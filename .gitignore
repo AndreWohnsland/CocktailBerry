@@ -2,3 +2,5 @@ venv
 .vscode
 *.pyc
 *.autosave
+*.log
+*.csv
