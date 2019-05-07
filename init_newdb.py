@@ -22,5 +22,5 @@ def create_new_db(DB, c):
 
     # Creating the Space Naming of the Bottles
     for Flaschen_C in range(1, 13):
-        c.execute("INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)", (Flaschen_C, ""))
+        c.execute("INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)",(Flaschen_C, ""))
     DB.commit()

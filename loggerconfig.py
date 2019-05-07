@@ -11,7 +11,8 @@ def basiclogger():
     logger.setLevel(logging.DEBUG)
     fh = logging.FileHandler('Party_2019_03_30.log')
     fh.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(message)s', "%Y-%m-%d %H:%M")
+    formatter = logging.Formatter(
+        '%(asctime)s - %(message)s', "%Y-%m-%d %H:%M")
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 

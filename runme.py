@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
     # Get the basic Logger
     loggerconfig.basiclogger()
-    
+
     # Load all the Functions from the setup script
     setupui.pass_setup(w, DB, c, partymode, devenvironment)
 
