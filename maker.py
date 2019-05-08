@@ -193,6 +193,26 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     w.tabWidget.setCurrentIndex(3)
             # Wenn alle Zutaten vorhanden sind startet das Zubereitungsprogramm.
             if createcheck == True:
+                # Generiert die Zusatzstrings für den Enddialog, falls Zusatzzutaten nötig sind
+                c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",(w.LWMaker.currentItem().text(),))
+                Zspeicher = c.fetchone()[0]
+                if (Zspeicher != None):
+                    if len(Zspeicher) >= 1:
+                        mysplitstring = str(Zspeicher).split(',')
+                        zusatzstring = "Noch hinzufügen:\n"
+                        switch = False
+                        for x in mysplitstring:
+                            if switch:
+                                y = x[1:].split(' ')
+                            else:
+                                switch = True
+                                y = x.split(' ')
+                            z = "{} ".format(str(round(int(y[0])*MVH))) + ' '.join(y[1:])
+                            zusatzstring = zusatzstring + "- ca. {}\n".format(z)
+                    else:
+                        zusatzstring = ""
+                else:
+                    zusatzstring = ""
                 # Die Zeit berechnet sich aus Division von Menge und Volumenstrom, es wird die längste Zeit gesucht
                 T_max = V_Zeit[0]
                 for row in range(1, len(V_Zeit)):
@@ -268,7 +288,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 w.progressBar.setValue(0)
                 if globals.loopcheck:
                     standartbox(
-                        "Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.")
+                        "Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.\n\n{}".format(zusatzstring))
                 elif not globals.loopcheck:
                     standartbox("Der Cocktail wurde abgebrochen!")
         globals.startcheck = False
