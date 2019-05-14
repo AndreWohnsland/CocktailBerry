@@ -78,7 +78,7 @@ def Maker_Rezepte_click(w, DB, c):
     c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
               (w.LWMaker.currentItem().text(),))
     Zspeicher = c.fetchone()[0]
-    if (Zspeicher != None):
+    if Zspeicher is not None:
         if len(Zspeicher) >= 1:
             w.LKommentar.setText("Hinzufügen:   " + str(Zspeicher))
         else:
@@ -196,10 +196,10 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 # Generiert die Zusatzstrings für den Enddialog, falls Zusatzzutaten nötig sind
                 c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",(w.LWMaker.currentItem().text(),))
                 Zspeicher = c.fetchone()[0]
-                if (Zspeicher != None):
+                if Zspeicher is not None:
                     if len(Zspeicher) >= 1:
                         mysplitstring = str(Zspeicher).split(',')
-                        zusatzstring = "Noch hinzufügen:\n"
+                        zusatzstring = "\n\nNoch hinzufügen:"
                         switch = False
                         for x in mysplitstring:
                             if switch:
@@ -208,7 +208,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                                 switch = True
                                 y = x.split(' ')
                             z = "{} ".format(str(round(int(y[0])*MVH))) + ' '.join(y[1:])
-                            zusatzstring = zusatzstring + "- ca. {}\n".format(z)
+                            zusatzstring = zusatzstring + "\n- ca. {}".format(z)
                     else:
                         zusatzstring = ""
                 else:
@@ -219,6 +219,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     if T_max < V_Zeit[row]:
                         T_max = V_Zeit[row]
                 T_aktuell = 0
+                w.progressionqwindow()
                 # Aktivieren der PINs
                 for row in range(0, len(V_FNr)):
                     if not devenvironment:
@@ -231,7 +232,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     if (T_aktuell*100) % 10 == 0:
                         print(str(T_aktuell) + " von " +
                               str(T_max) + " Sekunden ")
-                    w.progressBar.setValue(T_aktuell/T_max*100)
+                    w.prow_change(T_aktuell/T_max*100)
                     for row in range(0, len(V_FNr)):
                         if V_Zeit[row] > T_aktuell:
                             if (T_aktuell*100) % 10 == 0:
@@ -256,6 +257,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                         "Pin: " + str(Pinvektor[V_FNr[row] - 1]) + " wurde geschlossen")
                     if not devenvironment:
                         GPIO.output(Pinvektor[V_FNr[row] - 1], 1)
+                w.prow_close()
                 # Wendet den Verbrauch auf die DB an
                 for x in range(0, len(V_FNr)):
                     c.execute("UPDATE OR IGNORE Belegung SET Mengenlevel = Mengenlevel - ? WHERE Flasche = ?",
@@ -285,10 +287,9 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                               (round(V_Verbrauch[x]), round(V_Verbrauch[x]), V_FNr[x]))
                 DB.commit()
                 Belegung_progressbar(w, DB, c)
-                w.progressBar.setValue(0)
                 if globals.loopcheck:
                     standartbox(
-                        "Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.\n\n{}".format(zusatzstring))
+                        "Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{}".format(zusatzstring))
                 elif not globals.loopcheck:
                     standartbox("Der Cocktail wurde abgebrochen!")
         globals.startcheck = False
@@ -298,7 +299,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
         print("Alle Ports wurden gecleant!")'''
 
 
-def abbrechen_R(w, DB, c):
+def abbrechen_R():
     """ Interrupts the cocktail preparation. """
     # global loopcheck
     globals.loopcheck = False
@@ -307,13 +308,13 @@ def abbrechen_R(w, DB, c):
 
 def Maker_pm(w, DB, c, operator):
     """ Increases or decreases the Custom set amount. \n
-    The Minimum/Maximum ist 200/400. \n
+    The Minimum/Maximum ist 100/400. \n
     ------------------------------------------------------------
     As operater can be used: \n
     "+":    increases the value by 25 \n
     "-":    decreases the value by 25
     """
-    minimal = 200
+    minimal = 100
     maximal = 400
     if operator == "+":
         if int(w.LCustomMenge.text()) < maximal:

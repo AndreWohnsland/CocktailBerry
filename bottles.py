@@ -103,12 +103,11 @@ def Belegung_Flanwenden(w, DB, c):
         PBname = getattr(w, "PBneu" + str(Flaschen_C))
         if PBname.isChecked():
             storevar = c.execute(
-                "SELECT Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (Flaschen_C,))
-            for row in storevar:
-                storevol = row[0]
-                # print(storevol)
-            c.execute(
-                "UPDATE OR IGNORE Belegung SET Mengenlevel = ? WHERE Flasche = ?", (storevol, Flaschen_C))
+                "SELECT Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (Flaschen_C,)).fetchone()
+            if storevar is not None:
+                storevol = storevar[0]
+                c.execute(
+                    "UPDATE OR IGNORE Belegung SET Mengenlevel = ? WHERE Flasche = ?", (storevol, Flaschen_C))
     DB.commit()
     for Flaschen_C in range(1, 11):
         PBname = getattr(w, "PBneu" + str(Flaschen_C))

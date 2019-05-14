@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # Load the UI
     app = QApplication(sys.argv)
     # w = loadUi("Cocktailmanager_2.ui")
-    w = setupui.MainScreen()
+    w = setupui.MainScreen(devenvironment)
 
     # Setting the Pins if not DevEnvironment+
     if not devenvironment:

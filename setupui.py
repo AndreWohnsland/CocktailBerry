@@ -15,28 +15,66 @@ from bottles import *
 
 from Cocktailmanager_2 import Ui_MainWindow
 from passwordbuttons import Ui_PasswordWindow
+from progressbarwindow import Ui_Progressbarwindow
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
     """ Creates the Mainscreen. """
 
-    def __init__(self, parent=None):
+    def __init__(self, devenvironment, parent=None):
         super(MainScreen, self).__init__(parent)
         self.setupUi(self)
         self.LEpw.selectionChanged.connect(lambda: self.passwordwindow(1))
         self.LEpw2.selectionChanged.connect(lambda: self.passwordwindow(2))
+        self.LECleanMachine.selectionChanged.connect(lambda: self.passwordwindow(3))
+        if not devenvironment:
+            self.setCursor(Qt.BlankCursor)
+        self.devenvironment = devenvironment
 
     def passwordwindow(self, register):
         """ Opens up the PasswordScreen. """
         # pw = PasswordScreen(self)
         if register == 1:
+            self.register = 1
             if not hasattr(self, "pw1"):
                 self.pw1 = PasswordScreen(self)
             self.pw1.show()
         elif register == 2:
+            self.register = 2
             if not hasattr(self, "pw2"):
-                self.pw2 = PasswordScreen2(self)
+                self.pw2 = PasswordScreen(self)
             self.pw2.show()
+        elif register == 3:
+            self.register = 3
+            if not hasattr(self, "pw3"):
+                self.pw3 = PasswordScreen(self)
+            self.pw3.show()
+
+    def progressionqwindow(self):
+        """ Opens up the progressionwindow to show the Cocktail status. """
+        self.prow = Progressscreen(self)
+        self.prow.show()
+
+    def prow_change(self, pbvalue):
+        """ Changes the value of the Progressionbar of the ProBarWindow. """
+        self.prow.progressBar.setValue(pbvalue)
+
+    def prow_close(self):
+        """ Closes the Progressionwindow at the end of the cyclus. """
+        self.prow.close()
+
+
+class Progressscreen(QMainWindow, Ui_Progressbarwindow):
+    """ Class for the Progressscreen during Cocktail making. """
+
+    def __init__(self, parent=None):
+        super(Progressscreen, self).__init__(parent)
+        self.setupUi(self)
+        self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
+        self.setWindowFlag(Qt.WindowCloseButtonHint, False)
+        self.PBabbrechen.clicked.connect(abbrechen_R)
+        self.setWindowIcon(QIcon("Cocktail-icon.png"))
+        self.ms = parent
 
 
 class PasswordScreen(QMainWindow, Ui_PasswordWindow):
@@ -48,6 +86,7 @@ class PasswordScreen(QMainWindow, Ui_PasswordWindow):
         self.setupUi(self)
         self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
         # self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.PB0.clicked.connect(lambda: self.number_clicked(0))
         self.PB1.clicked.connect(lambda: self.number_clicked(1))
         self.PB2.clicked.connect(lambda: self.number_clicked(2))
@@ -61,59 +100,27 @@ class PasswordScreen(QMainWindow, Ui_PasswordWindow):
         self.PBenter.clicked.connect(self.enter_clicked)
         self.PBdel.clicked.connect(self.del_clicked)
         self.ms = parent
+        # decides in which window the numbers are entered
+        if self.ms.register == 1:
+            self.pwlineedit = self.ms.LEpw
+        elif self.ms.register == 2:
+            self.pwlineedit = self.ms.LEpw2
+        elif self.ms.register == 3:
+            self.pwlineedit = self.ms.LECleanMachine
 
     def number_clicked(self, number):
         # print(number)
-        self.ms.LEpw.setText(self.ms.LEpw.text() + "{}".format(number))
+        self.pwlineedit.setText(self.pwlineedit.text() + "{}".format(number))
 
     def enter_clicked(self):
         # print("enter")
         self.close()
 
     def del_clicked(self):
-        if len(self.ms.LEpw.text()) > 0:
+        if len(self.pwlineedit.text()) > 0:
             # print("del")
-            strstor = str(self.ms.LEpw.text())
-            self.ms.LEpw.setText(strstor[:-1])
-
-
-class PasswordScreen2(QMainWindow, Ui_PasswordWindow):
-    """ Creates the Passwordscreen2 (Zutaten). """
-
-    def __init__(self, parent=None):
-        super(PasswordScreen2, self).__init__(parent)
-        # self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setupUi(self)
-        # self.setWindowFlag(Qt.WindowCloseButtonHint, False)
-        self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
-        # self.setWindowFlags(Qt.FramelessWindowHint)
-        self.PB0.clicked.connect(lambda: self.number_clicked(0))
-        self.PB1.clicked.connect(lambda: self.number_clicked(1))
-        self.PB2.clicked.connect(lambda: self.number_clicked(2))
-        self.PB3.clicked.connect(lambda: self.number_clicked(3))
-        self.PB4.clicked.connect(lambda: self.number_clicked(4))
-        self.PB5.clicked.connect(lambda: self.number_clicked(5))
-        self.PB6.clicked.connect(lambda: self.number_clicked(6))
-        self.PB7.clicked.connect(lambda: self.number_clicked(7))
-        self.PB8.clicked.connect(lambda: self.number_clicked(8))
-        self.PB9.clicked.connect(lambda: self.number_clicked(9))
-        self.PBenter.clicked.connect(self.enter_clicked)
-        self.PBdel.clicked.connect(self.del_clicked)
-        self.ms = parent
-
-    def number_clicked(self, number):
-        # print(number)
-        self.ms.LEpw2.setText(self.ms.LEpw2.text() + "{}".format(number))
-
-    def enter_clicked(self):
-        # print("enter")
-        self.close()
-
-    def del_clicked(self):
-        if len(self.ms.LEpw2.text()) > 0:
-            # print("del")
-            strstor = str(self.ms.LEpw2.text())
-            self.ms.LEpw2.setText(strstor[:-1])
+            strstor = str(self.pwlineedit.text())
+            self.pwlineedit.setText(strstor[:-1])
 
 
 def pass_setup(w, DB, c, partymode, devenvironment):
@@ -127,9 +134,9 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBZdelete.clicked.connect(lambda: Zutaten_delete(w, DB, c))
     w.PBZclear.clicked.connect(lambda: Zutaten_clear(w, DB, c))
     w.PBZaktualisieren.clicked.connect(Zutaten_aktualiesieren)
-    w.PBZubereiten.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, True, devenvironment))
+    # w.PBZubereiten.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, True, devenvironment))
     w.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, False, devenvironment))
-    w.PBabbrechen.clicked.connect(lambda: abbrechen_R(w, DB, c))
+    # w.PBabbrechen.clicked.connect(abbrechen_R)
     w.PBCleanMachine.clicked.connect(lambda: CleanMachine(w, DB, c, devenvironment))
     w.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(w, DB, c))
     w.PBZplus.clicked.connect(lambda: Zutaten_Flvolumen_pm(w, DB, c, "+"))
