@@ -22,6 +22,9 @@
     <height>360</height>
    </size>
   </property>
+  <property name="cursor">
+   <cursorShape>BlankCursor</cursorShape>
+  </property>
   <property name="windowTitle">
    <string>~~ Cocktail wird zubereitet ~~</string>
   </property>
@@ -104,7 +107,7 @@ QProgressBar::chunk {
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>50</height>
+        <height>60</height>
        </size>
       </property>
       <property name="value">
