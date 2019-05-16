@@ -33,7 +33,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def passwordwindow(self, register):
         """ Opens up the PasswordScreen. """
-        # pw = PasswordScreen(self)
         if register == 1:
             self.register = 1
             if not hasattr(self, "pw1"):
@@ -82,7 +81,6 @@ class PasswordScreen(QMainWindow, Ui_PasswordWindow):
 
     def __init__(self, parent=None):
         super(PasswordScreen, self).__init__(parent)
-        # self.setAttribute(Qt.WA_DeleteOnClose)
         self.setupUi(self)
         self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
         # self.setWindowFlags(Qt.FramelessWindowHint)
@@ -109,22 +107,20 @@ class PasswordScreen(QMainWindow, Ui_PasswordWindow):
             self.pwlineedit = self.ms.LECleanMachine
 
     def number_clicked(self, number):
-        # print(number)
         self.pwlineedit.setText(self.pwlineedit.text() + "{}".format(number))
 
     def enter_clicked(self):
-        # print("enter")
         self.close()
 
     def del_clicked(self):
         if len(self.pwlineedit.text()) > 0:
-            # print("del")
             strstor = str(self.pwlineedit.text())
             self.pwlineedit.setText(strstor[:-1])
 
 
 def pass_setup(w, DB, c, partymode, devenvironment):
     """ Connect all the functions with the Buttons. """
+    # First, connect all the Pushbuttons with the Functions
     w.PBZutathinzu.clicked.connect(lambda: Zutat_eintragen(w, DB, c))
     w.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(w, DB, c))
     w.PBBelegung.clicked.connect(lambda: Belegung_eintragen(w, DB, c))
@@ -134,9 +130,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBZdelete.clicked.connect(lambda: Zutaten_delete(w, DB, c))
     w.PBZclear.clicked.connect(lambda: Zutaten_clear(w, DB, c))
     w.PBZaktualisieren.clicked.connect(Zutaten_aktualiesieren)
-    # w.PBZubereiten.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, True, devenvironment))
     w.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, False, devenvironment))
-    # w.PBabbrechen.clicked.connect(abbrechen_R)
     w.PBCleanMachine.clicked.connect(lambda: CleanMachine(w, DB, c, devenvironment))
     w.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(w, DB, c))
     w.PBZplus.clicked.connect(lambda: Zutaten_Flvolumen_pm(w, DB, c, "+"))
@@ -146,15 +140,17 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBSetnull.clicked.connect(lambda: Maker_nullProB(w, DB, c))
     w.PBZnull.clicked.connect(lambda: save_Zutaten(w, DB, c))
     w.PBRnull.clicked.connect(lambda: save_Rezepte(w, DB, c))
+    w.PBenable.clicked.connect(lambda: enableall(w, DB, c))
 
-    # w.LEpw2.selectionChanged.connect(lambda: passwordwindow(w,))
-
-    # Connect the Functions with the Lists
+    # Connect the Lists with the Functions
     w.LWZutaten.itemClicked.connect(lambda: Zutaten_Zutaten_click(w, DB, c))
     w.LWMaker.itemClicked.connect(lambda: Maker_Rezepte_click(w, DB, c))
     w.LWRezepte.itemClicked.connect(lambda: Rezepte_Rezepte_click(w, DB, c))
+    w.LWZutaten.currentTextChanged.connect(lambda: Zutaten_Zutaten_click(w, DB, c))
+    w.LWMaker.currentTextChanged.connect(lambda: Maker_Rezepte_click(w, DB, c))
+    w.LWRezepte.currentTextChanged.connect(lambda: Rezepte_Rezepte_click(w, DB, c))
 
-    # Disable some of the Tabs (for the Partymode)
+    # Disable some of the Tabs (for the Partymode, no one can access the recipes)
     if partymode:
         w.tabWidget.setTabEnabled(2, False)
 

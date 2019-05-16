@@ -279,6 +279,38 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWMaker.setFont(font)
+        self.LWMaker.setStyleSheet(" QScrollBar:vertical {\n"
+"     border: 1px solid rgb(97, 97, 97);\n"
+"     background: rgb(0, 0, 0);\n"
+"     width: 40px;\n"
+"     margin: 41px 0 41px 0;\n"
+" }\n"
+" QScrollBar::handle:vertical {\n"
+"     background: rgb(0, 0, 0);\n"
+" }\n"
+" QScrollBar::add-line:vertical {\n"
+"     border: 1px solid rgb(97, 97, 97);\n"
+"     background: rgb(0, 0, 0);\n"
+"     height: 40px;\n"
+"     subcontrol-position: bottom;\n"
+"     subcontrol-origin: margin;\n"
+" }\n"
+"\n"
+" QScrollBar::sub-line:vertical {\n"
+"     border: 1px solid rgb(97, 97, 97);\n"
+"     background: rgb(0, 0, 0);\n"
+"     height: 40px;\n"
+"     subcontrol-position: top;\n"
+"     subcontrol-origin: margin;\n"
+" }\n"
+"\n"
+" QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
+"        width: 12px;\n"
+"     height: 12px;\n"
+"     background: rgb(0, 123, 255);\n"
+" }")
+        self.LWMaker.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.LWMaker.setTextElideMode(QtCore.Qt.ElideRight)
         self.LWMaker.setObjectName("LWMaker")
         self.verticalLayout_21.addWidget(self.LWMaker)
         self.horizontalLayout_21 = QtWidgets.QHBoxLayout()
@@ -344,6 +376,27 @@ class Ui_MainWindow(object):
         self.LAlkoholname.setAlignment(QtCore.Qt.AlignCenter)
         self.LAlkoholname.setObjectName("LAlkoholname")
         self.verticalLayout_3.addWidget(self.LAlkoholname)
+        self.horizontalLayout_19 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_19.setObjectName("horizontalLayout_19")
+        self.LMenge = QtWidgets.QLabel(self.tab)
+        font = QtGui.QFont()
+        font.setPointSize(18)
+        font.setBold(False)
+        font.setWeight(50)
+        self.LMenge.setFont(font)
+        self.LMenge.setAlignment(QtCore.Qt.AlignCenter)
+        self.LMenge.setObjectName("LMenge")
+        self.horizontalLayout_19.addWidget(self.LMenge)
+        self.LAlkoholgehalt = QtWidgets.QLabel(self.tab)
+        font = QtGui.QFont()
+        font.setPointSize(18)
+        font.setBold(True)
+        font.setWeight(75)
+        self.LAlkoholgehalt.setFont(font)
+        self.LAlkoholgehalt.setAlignment(QtCore.Qt.AlignCenter)
+        self.LAlkoholgehalt.setObjectName("LAlkoholgehalt")
+        self.horizontalLayout_19.addWidget(self.LAlkoholgehalt)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_19)
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout()
@@ -498,35 +551,15 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.addLayout(self.verticalLayout_5)
         self.verticalLayout_3.addLayout(self.horizontalLayout_6)
         self.LKommentar = QtWidgets.QTextBrowser(self.tab)
+        self.LKommentar.setMinimumSize(QtCore.QSize(0, 0))
         self.LKommentar.setMaximumSize(QtCore.QSize(475, 40))
         font = QtGui.QFont()
-        font.setPointSize(9)
+        font.setPointSize(10)
         self.LKommentar.setFont(font)
         self.LKommentar.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.LKommentar.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.LKommentar.setObjectName("LKommentar")
         self.verticalLayout_3.addWidget(self.LKommentar)
-        self.horizontalLayout_19 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_19.setObjectName("horizontalLayout_19")
-        self.LMenge = QtWidgets.QLabel(self.tab)
-        font = QtGui.QFont()
-        font.setPointSize(14)
-        font.setBold(False)
-        font.setWeight(50)
-        self.LMenge.setFont(font)
-        self.LMenge.setAlignment(QtCore.Qt.AlignCenter)
-        self.LMenge.setObjectName("LMenge")
-        self.horizontalLayout_19.addWidget(self.LMenge)
-        self.LAlkoholgehalt = QtWidgets.QLabel(self.tab)
-        font = QtGui.QFont()
-        font.setPointSize(14)
-        font.setBold(True)
-        font.setWeight(75)
-        self.LAlkoholgehalt.setFont(font)
-        self.LAlkoholgehalt.setAlignment(QtCore.Qt.AlignCenter)
-        self.LAlkoholgehalt.setObjectName("LAlkoholgehalt")
-        self.horizontalLayout_19.addWidget(self.LAlkoholgehalt)
-        self.verticalLayout_3.addLayout(self.horizontalLayout_19)
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -568,7 +601,7 @@ class Ui_MainWindow(object):
         self.PBZubereiten_custom.setMinimumSize(QtCore.QSize(150, 40))
         self.PBZubereiten_custom.setMaximumSize(QtCore.QSize(200, 40))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(18)
         font.setBold(True)
         font.setWeight(75)
         self.PBZubereiten_custom.setFont(font)
@@ -586,6 +619,37 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWZutaten.setFont(font)
+        self.LWZutaten.setStyleSheet(" QScrollBar:vertical {\n"
+"     border: 1px solid rgb(97, 97, 97);\n"
+"     background: rgb(0, 0, 0);\n"
+"     width: 30px;\n"
+"     margin: 31px 0 31px 0;\n"
+" }\n"
+" QScrollBar::handle:vertical {\n"
+"     background: rgb(0, 0, 0);\n"
+" }\n"
+" QScrollBar::add-line:vertical {\n"
+"     border: 1px solid rgb(97, 97, 97);\n"
+"     background: rgb(0, 0, 0);\n"
+"     height: 30px;\n"
+"     subcontrol-position: bottom;\n"
+"     subcontrol-origin: margin;\n"
+" }\n"
+"\n"
+" QScrollBar::sub-line:vertical {\n"
+"     border: 1px solid rgb(97, 97, 97);\n"
+"     background: rgb(0, 0, 0);\n"
+"     height: 30px;\n"
+"     subcontrol-position: top;\n"
+"     subcontrol-origin: margin;\n"
+" }\n"
+"\n"
+" QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
+"        width: 10px;\n"
+"     height: 10px;\n"
+"     background: rgb(0, 123, 255);\n"
+" }")
+        self.LWZutaten.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWZutaten.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
         self.LWZutaten.setObjectName("LWZutaten")
         self.horizontalLayout_9.addWidget(self.LWZutaten)
@@ -752,6 +816,14 @@ class Ui_MainWindow(object):
         self.LECocktail.setPlaceholderText("")
         self.LECocktail.setObjectName("LECocktail")
         self.horizontalLayout_15.addWidget(self.LECocktail)
+        self.PBenable = QtWidgets.QPushButton(self.tab_3)
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.PBenable.setFont(font)
+        self.PBenable.setObjectName("PBenable")
+        self.horizontalLayout_15.addWidget(self.PBenable)
         self.PBRnull = QtWidgets.QPushButton(self.tab_3)
         self.PBRnull.setMaximumSize(QtCore.QSize(220, 16777215))
         font = QtGui.QFont()
@@ -849,9 +921,18 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addWidget(self.CBR8)
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.verticalLayout_4.addItem(spacerItem6)
+        self.CHBenabled = QtWidgets.QCheckBox(self.tab_3)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.CHBenabled.setFont(font)
+        self.CHBenabled.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.CHBenabled.setChecked(True)
+        self.CHBenabled.setObjectName("CHBenabled")
+        self.verticalLayout_4.addWidget(self.CHBenabled)
         spacerItem7 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_4.addItem(spacerItem7)
         self.PBclear = QtWidgets.QPushButton(self.tab_3)
+        self.PBclear.setMinimumSize(QtCore.QSize(0, 33))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -1042,11 +1123,43 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(16)
         self.LWRezepte.setFont(font)
+        self.LWRezepte.setStyleSheet(" QScrollBar:vertical {\n"
+"     border: 1px solid rgb(97, 97, 97);\n"
+"     background: rgb(0, 0, 0);\n"
+"     width: 30px;\n"
+"     margin: 31px 0 31px 0;\n"
+" }\n"
+" QScrollBar::handle:vertical {\n"
+"     background: rgb(0, 0, 0);\n"
+" }\n"
+" QScrollBar::add-line:vertical {\n"
+"     border: 1px solid rgb(97, 97, 97);\n"
+"     background: rgb(0, 0, 0);\n"
+"     height: 30px;\n"
+"     subcontrol-position: bottom;\n"
+"     subcontrol-origin: margin;\n"
+" }\n"
+"\n"
+" QScrollBar::sub-line:vertical {\n"
+"     border: 1px solid rgb(97, 97, 97);\n"
+"     background: rgb(0, 0, 0);\n"
+"     height: 30px;\n"
+"     subcontrol-position: top;\n"
+"     subcontrol-origin: margin;\n"
+" }\n"
+"\n"
+" QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
+"        width: 10px;\n"
+"     height: 10px;\n"
+"     background: rgb(0, 123, 255);\n"
+" }")
+        self.LWRezepte.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWRezepte.setObjectName("LWRezepte")
         self.verticalLayout_10.addWidget(self.LWRezepte)
         self.horizontalLayout_10 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_10.setObjectName("horizontalLayout_10")
         self.PBdelete = QtWidgets.QPushButton(self.tab_3)
+        self.PBdelete.setMinimumSize(QtCore.QSize(0, 33))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -1061,6 +1174,7 @@ class Ui_MainWindow(object):
         self.LEpw.setObjectName("LEpw")
         self.horizontalLayout_10.addWidget(self.LEpw)
         self.PBRezeptaktualisieren = QtWidgets.QPushButton(self.tab_3)
+        self.PBRezeptaktualisieren.setMinimumSize(QtCore.QSize(0, 32))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -1069,6 +1183,7 @@ class Ui_MainWindow(object):
         self.PBRezeptaktualisieren.setObjectName("PBRezeptaktualisieren")
         self.horizontalLayout_10.addWidget(self.PBRezeptaktualisieren)
         self.PBRezepthinzu = QtWidgets.QPushButton(self.tab_3)
+        self.PBRezepthinzu.setMinimumSize(QtCore.QSize(0, 32))
         self.PBRezepthinzu.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setPointSize(16)
@@ -1679,7 +1794,7 @@ class Ui_MainWindow(object):
         self.actionRezeptverwalter.setObjectName("actionRezeptverwalter")
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1690,6 +1805,8 @@ class Ui_MainWindow(object):
         self.label_17.setText(_translate("MainWindow", "-"))
         self.label_24.setText(_translate("MainWindow", "+"))
         self.LAlkoholname.setText(_translate("MainWindow", "LAlkoholname"))
+        self.LMenge.setText(_translate("MainWindow", "Menge in ml"))
+        self.LAlkoholgehalt.setText(_translate("MainWindow", "Alk in %"))
         self.LZutat1.setText(_translate("MainWindow", "LZutat1"))
         self.LZutat2.setText(_translate("MainWindow", "LZutat2"))
         self.LZutat3.setText(_translate("MainWindow", "LZutat3"))
@@ -1706,8 +1823,6 @@ class Ui_MainWindow(object):
         self.LMZutat6.setText(_translate("MainWindow", "LMZutat6"))
         self.LMZutat7.setText(_translate("MainWindow", "LMZutat7"))
         self.LMZutat8.setText(_translate("MainWindow", "LMZutat8"))
-        self.LMenge.setText(_translate("MainWindow", "Menge in ml"))
-        self.LAlkoholgehalt.setText(_translate("MainWindow", "Alkoholgehalt in %"))
         self.PBMminus.setText(_translate("MainWindow", "-"))
         self.LCustomMenge.setText(_translate("MainWindow", "200"))
         self.PBMplus.setText(_translate("MainWindow", "+"))
@@ -1726,7 +1841,9 @@ class Ui_MainWindow(object):
         self.PBZutathinzu.setText(_translate("MainWindow", "hinzufügen"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Zutaten"))
         self.label_23.setText(_translate("MainWindow", "Cocktailname:"))
+        self.PBenable.setText(_translate("MainWindow", "Enable all"))
         self.PBRnull.setText(_translate("MainWindow", "export + null"))
+        self.CHBenabled.setText(_translate("MainWindow", "  Enabled"))
         self.PBclear.setText(_translate("MainWindow", "clear"))
         self.label_7.setText(_translate("MainWindow", "ml"))
         self.label_5.setText(_translate("MainWindow", "ml"))

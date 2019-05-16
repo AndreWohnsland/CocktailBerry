@@ -7,6 +7,7 @@ import sys
 import sqlite3
 import time
 import logging
+import re
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -22,6 +23,7 @@ def Rezepte_a_M(w, DB, c):
     """ Goes through every recipe in the DB and crosscheck its incredients 
     with the actual bottle assignments. \n
     Only display the recipes in the maker tab which match all bottles needed.
+    In addition, only shows enabled recipes
     """
     w.LWMaker.clear()
     V_Rezepte = []
@@ -52,50 +54,61 @@ def Rezepte_a_M(w, DB, c):
     for row in ID_Rezepte:
         Zspeicher = c.execute("SELECT Name FROM Rezepte WHERE ID = ?", (row,))
         for Werte in Zspeicher:
-            w.LWMaker.addItem(Werte[0])
+            Zspeicher2 = c.execute("SELECT Enabled FROM Rezepte WHERE ID = ?", (row,))
+            enabled = c.fetchone()[0]
+            if enabled:
+                w.LWMaker.addItem(Werte[0])
 
 
 def Maker_Rezepte_click(w, DB, c):
     """ Get all the data out of the DB for the selected recipe,
     then assign the strings and values in the TextBoxes on the Maker Sheet.
     """
-    # in der DB nach dem Rezept (ID) suchen und über die ID (Zutaten) die Zutaten und die Mengen einspeichern.
-    # zusätzlich den Alkoholgehalt des Rezeptes herausssuchen und in die Label schreiben
-    Maker_List_null(w, DB, c)
-    # sucht den Alkoholgehalt aus der DB und trägt diesen ein
-    c.execute("SELECT Alkoholgehalt FROM Rezepte WHERE Name = ?",
-              (w.LWMaker.currentItem().text(),))
-    Zspeicher = c.fetchone()[0]
-    w.LAlkoholgehalt.setText("Alkoholgehalt: " + str(Zspeicher) + "%")
-    # Benennt das Rezept
-    w.LAlkoholname.setText(w.LWMaker.currentItem().text())
-    # Sucht die Rezeptmenge aus der Db und trägt sie ein
-    c.execute("SELECT Menge FROM Rezepte WHERE Name = ?",
-              (w.LWMaker.currentItem().text(),))
-    Zspeicher = c.fetchone()[0]
-    w.LMenge.setText("Menge: " + str(Zspeicher) + "ml")
-    # sucht das Kommentar aus der DB und trägt diesen ein
-    c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
-              (w.LWMaker.currentItem().text(),))
-    Zspeicher = c.fetchone()[0]
-    if Zspeicher is not None:
-        if len(Zspeicher) >= 1:
-            w.LKommentar.setText("Hinzufügen:   " + str(Zspeicher))
-        else:
-            w.LKommentar.setText("")
-    #Zspeicher = c.execute("SELECT Zusammen.Zutaten_ID, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID WHERE Rezepte.Name = ?",(w.LWMaker.currentItem().text(),))
-    Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (w.LWMaker.currentItem().text(),))
-    LVZutat = []
-    LVMenge = []
-    for row in Zspeicher:
-        #print(row[0], row[1])
-        LVZutat.append(row[0])
-        LVMenge.append(row[1])
-    for row in range(0, len(LVZutat)):
-        LZname = getattr(w, "LZutat" + str(row + 1))
-        LZname.setText(str(LVZutat[row]) + " ")
-        LMZname = getattr(w, "LMZutat" + str(row + 1))
-        LMZname.setText(" " + str(LVMenge[row]) + " ml")
+    if w.LWMaker.selectedItems():
+        # in der DB nach dem Rezept (ID) suchen und über die ID (Zutaten) die Zutaten und die Mengen einspeichern.
+        # zusätzlich den Alkoholgehalt des Rezeptes herausssuchen und in die Label schreiben
+        Maker_List_null(w, DB, c)
+        zusatzmenge = 0
+        # sucht den Alkoholgehalt aus der DB und trägt diesen ein
+        c.execute("SELECT Alkoholgehalt FROM Rezepte WHERE Name = ?",
+                (w.LWMaker.currentItem().text(),))
+        Zspeicher = c.fetchone()[0]
+        w.LAlkoholgehalt.setText("Alkohol: " + str(Zspeicher) + "%")
+        # Benennt das Rezept
+        w.LAlkoholname.setText(w.LWMaker.currentItem().text())
+        # sucht das Kommentar aus der DB und trägt diesen ein
+        c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
+                (w.LWMaker.currentItem().text(),))
+        Zspeicher = c.fetchone()[0]
+        if Zspeicher is not None:
+            if len(Zspeicher) >= 1:
+                w.LKommentar.setText("Hinzufügen:  " + str(Zspeicher))
+                mysplitstring = re.split(', | |,', Zspeicher) 
+                for allwords in mysplitstring:
+                    try:
+                        zusatzmenge += int(allwords)
+                    except:
+                        pass
+            else:
+                w.LKommentar.setText("")
+        # Sucht die Rezeptmenge aus der Db und trägt sie ein
+        c.execute("SELECT Menge FROM Rezepte WHERE Name = ?",
+                (w.LWMaker.currentItem().text(),))
+        Zspeicher = c.fetchone()[0]
+        w.LMenge.setText("Menge: " + str(int(Zspeicher) + zusatzmenge) + " ml")
+        #Zspeicher = c.execute("SELECT Zusammen.Zutaten_ID, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID WHERE Rezepte.Name = ?",(w.LWMaker.currentItem().text(),))
+        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (w.LWMaker.currentItem().text(),))
+        LVZutat = []
+        LVMenge = []
+        for row in Zspeicher:
+            #print(row[0], row[1])
+            LVZutat.append(row[0])
+            LVMenge.append(row[1])
+        for row in range(0, len(LVZutat)):
+            LZname = getattr(w, "LZutat" + str(row + 1))
+            LZname.setText(str(LVZutat[row]) + " ")
+            LMZname = getattr(w, "LMZutat" + str(row + 1))
+            LMZname.setText(" " + str(LVMenge[row]) + " ml")
 
 
 def Maker_List_null(w, DB, c):
@@ -163,13 +176,25 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     MFaktor = Alkoholfaktor
                 else:
                     MFaktor = 1
-                print(MFaktor)
+                # print(MFaktor)
                 V_ZM.append(round(int(row[0])*MFaktor, 1))
                 V_FNr.append(int(row[1]))
                 V_Zeit.append(
                     round((int(row[0])*MFaktor)/Volumenstrom[row[1]-1], 2))
                 V_Volumen += round(int(row[0])*MFaktor, 1)
                 V_Verbrauch.append(0)
+            # If there is a comment, it will be checked, and the quantity of the incredients will be added to the V_Volumen
+            c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",(w.LWMaker.currentItem().text(),))
+            Zspeicher = c.fetchone()[0]
+            if Zspeicher is None:
+                pass
+            elif len(Zspeicher) >= 1:
+                mysplitstring = re.split(', | |,', Zspeicher) 
+                for allwords in mysplitstring:
+                    try:
+                        V_Volumen += int(allwords)
+                    except:
+                        pass
             MVH = Cocktailmenge/V_Volumen
             if MVH != 1:
                 for x in range(0, len(V_ZM)):
@@ -198,15 +223,10 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 Zspeicher = c.fetchone()[0]
                 if Zspeicher is not None:
                     if len(Zspeicher) >= 1:
-                        mysplitstring = str(Zspeicher).split(',')
+                        mysplitstring = re.split(', |,', str(Zspeicher))
                         zusatzstring = "\n\nNoch hinzufügen:"
-                        switch = False
                         for x in mysplitstring:
-                            if switch:
-                                y = x[1:].split(' ')
-                            else:
-                                switch = True
-                                y = x.split(' ')
+                            y = x.split(' ')
                             z = "{} ".format(str(round(int(y[0])*MVH))) + ' '.join(y[1:])
                             zusatzstring = zusatzstring + "\n- ca. {}".format(z)
                     else:

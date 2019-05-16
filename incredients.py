@@ -125,12 +125,13 @@ def Zutaten_delete(w, DB, c):
 
 def Zutaten_Zutaten_click(w, DB, c):
     """ Search the DB entry for the incredient and displays them """
-    Zspeicher = c.execute(
-        "SELECT Alkoholgehalt, Flaschenvolumen FROM Zutaten WHERE Name = ?", (w.LWZutaten.currentItem().text(),))
-    for row in Zspeicher:
-        w.LEGehaltRezept.setText(str(row[0]))
-        w.LEFlaschenvolumen.setText(str(row[1]))
-    w.LEZutatRezept.setText(w.LWZutaten.currentItem().text())
+    if w.LWZutaten.selectedItems():
+        Zspeicher = c.execute(
+            "SELECT Alkoholgehalt, Flaschenvolumen FROM Zutaten WHERE Name = ?", (w.LWZutaten.currentItem().text(),))
+        for row in Zspeicher:
+            w.LEGehaltRezept.setText(str(row[0]))
+            w.LEFlaschenvolumen.setText(str(row[1]))
+        w.LEZutatRezept.setText(w.LWZutaten.currentItem().text())
 
 
 def Zutaten_aktualiesieren(w, DB, c):

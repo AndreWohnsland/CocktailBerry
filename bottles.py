@@ -174,4 +174,4 @@ def CleanMachine(w, DB, c, devenvironment):
     else:
         print("Falsches Passwort!!!!")
         standartbox("Falsches Passwort!!!!")
-    w.LECleanMachine.clear()
+    w.LECleanMachine.setText("")

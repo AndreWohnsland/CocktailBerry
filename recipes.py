@@ -112,10 +112,14 @@ def Rezept_eintragen(w, DB, c):
             if w.LEprozent_a.text() != "":
                 SVolcon += int(w.LEmenge_a.text())*int(w.LEprozent_a.text())
             Alkoholgehalt_Cocktail = int(SVolcon/SVol2)
+            if w.CHBenabled.isChecked():
+                isenabled = 1
+            else:
+                isenabled = 0
             # print(Alkoholgehalt_Cocktail)
             # Rezept wird in Rezept DB eingetragen
-            c.execute("INSERT OR IGNORE INTO Rezepte(Name, Alkoholgehalt, Menge, Kommentar, Anzahl_Lifetime, Anzahl) VALUES (?,?,?,?,0,0)",
-                      (w.LECocktail.text(), Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text()))
+            c.execute("INSERT OR IGNORE INTO Rezepte(Name, Alkoholgehalt, Menge, Kommentar, Anzahl_Lifetime, Anzahl, Enabled) VALUES (?,?,?,?,0,0,?)",
+                      (w.LECocktail.text(), Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled))
             # RezeptID, sowie ZutatenIDs werden herausgesucht und anschließend in die Zusammen DB eingetragen
             for Anzahl in range(0, len(Zutaten_V)):
                 temp1 = c.execute(
@@ -189,30 +193,38 @@ def Rezepte_clear(w, DB, c, clearmode):
 
 def Rezepte_Rezepte_click(w, DB, c):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
-    Rezepte_clear(w, DB, c, False)
-    # nimmt zutatenname und Menge für das Rezept
-    Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (w.LWRezepte.currentItem().text(),))
-    LVZutat = []
-    LVMenge = []
-    w.LECocktail.clear()
-    # Diese werden dann in ein Vektor (Liste) zugewisen
-    for row in Zspeicher:
-        #print(row[0], row[1])
-        LVZutat.append(row[0])
-        LVMenge.append(row[1])
-    # füllen aller Werte in die Felder
-    for row in range(0, len(LVZutat)):
-        LERname = getattr(w, "LER" + str(row + 1))
-        LERname.setText(str(LVMenge[row]))
-        CBRname = getattr(w, "CBR" + str(row + 1))
-        index = CBRname.findText(LVZutat[row], Qt.MatchFixedString)
-        CBRname.setCurrentIndex(index)
-    # eintragen vom Kommentar
-    c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
-              (w.LWRezepte.currentItem().text(),))
-    Zspeicher = c.fetchone()[0]
-    if (Zspeicher != None):
-        w.LEKommentar.setText(str(Zspeicher))
+    if w.LWRezepte.selectedItems():
+        LVZutat = []
+        LVMenge = []
+        # nimmt zutatenname und Menge für das Rezept
+        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (w.LWRezepte.currentItem().text(),))
+        Rezepte_clear(w, DB, c, False)
+        # Diese werden dann in ein Vektor (Liste) zugewisen
+        for row in Zspeicher:
+            #print(row[0], row[1])
+            LVZutat.append(row[0])
+            LVMenge.append(row[1])
+        # füllen aller Werte in die Felder
+        for row in range(0, len(LVZutat)):
+            LERname = getattr(w, "LER" + str(row + 1))
+            LERname.setText(str(LVMenge[row]))
+            CBRname = getattr(w, "CBR" + str(row + 1))
+            index = CBRname.findText(LVZutat[row], Qt.MatchFixedString)
+            CBRname.setCurrentIndex(index)
+        # eintragen vom Kommentar
+        c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
+                (w.LWRezepte.currentItem().text(),))
+        Zspeicher = c.fetchone()[0]
+        if (Zspeicher != None):
+            w.LEKommentar.setText(str(Zspeicher))
+        w.LECocktail.setText(str(w.LWRezepte.currentItem().text()))
+        c.execute("SELECT Enabled FROM Rezepte WHERE Name = ?",
+                (w.LWRezepte.currentItem().text(),))
+        enabled = c.fetchone()[0]
+        if enabled:
+            w.CHBenabled.setChecked(True)
+        else:
+            w.CHBenabled.setChecked(False)
 
 
 def Rezept_aktualisieren(w, DB, c):
@@ -299,8 +311,12 @@ def Rezept_aktualisieren(w, DB, c):
         Alkoholgehalt_Cocktail = int(SVolcon/SVol2)
         # print(Alkoholgehalt_Cocktail)
         # Rezept wird in Rezept DB eingetragen
-        c.execute("UPDATE OR IGNORE Rezepte SET Alkoholgehalt = ?, Menge = ?, Kommentar = ? WHERE ID = ?",
-                  (Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), int(CocktailID)))
+        if w.CHBenabled.isChecked():
+            isenabled = 1
+        else:
+            isenabled = 0
+        c.execute("UPDATE OR IGNORE Rezepte SET Alkoholgehalt = ?, Menge = ?, Kommentar = ?, Enabled = ? WHERE ID = ?",
+                  (Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, int(CocktailID)))
         # RezeptID, sowie ZutatenIDs werden herausgesucht und anschließend in die Zusammen DB eingetragen
         for Anzahl in range(0, len(Zutaten_V)):
             temp1 = c.execute(
@@ -354,7 +370,7 @@ def Rezepte_delete(w, DB, c):
     else:
         print("Falsches Passwort!")
         standartbox("Falsches Passwort!")
-    w.LEpw.clear()
+    w.LEpw.setText("")
 
 
 def save_Rezepte(w, DB, c):
@@ -391,3 +407,10 @@ def save_Rezepte(w, DB, c):
         print("Falsches Passwort!")
         standartbox("Falsches Passwort!")
     w.LEpw.clear()
+
+def enableall(w, DB, c):
+    c.execute("UPDATE OR IGNORE Rezepte SET Enabled = 1")
+    DB.commit()
+    Rezepte_a_M(w, DB, c)
+    Rezepte_clear(w, DB, c, False)
+    standartbox("Alle Rezepte wurden wieder aktiv gesetzt!")

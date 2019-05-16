@@ -282,7 +282,7 @@ QLineEdit
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -300,6 +300,44 @@ QLineEdit
              <font>
               <pointsize>20</pointsize>
              </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"> QScrollBar:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     width: 40px;
+     margin: 41px 0 41px 0;
+ }
+ QScrollBar::handle:vertical {
+     background: rgb(0, 0, 0);
+ }
+ QScrollBar::add-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 40px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 40px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+   	 width: 12px;
+     height: 12px;
+     background: rgb(0, 123, 255);
+ }</string>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="textElideMode">
+             <enum>Qt::ElideRight</enum>
             </property>
             <property name="sortingEnabled">
              <bool>true</bool>
@@ -450,6 +488,44 @@ QLineEdit
                <set>Qt::AlignCenter</set>
               </property>
              </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <item>
+               <widget class="QLabel" name="LMenge">
+                <property name="font">
+                 <font>
+                  <pointsize>18</pointsize>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Menge in ml</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="LAlkoholgehalt">
+                <property name="font">
+                 <font>
+                  <pointsize>18</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Alk in %</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -737,6 +813,12 @@ QLineEdit
             </item>
             <item>
              <widget class="QTextBrowser" name="LKommentar">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>475</width>
@@ -745,7 +827,7 @@ QLineEdit
               </property>
               <property name="font">
                <font>
-                <pointsize>9</pointsize>
+                <pointsize>10</pointsize>
                </font>
               </property>
               <property name="layoutDirection">
@@ -755,44 +837,6 @@ QLineEdit
                <enum>QFrame::NoFrame</enum>
               </property>
              </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_19">
-              <item>
-               <widget class="QLabel" name="LMenge">
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Menge in ml</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="LAlkoholgehalt">
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Alkoholgehalt in %</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-             </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -916,7 +960,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>18</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -945,6 +989,41 @@ QLineEdit
            <font>
             <pointsize>20</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"> QScrollBar:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     width: 30px;
+     margin: 31px 0 31px 0;
+ }
+ QScrollBar::handle:vertical {
+     background: rgb(0, 0, 0);
+ }
+ QScrollBar::add-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 30px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 30px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+   	 width: 10px;
+     height: 10px;
+     background: rgb(0, 123, 255);
+ }</string>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectItems</enum>
@@ -1277,6 +1356,20 @@ QLineEdit
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="PBenable">
+              <property name="font">
+               <font>
+                <pointsize>16</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Enable all</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="PBRnull">
               <property name="maximumSize">
                <size>
@@ -1503,6 +1596,24 @@ QLineEdit
                </spacer>
               </item>
               <item>
+               <widget class="QCheckBox" name="CHBenabled">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="text">
+                 <string>  Enabled</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="verticalSpacer_5">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -1517,6 +1628,12 @@ QLineEdit
               </item>
               <item>
                <widget class="QPushButton" name="PBclear">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>33</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
                   <pointsize>16</pointsize>
@@ -1986,6 +2103,41 @@ QLineEdit
                   <pointsize>16</pointsize>
                  </font>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true"> QScrollBar:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     width: 30px;
+     margin: 31px 0 31px 0;
+ }
+ QScrollBar::handle:vertical {
+     background: rgb(0, 0, 0);
+ }
+ QScrollBar::add-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 30px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 30px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+   	 width: 10px;
+     height: 10px;
+     background: rgb(0, 123, 255);
+ }</string>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOff</enum>
+                </property>
                 <property name="sortingEnabled">
                  <bool>true</bool>
                 </property>
@@ -1995,6 +2147,12 @@ QLineEdit
                <layout class="QHBoxLayout" name="horizontalLayout_10">
                 <item>
                  <widget class="QPushButton" name="PBdelete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>33</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <pointsize>16</pointsize>
@@ -2028,6 +2186,12 @@ QLineEdit
                 </item>
                 <item>
                  <widget class="QPushButton" name="PBRezeptaktualisieren">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>32</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <pointsize>16</pointsize>
@@ -2042,6 +2206,12 @@ QLineEdit
                 </item>
                 <item>
                  <widget class="QPushButton" name="PBRezepthinzu">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>32</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
