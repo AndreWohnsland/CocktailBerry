@@ -6,6 +6,7 @@ from PyQt5.uic import *
 
 
 def standartbox(textstring):
+    print(textstring)
     msgBox = QMessageBox()
     msgBox.setStandardButtons(QMessageBox.Ok)
     buttonok = msgBox.button(QMessageBox.Ok)

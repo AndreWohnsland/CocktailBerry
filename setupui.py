@@ -122,10 +122,10 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     """ Connect all the functions with the Buttons. """
     # First, connect all the Pushbuttons with the Functions
     w.PBZutathinzu.clicked.connect(lambda: Zutat_eintragen(w, DB, c))
-    w.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(w, DB, c))
+    w.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(w, DB, c, True))
     w.PBBelegung.clicked.connect(lambda: Belegung_eintragen(w, DB, c))
     w.PBclear.clicked.connect(lambda: Rezepte_clear(w, DB, c, True))
-    w.PBRezeptaktualisieren.clicked.connect(lambda: Rezept_aktualisieren(w, DB, c))
+    w.PBRezeptaktualisieren.clicked.connect(lambda: Rezept_eintragen(w, DB, c, False))
     w.PBdelete.clicked.connect(lambda: Rezepte_delete(w, DB, c))
     w.PBZdelete.clicked.connect(lambda: Zutaten_delete(w, DB, c))
     w.PBZclear.clicked.connect(lambda: Zutaten_clear(w, DB, c))

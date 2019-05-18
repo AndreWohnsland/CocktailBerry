@@ -14,7 +14,7 @@ class Ui_Progressbarwindow(object):
         Progressbarwindow.resize(600, 360)
         Progressbarwindow.setMinimumSize(QtCore.QSize(600, 360))
         Progressbarwindow.setMaximumSize(QtCore.QSize(600, 360))
-        Progressbarwindow.setCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
+        Progressbarwindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         Progressbarwindow.setStyleSheet("QWidget\n"
 "{\n"
 "    color: rgb(0, 123, 255);    \n"
