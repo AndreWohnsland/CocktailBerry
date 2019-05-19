@@ -15,7 +15,6 @@ def basiclogger():
         '%(asctime)s - %(message)s', "%Y-%m-%d %H:%M")
     fh.setFormatter(formatter)
     logger.addHandler(fh)
-
-    # Test the logger
+    # Logging the Start of the Programm. If it runs a whole evening, each restart means a previous crash.
     template = "{:-^80}"
     logger.debug(template.format("Restarting the Programm",))

@@ -282,7 +282,7 @@ QLineEdit
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -310,6 +310,8 @@ QLineEdit
  }
  QScrollBar::handle:vertical {
      background: rgb(0, 0, 0);
+	 min-width: 20px;
+	 max-width: 100px;
  }
  QScrollBar::add-line:vertical {
      border: 1px solid rgb(97, 97, 97);
@@ -326,6 +328,10 @@ QLineEdit
      subcontrol-position: top;
      subcontrol-origin: margin;
  }
+/*
+ QScrollBar::sub-page:vertical {
+	height: 100px
+} */
 
  QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
    	 width: 12px;

@@ -23,10 +23,8 @@ def ZutatenCB_Belegung(w, DB, c):
         CBBname = getattr(w, "CBB" + str(box))
         CBBname.clear()
         CBBname.addItem("")
-        # print(CBRname)
         for row in Zspeicher:
             CBBname.addItem(row[0])
-            # print(row[0])
 
 
 def Belegung_eintragen(w, DB, c):
@@ -39,7 +37,6 @@ def Belegung_eintragen(w, DB, c):
         CBBname = getattr(w, "CBB" + str(Flaschen_C))
         if (CBBname.currentText() != "" and CBBname.currentText() != 0):
             CBB_List.append(CBBname.currentText())
-            # print(CBBname.currentText())
     # Vergleiche alle eingetragenen Werte und prüfe nach einer Doppelung
     # Dummy1 wird 1 falls eine Doppelung eintritt
     for Flaschen_i in range(0, len(CBB_List)):
@@ -62,14 +59,11 @@ def Belegung_eintragen(w, DB, c):
             c.execute("UPDATE OR IGNORE Belegung SET ID = ? WHERE Flasche = ?", (int(
                 Speicher_ID2), Flaschen_C))
             DB.commit()
-            # print(CBBname.currentText())
         Belegung_a(w, DB, c)
         Rezepte_a_M(w, DB, c)
         Belegung_progressbar(w, DB, c)
-        print("Belegung geändert")
         standartbox("Belegung geändert")
     else:
-        print("Eine der Zutaten wurde doppelt zugewiesen!")
         standartbox("Eine der Zutaten wurde doppelt zugewiesen!")
 
 
@@ -79,9 +73,7 @@ def Belegung_einlesen(w, DB, c):
         CBBname = getattr(w, "CBB" + str(Flaschen_C))
         Testbelegung = c.execute(
             "SELECT Zutat_F FROM Belegung WHERE Flasche=?", (Flaschen_C,))
-        # print(Flaschen_C)
         for row in Testbelegung:
-            # print(row[0])
             index = CBBname.findText(row[0], Qt.MatchFixedString)
             CBBname.setCurrentIndex(index)
 
@@ -93,7 +85,6 @@ def Belegung_a(w, DB, c):
         Testbelegung = c.execute(
             "SELECT Zutat_F FROM Belegung WHERE Flasche=?", (Flaschen_C,))
         for row in Testbelegung:
-            # print(row[0])
             Lname.setText("  " + str(row[0]) + ":")
 
 
@@ -113,7 +104,6 @@ def Belegung_Flanwenden(w, DB, c):
         PBname = getattr(w, "PBneu" + str(Flaschen_C))
         PBname.setChecked(False)
     Belegung_progressbar(w, DB, c)
-    print("Alle Flaschen angewendet!")
     standartbox("Alle Flaschen angewendet!")
 
 
@@ -124,14 +114,12 @@ def Belegung_progressbar(w, DB, c):
     b1 = []
     storeval = c.execute("SELECT Mengenlevel FROM Belegung")
     for row in storeval:
-        # print(row[0])
         b1.append(row[0])
     for x in range(1, 11):
         ProBname = getattr(w, "ProBBelegung" + str(x))
         storeval2 = c.execute(
             "SELECT Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (x,))
         for row in storeval2:
-            # print(b1[x-1]/row[0]*100)
             if b1[x-1] <= 0:
                 ProBname.setValue(0)
             else:
@@ -140,18 +128,15 @@ def Belegung_progressbar(w, DB, c):
 
 def CleanMachine(w, DB, c, devenvironment):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. """
-    # Memo an mich: In DB dieses Event verzeichnen!!!!
     if not devenvironment:
         import RPi.GPIO as GPIO
         GPIO.setmode(GPIO.BCM)
     if w.LECleanMachine.text() == globals.masterpassword:
-        print("Achtung!: Maschine wird gereinigt, genug Wasser bereitstellen!")
         standartbox(
             "Achtung!: Maschine wird gereinigt, genug Wasser bereitstellen!")
         logger = logging.getLogger('cocktail_application')
         template = "{:*^80}"
         logger.info(template.format("Cleaning the Pumps",))
-        # Pinvektor = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 20]
         Pinvektor = globals.usedpins
         w.LECleanMachine.clear()
         for row in range(0, 9):
@@ -169,9 +154,7 @@ def CleanMachine(w, DB, c, devenvironment):
         for row in range(0, 9):
             if not devenvironment:
                 GPIO.output(Pinvektor[row], 1)
-        print("Fertig!!!")
         standartbox("Fertig!!!")
     else:
-        print("Falsches Passwort!!!!")
         standartbox("Falsches Passwort!!!!")
     w.LECleanMachine.setText("")

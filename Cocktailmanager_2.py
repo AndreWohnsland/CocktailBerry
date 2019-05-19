@@ -283,10 +283,13 @@ class Ui_MainWindow(object):
 "     border: 1px solid rgb(97, 97, 97);\n"
 "     background: rgb(0, 0, 0);\n"
 "     width: 40px;\n"
+"     height: 100px;\n"
 "     margin: 41px 0 41px 0;\n"
 " }\n"
 " QScrollBar::handle:vertical {\n"
 "     background: rgb(0, 0, 0);\n"
+"     min-width: 20px;\n"
+"     max-width: 100px;\n"
 " }\n"
 " QScrollBar::add-line:vertical {\n"
 "     border: 1px solid rgb(97, 97, 97);\n"
@@ -303,6 +306,10 @@ class Ui_MainWindow(object):
 "     subcontrol-position: top;\n"
 "     subcontrol-origin: margin;\n"
 " }\n"
+"/*\n"
+" QScrollBar::sub-page:vertical {\n"
+"    height: 100px\n"
+"} */\n"
 "\n"
 " QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
 "        width: 12px;\n"
@@ -1794,7 +1801,7 @@ class Ui_MainWindow(object):
         self.actionRezeptverwalter.setObjectName("actionRezeptverwalter")
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

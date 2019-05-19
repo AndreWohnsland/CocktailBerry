@@ -37,17 +37,17 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             self.register = 1
             if not hasattr(self, "pw1"):
                 self.pw1 = PasswordScreen(self)
-            self.pw1.show()
+            self.pw1.showMaximized()
         elif register == 2:
             self.register = 2
             if not hasattr(self, "pw2"):
                 self.pw2 = PasswordScreen(self)
-            self.pw2.show()
+            self.pw2.showMaximized()
         elif register == 3:
             self.register = 3
             if not hasattr(self, "pw3"):
                 self.pw3 = PasswordScreen(self)
-            self.pw3.show()
+            self.pw3.showMaximized()
 
     def progressionqwindow(self):
         """ Opens up the progressionwindow to show the Cocktail status. """
@@ -69,8 +69,9 @@ class Progressscreen(QMainWindow, Ui_Progressbarwindow):
     def __init__(self, parent=None):
         super(Progressscreen, self).__init__(parent)
         self.setupUi(self)
-        self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
-        self.setWindowFlag(Qt.WindowCloseButtonHint, False)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        # self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
+        # self.setWindowFlag(Qt.WindowCloseButtonHint, False)
         self.PBabbrechen.clicked.connect(abbrechen_R)
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.ms = parent
@@ -82,8 +83,7 @@ class PasswordScreen(QMainWindow, Ui_PasswordWindow):
     def __init__(self, parent=None):
         super(PasswordScreen, self).__init__(parent)
         self.setupUi(self)
-        self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
-        # self.setWindowFlags(Qt.FramelessWindowHint)
+        # self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.PB0.clicked.connect(lambda: self.number_clicked(0))
         self.PB1.clicked.connect(lambda: self.number_clicked(1))
@@ -129,7 +129,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBdelete.clicked.connect(lambda: Rezepte_delete(w, DB, c))
     w.PBZdelete.clicked.connect(lambda: Zutaten_delete(w, DB, c))
     w.PBZclear.clicked.connect(lambda: Zutaten_clear(w, DB, c))
-    w.PBZaktualisieren.clicked.connect(Zutaten_aktualiesieren)
+    w.PBZaktualisieren.clicked.connect(lambda: Zutaten_aktualiesieren(w, DB, c))
     w.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, False, devenvironment))
     w.PBCleanMachine.clicked.connect(lambda: CleanMachine(w, DB, c, devenvironment))
     w.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(w, DB, c))

@@ -36,7 +36,7 @@ if __name__ == '__main__':
     # w = loadUi("Cocktailmanager_2.ui")
     w = setupui.MainScreen(devenvironment)
 
-    # Setting the Pins if not DevEnvironment+
+    # Setting the Pins if not DevEnvironment
     if not devenvironment:
         GPIO.setmode(GPIO.BCM)
 

@@ -71,17 +71,34 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             LERname = getattr(w, "LER" + str(check_v))
             if CBRname.currentText() != "":
                 Zutaten_V.append(CBRname.currentText())
-                Mengen_V.append(LERname.text())
+                Mengen_V.append(int(LERname.text()))
                 # print(CBRname.currentText())
         # print(len(Zutaten_V))
         for Flaschen_i in range(0, len(Zutaten_V)):
             for Flaschen_j in range(0, len(Zutaten_V)):
                 if ((Zutaten_V[Flaschen_i] == Zutaten_V[Flaschen_j]) and (Flaschen_i != Flaschen_j)):
-                    standartbox("Eine Zutat wurde doppelt verwendet!")
+                    standartbox("Eine der Zutaten:\n<{}>\nwurde doppelt verwendet!".format(Zutaten_V[Flaschen_i]))
                     val_check = 1
                     break
             if val_check == 1:
                 break
+    # checks if there is at least one incredient, else this would make no sense
+    if val_check == 0:
+        if len(Zutaten_V) < 1:
+            val_check = 1
+            standartbox("Es muss mindestens eine Zutat eingetragen sein!")
+    # Checks if both Commentvalues are given (or none) and if they are, if they are numbers
+    if val_check == 0:
+        if (w.LEmenge_a.text() != "" and w.LEprozent_a.text() == "") or (w.LEmenge_a.text() == "" and w.LEprozent_a.text() != ""):
+            val_check = 1
+            standartbox("Bei den Kommentarwerten muss sowohl die Menge, als auch die Konzentration eingegeben werden!")
+        elif (w.LEmenge_a.text() != "" and w.LEprozent_a.text() != ""):
+            try:
+                int(w.LEmenge_a.text())
+                int(w.LEprozent_a.text())
+            except ValueError:
+                val_check = 1
+                standartbox("Bei den Kommentarwerten wurde mindestens einmal keine Zahl eingegeben!")
     # Hier wird noch überprüft, ob das Rezept schon in der DB existiert, um Dopplungen zu vermeiden (wäre sowieso nicht möglich, da unique DB entry)
     if val_check == 0 and newrecipe:
         c.execute("SELECT COUNT(*) FROM Rezepte WHERE Name=?",(neuername,))
@@ -96,19 +113,34 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             CocktailID = c.fetchone()[0]
         SVol = 0
         SVolcon = 0
+        SVol_alk = 0
+        SVolcon_alk = 0
         # Bilden des Alkoholgehalt vom Cocktail aus einzelnen Zutaten
         for Anzahl in range(0, len(Zutaten_V)):
             c.execute("SELECT Alkoholgehalt FROM Zutaten WHERE Name = ?", (Zutaten_V[Anzahl],))
             Konzentration = c.fetchone()[0]
-            Volcon = int(Mengen_V[Anzahl])*int(Konzentration)
-            SVol = SVol + int(Mengen_V[Anzahl])
-            SVolcon = SVolcon + Volcon
+            Volcon = Mengen_V[Anzahl]*int(Konzentration)
+            if Konzentration > 0:
+                SVol_alk += Mengen_V[Anzahl]
+                SVolcon_alk += Volcon
+            SVol += Mengen_V[Anzahl]
+            SVolcon +=  Volcon
         SVol2 = SVol
+        c_com = 0
+        v_com = 0
+        # includes the Concentration and Amount if there was a Comment
         if w.LEmenge_a.text() != "":
             SVol2 += int(w.LEmenge_a.text())
-        if w.LEprozent_a.text() != "":
+            v_com = int(w.LEmenge_a.text())
             SVolcon += int(w.LEmenge_a.text())*int(w.LEprozent_a.text())
+            c_com = int(w.LEprozent_a.text())
         Alkoholgehalt_Cocktail = int(SVolcon/SVol2)
+        # for none alcoholic recipes, you can't devide by zero (SVol_alk is zero if there is no alcohol)
+        if SVol_alk > 0:
+            c_alk = int(SVolcon_alk/SVol_alk)
+        else:
+            c_alk = 0
+        v_alk = SVol_alk
         if w.CHBenabled.isChecked():
             isenabled = 1
         else:
@@ -116,11 +148,11 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         # print(Alkoholgehalt_Cocktail)
         # Rezept wird in Rezept DB eingetragen
         if newrecipe:
-            c.execute("INSERT OR IGNORE INTO Rezepte(Name, Alkoholgehalt, Menge, Kommentar, Anzahl_Lifetime, Anzahl, Enabled) VALUES (?,?,?,?,0,0,?)",
-                      (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled))
+            c.execute("INSERT OR IGNORE INTO Rezepte(Name, Alkoholgehalt, Menge, Kommentar, Anzahl_Lifetime, Anzahl, Enabled, V_Alk, c_Alk, V_Com, c_Com) VALUES (?,?,?,?,0,0,?,?,?,?,?)",
+                      (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, v_alk, c_alk, v_com, c_com))
         if not newrecipe:
-            c.execute("UPDATE OR IGNORE Rezepte SET Name = ?, Alkoholgehalt = ?, Menge = ?, Kommentar = ?, Enabled = ? WHERE ID = ?",
-                      (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, int(CocktailID)))
+            c.execute("UPDATE OR IGNORE Rezepte SET Name = ?, Alkoholgehalt = ?, Menge = ?, Kommentar = ?, Enabled = ?, V_Alk = ?, c_Alk = ?, V_Com = ?, c_Com = ? WHERE ID = ?",
+                      (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, v_alk, c_alk, v_com, c_com, int(CocktailID)))
             c.execute("DELETE FROM Zusammen WHERE Rezept_ID = ?", (CocktailID,))
         # RezeptID, Alkoholisch sowie ZutatenIDs werden herausgesucht und anschließend in die Zusammen DB eingetragen
         c.execute("SELECT ID FROM Rezepte WHERE Name = ?", (neuername,))
@@ -144,9 +176,9 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         Rezepte_a_R(w, DB, c)
         Rezepte_clear(w, DB, c, True)
         if newrecipe:
-            standartbox("Rezept unter dem Namen: <{}> und der ID: <{}> eingetragen!".format(neuername, RezepteDBID))
+            standartbox("Rezept unter der ID und dem Namen:\n<{}> <{}>\neingetragen!".format(RezepteDBID, neuername))
         else:
-            standartbox("Rezept mit dem Namen: <{}> und der ID: <{}> unter dem Namen: <{}> aktualisiert!".format(altername, RezepteDBID, neuername))
+            standartbox("Rezept mit der ID und dem Namen:\n<{}> <{}>\nunter dem Namen:\n<{}>\naktualisiert!".format(RezepteDBID, altername, neuername))
 
 
 def Rezepte_a_R(w, DB, c):
@@ -169,12 +201,12 @@ def Rezepte_clear(w, DB, c, clearmode):
     w.LEKommentar.clear()
     if clearmode:
         w.LWRezepte.clearSelection()
-        w.LEmenge_a.clear()
-        w.LEprozent_a.clear()
     for check_v in range(1, 9):
         CBRname = getattr(w, "CBR" + str(check_v))
         LERname = getattr(w, "LER" + str(check_v))
         LERname.clear()
+        w.LEmenge_a.clear()
+        w.LEprozent_a.clear()
         CBRname.setCurrentIndex(0)
 
 
@@ -198,16 +230,16 @@ def Rezepte_Rezepte_click(w, DB, c):
             CBRname = getattr(w, "CBR" + str(row + 1))
             index = CBRname.findText(LVZutat[row], Qt.MatchFixedString)
             CBRname.setCurrentIndex(index)
-        # eintragen vom Kommentar
-        c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
-                (w.LWRezepte.currentItem().text(),))
-        Zspeicher = c.fetchone()[0]
-        if (Zspeicher != None):
-            w.LEKommentar.setText(str(Zspeicher))
+        # eintragen vom Kommentaren und Titel
         w.LECocktail.setText(str(w.LWRezepte.currentItem().text()))
-        c.execute("SELECT Enabled FROM Rezepte WHERE Name = ?",
+        Zspeicher = c.execute("SELECT Kommentar, Enabled, V_Com, c_Com FROM Rezepte WHERE Name = ?",
                 (w.LWRezepte.currentItem().text(),))
-        enabled = c.fetchone()[0]
+        for row in Zspeicher:
+            if row[0] != None:
+                w.LEKommentar.setText(str(row[0]))
+            enabled = row[1]
+            w.LEmenge_a.setText(str(row[2]))
+            w.LEprozent_a.setText(str(row[3]))
         if enabled:
             w.CHBenabled.setChecked(True)
         else:
@@ -233,7 +265,7 @@ def Rezepte_delete(w, DB, c):
             Rezepte_a_M(w, DB, c)
             Maker_List_null(w, DB, c)
             Rezepte_clear(w, DB, c, False)
-            standartbox("Rezept mit dem Namen: <{}> und der ID: <{}> gelöscht!".format(str(CocktailID), Rname))
+            standartbox("Rezept mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Rname, CocktailID))
     else:
         print("Falsches Passwort!")
     w.LEpw.setText("")

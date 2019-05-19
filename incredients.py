@@ -31,7 +31,6 @@ def Zutat_eintragen(w, DB, c):
               (w.LEZutatRezept.text(),))
     Zutatentest = c.fetchone()[0]
     if (w.LEZutatRezept.text() == "") or (w.LEGehaltRezept.text() == "") or (w.LEFlaschenvolumen.text() == ""):
-        print("Eine der Eingaben ist leer!")
         standartbox("Eine der Eingaben ist leer!")
     else:
         if Zutatentest == 0:
@@ -50,18 +49,14 @@ def Zutat_eintragen(w, DB, c):
                     ZutatenCB_Rezepte(w, DB, c)
                     ZutatenCB_Belegung(w, DB, c)
                     # Belegung_einlesen(w, DB, c)
-                    print("Zutat eingetragen")
                     standartbox("Zutat eingetragen")
                 else:
-                    print("Alkoholgehalt kann nicht größer als 100 sein!")
                     standartbox(
                         "Alkoholgehalt kann nicht größer als 100 sein!")
             except ValueError:
-                print("Alkoholgehalt und Flaschenvolumen muss eine Zahl sein!")
                 standartbox(
                     "Alkoholgehalt und Flaschenvolumen muss eine Zahl sein!")
         else:
-            print("Dieser Name existiert schon in der Datenbank!")
             standartbox("Dieser Name existiert schon in der Datenbank!")
 
 
@@ -80,7 +75,6 @@ def Zutaten_delete(w, DB, c):
     ZID = 0
     if w.LEpw2.text() == globals.masterpassword:
         if not w.LWZutaten.selectedItems():
-            print("Keine Zutat ausgewählt!")
             standartbox("Keine Zutat ausgewählt!")
         else:
             Zname = w.LWZutaten.currentItem().text()
@@ -103,21 +97,20 @@ def Zutaten_delete(w, DB, c):
                     Zutaten_a(w, DB, c)
                     # ich glaube die zeile hier ist unnötig
                     # Belegung_einlesen(w, DB, c)
-                    print("Zutat mit der ID: <" + str(ZID) +
-                          "> und dem Namen: <" + Zname + "> gelöscht!")
-                    standartbox("Zutat mit der ID: <" + str(ZID) +
-                                "> und dem Namen: <" + Zname + "> gelöscht!")
+                    standartbox("Zutat mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Zname, ZID))
                 else:
-                    print("Achtung, die Zutat ist noch in der Belegung registriert!")
                     standartbox(
                         "Achtung, die Zutat ist noch in der Belegung registriert!")
             else:
-                print("Zutat kann nicht gelöscht werden, da sie in " +
-                      str(Zutatentest) + " Rezept(en) genutzt wird!")
-                standartbox("Zutat kann nicht gelöscht werden, da sie in " +
-                            str(Zutatentest) + " Rezept(en) genutzt wird!")
+                stringsaver = c.execute("SELECT Rezepte.Name FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID = Zusammen.Rezept_ID WHERE Zusammen.Zutaten_ID=?", (ZID,))
+                Zutatenliste = []
+                for output in stringsaver:
+                    Zutatenliste.append(output[0])
+                    if len(Zutatenliste) >= 10:
+                        break
+                Zutatenstring = ', '.join(Zutatenliste)
+                standartbox("Zutat kann nicht gelöscht werden, da sie in {} Rezept(en) genutzt wird! Diese sind (maximal die zehn ersten):\n{}".format(Zutatentest, Zutatenstring))
     else:
-        print("Falsches Passwort!")
         standartbox("Falsches Passwort!")
 
     w.LEpw2.setText("")
@@ -138,7 +131,6 @@ def Zutaten_aktualiesieren(w, DB, c):
     """ Update the selected incredient if all values are given and excact """
     ZID = 0
     if (w.LEZutatRezept.text() == "") or (w.LEGehaltRezept.text() == "") or (w.LEFlaschenvolumen.text() == ""):
-        print("Eine der Eingaben ist leer!")
         standartbox("Eine der Eingaben ist leer!")
     else:
         try:
@@ -163,15 +155,11 @@ def Zutaten_aktualiesieren(w, DB, c):
                 ZutatenCB_Belegung(w, DB, c)
                 Belegung_einlesen(w, DB, c)
                 Belegung_progressbar(w, DB, c)
-                print("Zutat aktualisiert")
-                standartbox("Zutat aktualisiert")
+                standartbox("Zutat mit dem Namen:\n<{}>\naktualisiert unter:\n<{}>.".format(altername, neuerName))
             else:
-                print(
-                    "Alkoholgehalt und Flaschenvolumen kann nicht größer als 100 sein!")
                 standartbox(
                     "Alkoholgehalt und Flaschenvolumen kann nicht größer als 100 sein!")
         except ValueError:
-            print("Alkoholgehalt muss eine Zahl sein!")
             standartbox("Alkoholgehalt muss eine Zahl sein!")
 
 

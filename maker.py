@@ -156,7 +156,6 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
         Volumenstrom = globals.pumpvolume
         # Dann wird die ID, und Menge/Flaschen Ausgewählt
         if not w.LWMaker.selectedItems():
-            print("Kein Rezept ausgewählt!")
             standartbox("Kein Rezept ausgewählt!")
         else:
             Zspeicher = c.execute(
@@ -211,8 +210,6 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     c.execute(
                         "SELECT Zutaten.Name FROM Zutaten INNER JOIN Belegung ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (V_FNr[x],))
                     mangelzutat = c.fetchone()[0]
-                    print("Es ist in Flasche %i mit der Zutat %s nicht mehr genug Volumen vorhanden, %.0f ml wird benötigt!" % (
-                        V_FNr[x], mangelzutat, V_ZM[x]))
                     standartbox("Es ist in Flasche %i mit der Zutat %s nicht mehr genug Volumen vorhanden, %.0f ml wird benötigt!" % (
                         V_FNr[x], mangelzutat, V_ZM[x]))
                     w.tabWidget.setCurrentIndex(3)
@@ -249,20 +246,20 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 # Solange die aktuelle Zeit kleiner als die Maximalzeit ist, wird überprüft, welche Kanäle noch Volumen fördern müssen, und diese sind offen
                 # Dies passiert über die vorher berechnete Fließzeit, bis das Sollvolumen jeder Flüssigkeit erreicht wurde
                 while (T_aktuell < T_max and globals.loopcheck):
-                    if (T_aktuell*100) % 10 == 0:
+                    if (T_aktuell) % 1 == 0:
                         print(str(T_aktuell) + " von " +
                               str(T_max) + " Sekunden ")
                     w.prow_change(T_aktuell/T_max*100)
                     for row in range(0, len(V_FNr)):
                         if V_Zeit[row] > T_aktuell:
-                            if (T_aktuell*100) % 10 == 0:
+                            if (T_aktuell) % 1 == 0:
                                 print("Pin: " + str(Pinvektor[V_FNr[row] - 1]) + " aktiv, aktuelles Volumen: " + str(
                                     round(Volumenstrom[V_FNr[row] - 1]*T_aktuell, 1)))
                             if not devenvironment:
                                 GPIO.output(Pinvektor[V_FNr[row] - 1], 0)
                             V_Verbrauch[row] += Volumenstrom[V_FNr[row] - 1]*0.01
                         else:
-                            if (T_aktuell*100) % 10 == 0:
+                            if (T_aktuell) % 1 == 0:
                                 print(
                                     "Pin: " + str(Pinvektor[V_FNr[row] - 1]) + " geschlossen!")
                             if not devenvironment:
@@ -272,6 +269,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     time.sleep(0.01)
                     qApp.processEvents()
                 # Aus Sicherheitsgründen wird am Ende jeder verwendete Kanal geschlossen
+                print("-- Ende --")
                 for row in range(0, len(V_FNr)):
                     print(
                         "Pin: " + str(Pinvektor[V_FNr[row] - 1]) + " wurde geschlossen")
@@ -285,7 +283,6 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 # kreiert den logger und loggt den Rezeptnamen und Menge
                 # bemerkt außerdem wenn das Rezept abgebrochen wurde
                 # zudem loggt es die Menge, wo das Rezept abgebrochen wurde
-                logger = logging.getLogger()
                 if normalcheck:
                     mengenstring = "Standard"
                 else:
@@ -300,7 +297,6 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 logger = logging.getLogger('cocktail_application')
                 logger.info(template.format(
                     mengenstring, w.LWMaker.currentItem().text(), abbruchstring))
-                # logger.info(" %s	| %s%s", mengenstring, w.LWMaker.currentItem().text(), abbruchstring)
                 print("Verbrauchsmengen: ", [round(x) for x in V_Verbrauch])
                 for x in range(0, len(V_Verbrauch)):
                     c.execute("UPDATE OR IGNORE Zutaten SET Verbrauchsmenge = Verbrauchsmenge + ?, Verbrauch = Verbrauch + ? WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)",
@@ -321,7 +317,6 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
 
 def abbrechen_R():
     """ Interrupts the cocktail preparation. """
-    # global loopcheck
     globals.loopcheck = False
     print("Rezept wird abgebrochen!")
 
