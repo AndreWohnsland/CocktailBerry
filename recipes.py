@@ -166,14 +166,22 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                     isalkoholic = 1
                 else:
                     isalkoholic = 0
-            print(RezepteDBID, ZutatenDBID, Mengen_V[Anzahl], isalkoholic)
             c.execute("INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch) VALUES (?, ?, ?, ?)",
                       (RezepteDBID, ZutatenDBID, Mengen_V[Anzahl], isalkoholic))
         DB.commit()
-        # Entfernen/Zurücksetzen der Labels und Comboboxen
-        # hier wird einmal im auskommentierten nur hinzugefügt, alternative diese Zeile und sotieren Befehl
-        Rezepte_a_M(w, DB, c)
-        Rezepte_a_R(w, DB, c)
+        # Removing the old name from the list and adds the new one, clears the fields
+        if not newrecipe:
+            delfind = w.LWRezepte.findItems(altername, Qt.MatchExactly)
+            if len(delfind) > 0:
+                for item in delfind:
+                    w.LWRezepte.takeItem(w.LWRezepte.row(item))
+            delfind = w.LWMaker.findItems(altername, Qt.MatchExactly)
+            if len(delfind) > 0:
+                for item in delfind:
+                    w.LWMaker.takeItem(w.LWMaker.row(item))
+        w.LWRezepte.addItem(neuername)
+        # add needs to be checked, if all incredients are used
+        Rezepte_a_M(w, DB, c, False, "add", RezepteDBID)
         Rezepte_clear(w, DB, c, True)
         if newrecipe:
             standartbox("Rezept unter der ID und dem Namen:\n<{}> <{}>\neingetragen!".format(RezepteDBID, neuername))
@@ -253,17 +261,20 @@ def Rezepte_delete(w, DB, c):
             standartbox("Kein Rezept ausgewählt!")
         else:
             Rname = w.LWRezepte.currentItem().text()
-            Zspeicher = c.execute(
-                "SELECT ID FROM Rezepte WHERE Name = ?", (Rname,))
-            for row in Zspeicher:
-                CocktailID = row[0]
-            # print(CocktailID)
+            CocktailID = c.execute(
+                "SELECT ID FROM Rezepte WHERE Name = ?", (Rname,)).fetchone()[0]
             c.execute("DELETE FROM Zusammen WHERE Rezept_ID = ?", (CocktailID,))
             c.execute("DELETE FROM Rezepte WHERE ID = ?", (CocktailID,))
             DB.commit()
-            Rezepte_a_R(w, DB, c)
-            Rezepte_a_M(w, DB, c)
-            Maker_List_null(w, DB, c)
+            w.LWRezepte.clearSelection()
+            delfind = w.LWRezepte.findItems(Rname, Qt.MatchExactly)
+            if len(delfind) > 0:
+                for item in delfind:
+                    w.LWRezepte.takeItem(w.LWRezepte.row(item))
+            delfind = w.LWMaker.findItems(Rname, Qt.MatchExactly)
+            if len(delfind) > 0:
+                for item in delfind:
+                    w.LWMaker.takeItem(w.LWMaker.row(item))
             Rezepte_clear(w, DB, c, False)
             standartbox("Rezept mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Rname, CocktailID))
     else:
@@ -306,8 +317,12 @@ def save_Rezepte(w, DB, c):
     w.LEpw.clear()
 
 def enableall(w, DB, c):
+    idinput = []
+    Zspeicher = c.execute("SELECT ID FROM Rezepte WHERE Enabled = 0")
+    for Werte in Zspeicher:
+        idinput.append(int(Werte[0]))
     c.execute("UPDATE OR IGNORE Rezepte SET Enabled = 1")
     DB.commit()
-    Rezepte_a_M(w, DB, c)
+    Rezepte_a_M(w, DB, c, False, "enable", idinput)
     Rezepte_clear(w, DB, c, False)
     standartbox("Alle Rezepte wurden wieder aktiv gesetzt!")

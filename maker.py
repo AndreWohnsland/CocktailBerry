@@ -19,19 +19,28 @@ from msgboxgenerate import standartbox
 import globals
 
 
-def Rezepte_a_M(w, DB, c):
+def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0):
     """ Goes through every recipe in the DB and crosscheck its incredients 
     with the actual bottle assignments. \n
     Only display the recipes in the maker tab which match all bottles needed.
-    In addition, only shows enabled recipes
+    In addition, only shows enabled recipes.
+    By default, clears the Widget and load all DB entries new.
+    The mode is add or enable for the recipes or empty if none of them.
+    changeid is only needed for add (int) and enable (list).
     """
-    w.LWMaker.clear()
+    if reloadall:
+        w.LWMaker.clear()
     V_Rezepte = []
     ID_Rezepte = []
     # Alle RezeptIDs herraus suchen
-    Zspeicher = c.execute("SELECT ID FROM Rezepte")
-    for Werte in Zspeicher:
-        V_Rezepte.append(int(Werte[0]))
+    if mode == "add":
+        V_Rezepte.append(changeid)
+    elif mode == "enable":
+        V_Rezepte = changeid
+    else:
+        Zspeicher = c.execute("SELECT ID FROM Rezepte")
+        for Werte in Zspeicher:
+            V_Rezepte.append(int(Werte[0]))
     for row in V_Rezepte:
         vorhandenvar = 0
         V_Rezepte2 = []
@@ -52,12 +61,10 @@ def Rezepte_a_M(w, DB, c):
             ID_Rezepte.append(row)
     # alle möglichen Rezepte werden über ihre ID in Liste eingetragen
     for row in ID_Rezepte:
-        Zspeicher = c.execute("SELECT Name FROM Rezepte WHERE ID = ?", (row,))
-        for Werte in Zspeicher:
-            Zspeicher2 = c.execute("SELECT Enabled FROM Rezepte WHERE ID = ?", (row,))
-            enabled = c.fetchone()[0]
-            if enabled:
-                w.LWMaker.addItem(Werte[0])
+        Zspeicher = c.execute("SELECT Name, Enabled FROM Rezepte WHERE ID = ?", (row,)).fetchall()
+        (name_, enabled) = Zspeicher[0]
+        if enabled:
+            w.LWMaker.addItem(name_)
 
 
 def Maker_Rezepte_click(w, DB, c):
@@ -70,15 +77,13 @@ def Maker_Rezepte_click(w, DB, c):
         Maker_List_null(w, DB, c)
         zusatzmenge = 0
         # sucht den Alkoholgehalt aus der DB und trägt diesen ein
-        c.execute("SELECT Alkoholgehalt FROM Rezepte WHERE Name = ?",
-                (w.LWMaker.currentItem().text(),))
-        Zspeicher = c.fetchone()[0]
-        w.LAlkoholgehalt.setText("Alkohol: " + str(Zspeicher) + "%")
+        Maker_ProB_change(w, DB, c)
         # Benennt das Rezept
-        w.LAlkoholname.setText(w.LWMaker.currentItem().text())
+        cocktailname = w.LWMaker.currentItem().text()
+        w.LAlkoholname.setText(cocktailname)
         # sucht das Kommentar aus der DB und trägt diesen ein
         c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
-                (w.LWMaker.currentItem().text(),))
+                (cocktailname,))
         Zspeicher = c.fetchone()[0]
         if Zspeicher is not None:
             if len(Zspeicher) >= 1:
@@ -93,11 +98,11 @@ def Maker_Rezepte_click(w, DB, c):
                 w.LKommentar.setText("")
         # Sucht die Rezeptmenge aus der Db und trägt sie ein
         c.execute("SELECT Menge FROM Rezepte WHERE Name = ?",
-                (w.LWMaker.currentItem().text(),))
+                (cocktailname,))
         Zspeicher = c.fetchone()[0]
         w.LMenge.setText("Menge: " + str(int(Zspeicher) + zusatzmenge) + " ml")
-        #Zspeicher = c.execute("SELECT Zusammen.Zutaten_ID, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID WHERE Rezepte.Name = ?",(w.LWMaker.currentItem().text(),))
-        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (w.LWMaker.currentItem().text(),))
+        #Zspeicher = c.execute("SELECT Zusammen.Zutaten_ID, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID WHERE Rezepte.Name = ?",(cocktailname,))
+        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (cocktailname,))
         LVZutat = []
         LVMenge = []
         for row in Zspeicher:
@@ -342,3 +347,26 @@ def Maker_pm(w, DB, c, operator):
 def Maker_nullProB(w, DB, c):
     """ Sets the alcoholintensity to default value (100 %). """
     w.HSIntensity.setValue(0)
+
+
+def Maker_ProB_change(w, DB, c):
+    """ Recalculates the alcoholpercentage of the drink with the adjusted Value from the slider. """
+    if w.LWMaker.selectedItems():
+        factor = 1 + (w.HSIntensity.value()/100)
+        cocktailname = w.LWMaker.currentItem().text()
+        if factor == 1:
+            c.execute("SELECT Alkoholgehalt FROM Rezepte WHERE Name = ?",(cocktailname,))
+            c_ges = c.fetchone()[0]
+        else:
+            Zspeicher = c.execute("SELECT Menge, V_Alk, c_Alk, V_Com, c_Com FROM Rezepte WHERE Name = ?",(cocktailname,))
+            for row in Zspeicher:
+                v_ges = row[0]
+                v_alk = row[1]
+                c_alk = row[2]
+                v_com = row[3]
+                c_com = row[4]
+            v_notalk = v_ges - v_alk
+            v_gesneu = v_alk*factor + v_notalk + v_com
+            vc_neu = v_alk*factor*c_alk + v_com*c_com
+            c_ges = vc_neu/v_gesneu
+        w.LAlkoholgehalt.setText("Alkohol: {:.0f}%".format(c_ges))

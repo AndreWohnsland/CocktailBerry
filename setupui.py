@@ -150,6 +150,9 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.LWMaker.currentTextChanged.connect(lambda: Maker_Rezepte_click(w, DB, c))
     w.LWRezepte.currentTextChanged.connect(lambda: Rezepte_Rezepte_click(w, DB, c))
 
+    # Connects the slider
+    w.HSIntensity.valueChanged.connect(lambda: Maker_ProB_change(w, DB, c))
+
     # Disable some of the Tabs (for the Partymode, no one can access the recipes)
     if partymode:
         w.tabWidget.setTabEnabled(2, False)
