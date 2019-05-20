@@ -22,6 +22,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     """ Creates the Mainscreen. """
 
     def __init__(self, devenvironment, parent=None):
+        """ Init. Many of the button and List connects are in pass_setup. """
         super(MainScreen, self).__init__(parent)
         self.setupUi(self)
         self.LEpw.selectionChanged.connect(lambda: self.passwordwindow(1))
@@ -33,6 +34,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def passwordwindow(self, register):
         """ Opens up the PasswordScreen. """
+        # Since there are three different passwortlabels, it exists a window for each
         if register == 1:
             self.register = 1
             if not hasattr(self, "pw1"):
@@ -69,6 +71,7 @@ class Progressscreen(QMainWindow, Ui_Progressbarwindow):
     def __init__(self, parent=None):
         super(Progressscreen, self).__init__(parent)
         self.setupUi(self)
+        # Note: the Flag command don't work on the Pi, the Flags should work (not tested till now)
         self.setWindowFlags(Qt.FramelessWindowHint)
         # self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
         # self.setWindowFlag(Qt.WindowCloseButtonHint, False)
@@ -78,7 +81,7 @@ class Progressscreen(QMainWindow, Ui_Progressbarwindow):
 
 
 class PasswordScreen(QMainWindow, Ui_PasswordWindow):
-    """ Creates the Passwordscreen (Rezepte). """
+    """ Creates the Passwordscreen. """
 
     def __init__(self, parent=None):
         super(PasswordScreen, self).__init__(parent)

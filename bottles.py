@@ -30,41 +30,36 @@ def ZutatenCB_Belegung(w, DB, c):
 def Belegung_eintragen(w, DB, c):
     """ Insert the selected Bottleorder into the DB. """
     from maker import Rezepte_a_M
-    # prüfen wo der erste Belegungswert Startet (falls der erste, etc. slot leer ist)
+    # Checks where are entries and appends them to a list
     CBB_List = []
-    dummy2 = 0
+    dbl_check = 0
     for Flaschen_C in range(1, 11):
         CBBname = getattr(w, "CBB" + str(Flaschen_C))
         if (CBBname.currentText() != "" and CBBname.currentText() != 0):
             CBB_List.append(CBBname.currentText())
-    # Vergleiche alle eingetragenen Werte und prüfe nach einer Doppelung
-    # Dummy1 wird 1 falls eine Doppelung eintritt
+    # Checks if any incredient is used twice, if so, dbl_check gets activated 
     for Flaschen_i in range(0, len(CBB_List)):
         for Flaschen_j in range(0, len(CBB_List)):
             if ((CBB_List[Flaschen_i] == CBB_List[Flaschen_j]) and (Flaschen_i != Flaschen_j)):
-                dummy2 = 1
+                dbl_check = 1
+                standartbox("Eine der Zutaten wurde doppelt zugewiesen!")
                 break
-    # Wenn keine Dopplung existiert wird in DB eingetragen
-    if dummy2 == 0:
+    # If no error, insert values into DB
+    if dbl_check == 0:
         for Flaschen_C in range(1, 11):
             # Memo an mich: Umschreiben, erst id holen, dann alles auf einmal schreiben!
             Speicher_ID2 = 0
             CBBname = getattr(w, "CBB" + str(Flaschen_C))
-            c.execute("UPDATE OR IGNORE Belegung SET Zutat_F = ? WHERE Flasche = ?",
-                      (CBBname.currentText(), Flaschen_C))
+            incredientname = CBBname.currentText()
             Speicher_ID = c.execute(
-                "SELECT ID FROM Zutaten WHERE Name = ?", (CBBname.currentText(),))
-            for row in Speicher_ID:
-                Speicher_ID2 = row[0]
-            c.execute("UPDATE OR IGNORE Belegung SET ID = ? WHERE Flasche = ?", (int(
-                Speicher_ID2), Flaschen_C))
+                "SELECT ID FROM Zutaten WHERE Name = ?", (incredientname,)).fetchone()[0]
+            c.execute("UPDATE OR IGNORE Belegung SET ID = ?, Zutat_F = ? WHERE Flasche = ?",
+                (int(Speicher_ID), incredientname, Flaschen_C))
             DB.commit()
         Belegung_a(w, DB, c)
         Rezepte_a_M(w, DB, c)
         Belegung_progressbar(w, DB, c)
-        standartbox("Belegung geändert")
-    else:
-        standartbox("Eine der Zutaten wurde doppelt zugewiesen!")
+        standartbox("Belegung wurde geändert!")        
 
 
 def Belegung_einlesen(w, DB, c):
@@ -95,6 +90,7 @@ def Belegung_Flanwenden(w, DB, c):
         if PBname.isChecked():
             storevar = c.execute(
                 "SELECT Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (Flaschen_C,)).fetchone()
+            # the value can be None if the user checks a not used box, so its captured here
             if storevar is not None:
                 storevol = storevar[0]
                 c.execute(
@@ -127,7 +123,7 @@ def Belegung_progressbar(w, DB, c):
 
 
 def CleanMachine(w, DB, c, devenvironment):
-    """ Activate all Pumps for 20 s to clean them. Needs the Password. """
+    """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
     if not devenvironment:
         import RPi.GPIO as GPIO
         GPIO.setmode(GPIO.BCM)

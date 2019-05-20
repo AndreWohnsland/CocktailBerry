@@ -25,10 +25,8 @@ def ZutatenCB_Rezepte(w, DB, c):
         CBRname = getattr(w, "CBR" + str(box))
         CBRname.clear()
         CBRname.addItem("")
-        # print(CBRname)
         for row in Zspeicher:
             CBRname.addItem(row[0])
-            # print(row[0])
 
 
 def Rezept_eintragen(w, DB, c, newrecipe):
@@ -37,43 +35,47 @@ def Rezept_eintragen(w, DB, c, newrecipe):
     To store the values into the DB, a many to many relation is used. \n
     The newrecipe dertermines if the recipe is a new one, or an old is being updated
     """
-    # die Check Variabeln sind um zu überprüfen, ob eine Eingabe falsch ist, solange = 0 keine Eingabe falsch
+    # val_check if triggered (eg = 1) if any condition is not met
     val_check = 0
     neuername = w.LECocktail.text()
-    # überprüft ob der Cocktailname eingetragen wurde
+    # Checking if Cocktailname is missing
     if (neuername == "" or neuername == 0):
         val_check = 1
         standartbox("Bitte Cocktailnamen eingeben!")
-    for check_v in range(1, 9):
-        CBRname = getattr(w, "CBR" + str(check_v))
-        LERname = getattr(w, "LER" + str(check_v))
-        # Überprüft ob beide Felder ausgefüllt sind (entweder beide einen wert oder keine einen Wert)
-        if ((CBRname.currentText() != "") and LERname.text() == "") or ((CBRname.currentText() == "") and LERname.text() != ""):
+    # checks if there is at least one incredient, else this would make no sense
+    if val_check == 0:
+        if len(Zutaten_V) < 1:
             val_check = 1
-            standartbox("Irgendwo ist ein Wert vergessen worden!")
-            break
-        else:
-            # überprüft ob die Eingabe eine Zahl ist
-            if LERname.text() != "":
-                try:
-                    int(LERname.text())
-                except ValueError:
-                    val_check = 1
-                    standartbox("Menge muss eine Zahl sein!")
-                    break
-    # Wenn alle Eingaben stimmen, wird nach dopplungen überprüft
+            standartbox("Es muss mindestens eine Zutat eingetragen sein!")
+    # Checking if both values are given (incredient and quantity)
+    if val_check == 0:
+        for check_v in range(1, 9):
+            CBRname = getattr(w, "CBR" + str(check_v))
+            LERname = getattr(w, "LER" + str(check_v))
+            if ((CBRname.currentText() != "") and LERname.text() == "") or ((CBRname.currentText() == "") and LERname.text() != ""):
+                val_check = 1
+                standartbox("Irgendwo ist ein Wert vergessen worden!")
+                break
+            else:
+                # Checks if quantity is a number
+                if LERname.text() != "":
+                    try:
+                        int(LERname.text())
+                    except ValueError:
+                        val_check = 1
+                        standartbox("Menge muss eine Zahl sein!")
+                        break
+    # Checks, if any incredient was used twice
     if val_check == 0:
         Zutaten_V = []
         Mengen_V = []
-        # Zusätzlich werden Vektoren (Listen) mit den eingetragenen Werten gebildet
+        # in addition, also the values are stored into a list for later
         for check_v in range(1, 9):
             CBRname = getattr(w, "CBR" + str(check_v))
             LERname = getattr(w, "LER" + str(check_v))
             if CBRname.currentText() != "":
                 Zutaten_V.append(CBRname.currentText())
                 Mengen_V.append(int(LERname.text()))
-                # print(CBRname.currentText())
-        # print(len(Zutaten_V))
         for Flaschen_i in range(0, len(Zutaten_V)):
             for Flaschen_j in range(0, len(Zutaten_V)):
                 if ((Zutaten_V[Flaschen_i] == Zutaten_V[Flaschen_j]) and (Flaschen_i != Flaschen_j)):
@@ -82,12 +84,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                     break
             if val_check == 1:
                 break
-    # checks if there is at least one incredient, else this would make no sense
-    if val_check == 0:
-        if len(Zutaten_V) < 1:
-            val_check = 1
-            standartbox("Es muss mindestens eine Zutat eingetragen sein!")
-    # Checks if both Commentvalues are given (or none) and if they are, if they are numbers
+    # Checks if both commentvalues are given (or none) and if they are, if they are numbers
     if val_check == 0:
         if (w.LEmenge_a.text() != "" and w.LEprozent_a.text() == "") or (w.LEmenge_a.text() == "" and w.LEprozent_a.text() != ""):
             val_check = 1
@@ -99,13 +96,13 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             except ValueError:
                 val_check = 1
                 standartbox("Bei den Kommentarwerten wurde mindestens einmal keine Zahl eingegeben!")
-    # Hier wird noch überprüft, ob das Rezept schon in der DB existiert, um Dopplungen zu vermeiden (wäre sowieso nicht möglich, da unique DB entry)
+    # Checks if the name of the recipe already exists in case of a new recipe
     if val_check == 0 and newrecipe:
         c.execute("SELECT COUNT(*) FROM Rezepte WHERE Name=?",(neuername,))
         val_check = c.fetchone()[0]
         if not val_check == 0:
             standartbox("Dieser Name existiert schon in der Datenbank!")
-    # Wenn alle Werte Richtig eingetragen wurden, wird angefangen in die DB einzutragen 
+    # If nothing is wrong, starts writing into DB
     if val_check == 0:
         if not newrecipe:
             altername = w.LWRezepte.currentItem().text()
@@ -115,7 +112,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         SVolcon = 0
         SVol_alk = 0
         SVolcon_alk = 0
-        # Bilden des Alkoholgehalt vom Cocktail aus einzelnen Zutaten
+        # Calculates the concentration of the recipe and of the alcoholic/comment part
         for Anzahl in range(0, len(Zutaten_V)):
             c.execute("SELECT Alkoholgehalt FROM Zutaten WHERE Name = ?", (Zutaten_V[Anzahl],))
             Konzentration = c.fetchone()[0]
@@ -145,8 +142,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             isenabled = 1
         else:
             isenabled = 0
-        # print(Alkoholgehalt_Cocktail)
-        # Rezept wird in Rezept DB eingetragen
+        # Insert into recipe DB
         if newrecipe:
             c.execute("INSERT OR IGNORE INTO Rezepte(Name, Alkoholgehalt, Menge, Kommentar, Anzahl_Lifetime, Anzahl, Enabled, V_Alk, c_Alk, V_Com, c_Com) VALUES (?,?,?,?,0,0,?,?,?,?,?)",
                       (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, v_alk, c_alk, v_com, c_com))
@@ -154,7 +150,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             c.execute("UPDATE OR IGNORE Rezepte SET Name = ?, Alkoholgehalt = ?, Menge = ?, Kommentar = ?, Enabled = ?, V_Alk = ?, c_Alk = ?, V_Com = ?, c_Com = ? WHERE ID = ?",
                       (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, v_alk, c_alk, v_com, c_com, int(CocktailID)))
             c.execute("DELETE FROM Zusammen WHERE Rezept_ID = ?", (CocktailID,))
-        # RezeptID, Alkoholisch sowie ZutatenIDs werden herausgesucht und anschließend in die Zusammen DB eingetragen
+        # RezeptID, Alkoholisch and ZutatenIDs gets inserted into Zusammen DB
         c.execute("SELECT ID FROM Rezepte WHERE Name = ?", (neuername,))
         RezepteDBID = c.fetchone()[0]
         for Anzahl in range(0, len(Zutaten_V)):
@@ -204,7 +200,6 @@ def Rezepte_clear(w, DB, c, clearmode):
     False:  just clears the CB and Boxes \n
     True:   also clears the LW selection as well as the helper fields for excact Alkohol Calculation
     """
-    # Anmerkung an mich; Rezepte_clear2 ist das alte mit false | Rezepte_clear ist das alte mit true
     w.LECocktail.clear()
     w.LEKommentar.clear()
     if clearmode:
@@ -223,25 +218,24 @@ def Rezepte_Rezepte_click(w, DB, c):
     if w.LWRezepte.selectedItems():
         LVZutat = []
         LVMenge = []
-        # nimmt zutatenname und Menge für das Rezept
-        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (w.LWRezepte.currentItem().text(),))
+        cocktailname = str(w.LWRezepte.currentItem().text())
+        # Gets all the incredients as well the quatities for the recipe from the DB
+        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (cocktailname,))
         Rezepte_clear(w, DB, c, False)
-        # Diese werden dann in ein Vektor (Liste) zugewisen
+        # Appends the Values to a List then fills them into the Fields
         for row in Zspeicher:
-            #print(row[0], row[1])
             LVZutat.append(row[0])
             LVMenge.append(row[1])
-        # füllen aller Werte in die Felder
         for row in range(0, len(LVZutat)):
             LERname = getattr(w, "LER" + str(row + 1))
             LERname.setText(str(LVMenge[row]))
             CBRname = getattr(w, "CBR" + str(row + 1))
             index = CBRname.findText(LVZutat[row], Qt.MatchFixedString)
             CBRname.setCurrentIndex(index)
-        # eintragen vom Kommentaren und Titel
-        w.LECocktail.setText(str(w.LWRezepte.currentItem().text()))
+        # Inserts into Labesl
+        w.LECocktail.setText(cocktailname)
         Zspeicher = c.execute("SELECT Kommentar, Enabled, V_Com, c_Com FROM Rezepte WHERE Name = ?",
-                (w.LWRezepte.currentItem().text(),))
+                (cocktailname,))
         for row in Zspeicher:
             if row[0] != None:
                 w.LEKommentar.setText(str(row[0]))
@@ -283,6 +277,7 @@ def Rezepte_delete(w, DB, c):
 
 
 def save_Rezepte(w, DB, c):
+    """ Saves the DB entries for the quantities in a csv-File and sets the DB entry to zero. """
     if w.LEpw.text() == globals.masterpassword:
         with open('Rezepte_export.csv', mode='a', newline='') as writer_file:
             csv_writer = csv.writer(writer_file, delimiter=',')

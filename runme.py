@@ -56,6 +56,6 @@ if __name__ == '__main__':
     # 	CBSname = getattr(w, "CBB" + str(count))
     # 	CBSname.setCursor(Qt.BlankCursor)
 
-    # att the end close the application and the DB
+    # at the end close the application and the DB
     sys.exit(app.exec_())
     DB.close()
