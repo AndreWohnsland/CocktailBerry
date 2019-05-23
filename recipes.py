@@ -276,41 +276,6 @@ def Rezepte_delete(w, DB, c):
     w.LEpw.setText("")
 
 
-def save_Rezepte(w, DB, c):
-    """ Saves the DB entries for the quantities in a csv-File and sets the DB entry to zero. """
-    if w.LEpw.text() == globals.masterpassword:
-        with open('Rezepte_export.csv', mode='a', newline='') as writer_file:
-            csv_writer = csv.writer(writer_file, delimiter=',')
-            csv_writer.writerow(
-                ["----- Neuer Export von %s -----" % datetime.date.today()])
-            row1 = []
-            row2 = []
-            Zspeicher = c.execute(
-                "SELECT Name, Anzahl FROM Rezepte WHERE Anzahl > 0 ORDER BY Anzahl DESC, Name ASC")
-            for row in Zspeicher:
-                row1.append(row[0])
-                row2.append(row[1])
-            csv_writer.writerow(row1)
-            csv_writer.writerow(row2)
-            csv_writer.writerow(["----- Gesamte Mengen über Lebenszeit -----"])
-            row1 = []
-            row2 = []
-            Zspeicher = c.execute(
-                "SELECT Name, Anzahl_Lifetime FROM Rezepte WHERE Anzahl_Lifetime > 0 ORDER BY Anzahl_Lifetime DESC, Name ASC")
-            for row in Zspeicher:
-                row1.append(row[0])
-                row2.append(row[1])
-            csv_writer.writerow(row1)
-            csv_writer.writerow(row2)
-            csv_writer.writerow([" "])
-        c.execute("UPDATE OR IGNORE Rezepte SET Anzahl = 0")
-        DB.commit()
-        standartbox(
-            "Alle Daten wurden exportiert und die zurücksetzbare Rezeptanzahl zurückgesetzt!")
-    else:
-        standartbox("Falsches Passwort!")
-    w.LEpw.clear()
-
 def enableall(w, DB, c):
     idinput = []
     Zspeicher = c.execute("SELECT ID FROM Rezepte WHERE Enabled = 0")

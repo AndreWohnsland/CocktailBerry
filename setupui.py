@@ -16,6 +16,7 @@ from bottles import *
 from Cocktailmanager_2 import Ui_MainWindow
 from passwordbuttons import Ui_PasswordWindow
 from progressbarwindow import Ui_Progressbarwindow
+from savehelper import save_quant
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -132,7 +133,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBdelete.clicked.connect(lambda: Rezepte_delete(w, DB, c))
     w.PBZdelete.clicked.connect(lambda: Zutaten_delete(w, DB, c))
     w.PBZclear.clicked.connect(lambda: Zutaten_clear(w, DB, c))
-    w.PBZaktualisieren.clicked.connect(lambda: Zutaten_aktualiesieren(w, DB, c))
+    w.PBZaktualisieren.clicked.connect(lambda: Zutat_eintragen(w, DB, c, False))
     w.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, False, devenvironment))
     w.PBCleanMachine.clicked.connect(lambda: CleanMachine(w, DB, c, devenvironment))
     w.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(w, DB, c))
@@ -141,8 +142,8 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBMplus.clicked.connect(lambda: Maker_pm(w, DB, c, "+"))
     w.PBMminus.clicked.connect(lambda: Maker_pm(w, DB, c, "-"))
     w.PBSetnull.clicked.connect(lambda: Maker_nullProB(w, DB, c))
-    w.PBZnull.clicked.connect(lambda: save_Zutaten(w, DB, c))
-    w.PBRnull.clicked.connect(lambda: save_Rezepte(w, DB, c))
+    w.PBZnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw2", 'Zutaten_export.csv', "Zutaten", "Verbrauch", "Verbrauchsmenge"))
+    w.PBRnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw", 'Rezepte_export.csv', "Rezepte", "Anzahl", "Anzahl_Lifetime"))
     w.PBenable.clicked.connect(lambda: enableall(w, DB, c))
 
     # Connect the Lists with the Functions

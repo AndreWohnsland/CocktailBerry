@@ -47,8 +47,6 @@ def Belegung_eintragen(w, DB, c):
     # If no error, insert values into DB
     if dbl_check == 0:
         for Flaschen_C in range(1, 11):
-            # Memo an mich: Umschreiben, erst id holen, dann alles auf einmal schreiben!
-            Speicher_ID2 = 0
             CBBname = getattr(w, "CBB" + str(Flaschen_C))
             incredientname = CBBname.currentText()
             Speicher_ID = c.execute(
