@@ -42,11 +42,6 @@ def Rezept_eintragen(w, DB, c, newrecipe):
     if (neuername == "" or neuername == 0):
         val_check = 1
         standartbox("Bitte Cocktailnamen eingeben!")
-    # checks if there is at least one incredient, else this would make no sense
-    if val_check == 0:
-        if len(Zutaten_V) < 1:
-            val_check = 1
-            standartbox("Es muss mindestens eine Zutat eingetragen sein!")
     # Checking if both values are given (incredient and quantity)
     if val_check == 0:
         for check_v in range(1, 9):
@@ -84,6 +79,11 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                     break
             if val_check == 1:
                 break
+    # checks if there is at least one incredient, else this would make no sense
+    if val_check == 0:
+        if len(Zutaten_V) < 1:
+            val_check = 1
+            standartbox("Es muss mindestens eine Zutat eingetragen sein!")
     # Checks if both commentvalues are given (or none) and if they are, if they are numbers
     if val_check == 0:
         if (w.LEmenge_a.text() != "" and w.LEprozent_a.text() == "") or (w.LEmenge_a.text() == "" and w.LEprozent_a.text() != ""):
@@ -176,8 +176,8 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                 for item in delfind:
                     w.LWMaker.takeItem(w.LWMaker.row(item))
         w.LWRezepte.addItem(neuername)
-        # add needs to be checked, if all incredients are used
-        Rezepte_a_M(w, DB, c, False, "add", RezepteDBID)
+        # add needs to be checked, if all incredients are used 
+        Rezepte_a_M(w, DB, c, False, "add", RezepteDBID, isenabled)
         Rezepte_clear(w, DB, c, True)
         if newrecipe:
             standartbox("Rezept unter der ID und dem Namen:\n<{}> <{}>\neingetragen!".format(RezepteDBID, neuername))
@@ -232,7 +232,7 @@ def Rezepte_Rezepte_click(w, DB, c):
             CBRname = getattr(w, "CBR" + str(row + 1))
             index = CBRname.findText(LVZutat[row], Qt.MatchFixedString)
             CBRname.setCurrentIndex(index)
-        # Inserts into Labesl
+        # Inserts into Labels
         w.LECocktail.setText(cocktailname)
         Zspeicher = c.execute("SELECT Kommentar, Enabled, V_Com, c_Com FROM Rezepte WHERE Name = ?",
                 (cocktailname,))

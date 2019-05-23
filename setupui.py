@@ -143,7 +143,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBMminus.clicked.connect(lambda: Maker_pm(w, DB, c, "-"))
     w.PBSetnull.clicked.connect(lambda: Maker_nullProB(w, DB, c))
     w.PBZnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw2", 'Zutaten_export.csv', "Zutaten", "Verbrauch", "Verbrauchsmenge"))
-    w.PBRnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw", 'Rezepte_export.csv', "Rezepte", "Anzahl", "Anzahl_Lifetime"))
+    w.PBRnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw", 'Rezepte_export.csv', "Rezepte", "Anzahl", "Anzahl_Lifetime", True))
     w.PBenable.clicked.connect(lambda: enableall(w, DB, c))
 
     # Connect the Lists with the Functions

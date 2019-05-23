@@ -19,7 +19,7 @@ from msgboxgenerate import standartbox
 import globals
 
 
-def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0):
+def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0, goon = True):
     """ Goes through every recipe in the DB and crosscheck its incredients 
     with the actual bottle assignments. \n
     Only display the recipes in the maker tab which match all bottles needed.
@@ -27,43 +27,43 @@ def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0):
     By default, clears the Widget and load all DB entries new.
     The mode is add or enable for the recipes or empty if none of them.
     changeid is only needed for add (int) and enable (list).
+    goon is only needed at recipes and represents if the new/updated recipe is disabled or not
     """
     if reloadall:
         w.LWMaker.clear()
     V_Rezepte = []
     ID_Rezepte = []
-    # Alle RezeptIDs herraus suchen
+    # Search all ids needed, depending on the mode
     if mode == "add":
         V_Rezepte.append(changeid)
     elif mode == "enable":
         V_Rezepte = changeid
     else:
-        Zspeicher = c.execute("SELECT ID FROM Rezepte")
+        Zspeicher = c.execute("SELECT ID, Enabled FROM Rezepte")
         for Werte in Zspeicher:
-            V_Rezepte.append(int(Werte[0]))
-    for row in V_Rezepte:
-        vorhandenvar = 0
-        V_Rezepte2 = []
-        # Alle ZutatenIDs von einem Rezept suchen
-        Zspeicher = c.execute(
-            "SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ?", (row,))
-        for Werte in Zspeicher:
-            V_Rezepte2.append(int(Werte[0]))
-        for row2 in V_Rezepte2:
-            # Jede Zutat auf ihre Belegung überprüfen
-            c.execute("SELECT COUNT(*) FROM Belegung WHERE ID = ?", (row2,))
-            Zspeicher2 = c.fetchone()[0]
-            if Zspeicher2 == 0:
-                vorhandenvar = 1
-                break
-        # wenn alle Zutaten an einem Slot sind, wird die ID in die Liste mit aufgenommen
-        if vorhandenvar == 0:
-            ID_Rezepte.append(row)
-    # alle möglichen Rezepte werden über ihre ID in Liste eingetragen
-    for row in ID_Rezepte:
-        Zspeicher = c.execute("SELECT Name, Enabled FROM Rezepte WHERE ID = ?", (row,)).fetchall()
-        (name_, enabled) = Zspeicher[0]
-        if enabled:
+            if Werte[1]:
+                V_Rezepte.append(int(Werte[0]))
+    # Search all incredient IDs of the recipe
+    if goon:
+        for row in V_Rezepte:
+            vorhandenvar = 0
+            V_Rezepte2 = []
+            Zspeicher = c.execute(
+                "SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ?", (row,))
+            for Werte in Zspeicher:
+                V_Rezepte2.append(int(Werte[0]))
+            # Check if all Bottles for the Recipe are Connected, if so adds it to the List
+            for row2 in V_Rezepte2:
+                c.execute("SELECT COUNT(*) FROM Belegung WHERE ID = ?", (row2,))
+                Zspeicher2 = c.fetchone()[0]
+                if Zspeicher2 == 0:
+                    vorhandenvar = 1
+                    break
+            if vorhandenvar == 0:
+                ID_Rezepte.append(row)
+        # alle möglichen Rezepte werden über ihre ID in Liste eingetragen
+        for row in ID_Rezepte:
+            name_ = c.execute("SELECT Name FROM Rezepte WHERE ID = ?", (row,)).fetchone()[0]
             w.LWMaker.addItem(name_)
 
 
@@ -72,19 +72,18 @@ def Maker_Rezepte_click(w, DB, c):
     then assign the strings and values in the TextBoxes on the Maker Sheet.
     """
     if w.LWMaker.selectedItems():
-        # in der DB nach dem Rezept (ID) suchen und über die ID (Zutaten) die Zutaten und die Mengen einspeichern.
-        # zusätzlich den Alkoholgehalt des Rezeptes herausssuchen und in die Label schreiben
+        # search the DB for the recipe (ID) over the ID (Zutaten) fetch the incredients and amount
         Maker_List_null(w, DB, c)
         zusatzmenge = 0
-        # sucht den Alkoholgehalt aus der DB und trägt diesen ein
         Maker_ProB_change(w, DB, c)
-        # Benennt das Rezept
+        # Gets and sets the name
         cocktailname = w.LWMaker.currentItem().text()
         w.LAlkoholname.setText(cocktailname)
-        # sucht das Kommentar aus der DB und trägt diesen ein
+        # look up the comment
         c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
                 (cocktailname,))
         Zspeicher = c.fetchone()[0]
+        # gets the amount out of the comment
         if Zspeicher is not None:
             if len(Zspeicher) >= 1:
                 w.LKommentar.setText("Hinzufügen:  " + str(Zspeicher))
@@ -96,7 +95,6 @@ def Maker_Rezepte_click(w, DB, c):
                         pass
             else:
                 w.LKommentar.setText("")
-        # Sucht die Rezeptmenge aus der Db und trägt sie ein
         c.execute("SELECT Menge FROM Rezepte WHERE Name = ?",
                 (cocktailname,))
         Zspeicher = c.fetchone()[0]
@@ -105,8 +103,8 @@ def Maker_Rezepte_click(w, DB, c):
         Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (cocktailname,))
         LVZutat = []
         LVMenge = []
+        # assigns the values to the boxes
         for row in Zspeicher:
-            #print(row[0], row[1])
             LVZutat.append(row[0])
             LVMenge.append(row[1])
         for row in range(0, len(LVZutat)):
@@ -145,6 +143,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
     if not devenvironment:
         import RPi.GPIO as GPIO
         GPIO.setmode(GPIO.BCM)
+    # can only start one process
     if globals.startcheck == False:
         globals.startcheck = True
         V_ZM = []
@@ -159,9 +158,9 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
         createcheck = True
         Pinvektor = globals.usedpins
         Volumenstrom = globals.pumpvolume
-        # Dann wird die ID, und Menge/Flaschen Ausgewählt
         if not w.LWMaker.selectedItems():
             standartbox("Kein Rezept ausgewählt!")
+        # Select ID, Bottles and amount, calculate the time and update the counter
         else:
             Zspeicher = c.execute(
                 "SELECT ID, Menge FROM Rezepte WHERE Name = ?", (w.LWMaker.currentItem().text(),))
@@ -172,7 +171,6 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 "UPDATE OR IGNORE Rezepte SET Anzahl_Lifetime = Anzahl_Lifetime + 1, Anzahl = Anzahl + 1 WHERE ID = ?", (CocktailID,))
             if normalcheck == False:
                 Cocktailmenge = Fixmenge
-            # Die Zutatenmenge und die zugehörige Belegung wird ermittelt und mit dem Faktor die Gesamtmenge berechnet
             Zspeicher = c.execute(
                 "SELECT Zusammen.Menge, Belegung.Flasche, Zusammen.Alkoholisch From Zusammen INNER JOIN Belegung ON Zusammen.Zutaten_ID = Belegung.ID WHERE Zusammen.Rezept_ID = ?", (CocktailID,))
             for row in Zspeicher:
@@ -180,7 +178,6 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     MFaktor = Alkoholfaktor
                 else:
                     MFaktor = 1
-                # print(MFaktor)
                 V_ZM.append(round(int(row[0])*MFaktor, 1))
                 V_FNr.append(int(row[1]))
                 V_Zeit.append(
@@ -204,8 +201,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 for x in range(0, len(V_ZM)):
                     V_ZM[x] = round(V_ZM[x]*MVH, 1)
                     V_Zeit[x] = round(V_Zeit[x]*MVH, 1)
-                    #print("Zutat %i braucht %1.2f ml" %(x+1, V_ZM[x]))
-            # Prüft ob noch genug Menge an Flüssigkeit vorhanden ist
+            # Checks if there is still enough volume in the Bottle
             for x in range(0, len(V_ZM)):
                 c.execute(
                     "SELECT COUNT(*) FROM Belegung WHERE Flasche = ? AND Mengenlevel<?", (V_FNr[x], V_ZM[x]))
@@ -218,9 +214,9 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     standartbox("Es ist in Flasche %i mit der Zutat %s nicht mehr genug Volumen vorhanden, %.0f ml wird benötigt!" % (
                         V_FNr[x], mangelzutat, V_ZM[x]))
                     w.tabWidget.setCurrentIndex(3)
-            # Wenn alle Zutaten vorhanden sind startet das Zubereitungsprogramm.
+            # if all conditions are met, go on
             if createcheck == True:
-                # Generiert die Zusatzstrings für den Enddialog, falls Zusatzzutaten nötig sind
+                # Generate the Comment for the end of the Programm
                 c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",(w.LWMaker.currentItem().text(),))
                 Zspeicher = c.fetchone()[0]
                 if Zspeicher is not None:
@@ -235,21 +231,20 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                         zusatzstring = ""
                 else:
                     zusatzstring = ""
-                # Die Zeit berechnet sich aus Division von Menge und Volumenstrom, es wird die längste Zeit gesucht
+                # search for the longest time
                 T_max = V_Zeit[0]
                 for row in range(1, len(V_Zeit)):
                     if T_max < V_Zeit[row]:
                         T_max = V_Zeit[row]
                 T_aktuell = 0
                 w.progressionqwindow()
-                # Aktivieren der PINs
+                # activate the pins
                 for row in range(0, len(V_FNr)):
                     if not devenvironment:
                         GPIO.setup(Pinvektor[V_FNr[row] - 1], GPIO.OUT)
                     print(
                         "Pin: " + str(Pinvektor[V_FNr[row] - 1]) + " wurde initialisiert")
-                # Solange die aktuelle Zeit kleiner als die Maximalzeit ist, wird überprüft, welche Kanäle noch Volumen fördern müssen, und diese sind offen
-                # Dies passiert über die vorher berechnete Fließzeit, bis das Sollvolumen jeder Flüssigkeit erreicht wurde
+                # Until the max time is reached check which channel still needs to be opened
                 while (T_aktuell < T_max and globals.loopcheck):
                     if (T_aktuell) % 1 == 0:
                         print(str(T_aktuell) + " von " +
@@ -273,7 +268,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     T_aktuell = round(T_aktuell, 2)
                     time.sleep(0.01)
                     qApp.processEvents()
-                # Aus Sicherheitsgründen wird am Ende jeder verwendete Kanal geschlossen
+                # Due to safety, each channel is closed at the end
                 print("-- Ende --")
                 for row in range(0, len(V_FNr)):
                     print(
@@ -281,13 +276,11 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     if not devenvironment:
                         GPIO.output(Pinvektor[V_FNr[row] - 1], 1)
                 w.prow_close()
-                # Wendet den Verbrauch auf die DB an
+                # Adds the usage
                 for x in range(0, len(V_FNr)):
                     c.execute("UPDATE OR IGNORE Belegung SET Mengenlevel = Mengenlevel - ? WHERE Flasche = ?",
                               (round(V_Verbrauch[x]), V_FNr[x]))
-                # kreiert den logger und loggt den Rezeptnamen und Menge
-                # bemerkt außerdem wenn das Rezept abgebrochen wurde
-                # zudem loggt es die Menge, wo das Rezept abgebrochen wurde
+                # logs all value, checks if recipe was interrupted and where
                 if normalcheck:
                     mengenstring = "Standard"
                 else:
@@ -314,10 +307,6 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 elif not globals.loopcheck:
                     standartbox("Der Cocktail wurde abgebrochen!")
         globals.startcheck = False
-        # Alle Ports werden reseted
-        # Der Cleanup nur am Ende (Beenden des Codes) anstellen, sonst Schließt sich das GUIb
-        '''GPIO.cleanup()
-        print("Alle Ports wurden gecleant!")'''
 
 
 def abbrechen_R():
@@ -336,12 +325,13 @@ def Maker_pm(w, DB, c, operator):
     """
     minimal = 100
     maximal = 400
-    if operator == "+":
-        if int(w.LCustomMenge.text()) < maximal:
-            w.LCustomMenge.setText(str(int(w.LCustomMenge.text()) + 25))
-    else:
-        if int(w.LCustomMenge.text()) > minimal:
-            w.LCustomMenge.setText(str(int(w.LCustomMenge.text()) - 25))
+    dm = 25
+    amount = int(w.LCustomMenge.text())
+    if operator == "+" and amount < maximal:
+        amount += dm
+    if operator == "-" and amount > minimal:
+        amount -= dm
+    w.LCustomMenge.setText(str(amount))
 
 
 def Maker_nullProB(w, DB, c):
@@ -354,9 +344,11 @@ def Maker_ProB_change(w, DB, c):
     if w.LWMaker.selectedItems():
         factor = 1 + (w.HSIntensity.value()/100)
         cocktailname = w.LWMaker.currentItem().text()
+        # if the factor is one gets the value out of the DB
         if factor == 1:
             c.execute("SELECT Alkoholgehalt FROM Rezepte WHERE Name = ?",(cocktailname,))
             c_ges = c.fetchone()[0]
+        # if the value is not one calculates the new value out of the saved helper values in the DB
         else:
             Zspeicher = c.execute("SELECT Menge, V_Alk, c_Alk, V_Com, c_Com FROM Rezepte WHERE Name = ?",(cocktailname,))
             for row in Zspeicher:

@@ -75,7 +75,6 @@ def Zutat_eintragen(w, DB, c, newincredient = True):
                 (incredientname, conc, vol, ZID))
         DB.commit()
         if not newincredient:
-            # alternativ noch eine Funktion für delfind Schreiben?
             delfind = w.LWZutaten.findItems(altername, Qt.MatchExactly)
             if len(delfind) > 0:
                 for item in delfind:
@@ -114,7 +113,6 @@ def Zutaten_delete(w, DB, c):
                 "SELECT ID FROM Zutaten WHERE Name = ?", (Zname,))
             for row in Zspeicher:
                 ZID = row[0]
-            # print(ZID)
             c.execute("SELECT COUNT(*) FROM Zusammen WHERE Zutaten_ID=?", (ZID,))
             Zutatentest = c.fetchone()[0]
             # Checks if the incredient is used in any bottle or in any recipe and reacts accordingly
@@ -128,8 +126,6 @@ def Zutaten_delete(w, DB, c):
                     ZutatenCB_Belegung(w, DB, c)
                     Zutaten_clear(w, DB, c)
                     Zutaten_a(w, DB, c)
-                    # ich glaube die zeile hier ist unnötig
-                    # Belegung_einlesen(w, DB, c)
                     standartbox("Zutat mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Zname, ZID))
                 else:
                     standartbox(
@@ -146,7 +142,6 @@ def Zutaten_delete(w, DB, c):
                 standartbox("Zutat kann nicht gelöscht werden, da sie in {} Rezept(en) genutzt wird! Diese sind (maximal die zehn ersten):\n{}".format(Zutatentest, Zutatenstring))
     else:
         standartbox("Falsches Passwort!")
-
     w.LEpw2.setText("")
 
 

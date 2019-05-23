@@ -15,6 +15,7 @@ import init_newdb
 # Load all global over multiple Modules passed Values
 globals.initialize()
 
+loggername = "today"
 devenvironment = True
 partymode = False
 neednewdb = False
@@ -41,7 +42,7 @@ if __name__ == '__main__':
         GPIO.setmode(GPIO.BCM)
 
     # Get the basic Logger
-    loggerconfig.basiclogger()
+    loggerconfig.basiclogger(loggername)
 
     # Load all the Functions from the setup script
     setupui.pass_setup(w, DB, c, partymode, devenvironment)

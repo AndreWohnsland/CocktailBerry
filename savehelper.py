@@ -11,11 +11,15 @@ from PyQt5.uic import *
 import globals
 from msgboxgenerate import standartbox
 
-def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, searchstring2):
+def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, searchstring2, where_=False):
     """ Saves all the amounts of the incredients/recipes to a csv. 
     after that sets the variable incredient/recipes counter to zero.
     Needs the password for that procedure.
+    Needs a Filename, dbstring = Listname and the lifetime (ss1) variable (ss2) amount
+    where_ == True: only values greater zero are exported
     """
+    wherestring1 = ""
+    wherestring2 = ""
     wobject = getattr(w, wobject_name)
     if wobject.text() == globals.masterpassword:
         with open(filename, mode='a', newline='') as writer_file:
@@ -24,9 +28,12 @@ def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, search
                 ["----- Neuer Export von %s -----" % datetime.date.today()])
             row1 = []
             row2 = []
+            if where_:
+                wherestring1 = " WHERE {} > 0".format(searchstring1)
+                wherestring2 = " WHERE {} > 0".format(searchstring2)
             # selects the actual use and the names and writes them
-            sqlstring = "SELECT Name, {0} FROM {1} ORDER BY {0} DESC, Name ASC".format(
-                searchstring1, dbstring)
+            sqlstring = "SELECT Name, {0} FROM {1}{2} ORDER BY {0} DESC, Name ASC".format(
+                searchstring1, dbstring, wherestring1)
             Zspeicher = c.execute(sqlstring)
             for row in Zspeicher:
                 row1.append(row[0])
@@ -37,8 +44,8 @@ def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, search
             row1 = []
             row2 = []
             # selects the life time use and saves them
-            sqlstring = "SELECT Name, {0} FROM {1} ORDER BY {0} DESC, Name ASC".format(
-                searchstring2, dbstring)
+            sqlstring = "SELECT Name, {0} FROM {1}{2} ORDER BY {0} DESC, Name ASC".format(
+                searchstring2, dbstring, wherestring2)
             Zspeicher = c.execute(sqlstring)
             for row in Zspeicher:
                 row1.append(row[0])

@@ -29,6 +29,7 @@ def ZutatenCB_Belegung(w, DB, c):
 
 def Belegung_eintragen(w, DB, c):
     """ Insert the selected Bottleorder into the DB. """
+    # this import is neccecary on module level, otherwise there would be a circular import
     from maker import Rezepte_a_M
     # Checks where are entries and appends them to a list
     CBB_List = []
@@ -94,6 +95,7 @@ def Belegung_Flanwenden(w, DB, c):
                 c.execute(
                     "UPDATE OR IGNORE Belegung SET Mengenlevel = ? WHERE Flasche = ?", (storevol, Flaschen_C))
     DB.commit()
+    # remove all the checks from the combobuttons
     for Flaschen_C in range(1, 11):
         PBname = getattr(w, "PBneu" + str(Flaschen_C))
         PBname.setChecked(False)
@@ -127,7 +129,7 @@ def CleanMachine(w, DB, c, devenvironment):
         GPIO.setmode(GPIO.BCM)
     if w.LECleanMachine.text() == globals.masterpassword:
         standartbox(
-            "Achtung!: Maschine wird gereinigt, genug Wasser bereitstellen!")
+            "Achtung!: Maschine wird gereinigt, genug Wasser bereitstellen! Ok zum Fortfahren.")
         logger = logging.getLogger('cocktail_application')
         template = "{:*^80}"
         logger.info(template.format("Cleaning the Pumps",))

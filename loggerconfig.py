@@ -3,13 +3,14 @@ import logging
 import time
 
 
-def basiclogger():
+def basiclogger(loggername):
     """ This is a very basic logger, which logs every Level and writes the time
     and a Message.
     """
     logger = logging.getLogger('cocktail_application')
     logger.setLevel(logging.DEBUG)
-    fh = logging.FileHandler('Party_2019_03_30.log')
+    name_ = "Logfile_{}.log".format(loggername)
+    fh = logging.FileHandler(name_)
     fh.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
         '%(asctime)s - %(message)s', "%Y-%m-%d %H:%M")
