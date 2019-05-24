@@ -6,6 +6,7 @@ from PyQt5.uic import *
 
 
 def standartbox(textstring):
+    """ The default messagebox for the Maker. Uses a QMessageBox with OK-Button """
     # print(textstring)
     msgBox = QMessageBox()
     msgBox.setStandardButtons(QMessageBox.Ok)

@@ -25,10 +25,10 @@ def Zutat_eintragen(w, DB, c, newincredient = True):
     and its name is not already in the DB.
     Also can change the current selected incredient (newincredient = False)
     """
-    print("Zutat ist: ", w.LEZutatRezept.text())
-    print("Alkoholanteil ist: ", w.LEGehaltRezept.text())
-    print("Flaschenvolumen ist: ", w.LEFlaschenvolumen.text())
-    print("Neues Rezept: {}".format(newincredient))
+    # print("Zutat ist: ", w.LEZutatRezept.text())
+    # print("Alkoholanteil ist: ", w.LEGehaltRezept.text())
+    # print("Flaschenvolumen ist: ", w.LEFlaschenvolumen.text())
+    # print("Neues Rezept: {}".format(newincredient))
     Zutatentest = 0
     incredientname = w.LEZutatRezept.text()
     # counts the entries in the DB with the name and checks if its already there
