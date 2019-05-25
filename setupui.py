@@ -9,7 +9,7 @@ from PyQt5.uic import *
 
 import globals
 from maker import *
-from incredients import *
+from ingredients import *
 from recipes import *
 from bottles import *
 
@@ -163,7 +163,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
 
     # Clear Help Marker
     Maker_List_null(w, DB, c)
-    # Load Incredients
+    # Load ingredients
     Zutaten_a(w, DB, c)
     # Load Bottles into the Labels
     Belegung_a(w, DB, c)

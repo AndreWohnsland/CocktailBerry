@@ -20,7 +20,7 @@ import globals
 
 
 def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0, goon = True):
-    """ Goes through every recipe in the DB and crosscheck its incredients 
+    """ Goes through every recipe in the DB and crosscheck its ingredients 
     with the actual bottle assignments. \n
     Only display the recipes in the maker tab which match all bottles needed.
     In addition, only shows enabled recipes.
@@ -43,7 +43,7 @@ def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0, goon = True
         for Werte in Zspeicher:
             if Werte[1]:
                 V_Rezepte.append(int(Werte[0]))
-    # Search all incredient IDs of the recipe
+    # Search all ingredient IDs of the recipe
     if goon:
         for row in V_Rezepte:
             vorhandenvar = 0
@@ -72,7 +72,7 @@ def Maker_Rezepte_click(w, DB, c):
     then assign the strings and values in the TextBoxes on the Maker Sheet.
     """
     if w.LWMaker.selectedItems():
-        # search the DB for the recipe (ID) over the ID (Zutaten) fetch the incredients and amount
+        # search the DB for the recipe (ID) over the ID (Zutaten) fetch the ingredients and amount
         Maker_List_null(w, DB, c)
         zusatzmenge = 0
         Maker_ProB_change(w, DB, c)
@@ -184,7 +184,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     round((int(row[0])*MFaktor)/Volumenstrom[row[1]-1], 2))
                 V_Volumen += round(int(row[0])*MFaktor, 1)
                 V_Verbrauch.append(0)
-            # If there is a comment, it will be checked, and the quantity of the incredients will be added to the V_Volumen
+            # If there is a comment, it will be checked, and the quantity of the ingredients will be added to the V_Volumen
             c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",(w.LWMaker.currentItem().text(),))
             Zspeicher = c.fetchone()[0]
             if Zspeicher is None:

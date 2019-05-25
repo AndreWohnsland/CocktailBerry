@@ -17,7 +17,7 @@ from msgboxgenerate import standartbox
 
 
 def ZutatenCB_Belegung(w, DB, c):
-    """ Asigns all incredients to the Comboboxes in the bottles tab. """
+    """ Asigns all ingredients to the Comboboxes in the bottles tab. """
     for box in range(1, 11):
         Zspeicher = c.execute("SELECT NAME FROM Zutaten")
         CBBname = getattr(w, "CBB" + str(box))
@@ -38,7 +38,7 @@ def Belegung_eintragen(w, DB, c):
         CBBname = getattr(w, "CBB" + str(Flaschen_C))
         if (CBBname.currentText() != "" and CBBname.currentText() != 0):
             CBB_List.append(CBBname.currentText())
-    # Checks if any incredient is used twice, if so, dbl_check gets activated 
+    # Checks if any ingredient is used twice, if so, dbl_check gets activated 
     for Flaschen_i in range(0, len(CBB_List)):
         for Flaschen_j in range(0, len(CBB_List)):
             if ((CBB_List[Flaschen_i] == CBB_List[Flaschen_j]) and (Flaschen_i != Flaschen_j)):
@@ -49,11 +49,11 @@ def Belegung_eintragen(w, DB, c):
     if dbl_check == 0:
         for Flaschen_C in range(1, 11):
             CBBname = getattr(w, "CBB" + str(Flaschen_C))
-            incredientname = CBBname.currentText()
+            ingredientname = CBBname.currentText()
             Speicher_ID = c.execute(
-                "SELECT ID FROM Zutaten WHERE Name = ?", (incredientname,)).fetchone()[0]
+                "SELECT ID FROM Zutaten WHERE Name = ?", (ingredientname,)).fetchone()[0]
             c.execute("UPDATE OR IGNORE Belegung SET ID = ?, Zutat_F = ? WHERE Flasche = ?",
-                (int(Speicher_ID), incredientname, Flaschen_C))
+                (int(Speicher_ID), ingredientname, Flaschen_C))
             DB.commit()
         Belegung_a(w, DB, c)
         Rezepte_a_M(w, DB, c)

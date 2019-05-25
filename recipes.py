@@ -19,7 +19,7 @@ from msgboxgenerate import standartbox
 
 
 def ZutatenCB_Rezepte(w, DB, c):
-    """ Asigns all incredients to the Comboboxes in the recipe tab """
+    """ Asigns all ingredients to the Comboboxes in the recipe tab """
     for box in range(1, 9):
         Zspeicher = c.execute("SELECT NAME FROM Zutaten")
         CBRname = getattr(w, "CBR" + str(box))
@@ -31,7 +31,7 @@ def ZutatenCB_Rezepte(w, DB, c):
 
 def Rezept_eintragen(w, DB, c, newrecipe):
     """ Enter a new recipe into the DB, if all values are given an logical. \n
-    There can be up to 8 different incredients for each recipe. \n
+    There can be up to 8 different ingredients for each recipe. \n
     To store the values into the DB, a many to many relation is used. \n
     The newrecipe dertermines if the recipe is a new one, or an old is being updated
     """
@@ -42,7 +42,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
     if (neuername == "" or neuername == 0):
         val_check = 1
         standartbox("Bitte Cocktailnamen eingeben!")
-    # Checking if both values are given (incredient and quantity)
+    # Checking if both values are given (ingredient and quantity)
     if val_check == 0:
         for check_v in range(1, 9):
             CBRname = getattr(w, "CBR" + str(check_v))
@@ -60,7 +60,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                         val_check = 1
                         standartbox("Menge muss eine Zahl sein!")
                         break
-    # Checks, if any incredient was used twice
+    # Checks, if any ingredient was used twice
     if val_check == 0:
         Zutaten_V = []
         Mengen_V = []
@@ -79,7 +79,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                     break
             if val_check == 1:
                 break
-    # checks if there is at least one incredient, else this would make no sense
+    # checks if there is at least one ingredient, else this would make no sense
     if val_check == 0:
         if len(Zutaten_V) < 1:
             val_check = 1
@@ -176,7 +176,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                 for item in delfind:
                     w.LWMaker.takeItem(w.LWMaker.row(item))
         w.LWRezepte.addItem(neuername)
-        # add needs to be checked, if all incredients are used 
+        # add needs to be checked, if all ingredients are used 
         Rezepte_a_M(w, DB, c, False, "add", RezepteDBID, isenabled)
         Rezepte_clear(w, DB, c, True)
         if newrecipe:
@@ -219,7 +219,7 @@ def Rezepte_Rezepte_click(w, DB, c):
         LVZutat = []
         LVMenge = []
         cocktailname = str(w.LWRezepte.currentItem().text())
-        # Gets all the incredients as well the quatities for the recipe from the DB
+        # Gets all the ingredients as well the quatities for the recipe from the DB
         Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (cocktailname,))
         Rezepte_clear(w, DB, c, False)
         # Appends the Values to a List then fills them into the Fields

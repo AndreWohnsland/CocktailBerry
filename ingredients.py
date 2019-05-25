@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Module with all nececcary functions for the incredients Tab.
+""" Module with all nececcary functions for the ingredients Tab.
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
@@ -20,36 +20,36 @@ from msgboxgenerate import standartbox
 import globals
 
 
-def Zutat_eintragen(w, DB, c, newincredient = True):
-    """ Insert the new incredient into the DB, if all values are given 
+def Zutat_eintragen(w, DB, c, newingredient = True):
+    """ Insert the new ingredient into the DB, if all values are given 
     and its name is not already in the DB.
-    Also can change the current selected incredient (newincredient = False)
+    Also can change the current selected ingredient (newingredient = False)
     """
     # print("Zutat ist: ", w.LEZutatRezept.text())
     # print("Alkoholanteil ist: ", w.LEGehaltRezept.text())
     # print("Flaschenvolumen ist: ", w.LEFlaschenvolumen.text())
-    # print("Neues Rezept: {}".format(newincredient))
+    # print("Neues Rezept: {}".format(newingredient))
     Zutatentest = 0
-    incredientname = w.LEZutatRezept.text()
+    ingredientname = w.LEZutatRezept.text()
     # counts the entries in the DB with the name and checks if its already there
-    if newincredient:
+    if newingredient:
         c.execute("SELECT COUNT(*) FROM Zutaten WHERE Name=?",
-                (incredientname,))
+                (ingredientname,))
         Zutatentest = c.fetchone()[0]
-    if Zutatentest != 0 and newincredient:
+    if Zutatentest != 0 and newingredient:
         standartbox("Dieser Name existiert schon in der Datenbank!")
-    # if the incredient should be changed, check if its selected (should always be) and get the ID
-    if not newincredient and not w.LWZutaten.selectedItems():
+    # if the ingredient should be changed, check if its selected (should always be) and get the ID
+    if not newingredient and not w.LWZutaten.selectedItems():
         Zutatentest = 1
         standartbox("Es ist keine Zutat ausgewählt!")
-    elif not newincredient and w.LWZutaten.selectedItems():
+    elif not newingredient and w.LWZutaten.selectedItems():
         altername = w.LWZutaten.currentItem().text()
         Zspeicher = c.execute(
             "SELECT ID FROM Zutaten WHERE Name = ?", (altername,)).fetchone()[0]
         ZID = int(Zspeicher)
     # check if all Fields are filled
     if Zutatentest == 0:
-        if (incredientname == "") or (w.LEGehaltRezept.text() == "") or (w.LEFlaschenvolumen.text() == ""):
+        if (ingredientname == "") or (w.LEGehaltRezept.text() == "") or (w.LEFlaschenvolumen.text() == ""):
             standartbox("Eine der Eingaben ist leer!")
             Zutatentest = 1
     # check if the numbers make sense and then saves them into variables
@@ -67,32 +67,32 @@ def Zutat_eintragen(w, DB, c, newincredient = True):
                 "Alkoholgehalt und Flaschenvolumen muss eine Zahl sein!")
     # if everything is okay, insert or update the db, and the List widget
     if Zutatentest == 0:
-        if newincredient:
+        if newingredient:
             c.execute("INSERT OR IGNORE INTO Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch) VALUES (?,?,?,0,0)", (
-                incredientname, conc, vol))        
+                ingredientname, conc, vol))        
         else:
             c.execute("UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ? WHERE ID = ?",
-                (incredientname, conc, vol, ZID))
+                (ingredientname, conc, vol, ZID))
         DB.commit()
-        if not newincredient:
+        if not newingredient:
             delfind = w.LWZutaten.findItems(altername, Qt.MatchExactly)
             if len(delfind) > 0:
                 for item in delfind:
                     w.LWZutaten.takeItem(w.LWZutaten.row(item))
-        w.LWZutaten.addItem(incredientname)
+        w.LWZutaten.addItem(ingredientname)
         w.LEZutatRezept.clear()
         w.LEGehaltRezept.clear()
         w.LEFlaschenvolumen.clear()
         ZutatenCB_Rezepte(w, DB, c)
         ZutatenCB_Belegung(w, DB, c)
-        if newincredient:
+        if newingredient:
             standartbox("Zutat eingetragen")
         else:
-            standartbox("Zutat mit dem Namen: <{}> under <{}> aktualisiert".format(altername, incredientname))
+            standartbox("Zutat mit dem Namen: <{}> under <{}> aktualisiert".format(altername, ingredientname))
 
 
 def Zutaten_a(w, DB, c):
-    """ Load all incredientnames into the ListWidget """
+    """ Load all ingredientnames into the ListWidget """
     w.LWZutaten.clear()
     Zspeicher = c.execute("SELECT Name FROM Zutaten")
     for Werte in Zspeicher:
@@ -100,7 +100,7 @@ def Zutaten_a(w, DB, c):
 
 
 def Zutaten_delete(w, DB, c):
-    """ Deletes an incredient out of the DB if its not needed in any recipe. \n
+    """ Deletes an ingredient out of the DB if its not needed in any recipe. \n
     In addition to do so, a password is needed in the interface.
     """
     ZID = 0
@@ -115,7 +115,7 @@ def Zutaten_delete(w, DB, c):
                 ZID = row[0]
             c.execute("SELECT COUNT(*) FROM Zusammen WHERE Zutaten_ID=?", (ZID,))
             Zutatentest = c.fetchone()[0]
-            # Checks if the incredient is used in any bottle or in any recipe and reacts accordingly
+            # Checks if the ingredient is used in any bottle or in any recipe and reacts accordingly
             if Zutatentest == 0:
                 c.execute("SELECT COUNT(*) FROM Belegung WHERE ID=?", (ZID,))
                 Zutatentest = c.fetchone()[0]
@@ -130,7 +130,7 @@ def Zutaten_delete(w, DB, c):
                 else:
                     standartbox(
                         "Achtung, die Zutat ist noch in der Belegung registriert!")
-            # if the incredient is still used in recipes, inform the user about it and the first 10 recipes
+            # if the ingredient is still used in recipes, inform the user about it and the first 10 recipes
             else:
                 stringsaver = c.execute("SELECT Rezepte.Name FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID = Zusammen.Rezept_ID WHERE Zusammen.Zutaten_ID=?", (ZID,))
                 Zutatenliste = []
@@ -146,7 +146,7 @@ def Zutaten_delete(w, DB, c):
 
 
 def Zutaten_Zutaten_click(w, DB, c):
-    """ Search the DB entry for the incredient and displays them """
+    """ Search the DB entry for the ingredient and displays them """
     if w.LWZutaten.selectedItems():
         Zspeicher = c.execute(
             "SELECT Alkoholgehalt, Flaschenvolumen FROM Zutaten WHERE Name = ?", (w.LWZutaten.currentItem().text(),))
@@ -176,7 +176,7 @@ def Zutaten_Flvolumen_pm(w, DB, c, operator):
 
 
 def Zutaten_clear(w, DB, c):
-    """ Clears all entries in the incredient windows. """
+    """ Clears all entries in the ingredient windows. """
     w.LWZutaten.clearSelection()
     w.LEZutatRezept.clear()
     w.LEGehaltRezept.clear()

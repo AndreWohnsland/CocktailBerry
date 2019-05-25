@@ -12,8 +12,8 @@ import globals
 from msgboxgenerate import standartbox
 
 def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, searchstring2, where_=False):
-    """ Saves all the amounts of the incredients/recipes to a csv. 
-    after that sets the variable incredient/recipes counter to zero.
+    """ Saves all the amounts of the ingredients/recipes to a csv. 
+    after that sets the variable ingredient/recipes counter to zero.
     Needs the password for that procedure.
     Needs a Filename, dbstring = Listname and the lifetime (ss1) variable (ss2) amount
     where_ == True: only values greater zero are exported
