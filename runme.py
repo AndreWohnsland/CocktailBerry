@@ -15,10 +15,11 @@ import init_newdb
 # Load all global over multiple Modules passed Values
 globals.initialize()
 
-loggername = "today"
-devenvironment = True
-partymode = False
-neednewdb = False
+# Here you can change the parameters:
+loggername = "today"		    # under this name your logging file will be saved
+devenvironment = False			# important to set to False, otherwise the GPIO-commands dont work
+partymode = True				# True disables the recipe tab, that no user can change it
+neednewdb = False				# only needed if you delete your DB and want to set up new one
 
 if not devenvironment:
     import RPi.GPIO as GPIO
