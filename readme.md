@@ -66,8 +66,8 @@ First of all, you need to set your values in the `runme.py` file. The recommende
 ```python
 loggername = "yourlogname"		# under this name your logging file will be saved
 devenvironment = False			# important to set to False, otherwise the GPIO-commands dont work
-partymode = True				# True disables the recipe tab, that no user can change it
-neednewdb = False				# only needed if you delete your DB and want to set up new one
+partymode = True			# True disables the recipe tab, that no user can change it
+neednewdb = False			# only needed if you delete your DB and want to set up new one
 ```
 Depending on your preferred use, these values can differ. Then just run the file.\
 Setting up the machine is quite easy as well. Just go to the ***Belegung*** Tab and select via the dropdown boxes your assigned ingredients.\
