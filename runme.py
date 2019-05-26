@@ -17,7 +17,7 @@ globals.initialize()
 
 # Here you can change the parameters:
 loggername = "today"		    # under this name your logging file will be saved
-devenvironment = False			# important to set to False, otherwise the GPIO-commands dont work
+devenvironment = True			# important to set to False, otherwise the GPIO-commands dont work
 partymode = True				# True disables the recipe tab, that no user can change it
 neednewdb = False				# only needed if you delete your DB and want to set up new one
 

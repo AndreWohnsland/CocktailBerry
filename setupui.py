@@ -72,10 +72,7 @@ class Progressscreen(QMainWindow, Ui_Progressbarwindow):
     def __init__(self, parent=None):
         super(Progressscreen, self).__init__(parent)
         self.setupUi(self)
-        # Note: the Flag command don't work on the Pi, the Flags should work (not tested till now)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        # self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
-        # self.setWindowFlag(Qt.WindowCloseButtonHint, False)
         self.PBabbrechen.clicked.connect(abbrechen_R)
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.ms = parent
@@ -87,7 +84,13 @@ class PasswordScreen(QMainWindow, Ui_PasswordWindow):
     def __init__(self, parent=None):
         super(PasswordScreen, self).__init__(parent)
         self.setupUi(self)
-        # self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
+        self.setWindowFlags(
+            Qt.Window |
+            Qt.CustomizeWindowHint |
+            Qt.WindowTitleHint |
+            Qt.WindowCloseButtonHint |
+            Qt.WindowStaysOnTopHint
+            )
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.PB0.clicked.connect(lambda: self.number_clicked(0))
         self.PB1.clicked.connect(lambda: self.number_clicked(1))
