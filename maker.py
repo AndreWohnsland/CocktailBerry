@@ -15,10 +15,12 @@ from PyQt5.uic import *
 
 from bottles import Belegung_progressbar
 from msgboxgenerate import standartbox
+from loggerconfig import logfunction, logerror
 
 import globals
 
 
+@logerror
 def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0, goon = True):
     """ Goes through every recipe in the DB and crosscheck its ingredients 
     with the actual bottle assignments. \n
@@ -67,6 +69,7 @@ def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0, goon = True
             w.LWMaker.addItem(name_)
 
 
+@logerror
 def Maker_Rezepte_click(w, DB, c):
     """ Get all the data out of the DB for the selected recipe,
     then assign the strings and values in the TextBoxes on the Maker Sheet.
@@ -114,6 +117,7 @@ def Maker_Rezepte_click(w, DB, c):
             LMZname.setText(" " + str(LVMenge[row]) + " ml")
 
 
+@logerror
 def Maker_List_null(w, DB, c):
     """ Removes all the Values out of the Maker List. """
     w.LAlkoholgehalt.setText("")
@@ -127,6 +131,7 @@ def Maker_List_null(w, DB, c):
         LMZname.setText("")
 
 
+@logfunction
 def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
     """ Starts the Cocktail Making procedure, if not already started.\n
     ------------------------------------------------------------ 
@@ -151,6 +156,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
         V_Zeit = []
         V_Volumen = 0
         V_Verbrauch = []
+        timestep = 0.05
         Fixmenge = int(w.LCustomMenge.text())
         Alkoholfaktor = 1 + (w.HSIntensity.value()/100)
         MFaktor = 1
@@ -257,16 +263,16 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                                     round(Volumenstrom[V_FNr[row] - 1]*T_aktuell, 1)))
                             if not devenvironment:
                                 GPIO.output(Pinvektor[V_FNr[row] - 1], 0)
-                            V_Verbrauch[row] += Volumenstrom[V_FNr[row] - 1]*0.01
+                            V_Verbrauch[row] += Volumenstrom[V_FNr[row] - 1]*timestep
                         else:
                             if (T_aktuell) % 1 == 0:
                                 print(
                                     "Pin: " + str(Pinvektor[V_FNr[row] - 1]) + " geschlossen!")
                             if not devenvironment:
                                 GPIO.output(Pinvektor[V_FNr[row] - 1], 1)
-                    T_aktuell += 0.01
+                    T_aktuell += timestep
                     T_aktuell = round(T_aktuell, 2)
-                    time.sleep(0.01)
+                    time.sleep(timestep)
                     qApp.processEvents()
                 # Due to safety, each channel is closed at the end
                 print("-- Ende --")
@@ -288,7 +294,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 if globals.loopcheck == False:
                     abbruchstring = " - Rezept wurde bei " + \
                         str(round(T_aktuell, 1)) + " s abgebrochen - " + \
-                        str(round(Cocktailmenge*(T_aktuell + 0.01)/T_max)) + " ml"
+                        str(round(Cocktailmenge*(T_aktuell + timestep)/T_max)) + " ml"
                 else:
                     abbruchstring = ""
                 template = "{:8} | {}{}"
@@ -309,12 +315,14 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
         globals.startcheck = False
 
 
+@logfunction
 def abbrechen_R():
     """ Interrupts the cocktail preparation. """
     globals.loopcheck = False
     print("Rezept wird abgebrochen!")
 
 
+@logerror
 def Maker_pm(w, DB, c, operator):
     """ Increases or decreases the Custom set amount. \n
     The Minimum/Maximum ist 100/400. \n
@@ -334,11 +342,13 @@ def Maker_pm(w, DB, c, operator):
     w.LCustomMenge.setText(str(amount))
 
 
+@logerror
 def Maker_nullProB(w, DB, c):
     """ Sets the alcoholintensity to default value (100 %). """
     w.HSIntensity.setValue(0)
 
 
+@logerror
 def Maker_ProB_change(w, DB, c):
     """ Recalculates the alcoholpercentage of the drink with the adjusted Value from the slider. """
     if w.LWMaker.selectedItems():

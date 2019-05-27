@@ -73,7 +73,7 @@ class Progressscreen(QMainWindow, Ui_Progressbarwindow):
         super(Progressscreen, self).__init__(parent)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.PBabbrechen.clicked.connect(abbrechen_R)
+        self.PBabbrechen.clicked.connect(lambda: abbrechen_R())
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.ms = parent
 

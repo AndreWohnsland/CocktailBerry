@@ -45,6 +45,8 @@ def Belegung_eintragen(w, DB, c):
                 dbl_check = 1
                 standartbox("Eine der Zutaten wurde doppelt zugewiesen!")
                 break
+        if dbl_check == 1:
+            break
     # If no error, insert values into DB
     if dbl_check == 0:
         for Flaschen_C in range(1, 11):

@@ -18,7 +18,7 @@ globals.initialize()
 # Here you can change the parameters:
 loggername = "today"		    # under this name your logging file will be saved
 devenvironment = True			# important to set to False, otherwise the GPIO-commands dont work
-partymode = True				# True disables the recipe tab, that no user can change it
+partymode = False				# True disables the recipe tab, that no user can change it
 neednewdb = False				# only needed if you delete your DB and want to set up new one
 
 if not devenvironment:
@@ -43,7 +43,9 @@ if __name__ == '__main__':
         GPIO.setmode(GPIO.BCM)
 
     # Get the basic Logger
-    loggerconfig.basiclogger(loggername)
+    loggerconfig.basiclogger('cocktail_application', loggername, True)
+    loggerconfig.basiclogger('timing', 'timing')
+    # loggerconfig.initlogger_dec('calling', 'calling')
 
     # Load all the Functions from the setup script
     setupui.pass_setup(w, DB, c, partymode, devenvironment)
