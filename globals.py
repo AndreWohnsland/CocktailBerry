@@ -18,7 +18,7 @@ def initialize():
     loopcheck = True
     # set this to true if you want to log and supress errors while running the App
     # only recommended for the Maker on a Party, but not for debugging und you machine
-    decoactivate = False
+    decoactivate = True
     # here you can define your individual Password
     # there is a tochwindow for numbers, so if you want to isert the Password
     # without any Keybord, only Numbers is the way to go

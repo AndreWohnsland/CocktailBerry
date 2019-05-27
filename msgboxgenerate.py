@@ -4,7 +4,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
+from loggerconfig import logfunction, logerror
 
+
+@logerror
 def standartbox(textstring):
     """ The default messagebox for the Maker. Uses a QMessageBox with OK-Button """
     # print(textstring)

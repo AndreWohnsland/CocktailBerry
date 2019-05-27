@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
     # Get the basic Logger
     loggerconfig.basiclogger('cocktail_application', loggername, True)
-    loggerconfig.basiclogger('timing', 'timing')
+    loggerconfig.basiclogger('debuglog', 'debuglog')
     # loggerconfig.initlogger_dec('calling', 'calling')
 
     # Load all the Functions from the setup script

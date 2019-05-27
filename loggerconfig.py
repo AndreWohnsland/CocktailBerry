@@ -31,17 +31,17 @@ def logfunction(func):
     def wrapper(*args, **kwargs):
         if globals.decoactivate:
             trigger = True
-            logger_t = logging.getLogger('timing')
+            logger = logging.getLogger('debuglog')
             t1 = time.time()
             try:
                 func(*args, **kwargs)
             except Exception:
-                logger_t.exception("The function {} could not be fully excecuted!".format(func.__name__))
+                logger.exception("The function {} could not be fully excecuted!".format(func.__name__))
                 trigger = False
                 print("The function {} could not be fully excecuted!".format(func.__name__))
             t2 = round((time.time() - t1) * 1000)
             if trigger:
-                logger_t.info("The function {} took {} ms to complete".format(func.__name__, t2))
+                logger.info("The function {} took {} ms to complete".format(func.__name__, t2))
         else:
             func(*args, **kwargs)
     return wrapper
@@ -51,12 +51,12 @@ def logerror(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if globals.decoactivate:
-            logger_t = logging.getLogger('timing')
+            logger = logging.getLogger('debuglog')
             try:
                 func(*args, **kwargs)
             except Exception:
-                logger_t.exception
-                logger_t.exception("The function {} could not be fully excecuted!".format(func.__name__))
+                logger.exception
+                logger.exception("The function {} could not be fully excecuted!".format(func.__name__))
                 print("The function {} could not be fully excecuted!".format(func.__name__))
         else:
             func(*args, **kwargs)

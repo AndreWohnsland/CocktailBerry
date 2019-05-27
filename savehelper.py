@@ -10,7 +10,10 @@ from PyQt5.uic import *
 
 import globals
 from msgboxgenerate import standartbox
+from loggerconfig import logerror, logfunction
 
+
+@logerror
 def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, searchstring2, where_=False):
     """ Saves all the amounts of the ingredients/recipes to a csv. 
     after that sets the variable ingredient/recipes counter to zero.

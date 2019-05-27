@@ -2,8 +2,10 @@
 This is only needed when there is no Database (due to deleting it or simply not having any).
 """
 import sqlite3
+from loggerconfig import logfunction
 
 
+@logfunction
 def create_new_db(DB, c):
     """ Creates the new DB and the Tables: 'Rezepte', 'Zutaten', 'Zusammen' and 'Belegung'
     as well as their needed properties.

@@ -14,8 +14,10 @@ from PyQt5.uic import *
 
 import globals
 from msgboxgenerate import standartbox
+from loggerconfig import logerror, logfunction
 
 
+@logerror
 def ZutatenCB_Belegung(w, DB, c):
     """ Asigns all ingredients to the Comboboxes in the bottles tab. """
     for box in range(1, 11):
@@ -27,6 +29,7 @@ def ZutatenCB_Belegung(w, DB, c):
             CBBname.addItem(row[0])
 
 
+@logerror
 def Belegung_eintragen(w, DB, c):
     """ Insert the selected Bottleorder into the DB. """
     # this import is neccecary on module level, otherwise there would be a circular import
@@ -63,6 +66,7 @@ def Belegung_eintragen(w, DB, c):
         standartbox("Belegung wurde geändert!")        
 
 
+@logerror
 def Belegung_einlesen(w, DB, c):
     """ Reads the Bottleorder into the BottleTab. """
     for Flaschen_C in range(1, 11):
@@ -74,6 +78,7 @@ def Belegung_einlesen(w, DB, c):
             CBBname.setCurrentIndex(index)
 
 
+@logerror
 def Belegung_a(w, DB, c):
     """ Loads or updates the Labels of the Bottles (Volumelevel). """
     for Flaschen_C in range(1, 11):
@@ -84,6 +89,7 @@ def Belegung_a(w, DB, c):
             Lname.setText("  " + str(row[0]) + ":")
 
 
+@logerror
 def Belegung_Flanwenden(w, DB, c):
     """ Renews all the Bottles which are checked as new. """
     for Flaschen_C in range(1, 11):
@@ -105,6 +111,7 @@ def Belegung_Flanwenden(w, DB, c):
     standartbox("Alle Flaschen angewendet!")
 
 
+@logerror
 def Belegung_progressbar(w, DB, c):
     """ Gets the actual Level of the Bottle and creates the relation to the maximum Level. \n
     Assigns it to the according ProgressBar.
@@ -124,6 +131,7 @@ def Belegung_progressbar(w, DB, c):
                 ProBname.setValue(b1[x-1]/row[0]*100)
 
 
+@logerror
 def CleanMachine(w, DB, c, devenvironment):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
     if not devenvironment:
@@ -136,7 +144,7 @@ def CleanMachine(w, DB, c, devenvironment):
         template = "{:*^80}"
         logger.info(template.format("Cleaning the Pumps",))
         Pinvektor = globals.usedpins
-        w.LECleanMachine.clear()
+        w.LECleanMachine.setText("")
         for row in range(0, 9):
             if not devenvironment:
                 GPIO.setup(Pinvektor[row], GPIO.OUT)

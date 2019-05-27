@@ -16,8 +16,10 @@ from PyQt5.uic import *
 import globals
 from maker import Rezepte_a_M, Maker_List_null
 from msgboxgenerate import standartbox
+from loggerconfig import logfunction, logerror
 
 
+@logerror
 def ZutatenCB_Rezepte(w, DB, c):
     """ Asigns all ingredients to the Comboboxes in the recipe tab """
     for box in range(1, 9):
@@ -29,6 +31,7 @@ def ZutatenCB_Rezepte(w, DB, c):
             CBRname.addItem(row[0])
 
 
+@logerror
 def Rezept_eintragen(w, DB, c, newrecipe):
     """ Enter a new recipe into the DB, if all values are given an logical. \n
     There can be up to 8 different ingredients for each recipe. \n
@@ -185,6 +188,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             standartbox("Rezept mit der ID und dem Namen:\n<{}> <{}>\nunter dem Namen:\n<{}>\naktualisiert!".format(RezepteDBID, altername, neuername))
 
 
+@logerror
 def Rezepte_a_R(w, DB, c):
     """ Updates the ListWidget in the recipe Tab. """
     w.LWRezepte.clear()
@@ -193,6 +197,7 @@ def Rezepte_a_R(w, DB, c):
         w.LWRezepte.addItem(Werte[0])
 
 
+@logerror
 def Rezepte_clear(w, DB, c, clearmode):
     """ Clear all entries out of the Boxes and Comboboxes in the recipe tab. \n
     ------------------------------------------------------------
@@ -213,6 +218,7 @@ def Rezepte_clear(w, DB, c, clearmode):
         CBRname.setCurrentIndex(0)
 
 
+@logerror
 def Rezepte_Rezepte_click(w, DB, c):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
     if w.LWRezepte.selectedItems():
@@ -248,6 +254,7 @@ def Rezepte_Rezepte_click(w, DB, c):
             w.CHBenabled.setChecked(False)
 
 
+@logerror
 def Rezepte_delete(w, DB, c):
     """ Deletes the selected recipe, requires the Password """
     if w.LEpw.text() == globals.masterpassword:
@@ -276,6 +283,7 @@ def Rezepte_delete(w, DB, c):
     w.LEpw.setText("")
 
 
+@logerror
 def enableall(w, DB, c):
     idinput = []
     Zspeicher = c.execute("SELECT ID FROM Rezepte WHERE Enabled = 0")
