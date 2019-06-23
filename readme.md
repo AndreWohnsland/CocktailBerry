@@ -55,7 +55,7 @@ If you want to browse through the DB I recommend some program like [DB Browser f
 
 ## Modifying other Values (Pins, Volume Flow, Password)
 
-These values are stored under the `globals.py` file. Depending on your pumps and connection to the Pi, these can differ from mine  and can be changed:
+These values are stored under the `globals.py` file. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed:
 - `usedpins` are the RPi-Pins where each Pump is connected  
 - `pumpvolume` is the according volume flow in ml/s.
 - `masterpassword` can be any string, but i recommend a string of pure numbers, since the UI got a build in numpad window
