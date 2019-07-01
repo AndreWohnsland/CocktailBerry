@@ -312,6 +312,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                         "Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{}".format(zusatzstring))
                 elif not globals.loopcheck:
                     standartbox("Der Cocktail wurde abgebrochen!")
+                Maker_nullProB(w, DB, c)
         globals.startcheck = False
 
 
