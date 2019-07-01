@@ -28,4 +28,4 @@ def initialize():
     usedpins = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 20]
     # The according Volumeflow in ml/s for each Pump
     # Each Pump can be Measured individually and adjusted
-    pumpvolume = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
+    pumpvolume = [30, 30, 25, 30, 30, 30, 25, 30, 30, 23, 30, 30]
