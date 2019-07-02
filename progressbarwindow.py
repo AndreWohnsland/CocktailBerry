@@ -72,9 +72,10 @@ class Ui_Progressbarwindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.Lheader = QtWidgets.QLabel(self.centralwidget)
-        self.Lheader.setMaximumSize(QtCore.QSize(16777215, 120))
+        self.Lheader.setMinimumSize(QtCore.QSize(0, 150))
+        self.Lheader.setMaximumSize(QtCore.QSize(16777215, 150))
         font = QtGui.QFont()
-        font.setPointSize(36)
+        font.setPointSize(32)
         font.setBold(True)
         font.setWeight(75)
         self.Lheader.setFont(font)
@@ -128,4 +129,14 @@ class Ui_Progressbarwindow(object):
         self.progressBar.setFormat(_translate("Progressbarwindow", "%p%"))
         self.Labbruch.setText(_translate("Progressbarwindow", "Der Cocktail kann auch abgebrochen werden"))
         self.PBabbrechen.setText(_translate("Progressbarwindow", "Abbrechen"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Progressbarwindow = QtWidgets.QMainWindow()
+    ui = Ui_Progressbarwindow()
+    ui.setupUi(Progressbarwindow)
+    Progressbarwindow.show()
+    sys.exit(app.exec_())
 
