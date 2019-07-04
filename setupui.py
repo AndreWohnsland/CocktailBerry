@@ -130,7 +130,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     # First, connect all the Pushbuttons with the Functions
     w.PBZutathinzu.clicked.connect(lambda: Zutat_eintragen(w, DB, c))
     w.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(w, DB, c, True))
-    w.PBBelegung.clicked.connect(lambda: Belegung_eintragen(w, DB, c))
+    w.PBBelegung.clicked.connect(lambda: Belegung_eintragen(w, DB, c, True))
     w.PBclear.clicked.connect(lambda: Rezepte_clear(w, DB, c, True))
     w.PBRezeptaktualisieren.clicked.connect(lambda: Rezept_eintragen(w, DB, c, False))
     w.PBdelete.clicked.connect(lambda: Rezepte_delete(w, DB, c))
@@ -138,7 +138,8 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBZclear.clicked.connect(lambda: Zutaten_clear(w, DB, c))
     w.PBZaktualisieren.clicked.connect(lambda: Zutat_eintragen(w, DB, c, False))
     w.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, False, devenvironment))
-    w.PBCleanMachine.clicked.connect(lambda: CleanMachine(w, DB, c, devenvironment))
+    # w.PBCleanMachine.clicked.connect(lambda: CleanMachine(w, DB, c, devenvironment))
+    w.PBCleanMachine.clicked.connect(lambda: refresh_bottle_cb(w, DB, c))
     w.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(w, DB, c))
     w.PBZplus.clicked.connect(lambda: Zutaten_Flvolumen_pm(w, DB, c, "+"))
     w.PBZminus.clicked.connect(lambda: Zutaten_Flvolumen_pm(w, DB, c, "-"))
@@ -164,6 +165,8 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     if partymode:
         w.tabWidget.setTabEnabled(2, False)
 
+    # gets the bottle ingredients into the global list
+    get_bottle_ingredients(w, DB, c)
     # Clear Help Marker
     Maker_List_null(w, DB, c)
     # Load ingredients
@@ -173,7 +176,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     # Load Combobuttons Recipes
     ZutatenCB_Rezepte(w, DB, c)
     # Load Combobuttons Bottles
-    ZutatenCB_Belegung(w, DB, c)
+    newCB_Bottles(w, DB,c)
     # Load current Bottles into the Combobuttons
     Belegung_einlesen(w, DB, c)
     # Load Existing Recipes from DB into Recipe List
@@ -182,3 +185,15 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     Rezepte_a_M(w, DB, c)
     # Load the Progressbar
     Belegung_progressbar(w, DB, c)
+
+    # Connects additional Functionality to the Comboboxes
+    w.CBB1.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB2.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB3.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB4.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB5.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB6.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB7.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB8.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB9.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB10.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
