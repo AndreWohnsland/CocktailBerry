@@ -12,13 +12,15 @@ def initialize():
     global usedpins
     global pumpvolume
     global decoactivate
+    global olding
+    global supressbox
 
     # Only checkvariables for code and multimodule Communication
     startcheck = False
     loopcheck = True
     # set this to true if you want to log and supress errors while running the App
     # only recommended for the Maker on a Party, but not for debugging und you machine
-    decoactivate = True
+    decoactivate = False
     # here you can define your individual Password
     # there is a tochwindow for numbers, so if you want to isert the Password
     # without any Keybord, only Numbers is the way to go
@@ -29,3 +31,7 @@ def initialize():
     # The according Volumeflow in ml/s for each Pump
     # Each Pump can be Measured individually and adjusted
     pumpvolume = [30, 30, 25, 30, 30, 30, 25, 30, 30, 23, 30, 30]
+    # the global to get the old ingredients
+    olding = []
+    # global to supress the combobox change
+    supressbox = False
