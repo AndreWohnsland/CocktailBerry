@@ -16,10 +16,12 @@ from PyQt5.uic import *
 from recipes import ZutatenCB_Rezepte
 from bottles import ZutatenCB_Belegung, Belegung_einlesen, Belegung_progressbar
 from msgboxgenerate import standartbox
+from loggerconfig import logfunction, logerror
 
 import globals
 
 
+@logerror
 def Zutat_eintragen(w, DB, c, newingredient = True):
     """ Insert the new ingredient into the DB, if all values are given 
     and its name is not already in the DB.
@@ -74,23 +76,40 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
             c.execute("UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ? WHERE ID = ?",
                 (ingredientname, conc, vol, ZID))
         DB.commit()
+        # old ingredients need to be deleted and readded
+        # also when you delete an item, the selection jumps to the next item
+        # to prevent strange bugs deselect all items
         if not newingredient:
             delfind = w.LWZutaten.findItems(altername, Qt.MatchExactly)
             if len(delfind) > 0:
                 for item in delfind:
                     w.LWZutaten.takeItem(w.LWZutaten.row(item))
+            for i in range(w.LWZutaten.count()):
+                w.LWZutaten.item(i).setSelected(False)
         w.LWZutaten.addItem(ingredientname)
+        # Deletes the used values
         w.LEZutatRezept.clear()
         w.LEGehaltRezept.clear()
         w.LEFlaschenvolumen.clear()
         ZutatenCB_Rezepte(w, DB, c)
-        ZutatenCB_Belegung(w, DB, c)
+        # if its a new ingredient, adds it to the boxes and sorts them
+        # if its a changed one, update the values
+        for box in range(1, 11):
+            CBBname = getattr(w, "CBB" + str(box))
+            if newingredient:
+                CBBname.addItem(ingredientname)
+                CBBname.model().sort(0)
+            else:
+                index = CBBname.findText(altername, Qt.MatchFixedString)
+                if index >= 0:
+                    CBBname.setItemText(index, ingredientname)
         if newingredient:
             standartbox("Zutat eingetragen")
         else:
             standartbox("Zutat mit dem Namen: <{}> under <{}> aktualisiert".format(altername, ingredientname))
 
 
+@logerror
 def Zutaten_a(w, DB, c):
     """ Load all ingredientnames into the ListWidget """
     w.LWZutaten.clear()
@@ -99,6 +118,7 @@ def Zutaten_a(w, DB, c):
         w.LWZutaten.addItem(Werte[0])
 
 
+@logerror
 def Zutaten_delete(w, DB, c):
     """ Deletes an ingredient out of the DB if its not needed in any recipe. \n
     In addition to do so, a password is needed in the interface.
@@ -123,10 +143,18 @@ def Zutaten_delete(w, DB, c):
                     c.execute("DELETE FROM Zutaten WHERE ID = ?", (ZID,))
                     DB.commit()
                     ZutatenCB_Rezepte(w, DB, c)
-                    ZutatenCB_Belegung(w, DB, c)
+                    # This isn't nececary, a simple remove is better
+                    # ZutatenCB_Belegung(w, DB, c)
+                    for box in range(1, 11):
+                        CBBname = getattr(w, "CBB" + str(box))
+                        index = CBBname.findText(Zname, Qt.MatchFixedString)
+                        if index >= 0:
+                            globals.supressbox = True
+                            CBBname.removeItem(index)
+                            globals.supressbox = False
                     Zutaten_clear(w, DB, c)
                     Zutaten_a(w, DB, c)
-                    standartbox("Zutat mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Zname, ZID))
+                    standartbox("Zutat mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(ZID, Zname))
                 else:
                     standartbox(
                         "Achtung, die Zutat ist noch in der Belegung registriert!")
@@ -145,6 +173,7 @@ def Zutaten_delete(w, DB, c):
     w.LEpw2.setText("")
 
 
+@logerror
 def Zutaten_Zutaten_click(w, DB, c):
     """ Search the DB entry for the ingredient and displays them """
     if w.LWZutaten.selectedItems():
@@ -156,6 +185,7 @@ def Zutaten_Zutaten_click(w, DB, c):
         w.LEZutatRezept.setText(w.LWZutaten.currentItem().text())
 
 
+@logerror
 def Zutaten_Flvolumen_pm(w, DB, c, operator):
     """ Increase or decrease the Bottlevolume by a given amount (25). \n
     The value cannot exceed the minimal or maximal Volume (100/1500).
@@ -175,6 +205,7 @@ def Zutaten_Flvolumen_pm(w, DB, c, operator):
     w.LEFlaschenvolumen.setText(str(value_))
 
 
+@logerror
 def Zutaten_clear(w, DB, c):
     """ Clears all entries in the ingredient windows. """
     w.LWZutaten.clearSelection()
