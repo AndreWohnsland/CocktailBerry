@@ -1,7 +1,7 @@
 # The Cocktailmaker: Overview
 
 Hello everyone, I am *Andre Wohnsland*, a German Master Engineer in Renewable Energy Systems, trying to get better in Python every day. This is my first published project, a RaspberryPi app for a custom designed Cocktailmaker also created by me.
-I am planning to do a showcase of the whole machine (it's already running well) but currently i haven't had the time. Some impressions can already be found [here](https://imgur.com/a/fbZ0WuS). This app is at the moment under further construction and adding new functionalities, as well as optimizing the code (readability and efficiency).
+I am planning to do a showcase of the whole machine (it's already running well) but currently i haven't had the time. Some impressions of the UI can be found [here](https://imgur.com/a/fbZ0WuS) and of the machine [here](https://imgur.com/a/Z4tfISx). This app is at the moment under further construction and adding new functionalities, as well as optimizing the code (readability and efficiency).
 If you got any questions or proposed improvements, feel free to share and/or contact me.
 
 ## Minimal Requirements
@@ -84,4 +84,4 @@ If in any case any unexpected behaviour occurs feel free to contact me.
 ## Side Notes
 
 As you probably noticed, the interface is in German since this is the native language of all my friends (which are the users of the machine).
-I am planing to translate all text to English at some point, and give the possibility to choose between both languages, but currently there is no planned date for that.
+I am planing to translate all text to English at some point, and give the possibility to choose between both languages, but currently there is no planned date for that.# New Document
