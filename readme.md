@@ -84,4 +84,4 @@ If in any case any unexpected behaviour occurs feel free to contact me.
 ## Side Notes
 
 As you probably noticed, the interface is in German since this is the native language of all my friends (which are the users of the machine).
-I am planing to translate all text to English at some point, and give the possibility to choose between both languages, but currently there is no planned date for that.# New Document
+I am planing to translate all text to English at some point, and give the possibility to choose between both languages, but currently there is no planned date for that
