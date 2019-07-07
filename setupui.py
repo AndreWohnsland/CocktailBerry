@@ -15,6 +15,7 @@ from bottles import *
 
 from Cocktailmanager_2 import Ui_MainWindow
 from passwordbuttons import Ui_PasswordWindow
+from passwordbuttons2 import Ui_PasswordWindow2
 from progressbarwindow import Ui_Progressbarwindow
 from bottlewindow import Ui_Bottlewindow
 from savehelper import save_quant
@@ -83,7 +84,7 @@ class Progressscreen(QMainWindow, Ui_Progressbarwindow):
         self.ms = parent
 
 
-class PasswordScreen(QMainWindow, Ui_PasswordWindow):
+class PasswordScreen(QDialog, Ui_PasswordWindow2):
     """ Creates the Passwordscreen. """
 
     def __init__(self, parent=None):
