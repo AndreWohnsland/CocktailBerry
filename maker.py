@@ -209,19 +209,16 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     V_Zeit[x] = round(V_Zeit[x]*MVH, 1)
             # Checks if there is still enough volume in the Bottle
             for x in range(0, len(V_ZM)):
-                c.execute(
-                    "SELECT COUNT(*) FROM Belegung WHERE Flasche = ? AND Mengenlevel<?", (V_FNr[x], V_ZM[x]))
-                Mengentest = c.fetchone()[0]
-                if Mengentest != 0:
+                mengentest = c.execute("SELECT Zutaten.Name FROM Zutaten INNER JOIN Belegung ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ? AND Zutaten.Mengenlevel<?", (V_FNr[x], V_ZM[x])).fetchone()
+                if mengentest is not None:
                     createcheck = False
-                    c.execute(
-                        "SELECT Zutaten.Name FROM Zutaten INNER JOIN Belegung ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (V_FNr[x],))
-                    mangelzutat = c.fetchone()[0]
+                    mangelzutat = mengentest[0]
                     standartbox("Es ist in Flasche %i mit der Zutat %s nicht mehr genug Volumen vorhanden, %.0f ml wird benötigt!" % (
                         V_FNr[x], mangelzutat, V_ZM[x]))
                     w.tabWidget.setCurrentIndex(3)
+                    break
             # if all conditions are met, go on
-            if createcheck == True:
+            if createcheck:
                 # Generate the Comment for the end of the Programm
                 c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",(w.LWMaker.currentItem().text(),))
                 Zspeicher = c.fetchone()[0]
@@ -284,8 +281,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 w.prow_close()
                 # Adds the usage
                 for x in range(0, len(V_FNr)):
-                    c.execute("UPDATE OR IGNORE Belegung SET Mengenlevel = Mengenlevel - ? WHERE Flasche = ?",
-                              (round(V_Verbrauch[x]), V_FNr[x]))
+                    c.execute("UPDATE OR IGNORE Zutaten SET Mengenlevel = Mengenlevel - ? WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)", (round(V_Verbrauch[x]), V_FNr[x]))
                 # logs all value, checks if recipe was interrupted and where
                 if normalcheck:
                     mengenstring = "Standard"

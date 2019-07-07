@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
 from recipes import ZutatenCB_Rezepte
-from bottles import ZutatenCB_Belegung, Belegung_einlesen, Belegung_progressbar
+from bottles import ZutatenCB_Belegung, Belegung_einlesen, Belegung_progressbar, Belegung_a
 from msgboxgenerate import standartbox
 from loggerconfig import logfunction, logerror
 
@@ -70,11 +70,17 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
     # if everything is okay, insert or update the db, and the List widget
     if Zutatentest == 0:
         if newingredient:
-            c.execute("INSERT OR IGNORE INTO Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch) VALUES (?,?,?,0,0)", (
+            c.execute("INSERT OR IGNORE INTO Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel) VALUES (?,?,?,0,0,0)", (
                 ingredientname, conc, vol))        
         else:
-            c.execute("UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ? WHERE ID = ?",
-                (ingredientname, conc, vol, ZID))
+            vol_old = c.execute("SELECT Mengenlevel FROM Zutaten WHERE ID = ?", (ZID,)).fetchone()[0]
+            if int(vol_old) > vol:
+                vol_old = vol
+            c.execute("UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ?, Mengenlevel = ? WHERE ID = ?",
+                (ingredientname, conc, vol, vol_old, ZID))
+            # Updates the level of the bottles and their labels
+            Belegung_progressbar(w, DB, c)
+            Belegung_a(w, DB, c)
         DB.commit()
         # old ingredients need to be deleted and readded
         # also when you delete an item, the selection jumps to the next item

@@ -207,13 +207,10 @@ def Belegung_Flanwenden(w, DB, c):
     for Flaschen_C in range(1, 11):
         PBname = getattr(w, "PBneu" + str(Flaschen_C))
         if PBname.isChecked():
-            storevar = c.execute(
-                "SELECT Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (Flaschen_C,)).fetchone()
+            bottleid = c.execute("SELECT ID FROM Belegung WHERE Flasche = ?", (Flaschen_C,)).fetchone()[0]
             # the value can be None if the user checks a not used box, so its captured here
-            if storevar is not None:
-                storevol = storevar[0]
-                c.execute(
-                    "UPDATE OR IGNORE Belegung SET Mengenlevel = ? WHERE Flasche = ?", (storevol, Flaschen_C))
+            if bottleid != 0:
+                c.execute("UPDATE OR IGNORE Zutaten Set Mengenlevel = Flaschenvolumen WHERE ID = ?", (bottleid,))
     DB.commit()
     # remove all the checks from the combobuttons
     for Flaschen_C in range(1, 11):
@@ -228,25 +225,19 @@ def Belegung_progressbar(w, DB, c):
     """ Gets the actual Level of the Bottle and creates the relation to the maximum Level. \n
     Assigns it to the according ProgressBar.
     """
-    b1 = []
-    storeval = c.execute("SELECT Mengenlevel FROM Belegung")
-    for row in storeval:
-        b1.append(row[0])
-    for x in range(1, 11):
-        ProBname = getattr(w, "ProBBelegung" + str(x))
-        storeval2 = c.execute(
-            "SELECT Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (x,))
-        for row in storeval2:
-            if b1[x-1] <= 0:
+    for Flaschen_C in range(1, 11):
+        storeval = c.execute("SELECT Zutaten.Mengenlevel, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (Flaschen_C,)).fetchone()
+        if storeval is not None:
+            level = storeval[0]
+            maximum = storeval[1]
+            ProBname = getattr(w, "ProBBelegung" + str(Flaschen_C))
+            # Sets the level of the bar, it cant drop below 0 or 100%
+            if level <= 0:
                 ProBname.setValue(0)
-            # if the bottles are switched from a bigger to a littler one it may exceed 100% and the value is wrong, in this case it just
-            # sets the value for 100. In the future there may be a better solution for the whole process of the memory of bottle volume.
-            # The problem that currently remains is that the value shown is 100 but the value in the bottles DB could be larger than the
-            # value in the ingredient DB (for example 1000/750) -> a new bottle needs to be set to fix that.
-            elif (b1[x-1]/row[0]*100)>100:
+            elif level/maximum > 1:
                 ProBname.setValue(100)
             else:
-                ProBname.setValue(b1[x-1]/row[0]*100)
+                ProBname.setValue(level/maximum*100)
 
 
 @logerror
