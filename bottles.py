@@ -23,6 +23,7 @@ def customlevels(w, DB, c):
     vol_values = []
     w.bottleswindow(bot_names, vol_values)
 
+
 def get_bottle_ingredients(w, DB, c):
     """ At the start of the Programm, get all the ingredients from the DB. """
     for i in range(1,11):

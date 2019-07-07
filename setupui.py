@@ -2,6 +2,7 @@
 of the passed window. Also defines the Mode for controls. 
 """
 import sys
+import sqlite3
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -19,6 +20,7 @@ from passwordbuttons2 import Ui_PasswordWindow2
 from progressbarwindow import Ui_Progressbarwindow
 from bottlewindow import Ui_Bottlewindow
 from savehelper import save_quant
+from bottles import Belegung_progressbar
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -68,6 +70,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.prow.close()
 
     def bottleswindow(self, bot_names=[], vol_values=[]):
+        """ Opens the bottlewindow to change the volumelevels. """
         self.botw = Bottlewindow(self)
         self.botw.show()
 
@@ -88,6 +91,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
     """ Creates the Passwordscreen. """
 
     def __init__(self, parent=None):
+        """ Init. Connect all the buttons and set window policy. """
         super(PasswordScreen, self).__init__(parent)
         self.setupUi(self)
         self.setWindowFlags(
@@ -120,12 +124,15 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
             self.pwlineedit = self.ms.LECleanMachine
 
     def number_clicked(self, number):
+        """  Adds the clicked number to the lineedit. """
         self.pwlineedit.setText(self.pwlineedit.text() + "{}".format(number))
 
     def enter_clicked(self):
+        """ Enters/Closes the Dialog. """
         self.close()
 
     def del_clicked(self):
+        """ Deletes the last digit in the lineedit. """
         if len(self.pwlineedit.text()) > 0:
             strstor = str(self.pwlineedit.text())
             self.pwlineedit.setText(strstor[:-1])
@@ -135,6 +142,7 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
     """ Creates the Window to change to levels of the bottles. """
 
     def __init__(self, parent=None):
+        """ Init. Connects all the buttons, gets the names from Mainwindow/DB. """
         super(Bottlewindow, self).__init__(parent)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -142,6 +150,23 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
 
+        self.ms = parent
+        for i in range(1,11):
+            CBBname = getattr(self.ms, 'CBB' + str(i))
+            labelobj = getattr(self, 'LName' + str(i))
+            labelobj.setText('    ' + CBBname.currentText())
+        self.DB = sqlite3.connect('Datenbank.db')
+        self.c = self.DB.cursor()
+        bufferleffel = self.c.execute("SELECT Zutaten.Mengenlevel, Zutaten.ID, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID")
+        self.IDlist = []
+        self.maxvolume = []
+        for i, level in enumerate(bufferleffel):
+            LName = getattr(self, 'LAmount' + str(i+1))
+            LName.setText(str(level[0]))
+            self.IDlist.append(level[1])
+            self.maxvolume.append(level[2])
+
+        # creates lists of the objects and assings functions later through a loop
         myplus =  [
             self.PBMplus1, self.PBMplus2, self.PBMplus3, self.PBMplus4, self.PBMplus5,
             self.PBMplus6, self.PBMplus7, self.PBMplus8, self.PBMplus9, self.PBMplus10
@@ -155,32 +180,43 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
             self.LAmount6, self.LAmount7, self.LAmount8, self.LAmount9, self.LAmount10
         ]
 
-        for plus, minus, field in zip(myplus, myminus, mylabel):
-            plus.clicked.connect(lambda _, l=field: self.plusminus(label=l, operator='+'))
-            minus.clicked.connect(lambda _, l=field: self.plusminus(label=l, operator='-'))
-
-        self.ms = parent
-        for i in range(1,11):
-            CBBname = getattr(self.ms, "CBB" + str(i))
-            labelobj = getattr(self, 'LName' + str(i))
-            labelobj.setText('    ' + CBBname.currentText())
-        
+        for plus, minus, field, vol in zip(myplus, myminus, mylabel, self.maxvolume):
+            plus.clicked.connect(lambda _, l=field, b=vol: self.plusminus(label=l, operator='+', bsize=b))
+            minus.clicked.connect(lambda _, l=field, b=vol: self.plusminus(label=l, operator='-', bsize=b))
         
     def abbrechen_clicked(self):
+        """ Closes the Window without a change. """
         self.close()
 
     def eintragen_clicked(self):
+        """ Enters the Data and closes the window. """
+        for i in range(1, 11):
+            LName = getattr(self, 'LAmount' + str(i))
+            new_amount = min(int(LName.text()), self.maxvolume[i-1])
+            self.c.execute("UPDATE OR IGNORE Zutaten SET Mengenlevel = ? WHERE ID = ?", (new_amount, self.IDlist[i-1]))
+        self.DB.commit()
+        Belegung_progressbar(self.ms, self.DB, self.c)
         self.close()
     
-    def plusminus(self, label, operator):
-        minimal = 100
+    def plusminus(self, label, operator, bsize):
+        """ Changes the value on a given amount. Operator uses '+' or '-'.
+        Limits the value to a maximum and minimum Value as well as to the current Bottlesize
+        Also, always makes the value of the factor 25
+        """
+        minimal = 50
         maximal = 1500
         dm = 25
         amount = int(label.text())
-        if operator == "+" and amount < maximal:
+        if operator == "+":
             amount += dm
-        if operator == "-" and amount > minimal:
+        elif operator == "-":
             amount -= dm
+        else:
+            raise ValueError('operator is neither plus nor minus!')
+        amount = (amount//25)*25
+        # limits the value to min/max value, assigns it
+        amount = max(minimal, amount)
+        amount = min(maximal, amount, bsize)
         label.setText(str(amount))
 
 

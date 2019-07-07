@@ -39,7 +39,6 @@
 {
 	color: rgb(0, 123, 255);	
 	background-color: rgb(0, 0, 0);
-
 }
 
 QPushButton {
@@ -52,6 +51,13 @@ QPushButton {
 	padding: 3px;
 	padding-left: 5px;
 	padding-right: 5px;
+}
+
+QPushButton:pressed
+{
+	color: rgb(255, 255, 255);	
+	background-color: rgb(0, 123, 255);
+	border-color: rgb(0, 123, 255);
 }
 
 QPushButton:checked
@@ -120,6 +126,21 @@ QProgressBar::chunk {
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QLabel" name="LHeader">
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Füllstand der Flaschen auswählen/ändern</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QLabel" name="LName1">
@@ -131,7 +152,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -144,7 +165,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -181,7 +202,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -202,7 +223,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -237,7 +258,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -250,7 +271,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -287,7 +308,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -308,7 +329,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -343,7 +364,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -356,7 +377,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -393,7 +414,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -414,7 +435,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -449,7 +470,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -462,7 +483,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -499,7 +520,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -520,7 +541,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -555,7 +576,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -568,7 +589,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -605,7 +626,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -626,7 +647,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -661,7 +682,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -674,7 +695,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -711,7 +732,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -732,7 +753,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -767,7 +788,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -780,7 +801,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -817,7 +838,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -838,7 +859,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -873,7 +894,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -886,7 +907,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -923,7 +944,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -944,7 +965,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -979,7 +1000,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -992,7 +1013,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -1029,7 +1050,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -1050,7 +1071,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -1085,7 +1106,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1098,7 +1119,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -1135,7 +1156,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -1156,7 +1177,7 @@ QProgressBar::chunk {
         <property name="minimumSize">
          <size>
           <width>60</width>
-          <height>20</height>
+          <height>18</height>
          </size>
         </property>
         <property name="maximumSize">
