@@ -1,0 +1,8 @@
+--------------- 2019_07_07 ---------------------------------------------------------------------------------------------------------
+- Introduced changelog
+- Switched the UI element from mainwindow to dialog for the passwordbuttos
+- Removed the Mengenlevel from Belegung to Zutaten, changed sql querries and code accordingly
+- Introduced a new window for the Belegung tab to manually change the volume levels
+- started to fill functionality for the new window, adjusted other modules, if needed
+- Code improvements
+- Tiny bugfixes
