@@ -16,6 +16,7 @@ from bottles import *
 from Cocktailmanager_2 import Ui_MainWindow
 from passwordbuttons import Ui_PasswordWindow
 from progressbarwindow import Ui_Progressbarwindow
+from bottlewindow import Ui_Bottlewindow
 from savehelper import save_quant
 
 
@@ -64,6 +65,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def prow_close(self):
         """ Closes the Progressionwindow at the end of the cyclus. """
         self.prow.close()
+
+    def bottleswindow(self, bot_names=[], vol_values=[]):
+        self.botw = Bottlewindow(self)
+        self.botw.show()
 
 
 class Progressscreen(QMainWindow, Ui_Progressbarwindow):
@@ -125,12 +130,66 @@ class PasswordScreen(QMainWindow, Ui_PasswordWindow):
             self.pwlineedit.setText(strstor[:-1])
 
 
+class Bottlewindow(QMainWindow, Ui_Bottlewindow):
+    """ Creates the Window to change to levels of the bottles. """
+
+    def __init__(self, parent=None):
+        super(Bottlewindow, self).__init__(parent)
+        self.setupUi(self)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+
+        self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
+        self.PBEintragen.clicked.connect(self.eintragen_clicked)
+
+        myplus =  [
+            self.PBMplus1, self.PBMplus2, self.PBMplus3, self.PBMplus4, self.PBMplus5,
+            self.PBMplus6, self.PBMplus7, self.PBMplus8, self.PBMplus9, self.PBMplus10
+        ]
+        myminus =  [
+            self.PBMminus1, self.PBMminus2, self.PBMminus3, self.PBMminus4, self.PBMminus5,
+            self.PBMminus6, self.PBMminus7, self.PBMminus8, self.PBMminus9, self.PBMminus10
+        ]
+        mylabel = [
+            self.LAmount1, self.LAmount2, self.LAmount3, self.LAmount4, self.LAmount5,
+            self.LAmount6, self.LAmount7, self.LAmount8, self.LAmount9, self.LAmount10
+        ]
+
+        for plus, minus, field in zip(myplus, myminus, mylabel):
+            plus.clicked.connect(lambda _, l=field: self.plusminus(label=l, operator='+'))
+            minus.clicked.connect(lambda _, l=field: self.plusminus(label=l, operator='-'))
+
+        self.ms = parent
+        for i in range(1,11):
+            CBBname = getattr(self.ms, "CBB" + str(i))
+            labelobj = getattr(self, 'LName' + str(i))
+            labelobj.setText('    ' + CBBname.currentText())
+        
+        
+    def abbrechen_clicked(self):
+        self.close()
+
+    def eintragen_clicked(self):
+        self.close()
+    
+    def plusminus(self, label, operator):
+        minimal = 100
+        maximal = 1500
+        dm = 25
+        amount = int(label.text())
+        if operator == "+" and amount < maximal:
+            amount += dm
+        if operator == "-" and amount > minimal:
+            amount -= dm
+        label.setText(str(amount))
+
+
 def pass_setup(w, DB, c, partymode, devenvironment):
     """ Connect all the functions with the Buttons. """
     # First, connect all the Pushbuttons with the Functions
     w.PBZutathinzu.clicked.connect(lambda: Zutat_eintragen(w, DB, c))
     w.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(w, DB, c, True))
-    w.PBBelegung.clicked.connect(lambda: Belegung_eintragen(w, DB, c, True))
+    # w.PBBelegung.clicked.connect(lambda: Belegung_eintragen(w, DB, c, True))
+    w.PBBelegung.clicked.connect(lambda: customlevels(w, DB, c))
     w.PBclear.clicked.connect(lambda: Rezepte_clear(w, DB, c, True))
     w.PBRezeptaktualisieren.clicked.connect(lambda: Rezept_eintragen(w, DB, c, False))
     w.PBdelete.clicked.connect(lambda: Rezepte_delete(w, DB, c))
