@@ -17,6 +17,12 @@ from msgboxgenerate import standartbox
 from loggerconfig import logerror, logfunction
 
 
+def customlevels(w, DB, c):
+    """ Opens the additional window to change the volume levels of the bottles. """
+    bot_names = []
+    vol_values = []
+    w.bottleswindow(bot_names, vol_values)
+
 def get_bottle_ingredients(w, DB, c):
     """ At the start of the Programm, get all the ingredients from the DB. """
     for i in range(1,11):
