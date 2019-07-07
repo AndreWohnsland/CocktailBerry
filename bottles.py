@@ -233,6 +233,12 @@ def Belegung_progressbar(w, DB, c):
         for row in storeval2:
             if b1[x-1] <= 0:
                 ProBname.setValue(0)
+            # if the bottles are switched from a bigger to a littler one it may exceed 100% and the value is wrong, in this case it just
+            # sets the value for 100. In the future there may be a better solution for the whole process of the memory of bottle volume.
+            # The problem that currently remains is that the value shown is 100 but the value in the bottles DB could be larger than the
+            # value in the ingredient DB (for example 1000/750) -> a new bottle needs to be set to fix that.
+            elif (b1[x-1]/row[0]*100)>100:
+                ProBname.setValue(100)
             else:
                 ProBname.setValue(b1[x-1]/row[0]*100)
 
