@@ -173,8 +173,6 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
             for row in Zspeicher:
                 CocktailID = row[0]
                 Cocktailmenge = row[1]
-            c.execute(
-                "UPDATE OR IGNORE Rezepte SET Anzahl_Lifetime = Anzahl_Lifetime + 1, Anzahl = Anzahl + 1 WHERE ID = ?", (CocktailID,))
             if normalcheck == False:
                 Cocktailmenge = Fixmenge
             Zspeicher = c.execute(
@@ -279,7 +277,8 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     if not devenvironment:
                         GPIO.output(Pinvektor[V_FNr[row] - 1], 1)
                 w.prow_close()
-                # Adds the usage
+                # Adds the usage and the cocktail
+                c.execute("UPDATE OR IGNORE Rezepte SET Anzahl_Lifetime = Anzahl_Lifetime + 1, Anzahl = Anzahl + 1 WHERE ID = ?", (CocktailID,))
                 for x in range(0, len(V_FNr)):
                     c.execute("UPDATE OR IGNORE Zutaten SET Mengenlevel = Mengenlevel - ? WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)", (round(V_Verbrauch[x]), V_FNr[x]))
                 # logs all value, checks if recipe was interrupted and where
