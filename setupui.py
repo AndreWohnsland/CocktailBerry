@@ -13,16 +13,16 @@ from maker import *
 from ingredients import *
 from recipes import *
 from bottles import *
-from msgboxgenerate import standartbox
-
-from Cocktailmanager_2 import Ui_MainWindow
-from passwordbuttons import Ui_PasswordWindow
-from passwordbuttons2 import Ui_PasswordWindow2
-from progressbarwindow import Ui_Progressbarwindow
-from bonusingredient import Ui_addingredient
-from bottlewindow import Ui_Bottlewindow
 from savehelper import save_quant
 from bottles import Belegung_progressbar
+from msgboxgenerate import standartbox
+
+from ui_elements.Cocktailmanager_2 import Ui_MainWindow
+from ui_elements.passwordbuttons import Ui_PasswordWindow
+from ui_elements.passwordbuttons2 import Ui_PasswordWindow2
+from ui_elements.progressbarwindow import Ui_Progressbarwindow
+from ui_elements.bonusingredient import Ui_addingredient
+from ui_elements.bottlewindow import Ui_Bottlewindow
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
