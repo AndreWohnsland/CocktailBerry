@@ -1,3 +1,9 @@
+--------------- 2019_07_10 ---------------------------------------------------------------------------------------------------------
+- Added Recipes
+- Added a new option with a new window to sperately choose an ingredient and an amount to get the machine to spend it.
+- Added a new UI element and adjusted several modules for the new UI element
+- fixed a bug in the maker module, which was logging the recipe amount into the DB before checking if its possible to serve it.
+
 --------------- 2019_07_07 ---------------------------------------------------------------------------------------------------------
 - Introduced changelog
 - Switched the UI element from mainwindow to dialog for the passwordbuttos
