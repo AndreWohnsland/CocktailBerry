@@ -13,11 +13,13 @@ from maker import *
 from ingredients import *
 from recipes import *
 from bottles import *
+from msgboxgenerate import standartbox
 
 from Cocktailmanager_2 import Ui_MainWindow
 from passwordbuttons import Ui_PasswordWindow
 from passwordbuttons2 import Ui_PasswordWindow2
 from progressbarwindow import Ui_Progressbarwindow
+from bonusingredient import Ui_addingredient
 from bottlewindow import Ui_Bottlewindow
 from savehelper import save_quant
 from bottles import Belegung_progressbar
@@ -26,7 +28,7 @@ from bottles import Belegung_progressbar
 class MainScreen(QMainWindow, Ui_MainWindow):
     """ Creates the Mainscreen. """
 
-    def __init__(self, devenvironment, parent=None):
+    def __init__(self, devenvironment, DB=None, parent=None):
         """ Init. Many of the button and List connects are in pass_setup. """
         super(MainScreen, self).__init__(parent)
         self.setupUi(self)
@@ -36,6 +38,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if not devenvironment:
             self.setCursor(Qt.BlankCursor)
         self.devenvironment = devenvironment
+        if DB is not None:
+            self.DB = sqlite3.connect(DB)
+            self.c = self.DB.cursor()
 
     def passwordwindow(self, register):
         """ Opens up the PasswordScreen. """
@@ -56,9 +61,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 self.pw3 = PasswordScreen(self)
             self.pw3.showMaximized()
 
-    def progressionqwindow(self):
+    def progressionqwindow(self, labelchange=False):
         """ Opens up the progressionwindow to show the Cocktail status. """
         self.prow = Progressscreen(self)
+        if labelchange:
+            self.prow.Lheader.setText('Zutat wird ausgegeben!\nFortschritt:')
         self.prow.show()
 
     def prow_change(self, pbvalue):
@@ -74,6 +81,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.botw = Bottlewindow(self)
         self.botw.show()
 
+    def ingredientdialog(self):
+        self.ingd = Getingredientwindow(self)
+        self.ingd.show()
+
 
 class Progressscreen(QMainWindow, Ui_Progressbarwindow):
     """ Class for the Progressscreen during Cocktail making. """
@@ -85,6 +96,8 @@ class Progressscreen(QMainWindow, Ui_Progressbarwindow):
         self.PBabbrechen.clicked.connect(lambda: abbrechen_R())
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.ms = parent
+        if not self.ms.devenvironment:
+            self.setCursor(Qt.BlankCursor)
 
 
 class PasswordScreen(QDialog, Ui_PasswordWindow2):
@@ -115,6 +128,8 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         self.PBenter.clicked.connect(self.enter_clicked)
         self.PBdel.clicked.connect(self.del_clicked)
         self.ms = parent
+        if not self.ms.devenvironment:
+            self.setCursor(Qt.BlankCursor)
         # decides in which window the numbers are entered
         if self.ms.register == 1:
             self.pwlineedit = self.ms.LEpw
@@ -151,12 +166,14 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
 
         self.ms = parent
+        if not self.ms.devenvironment:
+            self.setCursor(Qt.BlankCursor)
         for i in range(1,11):
             CBBname = getattr(self.ms, 'CBB' + str(i))
             labelobj = getattr(self, 'LName' + str(i))
             labelobj.setText('    ' + CBBname.currentText())
-        self.DB = sqlite3.connect('Datenbank.db')
-        self.c = self.DB.cursor()
+        self.DB = self.ms.DB
+        self.c = self.ms.c
         bufferleffel = self.c.execute("SELECT Zutaten.Mengenlevel, Zutaten.ID, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID")
         self.IDlist = []
         self.maxvolume = []
@@ -220,6 +237,121 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
         label.setText(str(amount))
 
 
+class Getingredientwindow(QDialog, Ui_addingredient):
+    """ Creates a Dialog to chose an additional ingredient and the amount
+    to spend this ingredient.
+    """
+
+    def __init__(self, parent=None):
+        """ Init. Connects all the buttons and get values for the Combobox. """
+        super(Getingredientwindow, self).__init__(parent)
+        self.setupUi(self)
+        # Set window properties
+        self.setWindowFlags(
+            Qt.Window |
+            Qt.CustomizeWindowHint |
+            Qt.WindowTitleHint |
+            Qt.WindowCloseButtonHint |
+            Qt.WindowStaysOnTopHint
+            )
+        self.setWindowIcon(QIcon("Cocktail-icon.png"))
+        self.ms = parent
+        if not self.ms.devenvironment:
+            self.setCursor(Qt.BlankCursor)
+        # Connect all the buttons
+        self.PBplus.clicked.connect(lambda: self.plusminus('+'))
+        self.PBminus.clicked.connect(lambda: self.plusminus('-'))
+        self.PBAusgeben.clicked.connect(self.ausgeben_clicked)
+        self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
+        # Get the DB and fill Combobox
+        self.DB = self.ms.DB
+        self.c = self.ms.c
+        bottles = self.c.execute("SELECT Zutaten.Name FROM Zutaten INNER JOIN Belegung ON Zutaten.ID = Belegung.ID")
+        for bottle in bottles:
+            self.CBingredient.addItem(bottle[0])
+
+    def plusminus(self, operator):
+        """ Changes the value on a given amount. Operator uses '+' or '-'.
+        Limits the value to a maximum and minimum Value.
+        """
+        minimal = 20
+        maximal = 100
+        dm = 10
+        amount = int(self.LAmount.text())
+        if operator == "+":
+            amount += dm
+        elif operator == "-":
+            amount -= dm
+        else:
+            raise ValueError('operator is neither plus nor minus!')
+        # limits the value to min/max value, assigns it
+        amount = max(minimal, amount)
+        amount = min(maximal, amount)
+        self.LAmount.setText(str(amount))
+
+    def abbrechen_clicked(self):
+        """ Closes the Window without a change. """
+        self.close()
+
+    def ausgeben_clicked(self):
+        """ Calls the Progressbarwindow and spends the given amount of the ingredient. """
+        # get the globals, set GPIO
+        import globals
+        if not self.ms.devenvironment:
+            import RPi.GPIO as GPIO
+            GPIO.setmode(GPIO.BCM)
+        timestep = 0.05
+        pins = globals.usedpins
+        volumeflows = globals.pumpvolume
+        globals.loopcheck = True
+        # select the bottle and the according pin as well as Volumeflow, calculates the needed time
+        bottlename = self.CBingredient.currentText()
+        bottle = self.c.execute("SELECT Flasche From Belegung WHERE Zutat_F = ?",(bottlename,)).fetchone()
+        if bottle is not None:
+            pos = bottle[0] - 1
+            print('Ausgabemenge von ' + self.CBingredient.currentText() + ': ' + self.LAmount.text() +' die Flaschennummer ist: ' + str(pos+1))
+        pin = pins[pos]
+        volumeflow = int(volumeflows[pos])
+        volume = int(self.LAmount.text())
+        check = True
+        # now checks if there is enough of the ingredient
+        amounttest = self.c.execute("SELECT Mengenlevel FROM Zutaten WHERE Name = ? and Mengenlevel < ?", (bottlename, volume)).fetchone()
+        if amounttest is not None:
+            missingamount = amounttest[0]
+            standartbox('Die Flasche hat nicht genug Volumen! %i ml werden gebraucht, %i ml sind vorhanden!' % (volume, missingamount))
+            check = False
+        if check:
+            time_needed = volume/volumeflow
+            time_actual = 0
+            # initialise and open the Pins = activate the pump
+            if not self.ms.devenvironment:
+                GPIO.setup(pin, GPIO.OUT)
+                GPIO.output(pin, 0)
+            print('Pin: ' + str(pin) + ' wurde initialisiert!')
+            self.close()
+            self.ms.progressionqwindow(labelchange=True)
+            # until the time is reached, or the process is interrupted loop:
+            while (time_actual < time_needed and globals.loopcheck):
+                if (time_actual) % 1 == 0:
+                    print(str(time_actual) + " von " + str(time_needed) + " Sekunden ")
+                time_actual += timestep
+                time_actual = round(time_actual, 2)
+                time.sleep(timestep)
+                self.ms.prow_change(time_actual/time_needed*100)
+                qApp.processEvents()
+            # close the pin / pump at the end of the process.
+            if not self.ms.devenvironment:
+                GPIO.output(pin, 1)
+            # checks if the program was interrupted before or carried out till the end, gets the used volume
+            if not globals.loopcheck:
+                volume_to_substract = int(round(time_actual*volumeflow,0))
+            else:
+                volume_to_substract = volume
+            # substract the volume from the DB
+            self.c.execute("UPDATE OR IGNORE Zutaten SET Mengenlevel = Mengenlevel - ? WHERE Name = ?" ,(volume_to_substract, bottlename))
+            self.DB.commit()
+            self.ms.prow_close()
+
 def pass_setup(w, DB, c, partymode, devenvironment):
     """ Connect all the functions with the Buttons. """
     # First, connect all the Pushbuttons with the Functions
@@ -227,6 +359,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(w, DB, c, True))
     # w.PBBelegung.clicked.connect(lambda: Belegung_eintragen(w, DB, c, True))
     w.PBBelegung.clicked.connect(lambda: customlevels(w, DB, c))
+    w.PBZeinzelnd.clicked.connect(lambda: custom_output(w, DB, c))
     w.PBclear.clicked.connect(lambda: Rezepte_clear(w, DB, c, True))
     w.PBRezeptaktualisieren.clicked.connect(lambda: Rezept_eintragen(w, DB, c, False))
     w.PBdelete.clicked.connect(lambda: Rezepte_delete(w, DB, c))

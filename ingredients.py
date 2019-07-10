@@ -21,6 +21,10 @@ from loggerconfig import logfunction, logerror
 import globals
 
 
+def custom_output(w, DB, c):
+    w.ingredientdialog()
+
+
 @logerror
 def Zutat_eintragen(w, DB, c, newingredient = True):
     """ Insert the new ingredient into the DB, if all values are given 

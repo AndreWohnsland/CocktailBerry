@@ -28,7 +28,8 @@ if not devenvironment:
 if __name__ == '__main__':
 
     # Connect (or create) the DB and the cursor
-    DB = sqlite3.connect('Datenbank.db')
+    dbname = 'Datenbank.db'
+    DB = sqlite3.connect(dbname)
     c = DB.cursor()
     if neednewdb:
         init_newdb.create_new_db(DB, c)
@@ -36,7 +37,7 @@ if __name__ == '__main__':
     # Load the UI
     app = QApplication(sys.argv)
     # w = loadUi("Cocktailmanager_2.ui")
-    w = setupui.MainScreen(devenvironment)
+    w = setupui.MainScreen(devenvironment, dbname)
 
     # Setting the Pins if not DevEnvironment
     if not devenvironment:
