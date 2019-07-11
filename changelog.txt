@@ -1,8 +1,15 @@
+--------------- 2019_07_11 ---------------------------------------------------------------------------------------------------------
+- seperated the ingredient and recipe save csv into a seperate folder
+- adjusted code for that change
+- included the logging of the consumption and life time consumption into the DB when a single ingredient is spend
+- changed the save function to include the actual date in the name of the file. Also dont write the old headerline for the two saves into the file
+
 --------------- 2019_07_10 ---------------------------------------------------------------------------------------------------------
 - Added Recipes
 - Added a new option with a new window to sperately choose an ingredient and an amount to get the machine to spend it.
 - Added a new UI element and adjusted several modules for the new UI element
 - fixed a bug in the maker module, which was logging the recipe amount into the DB before checking if its possible to serve it.
+- seperated the logging files, as well as the UI files from the main folder into seperate directories
 
 --------------- 2019_07_07 ---------------------------------------------------------------------------------------------------------
 - Introduced changelog
