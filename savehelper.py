@@ -3,6 +3,7 @@ import sqlite3
 import time
 import datetime
 import csv
+import os
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -25,7 +26,10 @@ def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, search
     wherestring2 = ""
     wobject = getattr(w, wobject_name)
     if wobject.text() == globals.masterpassword:
-        with open(filename, mode='a', newline='') as writer_file:
+        dirpath = os.path.dirname(__file__)
+        subfoldername = "saves"
+        savepath = os.path.join(dirpath, subfoldername, filename)
+        with open(savepath, mode='a', newline='') as writer_file:
             csv_writer = csv.writer(writer_file, delimiter=',')
             csv_writer.writerow(
                 ["----- Neuer Export von %s -----" % datetime.date.today()])

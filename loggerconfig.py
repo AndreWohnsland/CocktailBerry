@@ -15,9 +15,8 @@ def basiclogger(loggerobj, loggername, printline = False):
     logger.setLevel(logging.DEBUG)
     dirpath = os.path.dirname(__file__)
     subfoldername = "logs"
-    name_ = os.path.join(subfoldername, "{}.log".format(loggername))
-    savepath = os.path.join(dirpath, name_)
-    print(savepath)
+    savepath = os.path.join(dirpath, subfoldername, "{}.log".format(loggername))
+    # print(savepath)
     fh = logging.FileHandler(savepath)
     fh.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
