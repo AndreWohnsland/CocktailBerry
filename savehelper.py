@@ -28,32 +28,37 @@ def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, search
     if wobject.text() == globals.masterpassword:
         dirpath = os.path.dirname(__file__)
         subfoldername = "saves"
-        savepath = os.path.join(dirpath, subfoldername, filename)
+        # generating a savename prefix for the date and remove the '-' signs
+        dtime = str(datetime.date.today())
+        dtime = dtime.replace('-', '')
+        savepath = os.path.join(dirpath, subfoldername, dtime + '_' + filename)
         with open(savepath, mode='a', newline='') as writer_file:
             csv_writer = csv.writer(writer_file, delimiter=',')
-            csv_writer.writerow(
-                ["----- Neuer Export von %s -----" % datetime.date.today()])
+            # csv_writer.writerow(
+            #     ["----- Neuer Export von %s -----" % datetime.date.today()])
             row1 = []
             row2 = []
             if where_:
                 wherestring1 = " WHERE {} > 0".format(searchstring1)
                 wherestring2 = " WHERE {} > 0".format(searchstring2)
             # selects the actual use and the names and writes them
-            sqlstring = "SELECT Name, {0} FROM {1}{2} ORDER BY {0} DESC, Name ASC".format(
-                searchstring1, dbstring, wherestring1)
+            sqlstring = "SELECT Name, {0} FROM {1}{2}".format(searchstring1, dbstring, wherestring1)
             Zspeicher = c.execute(sqlstring)
+            row1.append('date')
+            row2.append(datetime.date.today())
             for row in Zspeicher:
                 row1.append(row[0])
                 row2.append(row[1])
             csv_writer.writerow(row1)
             csv_writer.writerow(row2)
-            csv_writer.writerow(["----- Gesamte Mengen über Lebenszeit -----"])
+            # csv_writer.writerow(["----- Gesamte Mengen über Lebenszeit -----"])
             row1 = []
             row2 = []
             # selects the life time use and saves them
-            sqlstring = "SELECT Name, {0} FROM {1}{2} ORDER BY {0} DESC, Name ASC".format(
-                searchstring2, dbstring, wherestring2)
+            sqlstring = "SELECT Name, {0} FROM {1}{2}".format(searchstring2, dbstring, wherestring2)
             Zspeicher = c.execute(sqlstring)
+            row1.append('date')
+            row2.append('lifetime')
             for row in Zspeicher:
                 row1.append(row[0])
                 row2.append(row[1])
