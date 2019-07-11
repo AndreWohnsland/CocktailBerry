@@ -348,7 +348,7 @@ class Getingredientwindow(QDialog, Ui_addingredient):
             else:
                 volume_to_substract = volume
             # substract the volume from the DB
-            self.c.execute("UPDATE OR IGNORE Zutaten SET Mengenlevel = Mengenlevel - ? WHERE Name = ?" ,(volume_to_substract, bottlename))
+            self.c.execute("UPDATE OR IGNORE Zutaten SET Mengenlevel = Mengenlevel - ?, Verbrauchsmenge = Verbrauchsmenge + ?, Verbrauch = Verbrauch + ?  WHERE Name = ?" ,(volume_to_substract, volume_to_substract, volume_to_substract, bottlename))
             self.DB.commit()
             self.ms.prow_close()
 
