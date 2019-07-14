@@ -7,6 +7,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
+import string
 
 import globals
 from maker import *
@@ -23,6 +24,7 @@ from ui_elements.passwordbuttons2 import Ui_PasswordWindow2
 from ui_elements.progressbarwindow import Ui_Progressbarwindow
 from ui_elements.bonusingredient import Ui_addingredient
 from ui_elements.bottlewindow import Ui_Bottlewindow
+from ui_elements.Keyboard import Ui_Keyboard
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -32,34 +34,51 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """ Init. Many of the button and List connects are in pass_setup. """
         super(MainScreen, self).__init__(parent)
         self.setupUi(self)
-        self.LEpw.selectionChanged.connect(lambda: self.passwordwindow(1))
-        self.LEpw2.selectionChanged.connect(lambda: self.passwordwindow(2))
-        self.LECleanMachine.selectionChanged.connect(lambda: self.passwordwindow(3))
+        # the connection method here is defined in a seperate file "clickablelineedit.py"
+        # even if it belongs to the UI if its moved there, there will be an import error.
+        # Till this problem is resolved, this file will stay in the main directory
+        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw))
+        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2))
+        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine))
+        self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
+        self.LEGehaltRezept.clicked.connect(lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext="Alkoholgehalt eingeben!"))
+        self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept))
+        self.LEmenge_a.clicked.connect(lambda: self.passwordwindow(self.LEmenge_a, x_pos=400, y_pos=50, headertext="Zusatzmenge eingeben!"))
+        self.LEprozent_a.clicked.connect(lambda: self.passwordwindow(self.LEprozent_a, x_pos=400, y_pos=50, headertext="Alkoholgehalt Zusatzmenge eingeben!"))
+        self.LEKommentar.clicked.connect(lambda: self.keyboard(self.LEKommentar))
+        # connects all the Lineedits from the Recipe amount
+        LER_obj = [getattr(self, "LER" + str(x)) for x in range(1,9)]
+        for obj in LER_obj:
+            obj.clicked.connect(lambda o=obj: self.passwordwindow(le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!"))
+        # as long as its not devenvironment (usually touchscreen) hide the cursor
         if not devenvironment:
             self.setCursor(Qt.BlankCursor)
         self.devenvironment = devenvironment
+        # connect to the DB, if one is given (you should always give one!)
         if DB is not None:
             self.DB = sqlite3.connect(DB)
             self.c = self.DB.cursor()
 
-    def passwordwindow(self, register):
-        """ Opens up the PasswordScreen. """
-        # Since there are three different passwortlabels, it exists a window for each
-        if register == 1:
-            self.register = 1
-            if not hasattr(self, "pw1"):
-                self.pw1 = PasswordScreen(self)
-            self.pw1.showMaximized()
-        elif register == 2:
-            self.register = 2
-            if not hasattr(self, "pw2"):
-                self.pw2 = PasswordScreen(self)
-            self.pw2.showMaximized()
-        elif register == 3:
-            self.register = 3
-            if not hasattr(self, "pw3"):
-                self.pw3 = PasswordScreen(self)
-            self.pw3.showMaximized()
+    def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext=None):
+        """ Opens up the PasswordScreen/ a Numpad to enter Numeric Values (no commas!). 
+        Needs a Lineedit where the text is put in. In addition, the header of the window can be changed. 
+        This is only relevant if you dont show the window in Fullscreen!
+        In addition, if its not fullscreen, the postion of the upper left edge can be set in x- and y-direction.
+        """
+        self.pww = PasswordScreen(self, x_pos=x_pos, y_pos=y_pos, le_to_write=le_to_write)
+        if headertext is not None:
+            self.pww.setWindowTitle(headertext)
+        self.pww.show()
+    
+    def keyboard(self, le_to_write, headertext=None):
+        """ Opens up the Keyboard to seperate Enter a Name or similar.
+        Needs a Lineedit where the text is put in. In addition, the header of the window can be changed. 
+        This is only relevant if you dont show the window in Fullscreen!
+        """
+        self.kbw = Keyboardwidget(self, le_to_write=le_to_write)
+        if headertext is not None:
+            self.kbw.setWindowTitle(headertext)
+        self.kbw.showFullScreen()
 
     def progressionqwindow(self, labelchange=False):
         """ Opens up the progressionwindow to show the Cocktail status. """
@@ -103,7 +122,7 @@ class Progressscreen(QMainWindow, Ui_Progressbarwindow):
 class PasswordScreen(QDialog, Ui_PasswordWindow2):
     """ Creates the Passwordscreen. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent, x_pos=0, y_pos=0, le_to_write=None):
         """ Init. Connect all the buttons and set window policy. """
         super(PasswordScreen, self).__init__(parent)
         self.setupUi(self)
@@ -115,28 +134,18 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
             Qt.WindowStaysOnTopHint
             )
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
-        self.PB0.clicked.connect(lambda: self.number_clicked(0))
-        self.PB1.clicked.connect(lambda: self.number_clicked(1))
-        self.PB2.clicked.connect(lambda: self.number_clicked(2))
-        self.PB3.clicked.connect(lambda: self.number_clicked(3))
-        self.PB4.clicked.connect(lambda: self.number_clicked(4))
-        self.PB5.clicked.connect(lambda: self.number_clicked(5))
-        self.PB6.clicked.connect(lambda: self.number_clicked(6))
-        self.PB7.clicked.connect(lambda: self.number_clicked(7))
-        self.PB8.clicked.connect(lambda: self.number_clicked(8))
-        self.PB9.clicked.connect(lambda: self.number_clicked(9))
+        # Connect all the buttons, generates a list of the numbers an objectnames to do that
+        self.number_list = [x for x in range(10)]
+        self.attribute_numbers = [getattr(self, "PB" + str(x)) for x in self.number_list]
+        for obj, number in zip(self.attribute_numbers, self.number_list):
+            obj.clicked.connect(lambda _, n=number: self.number_clicked(number=n))
         self.PBenter.clicked.connect(self.enter_clicked)
         self.PBdel.clicked.connect(self.del_clicked)
         self.ms = parent
         if not self.ms.devenvironment:
             self.setCursor(Qt.BlankCursor)
-        # decides in which window the numbers are entered
-        if self.ms.register == 1:
-            self.pwlineedit = self.ms.LEpw
-        elif self.ms.register == 2:
-            self.pwlineedit = self.ms.LEpw2
-        elif self.ms.register == 3:
-            self.pwlineedit = self.ms.LECleanMachine
+        self.pwlineedit = le_to_write
+        self.move(x_pos, y_pos)
 
     def number_clicked(self, number):
         """  Adds the clicked number to the lineedit. """
@@ -162,9 +171,11 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
 
+        # connects all the buttons
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
 
+        # sets cursor visualibility and assigns the names to the labels
         self.ms = parent
         if not self.ms.devenvironment:
             self.setCursor(Qt.BlankCursor)
@@ -174,29 +185,27 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
             labelobj.setText('    ' + CBBname.currentText())
         self.DB = self.ms.DB
         self.c = self.ms.c
-        bufferleffel = self.c.execute("SELECT Zutaten.Mengenlevel, Zutaten.ID, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID")
+
+        # get all the DB values and assign the nececary to the level labels
+        # note: since there can be blank bottles (id=0 so no match) this needs to be catched as well (no selection from DB)
         self.IDlist = []
         self.maxvolume = []
-        for i, level in enumerate(bufferleffel):
-            LName = getattr(self, 'LAmount' + str(i+1))
-            LName.setText(str(level[0]))
-            self.IDlist.append(level[1])
-            self.maxvolume.append(level[2])
+        for flasche in range(1, 11):
+            bufferlevel = self.c.execute("SELECT Zutaten.Mengenlevel, Zutaten.ID, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID AND Belegung.Flasche = ?", (flasche,)).fetchone()
+            LName = getattr(self, 'LAmount' + str(flasche))
+            if bufferlevel is not None:
+                LName.setText(str(bufferlevel[0]))
+                self.IDlist.append(bufferlevel[1])
+                self.maxvolume.append(bufferlevel[2])
+            else:
+                LName.setText("0")
+                self.IDlist.append(0)
+                self.maxvolume.append(0)
 
         # creates lists of the objects and assings functions later through a loop
-        myplus =  [
-            self.PBMplus1, self.PBMplus2, self.PBMplus3, self.PBMplus4, self.PBMplus5,
-            self.PBMplus6, self.PBMplus7, self.PBMplus8, self.PBMplus9, self.PBMplus10
-        ]
-        myminus =  [
-            self.PBMminus1, self.PBMminus2, self.PBMminus3, self.PBMminus4, self.PBMminus5,
-            self.PBMminus6, self.PBMminus7, self.PBMminus8, self.PBMminus9, self.PBMminus10
-        ]
-        mylabel = [
-            self.LAmount1, self.LAmount2, self.LAmount3, self.LAmount4, self.LAmount5,
-            self.LAmount6, self.LAmount7, self.LAmount8, self.LAmount9, self.LAmount10
-        ]
-
+        myplus = [getattr(self, "PBMplus" + str(x)) for x in range(1,11)]
+        myminus = [getattr(self, "PBMminus" + str(x)) for x in range(1,11)]
+        mylabel = [getattr(self, "LAmount" + str(x)) for x in range(1,11)]
         for plus, minus, field, vol in zip(myplus, myminus, mylabel, self.maxvolume):
             plus.clicked.connect(lambda _, l=field, b=vol: self.plusminus(label=l, operator='+', bsize=b))
             minus.clicked.connect(lambda _, l=field, b=vol: self.plusminus(label=l, operator='-', bsize=b))
@@ -230,7 +239,7 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
             amount -= dm
         else:
             raise ValueError('operator is neither plus nor minus!')
-        amount = (amount//25)*25
+        amount = (amount//dm)*dm
         # limits the value to min/max value, assigns it
         amount = max(minimal, amount)
         amount = min(maximal, amount, bsize)
@@ -351,6 +360,72 @@ class Getingredientwindow(QDialog, Ui_addingredient):
             self.c.execute("UPDATE OR IGNORE Zutaten SET Mengenlevel = Mengenlevel - ?, Verbrauchsmenge = Verbrauchsmenge + ?, Verbrauch = Verbrauch + ?  WHERE Name = ?" ,(volume_to_substract, volume_to_substract, volume_to_substract, bottlename))
             self.DB.commit()
             self.ms.prow_close()
+
+class Keyboardwidget(QDialog, Ui_Keyboard):
+    """ Creates a Keyboard where the user can enter names or similar strings to Lineedits. """
+    def __init__(self, parent, le_to_write=None):
+        super(Keyboardwidget, self).__init__(parent)
+        self.setupUi(self)
+        self.ms = parent
+        self.le_to_write = le_to_write
+        self.LName.setText(self.le_to_write.text())
+
+        # populating all the buttons
+        self.backButton.clicked.connect(self.backbutton_clicked)
+        self.clear.clicked.connect(self.clearbutton_clicked)
+        self.enterButton.clicked.connect(self.enterbutton_clicked)
+        self.space.clicked.connect(lambda: self.inputbutton_clicked(" ", " "))
+        self.delButton.clicked.connect(self.delete_clicked)
+        self.shift.clicked.connect(self.shift_clicked)
+
+        # generating the lists to populate all remaining buttons via iteration
+        self.number_list = [x for x in range(10)]
+        self.char_list_lower = [x for x in string.ascii_lowercase]
+        self.char_list_upper = [x for x in string.ascii_uppercase]
+        self.attribute_chars = [getattr(self, "Button" + x) for x in self.char_list_lower]
+        self.attribute_numbers = [getattr(self, "Button" + str(x)) for x in self.number_list]
+        for obj, char, char2 in zip(self.attribute_chars, self.char_list_lower, self.char_list_upper):
+            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s))
+        for obj, char, char2 in zip(self.attribute_numbers, self.number_list, self.number_list):
+            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s))
+
+    def backbutton_clicked(self):
+        """ Closes the Window without any further action. """
+        self.close()
+    
+    def clearbutton_clicked(self):
+        """ Clears the input. """
+        self.LName.setText("")
+
+    def enterbutton_clicked(self):
+        """ Closes and enters the String value back to the Lineedit. """
+        self.le_to_write.setText(self.LName.text())
+        self.close()
+
+    def inputbutton_clicked(self, inputvalue, inputvalue_shift):
+        """ Enters the inputvalue into the field, adds it to the string.
+        Can either have the normal or the shift value, if there is no difference both imput arguments are the same.
+        """
+        stringvalue = self.LName.text()
+        if self.shift.isChecked():
+            addvalue = inputvalue_shift
+        else:
+            addvalue = inputvalue
+        stringvalue += str(addvalue)
+        self.LName.setText(stringvalue)
+
+    def delete_clicked(self):
+        stringvalue = self.LName.text()
+        if len(stringvalue) > 0:
+            self.LName.setText(stringvalue[:-1])
+
+    def shift_clicked(self):
+        if self.shift.isChecked():
+            charchoose = self.char_list_upper
+        else:
+            charchoose = self.char_list_lower
+        for obj, char in zip(self.attribute_chars, charchoose):
+            obj.setText(str(char))
 
 def pass_setup(w, DB, c, partymode, devenvironment):
     """ Connect all the functions with the Buttons. """

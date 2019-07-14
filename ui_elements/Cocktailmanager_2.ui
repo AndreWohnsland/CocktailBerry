@@ -282,7 +282,7 @@ QLineEdit
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -1062,7 +1062,7 @@ QLineEdit
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="LEZutatRezept">
+                 <widget class="ClickableLineEdit" name="LEZutatRezept">
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
@@ -1089,7 +1089,7 @@ QLineEdit
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="LEGehaltRezept">
+                 <widget class="ClickableLineEdit" name="LEGehaltRezept">
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
@@ -1336,7 +1336,7 @@ QLineEdit
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LEpw2">
+                   <widget class="ClickableLineEdit" name="LEpw2">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1416,7 +1416,7 @@ QLineEdit
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="LECocktail">
+             <widget class="ClickableLineEdit" name="LECocktail">
               <property name="font">
                <font>
                 <pointsize>14</pointsize>
@@ -1727,7 +1727,7 @@ QLineEdit
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout_16">
                   <item>
-                   <widget class="QLineEdit" name="LER1">
+                   <widget class="ClickableLineEdit" name="LER1">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1751,7 +1751,7 @@ QLineEdit
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LER2">
+                   <widget class="ClickableLineEdit" name="LER2">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1775,7 +1775,7 @@ QLineEdit
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LER3">
+                   <widget class="ClickableLineEdit" name="LER3">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1799,7 +1799,7 @@ QLineEdit
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LER4">
+                   <widget class="ClickableLineEdit" name="LER4">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1823,7 +1823,7 @@ QLineEdit
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LER5">
+                   <widget class="ClickableLineEdit" name="LER5">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1847,7 +1847,7 @@ QLineEdit
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LER6">
+                   <widget class="ClickableLineEdit" name="LER6">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1871,7 +1871,7 @@ QLineEdit
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LER7">
+                   <widget class="ClickableLineEdit" name="LER7">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1895,7 +1895,7 @@ QLineEdit
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LER8">
+                   <widget class="ClickableLineEdit" name="LER8">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1945,7 +1945,7 @@ QLineEdit
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LEmenge_a">
+                   <widget class="ClickableLineEdit" name="LEmenge_a">
                     <property name="maximumSize">
                      <size>
                       <width>100</width>
@@ -2145,7 +2145,7 @@ QLineEdit
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="LEprozent_a">
+                   <widget class="ClickableLineEdit" name="LEprozent_a">
                     <property name="maximumSize">
                      <size>
                       <width>100</width>
@@ -2162,7 +2162,7 @@ QLineEdit
                </layout>
               </item>
               <item>
-               <widget class="QLineEdit" name="LEKommentar"/>
+               <widget class="ClickableLineEdit" name="LEKommentar"/>
               </item>
              </layout>
             </item>
@@ -2238,7 +2238,7 @@ QLineEdit
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="LEpw">
+                 <widget class="ClickableLineEdit" name="LEpw">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
@@ -3589,7 +3589,7 @@ QLineEdit
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="LECleanMachine">
+             <widget class="ClickableLineEdit" name="LECleanMachine">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -3958,6 +3958,13 @@ QLineEdit
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>clickablelineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
