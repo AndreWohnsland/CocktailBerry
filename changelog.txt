@@ -1,21 +1,29 @@
+--------------- 2019_07_15 ---------------------------------------------------------------------------------------------------------
+- Added a keyboard and its functionality to all Lineedits which need a keyboard input
+- Added the Numpad (Passwordwindow) to all Lineedits which need a numeric input
+- Adjusted UI-code for that changes
+- Added validators and maxlength for the Lineedits
+- Fixed a bug with the bottlewindow which caused a false display and entry back to the mainwindow
+- improved the module for adding and substracting buttons
+
 --------------- 2019_07_11 ---------------------------------------------------------------------------------------------------------
-- seperated the ingredient and recipe save csv into a seperate folder
-- adjusted code for that change
-- included the logging of the consumption and life time consumption into the DB when a single ingredient is spend
-- changed the save function to include the actual date in the name of the file. Also dont write the old headerline for the two saves into the file
+- Seperated the ingredient and recipe save csv into a seperate folder
+- Adjusted code for that change
+- Included the logging of the consumption and life time consumption into the DB when a single ingredient is spend
+- Changed the save function to include the actual date in the name of the file. Also dont write the old headerline for the two saves into the file
 
 --------------- 2019_07_10 ---------------------------------------------------------------------------------------------------------
 - Added Recipes
 - Added a new option with a new window to sperately choose an ingredient and an amount to get the machine to spend it.
 - Added a new UI element and adjusted several modules for the new UI element
-- fixed a bug in the maker module, which was logging the recipe amount into the DB before checking if its possible to serve it.
-- seperated the logging files, as well as the UI files from the main folder into seperate directories
+- Fixed a bug in the maker module, which was logging the recipe amount into the DB before checking if its possible to serve it.
+- Seperated the logging files, as well as the UI files from the main folder into seperate directories
 
 --------------- 2019_07_07 ---------------------------------------------------------------------------------------------------------
 - Introduced changelog
 - Switched the UI element from mainwindow to dialog for the passwordbuttos
 - Removed the Mengenlevel from Belegung to Zutaten, changed sql querries and code accordingly
 - Introduced a new window for the Belegung tab to manually change the volume levels
-- started to fill functionality for the new window, adjusted other modules, if needed
+- Started to fill functionality for the new window, adjusted other modules, if needed
 - Code improvements
 - Tiny bugfixes
