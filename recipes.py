@@ -279,7 +279,7 @@ def Rezepte_delete(w, DB, c):
             Rezepte_clear(w, DB, c, False)
             standartbox("Rezept mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Rname, CocktailID))
     else:
-        print("Falsches Passwort!")
+        standartbox("Falsches Passwort!")
     w.LEpw.setText("")
 
 
