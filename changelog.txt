@@ -5,6 +5,12 @@
 - Added validators and maxlength for the Lineedits
 - Fixed a bug with the bottlewindow which caused a false display and entry back to the mainwindow
 - improved the module for adding and substracting buttons
+- Switched the signal method for the bottles combobuttons to .activate, no more need of the global var for that
+- Removed the comment window in the maker screen and added two more labels for ingredients instead.
+- Refactored the maker fetch code for the comment: now after a blank line a header follows and then the additional ingredients
+- Renamed savehelper into helperfunctions to add further functions to this module
+- Created a new function in helperfunction that replaces the other different functions for the logic of the plus and minus buttons 
+- Tiny bugfixes
 
 --------------- 2019_07_11 ---------------------------------------------------------------------------------------------------------
 - Seperated the ingredient and recipe save csv into a seperate folder
