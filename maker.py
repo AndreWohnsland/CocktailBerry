@@ -83,24 +83,17 @@ def Maker_Rezepte_click(w, DB, c):
         cocktailname = w.LWMaker.currentItem().text()
         w.LAlkoholname.setText(cocktailname)
         # look up the comment
-        c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
-                (cocktailname,))
-        Zspeicher = c.fetchone()[0]
+        Zspeicher = c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?", (cocktailname,)).fetchone()[0]
         # gets the amount out of the comment
         if Zspeicher is not None:
             if len(Zspeicher) >= 1:
-                w.LKommentar.setText("Hinzufügen:  " + str(Zspeicher))
                 mysplitstring = re.split(', | |,', Zspeicher) 
                 for allwords in mysplitstring:
                     try:
                         zusatzmenge += int(allwords)
                     except:
                         pass
-            else:
-                w.LKommentar.setText("")
-        c.execute("SELECT Menge FROM Rezepte WHERE Name = ?",
-                (cocktailname,))
-        Zspeicher = c.fetchone()[0]
+        Zspeicher =  c.execute("SELECT Menge FROM Rezepte WHERE Name = ?",(cocktailname,)).fetchone()[0]
         w.LMenge.setText("Menge: " + str(int(Zspeicher) + zusatzmenge) + " ml")
         #Zspeicher = c.execute("SELECT Zusammen.Zutaten_ID, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID WHERE Rezepte.Name = ?",(cocktailname,))
         Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (cocktailname,))
@@ -110,11 +103,37 @@ def Maker_Rezepte_click(w, DB, c):
         for row in Zspeicher:
             LVZutat.append(row[0])
             LVMenge.append(row[1])
+        # generates the additional incredients to add.
+        # therefore fills in a blank line and afterwards a header
+        Zspeicher = c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?", (cocktailname,)).fetchone()[0]
+        if Zspeicher is not None and len(Zspeicher)>0:
+            LVZutat.extend(["", "Selbst hinzufügen:"])
+            LVMenge.extend(["", ""])
+            # gets each ingredient comment and then split each line to search the amount and the Name of the ingredient
+            commentsplit = re.split(', |,', Zspeicher)
+            for row in commentsplit:
+                single_words = re.split(' ', row)
+                sum_string = ""
+                for word in single_words:
+                    try:
+                        LVMenge.append(int(word))
+                    except:
+                        # we dont want the 'ml' in our string
+                        # if the ingredient consists of more than one word, adds a blank between them
+                        if word != 'ml' and sum_string == "":
+                            sum_string += word
+                        elif word != 'ml':
+                            sum_string += " " + word
+                LVZutat.append(sum_string)
+        # loops through the list and give the string to the labels, also give the "Hinzufügen" another color for better visualibility
         for row in range(0, len(LVZutat)):
             LZname = getattr(w, "LZutat" + str(row + 1))
             LZname.setText(str(LVZutat[row]) + " ")
             LMZname = getattr(w, "LMZutat" + str(row + 1))
-            LMZname.setText(" " + str(LVMenge[row]) + " ml")
+            if LVMenge[row] != "":
+                LMZname.setText(" " + str(LVMenge[row]) + " ml")
+            if LVZutat[row] == "Selbst hinzufügen:":
+                LZname.setStyleSheet('color: rgb(170, 170, 170)')
 
 
 @logerror
@@ -123,12 +142,12 @@ def Maker_List_null(w, DB, c):
     w.LAlkoholgehalt.setText("")
     w.LAlkoholname.setText("")
     w.LMenge.setText("")
-    w.LKommentar.setText("")
-    for check_v in range(1, 9):
+    for check_v in range(1, 11):
         LZname = getattr(w, "LZutat" + str(check_v))
         LZname.setText("")
         LMZname = getattr(w, "LMZutat" + str(check_v))
         LMZname.setText("")
+        LZname.setStyleSheet('color: rgb(0, 123, 255)')
 
 
 @logfunction
@@ -316,26 +335,6 @@ def abbrechen_R():
     """ Interrupts the cocktail preparation. """
     globals.loopcheck = False
     print("Rezept wird abgebrochen!")
-
-
-@logerror
-def Maker_pm(w, DB, c, operator):
-    """ Increases or decreases the Custom set amount. \n
-    The Minimum/Maximum ist 100/400. \n
-    ------------------------------------------------------------
-    As operater can be used: \n
-    "+":    increases the value by 25 \n
-    "-":    decreases the value by 25
-    """
-    minimal = 100
-    maximal = 400
-    dm = 25
-    amount = int(w.LCustomMenge.text())
-    if operator == "+" and amount < maximal:
-        amount += dm
-    if operator == "-" and amount > minimal:
-        amount -= dm
-    w.LCustomMenge.setText(str(amount))
 
 
 @logerror
