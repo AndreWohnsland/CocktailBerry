@@ -14,6 +14,34 @@ from msgboxgenerate import standartbox
 from loggerconfig import logerror, logfunction
 
 
+def plusminus(label, operator, minimal=0, maximal=1000, dm=10, DB=None, c=None):
+    """ A helperfunction for the plus and minusbottons. Needs at least the label for the value and the operator.
+    Limits the process to a minimum and maximum value. A constant stepsize dm can be set.\n
+    As operater can be used: \n
+    "+":    increases the value by dm\n
+    "-":    decreases the value by dm
+    """
+    # sets the conditions that the value can not exceed the min/max value by clicking
+    try:
+        value_ = int(label.text())
+    except ValueError:
+        if operator == "+":
+            value_ = maximal
+        elif operator == "-":
+            value_ = minimal
+    # checks the operator and raises a error if its not '+' or '-'
+    if operator == "+":
+        value_ += dm
+    elif operator == "-":
+        value_ -= dm
+    else:
+        raise ValueError('operator is neither plus nor minus!')
+    # sets the value at a multiple of dm and limits it to min/max value
+    value_ = (value_//dm)*dm
+    value_ = max(minimal, value_)
+    value_ = min(maximal, value_)
+    label.setText(str(value_))
+
 @logerror
 def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, searchstring2, where_=False):
     """ Saves all the amounts of the ingredients/recipes to a csv. 
