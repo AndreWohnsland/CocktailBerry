@@ -5,6 +5,7 @@ import sys
 import sqlite3
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 import string
@@ -34,22 +35,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """ Init. Many of the button and List connects are in pass_setup. """
         super(MainScreen, self).__init__(parent)
         self.setupUi(self)
-        # the connection method here is defined in a seperate file "clickablelineedit.py"
-        # even if it belongs to the UI if its moved there, there will be an import error.
-        # Till this problem is resolved, this file will stay in the main directory
-        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw))
-        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2))
-        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine))
-        self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
-        self.LEGehaltRezept.clicked.connect(lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext="Alkoholgehalt eingeben!"))
-        self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept))
-        self.LEmenge_a.clicked.connect(lambda: self.passwordwindow(self.LEmenge_a, x_pos=400, y_pos=50, headertext="Zusatzmenge eingeben!"))
-        self.LEprozent_a.clicked.connect(lambda: self.passwordwindow(self.LEprozent_a, x_pos=400, y_pos=50, headertext="Alkoholgehalt Zusatzmenge eingeben!"))
-        self.LEKommentar.clicked.connect(lambda: self.keyboard(self.LEKommentar))
-        # connects all the Lineedits from the Recipe amount
-        LER_obj = [getattr(self, "LER" + str(x)) for x in range(1,9)]
-        for obj in LER_obj:
-            obj.clicked.connect(lambda o=obj: self.passwordwindow(le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!"))
         # as long as its not devenvironment (usually touchscreen) hide the cursor
         if not devenvironment:
             self.setCursor(Qt.BlankCursor)
@@ -58,6 +43,34 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if DB is not None:
             self.DB = sqlite3.connect(DB)
             self.c = self.DB.cursor()
+        # the connection method here is defined in a seperate file "clickablelineedit.py"
+        # even if it belongs to the UI if its moved there, there will be an import error.
+        # Till this problem is resolved, this file will stay in the main directory
+        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw))
+        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2))
+        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine))
+        self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
+        self.LEGehaltRezept.clicked.connect(lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext="Alkoholgehalt eingeben!"))
+        self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept, max_char_len=20))
+        self.LEmenge_a.clicked.connect(lambda: self.passwordwindow(self.LEmenge_a, x_pos=400, y_pos=50, headertext="Zusatzmenge eingeben!"))
+        self.LEprozent_a.clicked.connect(lambda: self.passwordwindow(self.LEprozent_a, x_pos=400, y_pos=50, headertext="Alkoholgehalt Zusatzmenge eingeben!"))
+        self.LEKommentar.clicked.connect(lambda: self.keyboard(self.LEKommentar, max_char_len=100))
+        # connects all the Lineedits from the Recipe amount and gives them the validator
+        LER_obj = [getattr(self, "LER" + str(x)) for x in range(1,9)]
+        for obj in LER_obj:
+            obj.clicked.connect(lambda o=obj: self.passwordwindow(le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!"))
+            obj.setValidator(QIntValidator(0,300))
+            obj.setMaxLength(3)
+        # Setting up Validators for all the the fields (length and/or Types):
+        self.LEGehaltRezept.setValidator(QIntValidator(0,99))
+        self.LEGehaltRezept.setMaxLength(2)
+        self.LEZutatRezept.setMaxLength(20)
+        self.LEFlaschenvolumen.setValidator(QIntValidator(100,2000))
+        self.LEmenge_a.setValidator(QIntValidator(0,300))
+        self.LEmenge_a.setMaxLength(3)
+        self.LEprozent_a.setValidator(QIntValidator(0,99))
+        self.LEprozent_a.setMaxLength(2)
+        self.LECocktail.setMaxLength(30)
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext=None):
         """ Opens up the PasswordScreen/ a Numpad to enter Numeric Values (no commas!). 
@@ -70,12 +83,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             self.pww.setWindowTitle(headertext)
         self.pww.show()
     
-    def keyboard(self, le_to_write, headertext=None):
+    def keyboard(self, le_to_write, headertext=None, max_char_len=30):
         """ Opens up the Keyboard to seperate Enter a Name or similar.
         Needs a Lineedit where the text is put in. In addition, the header of the window can be changed. 
         This is only relevant if you dont show the window in Fullscreen!
         """
-        self.kbw = Keyboardwidget(self, le_to_write=le_to_write)
+        self.kbw = Keyboardwidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
         if headertext is not None:
             self.kbw.setWindowTitle(headertext)
         self.kbw.showFullScreen()
@@ -170,11 +183,9 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
         super(Bottlewindow, self).__init__(parent)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
-
         # connects all the buttons
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
-
         # sets cursor visualibility and assigns the names to the labels
         self.ms = parent
         if not self.ms.devenvironment:
@@ -185,7 +196,6 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
             labelobj.setText('    ' + CBBname.currentText())
         self.DB = self.ms.DB
         self.c = self.ms.c
-
         # get all the DB values and assign the nececary to the level labels
         # note: since there can be blank bottles (id=0 so no match) this needs to be catched as well (no selection from DB)
         self.IDlist = []
@@ -201,7 +211,6 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
                 LName.setText("0")
                 self.IDlist.append(0)
                 self.maxvolume.append(0)
-
         # creates lists of the objects and assings functions later through a loop
         myplus = [getattr(self, "PBMplus" + str(x)) for x in range(1,11)]
         myminus = [getattr(self, "PBMminus" + str(x)) for x in range(1,11)]
@@ -363,13 +372,12 @@ class Getingredientwindow(QDialog, Ui_addingredient):
 
 class Keyboardwidget(QDialog, Ui_Keyboard):
     """ Creates a Keyboard where the user can enter names or similar strings to Lineedits. """
-    def __init__(self, parent, le_to_write=None):
+    def __init__(self, parent, le_to_write=None, max_char_len=30):
         super(Keyboardwidget, self).__init__(parent)
         self.setupUi(self)
         self.ms = parent
         self.le_to_write = le_to_write
         self.LName.setText(self.le_to_write.text())
-
         # populating all the buttons
         self.backButton.clicked.connect(self.backbutton_clicked)
         self.clear.clicked.connect(self.clearbutton_clicked)
@@ -377,7 +385,6 @@ class Keyboardwidget(QDialog, Ui_Keyboard):
         self.space.clicked.connect(lambda: self.inputbutton_clicked(" ", " "))
         self.delButton.clicked.connect(self.delete_clicked)
         self.shift.clicked.connect(self.shift_clicked)
-
         # generating the lists to populate all remaining buttons via iteration
         self.number_list = [x for x in range(10)]
         self.char_list_lower = [x for x in string.ascii_lowercase]
@@ -388,6 +395,8 @@ class Keyboardwidget(QDialog, Ui_Keyboard):
             obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s))
         for obj, char, char2 in zip(self.attribute_numbers, self.number_list, self.number_list):
             obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s))
+        # restricting the Lineedit to a set up Char leng
+        self.LName.setMaxLength(max_char_len)
 
     def backbutton_clicked(self):
         """ Closes the Window without any further action. """

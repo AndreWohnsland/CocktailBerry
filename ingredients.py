@@ -197,7 +197,7 @@ def Zutaten_Zutaten_click(w, DB, c):
 
 @logerror
 def Zutaten_Flvolumen_pm(w, DB, c, operator):
-    """ Increase or decrease the Bottlevolume by a given amount (25). \n
+    """ Increase or decrease the Bottlevolume by a given amount (50). \n
     The value cannot exceed the minimal or maximal Volume (100/1500).
     """
     minimalvolumen = 100
@@ -206,12 +206,18 @@ def Zutaten_Flvolumen_pm(w, DB, c, operator):
     # sets the conditions that the value can not exceed the min/max value by clicking
     try:
         value_ = int(w.LEFlaschenvolumen.text())
-        if operator == "+" and value_ < maximalvolumen:
-            value_ += dvol
-        elif operator == "-" and value_ > minimalvolumen:
-            value_ -= dvol
     except ValueError:
-        value_ = minimalvolumen
+        if operator == "+":
+            value_ = maximalvolumen
+        elif operator == "-":
+            value_ = minimalvolumen
+    if operator == "+":
+        value_ += dvol
+    elif operator == "-":
+        value_ -= dvol
+    value_ = (value_//dvol)*dvol
+    value_ = max(minimalvolumen, value_)
+    value_ = min(maximalvolumen, value_)
     w.LEFlaschenvolumen.setText(str(value_))
 
 
