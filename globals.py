@@ -13,7 +13,6 @@ def initialize():
     global pumpvolume
     global decoactivate
     global olding
-    global supressbox
 
     # Only checkvariables for code and multimodule Communication
     startcheck = False
@@ -33,5 +32,3 @@ def initialize():
     pumpvolume = [30, 30, 25, 30, 30, 30, 25, 30, 30, 23, 30, 30]
     # the global to get the old ingredients
     olding = []
-    # global to supress the combobox change
-    supressbox = False
