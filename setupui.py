@@ -15,7 +15,7 @@ from maker import *
 from ingredients import *
 from recipes import *
 from bottles import *
-from savehelper import save_quant
+from helperfunctions import save_quant, plusminus
 from bottles import Belegung_progressbar
 from msgboxgenerate import standartbox
 
@@ -216,8 +216,8 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
         myminus = [getattr(self, "PBMminus" + str(x)) for x in range(1,11)]
         mylabel = [getattr(self, "LAmount" + str(x)) for x in range(1,11)]
         for plus, minus, field, vol in zip(myplus, myminus, mylabel, self.maxvolume):
-            plus.clicked.connect(lambda _, l=field, b=vol: self.plusminus(label=l, operator='+', bsize=b))
-            minus.clicked.connect(lambda _, l=field, b=vol: self.plusminus(label=l, operator='-', bsize=b))
+            plus.clicked.connect(lambda _, l=field, b=vol: plusminus(label=l, operator='+', minimal=50, maximal=b, dm=25))
+            minus.clicked.connect(lambda _, l=field, b=vol: plusminus(label=l, operator='-', minimal=50, maximal=b, dm=25))
         
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """
@@ -232,27 +232,6 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
         self.DB.commit()
         Belegung_progressbar(self.ms, self.DB, self.c)
         self.close()
-    
-    def plusminus(self, label, operator, bsize):
-        """ Changes the value on a given amount. Operator uses '+' or '-'.
-        Limits the value to a maximum and minimum Value as well as to the current Bottlesize
-        Also, always makes the value of the factor 25
-        """
-        minimal = 50
-        maximal = 1500
-        dm = 25
-        amount = int(label.text())
-        if operator == "+":
-            amount += dm
-        elif operator == "-":
-            amount -= dm
-        else:
-            raise ValueError('operator is neither plus nor minus!')
-        amount = (amount//dm)*dm
-        # limits the value to min/max value, assigns it
-        amount = max(minimal, amount)
-        amount = min(maximal, amount, bsize)
-        label.setText(str(amount))
 
 
 class Getingredientwindow(QDialog, Ui_addingredient):
@@ -277,8 +256,8 @@ class Getingredientwindow(QDialog, Ui_addingredient):
         if not self.ms.devenvironment:
             self.setCursor(Qt.BlankCursor)
         # Connect all the buttons
-        self.PBplus.clicked.connect(lambda: self.plusminus('+'))
-        self.PBminus.clicked.connect(lambda: self.plusminus('-'))
+        self.PBplus.clicked.connect(lambda: plusminus(self.LAmount, '+', 20, 100, 10))
+        self.PBminus.clicked.connect(lambda: plusminus(self.LAmount, '-', 20, 100, 10))
         self.PBAusgeben.clicked.connect(self.ausgeben_clicked)
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         # Get the DB and fill Combobox
@@ -287,25 +266,6 @@ class Getingredientwindow(QDialog, Ui_addingredient):
         bottles = self.c.execute("SELECT Zutaten.Name FROM Zutaten INNER JOIN Belegung ON Zutaten.ID = Belegung.ID")
         for bottle in bottles:
             self.CBingredient.addItem(bottle[0])
-
-    def plusminus(self, operator):
-        """ Changes the value on a given amount. Operator uses '+' or '-'.
-        Limits the value to a maximum and minimum Value.
-        """
-        minimal = 20
-        maximal = 100
-        dm = 10
-        amount = int(self.LAmount.text())
-        if operator == "+":
-            amount += dm
-        elif operator == "-":
-            amount -= dm
-        else:
-            raise ValueError('operator is neither plus nor minus!')
-        # limits the value to min/max value, assigns it
-        amount = max(minimal, amount)
-        amount = min(maximal, amount)
-        self.LAmount.setText(str(amount))
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """
@@ -453,10 +413,10 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, False, devenvironment))
     w.PBCleanMachine.clicked.connect(lambda: CleanMachine(w, DB, c, devenvironment))
     w.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(w, DB, c))
-    w.PBZplus.clicked.connect(lambda: Zutaten_Flvolumen_pm(w, DB, c, "+"))
-    w.PBZminus.clicked.connect(lambda: Zutaten_Flvolumen_pm(w, DB, c, "-"))
-    w.PBMplus.clicked.connect(lambda: Maker_pm(w, DB, c, "+"))
-    w.PBMminus.clicked.connect(lambda: Maker_pm(w, DB, c, "-"))
+    w.PBZplus.clicked.connect(lambda: plusminus(w.LEFlaschenvolumen, "+", 500, 1500, 50))
+    w.PBZminus.clicked.connect(lambda: plusminus(w.LEFlaschenvolumen, "-", 500, 1500, 50))
+    w.PBMplus.clicked.connect(lambda: plusminus(w.LCustomMenge, "+", 100, 400, 25))
+    w.PBMminus.clicked.connect(lambda: plusminus(w.LCustomMenge, "-", 100, 400, 25))
     w.PBSetnull.clicked.connect(lambda: Maker_nullProB(w, DB, c))
     w.PBZnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw2", 'Zutaten_export.csv', "Zutaten", "Verbrauch", "Verbrauchsmenge"))
     w.PBRnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw", 'Rezepte_export.csv', "Rezepte", "Anzahl", "Anzahl_Lifetime", True))
@@ -499,13 +459,17 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     Belegung_progressbar(w, DB, c)
 
     # Connects additional Functionality to the Comboboxes
-    w.CBB1.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB2.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB3.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB4.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB5.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB6.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB7.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB8.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB9.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB10.currentIndexChanged.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # Information: there seems to be an .activate method which does exactly the same
+    # but only gets activated when the user input changes the index. Some testing is required.
+    # Switched to the activate method. removed the global var therefore. (15.07.2019)
+    # Seems to work fine, still, needs to track it.
+    w.CBB1.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB2.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB3.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB4.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB5.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB6.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB7.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB8.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB9.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    w.CBB10.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
