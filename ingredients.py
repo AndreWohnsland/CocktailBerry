@@ -114,9 +114,9 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
                 if index >= 0:
                     CBBname.setItemText(index, ingredientname)
         if newingredient:
-            standartbox("Zutat eingetragen")
+            standartbox("Zutat mit dem Namen: <{}> eingetragen".format(ingredientname))
         else:
-            standartbox("Zutat mit dem Namen: <{}> under <{}> aktualisiert".format(altername, ingredientname))
+            standartbox("Zutat mit dem Namen: <{}> unter <{}> aktualisiert".format(altername, ingredientname))
 
 
 @logerror
@@ -159,9 +159,7 @@ def Zutaten_delete(w, DB, c):
                         CBBname = getattr(w, "CBB" + str(box))
                         index = CBBname.findText(Zname, Qt.MatchFixedString)
                         if index >= 0:
-                            globals.supressbox = True
                             CBBname.removeItem(index)
-                            globals.supressbox = False
                     Zutaten_clear(w, DB, c)
                     Zutaten_a(w, DB, c)
                     standartbox("Zutat mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(ZID, Zname))
@@ -193,32 +191,6 @@ def Zutaten_Zutaten_click(w, DB, c):
             w.LEGehaltRezept.setText(str(row[0]))
             w.LEFlaschenvolumen.setText(str(row[1]))
         w.LEZutatRezept.setText(w.LWZutaten.currentItem().text())
-
-
-@logerror
-def Zutaten_Flvolumen_pm(w, DB, c, operator):
-    """ Increase or decrease the Bottlevolume by a given amount (50). \n
-    The value cannot exceed the minimal or maximal Volume (100/1500).
-    """
-    minimalvolumen = 100
-    maximalvolumen = 1500
-    dvol = 50
-    # sets the conditions that the value can not exceed the min/max value by clicking
-    try:
-        value_ = int(w.LEFlaschenvolumen.text())
-    except ValueError:
-        if operator == "+":
-            value_ = maximalvolumen
-        elif operator == "-":
-            value_ = minimalvolumen
-    if operator == "+":
-        value_ += dvol
-    elif operator == "-":
-        value_ -= dvol
-    value_ = (value_//dvol)*dvol
-    value_ = max(minimalvolumen, value_)
-    value_ = min(maximalvolumen, value_)
-    w.LEFlaschenvolumen.setText(str(value_))
 
 
 @logerror

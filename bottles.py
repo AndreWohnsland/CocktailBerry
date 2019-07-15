@@ -44,46 +44,43 @@ def refresh_bottle_cb(w, DB, c):
     since the index may change itself with the deletion.
     """
     # Creating a list of the new and old bottles used
-    if not globals.supressbox:
-        globals.supressbox = True
-        old_order = globals.olding
-        new_order = []
-        for i in range(1,11):
-            CBBname = getattr(w, "CBB" + str(i))
-            if CBBname.currentText() != 0:
-                new_order.append(CBBname.currentText())
-            else:
-                new_order.append("")
-        # getting the difference between those two lists and assign new/old value
-        new_blist = list(set(new_order) - set(old_order))
-        old_blist = list(set(old_order) - set(new_order))
-        # checks if the list only contains one element
-        # extrtacts the element out of the list
-        if len(new_blist)>1 or len(old_blist)>1:
-            raise ValueError('The List should never contain two or more Elements!')
+    old_order = globals.olding
+    new_order = []
+    for i in range(1,11):
+        CBBname = getattr(w, "CBB" + str(i))
+        if CBBname.currentText() != 0:
+            new_order.append(CBBname.currentText())
         else:
-            if len(new_blist)==0:
-                new_bottle = ""
-            else:
-                new_bottle = new_blist[0]
-            if len(old_blist)==0:
-                old_bottle = ""
-            else:
-                old_bottle = old_blist[0]
-        # adds or substracts the text to the comboboxes (except the one which was changed)
-        for i in range(1,11):
-            CBBname = getattr(w, "CBB" + str(i))
-            if (old_bottle != "") and (old_bottle != old_order[i-1]):
-                CBBname.addItem(old_bottle)
-            if (new_bottle != "") and (new_bottle != new_order[i-1]):
-                index = CBBname.findText(new_bottle, Qt.MatchFixedString)
-                if index >= 0:
-                    CBBname.removeItem(index)
-            CBBname.model().sort(0)
-        # the new is now the old for the next step:
-        Belegung_eintragen(w, DB, c)
-        globals.olding = new_order
-        globals.supressbox = False
+            new_order.append("")
+    # getting the difference between those two lists and assign new/old value
+    new_blist = list(set(new_order) - set(old_order))
+    old_blist = list(set(old_order) - set(new_order))
+    # checks if the list only contains one element
+    # extrtacts the element out of the list
+    if len(new_blist)>1 or len(old_blist)>1:
+        raise ValueError('The List should never contain two or more Elements!')
+    else:
+        if len(new_blist)==0:
+            new_bottle = ""
+        else:
+            new_bottle = new_blist[0]
+        if len(old_blist)==0:
+            old_bottle = ""
+        else:
+            old_bottle = old_blist[0]
+    # adds or substracts the text to the comboboxes (except the one which was changed)
+    for i in range(1,11):
+        CBBname = getattr(w, "CBB" + str(i))
+        if (old_bottle != "") and (old_bottle != old_order[i-1]):
+            CBBname.addItem(old_bottle)
+        if (new_bottle != "") and (new_bottle != new_order[i-1]):
+            index = CBBname.findText(new_bottle, Qt.MatchFixedString)
+            if index >= 0:
+                CBBname.removeItem(index)
+        CBBname.model().sort(0)
+    # the new is now the old for the next step:
+    Belegung_eintragen(w, DB, c)
+    globals.olding = new_order
 
 
 @logerror
