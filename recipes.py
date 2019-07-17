@@ -12,6 +12,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
+from collections import Counter
 
 import globals
 from maker import Rezepte_a_M, Maker_List_null
@@ -74,14 +75,11 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             if CBRname.currentText() != "":
                 Zutaten_V.append(CBRname.currentText())
                 Mengen_V.append(int(LERname.text()))
-        for Flaschen_i in range(0, len(Zutaten_V)):
-            for Flaschen_j in range(0, len(Zutaten_V)):
-                if ((Zutaten_V[Flaschen_i] == Zutaten_V[Flaschen_j]) and (Flaschen_i != Flaschen_j)):
-                    standartbox("Eine der Zutaten:\n<{}>\nwurde doppelt verwendet!".format(Zutaten_V[Flaschen_i]))
-                    val_check = 1
-                    break
-            if val_check == 1:
-                break
+        counted_ing = Counter(Zutaten_V)
+        double_ing = [x[0] for x in counted_ing.items() if x[1] > 1]
+        if len(double_ing) != 0:
+            val_check = 1
+            standartbox("Eine der Zutaten:\n<{}>\nwurde doppelt verwendet!".format(double_ing[0]))
     # checks if there is at least one ingredient, else this would make no sense
     if val_check == 0:
         if len(Zutaten_V) < 1:

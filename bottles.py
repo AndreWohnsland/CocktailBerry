@@ -11,6 +11,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
+from collections import Counter
 
 import globals
 from msgboxgenerate import standartbox
@@ -143,20 +144,19 @@ def Belegung_eintragen(w, DB, c, msgcall=False):
         if (CBBname.currentText() != "" and CBBname.currentText() != 0):
             CBB_List.append(CBBname.currentText())
     # Checks if any ingredient is used twice, if so, dbl_check gets activated 
-    for Flaschen_i in range(0, len(CBB_List)):
-        for Flaschen_j in range(0, len(CBB_List)):
-            if ((CBB_List[Flaschen_i] == CBB_List[Flaschen_j]) and (Flaschen_i != Flaschen_j)):
-                dbl_check = 1
-                standartbox("Eine der Zutaten wurde doppelt zugewiesen!")
-                break
-        if dbl_check == 1:
-            break
+    # due to refactoring of the CB, this should never happen, since the CB only displays ingredients which are not used
+    counted_bottles = Counter(CBB_List)
+    double_bottles = [x[0] for x in counted_bottles.items() if x[1] > 1]
+    if len(double_bottles) != 0:
+        dbl_check = 1
+        standartbox("Eine der Zutaten wurde doppelt zugewiesen!")
     # If no error, insert values into DB
     if dbl_check == 0:
         for Flaschen_C in range(1, 11):
             Speicher_ID = 0
             CBBname = getattr(w, "CBB" + str(Flaschen_C))
             ingredientname = CBBname.currentText()
+            # if no ID is pulled (no bottle there), the buffer is none and the id stays 0
             buffer = c.execute(
                 "SELECT ID FROM Zutaten WHERE Name = ?", (ingredientname,))
             for buf in buffer:
