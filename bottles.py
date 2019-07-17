@@ -113,7 +113,7 @@ def newCB_Bottles(w, DB,c):
     # generates a list of all Combobox entries
     entrylist = globals.olding
     inglist = []
-    Zspeicher = c.execute("SELECT NAME FROM Zutaten")
+    Zspeicher = c.execute("SELECT NAME FROM Zutaten WHERE Hand = 0")
     for ing in Zspeicher:
         inglist.append(str(ing[0]))
     # generates a list for each CB which values have to be assigned

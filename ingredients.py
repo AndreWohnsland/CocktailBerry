@@ -51,8 +51,14 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
     elif not newingredient and w.LWZutaten.selectedItems():
         altername = w.LWZutaten.currentItem().text()
         Zspeicher = c.execute(
-            "SELECT ID FROM Zutaten WHERE Name = ?", (altername,)).fetchone()[0]
-        ZID = int(Zspeicher)
+            "SELECT ID, Hand FROM Zutaten WHERE Name = ?", (altername,)).fetchone()
+        ZID = int(Zspeicher[0])
+        old_onlyhand = int(Zspeicher[1])
+    # check if the ingredient is not assigned in the Bottle order if the value is set to handadd
+    if Zutatentest == 0 and w.CHBHand.isChecked():
+        Zutatentest = c.execute("SELECT COUNT(*) FROM Belegung WHERE ID=?",(ZID,)).fetchone()[0]
+        if Zutatentest != 0:
+            standartbox("DIe Zutat ist noch in der Belegung registriert und kann somit nicht auf selbst hinzufügen gesetzt werden!")
     # check if all Fields are filled
     if Zutatentest == 0:
         if (ingredientname == "") or (w.LEGehaltRezept.text() == "") or (w.LEFlaschenvolumen.text() == ""):
@@ -73,15 +79,21 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
                 "Alkoholgehalt und Flaschenvolumen muss eine Zahl sein!")
     # if everything is okay, insert or update the db, and the List widget
     if Zutatentest == 0:
+        # decides if the ingredient is normal or hand add only
+        if w.CHBHand.isChecked():
+            onlyhand = 1
+        else:
+            onlyhand = 0
         if newingredient:
-            c.execute("INSERT OR IGNORE INTO Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel) VALUES (?,?,?,0,0,0)", (
-                ingredientname, conc, vol))        
+            c.execute("INSERT OR IGNORE INTO Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel,Hand) VALUES (?,?,?,0,0,0,?)", (
+                ingredientname, conc, vol, onlyhand))        
         else:
             vol_old = c.execute("SELECT Mengenlevel FROM Zutaten WHERE ID = ?", (ZID,)).fetchone()[0]
+            # if the new volume is less than the old level, set the old level accordingly
             if int(vol_old) > vol:
                 vol_old = vol
-            c.execute("UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ?, Mengenlevel = ? WHERE ID = ?",
-                (ingredientname, conc, vol, vol_old, ZID))
+            c.execute("UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ?, Mengenlevel = ?, Hand = ? WHERE ID = ?",
+                (ingredientname, conc, vol, vol_old, onlyhand, ZID))
             # Updates the level of the bottles and their labels
             Belegung_progressbar(w, DB, c)
             Belegung_a(w, DB, c)
@@ -89,6 +101,10 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
         # old ingredients need to be deleted and readded
         # also when you delete an item, the selection jumps to the next item
         # to prevent strange bugs deselect all items
+        # only enters the ingredient if its not hand add only
+        # The old ingredient need to be removed, if it was not handadd before
+        # this can happen if the user changes the ingredient and uncheck the Checkbox
+        # Still if delfind dont find the name (was handadd before), the code will still work!
         if not newingredient:
             delfind = w.LWZutaten.findItems(altername, Qt.MatchExactly)
             if len(delfind) > 0:
@@ -98,21 +114,28 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
                 w.LWZutaten.item(i).setSelected(False)
         w.LWZutaten.addItem(ingredientname)
         # Deletes the used values
+        w.CHBHand.setChecked(False)
         w.LEZutatRezept.clear()
         w.LEGehaltRezept.clear()
         w.LEFlaschenvolumen.clear()
-        ZutatenCB_Rezepte(w, DB, c)
+        # ZutatenCB_Rezepte(w, DB, c)
         # if its a new ingredient, adds it to the boxes and sorts them
         # if its a changed one, update the values
         for box in range(1, 11):
             CBBname = getattr(w, "CBB" + str(box))
-            if newingredient:
-                CBBname.addItem(ingredientname)
-                CBBname.model().sort(0)
-            else:
-                index = CBBname.findText(altername, Qt.MatchFixedString)
-                if index >= 0:
-                    CBBname.setItemText(index, ingredientname)
+            if box < 9:
+                CBRname = getattr(w, "CBR" + str(box))
+            for obj in [CBBname, CBRname]:
+                if (newingredient and onlyhand == 0) or (old_onlyhand == 1 and onlyhand == 0):
+                    obj.addItem(ingredientname)
+                    obj.model().sort(0)
+                elif not newingredient:
+                    index = obj.findText(altername, Qt.MatchFixedString)
+                    if index >= 0 and onlyhand == 0:
+                        obj.setItemText(index, ingredientname)
+                        obj.model().sort(0)
+                    elif index >= 0 and onlyhand == 1:
+                        obj.removeItem(index)
         if newingredient:
             standartbox("Zutat mit dem Namen: <{}> eingetragen".format(ingredientname))
         else:
@@ -185,12 +208,17 @@ def Zutaten_delete(w, DB, c):
 def Zutaten_Zutaten_click(w, DB, c):
     """ Search the DB entry for the ingredient and displays them """
     if w.LWZutaten.selectedItems():
+        ingredientname = w.LWZutaten.currentItem().text()
         Zspeicher = c.execute(
-            "SELECT Alkoholgehalt, Flaschenvolumen FROM Zutaten WHERE Name = ?", (w.LWZutaten.currentItem().text(),))
+            "SELECT Alkoholgehalt, Flaschenvolumen, Hand FROM Zutaten WHERE Name = ?", (ingredientname,))
         for row in Zspeicher:
             w.LEGehaltRezept.setText(str(row[0]))
             w.LEFlaschenvolumen.setText(str(row[1]))
-        w.LEZutatRezept.setText(w.LWZutaten.currentItem().text())
+            if row[2] == 1:
+                w.CHBHand.setChecked(True)
+            else:
+                w.CHBHand.setChecked(False)
+        w.LEZutatRezept.setText(ingredientname)
 
 
 @logerror
@@ -200,3 +228,4 @@ def Zutaten_clear(w, DB, c):
     w.LEZutatRezept.clear()
     w.LEGehaltRezept.clear()
     w.LEFlaschenvolumen.clear()
+    w.CHBHand.setChecked(False)

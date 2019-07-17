@@ -24,7 +24,7 @@ from loggerconfig import logfunction, logerror
 def ZutatenCB_Rezepte(w, DB, c):
     """ Asigns all ingredients to the Comboboxes in the recipe tab """
     for box in range(1, 9):
-        Zspeicher = c.execute("SELECT NAME FROM Zutaten")
+        Zspeicher = c.execute("SELECT NAME FROM Zutaten WHERE Hand = 0")
         CBRname = getattr(w, "CBR" + str(box))
         CBRname.clear()
         CBRname.addItem("")
