@@ -18,7 +18,6 @@ class Ui_addingredient(object):
 "{\n"
 "    color: rgb(0, 123, 255);    \n"
 "    background-color: rgb(0, 0, 0);\n"
-"\n"
 "}\n"
 "\n"
 "QPushButton {\n"
@@ -41,6 +40,22 @@ class Ui_addingredient(object):
 "\n"
 "#LAmount{\n"
 "    color: rgb(239, 151, 0);\n"
+"}\n"
+"\n"
+"QComboBox {\n"
+"    color: rgb(0, 123, 255);    \n"
+"    border: 1px solid  rgb(97, 97, 97);\n"
+"    border-top-left-radius: 7px;\n"
+"    border-bottom-left-radius: 7px;\n"
+"    padding: 1px 18px 1px 5px;\n"
+"    min-width: 6em;\n"
+"}\n"
+"\n"
+"QComboBox:on { /* shift the text when the popup opens */\n"
+"    border: 1px solid  rgb(97, 97, 97);\n"
+"    border-top-left-radius: 7px;\n"
+"    border-bottom-left-radius: 0px;\n"
+"    color: rgb(239, 151, 0);\n"
 "}")
         addingredient.setModal(True)
         self.verticalLayout = QtWidgets.QVBoxLayout(addingredient)
@@ -52,7 +67,7 @@ class Ui_addingredient(object):
         font.setPointSize(18)
         self.CBingredient.setFont(font)
         self.CBingredient.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-        self.CBingredient.setMaxVisibleItems(11)
+        self.CBingredient.setMaxVisibleItems(10)
         self.CBingredient.setObjectName("CBingredient")
         self.verticalLayout.addWidget(self.CBingredient)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
