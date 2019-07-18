@@ -36,6 +36,7 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
     # print("Flaschenvolumen ist: ", w.LEFlaschenvolumen.text())
     # print("Neues Rezept: {}".format(newingredient))
     Zutatentest = 0
+    old_onlyhand = 0
     ingredientname = w.LEZutatRezept.text()
     # counts the entries in the DB with the name and checks if its already there
     if newingredient:
@@ -55,7 +56,7 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
         ZID = int(Zspeicher[0])
         old_onlyhand = int(Zspeicher[1])
     # check if the ingredient is not assigned in the Bottle order if the value is set to handadd
-    if Zutatentest == 0 and w.CHBHand.isChecked():
+    if not newingredient and w.CHBHand.isChecked() and Zutatentest == 0:
         Zutatentest = c.execute("SELECT COUNT(*) FROM Belegung WHERE ID=?",(ZID,)).fetchone()[0]
         if Zutatentest != 0:
             standartbox("DIe Zutat ist noch in der Belegung registriert und kann somit nicht auf selbst hinzufügen gesetzt werden!")
