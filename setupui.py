@@ -26,6 +26,7 @@ from ui_elements.progressbarwindow import Ui_Progressbarwindow
 from ui_elements.bonusingredient import Ui_addingredient
 from ui_elements.bottlewindow import Ui_Bottlewindow
 from ui_elements.Keyboard import Ui_Keyboard
+from ui_elements.handadds import Ui_handadds
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -55,6 +56,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEmenge_a.clicked.connect(lambda: self.passwordwindow(self.LEmenge_a, x_pos=400, y_pos=50, headertext="Zusatzmenge eingeben!"))
         self.LEprozent_a.clicked.connect(lambda: self.passwordwindow(self.LEprozent_a, x_pos=400, y_pos=50, headertext="Alkoholgehalt Zusatzmenge eingeben!"))
         self.LEKommentar.clicked.connect(lambda: self.keyboard(self.LEKommentar, max_char_len=100))
+        # self.LEKommentar.clicked.connect(self.handwindow)
         # connects all the Lineedits from the Recipe amount and gives them the validator
         LER_obj = [getattr(self, "LER" + str(x)) for x in range(1,9)]
         for obj in LER_obj:
@@ -116,6 +118,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def ingredientdialog(self):
         self.ingd = Getingredientwindow(self)
         self.ingd.show()
+    
+    def handwindow(self):
+        self.handw = Handaddwidget(self)
+        self.handw.show()
 
 
 class Progressscreen(QMainWindow, Ui_Progressbarwindow):
@@ -395,6 +401,45 @@ class Keyboardwidget(QDialog, Ui_Keyboard):
             charchoose = self.char_list_lower
         for obj, char in zip(self.attribute_chars, charchoose):
             obj.setText(str(char))
+
+class Handaddwidget(QDialog, Ui_handadds):
+    """ Creates a window where the user can define additional ingredients to add via hand after the machine. """
+    def __init__(self, parent):
+        super(Handaddwidget, self).__init__(parent)
+        self.setupUi(self)
+        self.ms = parent
+        # get all ingredients from the DB (all of them, handadd and normal, bc you may want to add normal as well)
+        # first get a sortet list of all hand ingredients
+        handingredients = self.ms.c.execute("SELECT Name FROM Zutaten WHERE Hand = 1")
+        hand_list = []
+        for ingredient in handingredients:
+            hand_list.append(ingredient[0])
+        hand_list.sort()
+        # then get a sorted list of all normal ingredients
+        normalingredients = self.ms.c.execute("SELECT Name FROM Zutaten WHERE Hand = 0")
+        normal_list = []
+        for ingredient in normalingredients:
+            normal_list.append(ingredient[0])
+        normal_list.sort()
+        # combines both list, the normal at the bottom, since you want use them as often as the hand ones
+        ing_list = hand_list + normal_list
+        # goes through all CB and assign a empty value and all other listvalies
+        for i in range(1, 6):
+            CBhand = getattr(self, "CBHandadd" + str(i))
+            CBhand.addItem("")
+            for ing in ing_list:
+                CBhand.addItem(ing)
+        # connect the buttons
+        self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
+        self.PBEintragen.clicked.connect(self.eintragen_clicked)
+        
+    def abbrechen_clicked(self):
+        """ Closes the window without any action. """
+        self.close()
+
+    def eintragen_clicked(self):
+        """ Closes the window and enters the values into the DB/LE. """
+        self.close()
 
 def pass_setup(w, DB, c, partymode, devenvironment):
     """ Connect all the functions with the Buttons. """
