@@ -1,3 +1,11 @@
+--------------- 2019_07_18 ---------------------------------------------------------------------------------------------------------
+- Added a new dialog element to better control the comments which determine the additional ingredients to add by hand 
+- Implemented the structure code for this dialog
+- Adjusted stylesheet to match regular styles
+- added a checkbox option to the ingredients to have the possibility to set the ingredient just for handadd / comments
+- adjusted the code and DB structure accordingly
+- Tiny bugfixes
+
 --------------- 2019_07_15 ---------------------------------------------------------------------------------------------------------
 - Added a keyboard and its functionality to all Lineedits which need a keyboard input
 - Added the Numpad (Passwordwindow) to all Lineedits which need a numeric input
