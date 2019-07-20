@@ -11,9 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_handadds(object):
     def setupUi(self, handadds):
         handadds.setObjectName("handadds")
-        handadds.resize(400, 250)
-        handadds.setMinimumSize(QtCore.QSize(400, 250))
-        handadds.setMaximumSize(QtCore.QSize(400, 250))
+        handadds.resize(410, 250)
+        handadds.setMinimumSize(QtCore.QSize(410, 250))
+        handadds.setMaximumSize(QtCore.QSize(410, 250))
         handadds.setStyleSheet("QWidget\n"
 "{\n"
 "    color: rgb(0, 123, 255);    \n"

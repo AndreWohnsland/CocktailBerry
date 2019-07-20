@@ -44,6 +44,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if DB is not None:
             self.DB = sqlite3.connect(DB)
             self.c = self.DB.cursor()
+        self.handaddlist = []
         # the connection method here is defined in a seperate file "clickablelineedit.py"
         # even if it belongs to the UI if its moved there, there will be an import error.
         # Till this problem is resolved, this file will stay in the main directory
@@ -53,10 +54,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
         self.LEGehaltRezept.clicked.connect(lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext="Alkoholgehalt eingeben!"))
         self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept, max_char_len=20))
-        self.LEmenge_a.clicked.connect(lambda: self.passwordwindow(self.LEmenge_a, x_pos=400, y_pos=50, headertext="Zusatzmenge eingeben!"))
-        self.LEprozent_a.clicked.connect(lambda: self.passwordwindow(self.LEprozent_a, x_pos=400, y_pos=50, headertext="Alkoholgehalt Zusatzmenge eingeben!"))
-        self.LEKommentar.clicked.connect(lambda: self.keyboard(self.LEKommentar, max_char_len=100))
-        # self.LEKommentar.clicked.connect(self.handwindow)
+        self.LEKommentar.clicked.connect(self.handwindow)
         # connects all the Lineedits from the Recipe amount and gives them the validator
         LER_obj = [getattr(self, "LER" + str(x)) for x in range(1,9)]
         for obj in LER_obj:
@@ -68,10 +66,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEGehaltRezept.setMaxLength(2)
         self.LEZutatRezept.setMaxLength(20)
         self.LEFlaschenvolumen.setValidator(QIntValidator(100,2000))
-        self.LEmenge_a.setValidator(QIntValidator(0,300))
-        self.LEmenge_a.setMaxLength(3)
-        self.LEprozent_a.setValidator(QIntValidator(0,99))
-        self.LEprozent_a.setMaxLength(2)
         self.LECocktail.setMaxLength(30)
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext=None):
@@ -116,10 +110,16 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.botw.show()
 
     def ingredientdialog(self):
+        """ Opens a window to spend one single ingredient. """
         self.ingd = Getingredientwindow(self)
         self.ingd.show()
     
     def handwindow(self):
+        """ Opens a window to enter additional ingrediends added by hand. """
+        if self.LWRezepte.selectedItems() and self.handaddlist == []:
+            storeval = self.c.execute("SELECT Z.Zutaten_ID, Z.Menge, Z.Alkoholisch FROM Zusammen AS Z INNER JOIN Rezepte AS R ON R.ID=Z.Rezept_ID WHERE R.Name = ? AND Z.Hand=1", (self.LWRezepte.currentItem().text(),))
+            for row in storeval:
+                self.handaddlist.append(list(row))
         self.handw = Handaddwidget(self)
         self.handw.show()
 
@@ -407,7 +407,15 @@ class Handaddwidget(QDialog, Ui_handadds):
     def __init__(self, parent):
         super(Handaddwidget, self).__init__(parent)
         self.setupUi(self)
+        self.setWindowFlags(
+            Qt.Window |
+            Qt.CustomizeWindowHint |
+            Qt.WindowTitleHint |
+            Qt.WindowCloseButtonHint |
+            Qt.WindowStaysOnTopHint
+            )
         self.ms = parent
+        self.setWindowIcon(QIcon("Cocktail-icon.png"))
         # get all ingredients from the DB (all of them, handadd and normal, bc you may want to add normal as well)
         # first get a sortet list of all hand ingredients
         handingredients = self.ms.c.execute("SELECT Name FROM Zutaten WHERE Hand = 1")
@@ -432,6 +440,19 @@ class Handaddwidget(QDialog, Ui_handadds):
         # connect the buttons
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
+        for i in range(1,6):
+            LEHand = getattr(self, "LEHandadd" + str(i))
+            LEHand.clicked.connect((lambda o=LEHand: self.ms.passwordwindow(le_to_write=o, x_pos=400, y_pos=50, headertext="Menge eingeben!")))
+            LEHand.setValidator(QIntValidator(0, 300))
+            LEHand.setMaxLength(3)
+        for i, row in enumerate(self.ms.handaddlist):
+            ing_name = self.ms.c.execute("SELECT Name FROM Zutaten WHERE ID = ?", (row[0],)).fetchone()[0]
+            cb_obj = getattr(self, "CBHandadd" + str(i+1))
+            le_obj = getattr(self, "LEHandadd" + str(i+1))
+            index = cb_obj.findText(ing_name, Qt.MatchFixedString)
+            cb_obj.setCurrentIndex(index)
+            le_obj.setText(str(row[1]))
+        self.move(0, 100)
         
     def abbrechen_clicked(self):
         """ Closes the window without any action. """
@@ -439,7 +460,43 @@ class Handaddwidget(QDialog, Ui_handadds):
 
     def eintragen_clicked(self):
         """ Closes the window and enters the values into the DB/LE. """
-        self.close()
+        val_check = 0
+        inglist = []
+        amountlist = []
+        # checks for each row if both values are nothing or a value (you need both for a valid entry)
+        for i in range(1, 6):
+            LEname = getattr(self, "LEHandadd" + str(i))
+            CBname = getattr(self, "CBHandadd" + str(i))
+            if ((CBname.currentText() != "") and LEname.text() == "") or ((CBname.currentText() == "") and LEname.text() != ""):
+                val_check = 1
+                standartbox("Irgendwo ist ein Wert vergessen worden!")
+                break
+            # append both values to the lists
+            elif ((CBname.currentText() != "") and LEname.text() != "") :
+                inglist.append(CBname.currentText())
+                amountlist.append(int(LEname.text()))
+        # check if any ingredient was used twice
+        if val_check == 0:
+            counted_ing = Counter(inglist)
+            double_ing = [x[0] for x in counted_ing.items() if x[1] > 1]
+            if len(double_ing) != 0:
+                val_check = 1
+                standartbox("Eine der Zutaten:\n<{}>\nwurde doppelt verwendet!".format(double_ing[0]))
+        # if it passes all tests, generate the list for the later entry ands enter the comment into the according field
+        if val_check == 0:
+            self.ms.handaddlist = []
+            commenttext = ""
+            for ing, amount in zip(inglist, amountlist):
+                db_buffer = self.ms.c.execute("SELECT ID, ALkoholgehalt FROM Zutaten WHERE Name = ?", (ing,)).fetchone()
+                alcoholic = 0
+                if db_buffer[1] > 0:
+                    alcoholic = 1
+                self.ms.handaddlist.append([db_buffer[0], amount, alcoholic, 1, db_buffer[1]])
+                commenttext += "{} ml {}, ".format(amount, ing)
+            if len(commenttext)>0:
+                commenttext = commenttext[:-2]
+            self.ms.LEKommentar.setText(commenttext)
+            self.close()
 
 def pass_setup(w, DB, c, partymode, devenvironment):
     """ Connect all the functions with the Buttons. """

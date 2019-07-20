@@ -225,10 +225,10 @@ def Belegung_progressbar(w, DB, c):
     """
     for Flaschen_C in range(1, 11):
         storeval = c.execute("SELECT Zutaten.Mengenlevel, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (Flaschen_C,)).fetchone()
+        ProBname = getattr(w, "ProBBelegung" + str(Flaschen_C))
         if storeval is not None:
             level = storeval[0]
             maximum = storeval[1]
-            ProBname = getattr(w, "ProBBelegung" + str(Flaschen_C))
             # Sets the level of the bar, it cant drop below 0 or 100%
             if level <= 0:
                 ProBname.setValue(0)
@@ -236,6 +236,8 @@ def Belegung_progressbar(w, DB, c):
                 ProBname.setValue(100)
             else:
                 ProBname.setValue(level/maximum*100)
+        else:
+            ProBname.setValue(0)
 
 
 @logerror

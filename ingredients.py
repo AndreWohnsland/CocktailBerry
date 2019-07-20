@@ -31,10 +31,6 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
     and its name is not already in the DB.
     Also can change the current selected ingredient (newingredient = False)
     """
-    # print("Zutat ist: ", w.LEZutatRezept.text())
-    # print("Alkoholanteil ist: ", w.LEGehaltRezept.text())
-    # print("Flaschenvolumen ist: ", w.LEFlaschenvolumen.text())
-    # print("Neues Rezept: {}".format(newingredient))
     Zutatentest = 0
     old_onlyhand = 0
     ingredientname = w.LEZutatRezept.text()
@@ -119,7 +115,6 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
         w.LEZutatRezept.clear()
         w.LEGehaltRezept.clear()
         w.LEFlaschenvolumen.clear()
-        # ZutatenCB_Rezepte(w, DB, c)
         # if its a new ingredient, adds it to the boxes and sorts them
         # if its a changed one, update the values
         for box in range(1, 11):
@@ -176,9 +171,9 @@ def Zutaten_delete(w, DB, c):
                 if Zutatentest == 0:
                     c.execute("DELETE FROM Zutaten WHERE ID = ?", (ZID,))
                     DB.commit()
+                    # For optimisation this command here can be switched with a simpe remove for the ingredient
                     ZutatenCB_Rezepte(w, DB, c)
-                    # This isn't nececary, a simple remove is better
-                    # ZutatenCB_Belegung(w, DB, c)
+                    # Find the ingredient ind the Comboboxes for the Bottles and removes it
                     for box in range(1, 11):
                         CBBname = getattr(w, "CBB" + str(box))
                         index = CBBname.findText(Zname, Qt.MatchFixedString)

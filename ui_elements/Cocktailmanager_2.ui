@@ -288,7 +288,7 @@ QLineEdit
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -2064,16 +2064,6 @@ QLineEdit
                     </property>
                    </spacer>
                   </item>
-                  <item>
-                   <widget class="ClickableLineEdit" name="LEmenge_a">
-                    <property name="maximumSize">
-                     <size>
-                      <width>100</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
                  </layout>
                 </item>
                 <item>
@@ -2264,25 +2254,31 @@ QLineEdit
                     </property>
                    </spacer>
                   </item>
-                  <item>
-                   <widget class="ClickableLineEdit" name="LEprozent_a">
-                    <property name="maximumSize">
-                     <size>
-                      <width>100</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="layoutDirection">
-                     <enum>Qt::RightToLeft</enum>
-                    </property>
-                   </widget>
-                  </item>
                  </layout>
                 </item>
                </layout>
               </item>
               <item>
-               <widget class="ClickableLineEdit" name="LEKommentar"/>
+               <widget class="QLabel" name="label_25">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ef9700;&quot;&gt; Selbst hinzufügen:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="ClickableLineEdit" name="LEKommentar">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>33</height>
+                 </size>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
