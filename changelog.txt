@@ -1,3 +1,9 @@
+--------------- 2019_07_21 ---------------------------------------------------------------------------------------------------------
+- Added the possibility to select existing ingredients for the maker to calculate the possible recipes including the hand adds
+- Created and programmed an UI for that cause
+- Included Code and Logic into needed modules
+- Refactored the function to estimate the current concentration for the cocktail
+
 --------------- 2019_07_20 ---------------------------------------------------------------------------------------------------------
 - Added the possibility to set additional ingredients via hand add to an additional ui element
 - Adjusted DB to reflect that change
