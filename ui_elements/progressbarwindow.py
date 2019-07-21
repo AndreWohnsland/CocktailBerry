@@ -127,7 +127,7 @@ class Ui_Progressbarwindow(object):
         Progressbarwindow.setWindowTitle(_translate("Progressbarwindow", "~~ Cocktail wird zubereitet ~~"))
         self.Lheader.setText(_translate("Progressbarwindow", "<html><head/><body><p>Cocktail wird zubereitet!</p><p><span style=\" color:#ef9700;\">Fortschritt:</span></p></body></html>"))
         self.progressBar.setFormat(_translate("Progressbarwindow", "%p%"))
-        self.Labbruch.setText(_translate("Progressbarwindow", "Der Cocktail kann auch abgebrochen werden"))
+        self.Labbruch.setText(_translate("Progressbarwindow", "Der Vorgang kann auch abgebrochen werden"))
         self.PBabbrechen.setText(_translate("Progressbarwindow", "Abbrechen"))
 
 

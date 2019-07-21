@@ -2,6 +2,7 @@
 import logging
 import time
 from functools import wraps
+import os
 
 import globals
 
@@ -12,8 +13,11 @@ def basiclogger(loggerobj, loggername, printline = False):
     """
     logger = logging.getLogger(loggerobj)
     logger.setLevel(logging.DEBUG)
-    name_ = "{}.log".format(loggername)
-    fh = logging.FileHandler(name_)
+    dirpath = os.path.dirname(__file__)
+    subfoldername = "logs"
+    savepath = os.path.join(dirpath, subfoldername, "{}.log".format(loggername))
+    # print(savepath)
+    fh = logging.FileHandler(savepath)
     fh.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
         '%(asctime)s - %(message)s', "%Y-%m-%d %H:%M")

@@ -1,8 +1,56 @@
+--------------- 2019_07_21 ---------------------------------------------------------------------------------------------------------
+- Added the possibility to select existing ingredients for the maker to calculate the possible recipes including the hand adds
+- Created and programmed an UI for that cause
+- Included Code and Logic into needed modules
+- Refactored the function to estimate the current concentration for the cocktail
+
+--------------- 2019_07_20 ---------------------------------------------------------------------------------------------------------
+- Added the possibility to set additional ingredients via hand add to an additional ui element
+- Adjusted DB to reflect that change
+- Adjusted many modules to adjust to that change
+- Updated the Uis for the change
+- Some bugfixes
+
+--------------- 2019_07_18 ---------------------------------------------------------------------------------------------------------
+- Added a new dialog element to better control the comments which determine the additional ingredients to add by hand 
+- Implemented the structure code for this dialog
+- Adjusted stylesheet to match regular styles
+- added a checkbox option to the ingredients to have the possibility to set the ingredient just for handadd / comments
+- adjusted the code and DB structure accordingly
+- Tiny bugfixes
+
+--------------- 2019_07_15 ---------------------------------------------------------------------------------------------------------
+- Added a keyboard and its functionality to all Lineedits which need a keyboard input
+- Added the Numpad (Passwordwindow) to all Lineedits which need a numeric input
+- Adjusted UI-code for that changes
+- Added validators and maxlength for the Lineedits
+- Fixed a bug with the bottlewindow which caused a false display and entry back to the mainwindow
+- improved the module for adding and substracting buttons
+- Switched the signal method for the bottles combobuttons to .activate, no more need of the global var for that
+- Removed the comment window in the maker screen and added two more labels for ingredients instead.
+- Refactored the maker fetch code for the comment: now after a blank line a header follows and then the additional ingredients
+- Renamed savehelper into helperfunctions to add further functions to this module
+- Created a new function in helperfunction that replaces the other different functions for the logic of the plus and minus buttons 
+- Tiny bugfixes
+
+--------------- 2019_07_11 ---------------------------------------------------------------------------------------------------------
+- Seperated the ingredient and recipe save csv into a seperate folder
+- Adjusted code for that change
+- Included the logging of the consumption and life time consumption into the DB when a single ingredient is spend
+- Changed the save function to include the actual date in the name of the file. Also dont write the old headerline for the two saves into the file
+
+--------------- 2019_07_10 ---------------------------------------------------------------------------------------------------------
+- Added Recipes
+- Added a new option with a new window to sperately choose an ingredient and an amount to get the machine to spend it.
+- Added a new UI element and adjusted several modules for the new UI element
+- Fixed a bug in the maker module, which was logging the recipe amount into the DB before checking if its possible to serve it.
+- Seperated the logging files, as well as the UI files from the main folder into seperate directories
+
 --------------- 2019_07_07 ---------------------------------------------------------------------------------------------------------
 - Introduced changelog
 - Switched the UI element from mainwindow to dialog for the passwordbuttos
 - Removed the Mengenlevel from Belegung to Zutaten, changed sql querries and code accordingly
 - Introduced a new window for the Belegung tab to manually change the volume levels
-- started to fill functionality for the new window, adjusted other modules, if needed
+- Started to fill functionality for the new window, adjusted other modules, if needed
 - Code improvements
 - Tiny bugfixes

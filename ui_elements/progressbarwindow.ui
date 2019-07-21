@@ -155,7 +155,7 @@ QProgressBar::chunk {
        </font>
       </property>
       <property name="text">
-       <string>Der Cocktail kann auch abgebrochen werden</string>
+       <string>Der Vorgang kann auch abgebrochen werden</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignBottom|Qt::AlignHCenter</set>

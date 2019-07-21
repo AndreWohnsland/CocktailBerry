@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>available</class>
+ <widget class="QMainWindow" name="available">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>480</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>800</width>
+    <height>480</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Verfügbare Zutaten auswählen</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget
+{
+	color: rgb(0, 123, 255);	
+	background-color: rgb(0, 0, 0);
+
+}
+
+QWidget:item:selected
+{
+	color: rgb(239, 151, 0);
+    border: 1px solid rgb(239, 151, 0);
+	/*color: rgb(255, 255, 255);	
+	background-color: rgb(0, 123, 255);	*/
+}
+
+QTabWidget::pane {
+    border: 1px solid  rgb(97, 97, 97);
+    top: 1px;
+}
+
+QTabBar::tab {
+	background-color: rgb(97, 97, 97);
+	color: rgb(255, 255, 255);
+    border-width: 1px;
+	border-color: rgb(255, 255, 255);
+	border-style: solid;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+	padding: 5px;
+	padding-left: 63px;
+	padding-right:63px;
+}
+
+QTabBar::tab:selected {
+	color: rgb(255, 255, 255);	
+	background-color: rgb(0, 123, 255);
+}
+
+.QMessageBox {font-size: 16pt}
+
+.QSlider {
+    min-height: 30px;
+    max-height: 50px;
+}
+
+.QSlider::groove:horizontal {
+    border: 1px solid;
+    height: 5px;
+    background: #393939;
+    margin: 0 12px;
+}
+
+.QSlider::handle:horizontal {
+    background: rgb(0, 123, 255);
+    width: 30px;
+    height: 30px;
+    margin: -24px -12px;
+}
+
+QPushButton {
+	background-color: rgb(97, 97, 97);
+	color: rgb(255, 255, 255);
+    border-width: 1px;
+	border-color: rgb(97, 97, 97);
+	border-style: solid;
+	border-radius: 7;
+	padding: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+QPushButton:checked
+{
+	color: rgb(255, 255, 255);	
+	background-color: rgb(0, 123, 255);
+	border-color: rgb(0, 123, 255);
+}
+
+QPushButton:pressed
+{
+	color: rgb(255, 255, 255);	
+	background-color: rgb(0, 123, 255);
+	border-color: rgb(0, 123, 255);
+}
+
+QProgressBar
+{
+	background-color: rgb(166, 166, 166);
+	color: rgb(0, 0, 0);
+    border: 2px rgb(166, 166, 166);
+    border-radius: 5px;
+}
+
+QProgressBar::chunk {
+	border: 2px rgb(166, 166, 166);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+	background-color: rgb(0, 123, 255);
+   /* width: 40px;
+    margin: 0.5px;*/
+}
+
+QComboBox {
+	color: rgb(0, 123, 255);	
+    border: 1px solid  rgb(97, 97, 97);
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+    padding: 1px 18px 1px 5px;
+    min-width: 6em;
+}
+
+QComboBox:on { /* shift the text when the popup opens */
+    border: 1px solid  rgb(97, 97, 97);
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 0px;
+	color: rgb(239, 151, 0);
+}
+
+/* QComboBox:hover
+{
+	color: rgb(239, 151, 0);
+}*/
+
+QComboBox QAbstractItemView {
+    border: 1px solid  rgb(97, 97, 97);
+}
+
+/*QComboBox:item:checked {
+	color: rgb(239, 151, 0);
+    border: 1px solid rgb(239, 151, 0);
+}
+
+QComboBox:item:selected {
+	color: rgb(239, 151, 0);
+    border: 1px solid rgb(239, 151, 0);
+} */
+
+QLineEdit
+{
+    padding: 1px;
+    border-style: solid;
+    border: 1px solid rgb(97, 97, 97);
+    border-radius: 5;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="minimumSize">
+         <size>
+          <width>330</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>330</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>20</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ef9700;&quot;&gt;Vorhanden&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="minimumSize">
+         <size>
+          <width>330</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>330</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>20</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ef9700;&quot;&gt;Möglich&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QListWidget" name="LWVorhanden">
+        <property name="font">
+         <font>
+          <pointsize>20</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QScrollBar:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     width: 30px;
+     margin: 31px 0 31px 0;
+ }
+ QScrollBar::handle:vertical {
+     background: rgb(0, 0, 0);
+ }
+ QScrollBar::add-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 30px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 30px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+   	 width: 10px;
+     height: 10px;
+     background: rgb(0, 123, 255);
+ }</string>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectItems</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QPushButton" name="PBAdd">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>48</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>&lt;-</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="PBRemove">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>48</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>-&gt;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QListWidget" name="LWAlle">
+        <property name="font">
+         <font>
+          <pointsize>20</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QScrollBar:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     width: 30px;
+     margin: 31px 0 31px 0;
+ }
+ QScrollBar::handle:vertical {
+     background: rgb(0, 0, 0);
+ }
+ QScrollBar::add-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 30px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:vertical {
+     border: 1px solid rgb(97, 97, 97);
+     background: rgb(0, 0, 0);
+     height: 30px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+   	 width: 10px;
+     height: 10px;
+     background: rgb(0, 123, 255);
+ }</string>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectItems</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QPushButton" name="PBOk_2">
+        <property name="minimumSize">
+         <size>
+          <width>335</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>340</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>18</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>OK</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="PBAbbruch_2">
+        <property name="minimumSize">
+         <size>
+          <width>335</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>340</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>18</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Abbrechen</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

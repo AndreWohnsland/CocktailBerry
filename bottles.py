@@ -11,6 +11,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
+from collections import Counter
 
 import globals
 from msgboxgenerate import standartbox
@@ -44,46 +45,43 @@ def refresh_bottle_cb(w, DB, c):
     since the index may change itself with the deletion.
     """
     # Creating a list of the new and old bottles used
-    if not globals.supressbox:
-        globals.supressbox = True
-        old_order = globals.olding
-        new_order = []
-        for i in range(1,11):
-            CBBname = getattr(w, "CBB" + str(i))
-            if CBBname.currentText() != 0:
-                new_order.append(CBBname.currentText())
-            else:
-                new_order.append("")
-        # getting the difference between those two lists and assign new/old value
-        new_blist = list(set(new_order) - set(old_order))
-        old_blist = list(set(old_order) - set(new_order))
-        # checks if the list only contains one element
-        # extrtacts the element out of the list
-        if len(new_blist)>1 or len(old_blist)>1:
-            raise ValueError('The List should never contain two or more Elements!')
+    old_order = globals.olding
+    new_order = []
+    for i in range(1,11):
+        CBBname = getattr(w, "CBB" + str(i))
+        if CBBname.currentText() != 0:
+            new_order.append(CBBname.currentText())
         else:
-            if len(new_blist)==0:
-                new_bottle = ""
-            else:
-                new_bottle = new_blist[0]
-            if len(old_blist)==0:
-                old_bottle = ""
-            else:
-                old_bottle = old_blist[0]
-        # adds or substracts the text to the comboboxes (except the one which was changed)
-        for i in range(1,11):
-            CBBname = getattr(w, "CBB" + str(i))
-            if (old_bottle != "") and (old_bottle != old_order[i-1]):
-                CBBname.addItem(old_bottle)
-            if (new_bottle != "") and (new_bottle != new_order[i-1]):
-                index = CBBname.findText(new_bottle, Qt.MatchFixedString)
-                if index >= 0:
-                    CBBname.removeItem(index)
-            CBBname.model().sort(0)
-        # the new is now the old for the next step:
-        Belegung_eintragen(w, DB, c)
-        globals.olding = new_order
-        globals.supressbox = False
+            new_order.append("")
+    # getting the difference between those two lists and assign new/old value
+    new_blist = list(set(new_order) - set(old_order))
+    old_blist = list(set(old_order) - set(new_order))
+    # checks if the list only contains one element
+    # extrtacts the element out of the list
+    if len(new_blist)>1 or len(old_blist)>1:
+        raise ValueError('The List should never contain two or more Elements!')
+    else:
+        if len(new_blist)==0:
+            new_bottle = ""
+        else:
+            new_bottle = new_blist[0]
+        if len(old_blist)==0:
+            old_bottle = ""
+        else:
+            old_bottle = old_blist[0]
+    # adds or substracts the text to the comboboxes (except the one which was changed)
+    for i in range(1,11):
+        CBBname = getattr(w, "CBB" + str(i))
+        if (old_bottle != "") and (old_bottle != old_order[i-1]):
+            CBBname.addItem(old_bottle)
+        if (new_bottle != "") and (new_bottle != new_order[i-1]):
+            index = CBBname.findText(new_bottle, Qt.MatchFixedString)
+            if index >= 0:
+                CBBname.removeItem(index)
+        CBBname.model().sort(0)
+    # the new is now the old for the next step:
+    Belegung_eintragen(w, DB, c)
+    globals.olding = new_order
 
 
 @logerror
@@ -115,7 +113,7 @@ def newCB_Bottles(w, DB,c):
     # generates a list of all Combobox entries
     entrylist = globals.olding
     inglist = []
-    Zspeicher = c.execute("SELECT NAME FROM Zutaten")
+    Zspeicher = c.execute("SELECT NAME FROM Zutaten WHERE Hand = 0")
     for ing in Zspeicher:
         inglist.append(str(ing[0]))
     # generates a list for each CB which values have to be assigned
@@ -146,20 +144,19 @@ def Belegung_eintragen(w, DB, c, msgcall=False):
         if (CBBname.currentText() != "" and CBBname.currentText() != 0):
             CBB_List.append(CBBname.currentText())
     # Checks if any ingredient is used twice, if so, dbl_check gets activated 
-    for Flaschen_i in range(0, len(CBB_List)):
-        for Flaschen_j in range(0, len(CBB_List)):
-            if ((CBB_List[Flaschen_i] == CBB_List[Flaschen_j]) and (Flaschen_i != Flaschen_j)):
-                dbl_check = 1
-                standartbox("Eine der Zutaten wurde doppelt zugewiesen!")
-                break
-        if dbl_check == 1:
-            break
+    # due to refactoring of the CB, this should never happen, since the CB only displays ingredients which are not used
+    counted_bottles = Counter(CBB_List)
+    double_bottles = [x[0] for x in counted_bottles.items() if x[1] > 1]
+    if len(double_bottles) != 0:
+        dbl_check = 1
+        standartbox("Eine der Zutaten wurde doppelt zugewiesen!")
     # If no error, insert values into DB
     if dbl_check == 0:
         for Flaschen_C in range(1, 11):
             Speicher_ID = 0
             CBBname = getattr(w, "CBB" + str(Flaschen_C))
             ingredientname = CBBname.currentText()
+            # if no ID is pulled (no bottle there), the buffer is none and the id stays 0
             buffer = c.execute(
                 "SELECT ID FROM Zutaten WHERE Name = ?", (ingredientname,))
             for buf in buffer:
@@ -228,10 +225,10 @@ def Belegung_progressbar(w, DB, c):
     """
     for Flaschen_C in range(1, 11):
         storeval = c.execute("SELECT Zutaten.Mengenlevel, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (Flaschen_C,)).fetchone()
+        ProBname = getattr(w, "ProBBelegung" + str(Flaschen_C))
         if storeval is not None:
             level = storeval[0]
             maximum = storeval[1]
-            ProBname = getattr(w, "ProBBelegung" + str(Flaschen_C))
             # Sets the level of the bar, it cant drop below 0 or 100%
             if level <= 0:
                 ProBname.setValue(0)
@@ -239,6 +236,8 @@ def Belegung_progressbar(w, DB, c):
                 ProBname.setValue(100)
             else:
                 ProBname.setValue(level/maximum*100)
+        else:
+            ProBname.setValue(0)
 
 
 @logerror

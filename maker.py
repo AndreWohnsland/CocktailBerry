@@ -36,6 +36,7 @@ def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0, goon = True
     V_Rezepte = []
     ID_Rezepte = []
     # Search all ids needed, depending on the mode
+    # this differs on the input: changed bottles, add an recipe (or changed) or enabled/disabled a recipe
     if mode == "add":
         V_Rezepte.append(changeid)
     elif mode == "enable":
@@ -46,17 +47,32 @@ def Rezepte_a_M(w, DB, c, reloadall = True, mode = "", changeid = 0, goon = True
             if Werte[1]:
                 V_Rezepte.append(int(Werte[0]))
     # Search all ingredient IDs of the recipe
+    # if its only one recipe change and it is not enabled, this part will not be carried out
     if goon:
         for row in V_Rezepte:
             vorhandenvar = 0
+            # Generates a list of all Ids of the ingredients needed by the machine for every recipe
             V_Rezepte2 = []
             Zspeicher = c.execute(
-                "SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ?", (row,))
+                "SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=0", (row,))
             for Werte in Zspeicher:
                 V_Rezepte2.append(int(Werte[0]))
             # Check if all Bottles for the Recipe are Connected, if so adds it to the List
             for row2 in V_Rezepte2:
                 c.execute("SELECT COUNT(*) FROM Belegung WHERE ID = ?", (row2,))
+                Zspeicher2 = c.fetchone()[0]
+                if Zspeicher2 == 0:
+                    vorhandenvar = 1
+                    break
+            # Generates a list of all Ids of the ingredients which needs to be added later by hand
+            V_Rezepte2 = []
+            Zspeicher = c.execute(
+                "SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=1", (row,))
+            for Werte in Zspeicher:
+                V_Rezepte2.append(int(Werte[0]))
+            # Check if all ingredients for the Recipe are set available (Vorhanden DB got the list), if so adds it to the List
+            for row2 in V_Rezepte2:
+                c.execute("SELECT COUNT(*) FROM Vorhanden WHERE ID = ?", (row2,))
                 Zspeicher2 = c.fetchone()[0]
                 if Zspeicher2 == 0:
                     vorhandenvar = 1
@@ -78,43 +94,46 @@ def Maker_Rezepte_click(w, DB, c):
         # search the DB for the recipe (ID) over the ID (Zutaten) fetch the ingredients and amount
         Maker_List_null(w, DB, c)
         zusatzmenge = 0
+        # gets the alcohol percentage
         Maker_ProB_change(w, DB, c)
         # Gets and sets the name
         cocktailname = w.LWMaker.currentItem().text()
         w.LAlkoholname.setText(cocktailname)
-        # look up the comment
-        c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",
-                (cocktailname,))
-        Zspeicher = c.fetchone()[0]
-        # gets the amount out of the comment
-        if Zspeicher is not None:
-            if len(Zspeicher) >= 1:
-                w.LKommentar.setText("Hinzufügen:  " + str(Zspeicher))
-                mysplitstring = re.split(', | |,', Zspeicher) 
-                for allwords in mysplitstring:
-                    try:
-                        zusatzmenge += int(allwords)
-                    except:
-                        pass
-            else:
-                w.LKommentar.setText("")
-        c.execute("SELECT Menge FROM Rezepte WHERE Name = ?",
-                (cocktailname,))
-        Zspeicher = c.fetchone()[0]
-        w.LMenge.setText("Menge: " + str(int(Zspeicher) + zusatzmenge) + " ml")
-        #Zspeicher = c.execute("SELECT Zusammen.Zutaten_ID, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID WHERE Rezepte.Name = ?",(cocktailname,))
-        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ?", (cocktailname,))
+        # First gets all the ingredients added by the machine
+        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ? AND Zusammen.Hand=0", (cocktailname,))
         LVZutat = []
         LVMenge = []
         # assigns the values to the boxes
         for row in Zspeicher:
             LVZutat.append(row[0])
             LVMenge.append(row[1])
+        # generates the additional incredients to add. Therefore fills in a blank line and afterwards a header
+        # If there are no additional adds, just skip that part
+        Zspeicher = c.execute("SELECT Z.Zutaten_ID, Z.Menge FROM Zusammen AS Z INNER JOIN Rezepte AS R ON R.ID=Z.Rezept_ID WHERE R.Name = ? AND Z.Hand=1", (cocktailname,))
+        commentlist = []
+        for row in Zspeicher:
+            commentlist.append(row)
+        # if there are any additional ingredients generate the additional entries in the list
+        if len(commentlist) > 0:
+            LVZutat.extend(["", "Selbst hinzufügen:"])
+            LVMenge.extend(["", ""])
+            for row in commentlist:
+                handname = c.execute("SELECT Name FROM Zutaten WHERE ID=?", (row[0],)).fetchone()[0]
+                LVZutat.append(handname)
+                LVMenge.append(row[1])
+                zusatzmenge +=row[1]
+        # Adds up both the machine and manual add volume for the total volume
+        Zspeicher =  c.execute("SELECT Menge FROM Rezepte WHERE Name = ?",(cocktailname,)).fetchone()[0]
+        w.LMenge.setText("Menge: " + str(int(Zspeicher) + zusatzmenge) + " ml")
+        # loops through the list and give the string to the labels, also give the "Hinzufügen" another color for better visualibility
         for row in range(0, len(LVZutat)):
             LZname = getattr(w, "LZutat" + str(row + 1))
             LZname.setText(str(LVZutat[row]) + " ")
             LMZname = getattr(w, "LMZutat" + str(row + 1))
-            LMZname.setText(" " + str(LVMenge[row]) + " ml")
+            if LVMenge[row] != "":
+                LMZname.setText(" " + str(LVMenge[row]) + " ml")
+            if LVZutat[row] == "Selbst hinzufügen:":
+                LZname.setStyleSheet('color: rgb(170, 170, 170)')
 
 
 @logerror
@@ -123,12 +142,12 @@ def Maker_List_null(w, DB, c):
     w.LAlkoholgehalt.setText("")
     w.LAlkoholname.setText("")
     w.LMenge.setText("")
-    w.LKommentar.setText("")
-    for check_v in range(1, 9):
+    for check_v in range(1, 11):
         LZname = getattr(w, "LZutat" + str(check_v))
         LZname.setText("")
         LMZname = getattr(w, "LMZutat" + str(check_v))
         LMZname.setText("")
+        LZname.setStyleSheet('color: rgb(0, 123, 255)')
 
 
 @logfunction
@@ -168,40 +187,46 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
             standartbox("Kein Rezept ausgewählt!")
         # Select ID, Bottles and amount, calculate the time and update the counter
         else:
-            Zspeicher = c.execute(
-                "SELECT ID, Menge FROM Rezepte WHERE Name = ?", (w.LWMaker.currentItem().text(),))
-            for row in Zspeicher:
-                CocktailID = row[0]
-                Cocktailmenge = row[1]
-            c.execute(
-                "UPDATE OR IGNORE Rezepte SET Anzahl_Lifetime = Anzahl_Lifetime + 1, Anzahl = Anzahl + 1 WHERE ID = ?", (CocktailID,))
+            # gets the ID and the amount for the recipe
+            cocktailname = w.LWMaker.currentItem().text()
+            Zspeicher = c.execute("SELECT ID, Menge FROM Rezepte WHERE Name = ?", (cocktailname,)).fetchone()
+            CocktailID = Zspeicher[0]
+            Cocktailmenge = Zspeicher[1]
             if normalcheck == False:
                 Cocktailmenge = Fixmenge
-            Zspeicher = c.execute(
-                "SELECT Zusammen.Menge, Belegung.Flasche, Zusammen.Alkoholisch From Zusammen INNER JOIN Belegung ON Zusammen.Zutaten_ID = Belegung.ID WHERE Zusammen.Rezept_ID = ?", (CocktailID,))
+            # gets all the amounts, Bottles and alctype for the recipe
+            Zspeicher = c.execute("SELECT Zusammen.Menge, Belegung.Flasche, Zusammen.Alkoholisch From Zusammen INNER JOIN Belegung ON Zusammen.Zutaten_ID = Belegung.ID WHERE Zusammen.Rezept_ID = ? AND Zusammen.Hand=0", (CocktailID,))
             for row in Zspeicher:
+                # if the ingredient is alcoholic assign the factor
                 if row[2] == 1:
                     MFaktor = Alkoholfaktor
                 else:
                     MFaktor = 1
+                # creates the list for amount, bottlenumber, time, volume and consumption for each ingredient
                 V_ZM.append(round(int(row[0])*MFaktor, 1))
                 V_FNr.append(int(row[1]))
-                V_Zeit.append(
-                    round((int(row[0])*MFaktor)/Volumenstrom[row[1]-1], 2))
+                V_Zeit.append(round((int(row[0])*MFaktor)/Volumenstrom[row[1]-1], 2))
                 V_Volumen += round(int(row[0])*MFaktor, 1)
                 V_Verbrauch.append(0)
             # If there is a comment, it will be checked, and the quantity of the ingredients will be added to the V_Volumen
-            c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",(w.LWMaker.currentItem().text(),))
-            Zspeicher = c.fetchone()[0]
-            if Zspeicher is None:
-                pass
-            elif len(Zspeicher) >= 1:
-                mysplitstring = re.split(', | |,', Zspeicher) 
-                for allwords in mysplitstring:
-                    try:
-                        V_Volumen += int(allwords)
-                    except:
-                        pass
+            # gets all values from the DB which needed to be added via hand later
+            Zspeicher = c.execute("SELECT Zutaten.Name, Z.Menge, Z.Alkoholisch, Zutaten.ID FROM Zusammen AS Z INNER JOIN Rezepte AS R ON R.ID=Z.Rezept_ID INNER JOIN Zutaten ON Z.Zutaten_ID=Zutaten.ID WHERE R.ID = ? AND Z.Hand=1", (CocktailID,))
+            commentlist = []
+            for row in Zspeicher:
+                commentlist.append(row)
+            zusatzstring = ""
+            hand_consumption = []
+            if len(commentlist) > 0:
+                for row in commentlist:
+                    if row[2] == 1:
+                        MFaktor = Alkoholfaktor
+                    else:
+                        MFaktor = 1
+                    hand_volume = round(int(row[1])*MFaktor, 1)
+                    hand_consumption.append([row[3], hand_volume])
+                    V_Volumen += hand_volume
+            # Checks it the calculated volume is the desired volume, due to concentrating factors and comments, this can vary
+            # Calculates the difference and then adjust all values and the times
             MVH = Cocktailmenge/V_Volumen
             if MVH != 1:
                 for x in range(0, len(V_ZM)):
@@ -220,20 +245,14 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
             # if all conditions are met, go on
             if createcheck:
                 # Generate the Comment for the end of the Programm
-                c.execute("SELECT Kommentar FROM Rezepte WHERE Name = ?",(w.LWMaker.currentItem().text(),))
-                Zspeicher = c.fetchone()[0]
-                if Zspeicher is not None:
-                    if len(Zspeicher) >= 1:
-                        mysplitstring = re.split(', |,', str(Zspeicher))
-                        zusatzstring = "\n\nNoch hinzufügen:"
-                        for x in mysplitstring:
-                            y = x.split(' ')
-                            z = "{} ".format(str(round(int(y[0])*MVH))) + ' '.join(y[1:])
-                            zusatzstring = zusatzstring + "\n- ca. {}".format(z)
-                    else:
-                        zusatzstring = ""
-                else:
-                    zusatzstring = ""
+                if len(commentlist) > 0:
+                    zusatzstring = "\n\nNoch hinzufügen:"
+                    for row in commentlist:
+                        if row[2] == 1:
+                            MFaktor = Alkoholfaktor
+                        else:
+                            MFaktor = 1
+                        zusatzstring += "\n- ca. {} ml {}".format(round(int(row[1])*MVH*MFaktor), row[0])
                 # search for the longest time
                 T_max = V_Zeit[0]
                 for row in range(1, len(V_Zeit)):
@@ -279,9 +298,8 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                     if not devenvironment:
                         GPIO.output(Pinvektor[V_FNr[row] - 1], 1)
                 w.prow_close()
-                # Adds the usage
-                for x in range(0, len(V_FNr)):
-                    c.execute("UPDATE OR IGNORE Zutaten SET Mengenlevel = Mengenlevel - ? WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)", (round(V_Verbrauch[x]), V_FNr[x]))
+                # Adds the usage and the cocktail
+                c.execute("UPDATE OR IGNORE Rezepte SET Anzahl_Lifetime = Anzahl_Lifetime + 1, Anzahl = Anzahl + 1 WHERE ID = ?", (CocktailID,))
                 # logs all value, checks if recipe was interrupted and where
                 if normalcheck:
                     mengenstring = "Standard"
@@ -296,11 +314,15 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
                 template = "{:8} | {}{}"
                 logger = logging.getLogger('cocktail_application')
                 logger.info(template.format(
-                    mengenstring, w.LWMaker.currentItem().text(), abbruchstring))
+                    mengenstring, cocktailname, abbruchstring))
                 print("Verbrauchsmengen: ", [round(x) for x in V_Verbrauch])
+                # Updates the consumption, first for the normal values and then if the recipe was not interrupted and handadds exists also for them
                 for x in range(0, len(V_Verbrauch)):
-                    c.execute("UPDATE OR IGNORE Zutaten SET Verbrauchsmenge = Verbrauchsmenge + ?, Verbrauch = Verbrauch + ? WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)",
-                              (round(V_Verbrauch[x]), round(V_Verbrauch[x]), V_FNr[x]))
+                    c.execute("UPDATE OR IGNORE Zutaten SET Verbrauchsmenge = Verbrauchsmenge + ?, Verbrauch = Verbrauch + ?, Mengenlevel = Mengenlevel - ? WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)",
+                              (round(V_Verbrauch[x]), round(V_Verbrauch[x]), round(V_Verbrauch[x]), V_FNr[x]))
+                if globals.loopcheck and len(hand_consumption)>0:
+                    for row in hand_consumption:
+                        c.execute("UPDATE OR IGNORE Zutaten SET Verbrauchsmenge = Verbrauchsmenge + ?, Verbrauch = Verbrauch + ? WHERE ID = ?", (round(row[1]), round(row[1]), row[0]))
                 DB.commit()
                 Belegung_progressbar(w, DB, c)
                 if globals.loopcheck:
@@ -320,26 +342,6 @@ def abbrechen_R():
 
 
 @logerror
-def Maker_pm(w, DB, c, operator):
-    """ Increases or decreases the Custom set amount. \n
-    The Minimum/Maximum ist 100/400. \n
-    ------------------------------------------------------------
-    As operater can be used: \n
-    "+":    increases the value by 25 \n
-    "-":    decreases the value by 25
-    """
-    minimal = 100
-    maximal = 400
-    dm = 25
-    amount = int(w.LCustomMenge.text())
-    if operator == "+" and amount < maximal:
-        amount += dm
-    if operator == "-" and amount > minimal:
-        amount -= dm
-    w.LCustomMenge.setText(str(amount))
-
-
-@logerror
 def Maker_nullProB(w, DB, c):
     """ Sets the alcoholintensity to default value (100 %). """
     w.HSIntensity.setValue(0)
@@ -348,24 +350,24 @@ def Maker_nullProB(w, DB, c):
 @logerror
 def Maker_ProB_change(w, DB, c):
     """ Recalculates the alcoholpercentage of the drink with the adjusted Value from the slider. """
+    # only carries out if there is a selected recipe
     if w.LWMaker.selectedItems():
+        # gets the factor and the recipe ID
         factor = 1 + (w.HSIntensity.value()/100)
         cocktailname = w.LWMaker.currentItem().text()
-        # if the factor is one gets the value out of the DB
-        if factor == 1:
-            c.execute("SELECT Alkoholgehalt FROM Rezepte WHERE Name = ?",(cocktailname,))
-            c_ges = c.fetchone()[0]
-        # if the value is not one calculates the new value out of the saved helper values in the DB
-        else:
-            Zspeicher = c.execute("SELECT Menge, V_Alk, c_Alk, V_Com, c_Com FROM Rezepte WHERE Name = ?",(cocktailname,))
-            for row in Zspeicher:
-                v_ges = row[0]
-                v_alk = row[1]
-                c_alk = row[2]
-                v_com = row[3]
-                c_com = row[4]
-            v_notalk = v_ges - v_alk
-            v_gesneu = v_alk*factor + v_notalk + v_com
-            vc_neu = v_alk*factor*c_alk + v_com*c_com
-            c_ges = vc_neu/v_gesneu
-        w.LAlkoholgehalt.setText("Alkohol: {:.0f}%".format(c_ges))
+        recipe_id = c.execute("SELECT ID FROM Rezepte WHERE Name = ?",(cocktailname,)).fetchone()[0]
+        # select amount and concentration for each recipe
+        ingredient_data = c.execute("SELECT Zusammen.Menge, Zutaten.Alkoholgehalt FROM Zusammen INNER JOIN Zutaten ON Zutaten.ID = Zusammen.Zutaten_ID WHERE Zusammen.Rezept_ID = ?",(recipe_id,))
+        sum_volume = 0
+        sum_volumeconcentration = 0
+        # summs each volume and volumeconcentration up, multiply by the alcoholfactor, if the ingredient is alcoholic
+        for row in ingredient_data:
+            if row[1] == 0:
+                factor_volume = 1
+            else:
+                factor_volume = factor
+            sum_volume += row[0]*factor_volume
+            sum_volumeconcentration += row[0]*row[1]*factor_volume
+        concentration = sum_volumeconcentration/sum_volume
+        w.LAlkoholgehalt.setText("Alkohol: {:.0f}%".format(concentration))
+
