@@ -124,7 +124,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             v_com += row[1]
             sv_com += row[1]*row[4]
         if sv_com > 0:
-            c_com = sv_com/v_com
+            c_com = round(sv_com/v_com, 1)
         SVol2 += v_com
         SVolcon += v_com*c_com
         # Gets the percentage of alcohol the average percentage of pure alcohol and the amount of alcohol

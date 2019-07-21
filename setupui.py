@@ -27,6 +27,7 @@ from ui_elements.bonusingredient import Ui_addingredient
 from ui_elements.bottlewindow import Ui_Bottlewindow
 from ui_elements.Keyboard import Ui_Keyboard
 from ui_elements.handadds import Ui_handadds
+from ui_elements.available import Ui_available
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -55,6 +56,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEGehaltRezept.clicked.connect(lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext="Alkoholgehalt eingeben!"))
         self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept, max_char_len=20))
         self.LEKommentar.clicked.connect(self.handwindow)
+        self.PBAvailable.clicked.connect(self.availablewindow)
         # connects all the Lineedits from the Recipe amount and gives them the validator
         LER_obj = [getattr(self, "LER" + str(x)) for x in range(1,9)]
         for obj in LER_obj:
@@ -84,14 +86,14 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         Needs a Lineedit where the text is put in. In addition, the header of the window can be changed. 
         This is only relevant if you dont show the window in Fullscreen!
         """
-        self.kbw = Keyboardwidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
+        self.kbw = KeyboardWidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
         if headertext is not None:
             self.kbw.setWindowTitle(headertext)
         self.kbw.showFullScreen()
 
     def progressionqwindow(self, labelchange=False):
         """ Opens up the progressionwindow to show the Cocktail status. """
-        self.prow = Progressscreen(self)
+        self.prow = ProgressScreen(self)
         if labelchange:
             self.prow.Lheader.setText('Zutat wird ausgegeben!\nFortschritt:')
         self.prow.show()
@@ -106,12 +108,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def bottleswindow(self, bot_names=[], vol_values=[]):
         """ Opens the bottlewindow to change the volumelevels. """
-        self.botw = Bottlewindow(self)
+        self.botw = BottleWindow(self)
         self.botw.show()
 
     def ingredientdialog(self):
         """ Opens a window to spend one single ingredient. """
-        self.ingd = Getingredientwindow(self)
+        self.ingd = GetIngredientWindow(self)
         self.ingd.show()
     
     def handwindow(self):
@@ -120,15 +122,19 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             storeval = self.c.execute("SELECT Z.Zutaten_ID, Z.Menge, Z.Alkoholisch FROM Zusammen AS Z INNER JOIN Rezepte AS R ON R.ID=Z.Rezept_ID WHERE R.Name = ? AND Z.Hand=1", (self.LWRezepte.currentItem().text(),))
             for row in storeval:
                 self.handaddlist.append(list(row))
-        self.handw = Handaddwidget(self)
+        self.handw = HandaddWidget(self)
         self.handw.show()
 
+    def availablewindow(self):
+        self.availw = AvailableWindow(self)
+        self.availw.showFullScreen()
 
-class Progressscreen(QMainWindow, Ui_Progressbarwindow):
+
+class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
     """ Class for the Progressscreen during Cocktail making. """
 
     def __init__(self, parent=None):
-        super(Progressscreen, self).__init__(parent)
+        super(ProgressScreen, self).__init__(parent)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.PBabbrechen.clicked.connect(lambda: abbrechen_R())
@@ -181,12 +187,12 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
             self.pwlineedit.setText(strstor[:-1])
 
 
-class Bottlewindow(QMainWindow, Ui_Bottlewindow):
+class BottleWindow(QMainWindow, Ui_Bottlewindow):
     """ Creates the Window to change to levels of the bottles. """
 
     def __init__(self, parent=None):
         """ Init. Connects all the buttons, gets the names from Mainwindow/DB. """
-        super(Bottlewindow, self).__init__(parent)
+        super(BottleWindow, self).__init__(parent)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         # connects all the buttons
@@ -240,14 +246,14 @@ class Bottlewindow(QMainWindow, Ui_Bottlewindow):
         self.close()
 
 
-class Getingredientwindow(QDialog, Ui_addingredient):
+class GetIngredientWindow(QDialog, Ui_addingredient):
     """ Creates a Dialog to chose an additional ingredient and the amount
     to spend this ingredient.
     """
 
     def __init__(self, parent=None):
         """ Init. Connects all the buttons and get values for the Combobox. """
-        super(Getingredientwindow, self).__init__(parent)
+        super(GetIngredientWindow, self).__init__(parent)
         self.setupUi(self)
         # Set window properties
         self.setWindowFlags(
@@ -336,10 +342,10 @@ class Getingredientwindow(QDialog, Ui_addingredient):
             self.DB.commit()
             self.ms.prow_close()
 
-class Keyboardwidget(QDialog, Ui_Keyboard):
+class KeyboardWidget(QDialog, Ui_Keyboard):
     """ Creates a Keyboard where the user can enter names or similar strings to Lineedits. """
     def __init__(self, parent, le_to_write=None, max_char_len=30):
-        super(Keyboardwidget, self).__init__(parent)
+        super(KeyboardWidget, self).__init__(parent)
         self.setupUi(self)
         self.ms = parent
         self.le_to_write = le_to_write
@@ -402,10 +408,10 @@ class Keyboardwidget(QDialog, Ui_Keyboard):
         for obj, char in zip(self.attribute_chars, charchoose):
             obj.setText(str(char))
 
-class Handaddwidget(QDialog, Ui_handadds):
+class HandaddWidget(QDialog, Ui_handadds):
     """ Creates a window where the user can define additional ingredients to add via hand after the machine. """
     def __init__(self, parent):
-        super(Handaddwidget, self).__init__(parent)
+        super(HandaddWidget, self).__init__(parent)
         self.setupUi(self)
         self.setWindowFlags(
             Qt.Window |
@@ -497,6 +503,62 @@ class Handaddwidget(QDialog, Ui_handadds):
                 commenttext = commenttext[:-2]
             self.ms.LEKommentar.setText(commenttext)
             self.close()
+
+class AvailableWindow(QMainWindow, Ui_available):
+    """ Opens a window where the user can select all available ingredients. """
+    def __init__(self, parent):
+        super(AvailableWindow, self).__init__(parent)
+        self.setupUi(self)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.ms = parent
+        # somehow the ui dont accept without _2 for those two buttons so they are _2
+        self.PBAbbruch_2.clicked.connect(self.abbrechen_clicked)
+        self.PBOk_2.clicked.connect(self.accepted_clicked)
+        self.PBAdd.clicked.connect(lambda: self.changeingredient(self.LWVorhanden, self.LWAlle))
+        self.PBRemove.clicked.connect(lambda: self.changeingredient(self.LWAlle, self.LWVorhanden))
+        # gets the available ingredients out of the DB and assigns them to the LW
+        Zspeicher = self.ms.c.execute("SELECT Z.Name FROM Zutaten AS Z INNER JOIN Vorhanden AS V ON V.ID = Z.ID")
+        ingredient_available = []
+        for name in Zspeicher:
+            self.LWVorhanden.addItem(name[0])
+            ingredient_available.append(name[0])
+        # gets the names of all ingredients out of the DB calculates the not used ones and assigns them to the LW
+        Zspeicher = self.ms.c.execute("SELECT Name FROM Zutaten")
+        ingredient_all = []
+        for name in Zspeicher:
+            ingredient_all.append(name[0])
+        entrylist = list(set(ingredient_all) - set(ingredient_available))
+        for name in entrylist:
+            self.LWAlle.addItem(name)
+        # generates two list for values to remove and add from the db when the accept button is clicked
+        # self.add_db = []
+        # self.remove_db = []
+
+    def abbrechen_clicked(self):
+        """ Closes the window without any furter action. """
+        self.close()
+
+    def accepted_clicked(self):
+        """ Writes the new availibility into the DB. """
+        self.ms.c.execute("DELETE FROM Vorhanden")
+        for i in range(self.LWVorhanden.count()):
+            ing_id = self.ms.c.execute("SELECT ID FROM Zutaten WHERE Name=?",(self.LWVorhanden.item(i).text(),)).fetchone()[0]
+            self.ms.c.execute("INSERT OR IGNORE INTO Vorhanden(ID) VALUES(?)",(ing_id,))
+        self.ms.DB.commit()
+        # reloads the maker screen and updates the shown available recipes
+        Rezepte_a_M(self.ms, self.ms.DB, self.ms.c)
+        self.close()
+    
+    def changeingredient(self, lwadd, lwremove):
+        if lwremove.selectedItems():
+            ingredientname = lwremove.currentItem().text()
+            lwadd.addItem(ingredientname)
+            delfind = lwremove.findItems(ingredientname, Qt.MatchExactly)
+            if len(delfind) > 0:
+                for item in delfind:
+                    lwremove.takeItem(lwremove.row(item))
+            for i in range(lwremove.count()):
+                lwremove.item(i).setSelected(False)
 
 def pass_setup(w, DB, c, partymode, devenvironment):
     """ Connect all the functions with the Buttons. """

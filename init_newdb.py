@@ -13,8 +13,9 @@ def create_new_db(DB, c):
     # Creates each Table
     c.execute("CREATE TABLE IF NOT EXISTS Rezepte(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Name TEXT NOT NULL, Alkoholgehalt INTEGER NOT NULL, Menge INTEGER NOT NULL, Kommentar TEXT, Anzahl_Lifetime INTEGER, Anzahl INTEGER, Enabled INTEGER, V_Alk INTEGER, c_Alk INTEGER, V_Com INTEGER, c_Com INTEGER);")
     c.execute("CREATE TABLE IF NOT EXISTS Zutaten(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Name TEXT NOT NULL, Alkoholgehalt INTEGER NOT NULL, Flaschenvolumen INTEGER NOT NULL, Verbrauchsmenge INTEGER, Verbrauch INTEGER, Mengenlevel INTEGER, Hand INTEGER);")
-    c.execute("CREATE TABLE IF NOT EXISTS Zusammen(Rezept_ID INTEGER NOT NULL, Zutaten_ID INTEGER NOT NULL, Menge INTEGER NOT NULL, Alkoholisch INTEGER NOT NULL);")
+    c.execute("CREATE TABLE IF NOT EXISTS Zusammen(Rezept_ID INTEGER NOT NULL, Zutaten_ID INTEGER NOT NULL, Menge INTEGER NOT NULL, Alkoholisch INTEGER NOT NULL, Hand INTEGER);")
     c.execute("CREATE TABLE IF NOT EXISTS Belegung(Flasche INTEGER NOT NULL, Zutat_F TEXT NOT NULL, ID INTEGER, Mengenlevel INTEGER);")
+    c.execute("CREATE TABLE IF NOT EXISTS Vorhanden(ID INTEGER NOT NULL);")
     DB.commit()
 
     # Creating the Unique Indexes

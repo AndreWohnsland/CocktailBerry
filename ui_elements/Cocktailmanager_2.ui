@@ -288,7 +288,7 @@ QLineEdit
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -1402,17 +1402,27 @@ QLineEdit
                    </widget>
                   </item>
                   <item>
-                   <spacer name="horizontalSpacer_7">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
+                   <widget class="QPushButton" name="PBAvailable">
+                    <property name="maximumSize">
                      <size>
-                      <width>40</width>
-                      <height>20</height>
+                      <width>220</width>
+                      <height>16777215</height>
                      </size>
                     </property>
-                   </spacer>
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="layoutDirection">
+                     <enum>Qt::LeftToRight</enum>
+                    </property>
+                    <property name="text">
+                     <string>verfügbar</string>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="PBZnull">
