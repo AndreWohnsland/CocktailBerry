@@ -547,6 +547,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         self.ms.DB.commit()
         # reloads the maker screen and updates the shown available recipes
         Rezepte_a_M(self.ms, self.ms.DB, self.ms.c)
+        Maker_List_null(self.ms, self.ms.DB, self.ms.c)
         self.close()
     
     def changeingredient(self, lwadd, lwremove):
