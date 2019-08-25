@@ -2,6 +2,7 @@ import sys
 import sqlite3
 import logging
 import time
+import os
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -28,8 +29,10 @@ if not devenvironment:
 if __name__ == '__main__':
 
     # Connect (or create) the DB and the cursor
-    dbname = 'Datenbank.db'
-    DB = sqlite3.connect(dbname)
+    dbname = 'Datenbank'
+    dirpath = os.path.dirname(__file__)
+    db_path = os.path.join(dirpath, "{}.db".format(dbname))
+    DB = sqlite3.connect(db_path)
     c = DB.cursor()
     if neednewdb:
         init_newdb.create_new_db(DB, c)
@@ -37,7 +40,7 @@ if __name__ == '__main__':
     # Load the UI
     app = QApplication(sys.argv)
     # w = loadUi("Cocktailmanager_2.ui")
-    w = setupui.MainScreen(devenvironment, dbname)
+    w = setupui.MainScreen(devenvironment, db_path)
 
     # Setting the Pins if not DevEnvironment
     if not devenvironment:
