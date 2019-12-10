@@ -6,6 +6,7 @@ If you got any questions or proposed improvements, feel free to share and/or con
 
 ## Minimal Requirements
 
+Disclaimer: since the adding of the new `requirements.txt` file it should also be possible just to run `pip install -r requirements.txt` to get all requirements.
 ```
 - Python 3
 - PyQt5
