@@ -17,19 +17,20 @@ import init_newdb
 globals.initialize()
 
 # Here you can change the parameters:
-loggername = "today"		    # under this name your logging file will be saved
-devenvironment = True			# important to set to False, otherwise the GPIO-commands dont work
-partymode = False				# True disables the recipe tab, that no user can change it
-neednewdb = False				# only needed if you delete your DB and want to set up new one
+loggername = "today"  # under this name your logging file will be saved
+# important to set to False, otherwise the GPIO-commands dont work
+devenvironment = True
+partymode = False  # True disables the recipe tab, that no user can change it
+neednewdb = False  # only needed if you delete your DB and want to set up new one
 
 if not devenvironment:
     import RPi.GPIO as GPIO
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # Connect (or create) the DB and the cursor
-    dbname = 'Datenbank'
+    dbname = "Datenbank"
     dirpath = os.path.dirname(__file__)
     db_path = os.path.join(dirpath, "{}.db".format(dbname))
     DB = sqlite3.connect(db_path)
@@ -47,8 +48,8 @@ if __name__ == '__main__':
         GPIO.setmode(GPIO.BCM)
 
     # Get the basic Logger
-    loggerconfig.basiclogger('cocktail_application', loggername, True)
-    loggerconfig.basiclogger('debuglog', 'debuglog')
+    loggerconfig.basiclogger("cocktail_application", loggername, True)
+    loggerconfig.basiclogger("debuglog", "debuglog")
     # loggerconfig.initlogger_dec('calling', 'calling')
 
     # Load all the Functions from the setup script
