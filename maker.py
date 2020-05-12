@@ -48,45 +48,45 @@ def Rezepte_a_M(w, DB, c, reloadall=True, mode="", changeid=0, goon=True):
                 V_Rezepte.append(int(Werte[0]))
     # Search all ingredient IDs of the recipe
     # if its only one recipe change and it is not enabled, this part will not be carried out
-    if goon:
-        for row in V_Rezepte:
-            vorhandenvar = 0
-            # Generates a list of all Ids of the ingredients needed by the machine for every recipe
-            V_Rezepte2 = []
-            Zspeicher = c.execute(
-                "SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=0", (row,)
-            )
-            for Werte in Zspeicher:
-                V_Rezepte2.append(int(Werte[0]))
-            # Check if all Bottles for the Recipe are Connected, if so adds it to the List
-            for row2 in V_Rezepte2:
-                c.execute("SELECT COUNT(*) FROM Belegung WHERE ID = ?", (row2,))
-                Zspeicher2 = c.fetchone()[0]
-                if Zspeicher2 == 0:
-                    vorhandenvar = 1
-                    break
-            # Generates a list of all Ids of the ingredients which needs to be added later by hand
-            V_Rezepte2 = []
-            Zspeicher = c.execute(
-                "SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=1", (row,)
-            )
-            for Werte in Zspeicher:
-                V_Rezepte2.append(int(Werte[0]))
-            # Check if all ingredients for the Recipe are set available (Vorhanden DB got the list), if so adds it to the List
-            for row2 in V_Rezepte2:
-                c.execute("SELECT COUNT(*) FROM Vorhanden WHERE ID = ?", (row2,))
-                Zspeicher2 = c.fetchone()[0]
-                if Zspeicher2 == 0:
-                    vorhandenvar = 1
-                    break
-            if vorhandenvar == 0:
-                ID_Rezepte.append(row)
-        # alle möglichen Rezepte werden über ihre ID in Liste eingetragen
-        for row in ID_Rezepte:
-            name_ = c.execute(
-                "SELECT Name FROM Rezepte WHERE ID = ?", (row,)
-            ).fetchone()[0]
-            w.LWMaker.addItem(name_)
+    if not goon:
+        return
+
+    for row in V_Rezepte:
+        vorhandenvar = 0
+        # Generates a list of all Ids of the ingredients needed by the machine for every recipe
+        V_Rezepte2 = []
+        Zspeicher = c.execute(
+            "SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=0", (row,)
+        )
+        for Werte in Zspeicher:
+            V_Rezepte2.append(int(Werte[0]))
+        # Check if all Bottles for the Recipe are Connected, if so adds it to the List
+        for row2 in V_Rezepte2:
+            c.execute("SELECT COUNT(*) FROM Belegung WHERE ID = ?", (row2,))
+            Zspeicher2 = c.fetchone()[0]
+            if Zspeicher2 == 0:
+                vorhandenvar = 1
+                break
+        # Generates a list of all Ids of the ingredients which needs to be added later by hand
+        V_Rezepte2 = []
+        Zspeicher = c.execute(
+            "SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=1", (row,)
+        )
+        for Werte in Zspeicher:
+            V_Rezepte2.append(int(Werte[0]))
+        # Check if all ingredients for the Recipe are set available (Vorhanden DB got the list), if so adds it to the List
+        for row2 in V_Rezepte2:
+            c.execute("SELECT COUNT(*) FROM Vorhanden WHERE ID = ?", (row2,))
+            Zspeicher2 = c.fetchone()[0]
+            if Zspeicher2 == 0:
+                vorhandenvar = 1
+                break
+        if vorhandenvar == 0:
+            ID_Rezepte.append(row)
+    # alle möglichen Rezepte werden über ihre ID in Liste eingetragen
+    for row in ID_Rezepte:
+        name_ = c.execute("SELECT Name FROM Rezepte WHERE ID = ?", (row,)).fetchone()[0]
+        w.LWMaker.addItem(name_)
 
 
 @logerror
@@ -120,9 +120,7 @@ def Maker_Rezepte_click(w, DB, c):
             "SELECT Z.Zutaten_ID, Z.Menge FROM Zusammen AS Z INNER JOIN Rezepte AS R ON R.ID=Z.Rezept_ID WHERE R.Name = ? AND Z.Hand=1",
             (cocktailname,),
         )
-        commentlist = []
-        for row in Zspeicher:
-            commentlist.append(row)
+        commentlist = [row for row in Zspeicher]
         # if there are any additional ingredients generate the additional entries in the list
         if len(commentlist) > 0:
             LVZutat.extend(["", "Selbst hinzufügen:"])
@@ -219,10 +217,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
     )
     for row in Zspeicher:
         # if the ingredient is alcoholic assign the factor
-        if row[2] == 1:
-            MFaktor = Alkoholfaktor
-        else:
-            MFaktor = 1
+        MFaktor = Alkoholfaktor if row[2] == 1 else 1
         # creates the list for amount, bottlenumber, time, volume and consumption for each ingredient
         V_ZM.append(round(int(row[0]) * MFaktor, 1))
         V_FNr.append(int(row[1]))
@@ -235,9 +230,7 @@ def Maker_Zubereiten(w, DB, c, normalcheck, devenvironment):
         "SELECT Zutaten.Name, Z.Menge, Z.Alkoholisch, Zutaten.ID FROM Zusammen AS Z INNER JOIN Rezepte AS R ON R.ID=Z.Rezept_ID INNER JOIN Zutaten ON Z.Zutaten_ID=Zutaten.ID WHERE R.ID = ? AND Z.Hand=1",
         (CocktailID,),
     )
-    commentlist = []
-    for row in Zspeicher:
-        commentlist.append(row)
+    commentlist = [row for row in Zspeicher]
     zusatzstring = ""
     hand_consumption = []
     for row in commentlist:
@@ -387,10 +380,7 @@ def Maker_ProB_change(w, DB, c):
         sum_volumeconcentration = 0
         # summs each volume and volumeconcentration up, multiply by the alcoholfactor, if the ingredient is alcoholic
         for row in ingredient_data:
-            if row[1] == 0:
-                factor_volume = 1
-            else:
-                factor_volume = factor
+            factor_volume = 1 if row[1] == 0 else factor
             sum_volume += row[0] * factor_volume
             sum_volumeconcentration += row[0] * row[1] * factor_volume
         concentration = sum_volumeconcentration / sum_volume
