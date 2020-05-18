@@ -35,12 +35,13 @@ def plusminus(label, operator, minimal=0, maximal=1000, dm=10, DB=None, c=None):
     elif operator == "-":
         value_ -= dm
     else:
-        raise ValueError('operator is neither plus nor minus!')
+        raise ValueError("operator is neither plus nor minus!")
     # sets the value at a multiple of dm and limits it to min/max value
-    value_ = (value_//dm)*dm
+    value_ = (value_ // dm) * dm
     value_ = max(minimal, value_)
     value_ = min(maximal, value_)
     label.setText(str(value_))
+
 
 @logerror
 def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, searchstring2, where_=False):
@@ -58,10 +59,10 @@ def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, search
         subfoldername = "saves"
         # generating a savename prefix for the date and remove the '-' signs
         dtime = str(datetime.date.today())
-        dtime = dtime.replace('-', '')
-        savepath = os.path.join(dirpath, subfoldername, dtime + '_' + filename)
-        with open(savepath, mode='a', newline='') as writer_file:
-            csv_writer = csv.writer(writer_file, delimiter=',')
+        dtime = dtime.replace("-", "")
+        savepath = os.path.join(dirpath, subfoldername, dtime + "_" + filename)
+        with open(savepath, mode="a", newline="") as writer_file:
+            csv_writer = csv.writer(writer_file, delimiter=",")
             # csv_writer.writerow(
             #     ["----- Neuer Export von %s -----" % datetime.date.today()])
             row1 = []
@@ -71,10 +72,10 @@ def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, search
                 wherestring2 = " WHERE {} > 0".format(searchstring2)
             # selects the actual use and the names and writes them
             sqlstring = "SELECT Name, {0} FROM {1}{2}".format(searchstring1, dbstring, wherestring1)
-            Zspeicher = c.execute(sqlstring)
-            row1.append('date')
+            cursor_buffer = c.execute(sqlstring)
+            row1.append("date")
             row2.append(datetime.date.today())
-            for row in Zspeicher:
+            for row in cursor_buffer:
                 row1.append(row[0])
                 row2.append(row[1])
             csv_writer.writerow(row1)
@@ -84,10 +85,10 @@ def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, search
             row2 = []
             # selects the life time use and saves them
             sqlstring = "SELECT Name, {0} FROM {1}{2}".format(searchstring2, dbstring, wherestring2)
-            Zspeicher = c.execute(sqlstring)
-            row1.append('date')
-            row2.append('lifetime')
-            for row in Zspeicher:
+            cursor_buffer = c.execute(sqlstring)
+            row1.append("date")
+            row2.append("lifetime")
+            for row in cursor_buffer:
                 row1.append(row[0])
                 row2.append(row[1])
             csv_writer.writerow(row1)
@@ -96,8 +97,7 @@ def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, search
         sqlstring = "UPDATE OR IGNORE {} SET {} = 0".format(dbstring, searchstring1)
         c.execute(sqlstring)
         DB.commit()
-        standartbox(
-            "Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!")
+        standartbox("Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!")
     else:
         standartbox("Falsches Passwort!")
     wobject.setText("")

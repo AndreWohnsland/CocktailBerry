@@ -27,12 +27,15 @@ def customlevels(w, DB, c):
 
 def get_bottle_ingredients(w, DB, c):
     """ At the start of the Programm, get all the ingredients from the DB. """
-    for i in range(1,11):
-        storeval = c.execute("SELECT Zutaten.Name FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (i,)).fetchone()
+    for i in range(1, 11):
+        storeval = c.execute(
+            "SELECT Zutaten.Name FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?",
+            (i,),
+        ).fetchone()
         if storeval is not None:
-            globals.olding.append(storeval[0])
+            globals.old_ingredient.append(storeval[0])
         else:
-            globals.olding.append('')
+            globals.old_ingredient.append("")
 
 
 def refresh_bottle_cb(w, DB, c):
@@ -45,9 +48,9 @@ def refresh_bottle_cb(w, DB, c):
     since the index may change itself with the deletion.
     """
     # Creating a list of the new and old bottles used
-    old_order = globals.olding
+    old_order = globals.old_ingredient
     new_order = []
-    for i in range(1,11):
+    for i in range(1, 11):
         CBBname = getattr(w, "CBB" + str(i))
         if CBBname.currentText() != 0:
             new_order.append(CBBname.currentText())
@@ -56,54 +59,37 @@ def refresh_bottle_cb(w, DB, c):
     # getting the difference between those two lists and assign new/old value
     new_blist = list(set(new_order) - set(old_order))
     old_blist = list(set(old_order) - set(new_order))
+    print(len(new_blist), len(old_blist), old_blist[0], new_blist[0])
     # checks if the list only contains one element
     # extrtacts the element out of the list
-    if len(new_blist)>1 or len(old_blist)>1:
-        raise ValueError('The List should never contain two or more Elements!')
+    if len(new_blist) > 1 or len(old_blist) > 1:
+        raise ValueError("The List should never contain two or more Elements!")
     else:
-        if len(new_blist)==0:
+        if len(new_blist) == 0:
             new_bottle = ""
         else:
             new_bottle = new_blist[0]
-        if len(old_blist)==0:
+        if len(old_blist) == 0:
             old_bottle = ""
         else:
             old_bottle = old_blist[0]
     # adds or substracts the text to the comboboxes (except the one which was changed)
-    for i in range(1,11):
+    for i in range(1, 11):
         CBBname = getattr(w, "CBB" + str(i))
-        if (old_bottle != "") and (old_bottle != old_order[i-1]):
+        if (old_bottle != "") and (old_bottle != old_order[i - 1]):
             CBBname.addItem(old_bottle)
-        if (new_bottle != "") and (new_bottle != new_order[i-1]):
+        if (new_bottle != "") and (new_bottle != new_order[i - 1]):
             index = CBBname.findText(new_bottle, Qt.MatchFixedString)
             if index >= 0:
                 CBBname.removeItem(index)
         CBBname.model().sort(0)
     # the new is now the old for the next step:
     Belegung_eintragen(w, DB, c)
-    globals.olding = new_order
+    globals.old_ingredient = new_order
 
 
 @logerror
-def ZutatenCB_Belegung(w, DB, c):
-    """ Asigns all ingredients to the Comboboxes in the bottles tab. 
-    DEPRECIATED; Use newCB_Bottles instead!!!
-    """
-    for box in range(1, 11):
-        Zspeicher = c.execute("SELECT NAME FROM Zutaten")
-        CBBname = getattr(w, "CBB" + str(box))
-        CBBname.clear()
-        CBBname.addItem("")
-        for row in Zspeicher:
-            CBBname.addItem(row[0])
-
-
-def testfunction(w, DB, c):
-    pass
-
-
-@logerror
-def newCB_Bottles(w, DB,c):
+def newCB_Bottles(w, DB, c):
     """ This is a new method for the DropDowns of the different Bottles.\n
     Assigns all possible ingredients to the Comboboxes in the bottles tab.\n
     By possible it means that if another Combobox got the value, others cannot use it,
@@ -111,17 +97,17 @@ def newCB_Bottles(w, DB,c):
     Due to the process, after each change, each CB needs to be rechecked.
     """
     # generates a list of all Combobox entries
-    entrylist = globals.olding
+    entrylist = globals.old_ingredient
     inglist = []
-    Zspeicher = c.execute("SELECT NAME FROM Zutaten WHERE Hand = 0")
-    for ing in Zspeicher:
+    cursor_buffer = c.execute("SELECT NAME FROM Zutaten WHERE Hand = 0")
+    for ing in cursor_buffer:
         inglist.append(str(ing[0]))
     # generates a list for each CB which values have to be assigned
     # Therefore substract the already assigned values from all potential values
     # except the value of the current CB
     cblist = []
     for row, _ in enumerate(entrylist):
-        cblist.append(sorted(set(inglist) - set([x for i,x in enumerate(entrylist) if i!=row])))
+        cblist.append(sorted(set(inglist) - set([x for i, x in enumerate(entrylist) if i != row])))
     # finally deletes and refills every box
     for row, endlist in enumerate(cblist):
         CBBname = getattr(w, "CBB" + str(row + 1))
@@ -136,14 +122,15 @@ def Belegung_eintragen(w, DB, c, msgcall=False):
     """ Insert the selected Bottleorder into the DB. """
     # this import is neccecary on module level, otherwise there would be a circular import
     from maker import Rezepte_a_M
+
     # Checks where are entries and appends them to a list
     CBB_List = []
     dbl_check = 0
     for Flaschen_C in range(1, 11):
         CBBname = getattr(w, "CBB" + str(Flaschen_C))
-        if (CBBname.currentText() != "" and CBBname.currentText() != 0):
+        if CBBname.currentText() != "" and CBBname.currentText() != 0:
             CBB_List.append(CBBname.currentText())
-    # Checks if any ingredient is used twice, if so, dbl_check gets activated 
+    # Checks if any ingredient is used twice, if so, dbl_check gets activated
     # due to refactoring of the CB, this should never happen, since the CB only displays ingredients which are not used
     counted_bottles = Counter(CBB_List)
     double_bottles = [x[0] for x in counted_bottles.items() if x[1] > 1]
@@ -157,18 +144,19 @@ def Belegung_eintragen(w, DB, c, msgcall=False):
             CBBname = getattr(w, "CBB" + str(Flaschen_C))
             ingredientname = CBBname.currentText()
             # if no ID is pulled (no bottle there), the buffer is none and the id stays 0
-            buffer = c.execute(
-                "SELECT ID FROM Zutaten WHERE Name = ?", (ingredientname,))
+            buffer = c.execute("SELECT ID FROM Zutaten WHERE Name = ?", (ingredientname,))
             for buf in buffer:
                 Speicher_ID = buf[0]
-            c.execute("UPDATE OR IGNORE Belegung SET ID = ?, Zutat_F = ? WHERE Flasche = ?",
-                (int(Speicher_ID), ingredientname, Flaschen_C))
+            c.execute(
+                "UPDATE OR IGNORE Belegung SET ID = ?, Zutat_F = ? WHERE Flasche = ?",
+                (int(Speicher_ID), ingredientname, Flaschen_C),
+            )
             DB.commit()
         Belegung_a(w, DB, c)
         Rezepte_a_M(w, DB, c)
         Belegung_progressbar(w, DB, c)
         if msgcall:
-            standartbox("Belegung wurde geändert!")        
+            standartbox("Belegung wurde geändert!")
 
 
 @logerror
@@ -177,7 +165,9 @@ def Belegung_einlesen(w, DB, c):
     for Flaschen_C in range(1, 11):
         CBBname = getattr(w, "CBB" + str(Flaschen_C))
         Testbelegung = c.execute(
-            "SELECT Zutaten.Name FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche=?", (Flaschen_C,))
+            "SELECT Zutaten.Name FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche=?",
+            (Flaschen_C,),
+        )
         for row in Testbelegung:
             index = CBBname.findText(row[0], Qt.MatchFixedString)
             CBBname.setCurrentIndex(index)
@@ -189,7 +179,9 @@ def Belegung_a(w, DB, c):
     for Flaschen_C in range(1, 11):
         Lname = getattr(w, "LBelegung" + str(Flaschen_C))
         Testbelegung = c.execute(
-            "SELECT Zutaten.Name FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche=?", (Flaschen_C,)).fetchone()
+            "SELECT Zutaten.Name FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche=?",
+            (Flaschen_C,),
+        ).fetchone()
         # if len(Testbelegung)==0:
         #     Lname.setText("  ")
         # here must some more code to hide labels when there is no incredient in the according slot
@@ -224,7 +216,10 @@ def Belegung_progressbar(w, DB, c):
     Assigns it to the according ProgressBar.
     """
     for Flaschen_C in range(1, 11):
-        storeval = c.execute("SELECT Zutaten.Mengenlevel, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?", (Flaschen_C,)).fetchone()
+        storeval = c.execute(
+            "SELECT Zutaten.Mengenlevel, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?",
+            (Flaschen_C,),
+        ).fetchone()
         ProBname = getattr(w, "ProBBelegung" + str(Flaschen_C))
         if storeval is not None:
             level = storeval[0]
@@ -232,10 +227,10 @@ def Belegung_progressbar(w, DB, c):
             # Sets the level of the bar, it cant drop below 0 or 100%
             if level <= 0:
                 ProBname.setValue(0)
-            elif level/maximum > 1:
+            elif level / maximum > 1:
                 ProBname.setValue(100)
             else:
-                ProBname.setValue(level/maximum*100)
+                ProBname.setValue(level / maximum * 100)
         else:
             ProBname.setValue(0)
 
@@ -245,30 +240,30 @@ def CleanMachine(w, DB, c, devenvironment):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
     if not devenvironment:
         import RPi.GPIO as GPIO
+
         GPIO.setmode(GPIO.BCM)
     if w.LECleanMachine.text() == globals.masterpassword:
-        standartbox(
-            "Achtung!: Maschine wird gereinigt, genug Wasser bereitstellen! Ok zum Fortfahren.")
-        logger = logging.getLogger('cocktail_application')
+        standartbox("Achtung!: Maschine wird gereinigt, genug Wasser bereitstellen! Ok zum Fortfahren.")
+        logger = logging.getLogger("cocktail_application")
         template = "{:*^80}"
         logger.info(template.format("Cleaning the Pumps",))
-        Pinvektor = globals.usedpins
+        pin_list = globals.usedpins
         w.LECleanMachine.setText("")
-        for row in range(0, 9):
+        for row in range(9):
             if not devenvironment:
-                GPIO.setup(Pinvektor[row], GPIO.OUT)
+                GPIO.setup(pin_list[row], GPIO.OUT)
         T_aktuell = 0
-        while (T_aktuell < 20):
-            for row in range(0, 9):
+        while T_aktuell < 20:
+            for row in range(9):
                 if not devenvironment:
-                    GPIO.output(Pinvektor[row], 0)
+                    GPIO.output(pin_list[row], 0)
             T_aktuell += 0.1
             T_aktuell = round(T_aktuell, 1)
             time.sleep(0.1)
             qApp.processEvents()
-        for row in range(0, 9):
+        for row in range(9):
             if not devenvironment:
-                GPIO.output(Pinvektor[row], 1)
+                GPIO.output(pin_list[row], 1)
         standartbox("Fertig!!!")
     else:
         standartbox("Falsches Passwort!!!!")

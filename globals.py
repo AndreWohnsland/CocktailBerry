@@ -1,7 +1,7 @@
-''' Initialise all neccecary global Values, which are passed
+""" Initialise all neccecary global Values, which are passed
 over several Modules in the Python Script.
 Also assigns the values to them.
-'''
+"""
 
 
 def initialize():
@@ -12,7 +12,7 @@ def initialize():
     global usedpins
     global pumpvolume
     global decoactivate
-    global olding
+    global old_ingredient
 
     # Only checkvariables for code and multimodule Communication
     startcheck = False
@@ -31,4 +31,4 @@ def initialize():
     # Each Pump can be Measured individually and adjusted
     pumpvolume = [30, 30, 25, 30, 30, 30, 25, 30, 30, 23, 30, 30]
     # the global to get the old ingredients
-    olding = []
+    old_ingredient = []

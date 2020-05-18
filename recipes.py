@@ -24,11 +24,11 @@ from loggerconfig import logfunction, logerror
 def ZutatenCB_Rezepte(w, DB, c):
     """ Asigns all ingredients to the Comboboxes in the recipe tab """
     for box in range(1, 9):
-        Zspeicher = c.execute("SELECT NAME FROM Zutaten WHERE Hand = 0")
+        cursor_buffer = c.execute("SELECT NAME FROM Zutaten WHERE Hand = 0")
         CBRname = getattr(w, "CBR" + str(box))
         CBRname.clear()
         CBRname.addItem("")
-        for row in Zspeicher:
+        for row in cursor_buffer:
             CBRname.addItem(row[0])
 
 
@@ -55,7 +55,9 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         for check_v in range(1, 9):
             CBRname = getattr(w, "CBR" + str(check_v))
             LERname = getattr(w, "LER" + str(check_v))
-            if ((CBRname.currentText() != "") and LERname.text() == "") or ((CBRname.currentText() == "") and LERname.text() != ""):
+            if ((CBRname.currentText() != "") and LERname.text() == "") or (
+                (CBRname.currentText() == "") and LERname.text() != ""
+            ):
                 val_check = 1
                 standartbox("Irgendwo ist ein Wert vergessen worden!")
                 break
@@ -91,7 +93,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             standartbox("Es muss mindestens eine Zutat eingetragen sein!")
     # Checks if the name of the recipe already exists in case of a new recipe
     if val_check == 0 and newrecipe:
-        c.execute("SELECT COUNT(*) FROM Rezepte WHERE Name=?",(neuername,))
+        c.execute("SELECT COUNT(*) FROM Rezepte WHERE Name=?", (neuername,))
         val_check = c.fetchone()[0]
         if not val_check == 0:
             standartbox("Dieser Name existiert schon in der Datenbank!")
@@ -109,12 +111,12 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         for Anzahl in range(0, len(Zutaten_V)):
             c.execute("SELECT Alkoholgehalt FROM Zutaten WHERE Name = ?", (Zutaten_V[Anzahl],))
             Konzentration = c.fetchone()[0]
-            Volcon = Mengen_V[Anzahl]*int(Konzentration)
+            Volcon = Mengen_V[Anzahl] * int(Konzentration)
             if Konzentration > 0:
                 SVol_alk += Mengen_V[Anzahl]
                 SVolcon_alk += Volcon
             SVol += Mengen_V[Anzahl]
-            SVolcon +=  Volcon
+            SVolcon += Volcon
         SVol2 = SVol
         c_com = 0
         v_com = 0
@@ -122,15 +124,15 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         # gets the values of the additional comments
         for row in w.handaddlist:
             v_com += row[1]
-            sv_com += row[1]*row[4]
+            sv_com += row[1] * row[4]
         if sv_com > 0:
-            c_com = round(sv_com/v_com, 1)
+            c_com = round(sv_com / v_com, 1)
         SVol2 += v_com
-        SVolcon += v_com*c_com
+        SVolcon += v_com * c_com
         # Gets the percentage of alcohol the average percentage of pure alcohol and the amount of alcohol
-        Alkoholgehalt_Cocktail = int(SVolcon/SVol2)
+        Alkoholgehalt_Cocktail = int(SVolcon / SVol2)
         if SVol_alk > 0:
-            c_alk = int(SVolcon_alk/SVol_alk)
+            c_alk = int(SVolcon_alk / SVol_alk)
         else:
             c_alk = 0
         v_alk = SVol_alk
@@ -141,26 +143,48 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             isenabled = 0
         # Insert into recipe DB , deletes old values if its an update
         if newrecipe:
-            c.execute("INSERT OR IGNORE INTO Rezepte(Name, Alkoholgehalt, Menge, Kommentar, Anzahl_Lifetime, Anzahl, Enabled, V_Alk, c_Alk, V_Com, c_Com) VALUES (?,?,?,?,0,0,?,?,?,?,?)",
-                      (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, v_alk, c_alk, v_com, c_com))
+            c.execute(
+                "INSERT OR IGNORE INTO Rezepte(Name, Alkoholgehalt, Menge, Kommentar, Anzahl_Lifetime, Anzahl, Enabled, V_Alk, c_Alk, V_Com, c_Com) VALUES (?,?,?,?,0,0,?,?,?,?,?)",
+                (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, v_alk, c_alk, v_com, c_com),
+            )
         if not newrecipe:
-            c.execute("UPDATE OR IGNORE Rezepte SET Name = ?, Alkoholgehalt = ?, Menge = ?, Kommentar = ?, Enabled = ?, V_Alk = ?, c_Alk = ?, V_Com = ?, c_Com = ? WHERE ID = ?",
-                      (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, v_alk, c_alk, v_com, c_com, int(CocktailID)))
+            c.execute(
+                "UPDATE OR IGNORE Rezepte SET Name = ?, Alkoholgehalt = ?, Menge = ?, Kommentar = ?, Enabled = ?, V_Alk = ?, c_Alk = ?, V_Com = ?, c_Com = ? WHERE ID = ?",
+                (
+                    neuername,
+                    Alkoholgehalt_Cocktail,
+                    SVol,
+                    w.LEKommentar.text(),
+                    isenabled,
+                    v_alk,
+                    c_alk,
+                    v_com,
+                    c_com,
+                    int(CocktailID),
+                ),
+            )
             c.execute("DELETE FROM Zusammen WHERE Rezept_ID = ?", (CocktailID,))
         # RezeptID, Alkoholisch and ZutatenIDs gets inserted into Zusammen DB
         RezepteDBID = c.execute("SELECT ID FROM Rezepte WHERE Name = ?", (neuername,)).fetchone()[0]
         for Anzahl in range(0, len(Zutaten_V)):
-            incproperties = c.execute("SELECT ID, Alkoholgehalt FROM Zutaten WHERE Name = ?", (Zutaten_V[Anzahl],)).fetchone()
+            incproperties = c.execute(
+                "SELECT ID, Alkoholgehalt FROM Zutaten WHERE Name = ?", (Zutaten_V[Anzahl],)
+            ).fetchone()
             ZutatenDBID = incproperties[0]
             if incproperties[1] > 0:
                 isalkoholic = 1
             else:
                 isalkoholic = 0
-            c.execute("INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, 0)",
-                      (RezepteDBID, ZutatenDBID, Mengen_V[Anzahl], isalkoholic))
+            c.execute(
+                "INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, 0)",
+                (RezepteDBID, ZutatenDBID, Mengen_V[Anzahl], isalkoholic),
+            )
         # Insert all the handadds to the db on its seperate rows
         for row in w.handaddlist:
-            c.execute("INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, 1)", (RezepteDBID, row[0], row[1], row[2]))
+            c.execute(
+                "INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, 1)",
+                (RezepteDBID, row[0], row[1], row[2]),
+            )
         DB.commit()
         # Removing the old name from the list and adds the new one, clears the fields
         if not newrecipe:
@@ -173,22 +197,26 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                 for item in delfind:
                     w.LWMaker.takeItem(w.LWMaker.row(item))
         w.LWRezepte.addItem(neuername)
-        # add needs to be checked, if all ingredients are used 
+        # add needs to be checked, if all ingredients are used
         Rezepte_a_M(w, DB, c, False, "add", RezepteDBID, isenabled)
         Rezepte_clear(w, DB, c, True)
         if newrecipe:
             standartbox("Rezept unter der ID und dem Namen:\n<{}> <{}>\neingetragen!".format(RezepteDBID, neuername))
         else:
-            standartbox("Rezept mit der ID und dem Namen:\n<{}> <{}>\nunter dem Namen:\n<{}>\naktualisiert!".format(RezepteDBID, altername, neuername))
+            standartbox(
+                "Rezept mit der ID und dem Namen:\n<{}> <{}>\nunter dem Namen:\n<{}>\naktualisiert!".format(
+                    RezepteDBID, altername, neuername
+                )
+            )
 
 
 @logerror
 def Rezepte_a_R(w, DB, c):
     """ Updates the ListWidget in the recipe Tab. """
     w.LWRezepte.clear()
-    Zspeicher = c.execute("SELECT Name FROM Rezepte")
-    for Werte in Zspeicher:
-        w.LWRezepte.addItem(Werte[0])
+    cursor_buffer = c.execute("SELECT Name FROM Rezepte")
+    for values in cursor_buffer:
+        w.LWRezepte.addItem(values[0])
 
 
 @logerror
@@ -216,28 +244,34 @@ def Rezepte_clear(w, DB, c, clearmode):
 def Rezepte_Rezepte_click(w, DB, c):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
     if w.LWRezepte.selectedItems():
-        LVZutat = []
-        LVMenge = []
+        ingredient_names = []
+        ingredient_volume = []
         cocktailname = str(w.LWRezepte.currentItem().text())
         # Gets all the ingredients as well the quatities for the recipe from the DB
-        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ? AND Zusammen.Hand=0", (cocktailname,))
+        cursor_buffer = c.execute(
+            "SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ? AND Zusammen.Hand=0",
+            (cocktailname,),
+        )
         Rezepte_clear(w, DB, c, False)
         # Appends the Values to a List then fills them into the Fields
-        for row in Zspeicher:
-            LVZutat.append(row[0])
-            LVMenge.append(row[1])
-        for row in range(0, len(LVZutat)):
+        for row in cursor_buffer:
+            ingredient_names.append(row[0])
+            ingredient_volume.append(row[1])
+        for row in range(0, len(ingredient_names)):
             LERname = getattr(w, "LER" + str(row + 1))
-            LERname.setText(str(LVMenge[row]))
+            LERname.setText(str(ingredient_volume[row]))
             CBRname = getattr(w, "CBR" + str(row + 1))
-            index = CBRname.findText(LVZutat[row], Qt.MatchFixedString)
+            index = CBRname.findText(ingredient_names[row], Qt.MatchFixedString)
             CBRname.setCurrentIndex(index)
         # Inserts into Labels
         w.LECocktail.setText(cocktailname)
         # get all the data to write all the extra adds via hand
-        Zspeicher = c.execute("SELECT Zutaten.Name, Zusammen.Menge, Zutaten.ID, Zusammen.Alkoholisch, Zutaten.Alkoholgehalt FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ? AND Zusammen.Hand=1", (cocktailname,))
+        cursor_buffer = c.execute(
+            "SELECT Zutaten.Name, Zusammen.Menge, Zutaten.ID, Zusammen.Alkoholisch, Zutaten.Alkoholgehalt FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ? AND Zusammen.Hand=1",
+            (cocktailname,),
+        )
         handcomment = ""
-        for row in Zspeicher:
+        for row in cursor_buffer:
             handcomment += "{} ml {}, ".format(row[1], row[0])
             w.handaddlist.append([row[2], row[1], row[3], 1, row[4]])
         # at the end substract the last space and column
@@ -245,7 +279,7 @@ def Rezepte_Rezepte_click(w, DB, c):
             handcomment = handcomment[:-2]
         w.LEKommentar.setText(handcomment)
         # gets the enabled status
-        enabled = c.execute("SELECT Enabled FROM Rezepte WHERE Name = ?",(cocktailname,)).fetchone()[0]
+        enabled = c.execute("SELECT Enabled FROM Rezepte WHERE Name = ?", (cocktailname,)).fetchone()[0]
         if enabled:
             w.CHBenabled.setChecked(True)
         else:
@@ -260,8 +294,7 @@ def Rezepte_delete(w, DB, c):
             standartbox("Kein Rezept ausgewählt!")
         else:
             Rname = w.LWRezepte.currentItem().text()
-            CocktailID = c.execute(
-                "SELECT ID FROM Rezepte WHERE Name = ?", (Rname,)).fetchone()[0]
+            CocktailID = c.execute("SELECT ID FROM Rezepte WHERE Name = ?", (Rname,)).fetchone()[0]
             c.execute("DELETE FROM Zusammen WHERE Rezept_ID = ?", (CocktailID,))
             c.execute("DELETE FROM Rezepte WHERE ID = ?", (CocktailID,))
             DB.commit()
@@ -289,9 +322,9 @@ def Rezepte_delete(w, DB, c):
 @logerror
 def enableall(w, DB, c):
     idinput = []
-    Zspeicher = c.execute("SELECT ID FROM Rezepte WHERE Enabled = 0")
-    for Werte in Zspeicher:
-        idinput.append(int(Werte[0]))
+    cursor_buffer = c.execute("SELECT ID FROM Rezepte WHERE Enabled = 0")
+    for values in cursor_buffer:
+        idinput.append(int(values[0]))
     c.execute("UPDATE OR IGNORE Rezepte SET Enabled = 1")
     DB.commit()
     Rezepte_a_M(w, DB, c, False, "enable", idinput)

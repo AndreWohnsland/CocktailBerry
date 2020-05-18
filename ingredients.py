@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
 from recipes import ZutatenCB_Rezepte
-from bottles import ZutatenCB_Belegung, Belegung_einlesen, Belegung_progressbar, Belegung_a
+from bottles import Belegung_einlesen, Belegung_progressbar, Belegung_a
 from msgboxgenerate import standartbox
 from loggerconfig import logfunction, logerror
 
@@ -26,7 +26,7 @@ def custom_output(w, DB, c):
 
 
 @logerror
-def Zutat_eintragen(w, DB, c, newingredient = True):
+def Zutat_eintragen(w, DB, c, newingredient=True):
     """ Insert the new ingredient into the DB, if all values are given 
     and its name is not already in the DB.
     Also can change the current selected ingredient (newingredient = False)
@@ -36,8 +36,7 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
     ingredientname = w.LEZutatRezept.text()
     # counts the entries in the DB with the name and checks if its already there
     if newingredient:
-        c.execute("SELECT COUNT(*) FROM Zutaten WHERE Name=?",
-                (ingredientname,))
+        c.execute("SELECT COUNT(*) FROM Zutaten WHERE Name=?", (ingredientname,))
         Zutatentest = c.fetchone()[0]
     if Zutatentest != 0 and newingredient:
         standartbox("Dieser Name existiert schon in der Datenbank!")
@@ -47,15 +46,16 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
         standartbox("Es ist keine Zutat ausgewählt!")
     elif not newingredient and w.LWZutaten.selectedItems():
         altername = w.LWZutaten.currentItem().text()
-        Zspeicher = c.execute(
-            "SELECT ID, Hand FROM Zutaten WHERE Name = ?", (altername,)).fetchone()
-        ZID = int(Zspeicher[0])
-        old_onlyhand = int(Zspeicher[1])
+        cursor_buffer = c.execute("SELECT ID, Hand FROM Zutaten WHERE Name = ?", (altername,)).fetchone()
+        ZID = int(cursor_buffer[0])
+        old_onlyhand = int(cursor_buffer[1])
     # check if the ingredient is not assigned in the Bottle order if the value is set to handadd
     if not newingredient and w.CHBHand.isChecked() and Zutatentest == 0:
-        Zutatentest = c.execute("SELECT COUNT(*) FROM Belegung WHERE ID=?",(ZID,)).fetchone()[0]
+        Zutatentest = c.execute("SELECT COUNT(*) FROM Belegung WHERE ID=?", (ZID,)).fetchone()[0]
         if Zutatentest != 0:
-            standartbox("DIe Zutat ist noch in der Belegung registriert und kann somit nicht auf selbst hinzufügen gesetzt werden!")
+            standartbox(
+                "DIe Zutat ist noch in der Belegung registriert und kann somit nicht auf selbst hinzufügen gesetzt werden!"
+            )
     # check if all Fields are filled
     if Zutatentest == 0:
         if (ingredientname == "") or (w.LEGehaltRezept.text() == "") or (w.LEFlaschenvolumen.text() == ""):
@@ -68,12 +68,10 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
             vol = int(w.LEFlaschenvolumen.text())
             if conc > 100:
                 Zutatentest = 1
-                standartbox(
-                    "Alkoholgehalt kann nicht größer als 100 sein!")
+                standartbox("Alkoholgehalt kann nicht größer als 100 sein!")
         except ValueError:
             Zutatentest = 1
-            standartbox(
-                "Alkoholgehalt und Flaschenvolumen muss eine Zahl sein!")
+            standartbox("Alkoholgehalt und Flaschenvolumen muss eine Zahl sein!")
     # if everything is okay, insert or update the db, and the List widget
     if Zutatentest == 0:
         # decides if the ingredient is normal or hand add only
@@ -82,15 +80,19 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
         else:
             onlyhand = 0
         if newingredient:
-            c.execute("INSERT OR IGNORE INTO Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel,Hand) VALUES (?,?,?,0,0,0,?)", (
-                ingredientname, conc, vol, onlyhand))        
+            c.execute(
+                "INSERT OR IGNORE INTO Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel,Hand) VALUES (?,?,?,0,0,0,?)",
+                (ingredientname, conc, vol, onlyhand),
+            )
         else:
             vol_old = c.execute("SELECT Mengenlevel FROM Zutaten WHERE ID = ?", (ZID,)).fetchone()[0]
             # if the new volume is less than the old level, set the old level accordingly
             if int(vol_old) > vol:
                 vol_old = vol
-            c.execute("UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ?, Mengenlevel = ?, Hand = ? WHERE ID = ?",
-                (ingredientname, conc, vol, vol_old, onlyhand, ZID))
+            c.execute(
+                "UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ?, Mengenlevel = ?, Hand = ? WHERE ID = ?",
+                (ingredientname, conc, vol, vol_old, onlyhand, ZID),
+            )
             # Updates the level of the bottles and their labels
             Belegung_progressbar(w, DB, c)
             Belegung_a(w, DB, c)
@@ -142,9 +144,9 @@ def Zutat_eintragen(w, DB, c, newingredient = True):
 def Zutaten_a(w, DB, c):
     """ Load all ingredientnames into the ListWidget """
     w.LWZutaten.clear()
-    Zspeicher = c.execute("SELECT Name FROM Zutaten")
-    for Werte in Zspeicher:
-        w.LWZutaten.addItem(Werte[0])
+    cursor_buffer = c.execute("SELECT Name FROM Zutaten")
+    for values in cursor_buffer:
+        w.LWZutaten.addItem(values[0])
 
 
 @logerror
@@ -158,9 +160,8 @@ def Zutaten_delete(w, DB, c):
             standartbox("Keine Zutat ausgewählt!")
         else:
             Zname = w.LWZutaten.currentItem().text()
-            Zspeicher = c.execute(
-                "SELECT ID FROM Zutaten WHERE Name = ?", (Zname,))
-            for row in Zspeicher:
+            cursor_buffer = c.execute("SELECT ID FROM Zutaten WHERE Name = ?", (Zname,))
+            for row in cursor_buffer:
                 ZID = row[0]
             c.execute("SELECT COUNT(*) FROM Zusammen WHERE Zutaten_ID=?", (ZID,))
             Zutatentest = c.fetchone()[0]
@@ -183,18 +184,24 @@ def Zutaten_delete(w, DB, c):
                     Zutaten_a(w, DB, c)
                     standartbox("Zutat mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(ZID, Zname))
                 else:
-                    standartbox(
-                        "Achtung, die Zutat ist noch in der Belegung registriert!")
+                    standartbox("Achtung, die Zutat ist noch in der Belegung registriert!")
             # if the ingredient is still used in recipes, inform the user about it and the first 10 recipes
             else:
-                stringsaver = c.execute("SELECT Rezepte.Name FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID = Zusammen.Rezept_ID WHERE Zusammen.Zutaten_ID=?", (ZID,))
+                stringsaver = c.execute(
+                    "SELECT Rezepte.Name FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID = Zusammen.Rezept_ID WHERE Zusammen.Zutaten_ID=?",
+                    (ZID,),
+                )
                 Zutatenliste = []
                 for output in stringsaver:
                     Zutatenliste.append(output[0])
                     if len(Zutatenliste) >= 10:
                         break
-                Zutatenstring = ', '.join(Zutatenliste)
-                standartbox("Zutat kann nicht gelöscht werden, da sie in {} Rezept(en) genutzt wird! Diese sind (maximal die zehn ersten):\n{}".format(Zutatentest, Zutatenstring))
+                Zutatenstring = ", ".join(Zutatenliste)
+                standartbox(
+                    "Zutat kann nicht gelöscht werden, da sie in {} Rezept(en) genutzt wird! Diese sind (maximal die zehn ersten):\n{}".format(
+                        Zutatentest, Zutatenstring
+                    )
+                )
     else:
         standartbox("Falsches Passwort!")
     w.LEpw2.setText("")
@@ -205,9 +212,10 @@ def Zutaten_Zutaten_click(w, DB, c):
     """ Search the DB entry for the ingredient and displays them """
     if w.LWZutaten.selectedItems():
         ingredientname = w.LWZutaten.currentItem().text()
-        Zspeicher = c.execute(
-            "SELECT Alkoholgehalt, Flaschenvolumen, Hand FROM Zutaten WHERE Name = ?", (ingredientname,))
-        for row in Zspeicher:
+        cursor_buffer = c.execute(
+            "SELECT Alkoholgehalt, Flaschenvolumen, Hand FROM Zutaten WHERE Name = ?", (ingredientname,)
+        )
+        for row in cursor_buffer:
             w.LEGehaltRezept.setText(str(row[0]))
             w.LEFlaschenvolumen.setText(str(row[1]))
             if row[2] == 1:
