@@ -663,13 +663,19 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     # but only gets activated when the user input changes the index. Some testing is required.
     # Switched to the activate method. removed the global var therefore. (15.07.2019)
     # Seems to work fine, still, needs to track it.
-    w.CBB1.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB2.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB3.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB4.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB5.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB6.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB7.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB8.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB9.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    w.CBB10.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB1.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB2.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB3.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB4.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB5.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB6.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB7.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB8.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB9.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+    # w.CBB10.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
+
+    for combobox in [getattr(w, "CBB" + str(x)) for x in range(1, 11)]:
+        combobox.activated.connect(lambda _, window=w, db=DB, cursor=c: refresh_bottle_cb(w=window, DB=db, c=cursor))
+
+
+### lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s)

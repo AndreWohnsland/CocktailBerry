@@ -2,6 +2,7 @@ import sqlite3
 import os
 import logging
 import time
+from pathlib import Path
 
 database_name = "Datenbank"
 dirpath = os.path.dirname(__file__)
@@ -10,14 +11,15 @@ dirpath = os.path.dirname(__file__)
 class DatabaseHandler:
     database_path = os.path.join(dirpath, "..", f"{database_name}.db")
 
-    def __init__(self, create_database=False):
+    def __init__(self):
         self.database_path = DatabaseHandler.database_path
         print(self.database_path)
-        if create_database:
+        if not Path(self.database_path).exists():
+            print("creating Database")
             self.create_tables()
 
     def connect_database(self):
-        self.database = sqlite3.connect(DatabaseHandler.database_path)
+        self.database = sqlite3.connect(self.database_path)
         self.cursor = self.database.cursor()
 
     def query_database(self, sql, serachtuple=()):
@@ -47,26 +49,16 @@ class DatabaseHandler:
         self.cursor.execute(
             "CREATE TABLE IF NOT EXISTS Belegung(Flasche INTEGER NOT NULL, Zutat_F TEXT NOT NULL, ID INTEGER, Mengenlevel INTEGER);"
         )
-        self.cursor.execute(
-            "CREATE TABLE IF NOT EXISTS Vorhanden(ID INTEGER NOT NULL);"
-        )
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS Vorhanden(ID INTEGER NOT NULL);")
 
         # Creating the Unique Indexes
-        self.cursor.execute(
-            "CREATE UNIQUE INDEX IF NOT EXISTS idx_zutaten_name ON Zutaten(Name)"
-        )
-        self.cursor.execute(
-            "CREATE UNIQUE INDEX IF NOT EXISTS idx_rezepte_name ON Rezepte(Name)"
-        )
-        self.cursor.execute(
-            "CREATE UNIQUE INDEX IF NOT EXISTS idx_flasche ON Belegung(Flasche)"
-        )
+        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_zutaten_name ON Zutaten(Name)")
+        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_rezepte_name ON Rezepte(Name)")
+        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_flasche ON Belegung(Flasche)")
 
         # Creating the Space Naming of the Bottles
         for Flaschen_C in range(1, 13):
-            self.cursor.execute(
-                "INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)", (Flaschen_C, "")
-            )
+            self.cursor.execute("INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)", (Flaschen_C, ""))
         self.database.commit()
 
 
@@ -86,3 +78,22 @@ class LoggerHandler:
 
     def logevent(self, level, message):
         self.logger.log(getattr(logging, level), message)
+
+
+class FieldHandler:
+    def __init__(self):
+        self.alive = True
+
+    def missing_check(self, lineedits):
+        for lineedit in lineedits:
+            if lineedit.text() == "":
+                return [False, "Es wurde ein Wert vergessen, bitte nachtragen"]
+        return [True, None]
+
+    def valid_check_int(self, lineedits, wrongvals):
+        for lineedit, wrongval in zip(lineedits, wrongvals):
+            try:
+                int(lineedit.text())
+            except ValueError:
+                return [False, f"{wrongval} muss eine Zahl sein"]
+        return [True, None]

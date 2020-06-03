@@ -4,3 +4,4 @@ venv
 *.autosave
 *.log
 *.csv
+__pycache__
