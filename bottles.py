@@ -17,6 +17,23 @@ import globals
 from msgboxgenerate import standartbox
 from loggerconfig import logerror, logfunction
 
+from src.display_handler import DisplayHandler
+from src.database_commander import DatabaseCommander
+from src.display_controler import DisplayControler
+
+
+display_handler = DisplayHandler()
+database_commander = DatabaseCommander()
+display_controler = DisplayControler()
+
+
+def generate_cbbnames(w):
+    return [getattr(w, f"CBB{x}") for x in range(1, 11)]
+
+
+def generate_Lnames(w):
+    return [getattr(w, f"LBelegung{x}") for x in range(1, 11)]
+
 
 def customlevels(w, DB, c):
     """ Opens the additional window to change the volume levels of the bottles. """
@@ -27,185 +44,90 @@ def customlevels(w, DB, c):
 
 def get_bottle_ingredients(w, DB, c):
     """ At the start of the Programm, get all the ingredients from the DB. """
-    for i in range(1, 11):
-        storeval = c.execute(
-            "SELECT Zutaten.Name FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?",
-            (i,),
-        ).fetchone()
-        if storeval is not None:
-            globals.old_ingredient.append(storeval[0])
-        else:
-            globals.old_ingredient.append("")
+    bottles = database_commander.get_ingredients_at_bottles()
+    globals.old_ingredient.extend(bottles)
 
 
 def refresh_bottle_cb(w, DB, c):
-    """ This function is each time called, when the index of
-    the Bottles Combobox changes. It then evaluates the difference
-    between the old and the new bottles and adds/substract the changes 
-    ingredient to the dropdowns.
-    To prevent a inside loop call of this function, the global supressbox 
-    exists. Otherwise if an item is removed, the function will call itself again
-    since the index may change itself with the deletion.
-    """
+    """ Adds or remove items to the bottle comboboxes depending on the changed value"""
     # Creating a list of the new and old bottles used
+    CBBnames = generate_cbbnames(w)
     old_order = globals.old_ingredient
-    new_order = []
-    for i in range(1, 11):
-        CBBname = getattr(w, "CBB" + str(i))
-        if CBBname.currentText() != 0:
-            new_order.append(CBBname.currentText())
-        else:
-            new_order.append("")
-    # getting the difference between those two lists and assign new/old value
+    new_order = display_controler.get_current_combobox_items(CBBnames)
+
     new_blist = list(set(new_order) - set(old_order))
     old_blist = list(set(old_order) - set(new_order))
-    print(len(new_blist), len(old_blist), old_blist[0], new_blist[0])
-    # checks if the list only contains one element
-    # extrtacts the element out of the list
-    if len(new_blist) > 1 or len(old_blist) > 1:
-        raise ValueError("The List should never contain two or more Elements!")
-    else:
-        if len(new_blist) == 0:
-            new_bottle = ""
-        else:
-            new_bottle = new_blist[0]
-        if len(old_blist) == 0:
-            old_bottle = ""
-        else:
-            old_bottle = old_blist[0]
-    # adds or substracts the text to the comboboxes (except the one which was changed)
-    for i in range(1, 11):
-        CBBname = getattr(w, "CBB" + str(i))
-        if (old_bottle != "") and (old_bottle != old_order[i - 1]):
-            CBBname.addItem(old_bottle)
-        if (new_bottle != "") and (new_bottle != new_order[i - 1]):
-            index = CBBname.findText(new_bottle, Qt.MatchFixedString)
-            if index >= 0:
-                CBBname.removeItem(index)
-        CBBname.model().sort(0)
-    # the new is now the old for the next step:
+    new_bottle = new_blist[0] if new_blist else ""
+    old_bottle = old_blist[0] if old_blist else ""
+
+    display_handler.adjust_bottle_comboboxes(CBBnames, old_bottle, new_bottle)
+
     Belegung_eintragen(w, DB, c)
     globals.old_ingredient = new_order
 
 
 @logerror
 def newCB_Bottles(w, DB, c):
-    """ This is a new method for the DropDowns of the different Bottles.\n
-    Assigns all possible ingredients to the Comboboxes in the bottles tab.\n
-    By possible it means that if another Combobox got the value, others cannot use it,
-    since each bottle may only be used once in the Configuration.
-    Due to the process, after each change, each CB needs to be rechecked.
+    """ Fills each bottle combobox with the possible remaining options
     """
-    # generates a list of all Combobox entries
-    entrylist = globals.old_ingredient
-    inglist = []
-    cursor_buffer = c.execute("SELECT NAME FROM Zutaten WHERE Hand = 0")
-    for ing in cursor_buffer:
-        inglist.append(str(ing[0]))
-    # generates a list for each CB which values have to be assigned
-    # Therefore substract the already assigned values from all potential values
-    # except the value of the current CB
-    cblist = []
-    for row, _ in enumerate(entrylist):
-        cblist.append(sorted(set(inglist) - set([x for i, x in enumerate(entrylist) if i != row])))
-    # finally deletes and refills every box
-    for row, endlist in enumerate(cblist):
-        CBBname = getattr(w, "CBB" + str(row + 1))
-        CBBname.clear()
-        CBBname.addItem("")
-        for item in endlist:
-            CBBname.addItem(item)
+    CBBnames = generate_cbbnames(w)
+    used_ingredients = globals.old_ingredient
+    possible_ingredients = database_commander.get_ingredient_names_machine()
+
+    shown_ingredients = []
+    for row, _ in enumerate(used_ingredients):
+        shown_ingredients.append(
+            sorted(set(possible_ingredients) - set([x for i, x in enumerate(used_ingredients) if i != row]))
+        )
+
+    display_handler.fill_multiple_combobox_individually(CBBnames, shown_ingredients, True)
 
 
 @logerror
-def Belegung_eintragen(w, DB, c, msgcall=False):
+def Belegung_eintragen(w, DB, c):
     """ Insert the selected Bottleorder into the DB. """
     # this import is neccecary on module level, otherwise there would be a circular import
     from maker import Rezepte_a_M
 
     # Checks where are entries and appends them to a list
-    CBB_List = []
-    dbl_check = 0
-    for Flaschen_C in range(1, 11):
-        CBBname = getattr(w, "CBB" + str(Flaschen_C))
-        if CBBname.currentText() != "" and CBBname.currentText() != 0:
-            CBB_List.append(CBBname.currentText())
-    # Checks if any ingredient is used twice, if so, dbl_check gets activated
-    # due to refactoring of the CB, this should never happen, since the CB only displays ingredients which are not used
-    counted_bottles = Counter(CBB_List)
-    double_bottles = [x[0] for x in counted_bottles.items() if x[1] > 1]
-    if len(double_bottles) != 0:
-        dbl_check = 1
-        standartbox("Eine der Zutaten wurde doppelt zugewiesen!")
-    # If no error, insert values into DB
-    if dbl_check == 0:
-        for Flaschen_C in range(1, 11):
-            Speicher_ID = 0
-            CBBname = getattr(w, "CBB" + str(Flaschen_C))
-            ingredientname = CBBname.currentText()
-            # if no ID is pulled (no bottle there), the buffer is none and the id stays 0
-            buffer = c.execute("SELECT ID FROM Zutaten WHERE Name = ?", (ingredientname,))
-            for buf in buffer:
-                Speicher_ID = buf[0]
-            c.execute(
-                "UPDATE OR IGNORE Belegung SET ID = ?, Zutat_F = ? WHERE Flasche = ?",
-                (int(Speicher_ID), ingredientname, Flaschen_C),
-            )
-            DB.commit()
-        Belegung_a(w, DB, c)
-        Rezepte_a_M(w, DB, c)
-        Belegung_progressbar(w, DB, c)
-        if msgcall:
-            standartbox("Belegung wurde geändert!")
+    CBBnames = generate_cbbnames(w)
+    ingredient_names = display_controler.get_current_combobox_items(CBBnames)
+    database_commander.set_bottleorder(ingredient_names)
+
+    Belegung_a(w, DB, c)
+    Rezepte_a_M(w, DB, c)
+    Belegung_progressbar(w, DB, c)
 
 
 @logerror
 def Belegung_einlesen(w, DB, c):
     """ Reads the Bottleorder into the BottleTab. """
-    for Flaschen_C in range(1, 11):
-        CBBname = getattr(w, "CBB" + str(Flaschen_C))
-        Testbelegung = c.execute(
-            "SELECT Zutaten.Name FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche=?",
-            (Flaschen_C,),
-        )
-        for row in Testbelegung:
-            index = CBBname.findText(row[0], Qt.MatchFixedString)
-            CBBname.setCurrentIndex(index)
+    CBBnames = generate_cbbnames(w)
+    ingredient_names = database_commander.get_ingredients_at_bottles()
+    display_handler.set_multiple_combobox_items(CBBnames, ingredient_names)
 
 
 @logerror
 def Belegung_a(w, DB, c):
     """ Loads or updates the Labels of the Bottles (Volumelevel). """
-    for Flaschen_C in range(1, 11):
-        Lname = getattr(w, "LBelegung" + str(Flaschen_C))
-        Testbelegung = c.execute(
-            "SELECT Zutaten.Name FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche=?",
-            (Flaschen_C,),
-        ).fetchone()
-        # if len(Testbelegung)==0:
-        #     Lname.setText("  ")
-        # here must some more code to hide labels when there is no incredient in the according slot
-        if Testbelegung is not None:
-            Lname.setText("  " + str(Testbelegung[0]) + ":")
-        else:
-            Lname.setText("  -  ")
+    labels = generate_Lnames(w)
+    label_names = database_commander.get_ingredients_at_bottles()
+    label_names = [f"  {x}:" if x != "" else "  -  " for x in label_names]
+    display_handler.fill_multiple_lineedit(labels, label_names)
 
 
 @logerror
 def Belegung_Flanwenden(w, DB, c):
     """ Renews all the Bottles which are checked as new. """
-    for Flaschen_C in range(1, 11):
-        PBname = getattr(w, "PBneu" + str(Flaschen_C))
+    PBnames = [getattr(w, f"PBneu{x}") for x in range(1, 11)]
+    for Flaschen_C, PBname in enumerate(PBnames):
         if PBname.isChecked():
-            bottleid = c.execute("SELECT ID FROM Belegung WHERE Flasche = ?", (Flaschen_C,)).fetchone()[0]
-            # the value can be None if the user checks a not used box, so its captured here
-            if bottleid != 0:
-                c.execute("UPDATE OR IGNORE Zutaten Set Mengenlevel = Flaschenvolumen WHERE ID = ?", (bottleid,))
+            c.execute(
+                "UPDATE OR IGNORE Zutaten Set Mengenlevel = Flaschenvolumen WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)",
+                (Flaschen_C + 1,),
+            )
+            PBname.setChecked(False)
     DB.commit()
-    # remove all the checks from the combobuttons
-    for Flaschen_C in range(1, 11):
-        PBname = getattr(w, "PBneu" + str(Flaschen_C))
-        PBname.setChecked(False)
     Belegung_progressbar(w, DB, c)
     standartbox("Alle Flaschen angewendet!")
 

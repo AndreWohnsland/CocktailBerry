@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
 from recipes import ZutatenCB_Rezepte
-from bottles import Belegung_einlesen, Belegung_progressbar, Belegung_a
+from bottles import Belegung_progressbar, Belegung_a
 from msgboxgenerate import standartbox
 from loggerconfig import logfunction, logerror
 

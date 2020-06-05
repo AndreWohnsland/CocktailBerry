@@ -36,6 +36,7 @@ class DatabaseHandler:
         return result
 
     def create_tables(self):
+        self.connect_database()
         # Creates each Table
         self.cursor.execute(
             "CREATE TABLE IF NOT EXISTS Rezepte(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Name TEXT NOT NULL, Alkoholgehalt INTEGER NOT NULL, Menge INTEGER NOT NULL, Kommentar TEXT, Anzahl_Lifetime INTEGER, Anzahl INTEGER, Enabled INTEGER, V_Alk INTEGER, c_Alk INTEGER, V_Com INTEGER, c_Com INTEGER);"
@@ -60,6 +61,7 @@ class DatabaseHandler:
         for Flaschen_C in range(1, 13):
             self.cursor.execute("INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)", (Flaschen_C, ""))
         self.database.commit()
+        self.database.close()
 
 
 class LoggerHandler:

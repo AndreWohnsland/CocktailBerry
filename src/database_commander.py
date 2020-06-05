@@ -1,23 +1,23 @@
-from supporter import DatabaseHandler
+from src.supporter import DatabaseHandler
 
 
 class DatabaseCommander:
     def __init__(self):
         self.handler = DatabaseHandler()
 
-    def get_ingredients(self, recipe_id):
+    def get_recipe_ingredients(self, recipe_id):
         query = "SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID WHERE Zusammen.Rezept_ID = ?"
         return self.handler.query_database(query, (recipe_id,))
 
-    def get_recipes(self):
+    def get_all_recipes_properties(self):
         query = "SELECT ID, Name, Alkoholgehalt, Menge, Kommentar, Enabled, V_Alk, c_Alk, V_Com, c_Com FROM Rezepte"
         return self.handler.query_database(query)
 
     def build_recipe_object(self):
         recipe_object = {}
-        recipe_data = self.get_recipes()
+        recipe_data = self.get_all_recipes_properties()
         for recipe in recipe_data:
-            ingredient_data = self.get_ingredients(recipe[0])
+            ingredient_data = self.get_recipe_ingredients(recipe[0])
             recipe_object[recipe[1]] = {
                 "ID": recipe[0],
                 "alcohollevel": recipe[2],
@@ -31,3 +31,28 @@ class DatabaseCommander:
                 "ingredients": {a[0]: [a[1], a[2]] for a in ingredient_data},
             }
         return recipe_object
+
+    def get_ingredients_at_bottles(self):
+        query = "SELECT Zutat_F FROM Belegung"
+        result = self.handler.query_database(query)
+        return [x[0] for x in result]
+
+    def get_ingredient_names(self, condition_filter=""):
+        query = "SELECT Name FROM Zutaten"
+        if condition_filter != "":
+            query = f"{query} {condition_filter}"
+        names = self.handler.query_database(query)
+        return [x[0] for x in names]
+
+    def get_ingredient_names_hand(self):
+        return self.get_ingredient_names("WHERE Hand = 1")
+
+    def get_ingredient_names_machine(self):
+        return self.get_ingredient_names("WHERE Hand = 0")
+
+    def set_bottleorder(self, ingredient_names):
+        for i, ingredient in enumerate(ingredient_names):
+            bottle = i + 1
+            query = "UPDATE OR IGNORE Belegung SET ID = (SELECT ID FROM Zutaten WHERE Name = ?), Zutat_F = ? WHERE Flasche = ?"
+            searchtuple = (ingredient, ingredient, bottle)
+            self.handler.query_database(query, searchtuple)
