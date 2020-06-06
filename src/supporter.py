@@ -9,6 +9,8 @@ dirpath = os.path.dirname(__file__)
 
 
 class DatabaseHandler:
+    """Handler Class for Connecting and querring Databases"""
+
     database_path = os.path.join(dirpath, "..", f"{database_name}.db")
 
     def __init__(self):
@@ -65,6 +67,8 @@ class DatabaseHandler:
 
 
 class LoggerHandler:
+    """Handler Class for Generating Logger and Logging events"""
+
     log_folder = os.path.join(dirpath, "..", "logs")
 
     def __init__(self, loggername, filename):
@@ -75,14 +79,21 @@ class LoggerHandler:
         formatter = logging.Formatter("%(asctime)s - %(message)s", "%Y-%m-%d %H:%M")
         filehandler.setFormatter(formatter)
         self.logger.addHandler(filehandler)
-        template = "{:-^80}"
-        self.logger.debug(template.format("Starting the Programm",))
+        self.TEMPLATE = "{:-^80}"
 
-    def logevent(self, level, message):
+    def log_event(self, level, message):
         self.logger.log(getattr(logging, level), message)
+
+    def log_header(self, level, message):
+        self.log_event(level, self.TEMPLATE.format(message,))
+
+    def log_start_program(self):
+        self.logger.debug(self.TEMPLATE.format("Starting the Programm",))
 
 
 class FieldHandler:
+    """Handler Class to evaluate field Values in the UI """
+
     def __init__(self):
         self.alive = True
 
@@ -99,3 +110,20 @@ class FieldHandler:
             except ValueError:
                 return [False, f"{wrongval} muss eine Zahl sein"]
         return [True, None]
+
+
+###### This are temporary Helper Functions, they will be moved later in the UI parent class / there will be objects for them
+def generate_CBB_names(w):
+    return [getattr(w, f"CBB{x}") for x in range(1, 11)]
+
+
+def generate_LBelegung_names(w):
+    return [getattr(w, f"LBelegung{x}") for x in range(1, 11)]
+
+
+def generate_PBneu_names(w):
+    return [getattr(w, f"PBneu{x}") for x in range(1, 11)]
+
+
+def generate_ProBBelegung_names(w):
+    return [getattr(w, f"ProBBelegung{x}") for x in range(1, 11)]

@@ -2,6 +2,8 @@ from src.supporter import DatabaseHandler
 
 
 class DatabaseCommander:
+    """Commander Class to execute queries and return the results as lists """
+
     def __init__(self):
         self.handler = DatabaseHandler()
 
@@ -50,9 +52,29 @@ class DatabaseCommander:
     def get_ingredient_names_machine(self):
         return self.get_ingredient_names("WHERE Hand = 0")
 
+    def get_bottle_fill_levels(self):
+        query = "SELECT Zutaten.Mengenlevel, Zutaten.Flaschenvolumen FROM Belegung LEFT JOIN Zutaten ON Zutaten.ID = Belegung.ID"
+        values = self.handler.query_database(query)
+        levels = []
+        for current_value, max_value in values:
+            # restrict the value between 0 and 100
+            proportion = 0
+            if current_value != None:
+                proportion = round(min(max(current_value / max_value * 100, 0), 100))
+            levels.append(proportion)
+        return levels
+
+    # set commands
     def set_bottleorder(self, ingredient_names):
         for i, ingredient in enumerate(ingredient_names):
             bottle = i + 1
             query = "UPDATE OR IGNORE Belegung SET ID = (SELECT ID FROM Zutaten WHERE Name = ?), Zutat_F = ? WHERE Flasche = ?"
             searchtuple = (ingredient, ingredient, bottle)
             self.handler.query_database(query, searchtuple)
+
+    def set_bottle_volumelevel_to_max(self, boolean_list):
+        query = "UPDATE OR IGNORE Zutaten Set Mengenlevel = Flaschenvolumen WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)"
+        for i, set_to_max in enumerate(boolean_list):
+            bottle = i + 1
+            if set_to_max:
+                self.handler.query_database(query, (bottle,))

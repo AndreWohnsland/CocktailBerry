@@ -6,12 +6,13 @@ from PyQt5.uic import *
 
 
 class DisplayHandler:
+    """Handler Class to set/remove elements from to UI """
+
     def __init__(self):
         pass
 
-    def standartbox(self, textstring):
+    def standard_box(self, textstring):
         """ The default messagebox for the Maker. Uses a QMessageBox with OK-Button """
-        # print(textstring)
         msgBox = QMessageBox()
         msgBox.setStandardButtons(QMessageBox.Ok)
         buttonok = msgBox.button(QMessageBox.Ok)
@@ -78,3 +79,13 @@ class DisplayHandler:
             if (new_item != "") and (new_item != combobox.currentText()):
                 self.delete_single_combobox_item(combobox, new_item)
             combobox.model().sort(0)
+
+    # buttons / togglebuttons
+    def untoggle_buttons(self, button_list):
+        for button in button_list:
+            button.setChecked(False)
+
+    # progress bars
+    def set_progress_bar_values(self, progress_bar_list, value_list):
+        for progress_bar, value in zip(progress_bar_list, value_list):
+            progress_bar.setValue(value)

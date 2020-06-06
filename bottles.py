@@ -20,19 +20,21 @@ from loggerconfig import logerror, logfunction
 from src.display_handler import DisplayHandler
 from src.database_commander import DatabaseCommander
 from src.display_controler import DisplayControler
+from src.rpi_controller import RpiController
+from src.supporter import (
+    LoggerHandler,
+    generate_CBB_names,
+    generate_LBelegung_names,
+    generate_PBneu_names,
+    generate_ProBBelegung_names,
+)
 
 
 display_handler = DisplayHandler()
 database_commander = DatabaseCommander()
 display_controler = DisplayControler()
-
-
-def generate_cbbnames(w):
-    return [getattr(w, f"CBB{x}") for x in range(1, 11)]
-
-
-def generate_Lnames(w):
-    return [getattr(w, f"LBelegung{x}") for x in range(1, 11)]
+rpi_controller = RpiController()
+logger_handler = LoggerHandler("cocktail_application", "production_logs")
 
 
 def customlevels(w, DB, c):
@@ -51,7 +53,7 @@ def get_bottle_ingredients(w, DB, c):
 def refresh_bottle_cb(w, DB, c):
     """ Adds or remove items to the bottle comboboxes depending on the changed value"""
     # Creating a list of the new and old bottles used
-    CBBnames = generate_cbbnames(w)
+    CBBnames = generate_CBB_names(w)
     old_order = globals.old_ingredient
     new_order = display_controler.get_current_combobox_items(CBBnames)
 
@@ -70,7 +72,7 @@ def refresh_bottle_cb(w, DB, c):
 def newCB_Bottles(w, DB, c):
     """ Fills each bottle combobox with the possible remaining options
     """
-    CBBnames = generate_cbbnames(w)
+    CBBnames = generate_CBB_names(w)
     used_ingredients = globals.old_ingredient
     possible_ingredients = database_commander.get_ingredient_names_machine()
 
@@ -90,7 +92,7 @@ def Belegung_eintragen(w, DB, c):
     from maker import Rezepte_a_M
 
     # Checks where are entries and appends them to a list
-    CBBnames = generate_cbbnames(w)
+    CBBnames = generate_CBB_names(w)
     ingredient_names = display_controler.get_current_combobox_items(CBBnames)
     database_commander.set_bottleorder(ingredient_names)
 
@@ -102,7 +104,7 @@ def Belegung_eintragen(w, DB, c):
 @logerror
 def Belegung_einlesen(w, DB, c):
     """ Reads the Bottleorder into the BottleTab. """
-    CBBnames = generate_cbbnames(w)
+    CBBnames = generate_CBB_names(w)
     ingredient_names = database_commander.get_ingredients_at_bottles()
     display_handler.set_multiple_combobox_items(CBBnames, ingredient_names)
 
@@ -110,7 +112,7 @@ def Belegung_einlesen(w, DB, c):
 @logerror
 def Belegung_a(w, DB, c):
     """ Loads or updates the Labels of the Bottles (Volumelevel). """
-    labels = generate_Lnames(w)
+    labels = generate_LBelegung_names(w)
     label_names = database_commander.get_ingredients_at_bottles()
     label_names = [f"  {x}:" if x != "" else "  -  " for x in label_names]
     display_handler.fill_multiple_lineedit(labels, label_names)
@@ -119,74 +121,31 @@ def Belegung_a(w, DB, c):
 @logerror
 def Belegung_Flanwenden(w, DB, c):
     """ Renews all the Bottles which are checked as new. """
-    PBnames = [getattr(w, f"PBneu{x}") for x in range(1, 11)]
-    for Flaschen_C, PBname in enumerate(PBnames):
-        if PBname.isChecked():
-            c.execute(
-                "UPDATE OR IGNORE Zutaten Set Mengenlevel = Flaschenvolumen WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)",
-                (Flaschen_C + 1,),
-            )
-            PBname.setChecked(False)
-    DB.commit()
+    PBnames = generate_PBneu_names(w)
+    renew_bottle = display_controler.get_toggle_status(PBnames)
+    database_commander.set_bottle_volumelevel_to_max(renew_bottle)
+    display_handler.untoggle_buttons(PBnames)
     Belegung_progressbar(w, DB, c)
-    standartbox("Alle Flaschen angewendet!")
+    display_handler.standard_box("Alle Flaschen angewendet!")
 
 
 @logerror
 def Belegung_progressbar(w, DB, c):
-    """ Gets the actual Level of the Bottle and creates the relation to the maximum Level. \n
-    Assigns it to the according ProgressBar.
-    """
-    for Flaschen_C in range(1, 11):
-        storeval = c.execute(
-            "SELECT Zutaten.Mengenlevel, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID WHERE Belegung.Flasche = ?",
-            (Flaschen_C,),
-        ).fetchone()
-        ProBname = getattr(w, "ProBBelegung" + str(Flaschen_C))
-        if storeval is not None:
-            level = storeval[0]
-            maximum = storeval[1]
-            # Sets the level of the bar, it cant drop below 0 or 100%
-            if level <= 0:
-                ProBname.setValue(0)
-            elif level / maximum > 1:
-                ProBname.setValue(100)
-            else:
-                ProBname.setValue(level / maximum * 100)
-        else:
-            ProBname.setValue(0)
+    """ Gets the proportion of actual and maximal volume of each connected bottle and asigns it"""
+    progressbars = generate_ProBBelegung_names(w)
+    fill_levels = database_commander.get_bottle_fill_levels()
+    display_handler.set_progress_bar_values(progressbars, fill_levels)
 
 
 @logerror
 def CleanMachine(w, DB, c, devenvironment):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
-    if not devenvironment:
-        import RPi.GPIO as GPIO
+    right_password = display_controler.check_password(w.LECleanMachine)
+    if not right_password:
+        display_handler.standard_box("Falsches Passwort!!!!")
+        return
 
-        GPIO.setmode(GPIO.BCM)
-    if w.LECleanMachine.text() == globals.masterpassword:
-        standartbox("Achtung!: Maschine wird gereinigt, genug Wasser bereitstellen! Ok zum Fortfahren.")
-        logger = logging.getLogger("cocktail_application")
-        template = "{:*^80}"
-        logger.info(template.format("Cleaning the Pumps",))
-        pin_list = globals.usedpins
-        w.LECleanMachine.setText("")
-        for row in range(9):
-            if not devenvironment:
-                GPIO.setup(pin_list[row], GPIO.OUT)
-        T_aktuell = 0
-        while T_aktuell < 20:
-            for row in range(9):
-                if not devenvironment:
-                    GPIO.output(pin_list[row], 0)
-            T_aktuell += 0.1
-            T_aktuell = round(T_aktuell, 1)
-            time.sleep(0.1)
-            qApp.processEvents()
-        for row in range(9):
-            if not devenvironment:
-                GPIO.output(pin_list[row], 1)
-        standartbox("Fertig!!!")
-    else:
-        standartbox("Falsches Passwort!!!!")
-    w.LECleanMachine.setText("")
+    display_handler.standard_box("Achtung!: Maschine wird gereinigt, genug Wasser bereitstellen! Ok zum Fortfahren.")
+    logger_handler.log_header("INFO", "Cleaning the Pumps")
+    rpi_controller.clean_pumps()
+    display_handler.standard_box("Fertig!!!")
