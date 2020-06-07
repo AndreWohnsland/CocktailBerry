@@ -24,7 +24,7 @@ class RpiController(ConfigManager):
         self.SLEEP_TIME = 0.1
 
     def clean_pumps(self):
-        active_pins = self.usedpins[: self.NUMBER_BOTTLES]
+        active_pins = self.USEDPINS[: self.NUMBER_BOTTLES]
         print(f"Opening Pins: {active_pins}")
         for pin in active_pins:
             if not devenvironment:

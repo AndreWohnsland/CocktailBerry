@@ -64,7 +64,28 @@ class DatabaseCommander:
             levels.append(proportion)
         return levels
 
-    # set commands
+    def get_ingredient_data(self, ingredient_name):
+        query = "SELECT ID, Name, Alkoholgehalt, Flaschenvolumen, Hand, Mengenlevel FROM Zutaten WHERE Name = ?"
+        values = self.handler.query_database(query, (ingredient_name,))
+        if values:
+            values = values[0]
+            return {
+                "ID": values[0],
+                "name": values[1],
+                "alcohollevel": values[2],
+                "volume": values[3],
+                "hand_add": values[4],
+                "volume_level": values[5],
+            }
+        return {}
+
+    def get_bottle_usage(self, ingredient_id):
+        query = "SELECT COUNT(*) FROM Belegung WHERE ID = ?"
+        if self.handler.query_database(query, (ingredient_id,))[0][0]:
+            return True
+        return False
+
+    # set (update) commands
     def set_bottleorder(self, ingredient_names):
         for i, ingredient in enumerate(ingredient_names):
             bottle = i + 1
@@ -78,3 +99,14 @@ class DatabaseCommander:
             bottle = i + 1
             if set_to_max:
                 self.handler.query_database(query, (bottle,))
+
+    def set_ingredient_data(self, ingredient_name, alcohollevel, volume, new_level, onlyhand, ingredient_id):
+        query = "UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ?, Mengenlevel = ?, Hand = ? WHERE ID = ?"
+        searchtuple = (ingredient_name, alcohollevel, volume, new_level, onlyhand, ingredient_id)
+        self.handler.query_database(query, searchtuple)
+
+    # insert commands
+    def insert_new_ingredient(self, ingredient_name, alcohollevel, volume, onlyhand):
+        query = "INSERT OR IGNORE INTO Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel,Hand) VALUES (?,?,?,0,0,0,?)"
+        searchtuple = (ingredient_name, alcohollevel, volume, onlyhand)
+        self.handler.query_database(query, searchtuple)

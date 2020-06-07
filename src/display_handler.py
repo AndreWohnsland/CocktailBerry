@@ -41,6 +41,7 @@ class DisplayHandler:
         if combobox.count() == 0:
             combobox.addItem("")
         combobox.addItems(itemlist)
+        combobox.model().sort(0)
 
     def fill_multiple_combobox(self, combobox_list, itemlist, clear_first=False):
         for combobox in combobox_list:
@@ -80,6 +81,16 @@ class DisplayHandler:
                 self.delete_single_combobox_item(combobox, new_item)
             combobox.model().sort(0)
 
+    def rename_single_combobox(self, combobox, old_item, new_item):
+        index = combobox.findText(old_item, Qt.MatchFixedString)
+        if index >= 0:
+            combobox.setItemText(index, new_item)
+            combobox.model().sort(0)
+
+    def rename_multiple_combobox(self, combobox_list, old_item, new_item):
+        for combobox in combobox_list:
+            self.rename_single_combobox(combobox, old_item, new_item)
+
     # buttons / togglebuttons
     def untoggle_buttons(self, button_list):
         for button in button_list:
@@ -89,3 +100,14 @@ class DisplayHandler:
     def set_progress_bar_values(self, progress_bar_list, value_list):
         for progress_bar, value in zip(progress_bar_list, value_list):
             progress_bar.setValue(value)
+
+    # listwidget
+    def unselect_list_widget_items(self, list_widget):
+        for i in range(list_widget.count()):
+            list_widget.item(i).setSelected(False)
+
+    def delete_list_widget_item(self, list_widget, item):
+        index_to_delete = list_widget.findItems(item, Qt.MatchExactly)
+        if len(index_to_delete) > 0:
+            for index in index_to_delete:
+                list_widget.takeItem(list_widget.row(index))

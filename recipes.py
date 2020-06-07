@@ -289,7 +289,7 @@ def Rezepte_Rezepte_click(w, DB, c):
 @logerror
 def Rezepte_delete(w, DB, c):
     """ Deletes the selected recipe, requires the Password """
-    if w.LEpw.text() == globals.masterpassword:
+    if w.LEpw.text() == globals.MASTERPASSWORD:
         if not w.LWRezepte.selectedItems():
             standartbox("Kein Rezept ausgewählt!")
         else:

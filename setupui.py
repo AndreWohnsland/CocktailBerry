@@ -304,8 +304,8 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
             GPIO.setmode(GPIO.BCM)
 
         timestep = 0.05
-        pins = globals.usedpins
-        volumeflows = globals.pumpvolume
+        pins = globals.USEDPINS
+        volumeflows = globals.PUMP_VOLUMEFLOW
         globals.loopcheck = True
         # select the bottle and the according pin as well as Volumeflow, calculates the needed time
         bottlename = self.CBingredient.currentText()

@@ -103,7 +103,7 @@ QLineEdit
         <widget class="QComboBox" name="CBHandadd1">
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>103</width>
            <height>28</height>
           </size>
          </property>
@@ -126,7 +126,7 @@ QLineEdit
         <widget class="QComboBox" name="CBHandadd2">
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>103</width>
            <height>28</height>
           </size>
          </property>
@@ -149,7 +149,7 @@ QLineEdit
         <widget class="QComboBox" name="CBHandadd3">
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>103</width>
            <height>28</height>
           </size>
          </property>
@@ -172,7 +172,7 @@ QLineEdit
         <widget class="QComboBox" name="CBHandadd4">
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>103</width>
            <height>28</height>
           </size>
          </property>
@@ -195,7 +195,7 @@ QLineEdit
         <widget class="QComboBox" name="CBHandadd5">
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>103</width>
            <height>28</height>
           </size>
          </property>
@@ -532,7 +532,7 @@ QLineEdit
   <customwidget>
    <class>ClickableLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>clickablelineedit.h</header>
+   <header>ui_elements.clickablelineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

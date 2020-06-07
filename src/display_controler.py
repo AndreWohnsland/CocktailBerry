@@ -5,32 +5,73 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
 from config.config_manager import ConfigManager
+from src.database_commander import DatabaseCommander
 
 
 class DisplayControler(ConfigManager):
     """ Controler Class to get Values from the UI"""
 
     def __init__(self):
-        pass
+        self.database_commander = DatabaseCommander()
 
     def get_current_combobox_items(self, combobox_list):
-        items = []
-        for combobox in combobox_list:
-            items.append(combobox.currentText())
-        return items
+        return [combobox.currentText() for combobox in combobox_list]
 
     def get_toggle_status(self, button_list):
-        checked = []
-        for button in button_list:
-            if button.isChecked():
-                checked.append(True)
-            else:
-                checked.append(False)
-        return checked
+        return [True if button.isChecked() else False for button in button_list]
+
+    def get_lineedit_text(self, lineedit_list):
+        return [lineedit.text() for lineedit in lineedit_list]
+
+    def get_ingredient_data(self, lineedit_list, checkbox, list_widget):
+        ingredient_name, alcohollevel, volume = self.get_lineedit_text(lineedit_list)
+        hand_add = 1 if checkbox.isChecked() else 0
+        selected_ingredient = ""
+        if list_widget.selectedItems():
+            selected_ingredient = list_widget.currentItem().text()
+        return {
+            "ingredient_name": ingredient_name,
+            "alcohollevel": int(alcohollevel),
+            "volume": int(volume),
+            "hand_add": hand_add,
+            "selected_ingredient": selected_ingredient,
+        }
+
+    def check_ingredient_data(self, lineedit_list):
+        error_messages = self.missing_check(
+            lineedit_list, ["Der Zutatenname fehlt", "Der Alkoholgehalt fehlt", "Das Flaschenvolumen fehlt"]
+        )
+        ingredient_name, ingredient_percentage, ingredient_volume = lineedit_list
+        error_messages.extend(self.valid_check_int([ingredient_percentage, ingredient_volume], ["Alkoholgehalt", "Flaschenvolumen"]))
+        try:
+            if int(ingredient_percentage.text()) > 100:
+                error_messages.append("Alkoholgehalt kann nicht größer als 100 sein!")
+        except:
+            pass
+        return error_messages
 
     def check_password(self, lineedit):
         password = lineedit.text()
         lineedit.setText("")
-        if password == self.masterpassword:
+        if password == self.MASTERPASSWORD:
             return True
         return False
+
+    def missing_check(self, lineedit_list, message_list=[]):
+        error_messages = []
+        standard_message = "Es wurde ein Wert vergessen, bitte nachtragen"
+        if not message_list:
+            message_list = [standard_message for x in lineedit_list]
+        for lineedit, message in zip(lineedit_list, message_list):
+            if lineedit.text() == "":
+                error_messages.append(message)
+        return error_messages
+
+    def valid_check_int(self, lineedits, wrongvals):
+        error_messages = []
+        for lineedit, wrongval in zip(lineedits, wrongvals):
+            try:
+                int(lineedit.text())
+            except ValueError:
+                error_messages.append(f"{wrongval} muss eine Zahl sein")
+        return error_messages

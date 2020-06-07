@@ -189,8 +189,8 @@ def Maker_Zubereiten(w, DB, c, devenvironment):
     alcohol_faktor = 1 + (w.HSIntensity.value() / 100)
 
     globals.loopcheck = True
-    pin_list = globals.usedpins
-    volume_flows = globals.pumpvolume
+    pin_list = globals.USEDPINS
+    volume_flows = globals.PUMP_VOLUMEFLOW
 
     # gets the ID and the amount for the recipe
     cocktailname = w.LWMaker.currentItem().text()

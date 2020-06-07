@@ -97,24 +97,14 @@ class FieldHandler:
     def __init__(self):
         self.alive = True
 
-    def missing_check(self, lineedits):
-        for lineedit in lineedits:
-            if lineedit.text() == "":
-                return [False, "Es wurde ein Wert vergessen, bitte nachtragen"]
-        return [True, None]
-
-    def valid_check_int(self, lineedits, wrongvals):
-        for lineedit, wrongval in zip(lineedits, wrongvals):
-            try:
-                int(lineedit.text())
-            except ValueError:
-                return [False, f"{wrongval} muss eine Zahl sein"]
-        return [True, None]
-
 
 ###### This are temporary Helper Functions, they will be moved later in the UI parent class / there will be objects for them
 def generate_CBB_names(w):
     return [getattr(w, f"CBB{x}") for x in range(1, 11)]
+
+
+def generate_CBR_names(w):
+    return [getattr(w, f"CBR{x}") for x in range(1, 9)]
 
 
 def generate_LBelegung_names(w):
@@ -127,3 +117,7 @@ def generate_PBneu_names(w):
 
 def generate_ProBBelegung_names(w):
     return [getattr(w, f"ProBBelegung{x}") for x in range(1, 11)]
+
+
+def generate_ingredient_fields(w):
+    return [[w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen], w.CHBHand, w.LWZutaten]

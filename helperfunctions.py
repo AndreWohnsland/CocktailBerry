@@ -54,7 +54,7 @@ def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, search
     wherestring1 = ""
     wherestring2 = ""
     wobject = getattr(w, wobject_name)
-    if wobject.text() == globals.masterpassword:
+    if wobject.text() == globals.MASTERPASSWORD:
         dirpath = os.path.dirname(__file__)
         subfoldername = "saves"
         # generating a savename prefix for the date and remove the '-' signs
