@@ -35,8 +35,7 @@ def custom_output(w, DB, c):
     w.ingredientdialog()
 
 
-@logerror
-def Zutat_eintragen(w, DB, c, newingredient=True):
+def enter_ingredient(w, DB, c, newingredient=True):
     """ Insert the new ingredient into the DB, if all values are given 
     and its name is not already in the DB.
     Also can change the current selected ingredient (newingredient = False)
@@ -123,94 +122,56 @@ def change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
     return f"Zutat mit dem Namen: <{ingredient_data['selected_ingredient']}> unter <{ingredient_data['ingredient_name']}> aktualisiert"
 
 
-@logerror
 def Zutaten_a(w, DB, c):
     """ Load all ingredientnames into the ListWidget """
     w.LWZutaten.clear()
-    cursor_buffer = c.execute("SELECT Name FROM Zutaten")
-    for values in cursor_buffer:
-        w.LWZutaten.addItem(values[0])
+    ingredient_names = database_commander.get_ingredient_names()
+    display_handler.fill_list_widget(w.LWZutaten, ingredient_names)
 
 
-@logerror
 def Zutaten_delete(w, DB, c):
     """ Deletes an ingredient out of the DB if its not needed in any recipe. \n
     In addition to do so, a password is needed in the interface.
     """
-    ZID = 0
-    if w.LEpw2.text() == globals.MASTERPASSWORD:
-        if not w.LWZutaten.selectedItems():
-            standartbox("Keine Zutat ausgewählt!")
-        else:
-            Zname = w.LWZutaten.currentItem().text()
-            cursor_buffer = c.execute("SELECT ID FROM Zutaten WHERE Name = ?", (Zname,))
-            for row in cursor_buffer:
-                ZID = row[0]
-            c.execute("SELECT COUNT(*) FROM Zusammen WHERE Zutaten_ID=?", (ZID,))
-            Zutatentest = c.fetchone()[0]
-            # Checks if the ingredient is used in any bottle or in any recipe and reacts accordingly
-            if Zutatentest == 0:
-                c.execute("SELECT COUNT(*) FROM Belegung WHERE ID=?", (ZID,))
-                Zutatentest = c.fetchone()[0]
-                if Zutatentest == 0:
-                    c.execute("DELETE FROM Zutaten WHERE ID = ?", (ZID,))
-                    DB.commit()
-                    # For optimisation this command here can be switched with a simpe remove for the ingredient
-                    ZutatenCB_Rezepte(w, DB, c)
-                    # Find the ingredient ind the Comboboxes for the Bottles and removes it
-                    for box in range(1, 11):
-                        CBBname = getattr(w, "CBB" + str(box))
-                        index = CBBname.findText(Zname, Qt.MatchFixedString)
-                        if index >= 0:
-                            CBBname.removeItem(index)
-                    Zutaten_clear(w, DB, c)
-                    Zutaten_a(w, DB, c)
-                    standartbox("Zutat mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(ZID, Zname))
-                else:
-                    standartbox("Achtung, die Zutat ist noch in der Belegung registriert!")
-            # if the ingredient is still used in recipes, inform the user about it and the first 10 recipes
-            else:
-                stringsaver = c.execute(
-                    "SELECT Rezepte.Name FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID = Zusammen.Rezept_ID WHERE Zusammen.Zutaten_ID=?",
-                    (ZID,),
-                )
-                Zutatenliste = []
-                for output in stringsaver:
-                    Zutatenliste.append(output[0])
-                    if len(Zutatenliste) >= 10:
-                        break
-                Zutatenstring = ", ".join(Zutatenliste)
-                standartbox(
-                    "Zutat kann nicht gelöscht werden, da sie in {} Rezept(en) genutzt wird! Diese sind (maximal die zehn ersten):\n{}".format(
-                        Zutatentest, Zutatenstring
-                    )
-                )
-    else:
-        standartbox("Falsches Passwort!")
-    w.LEpw2.setText("")
+    _, _, ingredient_list_widget = generate_ingredient_fields(w)
+    if not display_controler.check_password(w.LEpw2):
+        display_handler.standard_box("Falsches Passwort!")
+        return
+    if not ingredient_list_widget.selectedItems():
+        display_handler.standard_box("Keine Zutat ausgewählt!")
+        return
+    ingredient_data = database_commander.get_ingredient_data(ingredient_list_widget.currentItem().text())
+    if database_commander.get_bottle_usage(ingredient_data["ID"]):
+        display_handler.standard_box("Achtung, die Zutat ist noch in der Belegung registriert!")
+        return
+    recipe_list = database_commander.get_recipe_usage_list(ingredient_data["ID"])
+    if recipe_list:
+        recipe_string = ", ".join(recipe_list[:10])
+        display_handler.standard_box(f"Zutat kann nicht gelöscht werden, da sie in:\n{recipe_string}\ngenutzt wird!")
+        return
+
+    database_commander.delete_ingredient(ingredient_data["ID"])
+    display_handler.delete_item_in_multiple_combobox(generate_CBB_names(w), ingredient_data["name"])
+    display_handler.delete_item_in_multiple_combobox(generate_CBR_names(w), ingredient_data["name"])
+    Zutaten_clear(w, DB, c)
+    Zutaten_a(w, DB, c)
+    display_handler.standard_box(f"Zutat mit der ID und dem Namen:\n<{ingredient_data['ID']}> <{ingredient_data['name']}>\ngelöscht!")
 
 
-@logerror
 def Zutaten_Zutaten_click(w, DB, c):
     """ Search the DB entry for the ingredient and displays them """
-    if w.LWZutaten.selectedItems():
-        ingredientname = w.LWZutaten.currentItem().text()
-        cursor_buffer = c.execute("SELECT Alkoholgehalt, Flaschenvolumen, Hand FROM Zutaten WHERE Name = ?", (ingredientname,))
-        for row in cursor_buffer:
-            w.LEGehaltRezept.setText(str(row[0]))
-            w.LEFlaschenvolumen.setText(str(row[1]))
-            if row[2] == 1:
-                w.CHBHand.setChecked(True)
-            else:
-                w.CHBHand.setChecked(False)
-        w.LEZutatRezept.setText(ingredientname)
+    ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = generate_ingredient_fields(w)
+    if ingredient_list_widget.selectedItems():
+        ingredient_data = database_commander.get_ingredient_data(ingredient_list_widget.currentItem().text())
+        display_handler.fill_multiple_lineedit(
+            ingredient_lineedits, [ingredient_data["name"], ingredient_data["alcohollevel"], ingredient_data["volume"]]
+        )
+        display_handler.set_checkbox_value(ingredient_checkbox, ingredient_data["hand_add"])
 
 
-@logerror
 def Zutaten_clear(w, DB, c):
     """ Clears all entries in the ingredient windows. """
-    w.LWZutaten.clearSelection()
-    w.LEZutatRezept.clear()
-    w.LEGehaltRezept.clear()
-    w.LEFlaschenvolumen.clear()
-    w.CHBHand.setChecked(False)
+    ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = generate_ingredient_fields(w)
+    display_handler.clean_multiple_lineedit(ingredient_lineedits)
+    ingredient_list_widget.clearSelection()
+    ingredient_checkbox.setChecked(False)

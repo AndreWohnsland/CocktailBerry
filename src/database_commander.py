@@ -85,6 +85,11 @@ class DatabaseCommander:
             return True
         return False
 
+    def get_recipe_usage_list(self, ingredient_id):
+        query = "SELECT Rezepte.Name FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID = Zusammen.Rezept_ID WHERE Zusammen.Zutaten_ID=?"
+        recipe_list = self.handler.query_database(query, (ingredient_id,))
+        return [recipe[0] for recipe in recipe_list]
+
     # set (update) commands
     def set_bottleorder(self, ingredient_names):
         for i, ingredient in enumerate(ingredient_names):
@@ -110,3 +115,8 @@ class DatabaseCommander:
         query = "INSERT OR IGNORE INTO Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel,Hand) VALUES (?,?,?,0,0,0,?)"
         searchtuple = (ingredient_name, alcohollevel, volume, onlyhand)
         self.handler.query_database(query, searchtuple)
+
+    # delete
+    def delete_ingredient(self, ingredient_id):
+        query = "DELETE FROM Zutaten WHERE ID = ?"
+        self.handler.query_database(query, (ingredient_id,))

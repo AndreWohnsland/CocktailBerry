@@ -28,11 +28,11 @@ class DisplayHandler:
     # LineEdit
     def clean_multiple_lineedit(self, lineedit_list):
         for lineedit in lineedit_list:
-            lineedit.setText("")
+            lineedit.clear()
 
     def fill_multiple_lineedit(self, lineedit_list, text_list):
         for lineedit, text in zip(lineedit_list, text_list):
-            lineedit.setText(text)
+            lineedit.setText(str(text))
 
     # Combobox
     def fill_single_combobox(self, combobox, itemlist, clear_first=False):
@@ -111,3 +111,14 @@ class DisplayHandler:
         if len(index_to_delete) > 0:
             for index in index_to_delete:
                 list_widget.takeItem(list_widget.row(index))
+
+    def fill_list_widget(self, list_widget, item_list):
+        for item in item_list:
+            list_widget.addItem(item)
+
+    # checkboxes
+    def set_checkbox_value(self, checkbox, value):
+        if value:
+            checkbox.setChecked(True)
+        else:
+            checkbox.setChecked(False)

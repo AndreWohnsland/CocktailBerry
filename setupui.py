@@ -62,11 +62,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # connects all the Lineedits from the Recipe amount and gives them the validator
         LER_obj = [getattr(self, "LER" + str(x)) for x in range(1, 9)]
         for obj in LER_obj:
-            obj.clicked.connect(
-                lambda o=obj: self.passwordwindow(
-                    le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!",
-                )
-            )
+            obj.clicked.connect(lambda o=obj: self.passwordwindow(le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!",))
             obj.setValidator(QIntValidator(0, 300))
             obj.setMaxLength(3)
         # Setting up Validators for all the the fields (length and/or Types):
@@ -160,9 +156,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         """ Init. Connect all the buttons and set window policy. """
         super(PasswordScreen, self).__init__(parent)
         self.setupUi(self)
-        self.setWindowFlags(
-            Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint
-        )
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         # Connect all the buttons, generates a list of the numbers an objectnames to do that
         self.number_list = [x for x in range(10)]
@@ -236,12 +230,8 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         myminus = [getattr(self, "PBMminus" + str(x)) for x in range(1, 11)]
         mylabel = [getattr(self, "LAmount" + str(x)) for x in range(1, 11)]
         for plus, minus, field, vol in zip(myplus, myminus, mylabel, self.maxvolume):
-            plus.clicked.connect(
-                lambda _, l=field, b=vol: plusminus(label=l, operator="+", minimal=50, maximal=b, dm=25)
-            )
-            minus.clicked.connect(
-                lambda _, l=field, b=vol: plusminus(label=l, operator="-", minimal=50, maximal=b, dm=25)
-            )
+            plus.clicked.connect(lambda _, l=field, b=vol: plusminus(label=l, operator="+", minimal=50, maximal=b, dm=25))
+            minus.clicked.connect(lambda _, l=field, b=vol: plusminus(label=l, operator="-", minimal=50, maximal=b, dm=25))
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """
@@ -270,9 +260,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         super(GetIngredientWindow, self).__init__(parent)
         self.setupUi(self)
         # Set window properties
-        self.setWindowFlags(
-            Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint
-        )
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.ms = parent
         if not self.ms.devenvironment:
@@ -312,22 +300,16 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         bottle = self.c.execute("SELECT Flasche From Belegung WHERE Zutat_F = ?", (bottlename,)).fetchone()
         if bottle is not None:
             pos = bottle[0] - 1
-            print(
-                f"Ausgabemenge von {self.CBingredient.currentText()}: {self.LAmount.text()} die Flaschennummer ist: {pos + 1}"
-            )
+            print(f"Ausgabemenge von {self.CBingredient.currentText()}: {self.LAmount.text()} die Flaschennummer ist: {pos + 1}")
         pin = pins[pos]
         volumeflow = int(volumeflows[pos])
         volume = int(self.LAmount.text())
         check = True
         # now checks if there is enough of the ingredient
-        amounttest = self.c.execute(
-            "SELECT Mengenlevel FROM Zutaten WHERE Name = ? and Mengenlevel < ?", (bottlename, volume),
-        ).fetchone()
+        amounttest = self.c.execute("SELECT Mengenlevel FROM Zutaten WHERE Name = ? and Mengenlevel < ?", (bottlename, volume),).fetchone()
         if amounttest is not None:
             missingamount = amounttest[0]
-            standartbox(
-                f"Die Flasche hat nicht genug Volumen! {volume} ml werden gebraucht, {missingamount} ml sind vorhanden!"
-            )
+            standartbox(f"Die Flasche hat nicht genug Volumen! {volume} ml werden gebraucht, {missingamount} ml sind vorhanden!")
             check = False
         if check:
             time_needed = volume / volumeflow
@@ -388,13 +370,9 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.attribute_chars = [getattr(self, "Button" + x) for x in self.char_list_lower]
         self.attribute_numbers = [getattr(self, "Button" + str(x)) for x in self.number_list]
         for obj, char, char2 in zip(self.attribute_chars, self.char_list_lower, self.char_list_upper):
-            obj.clicked.connect(
-                lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s)
-            )
+            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s))
         for obj, char, char2 in zip(self.attribute_numbers, self.number_list, self.number_list):
-            obj.clicked.connect(
-                lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s)
-            )
+            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s))
         # restricting the Lineedit to a set up Char leng
         self.LName.setMaxLength(max_char_len)
 
@@ -443,9 +421,7 @@ class HandaddWidget(QDialog, Ui_handadds):
     def __init__(self, parent):
         super(HandaddWidget, self).__init__(parent)
         self.setupUi(self)
-        self.setWindowFlags(
-            Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint
-        )
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.ms = parent
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         # get all ingredients from the DB (all of them, handadd and normal, bc you may want to add normal as well)
@@ -471,9 +447,7 @@ class HandaddWidget(QDialog, Ui_handadds):
         for i in range(1, 6):
             LEHand = getattr(self, "LEHandadd" + str(i))
             LEHand.clicked.connect(
-                lambda o=LEHand: self.ms.passwordwindow(
-                    le_to_write=o, x_pos=400, y_pos=50, headertext="Menge eingeben!"
-                )
+                lambda o=LEHand: self.ms.passwordwindow(le_to_write=o, x_pos=400, y_pos=50, headertext="Menge eingeben!")
             )
             LEHand.setValidator(QIntValidator(0, 300))
             LEHand.setMaxLength(3)
@@ -498,9 +472,7 @@ class HandaddWidget(QDialog, Ui_handadds):
         for i in range(1, 6):
             LEname = getattr(self, "LEHandadd" + str(i))
             CBname = getattr(self, "CBHandadd" + str(i))
-            if ((CBname.currentText() != "") and LEname.text() == "") or (
-                (CBname.currentText() == "") and LEname.text() != ""
-            ):
+            if ((CBname.currentText() != "") and LEname.text() == "") or ((CBname.currentText() == "") and LEname.text() != ""):
                 standartbox("Irgendwo ist ein Wert vergessen worden!")
                 return
             # append both values to the lists
@@ -568,9 +540,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         """ Writes the new availibility into the DB. """
         self.ms.c.execute("DELETE FROM Vorhanden")
         for i in range(self.LWVorhanden.count()):
-            ing_id = self.ms.c.execute(
-                "SELECT ID FROM Zutaten WHERE Name=?", (self.LWVorhanden.item(i).text(),),
-            ).fetchone()[0]
+            ing_id = self.ms.c.execute("SELECT ID FROM Zutaten WHERE Name=?", (self.LWVorhanden.item(i).text(),),).fetchone()[0]
             self.ms.c.execute("INSERT OR IGNORE INTO Vorhanden(ID) VALUES(?)", (ing_id,))
         self.ms.DB.commit()
         # reloads the maker screen and updates the shown available recipes
@@ -595,7 +565,7 @@ class AvailableWindow(QMainWindow, Ui_available):
 def pass_setup(w, DB, c, partymode, devenvironment):
     """ Connect all the functions with the Buttons. """
     # First, connect all the Pushbuttons with the Functions
-    w.PBZutathinzu.clicked.connect(lambda: Zutat_eintragen(w, DB, c))
+    w.PBZutathinzu.clicked.connect(lambda: enter_ingredient(w, DB, c))
     w.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(w, DB, c, True))
     w.PBBelegung.clicked.connect(lambda: customlevels(w, DB, c))
     w.PBZeinzelnd.clicked.connect(lambda: custom_output(w, DB, c))
@@ -604,7 +574,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBdelete.clicked.connect(lambda: Rezepte_delete(w, DB, c))
     w.PBZdelete.clicked.connect(lambda: Zutaten_delete(w, DB, c))
     w.PBZclear.clicked.connect(lambda: Zutaten_clear(w, DB, c))
-    w.PBZaktualisieren.clicked.connect(lambda: Zutat_eintragen(w, DB, c, False))
+    w.PBZaktualisieren.clicked.connect(lambda: enter_ingredient(w, DB, c, False))
     w.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(w, DB, c, devenvironment))
     w.PBCleanMachine.clicked.connect(lambda: CleanMachine(w, DB, c, devenvironment))
     w.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(w, DB, c))
@@ -613,12 +583,8 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBMplus.clicked.connect(lambda: plusminus(w.LCustomMenge, "+", 100, 400, 25))
     w.PBMminus.clicked.connect(lambda: plusminus(w.LCustomMenge, "-", 100, 400, 25))
     w.PBSetnull.clicked.connect(lambda: Maker_nullProB(w, DB, c))
-    w.PBZnull.clicked.connect(
-        lambda: save_quant(w, DB, c, "LEpw2", "Zutaten_export.csv", "Zutaten", "Verbrauch", "Verbrauchsmenge",)
-    )
-    w.PBRnull.clicked.connect(
-        lambda: save_quant(w, DB, c, "LEpw", "Rezepte_export.csv", "Rezepte", "Anzahl", "Anzahl_Lifetime", True,)
-    )
+    w.PBZnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw2", "Zutaten_export.csv", "Zutaten", "Verbrauch", "Verbrauchsmenge",))
+    w.PBRnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw", "Rezepte_export.csv", "Rezepte", "Anzahl", "Anzahl_Lifetime", True,))
     w.PBenable.clicked.connect(lambda: enableall(w, DB, c))
 
     # Connect the Lists with the Functions
