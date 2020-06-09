@@ -17,11 +17,23 @@ from bottles import Belegung_progressbar
 from msgboxgenerate import standartbox
 from loggerconfig import logfunction, logerror
 
+from src.database_commander import DatabaseCommander
+from src.display_handler import DisplayHandler
+
 import globals
 
 
+database_commander = DatabaseCommander()
+display_handler = DisplayHandler()
+
+
+def fill_recipe_list_widget(w, id_list=None):
+    if id_list is None:
+        id_list = database_commander.get_enabled_recipes()
+
+
 @logerror
-def Rezepte_a_M(w, DB, c, reloadall=True, mode="", changeid=0, goon=True):
+def Rezepte_a_M(w, DB, c, possible_recipes_id=None):
     """ Goes through every recipe in the DB and crosscheck its ingredients 
     with the actual bottle assignments. \n
     Only display the recipes in the maker tab which match all bottles needed.
@@ -31,58 +43,56 @@ def Rezepte_a_M(w, DB, c, reloadall=True, mode="", changeid=0, goon=True):
     changeid is only needed for add (int) and enable (list).
     goon is only needed at recipes and represents if the new/updated recipe is disabled or not
     """
-    if reloadall:
-        w.LWMaker.clear()
-    possible_recipes_id = []
+    if possible_recipes_id is None:
+        possible_recipes_id = database_commander.get_enabled_recipes()
+
     available_recipes_ids = []
-    # Search all ids needed, depending on the mode
-    # this differs on the input: changed bottles, add an recipe (or changed) or enabled/disabled a recipe
-    if mode == "add":
-        possible_recipes_id.append(changeid)
-    elif mode == "enable":
-        possible_recipes_id = changeid
-    else:
-        cursor_buffer = c.execute("SELECT ID, Enabled FROM Rezepte")
-        for values in cursor_buffer:
-            if values[1]:
-                possible_recipes_id.append(int(values[0]))
-    # Search all ingredient IDs of the recipe
-    # if its only one recipe change and it is not enabled, this part will not be carried out
-    if not goon:
-        return
+    bottle_ids = set(database_commander.get_ids_at_bottles())
+    handadds_ids = set(database_commander.get_handadd_ids())
 
     for recipe_id in possible_recipes_id:
-        can_do_recipe = True
-        # Generates a list of all Ids of the ingredients needed by the machine for every recipe
-        ingredient_ids_machine = []
-        cursor_buffer = c.execute("SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=0", (recipe_id,))
-        for values in cursor_buffer:
-            ingredient_ids_machine.append(int(values[0]))
-        # Check if all Bottles for the Recipe are Connected, if so adds it to the List
-        for ingredient_id in ingredient_ids_machine:
-            c.execute("SELECT COUNT(*) FROM Belegung WHERE ID = ?", (ingredient_id,))
-            cursor_buffer2 = c.fetchone()[0]
-            if cursor_buffer2 == 0:
-                can_do_recipe = False
-                break
-        # Generates a list of all Ids of the ingredients which needs to be added later by hand
-        ingredient_ids_hand = []
-        cursor_buffer = c.execute("SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=1", (recipe_id,))
-        for values in cursor_buffer:
-            ingredient_ids_hand.append(int(values[0]))
-        # Check if all ingredients for the Recipe are set available (Vorhanden DB got the list), if so adds it to the List
-        for ingredient_id in ingredient_ids_hand:
-            c.execute("SELECT COUNT(*) FROM Vorhanden WHERE ID = ?", (ingredient_id,))
-            cursor_buffer2 = c.fetchone()[0]
-            if cursor_buffer2 == 0:
-                can_do_recipe = False
-                break
-        if can_do_recipe:
-            available_recipes_ids.append(recipe_id)
-    # alle möglichen Rezepte werden über ihre ID in Liste eingetragen
-    for recipe_id in available_recipes_ids:
-        name_ = c.execute("SELECT Name FROM Rezepte WHERE ID = ?", (recipe_id,)).fetchone()[0]
-        w.LWMaker.addItem(name_)
+        recipe_handadds, recipe_machineadds = database_commander.get_ingredients_seperated_by_handadd(recipe_id)
+        recipe_handadds = set(recipe_handadds)
+        recipe_machineadds = set(recipe_machineadds)
+
+        if (not recipe_handadds.issubset(handadds_ids)) or (not recipe_machineadds.issubset(bottle_ids)):
+            continue
+
+        available_recipes_ids.append(recipe_id)
+
+    recipe_names = database_commander.get_multiple_recipe_names_from_ids(available_recipes_ids)
+    display_handler.fill_list_widget(w.LWMaker, recipe_names)
+
+    # can_do_recipe = True
+    # ingredient_ids_machine = []
+    # ingredient_ids_hand = []
+    #     cursor_buffer = c.execute("SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=0", (recipe_id,))
+    #     for values in cursor_buffer:
+    #         ingredient_ids_machine.append(int(values[0]))
+    #     # Check if all Bottles for the Recipe are Connected, if so adds it to the List
+    #     for ingredient_id in ingredient_ids_machine:
+    #         c.execute("SELECT COUNT(*) FROM Belegung WHERE ID = ?", (ingredient_id,))
+    #         cursor_buffer2 = c.fetchone()[0]
+    #         if cursor_buffer2 == 0:
+    #             can_do_recipe = False
+    #             break
+    #     # Generates a list of all Ids of the ingredients which needs to be added later by hand
+    #     cursor_buffer = c.execute("SELECT Zutaten_ID FROM Zusammen WHERE Rezept_ID = ? AND Hand=1", (recipe_id,))
+    #     for values in cursor_buffer:
+    #         ingredient_ids_hand.append(int(values[0]))
+    #     # Check if all ingredients for the Recipe are set available (Vorhanden DB got the list), if so adds it to the List
+    #     for ingredient_id in ingredient_ids_hand:
+    #         c.execute("SELECT COUNT(*) FROM Vorhanden WHERE ID = ?", (ingredient_id,))
+    #         cursor_buffer2 = c.fetchone()[0]
+    #         if cursor_buffer2 == 0:
+    #             can_do_recipe = False
+    #             break
+    #     if can_do_recipe:
+    #         available_recipes_ids.append(recipe_id)
+    # # alle möglichen Rezepte werden über ihre ID in Liste eingetragen
+    # for recipe_id in available_recipes_ids:
+    #     name_ = c.execute("SELECT Name FROM Rezepte WHERE ID = ?", (recipe_id,)).fetchone()[0]
+    #     w.LWMaker.addItem(name_)
 
 
 @logerror
@@ -294,13 +304,14 @@ def Maker_Zubereiten(w, DB, c, devenvironment):
     w.prow_close()
     # Adds the usage and the cocktail
     c.execute(
-        "UPDATE OR IGNORE Rezepte SET Anzahl_Lifetime = Anzahl_Lifetime + 1, Anzahl = Anzahl + 1 WHERE ID = ?",
-        (CocktailID,),
+        "UPDATE OR IGNORE Rezepte SET Anzahl_Lifetime = Anzahl_Lifetime + 1, Anzahl = Anzahl + 1 WHERE ID = ?", (CocktailID,),
     )
     # logs all value, checks if recipe was interrupted and where
     mengenstring = f"{cocktail_volume} ml"
     if globals.loopcheck == False:
-        abbruchstring = f" - Rezept wurde bei {round(T_aktuell, 1)} s abgebrochen - {round(cocktail_volume * (T_aktuell + timestep) / T_max)}  ml"
+        abbruchstring = (
+            f" - Rezept wurde bei {round(T_aktuell, 1)} s abgebrochen - {round(cocktail_volume * (T_aktuell + timestep) / T_max)}  ml"
+        )
     else:
         abbruchstring = ""
     logger = logging.getLogger("cocktail_application")

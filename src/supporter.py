@@ -91,13 +91,6 @@ class LoggerHandler:
         self.logger.debug(self.TEMPLATE.format("Starting the Programm",))
 
 
-class FieldHandler:
-    """Handler Class to evaluate field Values in the UI """
-
-    def __init__(self):
-        self.alive = True
-
-
 ###### This are temporary Helper Functions, they will be moved later in the UI parent class / there will be objects for them
 def generate_CBB_names(w):
     return [getattr(w, f"CBB{x}") for x in range(1, 11)]

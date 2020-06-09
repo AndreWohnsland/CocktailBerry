@@ -78,9 +78,7 @@ def newCB_Bottles(w, DB, c):
 
     shown_ingredients = []
     for row, _ in enumerate(used_ingredients):
-        shown_ingredients.append(
-            sorted(set(possible_ingredients) - set([x for i, x in enumerate(used_ingredients) if i != row]))
-        )
+        shown_ingredients.append(sorted(set(possible_ingredients) - set([x for i, x in enumerate(used_ingredients) if i != row])))
 
     display_handler.fill_multiple_combobox_individually(CBBnames, shown_ingredients, True)
 
@@ -97,6 +95,7 @@ def Belegung_eintragen(w, DB, c):
     database_commander.set_bottleorder(ingredient_names)
 
     Belegung_a(w, DB, c)
+    w.LWMaker.clear()
     Rezepte_a_M(w, DB, c)
     Belegung_progressbar(w, DB, c)
 

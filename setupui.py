@@ -18,6 +18,7 @@ from bottles import *
 from helperfunctions import export_ingredients, export_recipes, plusminus
 from bottles import Belegung_progressbar
 from msgboxgenerate import standartbox
+from config.config_manager import ConfigManager
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
 from ui_elements.passwordbuttons import Ui_PasswordWindow
@@ -30,7 +31,7 @@ from ui_elements.handadds import Ui_handadds
 from ui_elements.available import Ui_available
 
 
-class MainScreen(QMainWindow, Ui_MainWindow):
+class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     """ Creates the Mainscreen. """
 
     def __init__(self, devenvironment, DB=None, parent=None):
@@ -38,9 +39,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         super(MainScreen, self).__init__(parent)
         self.setupUi(self)
         # as long as its not devenvironment (usually touchscreen) hide the cursor
-        if not devenvironment:
+        if not self.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
-        self.devenvironment = devenvironment
+        self.devenvironment = self.DEVENVIRONMENT
         # connect to the DB, if one is given (you should always give one!)
         if DB is not None:
             self.DB = sqlite3.connect(DB)
@@ -544,6 +545,7 @@ class AvailableWindow(QMainWindow, Ui_available):
             self.ms.c.execute("INSERT OR IGNORE INTO Vorhanden(ID) VALUES(?)", (ing_id,))
         self.ms.DB.commit()
         # reloads the maker screen and updates the shown available recipes
+        self.ms.LWMaker.clear()
         Rezepte_a_M(self.ms, self.ms.DB, self.ms.c)
         Maker_List_null(self.ms, self.ms.DB, self.ms.c)
         self.close()

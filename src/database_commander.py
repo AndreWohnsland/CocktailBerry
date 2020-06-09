@@ -9,7 +9,7 @@ class DatabaseCommander:
         self.handler = DatabaseHandler()
 
     def get_recipe_ingredients(self, recipe_id):
-        query = "SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID WHERE Zusammen.Rezept_ID = ?"
+        query = "SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID WHERE Zusammen.Rezept_ID = ?"
         return self.handler.query_database(query, (recipe_id,))
 
     def get_all_recipes_properties(self):
@@ -35,8 +35,17 @@ class DatabaseCommander:
             }
         return recipe_object
 
+    def get_enabled_recipes(self):
+        recipe_data = self.get_all_recipes_properties()
+        return [x[0] for x in recipe_data if x[5]]
+
     def get_ingredients_at_bottles(self):
         query = "SELECT Zutat_F FROM Belegung"
+        result = self.handler.query_database(query)
+        return [x[0] for x in result]
+
+    def get_ids_at_bottles(self):
+        query = "SELECT ID FROM Belegung"
         result = self.handler.query_database(query)
         return [x[0] for x in result]
 
@@ -90,6 +99,28 @@ class DatabaseCommander:
         query = "SELECT Rezepte.Name FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID = Zusammen.Rezept_ID WHERE Zusammen.Zutaten_ID=?"
         recipe_list = self.handler.query_database(query, (ingredient_id,))
         return [recipe[0] for recipe in recipe_list]
+
+    def get_handadd_ids(self):
+        query = "SELECT ID FROM Vorhanden"
+        result = self.handler.query_database(query)
+        return [x[0] for x in result]
+
+    def get_ingredients_seperated_by_handadd(self, recipe_id):
+        handadds = []
+        machineadds = []
+        ingredients = self.get_recipe_ingredients(recipe_id)
+        for ingredient in ingredients:
+            if ingredient[2]:
+                handadds.append(ingredient[3])
+            else:
+                machineadds.append(ingredient[3])
+        return handadds, machineadds
+
+    def get_multiple_recipe_names_from_ids(self, id_list):
+        questionmarks = ",".join(["?"] * len(id_list))
+        query = f"SELECT Name FROM Rezepte WHERE ID in ({questionmarks})"
+        result = self.handler.query_database(query, id_list)
+        return [x[0] for x in result]
 
     def get_consumption_data_lists_recipes(self):
         query = "SELECT Name, Anzahl, Anzahl_Lifetime FROM Rezepte"

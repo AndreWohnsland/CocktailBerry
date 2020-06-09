@@ -11,7 +11,6 @@ from PyQt5.uic import *
 import setupui
 import globals
 import loggerconfig
-import init_newdb
 
 # Load all global over multiple Modules passed Values
 globals.initialize()
@@ -21,7 +20,6 @@ loggername = "today"  # under this name your logging file will be saved
 # important to set to False, otherwise the GPIO-commands dont work
 devenvironment = True
 partymode = False  # True disables the recipe tab, that no user can change it
-neednewdb = False  # only needed if you delete your DB and want to set up new one
 
 if not devenvironment:
     import RPi.GPIO as GPIO
@@ -35,8 +33,6 @@ if __name__ == "__main__":
     db_path = os.path.join(dirpath, "{}.db".format(dbname))
     DB = sqlite3.connect(db_path)
     c = DB.cursor()
-    if neednewdb:
-        init_newdb.create_new_db(DB, c)
 
     # Load the UI
     app = QApplication(sys.argv)

@@ -10,3 +10,4 @@ class ConfigManager:
     PARTYMODE = False
     LOGGERNAME = "cocktaillogger"
     LOGGERNAME_DEBUG = "debuglogger"
+    DEVENVIRONMENT = True

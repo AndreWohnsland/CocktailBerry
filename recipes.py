@@ -55,9 +55,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         for check_v in range(1, 9):
             CBRname = getattr(w, "CBR" + str(check_v))
             LERname = getattr(w, "LER" + str(check_v))
-            if ((CBRname.currentText() != "") and LERname.text() == "") or (
-                (CBRname.currentText() == "") and LERname.text() != ""
-            ):
+            if ((CBRname.currentText() != "") and LERname.text() == "") or ((CBRname.currentText() == "") and LERname.text() != ""):
                 val_check = 1
                 standartbox("Irgendwo ist ein Wert vergessen worden!")
                 break
@@ -150,26 +148,13 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         if not newrecipe:
             c.execute(
                 "UPDATE OR IGNORE Rezepte SET Name = ?, Alkoholgehalt = ?, Menge = ?, Kommentar = ?, Enabled = ?, V_Alk = ?, c_Alk = ?, V_Com = ?, c_Com = ? WHERE ID = ?",
-                (
-                    neuername,
-                    Alkoholgehalt_Cocktail,
-                    SVol,
-                    w.LEKommentar.text(),
-                    isenabled,
-                    v_alk,
-                    c_alk,
-                    v_com,
-                    c_com,
-                    int(CocktailID),
-                ),
+                (neuername, Alkoholgehalt_Cocktail, SVol, w.LEKommentar.text(), isenabled, v_alk, c_alk, v_com, c_com, int(CocktailID),),
             )
             c.execute("DELETE FROM Zusammen WHERE Rezept_ID = ?", (CocktailID,))
         # RezeptID, Alkoholisch and ZutatenIDs gets inserted into Zusammen DB
         RezepteDBID = c.execute("SELECT ID FROM Rezepte WHERE Name = ?", (neuername,)).fetchone()[0]
         for Anzahl in range(0, len(Zutaten_V)):
-            incproperties = c.execute(
-                "SELECT ID, Alkoholgehalt FROM Zutaten WHERE Name = ?", (Zutaten_V[Anzahl],)
-            ).fetchone()
+            incproperties = c.execute("SELECT ID, Alkoholgehalt FROM Zutaten WHERE Name = ?", (Zutaten_V[Anzahl],)).fetchone()
             ZutatenDBID = incproperties[0]
             if incproperties[1] > 0:
                 isalkoholic = 1
@@ -198,7 +183,8 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                     w.LWMaker.takeItem(w.LWMaker.row(item))
         w.LWRezepte.addItem(neuername)
         # add needs to be checked, if all ingredients are used
-        Rezepte_a_M(w, DB, c, False, "add", RezepteDBID, isenabled)
+        if isenabled:
+            Rezepte_a_M(w, DB, c, [RezepteDBID])
         Rezepte_clear(w, DB, c, True)
         if newrecipe:
             standartbox("Rezept unter der ID und dem Namen:\n<{}> <{}>\neingetragen!".format(RezepteDBID, neuername))
@@ -327,6 +313,6 @@ def enableall(w, DB, c):
         idinput.append(int(values[0]))
     c.execute("UPDATE OR IGNORE Rezepte SET Enabled = 1")
     DB.commit()
-    Rezepte_a_M(w, DB, c, False, "enable", idinput)
+    Rezepte_a_M(w, DB, c, idinput)
     Rezepte_clear(w, DB, c, False)
     standartbox("Alle Rezepte wurden wieder aktiv gesetzt!")
