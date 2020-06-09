@@ -1,4 +1,5 @@
 from src.supporter import DatabaseHandler
+import datetime
 
 
 class DatabaseCommander:
@@ -90,6 +91,24 @@ class DatabaseCommander:
         recipe_list = self.handler.query_database(query, (ingredient_id,))
         return [recipe[0] for recipe in recipe_list]
 
+    def get_consumption_data_lists_recipes(self):
+        query = "SELECT Name, Anzahl, Anzahl_Lifetime FROM Rezepte"
+        data = self.handler.query_database(query)
+        return self.convert_consumption_data(data)
+
+    def get_consumption_data_lists_ingredients(self):
+        query = "SELECT Name, Verbrauch, Verbrauchsmenge FROM Zutaten"
+        data = self.handler.query_database(query)
+        return self.convert_consumption_data(data)
+
+    def convert_consumption_data(self, data):
+        headers, resetable, lifetime = [], [], []
+        for row in data:
+            headers.append(row[0])
+            resetable.append(row[1])
+            lifetime.append(row[2])
+        return [["date", *headers], [datetime.date.today(), *resetable], ["lifetime", *lifetime]]
+
     # set (update) commands
     def set_bottleorder(self, ingredient_names):
         for i, ingredient in enumerate(ingredient_names):
@@ -120,3 +139,11 @@ class DatabaseCommander:
     def delete_ingredient(self, ingredient_id):
         query = "DELETE FROM Zutaten WHERE ID = ?"
         self.handler.query_database(query, (ingredient_id,))
+
+    def delete_consumption_recipes(self):
+        query = "UPDATE OR IGNORE Rezepte SET Anzahl = 0"
+        self.handler.query_database(query)
+
+    def delete_consumption_ingredients(self):
+        query = "UPDATE OR IGNORE Zutaten SET Verbrauch = 0"
+        self.handler.query_database(query)

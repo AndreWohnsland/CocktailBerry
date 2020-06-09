@@ -19,9 +19,7 @@ class RpiController(ConfigManager):
     """Controler Class for all RPi related GPIO routines """
 
     def __init__(self):
-        self.NUMBER_BOTTLES = 10
-        self.CLEAN_TIME = 20
-        self.SLEEP_TIME = 0.1
+        pass
 
     def clean_pumps(self):
         active_pins = self.USEDPINS[: self.NUMBER_BOTTLES]

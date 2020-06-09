@@ -15,7 +15,7 @@ from maker import *
 from ingredients import *
 from recipes import *
 from bottles import *
-from helperfunctions import save_quant, plusminus
+from helperfunctions import export_ingredients, export_recipes, plusminus
 from bottles import Belegung_progressbar
 from msgboxgenerate import standartbox
 
@@ -583,16 +583,16 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBMplus.clicked.connect(lambda: plusminus(w.LCustomMenge, "+", 100, 400, 25))
     w.PBMminus.clicked.connect(lambda: plusminus(w.LCustomMenge, "-", 100, 400, 25))
     w.PBSetnull.clicked.connect(lambda: Maker_nullProB(w, DB, c))
-    w.PBZnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw2", "Zutaten_export.csv", "Zutaten", "Verbrauch", "Verbrauchsmenge",))
-    w.PBRnull.clicked.connect(lambda: save_quant(w, DB, c, "LEpw", "Rezepte_export.csv", "Rezepte", "Anzahl", "Anzahl_Lifetime", True,))
+    w.PBZnull.clicked.connect(lambda: export_ingredients(w))
+    w.PBRnull.clicked.connect(lambda: export_recipes(w))
     w.PBenable.clicked.connect(lambda: enableall(w, DB, c))
 
     # Connect the Lists with the Functions
     w.LWZutaten.itemClicked.connect(lambda: Zutaten_Zutaten_click(w, DB, c))
-    w.LWMaker.itemClicked.connect(lambda: Maker_Rezepte_click(w, DB, c))
-    w.LWRezepte.itemClicked.connect(lambda: Rezepte_Rezepte_click(w, DB, c))
     w.LWZutaten.currentTextChanged.connect(lambda: Zutaten_Zutaten_click(w, DB, c))
+    w.LWMaker.itemClicked.connect(lambda: Maker_Rezepte_click(w, DB, c))
     w.LWMaker.currentTextChanged.connect(lambda: Maker_Rezepte_click(w, DB, c))
+    w.LWRezepte.itemClicked.connect(lambda: Rezepte_Rezepte_click(w, DB, c))
     w.LWRezepte.currentTextChanged.connect(lambda: Rezepte_Rezepte_click(w, DB, c))
 
     # Connects the slider
@@ -623,24 +623,5 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     # Load the Progressbar
     Belegung_progressbar(w, DB, c)
 
-    # Connects additional Functionality to the Comboboxes
-    # Information: there seems to be an .activate method which does exactly the same
-    # but only gets activated when the user input changes the index. Some testing is required.
-    # Switched to the activate method. removed the global var therefore. (15.07.2019)
-    # Seems to work fine, still, needs to track it.
-    # w.CBB1.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    # w.CBB2.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    # w.CBB3.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    # w.CBB4.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    # w.CBB5.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    # w.CBB6.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    # w.CBB7.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    # w.CBB8.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    # w.CBB9.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-    # w.CBB10.activated.connect(lambda: refresh_bottle_cb(w, DB, c))
-
     for combobox in [getattr(w, "CBB" + str(x)) for x in range(1, 11)]:
         combobox.activated.connect(lambda _, window=w, db=DB, cursor=c: refresh_bottle_cb(w=window, DB=db, c=cursor))
-
-
-### lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s)

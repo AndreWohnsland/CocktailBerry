@@ -15,7 +15,7 @@ class DatabaseHandler:
 
     def __init__(self):
         self.database_path = DatabaseHandler.database_path
-        print(self.database_path)
+        # print(self.database_path)
         if not Path(self.database_path).exists():
             print("creating Database")
             self.create_tables()

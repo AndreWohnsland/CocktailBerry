@@ -11,93 +11,54 @@ from PyQt5.uic import *
 
 import globals
 from msgboxgenerate import standartbox
-from loggerconfig import logerror, logfunction
+
+from src.database_commander import DatabaseCommander
+from src.display_handler import DisplayHandler
+from src.display_controler import DisplayControler
+
+database_commander = DatabaseCommander()
+display_handler = DisplayHandler()
+display_controler = DisplayControler()
 
 
-def plusminus(label, operator, minimal=0, maximal=1000, dm=10, DB=None, c=None):
-    """ A helperfunction for the plus and minusbottons. Needs at least the label for the value and the operator.
-    Limits the process to a minimum and maximum value. A constant stepsize dm can be set.\n
-    As operater can be used: \n
-    "+":    increases the value by dm\n
-    "-":    decreases the value by dm
-    """
-    # sets the conditions that the value can not exceed the min/max value by clicking
+def plusminus(label, operator, minimal=0, maximal=1000, dm=10):
+    """ increases or decreases the value by a given amount in the boundaries"""
     try:
         value_ = int(label.text())
+        value_ = value_ + (dm if operator == "+" else -dm)
+        value_ = min(maximal, max(minimal, (value_ // dm) * dm))
     except ValueError:
-        if operator == "+":
-            value_ = maximal
-        elif operator == "-":
-            value_ = minimal
-    # checks the operator and raises a error if its not '+' or '-'
-    if operator == "+":
-        value_ += dm
-    elif operator == "-":
-        value_ -= dm
-    else:
-        raise ValueError("operator is neither plus nor minus!")
-    # sets the value at a multiple of dm and limits it to min/max value
-    value_ = (value_ // dm) * dm
-    value_ = max(minimal, value_)
-    value_ = min(maximal, value_)
+        value_ = maximal if operator == "+" else minimal
     label.setText(str(value_))
 
 
-@logerror
-def save_quant(w, DB, c, wobject_name, filename, dbstring, searchstring1, searchstring2, where_=False):
-    """ Saves all the amounts of the ingredients/recipes to a csv. 
-    after that sets the variable ingredient/recipes counter to zero.
-    Needs the password for that procedure.
-    Needs a Filename, dbstring = Listname and the lifetime (ss1) variable (ss2) amount
-    where_ == True: only values greater zero are exported
-    """
-    wherestring1 = ""
-    wherestring2 = ""
-    wobject = getattr(w, wobject_name)
-    if wobject.text() == globals.MASTERPASSWORD:
-        dirpath = os.path.dirname(__file__)
-        subfoldername = "saves"
-        # generating a savename prefix for the date and remove the '-' signs
-        dtime = str(datetime.date.today())
-        dtime = dtime.replace("-", "")
-        savepath = os.path.join(dirpath, subfoldername, dtime + "_" + filename)
-        with open(savepath, mode="a", newline="") as writer_file:
-            csv_writer = csv.writer(writer_file, delimiter=",")
-            # csv_writer.writerow(
-            #     ["----- Neuer Export von %s -----" % datetime.date.today()])
-            row1 = []
-            row2 = []
-            if where_:
-                wherestring1 = " WHERE {} > 0".format(searchstring1)
-                wherestring2 = " WHERE {} > 0".format(searchstring2)
-            # selects the actual use and the names and writes them
-            sqlstring = "SELECT Name, {0} FROM {1}{2}".format(searchstring1, dbstring, wherestring1)
-            cursor_buffer = c.execute(sqlstring)
-            row1.append("date")
-            row2.append(datetime.date.today())
-            for row in cursor_buffer:
-                row1.append(row[0])
-                row2.append(row[1])
-            csv_writer.writerow(row1)
-            csv_writer.writerow(row2)
-            # csv_writer.writerow(["----- Gesamte Mengen über Lebenszeit -----"])
-            row1 = []
-            row2 = []
-            # selects the life time use and saves them
-            sqlstring = "SELECT Name, {0} FROM {1}{2}".format(searchstring2, dbstring, wherestring2)
-            cursor_buffer = c.execute(sqlstring)
-            row1.append("date")
-            row2.append("lifetime")
-            for row in cursor_buffer:
-                row1.append(row[0])
-                row2.append(row[1])
-            csv_writer.writerow(row1)
-            csv_writer.writerow(row2)
-            csv_writer.writerow([" "])
-        sqlstring = "UPDATE OR IGNORE {} SET {} = 0".format(dbstring, searchstring1)
-        c.execute(sqlstring)
-        DB.commit()
-        standartbox("Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!")
-    else:
-        standartbox("Falsches Passwort!")
-    wobject.setText("")
+def export_ingredients(w):
+    consumption_list = database_commander.get_consumption_data_lists_ingredients()
+    save_quant(w.LEpw2, "Zutaten_export.csv", consumption_list)
+
+
+def export_recipes(w):
+    consumption_list = database_commander.get_consumption_data_lists_recipes()
+    save_quant(w.LEpw, "Rezepte_export.csv", consumption_list)
+
+
+def save_quant(line_edit_password, filename, data):
+    """ Saves all the amounts of the ingredients/recipes to a csv and reset the counter to zero"""
+    if not display_controler.check_password(line_edit_password):
+        display_handler.standard_box("Falsches Passwort!")
+        return
+
+    write_rows_to_csv(filename, [*data, [" "]])
+    display_handler.standard_box("Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!")
+
+
+def write_rows_to_csv(filename, data_rows):
+    dtime = str(datetime.date.today())
+    dtime = dtime.replace("-", "")
+    dirpath = os.path.dirname(__file__)
+    subfoldername = "saves"
+    savepath = os.path.join(dirpath, subfoldername, f"{dtime}_{filename}")
+    with open(savepath, mode="a", newline="") as writer_file:
+        csv_writer = csv.writer(writer_file, delimiter=",")
+        for row in data_rows:
+            csv_writer.writerow(row)
