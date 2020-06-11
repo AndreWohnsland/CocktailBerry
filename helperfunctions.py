@@ -34,22 +34,29 @@ def plusminus(label, operator, minimal=0, maximal=1000, dm=10):
 
 def export_ingredients(w):
     consumption_list = database_commander.get_consumption_data_lists_ingredients()
-    save_quant(w.LEpw2, "Zutaten_export.csv", consumption_list)
+    successfull = save_quant(w.LEpw2, "Zutaten_export.csv", consumption_list)
+    if not successfull:
+        return
+    database_commander.delete_consumption_ingredients()
 
 
 def export_recipes(w):
     consumption_list = database_commander.get_consumption_data_lists_recipes()
-    save_quant(w.LEpw, "Rezepte_export.csv", consumption_list)
+    successfull = save_quant(w.LEpw, "Rezepte_export.csv", consumption_list)
+    if not successfull:
+        return
+    database_commander.delete_consumption_recipes()
 
 
 def save_quant(line_edit_password, filename, data):
     """ Saves all the amounts of the ingredients/recipes to a csv and reset the counter to zero"""
     if not display_controler.check_password(line_edit_password):
         display_handler.standard_box("Falsches Passwort!")
-        return
+        return False
 
     write_rows_to_csv(filename, [*data, [" "]])
     display_handler.standard_box("Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!")
+    return True
 
 
 def write_rows_to_csv(filename, data_rows):
