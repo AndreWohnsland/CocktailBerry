@@ -1,69 +1,19 @@
-import sqlite3
 import os
 import logging
 import time
+import datetime
+import csv
 from pathlib import Path
 
-database_name = "Datenbank"
+
+from src.database_commander import DatabaseCommander
+from src.display_handler import DisplayHandler
+from src.display_controler import DisplayControler
+
+database_commander = DatabaseCommander()
+display_handler = DisplayHandler()
+display_controler = DisplayControler()
 dirpath = os.path.dirname(__file__)
-
-
-class DatabaseHandler:
-    """Handler Class for Connecting and querring Databases"""
-
-    database_path = os.path.join(dirpath, "..", f"{database_name}.db")
-
-    def __init__(self):
-        self.database_path = DatabaseHandler.database_path
-        # print(self.database_path)
-        if not Path(self.database_path).exists():
-            print("creating Database")
-            self.create_tables()
-
-    def connect_database(self):
-        self.database = sqlite3.connect(self.database_path)
-        self.cursor = self.database.cursor()
-
-    def query_database(self, sql, serachtuple=()):
-        self.connect_database()
-        self.cursor.execute(sql, serachtuple)
-
-        if sql[0:6].lower() == "select":
-            result = self.cursor.fetchall()
-        else:
-            self.database.commit()
-            result = []
-
-        self.database.close()
-        return result
-
-    def create_tables(self):
-        self.connect_database()
-        # Creates each Table
-        self.cursor.execute(
-            "CREATE TABLE IF NOT EXISTS Rezepte(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Name TEXT NOT NULL, Alkoholgehalt INTEGER NOT NULL, Menge INTEGER NOT NULL, Kommentar TEXT, Anzahl_Lifetime INTEGER, Anzahl INTEGER, Enabled INTEGER, V_Alk INTEGER, c_Alk INTEGER, V_Com INTEGER, c_Com INTEGER);"
-        )
-        self.cursor.execute(
-            "CREATE TABLE IF NOT EXISTS Zutaten(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Name TEXT NOT NULL, Alkoholgehalt INTEGER NOT NULL, Flaschenvolumen INTEGER NOT NULL, Verbrauchsmenge INTEGER, Verbrauch INTEGER, Mengenlevel INTEGER, Hand INTEGER);"
-        )
-        self.cursor.execute(
-            "CREATE TABLE IF NOT EXISTS Zusammen(Rezept_ID INTEGER NOT NULL, Zutaten_ID INTEGER NOT NULL, Menge INTEGER NOT NULL, Alkoholisch INTEGER NOT NULL, Hand INTEGER);"
-        )
-        self.cursor.execute(
-            "CREATE TABLE IF NOT EXISTS Belegung(Flasche INTEGER NOT NULL, Zutat_F TEXT NOT NULL, ID INTEGER, Mengenlevel INTEGER);"
-        )
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS Vorhanden(ID INTEGER NOT NULL);")
-
-        # Creating the Unique Indexes
-        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_zutaten_name ON Zutaten(Name)")
-        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_rezepte_name ON Rezepte(Name)")
-        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_flasche ON Belegung(Flasche)")
-
-        # Creating the Space Naming of the Bottles
-        for Flaschen_C in range(1, 13):
-            self.cursor.execute("INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)", (Flaschen_C, ""))
-        self.database.commit()
-        self.database.close()
 
 
 class LoggerHandler:
@@ -71,14 +21,12 @@ class LoggerHandler:
 
     log_folder = os.path.join(dirpath, "..", "logs")
 
-    def __init__(self, loggername, filename):
+    def __init__(self, loggername, filename, new_handler=False):
         self.path = os.path.join(LoggerHandler.log_folder, f"{filename}.log")
+        logging.basicConfig(
+            level=logging.DEBUG, format="%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M", filename=self.path, filemode="a",
+        )
         self.logger = logging.getLogger(loggername)
-        filehandler = logging.FileHandler(self.path)
-        filehandler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(asctime)s - %(message)s", "%Y-%m-%d %H:%M")
-        filehandler.setFormatter(formatter)
-        self.logger.addHandler(filehandler)
         self.TEMPLATE = "{:-^80}"
 
     def log_event(self, level, message):
@@ -88,7 +36,54 @@ class LoggerHandler:
         self.log_event(level, self.TEMPLATE.format(message,))
 
     def log_start_program(self):
-        self.logger.debug(self.TEMPLATE.format("Starting the Programm",))
+        self.logger.info(self.TEMPLATE.format("Starting the Programm",))
+
+
+class SaveHandler:
+    def export_ingredients(self, w):
+        consumption_list = database_commander.get_consumption_data_lists_ingredients()
+        successfull = self.save_quant(w.LEpw2, "Zutaten_export.csv", consumption_list)
+        if not successfull:
+            return
+        database_commander.delete_consumption_ingredients()
+
+    def export_recipes(self, w):
+        consumption_list = database_commander.get_consumption_data_lists_recipes()
+        successfull = self.save_quant(w.LEpw, "Rezepte_export.csv", consumption_list)
+        if not successfull:
+            return
+        database_commander.delete_consumption_recipes()
+
+    def save_quant(self, line_edit_password, filename, data):
+        """ Saves all the amounts of the ingredients/recipes to a csv and reset the counter to zero"""
+        if not display_controler.check_password(line_edit_password):
+            display_handler.standard_box("Falsches Passwort!")
+            return False
+
+        self.write_rows_to_csv(filename, [*data, [" "]])
+        display_handler.standard_box("Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!")
+        return True
+
+    def write_rows_to_csv(self, filename, data_rows):
+        dtime = str(datetime.date.today())
+        dtime = dtime.replace("-", "")
+        subfoldername = "saves"
+        savepath = os.path.join(dirpath, subfoldername, f"{dtime}_{filename}")
+        with open(savepath, mode="a", newline="") as writer_file:
+            csv_writer = csv.writer(writer_file, delimiter=",")
+            for row in data_rows:
+                csv_writer.writerow(row)
+
+
+def plusminus(label, operator, minimal=0, maximal=1000, dm=10):
+    """ increases or decreases the value by a given amount in the boundaries"""
+    try:
+        value_ = int(label.text())
+        value_ = value_ + (dm if operator == "+" else -dm)
+        value_ = min(maximal, max(minimal, (value_ // dm) * dm))
+    except ValueError:
+        value_ = maximal if operator == "+" else minimal
+    label.setText(str(value_))
 
 
 ###### This are temporary Helper Functions, they will be moved later in the UI parent class / there will be objects for them
