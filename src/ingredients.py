@@ -13,10 +13,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
-from recipes import ZutatenCB_Rezepte
-from bottles import Belegung_progressbar, Belegung_a
+from src.recipes import ZutatenCB_Rezepte
+from src.bottles import Belegung_progressbar, Belegung_a
 from msgboxgenerate import standartbox
-from loggerconfig import logfunction, logerror
+from src.error_suppression import logerror
 
 from src.display_controler import DisplayControler
 from src.display_handler import DisplayHandler

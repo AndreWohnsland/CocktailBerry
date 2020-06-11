@@ -52,9 +52,9 @@ Just use the implemented UI for the procedure under the according tabs (**Zutate
 To enable/disable the recipe tab set:
 
 ```python
-partymode = False
+PARTYMODE = False
 or
-partymode = True
+PARTYMODE = True
 ```
 
 accordingly.
@@ -68,7 +68,7 @@ These values are stored under the `globals.py` file. Depending on your pumps and
 - `USEDPINS` are the RPi-Pins where each Pump is connected
 - `PUMP_VOLUMEFLOW` is the according volume flow in ml/s.
 - `MASTERPASSWORD` can be any string, but i recommend a string of pure numbers, since the UI got a build in numpad window
-- `decoactivate` serves to control the decorators. I recommend setting this value to `False` while developing and to `True` while using the machine. If it's set to `True`, the additional lines from the decorator will be carried out, otherwise the decorator will just execute the function without extra steps. The decorators can log the executed function name and needed time `(logfunction)` and / or suppress the Exception Error and log it instead `(logerror)`. This is quite handy when you want to run the machine without any restarts, but also keep track if anything goes wrong.
+- `SUPPRESS_ERROR` serves to control the decorators. I recommend setting this value to `False` while developing and to `True` while using the machine. If it's set to `True`, the additional lines from the decorator will be carried out, otherwise the decorator will just execute the function without extra steps. The decorators can log the executed function name and needed time `(logfunction)` and / or suppress the Exception Error and log it instead `(logerror)`. This is quite handy when you want to run the machine without any restarts, but also keep track if anything goes wrong.
 
 Other existing values serve different functions (you can look them up in the code, if interested) and should never be changed.
 
@@ -79,7 +79,7 @@ First of all, you need to set your values in the `runme.py` file. The recommende
 ```python
 loggername = "yourlogname"		# under this name your logging file will be saved
 devenvironment = False			# important to set to False, otherwise the GPIO-commands dont work
-partymode = True			# True disables the recipe tab, that no user can change it
+PARTYMODE = True			# True disables the recipe tab, that no user can change it
 neednewdb = False			# only needed if you delete your DB and want to set up new one
 ```
 

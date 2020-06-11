@@ -15,9 +15,9 @@ from PyQt5.uic import *
 from collections import Counter
 
 import globals
-from maker import Rezepte_a_M, Maker_List_null
+from src.maker import Rezepte_a_M, Maker_List_null
 from msgboxgenerate import standartbox
-from loggerconfig import logfunction, logerror
+from src.error_suppression import logerror
 
 from src.display_handler import DisplayHandler
 

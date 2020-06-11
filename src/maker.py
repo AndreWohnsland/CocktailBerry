@@ -13,15 +13,15 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
-from bottles import Belegung_progressbar
+from src.bottles import Belegung_progressbar
 from msgboxgenerate import standartbox
-from loggerconfig import logfunction, logerror
+from src.error_suppression import logerror
 
 from src.database_commander import DatabaseCommander
 from src.display_handler import DisplayHandler
 from src.rpi_controller import RpiController
 from src.display_controler import DisplayControler
-from src.supporter import LoggerHandler
+from src.logger_handler import LoggerHandler
 
 import globals
 
@@ -150,7 +150,6 @@ def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_tim
     logger_handler.log_event("INFO", f"{mengenstring:8} | {cocktail_name}{abbruchstring}")
 
 
-@logfunction
 def Maker_Zubereiten(w, DB, c, devenvironment):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
     if globals.startcheck:
@@ -190,7 +189,6 @@ def Maker_Zubereiten(w, DB, c, devenvironment):
     globals.startcheck = False
 
 
-@logfunction
 def abbrechen_R():
     """ Interrupts the cocktail preparation. """
     globals.loopcheck = False

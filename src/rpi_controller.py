@@ -27,7 +27,7 @@ class RpiController(ConfigManager):
         while t_cleaned < self.CLEAN_TIME:
             self.clean_print(t_cleaned)
             t_cleaned += self.SLEEP_TIME
-            t_cleaned = round(t_cleaned, 1)
+            t_cleaned = round(t_cleaned, 2)
             time.sleep(self.SLEEP_TIME)
             qApp.processEvents()
         self.close_pinlist(active_pins)
@@ -43,6 +43,7 @@ class RpiController(ConfigManager):
         current_time = 0
         consumption = [0] * len(indexes)
         self.activate_pinlist(pins)
+        print("---- Starting Cocktail ----")
         while current_time < max_time and globals.loopcheck:
             w.prow_change(current_time / max_time * 100)
             for element, (pin, pin_time, volume_flow) in enumerate(zip(pins, pin_times, volume_flows)):

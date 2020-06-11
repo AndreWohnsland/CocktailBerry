@@ -15,14 +15,14 @@ from collections import Counter
 
 import globals
 from msgboxgenerate import standartbox
-from loggerconfig import logerror, logfunction
+from src.error_suppression import logerror
 
 from src.display_handler import DisplayHandler
 from src.database_commander import DatabaseCommander
 from src.display_controler import DisplayControler
 from src.rpi_controller import RpiController
+from src.logger_handler import LoggerHandler
 from src.supporter import (
-    LoggerHandler,
     generate_CBB_names,
     generate_LBelegung_names,
     generate_PBneu_names,
@@ -87,7 +87,7 @@ def newCB_Bottles(w, DB, c):
 def Belegung_eintragen(w, DB, c):
     """ Insert the selected Bottleorder into the DB. """
     # this import is neccecary on module level, otherwise there would be a circular import
-    from maker import Rezepte_a_M
+    from src.maker import Rezepte_a_M
 
     # Checks where are entries and appends them to a list
     CBBnames = generate_CBB_names(w)

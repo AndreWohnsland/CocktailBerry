@@ -11,14 +11,15 @@ from PyQt5.uic import *
 import string
 
 import globals
-from maker import *
-from ingredients import *
-from recipes import *
-from bottles import *
-from helperfunctions import export_ingredients, export_recipes, plusminus
-from bottles import Belegung_progressbar
+from src.maker import *
+from src.ingredients import *
+from src.recipes import *
+from src.bottles import *
+from src.bottles import Belegung_progressbar
 from msgboxgenerate import standartbox
 from config.config_manager import ConfigManager
+from src.supporter import plusminus
+from src.save_handler import SaveHandler
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
 from ui_elements.passwordbuttons import Ui_PasswordWindow
@@ -29,6 +30,8 @@ from ui_elements.bottlewindow import Ui_Bottlewindow
 from ui_elements.Keyboard import Ui_Keyboard
 from ui_elements.handadds import Ui_handadds
 from ui_elements.available import Ui_available
+
+save_handler = SaveHandler()
 
 
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
@@ -564,7 +567,7 @@ class AvailableWindow(QMainWindow, Ui_available):
             lwremove.item(i).setSelected(False)
 
 
-def pass_setup(w, DB, c, partymode, devenvironment):
+def pass_setup(w, DB, c, PARTYMODE, devenvironment):
     """ Connect all the functions with the Buttons. """
     # First, connect all the Pushbuttons with the Functions
     w.PBZutathinzu.clicked.connect(lambda: enter_ingredient(w, DB, c))
@@ -585,8 +588,8 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     w.PBMplus.clicked.connect(lambda: plusminus(w.LCustomMenge, "+", 100, 400, 25))
     w.PBMminus.clicked.connect(lambda: plusminus(w.LCustomMenge, "-", 100, 400, 25))
     w.PBSetnull.clicked.connect(lambda: Maker_nullProB(w, DB, c))
-    w.PBZnull.clicked.connect(lambda: export_ingredients(w))
-    w.PBRnull.clicked.connect(lambda: export_recipes(w))
+    w.PBZnull.clicked.connect(lambda: save_handler.export_ingredients(w))
+    w.PBRnull.clicked.connect(lambda: save_handler.export_recipes(w))
     w.PBenable.clicked.connect(lambda: enableall(w, DB, c))
 
     # Connect the Lists with the Functions
@@ -600,8 +603,8 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     # Connects the slider
     w.HSIntensity.valueChanged.connect(lambda: Maker_ProB_change(w, DB, c))
 
-    # Disable some of the Tabs (for the Partymode, no one can access the recipes)
-    if partymode:
+    # Disable some of the Tabs (for the PARTYMODE, no one can access the recipes)
+    if PARTYMODE:
         w.tabWidget.setTabEnabled(2, False)
 
     # gets the bottle ingredients into the global list
