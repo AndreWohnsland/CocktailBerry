@@ -6,7 +6,7 @@ class ConfigManager:
     PUMP_VOLUMEFLOW = [30, 30, 25, 30, 30, 30, 25, 30, 30, 23, 30, 30]
     NUMBER_BOTTLES = 10
     CLEAN_TIME = 20
-    SLEEP_TIME = 0.1
+    SLEEP_TIME = 0.05
     PARTYMODE = False
     LOGGERNAME = "cocktaillogger"
     LOGGERNAME_DEBUG = "debuglogger"

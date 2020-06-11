@@ -19,6 +19,10 @@ from maker import Rezepte_a_M, Maker_List_null
 from msgboxgenerate import standartbox
 from loggerconfig import logfunction, logerror
 
+from src.display_handler import DisplayHandler
+
+display_handler = DisplayHandler()
+
 
 @logerror
 def ZutatenCB_Rezepte(w, DB, c):
@@ -298,7 +302,7 @@ def Rezepte_delete(w, DB, c):
             for i in range(w.LWRezepte.count()):
                 w.LWRezepte.item(i).setSelected(False)
             Rezepte_clear(w, DB, c, False)
-            Maker_List_null(w, DB, c)
+            display_handler.clear_recipe_data_maker(w)
             standartbox("Rezept mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Rname, CocktailID))
     else:
         standartbox("Falsches Passwort!")

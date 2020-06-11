@@ -8,9 +8,35 @@ class DatabaseCommander:
     def __init__(self):
         self.handler = DatabaseHandler()
 
-    def get_recipe_ingredients(self, recipe_id):
-        query = "SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID WHERE Zusammen.Rezept_ID = ?"
+    def get_recipe_ingredients_by_id(self, recipe_id):
+        query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID 
+                FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID 
+                WHERE Zusammen.Rezept_ID = ?"""
         return self.handler.query_database(query, (recipe_id,))
+
+    def get_recipe_ingredients_by_name(self, recipe_name):
+        query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.Alkoholgehalt 
+                FROM Zusammen INNER JOIN Zutaten ON Zutaten.ID = Zusammen.Zutaten_ID 
+                WHERE Zusammen.Rezept_ID = (SELECT ID FROM Rezepte WHERE Name = ?)"""
+        return self.handler.query_database(query, (recipe_name,))
+
+    def get_recipe_ingredients_with_bottles(self, recipe_name):
+        query = """SELECT Zutaten.Name, Zusammen.Menge, Belegung.Flasche, Zusammen.Alkoholisch, Zutaten.Mengenlevel
+                FROM Zusammen LEFT JOIN Belegung ON Zusammen.Zutaten_ID = Belegung.ID 
+                INNER JOIN Zutaten ON Zutaten.ID = Zusammen.Zutaten_ID 
+                WHERE Zusammen.Rezept_ID = (SELECT ID FROM Rezepte WHERE Name =?)"""
+        return self.handler.query_database(query, (recipe_name,))
+
+    def get_recipe_ingredients_by_name_seperated_data(self, recipe_name):
+        data = self.get_recipe_ingredients_by_name(recipe_name)
+        handadd_data = []
+        machineaddd_data = []
+        for d in data:
+            if d[2]:
+                handadd_data.append(d[0:2])
+            else:
+                machineaddd_data.append(d[0:2])
+        return machineaddd_data, handadd_data
 
     def get_all_recipes_properties(self):
         query = "SELECT ID, Name, Alkoholgehalt, Menge, Kommentar, Enabled, V_Alk, c_Alk, V_Com, c_Com FROM Rezepte"
@@ -20,7 +46,7 @@ class DatabaseCommander:
         recipe_object = {}
         recipe_data = self.get_all_recipes_properties()
         for recipe in recipe_data:
-            ingredient_data = self.get_recipe_ingredients(recipe[0])
+            ingredient_data = self.get_recipe_ingredients_by_id(recipe[0])
             recipe_object[recipe[1]] = {
                 "ID": recipe[0],
                 "alcohollevel": recipe[2],
@@ -108,7 +134,7 @@ class DatabaseCommander:
     def get_ingredients_seperated_by_handadd(self, recipe_id):
         handadds = []
         machineadds = []
-        ingredients = self.get_recipe_ingredients(recipe_id)
+        ingredients = self.get_recipe_ingredients_by_id(recipe_id)
         for ingredient in ingredients:
             if ingredient[2]:
                 handadds.append(ingredient[3])
@@ -159,6 +185,19 @@ class DatabaseCommander:
         query = "UPDATE OR IGNORE Zutaten SET Name = ?, Alkoholgehalt = ?, Flaschenvolumen = ?, Mengenlevel = ?, Hand = ? WHERE ID = ?"
         searchtuple = (ingredient_name, alcohollevel, volume, new_level, onlyhand, ingredient_id)
         self.handler.query_database(query, searchtuple)
+
+    def set_recipe_counter(self, recipe_name):
+        query = "UPDATE OR IGNORE Rezepte SET Anzahl_Lifetime = Anzahl_Lifetime + 1, Anzahl = Anzahl + 1 WHERE Name = ?"
+        self.handler.query_database(query, (recipe_name,))
+
+    def set_ingredient_consumption(self, ingredient_name, ingredient_consumption):
+        query = "UPDATE OR IGNORE Zutaten SET Verbrauchsmenge = Verbrauchsmenge + ?, Verbrauch = Verbrauch + ?, Mengenlevel = Mengenlevel - ? WHERE Name = ?"
+        searchtuple = (ingredient_consumption, ingredient_consumption, ingredient_consumption, ingredient_name)
+        self.handler.query_database(query, searchtuple)
+
+    def set_multiple_ingredient_consumption(self, ingredient_name_list, ingredient_consumption_list):
+        for ingredient_name, ingredient_consumption in zip(ingredient_name_list, ingredient_consumption_list):
+            self.set_ingredient_consumption(ingredient_name, ingredient_consumption)
 
     # insert commands
     def insert_new_ingredient(self, ingredient_name, alcohollevel, volume, onlyhand):

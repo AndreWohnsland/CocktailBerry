@@ -114,3 +114,11 @@ def generate_ProBBelegung_names(w):
 
 def generate_ingredient_fields(w):
     return [[w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen], w.CHBHand, w.LWZutaten]
+
+
+def generate_maker_ingredients_fields(w):
+    return [getattr(w, f"LZutat{x}") for x in range(1, 11)]
+
+
+def generate_maker_volume_fields(w):
+    return [getattr(w, f"LMZutat{x}") for x in range(1, 11)]

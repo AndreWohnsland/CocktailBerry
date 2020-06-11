@@ -547,7 +547,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         # reloads the maker screen and updates the shown available recipes
         self.ms.LWMaker.clear()
         Rezepte_a_M(self.ms, self.ms.DB, self.ms.c)
-        Maker_List_null(self.ms, self.ms.DB, self.ms.c)
+        Maker_List_null(self.ms)
         self.close()
 
     def changeingredient(self, lwadd, lwremove):
@@ -607,7 +607,7 @@ def pass_setup(w, DB, c, partymode, devenvironment):
     # gets the bottle ingredients into the global list
     get_bottle_ingredients(w, DB, c)
     # Clear Help Marker
-    Maker_List_null(w, DB, c)
+    Maker_List_null(w)
     # Load ingredients
     Zutaten_a(w, DB, c)
     # Load Bottles into the Labels

@@ -4,6 +4,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
+from src.supporter import generate_maker_ingredients_fields, generate_maker_volume_fields
+
 
 class DisplayHandler:
     """Handler Class to set/remove elements from to UI """
@@ -122,3 +124,29 @@ class DisplayHandler:
             checkbox.setChecked(True)
         else:
             checkbox.setChecked(False)
+
+    # label
+    def set_alcohol_level(self, w, value):
+        w.LAlkoholgehalt.setText(f"Alkohol: {value:.0f}%")
+
+    # others
+    def fill_recipe_data_maker(self, w, display_data, total_volume, cocktailname):
+        w.LAlkoholname.setText(cocktailname)
+        w.LMenge.setText(f"Menge: {total_volume} ml")
+        fields_ingredient = generate_maker_ingredients_fields(w)[: len(display_data)]
+        fields_volume = generate_maker_volume_fields(w)[: len(display_data)]
+        for field_ingredient, field_volume, (ingredient_name, volume) in zip(fields_ingredient, fields_volume, display_data):
+            field_ingredient.setText(f"{ingredient_name} ")
+            if volume != "":
+                field_volume.setText(f" {volume} ml")
+            if ingredient_name == "Selbst hinzufügen:":
+                field_ingredient.setStyleSheet("color: rgb(170, 170, 170)")
+
+    def clear_recipe_data_maker(self, w):
+        w.LAlkoholgehalt.setText("")
+        w.LAlkoholname.setText("")
+        w.LMenge.setText("")
+        for field_ingredient, field_volume in zip(generate_maker_ingredients_fields(w), generate_maker_volume_fields(w)):
+            field_ingredient.setText("")
+            field_ingredient.setStyleSheet("color: rgb(0, 123, 255)")
+            field_volume.setText("")

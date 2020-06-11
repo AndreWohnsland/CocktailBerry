@@ -37,6 +37,14 @@ class DisplayControler(ConfigManager):
             "selected_ingredient": selected_ingredient,
         }
 
+    def get_cocktail_data(self, w):
+        cocktail_volume = int(w.LCustomMenge.text())
+        alcohol_faktor = 1 + (w.HSIntensity.value() / 100)
+        cocktailname = ""
+        if w.LWMaker.selectedItems():
+            cocktailname = w.LWMaker.currentItem().text()
+        return cocktailname, cocktail_volume, alcohol_faktor
+
     def check_ingredient_data(self, lineedit_list):
         error_messages = self.missing_check(
             lineedit_list, ["Der Zutatenname fehlt", "Der Alkoholgehalt fehlt", "Das Flaschenvolumen fehlt"]
