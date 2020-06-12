@@ -23,6 +23,11 @@ class DisplayControler(ConfigManager):
     def get_lineedit_text(self, lineedit_list):
         return [lineedit.text() for lineedit in lineedit_list]
 
+    def get_list_widget_selection(self, list_widget):
+        if not list_widget.selectedItems():
+            return ""
+        return list_widget.currentItem().text()
+
     def get_ingredient_data(self, lineedit_list, checkbox, list_widget):
         ingredient_name, alcohollevel, volume = self.get_lineedit_text(lineedit_list)
         hand_add = 1 if checkbox.isChecked() else 0
@@ -64,6 +69,15 @@ class DisplayControler(ConfigManager):
         if password == self.MASTERPASSWORD:
             return True
         return False
+
+    def check_recipe_password(self, w):
+        return self.check_password(w.LEpw)
+
+    def check_bottles_password(self, w):
+        return self.check_password(w.LECleanMachine)
+
+    def check_ingredient_password(self, w):
+        return self.check_password(w.LEpw2)
 
     def missing_check(self, lineedit_list, message_list=[]):
         error_messages = []

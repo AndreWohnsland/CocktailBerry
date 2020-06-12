@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
-from src.supporter import generate_maker_ingredients_fields, generate_maker_volume_fields
+from src.supporter import generate_maker_ingredients_fields, generate_maker_volume_fields, generate_CBR_names, generate_lineedit_recipes
 
 
 class DisplayHandler:
@@ -69,6 +69,10 @@ class DisplayHandler:
     def sort_multiple_combobox(self, combobox_list):
         for combobox in combobox_list:
             combobox.sort()
+
+    def set_multiple_combobox_to_top_item(self, combobox_list):
+        for combobox in combobox_list:
+            combobox.setCurrentIndex(0)
 
     def set_multiple_combobox_items(self, combobox_list, item_to_set):
         for combobox, item in zip(combobox_list, item_to_set):
@@ -150,3 +154,40 @@ class DisplayHandler:
             field_ingredient.setText("")
             field_ingredient.setStyleSheet("color: rgb(0, 123, 255)")
             field_volume.setText("")
+
+    def clear_recipe_data_recipes(self, w, select_other_item):
+        w.LECocktail.clear()
+        w.LEKommentar.clear()
+        if not select_other_item:
+            w.LWRezepte.clearSelection()
+        self.set_multiple_combobox_to_top_item(generate_CBR_names(w))
+        self.clean_multiple_lineedit(generate_lineedit_recipes(w))
+        w.handaddlist = []
+
+    def refill_recipes_list_widget(self, w, items):
+        w.LWRezepte.clear()
+        self.fill_list_widget(w.LWRezepte, items)
+
+    def remove_recipe_from_list_widgets(self, w, recipe_name):
+        self.delete_list_widget_item(w.LWRezepte, recipe_name)
+        self.delete_list_widget_item(w.LWMaker, recipe_name)
+        self.unselect_list_widget_items(w.LWRezepte)
+        self.unselect_list_widget_items(w.LWMaker)
+
+    def set_recipe_handadd_comment(self, w, handadd_data):
+        comment = ""
+        for ingredient_name, volume, ingredient_id, alcoholic, alcohol_level in handadd_data:
+            comment += f"{volume} ml {ingredient_name}, "
+            w.handaddlist.append([ingredient_id, volume, alcoholic, 1, alcohol_level])
+        comment = comment[:-2]
+        w.LEKommentar.setText(comment)
+
+    def set_recipe_data(self, w, recipe_name, ingredient_names, ingredient_volumes, enaled, handadd_data):
+        if enaled:
+            w.CHBenabled.setChecked(True)
+        else:
+            w.CHBenabled.setChecked(False)
+        self.set_multiple_combobox_items(generate_CBR_names(w)[: len(ingredient_names)], ingredient_names)
+        self.fill_multiple_lineedit(generate_lineedit_recipes(w)[: len(ingredient_volumes)], ingredient_volumes)
+        w.LECocktail.setText(recipe_name)
+        self.set_recipe_handadd_comment(w, handadd_data)

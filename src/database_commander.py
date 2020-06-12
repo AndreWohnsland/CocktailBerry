@@ -66,9 +66,21 @@ class DatabaseCommander:
             }
         return recipe_object
 
-    def get_enabled_recipes(self):
+    def get_recipe_ingredients_for_comment(self, recipe_name):
+        query = "SELECT Zutaten.Name, Zusammen.Menge, Zutaten.ID, Zusammen.Alkoholisch, Zutaten.Alkoholgehalt FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ? AND Zusammen.Hand=1"
+        return self.handler.query_database(query, (recipe_name,))
+
+    def get_enabled_recipes_id(self):
         recipe_data = self.get_all_recipes_properties()
         return [x[0] for x in recipe_data if x[5]]
+
+    def get_disabled_recipes_id(self):
+        recipe_data = self.get_all_recipes_properties()
+        return [x[0] for x in recipe_data if not x[5]]
+
+    def get_recipes_name(self):
+        recipe_data = self.get_all_recipes_properties()
+        return [x[1] for x in recipe_data]
 
     def get_ingredients_at_bottles(self):
         query = "SELECT Zutat_F FROM Belegung"
@@ -174,6 +186,10 @@ class DatabaseCommander:
             lifetime.append(row[2])
         return [["date", *headers], [datetime.date.today(), *resetable], ["lifetime", *lifetime]]
 
+    def get_enabled_status(self, recipe_name):
+        query = "SELECT Enabled FROM Rezepte WHERE Name = ?"
+        return self.handler.query_database(query, (recipe_name,))[0]
+
     # set (update) commands
     def set_bottleorder(self, ingredient_names):
         for i, ingredient in enumerate(ingredient_names):
@@ -224,6 +240,10 @@ class DatabaseCommander:
         for ingredient_name, ingredient_consumption in zip(ingredient_name_list, ingredient_consumption_list):
             self.set_ingredient_consumption(ingredient_name, ingredient_consumption)
 
+    def set_all_recipes_enabled(self):
+        query = "UPDATE OR IGNORE Rezepte SET Enabled = 1"
+        self.handler.query_database(query)
+
     # insert commands
     def insert_new_ingredient(self, ingredient_name, alcohollevel, volume, onlyhand):
         query = """INSERT OR IGNORE INTO 
@@ -244,6 +264,12 @@ class DatabaseCommander:
     def delete_consumption_ingredients(self):
         query = "UPDATE OR IGNORE Zutaten SET Verbrauch = 0"
         self.handler.query_database(query)
+
+    def delete_recipe(self, recipe_name):
+        query1 = "DELETE FROM Zusammen WHERE Rezept_ID = (SELECT ID FROM Rezepte WHERE Name = ?)"
+        query2 = "DELETE FROM Rezepte WHERE Name = ?"
+        self.handler.query_database(query1, (recipe_name,))
+        self.handler.query_database(query2, (recipe_name,))
 
 
 class DatabaseHandler:

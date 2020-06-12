@@ -16,7 +16,6 @@ from src.ingredients import *
 from src.recipes import *
 from src.bottles import *
 from src.bottles import Belegung_progressbar
-from msgboxgenerate import display_handler.standard_box
 from config.config_manager import ConfigManager
 from src.supporter import plusminus
 from src.save_handler import SaveHandler
@@ -315,7 +314,9 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         amounttest = self.c.execute("SELECT Mengenlevel FROM Zutaten WHERE Name = ? and Mengenlevel < ?", (bottlename, volume),).fetchone()
         if amounttest is not None:
             missingamount = amounttest[0]
-            display_handler.standard_box(f"Die Flasche hat nicht genug Volumen! {volume} ml werden gebraucht, {missingamount} ml sind vorhanden!")
+            display_handler.standard_box(
+                f"Die Flasche hat nicht genug Volumen! {volume} ml werden gebraucht, {missingamount} ml sind vorhanden!"
+            )
             check = False
         if check:
             time_needed = volume / volumeflow
@@ -576,7 +577,7 @@ def pass_setup(w, DB, c, PARTYMODE, devenvironment):
     w.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(w, DB, c, True))
     w.PBBelegung.clicked.connect(lambda: customlevels(w, DB, c))
     w.PBZeinzelnd.clicked.connect(lambda: custom_output(w, DB, c))
-    w.PBclear.clicked.connect(lambda: Rezepte_clear(w, DB, c, True))
+    w.PBclear.clicked.connect(lambda: Rezepte_clear(w, DB, c, False))
     w.PBRezeptaktualisieren.clicked.connect(lambda: Rezept_eintragen(w, DB, c, False))
     w.PBdelete.clicked.connect(lambda: Rezepte_delete(w, DB, c))
     w.PBZdelete.clicked.connect(lambda: Zutaten_delete(w, DB, c))

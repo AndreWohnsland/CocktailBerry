@@ -138,8 +138,7 @@ def Belegung_progressbar(w, DB, c):
 @logerror
 def CleanMachine(w, DB, c, devenvironment):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
-    right_password = display_controler.check_password(w.LECleanMachine)
-    if not right_password:
+    if not display_controler.check_bottles_password(w):
         display_handler.standard_box("Falsches Passwort!!!!")
         return
 

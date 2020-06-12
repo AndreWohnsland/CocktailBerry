@@ -32,18 +32,13 @@ display_controler = DisplayControler()
 logger_handler = LoggerHandler("cocktail_application", "production_logs")
 
 
-def fill_recipe_list_widget(w, id_list=None):
-    if id_list is None:
-        id_list = database_commander.get_enabled_recipes()
-
-
 @logerror
 def Rezepte_a_M(w, DB, c, possible_recipes_id=None):
     """ Goes through every recipe in the list or all recipes if none given
     Checks if all ingredients are registered, if so, adds it to the list widget
     """
     if possible_recipes_id is None:
-        possible_recipes_id = database_commander.get_enabled_recipes()
+        possible_recipes_id = database_commander.get_enabled_recipes_id()
 
     available_recipes_ids = []
     bottle_ids = set(database_commander.get_ids_at_bottles())
@@ -105,6 +100,7 @@ def create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktai
 
 
 def scale_and_sort_ingredient_data(ingredient_data, volume_factor):
+    """Scale all ingrediets by the volume factor, sorts them into bottle and volume"""
     bottle_data = []
     comment_data = []
     bottle_list = []
@@ -125,6 +121,7 @@ def scale_and_sort_ingredient_data(ingredient_data, volume_factor):
 
 
 def build_comment_maker(comment_data):
+    """Build the additional comment for the completion message (if there are handadds)"""
     comment = ""
     if comment_data:
         comment = "\n\nNoch hinzufügen:"
@@ -134,12 +131,14 @@ def build_comment_maker(comment_data):
 
 
 def enough_ingredient(level, needed_volume):
+    """Checks if the needed volume is there """
     if needed_volume > level:
         return False
     return True
 
 
 def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_time):
+    """Enters a log entry for the made cocktail"""
     mengenstring = f"{cocktail_volume} ml"
     if globals.loopcheck == False:
         pumped_volume = round(cocktail_volume * (taken_time) / max_time)

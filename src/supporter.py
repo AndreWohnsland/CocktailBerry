@@ -40,3 +40,7 @@ def generate_maker_ingredients_fields(w):
 
 def generate_maker_volume_fields(w):
     return [getattr(w, f"LMZutat{x}") for x in range(1, 11)]
+
+
+def generate_lineedit_recipes(w):
+    return [getattr(w, f"LER{x}") for x in range(1, 9)]

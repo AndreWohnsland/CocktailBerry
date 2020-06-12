@@ -16,24 +16,24 @@ from collections import Counter
 
 import globals
 from src.maker import Rezepte_a_M, Maker_List_null
-from msgboxgenerate import display_handler.standard_box
 from src.error_suppression import logerror
+from src.supporter import generate_CBR_names
 
 from src.display_handler import DisplayHandler
+from src.display_controler import DisplayControler
+from src.database_commander import DatabaseCommander
 
 display_handler = DisplayHandler()
+display_controler = DisplayControler()
+database_commander = DatabaseCommander()
 
 
 @logerror
 def ZutatenCB_Rezepte(w, DB, c):
     """ Asigns all ingredients to the Comboboxes in the recipe tab """
-    for box in range(1, 9):
-        cursor_buffer = c.execute("SELECT NAME FROM Zutaten WHERE Hand = 0")
-        CBRname = getattr(w, "CBR" + str(box))
-        CBRname.clear()
-        CBRname.addItem("")
-        for row in cursor_buffer:
-            CBRname.addItem(row[0])
+    comboboxes_recipe = generate_CBR_names(w)
+    ingredient_list = database_commander.get_ingredient_names_machine()
+    display_handler.fill_multiple_combobox(comboboxes_recipe, ingredient_list, clear_first=True)
 
 
 @logerror
@@ -189,7 +189,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         # add needs to be checked, if all ingredients are used
         if isenabled:
             Rezepte_a_M(w, DB, c, [RezepteDBID])
-        Rezepte_clear(w, DB, c, True)
+        display_handler.clear_recipe_data_recipes(w, False)
         if newrecipe:
             display_handler.standard_box("Rezept unter der ID und dem Namen:\n<{}> <{}>\neingetragen!".format(RezepteDBID, neuername))
         else:
@@ -203,120 +203,55 @@ def Rezept_eintragen(w, DB, c, newrecipe):
 @logerror
 def Rezepte_a_R(w, DB, c):
     """ Updates the ListWidget in the recipe Tab. """
-    w.LWRezepte.clear()
-    cursor_buffer = c.execute("SELECT Name FROM Rezepte")
-    for values in cursor_buffer:
-        w.LWRezepte.addItem(values[0])
+    recipe_list = database_commander.get_recipes_name()
+    display_handler.refill_recipes_list_widget(w, recipe_list)
 
 
 @logerror
-def Rezepte_clear(w, DB, c, clearmode):
-    """ Clear all entries out of the Boxes and Comboboxes in the recipe tab. \n
-    ------------------------------------------------------------
-    Also two different clearmode are available: \n
-    False:  just clears the CB and Boxes \n
-    True:   also clears the LW selection as well as the helper fields for excact Alkohol Calculation
-    """
-    w.LECocktail.clear()
-    w.LEKommentar.clear()
-    if clearmode:
-        w.LWRezepte.clearSelection()
-    for check_v in range(1, 9):
-        CBRname = getattr(w, "CBR" + str(check_v))
-        LERname = getattr(w, "LER" + str(check_v))
-        LERname.clear()
-        CBRname.setCurrentIndex(0)
-    # resets the list which contains the properties of the handadd ingredients
-    w.handaddlist = []
+def Rezepte_clear(w, DB, c, select_other_item):
+    """ will be removed with the ui refactoring """
+    display_handler.clear_recipe_data_recipes(w, select_other_item)
 
 
 @logerror
 def Rezepte_Rezepte_click(w, DB, c):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
-    if w.LWRezepte.selectedItems():
-        ingredient_names = []
-        ingredient_volume = []
-        cocktailname = str(w.LWRezepte.currentItem().text())
-        # Gets all the ingredients as well the quatities for the recipe from the DB
-        cursor_buffer = c.execute(
-            "SELECT Zutaten.Name, Zusammen.Menge FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ? AND Zusammen.Hand=0",
-            (cocktailname,),
-        )
-        Rezepte_clear(w, DB, c, False)
-        # Appends the Values to a List then fills them into the Fields
-        for row in cursor_buffer:
-            ingredient_names.append(row[0])
-            ingredient_volume.append(row[1])
-        for row in range(0, len(ingredient_names)):
-            LERname = getattr(w, "LER" + str(row + 1))
-            LERname.setText(str(ingredient_volume[row]))
-            CBRname = getattr(w, "CBR" + str(row + 1))
-            index = CBRname.findText(ingredient_names[row], Qt.MatchFixedString)
-            CBRname.setCurrentIndex(index)
-        # Inserts into Labels
-        w.LECocktail.setText(cocktailname)
-        # get all the data to write all the extra adds via hand
-        cursor_buffer = c.execute(
-            "SELECT Zutaten.Name, Zusammen.Menge, Zutaten.ID, Zusammen.Alkoholisch, Zutaten.Alkoholgehalt FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ? AND Zusammen.Hand=1",
-            (cocktailname,),
-        )
-        handcomment = ""
-        for row in cursor_buffer:
-            handcomment += "{} ml {}, ".format(row[1], row[0])
-            w.handaddlist.append([row[2], row[1], row[3], 1, row[4]])
-        # at the end substract the last space and column
-        if len(handcomment) > 0:
-            handcomment = handcomment[:-2]
-        w.LEKommentar.setText(handcomment)
-        # gets the enabled status
-        enabled = c.execute("SELECT Enabled FROM Rezepte WHERE Name = ?", (cocktailname,)).fetchone()[0]
-        if enabled:
-            w.CHBenabled.setChecked(True)
-        else:
-            w.CHBenabled.setChecked(False)
+    recipe_name = display_controler.get_list_widget_selection(w.LWRezepte)
+    if not recipe_name:
+        return
+
+    display_handler.clear_recipe_data_recipes(w, True)
+    machineadd_data, _ = database_commander.get_recipe_ingredients_by_name_seperated_data(recipe_name)
+    ingredient_names = [data[0] for data in machineadd_data]
+    ingredient_volumes = [data[1] for data in machineadd_data]
+    handadd_data = database_commander.get_recipe_ingredients_for_comment(recipe_name)
+    enabled = database_commander.get_enabled_status(recipe_name)
+    display_handler.set_recipe_data(w, recipe_name, ingredient_names, ingredient_volumes, enabled, handadd_data)
 
 
 @logerror
 def Rezepte_delete(w, DB, c):
     """ Deletes the selected recipe, requires the Password """
-    if w.LEpw.text() == globals.MASTERPASSWORD:
-        if not w.LWRezepte.selectedItems():
-            display_handler.standard_box("Kein Rezept ausgewählt!")
-        else:
-            Rname = w.LWRezepte.currentItem().text()
-            CocktailID = c.execute("SELECT ID FROM Rezepte WHERE Name = ?", (Rname,)).fetchone()[0]
-            c.execute("DELETE FROM Zusammen WHERE Rezept_ID = ?", (CocktailID,))
-            c.execute("DELETE FROM Rezepte WHERE ID = ?", (CocktailID,))
-            DB.commit()
-            w.LWRezepte.clearSelection()
-            delfind = w.LWRezepte.findItems(Rname, Qt.MatchExactly)
-            if len(delfind) > 0:
-                for item in delfind:
-                    w.LWRezepte.takeItem(w.LWRezepte.row(item))
-            delfind = w.LWMaker.findItems(Rname, Qt.MatchExactly)
-            if len(delfind) > 0:
-                for item in delfind:
-                    w.LWMaker.takeItem(w.LWMaker.row(item))
-            for i in range(w.LWMaker.count()):
-                w.LWMaker.item(i).setSelected(False)
-            for i in range(w.LWRezepte.count()):
-                w.LWRezepte.item(i).setSelected(False)
-            Rezepte_clear(w, DB, c, False)
-            display_handler.clear_recipe_data_maker(w)
-            display_handler.standard_box("Rezept mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Rname, CocktailID))
-    else:
+    if not display_controler.check_recipe_password(w):
         display_handler.standard_box("Falsches Passwort!")
-    w.LEpw.setText("")
+        return
+    recipe_name = display_controler.get_list_widget_selection(w.LWRezepte)
+    if not recipe_name:
+        display_handler.standard_box("Kein Rezept ausgewählt!")
+        return
+
+    database_commander.delete_recipe(recipe_name)
+    display_handler.remove_recipe_from_list_widgets(w, recipe_name)
+    display_handler.clear_recipe_data_recipes(w, False)
+    display_handler.clear_recipe_data_maker(w)
+    display_handler.standard_box(f"Rezept mit dem Namen <{recipe_name}> wurde gelöscht!")
 
 
 @logerror
 def enableall(w, DB, c):
-    idinput = []
-    cursor_buffer = c.execute("SELECT ID FROM Rezepte WHERE Enabled = 0")
-    for values in cursor_buffer:
-        idinput.append(int(values[0]))
-    c.execute("UPDATE OR IGNORE Rezepte SET Enabled = 1")
-    DB.commit()
-    Rezepte_a_M(w, DB, c, idinput)
-    Rezepte_clear(w, DB, c, False)
+    """Set all recipes to enabled """
+    disabled_ids = database_commander.get_disabled_recipes_id()
+    database_commander.set_all_recipes_enabled()
+    Rezepte_a_M(w, DB, c, disabled_ids)
+    display_handler.clear_recipe_data_recipes(w, True)
     display_handler.standard_box("Alle Rezepte wurden wieder aktiv gesetzt!")

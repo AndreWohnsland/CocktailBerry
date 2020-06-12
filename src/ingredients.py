@@ -35,8 +35,7 @@ def custom_output(w, DB, c):
 
 
 def enter_ingredient(w, DB, c, newingredient=True):
-    """ Insert the new ingredient into the DB, if all values are given 
-    and its name is not already in the DB.
+    """ Insert the new ingredient into the DB, if all values are given and its name is not already in the DB.
     Also can change the current selected ingredient (newingredient = False)
     """
     ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = generate_ingredient_fields(w)
@@ -61,6 +60,7 @@ def enter_ingredient(w, DB, c, newingredient=True):
 
 
 def add_new_ingredient(w, ingredient_data):
+    """Adds the ingredient into the database """
     combobox_recipes = generate_CBR_names(w)
     combobox_bottles = generate_CBB_names(w)
     given_name_ingredient_data = database_commander.get_ingredient_data(ingredient_data["ingredient_name"])
@@ -78,6 +78,7 @@ def add_new_ingredient(w, ingredient_data):
 
 
 def change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
+    """Changes the existing ingredient """
     combobox_recipes = generate_CBR_names(w)
     combobox_bottles = generate_CBB_names(w)
     selected_ingredient_data = database_commander.get_ingredient_data(ingredient_data["selected_ingredient"])
@@ -129,11 +130,9 @@ def Zutaten_a(w, DB, c):
 
 
 def Zutaten_delete(w, DB, c):
-    """ Deletes an ingredient out of the DB if its not needed in any recipe. \n
-    In addition to do so, a password is needed in the interface.
-    """
+    """ Deletes an ingredient out of the DB if its not needed in any recipe."""
     _, _, ingredient_list_widget = generate_ingredient_fields(w)
-    if not display_controler.check_password(w.LEpw2):
+    if not display_controler.check_ingredient_password(w):
         display_handler.standard_box("Falsches Passwort!")
         return
     if not ingredient_list_widget.selectedItems():
