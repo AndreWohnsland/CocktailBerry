@@ -21,7 +21,7 @@ if not devenvironment:
 if __name__ == "__main__":
 
     # Connect (or create) the DB and the cursor
-    dbname = "Datenbank"
+    dbname = "Cocktail_database"
     dirpath = os.path.dirname(__file__)
     db_path = os.path.join(dirpath, "{}.db".format(dbname))
     DB = sqlite3.connect(db_path)

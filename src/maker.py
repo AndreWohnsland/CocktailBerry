@@ -14,7 +14,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
 from src.bottles import Belegung_progressbar
-from msgboxgenerate import standartbox
 from src.error_suppression import logerror
 
 from src.database_commander import DatabaseCommander

@@ -14,7 +14,6 @@ from PyQt5.uic import *
 from collections import Counter
 
 import globals
-from msgboxgenerate import standartbox
 from src.error_suppression import logerror
 
 from src.display_handler import DisplayHandler

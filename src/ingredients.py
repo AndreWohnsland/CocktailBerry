@@ -15,7 +15,6 @@ from PyQt5.uic import *
 
 from src.recipes import ZutatenCB_Rezepte
 from src.bottles import Belegung_progressbar, Belegung_a
-from msgboxgenerate import standartbox
 from src.error_suppression import logerror
 
 from src.display_controler import DisplayControler

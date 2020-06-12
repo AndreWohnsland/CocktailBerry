@@ -16,10 +16,11 @@ from src.ingredients import *
 from src.recipes import *
 from src.bottles import *
 from src.bottles import Belegung_progressbar
-from msgboxgenerate import standartbox
+from msgboxgenerate import display_handler.standard_box
 from config.config_manager import ConfigManager
 from src.supporter import plusminus
 from src.save_handler import SaveHandler
+from src.display_handler import DisplayHandler
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
 from ui_elements.passwordbuttons import Ui_PasswordWindow
@@ -32,6 +33,7 @@ from ui_elements.handadds import Ui_handadds
 from ui_elements.available import Ui_available
 
 save_handler = SaveHandler()
+display_handler = DisplayHandler()
 
 
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
@@ -313,7 +315,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         amounttest = self.c.execute("SELECT Mengenlevel FROM Zutaten WHERE Name = ? and Mengenlevel < ?", (bottlename, volume),).fetchone()
         if amounttest is not None:
             missingamount = amounttest[0]
-            standartbox(f"Die Flasche hat nicht genug Volumen! {volume} ml werden gebraucht, {missingamount} ml sind vorhanden!")
+            display_handler.standard_box(f"Die Flasche hat nicht genug Volumen! {volume} ml werden gebraucht, {missingamount} ml sind vorhanden!")
             check = False
         if check:
             time_needed = volume / volumeflow
@@ -477,7 +479,7 @@ class HandaddWidget(QDialog, Ui_handadds):
             LEname = getattr(self, "LEHandadd" + str(i))
             CBname = getattr(self, "CBHandadd" + str(i))
             if ((CBname.currentText() != "") and LEname.text() == "") or ((CBname.currentText() == "") and LEname.text() != ""):
-                standartbox("Irgendwo ist ein Wert vergessen worden!")
+                display_handler.standard_box("Irgendwo ist ein Wert vergessen worden!")
                 return
             # append both values to the lists
             elif (CBname.currentText() != "") and LEname.text() != "":
@@ -487,7 +489,7 @@ class HandaddWidget(QDialog, Ui_handadds):
         counted_ing = Counter(inglist)
         double_ing = [x[0] for x in counted_ing.items() if x[1] > 1]
         if len(double_ing) != 0:
-            standartbox(f"Eine der Zutaten:\n<{double_ing[0]}>\nwurde doppelt verwendet!")
+            display_handler.standard_box(f"Eine der Zutaten:\n<{double_ing[0]}>\nwurde doppelt verwendet!")
             return
         # if it passes all tests, generate the list for the later entry ands enter the comment into the according field
         self.ms.handaddlist = []

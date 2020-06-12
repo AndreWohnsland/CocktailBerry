@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import sqlite3
 
-database_name = "Datenbank"
+database_name = "Cocktail_database"
 dirpath = os.path.dirname(__file__)
 
 

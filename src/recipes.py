@@ -16,7 +16,7 @@ from collections import Counter
 
 import globals
 from src.maker import Rezepte_a_M, Maker_List_null
-from msgboxgenerate import standartbox
+from msgboxgenerate import display_handler.standard_box
 from src.error_suppression import logerror
 
 from src.display_handler import DisplayHandler
@@ -49,11 +49,11 @@ def Rezept_eintragen(w, DB, c, newrecipe):
     # checks if the user pressed change without selecting a recipe first
     if val_check == 0 and not newrecipe and not w.LWRezepte.selectedItems():
         val_check = 1
-        standartbox("Es ist kein Rezept ausgewählt!")
+        display_handler.standard_box("Es ist kein Rezept ausgewählt!")
     # Checking if Cocktailname is missing
     if val_check == 0 and (neuername == "" or neuername == 0):
         val_check = 1
-        standartbox("Bitte Cocktailnamen eingeben!")
+        display_handler.standard_box("Bitte Cocktailnamen eingeben!")
     # Checking if both values are given (ingredient and quantity)
     if val_check == 0:
         for check_v in range(1, 9):
@@ -61,7 +61,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             LERname = getattr(w, "LER" + str(check_v))
             if ((CBRname.currentText() != "") and LERname.text() == "") or ((CBRname.currentText() == "") and LERname.text() != ""):
                 val_check = 1
-                standartbox("Irgendwo ist ein Wert vergessen worden!")
+                display_handler.standard_box("Irgendwo ist ein Wert vergessen worden!")
                 break
             else:
                 # Checks if quantity is a number
@@ -70,7 +70,7 @@ def Rezept_eintragen(w, DB, c, newrecipe):
                         int(LERname.text())
                     except ValueError:
                         val_check = 1
-                        standartbox("Menge muss eine Zahl sein!")
+                        display_handler.standard_box("Menge muss eine Zahl sein!")
                         break
     # Checks, if any ingredient was used twice
     if val_check == 0:
@@ -87,18 +87,18 @@ def Rezept_eintragen(w, DB, c, newrecipe):
         double_ing = [x[0] for x in counted_ing.items() if x[1] > 1]
         if len(double_ing) != 0:
             val_check = 1
-            standartbox("Eine der Zutaten:\n<{}>\nwurde doppelt verwendet!".format(double_ing[0]))
+            display_handler.standard_box("Eine der Zutaten:\n<{}>\nwurde doppelt verwendet!".format(double_ing[0]))
     # checks if there is at least one ingredient, else this would make no sense
     if val_check == 0:
         if len(Zutaten_V) < 1:
             val_check = 1
-            standartbox("Es muss mindestens eine Zutat eingetragen sein!")
+            display_handler.standard_box("Es muss mindestens eine Zutat eingetragen sein!")
     # Checks if the name of the recipe already exists in case of a new recipe
     if val_check == 0 and newrecipe:
         c.execute("SELECT COUNT(*) FROM Rezepte WHERE Name=?", (neuername,))
         val_check = c.fetchone()[0]
         if not val_check == 0:
-            standartbox("Dieser Name existiert schon in der Datenbank!")
+            display_handler.standard_box("Dieser Name existiert schon in der Datenbank!")
     # If nothing is wrong, starts writing into DB
     if val_check == 0:
         if not newrecipe:
@@ -191,9 +191,9 @@ def Rezept_eintragen(w, DB, c, newrecipe):
             Rezepte_a_M(w, DB, c, [RezepteDBID])
         Rezepte_clear(w, DB, c, True)
         if newrecipe:
-            standartbox("Rezept unter der ID und dem Namen:\n<{}> <{}>\neingetragen!".format(RezepteDBID, neuername))
+            display_handler.standard_box("Rezept unter der ID und dem Namen:\n<{}> <{}>\neingetragen!".format(RezepteDBID, neuername))
         else:
-            standartbox(
+            display_handler.standard_box(
                 "Rezept mit der ID und dem Namen:\n<{}> <{}>\nunter dem Namen:\n<{}>\naktualisiert!".format(
                     RezepteDBID, altername, neuername
                 )
@@ -281,7 +281,7 @@ def Rezepte_delete(w, DB, c):
     """ Deletes the selected recipe, requires the Password """
     if w.LEpw.text() == globals.MASTERPASSWORD:
         if not w.LWRezepte.selectedItems():
-            standartbox("Kein Rezept ausgewählt!")
+            display_handler.standard_box("Kein Rezept ausgewählt!")
         else:
             Rname = w.LWRezepte.currentItem().text()
             CocktailID = c.execute("SELECT ID FROM Rezepte WHERE Name = ?", (Rname,)).fetchone()[0]
@@ -303,9 +303,9 @@ def Rezepte_delete(w, DB, c):
                 w.LWRezepte.item(i).setSelected(False)
             Rezepte_clear(w, DB, c, False)
             display_handler.clear_recipe_data_maker(w)
-            standartbox("Rezept mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Rname, CocktailID))
+            display_handler.standard_box("Rezept mit der ID und dem Namen:\n<{}> <{}>\ngelöscht!".format(Rname, CocktailID))
     else:
-        standartbox("Falsches Passwort!")
+        display_handler.standard_box("Falsches Passwort!")
     w.LEpw.setText("")
 
 
@@ -319,4 +319,4 @@ def enableall(w, DB, c):
     DB.commit()
     Rezepte_a_M(w, DB, c, idinput)
     Rezepte_clear(w, DB, c, False)
-    standartbox("Alle Rezepte wurden wieder aktiv gesetzt!")
+    display_handler.standard_box("Alle Rezepte wurden wieder aktiv gesetzt!")
