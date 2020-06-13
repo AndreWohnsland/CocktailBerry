@@ -13,6 +13,13 @@ class DatabaseCommander:
     def __init__(self):
         self.handler = DatabaseHandler()
 
+    def get_recipe_id_by_name(self, recipe_name):
+        query = "SELECT ID FROM Rezepte WHERE Name=?"
+        value = self.handler.query_database(query, (recipe_name,))
+        if not value:
+            return 0
+        return value[0][0]
+
     def get_recipe_ingredients_by_id(self, recipe_id):
         query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID 
                 FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID 
@@ -67,7 +74,11 @@ class DatabaseCommander:
         return recipe_object
 
     def get_recipe_ingredients_for_comment(self, recipe_name):
-        query = "SELECT Zutaten.Name, Zusammen.Menge, Zutaten.ID, Zusammen.Alkoholisch, Zutaten.Alkoholgehalt FROM Zusammen INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID WHERE Rezepte.Name = ? AND Zusammen.Hand=1"
+        query = """SELECT Zutaten.Name, Zusammen.Menge, Zutaten.ID, Zusammen.Alkoholisch, Zutaten.Alkoholgehalt 
+                FROM Zusammen 
+                INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID 
+                INNER JOIN Zutaten ON Zusammen.Zutaten_ID=Zutaten.ID 
+                WHERE Rezepte.Name = ? AND Zusammen.Hand=1"""
         return self.handler.query_database(query, (recipe_name,))
 
     def get_enabled_recipes_id(self):

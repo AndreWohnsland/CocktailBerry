@@ -6,6 +6,7 @@ from PyQt5.uic import *
 
 from config.config_manager import ConfigManager
 from src.database_commander import DatabaseCommander
+from src.supporter import generate_lineedit_recipes, generate_CBR_names
 
 
 class DisplayControler(ConfigManager):
@@ -49,6 +50,18 @@ class DisplayControler(ConfigManager):
         if w.LWMaker.selectedItems():
             cocktailname = w.LWMaker.currentItem().text()
         return cocktailname, cocktail_volume, alcohol_faktor
+
+    def get_recipe_field_data(self, w):
+        recipe_name = w.LECocktail.text()
+        selected_recipe = ""
+        if w.LWRezepte.selectedItems():
+            selected_recipe = w.LWRezepte.currentItem().text()
+        ingredient_volumes = self.get_lineedit_text(generate_lineedit_recipes(w))
+        ingredient_names = self.get_current_combobox_items(generate_CBR_names(w))
+        enabled = 0
+        if w.CHBenabled.isChecked():
+            enabled = 1
+        return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled
 
     def check_ingredient_data(self, lineedit_list):
         error_messages = self.missing_check(
