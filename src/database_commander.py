@@ -209,7 +209,7 @@ class DatabaseCommander:
             self.handler.query_database(query, searchtuple)
 
     def set_bottle_volumelevel_to_max(self, boolean_list):
-        query = """"UPDATE OR IGNORE Zutaten 
+        query = """UPDATE OR IGNORE Zutaten 
                 Set Mengenlevel = Flaschenvolumen 
                 WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)"""
         for i, set_to_max in enumerate(boolean_list):
