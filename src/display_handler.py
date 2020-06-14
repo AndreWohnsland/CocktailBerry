@@ -171,8 +171,8 @@ class DisplayHandler:
     def remove_recipe_from_list_widgets(self, w, recipe_name):
         self.delete_list_widget_item(w.LWRezepte, recipe_name)
         self.delete_list_widget_item(w.LWMaker, recipe_name)
-        self.unselect_list_widget_items(w.LWRezepte)
-        self.unselect_list_widget_items(w.LWMaker)
+        w.LWRezepte.clearSelection()
+        w.LWMaker.clearSelection()
 
     def set_recipe_handadd_comment(self, w, handadd_data):
         comment = ""

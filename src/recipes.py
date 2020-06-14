@@ -49,15 +49,13 @@ def prepare_update_existing_recipe(w, selected_name):
     recipe_id = database_commander.get_recipe_id_by_name(selected_name)
     database_commander.delete_recipe_ingredient_data(recipe_id)
     display_handler.remove_recipe_from_list_widgets(w, selected_name)
-
-
     return recipe_id, ""
 
 
 def reason_check_ingredients(ingredient_names, ingredient_volumes):
     names, volumes = [], []
     for name, volume in zip(ingredient_names, ingredient_volumes):
-        if (name == "" and volume !="") or (name != "" and volume== ""):
+        if (name == "" and volume != "") or (name != "" and volume == ""):
             return [], [], "Irgendwo ist ein wert vergessen worden"
         elif name != "":
             names.append(name)
@@ -75,7 +73,7 @@ def reason_check_ingredients(ingredient_names, ingredient_volumes):
     return names, volumes, ""
 
 
-def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data):
+def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, handadd_data):
     comment = w.LEKommentar.text()
     if recipe_id:
         database_commander.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
@@ -83,74 +81,61 @@ def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alco
         database_commander.insert_new_recipe(recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
         recipe_id = database_commander.get_recipe_id_by_name(recipe_name)
     for data in ingredient_data:
-        pass # enters each row into the db ##### TODO IMPLEMENT THIS
+        is_alcoholic = 1 if data["alcohollevel"] > 0 else 0
+        database_commander.insert_recipe_data(recipe_id, data["ID"], data["recipe_volume"], is_alcoholic, 0)
+    for hand_id, hand_volume, hand_alcoholic, _, _ in handadd_data:
+        database_commander.insert_recipe_data(recipe_id, hand_id, hand_volume, hand_alcoholic, 1)
+    return recipe_id
+
 
 @logerror
 def Rezept_eintragen(w, DB, c, newrecipe):
     """ Enters or updates the recipe into the db
     """
     recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled = display_controler.get_recipe_field_data(w)
+    handadd_data = w.handaddlist
     if not recipe_name:
         display_handler.standard_box("Bitte Cocktailnamen eingeben!")
         return
     ingredient_names, ingredient_volumes, error_message = reason_check_ingredients(ingredient_names, ingredient_volumes)
     if error_message:
         display_handler.standard_box(error_message)
+        return
 
     if newrecipe:
         recipe_id, error_message = prepare_enter_new_recipe(w, recipe_name)
     else:
         recipe_id, error_message = prepare_update_existing_recipe(w, selected_name)
-
     if error_message:
         display_handler.standard_box(error_message)
         return
 
-    # new part for volume and concentration, the comment part conc is no longer needed
     recipe_volume = sum(ingredient_volumes)
     ingredient_data = []
     recipe_volume_concentration = 0
     for ingredient_name, ingredient_volume in zip(ingredient_names, ingredient_volumes):
         data = database_commander.get_ingredient_data(ingredient_name)
         data["recipe_volume"] = ingredient_volume
-        recipe_volume_concentration += data["alcohollevel"]*ingredient_volume
+        recipe_volume_concentration += data["alcohollevel"] * ingredient_volume
         ingredient_data.append(data)
-    for row in w.handaddlist: # id, volume, alcoholic, 1, alcohol_con
-        recipe_volume += row[1]
-        recipe_volume_concentration += row[1] * row[4]
-    recipe_alcohollevel = int(recipe_volume_concentration/recipe_volume)
+    for _, hand_volume, _, _, hand_alcohollevel in handadd_data:  # id, volume, alcoholic, 1, alcohol_con
+        recipe_volume += hand_volume
+        recipe_volume_concentration += hand_volume * hand_alcohollevel
+    recipe_alcohollevel = int(recipe_volume_concentration / recipe_volume)
 
-    enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data)
-
-    # old part
-    for Anzahl in range(0, len(ingredient_names)):
-        incproperties = c.execute("SELECT ID, Alkoholgehalt FROM Zutaten WHERE Name = ?", (ingredient_names[Anzahl],)).fetchone()
-        ZutatenDBID = incproperties[0]
-        if incproperties[1] > 0:
-            isalkoholic = 1
-        else:
-            isalkoholic = 0
-        c.execute(
-            "INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, 0)",
-            (RezepteDBID, ZutatenDBID, ingredient_volumes[Anzahl], isalkoholic),
-        )
-    # Insert all the handadds to the db on its seperate rows
-    for row in w.handaddlist:
-        c.execute(
-            "INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, 1)",
-            (RezepteDBID, row[0], row[1], row[2]),
-        )
-    DB.commit()
+    recipe_id = enter_or_update_recipe(
+        w, recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, handadd_data
+    )
     w.LWRezepte.addItem(recipe_name)
-    # add needs to be checked, if all ingredients are used
     if enabled:
-        Rezepte_a_M(w, DB, c, [RezepteDBID])
+        Rezepte_a_M(w, DB, c, [recipe_id])
     display_handler.clear_recipe_data_recipes(w, False)
+
     if newrecipe:
-        display_handler.standard_box(f"Rezept unter der ID und dem Namen:\n<{RezepteDBID}> <{recipe_name}>\neingetragen!")
+        display_handler.standard_box(f"Rezept unter der ID und dem Namen:\n<{recipe_id}> <{recipe_name}>\neingetragen!")
     else:
         display_handler.standard_box(
-            "Rezept mit der ID und dem Namen:\n<{}> <{}>\nunter dem Namen:\n<{}>\naktualisiert!".format(RezepteDBID, selected_name, recipe_name)
+            f"Rezept mit der ID und dem Namen:\n<{recipe_id}> <{selected_name}>\nunter dem Namen:\n<{recipe_name}>\naktualisiert!"
         )
 
 

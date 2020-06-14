@@ -273,6 +273,11 @@ class DatabaseCommander:
         searchtuple = (name, alcohollevel, volume, comment, enabled)
         self.handler.query_database(query, searchtuple)
 
+    def insert_recipe_data(self, recipe_id, ingredient_id, ingredient_volume, isalcoholic, hand_add):
+        query = "INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, ?)"
+        searchtuple = (recipe_id, ingredient_id, ingredient_volume, isalcoholic, hand_add)
+        self.handler.query_database(query, searchtuple)
+
     # delete
     def delete_ingredient(self, ingredient_id):
         query = "DELETE FROM Zutaten WHERE ID = ?"
