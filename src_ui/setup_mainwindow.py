@@ -54,6 +54,10 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         if DB is not None:
             self.DB = sqlite3.connect(DB)
             self.c = self.DB.cursor()
+        # Code for hide the curser. Still experimental!
+        # for count in range(1,10):
+        # 	CBSname = getattr(self, "CBB" + str(count))
+        # 	CBSname.setCursor(Qt.BlankCursor)
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext=None):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """

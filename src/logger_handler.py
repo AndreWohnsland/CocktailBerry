@@ -10,7 +10,7 @@ class LoggerHandler:
 
     log_folder = os.path.join(dirpath, "..", "logs")
 
-    def __init__(self, loggername, filename, new_handler=False):
+    def __init__(self, loggername, filename):
         self.path = os.path.join(LoggerHandler.log_folder, f"{filename}.log")
         logging.basicConfig(
             level=logging.DEBUG, format="%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M", filename=self.path, filemode="a",
