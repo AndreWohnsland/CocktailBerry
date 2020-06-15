@@ -15,7 +15,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         super(PasswordScreen, self).__init__(parent)
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
-        self.setWindowIcon(QIcon("Cocktail-icon.png"))
+        self.setWindowIcon(QIcon(parent.icon_path))
         # Connect all the buttons, generates a list of the numbers an objectnames to do that
         self.number_list = [x for x in range(10)]
         self.attribute_numbers = [getattr(self, "PB" + str(x)) for x in self.number_list]

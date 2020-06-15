@@ -19,7 +19,7 @@ class HandaddWidget(QDialog, Ui_handadds):
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.ms = parent
-        self.setWindowIcon(QIcon("Cocktail-icon.png"))
+        self.setWindowIcon(QIcon(parent.icon_path))
         # get all ingredients from the DB (all of them, handadd and normal, bc you may want to add normal as well)
         # first get a sortet list of all hand ingredients
         handingredients = self.ms.c.execute("SELECT Name FROM Zutaten WHERE Hand = 1")

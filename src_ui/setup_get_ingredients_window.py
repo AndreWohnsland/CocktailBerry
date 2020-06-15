@@ -24,7 +24,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.setupUi(self)
         # Set window properties
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
-        self.setWindowIcon(QIcon("Cocktail-icon.png"))
+        self.setWindowIcon(QIcon(parent.icon_path))
         self.ms = parent
         if not self.ms.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
