@@ -6,7 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
-import src_ui.setupui as setupui
+import src_ui.setup_mainwindow as setupui
 import globals
 from src.logger_handler import LoggerHandler
 

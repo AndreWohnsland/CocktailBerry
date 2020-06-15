@@ -33,7 +33,7 @@ logger_handler = LoggerHandler("cocktail_application", "production_logs")
 
 
 @logerror
-def Rezepte_a_M(w, DB, c, possible_recipes_id=None):
+def Rezepte_a_M(w, possible_recipes_id=None):
     """ Goes through every recipe in the list or all recipes if none given
     Checks if all ingredients are registered, if so, adds it to the list widget
     """
@@ -59,13 +59,13 @@ def Rezepte_a_M(w, DB, c, possible_recipes_id=None):
 
 
 @logerror
-def Maker_Rezepte_click(w, DB, c):
+def Maker_Rezepte_click(w):
     """ Updates the maker display Data with the selected recipe"""
     if not w.LWMaker.selectedItems():
         return
 
     display_handler.clear_recipe_data_maker(w)
-    Maker_ProB_change(w, DB, c)
+    Maker_ProB_change(w)
     cocktailname = w.LWMaker.currentItem().text()
 
     machineadd_data, handadd_data = database_commander.get_recipe_ingredients_by_name_seperated_data(cocktailname)
@@ -148,7 +148,7 @@ def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_tim
     logger_handler.log_event("INFO", f"{mengenstring:8} | {cocktail_name}{abbruchstring}")
 
 
-def Maker_Zubereiten(w, DB, c, devenvironment):
+def Maker_Zubereiten(w):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
     if globals.startcheck:
         return
@@ -182,8 +182,8 @@ def Maker_Zubereiten(w, DB, c, devenvironment):
         database_commander.set_multiple_ingredient_consumption(consumption_names, consumption)
         display_handler.standard_box("Der Cocktail wurde abgebrochen!")
 
-    Belegung_progressbar(w, DB, c)
-    Maker_nullProB(w, DB, c)
+    Belegung_progressbar(w)
+    Maker_nullProB(w)
     globals.startcheck = False
 
 
@@ -194,13 +194,13 @@ def abbrechen_R():
 
 
 @logerror
-def Maker_nullProB(w, DB, c):
+def Maker_nullProB(w):
     """ Sets the alcoholintensity to default value (100 %). """
     w.HSIntensity.setValue(0)
 
 
 @logerror
-def Maker_ProB_change(w, DB, c):
+def Maker_ProB_change(w):
     """ Recalculates the alcoholpercentage of the drink with the adjusted Value from the slider. """
     cocktailname, _, alcohol_faktor = display_controler.get_cocktail_data(w)
     if not cocktailname:
