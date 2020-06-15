@@ -36,8 +36,7 @@ if __name__ == "__main__":
     logger_handler.log_start_program()
 
     app = QApplication(sys.argv)
-    w = setupui.MainScreen(devenvironment, db_path)
-    setupui.pass_setup(w, DB, c, PARTYMODE, devenvironment)
+    w = setupui.MainScreen(db_path)
     w.showFullScreen()
     w.setFixedSize(800, 480)
 

@@ -24,7 +24,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         self.PBenter.clicked.connect(self.enter_clicked)
         self.PBdel.clicked.connect(self.del_clicked)
         self.ms = parent
-        if not self.ms.devenvironment:
+        if not self.ms.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         self.pwlineedit = le_to_write
         self.move(x_pos, y_pos)

@@ -26,7 +26,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.ms = parent
-        if not self.ms.devenvironment:
+        if not self.ms.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         # Connect all the buttons
         self.PBplus.clicked.connect(lambda: plusminus(self.LAmount, "+", 20, 100, 10))
@@ -49,7 +49,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         # get the globals, set GPIO
         import globals
 
-        if not self.ms.devenvironment:
+        if not self.ms.DEVENVIRONMENT:
             import RPi.GPIO as GPIO
 
             GPIO.setmode(GPIO.BCM)
@@ -80,7 +80,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
             time_needed = volume / volumeflow
             time_actual = 0
             # initialise and open the Pins = activate the pump
-            if not self.ms.devenvironment:
+            if not self.ms.DEVENVIRONMENT:
                 GPIO.setup(pin, GPIO.OUT)
                 GPIO.output(pin, 0)
             print(f"Pin: {pin} wurde initialisiert!")
@@ -96,7 +96,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
                 self.ms.prow_change(time_actual / time_needed * 100)
                 qApp.processEvents()
             # close the pin / pump at the end of the process.
-            if not self.ms.devenvironment:
+            if not self.ms.DEVENVIRONMENT:
                 GPIO.output(pin, 1)
             # checks if the program was interrupted before or carried out till the end, gets the used volume
             if not globals.loopcheck:

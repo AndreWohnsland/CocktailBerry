@@ -38,61 +38,30 @@ display_handler = DisplayHandler()
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     """ Creates the Mainscreen. """
 
-    def __init__(self, devenvironment, DB=None, parent=None):
+    def __init__(self, DB=None, parent=None):
         """ Init. Many of the button and List connects are in pass_setup. """
         super(MainScreen, self).__init__(parent)
         self.setupUi(self)
-        # as long as its not devenvironment (usually touchscreen) hide the cursor
+        self.handaddlist = []
+        self.connect_objects()
+        self.connect_other_windows()
+        # as long as its not DEVENVIRONMENT (usually touchscreen) hide the cursor
         if not self.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
-        self.devenvironment = self.DEVENVIRONMENT
         # connect to the DB, if one is given (you should always give one!)
         if DB is not None:
             self.DB = sqlite3.connect(DB)
             self.c = self.DB.cursor()
-        self.handaddlist = []
-        # the connection method here is defined in a seperate file "clickablelineedit.py"
-        # even if it belongs to the UI if its moved there, there will be an import error.
-        # Till this problem is resolved, this file will stay in the main directory
-        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw))
-        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2))
-        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine))
-        self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
-        self.LEGehaltRezept.clicked.connect(
-            lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext="Alkoholgehalt eingeben!")
-        )
-        self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept, max_char_len=20))
-        self.LEKommentar.clicked.connect(self.handwindow)
-        self.PBAvailable.clicked.connect(self.availablewindow)
-        # connects all the Lineedits from the Recipe amount and gives them the validator
-        LER_obj = [getattr(self, "LER" + str(x)) for x in range(1, 9)]
-        for obj in LER_obj:
-            obj.clicked.connect(lambda o=obj: self.passwordwindow(le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!",))
-            obj.setValidator(QIntValidator(0, 300))
-            obj.setMaxLength(3)
-        # Setting up Validators for all the the fields (length and/or Types):
-        self.LEGehaltRezept.setValidator(QIntValidator(0, 99))
-        self.LEGehaltRezept.setMaxLength(2)
-        self.LEZutatRezept.setMaxLength(20)
-        self.LEFlaschenvolumen.setValidator(QIntValidator(100, 2000))
-        self.LECocktail.setMaxLength(30)
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext=None):
-        """ Opens up the PasswordScreen/ a Numpad to enter Numeric Values (no commas!). 
-        Needs a Lineedit where the text is put in. In addition, the header of the window can be changed. 
-        This is only relevant if you dont show the window in Fullscreen!
-        In addition, if its not fullscreen, the postion of the upper left edge can be set in x- and y-direction.
-        """
+        """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
         self.pww = PasswordScreen(self, x_pos=x_pos, y_pos=y_pos, le_to_write=le_to_write)
         if headertext is not None:
             self.pww.setWindowTitle(headertext)
         self.pww.show()
 
     def keyboard(self, le_to_write, headertext=None, max_char_len=30):
-        """ Opens up the Keyboard to seperate Enter a Name or similar.
-        Needs a Lineedit where the text is put in. In addition, the header of the window can be changed. 
-        This is only relevant if you dont show the window in Fullscreen!
-        """
+        """ Opens up the Keyboard connected to the lineedit """
         self.kbw = KeyboardWidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
         if headertext is not None:
             self.kbw.setWindowTitle(headertext)
@@ -139,67 +108,91 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.availw = AvailableWindow(self)
         self.availw.showFullScreen()
 
+    def connect_other_windows(self):
+        """Links the buttons and lineedits to the other ui elements"""
+        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw))
+        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2))
+        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine))
+        self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
+        self.LEGehaltRezept.clicked.connect(
+            lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext="Alkoholgehalt eingeben!")
+        )
+        self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept, max_char_len=20))
+        self.LEKommentar.clicked.connect(self.handwindow)
+        self.PBAvailable.clicked.connect(self.availablewindow)
+        # connects all the Lineedits from the Recipe amount and gives them the validator
+        LER_obj = [getattr(self, "LER" + str(x)) for x in range(1, 9)]
+        for obj in LER_obj:
+            obj.clicked.connect(lambda o=obj: self.passwordwindow(le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!",))
+            obj.setValidator(QIntValidator(0, 300))
+            obj.setMaxLength(3)
+        # Setting up Validators for all the the fields (length and/or Types):
+        self.LEGehaltRezept.setValidator(QIntValidator(0, 99))
+        self.LEGehaltRezept.setMaxLength(2)
+        self.LEZutatRezept.setMaxLength(20)
+        self.LEFlaschenvolumen.setValidator(QIntValidator(100, 2000))
+        self.LECocktail.setMaxLength(30)
 
-def pass_setup(w, DB, c, PARTYMODE, devenvironment):
-    """ Connect all the functions with the Buttons. """
-    # First, connect all the Pushbuttons with the Functions
-    w.PBZutathinzu.clicked.connect(lambda: enter_ingredient(w))
-    w.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(w, True))
-    w.PBBelegung.clicked.connect(lambda: customlevels(w))
-    w.PBZeinzelnd.clicked.connect(lambda: custom_output(w))
-    w.PBclear.clicked.connect(lambda: Rezepte_clear(w, False))
-    w.PBRezeptaktualisieren.clicked.connect(lambda: Rezept_eintragen(w, False))
-    w.PBdelete.clicked.connect(lambda: Rezepte_delete(w))
-    w.PBZdelete.clicked.connect(lambda: Zutaten_delete(w))
-    w.PBZclear.clicked.connect(lambda: Zutaten_clear(w))
-    w.PBZaktualisieren.clicked.connect(lambda: enter_ingredient(w, False))
-    w.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(w))
-    w.PBCleanMachine.clicked.connect(lambda: CleanMachine(w))
-    w.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(w))
-    w.PBZplus.clicked.connect(lambda: plusminus(w.LEFlaschenvolumen, "+", 500, 1500, 50))
-    w.PBZminus.clicked.connect(lambda: plusminus(w.LEFlaschenvolumen, "-", 500, 1500, 50))
-    w.PBMplus.clicked.connect(lambda: plusminus(w.LCustomMenge, "+", 100, 400, 25))
-    w.PBMminus.clicked.connect(lambda: plusminus(w.LCustomMenge, "-", 100, 400, 25))
-    w.PBSetnull.clicked.connect(lambda: Maker_nullProB(w))
-    w.PBZnull.clicked.connect(lambda: save_handler.export_ingredients(w))
-    w.PBRnull.clicked.connect(lambda: save_handler.export_recipes(w))
-    w.PBenable.clicked.connect(lambda: enableall(w))
+    def connect_objects(self):
+        """ Connect all the functions with the Buttons. """
+        # First, connect all the Pushbuttons with the Functions
+        self.PBZutathinzu.clicked.connect(lambda: enter_ingredient(self))
+        self.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(self, True))
+        self.PBBelegung.clicked.connect(lambda: customlevels(self))
+        self.PBZeinzelnd.clicked.connect(lambda: custom_output(self))
+        self.PBclear.clicked.connect(lambda: Rezepte_clear(self, False))
+        self.PBRezeptaktualisieren.clicked.connect(lambda: Rezept_eintragen(self, False))
+        self.PBdelete.clicked.connect(lambda: Rezepte_delete(self))
+        self.PBZdelete.clicked.connect(lambda: Zutaten_delete(self))
+        self.PBZclear.clicked.connect(lambda: Zutaten_clear(self))
+        self.PBZaktualisieren.clicked.connect(lambda: enter_ingredient(self, False))
+        self.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(self))
+        self.PBCleanMachine.clicked.connect(lambda: CleanMachine(self))
+        self.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(self))
+        self.PBZplus.clicked.connect(lambda: plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
+        self.PBZminus.clicked.connect(lambda: plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))
+        self.PBMplus.clicked.connect(lambda: plusminus(self.LCustomMenge, "+", 100, 400, 25))
+        self.PBMminus.clicked.connect(lambda: plusminus(self.LCustomMenge, "-", 100, 400, 25))
+        self.PBSetnull.clicked.connect(lambda: Maker_nullProB(self))
+        self.PBZnull.clicked.connect(lambda: save_handler.export_ingredients(self))
+        self.PBRnull.clicked.connect(lambda: save_handler.export_recipes(self))
+        self.PBenable.clicked.connect(lambda: enableall(self))
 
-    # Connect the Lists with the Functions
-    w.LWZutaten.itemClicked.connect(lambda: Zutaten_Zutaten_click(w))
-    w.LWZutaten.currentTextChanged.connect(lambda: Zutaten_Zutaten_click(w))
-    w.LWMaker.itemClicked.connect(lambda: Maker_Rezepte_click(w))
-    w.LWMaker.currentTextChanged.connect(lambda: Maker_Rezepte_click(w))
-    w.LWRezepte.itemClicked.connect(lambda: Rezepte_Rezepte_click(w))
-    w.LWRezepte.currentTextChanged.connect(lambda: Rezepte_Rezepte_click(w))
+        # Connect the Lists with the Functions
+        self.LWZutaten.itemClicked.connect(lambda: Zutaten_Zutaten_click(self))
+        self.LWZutaten.currentTextChanged.connect(lambda: Zutaten_Zutaten_click(self))
+        self.LWMaker.itemClicked.connect(lambda: Maker_Rezepte_click(self))
+        self.LWMaker.currentTextChanged.connect(lambda: Maker_Rezepte_click(self))
+        self.LWRezepte.itemClicked.connect(lambda: Rezepte_Rezepte_click(self))
+        self.LWRezepte.currentTextChanged.connect(lambda: Rezepte_Rezepte_click(self))
 
-    # Connects the slider
-    w.HSIntensity.valueChanged.connect(lambda: Maker_ProB_change(w))
+        # Connects the slider
+        self.HSIntensity.valueChanged.connect(lambda: Maker_ProB_change(self))
 
-    # Disable some of the Tabs (for the PARTYMODE, no one can access the recipes)
-    if PARTYMODE:
-        w.tabWidget.setTabEnabled(2, False)
+        # Disable some of the Tabs (for the PARTYMODE, no one can access the recipes)
+        if self.PARTYMODE:
+            self.tabWidget.setTabEnabled(2, False)
 
-    # gets the bottle ingredients into the global list
-    get_bottle_ingredients(w)
-    # Clear Help Marker
-    Maker_List_null(w)
-    # Load ingredients
-    Zutaten_a(w)
-    # Load Bottles into the Labels
-    Belegung_a(w)
-    # Load Combobuttons Recipes
-    ZutatenCB_Rezepte(w)
-    # Load Combobuttons Bottles
-    newCB_Bottles(w)
-    # Load current Bottles into the Combobuttons
-    Belegung_einlesen(w)
-    # Load Existing Recipes from DB into Recipe List
-    Rezepte_a_R(w)
-    # Load Possible Recipes Into Maker List
-    Rezepte_a_M(w)
-    # Load the Progressbar
-    Belegung_progressbar(w)
+        # gets the bottle ingredients into the global list
+        get_bottle_ingredients(self)
+        # Clear Help Marker
+        Maker_List_null(self)
+        # Load ingredients
+        Zutaten_a(self)
+        # Load Bottles into the Labels
+        Belegung_a(self)
+        # Load Combobuttons Recipes
+        ZutatenCB_Rezepte(self)
+        # Load Combobuttons Bottles
+        newCB_Bottles(self)
+        # Load current Bottles into the Combobuttons
+        Belegung_einlesen(self)
+        # Load Existing Recipes from DB into Recipe List
+        Rezepte_a_R(self)
+        # Load Possible Recipes Into Maker List
+        Rezepte_a_M(self)
+        # Load the Progressbar
+        Belegung_progressbar(self)
 
-    for combobox in [getattr(w, "CBB" + str(x)) for x in range(1, 11)]:
-        combobox.activated.connect(lambda _, window=w: refresh_bottle_cb(w=window))
+        for combobox in [getattr(self, "CBB" + str(x)) for x in range(1, 11)]:
+            combobox.activated.connect(lambda _, window=self: refresh_bottle_cb(w=window))

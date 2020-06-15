@@ -23,7 +23,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
         # sets cursor visualibility and assigns the names to the labels
         self.ms = parent
-        if not self.ms.devenvironment:
+        if not self.ms.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         for i in range(1, 11):
             CBBname = getattr(self.ms, "CBB" + str(i))

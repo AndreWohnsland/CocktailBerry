@@ -19,5 +19,5 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         self.PBabbrechen.clicked.connect(lambda: abbrechen_R())
         self.setWindowIcon(QIcon("Cocktail-icon.png"))
         self.ms = parent
-        if not self.ms.devenvironment:
+        if not self.ms.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
