@@ -57,19 +57,10 @@ class HandaddWidget(QDialog, Ui_handadds):
 
     def eintragen_clicked(self):
         """ Closes the window and enters the values into the DB/LE. """
-        ingredient_list = []
-        amount_list = []
-        # checks for each row if both values are nothing or a value (you need both for a valid entry)
-        for i in range(1, 6):
-            lineedit = getattr(self, f"LEHandadd{i}")
-            combobox = getattr(self, f"CBHandadd{i}")
-            if self.missing_pairs(combobox, lineedit):
-                display_handler.standard_box("Irgendwo ist ein Wert vergessen worden!")
-                return
-            # append both values to the lists
-            elif combobox.currentText() != "":
-                ingredient_list.append(combobox.currentText())
-                amount_list.append(int(lineedit.text()))
+        ingredient_list, amount_list, error = self.build_list_pairs()
+        if error:
+            display_handler.standard_box(error)
+            return
         # check if any ingredient was used twice
         counted_ingredients = Counter(ingredient_list)
         double_ingredient = [x[0] for x in counted_ingredients.items() if x[1] > 1]
@@ -92,3 +83,18 @@ class HandaddWidget(QDialog, Ui_handadds):
         if ((combobox.currentText() != "") and lineedit.text() == "") or ((combobox.currentText() == "") and lineedit.text() != ""):
             return True
         return False
+
+    def build_list_pairs(self):
+        ingredient_list = []
+        amount_list = []
+        # checks for each row if both values are nothing or a value (you need both for a valid entry)
+        for i in range(1, 6):
+            lineedit = getattr(self, f"LEHandadd{i}")
+            combobox = getattr(self, f"CBHandadd{i}")
+            if self.missing_pairs(combobox, lineedit):
+                return [], [], "Irgendwo ist ein Wert vergessen worden!"
+            # append both values to the lists
+            elif combobox.currentText() != "":
+                ingredient_list.append(combobox.currentText())
+                amount_list.append(int(lineedit.text()))
+        return ingredient_list, amount_list, ""

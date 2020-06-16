@@ -22,9 +22,9 @@ from src.supporter import plusminus, generate_lineedit_recipes, generate_CBB_nam
 from src.save_handler import SaveHandler
 from src.display_handler import DisplayHandler
 from src.database_commander import DatabaseCommander
+from src.logger_handler import LoggerHandler
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
-
 from src_ui.setup_progress_screen import ProgressScreen
 from src_ui.setup_password_screen import PasswordScreen
 from src_ui.setup_bottle_window import BottleWindow
@@ -41,21 +41,20 @@ database_commander = DatabaseCommander()
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     """ Creates the Mainscreen. """
 
-    def __init__(self, DB=None, parent=None):
+    def __init__(self, parent=None):
         """ Init. Many of the button and List connects are in pass_setup. """
         super(MainScreen, self).__init__(parent)
         self.setupUi(self)
         self.handaddlist = []
+        # Get the basic Logger
+        self.logger_handler = LoggerHandler("cocktail_application", "production_logs")
+        self.logger_handler.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
         self.icon_path = os.path.join(os.path.dirname(__file__), "..", "ui_elements", "Cocktail-icon.png")
         # as long as its not DEVENVIRONMENT (usually touchscreen) hide the cursor
         if not self.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
-        # connect to the DB, if one is given (you should always give one!)
-        if DB is not None:
-            self.DB = sqlite3.connect(DB)
-            self.c = self.DB.cursor()
         # Code for hide the curser. Still experimental!
         # for count in range(1,10):
         # 	CBSname = getattr(self, "CBB" + str(count))

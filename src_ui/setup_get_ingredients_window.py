@@ -40,9 +40,6 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.PBminus.clicked.connect(lambda: plusminus(self.LAmount, "-", 20, 100, 10))
         self.PBAusgeben.clicked.connect(self.ausgeben_clicked)
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
-        # Get the DB and fill Combobox
-        self.DB = self.ms.DB
-        self.c = self.ms.c
         bottles = database_commander.get_ingredients_at_bottles_without_empty_ones()
         display_handler.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
 
