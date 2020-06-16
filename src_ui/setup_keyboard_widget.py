@@ -1,6 +1,5 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 import string
@@ -28,8 +27,8 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.number_list = [x for x in range(10)]
         self.char_list_lower = [x for x in string.ascii_lowercase]
         self.char_list_upper = [x for x in string.ascii_uppercase]
-        self.attribute_chars = [getattr(self, "Button" + x) for x in self.char_list_lower]
-        self.attribute_numbers = [getattr(self, "Button" + str(x)) for x in self.number_list]
+        self.attribute_chars = [getattr(self, f"Button{x}") for x in self.char_list_lower]
+        self.attribute_numbers = [getattr(self, f"Button{x}") for x in self.number_list]
         for obj, char, char2 in zip(self.attribute_chars, self.char_list_lower, self.char_list_upper):
             obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s))
         for obj, char, char2 in zip(self.attribute_numbers, self.number_list, self.number_list):
@@ -64,8 +63,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
 
     def delete_clicked(self):
         stringvalue = self.LName.text()
-        if len(stringvalue) > 0:
-            self.LName.setText(stringvalue[:-1])
+        self.LName.setText(stringvalue[:-1])
 
     def shift_clicked(self):
         if self.shift.isChecked():

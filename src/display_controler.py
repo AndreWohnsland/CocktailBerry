@@ -76,6 +76,11 @@ class DisplayControler(ConfigManager):
             pass
         return error_messages
 
+    def get_data_ingredient_window(self, w):
+        ingredient_name = w.CBingredient.currentText()
+        volume = int(w.LAmount.text())
+        return ingredient_name, volume
+
     def check_password(self, lineedit):
         password = lineedit.text()
         lineedit.setText("")

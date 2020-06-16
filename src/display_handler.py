@@ -37,21 +37,22 @@ class DisplayHandler:
             lineedit.setText(str(text))
 
     # Combobox
-    def fill_single_combobox(self, combobox, itemlist, clear_first=False):
+    def fill_single_combobox(self, combobox, itemlist, clear_first=False, sort_items=True, first_empty=True):
         if clear_first:
             combobox.clear()
-        if combobox.count() == 0:
+        if combobox.count() == 0 and first_empty:
             combobox.addItem("")
         combobox.addItems(itemlist)
-        combobox.model().sort(0)
+        if sort_items:
+            combobox.model().sort(0)
 
-    def fill_multiple_combobox(self, combobox_list, itemlist, clear_first=False):
+    def fill_multiple_combobox(self, combobox_list, itemlist, clear_first=False, sort_items=True, first_empty=True):
         for combobox in combobox_list:
-            self.fill_single_combobox(combobox, itemlist, clear_first)
+            self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
 
-    def fill_multiple_combobox_individually(self, combobox_list, list_of_itemlist, clear_first=False):
+    def fill_multiple_combobox_individually(self, combobox_list, list_of_itemlist, clear_first=False, sort_items=True, first_empty=True):
         for combobox, itemlist in zip(combobox_list, list_of_itemlist):
-            self.fill_single_combobox(combobox, itemlist, clear_first)
+            self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
 
     def delete_single_combobox_item(self, combobox, item):
         index = combobox.findText(item, Qt.MatchFixedString)
@@ -74,10 +75,13 @@ class DisplayHandler:
         for combobox in combobox_list:
             combobox.setCurrentIndex(0)
 
-    def set_multiple_combobox_items(self, combobox_list, item_to_set):
-        for combobox, item in zip(combobox_list, item_to_set):
-            index = combobox.findText(item, Qt.MatchFixedString)
-            combobox.setCurrentIndex(index)
+    def set_multiple_combobox_items(self, combobox_list, items_to_set):
+        for combobox, item in zip(combobox_list, items_to_set):
+            self.set_combobox_item(combobox, item)
+
+    def set_combobox_item(self, combobox, item):
+        index = combobox.findText(item, Qt.MatchFixedString)
+        combobox.setCurrentIndex(index)
 
     def adjust_bottle_comboboxes(self, combobox_list, old_item, new_item):
         for combobox in combobox_list:

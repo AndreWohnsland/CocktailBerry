@@ -9,8 +9,15 @@ from ui_elements.bonusingredient import Ui_addingredient
 
 from src.supporter import plusminus
 from src.display_handler import DisplayHandler
+from src.display_controler import DisplayControler
+from src.database_commander import DatabaseCommander
+from src.rpi_controller import RpiController
+from src.bottles import Belegung_progressbar
 
 display_handler = DisplayHandler()
+database_commander = DatabaseCommander()
+rpi_controller = RpiController()
+display_controler = DisplayControler()
 
 
 class GetIngredientWindow(QDialog, Ui_addingredient):
@@ -36,9 +43,8 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         # Get the DB and fill Combobox
         self.DB = self.ms.DB
         self.c = self.ms.c
-        bottles = self.c.execute("SELECT Zutaten.Name FROM Zutaten INNER JOIN Belegung ON Zutaten.ID = Belegung.ID")
-        for bottle in bottles:
-            self.CBingredient.addItem(bottle[0])
+        bottles = database_commander.get_ingredients_at_bottles_without_empty_ones()
+        display_handler.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """
@@ -46,67 +52,20 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
 
     def ausgeben_clicked(self):
         """ Calls the Progressbarwindow and spends the given amount of the ingredient. """
-        # get the globals, set GPIO
         import globals
 
-        if not self.ms.DEVENVIRONMENT:
-            import RPi.GPIO as GPIO
-
-            GPIO.setmode(GPIO.BCM)
-
-        timestep = 0.05
-        pins = globals.USEDPINS
-        volumeflows = globals.PUMP_VOLUMEFLOW
         globals.loopcheck = True
-        # select the bottle and the according pin as well as Volumeflow, calculates the needed time
-        bottlename = self.CBingredient.currentText()
-        bottle = self.c.execute("SELECT Flasche From Belegung WHERE Zutat_F = ?", (bottlename,)).fetchone()
-        if bottle is not None:
-            pos = bottle[0] - 1
-            print(f"Ausgabemenge von {self.CBingredient.currentText()}: {self.LAmount.text()} die Flaschennummer ist: {pos + 1}")
-        pin = pins[pos]
-        volumeflow = int(volumeflows[pos])
-        volume = int(self.LAmount.text())
-        check = True
-        # now checks if there is enough of the ingredient
-        amounttest = self.c.execute("SELECT Mengenlevel FROM Zutaten WHERE Name = ? and Mengenlevel < ?", (bottlename, volume),).fetchone()
-        if amounttest is not None:
-            missingamount = amounttest[0]
-            display_handler.standard_box(
-                f"Die Flasche hat nicht genug Volumen! {volume} ml werden gebraucht, {missingamount} ml sind vorhanden!"
-            )
-            check = False
-        if check:
-            time_needed = volume / volumeflow
-            time_actual = 0
-            # initialise and open the Pins = activate the pump
-            if not self.ms.DEVENVIRONMENT:
-                GPIO.setup(pin, GPIO.OUT)
-                GPIO.output(pin, 0)
-            print(f"Pin: {pin} wurde initialisiert!")
-            self.close()
-            self.ms.progressionqwindow(labelchange="Zutat wird ausgegeben!\nFortschritt:")
-            # until the time is reached, or the process is interrupted loop:
-            while time_actual < time_needed and globals.loopcheck:
-                if (time_actual) % 1 == 0:
-                    print(str(time_actual) + " von " + str(time_needed) + " Sekunden ")
-                time_actual += timestep
-                time_actual = round(time_actual, 2)
-                time.sleep(timestep)
-                self.ms.prow_change(time_actual / time_needed * 100)
-                qApp.processEvents()
-            # close the pin / pump at the end of the process.
-            if not self.ms.DEVENVIRONMENT:
-                GPIO.output(pin, 1)
-            # checks if the program was interrupted before or carried out till the end, gets the used volume
-            if not globals.loopcheck:
-                volume_to_substract = int(round(time_actual * volumeflow, 0))
-            else:
-                volume_to_substract = volume
-            # substract the volume from the DB
-            self.c.execute(
-                "UPDATE OR IGNORE Zutaten SET Mengenlevel = Mengenlevel - ?, Verbrauchsmenge = Verbrauchsmenge + ?, Verbrauch = Verbrauch + ?  WHERE Name = ?",
-                (volume_to_substract, volume_to_substract, volume_to_substract, bottlename,),
-            )
-            self.DB.commit()
-            self.ms.prow_close()
+        ingredient_name, volume = display_controler.get_data_ingredient_window(self)
+        bottle, level = database_commander.get_ingredient_bottle_and_level_by_name(ingredient_name)
+        print(f"Ausgabemenge von {self.CBingredient.currentText()}: {volume}")
+
+        self.close()
+        if volume > level:
+            display_handler.standard_box(f"{ingredient_name} hat nicht genug Volumen! {level}/{volume} ml vorhanden.")
+            self.ms.tabWidget.setCurrentIndex(3)
+            return
+
+        volume, _, _ = rpi_controller.make_cocktail(self.ms, [bottle], [volume], labelchange="Zutat wird ausgegeben!\nFortschritt:")
+        database_commander.set_ingredient_consumption(ingredient_name, volume[0])
+        Belegung_progressbar(self.ms)
+        self.ms.prow_close()

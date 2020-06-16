@@ -32,8 +32,8 @@ class RpiController(ConfigManager):
             qApp.processEvents()
         self.close_pinlist(active_pins)
 
-    def make_cocktail(self, w, bottle_list, volume_list):
-        w.progressionqwindow()
+    def make_cocktail(self, w, bottle_list, volume_list, labelchange=""):
+        w.progressionqwindow(labelchange)
         already_closed_pins = set()
         indexes = [x - 1 for x in bottle_list]
         pins = [self.USEDPINS[i] for i in indexes]

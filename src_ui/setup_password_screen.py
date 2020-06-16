@@ -1,6 +1,5 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
@@ -17,12 +16,12 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QIcon(parent.icon_path))
         # Connect all the buttons, generates a list of the numbers an objectnames to do that
+        self.PBenter.clicked.connect(self.enter_clicked)
+        self.PBdel.clicked.connect(self.del_clicked)
         self.number_list = [x for x in range(10)]
         self.attribute_numbers = [getattr(self, "PB" + str(x)) for x in self.number_list]
         for obj, number in zip(self.attribute_numbers, self.number_list):
             obj.clicked.connect(lambda _, n=number: self.number_clicked(number=n))
-        self.PBenter.clicked.connect(self.enter_clicked)
-        self.PBdel.clicked.connect(self.del_clicked)
         self.ms = parent
         if not self.ms.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
@@ -31,7 +30,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
 
     def number_clicked(self, number):
         """  Adds the clicked number to the lineedit. """
-        self.pwlineedit.setText(self.pwlineedit.text() + "{}".format(number))
+        self.pwlineedit.setText(f"{self.pwlineedit.text()}{number}")
 
     def enter_clicked(self):
         """ Enters/Closes the Dialog. """
@@ -39,6 +38,5 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
 
     def del_clicked(self):
         """ Deletes the last digit in the lineedit. """
-        if len(self.pwlineedit.text()) > 0:
-            strstor = str(self.pwlineedit.text())
-            self.pwlineedit.setText(strstor[:-1])
+        strstor = self.pwlineedit.text()
+        self.pwlineedit.setText(strstor[:-1])

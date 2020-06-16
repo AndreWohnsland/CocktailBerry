@@ -18,9 +18,10 @@ from src.recipes import *
 from src.bottles import *
 from src.bottles import Belegung_progressbar
 from config.config_manager import ConfigManager
-from src.supporter import plusminus
+from src.supporter import plusminus, generate_lineedit_recipes, generate_CBB_names
 from src.save_handler import SaveHandler
 from src.display_handler import DisplayHandler
+from src.database_commander import DatabaseCommander
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
 
@@ -34,6 +35,7 @@ from src_ui.setup_avialable_window import AvailableWindow
 
 save_handler = SaveHandler()
 display_handler = DisplayHandler()
+database_commander = DatabaseCommander()
 
 
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
@@ -101,12 +103,8 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     def handwindow(self):
         """ Opens a window to enter additional ingrediends added by hand. """
         if self.LWRezepte.selectedItems() and self.handaddlist == []:
-            storeval = self.c.execute(
-                "SELECT Z.Zutaten_ID, Z.Menge, Z.Alkoholisch FROM Zusammen AS Z INNER JOIN Rezepte AS R ON R.ID=Z.Rezept_ID WHERE R.Name = ? AND Z.Hand=1",
-                (self.LWRezepte.currentItem().text(),),
-            )
-            for row in storeval:
-                self.handaddlist.append(list(row))
+            handadd_data = database_commander.get_recipe_handadd_window_properties(self.LWRezepte.currentItem().text())
+            self.handaddlist.extend([list(x) for x in handadd_data])
         self.handw = HandaddWidget(self)
         self.handw.show()
 
@@ -127,8 +125,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.LEKommentar.clicked.connect(self.handwindow)
         self.PBAvailable.clicked.connect(self.availablewindow)
         # connects all the Lineedits from the Recipe amount and gives them the validator
-        LER_obj = [getattr(self, "LER" + str(x)) for x in range(1, 9)]
-        for obj in LER_obj:
+        for obj in generate_lineedit_recipes(self):
             obj.clicked.connect(lambda o=obj: self.passwordwindow(le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!",))
             obj.setValidator(QIntValidator(0, 300))
             obj.setMaxLength(3)
@@ -200,5 +197,5 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # Load the Progressbar
         Belegung_progressbar(self)
 
-        for combobox in [getattr(self, "CBB" + str(x)) for x in range(1, 11)]:
+        for combobox in generate_CBB_names(self):
             combobox.activated.connect(lambda _, window=self: refresh_bottle_cb(w=window))

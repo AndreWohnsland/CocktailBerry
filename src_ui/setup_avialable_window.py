@@ -6,6 +6,11 @@ from PyQt5.uic import *
 
 from ui_elements.available import Ui_available
 from src.maker import Maker_List_null, Rezepte_a_M
+from src.display_handler import DisplayHandler
+from src.database_commander import DatabaseCommander
+
+display_handler = DisplayHandler()
+database_commander = DatabaseCommander()
 
 
 class AvailableWindow(QMainWindow, Ui_available):
@@ -22,22 +27,11 @@ class AvailableWindow(QMainWindow, Ui_available):
         self.PBAdd.clicked.connect(lambda: self.changeingredient(self.LWVorhanden, self.LWAlle))
         self.PBRemove.clicked.connect(lambda: self.changeingredient(self.LWAlle, self.LWVorhanden))
         # gets the available ingredients out of the DB and assigns them to the LW
-        cursor_buffer = self.ms.c.execute("SELECT Z.Name FROM Zutaten AS Z INNER JOIN Vorhanden AS V ON V.ID = Z.ID")
-        ingredient_available = []
-        for name in cursor_buffer:
-            self.LWVorhanden.addItem(name[0])
-            ingredient_available.append(name[0])
-        # gets the names of all ingredients out of the DB calculates the not used ones and assigns them to the LW
-        cursor_buffer = self.ms.c.execute("SELECT Name FROM Zutaten")
-        ingredient_all = []
-        for name in cursor_buffer:
-            ingredient_all.append(name[0])
+        ingredient_available = database_commander.get_available_ingredient_names()
+        ingredient_all = database_commander.get_ingredient_names()
         entrylist = list(set(ingredient_all) - set(ingredient_available))
-        for name in entrylist:
-            self.LWAlle.addItem(name)
-        # generates two list for values to remove and add from the db when the accept button is clicked
-        # self.add_db = []
-        # self.remove_db = []
+        display_handler.fill_list_widget(self.LWVorhanden, ingredient_available)
+        display_handler.fill_list_widget(self.LWAlle, entrylist)
 
     def abbrechen_clicked(self):
         """ Closes the window without any furter action. """
@@ -45,11 +39,9 @@ class AvailableWindow(QMainWindow, Ui_available):
 
     def accepted_clicked(self):
         """ Writes the new availibility into the DB. """
-        self.ms.c.execute("DELETE FROM Vorhanden")
-        for i in range(self.LWVorhanden.count()):
-            ing_id = self.ms.c.execute("SELECT ID FROM Zutaten WHERE Name=?", (self.LWVorhanden.item(i).text(),),).fetchone()[0]
-            self.ms.c.execute("INSERT OR IGNORE INTO Vorhanden(ID) VALUES(?)", (ing_id,))
-        self.ms.DB.commit()
+        database_commander.delete_existing_handadd_ingredient()
+        ingredient_names = [self.LWVorhanden.item(i).text() for i in range(self.LWVorhanden.count())]
+        database_commander.insert_multiple_existing_handadd_ingredients_by_name(ingredient_names)
         # reloads the maker screen and updates the shown available recipes
         self.ms.LWMaker.clear()
         Rezepte_a_M(self.ms)
@@ -62,9 +54,5 @@ class AvailableWindow(QMainWindow, Ui_available):
 
         ingredientname = lwremove.currentItem().text()
         lwadd.addItem(ingredientname)
-        delfind = lwremove.findItems(ingredientname, Qt.MatchExactly)
-        if len(delfind) > 0:
-            for item in delfind:
-                lwremove.takeItem(lwremove.row(item))
-        for i in range(lwremove.count()):
-            lwremove.item(i).setSelected(False)
+        display_handler.delete_list_widget_item(lwremove, ingredientname)
+        display_handler.unselect_list_widget_items(lwremove)

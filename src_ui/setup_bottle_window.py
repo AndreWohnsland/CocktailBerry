@@ -8,6 +8,9 @@ from ui_elements.bottlewindow import Ui_Bottlewindow
 
 from src.supporter import plusminus
 from src.bottles import Belegung_progressbar
+from src.database_commander import DatabaseCommander
+
+database_commander = DatabaseCommander()
 
 
 class BottleWindow(QMainWindow, Ui_Bottlewindow):
@@ -25,34 +28,15 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         self.ms = parent
         if not self.ms.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
-        for i in range(1, 11):
-            CBBname = getattr(self.ms, "CBB" + str(i))
-            labelobj = getattr(self, "LName" + str(i))
-            labelobj.setText("    " + CBBname.currentText())
-        self.DB = self.ms.DB
-        self.c = self.ms.c
         # get all the DB values and assign the nececary to the level labels
         # note: since there can be blank bottles (id=0 so no match) this needs to be catched as well (no selection from DB)
         self.IDlist = []
         self.maxvolume = []
-        for flasche in range(1, 11):
-            bufferlevel = self.c.execute(
-                "SELECT Zutaten.Mengenlevel, Zutaten.ID, Zutaten.Flaschenvolumen FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID AND Belegung.Flasche = ?",
-                (flasche,),
-            ).fetchone()
-            LName = getattr(self, "LAmount" + str(flasche))
-            if bufferlevel is not None:
-                LName.setText(str(bufferlevel[0]))
-                self.IDlist.append(bufferlevel[1])
-                self.maxvolume.append(bufferlevel[2])
-            else:
-                LName.setText("0")
-                self.IDlist.append(0)
-                self.maxvolume.append(0)
+        self.asign_bottle_data()
         # creates lists of the objects and assings functions later through a loop
-        myplus = [getattr(self, "PBMplus" + str(x)) for x in range(1, 11)]
-        myminus = [getattr(self, "PBMminus" + str(x)) for x in range(1, 11)]
-        mylabel = [getattr(self, "LAmount" + str(x)) for x in range(1, 11)]
+        myplus = [getattr(self, f"PBMplus{x}") for x in range(1, 11)]
+        myminus = [getattr(self, f"PBMminus{x}") for x in range(1, 11)]
+        mylabel = [getattr(self, f"LAmount{x}") for x in range(1, 11)]
         for plus, minus, field, vol in zip(myplus, myminus, mylabel, self.maxvolume):
             plus.clicked.connect(lambda _, l=field, b=vol: plusminus(label=l, operator="+", minimal=50, maximal=b, dm=25))
             minus.clicked.connect(lambda _, l=field, b=vol: plusminus(label=l, operator="-", minimal=50, maximal=b, dm=25))
@@ -63,12 +47,25 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
 
     def eintragen_clicked(self):
         """ Enters the Data and closes the window. """
-        for i in range(1, 11):
-            LName = getattr(self, "LAmount" + str(i))
-            new_amount = min(int(LName.text()), self.maxvolume[i - 1])
-            self.c.execute(
-                "UPDATE OR IGNORE Zutaten SET Mengenlevel = ? WHERE ID = ?", (new_amount, self.IDlist[i - 1]),
-            )
-        self.DB.commit()
+        LName = [getattr(self, f"LAmount{i}") for i in range(1, 11)]
+        for label, ingredient_id, maxvolume in zip(LName, self.IDlist, self.maxvolume):
+            new_amount = min(int(label.text()), maxvolume)
+            database_commander.set_ingredient_level_to_value(ingredient_id, new_amount)
         Belegung_progressbar(self.ms)
         self.close()
+
+    def asign_bottle_data(self):
+        bottle_data = database_commander.get_bottle_data_bottle_window()
+        for i, (ingredient_name, bottle_level, ingredient_id, ingredient_volume) in enumerate(bottle_data, start=1):
+            labelobj = getattr(self, f"LName{i}")
+            LName = getattr(self, f"LAmount{i}")
+            if bottle_level is not None:
+                LName.setText(str(bottle_level))
+                self.IDlist.append(ingredient_id)
+                self.maxvolume.append(ingredient_volume)
+                labelobj.setText(f"    {ingredient_name}")
+            else:
+                LName.setText("0")
+                self.IDlist.append(0)
+                self.maxvolume.append(0)
+                labelobj.setText("")
