@@ -8,16 +8,10 @@ def initialize():
     """ The Initialise Function for the global variables. """
     global startcheck
     global loopcheck
-    global MASTERPASSWORD
-    global USEDPINS
-    global PUMP_VOLUMEFLOW
     global SUPPRESS_ERROR
     global old_ingredient
 
     startcheck = False
     loopcheck = True
     SUPPRESS_ERROR = False
-    MASTERPASSWORD = "1337"
-    USEDPINS = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 20]
-    PUMP_VOLUMEFLOW = [30, 30, 25, 30, 30, 30, 25, 30, 30, 23, 30, 30]
     old_ingredient = []
