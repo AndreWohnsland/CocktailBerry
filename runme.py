@@ -1,69 +1,16 @@
 import sys
-import sqlite3
-import logging
-import time
-import os
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+from PyQt5.QtWidgets import QApplication
 
-import setupui
+import src_ui.setup_mainwindow as setupui
 import globals
-import loggerconfig
-import init_newdb
 
-# Load all global over multiple Modules passed Values
+
 globals.initialize()
 
-# Here you can change the parameters:
-loggername = "today"		    # under this name your logging file will be saved
-devenvironment = True			# important to set to False, otherwise the GPIO-commands dont work
-partymode = False				# True disables the recipe tab, that no user can change it
-neednewdb = False				# only needed if you delete your DB and want to set up new one
 
-if not devenvironment:
-    import RPi.GPIO as GPIO
-
-
-if __name__ == '__main__':
-
-    # Connect (or create) the DB and the cursor
-    dbname = 'Datenbank'
-    dirpath = os.path.dirname(__file__)
-    db_path = os.path.join(dirpath, "{}.db".format(dbname))
-    DB = sqlite3.connect(db_path)
-    c = DB.cursor()
-    if neednewdb:
-        init_newdb.create_new_db(DB, c)
-
-    # Load the UI
+if __name__ == "__main__":
     app = QApplication(sys.argv)
-    # w = loadUi("Cocktailmanager_2.ui")
-    w = setupui.MainScreen(devenvironment, db_path)
-
-    # Setting the Pins if not DevEnvironment
-    if not devenvironment:
-        GPIO.setmode(GPIO.BCM)
-
-    # Get the basic Logger
-    loggerconfig.basiclogger('cocktail_application', loggername, True)
-    loggerconfig.basiclogger('debuglog', 'debuglog')
-    # loggerconfig.initlogger_dec('calling', 'calling')
-
-    # Load all the Functions from the setup script
-    setupui.pass_setup(w, DB, c, partymode, devenvironment)
-
-    # Show window in Fullscreen
+    w = setupui.MainScreen()
     w.showFullScreen()
     w.setFixedSize(800, 480)
-
-    # Code for hide the curser. Still experimental!
-    # w.setCursor(Qt.BlankCursor)
-    # for count in range(1,10):
-    # 	CBSname = getattr(w, "CBB" + str(count))
-    # 	CBSname.setCursor(Qt.BlankCursor)
-
-    # at the end close the application and the DB
     sys.exit(app.exec_())
-    DB.close()

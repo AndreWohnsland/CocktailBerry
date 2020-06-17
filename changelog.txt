@@ -1,3 +1,8 @@
+--------------- 2020_05_13 ---------------------------------------------------------------------------------------------------------
+- Started heavily refactoring code
+- This includes replacing bad naming convention as well as bad code parts
+- Later on there will be also refactoring in the whole code base to separate Frontend (Ui) from Backend (API)
+
 --------------- 2019_07_21 ---------------------------------------------------------------------------------------------------------
 - Added the possibility to select existing ingredients for the maker to calculate the possible recipes including the hand adds
 - Created and programmed an UI for that cause
