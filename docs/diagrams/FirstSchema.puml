@@ -1,0 +1,52 @@
+@startuml ProgramSchema
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+
+!include DEVICONS/linux.puml
+!include DEVICONS/python.puml
+!include DEVICONS/sqllite.puml
+!include DEVICONS/aptana.puml
+!include DEVICONS/html5.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/user.puml
+
+skinparam backgroundColor #fff
+
+LAYOUT_WITH_LEGEND()
+
+  Container(configmanager, "Config Manager", "python", "Class to hold all configuration, used where needed for configs", "python")
+  Container(displaycontroler, "Display Controler", "python", "Class to get values from GUI", "python")
+  Container(displayhandler, "Display Handler", "python", "Class to set values / properties in GUI", "python")
+  Container(rpicontroller, "RPI Controller", "python", "Class to controll the Raspberry Pi and the GPIOs", "python")
+  Container(apicontroller, "API Controller", "python", "Modules to handle logic for seperate views", "python")
+  Container(savehandler, "Save Handler", "python", "Class to export data from DB to csv", "python")
+
+  Container(dbhandler, "Database Handler", "Python", "Handles and executes all SQL logic and connection", "python")
+  ContainerDb(db, "Database", "Sqllite", "Holds data for Cocktails, Bottles and Ingredients", "sqllite")
+
+  Container(mainwindow, "Mainwindow", "PyQt", "The main user interaction happens here", "python")
+  Container(dialogwindow, "Dialog windows", "PyQt", "User interaction popups for input / output", "python")
+  Container(progresscreen, "Progress Screen", "PyQt", "View for progress and interruption of cocktail", "python")
+
+
+Rel_U(dbhandler, db, "Reads/Writes")
+
+Rel(mainwindow, dialogwindow, "opens")
+Rel(mainwindow, progresscreen, "opens")
+Rel(mainwindow, apicontroller, "calls")
+Rel(mainwindow, savehandler, "calls")
+
+' Rel(mainwindow, configmanager, "uses")
+' Rel(rpicontroller, configmanager, "uses")
+' Rel(displaycontroler, configmanager, "uses")
+
+Rel_U(apicontroller, displaycontroler, "uses")
+Rel(apicontroller, displayhandler, "uses")
+Rel_L(apicontroller, dbhandler, "uses")
+Rel(apicontroller, rpicontroller, "calls")
+
+
+
+@enduml
