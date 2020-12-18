@@ -105,7 +105,7 @@ If in any case any unexpected behaviour occurs feel free to open an issue.
 
 In the following diagram, the schema and Classes / Containers are displayed in a simplified version.
 
-![ProgramSchema](docs/diagrams/out/ProgrammSchema.svg)
+![ProgramSchema](docs/diagrams/out/ProgramSchema.svg)
 
 ## Pull Requests and Issues
 
