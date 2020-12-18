@@ -101,6 +101,12 @@ If in any case any unexpected behaviour occurs feel free to open an issue.
 
 # Development
 
+## Program Schema
+
+In the following diagram, the schema and Classes / Containers are displayed in a simplified version.
+
+![ProgramSchema](docs/diagrams/out/ProgrammSchema.svg)
+
 ## Pull Requests and Issues
 
 If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue.
