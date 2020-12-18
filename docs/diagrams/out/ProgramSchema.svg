@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="803px" preserveAspectRatio="none" style="width:1172px;height:803px;" version="1.1" viewBox="0 0 1172 803" width="1172px" zoomAndPan="magnify"><defs/><g><!--MD5=[dedadde33254924fa5262a9f3efcf6d7]
+entity configmanager--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="218" x="876.5" y="10.5"/><image height="48" width="48" x="961.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="20.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="121" x="925" y="85.1094">Config Manager</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="964" y="101.082">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="987.5" y="118.252"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="190" x="890.5" y="135.8613">Class to hold all configuration,</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="195" x="888" y="153.4707">used where needed for configs</text><!--MD5=[9ac5496826dbbf41b402c24e31796318]
+entity displaycontroler--><rect fill="#438DD5" height="138.4375" style="stroke:#3C7FC0;stroke-width:1.5;" width="203" x="286" y="19.5"/><image height="48" width="48" x="363.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="29.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="133" x="321" y="94.1094">Display Controler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="366" y="110.082">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="389.5" y="127.252"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="179" x="300" y="144.8613">Class to get values from GUI</text><!--MD5=[0b83bef35d0ed29f1b5099755031c34f]
+entity displayhandler--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="219" x="151" y="481"/><image height="48" width="48" x="236.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="491"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="121" x="200" y="555.6094">Display Handler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="239" y="571.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="262.5" y="588.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="195" x="165" y="606.3613">Class to set values / properties</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="38" x="241.5" y="623.9707">in GUI</text><!--MD5=[8a7e0513bd84421f24a419beb0ec9b98]
+entity rpicontroller--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="219" x="405" y="481"/><image height="48" width="48" x="490.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="491"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="107" x="461" y="555.6094">RPI Controller</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="493" y="571.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="516.5" y="588.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="195" x="419" y="606.3613">Class to controll the Raspberry</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="109" x="460" y="623.9707">Pi and the GPIOs</text><!--MD5=[31948b9d8281befde8528aba2388c2bb]
+entity apicontroller--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="198" x="288.5" y="248"/><image height="48" width="48" x="363.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="106" x="334.5" y="322.6094">API Controller</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="366" y="338.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="389.5" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="170" x="302.5" y="373.3613">Modules to handle logic for</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="94" x="340.5" y="390.9707">seperate views</text><!--MD5=[66b0507f297f6d670471e03714edf96c]
+entity savehandler--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="209" x="522" y="248"/><image height="48" width="48" x="602.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="102" x="575.5" y="322.6094">Save Handler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="605" y="338.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="628.5" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="181" x="536" y="373.3613">Class to export data from DB</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="37" x="608" y="390.9707">to csv</text><!--MD5=[ec4f74e93930c28c11af6339f2384956]
+entity dbhandler--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="217" x="7" y="248"/><image height="48" width="48" x="91.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="136" x="47.5" y="322.6094">Database Handler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="44" x="93.5" y="338.582">[Python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="117.5" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="189" x="21" y="373.3613">Handles and executes all SQL</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="130" x="50.5" y="390.9707">logic and connection</text><!--MD5=[7468467f3b6b392f1d176d828c753b77]
+entity db--><path d="M25,16 C25,6 115.5,6 115.5,6 C115.5,6 206,6 206,16 L206,161.0469 C206,171.0469 115.5,171.0469 115.5,171.0469 C115.5,171.0469 25,171.0469 25,161.0469 L25,16 " fill="#438DD5" style="stroke:#3C7FC0;stroke-width:1.5;"/><path d="M25,16 C25,26 115.5,26 115.5,26 C115.5,26 206,26 206,16 " fill="none" style="stroke:#3C7FC0;stroke-width:1.5;"/><image height="48" width="48" x="91.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB9klEQVR4Xu2XP0oEMRTG9245gBfwAF7AA3gArazEzsLCcjsrsRNsLERWEBZkYUFQVFAEYfxmHxseeWsy+ZJZRSd8CBMT5sf3/s2O3O71r9LIbv2sBqCU/gHQ5uHt3uls6+jO/quLagJt7N9cTl+b5TqbPNszSVUDgjEv75+eRtbB+dyejKsOELyxNFjYtIfjqgM0mb9pDv0I5+z5iCoAHV88KJg2dbRb6wZCNSmY1hsA6R1E096KqBQoCBYKXj9i2StxFQHtjO/1u/E4e/rQO+gC9lZcRUD69YiUtWetZR/Ys7IP5SaQKwHS2YNCgxmKpF1EvBwNBD/8i2HMysa4fTK1F5MigcZXj/7FSB1rD/yzt7qIBPJ+1LXHcUC6GSJ7bHFxc17EAOkAwZ6gNzb540KLAfIfPXAiGB3NwjN7pbuygWCJn6ZIFJ3d6JNEJwyUDYSMEYfkW0fSGSjYR6skOmGgbCCfQIgXHBIymSFwy57PFQ8EP4J42cOE8oBkYIkfQfuhf2YEygMChPdD4iULCWQPc8oDcsuaR7B8rVWkcQSQ9GWpNbTE8rIKlA0knRB/+6BxBBAkQCXzISIGiP606CIGqEoD/E4MUPnAiogBqlvngQaglBggjFW7WUt/Aggtsaeu6Dggtxj7drOKSKD+NAClNACl9AUuuvIirgcoNQAAAABJRU5ErkJggg==" y="30"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="72" x="79.5" y="94.6094">Database</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="40" x="95.5" y="110.582">[Sqllite]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="117.5" y="127.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="153" x="39" y="145.3613">Holds data for Cocktails,</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="145" x="43" y="162.9707">Bottles and Ingredients</text><!--MD5=[4192cd31c9f16ad4af215570ca644b0f]
+entity mainwindow--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="189" x="652" y="10.5"/><image height="48" width="48" x="722.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="20.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="96" x="698.5" y="85.1094">Mainwindow</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="730.5" y="101.082">[PyQt]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="748.5" y="118.252"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="161" x="666" y="135.8613">The main user interaction</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="88" x="702.5" y="153.4707">happens here</text><!--MD5=[d3448ed704dcc21d656126f6062c763a]
+entity dialogwindow--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="199" x="766" y="248"/><image height="48" width="48" x="841.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="122" x="804.5" y="322.6094">Dialog windows</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="849.5" y="338.582">[PyQt]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="867.5" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="171" x="780" y="373.3613">User interaction popups for</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="83" x="824" y="390.9707">input / output</text><!--MD5=[771f199931bea7bf680e64e5841f7982]
+entity progresscreen--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="166" x="1000.5" y="248"/><image height="48" width="48" x="1059.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="128" x="1019.5" y="322.6094">Progress Screen</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="1067.5" y="338.582">[PyQt]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="1085.5" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="138" x="1014.5" y="373.3613">View for progress and</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="139" x="1014" y="390.9707">interruption of cocktail</text><!--MD5=[4de0f45860ffa9cfdd5513b104e78a27]
+reverse link db to dbhandler--><path d="M115.5,179.435 C115.5,201.969 115.5,225.943 115.5,247.796 " fill="none" id="db-backto-dbhandler" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="115.5,171.206,112.5,179.206,118.5,179.206,115.5,171.206" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="77" x="116.5" y="214.457">Reads/Writes</text><!--MD5=[a9a7d6df0ab0463811fd096bc0741ea6]
+link mainwindow to dialogwindow--><path d="M785.465,166.612 C797.382,190.196 810.552,216.259 822.71,240.318 " fill="none" id="mainwindow-to-dialogwindow" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="826.447,247.715,825.5159,239.2219,820.161,241.9283,826.447,247.715" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="35" x="811.5" y="214.457">opens</text><!--MD5=[2cad896a77f80052ccaab6697fe1044b]
+link mainwindow to progresscreen--><path d="M841.174,159.129 C847.006,163.189 852.814,167.173 858.5,171 C912.319,207.22 929.089,211.181 982.5,248 C986.188,250.542 989.926,253.165 993.683,255.841 " fill="none" id="mainwindow-to-progresscreen" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1000.461,260.708,995.7121,253.6053,992.2128,258.4793,1000.461,260.708" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="35" x="937.5" y="214.457">opens</text><!--MD5=[ea3bd8d81a6f4285b215cf373355edc3]
+link mainwindow to apicontroller--><path d="M651.94,151.364 C607.221,180.638 553.096,216.095 504.5,248 C500.879,250.377 497.196,252.796 493.476,255.24 " fill="none" id="mainwindow-to-apicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="486.747,259.662,495.08,257.775,491.7845,252.761,486.747,259.662" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="27" x="572.5" y="214.457">calls</text><!--MD5=[0b7c59f9289e18c8867f79d7f47acd94]
+link mainwindow to savehandler--><path d="M707.208,166.612 C695.19,190.196 681.909,216.259 669.65,240.318 " fill="none" id="mainwindow-to-savehandler" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="665.881,247.715,672.1864,241.9494,666.8405,239.225,665.881,247.715" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="27" x="687.5" y="214.457">calls</text><!--MD5=[6f3b3f071efec319ef91ff7fe89694e1]
+reverse link displaycontroler to apicontroller--><path d="M387.5,165.679 C387.5,192.012 387.5,221.526 387.5,247.929 " fill="none" id="displaycontroler-backto-apicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="387.5,157.616,384.5,165.616,390.5,165.616,387.5,157.616" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="28" x="388.5" y="214.457">uses</text><!--MD5=[34edaca6fca6f973d5498cd7255dc4e9]
+link apicontroller to displayhandler--><path d="M345.034,404.241 C332.802,426.491 319.395,450.876 306.935,473.539 " fill="none" id="apicontroller-to-displayhandler" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="302.926,480.832,309.4088,475.2666,304.1509,472.3762,302.926,480.832" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="28" x="329.5" y="447.457">uses</text><!--MD5=[5e1176c3b8be1dbe6530f6890fff5411]
+reverse link dbhandler to apicontroller--><path d="M232.399,326 C251.007,326 270.101,326 288.252,326 " fill="none" id="dbhandler-backto-apicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="224.174,326,232.174,329,232.174,323,224.174,326" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="28" x="242.25" y="319.457">uses</text><!--MD5=[7547e218299c7d9d5f56e7fcee614a72]
+link apicontroller to rpicontroller--><path d="M429.966,404.241 C442.198,426.491 455.605,450.876 468.065,473.539 " fill="none" id="apicontroller-to-rpicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="472.074,480.832,470.8491,472.3762,465.5912,475.2666,472.074,480.832" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="27" x="456.5" y="447.457">calls</text><rect fill="#FFFFFF" height="137.2656" rx="5" ry="5" style="stroke:#FFFFFF;stroke-width:1.0;" width="133" x="1017.5" y="650.0469"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="53" x="1023.5" y="671.5801">Legend</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="1080.5" y="671.5801"/><rect fill="#08427B" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1023.5" y="674.6563"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="44" x="1027.5" y="689.1895">person</text><rect fill="#1168BD" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1023.5" y="692.2656"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="44" x="1027.5" y="706.7988">system</text><rect fill="#438DD5" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1023.5" y="709.875"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="59" x="1027.5" y="724.4082">container</text><rect fill="#686868" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1023.5" y="727.4844"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="98" x="1027.5" y="742.0176">external person</text><rect fill="#999999" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1023.5" y="745.0938"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="98" x="1027.5" y="759.627">external system</text><rect fill="#B3B3B3" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1023.5" y="762.7031"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="113" x="1027.5" y="777.2363">external container</text><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1023.5" x2="1144.5" y1="657.0469" y2="657.0469"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1023.5" x2="1144.5" y1="674.6563" y2="674.6563"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1023.5" x2="1144.5" y1="692.2656" y2="692.2656"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1023.5" x2="1144.5" y1="709.875" y2="709.875"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1023.5" x2="1144.5" y1="727.4844" y2="727.4844"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1023.5" x2="1144.5" y1="745.0938" y2="745.0938"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1023.5" x2="1144.5" y1="762.7031" y2="762.7031"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1023.5" x2="1144.5" y1="780.3125" y2="780.3125"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1023.5" x2="1023.5" y1="657.0469" y2="780.3125"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1144.5" x2="1144.5" y1="657.0469" y2="780.3125"/><!--MD5=[d4065897d654a2fcdd871a36a4bd6a73]
+@startuml ProgramSchema
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+
+!include DEVICONS/linux.puml
+!include DEVICONS/python.puml
+!include DEVICONS/sqllite.puml
+!include DEVICONS/aptana.puml
+!include DEVICONS/html5.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/user.puml
+
+skinparam backgroundColor #fff
+
+LAYOUT_WITH_LEGEND()
+
+  Container(configmanager, "Config Manager", "python", "Class to hold all configuration, used where needed for configs", "python")
+  Container(displaycontroler, "Display Controler", "python", "Class to get values from GUI", "python")
+  Container(displayhandler, "Display Handler", "python", "Class to set values / properties in GUI", "python")
+  Container(rpicontroller, "RPI Controller", "python", "Class to controll the Raspberry Pi and the GPIOs", "python")
+  Container(apicontroller, "API Controller", "python", "Modules to handle logic for seperate views", "python")
+  Container(savehandler, "Save Handler", "python", "Class to export data from DB to csv", "python")
+
+  Container(dbhandler, "Database Handler", "Python", "Handles and executes all SQL logic and connection", "python")
+  ContainerDb(db, "Database", "Sqllite", "Holds data for Cocktails, Bottles and Ingredients", "sqllite")
+
+  Container(mainwindow, "Mainwindow", "PyQt", "The main user interaction happens here", "python")
+  Container(dialogwindow, "Dialog windows", "PyQt", "User interaction popups for input / output", "python")
+  Container(progresscreen, "Progress Screen", "PyQt", "View for progress and interruption of cocktail", "python")
+
+
+Rel_U(dbhandler, db, "Reads/Writes")
+
+Rel(mainwindow, dialogwindow, "opens")
+Rel(mainwindow, progresscreen, "opens")
+Rel(mainwindow, apicontroller, "calls")
+Rel(mainwindow, savehandler, "calls")
+
+' Rel(mainwindow, configmanager, "uses")
+' Rel(rpicontroller, configmanager, "uses")
+' Rel(displaycontroler, configmanager, "uses")
+
+Rel_U(apicontroller, displaycontroler, "uses")
+Rel(apicontroller, displayhandler, "uses")
+Rel_L(apicontroller, dbhandler, "uses")
+Rel(apicontroller, rpicontroller, "calls")
+
+
+
+@enduml
+
+@startuml ProgramSchema
+
+
+
+
+
+skinparam defaultTextAlignment center
+
+skinparam wrapWidth 200
+skinparam maxMessageSize 150
+
+skinparam LegendBorderColor transparent
+skinparam LegendBackgroundColor transparent
+skinparam LegendFontColor #FFFFFF
+
+skinparam rectangle {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam database {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam queue {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam Arrow {
+    Color #666666
+    FontColor #666666
+    FontSize 12
+}
+
+skinparam rectangle<<boundary>> {
+    Shadowing false
+    StereotypeFontSize 0
+    FontColor #444444
+    BorderColor #444444
+    BorderStyle dashed
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam rectangle<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+
+skinparam rectangle<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+
+skinparam rectangle<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+
+skinparam rectangle<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+
+sprite $person [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+0000000000000000000049BCCA7200000000000000000000
+0000000000000000006EFFFFFFFFB3000000000000000000
+00000000000000001CFFFFFFFFFFFF700000000000000000
+0000000000000001EFFFFFFFFFFFFFF80000000000000000
+000000000000000CFFFFFFFFFFFFFFFF6000000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+00000000000001FFFFFFFFFFFFFFFFFFF900000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFF00000000000000
+0000000000000BFFFFFFFFFFFFFFFFFFFF40000000000000
+0000000000000EFFFFFFFFFFFFFFFFFFFF70000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000DFFFFFFFFFFFFFFFFFFFF60000000000000
+0000000000000AFFFFFFFFFFFFFFFFFFFF40000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFE00000000000000
+00000000000000EFFFFFFFFFFFFFFFFFF800000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+000000000000000BFFFFFFFFFFFFFFFF5000000000000000
+0000000000000001DFFFFFFFFFFFFFF70000000000000000
+00000000000000000BFFFFFFFFFFFF500000000000000000
+0000000000000000005DFFFFFFFFA1000000000000000000
+0000000000000000000037ABB96100000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000025788300000000005886410000000000000
+000000000007DFFFFFFD9643347BFFFFFFFB400000000000
+0000000004EFFFFFFFFFFFFFFFFFFFFFFFFFFB1000000000
+000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFD200000000
+00000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE10000000
+0000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB0000000
+000000BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5000000
+000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD000000
+000009FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF200000
+00000DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF600000
+00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF800000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA00000
+00000EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF700000
+000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE100000
+0000008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD3000000
+000000014555555555555555555555555555555300000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam rectangle<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+
+skinparam database<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+
+skinparam queue<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+
+skinparam rectangle<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+
+skinparam database<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+
+skinparam queue<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sprite $linux [48x48/16] {
+000000000000000000000000000000000000000000000000
+00000000000000000000169AA74000000000000000000000
+00000000000000000007FFFFFFFD30000000000000000000
+0000000000000000006FFFFFFFFFF4000000000000000000
+000000000000000000FFFFFFFFFFFE100000000000000000
+000000000000000005FFFFFFFFFFFF700000000000000000
+000000000000000008FFFFFFFFFFFFC00000000000000000
+00000000000000000AFFFFFFFFFFFFF00000000000000000
+00000000000000000AF9CFFF836FFFF20000000000000000
+000000000000000009A33EFD0739FFF40000000000000000
+0000000000000000087D8BFD6F87FFF60000000000000000
+0000000000000000078FFCCE9FF8FFF70000000000000000
+000000000000000006DA65314AAAFFF80000000000000000
+000000000000000005E200000008FFFB0000000000000000
+000000000000000004B000000631FFFD0000000000000000
+000000000000000003F61004622CFFFF2000000000000000
+000000000000000006FA34510863FFFFA000000000000000
+00000000000000000CF3A5378100DFFFF300000000000000
+00000000000000007FA0034100005FFFFD00000000000000
+0000000000000003FF20000000000CFFFF90000000000000
+000000000000002EFA000000000006FFFFF4000000000000
+00000000000000CFF4000000000004FFFFFE100000000000
+00000000000007FFF0000000000000DFFFFFC00000000000
+0000000000000EFFA00000000000004FC8FFF50000000000
+0000000000003F9D2000000000000009FE8FFD0000000000
+0000000000008F9A0000000000000002FF9EFF5000000000
+000000000000DAE20000000000000000DFEAFFC000000000
+000000000004F8C000000000000000009FF8FFF100000000
+00000000000CCB6000000000000000007FF8FFF400000000
+00000000005F9E2000000000000000006FF9FFF600000000
+0000000000CF7F0000000000000000006FBCFFF700000000
+0000000003FF9B0000000000000000006F7DFFF700000000
+0000000005FFF50000000000000000007A9B98E600000000
+000000000573AE4000000000000000178DFFFF9200000000
+0000000009000AF700000000000000808FFFFFC700000000
+00000297830000EFC1000000000000902FFFFC0700000000
+000008000000004FFE2000000000009006EFA00430000000
+000007000000000BFFE10000000000800000000080000000
+0000070000000001EFF80000000001900000000029300000
+00000800000000003FE3000000000CA00000000000750000
+0000060000000000081000000002CFA00000000000080000
+000006000000000000800000017FFF900000000002710000
+0000610000000000007EA88ACFFFFF600000000264000000
+0000720000000000002FFFFFFFFFFF500000006600000000
+0000057751000000000FFFFFFFFFFF200000072000000000
+0000000015873000003D743222356A300001810000000000
+000000000000366326800000000000840057000000000000
+000000000000000131000000000000036730000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV LINUX>> White
+sprite $python [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000025889987520000000000000000000
+000000000000000008EFFFFFFFFFFC200000000000000000
+00000000000000009FFEFFFFFFFFFFF20000000000000000
+0000000000000000FF407FFFFFFFFFFC0000000000000000
+0000000000000001FE002FFFFFFFFFFF0000000000000000
+0000000000000002FF619FFFFFFFFFFF1000000000000000
+0000000000000002FFFFFFFFFFFFFFFF1000000000000000
+0000000000000002FFFFFFFFFFFFFFFF1000000000000000
+000000000000000011111111FFFFFFFF1000000000000000
+00000000005BEEEEEEEEEEEEFFFFFFFF1DEEEA2000000000
+000000000BFFFFFFFFFFFFFFFFFFFFFF1EFFFFE100000000
+000000009FFFFFFFFFFFFFFFFFFFFFFF1EFFFFF900000000
+00000001FFFFFFFFFFFFFFFFFFFFFFFF1EFFFFFF00000000
+00000005FFFFFFFFFFFFFFFFFFFFFFFF0FFFFFFF40000000
+00000008FFFFFFFFFFFFFFFFFFFFFFFA4FFFFFFF70000000
+0000000BFFFFFFFFFFFFFFFFFFFFFFD1CFFFFFFFA0000000
+0000000CFFFFFFFFFFFDCCCCCCCCC81AFFFFFFFFC0000000
+0000000DFFFFFFFFF7112222222236DFFFFFFFFFD0000000
+0000000CFFFFFFFF34DFFFFFFFFFFFFFFFFFFFFFC0000000
+0000000AFFFFFFF74FFFFFFFFFFFFFFFFFFFFFFFB0000000
+00000007FFFFFFF1DFFFFFFFFFFFFFFFFFFFFFFF70000000
+00000004FFFFFFD1FFFFFFFFFFFFFFFFFFFFFFFF30000000
+00000000EFFFFFD2FFFFFFFFFFFFFFFFFFFFFFFD00000000
+000000007FFFFFD2FFFFFFFFFFFFFFFFFFFFFFF500000000
+000000000AFFFFD2FFFFFFFFFFFFFFFFFFFFFFA000000000
+0000000000489982FFFFFFFF999999999999850000000000
+0000000000000002FFFFFFFF666666660000000000000000
+0000000000000002FFFFFFFFFFFFFFFF1000000000000000
+0000000000000002FFFFFFFFFFFFBFFF1000000000000000
+0000000000000002FFFFFFFFFFF402FF1000000000000000
+0000000000000000FFFFFFFFFFF100FF0000000000000000
+00000000000000009FFFFFFFFFFB4AF90000000000000000
+00000000000000000AFFFFFFFFFFFFA00000000000000000
+0000000000000000004BFFFFFFFFB4000000000000000000
+000000000000000000000357653000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV PYTHON>> White
+sprite $sqllite [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000263000000000000000000
+00000000000000000000000001BFFFA00000000000000000
+0000000000000000000000002EFFFFF70000000000000000
+000000000000000000000001EFFFFFFE0000000000000000
+00000000000000000000000CFFFFCFFF2000000000000000
+00000000000000000000008FFFFAEFFF2000000000000000
+0000000000000000000003FFFFCAFFFF1000000000000000
+000000000000000000000CFFFF6FFFFF0000000000000000
+000000000000000000005FFFF5DFFFFB0000000000000000
+00000000000000000000DFFFA6FFFFF70000000000000000
+00000000000000000005FFFF2EFFFFF10000000000000000
+0000000000000000000CFFF87FFFFFB00000000000000000
+0000000000000000002FFFE1EFFFFF400000000000000000
+0000000000000000009FFF67FFFFFC000000000000000000
+000000000000000000EFFE1EFFFFF4000000000000000000
+000000000000000003FFF86FFFFFA0000000000000000000
+000000000000000007FFF1CFFFFF20000000000000000000
+00000000000000000BFFA3FFFFF800000000000000000000
+000000000000000018FF49FFFD7000000000000000000000
+00000000000000006BFE0EFD651000000000000000000000
+00000000000000007FFA4FEDF90000000000000000000000
+00000000000000007FF59FFFD00000000000000000000000
+0000000000000002EDF1EFFF300000000000000000000000
+0000000000000001FFD4FFF6000000000000000000000000
+0000000000000000BF98FF60000000000000000000000000
+00000000000000006F6BC100000000000000000000000000
+00000000000000003F3C1000000000000000000000000000
+00000000000000000F320000000000000000000000000000
+00000000000000000C000000000000000000000000000000
+000000000000000009000000000000000000000000000000
+000000000000000007000000000000000000000000000000
+000000000000000006000000000000000000000000000000
+000000000000000006000000000000000000000000000000
+000000000000000006000000000000000000000000000000
+000000000000000005000000000000000000000000000000
+000000000000000005000000000000000000000000000000
+000000000000000002200000000000000000000000000000
+000000000000000000100000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV SQLLITE>> White
+sprite $aptana [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+00000000000000000000017AA50000000000000000000000
+000000000000000000000CFFFF9000000000000000000000
+000000000000000000002FFFFFF000000000000000000000
+000000000000000000005FFFFFF000000000000000000000
+000000000000000000008FFFFFF200000000000000000000
+00000000006CB3000000CFFFFFF70000007DC40000000000
+0000000008FFFF400008FFFFFFFF500009FFFF6000000000
+000000003FFFFFFB78EFFFFFFFFFFD99DFFFFFF100000000
+000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF300000000
+000000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE000000000
+0000000008FFFFFFFFFFFFFFFFFFFFFFFFFFFF4000000000
+0000000000BFFFFFFFFFFFEDDFFFFFFFFFFFF60000000000
+00000000004FFFFFFFFF82000039FFFFFFFFE00000000000
+00000000002FFFFFFFB1000000002CFFFFFFD00000000000
+00000000005FFFFFFA000000000000CFFFFFF10000000000
+0000000000BFFFFFC00000000000001EFFFFF90000000000
+0000000007FFFFFF3000000000000005FFFFFF7000000000
+0000069ADFFFFFFC0000000000000000EFFFFFFFDB700000
+0000AFFFFFFFFFF700000000000000009FFFFFFFFFFA0000
+0000FFFFFFFFFFF500000000000000007FFFFFFFFFFF0000
+0000FFFFFFFFFFF300000000000000006FFFFFFFFFFF0000
+0000FFFFFFFFFFF500000000000000007FFFFFFFFFFD0000
+0000AFFFFFFFFFF700000000000000009FFFFFFFFFF80000
+0000068BEFFFFFFC0000000000000000EFFFFFFA88400000
+0000000008FFFFFF3000000000000005FFFFFF3000000000
+0000000000AFFFFFC00000000000001EFFFFF70000000000
+00000000003FFFFFFA000000000000BFFFFFF10000000000
+00000000000FFFFFFFB1000000002CFFFFFFF00000000000
+00000000002FFFFFFFFF82000039FFFFFFFFF00000000000
+00000000009FFFFFFFFFFFEDDFFFFFFFFFFFF70000000000
+0000000005FFFFFFFFFFFFFFFFFFFFFFFFFFFF4000000000
+000000000EFFFFFFFFFFFFFFFFFFFFFFFFFFFFF200000000
+000000004FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF400000000
+000000002FFFFFFC89EFFFFFFFFFFC76BFFFFFF100000000
+0000000007FFFF800006FFFFFFFF700006FFFF4000000000
+00000000005CE70000008FFFFFF80000004CB30000000000
+000000000000000000002FFFFFF100000000000000000000
+000000000000000000001FFFFFF000000000000000000000
+000000000000000000000FFFFFF000000000000000000000
+0000000000000000000009FFFFA000000000000000000000
+000000000000000000000058850000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV APTANA>> White
+sprite $html5 [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+0000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD0000000
+0000000EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE0000000
+0000000CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC0000000
+0000000BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB0000000
+00000009FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF90000000
+00000008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF80000000
+00000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF60000000
+00000005FFFFF7333333333333333333338FFFFF50000000
+00000004FFFFF7000000000000000000007FFFFF40000000
+00000002FFFFF8000000000000000000008FFFFF20000000
+00000001FFFFF900000000000000000000AFFFFF10000000
+00000000FFFFFB00008888888888888888DFFFFF00000000
+00000000EFFFFC0000EFFFFFFFFFFFFFFFFFFFFE00000000
+00000000CFFFFE0000DFFFFFFFFFFFFFFFFFFFFC00000000
+00000000BFFFFF0000CFFFFFFFFFFFFFFFFFFFFB00000000
+00000000AFFFFF10009DDDDDDDDDDDDDDEFFFFFA00000000
+000000008FFFFF20000000000000000002FFFFF800000000
+000000007FFFFF30000000000000000004FFFFF700000000
+000000005FFFFF50000000000000000005FFFFF500000000
+000000004FFFFF60000000000000000007FFFFF400000000
+000000003FFFFFEDDDDDDDDDDDDDD20008FFFFF300000000
+000000001FFFFFFFFFFFFFFFFFFFF1000AFFFFF100000000
+000000000FFFFFC4444FFFFFFFFFF0000BFFFFF000000000
+000000000EFFFFC0000FFFFFFFFFE0000CFFFFE000000000
+000000000DFFFFD0000DFFFFFFFFD0000EFFFFD000000000
+000000000BFFFFF00009FFFFFFFF90000FFFFFB000000000
+000000000AFFFFF00000048CC84000001FFFFFA000000000
+0000000009FFFFF200000000000000002FFFFF8000000000
+0000000007FFFFF300000000000000004FFFFF7000000000
+0000000006FFFFFFB73000000000026AFFFFFF6000000000
+0000000004FFFFFFFFFEA5100049EFFFFFFFFF4000000000
+0000000003FFFFFFFFFFFFFCCFFFFFFFFFFFFF3000000000
+0000000001FFFFFFFFFFFFFFFFFFFFFFFFFFFF1000000000
+0000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000
+0000000000EFFFFFFFFFFFFFFFFFFFFFFFFFFE0000000000
+0000000000038CFFFFFFFFFFFFFFFFFFFFD9400000000000
+0000000000000015AEFFFFFFFFFFFFEA6100000000000000
+00000000000000000037BFFFFFFC84000000000000000000
+000000000000000000000159950000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV HTML5>> White
+sprite $users [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000024310000000000000000000000
+000000000000000000018EFFFFC400000000000000000000
+0000000000000000003EFFFFFFFF90000000000000000000
+000000000000000002EFFFFFFFFFF9000000000000000000
+00000000000000000CFFFFFFFFFFFF400000000000000000
+0000006DFE8000004FFFFFFFFFFFFFC000004BFEA2000000
+000009FFFFFC00009FFFFFFFFFFFFFF10005FFFFFE200000
+00003FFFFFFF8000BFFFFFFFFFFFFFF3001FFFFFFFC00000
+00009FFFFFFFD000CFFFFFFFFFFFFFF4005FFFFFFFF10000
+0000AFFFFFFFE000AFFFFFFFFFFFFFF2006FFFFFFFF20000
+00007FFFFFFFC0006FFFFFFFFFFFFFE0004FFFFFFFF00000
+00001FFFFFFF50001FFFFFFFFFFFFF80000DFFFFFF900000
+000004FFFFF8000007FFFFFFFFFFFE100002DFFFFB000000
+000000179830000000AFFFFFFFFFF3000000069940000000
+00000000000000000007FFFFFFFC20000000000000000000
+0000012333310000000016ACB94000000000233332000000
+0001BFFFFFFFD3000000000000000000008FFFFFFFE60000
+000DFFFFFFFFE400000000000000000000AFFFFFFFFF6000
+007FFFFFFFFD1006BEFE8310025BFFD92006FFFFFFFFF000
+00CFFFFFFFE102DFFFFFFFFFFFFFFFFFF8007FFFFFFFF400
+00DFFFFFFF302FFFFFFFFFFFFFFFFFFFFFA00BFFFFFFF500
+00DFFFFFFB00EFFFFFFFFFFFFFFFFFFFFFF603FFFFFFF500
+00CFFFFFF407FFFFFFFFFFFFFFFFFFFFFFFE00CFFFFFF400
+006FFFFFF00DFFFFFFFFFFFFFFFFFFFFFFFF508FFFFFD000
+00037777601FFFFFFFFFFFFFFFFFFFFFFFFF902777761000
+00000000002FFFFFFFFFFFFFFFFFFFFFFFFFB00000000000
+00000000003FFFFFFFFFFFFFFFFFFFFFFFFFB00000000000
+00000000003FFFFFFFFFFFFFFFFFFFFFFFFFB00000000000
+00000000000FFFFFFFFFFFFFFFFFFFFFFFFF800000000000
+000000000009FFFFFFFFFFFFFFFFFFFFFFFF200000000000
+0000000000007DEEEEEEEEEEEEEEEEEEEEB2000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<FA5 USERS>> White
+sprite $user [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+0000000000000000000049BCCA7200000000000000000000
+0000000000000000006EFFFFFFFFB3000000000000000000
+00000000000000001CFFFFFFFFFFFF700000000000000000
+0000000000000001EFFFFFFFFFFFFFF80000000000000000
+000000000000000CFFFFFFFFFFFFFFFF6000000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+00000000000001FFFFFFFFFFFFFFFFFFF900000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFF00000000000000
+0000000000000BFFFFFFFFFFFFFFFFFFFF40000000000000
+0000000000000EFFFFFFFFFFFFFFFFFFFF70000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000DFFFFFFFFFFFFFFFFFFFF60000000000000
+0000000000000AFFFFFFFFFFFFFFFFFFFF40000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFE00000000000000
+00000000000000EFFFFFFFFFFFFFFFFFF800000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+000000000000000BFFFFFFFFFFFFFFFF5000000000000000
+0000000000000001DFFFFFFFFFFFFFF70000000000000000
+00000000000000000BFFFFFFFFFFFF500000000000000000
+0000000000000000005DFFFFFFFFA1000000000000000000
+0000000000000000000037ABB96100000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000025788300000000005886410000000000000
+000000000007DFFFFFFD9643347BFFFFFFFB400000000000
+0000000004EFFFFFFFFFFFFFFFFFFFFFFFFFFB1000000000
+000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFD200000000
+00000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE10000000
+0000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB0000000
+000000BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5000000
+000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD000000
+000009FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF200000
+00000DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF600000
+00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF800000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA00000
+00000EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF700000
+000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE100000
+0000008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD3000000
+000000014555555555555555555555555555555300000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<FA5 USER>> White
+
+skinparam backgroundColor #fff
+
+hide stereotype
+legend right
+|<color:#000000>**Legend**</color> |
+|<#08427B> person |
+|<#1168BD> system |
+|<#438DD5> container |
+|<#686868> external person |
+|<#999999> external system |
+|<#B3B3B3> external container |
+endlegend
+
+  rectangle "<$python>\n==Config Manager\n//<size:12>[python]</size>//\n\n Class to hold all configuration, used where needed for configs" <<container>> as configmanager
+  rectangle "<$python>\n==Display Controler\n//<size:12>[python]</size>//\n\n Class to get values from GUI" <<container>> as displaycontroler
+  rectangle "<$python>\n==Display Handler\n//<size:12>[python]</size>//\n\n Class to set values / properties in GUI" <<container>> as displayhandler
+  rectangle "<$python>\n==RPI Controller\n//<size:12>[python]</size>//\n\n Class to controll the Raspberry Pi and the GPIOs" <<container>> as rpicontroller
+  rectangle "<$python>\n==API Controller\n//<size:12>[python]</size>//\n\n Modules to handle logic for seperate views" <<container>> as apicontroller
+  rectangle "<$python>\n==Save Handler\n//<size:12>[python]</size>//\n\n Class to export data from DB to csv" <<container>> as savehandler
+
+  rectangle "<$python>\n==Database Handler\n//<size:12>[Python]</size>//\n\n Handles and executes all SQL logic and connection" <<container>> as dbhandler
+  database "<$sqllite>\n==Database\n//<size:12>[Sqllite]</size>//\n\n Holds data for Cocktails, Bottles and Ingredients" <<container>> as db
+
+  rectangle "<$python>\n==Mainwindow\n//<size:12>[PyQt]</size>//\n\n The main user interaction happens here" <<container>> as mainwindow
+  rectangle "<$python>\n==Dialog windows\n//<size:12>[PyQt]</size>//\n\n User interaction popups for input / output" <<container>> as dialogwindow
+  rectangle "<$python>\n==Progress Screen\n//<size:12>[PyQt]</size>//\n\n View for progress and interruption of cocktail" <<container>> as progresscreen
+
+
+dbhandler -UP->> db : **Reads/Writes**
+
+mainwindow - ->> dialogwindow : **opens**
+mainwindow - ->> progresscreen : **opens**
+mainwindow - ->> apicontroller : **calls**
+mainwindow - ->> savehandler : **calls**
+
+
+apicontroller -UP->> displaycontroler : **uses**
+apicontroller - ->> displayhandler : **uses**
+apicontroller -LEFT->> dbhandler : **uses**
+apicontroller - ->> rpicontroller : **calls**
+
+
+
+@enduml
+
+PlantUML version 1.2020.22(Sun Dec 06 10:36:27 CET 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: de
+Country: DE
+--></g></svg>
