@@ -28,7 +28,7 @@ def post_cocktail_hook():
     headers = {"content-type": "application/json"}
     req = requests.post(url, data=json.dumps(cocktail), headers=headers)
     print(cocktail)
-    return jsonify({"cocktail": cocktail}), req.status_code
+    return jsonify({"cocktail": cocktail, "text": req.text}), req.status_code
 
 
 if __name__ == "__main__":
