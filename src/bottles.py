@@ -33,7 +33,7 @@ display_handler = DisplayHandler()
 database_commander = DatabaseCommander()
 display_controler = DisplayControler()
 rpi_controller = RpiController()
-logger_handler = LoggerHandler("cocktail_application", "production_logs")
+logger_handler = LoggerHandler("bottles_module", "production_logs")
 
 
 def customlevels(w):

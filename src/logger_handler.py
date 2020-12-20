@@ -11,10 +11,17 @@ class LoggerHandler:
     log_folder = os.path.join(dirpath, "..", "logs")
 
     def __init__(self, loggername, filename):
+        self.loggername = loggername
         self.path = os.path.join(LoggerHandler.log_folder, f"{filename}.log")
-        logging.basicConfig(
-            level=logging.DEBUG, format="%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M", filename=self.path, filemode="a",
-        )
+
+        logger = logging.getLogger(loggername)
+        logger.setLevel(logging.DEBUG)
+        fh = logging.FileHandler(self.path)
+        fh.setLevel(logging.DEBUG)
+        formatter = logging.Formatter("%(asctime)s | %(name)s | %(levelname)s: %(message)s", "%Y-%m-%d %H:%M")
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+
         self.logger = logging.getLogger(loggername)
         self.TEMPLATE = "{:-^80}"
 
