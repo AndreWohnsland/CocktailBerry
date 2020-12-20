@@ -1,3 +1,8 @@
+--------------- 2020_12_20 ---------------------------------------------------------------------------------------------------------
+- Introduced microservice to post tasks to
+- This includes a endpoint to make a post of the cocktail name and date to an webhook / endpoint
+- Added docker and docker-compose for the flask server and adjusted readme
+
 --------------- 2020_05_13 ---------------------------------------------------------------------------------------------------------
 - Started heavily refactoring code
 - This includes replacing bad naming convention as well as bad code parts
