@@ -2,12 +2,33 @@
 
 #### A Python and Qt Based App for a Cocktail machine
 
+<br />
+
+<!-- TOC -->
+
+- [The Cocktailmaker](#the-cocktailmaker)
 - [Overview](#overview)
 - [Installing Requirements](#installing-requirements)
+  - [Minimal Requirements](#minimal-requirements)
+  - [Install PyQt5 on RaspberryPi](#install-pyqt5-on-raspberrypi)
+  - [Install PyQt5 on other Systems](#install-pyqt5-on-other-systems)
+  - [Development on Non-Pi Hardware](#development-on-non-pi-hardware)
 - [Setting up the Maker](#setting-up-the-maker)
+  - [Adding new Recipes or Ingredients](#adding-new-recipes-or-ingredients)
+  - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
 - [Troubleshooting](#troubleshooting)
+  - [Problems while Running the Program](#problems-while-running-the-program)
+- [Microservices](#microservices)
+  - [Usage of Services](#usage-of-services)
 - [Development](#development)
+  - [Program Schema](#program-schema)
+  - [Pull Requests and Issues](#pull-requests-and-issues)
+  - [Caveats from Past Code](#caveats-from-past-code)
 - [Side Notes](#side-notes)
+
+<!-- /TOC -->
+
+<br />
 
 # Overview
 
@@ -98,6 +119,25 @@ The program will then evaluate which recipe meets all requirements to only show 
 
 All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled and a info message should be displayed.\
 If in any case any unexpected behaviour occurs feel free to open an issue.
+
+# Microservices
+
+As an further addition ther is the option to run a microservice within docker which handles some networking topics.
+Currently this is limited to:
+
+- Posting the cocktailname and current time to a given webhook
+
+The seperation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is seperated to the service, also there is no need for multiple worker to not block the thread when the webhook enpoint is not up (Which would result in a delay of the display without multithredding). Also in the future, new services can be added easily to the docker container to execute different tasks.
+
+## Usage of Services
+
+Simply have `docker-compose` installed and run the command in the main folder:
+
+```
+docker-compose up
+```
+
+This will handle the setup of all docker services. You will have to rename the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
 
 # Development
 
