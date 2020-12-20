@@ -10,4 +10,6 @@ class ConfigManager:
     PARTYMODE = False
     LOGGERNAME = "cocktaillogger"
     LOGGERNAME_DEBUG = "debuglogger"
+    USE_MICROSERVICE = True
+    MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
     DEVENVIRONMENT = True
