@@ -22,7 +22,7 @@ def post_cocktail_hook():
         abort(400)
     cocktail = {
         "cocktailname": request.json["cocktailname"],
-        "makedate": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+        "makedate": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
     }
     url = os.getenv("HOOK_ENDPOINT")
     headers = {"content-type": "application/json"}
