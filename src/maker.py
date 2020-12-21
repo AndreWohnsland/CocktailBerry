@@ -21,6 +21,7 @@ from src.display_handler import DisplayHandler
 from src.rpi_controller import RpiController
 from src.display_controler import DisplayControler
 from src.logger_handler import LoggerHandler
+from src.service_handler import ServiceHandler
 
 import globals
 
@@ -29,7 +30,8 @@ database_commander = DatabaseCommander()
 display_handler = DisplayHandler()
 rpi_controler = RpiController()
 display_controler = DisplayControler()
-logger_handler = LoggerHandler("cocktail_application", "production_logs")
+service_handler = ServiceHandler()
+logger_handler = LoggerHandler("maker_module", "production_logs")
 
 
 @logerror
@@ -173,6 +175,8 @@ def Maker_Zubereiten(w):
     database_commander.set_recipe_counter(cocktailname)
     generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
     print("Verbrauchsmengen: ", consumption)
+
+    service_handler.post_cocktail_to_hook(cocktailname, cocktail_volume)
 
     if globals.loopcheck:
         database_commander.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
