@@ -132,11 +132,11 @@ def enter_recipe(w, newrecipe):
     display_handler.clear_recipe_data_recipes(w, False)
 
     if newrecipe:
-        display_handler.standard_box(f"Rezept unter der ID und dem Namen:\n<{recipe_id}> <{recipe_name}>\neingetragen!")
+        message = f"Rezept unter der ID und dem Namen:\n<{recipe_id}> <{recipe_name}>\neingetragen!"
+        display_handler.standard_box(message)
     else:
-        display_handler.standard_box(
-            f"Rezept mit der ID und dem Namen:\n<{recipe_id}> <{selected_name}>\nunter dem Namen:\n<{recipe_name}>\naktualisiert!"
-        )
+        message = f"Rezept mit der ID und dem Namen:\n<{recipe_id}> <{selected_name}>\nunter dem Namen:\n<{recipe_name}>\naktualisiert!"
+        display_handler.standard_box(message)
 
 
 @logerror

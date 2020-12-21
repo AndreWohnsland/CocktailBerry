@@ -151,13 +151,11 @@ def prepare_cocktail(w):
         display_handler.standard_box("Kein Rezept ausgewählt!")
         return
     ingredient_data = database_commander.get_recipe_ingredients_with_bottles(cocktailname)
-    update_data, ingredient_volumes, ingredient_bottles, comment, error_data = create_recipe_production_properties(
-        ingredient_data, alcohol_faktor, cocktail_volume
-    )
+    production_props = create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume)
+    update_data, ingredient_volumes, ingredient_bottles, comment, error_data = production_props
     if error_data:
-        display_handler.standard_box(
-            f"Es ist in Flasche {error_data[0]} mit der Zutat {error_data[1]} nicht mehr genug Volumen vorhanden, {error_data[2]:.0f} ml wird benötigt!"
-        )
+        message = f"Es ist in Flasche {error_data[0]} mit der Zutat {error_data[1]} nicht mehr genug Volumen vorhanden, {error_data[2]:.0f} ml wird benötigt!"
+        display_handler.standard_box(message)
         w.tabWidget.setCurrentIndex(3)
         return
 
