@@ -105,6 +105,8 @@ These values are stored under the `config/config_manager.py` file. Depending on 
 - `PARTYMODE` en- or disables the recipe tab (to prevent user interaction)
 - `LOGGERNAME` name for the standard logger
 - `LOGGERNAME_DEBUG` name for the error logger
+- `USE_MICROSERVICE` boolean flag to post to microservice set up by docker (optional)
+- `MICROSERVICE_BASE_URL` base url for microservice (if default docker it is at http://127.0.0.1:5000)
 - `DEVENVIRONMENT` boolean flag to enable some development features
 
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
@@ -122,12 +124,12 @@ If in any case any unexpected behaviour occurs feel free to open an issue.
 
 # Microservices
 
-As an further addition ther is the option to run a microservice within docker which handles some networking topics.
+As an further addition there is the option to run a microservice within docker which handles some networking topics.
 Currently this is limited to:
 
-- Posting the cocktailname and current time to a given webhook
+- Posting the cocktailname, used volume and current time to a given webhook
 
-The seperation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is seperated to the service, also there is no need for multiple worker to not block the thread when the webhook enpoint is not up (Which would result in a delay of the display without multithredding). Also in the future, new services can be added easily to the docker container to execute different tasks.
+The seperation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is seperated to the service, also there is no need for multiple worker to not block the thread when the webhook enpoint is not up (Which would result in a delay of the display without multithredding). In the future, new services can be added easily to the docker container to execute different tasks. One example would be the export no longer be saved locally, but send via an email.
 
 ## Usage of Services
 
