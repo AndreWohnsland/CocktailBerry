@@ -142,7 +142,7 @@ def enough_ingredient(level, needed_volume):
 def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_time):
     """Enters a log entry for the made cocktail"""
     mengenstring = f"{cocktail_volume} ml"
-    if globals.loopcheck == False:
+    if globals.make_cocktail == False:
         pumped_volume = round(cocktail_volume * (taken_time) / max_time)
         abbruchstring = f" - Rezept wurde bei {round(taken_time, 1)} s abgebrochen - {pumped_volume} ml"
     else:
@@ -152,7 +152,7 @@ def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_tim
 
 def prepare_cocktail(w):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
-    if globals.startcheck:
+    if globals.cocktail_started:
         return
     cocktailname, cocktail_volume, alcohol_faktor = display_controller.get_cocktail_data(w)
     if not cocktailname:
@@ -169,8 +169,8 @@ def prepare_cocktail(w):
         w.tabWidget.setCurrentIndex(3)
         return
 
-    globals.startcheck = True
-    globals.loopcheck = True
+    globals.cocktail_started = True
+    globals.make_cocktail = True
     consumption, taken_time, max_time = rpi_controler.make_cocktail(w, ingredient_bottles, ingredient_volumes)
     database_commander.set_recipe_counter(cocktailname)
     generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
@@ -178,7 +178,7 @@ def prepare_cocktail(w):
 
     service_handler.post_cocktail_to_hook(cocktailname, cocktail_volume)
 
-    if globals.loopcheck:
+    if globals.make_cocktail:
         database_commander.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
         display_handler.standard_box(f"Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{comment}")
     else:
@@ -188,12 +188,12 @@ def prepare_cocktail(w):
 
     set_fill_level_bars(w)
     reset_alcohollevel(w)
-    globals.startcheck = False
+    globals.cocktail_started = False
 
 
 def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
-    globals.loopcheck = False
+    globals.make_cocktail = False
     print("Rezept wird abgebrochen!")
 
 

@@ -44,7 +44,7 @@ class RpiController(ConfigManager):
         consumption = [0] * len(indexes)
         self.activate_pinlist(pins)
         print("---- Starting Cocktail ----")
-        while current_time < max_time and globals.loopcheck:
+        while current_time < max_time and globals.make_cocktail:
             for element, (pin, pin_time, volume_flow) in enumerate(zip(pins, pin_times, volume_flows)):
                 if pin_time > current_time:
                     consumption[element] += volume_flow * self.SLEEP_TIME

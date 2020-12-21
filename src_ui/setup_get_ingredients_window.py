@@ -51,7 +51,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         """ Calls the Progressbarwindow and spends the given amount of the ingredient. """
         import globals
 
-        globals.loopcheck = True
+        globals.make_cocktail = True
         ingredient_name, volume = display_controller.get_data_ingredient_window(self)
         bottle, level = database_commander.get_ingredient_bottle_and_level_by_name(ingredient_name)
         print(f"Ausgabemenge von {self.CBingredient.currentText()}: {volume}")

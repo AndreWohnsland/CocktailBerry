@@ -6,12 +6,12 @@ Also assigns the values to them.
 
 def initialize():
     """ The Initialise Function for the global variables. """
-    global startcheck
-    global loopcheck
+    global cocktail_started
+    global make_cocktail
     global SUPPRESS_ERROR
     global old_ingredient
 
-    startcheck = False
-    loopcheck = True
+    cocktail_started = False
+    make_cocktail = True
     SUPPRESS_ERROR = False
     old_ingredient = []
