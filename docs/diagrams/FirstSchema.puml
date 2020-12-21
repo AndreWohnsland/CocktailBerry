@@ -3,28 +3,33 @@
 
 !define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
 !define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!define FONTAWESOMEOLD https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome
 
 !include DEVICONS/linux.puml
 !include DEVICONS/python.puml
 !include DEVICONS/sqllite.puml
 !include DEVICONS/aptana.puml
-!include DEVICONS/html5.puml
+!include DEVICONS/docker.puml
 !include FONTAWESOME/users.puml
 !include FONTAWESOME/user.puml
+!include FONTAWESOMEOLD/send_o.puml
 
 skinparam backgroundColor #fff
 
 LAYOUT_WITH_LEGEND()
 
   Container(configmanager, "Config Manager", "python", "Class to hold all configuration, used where needed for configs", "python")
-  Container(displaycontroler, "Display Controler", "python", "Class to get values from GUI", "python")
+  Container(displaycontroller, "Display Controller", "python", "Class to get values from GUI", "python")
   Container(displayhandler, "Display Handler", "python", "Class to set values / properties in GUI", "python")
   Container(rpicontroller, "RPI Controller", "python", "Class to controll the Raspberry Pi and the GPIOs", "python")
   Container(apicontroller, "API Controller", "python", "Modules to handle logic for seperate views", "python")
   Container(savehandler, "Save Handler", "python", "Class to export data from DB to csv", "python")
 
+  Container(microservice, "Microservice", "python", "Flask API to call services to interact with the www", "docker")
+  System(webhook, "Webhooks", "External webhooks or endpoints to post data from the cocktailmaker to", "send_o")
+
   Container(dbhandler, "Database Handler", "Python", "Handles and executes all SQL logic and connection", "python")
-  ContainerDb(db, "Database", "Sqllite", "Holds data for Cocktails, Bottles and Ingredients", "sqllite")
+  ContainerDb(db, "Database", "Sqllite", "Holds data for cocktails, bottles and ingredients", "sqllite")
 
   Container(mainwindow, "Mainwindow", "PyQt", "The main user interaction happens here", "python")
   Container(dialogwindow, "Dialog windows", "PyQt", "User interaction popups for input / output", "python")
@@ -40,12 +45,15 @@ Rel(mainwindow, savehandler, "calls")
 
 ' Rel(mainwindow, configmanager, "uses")
 ' Rel(rpicontroller, configmanager, "uses")
-' Rel(displaycontroler, configmanager, "uses")
+' Rel(displaycontroller, configmanager, "uses")
 
-Rel_U(apicontroller, displaycontroler, "uses")
+Rel_U(apicontroller, displaycontroller, "uses")
 Rel(apicontroller, displayhandler, "uses")
 Rel_L(apicontroller, dbhandler, "uses")
 Rel(apicontroller, rpicontroller, "calls")
+Rel(apicontroller, microservice, "post", "http")
+
+Rel(microservice, webhook, "post", "https")
 
 
 
