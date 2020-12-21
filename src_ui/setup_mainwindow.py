@@ -141,7 +141,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.PBZutathinzu.clicked.connect(lambda: enter_ingredient(self))
         self.PBRezepthinzu.clicked.connect(lambda: enter_recipe(self, True))
         self.PBBelegung.clicked.connect(lambda: customlevels(self))
-        self.PBZeinzelnd.clicked.connect(lambda: custom_output(self))
+        self.PBZeinzelnd.clicked.connect(lambda: custom_ingredient_output(self))
         self.PBclear.clicked.connect(lambda: display_handler.clear_recipe_data_recipes(self, False))
         self.PBRezeptaktualisieren.clicked.connect(lambda: enter_recipe(self, False))
         self.PBdelete.clicked.connect(lambda: delete_recipe(self))
@@ -178,7 +178,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # gets the bottle ingredients into the global list
         get_bottle_ingredients(self)
         # Clear Help Marker
-        clear_maker_data(self)
+        display_handler.clear_recipe_data_maker(self)
         # Load ingredients
         load_ingredients(self)
         # Load Bottles into the Labels

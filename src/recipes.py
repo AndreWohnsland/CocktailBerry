@@ -15,7 +15,7 @@ from PyQt5.uic import *
 from collections import Counter
 
 import globals
-from src.maker import refresh_recipe_maker_view, clear_maker_data
+from src.maker import refresh_recipe_maker_view
 from src.error_suppression import logerror
 from src.supporter import generate_CBR_names
 

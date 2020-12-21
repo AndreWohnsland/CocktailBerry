@@ -30,7 +30,8 @@ display_handler = DisplayHandler()
 database_commander = DatabaseCommander()
 
 
-def custom_output(w):
+def custom_ingredient_output(w):
+    """Calls an additional window to make a single ingredient output"""
     w.ingredientdialog()
 
 

@@ -80,14 +80,6 @@ def updated_clicked_recipe_maker(w):
     display_handler.fill_recipe_data_maker(w, ingredient_data, total_volume, cocktailname)
 
 
-@logerror
-def clear_maker_data(w):
-    """ Removes all the Values out of the Maker List. 
-    ### will be replaced totally with display_handler.clear_recipe_data_maker(w) in the future, currently just bandaid
-    """
-    display_handler.clear_recipe_data_maker(w)
-
-
 def create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume):
     """Returns the comment and the machinedata if enough ingredients are there"""
     adjusted_data = []
