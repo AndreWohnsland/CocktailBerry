@@ -9,7 +9,7 @@ from ui_elements.bonusingredient import Ui_addingredient
 
 from src.supporter import plusminus
 from src.display_handler import DisplayHandler
-from src.display_controler import DisplayControler
+from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
 from src.rpi_controller import RpiController
 from src.bottles import set_fill_level_bars
@@ -17,7 +17,7 @@ from src.bottles import set_fill_level_bars
 display_handler = DisplayHandler()
 database_commander = DatabaseCommander()
 rpi_controller = RpiController()
-display_controler = DisplayControler()
+display_controller = DisplayController()
 
 
 class GetIngredientWindow(QDialog, Ui_addingredient):
@@ -52,7 +52,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         import globals
 
         globals.loopcheck = True
-        ingredient_name, volume = display_controler.get_data_ingredient_window(self)
+        ingredient_name, volume = display_controller.get_data_ingredient_window(self)
         bottle, level = database_commander.get_ingredient_bottle_and_level_by_name(ingredient_name)
         print(f"Ausgabemenge von {self.CBingredient.currentText()}: {volume}")
 

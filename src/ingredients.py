@@ -17,7 +17,7 @@ from src.recipes import fill_recipeCB_with_ingredients
 from src.bottles import set_fill_level_bars, refresh_bottle_information
 from src.error_suppression import logerror
 
-from src.display_controler import DisplayControler
+from src.display_controller import DisplayController
 from src.display_handler import DisplayHandler
 from src.database_commander import DatabaseCommander
 
@@ -25,7 +25,7 @@ from src.supporter import generate_ingredient_fields, generate_CBB_names, genera
 
 import globals
 
-display_controler = DisplayControler()
+display_controller = DisplayController()
 display_handler = DisplayHandler()
 database_commander = DatabaseCommander()
 
@@ -39,11 +39,11 @@ def enter_ingredient(w, newingredient=True):
     Also can change the current selected ingredient (newingredient = False)
     """
     ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = generate_ingredient_fields(w)
-    error = display_controler.check_ingredient_data(ingredient_lineedits)
+    error = display_controller.check_ingredient_data(ingredient_lineedits)
     if error:
         display_handler.standard_box(error[0])
         return
-    ingredient_data = display_controler.get_ingredient_data(ingredient_lineedits, ingredient_checkbox, ingredient_list_widget)
+    ingredient_data = display_controller.get_ingredient_data(ingredient_lineedits, ingredient_checkbox, ingredient_list_widget)
 
     if newingredient:
         succesfull = add_new_ingredient(w, ingredient_data)
@@ -132,7 +132,7 @@ def load_ingredients(w):
 def delete_ingredient(w):
     """ Deletes an ingredient out of the DB if its not needed in any recipe."""
     _, _, ingredient_list_widget = generate_ingredient_fields(w)
-    if not display_controler.check_ingredient_password(w):
+    if not display_controller.check_ingredient_password(w):
         display_handler.standard_box("Falsches Passwort!")
         return
     if not ingredient_list_widget.selectedItems():

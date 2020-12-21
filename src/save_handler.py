@@ -7,11 +7,11 @@ from pathlib import Path
 
 from src.database_commander import DatabaseCommander
 from src.display_handler import DisplayHandler
-from src.display_controler import DisplayControler
+from src.display_controller import DisplayController
 
 database_commander = DatabaseCommander()
 display_handler = DisplayHandler()
-display_controler = DisplayControler()
+display_controller = DisplayController()
 
 
 dirpath = os.path.dirname(__file__)
@@ -34,7 +34,7 @@ class SaveHandler:
 
     def save_quant(self, line_edit_password, filename, data):
         """ Saves all the amounts of the ingredients/recipes to a csv and reset the counter to zero"""
-        if not display_controler.check_password(line_edit_password):
+        if not display_controller.check_password(line_edit_password):
             display_handler.standard_box("Falsches Passwort!")
             return False
 

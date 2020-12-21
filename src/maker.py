@@ -19,7 +19,7 @@ from src.error_suppression import logerror
 from src.database_commander import DatabaseCommander
 from src.display_handler import DisplayHandler
 from src.rpi_controller import RpiController
-from src.display_controler import DisplayControler
+from src.display_controller import DisplayController
 from src.logger_handler import LoggerHandler
 from src.service_handler import ServiceHandler
 
@@ -29,7 +29,7 @@ import globals
 database_commander = DatabaseCommander()
 display_handler = DisplayHandler()
 rpi_controler = RpiController()
-display_controler = DisplayControler()
+display_controller = DisplayController()
 service_handler = ServiceHandler()
 logger_handler = LoggerHandler("maker_module", "production_logs")
 
@@ -154,7 +154,7 @@ def prepare_cocktail(w):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
     if globals.startcheck:
         return
-    cocktailname, cocktail_volume, alcohol_faktor = display_controler.get_cocktail_data(w)
+    cocktailname, cocktail_volume, alcohol_faktor = display_controller.get_cocktail_data(w)
     if not cocktailname:
         display_handler.standard_box("Kein Rezept ausgewählt!")
         return
@@ -206,7 +206,7 @@ def reset_alcohollevel(w):
 @logerror
 def handle_alcohollevel_change(w):
     """ Recalculates the alcoholpercentage of the drink with the adjusted Value from the slider. """
-    cocktailname, _, alcohol_faktor = display_controler.get_cocktail_data(w)
+    cocktailname, _, alcohol_faktor = display_controller.get_cocktail_data(w)
     if not cocktailname:
         return
 

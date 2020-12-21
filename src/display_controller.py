@@ -9,7 +9,7 @@ from src.database_commander import DatabaseCommander
 from src.supporter import generate_lineedit_recipes, generate_CBR_names
 
 
-class DisplayControler(ConfigManager):
+class DisplayController(ConfigManager):
     """ Controler Class to get Values from the UI"""
 
     def __init__(self):

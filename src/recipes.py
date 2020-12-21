@@ -20,11 +20,11 @@ from src.error_suppression import logerror
 from src.supporter import generate_CBR_names
 
 from src.display_handler import DisplayHandler
-from src.display_controler import DisplayControler
+from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
 
 display_handler = DisplayHandler()
-display_controler = DisplayControler()
+display_controller = DisplayController()
 database_commander = DatabaseCommander()
 
 
@@ -92,7 +92,7 @@ def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alco
 def enter_recipe(w, newrecipe):
     """ Enters or updates the recipe into the db
     """
-    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled = display_controler.get_recipe_field_data(w)
+    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled = display_controller.get_recipe_field_data(w)
     handadd_data = w.handaddlist
     if not recipe_name:
         display_handler.standard_box("Bitte Cocktailnamen eingeben!")
@@ -149,7 +149,7 @@ def update_recipe_view(w):
 @logerror
 def load_selected_recipe_data(w):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
-    recipe_name = display_controler.get_list_widget_selection(w.LWRezepte)
+    recipe_name = display_controller.get_list_widget_selection(w.LWRezepte)
     if not recipe_name:
         return
 
@@ -165,10 +165,10 @@ def load_selected_recipe_data(w):
 @logerror
 def delete_recipe(w):
     """ Deletes the selected recipe, requires the Password """
-    if not display_controler.check_recipe_password(w):
+    if not display_controller.check_recipe_password(w):
         display_handler.standard_box("Falsches Passwort!")
         return
-    recipe_name = display_controler.get_list_widget_selection(w.LWRezepte)
+    recipe_name = display_controller.get_list_widget_selection(w.LWRezepte)
     if not recipe_name:
         display_handler.standard_box("Kein Rezept ausgewählt!")
         return

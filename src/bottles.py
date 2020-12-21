@@ -18,7 +18,7 @@ from src.error_suppression import logerror
 
 from src.display_handler import DisplayHandler
 from src.database_commander import DatabaseCommander
-from src.display_controler import DisplayControler
+from src.display_controller import DisplayController
 from src.rpi_controller import RpiController
 from src.logger_handler import LoggerHandler
 from src.supporter import (
@@ -31,7 +31,7 @@ from src.supporter import (
 
 display_handler = DisplayHandler()
 database_commander = DatabaseCommander()
-display_controler = DisplayControler()
+display_controller = DisplayController()
 rpi_controller = RpiController()
 logger_handler = LoggerHandler("bottles_module", "production_logs")
 
@@ -54,7 +54,7 @@ def refresh_bottle_cb(w):
     # Creating a list of the new and old bottles used
     CBBnames = generate_CBB_names(w)
     old_order = globals.old_ingredient
-    new_order = display_controler.get_current_combobox_items(CBBnames)
+    new_order = display_controller.get_current_combobox_items(CBBnames)
 
     new_blist = list(set(new_order) - set(old_order))
     old_blist = list(set(old_order) - set(new_order))
@@ -90,7 +90,7 @@ def register_bottles(w):
 
     # Checks where are entries and appends them to a list
     CBBnames = generate_CBB_names(w)
-    ingredient_names = display_controler.get_current_combobox_items(CBBnames)
+    ingredient_names = display_controller.get_current_combobox_items(CBBnames)
     database_commander.set_bottleorder(ingredient_names)
 
     refresh_bottle_information(w)
@@ -120,7 +120,7 @@ def refresh_bottle_information(w):
 def renew_checked_bottles(w):
     """ Renews all the Bottles which are checked as new. """
     PBnames = generate_PBneu_names(w)
-    renew_bottle = display_controler.get_toggle_status(PBnames)
+    renew_bottle = display_controller.get_toggle_status(PBnames)
     database_commander.set_bottle_volumelevel_to_max(renew_bottle)
     display_handler.untoggle_buttons(PBnames)
     set_fill_level_bars(w)
@@ -138,7 +138,7 @@ def set_fill_level_bars(w):
 @logerror
 def clean_machine(w):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
-    if not display_controler.check_bottles_password(w):
+    if not display_controller.check_bottles_password(w):
         display_handler.standard_box("Falsches Passwort!!!!")
         return
 
