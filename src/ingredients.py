@@ -13,8 +13,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
-from src.recipes import ZutatenCB_Rezepte
-from src.bottles import Belegung_progressbar, Belegung_a
+from src.recipes import fill_recipeCB_with_ingredients
+from src.bottles import set_fill_level_bars, refresh_bottle_information
 from src.error_suppression import logerror
 
 from src.display_controler import DisplayControler
@@ -52,10 +52,10 @@ def enter_ingredient(w, newingredient=True):
     if not succesfull:
         return
 
-    Zutaten_clear(w)
+    clear_ingredient_information(w)
     ingredient_list_widget.addItem(ingredient_data["ingredient_name"])
-    Belegung_progressbar(w)
-    Belegung_a(w)
+    set_fill_level_bars(w)
+    refresh_bottle_information(w)
     display_handler.standard_box(succesfull)
 
 
@@ -122,14 +122,14 @@ def change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
     return f"Zutat mit dem Namen: <{ingredient_data['selected_ingredient']}> unter <{ingredient_data['ingredient_name']}> aktualisiert"
 
 
-def Zutaten_a(w):
+def load_ingredients(w):
     """ Load all ingredientnames into the ListWidget """
     w.LWZutaten.clear()
     ingredient_names = database_commander.get_ingredient_names()
     display_handler.fill_list_widget(w.LWZutaten, ingredient_names)
 
 
-def Zutaten_delete(w):
+def delete_ingredient(w):
     """ Deletes an ingredient out of the DB if its not needed in any recipe."""
     _, _, ingredient_list_widget = generate_ingredient_fields(w)
     if not display_controler.check_ingredient_password(w):
@@ -151,12 +151,12 @@ def Zutaten_delete(w):
     database_commander.delete_ingredient(ingredient_data["ID"])
     display_handler.delete_item_in_multiple_combobox(generate_CBB_names(w), ingredient_data["name"])
     display_handler.delete_item_in_multiple_combobox(generate_CBR_names(w), ingredient_data["name"])
-    Zutaten_clear(w)
-    Zutaten_a(w)
+    clear_ingredient_information(w)
+    load_ingredients(w)
     display_handler.standard_box(f"Zutat mit der ID und dem Namen:\n<{ingredient_data['ID']}> <{ingredient_data['name']}>\ngelöscht!")
 
 
-def Zutaten_Zutaten_click(w):
+def display_selected_ingredient(w):
     """ Search the DB entry for the ingredient and displays them """
     ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = generate_ingredient_fields(w)
     if ingredient_list_widget.selectedItems():
@@ -167,7 +167,7 @@ def Zutaten_Zutaten_click(w):
         display_handler.set_checkbox_value(ingredient_checkbox, ingredient_data["hand_add"])
 
 
-def Zutaten_clear(w):
+def clear_ingredient_information(w):
     """ Clears all entries in the ingredient windows. """
     ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = generate_ingredient_fields(w)
     display_handler.clean_multiple_lineedit(ingredient_lineedits)

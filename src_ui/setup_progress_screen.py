@@ -5,7 +5,7 @@ from PyQt5.uic import *
 
 from ui_elements.progressbarwindow import Ui_Progressbarwindow
 
-from src.maker import abbrechen_R
+from src.maker import interrupt_cocktail
 
 
 class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
@@ -15,7 +15,7 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         super(ProgressScreen, self).__init__(parent)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.PBabbrechen.clicked.connect(lambda: abbrechen_R())
+        self.PBabbrechen.clicked.connect(lambda: interrupt_cocktail())
         self.setWindowIcon(QIcon(parent.icon_path))
         self.ms = parent
         if not self.ms.DEVENVIRONMENT:

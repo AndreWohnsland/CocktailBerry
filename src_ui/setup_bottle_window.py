@@ -7,7 +7,7 @@ from PyQt5.uic import *
 from ui_elements.bottlewindow import Ui_Bottlewindow
 
 from src.supporter import plusminus
-from src.bottles import Belegung_progressbar
+from src.bottles import set_fill_level_bars
 from src.database_commander import DatabaseCommander
 
 database_commander = DatabaseCommander()
@@ -51,7 +51,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         for label, ingredient_id, maxvolume in zip(LName, self.IDlist, self.maxvolume):
             new_amount = min(int(label.text()), maxvolume)
             database_commander.set_ingredient_level_to_value(ingredient_id, new_amount)
-        Belegung_progressbar(self.ms)
+        set_fill_level_bars(self.ms)
         self.close()
 
     def asign_bottle_data(self):

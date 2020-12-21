@@ -16,7 +16,7 @@ from src.maker import *
 from src.ingredients import *
 from src.recipes import *
 from src.bottles import *
-from src.bottles import Belegung_progressbar
+from src.bottles import set_fill_level_bars
 from config.config_manager import ConfigManager
 from src.supporter import plusminus, generate_lineedit_recipes, generate_CBB_names
 from src.save_handler import SaveHandler
@@ -139,37 +139,37 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         """ Connect all the functions with the Buttons. """
         # First, connect all the Pushbuttons with the Functions
         self.PBZutathinzu.clicked.connect(lambda: enter_ingredient(self))
-        self.PBRezepthinzu.clicked.connect(lambda: Rezept_eintragen(self, True))
+        self.PBRezepthinzu.clicked.connect(lambda: enter_recipe(self, True))
         self.PBBelegung.clicked.connect(lambda: customlevels(self))
         self.PBZeinzelnd.clicked.connect(lambda: custom_output(self))
-        self.PBclear.clicked.connect(lambda: Rezepte_clear(self, False))
-        self.PBRezeptaktualisieren.clicked.connect(lambda: Rezept_eintragen(self, False))
-        self.PBdelete.clicked.connect(lambda: Rezepte_delete(self))
-        self.PBZdelete.clicked.connect(lambda: Zutaten_delete(self))
-        self.PBZclear.clicked.connect(lambda: Zutaten_clear(self))
+        self.PBclear.clicked.connect(lambda: display_handler.clear_recipe_data_recipes(self, False))
+        self.PBRezeptaktualisieren.clicked.connect(lambda: enter_recipe(self, False))
+        self.PBdelete.clicked.connect(lambda: delete_recipe(self))
+        self.PBZdelete.clicked.connect(lambda: delete_ingredient(self))
+        self.PBZclear.clicked.connect(lambda: clear_ingredient_information(self))
         self.PBZaktualisieren.clicked.connect(lambda: enter_ingredient(self, False))
-        self.PBZubereiten_custom.clicked.connect(lambda: Maker_Zubereiten(self))
-        self.PBCleanMachine.clicked.connect(lambda: CleanMachine(self))
-        self.PBFlanwenden.clicked.connect(lambda: Belegung_Flanwenden(self))
+        self.PBZubereiten_custom.clicked.connect(lambda: prepare_cocktail(self))
+        self.PBCleanMachine.clicked.connect(lambda: clean_machine(self))
+        self.PBFlanwenden.clicked.connect(lambda: renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
         self.PBZminus.clicked.connect(lambda: plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))
         self.PBMplus.clicked.connect(lambda: plusminus(self.LCustomMenge, "+", 100, 400, 25))
         self.PBMminus.clicked.connect(lambda: plusminus(self.LCustomMenge, "-", 100, 400, 25))
-        self.PBSetnull.clicked.connect(lambda: Maker_nullProB(self))
+        self.PBSetnull.clicked.connect(lambda: reset_alcohollevel(self))
         self.PBZnull.clicked.connect(lambda: save_handler.export_ingredients(self))
         self.PBRnull.clicked.connect(lambda: save_handler.export_recipes(self))
-        self.PBenable.clicked.connect(lambda: enableall(self))
+        self.PBenable.clicked.connect(lambda: enableall_recipes(self))
 
         # Connect the Lists with the Functions
-        self.LWZutaten.itemClicked.connect(lambda: Zutaten_Zutaten_click(self))
-        self.LWZutaten.currentTextChanged.connect(lambda: Zutaten_Zutaten_click(self))
-        self.LWMaker.itemClicked.connect(lambda: Maker_Rezepte_click(self))
-        self.LWMaker.currentTextChanged.connect(lambda: Maker_Rezepte_click(self))
-        self.LWRezepte.itemClicked.connect(lambda: Rezepte_Rezepte_click(self))
-        self.LWRezepte.currentTextChanged.connect(lambda: Rezepte_Rezepte_click(self))
+        self.LWZutaten.itemClicked.connect(lambda: display_selected_ingredient(self))
+        self.LWZutaten.currentTextChanged.connect(lambda: display_selected_ingredient(self))
+        self.LWMaker.itemClicked.connect(lambda: updated_clicked_recipe_maker(self))
+        self.LWMaker.currentTextChanged.connect(lambda: updated_clicked_recipe_maker(self))
+        self.LWRezepte.itemClicked.connect(lambda: load_selected_recipe_data(self))
+        self.LWRezepte.currentTextChanged.connect(lambda: load_selected_recipe_data(self))
 
         # Connects the slider
-        self.HSIntensity.valueChanged.connect(lambda: Maker_ProB_change(self))
+        self.HSIntensity.valueChanged.connect(lambda: handle_alcohollevel_change(self))
 
         # Disable some of the Tabs (for the PARTYMODE, no one can access the recipes)
         if self.PARTYMODE:
@@ -178,23 +178,23 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # gets the bottle ingredients into the global list
         get_bottle_ingredients(self)
         # Clear Help Marker
-        Maker_List_null(self)
+        clear_maker_data(self)
         # Load ingredients
-        Zutaten_a(self)
+        load_ingredients(self)
         # Load Bottles into the Labels
-        Belegung_a(self)
+        refresh_bottle_information(self)
         # Load Combobuttons Recipes
-        ZutatenCB_Rezepte(self)
+        fill_recipeCB_with_ingredients(self)
         # Load Combobuttons Bottles
         newCB_Bottles(self)
         # Load current Bottles into the Combobuttons
-        Belegung_einlesen(self)
+        read_in_bottles(self)
         # Load Existing Recipes from DB into Recipe List
-        Rezepte_a_R(self)
+        update_recipe_view(self)
         # Load Possible Recipes Into Maker List
-        Rezepte_a_M(self)
+        refresh_recipe_maker_view(self)
         # Load the Progressbar
-        Belegung_progressbar(self)
+        set_fill_level_bars(self)
 
         for combobox in generate_CBB_names(self):
             combobox.activated.connect(lambda _, window=self: refresh_bottle_cb(w=window))

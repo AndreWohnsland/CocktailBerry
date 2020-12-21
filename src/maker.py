@@ -13,7 +13,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
-from src.bottles import Belegung_progressbar
+from src.bottles import set_fill_level_bars
 from src.error_suppression import logerror
 
 from src.database_commander import DatabaseCommander
@@ -35,7 +35,7 @@ logger_handler = LoggerHandler("maker_module", "production_logs")
 
 
 @logerror
-def Rezepte_a_M(w, possible_recipes_id=None):
+def refresh_recipe_maker_view(w, possible_recipes_id=None):
     """ Goes through every recipe in the list or all recipes if none given
     Checks if all ingredients are registered, if so, adds it to the list widget
     """
@@ -61,13 +61,13 @@ def Rezepte_a_M(w, possible_recipes_id=None):
 
 
 @logerror
-def Maker_Rezepte_click(w):
+def updated_clicked_recipe_maker(w):
     """ Updates the maker display Data with the selected recipe"""
     if not w.LWMaker.selectedItems():
         return
 
     display_handler.clear_recipe_data_maker(w)
-    Maker_ProB_change(w)
+    handle_alcohollevel_change(w)
     cocktailname = w.LWMaker.currentItem().text()
 
     machineadd_data, handadd_data = database_commander.get_recipe_ingredients_by_name_seperated_data(cocktailname)
@@ -81,7 +81,7 @@ def Maker_Rezepte_click(w):
 
 
 @logerror
-def Maker_List_null(w):
+def clear_maker_data(w):
     """ Removes all the Values out of the Maker List. 
     ### will be replaced totally with display_handler.clear_recipe_data_maker(w) in the future, currently just bandaid
     """
@@ -150,7 +150,7 @@ def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_tim
     logger_handler.log_event("INFO", f"{mengenstring:8} | {cocktail_name}{abbruchstring}")
 
 
-def Maker_Zubereiten(w):
+def prepare_cocktail(w):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
     if globals.startcheck:
         return
@@ -186,25 +186,25 @@ def Maker_Zubereiten(w):
         database_commander.set_multiple_ingredient_consumption(consumption_names, consumption)
         display_handler.standard_box("Der Cocktail wurde abgebrochen!")
 
-    Belegung_progressbar(w)
-    Maker_nullProB(w)
+    set_fill_level_bars(w)
+    reset_alcohollevel(w)
     globals.startcheck = False
 
 
-def abbrechen_R():
+def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
     globals.loopcheck = False
     print("Rezept wird abgebrochen!")
 
 
 @logerror
-def Maker_nullProB(w):
+def reset_alcohollevel(w):
     """ Sets the alcoholintensity to default value (100 %). """
     w.HSIntensity.setValue(0)
 
 
 @logerror
-def Maker_ProB_change(w):
+def handle_alcohollevel_change(w):
     """ Recalculates the alcoholpercentage of the drink with the adjusted Value from the slider. """
     cocktailname, _, alcohol_faktor = display_controler.get_cocktail_data(w)
     if not cocktailname:

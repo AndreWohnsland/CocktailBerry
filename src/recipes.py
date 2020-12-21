@@ -15,7 +15,7 @@ from PyQt5.uic import *
 from collections import Counter
 
 import globals
-from src.maker import Rezepte_a_M, Maker_List_null
+from src.maker import refresh_recipe_maker_view, clear_maker_data
 from src.error_suppression import logerror
 from src.supporter import generate_CBR_names
 
@@ -29,7 +29,7 @@ database_commander = DatabaseCommander()
 
 
 @logerror
-def ZutatenCB_Rezepte(w):
+def fill_recipeCB_with_ingredients(w):
     """ Asigns all ingredients to the Comboboxes in the recipe tab """
     comboboxes_recipe = generate_CBR_names(w)
     ingredient_list = database_commander.get_ingredient_names_machine()
@@ -89,7 +89,7 @@ def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alco
 
 
 @logerror
-def Rezept_eintragen(w, newrecipe):
+def enter_recipe(w, newrecipe):
     """ Enters or updates the recipe into the db
     """
     recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled = display_controler.get_recipe_field_data(w)
@@ -128,7 +128,7 @@ def Rezept_eintragen(w, newrecipe):
     )
     w.LWRezepte.addItem(recipe_name)
     if enabled:
-        Rezepte_a_M(w, [recipe_id])
+        refresh_recipe_maker_view(w, [recipe_id])
     display_handler.clear_recipe_data_recipes(w, False)
 
     if newrecipe:
@@ -140,20 +140,14 @@ def Rezept_eintragen(w, newrecipe):
 
 
 @logerror
-def Rezepte_a_R(w):
+def update_recipe_view(w):
     """ Updates the ListWidget in the recipe Tab. """
     recipe_list = database_commander.get_recipes_name()
     display_handler.refill_recipes_list_widget(w, recipe_list)
 
 
 @logerror
-def Rezepte_clear(w, select_other_item):
-    """ will be removed with the ui refactoring """
-    display_handler.clear_recipe_data_recipes(w, select_other_item)
-
-
-@logerror
-def Rezepte_Rezepte_click(w):
+def load_selected_recipe_data(w):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
     recipe_name = display_controler.get_list_widget_selection(w.LWRezepte)
     if not recipe_name:
@@ -169,7 +163,7 @@ def Rezepte_Rezepte_click(w):
 
 
 @logerror
-def Rezepte_delete(w):
+def delete_recipe(w):
     """ Deletes the selected recipe, requires the Password """
     if not display_controler.check_recipe_password(w):
         display_handler.standard_box("Falsches Passwort!")
@@ -187,10 +181,10 @@ def Rezepte_delete(w):
 
 
 @logerror
-def enableall(w):
+def enableall_recipes(w):
     """Set all recipes to enabled """
     disabled_ids = database_commander.get_disabled_recipes_id()
     database_commander.set_all_recipes_enabled()
-    Rezepte_a_M(w, disabled_ids)
+    refresh_recipe_maker_view(w, disabled_ids)
     display_handler.clear_recipe_data_recipes(w, True)
     display_handler.standard_box("Alle Rezepte wurden wieder aktiv gesetzt!")

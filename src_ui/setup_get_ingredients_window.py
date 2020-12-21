@@ -12,7 +12,7 @@ from src.display_handler import DisplayHandler
 from src.display_controler import DisplayControler
 from src.database_commander import DatabaseCommander
 from src.rpi_controller import RpiController
-from src.bottles import Belegung_progressbar
+from src.bottles import set_fill_level_bars
 
 display_handler = DisplayHandler()
 database_commander = DatabaseCommander()
@@ -64,5 +64,5 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
 
         volume, _, _ = rpi_controller.make_cocktail(self.ms, [bottle], [volume], labelchange="Zutat wird ausgegeben!\nFortschritt:")
         database_commander.set_ingredient_consumption(ingredient_name, volume[0])
-        Belegung_progressbar(self.ms)
+        set_fill_level_bars(self.ms)
         self.ms.prow_close()

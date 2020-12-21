@@ -63,7 +63,7 @@ def refresh_bottle_cb(w):
 
     display_handler.adjust_bottle_comboboxes(CBBnames, old_bottle, new_bottle)
 
-    Belegung_eintragen(w)
+    register_bottles(w)
     globals.old_ingredient = new_order
 
 
@@ -83,24 +83,24 @@ def newCB_Bottles(w):
 
 
 @logerror
-def Belegung_eintragen(w):
+def register_bottles(w):
     """ Insert the selected Bottleorder into the DB. """
     # this import is neccecary on module level, otherwise there would be a circular import
-    from src.maker import Rezepte_a_M
+    from src.maker import refresh_recipe_maker_view
 
     # Checks where are entries and appends them to a list
     CBBnames = generate_CBB_names(w)
     ingredient_names = display_controler.get_current_combobox_items(CBBnames)
     database_commander.set_bottleorder(ingredient_names)
 
-    Belegung_a(w)
+    refresh_bottle_information(w)
     w.LWMaker.clear()
-    Rezepte_a_M(w)
-    Belegung_progressbar(w)
+    refresh_recipe_maker_view(w)
+    set_fill_level_bars(w)
 
 
 @logerror
-def Belegung_einlesen(w):
+def read_in_bottles(w):
     """ Reads the Bottleorder into the BottleTab. """
     CBBnames = generate_CBB_names(w)
     ingredient_names = database_commander.get_ingredients_at_bottles()
@@ -108,7 +108,7 @@ def Belegung_einlesen(w):
 
 
 @logerror
-def Belegung_a(w):
+def refresh_bottle_information(w):
     """ Loads or updates the Labels of the Bottles (Volumelevel). """
     labels = generate_LBelegung_names(w)
     label_names = database_commander.get_ingredients_at_bottles()
@@ -117,18 +117,18 @@ def Belegung_a(w):
 
 
 @logerror
-def Belegung_Flanwenden(w):
+def renew_checked_bottles(w):
     """ Renews all the Bottles which are checked as new. """
     PBnames = generate_PBneu_names(w)
     renew_bottle = display_controler.get_toggle_status(PBnames)
     database_commander.set_bottle_volumelevel_to_max(renew_bottle)
     display_handler.untoggle_buttons(PBnames)
-    Belegung_progressbar(w)
+    set_fill_level_bars(w)
     display_handler.standard_box("Alle Flaschen angewendet!")
 
 
 @logerror
-def Belegung_progressbar(w):
+def set_fill_level_bars(w):
     """ Gets the proportion of actual and maximal volume of each connected bottle and asigns it"""
     progressbars = generate_ProBBelegung_names(w)
     fill_levels = database_commander.get_bottle_fill_levels()
@@ -136,7 +136,7 @@ def Belegung_progressbar(w):
 
 
 @logerror
-def CleanMachine(w):
+def clean_machine(w):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
     if not display_controler.check_bottles_password(w):
         display_handler.standard_box("Falsches Passwort!!!!")
