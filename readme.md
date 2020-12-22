@@ -128,6 +128,7 @@ As an further addition there is the option to run a microservice within docker w
 Currently this is limited to:
 
 - Posting the cocktailname, used volume and current time to a given webhook
+- Posting the export csv as email to a receiver
 
 The seperation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is seperated to the service, also there is no need for multiple worker to not block the thread when the webhook enpoint is not up (Which would result in a delay of the display without multithredding). In the future, new services can be added easily to the docker container to execute different tasks. One example would be the export no longer be saved locally, but send via an email.
 

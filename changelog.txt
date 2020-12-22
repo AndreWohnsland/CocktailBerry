@@ -1,6 +1,7 @@
 --------------- 2020_12_20 ---------------------------------------------------------------------------------------------------------
 - Introduced microservice to post tasks to
-- This includes a endpoint to make a post of the cocktail name and date to an webhook / endpoint
+- This includes an endpoint to make a post of the cocktail name and date to an webhook / endpoint
+- Also includes an endpoint for sending csv as mail
 - Added docker and docker-compose for the flask server and adjusted readme
 
 --------------- 2020_05_13 ---------------------------------------------------------------------------------------------------------
