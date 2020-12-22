@@ -34,7 +34,8 @@ LAYOUT_WITH_LEGEND()
   Container(mainwindow, "Mainwindow", "PyQt", "The main user interaction happens here", "python")
   Container(dialogwindow, "Dialog windows", "PyQt", "User interaction popups for input / output", "python")
   Container(progresscreen, "Progress Screen", "PyQt", "View for progress and interruption of cocktail", "python")
-
+  Person_Ext(user, "User", "Person who wants the exported data from the DB", "user")
+  System(email, "GMail", "Gmail account / service used as sender over smtp for the data", "send_o")
 
 Rel_U(dbhandler, db, "Reads/Writes")
 
@@ -54,7 +55,9 @@ Rel(apicontroller, rpicontroller, "calls")
 Rel(apicontroller, microservice, "post", "http")
 
 Rel(microservice, webhook, "post", "https")
+Rel(microservice, email, "uses", "smtp")
 
+Rel(email, user, "sends", "smtp")
 
 
 @enduml
