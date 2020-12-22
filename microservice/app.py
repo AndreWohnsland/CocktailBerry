@@ -7,6 +7,7 @@ import datetime
 import logging
 from threading import Thread
 from dotenv import load_dotenv
+from email_sender import send_mail
 
 load_dotenv()
 
@@ -42,6 +43,14 @@ def post_cocktail_hook():
     thread = Thread(target=post_to_hook, args=(url, payload, headers,))
     thread.start()
     return jsonify({"text": "Post to cocktail webhook started"}), 201
+
+
+@app.route("/email", methods=["POST"])
+def post_file_with_mail():
+    data_file = request.files["upload_file"]
+    text = send_mail(data_file.filename, data_file)
+    app.logger.info(text)
+    return jsonify({"text": text}), 200
 
 
 if __name__ == "__main__":
