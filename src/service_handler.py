@@ -41,3 +41,22 @@ class ServiceHandler(ConfigManager):
         except requests.exceptions.ConnectionError:
             self.log_connection_error(full_url)
         return ret_data
+
+    def send_mail(self, file_name, binary_file):
+        if not self.USE_MICROSERVICE:
+            return self.return_service_disabled()
+        endpoint = "/email"
+        full_url = f"{self.base_url}{endpoint}"
+        ret_data = {}
+        files = {"upload_file": (file_name, binary_file,)}
+        try:
+            req = requests.post(full_url, files=files)
+            message = str(req.text).replace("\n", "")
+            ret_data = {
+                "status": req.status_code,
+                "message": message,
+            }
+            self.logger.log_event("INFO", f"Posted file to {full_url} | {req.status_code}: {message}")
+        except requests.exceptions.ConnectionError:
+            self.log_connection_error(full_url)
+        return ret_data
