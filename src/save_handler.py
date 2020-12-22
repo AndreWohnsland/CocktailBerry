@@ -8,10 +8,12 @@ from pathlib import Path
 from src.database_commander import DatabaseCommander
 from src.display_handler import DisplayHandler
 from src.display_controller import DisplayController
+from src.service_handler import ServiceHandler
 
 database_commander = DatabaseCommander()
 display_handler = DisplayHandler()
 display_controller = DisplayController()
+service_handler = ServiceHandler()
 
 
 dirpath = os.path.dirname(__file__)
@@ -46,8 +48,10 @@ class SaveHandler:
         dtime = str(datetime.date.today())
         dtime = dtime.replace("-", "")
         subfoldername = "saves"
-        savepath = os.path.join(dirpath, "..", subfoldername, f"{dtime}_{filename}")
+        full_file_name = f"{dtime}_{filename}"
+        savepath = os.path.join(dirpath, "..", subfoldername, full_file_name)
         with open(savepath, mode="a", newline="") as writer_file:
             csv_writer = csv.writer(writer_file, delimiter=",")
             for row in data_rows:
                 csv_writer.writerow(row)
+        service_handler.send_mail(full_file_name, open(savepath, "rb"))
