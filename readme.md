@@ -120,7 +120,7 @@ The program will then evaluate which recipe meets all requirements to only show 
 ## Problems while Running the Program
 
 All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled and a info message should be displayed.\
-If in any case any unexpected behaviour occurs feel free to open an issue.
+If in any case any unexpected behaviour occurs feel free to open an issue. Usually a part of the actions are also logged into the logfiles.
 
 # Microservices
 
