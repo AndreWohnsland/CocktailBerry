@@ -1,6 +1,6 @@
-import requests
 import json
 from typing import Dict
+import requests
 from config.config_manager import ConfigManager
 from src.logger_handler import LoggerHandler
 

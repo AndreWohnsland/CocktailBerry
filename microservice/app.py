@@ -1,12 +1,12 @@
 #!flask/bin/python
-from flask import Flask, request, abort, jsonify
 import os
-import requests
-import json
 import datetime
 import logging
+import json
 from threading import Thread
+import requests
 from dotenv import load_dotenv
+from flask import Flask, request, abort, jsonify
 from email_sender import send_mail
 
 load_dotenv()

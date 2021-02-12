@@ -4,7 +4,7 @@ import time
 from functools import wraps
 import os
 
-import globals
+import globalvars
 
 
 def logerror(func):
@@ -12,7 +12,7 @@ def logerror(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if globals.SUPPRESS_ERROR:
+        if globalvars.SUPPRESS_ERROR:
             logger = logging.getLogger("debuglog")
             try:
                 func(*args, **kwargs)

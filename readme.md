@@ -156,7 +156,7 @@ If you want to support this project, feel free to fork it and create your own pu
 
 ## Caveats from Past Code
 
-There are currently still some caveats from the previous code, contained in the `globals.py`. These are:
+There are currently still some caveats from the previous code, contained in the `globalvars.py`. These are:
 
 - `SUPPRESS_ERROR` serves to control the decorators. I recommend setting this value to `False` while developing and to `True` while using the machine. If it's set to `True`, the additional lines from the decorator will be carried out, otherwise the decorator will just execute the function without extra steps. The decorators can suppress the Exception Error and log it instead `(logerror)`. This is quite handy when you want to run the machine without any restarts, but also keep track if anything goes wrong.
 - `cocktail_started` Boolean flag to ensure only one cocktail is run

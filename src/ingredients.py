@@ -23,7 +23,7 @@ from src.database_commander import DatabaseCommander
 
 from src.supporter import generate_ingredient_fields, generate_CBB_names, generate_CBR_names
 
-import globals
+import globalvars
 
 display_controller = DisplayController()
 display_handler = DisplayHandler()

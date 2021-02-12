@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 from collections import Counter
 
-import globals
+import globalvars
 from src.error_suppression import logerror
 
 from src.display_handler import DisplayHandler
@@ -46,14 +46,14 @@ def customlevels(w):
 def get_bottle_ingredients(w):
     """ At the start of the Programm, get all the ingredients from the DB. """
     bottles = database_commander.get_ingredients_at_bottles()
-    globals.old_ingredient.extend(bottles)
+    globalvars.old_ingredient.extend(bottles)
 
 
 def refresh_bottle_cb(w):
     """ Adds or remove items to the bottle comboboxes depending on the changed value"""
     # Creating a list of the new and old bottles used
     CBBnames = generate_CBB_names(w)
-    old_order = globals.old_ingredient
+    old_order = globalvars.old_ingredient
     new_order = display_controller.get_current_combobox_items(CBBnames)
 
     new_blist = list(set(new_order) - set(old_order))
@@ -64,7 +64,7 @@ def refresh_bottle_cb(w):
     display_handler.adjust_bottle_comboboxes(CBBnames, old_bottle, new_bottle)
 
     register_bottles(w)
-    globals.old_ingredient = new_order
+    globalvars.old_ingredient = new_order
 
 
 @logerror
@@ -72,7 +72,7 @@ def newCB_Bottles(w):
     """ Fills each bottle combobox with the possible remaining options
     """
     CBBnames = generate_CBB_names(w)
-    used_ingredients = globals.old_ingredient
+    used_ingredients = globalvars.old_ingredient
     possible_ingredients = database_commander.get_ingredient_names_machine()
 
     shown_ingredients = []

@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 import string
 
-import globals
+import globalvars
 from src.maker import *
 from src.ingredients import *
 from src.recipes import *
