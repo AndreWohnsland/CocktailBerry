@@ -3,11 +3,6 @@
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
-import sys
-import sqlite3
-import time
-import logging
-import re
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -26,12 +21,12 @@ from src.service_handler import ServiceHandler
 import globalvars
 
 
-database_commander = DatabaseCommander()
-display_handler = DisplayHandler()
-rpi_controler = RpiController()
-display_controller = DisplayController()
-service_handler = ServiceHandler()
-logger_handler = LoggerHandler("maker_module", "production_logs")
+DB_COMMANDER = DatabaseCommander()
+DP_HANDLER = DisplayHandler()
+RPI_CONTROLLER = RpiController()
+DP_CONTROLLER = DisplayController()
+SERVICE_HANDLER = ServiceHandler()
+LOG_HANDLER = LoggerHandler("maker_module", "production_logs")
 
 
 @logerror
@@ -40,14 +35,14 @@ def refresh_recipe_maker_view(w, possible_recipes_id=None):
     Checks if all ingredients are registered, if so, adds it to the list widget
     """
     if possible_recipes_id is None:
-        possible_recipes_id = database_commander.get_enabled_recipes_id()
+        possible_recipes_id = DB_COMMANDER.get_enabled_recipes_id()
 
     available_recipes_ids = []
-    bottle_ids = set(database_commander.get_ids_at_bottles())
-    handadds_ids = set(database_commander.get_handadd_ids())
+    bottle_ids = set(DB_COMMANDER.get_ids_at_bottles())
+    handadds_ids = set(DB_COMMANDER.get_handadd_ids())
 
     for recipe_id in possible_recipes_id:
-        recipe_handadds, recipe_machineadds = database_commander.get_ingredients_seperated_by_handadd(recipe_id)
+        recipe_handadds, recipe_machineadds = DB_COMMANDER.get_ingredients_seperated_by_handadd(recipe_id)
         recipe_handadds = set(recipe_handadds)
         recipe_machineadds = set(recipe_machineadds)
 
@@ -56,8 +51,8 @@ def refresh_recipe_maker_view(w, possible_recipes_id=None):
 
         available_recipes_ids.append(recipe_id)
 
-    recipe_names = database_commander.get_multiple_recipe_names_from_ids(available_recipes_ids)
-    display_handler.fill_list_widget(w.LWMaker, recipe_names)
+    recipe_names = DB_COMMANDER.get_multiple_recipe_names_from_ids(available_recipes_ids)
+    DP_HANDLER.fill_list_widget(w.LWMaker, recipe_names)
 
 
 @logerror
@@ -66,18 +61,18 @@ def updated_clicked_recipe_maker(w):
     if not w.LWMaker.selectedItems():
         return
 
-    display_handler.clear_recipe_data_maker(w)
+    DP_HANDLER.clear_recipe_data_maker(w)
     handle_alcohollevel_change(w)
     cocktailname = w.LWMaker.currentItem().text()
 
-    machineadd_data, handadd_data = database_commander.get_recipe_ingredients_by_name_seperated_data(cocktailname)
+    machineadd_data, handadd_data = DB_COMMANDER.get_recipe_ingredients_by_name_seperated_data(cocktailname)
     total_volume = sum([v[1] for v in machineadd_data] + [v[1] for v in handadd_data])
     ingredient_data = machineadd_data
     if handadd_data:
         ingredient_data.extend([["", ""], ["Selbst hinzufügen:", ""]])
         ingredient_data.extend(handadd_data)
 
-    display_handler.fill_recipe_data_maker(w, ingredient_data, total_volume, cocktailname)
+    DP_HANDLER.fill_recipe_data_maker(w, ingredient_data, total_volume, cocktailname)
 
 
 def create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume):
@@ -88,7 +83,8 @@ def create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktai
         adjusted_data.append([ingredient_name, ingredient_volume * factor, ingredient_bottle, ingredient_level])
     total_volume = sum([x[1] for x in adjusted_data])
     volume_factor = cocktail_volume / total_volume
-    update_data, volume_list, bottle_list, comment_data, error_data = scale_and_sort_ingredient_data(adjusted_data, volume_factor)
+    update_data, volume_list, bottle_list, comment_data, error_data = scale_and_sort_ingredient_data(
+        adjusted_data, volume_factor)
     comment = build_comment_maker(comment_data)
     return update_data, volume_list, bottle_list, comment, error_data
 
@@ -139,42 +135,43 @@ def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_tim
         abbruchstring = f" - Rezept wurde bei {round(taken_time, 1)} s abgebrochen - {pumped_volume} ml"
     else:
         abbruchstring = ""
-    logger_handler.log_event("INFO", f"{mengenstring:8} | {cocktail_name}{abbruchstring}")
+    LOG_HANDLER.log_event("INFO", f"{mengenstring:8} | {cocktail_name}{abbruchstring}")
 
 
 def prepare_cocktail(w):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
     if globalvars.cocktail_started:
         return
-    cocktailname, cocktail_volume, alcohol_faktor = display_controller.get_cocktail_data(w)
+    cocktailname, cocktail_volume, alcohol_faktor = DP_CONTROLLER.get_cocktail_data(w)
     if not cocktailname:
-        display_handler.standard_box("Kein Rezept ausgewählt!")
+        DP_HANDLER.standard_box("Kein Rezept ausgewählt!")
         return
-    ingredient_data = database_commander.get_recipe_ingredients_with_bottles(cocktailname)
+    ingredient_data = DB_COMMANDER.get_recipe_ingredients_with_bottles(cocktailname)
     production_props = create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume)
     update_data, ingredient_volumes, ingredient_bottles, comment, error_data = production_props
     if error_data:
         message = f"Es ist in Flasche {error_data[0]} mit der Zutat {error_data[1]} nicht mehr genug Volumen vorhanden, {error_data[2]:.0f} ml wird benötigt!"
-        display_handler.standard_box(message)
+        DP_HANDLER.standard_box(message)
         w.tabWidget.setCurrentIndex(3)
         return
 
     globalvars.cocktail_started = True
     globalvars.make_cocktail = True
-    consumption, taken_time, max_time = rpi_controler.make_cocktail(w, ingredient_bottles, ingredient_volumes)
-    database_commander.set_recipe_counter(cocktailname)
+    consumption, taken_time, max_time = RPI_CONTROLLER.make_cocktail(w, ingredient_bottles, ingredient_volumes)
+    DB_COMMANDER.set_recipe_counter(cocktailname)
     generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
     print("Verbrauchsmengen: ", consumption)
 
-    service_handler.post_cocktail_to_hook(cocktailname, cocktail_volume)
+    SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, cocktail_volume)
 
     if globalvars.make_cocktail:
-        database_commander.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
-        display_handler.standard_box(f"Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{comment}")
+        DB_COMMANDER.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
+        DP_HANDLER.standard_box(
+            f"Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{comment}")
     else:
         consumption_names = [x[0] for x in update_data][: len(consumption)]
-        database_commander.set_multiple_ingredient_consumption(consumption_names, consumption)
-        display_handler.standard_box("Der Cocktail wurde abgebrochen!")
+        DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption)
+        DP_HANDLER.standard_box("Der Cocktail wurde abgebrochen!")
 
     set_fill_level_bars(w)
     reset_alcohollevel(w)
@@ -196,11 +193,11 @@ def reset_alcohollevel(w):
 @logerror
 def handle_alcohollevel_change(w):
     """ Recalculates the alcoholpercentage of the drink with the adjusted Value from the slider. """
-    cocktailname, _, alcohol_faktor = display_controller.get_cocktail_data(w)
+    cocktailname, _, alcohol_faktor = DP_CONTROLLER.get_cocktail_data(w)
     if not cocktailname:
         return
 
-    recipe_data = database_commander.get_recipe_ingredients_by_name(cocktailname)
+    recipe_data = DB_COMMANDER.get_recipe_ingredients_by_name(cocktailname)
     total_volume = 0
     volume_concentration = 0
     for _, volume, _, concentration in recipe_data:
@@ -208,4 +205,4 @@ def handle_alcohollevel_change(w):
         total_volume += volume * factor_volume
         volume_concentration += volume * factor_volume * concentration
     alcohol_level = volume_concentration / total_volume
-    display_handler.set_alcohol_level(w, alcohol_level)
+    DP_HANDLER.set_alcohol_level(w, alcohol_level)

@@ -25,6 +25,7 @@
   - [Pull Requests and Issues](#pull-requests-and-issues)
   - [Caveats from Past Code](#caveats-from-past-code)
 - [Side Notes](#side-notes)
+- [ToDos](#todos)
 
 <!-- /TOC -->
 
@@ -170,3 +171,7 @@ They will be moved into the main logic classes in the future.
 As you probably noticed, the interface is in German since this is the native language of all my friends (which are the users of the machine). I am planning to translate all text to English at some point, and give the possibility to choose between both languages, but currently there is no planned date for that.
 
 To achieve this goal the message display structure needs to be restructured.
+
+# ToDos
+
+- Convert from basic sqlite to SQLAlchemy

@@ -43,6 +43,7 @@ class RpiController(ConfigManager):
         current_time = 0
         consumption = [0] * len(indexes)
         self.activate_pinlist(pins)
+
         print("---- Starting Cocktail ----")
         while current_time < max_time and globalvars.make_cocktail:
             for element, (pin, pin_time, volume_flow) in enumerate(zip(pins, pin_times, volume_flows)):
@@ -51,12 +52,14 @@ class RpiController(ConfigManager):
                 elif pin not in already_closed_pins:
                     self.close_pin(pin, current_time)
                     already_closed_pins.add(pin)
+
             self.consumption_print(consumption, current_time, max_time)
             current_time += self.SLEEP_TIME
             current_time = round(current_time, 2)
             time.sleep(self.SLEEP_TIME)
             w.prow_change(current_time / max_time * 100)
             qApp.processEvents()
+
         print("---- Done ----")
         self.close_pinlist(pins)
         w.prow_close()
@@ -82,7 +85,8 @@ class RpiController(ConfigManager):
 
     def consumption_print(self, consumption, current_time, max_time, interval=1):
         if current_time % interval == 0:
-            print(f"Making Cocktail, {current_time}/{max_time} s:\tThe consumption is currently {[round(x) for x in consumption]}")
+            print(
+                f"Making Cocktail, {current_time}/{max_time} s:\tThe consumption is currently {[round(x) for x in consumption]}")
 
     def clean_print(self, t_cleaned, interval=2):
         if t_cleaned % interval == 0:

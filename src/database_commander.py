@@ -50,11 +50,11 @@ class DatabaseCommander:
         data = self.get_recipe_ingredients_by_name(recipe_name)
         handadd_data = []
         machineaddd_data = []
-        for d in data:
-            if d[2]:
-                handadd_data.append(d[0:2])
+        for row in data:
+            if row[2]:
+                handadd_data.append(row[0:2])
             else:
-                machineaddd_data.append(d[0:2])
+                machineaddd_data.append(row[0:2])
         return machineaddd_data, handadd_data
 
     def get_all_recipes_properties(self):
@@ -210,11 +210,9 @@ class DatabaseCommander:
         return self.convert_consumption_data(data)
 
     def convert_consumption_data(self, data):
-        headers, resetable, lifetime = [], [], []
-        for row in data:
-            headers.append(row[0])
-            resetable.append(row[1])
-            lifetime.append(row[2])
+        headers = [row[0] for row in data]
+        resetable = [row[1] for row in data]
+        lifetime = [row[2] for row in data]
         return [["date", *headers], [datetime.date.today(), *resetable], ["lifetime", *lifetime]]
 
     def get_enabled_status(self, recipe_name):
@@ -401,11 +399,7 @@ class DatabaseHandler:
                 Kommentar TEXT,
                 Anzahl_Lifetime INTEGER,
                 Anzahl INTEGER,
-                Enabled INTEGER,
-                V_Alk INTEGER,
-                c_Alk INTEGER,
-                V_Com INTEGER,
-                c_Com INTEGER);"""
+                Enabled INTEGER);"""
         )
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS Zutaten(
@@ -424,13 +418,27 @@ class DatabaseHandler:
                 Zutaten_ID INTEGER NOT NULL,
                 Menge INTEGER NOT NULL,
                 Alkoholisch INTEGER NOT NULL,
-                Hand INTEGER);"""
+                Hand INTEGER,
+                CONSTRAINT fk_zusammen_zutat
+                    FOREIGN KEY (Zutaten_ID)
+                    REFERENCES Zutaten (ID)
+                    ON DELETE RESTRICT,
+                CONSTRAINT fk_zusammen_rezept
+                    FOREIGN KEY (Rezept_ID)
+                    REFERENCES Rezepte (ID)
+                    ON DELETE CASCADE
+                );"""
         )
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS Belegung(
                 Flasche INTEGER NOT NULL,
                 Zutat_F TEXT NOT NULL,
-                ID INTEGER);"""
+                ID INTEGER,
+                CONSTRAINT fk_belegung_zutat
+                    FOREIGN KEY (ID)
+                    REFERENCES Zutaten (ID)
+                    ON DELETE RESTRICT
+                );"""
         )
         self.cursor.execute("CREATE TABLE IF NOT EXISTS Vorhanden(ID INTEGER NOT NULL);")
 
@@ -440,7 +448,7 @@ class DatabaseHandler:
         self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_flasche ON Belegung(Flasche)")
 
         # Creating the Space Naming of the Bottles
-        for Flaschen_C in range(1, 13):
-            self.cursor.execute("INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)", (Flaschen_C, ""))
+        for bottle_count in range(1, 13):
+            self.cursor.execute("INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)", (bottle_count, ""))
         self.database.commit()
         self.database.close()

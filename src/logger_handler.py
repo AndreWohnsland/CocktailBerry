@@ -1,6 +1,5 @@
 import os
 import logging
-from pathlib import Path
 
 dirpath = os.path.dirname(__file__)
 
@@ -17,20 +16,20 @@ class LoggerHandler:
         logger = logging.getLogger(loggername)
         logger.setLevel(logging.DEBUG)
         if not logger.hasHandlers():
-            fh = logging.FileHandler(self.path)
-            fh.setLevel(logging.DEBUG)
+            filehandler = logging.FileHandler(self.path)
+            filehandler.setLevel(logging.DEBUG)
             formatter = logging.Formatter("%(asctime)s | %(name)s | %(levelname)s: %(message)s", "%Y-%m-%d %H:%M")
-            fh.setFormatter(formatter)
-            logger.addHandler(fh)
+            filehandler.setFormatter(formatter)
+            logger.addHandler(filehandler)
 
         self.logger = logging.getLogger(loggername)
-        self.TEMPLATE = "{:-^80}"
+        self.template = "{:-^80}"
 
     def log_event(self, level, message):
         self.logger.log(getattr(logging, level), message)
 
     def log_header(self, level, message):
-        self.log_event(level, self.TEMPLATE.format(message,))
+        self.log_event(level, self.template.format(message,))
 
     def log_start_program(self):
-        self.logger.info(self.TEMPLATE.format("Starting the Programm",))
+        self.logger.info(self.template.format("Starting the Programm",))

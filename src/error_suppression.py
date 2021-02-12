@@ -1,8 +1,6 @@
 """ Special configs for the Logger """
 import logging
-import time
 from functools import wraps
-import os
 
 import globalvars
 
@@ -17,7 +15,7 @@ def logerror(func):
             try:
                 func(*args, **kwargs)
             except Exception:
-                logger.exception(f"The function {func.__name__} could not be fully excecuted!")
+                logger.exception("The function %s could not be fully excecuted!", func.__name__)
                 print("The function {} could not be fully excecuted!".format(func.__name__))
         else:
             func(*args, **kwargs)
