@@ -56,13 +56,13 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # 	CBSname = getattr(self, "CBB" + str(count))
         # 	CBSname.setCursor(Qt.BlankCursor)
         # init the empty further screens
-        self.pww = None
-        self.kbw = None
-        self.prow = None
-        self.botw = None
-        self.ingd = None
-        self.handw = None
-        self.availw = None
+        self.pww: PasswordScreen = None
+        self.kbw: KeyboardWidget = None
+        self.prow: ProgressScreen = None
+        self.botw: BottleWindow = None
+        self.ingd: GetIngredientWindow = None
+        self.handw: HandaddWidget = None
+        self.availw: AvailableWindow = None
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext=None):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
