@@ -1,8 +1,8 @@
+import string
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
-import string
 
 from ui_elements.Keyboard import Ui_Keyboard
 
@@ -13,7 +13,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
     def __init__(self, parent, le_to_write=None, max_char_len=30):
         super(KeyboardWidget, self).__init__(parent)
         self.setupUi(self)
-        self.ms = parent
+        self.mainscreen = parent
         self.le_to_write = le_to_write
         self.LName.setText(self.le_to_write.text())
         # populating all the buttons
@@ -24,15 +24,17 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.delButton.clicked.connect(self.delete_clicked)
         self.shift.clicked.connect(self.shift_clicked)
         # generating the lists to populate all remaining buttons via iteration
-        self.number_list = [x for x in range(10)]
-        self.char_list_lower = [x for x in string.ascii_lowercase]
-        self.char_list_upper = [x for x in string.ascii_uppercase]
+        self.number_list = list(range(10))
+        self.char_list_lower = list(string.ascii_lowercase)
+        self.char_list_upper = list(string.ascii_uppercase)
         self.attribute_chars = [getattr(self, f"Button{x}") for x in self.char_list_lower]
         self.attribute_numbers = [getattr(self, f"Button{x}") for x in self.number_list]
         for obj, char, char2 in zip(self.attribute_chars, self.char_list_lower, self.char_list_upper):
-            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s))
+            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(
+                inputvalue=iv, inputvalue_shift=iv_s))
         for obj, char, char2 in zip(self.attribute_numbers, self.number_list, self.number_list):
-            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(inputvalue=iv, inputvalue_shift=iv_s))
+            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(
+                inputvalue=iv, inputvalue_shift=iv_s))
         # restricting the Lineedit to a set up Char leng
         self.LName.setMaxLength(max_char_len)
 
