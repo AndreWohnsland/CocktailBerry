@@ -5,8 +5,8 @@ from PyQt5.uic import *
 
 from ui_elements.available import Ui_available
 from src.maker import refresh_recipe_maker_view
-from src.display_handler_ import DisplayHandler
-from src.database_commander_ import DatabaseCommander
+from src.display_handler import DisplayHandler
+from src.database_commander import DatabaseCommander
 
 DP_HANDLER = DisplayHandler()
 DB_COMMANDER = DatabaseCommander()
