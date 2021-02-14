@@ -14,10 +14,10 @@ from src.database_commander import DatabaseCommander
 from src.rpi_controller import RpiController
 from src.bottles import set_fill_level_bars
 
-display_handler = DisplayHandler()
-database_commander = DatabaseCommander()
-rpi_controller = RpiController()
-display_controller = DisplayController()
+DP_HANDLER = DisplayHandler()
+DB_COMMANDER = DatabaseCommander()
+RPI_CONTROLLER = RpiController()
+DP_CONTROLLER = DisplayController()
 
 
 class GetIngredientWindow(QDialog, Ui_addingredient):
@@ -30,18 +30,19 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         super(GetIngredientWindow, self).__init__(parent)
         self.setupUi(self)
         # Set window properties
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint |
+                            Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QIcon(parent.icon_path))
-        self.ms = parent
-        if not self.ms.DEVENVIRONMENT:
+        self.mainscreen = parent
+        if not self.mainscreen.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         # Connect all the buttons
         self.PBplus.clicked.connect(lambda: plusminus(self.LAmount, "+", 20, 100, 10))
         self.PBminus.clicked.connect(lambda: plusminus(self.LAmount, "-", 20, 100, 10))
         self.PBAusgeben.clicked.connect(self.ausgeben_clicked)
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
-        bottles = database_commander.get_ingredients_at_bottles_without_empty_ones()
-        display_handler.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
+        bottles = DB_COMMANDER.get_ingredients_at_bottles_without_empty_ones()
+        DP_HANDLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """
@@ -49,20 +50,21 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
 
     def ausgeben_clicked(self):
         """ Calls the Progressbarwindow and spends the given amount of the ingredient. """
-        import globals
+        import globalvars
 
-        globals.make_cocktail = True
-        ingredient_name, volume = display_controller.get_data_ingredient_window(self)
-        bottle, level = database_commander.get_ingredient_bottle_and_level_by_name(ingredient_name)
+        globalvars.make_cocktail = True
+        ingredient_name, volume = DP_CONTROLLER.get_data_ingredient_window(self)
+        bottle, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
         print(f"Ausgabemenge von {self.CBingredient.currentText()}: {volume}")
 
         self.close()
         if volume > level:
-            display_handler.standard_box(f"{ingredient_name} hat nicht genug Volumen! {level}/{volume} ml vorhanden.")
-            self.ms.tabWidget.setCurrentIndex(3)
+            DP_HANDLER.standard_box(f"{ingredient_name} hat nicht genug Volumen! {level}/{volume} ml vorhanden.")
+            self.mainscreen.tabWidget.setCurrentIndex(3)
             return
 
-        volume, _, _ = rpi_controller.make_cocktail(self.ms, [bottle], [volume], labelchange="Zutat wird ausgegeben!\nFortschritt:")
-        database_commander.set_ingredient_consumption(ingredient_name, volume[0])
-        set_fill_level_bars(self.ms)
-        self.ms.prow_close()
+        volume, _, _ = RPI_CONTROLLER.make_cocktail(
+            self.mainscreen, [bottle], [volume], labelchange="Zutat wird ausgegeben!\nFortschritt:")
+        DB_COMMANDER.set_ingredient_consumption(ingredient_name, volume[0])
+        set_fill_level_bars(self.mainscreen)
+        self.mainscreen.prow_close()

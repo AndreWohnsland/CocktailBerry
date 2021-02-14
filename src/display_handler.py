@@ -15,17 +15,17 @@ class DisplayHandler:
 
     def standard_box(self, textstring):
         """ The default messagebox for the Maker. Uses a QMessageBox with OK-Button """
-        msgBox = QMessageBox()
-        msgBox.setStandardButtons(QMessageBox.Ok)
-        buttonok = msgBox.button(QMessageBox.Ok)
+        messagebox = QMessageBox()
+        messagebox.setStandardButtons(QMessageBox.Ok)
+        buttonok = messagebox.button(QMessageBox.Ok)
         buttonok.setText("     OK     ")
         fillstring = "-" * 70
-        msgBox.setText(f"{fillstring}\n{textstring}\n{fillstring}")
-        msgBox.setStyleSheet(
+        messagebox.setText(f"{fillstring}\n{textstring}\n{fillstring}")
+        messagebox.setStyleSheet(
             "QMessageBox QPushButton{background-color: rgb(0, 123, 255); color: rgb(0, 0, 0); font-size: 30pt;} QMessageBox{background-color: rgb(10, 10, 10); font-size: 16pt;} QMessageBox QLabel{color: rgb(0, 123, 255);}"
         )
-        msgBox.showFullScreen()
-        msgBox.exec_()
+        messagebox.showFullScreen()
+        messagebox.exec_()
 
     # LineEdit
     def clean_multiple_lineedit(self, lineedit_list):

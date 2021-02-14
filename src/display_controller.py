@@ -1,4 +1,3 @@
-import sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -64,10 +63,9 @@ class DisplayController(ConfigManager):
         return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled
 
     def check_ingredient_data(self, lineedit_list):
-        error_messages = self.missing_check(
-            lineedit_list, ["Der Zutatenname fehlt", "Der Alkoholgehalt fehlt", "Das Flaschenvolumen fehlt"]
-        )
-        ingredient_name, ingredient_percentage, ingredient_volume = lineedit_list
+        missing_criteria = ["Der Zutatenname fehlt", "Der Alkoholgehalt fehlt", "Das Flaschenvolumen fehlt"]
+        error_messages = self.missing_check(lineedit_list, missing_criteria)
+        _, ingredient_percentage, ingredient_volume = lineedit_list
         error_messages.extend(self.valid_check_int([ingredient_percentage, ingredient_volume], ["Alkoholgehalt", "Flaschenvolumen"]))
         try:
             if int(ingredient_percentage.text()) > 100:
@@ -97,10 +95,10 @@ class DisplayController(ConfigManager):
     def check_ingredient_password(self, w):
         return self.check_password(w.LEpw2)
 
-    def missing_check(self, lineedit_list, message_list=[]):
+    def missing_check(self, lineedit_list, message_list=None):
         error_messages = []
         standard_message = "Es wurde ein Wert vergessen, bitte nachtragen"
-        if not message_list:
+        if message_list is None:
             message_list = [standard_message for x in lineedit_list]
         for lineedit, message in zip(lineedit_list, message_list):
             if lineedit.text() == "":

@@ -17,6 +17,6 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.PBabbrechen.clicked.connect(lambda: interrupt_cocktail())
         self.setWindowIcon(QIcon(parent.icon_path))
-        self.ms = parent
-        if not self.ms.DEVENVIRONMENT:
+        self.mainscreen = parent
+        if not self.mainscreen.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)

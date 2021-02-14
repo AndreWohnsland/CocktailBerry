@@ -1,6 +1,6 @@
-import requests
 import json
 from typing import Dict
+import requests
 from config.config_manager import ConfigManager
 from src.logger_handler import LoggerHandler
 
@@ -16,15 +16,9 @@ class ServiceHandler(ConfigManager):
     def log_connection_error(self, func: str):
         self.logger.log_event("ERROR", f"Could not connect to the microservice endpoint: '{func}'")
 
-    def return_service_disabled(self):
-        return {
-            "status": 503,
-            "message": "microservice disabled",
-        }
-
     def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int) -> Dict:
         if not self.USE_MICROSERVICE:
-            return self.return_service_disabled()
+            return return_service_disabled()
         # calculare volume in litre
         payload = json.dumps({"cocktailname": cocktailname, "volume": cocktail_volume / 1000})
         endpoint = "/hookhandler/cocktail"
@@ -44,7 +38,7 @@ class ServiceHandler(ConfigManager):
 
     def send_mail(self, file_name, binary_file):
         if not self.USE_MICROSERVICE:
-            return self.return_service_disabled()
+            return return_service_disabled()
         endpoint = "/email"
         full_url = f"{self.base_url}{endpoint}"
         ret_data = {}
@@ -60,3 +54,10 @@ class ServiceHandler(ConfigManager):
         except requests.exceptions.ConnectionError:
             self.log_connection_error(full_url)
         return ret_data
+
+
+def return_service_disabled():
+    return {
+        "status": 503,
+        "message": "microservice disabled",
+    }

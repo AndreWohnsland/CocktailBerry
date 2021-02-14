@@ -9,7 +9,7 @@ def plusminus(label, operator, minimal=0, maximal=1000, dm=10):
     label.setText(str(value_))
 
 
-###### This are temporary Helper Functions, they will be moved later in the UI parent class / there will be objects for them
+# This are temporary Helper Functions, they will be moved later in the UI parent class / there will be objects for them
 def generate_CBB_names(w):
     return [getattr(w, f"CBB{x}") for x in range(1, 11)]
 

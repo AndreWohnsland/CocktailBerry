@@ -3,18 +3,12 @@
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
-import sys
-import sqlite3
-import time
-import datetime
-import csv
+from collections import Counter
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
-from collections import Counter
 
-import globals
 from src.maker import refresh_recipe_maker_view
 from src.error_suppression import logerror
 from src.supporter import generate_CBR_names
@@ -29,14 +23,14 @@ database_commander = DatabaseCommander()
 
 
 @logerror
-def fill_recipeCB_with_ingredients(w):
+def fill_recipe_box_with_ingredients(w):
     """ Asigns all ingredients to the Comboboxes in the recipe tab """
     comboboxes_recipe = generate_CBR_names(w)
     ingredient_list = database_commander.get_ingredient_names_machine()
     display_handler.fill_multiple_combobox(comboboxes_recipe, ingredient_list, clear_first=True)
 
 
-def prepare_enter_new_recipe(w, recipe_name):
+def prepare_enter_new_recipe(recipe_name):
     recipe_id = database_commander.get_recipe_id_by_name(recipe_name)
     if recipe_id:
         return recipe_id, "Dieser Name existiert schon in der Datenbank!"
@@ -92,7 +86,8 @@ def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alco
 def enter_recipe(w, newrecipe):
     """ Enters or updates the recipe into the db
     """
-    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled = display_controller.get_recipe_field_data(w)
+    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled = display_controller.get_recipe_field_data(
+        w)
     handadd_data = w.handaddlist
     if not recipe_name:
         display_handler.standard_box("Bitte Cocktailnamen eingeben!")
@@ -103,7 +98,7 @@ def enter_recipe(w, newrecipe):
         return
 
     if newrecipe:
-        recipe_id, error_message = prepare_enter_new_recipe(w, recipe_name)
+        recipe_id, error_message = prepare_enter_new_recipe(recipe_name)
     else:
         recipe_id, error_message = prepare_update_existing_recipe(w, selected_name)
     if error_message:
