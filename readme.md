@@ -8,6 +8,8 @@
 
 - [The Cocktailmaker](#the-cocktailmaker)
 - [Overview](#overview)
+  - [Interface](#interface)
+  - [Machine](#machine)
 - [Installing Requirements](#installing-requirements)
   - [Minimal Requirements](#minimal-requirements)
   - [Install PyQt5 on RaspberryPi](#install-pyqt5-on-raspberrypi)
@@ -39,6 +41,38 @@ I am _Andre Wohnsland_, a German System Engineer in IoT, trying to get better in
 Some impressions of the UI can be found [here](https://imgur.com/a/fbZ0WuS) and of the machine [here](https://imgur.com/a/Z4tfISx). This app is currently under further construction, new features and refactoring of the old codebase takes place. If you got any questions or proposed improvements, feel free to share them by contacting me.
 
 This app is used to control a cocktail machine and prepare easily cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
+
+## Interface
+
+The interface was programmed with PyQt5 for the users to easily interact with the maker and enter new ingredients/recipes. There are different views for the tasks.
+
+The Maker GUI:
+
+<img src="docs/pictures/Main_ui.png" alt="Maker" width="600"/>
+
+The Ingredient GUI:
+
+<img src="docs/pictures/Ingredients_ui.png" alt="Ingredient" width="600"/>
+
+The Recipe GUI:
+
+<img src="docs/pictures/Recipes_ui.png" alt="Recipe" width="600"/>
+
+The Bottle GUI:
+
+<img src="docs/pictures/Bottles_ui.png" alt="Bottle" width="600"/>
+
+## Machine
+
+The Machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps, cabeling and a custom design housing made out of bended, laser cut and welded stainless steel. The electronics are hidden in a water proof housing, the pumps are within the casing.
+
+Frontview:
+
+<img src="docs/pictures/Frontview.jpg" alt="Frontview" width="600"/>
+
+Sideview:
+
+<img src="docs/pictures/Sideview.jpg" alt="Sideview" width="600"/>
 
 # Installing Requirements
 
