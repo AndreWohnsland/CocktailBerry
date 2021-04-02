@@ -8,8 +8,8 @@
 
 - [The Cocktailmaker](#the-cocktailmaker)
 - [Overview](#overview)
-  - [Interface](#interface)
   - [Machine](#machine)
+  - [Interface](#interface)
 - [Installing Requirements](#installing-requirements)
   - [Minimal Requirements](#minimal-requirements)
   - [Install PyQt5 on RaspberryPi](#install-pyqt5-on-raspberrypi)
@@ -42,6 +42,18 @@ Some impressions of the UI can be found [here](https://imgur.com/a/fbZ0WuS) and 
 
 This app is used to control a cocktail machine and prepare easily cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
 
+## Machine
+
+The Machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps, cabeling and a custom design housing made out of bended, laser cut and welded stainless steel. The electronics are hidden in a water proof housing, the pumps are within the casing.
+
+Frontview:
+
+<img src="docs/pictures/Frontview.jpg" alt="Frontview" width="600"/>
+
+Sideview:
+
+<img src="docs/pictures/Sideview.jpg" alt="Sideview" width="600"/>
+
 ## Interface
 
 The interface was programmed with PyQt5 for the users to easily interact with the maker and enter new ingredients/recipes. There are different views for the tasks.
@@ -61,18 +73,6 @@ The Recipe GUI:
 The Bottle GUI:
 
 <img src="docs/pictures/Bottles_ui.png" alt="Bottle" width="600"/>
-
-## Machine
-
-The Machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps, cabeling and a custom design housing made out of bended, laser cut and welded stainless steel. The electronics are hidden in a water proof housing, the pumps are within the casing.
-
-Frontview:
-
-<img src="docs/pictures/Frontview.jpg" alt="Frontview" width="600"/>
-
-Sideview:
-
-<img src="docs/pictures/Sideview.jpg" alt="Sideview" width="600"/>
 
 # Installing Requirements
 
