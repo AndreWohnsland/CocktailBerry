@@ -46,6 +46,10 @@ This app is used to control a cocktail machine and prepare easily cocktails over
 
 The Machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps, cabeling and a custom design housing made out of bended, laser cut and welded stainless steel. The electronics are hidden in a water proof housing, the pumps are within the casing.
 
+In Action:
+
+<img src="docs/pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
+
 Frontview:
 
 <img src="docs/pictures/Frontview.jpg" alt="Frontview" width="600"/>
