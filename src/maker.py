@@ -121,8 +121,10 @@ def build_comment_maker(comment_data):
 
 
 def enough_ingredient(level, needed_volume):
-    """Checks if the needed volume is there """
-    if needed_volume > level:
+    """Checks if the needed volume is there
+    Accepts if there is at least 80% of needed volume
+    to be more efficient with the remainder volume in the bottle"""
+    if needed_volume*0.8 > level:
         return False
     return True
 
