@@ -157,8 +157,6 @@ def prepare_cocktail(w):
         w.tabWidget.setCurrentIndex(3)
         return
 
-    shared.cocktail_started = True
-    shared.make_cocktail = True
     consumption, taken_time, max_time = RPI_CONTROLLER.make_cocktail(w, ingredient_bottles, ingredient_volumes)
     DB_COMMANDER.set_recipe_counter(cocktailname)
     generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)

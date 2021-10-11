@@ -3,9 +3,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
-import time
 
 from ui_elements.bonusingredient import Ui_addingredient
+from config.config_manager import shared
 
 from src.supporter import plusminus
 from src.display_handler import DisplayHandler
@@ -50,9 +50,6 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
 
     def ausgeben_clicked(self):
         """ Calls the Progressbarwindow and spends the given amount of the ingredient. """
-        import globalvars
-
-        globalvars.make_cocktail = True
         ingredient_name, volume = DP_CONTROLLER.get_data_ingredient_window(self)
         bottle, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
         print(f"Ausgabemenge von {self.CBingredient.currentText()}: {volume}")
@@ -68,3 +65,4 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         DB_COMMANDER.set_ingredient_consumption(ingredient_name, volume[0])
         set_fill_level_bars(self.mainscreen)
         self.mainscreen.prow_close()
+        shared.cocktail_started = False

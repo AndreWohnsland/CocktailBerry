@@ -32,7 +32,9 @@ class RpiController(ConfigManager):
             qApp.processEvents()
         self.close_pinlist(active_pins)
 
-    def make_cocktail(self, w, bottle_list, volume_list, labelchange=""):
+    def make_cocktail(self, w, bottle_list: list[int], volume_list: list[float], labelchange=""):
+        shared.cocktail_started = True
+        shared.make_cocktail = True
         w.progressionqwindow(labelchange)
         already_closed_pins = set()
         indexes = [x - 1 for x in bottle_list]
@@ -65,29 +67,29 @@ class RpiController(ConfigManager):
         w.prow_close()
         return [round(x) for x in consumption], current_time, max_time
 
-    def close_pin(self, pin, current_time):
+    def close_pin(self, pin: int, current_time: float):
         if not self.devenvironment:
             GPIO.output(pin, 1)
         print(f"{current_time}s: Pin number <{pin}> is closed")
 
-    def activate_pinlist(self, pinlist):
+    def activate_pinlist(self, pinlist: list[int]):
         print(f"Opening Pins: {pinlist}")
         if not self.devenvironment:
             for pin in pinlist:
                 GPIO.setup(pin, 0)
                 GPIO.output(pin, 0)
 
-    def close_pinlist(self, pinlist):
+    def close_pinlist(self, pinlist: list[int]):
         print(f"Closing Pins: {pinlist}")
         if not self.devenvironment:
             for pin in pinlist:
                 GPIO.output(pin, 1)
 
-    def consumption_print(self, consumption, current_time, max_time, interval=1):
+    def consumption_print(self, consumption: list[float], current_time: float, max_time: float, interval=1):
         if current_time % interval == 0:
             print(
                 f"Making Cocktail, {current_time}/{max_time} s:\tThe consumption is currently {[round(x) for x in consumption]}")
 
-    def clean_print(self, t_cleaned, interval=2):
+    def clean_print(self, t_cleaned: float, interval=2):
         if t_cleaned % interval == 0:
             print(f"Cleaning, {t_cleaned}/{self.CLEAN_TIME} s\t{'.' * int(t_cleaned)}")
