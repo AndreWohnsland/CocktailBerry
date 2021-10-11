@@ -85,7 +85,7 @@ class DisplayHandler:
 
     def adjust_bottle_comboboxes(self, combobox_list, old_item, new_item):
         for combobox in combobox_list:
-            if (old_item != "") and (new_item != combobox.currentText()):
+            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):
                 combobox.addItem(old_item)
             if (new_item != "") and (new_item != combobox.currentText()):
                 self.delete_single_combobox_item(combobox, new_item)
