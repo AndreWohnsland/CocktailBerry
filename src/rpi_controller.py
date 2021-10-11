@@ -1,10 +1,10 @@
+import time
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
-import time
 
-import globalvars
+from config.config_manager import shared
 from config.config_manager import ConfigManager
 
 
@@ -45,7 +45,7 @@ class RpiController(ConfigManager):
         self.activate_pinlist(pins)
 
         print("---- Starting Cocktail ----")
-        while current_time < max_time and globalvars.make_cocktail:
+        while current_time < max_time and shared.make_cocktail:
             for element, (pin, pin_time, volume_flow) in enumerate(zip(pins, pin_times, volume_flows)):
                 if pin_time > current_time:
                     consumption[element] += volume_flow * self.SLEEP_TIME

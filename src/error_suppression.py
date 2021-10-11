@@ -2,7 +2,7 @@
 import logging
 from functools import wraps
 
-import globalvars
+from config.config_manager import shared
 
 
 def logerror(func):
@@ -10,7 +10,7 @@ def logerror(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if globalvars.SUPPRESS_ERROR:
+        if shared.supress_error:
             logger = logging.getLogger("debuglog")
             try:
                 func(*args, **kwargs)

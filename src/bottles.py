@@ -8,7 +8,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 
-import globalvars
+from config.config_manager import shared
 from src.error_suppression import logerror
 
 from src.display_handler import DisplayHandler
@@ -41,14 +41,14 @@ def customlevels(w):
 def get_bottle_ingredients():
     """ At the start of the Programm, get all the ingredients from the DB. """
     bottles = DB_COMMANDER.get_ingredients_at_bottles()
-    globalvars.old_ingredient.extend(bottles)
+    shared.old_ingredient = bottles
 
 
 def refresh_bottle_cb(w):
     """ Adds or remove items to the bottle comboboxes depending on the changed value"""
     # Creating a list of the new and old bottles used
     combobox_bottles = generate_CBB_names(w)
-    old_order = globalvars.old_ingredient
+    old_order = shared.old_ingredient
     new_order = DP_CONTROLLER.get_current_combobox_items(combobox_bottles)
 
     new_blist = list(set(new_order) - set(old_order))
@@ -59,7 +59,7 @@ def refresh_bottle_cb(w):
     DP_HANDLER.adjust_bottle_comboboxes(combobox_bottles, old_bottle, new_bottle)
 
     register_bottles(w)
-    globalvars.old_ingredient = new_order
+    shared.old_ingredient = new_order
 
 
 @logerror
@@ -67,12 +67,13 @@ def calculate_combobox_bottles(w):
     """ Fills each bottle combobox with the possible remaining options
     """
     combobox_bottles = generate_CBB_names(w)
-    used_ingredients = globalvars.old_ingredient
+    used_ingredients = shared.old_ingredient
     possible_ingredients = DB_COMMANDER.get_ingredient_names_machine()
 
     shown_ingredients = []
     for row, _ in enumerate(used_ingredients):
-        shown_ingredients.append(sorted(set(possible_ingredients) - set([x for i, x in enumerate(used_ingredients) if i != row])))
+        shown_ingredients.append(sorted(set(possible_ingredients) -
+                                 {x for i, x in enumerate(used_ingredients) if i != row}))
 
     DP_HANDLER.fill_multiple_combobox_individually(combobox_bottles, shown_ingredients, True)
 
