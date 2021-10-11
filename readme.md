@@ -25,7 +25,6 @@
 - [Development](#development)
   - [Program Schema](#program-schema)
   - [Pull Requests and Issues](#pull-requests-and-issues)
-  - [Caveats from Past Code](#caveats-from-past-code)
 - [Side Notes](#side-notes)
 - [ToDos](#todos)
 
@@ -148,6 +147,8 @@ These values are stored under the `config/config_manager.py` file. Depending on 
 - `MICROSERVICE_BASE_URL` base url for microservice (if default docker it is at http://127.0.0.1:5000)
 - `DEVENVIRONMENT` boolean flag to enable some development features
 
+In addition, there is a `Shared` config class, with dynamic values. The only thing you may want to change is `supress_error` to true, this will activate a wrapper function catching and logging errors of the wrapped function. In production this will effectivly prevent the app from crashing due to errors (bugs) and log them, but setting it to `True` is at own risk.
+
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
 
 Setting up the machine is quite easy as well. Just go to the **Belegung** Tab and select via the dropdown boxes your assigned ingredients. In addition, you can define ingredients which are also there, but are not connected to the machine (under _Zutaten/Ingredients > verfügbar/available_). You can define ingredients in recipes (at _selbst hinzufügen / add your own_) which should be later added via hand (for example sticky ingredients which would not be optimal for your pump, or only very rarely used ones in cocktails).
@@ -192,17 +193,6 @@ In the following diagram, the schema and Classes / Containers are displayed in a
 ## Pull Requests and Issues
 
 If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue.
-
-## Caveats from Past Code
-
-There are currently still some caveats from the previous code, contained in the `globalvars.py`. These are:
-
-- `SUPPRESS_ERROR` serves to control the decorators. I recommend setting this value to `False` while developing and to `True` while using the machine. If it's set to `True`, the additional lines from the decorator will be carried out, otherwise the decorator will just execute the function without extra steps. The decorators can suppress the Exception Error and log it instead `(logerror)`. This is quite handy when you want to run the machine without any restarts, but also keep track if anything goes wrong.
-- `cocktail_started` Boolean flag to ensure only one cocktail is run
-- `make_cocktail` Boolean flag to interrupt the cocktail procedure over the Ui via a button
-- `old_ingredient` Memorisation of the last order of ingredients before a change of the comboboxes
-
-They will be moved into the main logic classes in the future.
 
 # Side Notes
 

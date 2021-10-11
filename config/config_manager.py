@@ -10,6 +10,17 @@ class ConfigManager:
     PARTYMODE = False
     LOGGERNAME = "cocktaillogger"
     LOGGERNAME_DEBUG = "debuglogger"
-    USE_MICROSERVICE = True
+    USE_MICROSERVICE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
     DEVENVIRONMENT = True
+
+
+class Shared:
+    def __init__(self):
+        self.cocktail_started = False
+        self.make_cocktail = True
+        self.supress_error = False
+        self.old_ingredient = []
+
+
+shared = Shared()
