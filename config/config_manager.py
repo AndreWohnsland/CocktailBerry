@@ -16,6 +16,8 @@ class ConfigManager:
 
 
 class Shared:
+    """Shared global variables which may dynamically change and are needed on different spaces"""
+
     def __init__(self):
         self.cocktail_started = False
         self.make_cocktail = True
