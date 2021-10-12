@@ -1,8 +1,3 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
-
 from config.config_manager import ConfigManager
 from src.database_commander import DatabaseCommander
 from src.supporter import generate_lineedit_recipes, generate_CBR_names
@@ -18,7 +13,7 @@ class DisplayController(ConfigManager):
         return [combobox.currentText() for combobox in combobox_list]
 
     def get_toggle_status(self, button_list):
-        return [True if button.isChecked() else False for button in button_list]
+        return [button.isChecked() for button in button_list]
 
     def get_lineedit_text(self, lineedit_list):
         return [lineedit.text() for lineedit in lineedit_list]
@@ -66,11 +61,12 @@ class DisplayController(ConfigManager):
         missing_criteria = ["Der Zutatenname fehlt", "Der Alkoholgehalt fehlt", "Das Flaschenvolumen fehlt"]
         error_messages = self.missing_check(lineedit_list, missing_criteria)
         _, ingredient_percentage, ingredient_volume = lineedit_list
-        error_messages.extend(self.valid_check_int([ingredient_percentage, ingredient_volume], ["Alkoholgehalt", "Flaschenvolumen"]))
+        error_messages.extend(self.valid_check_int(
+            [ingredient_percentage, ingredient_volume], ["Alkoholgehalt", "Flaschenvolumen"]))
         try:
             if int(ingredient_percentage.text()) > 100:
                 error_messages.append("Alkoholgehalt kann nicht größer als 100 sein!")
-        except:
+        except ValueError:
             pass
         return error_messages
 

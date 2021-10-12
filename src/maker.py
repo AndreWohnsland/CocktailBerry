@@ -3,11 +3,6 @@
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
-
 from src.bottles import set_fill_level_bars
 from src.error_suppression import logerror
 

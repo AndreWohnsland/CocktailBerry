@@ -3,11 +3,6 @@
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
-
 from config.config_manager import shared
 from src.error_suppression import logerror
 
@@ -72,8 +67,8 @@ def calculate_combobox_bottles(w):
 
     shown_ingredients = []
     for row, _ in enumerate(used_ingredients):
-        shown_ingredients.append(sorted(set(possible_ingredients) -
-                                 {x for i, x in enumerate(used_ingredients) if i != row}))
+        used_without_self = {x for i, x in enumerate(used_ingredients) if i != row}
+        shown_ingredients.append(sorted(set(possible_ingredients) - used_without_self))
 
     DP_HANDLER.fill_multiple_combobox_individually(combobox_bottles, shown_ingredients, True)
 

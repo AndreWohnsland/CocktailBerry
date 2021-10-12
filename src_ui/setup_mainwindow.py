@@ -2,11 +2,9 @@
 of the passed window. Also defines the Mode for controls.
 """
 import os
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+from PyQt5.QtWidgets import QMainWindow
 
 from config.config_manager import ConfigManager
 from src.maker import *

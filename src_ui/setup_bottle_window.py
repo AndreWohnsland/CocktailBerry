@@ -1,7 +1,5 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow
 
 from ui_elements.bottlewindow import Ui_Bottlewindow
 
@@ -38,9 +36,9 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         mylabel = [getattr(self, f"LAmount{x}") for x in range(1, 11)]
         for plus, minus, field, vol in zip(myplus, myminus, mylabel, self.maxvolume):
             plus.clicked.connect(lambda _, l=field, b=vol: plusminus(
-                label=l, operator="+", minimal=50, maximal=b, dm=25))
+                label=l, operator="+", minimal=50, maximal=b, delta=25))
             minus.clicked.connect(lambda _, l=field, b=vol: plusminus(
-                label=l, operator="-", minimal=50, maximal=b, dm=25))
+                label=l, operator="-", minimal=50, maximal=b, delta=25))
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """

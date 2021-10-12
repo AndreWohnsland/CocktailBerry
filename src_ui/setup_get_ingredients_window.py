@@ -1,8 +1,6 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QDialog
 
 from ui_elements.bonusingredient import Ui_addingredient
 from config.config_manager import shared

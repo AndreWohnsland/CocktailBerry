@@ -1,8 +1,6 @@
-import sys
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMessageBox
+
 
 from src.supporter import generate_maker_ingredients_fields, generate_maker_volume_fields, generate_CBR_names, generate_lineedit_recipes
 

@@ -1,8 +1,5 @@
 import time
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+from PyQt5.QtWidgets import qApp
 
 from config.config_manager import shared
 from config.config_manager import ConfigManager

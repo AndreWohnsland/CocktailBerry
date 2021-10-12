@@ -1,10 +1,7 @@
 import sys
 import traceback
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+from PyQt5.QtCore import pyqtSignal, QRunnable, QObject, pyqtSlot
 
 
 class WorkerSignals(QObject):
@@ -51,7 +48,7 @@ class Worker(QRunnable):
         super(Worker, self).__init__()
 
         # Store constructor arguments (re-used for processing)
-        self.fn = fn
+        self.function = fn
         self.args = args
         self.kwargs = kwargs
         self.signals = WorkerSignals()
@@ -67,7 +64,7 @@ class Worker(QRunnable):
 
         # Retrieve args/kwargs here; and fire processing using them
         try:
-            result = self.fn(*self.args, **self.kwargs)
+            result = self.function(*self.args, **self.kwargs)
         except:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]

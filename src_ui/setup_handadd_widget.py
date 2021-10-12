@@ -1,9 +1,8 @@
 from collections import Counter
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtGui import QIcon, QIntValidator
 
 from ui_elements.handadds import Ui_handadds
 from src.display_handler import DisplayHandler
