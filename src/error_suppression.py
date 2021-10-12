@@ -16,7 +16,7 @@ def logerror(func):
                 func(*args, **kwargs)
             except Exception:
                 logger.exception("The function %s could not be fully excecuted!", func.__name__)
-                print("The function {} could not be fully excecuted!".format(func.__name__))
+                print(f"The function {func.__name__} could not be fully excecuted!")
         else:
             func(*args, **kwargs)
 

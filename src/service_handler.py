@@ -19,7 +19,7 @@ class ServiceHandler(ConfigManager):
     def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int) -> Dict:
         if not self.USE_MICROSERVICE:
             return return_service_disabled()
-        # calculare volume in litre
+        # calculate volume in litre
         payload = json.dumps({"cocktailname": cocktailname, "volume": cocktail_volume / 1000})
         endpoint = "/hookhandler/cocktail"
         full_url = f"{self.base_url}{endpoint}"
