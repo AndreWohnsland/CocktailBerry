@@ -1,0 +1,4 @@
+streamlit==1.0.0
+streamlit-autorefresh == 0.0.1
+matplotlib == 3.4.3
+pywaffle == 0.6.3
