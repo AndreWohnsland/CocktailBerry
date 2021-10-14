@@ -2,6 +2,7 @@ version: '3'
 
 services:
   frontend:
+    restart: always
     build: frontend
     ports:
       - 8501:8501
@@ -10,6 +11,7 @@ services:
     volumes:
       - ./storage:/app/storage
   backend:
+    restart: always
     build: backend
     ports:
       - 8080:8080
