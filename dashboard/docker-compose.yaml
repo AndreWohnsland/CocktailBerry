@@ -3,6 +3,9 @@ version: '3'
 services:
   frontend:
     restart: always
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     build: frontend
     ports:
       - 8501:8501
