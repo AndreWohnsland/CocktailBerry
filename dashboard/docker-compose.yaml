@@ -4,6 +4,7 @@ services:
   frontend:
     restart: always
     privileged: true
+    user: root
     cap_add:
       - NET_ADMIN
       - NET_RAW
