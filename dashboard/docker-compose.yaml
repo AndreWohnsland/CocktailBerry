@@ -2,13 +2,10 @@ version: '3'
 
 services:
   frontend:
+    name: cocktail-dashboard-frontend
     restart: always
-    # privileged: true
-    # user: root
-    # cap_add:
-    #   - NET_ADMIN
-    #   - NET_RAW
     build: frontend
+    image: andrewo92/coktaildashboard-frontend:latest
     ports:
       - 8501:8501
     depends_on:
@@ -16,8 +13,10 @@ services:
     volumes:
       - ./storage:/app/storage
   backend:
+    name: cocktail-dashboard-frontend
     restart: always
     build: backend
+    image: andrewo92/coktaildashboard-backend:latest
     ports:
       - 8080:8080
     volumes:

@@ -1,8 +1,10 @@
 version: '3.8'
 services:
   api-service:
+    name: cocktail-microservice
     restart: always
     build: ./microservice/
+    image: andrewo92/coktail-microservice:latest
     volumes:
       - ./microservice/:/usr/src/app/
     ports:
