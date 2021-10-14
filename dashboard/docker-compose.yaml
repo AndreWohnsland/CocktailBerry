@@ -3,11 +3,11 @@ version: '3'
 services:
   frontend:
     restart: always
-    privileged: true
-    user: root
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
+    # privileged: true
+    # user: root
+    # cap_add:
+    #   - NET_ADMIN
+    #   - NET_RAW
     build: frontend
     ports:
       - 8501:8501
