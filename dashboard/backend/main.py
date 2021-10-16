@@ -30,8 +30,8 @@ async def enter_cocktail_for_team(team: Teaminfo):
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     entry_datetime = datetime.datetime.now().replace(microsecond=0)
-    SQL = "INSERT INTO TEAM(Date, Team, Volume) VALUES(?,?,?)"
-    cursor.execute(SQL, (entry_datetime, team.team, team.volume,))
+    sql = "INSERT INTO TEAM(Date, Team, Volume) VALUES(?,?,?)"
+    cursor.execute(sql, (entry_datetime, team.team, team.volume,))
     conn.commit()
     conn.close()
     return {"message": "Team entry was Successfull", "team": team.team, "volume": team.volume}
@@ -43,8 +43,8 @@ def get_leaderboard(hourrange=None, limit=2, count=True):
         addition = f" WHERE Date >= datetime('now','-{hourrange} hours')"
     agg = "count(*)" if count else "sum(Volume)"
     conn = sqlite3.connect(database_path)
-    SQL = f"SELECT Team, {agg} as amount FROM Team{addition} GROUP BY Team ORDER BY {agg} DESC LIMIT ?"
-    df = pd.read_sql(SQL, conn, params=(limit,))
+    sql = f"SELECT Team, {agg} as amount FROM Team{addition} GROUP BY Team ORDER BY {agg} DESC LIMIT ?"
+    df = pd.read_sql(sql, conn, params=(limit,))
     conn.close()
     return_data = {x: y for x, y in zip(df.Team.to_list(), df.amount.to_list())}
     return return_data
