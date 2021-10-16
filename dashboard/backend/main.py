@@ -20,6 +20,12 @@ class Teaminfo(BaseModel):
     volume: int
 
 
+class BoardConfig(BaseModel):
+    hourrange: Optional[int] = None
+    limit: Optional[int] = 5
+    count: Optional[bool] = True
+
+
 @app.get("/")
 def home():
     return {"message": "Welcome to dashboard api"}
@@ -46,17 +52,14 @@ def get_leaderboard(hourrange=None, limit=2, count=True):
     sql = f"SELECT Team, {agg} as amount FROM Team{addition} GROUP BY Team ORDER BY {agg} DESC LIMIT ?"
     df = pd.read_sql(sql, conn, params=(limit,))
     conn.close()
-    return_data = {x: y for x, y in zip(df.Team.to_list(), df.amount.to_list())}
+    return_data = dict(zip(df.Team.to_list(), df.amount.to_list()))
     return return_data
 
 
 @app.get("/leaderboard")
-def leaderboard(
-    hourrange: Optional[int] = 24,
-    limit: Optional[int] = 5,
-    count: Optional[bool] = True
-):
-    return get_leaderboard(hourrange, limit, count)
+def leaderboard(conf: BoardConfig):
+    print(conf.hourrange, conf.limit, conf.count)
+    return get_leaderboard(conf.hourrange, conf.limit, conf.count)
 
 
 def create_tables():
