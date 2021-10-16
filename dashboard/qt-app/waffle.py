@@ -1,10 +1,20 @@
 import math
+import json
+import requests
 import matplotlib
 import matplotlib.pyplot as plt
 
 from pywaffle import Waffle
 
 matplotlib.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
+
+
+NAMES = [
+    "Anzahl (Heute)",
+    "Volumen (Heute)",
+    "Anzahl (Komplett)",
+    "Volumen (Komplett)"
+]
 
 
 def sort_dict_items(to_sort: dict):
@@ -48,8 +58,39 @@ def generate_dimensions(total: float, count=True):
     return {"rows": row}
 
 
-def generate_figure(title: str, count=True, sort=True):
-    data = {"A": 10, "B": 5, "C": 15}
+def get_data(count: bool, hourrange: int, limit: int):
+    headers = {"content-type": "application/json"}
+    payload = {"limit": limit, "count": count, "hourrange": hourrange}
+    payload = json.dumps(payload)
+    res = requests.get("http://127.0.0.1:8080/leaderboard", data=payload, headers=headers)
+    return json.loads(res.text)
+
+
+def decide_data(datatype: int):
+    count = True
+    sort = True
+    hourrange = None
+    if datatype in (1, 2):
+        hourrange = 24
+        limit = 5
+    if datatype in (3, 4):
+        sort = False
+        limit = 10
+    if datatype in (2, 4):
+        count = False
+    return (count, sort, hourrange, limit)
+
+
+def generate_figure(datatype: int):
+    """Generates the Waffle plot.
+    Type is int from 1-4:
+    1: Amount Today
+    2: Volume Today
+    3: Amount All Time
+    4: Volume All Time
+    """
+    count, sort, hourrange, limit = decide_data(datatype)
+    data = get_data(count, hourrange, limit)
     waffle_data = extract_data(sort, data)
     dims = generate_dimensions(sum(data.values()), count)
     fig = plt.figure(
@@ -57,7 +98,7 @@ def generate_figure(title: str, count=True, sort=True):
         **dims,
         values=waffle_data,
         title={
-            'label': title,
+            'label': NAMES[datatype - 1],
             'fontdict': {
                 'fontsize': 50
             }

@@ -8,4 +8,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     w = Leaderboard()
     w.showFullScreen()
+    # w.update(15)
     sys.exit(app.exec_())

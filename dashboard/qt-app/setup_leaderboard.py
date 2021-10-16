@@ -1,9 +1,11 @@
-
+from itertools import cycle
+import time
 import matplotlib
 from mainwindow import Ui_Leaderboard
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, qApp
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from waffle import generate_figure
 
@@ -19,12 +21,22 @@ class Leaderboard(QMainWindow, Ui_Leaderboard):
         self.setWindowFlags(Qt.FramelessWindowHint)
 
         self.selectbtn.clicked.connect(self.select)
+        self.options = cycle([1, 2, 3, 4])
+        self.curr_option = next(self.options)
 
-        self.canvas = FigureCanvas(generate_figure("TEST"))
+        fig = generate_figure(self.curr_option)
+        self.canvas = FigureCanvas(fig)
         self.horizontalLayout.addWidget(self.canvas)
 
     def select(self):
-        print("clicked")
         self.canvas.deleteLater()
-        self.canvas = FigureCanvas(generate_figure("Clicked"))
+        self.curr_option = next(self.options)
+        self.canvas = FigureCanvas(generate_figure(self.curr_option))
         self.horizontalLayout.addWidget(self.canvas)
+
+    def update(self, timing=15):
+        self.canvas.deleteLater()
+        self.canvas = FigureCanvas(generate_figure(self.curr_option))
+        self.horizontalLayout.addWidget(self.canvas)
+        time.sleep(timing)
+        qApp.processEvents()
