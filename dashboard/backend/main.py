@@ -2,6 +2,8 @@ import os
 import datetime
 from pathlib import Path
 import sqlite3
+from typing import Optional
+import pandas as pd
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -33,6 +35,28 @@ async def enter_cocktail_for_team(team: Teaminfo):
     conn.commit()
     conn.close()
     return {"message": "Team entry was Successfull", "team": team.team, "volume": team.volume}
+
+
+def get_leaderboard(hourrange=None, limit=2, count=True):
+    addition = ""
+    if hourrange is not None:
+        addition = f" WHERE Date >= datetime('now','-{hourrange} hours')"
+    agg = "count(*)" if count else "sum(Volume)"
+    conn = sqlite3.connect(database_path)
+    SQL = f"SELECT Team, {agg} as amount FROM Team{addition} GROUP BY Team ORDER BY {agg} DESC LIMIT ?"
+    df = pd.read_sql(SQL, conn, params=(limit,))
+    conn.close()
+    return_data = {x: y for x, y in zip(df.Team.to_list(), df.amount.to_list())}
+    return return_data
+
+
+@app.get("/leaderboard")
+def leaderboard(
+    hourrange: Optional[int] = 24,
+    limit: Optional[int] = 5,
+    count: Optional[bool] = True
+):
+    return get_leaderboard(hourrange, limit, count)
 
 
 def create_tables():
