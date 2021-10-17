@@ -17,6 +17,7 @@ from src.save_handler import SaveHandler
 from src.display_handler import DisplayHandler
 from src.database_commander import DatabaseCommander
 from src.logger_handler import LoggerHandler
+from src_ui.setup_team_window import TeamScreen
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
 from src_ui.setup_progress_screen import ProgressScreen
@@ -61,6 +62,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.ingd: GetIngredientWindow = None
         self.handw: HandaddWidget = None
         self.availw: AvailableWindow = None
+        self.teamw: TeamScreen = None
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext=None):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
@@ -82,6 +84,10 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         if labelchange:
             self.prow.Lheader.setText(labelchange)
         self.prow.show()
+
+    def teamwindow(self):
+        self.teamw = TeamScreen(self)
+        self.teamw.exec_()
 
     def prow_change(self, pbvalue):
         """ Changes the value of the Progressionbar of the ProBarWindow. """
