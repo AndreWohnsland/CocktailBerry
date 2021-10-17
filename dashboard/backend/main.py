@@ -3,7 +3,6 @@ import datetime
 from pathlib import Path
 import sqlite3
 from typing import Optional
-import pandas as pd
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -49,16 +48,16 @@ def get_leaderboard(hourrange=None, limit=2, count=True):
         addition = f" WHERE Date >= datetime('now','-{hourrange} hours')"
     agg = "count(*)" if count else "sum(Volume)"
     conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
     sql = f"SELECT Team, {agg} as amount FROM Team{addition} GROUP BY Team ORDER BY {agg} DESC LIMIT ?"
-    df = pd.read_sql(sql, conn, params=(limit,))
+    cursor.execute(sql, (limit,))
+    return_data = dict(cursor.fetchall())
     conn.close()
-    return_data = dict(zip(df.Team.to_list(), df.amount.to_list()))
     return return_data
 
 
 @app.get("/leaderboard")
 def leaderboard(conf: BoardConfig):
-    print(conf.hourrange, conf.limit, conf.count)
     return get_leaderboard(conf.hourrange, conf.limit, conf.count)
 
 
