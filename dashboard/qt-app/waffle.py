@@ -67,17 +67,11 @@ def get_data(count: bool, hourrange: int, limit: int):
 
 
 def decide_data(datatype: int):
-    count = True
-    sort = True
-    hourrange = None
-    if datatype in (1, 2):
-        hourrange = 24
-        limit = 5
-    if datatype in (3, 4):
-        sort = False
-        limit = 10
-    if datatype in (2, 4):
-        count = False
+    index = datatype - 1
+    count = [True, False, True, False][index]
+    sort = [True, True, False, False][index]
+    hourrange = [24, 24, None, None][index]
+    limit = [5, 5, 10, 10][index]
     return (count, sort, hourrange, limit)
 
 
@@ -93,6 +87,9 @@ def generate_figure(datatype: int):
     data = get_data(count, hourrange, limit)
     waffle_data = extract_data(sort, data)
     dims = generate_dimensions(sum(data.values()), count)
+    # close current (old) figure, to avoid memory leak
+    # this is needed because old figures will keep open until explicitly closed
+    plt.close()
     fig = plt.figure(
         FigureClass=Waffle,
         **dims,
