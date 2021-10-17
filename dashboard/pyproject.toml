@@ -13,6 +13,9 @@ pip-chill = "^1.0.1"
 matplotlib = "^3.4.3"
 pywaffle = "^0.6.3"
 streamlit-autorefresh = "^0.0.1"
+pandas = "^1.3.3"
+requests = "^2.26.0"
+PyQt5 = "^5.15.4"
 
 [tool.poetry.dev-dependencies]
 
