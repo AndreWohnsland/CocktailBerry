@@ -18,6 +18,9 @@ class RpiController(ConfigManager):
             self.devenvironment = True
 
     def clean_pumps(self):
+        """Clean the pumps for the defined time in the config.
+        Acitvates all pumps for the given time
+        """
         active_pins = self.USEDPINS[: self.NUMBER_BOTTLES]
         self.activate_pinlist(active_pins)
         t_cleaned = 0
@@ -30,6 +33,22 @@ class RpiController(ConfigManager):
         self.close_pinlist(active_pins)
 
     def make_cocktail(self, w, bottle_list: list[int], volume_list: list[float], labelchange=""):
+        """RPI Logic to prepare the cocktail.
+        Calculates needed time for each slot according to data and config.
+        Updates Progressbar status. Returns data for DB updates.
+
+        Args:
+            w (QtMainWindow): MainWindow Object
+            bottle_list (list[int]): Number of bottles to be used
+            volume_list (list[float]): Corresponding Volumens needed of bottles
+            labelchange (str, optional): Option to change the display text of Progress Screen. Defaults to "".
+
+        Returns:
+            tuple(list[int], float, float): Consumption of each bottle, taken time, max needed time
+        """
+        # Only shwo team dialog if it is enabled
+        if self.USE_TEAMS:
+            w.teamwindow()
         shared.cocktail_started = True
         shared.make_cocktail = True
         w.progressionqwindow(labelchange)
