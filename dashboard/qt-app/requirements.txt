@@ -1,0 +1,4 @@
+matplotlib
+pywaffle 
+requests
+PyQt5
