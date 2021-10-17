@@ -10,13 +10,14 @@
 !include DEVICONS/sqllite.puml
 !include DEVICONS/aptana.puml
 !include DEVICONS/docker.puml
+!include DEVICONS/html5.puml
 !include FONTAWESOME/users.puml
 !include FONTAWESOME/user.puml
 !include FONTAWESOMEOLD/send_o.puml
 
 skinparam backgroundColor #fff
 
-LAYOUT_WITH_LEGEND()
+HIDE_STEREOTYPE()
 
   Container(configmanager, "Config Manager", "python", "Class to hold all configuration, used where needed for configs", "python")
   Container(displaycontroller, "Display Controller", "python", "Class to get values from GUI", "python")
@@ -37,7 +38,11 @@ LAYOUT_WITH_LEGEND()
   Person_Ext(user, "User", "Person who wants the exported data from the DB", "user")
   System(email, "GMail", "Gmail account / service used as sender over smtp for the data", "send_o")
 
-Rel_U(dbhandler, db, "Reads/Writes")
+  Container(dashapi, "Dashboard API", "python", "FastAPI to get team Data for the leaderboard", "docker")
+  Container(dashfrontend, "Dashboard", "Streamlit", "Python Streamlit Page to show leaderboard", "html5")
+
+
+Rel(dbhandler, db, "Reads/Writes")
 
 Rel(mainwindow, dialogwindow, "opens")
 Rel(mainwindow, progresscreen, "opens")
@@ -48,11 +53,15 @@ Rel(mainwindow, savehandler, "calls")
 ' Rel(rpicontroller, configmanager, "uses")
 ' Rel(displaycontroller, configmanager, "uses")
 
-Rel_U(apicontroller, displaycontroller, "uses")
+Rel(apicontroller, displaycontroller, "uses")
 Rel(apicontroller, displayhandler, "uses")
-Rel_L(apicontroller, dbhandler, "uses")
+Rel(apicontroller, dbhandler, "uses")
 Rel(apicontroller, rpicontroller, "calls")
 Rel(apicontroller, microservice, "post", "http")
+
+Rel_L(apicontroller, dashapi, "post", "http")
+Rel(dashfrontend, dashapi, "uses", "http")
+
 
 Rel(microservice, webhook, "post", "https")
 Rel(microservice, email, "uses", "smtp")

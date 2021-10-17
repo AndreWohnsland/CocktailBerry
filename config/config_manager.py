@@ -23,6 +23,7 @@ class ConfigManager:
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
     # if to use the teams function and according options.
     # URL should be 'device_ip:8080' where dashboard container is running and in the same network
+    # Button names must be two strings in the list
     USE_TEAMS = True
     TEAM_BUTTON_NAMES = ["Team 1", "Team 2"]
     TEAM_API_URL = "http://127.0.0.1:8080"
@@ -38,6 +39,7 @@ class Shared:
         self.make_cocktail = True
         self.supress_error = False
         self.old_ingredient = []
+        self.selected_team = "Nothing"
 
 
 shared = Shared()
