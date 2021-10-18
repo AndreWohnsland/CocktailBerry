@@ -29,6 +29,7 @@
   - [Microservices](#microservices)
   - [Dashboard with Teams](#dashboard-with-teams)
   - [Usage of Services](#usage-of-services)
+  - [Installing Docker](#installing-docker)
 - [Development](#development)
   - [Program Schema](#program-schema)
   - [Pull Requests and Issues](#pull-requests-and-issues)
@@ -261,6 +262,22 @@ docker-compose up -d
 ```
 
 This will handle the setup of all docker services. You will have to rename the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
+
+## Installing Docker
+
+tl;dr: Just run these commands in sequence on the pi and reboot after the first half.
+
+```bash
+sudo apt-get update && sudo apt-get upgrade
+curl -sSL https://get.docker.com | sh
+sudo usermod -aG docker ${USER}
+# reboot here
+sudo apt-get install libffi-dev libssl-dev
+sudo pip3 install docker-compose
+sudo systemctl enable docker
+# tesing if it works
+docker run hello-world
+```
 
 # Development
 
