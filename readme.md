@@ -24,6 +24,7 @@
     - [PyQt can't be Installed](#pyqt-cant-be-installed)
     - [Numpy Import Error at Matplotlib Import](#numpy-import-error-at-matplotlib-import)
     - [How to get the GUI Running on Startup](#how-to-get-the-gui-running-on-startup)
+    - [The GUI on the RPi Looks Different than on the Screenshots](#the-gui-on-the-rpi-looks-different-than-on-the-screenshots)
 - [Advanced Topics](#advanced-topics)
   - [Microservices](#microservices)
   - [Dashboard with Teams](#dashboard-with-teams)
@@ -181,7 +182,7 @@ You probably need to run `sudo apt install python3-pyqt5` instead of `pip instal
 
 ### Numpy Import Error at Matplotlib Import
 
-Try first running `pip3 install -U numpy` and `sudo apt install libatlas3-base`. If it is still not fixed, try uninstalling and installing numpy / matplotlib again.
+Try first running `pip3 install -U numpy` and `sudo apt install libatlas3-base`. If it is still not fixed, try uninstalling and installing numpy / matplotlib again. If really nothing else works try `sudo pip3 install -U numpy`, then you will probably need to run the python file with root priviledge as well, which may result in another GUI style used by the system.
 
 ### How to get the GUI Running on Startup
 
@@ -198,14 +199,26 @@ Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh
 ```bash
 #!/bin/bash
 # launcher.sh for dashboard
+# no need for sudo if there were no Numpy import errors
 sudo python3 /home/pi/Cocktailmaker_AW/dashboard/qt-app/main.py
 ```
 
 ```bash
 #!/bin/bash
 # launcher.sh for cocktailmaker
-sudo python3 /home/pi/Cocktailmaker_AW/runme.py
+python3 /home/pi/Cocktailmaker_AW/runme.py
 ```
+
+If your setup is equal to mine (Raspberry Pi, Maker GitHub cloned to `/home/pi/` folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
+
+```bash
+cp /home/pi/Cocktailmaker_AW/launcher.sh /home/pi/
+cp /home/pi/Cocktailmaker_AW/cocktail.desktop /etc/xdg/autostart/
+```
+
+### The GUI on the RPi Looks Different than on the Screenshots
+
+I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI ressources. Using the pi user will result in the shown interfaces at the cocktailmaker (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
 
 # Advanced Topics
 
