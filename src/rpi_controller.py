@@ -6,17 +6,20 @@ from config.config_manager import shared
 from config.config_manager import ConfigManager
 
 
+try:
+    from RPi import GPIO
+    GPIO.setmode(GPIO.BCM)
+    DEV = False
+except ModuleNotFoundError:
+    DEV = True
+
+
 class RpiController(ConfigManager):
     """Controler Class for all RPi related GPIO routines """
 
     def __init__(self):
-        try:
-            import RPi.GPIO as GPIO
-
-            GPIO.setmode(GPIO.BCM)
-            self.devenvironment = False
-        except ModuleNotFoundError:
-            self.devenvironment = True
+        self.devenvironment = DEV
+        print(f"Devenvironment is {self.devenvironment}")
 
     def clean_pumps(self):
         """Clean the pumps for the defined time in the config.
