@@ -216,6 +216,14 @@ cp /home/pi/Cocktailmaker_AW/launcher.sh /home/pi/
 cp /home/pi/Cocktailmaker_AW/cocktail.desktop /etc/xdg/autostart/
 ```
 
+If there are any problems with the lxterminal window opening and instant closing, check the rights of the shell file, it needs executable (x) rights, otherwise use `chmod` to give x-rights:
+
+```bash
+sudo chmod +x /home/pi/launcher.sh
+# or
+sudo chmod 755 /home/pi/launcher.sh
+```
+
 ### The GUI on the RPi Looks Different than on the Screenshots
 
 I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI ressources. Using the pi user will result in the shown interfaces at the cocktailmaker (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
