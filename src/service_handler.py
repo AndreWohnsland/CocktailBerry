@@ -33,11 +33,11 @@ class ServiceHandler(ConfigManager):
         files = {"upload_file": (file_name, binary_file,)}
         return self.try_to_send(endpoint, post_type="file", files=files)
 
-    def post_team_data(self, team_name: str) -> Dict:
+    def post_team_data(self, team_name: str, cocktail_volume: int) -> Dict:
         """Post the given team name to the team api if activated"""
         if not self.USE_TEAMS:
             return team_disabled()
-        payload = json.dumps({"team": team_name})
+        payload = json.dumps({"team": team_name, "volume": cocktail_volume})
         endpoint = f"{self.TEAM_API_URL}/cocktail"
         return self.try_to_send(endpoint, payload=payload, post_type="teamdata")
 

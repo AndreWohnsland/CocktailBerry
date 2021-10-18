@@ -158,6 +158,10 @@ def prepare_cocktail(w):
     print("Verbrauchsmengen: ", consumption)
 
     SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, cocktail_volume)
+    # only post team if cocktail was made over 60%
+    readiness = taken_time / max_time
+    if readiness >= 0.6:
+        SERVICE_HANDLER.post_team_data(shared.selected_team, round(cocktail_volume * readiness))
 
     if shared.make_cocktail:
         DB_COMMANDER.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
