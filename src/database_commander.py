@@ -1,5 +1,6 @@
 import datetime
 import os
+import shutil
 from pathlib import Path
 import sqlite3
 from typing import Any
@@ -361,18 +362,24 @@ class DatabaseHandler:
     """Handler Class for Connecting and querring Databases"""
 
     database_path = os.path.join(DIRPATH, "..", f"{DATABASE_NAME}.db")
+    database_path_default = os.path.join(DIRPATH, "..", f"{DATABASE_NAME}_default.db")
 
     def __init__(self):
         self.database_path = DatabaseHandler.database_path
-        # print(self.database_path)
-        if not Path(self.database_path).exists():
+        if not Path(self.database_path_default).exists():
             print("creating Database")
             self.create_tables()
+        if not Path(self.database_path).exists():
+            print("Copying default database for maker usage")
+            self.copy_default_database()
         self.database = None
         self.cursor = None
 
-    def connect_database(self):
-        self.database = sqlite3.connect(self.database_path)
+    def connect_database(self, path: str = None):
+        if path:
+            self.database = sqlite3.connect(path)
+        else:
+            self.database = sqlite3.connect(self.database_path)
         self.cursor = self.database.cursor()
 
     def query_database(self, sql: str, serachtuple=()):
@@ -388,8 +395,11 @@ class DatabaseHandler:
         self.database.close()
         return result
 
+    def copy_default_database(self):
+        shutil.copy(self.database_path_default, self.database_path)
+
     def create_tables(self):
-        self.connect_database()
+        self.connect_database(self.database_path_default)
         # Creates each Table
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS Rezepte(
