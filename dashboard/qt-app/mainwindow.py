@@ -26,7 +26,7 @@ class Ui_Leaderboard(object):
         Leaderboard.setStyleSheet("QWidget\n"
 "{\n"
 "    color: rgb(0, 123, 255);    \n"
-"    background-color: rgb(0, 0, 0);\n"
+"    background-color: rgb(14, 17, 23);\n"
 "\n"
 "}\n"
 "\n"
