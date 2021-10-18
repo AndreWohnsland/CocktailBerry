@@ -1,4 +1,5 @@
 import time
+from typing import List
 from PyQt5.QtWidgets import qApp
 
 from config.config_manager import shared
@@ -32,19 +33,19 @@ class RpiController(ConfigManager):
             qApp.processEvents()
         self.close_pinlist(active_pins)
 
-    def make_cocktail(self, w, bottle_list: list[int], volume_list: list[float], labelchange=""):
+    def make_cocktail(self, w, bottle_list: List[int], volume_list: List[float], labelchange=""):
         """RPI Logic to prepare the cocktail.
         Calculates needed time for each slot according to data and config.
         Updates Progressbar status. Returns data for DB updates.
 
         Args:
             w (QtMainWindow): MainWindow Object
-            bottle_list (list[int]): Number of bottles to be used
-            volume_list (list[float]): Corresponding Volumens needed of bottles
+            bottle_list (List[int]): Number of bottles to be used
+            volume_list (List[float]): Corresponding Volumens needed of bottles
             labelchange (str, optional): Option to change the display text of Progress Screen. Defaults to "".
 
         Returns:
-            tuple(list[int], float, float): Consumption of each bottle, taken time, max needed time
+            tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
         """
         # Only shwo team dialog if it is enabled
         if self.USE_TEAMS:
@@ -88,20 +89,20 @@ class RpiController(ConfigManager):
             GPIO.output(pin, 1)
         print(f"{current_time}s: Pin number <{pin}> is closed")
 
-    def activate_pinlist(self, pinlist: list[int]):
+    def activate_pinlist(self, pinlist: List[int]):
         print(f"Opening Pins: {pinlist}")
         if not self.devenvironment:
             for pin in pinlist:
                 GPIO.setup(pin, 0)
                 GPIO.output(pin, 0)
 
-    def close_pinlist(self, pinlist: list[int]):
+    def close_pinlist(self, pinlist: List[int]):
         print(f"Closing Pins: {pinlist}")
         if not self.devenvironment:
             for pin in pinlist:
                 GPIO.output(pin, 1)
 
-    def consumption_print(self, consumption: list[float], current_time: float, max_time: float, interval=1):
+    def consumption_print(self, consumption: List[float], current_time: float, max_time: float, interval=1):
         if current_time % interval == 0:
             print(
                 f"Making Cocktail, {current_time}/{max_time} s:\tThe consumption is currently {[round(x) for x in consumption]}")
