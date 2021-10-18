@@ -21,6 +21,7 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         self.mainscreen = parent
         if not self.mainscreen.DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
+        self.move(0, 0)
 
         def set_team(team: str):
             shared.selected_team = team
