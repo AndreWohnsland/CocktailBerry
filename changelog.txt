@@ -1,3 +1,13 @@
+--------------- 2021_10_19 ---------------------------------------------------------------------------------------------------------
+- release of v1.2 
+- Introduced teams to have a competetive point
+- Added Dashboard for display of teams
+- Added API Service for teams
+- Introduced type hints a many places, more docs
+- Some refactoring
+- Removed global vars and switched to Shared class
+- Switched to default db and the creation of local db, that git won't overwrite local db
+
 --------------- 2020_12_20 ---------------------------------------------------------------------------------------------------------
 - Introduced microservice to post tasks to
 - This includes an endpoint to make a post of the cocktail name and date to an webhook / endpoint
