@@ -89,7 +89,7 @@ def generate_figure(datatype: int):
     dims = generate_dimensions(sum(data.values()), count)
     # close current (old) figure, to avoid memory leak
     # this is needed because old figures will keep open until explicitly closed
-    plt.close()
+    plt.close('all')
     fig = plt.figure(
         FigureClass=Waffle,
         **dims,
