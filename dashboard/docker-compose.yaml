@@ -2,6 +2,7 @@ version: '3'
 
 services:
   backend:
+    image: cocktail-dashboard-backend
     container_name: cocktail-dashboard-backend
     restart: always
     build: backend
