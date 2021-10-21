@@ -1,0 +1,4 @@
+streamlit
+streamlit-autorefresh
+matplotlib
+pywaffle

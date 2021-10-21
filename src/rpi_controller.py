@@ -1,26 +1,30 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
 import time
+from typing import List
+from PyQt5.QtWidgets import qApp
 
-import globalvars
+from config.config_manager import shared
 from config.config_manager import ConfigManager
+
+
+try:
+    from RPi import GPIO
+    GPIO.setmode(GPIO.BCM)
+    DEV = False
+except ModuleNotFoundError:
+    DEV = True
 
 
 class RpiController(ConfigManager):
     """Controler Class for all RPi related GPIO routines """
 
     def __init__(self):
-        try:
-            import RPi.GPIO as GPIO
-
-            GPIO.setmode(GPIO.BCM)
-            self.devenvironment = False
-        except ModuleNotFoundError:
-            self.devenvironment = True
+        self.devenvironment = DEV
+        print(f"Devenvironment is {self.devenvironment}")
 
     def clean_pumps(self):
+        """Clean the pumps for the defined time in the config.
+        Acitvates all pumps for the given time
+        """
         active_pins = self.USEDPINS[: self.NUMBER_BOTTLES]
         self.activate_pinlist(active_pins)
         t_cleaned = 0
@@ -32,7 +36,25 @@ class RpiController(ConfigManager):
             qApp.processEvents()
         self.close_pinlist(active_pins)
 
-    def make_cocktail(self, w, bottle_list, volume_list, labelchange=""):
+    def make_cocktail(self, w, bottle_list: List[int], volume_list: List[float], labelchange=""):
+        """RPI Logic to prepare the cocktail.
+        Calculates needed time for each slot according to data and config.
+        Updates Progressbar status. Returns data for DB updates.
+
+        Args:
+            w (QtMainWindow): MainWindow Object
+            bottle_list (List[int]): Number of bottles to be used
+            volume_list (List[float]): Corresponding Volumens needed of bottles
+            labelchange (str, optional): Option to change the display text of Progress Screen. Defaults to "".
+
+        Returns:
+            tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
+        """
+        # Only shwo team dialog if it is enabled
+        if self.USE_TEAMS:
+            w.teamwindow()
+        shared.cocktail_started = True
+        shared.make_cocktail = True
         w.progressionqwindow(labelchange)
         already_closed_pins = set()
         indexes = [x - 1 for x in bottle_list]
@@ -45,7 +67,7 @@ class RpiController(ConfigManager):
         self.activate_pinlist(pins)
 
         print("---- Starting Cocktail ----")
-        while current_time < max_time and globalvars.make_cocktail:
+        while current_time < max_time and shared.make_cocktail:
             for element, (pin, pin_time, volume_flow) in enumerate(zip(pins, pin_times, volume_flows)):
                 if pin_time > current_time:
                     consumption[element] += volume_flow * self.SLEEP_TIME
@@ -65,29 +87,29 @@ class RpiController(ConfigManager):
         w.prow_close()
         return [round(x) for x in consumption], current_time, max_time
 
-    def close_pin(self, pin, current_time):
+    def close_pin(self, pin: int, current_time: float):
         if not self.devenvironment:
             GPIO.output(pin, 1)
         print(f"{current_time}s: Pin number <{pin}> is closed")
 
-    def activate_pinlist(self, pinlist):
+    def activate_pinlist(self, pinlist: List[int]):
         print(f"Opening Pins: {pinlist}")
         if not self.devenvironment:
             for pin in pinlist:
                 GPIO.setup(pin, 0)
                 GPIO.output(pin, 0)
 
-    def close_pinlist(self, pinlist):
+    def close_pinlist(self, pinlist: List[int]):
         print(f"Closing Pins: {pinlist}")
         if not self.devenvironment:
             for pin in pinlist:
                 GPIO.output(pin, 1)
 
-    def consumption_print(self, consumption, current_time, max_time, interval=1):
+    def consumption_print(self, consumption: List[float], current_time: float, max_time: float, interval=1):
         if current_time % interval == 0:
             print(
                 f"Making Cocktail, {current_time}/{max_time} s:\tThe consumption is currently {[round(x) for x in consumption]}")
 
-    def clean_print(self, t_cleaned, interval=2):
+    def clean_print(self, t_cleaned: float, interval=2):
         if t_cleaned % interval == 0:
             print(f"Cleaning, {t_cleaned}/{self.CLEAN_TIME} s\t{'.' * int(t_cleaned)}")

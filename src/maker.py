@@ -3,11 +3,6 @@
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
-
 from src.bottles import set_fill_level_bars
 from src.error_suppression import logerror
 
@@ -18,7 +13,7 @@ from src.display_controller import DisplayController
 from src.logger_handler import LoggerHandler
 from src.service_handler import ServiceHandler
 
-import globalvars
+from config.config_manager import shared
 
 
 DB_COMMANDER = DatabaseCommander()
@@ -124,7 +119,7 @@ def enough_ingredient(level, needed_volume):
     """Checks if the needed volume is there
     Accepts if there is at least 80% of needed volume
     to be more efficient with the remainder volume in the bottle"""
-    if needed_volume*0.8 > level:
+    if needed_volume * 0.8 > level:
         return False
     return True
 
@@ -132,7 +127,7 @@ def enough_ingredient(level, needed_volume):
 def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_time):
     """Enters a log entry for the made cocktail"""
     mengenstring = f"{cocktail_volume} ml"
-    if globalvars.make_cocktail == False:
+    if not shared.make_cocktail:
         pumped_volume = round(cocktail_volume * (taken_time) / max_time)
         abbruchstring = f" - Rezept wurde bei {round(taken_time, 1)} s abgebrochen - {pumped_volume} ml"
     else:
@@ -142,7 +137,7 @@ def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_tim
 
 def prepare_cocktail(w):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
-    if globalvars.cocktail_started:
+    if shared.cocktail_started:
         return
     cocktailname, cocktail_volume, alcohol_faktor = DP_CONTROLLER.get_cocktail_data(w)
     if not cocktailname:
@@ -157,16 +152,18 @@ def prepare_cocktail(w):
         w.tabWidget.setCurrentIndex(3)
         return
 
-    globalvars.cocktail_started = True
-    globalvars.make_cocktail = True
     consumption, taken_time, max_time = RPI_CONTROLLER.make_cocktail(w, ingredient_bottles, ingredient_volumes)
     DB_COMMANDER.set_recipe_counter(cocktailname)
     generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
     print("Verbrauchsmengen: ", consumption)
 
     SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, cocktail_volume)
+    # only post team if cocktail was made over 60%
+    readiness = taken_time / max_time
+    if readiness >= 0.6:
+        SERVICE_HANDLER.post_team_data(shared.selected_team, round(cocktail_volume * readiness))
 
-    if globalvars.make_cocktail:
+    if shared.make_cocktail:
         DB_COMMANDER.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
         DP_HANDLER.standard_box(
             f"Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{comment}")
@@ -177,12 +174,12 @@ def prepare_cocktail(w):
 
     set_fill_level_bars(w)
     reset_alcohollevel(w)
-    globalvars.cocktail_started = False
+    shared.cocktail_started = False
 
 
 def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
-    globalvars.make_cocktail = False
+    shared.make_cocktail = False
     print("Rezept wird abgebrochen!")
 
 

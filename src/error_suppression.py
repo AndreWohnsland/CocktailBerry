@@ -2,7 +2,7 @@
 import logging
 from functools import wraps
 
-import globalvars
+from config.config_manager import shared
 
 
 def logerror(func):
@@ -10,13 +10,13 @@ def logerror(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if globalvars.SUPPRESS_ERROR:
+        if shared.supress_error:
             logger = logging.getLogger("debuglog")
             try:
                 func(*args, **kwargs)
             except Exception:
                 logger.exception("The function %s could not be fully excecuted!", func.__name__)
-                print("The function {} could not be fully excecuted!".format(func.__name__))
+                print(f"The function {func.__name__} could not be fully excecuted!")
         else:
             func(*args, **kwargs)
 

@@ -1,6 +1,8 @@
 version: '3.8'
 services:
   api-service:
+    image: cocktail-microservice
+    container_name: cocktail-microservice
     restart: always
     build: ./microservice/
     volumes:

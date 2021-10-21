@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  frontend:
+    container_name: cocktail-dashboard-frontend
+    restart: always
+    build: frontend
+    ports:
+      - 8501:8501
+    depends_on:
+      - backend
+    volumes:
+      - ./storage:/app/storage
+  backend:
+    container_name: cocktail-dashboard-backend
+    restart: always
+    build: backend
+    ports:
+      - 8080:8080
+    volumes:
+      - ./storage:/app/storage

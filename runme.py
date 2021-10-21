@@ -2,10 +2,6 @@ import sys
 from PyQt5.QtWidgets import QApplication
 
 import src_ui.setup_mainwindow as setupui
-import globalvars
-
-
-globalvars.initialize()
 
 
 if __name__ == "__main__":

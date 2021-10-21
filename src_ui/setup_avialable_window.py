@@ -1,7 +1,6 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow
+
 
 from ui_elements.available import Ui_available
 from src.maker import refresh_recipe_maker_view

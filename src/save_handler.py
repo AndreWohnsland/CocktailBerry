@@ -46,8 +46,9 @@ class SaveHandler:
         subfoldername = "saves"
         full_file_name = f"{dtime}_{filename}"
         savepath = os.path.join(DIRPATH, "..", subfoldername, full_file_name)
-        with open(savepath, mode="a", newline="") as writer_file:
+        with open(savepath, mode="a", newline="", encoding="utf-8") as writer_file:
             csv_writer = csv.writer(writer_file, delimiter=",")
             for row in data_rows:
                 csv_writer.writerow(row)
-        S_HANDLER.send_mail(full_file_name, open(savepath, "rb"))
+        with open(savepath, "rb") as read_file:
+            S_HANDLER.send_mail(full_file_name, read_file)

@@ -1,32 +1,36 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="1302px" preserveAspectRatio="none" style="width:1173px;height:1302px;" version="1.1" viewBox="0 0 1173 1302" width="1173px" zoomAndPan="magnify"><defs/><g><!--MD5=[dedadde33254924fa5262a9f3efcf6d7]
-entity configmanager--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="218" x="877" y="10.5"/><image height="48" width="48" x="962" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="20.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="121" x="925.5" y="85.1094">Config Manager</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="964.5" y="101.082">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="988" y="118.252"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="190" x="891" y="135.8613">Class to hold all configuration,</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="195" x="888.5" y="153.4707">used where needed for configs</text><!--MD5=[b07c610e305c099cb85aa9961d45b14f]
-entity displaycontroller--><rect fill="#438DD5" height="138.4375" style="stroke:#3C7FC0;stroke-width:1.5;" width="203" x="286.5" y="19.5"/><image height="48" width="48" x="364" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="29.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="137" x="319.5" y="94.1094">Display Controller</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="366.5" y="110.082">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="390" y="127.252"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="179" x="300.5" y="144.8613">Class to get values from GUI</text><!--MD5=[0b83bef35d0ed29f1b5099755031c34f]
-entity displayhandler--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="219" x="24.5" y="496"/><image height="48" width="48" x="110" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="506"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="121" x="73.5" y="570.6094">Display Handler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="112.5" y="586.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="136" y="603.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="195" x="38.5" y="621.3613">Class to set values / properties</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="38" x="115" y="638.9707">in GUI</text><!--MD5=[8a7e0513bd84421f24a419beb0ec9b98]
-entity rpicontroller--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="219" x="278.5" y="496"/><image height="48" width="48" x="364" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="506"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="107" x="334.5" y="570.6094">RPI Controller</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="366.5" y="586.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="390" y="603.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="195" x="292.5" y="621.3613">Class to controll the Raspberry</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="109" x="333.5" y="638.9707">Pi and the GPIOs</text><!--MD5=[31948b9d8281befde8528aba2388c2bb]
-entity apicontroller--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="198" x="289" y="248"/><image height="48" width="48" x="364" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="106" x="335" y="322.6094">API Controller</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="366.5" y="338.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="390" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="170" x="303" y="373.3613">Modules to handle logic for</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="94" x="341" y="390.9707">seperate views</text><!--MD5=[66b0507f297f6d670471e03714edf96c]
-entity savehandler--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="209" x="522.5" y="248"/><image height="48" width="48" x="603" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="102" x="576" y="322.6094">Save Handler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="605.5" y="338.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="629" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="181" x="536.5" y="373.3613">Class to export data from DB</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="37" x="608.5" y="390.9707">to csv</text><!--MD5=[8025ad86b7bfd9c9a9c22787cab830ca]
-entity microservice--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="200" x="533" y="496"/><image height="48" width="48" x="609" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACUElEQVR4Xu2WS0oEMRCGvVsfYC7gAbyAB/AAunIl7lzMwuXsXIk7wY0LkRGEAREEQVFBEYTxIz+UsSvdyTx8oJEfSVdXki9VlepZaTbPfpVWvOlnVYFyqkA5VaCcKlBOfxFosH2+Mboy8eh9yrUEICAOxw/D41s0Or3j0fuUazlAokE7Rzf/G2jr4NqLfJEpUBBM/UDZCpsBiLVOJk/sKg7GGmApBGKF8c0zzv6VaWYg5UVAlqbClDFrbe8SB9z8W+lbgUiuBgRpdffCOzQlQLYZqxBwezQg7PG1NztqVYwBESfewrS+P2mR5YHYgGlI/Yb/8RgRrWEoHeXCih04No6XwmKIVo46G2vKngdiYxUsUiR8ytjJxvaIcwuIXZPVo2hp/N1A1/evsYWA4cxqZkkDwasNEEvYOK4hG8d1A4TVE0a1KDkwto1VdnrVgk4DqSDA4gSLq7U4cQLXbyp9AhqE73YTgKzKuu4n9uQNj+Mfy+DsriWdP4BYnSxMp1NyxEAhNQtnYrLdKVIwDX9KnK4Vg8eXN9mVRJvCUnqFXVPM0iq1dMrw0BVdugDy2w2itKaBmtAnvHFB+RL26gQiql2TB6HUfPr7pWbh7S11AvWEVy2/Czcp9Sdv9+oEasIViD9MahvDqKsWqtX6+tUH1ISTJe92oYhi/J0qUQaoCUw9faxLRFEt27/qVx6oCQdV44/vZ1JwcAAlOuucVBGQROT1DbKOp7umryl2ccyUIK8ZgGIRM/0q0nWbLxhJzQn0dapAOVWgnCpQThUopwqU0zsLC7tqGBQfDgAAAABJRU5ErkJggg==" y="506"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="97" x="584.5" y="570.6094">Microservice</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="611.5" y="586.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="635" y="603.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="172" x="547" y="621.3613">Flask API to call services to</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="130" x="568" y="638.9707">interact with the www</text><!--MD5=[b1a7855e6585e68a7a22c3cffb63dc0f]
-entity webhook--><rect fill="#1168BD" height="158.5625" style="stroke:#3C7FC0;stroke-width:1.5;" width="217" x="400.5" y="744"/><image height="48" width="48" x="485" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAC00lEQVR4Xs2XPW7VUBCFs4XZQZbAElgCS6CkRNQUVLRQ09BQh5YGIZBoEIICCQoKUtAQKYqQEAWNOXiUo2H+/Bz7+WV0CmLP8/08M+f6ciR3Xl4rHcVLh9WBgW49/vDx9OfTN9955WBAN+6/ffX5fLgMkOn1AwAd33v96MUpUTRuPnynd7cGuvvsy8WvP44GAUpN2A4ITfl29ttCkAz/YNoWQBiX5+9/OBSUCtI/MUxM3jtQHBd4ShvEWxu57PaTT25cUAlUiwl0GUrFi3sBgmWwu1gUTA+NTRGXFpPVgdALNy6IBydfYybEBFpM1gXCwgbjXwDOLmaFqmiOtZisBYR29OMSlVpMlgOl44JxjpmuVKnFZAkQFsCzLAoCy8RMGUtorSSFxeTKQCw4oxkXcLtBkcJicgWg+AVAy9xDKYyRNjR6nj93rzEDyB0YhssvQMxUYZI0zY2t1BaTHYFmjYvK5ke7VRaTXYDigaG3NG7ZnqbclcWkB5o1Liq2SSN2RFVZTCqg6sAQM63iRyPOsqqymKRA6YEhplnhua6WQzYfFHPiTvEf0OSBIZVrE6P6YWMxIRA3DEZ6YHBKv+0a6SyrGosJgRwNlompTnhRV04GXibmU43FhEDxRfFQHCdij1XxpGGjL21jMbEzhNtxMIexWtYLQHT7tYu0EVaNxSS6DEmxWsNYMBDHc0+MapYpZqbl90AqpFYF66OZZVVvMamAKJQkLVga1RpWvcVkEkh1PP5vfLJZ/SyreovJjkCquIPb6K1O9RaTFYGGsWXISUeV6i0m6wIxUIb0nC9TFpM9AWnErXXSYrIWENbG9lPtFPCpzvukxWQVIEDYMlQ7BdL4xawsJsuBUPx0awYi+pUWbKgtJsuBKrNQacGaXy0C2mUnVNmttZloWQJUGbtXUxvVDCB7BmqGYKFmAKFBSjP5SV+iGUAyFnyy5gs1D2gDXTugv2r+sg9oaALdAAAAAElFTkSuQmCC" y="754"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="82" x="468" y="818.6094">Webhooks</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="511" y="836.6582"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="135" x="441.5" y="854.2676">External webhooks or</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="197" x="410.5" y="871.877">endpoints to post data from the</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="102" x="458" y="889.4863">cocktailmaker to</text><!--MD5=[ec4f74e93930c28c11af6339f2384956]
-entity dbhandler--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="217" x="7.5" y="248"/><image height="48" width="48" x="92" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="136" x="48" y="322.6094">Database Handler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="44" x="94" y="338.582">[Python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="118" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="189" x="21.5" y="373.3613">Handles and executes all SQL</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="130" x="51" y="390.9707">logic and connection</text><!--MD5=[7468467f3b6b392f1d176d828c753b77]
-entity db--><path d="M6,16 C6,6 116,6 116,6 C116,6 226,6 226,16 L226,161.0469 C226,171.0469 116,171.0469 116,171.0469 C116,171.0469 6,171.0469 6,161.0469 L6,16 " fill="#438DD5" style="stroke:#3C7FC0;stroke-width:1.5;"/><path d="M6,16 C6,26 116,26 116,26 C116,26 226,26 226,16 " fill="none" style="stroke:#3C7FC0;stroke-width:1.5;"/><image height="48" width="48" x="92" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB9klEQVR4Xu2XP0oEMRTG9245gBfwAF7AA3gArazEzsLCcjsrsRNsLERWEBZkYUFQVFAEYfxmHxseeWsy+ZJZRSd8CBMT5sf3/s2O3O71r9LIbv2sBqCU/gHQ5uHt3uls6+jO/quLagJt7N9cTl+b5TqbPNszSVUDgjEv75+eRtbB+dyejKsOELyxNFjYtIfjqgM0mb9pDv0I5+z5iCoAHV88KJg2dbRb6wZCNSmY1hsA6R1E096KqBQoCBYKXj9i2StxFQHtjO/1u/E4e/rQO+gC9lZcRUD69YiUtWetZR/Ys7IP5SaQKwHS2YNCgxmKpF1EvBwNBD/8i2HMysa4fTK1F5MigcZXj/7FSB1rD/yzt7qIBPJ+1LXHcUC6GSJ7bHFxc17EAOkAwZ6gNzb540KLAfIfPXAiGB3NwjN7pbuygWCJn6ZIFJ3d6JNEJwyUDYSMEYfkW0fSGSjYR6skOmGgbCCfQIgXHBIymSFwy57PFQ8EP4J42cOE8oBkYIkfQfuhf2YEygMChPdD4iULCWQPc8oDcsuaR7B8rVWkcQSQ9GWpNbTE8rIKlA0knRB/+6BxBBAkQCXzISIGiP606CIGqEoD/E4MUPnAiogBqlvngQaglBggjFW7WUt/Aggtsaeu6Dggtxj7drOKSKD+NAClNACl9AUuuvIirgcoNQAAAABJRU5ErkJggg==" y="30"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="72" x="80" y="94.6094">Database</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="40" x="96" y="110.582">[Sqllite]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="118" y="127.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="196" x="20" y="145.3613">Holds data for cocktails, bottles</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="98" x="67" y="162.9707">and ingredients</text><!--MD5=[4192cd31c9f16ad4af215570ca644b0f]
-entity mainwindow--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="189" x="652.5" y="10.5"/><image height="48" width="48" x="723" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="20.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="96" x="699" y="85.1094">Mainwindow</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="731" y="101.082">[PyQt]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="749" y="118.252"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="161" x="666.5" y="135.8613">The main user interaction</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="88" x="703" y="153.4707">happens here</text><!--MD5=[d3448ed704dcc21d656126f6062c763a]
-entity dialogwindow--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="199" x="766.5" y="248"/><image height="48" width="48" x="842" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="122" x="805" y="322.6094">Dialog windows</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="850" y="338.582">[PyQt]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="868" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="171" x="780.5" y="373.3613">User interaction popups for</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="83" x="824.5" y="390.9707">input / output</text><!--MD5=[771f199931bea7bf680e64e5841f7982]
-entity progresscreen--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="166" x="1001" y="248"/><image height="48" width="48" x="1060" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACLklEQVR4Xu2XPUoEQRBG925zAC/gAbyAB/AAGhmJmYGB4WZGYiaYGIisICzIgiAoKiiCsD6m2WGs6qqebmfZRefjC+ant+pR3VPdO6p2r9fKI/1otR6AUh6AUv5DQJuHtzvj++OLRzy+esJcHJw/8JBXenxHlwCR+PXja+5q8vBehpUNRCVCyiQTKmDKBgqZtk+mXDNBPwGkqJOO4DsPaGP/Zl7XJtxSAImgpIP4zgNqCPZOZ8A10+eIYTqO40Kg7vpnQFW9jKKWIAv1DESXu5y+sYqTliALATR7/myGnU1e/F7gAYEiw+cLIIHLrVM2E6jLF9RFGggRXGf0gJw1kaso0NzuT3Eglo4MUKpq0dyFQq/XjgOxfcoARWIJk1g+rcW2o/OaQL0sZz4u5ovtTL6oBavOawJZUdoiH8MsU2NoyCp/tpC178aBSCYDtES1QzOko0S9dXTHZucH4a3OawI5FSIZy8JP1kV5FbJKTW2sRZorlqnOawJZJ6+wD8inRcr7yqJlCF+NfFoqpl7nNYGwbq8AFRw/orJWtAekZ61HIHYCnTEBVKml3ReQ1RKDPaCqXkzt/4EOUBjjmwhObYITQMIOEJ0wah3Ed29AlpyzWNRLAWrvzasHCgedZuRygSrjtNVWQxBudQTf2UDJszbzRZFCy3DOzpazgSrVnyz5/cZyCVBV9yfnVBmKpH/VxYVAjdkj6XXsM7QcLqwts7t/C9S7B6CUB6CU1w7oG3EhlXyvYa6vAAAAAElFTkSuQmCC" y="258"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="128" x="1020" y="322.6094">Progress Screen</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="1068" y="338.582">[PyQt]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="1086" y="355.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="138" x="1015" y="373.3613">View for progress and</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="139" x="1014.5" y="390.9707">interruption of cocktail</text><!--MD5=[8fc3522a43f8c7199df5e09e5bb0188e]
-entity user--><rect fill="#686868" height="140.9531" style="stroke:#8A8A8A;stroke-width:1.5;" width="186" x="665" y="995"/><image height="48" width="48" x="734" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB6ElEQVR4Xu2YLY+EMBCG9+dWr0aj0Wg0Go1Go0+j8Xdv2uTCvv1gpt0ebHKPuhDaeW4605Z9mJvx4AdXUyTUdd08z+u6flmWZRnHsWkafk9DptAwDPu+f0eAYtu2PEaGWuj5fCIZrBAC2eLBAnRCsEkkxmeaJp7iDJ2QMDdHsLg8SxKFEJaAo8lAXnmuOFIhTMpxxKATebo4UiFknuNo4OniSIXQyRxEA3YsnjGCVEjVXD7yLUAqxBGUyPv/Y4W2beMgGuS7kVQIBycH0fD+oi5pezQETxdHKmQKGk1eQEYldK+jw5GxPfZ9z7Mk0Qnhf1W1m3w//EUn5BDmSZsbR44QQLBEqrBHqOrmSKaQAxdnLArCrxZcM7A7ZKs4ioRq8LFC+NpC3WCBJsvpVw5edm9iEXFuyNfxXAgSwfrFQ1c0iNda8AdejvUgnktOtJQQxmcfFzGglc5WVCj7oDgFqU18boeFSs52CUh8LE8BIVQDT1ABrB0HtgSEYlX5doJnCwv9TXocKCaKbnwhdDKPq4lf3SwU3HLq4V/+WYhHVMa/3b4IlfyikAduCkcBc7mQ3/z/Qq/cTuikhkzB12Ae/mcJC9U+Vo8Ej1gWAtgbeGgFsAMHr50BIWOLCbezvhpBFUdY6EJuJ/QDW0XoMX60zZ0AAAAASUVORK5CYII=" y="1005"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="36" x="740" y="1069.6094">User</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="760" y="1087.6582"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="138" x="689" y="1105.2676">Person who wants the</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="166" x="675" y="1122.877">exported data from the DB</text><!--MD5=[d112aecbd7ccc75573a6ee2503a173b3]
-entity email--><rect fill="#1168BD" height="158.5625" style="stroke:#3C7FC0;stroke-width:1.5;" width="210" x="653" y="744"/><image height="48" width="48" x="734" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAC00lEQVR4Xs2XPW7VUBCFs4XZQZbAElgCS6CkRNQUVLRQ09BQh5YGIZBoEIICCQoKUtAQKYqQEAWNOXiUo2H+/Bz7+WV0CmLP8/08M+f6ciR3Xl4rHcVLh9WBgW49/vDx9OfTN9955WBAN+6/ffX5fLgMkOn1AwAd33v96MUpUTRuPnynd7cGuvvsy8WvP44GAUpN2A4ITfl29ttCkAz/YNoWQBiX5+9/OBSUCtI/MUxM3jtQHBd4ShvEWxu57PaTT25cUAlUiwl0GUrFi3sBgmWwu1gUTA+NTRGXFpPVgdALNy6IBydfYybEBFpM1gXCwgbjXwDOLmaFqmiOtZisBYR29OMSlVpMlgOl44JxjpmuVKnFZAkQFsCzLAoCy8RMGUtorSSFxeTKQCw4oxkXcLtBkcJicgWg+AVAy9xDKYyRNjR6nj93rzEDyB0YhssvQMxUYZI0zY2t1BaTHYFmjYvK5ke7VRaTXYDigaG3NG7ZnqbclcWkB5o1Liq2SSN2RFVZTCqg6sAQM63iRyPOsqqymKRA6YEhplnhua6WQzYfFHPiTvEf0OSBIZVrE6P6YWMxIRA3DEZ6YHBKv+0a6SyrGosJgRwNlompTnhRV04GXibmU43FhEDxRfFQHCdij1XxpGGjL21jMbEzhNtxMIexWtYLQHT7tYu0EVaNxSS6DEmxWsNYMBDHc0+MapYpZqbl90AqpFYF66OZZVVvMamAKJQkLVga1RpWvcVkEkh1PP5vfLJZ/SyreovJjkCquIPb6K1O9RaTFYGGsWXISUeV6i0m6wIxUIb0nC9TFpM9AWnErXXSYrIWENbG9lPtFPCpzvukxWQVIEDYMlQ7BdL4xawsJsuBUPx0awYi+pUWbKgtJsuBKrNQacGaXy0C2mUnVNmttZloWQJUGbtXUxvVDCB7BmqGYKFmAKFBSjP5SV+iGUAyFnyy5gs1D2gDXTugv2r+sg9oaALdAAAAAElFTkSuQmCC" y="754"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="42" x="737" y="818.6094">GMail</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="760" y="836.6582"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="182" x="667" y="854.2676">Gmail account / service used</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="174" x="669" y="871.877">as sender over smtp for the</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="28" x="744" y="889.4863">data</text><!--MD5=[4de0f45860ffa9cfdd5513b104e78a27]
-reverse link db to dbhandler--><path d="M116,179.435 C116,201.969 116,225.943 116,247.796 " fill="none" id="db-backto-dbhandler" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="116,171.206,113,179.206,119,179.206,116,171.206" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="77" x="117" y="214.457">Reads/Writes</text><!--MD5=[a9a7d6df0ab0463811fd096bc0741ea6]
-link mainwindow to dialogwindow--><path d="M785.965,166.612 C797.882,190.196 811.052,216.259 823.21,240.318 " fill="none" id="mainwindow-to-dialogwindow" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="826.947,247.715,826.0159,239.2219,820.661,241.9283,826.947,247.715" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="35" x="812" y="214.457">opens</text><!--MD5=[2cad896a77f80052ccaab6697fe1044b]
-link mainwindow to progresscreen--><path d="M841.674,159.129 C847.506,163.189 853.314,167.173 859,171 C912.819,207.22 929.589,211.181 983,248 C986.688,250.542 990.426,253.165 994.183,255.841 " fill="none" id="mainwindow-to-progresscreen" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1000.961,260.708,996.2121,253.6053,992.7128,258.4793,1000.961,260.708" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="35" x="938" y="214.457">opens</text><!--MD5=[ea3bd8d81a6f4285b215cf373355edc3]
-link mainwindow to apicontroller--><path d="M652.44,151.364 C607.721,180.638 553.596,216.095 505,248 C501.379,250.377 497.696,252.796 493.976,255.24 " fill="none" id="mainwindow-to-apicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="487.247,259.662,495.58,257.775,492.2845,252.761,487.247,259.662" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="27" x="573" y="214.457">calls</text><!--MD5=[0b7c59f9289e18c8867f79d7f47acd94]
-link mainwindow to savehandler--><path d="M707.708,166.612 C695.69,190.196 682.409,216.259 670.15,240.318 " fill="none" id="mainwindow-to-savehandler" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="666.381,247.715,672.6864,241.9494,667.3405,239.225,666.381,247.715" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="27" x="688" y="214.457">calls</text><!--MD5=[a8c4977a9d8e9deb762ddb1a0739da03]
-reverse link displaycontroller to apicontroller--><path d="M388,165.679 C388,192.012 388,221.526 388,247.929 " fill="none" id="displaycontroller-backto-apicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="388,157.616,385,165.616,391,165.616,388,157.616" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="28" x="389" y="214.457">uses</text><!--MD5=[34edaca6fca6f973d5498cd7255dc4e9]
-link apicontroller to displayhandler--><path d="M308.33,404.161 C280.214,431.392 248.486,462.12 219.879,489.826 " fill="none" id="apicontroller-to-displayhandler" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="213.824,495.69,221.6579,492.2796,217.4838,487.9695,213.824,495.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="28" x="278" y="454.957">uses</text><!--MD5=[5e1176c3b8be1dbe6530f6890fff5411]
-reverse link dbhandler to apicontroller--><path d="M232.899,326 C251.507,326 270.601,326 288.752,326 " fill="none" id="dbhandler-backto-apicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="224.674,326,232.674,329,232.674,323,224.674,326" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="28" x="242.75" y="319.457">uses</text><!--MD5=[7547e218299c7d9d5f56e7fcee614a72]
-link apicontroller to rpicontroller--><path d="M388,404.161 C388,430.594 388,460.323 388,487.384 " fill="none" id="apicontroller-to-rpicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="388,495.69,391,487.69,385,487.69,388,495.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="27" x="389" y="454.957">calls</text><!--MD5=[b7eefbc6fe0f50ad7f4847574978646d]
-link apicontroller to microservice--><path d="M464.847,404.161 C491.967,431.392 522.571,462.12 550.164,489.826 " fill="none" id="apicontroller-to-microservice" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="556.004,495.69,552.4842,487.9047,548.233,492.1388,556.004,495.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="25" x="527.5" y="447.457">post</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="26" x="527" y="462.5508">[http]</text><!--MD5=[2f571eebf7f3222f916c90dc54f13b1a]
-link microservice to webhook--><path d="M594.276,652.292 C580.903,678.983 565.841,709.047 552.137,736.399 " fill="none" id="microservice-to-webhook" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="548.498,743.663,554.7632,737.8537,549.3985,735.1666,548.498,743.663" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="25" x="583.5" y="695.457">post</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="580" y="710.5508">[https]</text><!--MD5=[453a6143dcedb3eac412c0c11383165d]
-link microservice to email--><path d="M672.037,652.292 C685.517,678.983 700.701,709.047 714.515,736.399 " fill="none" id="microservice-to-email" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="718.183,743.663,717.254,735.1697,711.8984,737.8748,718.183,743.663" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="28" x="706.5" y="695.457">uses</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="33" x="704" y="710.5508">[smtp]</text><!--MD5=[4037f8273a2128c606d8180d9ead9800]
-link email to user--><path d="M758,903.085 C758,929.845 758,959.738 758,986.456 " fill="none" id="email-to-user" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="758,994.639,761,986.639,755,986.639,758,994.639" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="35" x="759" y="946.457">sends</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="33" x="760" y="961.5508">[smtp]</text><rect fill="#FFFFFF" height="137.2656" rx="5" ry="5" style="stroke:#FFFFFF;stroke-width:1.0;" width="133" x="1018" y="1148.9531"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="53" x="1024" y="1170.4863">Legend</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="1081" y="1170.4863"/><rect fill="#08427B" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1024" y="1173.5625"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="44" x="1028" y="1188.0957">person</text><rect fill="#1168BD" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1024" y="1191.1719"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="44" x="1028" y="1205.7051">system</text><rect fill="#438DD5" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1024" y="1208.7813"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="59" x="1028" y="1223.3145">container</text><rect fill="#686868" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1024" y="1226.3906"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="98" x="1028" y="1240.9238">external person</text><rect fill="#999999" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1024" y="1244"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="98" x="1028" y="1258.5332">external system</text><rect fill="#B3B3B3" height="17.6094" style="stroke:none;stroke-width:1.0;" width="121" x="1024" y="1261.6094"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="113" x="1028" y="1276.1426">external container</text><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1024" x2="1145" y1="1155.9531" y2="1155.9531"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1024" x2="1145" y1="1173.5625" y2="1173.5625"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1024" x2="1145" y1="1191.1719" y2="1191.1719"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1024" x2="1145" y1="1208.7813" y2="1208.7813"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1024" x2="1145" y1="1226.3906" y2="1226.3906"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1024" x2="1145" y1="1244" y2="1244"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1024" x2="1145" y1="1261.6094" y2="1261.6094"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1024" x2="1145" y1="1279.2188" y2="1279.2188"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1024" x2="1024" y1="1155.9531" y2="1279.2188"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="1145" x2="1145" y1="1155.9531" y2="1279.2188"/><!--MD5=[1f2c9c534edfc5007d7de492ea3729fe]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="1154px" preserveAspectRatio="none" style="width:1393px;height:1154px;background:#FFFFFF;" version="1.1" viewBox="0 0 1393 1154" width="1393px" zoomAndPan="magnify"><defs/><g><!--MD5=[dedadde33254924fa5262a9f3efcf6d7]
+entity configmanager--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="218" x="1097.5" y="7"/><image height="48" width="48" x="1182.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="17"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="121" x="1146" y="81.6094">Config Manager</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="1185" y="97.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="1208.5" y="114.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="190" x="1111.5" y="132.3613">Class to hold all configuration,</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="195" x="1109" y="149.9707">used where needed for configs</text><!--MD5=[b07c610e305c099cb85aa9961d45b14f]
+entity displaycontroller--><rect fill="#438DD5" height="138.4375" style="stroke:#3C7FC0;stroke-width:1.5;" width="203" x="7" y="512"/><image height="48" width="48" x="84.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="522"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="137" x="40" y="586.6094">Display Controller</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="87" y="602.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="110.5" y="619.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="179" x="21" y="637.3613">Class to get values from GUI</text><!--MD5=[0b83bef35d0ed29f1b5099755031c34f]
+entity displayhandler--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="219" x="245" y="503"/><image height="48" width="48" x="330.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="513"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="121" x="294" y="577.6094">Display Handler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="333" y="593.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="356.5" y="610.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="195" x="259" y="628.3613">Class to set values / properties</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="38" x="335.5" y="645.9707">in GUI</text><!--MD5=[8a7e0513bd84421f24a419beb0ec9b98]
+entity rpicontroller--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="219" x="499" y="503"/><image height="48" width="48" x="584.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="513"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="107" x="555" y="577.6094">RPI Controller</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="587" y="593.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="610.5" y="610.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="195" x="513" y="628.3613">Class to controll the Raspberry</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="109" x="554" y="645.9707">Pi and the GPIOs</text><!--MD5=[31948b9d8281befde8528aba2388c2bb]
+entity apicontroller--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="198" x="509.5" y="255"/><image height="48" width="48" x="584.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="265"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="106" x="555.5" y="329.6094">API Controller</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="587" y="345.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="610.5" y="362.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="170" x="523.5" y="380.3613">Modules to handle logic for</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="94" x="561.5" y="397.9707">seperate views</text><!--MD5=[66b0507f297f6d670471e03714edf96c]
+entity savehandler--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="209" x="743" y="255"/><image height="48" width="48" x="823.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="265"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="102" x="796.5" y="329.6094">Save Handler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="826" y="345.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="849.5" y="362.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="181" x="757" y="380.3613">Class to export data from DB</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="37" x="829" y="397.9707">to csv</text><!--MD5=[8025ad86b7bfd9c9a9c22787cab830ca]
+entity microservice--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="200" x="753.5" y="503"/><image height="48" width="48" x="829.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACFklEQVR42u2XPUoEMRTHczcP4AU8gBfwAB5AKyuxs7Cw3M5K7AQbC5EVhAVZWBAUFRRBGH/4h0fITDKZD5lFszyWzJt8/PK+knEbezdrJa4AFaACVIAK0N8H2jy43Z09mPA4MRAQ5/OXk8tHZHb9xOP0QKJBDi9W/xto/2xZF/yFp0BBYEoDtUaY6xS8V4s3VhUHbTXQZAIxw3z1TucxgeQXAZmbMl3GqO3jezrQbS2AcK4aGGnr6K4nkC3GLBjcHg0IvZ/2pkeCiDEg7MRbmHZOFwFZOxALMAxRveHfbyNYS6EjX1iwA8fC/lRoDNHCUXtjzlwgFlbAIrJE3WWsZG17pHMAxKqN0SNrTQO0fP4M4pLOzNbiMngtDpjC2n4MWduPGyAsnlCqRKkDbVtYYadXAbSLFV8ELHYwXILJsRO4WWmvc1tAFmWx/ETfmOG+/YPJBWe51tjZ+VbBC1VV4SMaMqlp2BODLadwQfXzk+OUVjReP76klxNtCFPpFXoNMU0Qas0uo4dSdHQBKH3AuUT5Gf02WA/hDpUaq8YGK9RisRITFYv+14+EeVXyW/ca0CQO1Nyjw69+CkNVvFjeJTyVb07XurMhN0Cs6J9T49wYdbvoioIVVbJ/5QrLRlX4Wy+gcLABObrf91CHCxqWt6uPKp5yTacpenF0ctBoXx3YTLcipdvAj8PybV+AClABKkAFaIB8AwsLu2rt1/2cAAAAAElFTkSuQmCC" y="513"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="97" x="805" y="577.6094">Microservice</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="832" y="593.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="855.5" y="610.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="172" x="767.5" y="628.3613">Flask API to call services to</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="788.5" y="645.9707">interact with the www</text><!--MD5=[b1a7855e6585e68a7a22c3cffb63dc0f]
+entity webhook--><rect fill="#1168BD" height="158.5625" style="stroke:#3C7FC0;stroke-width:1.5;" width="217" x="496" y="754"/><image height="48" width="48" x="580.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACdUlEQVR42u2ZP0oDURDGcwVv4BE8gkfwCJaWYm1hZau1jY21tjYiCjYiWghaWJjCRkFEEAub+MHi5GX+b/ZlY5HHFgn7su+Xme+bGZLB0sbZv7oGC6CJa23/9m74eXj5Mn+gle2r84f30d8C2dyAlrcu9k6Ho8m1uns9H6DNo8ePr5+RWKDsGwhJeX77LiGIDC961RDkcnLzylAQKlzNW4ipPyApF3iqSRDd6sll6wf3TC6IBKJFG8hlCNVsgWAZVJcSBeohY9NFuGSx+kDIBZML1s7xk7pZWqwyEA5mKIArD2NRlBarBoR0+HJRC5K0WAUgVS6Qs5pN1X2lxToB4QA8i+UIx1ghLK1kWWx6IAp4Ri7gZkKxLDYNkOwASBl7aFmjm4RKz6sWawfEBgbqAE5hVGXrWCwL1EoulCbaKe1mWSwFJAcG39K4VeZU5bYsFgC1kgtLk5UR32ImkDUw+LGUTUNq2beYDqQODGF5ZLFU9RFajAOFA0MmTY6WQ4uNgahg+ANDpreHHnQsNgZiNDgm08XUcb35MpkZUlXCwNIjHopxwuoGctLIaDm02ISGcFsKs4lW6QUgsnqd13JoMcVl2KTKAqwglnNPXssZi5l1CFutgPnL7yehxeLWgZBYPpLLOiNvsRbNFV89TFZYJkKLtRs/ZAXPWz1psZpATcqwx6oUGYtVBiqdr875ocVmBWSV1tBi1YBwNsqPU1obvYcWqwMEiDIMVqXANuqYzjzTFQjBV0szEJEvq7Q6s15XIH+itQLmfKoTUKYSytLqF/TpgSxjh72s2g/n5QwUDvx9/JKPBCVben9/LSDgYcwXf77M+PoFav6yD/ehwgkAAAAASUVORK5CYII=" y="764"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="82" x="563.5" y="828.6094">Webhooks</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="606.5" y="846.6582"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="135" x="537" y="864.2676">External webhooks or</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="197" x="506" y="881.877">endpoints to post data from the</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="102" x="553.5" y="899.4863">cocktailmaker to</text><!--MD5=[ec4f74e93930c28c11af6339f2384956]
+entity dbhandler--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="217" x="992" y="503"/><image height="48" width="48" x="1076.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="513"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="136" x="1032.5" y="577.6094">Database Handler</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="44" x="1078.5" y="593.582">[Python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="1102.5" y="610.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="189" x="1006" y="628.3613">Handles and executes all SQL</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="1035.5" y="645.9707">logic and connection</text><!--MD5=[7468467f3b6b392f1d176d828c753b77]
+entity db--><path d="M993.5,761 C993.5,751 1103.5,751 1103.5,751 C1103.5,751 1213.5,751 1213.5,761 L1213.5,906.0469 C1213.5,916.0469 1103.5,916.0469 1103.5,916.0469 C1103.5,916.0469 993.5,916.0469 993.5,906.0469 L993.5,761 " fill="#438DD5" style="stroke:#3C7FC0;stroke-width:1.5;"/><path d="M993.5,761 C993.5,771 1103.5,771 1103.5,771 C1103.5,771 1213.5,771 1213.5,761 " fill="none" style="stroke:#3C7FC0;stroke-width:1.5;"/><image height="48" width="48" x="1079.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABoklEQVR42u2YMUpDQRCGczcP4AU8gBfwAB5AKyuxs7CwTJdK7AQbC5EIQkACgYASBUUQ4geDyzgvIM7um33ILiHwtnkf/8z8/+4bbR3cDuo3akANaHBAOyf3h5P57ulDfaDto7vr2ev6e11MVzWBEObl/XP9cx1fLuoAoU2XhsVmHaDp4k1z6EeUiwY6u1pqGlpHqxUNxDQZbQDSO1QzFMgUi4E3bRTaQ/vjR/1uHufPH3oHFwgF0q+nUl15QsfeyLPRh/7aQFlAunsYNMQwNI56+YHQQ7vfRmPcO5/FAY1vnvRkdeVBv9BwTXqUlccJpM2Q7ukOly/n/UC6QMhjvNERF7lA6dCDEiY6RLPQEyOSpDSlUXR345MOJ8wFomNEITnrSDuDwj5W6XDCXKDUQNQLhYRMMgS1KhzyExB6mHpVuHVIYIkexn7c14wsICCSHlKvZNbV7mXS0RQrzVpBGueUCQRkWGL+WOUCiRPy3weN06kFKCcfCgO5jxZ9ARUxwMJpPyygsnPegAKAiNUG9Fvm9+SK/mtQH6HRvlM3oH8K9AUuuvIiptA2nwAAAABJRU5ErkJggg==" y="775"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="72" x="1067.5" y="839.6094">Database</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="40" x="1083.5" y="855.582">[Sqllite]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="1105.5" y="872.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="196" x="1007.5" y="890.3613">Holds data for cocktails, bottles</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="1054.5" y="907.9707">and ingredients</text><!--MD5=[4192cd31c9f16ad4af215570ca644b0f]
+entity mainwindow--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="189" x="873" y="7"/><image height="48" width="48" x="943.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="17"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="96" x="919.5" y="81.6094">Mainwindow</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="32" x="951.5" y="97.582">[PyQt]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="969.5" y="114.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="161" x="887" y="132.3613">The main user interaction</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="88" x="923.5" y="149.9707">happens here</text><!--MD5=[d3448ed704dcc21d656126f6062c763a]
+entity dialogwindow--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="199" x="987" y="255"/><image height="48" width="48" x="1062.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="265"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="122" x="1025.5" y="329.6094">Dialog windows</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="32" x="1070.5" y="345.582">[PyQt]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="1088.5" y="362.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="171" x="1001" y="380.3613">User interaction popups for</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="83" x="1045" y="397.9707">input / output</text><!--MD5=[771f199931bea7bf680e64e5841f7982]
+entity progresscreen--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="166" x="1221.5" y="255"/><image height="48" width="48" x="1280.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAB0klEQVR42u2YsUoDQRCG7918AF/AB/AFfAAfIFZWYmdhYZnOSuwEGwuRCEJAAoGAYgRFEOIHA0u47M7tnHOXE3eY4pJbdj7+nZuZu2pndD8orwpQASpAgwXaO308HD+f3yzw8d0LzsXJ9Zw/udUrEIGXn98r1Sbzj3ZYZiCUkJCNTFgLJjOQRDq4mHLNATXq1C3Q7vGDaBPSqFGkboECwdHlDLhwfIqxrA+gfPtnQJJGUe8JiCp3O30nixtdAZq9foVlV5M3vRZoQKCsfm0A1XD5qchWNRZAdyCMzW1ASk64ACn1qUqljhdQKO41k1qfC0T7dKEhhQkcvUXbMQC5pDMPF+dFO0uxGoBSu9TisSzlaAwNUa19Nw5EMAUFtaUYUlGivn/2RLPTN+Guj0IEIy30YDlmUyglNdqkktRqpKkBKDV5SR9wAbI9ZVEZ5Knxqk8cva11bJZXgFqMH6aM1oA2T80RiE7QptvXUtsLKFUSs+Yhkmn9PVABkjW6s4OijfMISyWMek9vHX9syF/vzdsHkkEnrOz8rSP/jPp4c82ZtTkvRJKSoczOnp9jlCknv944f7BCA2WqFJG280mPHkmto89QcrhItczy0bMAFaDh+A9xIZV80VCLawAAAABJRU5ErkJggg==" y="265"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="128" x="1240.5" y="329.6094">Progress Screen</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="32" x="1288.5" y="345.582">[PyQt]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="1306.5" y="362.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="138" x="1235.5" y="380.3613">View for progress and</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="139" x="1235" y="397.9707">interruption of cocktail</text><!--MD5=[8fc3522a43f8c7199df5e09e5bb0188e]
+entity user--><rect fill="#686868" height="140.9531" style="stroke:#8A8A8A;stroke-width:1.5;" width="186" x="760.5" y="1008"/><image height="48" width="48" x="829.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABkElEQVR42u2YrY+EMBDF5889vRqNRqPRaDQajT6Nxnd/YZPLJUA7dFpgN/vUhjTblzdfbyo/N4N8FKGqqvq+H8fxd8EwDG3bFkVxAaGmaeZ5djuAYlmWJxF6PB6I4RRAreyEYOMRZo2u6/ISUmrzHwQ3FyFC4KKArukJ8acuFlRiekIo7wxIT4hKthCiYyUmdKi4LC1AS8jZoK//tyU0TZOFkL4baQkxOO+V1JaypyCydOroQjs00d52dES3x7qu89qPQ+UWYYliHKNSp6PamCwsl3mkokccyptkJh/jTFC4flyAzaA7RFP5xDXoSkJsW+QNAeoWBLccDr9OEkTmhj6OoumHm/nLx1fScF+5gB8c3qtBvmsmmvgXU6Mv26TlV0uSD4ogkNazbksOS6+Z/3s6yWZ3cflB7LSEjAuGce7KJfL8JVOYEJXsTsQ6uyWtmbebf0m77tjdraR6UYgDTuFehNbF/yV0c0KBHLI/u9ifaeTksRocsRuzjN5wztzYtJ2ytxDizups8Djg79YRwhNbRegxSU73LwAAAABJRU5ErkJggg==" y="1018"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="36" x="835.5" y="1082.6094">User</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="855.5" y="1100.6582"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="138" x="784.5" y="1118.2676">Person who wants the</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="166" x="770.5" y="1135.877">exported data from the DB</text><!--MD5=[d112aecbd7ccc75573a6ee2503a173b3]
+entity email--><rect fill="#1168BD" height="158.5625" style="stroke:#3C7FC0;stroke-width:1.5;" width="210" x="748.5" y="754"/><image height="48" width="48" x="829.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACdUlEQVR42u2ZP0oDURDGcwVv4BE8gkfwCJaWYm1hZau1jY21tjYiCjYiWghaWJjCRkFEEAub+MHi5GX+b/ZlY5HHFgn7su+Xme+bGZLB0sbZv7oGC6CJa23/9m74eXj5Mn+gle2r84f30d8C2dyAlrcu9k6Ho8m1uns9H6DNo8ePr5+RWKDsGwhJeX77LiGIDC961RDkcnLzylAQKlzNW4ipPyApF3iqSRDd6sll6wf3TC6IBKJFG8hlCNVsgWAZVJcSBeohY9NFuGSx+kDIBZML1s7xk7pZWqwyEA5mKIArD2NRlBarBoR0+HJRC5K0WAUgVS6Qs5pN1X2lxToB4QA8i+UIx1ghLK1kWWx6IAp4Ri7gZkKxLDYNkOwASBl7aFmjm4RKz6sWawfEBgbqAE5hVGXrWCwL1EoulCbaKe1mWSwFJAcG39K4VeZU5bYsFgC1kgtLk5UR32ImkDUw+LGUTUNq2beYDqQODGF5ZLFU9RFajAOFA0MmTY6WQ4uNgahg+ANDpreHHnQsNgZiNDgm08XUcb35MpkZUlXCwNIjHopxwuoGctLIaDm02ISGcFsKs4lW6QUgsnqd13JoMcVl2KTKAqwglnNPXssZi5l1CFutgPnL7yehxeLWgZBYPpLLOiNvsRbNFV89TFZYJkKLtRs/ZAXPWz1psZpATcqwx6oUGYtVBiqdr875ocVmBWSV1tBi1YBwNsqPU1obvYcWqwMEiDIMVqXANuqYzjzTFQjBV0szEJEvq7Q6s15XIH+itQLmfKoTUKYSytLqF/TpgSxjh72s2g/n5QwUDvx9/JKPBCVben9/LSDgYcwXf77M+PoFav6yD/ehwgkAAAAASUVORK5CYII=" y="764"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="42" x="832.5" y="828.6094">GMail</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="855.5" y="846.6582"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="182" x="762.5" y="864.2676">Gmail account / service used</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="174" x="764.5" y="881.877">as sender over smtp for the</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="28" x="839.5" y="899.4863">data</text><!--MD5=[be32ed206c25d0f8ecb7fa6d8651d0c5]
+entity dashapi--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="207" x="240" y="255"/><image height="48" width="48" x="319.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACFklEQVR42u2XPUoEMRTHczcP4AU8gBfwAB5AKyuxs7Cw3M5K7AQbC5EVhAVZWBAUFRRBGH/4h0fITDKZD5lFszyWzJt8/PK+knEbezdrJa4AFaACVIAK0N8H2jy43Z09mPA4MRAQ5/OXk8tHZHb9xOP0QKJBDi9W/xto/2xZF/yFp0BBYEoDtUaY6xS8V4s3VhUHbTXQZAIxw3z1TucxgeQXAZmbMl3GqO3jezrQbS2AcK4aGGnr6K4nkC3GLBjcHg0IvZ/2pkeCiDEg7MRbmHZOFwFZOxALMAxRveHfbyNYS6EjX1iwA8fC/lRoDNHCUXtjzlwgFlbAIrJE3WWsZG17pHMAxKqN0SNrTQO0fP4M4pLOzNbiMngtDpjC2n4MWduPGyAsnlCqRKkDbVtYYadXAbSLFV8ELHYwXILJsRO4WWmvc1tAFmWx/ETfmOG+/YPJBWe51tjZ+VbBC1VV4SMaMqlp2BODLadwQfXzk+OUVjReP76klxNtCFPpFXoNMU0Qas0uo4dSdHQBKH3AuUT5Gf02WA/hDpUaq8YGK9RisRITFYv+14+EeVXyW/ca0CQO1Nyjw69+CkNVvFjeJTyVb07XurMhN0Cs6J9T49wYdbvoioIVVbJ/5QrLRlX4Wy+gcLABObrf91CHCxqWt6uPKp5yTacpenF0ctBoXx3YTLcipdvAj8PybV+AClABKkAFaIB8AwsLu2rt1/2cAAAAAElFTkSuQmCC" y="265"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="115" x="286" y="329.6094">Dashboard API</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="322" y="345.582">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="345.5" y="362.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="179" x="254" y="380.3613">FastAPI to get team Data for</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="101" x="293" y="397.9707">the leaderboard</text><!--MD5=[2077bcd4475b21516d58721ee6de7130]
+entity dashfrontend--><rect fill="#438DD5" height="156.0469" style="stroke:#3C7FC0;stroke-width:1.5;" width="220" x="233.5" y="7"/><image height="48" width="48" x="319.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAACD0lEQVR42u2YMUoEQRBF+24ewAt4AC/gATyARkZiZmBguJmRmAkmBiIrCAuysLCgqKAIgn4YkKFq+nf9menFYJYKDJyu19VV9as7bR3c/StLE9AEVAVo+fK1AROA3j6/fyr/4EIAmq8+agPBhQB0s3ivDQQXAtDs9rk2EFwIQGfX69pAcCEAHV4sawPBhQC0P3sy3x9frXZPH3ubDzlcCEB75wsPNKTd4XOzIFwIQDsnD8EjD5qPEFwIQNtH98GiCNrl/NUsCBealvG2gR1LBqEwC8riatTDNNaB2pLTDQZk1MMs4Xc8im4wIK8eI4pdTjcYEE9D5Hh8zPDni8VloHihFk1qIineytBw+wFJbTYL5NUj1+yLJi2V4tvKyeGIusGAcEC+ecQTuZ1wPh3J6WeBvHpIv3ZJxnWjcA3y3Qyh/jMOFG9pAhBXj7gy8KYvABl9MDcpoh7mP83GcjeyMhAPNbkImFklrhsFIJ+Mnd0BRYRDgeEPX8++OIhuFIB8DHqohzp8Jqmh9VAPdTxnQJ2XIWRAcwMpBgaf+0Mvdvwkbc5UL/xBldpdDp/goPk8SXSjAOTVg0yA8ZGNR5cBDVSPiKrIL2g1gAY96Y3+csV1I/TG2NzMB071kAskO09n+dETZ4+aQmUFw9aUIYqcJ804r7AIG7pR50NbTkM29CzchA3HAes9dE8P5xPQmPYLRDIh9DaUBEMAAAAASUVORK5CYII=" y="17"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="85" x="301" y="81.6094">Dashboard</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="55" x="316" y="97.582">[Streamlit]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="0" x="345.5" y="114.752"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="192" x="247.5" y="132.3613">Python Streamlit Page to show</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="77" x="305" y="149.9707">leaderboard</text><!--MD5=[9af1a31b2cf3ac86a0163eb9635442c3]
+link dbhandler to db--><path d="M1101.42,659.2 C1101.74,685.63 1102.1,715.43 1102.43,742.76 " fill="none" id="dbhandler-to-db" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1102.52,750.78,1105.4198,742.7431,1099.4202,742.8181,1102.52,750.78" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="77" x="1103.5" y="709.957">Reads/Writes</text><!--MD5=[a9a7d6df0ab0463811fd096bc0741ea6]
+link mainwindow to dialogwindow--><path d="M1004.83,163.16 C1017.78,189.94 1032.37,220.09 1045.59,247.43 " fill="none" id="mainwindow-to-dialogwindow" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1049.1,254.69,1048.3142,246.1822,1042.9138,248.7967,1049.1,254.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="35" x="1035.5" y="213.957">opens</text><!--MD5=[2cad896a77f80052ccaab6697fe1044b]
+link mainwindow to progresscreen--><path d="M1062.14,152.79 C1105.44,183.61 1157.3,220.86 1203.5,255 C1207.25,257.77 1211.07,260.61 1214.92,263.48 " fill="none" id="mainwindow-to-progresscreen" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1221.42,268.35,1216.82,261.15,1213.22,265.95,1221.42,268.35" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="35" x="1160.5" y="213.957">opens</text><!--MD5=[ea3bd8d81a6f4285b215cf373355edc3]
+link mainwindow to apicontroller--><path d="M872.71,150.96 C824,184.33 764.49,225.11 714.29,259.51 " fill="none" id="mainwindow-to-apicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="707.59,264.1,715.8868,262.0597,712.4995,257.1074,707.59,264.1" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="27" x="810.5" y="213.957">calls</text><!--MD5=[0b7c59f9289e18c8867f79d7f47acd94]
+link mainwindow to savehandler--><path d="M929.86,163.16 C916.8,189.94 902.09,220.09 888.75,247.43 " fill="none" id="mainwindow-to-savehandler" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="885.21,254.69,891.4151,248.8166,886.0231,246.1848,885.21,254.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="27" x="916.5" y="213.957">calls</text><!--MD5=[ddc8241687a9da315e588551099d623a]
+link apicontroller to displaycontroller--><path d="M509.36,389.02 C494.47,396.69 479.18,404.25 464.5,411 C361.83,458.17 328.12,451.6 227.5,503 C224.12,504.73 220.71,506.53 217.29,508.38 " fill="none" id="apicontroller-to-displaycontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="210.27,512.27,218.7206,511.0103,215.8086,505.7643,210.27,512.27" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28" x="388.5" y="461.957">uses</text><!--MD5=[34edaca6fca6f973d5498cd7255dc4e9]
+link apicontroller to displayhandler--><path d="M528.83,411.16 C500.71,438.39 468.99,469.12 440.38,496.83 " fill="none" id="apicontroller-to-displayhandler" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="434.32,502.69,442.1551,499.2824,437.9826,494.9708,434.32,502.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28" x="498.5" y="461.957">uses</text><!--MD5=[366d70a2932da174ba14e74c4aeded3f]
+link apicontroller to dbhandler--><path d="M707.82,401.46 C713.73,404.82 719.65,408.02 725.5,411 C829.17,463.74 865.61,452.72 970.5,503 C975.08,505.2 979.71,507.5 984.36,509.88 " fill="none" id="apicontroller-to-dbhandler" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="991.67,513.69,985.9519,507.3415,983.1875,512.6667,991.67,513.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28" x="897.5" y="461.957">uses</text><!--MD5=[7547e218299c7d9d5f56e7fcee614a72]
+link apicontroller to rpicontroller--><path d="M608.5,411.16 C608.5,437.59 608.5,467.32 608.5,494.38 " fill="none" id="apicontroller-to-rpicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="608.5,502.69,611.5,494.69,605.5,494.69,608.5,502.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="27" x="609.5" y="461.957">calls</text><!--MD5=[b7eefbc6fe0f50ad7f4847574978646d]
+link apicontroller to microservice--><path d="M685.35,411.16 C712.47,438.39 743.07,469.12 770.66,496.83 " fill="none" id="apicontroller-to-microservice" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="776.5,502.69,772.9743,494.9074,768.7263,499.1446,776.5,502.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="25" x="748" y="454.457">post</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="26" x="747.5" y="469.5508">[http]</text><!--MD5=[f2eb7710b9e1706e8d57c85ad711219f]
+reverse link dashapi to apicontroller--><path d="M455.3,333 C473.24,333 491.7,333 509.32,333 " fill="none" id="dashapi-backto-apicontroller" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="447.09,333,455.09,336,455.09,330,447.09,333" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="25" x="465.75" y="311.457">post</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="26" x="465.25" y="326.5508">[http]</text><!--MD5=[960f14e35161ae173339742ca90fadc0]
+link dashfrontend to dashapi--><path d="M343.5,163.16 C343.5,189.59 343.5,219.32 343.5,246.38 " fill="none" id="dashfrontend-to-dashapi" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="343.5,254.69,346.5,246.69,340.5,246.69,343.5,254.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28" x="344.5" y="206.457">uses</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="26" x="345.5" y="221.5508">[http]</text><!--MD5=[2f571eebf7f3222f916c90dc54f13b1a]
+link microservice to webhook--><path d="M776.76,659.2 C748.76,687.37 716.96,719.36 688.38,748.12 " fill="none" id="microservice-to-webhook" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="682.7,753.82,690.4647,750.255,686.206,746.0285,682.7,753.82" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="25" x="749" y="702.457">post</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="32" x="745.5" y="717.5508">[https]</text><!--MD5=[453a6143dcedb3eac412c0c11383165d]
+link microservice to email--><path d="M853.5,659.2 C853.5,686.55 853.5,717.49 853.5,745.59 " fill="none" id="microservice-to-email" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="853.5,753.82,856.5,745.82,850.5,745.82,853.5,753.82" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28" x="857" y="702.457">uses</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="33" x="854.5" y="717.5508">[smtp]</text><!--MD5=[4037f8273a2128c606d8180d9ead9800]
+link email to user--><path d="M853.5,913.06 C853.5,940.82 853.5,972.02 853.5,999.72 " fill="none" id="email-to-user" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="853.5,1007.82,856.5,999.82,850.5,999.82,853.5,1007.82" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="35" x="854.5" y="959.457">sends</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="33" x="855.5" y="974.5508">[smtp]</text><!--MD5=[56bd993348864a96e0c87c0853ab375c]
 @startuml ProgramSchema
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
@@ -39,13 +43,14 @@ link email to user--><path d="M758,903.085 C758,929.845 758,959.738 758,986.456 
 !include DEVICONS/sqllite.puml
 !include DEVICONS/aptana.puml
 !include DEVICONS/docker.puml
+!include DEVICONS/html5.puml
 !include FONTAWESOME/users.puml
 !include FONTAWESOME/user.puml
 !include FONTAWESOMEOLD/send_o.puml
 
 skinparam backgroundColor #fff
 
-LAYOUT_WITH_LEGEND()
+HIDE_STEREOTYPE()
 
   Container(configmanager, "Config Manager", "python", "Class to hold all configuration, used where needed for configs", "python")
   Container(displaycontroller, "Display Controller", "python", "Class to get values from GUI", "python")
@@ -66,7 +71,11 @@ LAYOUT_WITH_LEGEND()
   Person_Ext(user, "User", "Person who wants the exported data from the DB", "user")
   System(email, "GMail", "Gmail account / service used as sender over smtp for the data", "send_o")
 
-Rel_U(dbhandler, db, "Reads/Writes")
+  Container(dashapi, "Dashboard API", "python", "FastAPI to get team Data for the leaderboard", "docker")
+  Container(dashfrontend, "Dashboard", "Streamlit", "Python Streamlit Page to show leaderboard", "html5")
+
+
+Rel(dbhandler, db, "Reads/Writes")
 
 Rel(mainwindow, dialogwindow, "opens")
 Rel(mainwindow, progresscreen, "opens")
@@ -77,11 +86,15 @@ Rel(mainwindow, savehandler, "calls")
 ' Rel(rpicontroller, configmanager, "uses")
 ' Rel(displaycontroller, configmanager, "uses")
 
-Rel_U(apicontroller, displaycontroller, "uses")
+Rel(apicontroller, displaycontroller, "uses")
 Rel(apicontroller, displayhandler, "uses")
-Rel_L(apicontroller, dbhandler, "uses")
+Rel(apicontroller, dbhandler, "uses")
 Rel(apicontroller, rpicontroller, "calls")
 Rel(apicontroller, microservice, "post", "http")
+
+Rel_L(apicontroller, dashapi, "post", "http")
+Rel(dashfrontend, dashapi, "uses", "http")
+
 
 Rel(microservice, webhook, "post", "https")
 Rel(microservice, email, "uses", "smtp")
@@ -97,6 +110,15 @@ Rel(email, user, "sends", "smtp")
 
 
 
+
+
+
+
+
+
+
+
+
 skinparam defaultTextAlignment center
 
 skinparam wrapWidth 200
@@ -105,6 +127,12 @@ skinparam maxMessageSize 150
 skinparam LegendBorderColor transparent
 skinparam LegendBackgroundColor transparent
 skinparam LegendFontColor #FFFFFF
+
+skinparam shadowing<<legendArea>> false
+skinparam rectangle<<legendArea>> {
+    backgroundcolor #00000000
+    bordercolor #00000000
+}
 
 skinparam rectangle {
     StereotypeFontSize 12
@@ -121,19 +149,111 @@ skinparam queue {
     shadowing false
 }
 
-skinparam Arrow {
+skinparam arrow {
     Color #666666
     FontColor #666666
     FontSize 12
 }
 
+skinparam actor {
+    StereotypeFontSize 12
+    shadowing false
+    style awesome
+}
+
+skinparam person {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam package {
+    StereotypeFontSize 6
+    StereotypeFontColor transparent
+    FontStyle plain
+    BackgroundColor transparent
+}
+
 skinparam rectangle<<boundary>> {
     Shadowing false
-    StereotypeFontSize 0
+    StereotypeFontSize 6
+    StereotypeFontColor transparent
     FontColor #444444
     BorderColor #444444
+    BackgroundColor transparent
     BorderStyle dashed
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -169,6 +289,31 @@ skinparam rectangle<<person>> {
     BackgroundColor #08427B
     BorderColor #073B6F
 }
+skinparam database<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam queue<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam actor<<person>> {
+    StereotypeFontColor #08427B
+    FontColor #08427B
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam person<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+
 
 skinparam rectangle<<external_person>> {
     StereotypeFontColor #FFFFFF
@@ -176,6 +321,31 @@ skinparam rectangle<<external_person>> {
     BackgroundColor #686868
     BorderColor #8A8A8A
 }
+skinparam database<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam queue<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam actor<<external_person>> {
+    StereotypeFontColor #686868
+    FontColor #686868
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam person<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+
 
 skinparam rectangle<<system>> {
     StereotypeFontColor #FFFFFF
@@ -183,6 +353,31 @@ skinparam rectangle<<system>> {
     BackgroundColor #1168BD
     BorderColor #3C7FC0
 }
+skinparam database<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+skinparam queue<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+skinparam actor<<system>> {
+    StereotypeFontColor #1168BD
+    FontColor #1168BD
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+skinparam person<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+
 
 skinparam rectangle<<external_system>> {
     StereotypeFontColor #FFFFFF
@@ -190,6 +385,34 @@ skinparam rectangle<<external_system>> {
     BackgroundColor #999999
     BorderColor #8A8A8A
 }
+skinparam database<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+skinparam queue<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+skinparam actor<<external_system>> {
+    StereotypeFontColor #999999
+    FontColor #999999
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+skinparam person<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+
+
+
+
 
 sprite $person [48x48/16] {
 000000000000000000000000000000000000000000000000
@@ -242,6 +465,67 @@ sprite $person [48x48/16] {
 000000000000000000000000000000000000000000000000
 }
 
+sprite $person2 [48x48/16] {
+0000000000000000000049BCCA7200000000000000000000
+0000000000000000006EFFFFFFFFB3000000000000000000
+00000000000000001CFFFFFFFFFFFF700000000000000000
+0000000000000001EFFFFFFFFFFFFFF80000000000000000
+000000000000000CFFFFFFFFFFFFFFFF6000000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+00000000000001FFFFFFFFFFFFFFFFFFF900000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFF00000000000000
+0000000000000BFFFFFFFFFFFFFFFFFFFF40000000000000
+0000000000000EFFFFFFFFFFFFFFFFFFFF70000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000DFFFFFFFFFFFFFFFFFFFF60000000000000
+0000000000000AFFFFFFFFFFFFFFFFFFFF40000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFE00000000000000
+00000000000000EFFFFFFFFFFFFFFFFFF800000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+000000000000000BFFFFFFFFFFFFFFFF5000000000000000
+0000000000000001DFFFFFFFFFFFFFF70000000000000000
+00000000000000000BFFFFFFFFFFFF500000000000000000
+0000000000000000005DFFFFFFFFA1000000000000000000
+0000000000000000000037ABB96100000000000000000000
+000000000002578888300000000005888864100000000000
+0000000007DFFFFFFFFD9643347BFFFFFFFFFB4000000000
+00000004EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB10000000
+0000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD2000000
+000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE100000
+00003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+0000BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF50000
+0003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD0000
+0009FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2000
+000DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6000
+000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB000
+001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB000
+001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB000
+001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA000
+000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+000DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6000
+0009FFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFFF2000
+0003FFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFFD0000
+0000BFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFF50000
+00003FFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFB00000
+000006FFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFE100000
+0000007FFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFD2000000
+00000004EFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFB10000000
+0000000007DF8FFFFFFFFFFFFFFFFFFFFFF8FB4000000000
+000000000002578888888888888888888864100000000000
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -263,20 +547,31 @@ skinparam rectangle<<container>> {
     BackgroundColor #438DD5
     BorderColor #3C7FC0
 }
-
 skinparam database<<container>> {
     StereotypeFontColor #FFFFFF
     FontColor #FFFFFF
     BackgroundColor #438DD5
     BorderColor #3C7FC0
 }
-
 skinparam queue<<container>> {
     StereotypeFontColor #FFFFFF
     FontColor #FFFFFF
     BackgroundColor #438DD5
     BorderColor #3C7FC0
 }
+skinparam actor<<container>> {
+    StereotypeFontColor #438DD5
+    FontColor #438DD5
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+skinparam person<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+
 
 skinparam rectangle<<external_container>> {
     StereotypeFontColor #FFFFFF
@@ -284,20 +579,34 @@ skinparam rectangle<<external_container>> {
     BackgroundColor #B3B3B3
     BorderColor #A6A6A6
 }
-
 skinparam database<<external_container>> {
     StereotypeFontColor #FFFFFF
     FontColor #FFFFFF
     BackgroundColor #B3B3B3
     BorderColor #A6A6A6
 }
-
 skinparam queue<<external_container>> {
     StereotypeFontColor #FFFFFF
     FontColor #FFFFFF
     BackgroundColor #B3B3B3
     BorderColor #A6A6A6
 }
+skinparam actor<<external_container>> {
+    StereotypeFontColor #B3B3B3
+    FontColor #B3B3B3
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+skinparam person<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+
+
+
+
 
 
 
@@ -577,6 +886,59 @@ sprite $docker [48x48/16] {
 
 
 skinparam folderBackgroundColor<<DEV DOCKER>> White
+sprite $html5 [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+0000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD0000000
+0000000EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE0000000
+0000000CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC0000000
+0000000BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB0000000
+00000009FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF90000000
+00000008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF80000000
+00000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF60000000
+00000005FFFFF7333333333333333333338FFFFF50000000
+00000004FFFFF7000000000000000000007FFFFF40000000
+00000002FFFFF8000000000000000000008FFFFF20000000
+00000001FFFFF900000000000000000000AFFFFF10000000
+00000000FFFFFB00008888888888888888DFFFFF00000000
+00000000EFFFFC0000EFFFFFFFFFFFFFFFFFFFFE00000000
+00000000CFFFFE0000DFFFFFFFFFFFFFFFFFFFFC00000000
+00000000BFFFFF0000CFFFFFFFFFFFFFFFFFFFFB00000000
+00000000AFFFFF10009DDDDDDDDDDDDDDEFFFFFA00000000
+000000008FFFFF20000000000000000002FFFFF800000000
+000000007FFFFF30000000000000000004FFFFF700000000
+000000005FFFFF50000000000000000005FFFFF500000000
+000000004FFFFF60000000000000000007FFFFF400000000
+000000003FFFFFEDDDDDDDDDDDDDD20008FFFFF300000000
+000000001FFFFFFFFFFFFFFFFFFFF1000AFFFFF100000000
+000000000FFFFFC4444FFFFFFFFFF0000BFFFFF000000000
+000000000EFFFFC0000FFFFFFFFFE0000CFFFFE000000000
+000000000DFFFFD0000DFFFFFFFFD0000EFFFFD000000000
+000000000BFFFFF00009FFFFFFFF90000FFFFFB000000000
+000000000AFFFFF00000048CC84000001FFFFFA000000000
+0000000009FFFFF200000000000000002FFFFF8000000000
+0000000007FFFFF300000000000000004FFFFF7000000000
+0000000006FFFFFFB73000000000026AFFFFFF6000000000
+0000000004FFFFFFFFFEA5100049EFFFFFFFFF4000000000
+0000000003FFFFFFFFFFFFFCCFFFFFFFFFFFFF3000000000
+0000000001FFFFFFFFFFFFFFFFFFFFFFFFFFFF1000000000
+0000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000
+0000000000EFFFFFFFFFFFFFFFFFFFFFFFFFFE0000000000
+0000000000038CFFFFFFFFFFFFFFFFFFFFD9400000000000
+0000000000000015AEFFFFFFFFFFFFEA6100000000000000
+00000000000000000037BFFFFFFC84000000000000000000
+000000000000000000000159950000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV HTML5>> White
 sprite $users [48x48/16] {
 000000000000000000000000000000000000000000000000
 000000000000000000000000000000000000000000000000
@@ -740,36 +1102,31 @@ skinparam folderBackgroundColor<<FA SEND_O>> White
 skinparam backgroundColor #fff
 
 hide stereotype
-legend right
-|<color:#000000>**Legend**</color> |
-|<#08427B> person |
-|<#1168BD> system |
-|<#438DD5> container |
-|<#686868> external person |
-|<#999999> external system |
-|<#B3B3B3> external container |
-endlegend
 
-  rectangle "<$python>\n==Config Manager\n//<size:12>[python]</size>//\n\n Class to hold all configuration, used where needed for configs" <<container>> as configmanager
-  rectangle "<$python>\n==Display Controller\n//<size:12>[python]</size>//\n\n Class to get values from GUI" <<container>> as displaycontroller
-  rectangle "<$python>\n==Display Handler\n//<size:12>[python]</size>//\n\n Class to set values / properties in GUI" <<container>> as displayhandler
-  rectangle "<$python>\n==RPI Controller\n//<size:12>[python]</size>//\n\n Class to controll the Raspberry Pi and the GPIOs" <<container>> as rpicontroller
-  rectangle "<$python>\n==API Controller\n//<size:12>[python]</size>//\n\n Modules to handle logic for seperate views" <<container>> as apicontroller
-  rectangle "<$python>\n==Save Handler\n//<size:12>[python]</size>//\n\n Class to export data from DB to csv" <<container>> as savehandler
+  rectangle "<$python>\n==Config Manager\n//<size:12>[python]</size>//\n\n Class to hold all configuration, used where needed for configs" <<container>> as configmanager 
+  rectangle "<$python>\n==Display Controller\n//<size:12>[python]</size>//\n\n Class to get values from GUI" <<container>> as displaycontroller 
+  rectangle "<$python>\n==Display Handler\n//<size:12>[python]</size>//\n\n Class to set values / properties in GUI" <<container>> as displayhandler 
+  rectangle "<$python>\n==RPI Controller\n//<size:12>[python]</size>//\n\n Class to controll the Raspberry Pi and the GPIOs" <<container>> as rpicontroller 
+  rectangle "<$python>\n==API Controller\n//<size:12>[python]</size>//\n\n Modules to handle logic for seperate views" <<container>> as apicontroller 
+  rectangle "<$python>\n==Save Handler\n//<size:12>[python]</size>//\n\n Class to export data from DB to csv" <<container>> as savehandler 
 
-  rectangle "<$docker>\n==Microservice\n//<size:12>[python]</size>//\n\n Flask API to call services to interact with the www" <<container>> as microservice
-  rectangle "<$send_o>\n==Webhooks\n\n External webhooks or endpoints to post data from the cocktailmaker to" <<system>> as webhook
+  rectangle "<$docker>\n==Microservice\n//<size:12>[python]</size>//\n\n Flask API to call services to interact with the www" <<container>> as microservice 
+  rectangle "<$send_o>\n==Webhooks\n\n External webhooks or endpoints to post data from the cocktailmaker to" <<system>> as webhook 
 
-  rectangle "<$python>\n==Database Handler\n//<size:12>[Python]</size>//\n\n Handles and executes all SQL logic and connection" <<container>> as dbhandler
-  database "<$sqllite>\n==Database\n//<size:12>[Sqllite]</size>//\n\n Holds data for cocktails, bottles and ingredients" <<container>> as db
+  rectangle "<$python>\n==Database Handler\n//<size:12>[Python]</size>//\n\n Handles and executes all SQL logic and connection" <<container>> as dbhandler 
+  database "<$sqllite>\n==Database\n//<size:12>[Sqllite]</size>//\n\n Holds data for cocktails, bottles and ingredients" <<container>> as db 
 
-  rectangle "<$python>\n==Mainwindow\n//<size:12>[PyQt]</size>//\n\n The main user interaction happens here" <<container>> as mainwindow
-  rectangle "<$python>\n==Dialog windows\n//<size:12>[PyQt]</size>//\n\n User interaction popups for input / output" <<container>> as dialogwindow
-  rectangle "<$python>\n==Progress Screen\n//<size:12>[PyQt]</size>//\n\n View for progress and interruption of cocktail" <<container>> as progresscreen
-  rectangle "<$user>\n==User\n\n Person who wants the exported data from the DB" <<external_person>> as user
-  rectangle "<$send_o>\n==GMail\n\n Gmail account / service used as sender over smtp for the data" <<system>> as email
+  rectangle "<$python>\n==Mainwindow\n//<size:12>[PyQt]</size>//\n\n The main user interaction happens here" <<container>> as mainwindow 
+  rectangle "<$python>\n==Dialog windows\n//<size:12>[PyQt]</size>//\n\n User interaction popups for input / output" <<container>> as dialogwindow 
+  rectangle "<$python>\n==Progress Screen\n//<size:12>[PyQt]</size>//\n\n View for progress and interruption of cocktail" <<container>> as progresscreen 
+  rectangle "<$user>\n==User\n\n Person who wants the exported data from the DB" <<external_person>> as user 
+  rectangle "<$send_o>\n==GMail\n\n Gmail account / service used as sender over smtp for the data" <<system>> as email 
 
-dbhandler -UP->> db : **Reads/Writes**
+  rectangle "<$docker>\n==Dashboard API\n//<size:12>[python]</size>//\n\n FastAPI to get team Data for the leaderboard" <<container>> as dashapi 
+  rectangle "<$html5>\n==Dashboard\n//<size:12>[Streamlit]</size>//\n\n Python Streamlit Page to show leaderboard" <<container>> as dashfrontend 
+
+
+dbhandler - ->> db : **Reads/Writes**
 
 mainwindow - ->> dialogwindow : **opens**
 mainwindow - ->> progresscreen : **opens**
@@ -777,11 +1134,15 @@ mainwindow - ->> apicontroller : **calls**
 mainwindow - ->> savehandler : **calls**
 
 
-apicontroller -UP->> displaycontroller : **uses**
+apicontroller - ->> displaycontroller : **uses**
 apicontroller - ->> displayhandler : **uses**
-apicontroller -LEFT->> dbhandler : **uses**
+apicontroller - ->> dbhandler : **uses**
 apicontroller - ->> rpicontroller : **calls**
 apicontroller - ->> microservice : **post**\n//<size:12>[http]</size>//
+
+apicontroller -LEFT->> dashapi : **post**\n//<size:12>[http]</size>//
+dashfrontend - ->> dashapi : **uses**\n//<size:12>[http]</size>//
+
 
 microservice - ->> webhook : **post**\n//<size:12>[https]</size>//
 microservice - ->> email : **uses**\n//<size:12>[smtp]</size>//
@@ -791,10 +1152,10 @@ email - ->> user : **sends**\n//<size:12>[smtp]</size>//
 
 @enduml
 
-PlantUML version 1.2020.22(Sun Dec 06 10:36:27 CET 2020)
+PlantUML version 1.2021.7(Sun May 23 14:40:07 CEST 2021)
 (GPL source distribution)
-Java Runtime: OpenJDK Runtime Environment
-JVM: OpenJDK 64-Bit Server VM
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
 Default Encoding: Cp1252
 Language: de
 Country: DE

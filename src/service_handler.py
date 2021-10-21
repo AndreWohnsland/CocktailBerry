@@ -13,51 +13,78 @@ class ServiceHandler(ConfigManager):
         self.logger = LoggerHandler("microservice", "service_logs")
         self.headers = {"content-type": "application/json"}
 
-    def log_connection_error(self, func: str):
-        self.logger.log_event("ERROR", f"Could not connect to the microservice endpoint: '{func}'")
+    def log_connection_error(self, endpoint: str):
+        self.logger.log_event("ERROR", f"Could not connect to the microservice endpoint: '{endpoint}'")
 
     def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int) -> Dict:
+        """Post the given cocktail data to the microservice handling internet traffic to send to defined webhook"""
         if not self.USE_MICROSERVICE:
-            return return_service_disabled()
-        # calculare volume in litre
+            return service_disabled()
+        # calculate volume in litre
         payload = json.dumps({"cocktailname": cocktailname, "volume": cocktail_volume / 1000})
-        endpoint = "/hookhandler/cocktail"
-        full_url = f"{self.base_url}{endpoint}"
-        ret_data = {}
-        try:
-            req = requests.post(full_url, data=payload, headers=self.headers)
-            message = str(req.text).replace("\n", "")
-            ret_data = {
-                "status": req.status_code,
-                "message": message,
-            }
-            self.logger.log_event("INFO", f"Posted cocktail to {full_url} | {req.status_code}: {message}")
-        except requests.exceptions.ConnectionError:
-            self.log_connection_error(full_url)
-        return ret_data
+        endpoint = f"{self.base_url}/hookhandler/cocktail"
+        return self.try_to_send(endpoint, payload=payload, post_type="cocktail")
 
-    def send_mail(self, file_name, binary_file):
+    def send_mail(self, file_name: str, binary_file) -> Dict:
+        """Post the given file to the microservice handling internet traffic to send as mail"""
         if not self.USE_MICROSERVICE:
-            return return_service_disabled()
-        endpoint = "/email"
-        full_url = f"{self.base_url}{endpoint}"
-        ret_data = {}
+            return service_disabled()
+        endpoint = f"{self.base_url}/email"
         files = {"upload_file": (file_name, binary_file,)}
+        return self.try_to_send(endpoint, post_type="file", files=files)
+
+    def post_team_data(self, team_name: str, cocktail_volume: int) -> Dict:
+        """Post the given team name to the team api if activated"""
+        if not self.USE_TEAMS:
+            return team_disabled()
+        payload = json.dumps({"team": team_name, "volume": cocktail_volume})
+        endpoint = f"{self.TEAM_API_URL}/cocktail"
+        return self.try_to_send(endpoint, payload=payload, post_type="teamdata")
+
+    def try_to_send(self, endpoint: str, payload: str = None, post_type: str = "", files: dict = None) -> Dict:
+        """Try to send the data to the given endpoint.
+        Logs the action, catches and logs if there is no connection.
+        Raises an exception if there is no data to send.
+
+        Args:
+            endpoint (str): url to send
+            payload (str, optional): JSON data for payload. Defaults to None.
+            post_type (str, optional): Addional info for logger what was posted. Defaults to "".
+            files (dict, optional): dict with key 'upload_file' + filename and binary data as tuple. Defaults to None.
+
+        Raises:
+            Exception: There is no data to send. This shouldn't be happening if used correctly.
+
+        Returns:
+            Dict: Statuscode and message, or empty if cannot reach service
+        """
         try:
-            req = requests.post(full_url, files=files)
+            if payload is not None:
+                req = requests.post(endpoint, data=payload, headers=self.headers)
+            elif files is not None:
+                req = requests.post(endpoint, files=files)
+            else:
+                raise Exception('Neither payload nor files given!')
             message = str(req.text).replace("\n", "")
-            ret_data = {
+            self.logger.log_event("INFO", f"Posted {post_type} to {endpoint} | {req.status_code}: {message}")
+            return {
                 "status": req.status_code,
                 "message": message,
             }
-            self.logger.log_event("INFO", f"Posted file to {full_url} | {req.status_code}: {message}")
         except requests.exceptions.ConnectionError:
-            self.log_connection_error(full_url)
-        return ret_data
+            self.log_connection_error(endpoint)
+            return {}
 
 
-def return_service_disabled():
+def service_disabled():
     return {
         "status": 503,
-        "message": "microservice disabled",
+        "message": "Microservice disabled",
+    }
+
+
+def team_disabled():
+    return {
+        "status": 503,
+        "message": "Teams disabled",
     }

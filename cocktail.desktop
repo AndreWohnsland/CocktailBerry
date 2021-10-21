@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=CocktailScreen
+NoDisplay=false
+Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh

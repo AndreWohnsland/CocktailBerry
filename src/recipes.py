@@ -4,10 +4,6 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
 from collections import Counter
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
 
 from src.maker import refresh_recipe_maker_view
 from src.error_suppression import logerror
@@ -62,7 +58,7 @@ def reason_check_ingredients(ingredient_names, ingredient_volumes):
         return [], [], f"Eine der Zutaten:\n<{double_names[0]}>\nwurde doppelt verwendet!"
     try:
         volumes = [int(x) for x in volumes]
-    except:
+    except ValueError:
         return [], [], "Menge muss eine Zahl sein!"
     return names, volumes, ""
 

@@ -1,8 +1,6 @@
-import sys
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.uic import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMessageBox
+
 
 from src.supporter import generate_maker_ingredients_fields, generate_maker_volume_fields, generate_CBR_names, generate_lineedit_recipes
 
@@ -85,7 +83,7 @@ class DisplayHandler:
 
     def adjust_bottle_comboboxes(self, combobox_list, old_item, new_item):
         for combobox in combobox_list:
-            if (old_item != "") and (new_item != combobox.currentText()):
+            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):
                 combobox.addItem(old_item)
             if (new_item != "") and (new_item != combobox.currentText()):
                 self.delete_single_combobox_item(combobox, new_item)

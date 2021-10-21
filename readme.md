@@ -20,12 +20,19 @@
   - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
 - [Troubleshooting](#troubleshooting)
   - [Problems while Running the Program](#problems-while-running-the-program)
-- [Microservices](#microservices)
+  - [Problems Installing Software on Raspberry Pi](#problems-installing-software-on-raspberry-pi)
+    - [PyQt can't be Installed](#pyqt-cant-be-installed)
+    - [Numpy Import Error at Matplotlib Import](#numpy-import-error-at-matplotlib-import)
+    - [How to get the GUI Running on Startup](#how-to-get-the-gui-running-on-startup)
+    - [The GUI on the RPi Looks Different than on the Screenshots](#the-gui-on-the-rpi-looks-different-than-on-the-screenshots)
+- [Advanced Topics](#advanced-topics)
+  - [Microservices](#microservices)
+  - [Dashboard with Teams](#dashboard-with-teams)
   - [Usage of Services](#usage-of-services)
+  - [Installing Docker](#installing-docker)
 - [Development](#development)
   - [Program Schema](#program-schema)
   - [Pull Requests and Issues](#pull-requests-and-issues)
-  - [Caveats from Past Code](#caveats-from-past-code)
 - [Side Notes](#side-notes)
 - [ToDos](#todos)
 
@@ -146,7 +153,12 @@ These values are stored under the `config/config_manager.py` file. Depending on 
 - `LOGGERNAME_DEBUG` name for the error logger
 - `USE_MICROSERVICE` boolean flag to post to microservice set up by docker (optional)
 - `MICROSERVICE_BASE_URL` base url for microservice (if default docker it is at http://127.0.0.1:5000)
+- `USE_TEAMS` boolean flag to use teams feature (version >= 1.2) (optional)
+- `TEAM_BUTTON_NAMES` List of format ["Team1", "Team2"] (optional)
+- `TEAM_API_URL` Endpoint of teams API, default used port by API is 8080
 - `DEVENVIRONMENT` boolean flag to enable some development features
+
+In addition, there is a `Shared` config class, with dynamic values. The only thing you may want to change is `supress_error` to true, this will activate a wrapper function catching and logging errors of the wrapped function. In production this will effectively prevent the app from crashing due to errors (bugs) and log them, but setting it to `True` is at own risk.
 
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
 
@@ -159,9 +171,67 @@ The program will then evaluate which recipe meets all requirements to only show 
 ## Problems while Running the Program
 
 All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled and a info message should be displayed.\
-If in any case any unexpected behaviour occurs feel free to open an issue. Usually a part of the actions are also logged into the logfiles.
+If in any case any unexpected behavior occurs feel free to open an issue. Usually a part of the actions are also logged into the logfiles.
 
-# Microservices
+## Problems Installing Software on Raspberry Pi
+
+The Raspberry Pi can sometimes differ from other machines in term of installation. Here are some issues that might occur.
+
+### PyQt can't be Installed
+
+You probably need to run `sudo apt install python3-pyqt5` instead of `pip install pyqt5` on the pi
+
+### Numpy Import Error at Matplotlib Import
+
+Try first running `pip3 install -U numpy` and `sudo apt install libatlas3-base`. If it is still not fixed, try uninstalling and installing numpy / matplotlib again. If really nothing else works try `sudo pip3 install -U numpy`, then you will probably need to run the python file with root priviledge as well, which may result in another GUI style used by the system.
+
+### How to get the GUI Running on Startup
+
+I found the easiest thing is to use RPis Autostart. Create a .desktop file with `sudo nano /etc/xdg/autostart/cocktail.desktop` and the `launcher.sh` in your `/home/pi` folder:
+
+```
+[Desktop Entry]
+Type=Application
+Name=CocktailScreen
+NoDisplay=false
+Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh
+```
+
+```bash
+#!/bin/bash
+# launcher.sh for dashboard
+# no need for sudo if there were no Numpy import errors
+sudo python3 /home/pi/Cocktailmaker_AW/dashboard/qt-app/main.py
+```
+
+```bash
+#!/bin/bash
+# launcher.sh for cocktailmaker
+python3 /home/pi/Cocktailmaker_AW/runme.py
+```
+
+If your setup is equal to mine (Raspberry Pi, Maker GitHub cloned to `/home/pi/` folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
+
+```bash
+cp /home/pi/Cocktailmaker_AW/launcher.sh /home/pi/
+cp /home/pi/Cocktailmaker_AW/cocktail.desktop /etc/xdg/autostart/
+```
+
+If there are any problems with the lxterminal window opening and instant closing, check the rights of the shell file, it needs executable (x) rights, otherwise use `chmod` to give x-rights:
+
+```bash
+sudo chmod +x /home/pi/launcher.sh
+# or
+sudo chmod 755 /home/pi/launcher.sh
+```
+
+### The GUI on the RPi Looks Different than on the Screenshots
+
+I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI ressources. Using the pi user will result in the shown interfaces at the cocktailmaker (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
+
+# Advanced Topics
+
+## Microservices
 
 As an further addition there is the option to run a microservice within docker which handles some networking topics.
 Currently this is limited to:
@@ -169,17 +239,45 @@ Currently this is limited to:
 - Posting the cocktailname, used volume and current time to a given webhook
 - Posting the export csv as email to a receiver
 
-The seperation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is seperated to the service, also there is no need for multiple worker to not block the thread when the webhook enpoint is not up (Which would result in a delay of the display without multithredding). In the future, new services can be added easily to the docker container to execute different tasks. One example would be the export no longer be saved locally, but send via an email.
+The separation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is separated to the service, also there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithredding). In the future, new services can be added easily to the docker container to execute different tasks. One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktail-maker-now-with-home-assistant).
+
+## Dashboard with Teams
+
+With `version 1.2`, there is a team feature implemented into the maker. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device can be specified within the config. The cocktailmaker will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leaderboard. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the api / the dashboard for easy display on another screen.
+
+<img src="docs/pictures/teams_ui.png" alt="Maker" width="600"/>
+
+<img src="docs/pictures/dashboard.png" alt="Maker" width="600"/>
+
+The recommended way to to is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before you should instal the `requirements.txt` within the same folder using pip. See `Usage of Services` how to setup docker-compose in general.
+
+A second option is to use the `docker-compose.both.yaml` file with the compose `--file` option. This will build up the backend API, as well as a Streamlit frontend Web App. Streamlit is using pyarrow, which the Raspberry Pi 3 (Armv7 Architecture) seems not be able to build without any tweaks. On other architectures (like x86) the container could be build without any problems. If theses things confuse you, I strongly recommend using the first recommended option, since you only will loose the possibility to access the dashboard with multiple devices, like a smartphone.
 
 ## Usage of Services
 
-Simply have `docker-compose` installed and run the command in the main folder:
+Simply have `docker-compose` installed and run the command in the main folder for the cocktailmaker microservice or in the dashboard folder (on another device) for the dashboard service:
 
 ```
-docker-compose up
+docker-compose up -d
 ```
 
 This will handle the setup of all docker services. You will have to rename the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
+
+## Installing Docker
+
+tl;dr: Just run these commands in sequence on the pi and reboot after the first half.
+
+```bash
+sudo apt-get update && sudo apt-get upgrade
+curl -sSL https://get.docker.com | sh
+sudo usermod -aG docker ${USER}
+# reboot here
+sudo apt-get install libffi-dev libssl-dev
+sudo pip3 install docker-compose
+sudo systemctl enable docker
+# tesing if it works
+docker run hello-world
+```
 
 # Development
 
@@ -192,17 +290,6 @@ In the following diagram, the schema and Classes / Containers are displayed in a
 ## Pull Requests and Issues
 
 If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue.
-
-## Caveats from Past Code
-
-There are currently still some caveats from the previous code, contained in the `globalvars.py`. These are:
-
-- `SUPPRESS_ERROR` serves to control the decorators. I recommend setting this value to `False` while developing and to `True` while using the machine. If it's set to `True`, the additional lines from the decorator will be carried out, otherwise the decorator will just execute the function without extra steps. The decorators can suppress the Exception Error and log it instead `(logerror)`. This is quite handy when you want to run the machine without any restarts, but also keep track if anything goes wrong.
-- `cocktail_started` Boolean flag to ensure only one cocktail is run
-- `make_cocktail` Boolean flag to interrupt the cocktail procedure over the Ui via a button
-- `old_ingredient` Memorisation of the last order of ingredients before a change of the comboboxes
-
-They will be moved into the main logic classes in the future.
 
 # Side Notes
 
