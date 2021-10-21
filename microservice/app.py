@@ -4,10 +4,14 @@ import datetime
 import logging
 import json
 from threading import Thread
+from typing import Dict
 import requests
 from dotenv import load_dotenv
 from flask import Flask, request, abort, jsonify
+
+from querry_sender import try_send_querry_data
 from email_sender import send_mail
+from database import DatabaseHandler
 
 load_dotenv()
 
@@ -22,12 +26,14 @@ def welcome():
 
 @app.route("/hookhandler/cocktail", methods=["POST"])
 def post_cocktail_hook():
-    def post_to_hook(url, payload, headers):
+    def post_to_hook(url: str, payload: str, headers: Dict):
         try:
             req = requests.post(url, data=payload, headers=headers)
             app.logger.info(f"{req.status_code}: Posted to webhook with payload: {payload}")
         except requests.exceptions.ConnectionError:
             app.logger.error("Could not connect to the webhook for the cocktail!")
+            db_handler = DatabaseHandler()
+            db_handler.save_failed_post(payload)
 
     if not request.json or not "cocktailname" in request.json:
         abort(400)
@@ -54,4 +60,5 @@ def post_file_with_mail():
 
 
 if __name__ == "__main__":
+    try_send_querry_data()
     app.run(host="0.0.0.0", port=os.getenv("PORT"))

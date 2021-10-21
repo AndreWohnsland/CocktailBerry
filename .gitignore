@@ -9,3 +9,4 @@ __pycache__
 .venv
 team.db
 Cocktail_database.db
+failed_data.db
