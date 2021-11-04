@@ -20,6 +20,7 @@
   - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
 - [Troubleshooting](#troubleshooting)
   - [Problems while Running the Program](#problems-while-running-the-program)
+  - [Touchscreen Calibration](#touchscreen-calibration)
   - [Problems Installing Software on Raspberry Pi](#problems-installing-software-on-raspberry-pi)
     - [PyQt can't be Installed](#pyqt-cant-be-installed)
     - [Numpy Import Error at Matplotlib Import](#numpy-import-error-at-matplotlib-import)
@@ -172,6 +173,30 @@ The program will then evaluate which recipe meets all requirements to only show 
 
 All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled and a info message should be displayed.\
 If in any case any unexpected behavior occurs feel free to open an issue. Usually a part of the actions are also logged into the logfiles.
+
+## Touchscreen Calibration
+
+Sometimes you need to calibrate your touchscreen, otherwise the touched points and cursor are out of sync. First you need to get and compile xinput. After that, you can execute the program and select the crosses on the touchscreen according to the shown order.
+
+```bash
+wget http://github.com/downloads/tias/xinput_calibrator/xinput_calibrator-0.7.5.tar.gz
+tar -zxvf xinput_calibrator-0.7.5.tar.gz
+cd xinput_calibrator-0.7.5
+sudo apt-get install libx11-dev libxext-dev libxi-dev x11proto-input-dev
+./configure
+make
+sudo make install
+sudo xinput_calibrator # sudo DISPLAY=:0.0 xinput_calibrator may also work
+```
+
+To adjust those new touch coordinates, they need to be saved. The xinput programm should print out some block beginning with `Section "InputClass"` and ending with `EndSection`. This part needs to be entered in the `99-calibration.conf`.
+
+```bash
+sudo mkdir /etc/X11/xorg.conf.d
+sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
+```
+
+After the reboot, the calibration should be okay.
 
 ## Problems Installing Software on Raspberry Pi
 
