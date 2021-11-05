@@ -167,6 +167,12 @@ Setting up the machine is quite easy as well. Just go to the **Belegung** Tab an
 
 The program will then evaluate which recipe meets all requirements to only show the recipes where even the ingredients added via hand later are available and the recipe will be shown in the **_Maker_** Tab.
 
+## Calibration of the Pumps
+
+You can use the provided `calibration/calibration.py` script to run a very simple overlay for pump adjustment. Within the file, you can define your used pins (`pinvector`) and the default volume provided by the manufacture (`volumeflow`) for the calibration. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight output from the pumps. In the end, you can adjust each pump volume flow by the factor:
+
+$\dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}}$
+
 # Troubleshooting
 
 ## Problems while Running the Program
