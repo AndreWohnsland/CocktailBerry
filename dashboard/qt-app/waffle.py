@@ -97,11 +97,11 @@ def generate_figure(datatype: int):
         title={
             'label': NAMES[datatype - 1],
             'fontdict': {
-                'fontsize': 50
+                'fontsize': 30
             }
         },
         facecolor=(0.054, 0.066, 0.090, 1),
         legend={'loc': 'upper center', 'bbox_to_anchor': (0.5, 0.0),
-                'ncol': 2, 'framealpha': 0, 'fontsize': 30}
+                'ncol': 2, 'framealpha': 0, 'fontsize': 18}
     )
     return fig
