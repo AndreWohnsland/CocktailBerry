@@ -17,7 +17,6 @@ from src.save_handler import SaveHandler
 from src.display_handler import DisplayHandler
 from src.database_commander import DatabaseCommander
 from src.logger_handler import LoggerHandler
-from src_ui.setup_team_window import TeamScreen
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
 from src_ui.setup_progress_screen import ProgressScreen
@@ -27,6 +26,7 @@ from src_ui.setup_get_ingredients_window import GetIngredientWindow
 from src_ui.setup_keyboard_widget import KeyboardWidget
 from src_ui.setup_handadd_widget import HandaddWidget
 from src_ui.setup_avialable_window import AvailableWindow
+from src_ui.setup_team_window import TeamScreen
 
 SAVE_HANDLER = SaveHandler()
 DP_HANDLER = DisplayHandler()
@@ -39,6 +39,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     def __init__(self, parent=None):
         """ Init. Many of the button and List connects are in pass_setup. """
         super(MainScreen, self).__init__(parent)
+        ConfigManager.__init__(self)
         self.setupUi(self)
         self.handaddlist = []
         # Get the basic Logger
@@ -47,8 +48,8 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.connect_objects()
         self.connect_other_windows()
         self.icon_path = os.path.join(os.path.dirname(__file__), "..", "ui_elements", "Cocktail-icon.png")
-        # as long as its not DEVENVIRONMENT (usually touchscreen) hide the cursor
-        if not self.DEVENVIRONMENT:
+        # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
+        if not self.UI_DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         # Code for hide the curser. Still experimental!
         # for count in range(1,10):
@@ -180,8 +181,8 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # Connects the slider
         self.HSIntensity.valueChanged.connect(lambda: handle_alcohollevel_change(self))
 
-        # Disable some of the Tabs (for the PARTYMODE, no one can access the recipes)
-        if self.PARTYMODE:
+        # Disable some of the Tabs (for the UI_PARTYMODE, no one can access the recipes)
+        if self.UI_PARTYMODE:
             self.tabWidget.setTabEnabled(2, False)
 
         # gets the bottle ingredients into the global list

@@ -23,7 +23,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
         # sets cursor visualibility and assigns the names to the labels
         self.mainscreen = parent
-        if not self.mainscreen.DEVENVIRONMENT:
+        if not self.mainscreen.UI_DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         # get all the DB values and assign the nececary to the level labels
         # note: since there can be blank bottles (id=0 so no match) this needs to be catched as well (no selection from DB)

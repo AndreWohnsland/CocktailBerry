@@ -32,7 +32,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
                             Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
-        if not self.mainscreen.DEVENVIRONMENT:
+        if not self.mainscreen.UI_DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         # Connect all the buttons
         self.PBplus.clicked.connect(lambda: plusminus(self.LAmount, "+", 20, 100, 10))

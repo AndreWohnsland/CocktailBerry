@@ -23,7 +23,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         for obj, number in zip(self.attribute_numbers, self.number_list):
             obj.clicked.connect(lambda _, n=number: self.number_clicked(number=n))
         self.mainscreen = parent
-        if not self.mainscreen.DEVENVIRONMENT:
+        if not self.mainscreen.UI_DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         self.pwlineedit = le_to_write
         self.move(x_pos, y_pos)

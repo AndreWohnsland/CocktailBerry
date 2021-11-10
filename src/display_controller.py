@@ -7,6 +7,7 @@ class DisplayController(ConfigManager):
     """ Controler Class to get Values from the UI"""
 
     def __init__(self):
+        super().__init__()
         self.database_commander = DatabaseCommander()
 
     def get_current_combobox_items(self, combobox_list):
@@ -78,7 +79,7 @@ class DisplayController(ConfigManager):
     def check_password(self, lineedit):
         password = lineedit.text()
         lineedit.setText("")
-        if password == self.MASTERPASSWORD:
+        if password == self.UI_MASTERPASSWORD:
             return True
         return False
 
