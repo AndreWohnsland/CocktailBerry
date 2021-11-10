@@ -18,6 +18,7 @@
 - [Setting up the Maker](#setting-up-the-maker)
   - [Adding new Recipes or Ingredients](#adding-new-recipes-or-ingredients)
   - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
+  - [Calibration of the Pumps](#calibration-of-the-pumps)
 - [Troubleshooting](#troubleshooting)
   - [Problems while Running the Program](#problems-while-running-the-program)
   - [Touchscreen Calibration](#touchscreen-calibration)
@@ -121,10 +122,10 @@ pip3 install PyQt5
 
 ## Development on Non-Pi Hardware
 
-When you are working on another hardware (for example on a Windows or macOS engine) it is recommended (but not necessary) to set `DEVENVIRONMENT` to `True`. This will enable your cursor for example. All configuration can be set under `config/config_manager.py`:
+When you are working on another hardware (for example on a Windows or macOS engine) it is recommended (but not necessary) to set `UI_DEVENVIRONMENT` to `true`. This will enable your cursor for example. All configuration can be customized under `custom_config.yaml`:
 
-```python
-DEVENVIRONMENT = True
+```yaml
+UI_DEVENVIRONMENT: true
 ```
 
 This include the password (if needed/wanted), the configuration and physical connections of your hardware (like GPIO pin connection and pump volume), the names of the logger and restricted access to some tabs.
@@ -141,25 +142,25 @@ All entered values are checked for reason and if something is wrong, an error me
 
 ## Setting up the Machine / Modifying other Values
 
-These values are stored under the `config/config_manager.py` file. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed:
+These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed:
 
-- `MASTERPASSWORD` I recommend a string of pure numbers, since the UI supports only numbers with a build in numpad window
-- `USEDPINS` are the RPi-Pins where each Pump is connected
+- `UI_DEVENVIRONMENT` boolean flag to enable some development features
+- `UI_PARTYMODE` en- or disables the recipe tab (to prevent user interaction)
+- `UI_MASTERPASSWORD` I recommend a string of pure numbers, since the UI supports only numbers with a build in numpad window
+- `PUMP_PINS` are the RPi-Pins where each Pump is connected
 - `PUMP_VOLUMEFLOW` is the according volume flow for each pump in ml/s
-- `NUMBER_BOTTLES` are the number of supported bottles. Currently the Ui is build for up to ten bottles
-- `CLEAN_TIME` is the time the machine will execute the cleaning program
-- `SLEEP_TIME` is the sleep interval between each Ui refresh and check of conditions while generating a cocktail
-- `PARTYMODE` en- or disables the recipe tab (to prevent user interaction)
+- `MAKER_NUMBER_BOTTLES` are the number of supported bottles. Currently the Ui is build for up to ten bottles
+- `MAKER_CLEAN_TIME` is the time the machine will execute the cleaning program
+- `MAKER_SLEEP_TIME` is the sleep interval between each Ui refresh and check of conditions while generating a cocktail
 - `LOGGERNAME` name for the standard logger
 - `LOGGERNAME_DEBUG` name for the error logger
-- `USE_MICROSERVICE` boolean flag to post to microservice set up by docker (optional)
+- `MICROSERVICE_ACTIVE` boolean flag to post to microservice set up by docker (optional)
 - `MICROSERVICE_BASE_URL` base url for microservice (if default docker it is at http://127.0.0.1:5000)
-- `USE_TEAMS` boolean flag to use teams feature (version >= 1.2) (optional)
+- `TEAMS_ACTIVE` boolean flag to use teams feature (version >= 1.2) (optional)
 - `TEAM_BUTTON_NAMES` List of format ["Team1", "Team2"] (optional)
 - `TEAM_API_URL` Endpoint of teams API, default used port by API is 8080
-- `DEVENVIRONMENT` boolean flag to enable some development features
 
-In addition, there is a `Shared` config class, with dynamic values. The only thing you may want to change is `supress_error` to true, this will activate a wrapper function catching and logging errors of the wrapped function. In production this will effectively prevent the app from crashing due to errors (bugs) and log them, but setting it to `True` is at own risk.
+In addition, there is a `Shared` config class within the `config/config_manager.py`, with dynamic values. The only thing you may want to change is `suppress_error` to `True`, this will activate a wrapper function catching and logging errors of the wrapped function. In production this will effectively prevent the app from crashing due to errors (bugs) and log them, but setting it to `True` is at own risk.
 
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
 
