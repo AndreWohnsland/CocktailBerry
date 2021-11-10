@@ -10,7 +10,7 @@ def logerror(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if shared.supress_error:
+        if shared.suppress_error:
             logger = logging.getLogger("debuglog")
             try:
                 func(*args, **kwargs)
