@@ -171,6 +171,14 @@ QLineEdit
     border-style: solid;
     border: 1px solid rgb(97, 97, 97);
     border-radius: 5;
+}
+
+#LAvailable {
+	color: rgb(239, 151, 0);
+}
+
+#LPossible{
+	color: rgb(239, 151, 0);
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -178,7 +186,7 @@ QLineEdit
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="LAvailable">
         <property name="minimumSize">
          <size>
           <width>330</width>
@@ -220,7 +228,7 @@ QLineEdit
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="LPossible">
         <property name="minimumSize">
          <size>
           <width>330</width>

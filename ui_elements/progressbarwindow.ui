@@ -81,6 +81,10 @@ QProgressBar::chunk {
 
 #Labbruch {
 	color: rgb(239, 151, 0);
+}
+
+#LProgress{
+	color: rgb(239, 151, 0);
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -90,13 +94,13 @@ QProgressBar::chunk {
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>150</height>
+        <height>100</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>150</height>
+        <height>90</height>
        </size>
       </property>
       <property name="font">
@@ -107,7 +111,36 @@ QProgressBar::chunk {
        </font>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cocktail wird zubereitet!&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#ef9700;&quot;&gt;Fortschritt:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cocktail wird zubereitet!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignHCenter|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="LProgress">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>32</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ef9700;&quot;&gt;Fortschritt:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignHCenter|Qt::AlignTop</set>
