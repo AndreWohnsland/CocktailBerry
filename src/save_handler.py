@@ -3,12 +3,10 @@ import datetime
 import csv
 
 from src.database_commander import DatabaseCommander
-from src.display_handler import DisplayHandler
 from src.display_controller import DisplayController
 from src.service_handler import ServiceHandler
 
 DB_COMMANDER = DatabaseCommander()
-DP_HANDLER = DisplayHandler()
 DP_CONTROLLER = DisplayController()
 S_HANDLER = ServiceHandler()
 
@@ -33,11 +31,11 @@ class SaveHandler:
     def save_quant(self, line_edit_password, filename, data):
         """ Saves all the amounts of the ingredients/recipes to a csv and reset the counter to zero"""
         if not DP_CONTROLLER.check_password(line_edit_password):
-            DP_HANDLER.standard_box("Falsches Passwort!")
+            DP_CONTROLLER.standard_box("Falsches Passwort!")
             return False
 
         self.write_rows_to_csv(filename, [*data, [" "]])
-        DP_HANDLER.standard_box("Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!")
+        DP_CONTROLLER.standard_box("Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!")
         return True
 
     def write_rows_to_csv(self, filename, data_rows):

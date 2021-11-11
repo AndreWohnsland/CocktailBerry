@@ -12,9 +12,9 @@ from src.ingredients import *
 from src.recipes import *
 from src.bottles import *
 from src.bottles import set_fill_level_bars
-from src.supporter import plusminus, generate_lineedit_recipes, generate_CBB_names
+from src.supporter import plusminus
 from src.save_handler import SaveHandler
-from src.display_handler import DisplayHandler
+from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
 from src.logger_handler import LoggerHandler
 
@@ -29,8 +29,8 @@ from src_ui.setup_avialable_window import AvailableWindow
 from src_ui.setup_team_window import TeamScreen
 
 SAVE_HANDLER = SaveHandler()
-DP_HANDLER = DisplayHandler()
 DB_COMMANDER = DatabaseCommander()
+DP_CONTROLLER = DisplayController()
 
 
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
@@ -133,7 +133,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.LEKommentar.clicked.connect(self.handwindow)
         self.PBAvailable.clicked.connect(self.availablewindow)
         # connects all the Lineedits from the Recipe amount and gives them the validator
-        for obj in generate_lineedit_recipes(self):
+        for obj in DP_CONTROLLER.get_lineedits_recipe(self):
             obj.clicked.connect(lambda o=obj: self.passwordwindow(
                 le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!",))
             obj.setValidator(QIntValidator(0, 300))
@@ -150,9 +150,9 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # First, connect all the Pushbuttons with the Functions
         self.PBZutathinzu.clicked.connect(lambda: enter_ingredient(self))
         self.PBRezepthinzu.clicked.connect(lambda: enter_recipe(self, True))
-        self.PBBelegung.clicked.connect(lambda: customlevels(self))
+        self.PBBelegung.clicked.connect(self.bottleswindow)
         self.PBZeinzelnd.clicked.connect(lambda: custom_ingredient_output(self))
-        self.PBclear.clicked.connect(lambda: DP_HANDLER.clear_recipe_data_recipes(self, False))
+        self.PBclear.clicked.connect(lambda: DP_CONTROLLER.clear_recipe_data_recipes(self, False))
         self.PBRezeptaktualisieren.clicked.connect(lambda: enter_recipe(self, False))
         self.PBdelete.clicked.connect(lambda: delete_recipe(self))
         self.PBZdelete.clicked.connect(lambda: delete_ingredient(self))
@@ -188,7 +188,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # gets the bottle ingredients into the global list
         get_bottle_ingredients()
         # Clear Help Marker
-        DP_HANDLER.clear_recipe_data_maker(self)
+        DP_CONTROLLER.clear_recipe_data_maker(self)
         # Load ingredients
         load_ingredients(self)
         # Load Bottles into the Labels
@@ -206,5 +206,5 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # Load the Progressbar
         set_fill_level_bars(self)
 
-        for combobox in generate_CBB_names(self):
+        for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
             combobox.activated.connect(lambda _, window=self: refresh_bottle_cb(w=window))

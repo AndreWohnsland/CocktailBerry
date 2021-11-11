@@ -5,10 +5,10 @@ from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon, QIntValidator
 
 from ui_elements.handadds import Ui_handadds
-from src.display_handler import DisplayHandler
+from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
 
-display_handler = DisplayHandler()
+DP_CONTROLLER = DisplayController()
 database_commander = DatabaseCommander()
 
 
@@ -28,7 +28,7 @@ class HandaddWidget(QDialog, Ui_handadds):
         machine_list.sort()
         ingredient_list = hand_list + machine_list
         self.comboboxes_handadd = [getattr(self, f"CBHandadd{x}") for x in range(1, 6)]
-        display_handler.fill_multiple_combobox(self.comboboxes_handadd, ingredient_list, sort_items=False)
+        DP_CONTROLLER.fill_multiple_combobox(self.comboboxes_handadd, ingredient_list, sort_items=False)
         # connect the buttons
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
@@ -49,7 +49,7 @@ class HandaddWidget(QDialog, Ui_handadds):
             ingredient_name = database_commander.get_ingredient_name_from_id(row[0])
             combobox = getattr(self, f"CBHandadd{i}")
             lineedit = getattr(self, f"LEHandadd{i}")
-            display_handler.set_combobox_item(combobox, ingredient_name)
+            DP_CONTROLLER.set_combobox_item(combobox, ingredient_name)
             lineedit.setText(str(row[1]))
 
     def abbrechen_clicked(self):
@@ -60,13 +60,13 @@ class HandaddWidget(QDialog, Ui_handadds):
         """ Closes the window and enters the values into the DB/LE. """
         ingredient_list, amount_list, error = self.build_list_pairs()
         if error:
-            display_handler.standard_box(error)
+            DP_CONTROLLER.standard_box(error)
             return
         # check if any ingredient was used twice
         counted_ingredients = Counter(ingredient_list)
         double_ingredient = [x[0] for x in counted_ingredients.items() if x[1] > 1]
         if len(double_ingredient) != 0:
-            display_handler.standard_box(f"Eine der Zutaten:\n<{double_ingredient[0]}>\nwurde doppelt verwendet!")
+            DP_CONTROLLER.standard_box(f"Eine der Zutaten:\n<{double_ingredient[0]}>\nwurde doppelt verwendet!")
             return
         # if it passes all tests, generate the list for the later entry ands enter the comment into the according field
         self.mainscreen.handaddlist = []

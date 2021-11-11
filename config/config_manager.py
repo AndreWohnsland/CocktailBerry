@@ -24,9 +24,6 @@ class ConfigManager:
     MAKER_CLEAN_TIME = 20
     # time between each check loop when making cocktail
     MAKER_SLEEP_TIME = 0.05
-    # Names for the according logger files
-    LOGGERNAME = "cocktaillogger"
-    LOGGERNAME_DEBUG = "debuglogger"
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"

@@ -4,10 +4,10 @@ from PyQt5.QtWidgets import QMainWindow
 
 from ui_elements.available import Ui_available
 from src.maker import refresh_recipe_maker_view
-from src.display_handler import DisplayHandler
+from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
 
-DP_HANDLER = DisplayHandler()
+DP_CONTROLLER = DisplayController()
 DB_COMMANDER = DatabaseCommander()
 
 
@@ -28,8 +28,8 @@ class AvailableWindow(QMainWindow, Ui_available):
         ingredient_available = DB_COMMANDER.get_available_ingredient_names()
         ingredient_all = DB_COMMANDER.get_ingredient_names()
         entrylist = list(set(ingredient_all) - set(ingredient_available))
-        DP_HANDLER.fill_list_widget(self.LWVorhanden, ingredient_available)
-        DP_HANDLER.fill_list_widget(self.LWAlle, entrylist)
+        DP_CONTROLLER.fill_list_widget(self.LWVorhanden, ingredient_available)
+        DP_CONTROLLER.fill_list_widget(self.LWAlle, entrylist)
 
     def abbrechen_clicked(self):
         """ Closes the window without any furter action. """
@@ -43,7 +43,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         # reloads the maker screen and updates the shown available recipes
         self.mainscreen.LWMaker.clear()
         refresh_recipe_maker_view(self.mainscreen)
-        DP_HANDLER.clear_recipe_data_maker(self.mainscreen)
+        DP_CONTROLLER.clear_recipe_data_maker(self.mainscreen)
         self.close()
 
     def changeingredient(self, lwadd, lwremove):
@@ -52,5 +52,5 @@ class AvailableWindow(QMainWindow, Ui_available):
 
         ingredientname = lwremove.currentItem().text()
         lwadd.addItem(ingredientname)
-        DP_HANDLER.delete_list_widget_item(lwremove, ingredientname)
-        DP_HANDLER.unselect_list_widget_items(lwremove)
+        DP_CONTROLLER.delete_list_widget_item(lwremove, ingredientname)
+        DP_CONTROLLER.unselect_list_widget_items(lwremove)

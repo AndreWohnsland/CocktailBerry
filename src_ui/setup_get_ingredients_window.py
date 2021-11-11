@@ -6,13 +6,11 @@ from ui_elements.bonusingredient import Ui_addingredient
 from config.config_manager import shared
 
 from src.supporter import plusminus
-from src.display_handler import DisplayHandler
 from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
 from src.rpi_controller import RpiController
 from src.bottles import set_fill_level_bars
 
-DP_HANDLER = DisplayHandler()
 DB_COMMANDER = DatabaseCommander()
 RPI_CONTROLLER = RpiController()
 DP_CONTROLLER = DisplayController()
@@ -40,7 +38,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.PBAusgeben.clicked.connect(self.ausgeben_clicked)
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         bottles = DB_COMMANDER.get_ingredients_at_bottles_without_empty_ones()
-        DP_HANDLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
+        DP_CONTROLLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """
@@ -54,7 +52,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
 
         self.close()
         if volume > level:
-            DP_HANDLER.standard_box(f"{ingredient_name} hat nicht genug Volumen! {level}/{volume} ml vorhanden.")
+            DP_CONTROLLER.standard_box(f"{ingredient_name} hat nicht genug Volumen! {level}/{volume} ml vorhanden.")
             self.mainscreen.tabWidget.setCurrentIndex(3)
             return
 

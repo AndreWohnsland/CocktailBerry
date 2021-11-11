@@ -7,7 +7,6 @@ from src.bottles import set_fill_level_bars
 from src.error_suppression import logerror
 
 from src.database_commander import DatabaseCommander
-from src.display_handler import DisplayHandler
 from src.rpi_controller import RpiController
 from src.display_controller import DisplayController
 from src.logger_handler import LoggerHandler
@@ -17,7 +16,6 @@ from config.config_manager import shared
 
 
 DB_COMMANDER = DatabaseCommander()
-DP_HANDLER = DisplayHandler()
 RPI_CONTROLLER = RpiController()
 DP_CONTROLLER = DisplayController()
 SERVICE_HANDLER = ServiceHandler()
@@ -47,7 +45,7 @@ def refresh_recipe_maker_view(w, possible_recipes_id=None):
         available_recipes_ids.append(recipe_id)
 
     recipe_names = DB_COMMANDER.get_multiple_recipe_names_from_ids(available_recipes_ids)
-    DP_HANDLER.fill_list_widget(w.LWMaker, recipe_names)
+    DP_CONTROLLER.fill_list_widget(w.LWMaker, recipe_names)
 
 
 @logerror
@@ -56,7 +54,7 @@ def updated_clicked_recipe_maker(w):
     if not w.LWMaker.selectedItems():
         return
 
-    DP_HANDLER.clear_recipe_data_maker(w)
+    DP_CONTROLLER.clear_recipe_data_maker(w)
     handle_alcohollevel_change(w)
     cocktailname = w.LWMaker.currentItem().text()
 
@@ -67,7 +65,7 @@ def updated_clicked_recipe_maker(w):
         ingredient_data.extend([["", ""], ["Selbst hinzufügen:", ""]])
         ingredient_data.extend(handadd_data)
 
-    DP_HANDLER.fill_recipe_data_maker(w, ingredient_data, total_volume, cocktailname)
+    DP_CONTROLLER.fill_recipe_data_maker(w, ingredient_data, total_volume, cocktailname)
 
 
 def create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume):
@@ -141,14 +139,14 @@ def prepare_cocktail(w):
         return
     cocktailname, cocktail_volume, alcohol_faktor = DP_CONTROLLER.get_cocktail_data(w)
     if not cocktailname:
-        DP_HANDLER.standard_box("Kein Rezept ausgewählt!")
+        DP_CONTROLLER.standard_box("Kein Rezept ausgewählt!")
         return
     ingredient_data = DB_COMMANDER.get_recipe_ingredients_with_bottles(cocktailname)
     production_props = create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume)
     update_data, ingredient_volumes, ingredient_bottles, comment, error_data = production_props
     if error_data:
         message = f"Es ist in Flasche {error_data[0]} mit der Zutat {error_data[1]} nicht mehr genug Volumen vorhanden, {error_data[2]:.0f} ml wird benötigt!"
-        DP_HANDLER.standard_box(message)
+        DP_CONTROLLER.standard_box(message)
         w.tabWidget.setCurrentIndex(3)
         return
 
@@ -165,12 +163,12 @@ def prepare_cocktail(w):
 
     if shared.make_cocktail:
         DB_COMMANDER.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
-        DP_HANDLER.standard_box(
+        DP_CONTROLLER.standard_box(
             f"Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{comment}")
     else:
         consumption_names = [x[0] for x in update_data][: len(consumption)]
         DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption)
-        DP_HANDLER.standard_box("Der Cocktail wurde abgebrochen!")
+        DP_CONTROLLER.standard_box("Der Cocktail wurde abgebrochen!")
 
     set_fill_level_bars(w)
     reset_alcohollevel(w)
@@ -204,4 +202,4 @@ def handle_alcohollevel_change(w):
         total_volume += volume * factor_volume
         volume_concentration += volume * factor_volume * concentration
     alcohol_level = volume_concentration / total_volume
-    DP_HANDLER.set_alcohol_level(w, alcohol_level)
+    DP_CONTROLLER.set_alcohol_level(w, alcohol_level)
