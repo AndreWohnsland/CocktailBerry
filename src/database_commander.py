@@ -219,7 +219,7 @@ class DatabaseCommander:
 
     def get_enabled_status(self, recipe_name: str) -> int:
         query = "SELECT Enabled FROM Rezepte WHERE Name = ?"
-        return self.handler.query_database(query, (recipe_name,))[0]
+        return self.handler.query_database(query, (recipe_name,))[0][0]
 
     def get_available_ingredient_names(self) -> List[str]:
         query = """SELECT Zutaten.Name FROM Zutaten
