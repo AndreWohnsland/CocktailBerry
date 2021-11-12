@@ -1,30 +1,15 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMessageBox
 
-from config.config_manager import ConfigManager
 from src.database_commander import DatabaseCommander
+from src.dialog_handler import DialogHandler, ui_language
 
 
-class DisplayController(ConfigManager):
+class DisplayController(DialogHandler):
     """ Controler Class to get Values from the UI"""
 
     def __init__(self):
         super().__init__()
         self.database_commander = DatabaseCommander()
-
-    def standard_box(self, textstring):
-        """ The default messagebox for the Maker. Uses a QMessageBox with OK-Button """
-        messagebox = QMessageBox()
-        messagebox.setStandardButtons(QMessageBox.Ok)
-        buttonok = messagebox.button(QMessageBox.Ok)
-        buttonok.setText("     OK     ")
-        fillstring = "-" * 70
-        messagebox.setText(f"{fillstring}\n{textstring}\n{fillstring}")
-        messagebox.setStyleSheet(
-            "QMessageBox QPushButton{background-color: rgb(0, 123, 255); color: rgb(0, 0, 0); font-size: 30pt;} QMessageBox{background-color: rgb(10, 10, 10); font-size: 16pt;} QMessageBox QLabel{color: rgb(0, 123, 255);}"
-        )
-        messagebox.showFullScreen()
-        messagebox.exec_()
 
     ########################
     # UI "EXTRACT" METHODS #
@@ -36,7 +21,7 @@ class DisplayController(ConfigManager):
         return [button.isChecked() for button in button_list]
 
     def get_lineedit_text(self, lineedit_list):
-        return [lineedit.text() for lineedit in lineedit_list]
+        return [lineedit.text().strip() for lineedit in lineedit_list]
 
     def get_list_widget_selection(self, list_widget):
         if not list_widget.selectedItems():
@@ -45,7 +30,7 @@ class DisplayController(ConfigManager):
 
     def get_ingredient_data(self, lineedit_list, checkbox, list_widget):
         ingredient_name, alcohollevel, volume = self.get_lineedit_text(lineedit_list)
-        hand_add = 1 if checkbox.isChecked() else 0
+        hand_add = int(checkbox.isChecked())
         selected_ingredient = ""
         if list_widget.selectedItems():
             selected_ingredient = list_widget.currentItem().text()
@@ -66,27 +51,27 @@ class DisplayController(ConfigManager):
         return cocktailname, cocktail_volume, alcohol_faktor
 
     def get_recipe_field_data(self, w):
-        recipe_name = w.LECocktail.text()
+        recipe_name = w.LECocktail.text().strip()
         selected_recipe = w.LWRezepte.currentItem().text() if w.LWRezepte.selectedItems() else ""
         ingredient_volumes = self.get_lineedit_text(self.get_lineedits_recipe(w))
         ingredient_names = self.get_current_combobox_items(self.get_comboboxes_recipes(w))
         enabled = int(w.CHBenabled.isChecked())
         return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled
 
-    def check_ingredient_data(self, lineedit_list):
-        missing_criteria = ["Der Zutatenname fehlt", "Der Alkoholgehalt fehlt", "Das Flaschenvolumen fehlt"]
-        error_messages = self.missing_check(lineedit_list, missing_criteria)
+    def validate_ingredient_data(self, lineedit_list) -> bool:
+        if self.lineedit_is_missing(lineedit_list):
+            self.say_some_value_missing()
+            return False
         _, ingredient_percentage, ingredient_volume = lineedit_list
-        error_messages.extend(self.valid_check_int(
-            [ingredient_percentage, ingredient_volume], ["Alkoholgehalt", "Flaschenvolumen"]))
-        try:
-            if int(ingredient_percentage.text()) > 100:
-                error_messages.append("Alkoholgehalt kann nicht größer als 100 sein!")
-        except ValueError:
-            pass
-        return error_messages
+        if self.lineedit_is_no_int([ingredient_percentage, ingredient_volume]):
+            self.say_needs_to_be_int()
+            return False
+        if int(ingredient_percentage.text()) > 100:
+            self.say_alcohollevel_max_limit()
+            return False
+        return True
 
-    def get_data_ingredient_window(self, w):
+    def get_ingredient_window_data(self, w):
         ingredient_name = w.CBingredient.currentText()
         volume = int(w.LAmount.text())
         return ingredient_name, volume
@@ -107,24 +92,19 @@ class DisplayController(ConfigManager):
     def check_ingredient_password(self, w):
         return self.check_password(w.LEpw2)
 
-    def missing_check(self, lineedit_list, message_list=None):
-        error_messages = []
-        standard_message = "Es wurde ein Wert vergessen, bitte nachtragen"
-        if message_list is None:
-            message_list = [standard_message for x in lineedit_list]
-        for lineedit, message in zip(lineedit_list, message_list):
-            if lineedit.text() == "":
-                error_messages.append(message)
-        return error_messages
+    def lineedit_is_missing(self, lineedit_list) -> bool:
+        for lineedit in lineedit_list:
+            if lineedit.text().strip() == "":
+                return True
+        return False
 
-    def valid_check_int(self, lineedits, wrongvals):
-        error_messages = []
-        for lineedit, wrongval in zip(lineedits, wrongvals):
+    def lineedit_is_no_int(self, lineedits) -> bool:
+        for lineedit in lineedits:
             try:
                 int(lineedit.text())
             except ValueError:
-                error_messages.append(f"{wrongval} muss eine Zahl sein")
-        return error_messages
+                return True
+        return False
 
     ###########################
     # UI "MANIPULATE" METHODS #
@@ -237,20 +217,21 @@ class DisplayController(ConfigManager):
 
     # label
     def set_alcohol_level(self, w, value):
-        w.LAlkoholgehalt.setText(f"Alkohol: {value:.0f}%")
+        w.LAlkoholgehalt.setText(ui_language.get_volpc_for_dynamic(value))
 
     # others
     def fill_recipe_data_maker(self, w, display_data, total_volume, cocktailname):
         w.LAlkoholname.setText(cocktailname)
-        w.LMenge.setText(f"Menge: {total_volume} ml")
+        w.LMenge.setText(ui_language.get_volume_for_dynamic(total_volume))
         fields_ingredient = self.get_labels_maker_ingredients(w)[: len(display_data)]
         fields_volume = self.get_labels_maker_volume(w)[: len(display_data)]
         for field_ingredient, field_volume, (ingredient_name, volume) in zip(fields_ingredient, fields_volume, display_data):
-            field_ingredient.setText(f"{ingredient_name} ")
             if volume != "":
                 field_volume.setText(f" {volume} ml")
-            if ingredient_name == "Selbst hinzufügen:":
+            if ingredient_name == "HEADER":
+                ingredient_name = ui_language.get_add_self()
                 field_ingredient.setStyleSheet("color: rgb(170, 170, 170)")
+            field_ingredient.setText(f"{ingredient_name} ")
 
     def clear_recipe_data_maker(self, w):
         w.LAlkoholgehalt.setText("")
