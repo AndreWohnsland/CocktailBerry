@@ -31,11 +31,11 @@ class SaveHandler:
     def save_quant(self, line_edit_password, filename, data):
         """ Saves all the amounts of the ingredients/recipes to a csv and reset the counter to zero"""
         if not DP_CONTROLLER.check_password(line_edit_password):
-            DP_CONTROLLER.standard_box("Falsches Passwort!")
+            DP_CONTROLLER.say_wrong_password()
             return False
 
         self.write_rows_to_csv(filename, [*data, [" "]])
-        DP_CONTROLLER.standard_box("Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!")
+        DP_CONTROLLER.say_all_data_exported()
         return True
 
     def write_rows_to_csv(self, filename, data_rows):

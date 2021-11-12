@@ -12,19 +12,13 @@ DP_CONTROLLER = DisplayController()
 DB_COMMANDER = DatabaseCommander()
 
 
-def custom_ingredient_output(w):
-    """Calls an additional window to make a single ingredient output"""
-    w.ingredientdialog()
-
-
 def enter_ingredient(w, newingredient=True):
     """ Insert the new ingredient into the DB, if all values are given and its name is not already in the DB.
     Also can change the current selected ingredient (newingredient = False)
     """
     ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
-    error = DP_CONTROLLER.check_ingredient_data(ingredient_lineedits)
-    if error:
-        DP_CONTROLLER.standard_box(error[0])
+    valid_data = DP_CONTROLLER.validate_ingredient_data(ingredient_lineedits)
+    if not valid_data:
         return
     ingredient_data = DP_CONTROLLER.get_ingredient_data(
         ingredient_lineedits, ingredient_checkbox, ingredient_list_widget)
@@ -40,16 +34,19 @@ def enter_ingredient(w, newingredient=True):
     ingredient_list_widget.addItem(ingredient_data["ingredient_name"])
     set_fill_level_bars(w)
     refresh_bottle_information(w)
-    DP_CONTROLLER.standard_box(succesfull)
+    DP_CONTROLLER.say_ingredient_added_or_changed(
+        ingredient_data["ingredient_name"],
+        newingredient,
+        ingredient_data["selected_ingredient"]
+    )
 
 
 def add_new_ingredient(w, ingredient_data):
     """Adds the ingredient into the database """
-
     given_name_ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient_data["ingredient_name"])
     if given_name_ingredient_data:
-        DP_CONTROLLER.standard_box("Dieser Name existiert schon in der Datenbank!")
-        return ""
+        DP_CONTROLLER.say_name_already_exists()
+        return False
 
     DB_COMMANDER.insert_new_ingredient(
         ingredient_data["ingredient_name"],
@@ -61,22 +58,22 @@ def add_new_ingredient(w, ingredient_data):
         combobox_recipes = DP_CONTROLLER.get_comboboxes_recipes(w)
         combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
         DP_CONTROLLER.fill_multiple_combobox(combobox_recipes + combobox_bottles, [ingredient_data["ingredient_name"]])
-    return f"Zutat mit dem Namen: <{ingredient_data['ingredient_name']}> eingetragen"
+    return True
 
 
 def change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
     """Changes the existing ingredient """
     selected_ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient_data["selected_ingredient"])
     if not ingredient_data["selected_ingredient"]:
-        DP_CONTROLLER.standard_box("Es ist keine Zutat ausgewählt!")
-        return ""
+        DP_CONTROLLER.say_no_ingredient_selected()
+        return False
 
     bottle_used = DB_COMMANDER.get_bottle_usage(selected_ingredient_data["ID"])
     if ingredient_data["hand_add"] and bottle_used:
-        DP_CONTROLLER.standard_box(
-            "Die Zutat ist noch in der Belegung registriert und kann somit nicht auf selbst hinzufügen gesetzt werden!")
-        return ""
+        DP_CONTROLLER.say_ingredient_still_at_bottle()
+        return False
 
+    # in case the volume was lowered below current level get the minimum of both
     volume_level = min(selected_ingredient_data["volume_level"], ingredient_data["volume"])
     DB_COMMANDER.set_ingredient_data(
         ingredient_data["ingredient_name"],
@@ -103,7 +100,7 @@ def change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
     else:
         DP_CONTROLLER.delete_item_in_multiple_combobox(both_boxes, ingredient_data["selected_ingredient"])
 
-    return f"Zutat mit dem Namen: <{ingredient_data['selected_ingredient']}> unter <{ingredient_data['ingredient_name']}> aktualisiert"
+    return True
 
 
 def load_ingredients(w):
@@ -117,19 +114,19 @@ def delete_ingredient(w):
     """ Deletes an ingredient out of the DB if its not needed in any recipe."""
     _, _, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     if not DP_CONTROLLER.check_ingredient_password(w):
-        DP_CONTROLLER.standard_box("Falsches Passwort!")
+        DP_CONTROLLER.say_wrong_password()
         return
     if not ingredient_list_widget.selectedItems():
-        DP_CONTROLLER.standard_box("Keine Zutat ausgewählt!")
+        DP_CONTROLLER.say_no_ingredient_selected()
         return
     ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient_list_widget.currentItem().text())
     if DB_COMMANDER.get_bottle_usage(ingredient_data["ID"]):
-        DP_CONTROLLER.standard_box("Achtung, die Zutat ist noch in der Belegung registriert!")
+        DP_CONTROLLER.say_ingredient_still_at_bottle()
         return
     recipe_list = DB_COMMANDER.get_recipe_usage_list(ingredient_data["ID"])
     if recipe_list:
         recipe_string = ", ".join(recipe_list[:10])
-        DP_CONTROLLER.standard_box(f"Zutat kann nicht gelöscht werden, da sie in:\n{recipe_string}\ngenutzt wird!")
+        DP_CONTROLLER.say_ingredient_still_at_recipe(recipe_string)
         return
 
     DB_COMMANDER.delete_ingredient(ingredient_data["ID"])
@@ -137,8 +134,7 @@ def delete_ingredient(w):
     DP_CONTROLLER.delete_item_in_multiple_combobox(DP_CONTROLLER.get_comboboxes_recipes(w), ingredient_data["name"])
     clear_ingredient_information(w)
     load_ingredients(w)
-    DP_CONTROLLER.standard_box(
-        f"Zutat mit der ID und dem Namen:\n<{ingredient_data['ID']}> <{ingredient_data['name']}>\ngelöscht!")
+    DP_CONTROLLER.say_ingredient_deleted(ingredient_data['name'])
 
 
 def display_selected_ingredient(w):

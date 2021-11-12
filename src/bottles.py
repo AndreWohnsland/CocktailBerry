@@ -99,7 +99,7 @@ def renew_checked_bottles(w):
     DB_COMMANDER.set_bottle_volumelevel_to_max(renew_bottle)
     DP_CONTROLLER.untoggle_buttons(pushbutton_new_list)
     set_fill_level_bars(w)
-    DP_CONTROLLER.standard_box("Alle Flaschen angewendet!")
+    DP_CONTROLLER.say_bottles_renewed()
 
 
 @logerror
@@ -114,10 +114,10 @@ def set_fill_level_bars(w):
 def clean_machine(w):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
     if not DP_CONTROLLER.check_bottles_password(w):
-        DP_CONTROLLER.standard_box("Falsches Passwort!!!!")
+        DP_CONTROLLER.say_wrong_password()
         return
 
-    DP_CONTROLLER.standard_box("Achtung!: Maschine wird gereinigt, genug Wasser bereitstellen! Ok zum Fortfahren.")
+    DP_CONTROLLER.say_supply_water()
     LOG_HANDLER.log_header("INFO", "Cleaning the Pumps")
     RPI_CONTROLLER.clean_pumps()
-    DP_CONTROLLER.standard_box("Fertig!!!")
+    DP_CONTROLLER.say_done()

@@ -62,7 +62,7 @@ def updated_clicked_recipe_maker(w):
     total_volume = sum([v[1] for v in machineadd_data] + [v[1] for v in handadd_data])
     ingredient_data = machineadd_data
     if handadd_data:
-        ingredient_data.extend([["", ""], ["Selbst hinzufügen:", ""]])
+        ingredient_data.extend([["", ""], ["HEADER", ""]])
         ingredient_data.extend(handadd_data)
 
     DP_CONTROLLER.fill_recipe_data_maker(w, ingredient_data, total_volume, cocktailname)
@@ -92,7 +92,7 @@ def scale_and_sort_ingredient_data(ingredient_data, volume_factor):
         adjusted_volume = round(ingredient_volume * volume_factor)
         if ingredient_bottle:
             if not enough_ingredient(ingredient_level, adjusted_volume):
-                error_data = [ingredient_bottle, ingredient_name, adjusted_volume]
+                error_data = [ingredient_name, ingredient_level, round(adjusted_volume, 0)]
                 return [], [], [], "", error_data
             bottle_list.append(ingredient_bottle)
             volume_list.append(adjusted_volume)
@@ -106,10 +106,8 @@ def scale_and_sort_ingredient_data(ingredient_data, volume_factor):
 def build_comment_maker(comment_data):
     """Build the additional comment for the completion message (if there are handadds)"""
     comment = ""
-    if comment_data:
-        comment = "\n\nNoch hinzufügen:"
-        for ingredient_name, ingredient_volume in comment_data:
-            comment += f"\n- ca. {ingredient_volume:.0f} ml {ingredient_name}"
+    for ingredient_name, ingredient_volume in comment_data:
+        comment += f"\n- ca. {ingredient_volume:.0f} ml {ingredient_name}"
     return comment
 
 
@@ -124,13 +122,12 @@ def enough_ingredient(level, needed_volume):
 
 def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_time):
     """Enters a log entry for the made cocktail"""
-    mengenstring = f"{cocktail_volume} ml"
+    volume_string = f"{cocktail_volume} ml"
+    cancel_log_addition = ""
     if not shared.make_cocktail:
         pumped_volume = round(cocktail_volume * (taken_time) / max_time)
-        abbruchstring = f" - Rezept wurde bei {round(taken_time, 1)} s abgebrochen - {pumped_volume} ml"
-    else:
-        abbruchstring = ""
-    LOG_HANDLER.log_event("INFO", f"{mengenstring:8} | {cocktail_name}{abbruchstring}")
+        cancel_log_addition = f" - Recipe canceled at {round(taken_time, 1)} s - {pumped_volume} ml"
+    LOG_HANDLER.log_event("INFO", f"{volume_string:8} | {cocktail_name}{cancel_log_addition}")
 
 
 def prepare_cocktail(w):
@@ -139,21 +136,21 @@ def prepare_cocktail(w):
         return
     cocktailname, cocktail_volume, alcohol_faktor = DP_CONTROLLER.get_cocktail_data(w)
     if not cocktailname:
-        DP_CONTROLLER.standard_box("Kein Rezept ausgewählt!")
+        DP_CONTROLLER.say_no_recipe_selected()
         return
     ingredient_data = DB_COMMANDER.get_recipe_ingredients_with_bottles(cocktailname)
     production_props = create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume)
     update_data, ingredient_volumes, ingredient_bottles, comment, error_data = production_props
     if error_data:
-        message = f"Es ist in Flasche {error_data[0]} mit der Zutat {error_data[1]} nicht mehr genug Volumen vorhanden, {error_data[2]:.0f} ml wird benötigt!"
-        DP_CONTROLLER.standard_box(message)
+        DP_CONTROLLER.say_not_enough_ingredient_volume(error_data[0], error_data[1], error_data[2])
         w.tabWidget.setCurrentIndex(3)
         return
 
-    consumption, taken_time, max_time = RPI_CONTROLLER.make_cocktail(w, ingredient_bottles, ingredient_volumes)
+    print(f"Preparing {cocktail_volume} ml {cocktailname}")
+    consumption, taken_time, max_time = RPI_CONTROLLER.make_cocktail(
+        w, ingredient_bottles, ingredient_volumes, cocktailname)
     DB_COMMANDER.set_recipe_counter(cocktailname)
     generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
-    print("Verbrauchsmengen: ", consumption)
 
     SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, cocktail_volume)
     # only post team if cocktail was made over 60%
@@ -163,12 +160,11 @@ def prepare_cocktail(w):
 
     if shared.make_cocktail:
         DB_COMMANDER.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
-        DP_CONTROLLER.standard_box(
-            f"Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{comment}")
+        DP_CONTROLLER.say_cocktail_ready(comment)
     else:
         consumption_names = [x[0] for x in update_data][: len(consumption)]
         DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption)
-        DP_CONTROLLER.standard_box("Der Cocktail wurde abgebrochen!")
+        DP_CONTROLLER.say_cocktail_canceled()
 
     set_fill_level_bars(w)
     reset_alcohollevel(w)
@@ -178,7 +174,7 @@ def prepare_cocktail(w):
 def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
     shared.make_cocktail = False
-    print("Rezept wird abgebrochen!")
+    print("Canceling Recipe!")
 
 
 @logerror

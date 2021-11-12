@@ -26,38 +26,44 @@ def fill_recipe_box_with_ingredients(w):
 def prepare_enter_new_recipe(recipe_name):
     recipe_id = DB_COMMANDER.get_recipe_id_by_name(recipe_name)
     if recipe_id:
-        return recipe_id, "Dieser Name existiert schon in der Datenbank!"
-    return recipe_id, ""
+        DP_CONTROLLER.say_name_already_exists()
+        return recipe_id, True
+    return recipe_id, False
 
 
 def prepare_update_existing_recipe(w, selected_name):
     if not selected_name:
-        return 0, "Es ist kein Rezept ausgewählt!"
+        DP_CONTROLLER.say_no_recipe_selected()
+        return 0, True
     recipe_id = DB_COMMANDER.get_recipe_id_by_name(selected_name)
     DB_COMMANDER.delete_recipe_ingredient_data(recipe_id)
     DP_CONTROLLER.remove_recipe_from_list_widgets(w, selected_name)
-    return recipe_id, ""
+    return recipe_id, False
 
 
-def reason_check_ingredients(ingredient_names, ingredient_volumes):
+def validate_extract_ingredients(ingredient_names, ingredient_volumes):
     names, volumes = [], []
     for name, volume in zip(ingredient_names, ingredient_volumes):
         if (name == "" and volume != "") or (name != "" and volume == ""):
-            return [], [], "Irgendwo ist ein wert vergessen worden"
+            DP_CONTROLLER.say_some_value_missing()
+            return [], [], False
         if name != "":
             names.append(name)
             volumes.append(volume)
     if len(names) == 0:
-        return [], [], "Es muss mindestens eine Zutat eingetragen sein!"
+        DP_CONTROLLER.say_recipe_at_least_one_ingredient()
+        return [], [], False
     conter_names = Counter(names)
     double_names = [x[0] for x in conter_names.items() if x[1] > 1]
     if len(double_names) != 0:
-        return [], [], f"Eine der Zutaten:\n<{double_names[0]}>\nwurde doppelt verwendet!"
+        DP_CONTROLLER.say_ingredient_double_usage(double_names[0])
+        return [], [], False
     try:
         volumes = [int(x) for x in volumes]
     except ValueError:
-        return [], [], "Menge muss eine Zahl sein!"
-    return names, volumes, ""
+        DP_CONTROLLER.say_needs_to_be_int()
+        return [], [], False
+    return names, volumes, True
 
 
 def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, handadd_data):
@@ -79,15 +85,13 @@ def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alco
 def enter_recipe(w, newrecipe):
     """ Enters or updates the recipe into the db
     """
-    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled = DP_CONTROLLER.get_recipe_field_data(
-        w)
+    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled = DP_CONTROLLER.get_recipe_field_data(w)
     handadd_data = w.handaddlist
     if not recipe_name:
-        DP_CONTROLLER.standard_box("Bitte Cocktailnamen eingeben!")
+        DP_CONTROLLER.say_enter_cocktailname()
         return
-    ingredient_names, ingredient_volumes, error_message = reason_check_ingredients(ingredient_names, ingredient_volumes)
-    if error_message:
-        DP_CONTROLLER.standard_box(error_message)
+    ingredient_names, ingredient_volumes, is_valid = validate_extract_ingredients(ingredient_names, ingredient_volumes)
+    if not is_valid:
         return
 
     if newrecipe:
@@ -95,7 +99,6 @@ def enter_recipe(w, newrecipe):
     else:
         recipe_id, error_message = prepare_update_existing_recipe(w, selected_name)
     if error_message:
-        DP_CONTROLLER.standard_box(error_message)
         return
 
     recipe_volume = sum(ingredient_volumes)
@@ -120,11 +123,9 @@ def enter_recipe(w, newrecipe):
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
 
     if newrecipe:
-        message = f"Rezept unter der ID und dem Namen:\n<{recipe_id}> <{recipe_name}>\neingetragen!"
-        DP_CONTROLLER.standard_box(message)
+        DP_CONTROLLER.say_recipe_added(recipe_name)
     else:
-        message = f"Rezept mit der ID und dem Namen:\n<{recipe_id}> <{selected_name}>\nunter dem Namen:\n<{recipe_name}>\naktualisiert!"
-        DP_CONTROLLER.standard_box(message)
+        DP_CONTROLLER.say_recipe_updated(selected_name, recipe_name)
 
 
 @logerror
@@ -154,18 +155,18 @@ def load_selected_recipe_data(w):
 def delete_recipe(w):
     """ Deletes the selected recipe, requires the Password """
     if not DP_CONTROLLER.check_recipe_password(w):
-        DP_CONTROLLER.standard_box("Falsches Passwort!")
+        DP_CONTROLLER.say_wrong_password()
         return
     recipe_name = DP_CONTROLLER.get_list_widget_selection(w.LWRezepte)
     if not recipe_name:
-        DP_CONTROLLER.standard_box("Kein Rezept ausgewählt!")
+        DP_CONTROLLER.say_no_recipe_selected()
         return
 
     DB_COMMANDER.delete_recipe(recipe_name)
     DP_CONTROLLER.remove_recipe_from_list_widgets(w, recipe_name)
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
     DP_CONTROLLER.clear_recipe_data_maker(w)
-    DP_CONTROLLER.standard_box(f"Rezept mit dem Namen <{recipe_name}> wurde gelöscht!")
+    DP_CONTROLLER.say_recipe_deleted(recipe_name)
 
 
 @logerror
@@ -175,4 +176,4 @@ def enableall_recipes(w):
     DB_COMMANDER.set_all_recipes_enabled()
     refresh_recipe_maker_view(w, disabled_ids)
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
-    DP_CONTROLLER.standard_box("Alle Rezepte wurden wieder aktiv gesetzt!")
+    DP_CONTROLLER.say_all_recipes_enabled()
