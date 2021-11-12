@@ -17,6 +17,7 @@ from src.save_handler import SaveHandler
 from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
 from src.logger_handler import LoggerHandler
+from src.dialog_handler import ui_language
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
 from src_ui.setup_progress_screen import ProgressScreen
@@ -64,6 +65,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.handw: HandaddWidget = None
         self.availw: AvailableWindow = None
         self.teamw: TeamScreen = None
+        ui_language.adjust_mainwindow(self)
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext=None):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
@@ -82,8 +84,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     def progressionqwindow(self, labelchange=""):
         """ Opens up the progressionwindow to show the Cocktail status. """
         self.prow = ProgressScreen(self)
-        if labelchange:
-            self.prow.Lheader.setText(labelchange)
+        ui_language.adjust_progress_screen(self.prow, labelchange)
         self.prow.show()
 
     def teamwindow(self):
@@ -151,7 +152,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.PBZutathinzu.clicked.connect(lambda: enter_ingredient(self))
         self.PBRezepthinzu.clicked.connect(lambda: enter_recipe(self, True))
         self.PBBelegung.clicked.connect(self.bottleswindow)
-        self.PBZeinzelnd.clicked.connect(lambda: custom_ingredient_output(self))
+        self.PBZeinzelnd.clicked.connect(self.ingredientdialog)
         self.PBclear.clicked.connect(lambda: DP_CONTROLLER.clear_recipe_data_recipes(self, False))
         self.PBRezeptaktualisieren.clicked.connect(lambda: enter_recipe(self, False))
         self.PBdelete.clicked.connect(lambda: delete_recipe(self))

@@ -10,6 +10,7 @@ from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
 from src.rpi_controller import RpiController
 from src.bottles import set_fill_level_bars
+from src.dialog_handler import ui_language
 
 DB_COMMANDER = DatabaseCommander()
 RPI_CONTROLLER = RpiController()
@@ -39,6 +40,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         bottles = DB_COMMANDER.get_ingredients_at_bottles_without_empty_ones()
         DP_CONTROLLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
+        ui_language.adjust_bonusingredient_screen(self)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """
@@ -46,18 +48,17 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
 
     def ausgeben_clicked(self):
         """ Calls the Progressbarwindow and spends the given amount of the ingredient. """
-        ingredient_name, volume = DP_CONTROLLER.get_data_ingredient_window(self)
+        ingredient_name, volume = DP_CONTROLLER.get_ingredient_window_data(self)
         bottle, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
-        print(f"Ausgabemenge von {self.CBingredient.currentText()}: {volume}")
+        print(f"Spending {volume} ml {self.CBingredient.currentText()}")
 
         self.close()
         if volume > level:
-            DP_CONTROLLER.standard_box(f"{ingredient_name} hat nicht genug Volumen! {level}/{volume} ml vorhanden.")
+            DP_CONTROLLER.say_not_enough_ingredient_volume(ingredient_name, level, volume)
             self.mainscreen.tabWidget.setCurrentIndex(3)
             return
 
-        volume, _, _ = RPI_CONTROLLER.make_cocktail(
-            self.mainscreen, [bottle], [volume], labelchange="Zutat wird ausgegeben!\nFortschritt:")
+        volume, _, _ = RPI_CONTROLLER.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name)
         DB_COMMANDER.set_ingredient_consumption(ingredient_name, volume[0])
         set_fill_level_bars(self.mainscreen)
         self.mainscreen.prow_close()

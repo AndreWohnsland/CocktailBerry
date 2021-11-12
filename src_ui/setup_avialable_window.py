@@ -6,6 +6,7 @@ from ui_elements.available import Ui_available
 from src.maker import refresh_recipe_maker_view
 from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
+from src.dialog_handler import ui_language
 
 DP_CONTROLLER = DisplayController()
 DB_COMMANDER = DatabaseCommander()
@@ -30,6 +31,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         entrylist = list(set(ingredient_all) - set(ingredient_available))
         DP_CONTROLLER.fill_list_widget(self.LWVorhanden, ingredient_available)
         DP_CONTROLLER.fill_list_widget(self.LWAlle, entrylist)
+        ui_language.adjust_available_windos(self)
 
     def abbrechen_clicked(self):
         """ Closes the window without any furter action. """

@@ -7,6 +7,7 @@ from PyQt5.QtGui import QIcon, QIntValidator
 from ui_elements.handadds import Ui_handadds
 from src.display_controller import DisplayController
 from src.database_commander import DatabaseCommander
+from src.dialog_handler import ui_language
 
 DP_CONTROLLER = DisplayController()
 database_commander = DatabaseCommander()
@@ -43,6 +44,7 @@ class HandaddWidget(QDialog, Ui_handadds):
             lineedit.setMaxLength(3)
         self.fill_elements()
         self.move(0, 100)
+        ui_language.adjust_handadds_window(self)
 
     def fill_elements(self):
         for i, row in enumerate(self.mainscreen.handaddlist, start=1):
@@ -60,13 +62,13 @@ class HandaddWidget(QDialog, Ui_handadds):
         """ Closes the window and enters the values into the DB/LE. """
         ingredient_list, amount_list, error = self.build_list_pairs()
         if error:
-            DP_CONTROLLER.standard_box(error)
+            DP_CONTROLLER.say_some_value_missing()
             return
         # check if any ingredient was used twice
         counted_ingredients = Counter(ingredient_list)
         double_ingredient = [x[0] for x in counted_ingredients.items() if x[1] > 1]
         if len(double_ingredient) != 0:
-            DP_CONTROLLER.standard_box(f"Eine der Zutaten:\n<{double_ingredient[0]}>\nwurde doppelt verwendet!")
+            DP_CONTROLLER.say_ingredient_double_usage(double_ingredient[0])
             return
         # if it passes all tests, generate the list for the later entry ands enter the comment into the according field
         self.mainscreen.handaddlist = []
@@ -94,9 +96,9 @@ class HandaddWidget(QDialog, Ui_handadds):
             lineedit = getattr(self, f"LEHandadd{i}")
             combobox = getattr(self, f"CBHandadd{i}")
             if self.missing_pairs(combobox, lineedit):
-                return [], [], "Irgendwo ist ein Wert vergessen worden!"
+                return [], [], True
             # append both values to the lists
-            elif combobox.currentText() != "":
+            if combobox.currentText() != "":
                 ingredient_list.append(combobox.currentText())
                 amount_list.append(int(lineedit.text()))
-        return ingredient_list, amount_list, ""
+        return ingredient_list, amount_list, False

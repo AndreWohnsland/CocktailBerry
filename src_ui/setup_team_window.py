@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QDialog
 
 from ui_elements.teamselection import Ui_Teamselection
 from config.config_manager import ConfigManager, shared
+from src.dialog_handler import ui_language
 
 
 class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
@@ -23,6 +24,7 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         if not self.mainscreen.UI_DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         self.move(0, 0)
+        ui_language.adjust_team_window(self)
 
         def set_team(team: str):
             shared.selected_team = team
