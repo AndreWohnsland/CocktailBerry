@@ -54,7 +54,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
             self.mainscreen.tabWidget.setCurrentIndex(3)
             return
 
-        volume, _, _ = RPI_CONTROLLER.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name)
+        volume, _, _ = RPI_CONTROLLER.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name, False)
         DB_COMMANDER.set_ingredient_consumption(ingredient_name, volume[0])
         set_fill_level_bars(self.mainscreen)
         self.mainscreen.prow_close()

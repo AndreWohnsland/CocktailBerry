@@ -41,7 +41,7 @@ class RpiController(ConfigManager):
         self.close_pinlist(active_pins)
         self.header_print("Done Cleaning")
 
-    def make_cocktail(self, w, bottle_list: List[int], volume_list: List[float], recipe=""):
+    def make_cocktail(self, w, bottle_list: List[int], volume_list: List[float], recipe="", is_cocktail=True):
         """RPI Logic to prepare the cocktail.
         Calculates needed time for each slot according to data and config.
         Updates Progressbar status. Returns data for DB updates.
@@ -56,7 +56,7 @@ class RpiController(ConfigManager):
             tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
         """
         # Only shwo team dialog if it is enabled
-        if self.TEAMS_ACTIVE:
+        if self.TEAMS_ACTIVE and is_cocktail:
             w.teamwindow()
         shared.cocktail_started = True
         shared.make_cocktail = True
