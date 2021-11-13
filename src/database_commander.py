@@ -463,3 +463,6 @@ class DatabaseHandler:
             self.cursor.execute("INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)", (bottle_count, ""))
         self.database.commit()
         self.database.close()
+
+
+DB_COMMANDER = DatabaseCommander()

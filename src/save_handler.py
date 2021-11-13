@@ -2,13 +2,9 @@ import os
 import datetime
 import csv
 
-from src.database_commander import DatabaseCommander
-from src.display_controller import DisplayController
-from src.service_handler import ServiceHandler
-
-DB_COMMANDER = DatabaseCommander()
-DP_CONTROLLER = DisplayController()
-S_HANDLER = ServiceHandler()
+from src.database_commander import DB_COMMANDER
+from src.display_controller import DP_CONTROLLER
+from src.service_handler import SERVICE_HANDLER
 
 DIRPATH = os.path.dirname(__file__)
 
@@ -49,4 +45,7 @@ class SaveHandler:
             for row in data_rows:
                 csv_writer.writerow(row)
         with open(savepath, "rb") as read_file:
-            S_HANDLER.send_mail(full_file_name, read_file)
+            SERVICE_HANDLER.send_mail(full_file_name, read_file)
+
+
+SAVE_HANDLER = SaveHandler()

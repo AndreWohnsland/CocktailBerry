@@ -8,11 +8,8 @@ from collections import Counter
 from src.maker import refresh_recipe_maker_view
 from src.error_suppression import logerror
 
-from src.display_controller import DisplayController
-from src.database_commander import DatabaseCommander
-
-DP_CONTROLLER = DisplayController()
-DB_COMMANDER = DatabaseCommander()
+from src.display_controller import DP_CONTROLLER
+from src.database_commander import DB_COMMANDER
 
 
 @logerror

@@ -123,3 +123,6 @@ class RpiController(ConfigManager):
 
     def header_print(self, msg):
         print(f"{' ' + msg + ' ':-^80}")
+
+
+RPI_CONTROLLER = RpiController()

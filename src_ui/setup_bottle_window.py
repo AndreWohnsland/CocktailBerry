@@ -5,10 +5,8 @@ from ui_elements.bottlewindow import Ui_Bottlewindow
 
 from src.supporter import plusminus
 from src.bottles import set_fill_level_bars
-from src.database_commander import DatabaseCommander
-from src.dialog_handler import ui_language
-
-DB_COMMANDER = DatabaseCommander()
+from src.database_commander import DB_COMMANDER
+from src.dialog_handler import UI_LANGUAGE
 
 
 class BottleWindow(QMainWindow, Ui_Bottlewindow):
@@ -40,7 +38,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
                 label=l, operator="+", minimal=50, maximal=b, delta=25))
             minus.clicked.connect(lambda _, l=field, b=vol: plusminus(
                 label=l, operator="-", minimal=50, maximal=b, delta=25))
-        ui_language.adjust_bottle_window(self)
+        UI_LANGUAGE.adjust_bottle_window(self)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """

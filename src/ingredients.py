@@ -4,12 +4,8 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 from src.bottles import set_fill_level_bars, refresh_bottle_information
 
-from src.display_controller import DisplayController
-from src.database_commander import DatabaseCommander
-
-
-DP_CONTROLLER = DisplayController()
-DB_COMMANDER = DatabaseCommander()
+from src.display_controller import DP_CONTROLLER
+from src.database_commander import DB_COMMANDER
 
 
 def enter_ingredient(w, newingredient=True):

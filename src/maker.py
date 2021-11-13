@@ -6,19 +6,15 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 from src.bottles import set_fill_level_bars
 from src.error_suppression import logerror
 
-from src.database_commander import DatabaseCommander
-from src.rpi_controller import RpiController
-from src.display_controller import DisplayController
+from src.database_commander import DB_COMMANDER
+from src.rpi_controller import RPI_CONTROLLER
+from src.display_controller import DP_CONTROLLER
+from src.service_handler import SERVICE_HANDLER
 from src.logger_handler import LoggerHandler
-from src.service_handler import ServiceHandler
 
 from config.config_manager import shared
 
 
-DB_COMMANDER = DatabaseCommander()
-RPI_CONTROLLER = RpiController()
-DP_CONTROLLER = DisplayController()
-SERVICE_HANDLER = ServiceHandler()
 LOG_HANDLER = LoggerHandler("maker_module", "production_logs")
 
 

@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 
-from src.database_commander import DatabaseCommander
-from src.dialog_handler import DialogHandler, ui_language
+from src.database_commander import DB_COMMANDER
+from src.dialog_handler import DialogHandler, UI_LANGUAGE
 
 
 class DisplayController(DialogHandler):
@@ -9,7 +9,7 @@ class DisplayController(DialogHandler):
 
     def __init__(self):
         super().__init__()
-        self.database_commander = DatabaseCommander()
+        self.database_commander = DB_COMMANDER
 
     ########################
     # UI "EXTRACT" METHODS #
@@ -217,19 +217,19 @@ class DisplayController(DialogHandler):
 
     # label
     def set_alcohol_level(self, w, value):
-        w.LAlkoholgehalt.setText(ui_language.get_volpc_for_dynamic(value))
+        w.LAlkoholgehalt.setText(UI_LANGUAGE.get_volpc_for_dynamic(value))
 
     # others
     def fill_recipe_data_maker(self, w, display_data, total_volume, cocktailname):
         w.LAlkoholname.setText(cocktailname)
-        w.LMenge.setText(ui_language.get_volume_for_dynamic(total_volume))
+        w.LMenge.setText(UI_LANGUAGE.get_volume_for_dynamic(total_volume))
         fields_ingredient = self.get_labels_maker_ingredients(w)[: len(display_data)]
         fields_volume = self.get_labels_maker_volume(w)[: len(display_data)]
         for field_ingredient, field_volume, (ingredient_name, volume) in zip(fields_ingredient, fields_volume, display_data):
             if volume != "":
                 field_volume.setText(f" {volume} ml")
             if ingredient_name == "HEADER":
-                ingredient_name = ui_language.get_add_self()
+                ingredient_name = UI_LANGUAGE.get_add_self()
                 field_ingredient.setStyleSheet("color: rgb(170, 170, 170)")
             field_ingredient.setText(f"{ingredient_name} ")
 
@@ -311,3 +311,6 @@ class DisplayController(DialogHandler):
 
     def get_labels_maker_ingredients(self, w):
         return [getattr(w, f"LZutat{x}") for x in range(1, 11)]
+
+
+DP_CONTROLLER = DisplayController()

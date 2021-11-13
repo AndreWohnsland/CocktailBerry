@@ -6,15 +6,11 @@ from ui_elements.bonusingredient import Ui_addingredient
 from config.config_manager import shared
 
 from src.supporter import plusminus
-from src.display_controller import DisplayController
-from src.database_commander import DatabaseCommander
-from src.rpi_controller import RpiController
+from src.display_controller import DP_CONTROLLER
+from src.database_commander import DB_COMMANDER
+from src.rpi_controller import RPI_CONTROLLER
 from src.bottles import set_fill_level_bars
-from src.dialog_handler import ui_language
-
-DB_COMMANDER = DatabaseCommander()
-RPI_CONTROLLER = RpiController()
-DP_CONTROLLER = DisplayController()
+from src.dialog_handler import UI_LANGUAGE
 
 
 class GetIngredientWindow(QDialog, Ui_addingredient):
@@ -40,7 +36,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         bottles = DB_COMMANDER.get_ingredients_at_bottles_without_empty_ones()
         DP_CONTROLLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
-        ui_language.adjust_bonusingredient_screen(self)
+        UI_LANGUAGE.adjust_bonusingredient_screen(self)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """

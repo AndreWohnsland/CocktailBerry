@@ -89,3 +89,6 @@ def team_disabled():
         "status": 503,
         "message": "Teams disabled",
     }
+
+
+SERVICE_HANDLER = ServiceHandler()
