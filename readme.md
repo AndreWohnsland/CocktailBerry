@@ -10,6 +10,9 @@
 - [Overview](#overview)
   - [Machine](#machine)
   - [Interface](#interface)
+- [Hardware](#hardware)
+  - [Used Hardware in Showcase Maker](#used-hardware-in-showcase-maker)
+  - [Used Hardware in Showcase Teams Dashboard](#used-hardware-in-showcase-teams-dashboard)
 - [Installing Requirements](#installing-requirements)
   - [Minimal Requirements](#minimal-requirements)
   - [Install PyQt5 on RaspberryPi](#install-pyqt5-on-raspberrypi)
@@ -19,6 +22,7 @@
   - [Adding new Recipes or Ingredients](#adding-new-recipes-or-ingredients)
   - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
   - [Calibration of the Pumps](#calibration-of-the-pumps)
+- [Supported Languages](#supported-languages)
 - [Troubleshooting](#troubleshooting)
   - [Problems while Running the Program](#problems-while-running-the-program)
   - [Touchscreen Calibration](#touchscreen-calibration)
@@ -35,7 +39,6 @@
 - [Development](#development)
   - [Program Schema](#program-schema)
   - [Pull Requests and Issues](#pull-requests-and-issues)
-- [Side Notes](#side-notes)
 - [ToDos](#todos)
 
 <!-- /TOC -->
@@ -87,6 +90,36 @@ The Bottle GUI:
 
 <img src="docs/pictures/Bottles_ui.png" alt="Bottle" width="600"/>
 
+# Hardware
+
+You can also run the interface on any non RPi hardware, but you wont be able to controll the pins without a device supporting this. To build a functional maker I provided a list of my used hardware.
+
+## Used Hardware in Showcase Maker
+
+Following component were used within the showcase for the Maker:
+
+- 1x [Raspberry Pi 3b+](http://www.amazon.de/dp/B00LPESRUK/) (or newer like [Model 4](https://www.amazon.de/gp/product/B07TD42S27))
+- 1x [5 inch Touch Screen](http://www.amazon.de/dp/B071XT9Z7H/) for the Raspberry Pi
+- 1x Micro SD-Card (16 Gb is enough)
+- 1x 5V Power supply for the Raspberry Pi
+- 1x or 2x [Relay-Boards](https://www.amazon.de/gp/product/B07MJF9Z4K) depending on pump count (important to have 5V input control)
+- 6-10x Pumps, depending on your setup (you can use a [peristaltic pump](https://www.amazon.de/gp/product/B07YWGSH3C/) or a [membrane pump](http://www.amazon.de/dp/B07L1FB18S/), it should be food save)
+- 1x Power supply for the pumps (a 12V/5A Laptop charger in my case, needs to match pump voltage)
+- Food safe hose/tubes for the pumps
+- Female to Female jumper wires
+- Female to Male HDMI and USB extension cable
+- Some wires
+
+## Used Hardware in Showcase Teams Dashboard
+
+Following component were used within the showcase for the Teams Dashboard:
+
+- 1x [Raspberry Pi 3b+](http://www.amazon.de/dp/B00LPESRUK/) (or newer like [Model 4](https://www.amazon.de/gp/product/B07TD42S27))
+- 1x [7 inch Touch Screen](http://www.amazon.de/dp/B014WKCFR4/)
+- 1x [Display Casing](http://www.amazon.de/dp/B01GQFUWIC/)
+- 1x Micro SD-Card (16 Gb is enough)
+- 1x 5V Power supply for the Raspberry Pi
+
 # Installing Requirements
 
 ## Minimal Requirements
@@ -94,8 +127,8 @@ The Bottle GUI:
 Disclaimer: since the adding of the new `requirements.txt` file it should also be possible just to run `pip install -r requirements.txt` in the folder to get all requirements.
 
 ```
-- Python 3.6
-- PyQt5
+- Python >= 3.6
+- PyQt5, requests, pyyaml
 - RaspberryPi 3 (older may work but are not tested)
 ```
 
@@ -116,8 +149,9 @@ sudo apt-get install qt5-default pyqt5-dev pyqt5-dev-tools
 If you want to run some testing on other systems, you can get PyQt5 [here](https://www.riverbankcomputing.com/software/pyqt/download5).\
 As long as you are using a supported version of Python you can install PyQt5 from [PyPi](https://pypi.org/project/PyQt5/) by running:
 
-```
-pip3 install PyQt5
+```bash
+pip install PyQt5 # if only python3 is installed
+pip3 install PyQt5 # if also python2 is installed
 ```
 
 ## Development on Non-Pi Hardware
@@ -147,12 +181,13 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 - `UI_DEVENVIRONMENT` Boolean flag to enable some development features
 - `UI_PARTYMODE` En- or disables the recipe tab (to prevent user interaction)
 - `UI_MASTERPASSWORD` String for password, Use numbers for build in numpad like '1234'
+- `UI_LANGUAGE` 2 char code for the language, see [supported languages](#supported-languages) (version >= 1.3)
 - `PUMP_PINS` List of the RPi-Pins where each Pump is connected
 - `PUMP_VOLUMEFLOW` List of the according volume flow for each pump in ml/s
 - `MAKER_NUMBER_BOTTLES` Number of supported/displayed bottles. Currently the Ui is build for up to ten bottles
 - `MAKER_CLEAN_TIME` Time the machine will execute the cleaning program
 - `MAKER_SLEEP_TIME` Sleep interval between each Ui refresh and check of conditions while generating a cocktail
-- `MICROSERVICE_ACTIVE` Boolean flag to post to microservice set up by docker (optional)
+- `MICROSERVICE_ACTIVE` Boolean flag to post to microservice set up by docker (optional) (version >= 1.1)
 - `MICROSERVICE_BASE_URL` Base url for microservice (if default docker it is at http://127.0.0.1:5000) (optional)
 - `TEAMS_ACTIVE` Boolean flag to use teams feature (version >= 1.2) (optional)
 - `TEAM_BUTTON_NAMES` List of format ["Team1", "Team2"] (optional)
@@ -168,9 +203,18 @@ The program will then evaluate which recipe meets all requirements to only show 
 
 ## Calibration of the Pumps
 
-You can use the provided `calibration/calibration.py` script to run a very simple overlay for pump adjustment. Within the file, you can define your used pins (`pinvector`) and the default volumeflow provided by the manufacture (`volumeflow`) for the calibration. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight output from the pumps. In the end, you can adjust each pump volume flow by the factor:
+You can use the provided `calibration/calibration.py` script to run a very simple overlay for pump adjustment. Within the file, you can define your used pins (`pinvector`) and the default volumeflow provided by the manufacture (`volumeflow`) for the calibration. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps. In the end, you can adjust each pump volume flow by the factor:
 
 $\dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}}$
+
+# Supported Languages
+
+Version >= 1.3 includes multi-language support. You can change the language with the `UI_LANGUAGE` config option. Currently supported languages are:
+
+- German (`de`)
+- English (`en`)
+
+If you are interested in implementing your own native language, feel free to contact me or submit an according pull request.
 
 # Troubleshooting
 
@@ -194,7 +238,7 @@ sudo make install
 sudo xinput_calibrator # sudo DISPLAY=:0.0 xinput_calibrator may also work
 ```
 
-To adjust those new touch coordinates, they need to be saved. The xinput programm should print out some block beginning with `Section "InputClass"` and ending with `EndSection`. This part needs to be entered in the `99-calibration.conf`.
+To adjust those new touch coordinates, they need to be saved. The xinput programm should print out some block beginning with `Section "InputClass"` and ending with `EndSection`. This part needs to be copied to the `99-calibration.conf` file.
 
 ```bash
 sudo mkdir /etc/X11/xorg.conf.d
@@ -320,12 +364,6 @@ In the following diagram, the schema and Classes / Containers are displayed in a
 ## Pull Requests and Issues
 
 If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue.
-
-# Side Notes
-
-As you probably noticed, the interface is in German since this is the native language of all my friends (which are the users of the machine). I am planning to translate all text to English at some point, and give the possibility to choose between both languages, but currently there is no planned date for that.
-
-To achieve this goal the message display structure needs to be restructured.
 
 # ToDos
 
