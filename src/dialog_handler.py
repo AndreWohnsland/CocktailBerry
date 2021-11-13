@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Literal, Union
 from PyQt5.QtWidgets import QMessageBox
 from config.config_manager import ConfigManager
 
@@ -419,5 +419,26 @@ class UiLanguage(ConfigManager):
         }
         w.Lheader.setText(self.__choose_language(header))
 
+    def generate_password_header(self, headertype: Literal["password", "amount", "alcohol"] = "password"):
+        password = {
+            "en": "Please enter password!",
+            "de": "Bitte Passwort eingeben!",
+        }
+        amount = {
+            "en": "Please enter amount!",
+            "de": "Bitte Menge eingeben!",
+        }
+        alcohol = {
+            "en": "Please enter alcohol!",
+            "de": "Bitte Alkoholgehalt eingeben!",
+        }
+        if headertype == "password":
+            return self.__choose_language(password)
+        if headertype == "amount":
+            return self.__choose_language(amount)
+        if headertype == "alcohol":
+            return self.__choose_language(alcohol)
+        raise ValueError("Currently not possible")
 
-ui_language = UiLanguage()
+
+UI_LANGUAGE = UiLanguage()

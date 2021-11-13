@@ -7,17 +7,16 @@ from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
 from config.config_manager import ConfigManager
-from src.maker import *
-from src.ingredients import *
-from src.recipes import *
-from src.bottles import *
-from src.bottles import set_fill_level_bars
+from src import maker
+from src import ingredients
+from src import recipes
+from src import bottles
 from src.supporter import plusminus
-from src.save_handler import SaveHandler
-from src.display_controller import DisplayController
-from src.database_commander import DatabaseCommander
+from src.save_handler import SAVE_HANDLER
+from src.display_controller import DP_CONTROLLER
+from src.database_commander import DB_COMMANDER
+from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
-from src.dialog_handler import ui_language
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
 from src_ui.setup_progress_screen import ProgressScreen
@@ -28,10 +27,6 @@ from src_ui.setup_keyboard_widget import KeyboardWidget
 from src_ui.setup_handadd_widget import HandaddWidget
 from src_ui.setup_avialable_window import AvailableWindow
 from src_ui.setup_team_window import TeamScreen
-
-SAVE_HANDLER = SaveHandler()
-DB_COMMANDER = DatabaseCommander()
-DP_CONTROLLER = DisplayController()
 
 
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
@@ -65,13 +60,11 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.handw: HandaddWidget = None
         self.availw: AvailableWindow = None
         self.teamw: TeamScreen = None
-        ui_language.adjust_mainwindow(self)
+        UI_LANGUAGE.adjust_mainwindow(self)
 
-    def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext=None):
+    def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext="Password"):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
-        self.pww = PasswordScreen(self, x_pos=x_pos, y_pos=y_pos, le_to_write=le_to_write)
-        if headertext is not None:
-            self.pww.setWindowTitle(headertext)
+        self.pww = PasswordScreen(self, x_pos, y_pos, le_to_write, headertext)
         self.pww.show()
 
     def keyboard(self, le_to_write, headertext=None, max_char_len=30):
@@ -84,7 +77,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     def progressionqwindow(self, labelchange=""):
         """ Opens up the progressionwindow to show the Cocktail status. """
         self.prow = ProgressScreen(self)
-        ui_language.adjust_progress_screen(self.prow, labelchange)
+        UI_LANGUAGE.adjust_progress_screen(self.prow, labelchange)
         self.prow.show()
 
     def teamwindow(self):
@@ -123,20 +116,22 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
 
     def connect_other_windows(self):
         """Links the buttons and lineedits to the other ui elements"""
-        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw))
-        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2))
-        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine))
+        password = UI_LANGUAGE.generate_password_header("password")
+        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw, headertext=password))
+        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2, headertext=password))
+        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine, headertext=password))
         self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
+        alcohol = UI_LANGUAGE.generate_password_header("alcohol")
         self.LEGehaltRezept.clicked.connect(
-            lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext="Alkoholgehalt eingeben!")
+            lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext=alcohol)
         )
         self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept, max_char_len=20))
         self.LEKommentar.clicked.connect(self.handwindow)
         self.PBAvailable.clicked.connect(self.availablewindow)
         # connects all the Lineedits from the Recipe amount and gives them the validator
+        amount = UI_LANGUAGE.generate_password_header("amount")
         for obj in DP_CONTROLLER.get_lineedits_recipe(self):
-            obj.clicked.connect(lambda o=obj: self.passwordwindow(
-                le_to_write=o, x_pos=400, y_pos=50, headertext="Zutatenmenge eingeben!",))
+            obj.clicked.connect(lambda o=obj: self.passwordwindow(o, 400, 50, amount))
             obj.setValidator(QIntValidator(0, 300))
             obj.setMaxLength(3)
         # Setting up Validators for all the the fields (length and/or Types):
@@ -149,63 +144,63 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """
         # First, connect all the Pushbuttons with the Functions
-        self.PBZutathinzu.clicked.connect(lambda: enter_ingredient(self))
-        self.PBRezepthinzu.clicked.connect(lambda: enter_recipe(self, True))
+        self.PBZutathinzu.clicked.connect(lambda: ingredients.enter_ingredient(self))
+        self.PBRezepthinzu.clicked.connect(lambda: recipes.enter_recipe(self, True))
         self.PBBelegung.clicked.connect(self.bottleswindow)
         self.PBZeinzelnd.clicked.connect(self.ingredientdialog)
         self.PBclear.clicked.connect(lambda: DP_CONTROLLER.clear_recipe_data_recipes(self, False))
-        self.PBRezeptaktualisieren.clicked.connect(lambda: enter_recipe(self, False))
-        self.PBdelete.clicked.connect(lambda: delete_recipe(self))
-        self.PBZdelete.clicked.connect(lambda: delete_ingredient(self))
-        self.PBZclear.clicked.connect(lambda: clear_ingredient_information(self))
-        self.PBZaktualisieren.clicked.connect(lambda: enter_ingredient(self, False))
-        self.PBZubereiten_custom.clicked.connect(lambda: prepare_cocktail(self))
-        self.PBCleanMachine.clicked.connect(lambda: clean_machine(self))
-        self.PBFlanwenden.clicked.connect(lambda: renew_checked_bottles(self))
+        self.PBRezeptaktualisieren.clicked.connect(lambda: recipes.enter_recipe(self, False))
+        self.PBdelete.clicked.connect(lambda: recipes.delete_recipe(self))
+        self.PBZdelete.clicked.connect(lambda: ingredients.delete_ingredient(self))
+        self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
+        self.PBZaktualisieren.clicked.connect(lambda: ingredients.enter_ingredient(self, False))
+        self.PBZubereiten_custom.clicked.connect(lambda: maker.prepare_cocktail(self))
+        self.PBCleanMachine.clicked.connect(lambda: bottles.clean_machine(self))
+        self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
         self.PBZminus.clicked.connect(lambda: plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))
         self.PBMplus.clicked.connect(lambda: plusminus(self.LCustomMenge, "+", 100, 400, 25))
         self.PBMminus.clicked.connect(lambda: plusminus(self.LCustomMenge, "-", 100, 400, 25))
-        self.PBSetnull.clicked.connect(lambda: reset_alcohollevel(self))
+        self.PBSetnull.clicked.connect(lambda: maker.reset_alcohollevel(self))
         self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients(self))
         self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes(self))
-        self.PBenable.clicked.connect(lambda: enableall_recipes(self))
+        self.PBenable.clicked.connect(lambda: recipes.enableall_recipes(self))
 
         # Connect the Lists with the Functions
-        self.LWZutaten.itemClicked.connect(lambda: display_selected_ingredient(self))
-        self.LWZutaten.currentTextChanged.connect(lambda: display_selected_ingredient(self))
-        self.LWMaker.itemClicked.connect(lambda: updated_clicked_recipe_maker(self))
-        self.LWMaker.currentTextChanged.connect(lambda: updated_clicked_recipe_maker(self))
-        self.LWRezepte.itemClicked.connect(lambda: load_selected_recipe_data(self))
-        self.LWRezepte.currentTextChanged.connect(lambda: load_selected_recipe_data(self))
+        self.LWZutaten.itemClicked.connect(lambda: ingredients.display_selected_ingredient(self))
+        self.LWZutaten.currentTextChanged.connect(lambda: ingredients.display_selected_ingredient(self))
+        self.LWMaker.itemClicked.connect(lambda: maker.updated_clicked_recipe_maker(self))
+        self.LWMaker.currentTextChanged.connect(lambda: maker.updated_clicked_recipe_maker(self))
+        self.LWRezepte.itemClicked.connect(lambda: recipes.load_selected_recipe_data(self))
+        self.LWRezepte.currentTextChanged.connect(lambda: recipes.load_selected_recipe_data(self))
 
         # Connects the slider
-        self.HSIntensity.valueChanged.connect(lambda: handle_alcohollevel_change(self))
+        self.HSIntensity.valueChanged.connect(lambda: maker.handle_alcohollevel_change(self))
 
         # Disable some of the Tabs (for the UI_PARTYMODE, no one can access the recipes)
         if self.UI_PARTYMODE:
             self.tabWidget.setTabEnabled(2, False)
 
         # gets the bottle ingredients into the global list
-        get_bottle_ingredients()
+        bottles.get_bottle_ingredients()
         # Clear Help Marker
         DP_CONTROLLER.clear_recipe_data_maker(self)
         # Load ingredients
-        load_ingredients(self)
+        ingredients.load_ingredients(self)
         # Load Bottles into the Labels
-        refresh_bottle_information(self)
+        bottles.refresh_bottle_information(self)
         # Load Combobuttons Recipes
-        fill_recipe_box_with_ingredients(self)
+        recipes.fill_recipe_box_with_ingredients(self)
         # Load Combobuttons Bottles
-        calculate_combobox_bottles(self)
+        bottles.calculate_combobox_bottles(self)
         # Load current Bottles into the Combobuttons
-        read_in_bottles(self)
+        bottles.read_in_bottles(self)
         # Load Existing Recipes from DB into Recipe List
-        update_recipe_view(self)
+        recipes.update_recipe_view(self)
         # Load Possible Recipes Into Maker List
-        refresh_recipe_maker_view(self)
+        maker.refresh_recipe_maker_view(self)
         # Load the Progressbar
-        set_fill_level_bars(self)
+        bottles.set_fill_level_bars(self)
 
         for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
-            combobox.activated.connect(lambda _, window=self: refresh_bottle_cb(w=window))
+            combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
