@@ -307,7 +307,7 @@ I've noticed when running as root (sudo python3) and running as the pi user (pyt
 
 ## Microservices
 
-As an further addition there is the option to run a microservice within docker which handles some networking topics.
+As an further addition since `version 1.1`, there is the option to run a microservice within docker which handles some networking topics.
 Currently this is limited to:
 
 - Posting the cocktailname, used volume and current time to a given webhook
