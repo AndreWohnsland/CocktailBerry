@@ -49,7 +49,7 @@
 
 # Overview
 
-Welcome to the official dokumentation of my Cocktail Maker!
+Welcome to the official documentation of my Cocktail Maker!
 
 This app is used to control a cocktail machine and prepare easily cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
 
@@ -62,11 +62,11 @@ tl;dr:
 The Cocktail Maker can do:
 
 - Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
-- Add new ingredients and recepies with needed information over the UI
+- Add new ingredients and recipes with needed information over the UI
 - Specify additional ingredients for later hand add within an recipe (like sticky sirup)
 - Define connected ingredients to the machine and also existing additional ingredients over the UI
 - Auto calculates and displays possible recipes dependent on given information
-- Execute a cleaning programm to get rid of remaining fluids
+- Execute a cleaning program to get rid of remaining fluids
 - Export data for later data analysis, send data as mail to a receiver
 - Send cocktail production data to a given endpoint, for example a webhook
 - Keep track of cocktail count and volume from different teams for some fun competition
@@ -74,12 +74,12 @@ The Cocktail Maker can do:
 In addition there is the possibility to use and set up a second device as a dashboard:
 
 - Provide the teams API to post and get cocktail data
-- Display different modes of data for a by team comparision
-- _Optional_: Use the dashboard as WiFi hotspot
+- Display different modes of data for a by team comparison
+- _Optional_: Use the dashboard as WiFi hot-spot
 
 ## The Machine
 
-The Machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps, cabeling and a custom design housing made out of bended, laser cut and welded stainless steel. The electronics are hidden in a water proof housing, the pumps are within the casing. See [Hardware](#hardware) for a detailed list of components.
+The Machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps, cabling and a custom design housing made out of bended, laser cut and welded stainless steel. The electronics are hidden in a water proof housing, the pumps are within the casing. See [Hardware](#hardware) for a detailed list of components.
 
 Frontview:
 
@@ -111,7 +111,7 @@ The Bottle GUI:
 
 # Hardware
 
-You can also run the interface on any non RPi hardware, but you wont be able to controll the pins without a device supporting this. To build a functional maker I provided a list of my used hardware.
+You can also run the interface on any non RPi hardware, but you wont be able to control the pins without a device supporting this. To build a functional maker I provided a list of my used hardware.
 
 ## Used Hardware in Showcase Maker
 
@@ -189,7 +189,7 @@ This include the password (if needed/wanted), the configuration and physical con
 
 There are only limited ingredients and recipes. But you can add your own data to the program as well.
 This app uses a sqlite3 Database coupled to the UI. So, it's quite easy to implement new ingredients or even recipes.
-Just use the implemented UI for the procedure under the according tabs (**Zutaten** (ingredients) or **Rezepte** (recipes)).
+Just use the implemented UI for the procedure under the according tabs (**Ingredients** or **Recipes**).
 
 All entered values are checked for reason and if something is wrong, an error message will inform the user what is wrong with the data input. If you want to browse through the DB I recommend some program like [DB Browser for sqlite](https://sqlitebrowser.org/).
 
@@ -216,19 +216,19 @@ In addition, there is a `Shared` config class within the `config/config_manager.
 
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
 
-Setting up the machine is quite easy as well. Just go to the **Belegung** Tab and select via the dropdown boxes your assigned ingredients. In addition, you can define ingredients which are also there, but are not connected to the machine (under _Zutaten/Ingredients > verfügbar/available_). You can define ingredients in recipes (at _selbst hinzufügen / add your own_) which should be later added via hand (for example sticky ingredients which would not be optimal for your pump, or only very rarely used ones in cocktails).
+Setting up the machine is quite easy as well. Just go to the **Bottles** Tab and select via the dropdown boxes your assigned ingredients. In addition, you can define ingredients which are also there, but are not connected to the machine (under _Ingredients > available_). You can define ingredients in recipes (at _add self by hand_) which should be later added via hand, for example sticky ingredients which would not be optimal for your pump, or only very rarely used ones in cocktails.
 
 The program will then evaluate which recipe meets all requirements to only show the recipes where even the ingredients added via hand later are available and the recipe will be shown in the **_Maker_** Tab.
 
 ## Calibration of the Pumps
 
-You can use the provided `calibration/calibration.py` script to run a very simple overlay for pump adjustment. Within the file, you can define your used pins (`pinvector`) and the default volumeflow provided by the manufacture (`volumeflow`) for the calibration. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps. In the end, you can adjust each pump volume flow by the factor:
+You can use the provided `calibration/calibration.py` script to run a very simple overlay for pump adjustment. Within the file, you can define your used pins (`pinvector`) and the default volume flow provided by the manufacture (`volumeflow`) for the calibration. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps. In the end, you can adjust each pump volume flow by the factor:
 
 $\dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}}$
 
 ## Cleaning the Maker
 
-The maker has a build in cleaning function for cleaning at the end of a party. You will find the feature it under the `Bottles` tab. To start the cleaning process, the master password is needed to prevent unwanted cleaning attempts. The maker will then go in cleaning mode for the defined time within the config (default is 20 seconds). A message prompt will inform the user to provide enought water for the cleaning process. I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water and then running twice times again the cleaning programm to fully clean all pumps from remaining fluid.
+The maker has a build in cleaning function for cleaning at the end of a party. You will find the feature it under the `Bottles` tab. To start the cleaning process, the master password is needed to prevent unwanted cleaning attempts. The maker will then go in cleaning mode for the defined time within the config (default is 20 seconds). A message prompt will inform the user to provide enough water for the cleaning process. I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water and then running twice times again the cleaning program to fully clean all pumps from remaining fluid.
 
 # Supported Languages
 
@@ -246,14 +246,14 @@ If you are interested in implementing your own native language, feel free to con
 As an further addition since `version 1.1`, there is the option to run a microservice within docker which handles some networking topics.
 Currently this is limited to:
 
-- Posting the cocktailname, used volume and current time to a given webhook
+- Posting the cocktail name, used volume and current time to a given webhook
 - Posting the export csv as email to a receiver
 
-The separation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is separated to the service, also there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithredding). In the future, new services can be added easily to the docker container to execute different tasks. One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktail-maker-now-with-home-assistant). The service will also temporary store the data within a database, if there was no connection to the endpoint and try later again. This way, no data will get lost in the void.
+The separation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is separated to the service, also there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithreading). In the future, new services can be added easily to the docker container to execute different tasks. One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktail-maker-now-with-home-assistant). The service will also temporary store the data within a database, if there was no connection to the endpoint and try later again. This way, no data will get lost in the void.
 
 ## Dashboard with Teams
 
-With `version 1.2`, there is a team feature implemented into the maker. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device can be specified within the config. The cocktailmaker will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leaderboard. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the api / the dashboard for easy display on another screen.
+With `version 1.2`, there is a team feature implemented into the maker. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device can be specified within the config. The cocktailmaker will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leader board. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the api / the dashboard for easy display on another screen.
 
 <img src="docs/pictures/teams_ui.png" alt="Maker" width="600"/>
 
@@ -263,7 +263,7 @@ The recommended way to to is to use a second Raspberry Pi with a touchscreen att
 
 A second option is to use the `docker-compose.both.yaml` file with the compose `--file` option. This will build up the backend API, as well as a Streamlit frontend Web App. Streamlit is using pyarrow, which the Raspberry Pi 3 (Armv7 Architecture) seems not be able to build without any tweaks. On other architectures (like x86) the container could be build without any problems. If theses things confuse you, I strongly recommend using the first recommended option, since you only will loose the possibility to access the dashboard with multiple devices, like a smartphone.
 
-You can also set the second device up as a WiFi hotspot. This will give you the possibility to always connect to the dashboard, even if no connection to another home network or internet is available. For this, a very easy way is to use [RapsAp](https://raspap.com/).
+You can also set the second device up as a WiFi hot-spot. This will give you the possibility to always connect to the dashboard, even if no connection to another home network or internet is available. For this, a very easy way is to use [RapsAp](https://raspap.com/).
 
 ## Usage of Services
 
@@ -313,7 +313,7 @@ sudo make install
 sudo xinput_calibrator # sudo DISPLAY=:0.0 xinput_calibrator may also work
 ```
 
-To adjust those new touch coordinates, they need to be saved. The xinput programm should print out some block beginning with `Section "InputClass"` and ending with `EndSection`. This part needs to be copied to the `99-calibration.conf` file.
+To adjust those new touch coordinates, they need to be saved. The xinput program should print out some block beginning with `Section "InputClass"` and ending with `EndSection`. This part needs to be copied to the `99-calibration.conf` file.
 
 ```bash
 sudo mkdir /etc/X11/xorg.conf.d
@@ -332,7 +332,7 @@ You probably need to run `sudo apt install python3-pyqt5` instead of `pip instal
 
 ### Numpy Import Error at Matplotlib Import
 
-Try first running `pip3 install -U numpy` and `sudo apt install libatlas3-base`. If it is still not fixed, try uninstalling and installing numpy / matplotlib again. If really nothing else works try `sudo pip3 install -U numpy`, then you will probably need to run the python file with root priviledge as well, which may result in another GUI style used by the system.
+Try first running `pip3 install -U numpy` and `sudo apt install libatlas3-base`. If it is still not fixed, try uninstalling and installing numpy / matplotlib again. If really nothing else works try `sudo pip3 install -U numpy`, then you will probably need to run the python file with root privilege as well, which may result in another GUI style used by the system.
 
 ### How to get the GUI Running on Startup
 
@@ -376,7 +376,7 @@ sudo chmod 755 /home/pi/launcher.sh
 
 ### The GUI on the RPi Looks Different than on the Screenshots
 
-I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI ressources. Using the pi user will result in the shown interfaces at the cocktailmaker (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
+I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources. Using the pi user will result in the shown interfaces at the cocktailmaker (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
 
 # Development
 
