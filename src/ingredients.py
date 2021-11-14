@@ -27,7 +27,7 @@ def enter_ingredient(w, newingredient=True):
         return
 
     clear_ingredient_information(w)
-    ingredient_list_widget.addItem(ingredient_data["ingredient_name"])
+    DP_CONTROLLER.fill_list_widget(ingredient_list_widget, [ingredient_data["ingredient_name"]])
     set_fill_level_bars(w)
     refresh_bottle_information(w)
     DP_CONTROLLER.say_ingredient_added_or_changed(
@@ -101,9 +101,10 @@ def change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
 
 def load_ingredients(w):
     """ Load all ingredientnames into the ListWidget """
-    w.LWZutaten.clear()
+    DP_CONTROLLER.clear_list_widget_ingredients(w)
     ingredient_names = DB_COMMANDER.get_ingredient_names()
-    DP_CONTROLLER.fill_list_widget(w.LWZutaten, ingredient_names)
+    _, _, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+    DP_CONTROLLER.fill_list_widget(ingredient_list_widget, ingredient_names)
 
 
 def delete_ingredient(w):
@@ -112,10 +113,11 @@ def delete_ingredient(w):
     if not DP_CONTROLLER.check_ingredient_password(w):
         DP_CONTROLLER.say_wrong_password()
         return
-    if not ingredient_list_widget.selectedItems():
+    selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_list_widget)
+    if not selected_ingredient:
         DP_CONTROLLER.say_no_ingredient_selected()
         return
-    ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient_list_widget.currentItem().text())
+    ingredient_data = DB_COMMANDER.get_ingredient_data(selected_ingredient)
     if DB_COMMANDER.get_bottle_usage(ingredient_data["ID"]):
         DP_CONTROLLER.say_ingredient_still_at_bottle()
         return
@@ -136,8 +138,9 @@ def delete_ingredient(w):
 def display_selected_ingredient(w):
     """ Search the DB entry for the ingredient and displays them """
     ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
-    if ingredient_list_widget.selectedItems():
-        ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient_list_widget.currentItem().text())
+    selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_list_widget)
+    if selected_ingredient:
+        ingredient_data = DB_COMMANDER.get_ingredient_data(selected_ingredient)
         DP_CONTROLLER.fill_multiple_lineedit(
             ingredient_lineedits, [ingredient_data["name"], ingredient_data["alcohollevel"], ingredient_data["volume"]]
         )
@@ -148,5 +151,5 @@ def clear_ingredient_information(w):
     """ Clears all entries in the ingredient windows. """
     ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     DP_CONTROLLER.clean_multiple_lineedit(ingredient_lineedits)
-    ingredient_list_widget.clearSelection()
-    ingredient_checkbox.setChecked(False)
+    DP_CONTROLLER.unselect_list_widget_items(ingredient_list_widget)
+    DP_CONTROLLER.set_checkbox_value(ingredient_checkbox, False)

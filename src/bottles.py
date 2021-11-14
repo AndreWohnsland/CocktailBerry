@@ -68,7 +68,7 @@ def register_bottles(w):
     DB_COMMANDER.set_bottleorder(ingredient_names)
 
     refresh_bottle_information(w)
-    w.LWMaker.clear()
+    DP_CONTROLLER.clear_list_widget_maker(w)
     refresh_recipe_maker_view(w)
     set_fill_level_bars(w)
 

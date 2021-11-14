@@ -1,7 +1,9 @@
+from typing import Literal
 from PyQt5.QtCore import Qt
 
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
+from config.config_manager import shared
 
 
 class DisplayController(DialogHandler):
@@ -52,11 +54,12 @@ class DisplayController(DialogHandler):
 
     def get_recipe_field_data(self, w):
         recipe_name = w.LECocktail.text().strip()
-        selected_recipe = w.LWRezepte.currentItem().text() if w.LWRezepte.selectedItems() else ""
+        selected_recipe = self.get_list_widget_selection(w.LWRezepte)
         ingredient_volumes = self.get_lineedit_text(self.get_lineedits_recipe(w))
         ingredient_names = self.get_current_combobox_items(self.get_comboboxes_recipes(w))
         enabled = int(w.CHBenabled.isChecked())
-        return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled
+        comment = w.LEKommentar.text()
+        return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, comment
 
     def validate_ingredient_data(self, lineedit_list) -> bool:
         if self.lineedit_is_missing(lineedit_list):
@@ -109,6 +112,23 @@ class DisplayController(DialogHandler):
     ###########################
     # UI "MANIPULATE" METHODS #
     ###########################
+    # TabWidget
+    def set_tabwidget_tab(self, w, tab: Literal["maker", "ingredients", "recipes", "bottles"]):
+        tabs = {
+            "maker": 0,
+            "ingredients": 1,
+            "recipes": 2,
+            "bottles": 3
+        }
+        w.tabWidget.setCurrentIndex(tabs[tab])
+
+    # Slider
+    def __set_slider_value(self, slider, value):
+        slider.setValue(value)
+
+    def reset_alcohol_slider(self, w):
+        self.__set_slider_value(w.HSIntensity, 0)
+
     # LineEdit
     def clean_multiple_lineedit(self, lineedit_list):
         for lineedit in lineedit_list:
@@ -204,9 +224,24 @@ class DisplayController(DialogHandler):
             for index in index_to_delete:
                 list_widget.takeItem(list_widget.row(index))
 
-    def fill_list_widget(self, list_widget, item_list):
+    def fill_list_widget(self, list_widget, item_list: list):
         for item in item_list:
             list_widget.addItem(item)
+
+    def __clear_list_widget(self, listwidget):
+        listwidget.clear()
+
+    def clear_list_widget_maker(self, w):
+        self.__clear_list_widget(w.LWMaker)
+
+    def clear_list_widget_ingredients(self, w):
+        self.__clear_list_widget(w.LWZutaten)
+
+    def fill_list_widget_maker(self, w, recipe_names: list):
+        self.fill_list_widget(w.LWMaker, recipe_names)
+
+    def fill_list_widget_recipes(self, w, recipe_names: list):
+        self.fill_list_widget(w.LWRezepte, recipe_names)
 
     # checkboxes
     def set_checkbox_value(self, checkbox, value):
@@ -249,7 +284,7 @@ class DisplayController(DialogHandler):
             w.LWRezepte.clearSelection()
         self.set_multiple_combobox_to_top_item(self.get_comboboxes_recipes(w))
         self.clean_multiple_lineedit(self.get_lineedits_recipe(w))
-        w.handaddlist = []
+        shared.handaddlist = []
 
     def refill_recipes_list_widget(self, w, items):
         w.LWRezepte.clear()
@@ -265,7 +300,7 @@ class DisplayController(DialogHandler):
         comment = ""
         for ingredient_name, volume, ingredient_id, alcoholic, alcohol_level in handadd_data:
             comment += f"{volume} ml {ingredient_name}, "
-            w.handaddlist.append([ingredient_id, volume, alcoholic, 1, alcohol_level])
+            shared.handaddlist.append([ingredient_id, volume, alcoholic, 1, alcohol_level])
         comment = comment[:-2]
         w.LEKommentar.setText(comment)
 
@@ -301,6 +336,7 @@ class DisplayController(DialogHandler):
         return [getattr(w, f"LER{x}") for x in range(1, 9)]
 
     def get_ingredient_fields(self, w):
+        """Returns [Name, Alcohol, Volume], CheckedHand, ListWidget Elements for Ingredients"""
         return [[w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen], w.CHBHand, w.LWZutaten]
 
     def get_label_bottles(self, w):

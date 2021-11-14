@@ -75,6 +75,7 @@ class Shared:
         self.suppress_error = False
         self.old_ingredient = []
         self.selected_team = "Nothing"
+        self.handaddlist = []
 
 
 shared = Shared()

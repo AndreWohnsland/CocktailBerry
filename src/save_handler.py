@@ -11,28 +11,25 @@ DIRPATH = os.path.dirname(__file__)
 
 class SaveHandler:
     def export_ingredients(self, w):
-        consumption_list = DB_COMMANDER.get_consumption_data_lists_ingredients()
-        successfull = self.save_quant(w.LEpw2, "Zutaten_export.csv", consumption_list)
-        if not successfull:
+        if not DP_CONTROLLER.check_ingredient_password(w):
+            DP_CONTROLLER.say_wrong_password()
             return
+        consumption_list = DB_COMMANDER.get_consumption_data_lists_ingredients()
+        self.save_quant("Zutaten_export.csv", consumption_list)
         DB_COMMANDER.delete_consumption_ingredients()
 
     def export_recipes(self, w):
-        consumption_list = DB_COMMANDER.get_consumption_data_lists_recipes()
-        successfull = self.save_quant(w.LEpw, "Rezepte_export.csv", consumption_list)
-        if not successfull:
+        if not DP_CONTROLLER.check_recipe_password(w):
+            DP_CONTROLLER.say_wrong_password()
             return
+        consumption_list = DB_COMMANDER.get_consumption_data_lists_recipes()
+        self.save_quant("Rezepte_export.csv", consumption_list)
         DB_COMMANDER.delete_consumption_recipes()
 
-    def save_quant(self, line_edit_password, filename, data):
+    def save_quant(self, filename, data):
         """ Saves all the amounts of the ingredients/recipes to a csv and reset the counter to zero"""
-        if not DP_CONTROLLER.check_password(line_edit_password):
-            DP_CONTROLLER.say_wrong_password()
-            return False
-
         self.write_rows_to_csv(filename, [*data, [" "]])
         DP_CONTROLLER.say_all_data_exported()
-        return True
 
     def write_rows_to_csv(self, filename, data_rows):
         dtime = str(datetime.date.today())

@@ -41,18 +41,18 @@ def refresh_recipe_maker_view(w, possible_recipes_id=None):
         available_recipes_ids.append(recipe_id)
 
     recipe_names = DB_COMMANDER.get_multiple_recipe_names_from_ids(available_recipes_ids)
-    DP_CONTROLLER.fill_list_widget(w.LWMaker, recipe_names)
+    DP_CONTROLLER.fill_list_widget_maker(w, recipe_names)
 
 
 @logerror
 def updated_clicked_recipe_maker(w):
     """ Updates the maker display Data with the selected recipe"""
-    if not w.LWMaker.selectedItems():
+    cocktailname, _, _ = DP_CONTROLLER.get_cocktail_data(w)
+    if not cocktailname:
         return
 
     DP_CONTROLLER.clear_recipe_data_maker(w)
     handle_alcohollevel_change(w)
-    cocktailname = w.LWMaker.currentItem().text()
 
     machineadd_data, handadd_data = DB_COMMANDER.get_recipe_ingredients_by_name_seperated_data(cocktailname)
     total_volume = sum([v[1] for v in machineadd_data] + [v[1] for v in handadd_data])
@@ -139,7 +139,7 @@ def prepare_cocktail(w):
     update_data, ingredient_volumes, ingredient_bottles, comment, error_data = production_props
     if error_data:
         DP_CONTROLLER.say_not_enough_ingredient_volume(error_data[0], error_data[1], error_data[2])
-        w.tabWidget.setCurrentIndex(3)
+        DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
         return
 
     print(f"Preparing {cocktail_volume} ml {cocktailname}")
@@ -163,7 +163,7 @@ def prepare_cocktail(w):
         DP_CONTROLLER.say_cocktail_canceled()
 
     set_fill_level_bars(w)
-    reset_alcohollevel(w)
+    DP_CONTROLLER.reset_alcohol_slider(w)
     shared.cocktail_started = False
 
 
@@ -171,12 +171,6 @@ def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
     shared.make_cocktail = False
     print("Canceling Recipe!")
-
-
-@logerror
-def reset_alcohollevel(w):
-    """ Sets the alcoholintensity to default value (100 %). """
-    w.HSIntensity.setValue(0)
 
 
 @logerror

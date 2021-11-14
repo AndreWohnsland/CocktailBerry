@@ -10,6 +10,7 @@ from src.error_suppression import logerror
 
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
+from config.config_manager import shared
 
 
 @logerror
@@ -63,8 +64,7 @@ def validate_extract_ingredients(ingredient_names, ingredient_volumes):
     return names, volumes, True
 
 
-def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, handadd_data):
-    comment = w.LEKommentar.text()
+def enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, handadd_data, comment):
     if recipe_id:
         DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
     else:
@@ -82,8 +82,8 @@ def enter_or_update_recipe(w, recipe_id, recipe_name, recipe_volume, recipe_alco
 def enter_recipe(w, newrecipe):
     """ Enters or updates the recipe into the db
     """
-    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled = DP_CONTROLLER.get_recipe_field_data(w)
-    handadd_data = w.handaddlist
+    recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
+    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, comment = recipe_input
     if not recipe_name:
         DP_CONTROLLER.say_enter_cocktailname()
         return
@@ -106,15 +106,15 @@ def enter_recipe(w, newrecipe):
         data["recipe_volume"] = ingredient_volume
         recipe_volume_concentration += data["alcohollevel"] * ingredient_volume
         ingredient_data.append(data)
-    for _, hand_volume, _, _, hand_alcohollevel in handadd_data:  # id, volume, alcoholic, 1, alcohol_con
+    for _, hand_volume, _, _, hand_alcohollevel in shared.handaddlist:  # id, volume, alcoholic, 1, alcohol_con
         recipe_volume += hand_volume
         recipe_volume_concentration += hand_volume * hand_alcohollevel
     recipe_alcohollevel = int(recipe_volume_concentration / recipe_volume)
 
     recipe_id = enter_or_update_recipe(
-        w, recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, handadd_data
+        recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, shared.handaddlist, comment
     )
-    w.LWRezepte.addItem(recipe_name)
+    DP_CONTROLLER.fill_list_widget_recipes(w, [recipe_name])
     if enabled:
         refresh_recipe_maker_view(w, [recipe_id])
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
@@ -135,7 +135,7 @@ def update_recipe_view(w):
 @logerror
 def load_selected_recipe_data(w):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
-    recipe_name = DP_CONTROLLER.get_list_widget_selection(w.LWRezepte)
+    _, recipe_name, *_ = DP_CONTROLLER.get_recipe_field_data(w)
     if not recipe_name:
         return
 
@@ -154,7 +154,7 @@ def delete_recipe(w):
     if not DP_CONTROLLER.check_recipe_password(w):
         DP_CONTROLLER.say_wrong_password()
         return
-    recipe_name = DP_CONTROLLER.get_list_widget_selection(w.LWRezepte)
+    _, recipe_name, *_ = DP_CONTROLLER.get_recipe_field_data(w)
     if not recipe_name:
         DP_CONTROLLER.say_no_recipe_selected()
         return
