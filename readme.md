@@ -8,7 +8,8 @@
 
 - [The Cocktailmaker](#the-cocktailmaker)
 - [Overview](#overview)
-  - [Machine](#machine)
+  - [Features](#features)
+  - [The Machine](#the-machine)
   - [Interface](#interface)
 - [Hardware](#hardware)
   - [Used Hardware in Showcase Maker](#used-hardware-in-showcase-maker)
@@ -22,7 +23,13 @@
   - [Adding new Recipes or Ingredients](#adding-new-recipes-or-ingredients)
   - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
   - [Calibration of the Pumps](#calibration-of-the-pumps)
+  - [Cleaning the Maker](#cleaning-the-maker)
 - [Supported Languages](#supported-languages)
+- [Advanced Topics](#advanced-topics)
+  - [Microservices](#microservices)
+  - [Dashboard with Teams](#dashboard-with-teams)
+  - [Usage of Services](#usage-of-services)
+  - [Installing Docker](#installing-docker)
 - [Troubleshooting](#troubleshooting)
   - [Problems while Running the Program](#problems-while-running-the-program)
   - [Touchscreen Calibration](#touchscreen-calibration)
@@ -31,11 +38,6 @@
     - [Numpy Import Error at Matplotlib Import](#numpy-import-error-at-matplotlib-import)
     - [How to get the GUI Running on Startup](#how-to-get-the-gui-running-on-startup)
     - [The GUI on the RPi Looks Different than on the Screenshots](#the-gui-on-the-rpi-looks-different-than-on-the-screenshots)
-- [Advanced Topics](#advanced-topics)
-  - [Microservices](#microservices)
-  - [Dashboard with Teams](#dashboard-with-teams)
-  - [Usage of Services](#usage-of-services)
-  - [Installing Docker](#installing-docker)
 - [Development](#development)
   - [Program Schema](#program-schema)
   - [Pull Requests and Issues](#pull-requests-and-issues)
@@ -47,20 +49,37 @@
 
 # Overview
 
-Hello everyone, I am proud to announce the first iteration of the refactored code of the Cocktailmaker and the resulting 1.0 release after roughly one year of operating the machine in real life.
-I am _Andre Wohnsland_, a German System Engineer in IoT, trying to get better in Python every day. This is was originally my first published project, a RaspberryPi app for a custom designed Cocktailmaker also made by me.
-
-Some impressions of the UI can be found [here](https://imgur.com/a/fbZ0WuS) and of the machine [here](https://imgur.com/a/Z4tfISx). This app is currently under further construction, new features and refactoring of the old codebase takes place. If you got any questions or proposed improvements, feel free to share them by contacting me.
+Welcome to the official dokumentation of my Cocktail Maker!
 
 This app is used to control a cocktail machine and prepare easily cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
 
-## Machine
-
-The Machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps, cabeling and a custom design housing made out of bended, laser cut and welded stainless steel. The electronics are hidden in a water proof housing, the pumps are within the casing.
-
-In Action:
+tl;dr:
 
 <img src="docs/pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
+
+## Features
+
+The Cocktail Maker can do:
+
+- Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
+- Add new ingredients and recepies with needed information over the UI
+- Specify additional ingredients for later hand add within an recipe (like sticky sirup)
+- Define connected ingredients to the machine and also existing additional ingredients over the UI
+- Auto calculates and displays possible recipes dependent on given information
+- Execute a cleaning programm to get rid of remaining fluids
+- Export data for later data analysis, send data as mail to a receiver
+- Send cocktail production data to a given endpoint, for example a webhook
+- Keep track of cocktail count and volume from different teams for some fun competition
+
+In addition there is the possibility to use and set up a second device as a dashboard:
+
+- Provide the teams API to post and get cocktail data
+- Display different modes of data for a by team comparision
+- _Optional_: Use the dashboard as WiFi hotspot
+
+## The Machine
+
+The Machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps, cabeling and a custom design housing made out of bended, laser cut and welded stainless steel. The electronics are hidden in a water proof housing, the pumps are within the casing. See [Hardware](#hardware) for a detailed list of components.
 
 Frontview:
 
@@ -207,6 +226,10 @@ You can use the provided `calibration/calibration.py` script to run a very simpl
 
 $\dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}}$
 
+## Cleaning the Maker
+
+The maker has a build in cleaning function for cleaning at the end of a party. You will find the feature it under the `Bottles` tab. To start the cleaning process, the master password is needed to prevent unwanted cleaning attempts. The maker will then go in cleaning mode for the defined time within the config (default is 20 seconds). A message prompt will inform the user to provide enought water for the cleaning process. I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water and then running twice times again the cleaning programm to fully clean all pumps from remaining fluid.
+
 # Supported Languages
 
 Version >= 1.3 includes multi-language support. You can change the language with the `UI_LANGUAGE` config option. Currently supported languages are:
@@ -215,6 +238,58 @@ Version >= 1.3 includes multi-language support. You can change the language with
 - English (`en`)
 
 If you are interested in implementing your own native language, feel free to contact me or submit an according pull request.
+
+# Advanced Topics
+
+## Microservices
+
+As an further addition since `version 1.1`, there is the option to run a microservice within docker which handles some networking topics.
+Currently this is limited to:
+
+- Posting the cocktailname, used volume and current time to a given webhook
+- Posting the export csv as email to a receiver
+
+The separation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is separated to the service, also there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithredding). In the future, new services can be added easily to the docker container to execute different tasks. One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktail-maker-now-with-home-assistant). The service will also temporary store the data within a database, if there was no connection to the endpoint and try later again. This way, no data will get lost in the void.
+
+## Dashboard with Teams
+
+With `version 1.2`, there is a team feature implemented into the maker. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device can be specified within the config. The cocktailmaker will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leaderboard. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the api / the dashboard for easy display on another screen.
+
+<img src="docs/pictures/teams_ui.png" alt="Maker" width="600"/>
+
+<img src="docs/pictures/dashboard.png" alt="Maker" width="600"/>
+
+The recommended way to to is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before you should instal the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to setup docker-compose in general. The language can be set within the `.language.env`, codes identical to [supported languages](#supported-languages).
+
+A second option is to use the `docker-compose.both.yaml` file with the compose `--file` option. This will build up the backend API, as well as a Streamlit frontend Web App. Streamlit is using pyarrow, which the Raspberry Pi 3 (Armv7 Architecture) seems not be able to build without any tweaks. On other architectures (like x86) the container could be build without any problems. If theses things confuse you, I strongly recommend using the first recommended option, since you only will loose the possibility to access the dashboard with multiple devices, like a smartphone.
+
+You can also set the second device up as a WiFi hotspot. This will give you the possibility to always connect to the dashboard, even if no connection to another home network or internet is available. For this, a very easy way is to use [RapsAp](https://raspap.com/).
+
+## Usage of Services
+
+Simply have `docker-compose` installed and run the command in the main folder for the cocktailmaker microservice or in the dashboard folder (on another device) for the dashboard service:
+
+```
+docker-compose up -d
+```
+
+This will handle the setup of all docker services. You will have to rename the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
+
+## Installing Docker
+
+tl;dr: Just run these commands in sequence on the pi and reboot after the first half.
+
+```bash
+sudo apt-get update && sudo apt-get upgrade
+curl -sSL https://get.docker.com | sh
+sudo usermod -aG docker ${USER}
+# reboot here
+sudo apt-get install libffi-dev libssl-dev
+sudo pip3 install docker-compose
+sudo systemctl enable docker
+# tesing if it works
+docker run hello-world
+```
 
 # Troubleshooting
 
@@ -302,56 +377,6 @@ sudo chmod 755 /home/pi/launcher.sh
 ### The GUI on the RPi Looks Different than on the Screenshots
 
 I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI ressources. Using the pi user will result in the shown interfaces at the cocktailmaker (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
-
-# Advanced Topics
-
-## Microservices
-
-As an further addition since `version 1.1`, there is the option to run a microservice within docker which handles some networking topics.
-Currently this is limited to:
-
-- Posting the cocktailname, used volume and current time to a given webhook
-- Posting the export csv as email to a receiver
-
-The separation was made here that a service class within the cocktailmaker needs only to make a request to the microservice endpoint. Therefore all logic is separated to the service, also there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithredding). In the future, new services can be added easily to the docker container to execute different tasks. One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktail-maker-now-with-home-assistant).
-
-## Dashboard with Teams
-
-With `version 1.2`, there is a team feature implemented into the maker. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device can be specified within the config. The cocktailmaker will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leaderboard. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the api / the dashboard for easy display on another screen.
-
-<img src="docs/pictures/teams_ui.png" alt="Maker" width="600"/>
-
-<img src="docs/pictures/dashboard.png" alt="Maker" width="600"/>
-
-The recommended way to to is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before you should instal the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to setup docker-compose in general. The language can be set within the `.language.env`, codes identical to [supported languages](#supported-languages).
-
-A second option is to use the `docker-compose.both.yaml` file with the compose `--file` option. This will build up the backend API, as well as a Streamlit frontend Web App. Streamlit is using pyarrow, which the Raspberry Pi 3 (Armv7 Architecture) seems not be able to build without any tweaks. On other architectures (like x86) the container could be build without any problems. If theses things confuse you, I strongly recommend using the first recommended option, since you only will loose the possibility to access the dashboard with multiple devices, like a smartphone.
-
-## Usage of Services
-
-Simply have `docker-compose` installed and run the command in the main folder for the cocktailmaker microservice or in the dashboard folder (on another device) for the dashboard service:
-
-```
-docker-compose up -d
-```
-
-This will handle the setup of all docker services. You will have to rename the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
-
-## Installing Docker
-
-tl;dr: Just run these commands in sequence on the pi and reboot after the first half.
-
-```bash
-sudo apt-get update && sudo apt-get upgrade
-curl -sSL https://get.docker.com | sh
-sudo usermod -aG docker ${USER}
-# reboot here
-sudo apt-get install libffi-dev libssl-dev
-sudo pip3 install docker-compose
-sudo systemctl enable docker
-# tesing if it works
-docker run hello-world
-```
 
 # Development
 
