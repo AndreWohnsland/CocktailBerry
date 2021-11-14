@@ -8,6 +8,7 @@ from ui_elements.handadds import Ui_handadds
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
+from config.config_manager import shared
 
 
 class HandaddWidget(QDialog, Ui_handadds):
@@ -42,7 +43,7 @@ class HandaddWidget(QDialog, Ui_handadds):
         UI_LANGUAGE.adjust_handadds_window(self)
 
     def fill_elements(self):
-        for i, row in enumerate(self.mainscreen.handaddlist, start=1):
+        for i, row in enumerate(shared.handaddlist, start=1):
             ingredient_name = DB_COMMANDER.get_ingredient_name_from_id(row[0])
             combobox = getattr(self, f"CBHandadd{i}")
             lineedit = getattr(self, f"LEHandadd{i}")
@@ -66,12 +67,12 @@ class HandaddWidget(QDialog, Ui_handadds):
             DP_CONTROLLER.say_ingredient_double_usage(double_ingredient[0])
             return
         # if it passes all tests, generate the list for the later entry ands enter the comment into the according field
-        self.mainscreen.handaddlist = []
+        shared.handaddlist = []
         commenttext = ""
         for ingredient, amount in zip(ingredient_list, amount_list):
             ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient)
             alcoholic = 1 if ingredient_data["alcohollevel"] > 0 else 0
-            self.mainscreen.handaddlist.append(
+            shared.handaddlist.append(
                 [ingredient_data["ID"], amount, alcoholic, 1, ingredient_data["alcohollevel"]])
             commenttext += f"{amount} ml {ingredient}, "
         commenttext = commenttext[:-2]

@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
-from config.config_manager import ConfigManager
+from config.config_manager import ConfigManager, shared
 from src import maker
 from src import ingredients
 from src import recipes
@@ -37,7 +37,6 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         super(MainScreen, self).__init__(parent)
         ConfigManager.__init__(self)
         self.setupUi(self)
-        self.handaddlist = []
         # Get the basic Logger
         self.logger_handler = LoggerHandler("cocktail_application", "production_logs")
         self.logger_handler.log_start_program()
@@ -104,9 +103,9 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
 
     def handwindow(self):
         """ Opens a window to enter additional ingrediends added by hand. """
-        if self.LWRezepte.selectedItems() and self.handaddlist == []:
+        if self.LWRezepte.selectedItems() and shared.handaddlist == []:
             handadd_data = DB_COMMANDER.get_recipe_handadd_window_properties(self.LWRezepte.currentItem().text())
-            self.handaddlist.extend([list(x) for x in handadd_data])
+            shared.handaddlist.extend([list(x) for x in handadd_data])
         self.handw = HandaddWidget(self)
         self.handw.show()
 
@@ -161,7 +160,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.PBZminus.clicked.connect(lambda: plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))
         self.PBMplus.clicked.connect(lambda: plusminus(self.LCustomMenge, "+", 100, 400, 25))
         self.PBMminus.clicked.connect(lambda: plusminus(self.LCustomMenge, "-", 100, 400, 25))
-        self.PBSetnull.clicked.connect(lambda: maker.reset_alcohollevel(self))
+        self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
         self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients(self))
         self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes(self))
         self.PBenable.clicked.connect(lambda: recipes.enableall_recipes(self))
