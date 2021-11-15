@@ -22,6 +22,8 @@ def fill_recipe_box_with_ingredients(w):
 
 
 def prepare_enter_new_recipe(recipe_name):
+    """Checks if the recipe already exists
+    Returns id, got_error"""
     recipe_id = DB_COMMANDER.get_recipe_id_by_name(recipe_name)
     if recipe_id:
         DP_CONTROLLER.say_name_already_exists()
@@ -30,6 +32,8 @@ def prepare_enter_new_recipe(recipe_name):
 
 
 def prepare_update_existing_recipe(w, selected_name):
+    """Checks if a recipe is selected and deletes according ingredient data if is valid
+    Returns id, got_error"""
     if not selected_name:
         DP_CONTROLLER.say_no_recipe_selected()
         return 0, True
@@ -40,6 +44,9 @@ def prepare_update_existing_recipe(w, selected_name):
 
 
 def validate_extract_ingredients(ingredient_names, ingredient_volumes):
+    """Gives a list for names and volumens of ingredients.
+    If some according value is missing, informs the user.
+    Returns [names], [volumes], is_valid"""
     names, volumes = [], []
     for name, volume in zip(ingredient_names, ingredient_volumes):
         if (name == "" and volume != "") or (name != "" and volume == ""):
@@ -65,6 +72,7 @@ def validate_extract_ingredients(ingredient_names, ingredient_volumes):
 
 
 def enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, handadd_data, comment):
+    """Logic to insert/update data into DB"""
     if recipe_id:
         DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
     else:
