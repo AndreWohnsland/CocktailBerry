@@ -419,7 +419,7 @@ class UiLanguage(ConfigManager):
         }
         w.Lheader.setText(self.__choose_language(header))
 
-    def generate_password_header(self, headertype: Literal["password", "amount", "alcohol"] = "password"):
+    def generate_password_header(self, headertype: Literal["password", "amount", "alcohol"] = "password") -> str:
         password = {
             "en": "Please enter password!",
             "de": "Bitte Passwort eingeben!",
