@@ -310,11 +310,7 @@ class DisplayController(DialogHandler):
         w.LEKommentar.setText(comment)
 
     def set_recipe_data(self, w, recipe_name, ingredient_names, ingredient_volumes, enabled, handadd_data):
-        # TODO: bool(enabled) should work here
-        if enabled:
-            w.CHBenabled.setChecked(True)
-        else:
-            w.CHBenabled.setChecked(False)
+        w.CHBenabled.setChecked(bool(enabled))
         self.set_multiple_combobox_items(self.get_comboboxes_recipes(w)[: len(ingredient_names)], ingredient_names)
         self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(ingredient_volumes)], ingredient_volumes)
         w.LECocktail.setText(recipe_name)
