@@ -72,10 +72,9 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
             self.kbw.setWindowTitle(headertext)
         self.kbw.showFullScreen()
 
-    def progressionqwindow(self, labelchange=""):
+    def progressionqwindow(self, cocktail_type: str = "Cocktail"):
         """ Opens up the progressionwindow to show the Cocktail status. """
-        self.prow = ProgressScreen(self)
-        UI_LANGUAGE.adjust_progress_screen(self.prow, labelchange)
+        self.prow = ProgressScreen(self, cocktail_type)
         self.prow.show()
 
     def teamwindow(self):
