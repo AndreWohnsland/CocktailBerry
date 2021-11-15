@@ -11,7 +11,6 @@ from src import maker
 from src import ingredients
 from src import recipes
 from src import bottles
-from src.supporter import plusminus
 from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
@@ -151,10 +150,10 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.PBZubereiten_custom.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBCleanMachine.clicked.connect(lambda: bottles.clean_machine(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
-        self.PBZplus.clicked.connect(lambda: plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
-        self.PBZminus.clicked.connect(lambda: plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))
-        self.PBMplus.clicked.connect(lambda: plusminus(self.LCustomMenge, "+", 100, 400, 25))
-        self.PBMminus.clicked.connect(lambda: plusminus(self.LCustomMenge, "-", 100, 400, 25))
+        self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
+        self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))
+        self.PBMplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LCustomMenge, "+", 100, 400, 25))
+        self.PBMminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LCustomMenge, "-", 100, 400, 25))
         self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
         self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients(self))
         self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes(self))

@@ -3,10 +3,10 @@ from PyQt5.QtWidgets import QMainWindow
 
 from ui_elements.bottlewindow import Ui_Bottlewindow
 
-from src.supporter import plusminus
 from src.bottles import set_fill_level_bars
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
+from src.display_controller import DP_CONTROLLER
 
 
 class BottleWindow(QMainWindow, Ui_Bottlewindow):
@@ -34,9 +34,9 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         myminus = [getattr(self, f"PBMminus{x}") for x in range(1, 11)]
         mylabel = [getattr(self, f"LAmount{x}") for x in range(1, 11)]
         for plus, minus, field, vol in zip(myplus, myminus, mylabel, self.maxvolume):
-            plus.clicked.connect(lambda _, l=field, b=vol: plusminus(
+            plus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.plusminus(
                 label=l, operator="+", minimal=50, maximal=b, delta=25))
-            minus.clicked.connect(lambda _, l=field, b=vol: plusminus(
+            minus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.plusminus(
                 label=l, operator="-", minimal=50, maximal=b, delta=25))
         UI_LANGUAGE.adjust_bottle_window(self)
 

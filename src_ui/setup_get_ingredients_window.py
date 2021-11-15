@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import QDialog
 from ui_elements.bonusingredient import Ui_addingredient
 from config.config_manager import shared
 
-from src.supporter import plusminus
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.rpi_controller import RPI_CONTROLLER
@@ -30,8 +29,8 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         if not self.mainscreen.UI_DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
         # Connect all the buttons
-        self.PBplus.clicked.connect(lambda: plusminus(self.LAmount, "+", 20, 100, 10))
-        self.PBminus.clicked.connect(lambda: plusminus(self.LAmount, "-", 20, 100, 10))
+        self.PBplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LAmount, "+", 20, 100, 10))
+        self.PBminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LAmount, "-", 20, 100, 10))
         self.PBAusgeben.clicked.connect(self.ausgeben_clicked)
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         bottles = DB_COMMANDER.get_ingredients_at_bottles_without_empty_ones()
