@@ -21,7 +21,7 @@ def fill_recipe_box_with_ingredients(w):
     DP_CONTROLLER.fill_multiple_combobox(comboboxes_recipe, ingredient_list, clear_first=True)
 
 
-def prepare_enter_new_recipe(recipe_name):
+def __prepare_enter_new_recipe(recipe_name):
     """Checks if the recipe already exists
     Returns id, got_error"""
     recipe_id = DB_COMMANDER.get_recipe_id_by_name(recipe_name)
@@ -31,7 +31,7 @@ def prepare_enter_new_recipe(recipe_name):
     return recipe_id, False
 
 
-def prepare_update_existing_recipe(w, selected_name):
+def __prepare_update_existing_recipe(w, selected_name):
     """Checks if a recipe is selected and deletes according ingredient data if is valid
     Returns id, got_error"""
     if not selected_name:
@@ -43,7 +43,7 @@ def prepare_update_existing_recipe(w, selected_name):
     return recipe_id, False
 
 
-def validate_extract_ingredients(ingredient_names, ingredient_volumes):
+def __validate_extract_ingredients(ingredient_names, ingredient_volumes):
     """Gives a list for names and volumens of ingredients.
     If some according value is missing, informs the user.
     Returns [names], [volumes], is_valid"""
@@ -71,7 +71,7 @@ def validate_extract_ingredients(ingredient_names, ingredient_volumes):
     return names, volumes, True
 
 
-def enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, handadd_data, comment):
+def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, comment):
     """Logic to insert/update data into DB"""
     if recipe_id:
         DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
@@ -81,7 +81,7 @@ def enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohol
     for data in ingredient_data:
         is_alcoholic = 1 if data["alcohollevel"] > 0 else 0
         DB_COMMANDER.insert_recipe_data(recipe_id, data["ID"], data["recipe_volume"], is_alcoholic, 0)
-    for hand_id, hand_volume, hand_alcoholic, _, _ in handadd_data:
+    for hand_id, hand_volume, hand_alcoholic, _, _ in shared.handaddlist:
         DB_COMMANDER.insert_recipe_data(recipe_id, hand_id, hand_volume, hand_alcoholic, 1)
     return recipe_id
 
@@ -95,14 +95,15 @@ def enter_recipe(w, newrecipe):
     if not recipe_name:
         DP_CONTROLLER.say_enter_cocktailname()
         return
-    ingredient_names, ingredient_volumes, is_valid = validate_extract_ingredients(ingredient_names, ingredient_volumes)
+    ingredient_names, ingredient_volumes, is_valid = __validate_extract_ingredients(
+        ingredient_names, ingredient_volumes)
     if not is_valid:
         return
 
     if newrecipe:
-        recipe_id, error_message = prepare_enter_new_recipe(recipe_name)
+        recipe_id, error_message = __prepare_enter_new_recipe(recipe_name)
     else:
-        recipe_id, error_message = prepare_update_existing_recipe(w, selected_name)
+        recipe_id, error_message = __prepare_update_existing_recipe(w, selected_name)
     if error_message:
         return
 
@@ -119,8 +120,8 @@ def enter_recipe(w, newrecipe):
         recipe_volume_concentration += hand_volume * hand_alcohollevel
     recipe_alcohollevel = int(recipe_volume_concentration / recipe_volume)
 
-    recipe_id = enter_or_update_recipe(
-        recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, shared.handaddlist, comment
+    recipe_id = __enter_or_update_recipe(
+        recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, comment
     )
     DP_CONTROLLER.fill_list_widget_recipes(w, [recipe_name])
     if enabled:
@@ -151,6 +152,7 @@ def load_selected_recipe_data(w):
     machineadd_data, _ = DB_COMMANDER.get_recipe_ingredients_by_name_seperated_data(recipe_name)
     ingredient_names = [data[0] for data in machineadd_data]
     ingredient_volumes = [data[1] for data in machineadd_data]
+    # This separation is needed here bc above data is only name, volume but for handadd also other parameters are needed
     handadd_data = DB_COMMANDER.get_recipe_ingredients_for_comment(recipe_name)
     enabled = DB_COMMANDER.get_enabled_status(recipe_name)
     DP_CONTROLLER.set_recipe_data(w, recipe_name, ingredient_names, ingredient_volumes, enabled, handadd_data)
