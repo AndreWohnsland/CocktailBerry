@@ -35,7 +35,7 @@ def refresh_bottle_cb(w):
 
     DP_CONTROLLER.adjust_bottle_comboboxes(combobox_bottles, old_bottle, new_bottle)
 
-    register_bottles(w)
+    __register_bottles(w)
     shared.old_ingredient = new_order
 
 
@@ -56,7 +56,7 @@ def calculate_combobox_bottles(w):
 
 
 @logerror
-def register_bottles(w):
+def __register_bottles(w):
     """ Insert the selected Bottleorder into the DB. """
     # this import is neccecary on function level, otherwise there would be a circular import
     # pylint: disable=import-outside-toplevel

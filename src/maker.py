@@ -64,7 +64,7 @@ def updated_clicked_recipe_maker(w):
     DP_CONTROLLER.fill_recipe_data_maker(w, ingredient_data, total_volume, cocktailname)
 
 
-def create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume):
+def __create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume):
     """Returns the comment and the machinedata if enough ingredients are there"""
     adjusted_data = []
     for ingredient_name, ingredient_volume, ingredient_bottle, ingredient_alcoholic, ingredient_level in ingredient_data:
@@ -72,13 +72,13 @@ def create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktai
         adjusted_data.append([ingredient_name, ingredient_volume * factor, ingredient_bottle, ingredient_level])
     total_volume = sum([x[1] for x in adjusted_data])
     volume_factor = cocktail_volume / total_volume
-    update_data, volume_list, bottle_list, comment_data, error_data = scale_and_sort_ingredient_data(
+    update_data, volume_list, bottle_list, comment_data, error_data = __scale_and_sort_ingredient_data(
         adjusted_data, volume_factor)
-    comment = build_comment_maker(comment_data)
+    comment = __build_comment_maker(comment_data)
     return update_data, volume_list, bottle_list, comment, error_data
 
 
-def scale_and_sort_ingredient_data(ingredient_data, volume_factor):
+def __scale_and_sort_ingredient_data(ingredient_data, volume_factor):
     """Scale all ingrediets by the volume factor, sorts them into bottle and volume"""
     bottle_data = []
     comment_data = []
@@ -87,7 +87,7 @@ def scale_and_sort_ingredient_data(ingredient_data, volume_factor):
     for ingredient_name, ingredient_volume, ingredient_bottle, ingredient_level in ingredient_data:
         adjusted_volume = round(ingredient_volume * volume_factor)
         if ingredient_bottle:
-            if not enough_ingredient(ingredient_level, adjusted_volume):
+            if not __enough_ingredient(ingredient_level, adjusted_volume):
                 error_data = [ingredient_name, ingredient_level, round(adjusted_volume, 0)]
                 return [], [], [], "", error_data
             bottle_list.append(ingredient_bottle)
@@ -99,7 +99,7 @@ def scale_and_sort_ingredient_data(ingredient_data, volume_factor):
     return update_data, volume_list, bottle_list, comment_data, []
 
 
-def build_comment_maker(comment_data):
+def __build_comment_maker(comment_data):
     """Build the additional comment for the completion message (if there are handadds)"""
     comment = ""
     for ingredient_name, ingredient_volume in comment_data:
@@ -107,7 +107,7 @@ def build_comment_maker(comment_data):
     return comment
 
 
-def enough_ingredient(level, needed_volume):
+def __enough_ingredient(level, needed_volume):
     """Checks if the needed volume is there
     Accepts if there is at least 80% of needed volume
     to be more efficient with the remainder volume in the bottle"""
@@ -116,7 +116,7 @@ def enough_ingredient(level, needed_volume):
     return True
 
 
-def generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_time):
+def __generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_time):
     """Enters a log entry for the made cocktail"""
     volume_string = f"{cocktail_volume} ml"
     cancel_log_addition = ""
@@ -135,7 +135,7 @@ def prepare_cocktail(w):
         DP_CONTROLLER.say_no_recipe_selected()
         return
     ingredient_data = DB_COMMANDER.get_recipe_ingredients_with_bottles(cocktailname)
-    production_props = create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume)
+    production_props = __create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume)
     update_data, ingredient_volumes, ingredient_bottles, comment, error_data = production_props
     if error_data:
         DP_CONTROLLER.say_not_enough_ingredient_volume(error_data[0], error_data[1], error_data[2])
@@ -146,7 +146,7 @@ def prepare_cocktail(w):
     consumption, taken_time, max_time = RPI_CONTROLLER.make_cocktail(
         w, ingredient_bottles, ingredient_volumes, cocktailname)
     DB_COMMANDER.set_recipe_counter(cocktailname)
-    generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
+    __generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
 
     SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, cocktail_volume)
     # only post team if cocktail was made over 60%

@@ -20,9 +20,9 @@ def enter_ingredient(w, newingredient=True):
         ingredient_lineedits, ingredient_checkbox, ingredient_list_widget)
 
     if newingredient:
-        succesfull = add_new_ingredient(w, ingredient_data)
+        succesfull = __add_new_ingredient(w, ingredient_data)
     else:
-        succesfull = change_existing_ingredient(w, ingredient_list_widget, ingredient_data)
+        succesfull = __change_existing_ingredient(w, ingredient_list_widget, ingredient_data)
     if not succesfull:
         return
 
@@ -37,7 +37,7 @@ def enter_ingredient(w, newingredient=True):
     )
 
 
-def add_new_ingredient(w, ingredient_data):
+def __add_new_ingredient(w, ingredient_data):
     """Adds the ingredient into the database """
     given_name_ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient_data["ingredient_name"])
     if given_name_ingredient_data:
@@ -57,7 +57,7 @@ def add_new_ingredient(w, ingredient_data):
     return True
 
 
-def change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
+def __change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
     """Changes the existing ingredient """
     selected_ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient_data["selected_ingredient"])
     if not ingredient_data["selected_ingredient"]:
