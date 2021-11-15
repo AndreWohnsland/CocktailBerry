@@ -1,3 +1,11 @@
+--------------- 2021_11_15 ---------------------------------------------------------------------------------------------------------
+- Adjusted remaining language for dashboard and missing pieces
+- Refactored ui access to display_controller
+- Refactored handadd list into shared class
+- Updated documentation to be nice and up to date
+- Switched to using static class objects instead of constructing equivalent object each time
+- Prettified RPi Module outputs
+
 --------------- 2021_11_12 ---------------------------------------------------------------------------------------------------------
 - Fixed a bug which caused the app to crash when adjusting bottle levels
 - Fixed a display bug where the recipe was always shown as enabled even if it was not
