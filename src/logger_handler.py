@@ -32,4 +32,4 @@ class LoggerHandler:
         self.log_event(level, self.template.format(message,))
 
     def log_start_program(self):
-        self.logger.info(self.template.format("Starting the Programm",))
+        self.log_header("INFO", "Starting the Programm")

@@ -14,6 +14,7 @@ def logerror(func):
             logger = LoggerHandler("error_suppressor", "debuglog")
             try:
                 func(*args, **kwargs)
+            # pylint: disable=broad-except
             except Exception:
                 msg = f"The function {func.__name__} could not be fully excecuted!"
                 logger.log_event("ERROR", msg)
