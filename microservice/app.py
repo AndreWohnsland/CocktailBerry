@@ -60,5 +60,5 @@ def post_file_with_mail():
 
 
 if __name__ == "__main__":
-    try_send_querry_data()
+    try_send_querry_data(app)
     app.run(host="0.0.0.0", port=os.getenv("PORT"))

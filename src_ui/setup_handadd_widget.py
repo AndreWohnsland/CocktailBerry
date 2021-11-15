@@ -5,11 +5,10 @@ from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon, QIntValidator
 
 from ui_elements.handadds import Ui_handadds
-from src.display_handler import DisplayHandler
-from src.database_commander import DatabaseCommander
-
-display_handler = DisplayHandler()
-database_commander = DatabaseCommander()
+from src.display_controller import DP_CONTROLLER
+from src.database_commander import DB_COMMANDER
+from src.dialog_handler import UI_LANGUAGE
+from config.config_manager import shared
 
 
 class HandaddWidget(QDialog, Ui_handadds):
@@ -22,34 +21,34 @@ class HandaddWidget(QDialog, Ui_handadds):
                             Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.mainscreen = parent
         self.setWindowIcon(QIcon(parent.icon_path))
-        hand_list = database_commander.get_ingredient_names_hand()
-        machine_list = database_commander.get_ingredient_names_machine()
+        # generating a sorted by name list for all ingredients, all handadd first
+        hand_list = DB_COMMANDER.get_ingredient_names_hand()
+        machine_list = DB_COMMANDER.get_ingredient_names_machine()
         hand_list.sort()
         machine_list.sort()
         ingredient_list = hand_list + machine_list
         self.comboboxes_handadd = [getattr(self, f"CBHandadd{x}") for x in range(1, 6)]
-        display_handler.fill_multiple_combobox(self.comboboxes_handadd, ingredient_list, sort_items=False)
+        DP_CONTROLLER.fill_multiple_combobox(self.comboboxes_handadd, ingredient_list, sort_items=False)
         # connect the buttons
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
 
         self.lineedit_hand = [getattr(self, f"LEHandadd{x}") for x in range(1, 6)]
+        msg = UI_LANGUAGE.generate_password_header("amount")
         for lineedit in self.lineedit_hand:
-            lineedit.clicked.connect(
-                lambda o=lineedit: self.mainscreen.passwordwindow(
-                    le_to_write=o, x_pos=400, y_pos=50, headertext="Menge eingeben!")
-            )
+            lineedit.clicked.connect(lambda o=lineedit: self.mainscreen.passwordwindow(o, 400, 50, msg))
             lineedit.setValidator(QIntValidator(0, 300))
             lineedit.setMaxLength(3)
         self.fill_elements()
         self.move(0, 100)
+        UI_LANGUAGE.adjust_handadds_window(self)
 
     def fill_elements(self):
-        for i, row in enumerate(self.mainscreen.handaddlist, start=1):
-            ingredient_name = database_commander.get_ingredient_name_from_id(row[0])
+        for i, row in enumerate(shared.handaddlist, start=1):
+            ingredient_name = DB_COMMANDER.get_ingredient_name_from_id(row[0])
             combobox = getattr(self, f"CBHandadd{i}")
             lineedit = getattr(self, f"LEHandadd{i}")
-            display_handler.set_combobox_item(combobox, ingredient_name)
+            DP_CONTROLLER.set_combobox_item(combobox, ingredient_name)
             lineedit.setText(str(row[1]))
 
     def abbrechen_clicked(self):
@@ -60,21 +59,21 @@ class HandaddWidget(QDialog, Ui_handadds):
         """ Closes the window and enters the values into the DB/LE. """
         ingredient_list, amount_list, error = self.build_list_pairs()
         if error:
-            display_handler.standard_box(error)
+            DP_CONTROLLER.say_some_value_missing()
             return
         # check if any ingredient was used twice
         counted_ingredients = Counter(ingredient_list)
         double_ingredient = [x[0] for x in counted_ingredients.items() if x[1] > 1]
         if len(double_ingredient) != 0:
-            display_handler.standard_box(f"Eine der Zutaten:\n<{double_ingredient[0]}>\nwurde doppelt verwendet!")
+            DP_CONTROLLER.say_ingredient_double_usage(double_ingredient[0])
             return
         # if it passes all tests, generate the list for the later entry ands enter the comment into the according field
-        self.mainscreen.handaddlist = []
+        shared.handaddlist = []
         commenttext = ""
         for ingredient, amount in zip(ingredient_list, amount_list):
-            ingredient_data = database_commander.get_ingredient_data(ingredient)
+            ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient)
             alcoholic = 1 if ingredient_data["alcohollevel"] > 0 else 0
-            self.mainscreen.handaddlist.append(
+            shared.handaddlist.append(
                 [ingredient_data["ID"], amount, alcoholic, 1, ingredient_data["alcohollevel"]])
             commenttext += f"{amount} ml {ingredient}, "
         commenttext = commenttext[:-2]
@@ -94,9 +93,9 @@ class HandaddWidget(QDialog, Ui_handadds):
             lineedit = getattr(self, f"LEHandadd{i}")
             combobox = getattr(self, f"CBHandadd{i}")
             if self.missing_pairs(combobox, lineedit):
-                return [], [], "Irgendwo ist ein Wert vergessen worden!"
+                return [], [], True
             # append both values to the lists
-            elif combobox.currentText() != "":
+            if combobox.currentText() != "":
                 ingredient_list.append(combobox.currentText())
                 amount_list.append(int(lineedit.text()))
-        return ingredient_list, amount_list, ""
+        return ingredient_list, amount_list, False

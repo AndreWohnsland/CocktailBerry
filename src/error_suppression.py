@@ -1,8 +1,8 @@
-""" Special configs for the Logger """
-import logging
+""" Wrapper function to suppress and instead only log error. Use with caution """
 from functools import wraps
 
 from config.config_manager import shared
+from src.logger_handler import LoggerHandler
 
 
 def logerror(func):
@@ -10,13 +10,15 @@ def logerror(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if shared.supress_error:
-            logger = logging.getLogger("debuglog")
+        if shared.suppress_error:
+            logger = LoggerHandler("error_suppressor", "debuglog")
             try:
                 func(*args, **kwargs)
+            # pylint: disable=broad-except
             except Exception:
-                logger.exception("The function %s could not be fully excecuted!", func.__name__)
-                print(f"The function {func.__name__} could not be fully excecuted!")
+                msg = f"The function {func.__name__} could not be fully excecuted!"
+                logger.log_event("ERROR", msg)
+                print(msg)
         else:
             func(*args, **kwargs)
 

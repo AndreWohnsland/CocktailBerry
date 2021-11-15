@@ -10,3 +10,4 @@ __pycache__
 team.db
 Cocktail_database.db
 failed_data.db
+custom_config.*

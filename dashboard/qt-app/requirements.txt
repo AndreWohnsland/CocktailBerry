@@ -2,3 +2,4 @@ matplotlib
 pywaffle 
 requests
 PyQt5
+python-dotenv

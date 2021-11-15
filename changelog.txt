@@ -1,3 +1,28 @@
+--------------- 2021_11_15 ---------------------------------------------------------------------------------------------------------
+- Adjusted remaining language for dashboard and missing pieces
+- Refactored ui access to display_controller
+- Refactored handadd list into shared class
+- Updated documentation to be nice and up to date
+- Switched to using static class objects instead of constructing equivalent object each time
+- Prettified RPi Module outputs
+
+--------------- 2021_11_12 ---------------------------------------------------------------------------------------------------------
+- Fixed a bug which caused the app to crash when adjusting bottle levels
+- Fixed a display bug where the recipe was always shown as enabled even if it was not
+- Fixed a bug which allowed names only using whitespaces
+- Introduced a new config yaml file to better handle the configuration and not conflict with git
+- Refactored supporter module within the display_controller module
+- Refactored standard_box calls with according messages into display_controller for later language support
+- Added UI_LANGUAGE config to support multilanguage
+  - Currently en (english) or de (german) can be used
+  - Fallback (in case of unknown code) is the english setting
+- Introduced UiLanguage class to convert static and dynamic ui elements to according language
+- Formatted RPi module output for cleaner order of cocktail and cleaning process
+- Migrated display_handler into display_controller to be one unified module
+- Introduced dialog_handler for multi-language-support
+- BREAKING CHANGES:
+  - Renamed multiple configuration names to better represent their usage
+
 --------------- 2021_10_19 ---------------------------------------------------------------------------------------------------------
 - release of v1.2 
 - Introduced teams to have a competetive point

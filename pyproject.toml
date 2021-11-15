@@ -9,6 +9,7 @@ license = "MIT"
 python = "3.6"
 PyQt5 = "^5.15.2"
 requests = "^2.25.1"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.11.1"

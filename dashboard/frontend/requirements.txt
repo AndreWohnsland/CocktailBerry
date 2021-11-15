@@ -2,3 +2,4 @@ streamlit
 streamlit-autorefresh
 matplotlib
 pywaffle
+python-dotenv

@@ -9,6 +9,7 @@ class ServiceHandler(ConfigManager):
     """Class to handle all calls to the mircoservice within the docker"""
 
     def __init__(self):
+        super().__init__()
         self.base_url = self.MICROSERVICE_BASE_URL
         self.logger = LoggerHandler("microservice", "service_logs")
         self.headers = {"content-type": "application/json"}
@@ -18,7 +19,7 @@ class ServiceHandler(ConfigManager):
 
     def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int) -> Dict:
         """Post the given cocktail data to the microservice handling internet traffic to send to defined webhook"""
-        if not self.USE_MICROSERVICE:
+        if not self.MICROSERVICE_ACTIVE:
             return service_disabled()
         # calculate volume in litre
         payload = json.dumps({"cocktailname": cocktailname, "volume": cocktail_volume / 1000})
@@ -27,7 +28,7 @@ class ServiceHandler(ConfigManager):
 
     def send_mail(self, file_name: str, binary_file) -> Dict:
         """Post the given file to the microservice handling internet traffic to send as mail"""
-        if not self.USE_MICROSERVICE:
+        if not self.MICROSERVICE_ACTIVE:
             return service_disabled()
         endpoint = f"{self.base_url}/email"
         files = {"upload_file": (file_name, binary_file,)}
@@ -35,7 +36,7 @@ class ServiceHandler(ConfigManager):
 
     def post_team_data(self, team_name: str, cocktail_volume: int) -> Dict:
         """Post the given team name to the team api if activated"""
-        if not self.USE_TEAMS:
+        if not self.TEAMS_ACTIVE:
             return team_disabled()
         payload = json.dumps({"team": team_name, "volume": cocktail_volume})
         endpoint = f"{self.TEAM_API_URL}/cocktail"
@@ -88,3 +89,6 @@ def team_disabled():
         "status": 503,
         "message": "Teams disabled",
     }
+
+
+SERVICE_HANDLER = ServiceHandler()

@@ -1,20 +1,42 @@
 import math
 import json
+import os
 import requests
 import matplotlib
 import matplotlib.pyplot as plt
+from dotenv import load_dotenv
 
 from pywaffle import Waffle
 
+DIRPATH = os.path.dirname(__file__)
+load_dotenv(os.path.join(DIRPATH, ".language.env"))
 matplotlib.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 
-NAMES = [
-    "Anzahl (Heute)",
-    "Volumen (Heute)",
-    "Anzahl (Komplett)",
-    "Volumen (Komplett)"
-]
+def __choose_language(element: dict) -> str:
+    language = os.getenv("LANGUAGE")
+    return element.get(language, element["en"])
+
+
+HEADER = __choose_language({
+    "en": [
+        "Amount (today)",
+        "Volume (today)",
+        "Amount (all time)",
+        "Volume (all time)"
+    ],
+    "de": [
+        "Anzahl (Heute)",
+        "Volumen (Heute)",
+        "Anzahl (Komplett)",
+        "Volumen (Komplett)"
+    ],
+})
+
+DEFAULT_MESSAGE = __choose_language({
+    "en": "Drink cocktails to start ...",
+    "de": "Cocktails trinken zum starten ...",
+})
 
 
 def sort_dict_items(to_sort: dict):
@@ -25,7 +47,7 @@ def sort_dict_items(to_sort: dict):
 
 def extract_data(sort: bool, data: dict):
     if not data or sum(data.values()) < 3:
-        waffle_data = {"Cocktails trinken zum starten ...": 3}
+        waffle_data = {DEFAULT_MESSAGE: 3}
     else:
         waffle_data = {f"{x} ({y})": y for x, y in data.items()}
     if sort:
@@ -95,13 +117,13 @@ def generate_figure(datatype: int):
         **dims,
         values=waffle_data,
         title={
-            'label': NAMES[datatype - 1],
+            'label': HEADER[datatype - 1],
             'fontdict': {
-                'fontsize': 50
+                'fontsize': 30
             }
         },
         facecolor=(0.054, 0.066, 0.090, 1),
         legend={'loc': 'upper center', 'bbox_to_anchor': (0.5, 0.0),
-                'ncol': 2, 'framealpha': 0, 'fontsize': 30}
+                'ncol': 2, 'framealpha': 0, 'fontsize': 18}
     )
     return fig

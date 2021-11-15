@@ -8,7 +8,7 @@ from ui_elements.passwordbuttons2 import Ui_PasswordWindow2
 class PasswordScreen(QDialog, Ui_PasswordWindow2):
     """ Creates the Passwordscreen. """
 
-    def __init__(self, parent, x_pos=0, y_pos=0, le_to_write=None):
+    def __init__(self, parent, x_pos=0, y_pos=0, le_to_write=None, headertext="Password"):
         """ Init. Connect all the buttons and set window policy. """
         super(PasswordScreen, self).__init__(parent)
         self.setupUi(self)
@@ -23,8 +23,9 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         for obj, number in zip(self.attribute_numbers, self.number_list):
             obj.clicked.connect(lambda _, n=number: self.number_clicked(number=n))
         self.mainscreen = parent
-        if not self.mainscreen.DEVENVIRONMENT:
+        if not self.mainscreen.UI_DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
+        self.setWindowTitle(headertext)
         self.pwlineedit = le_to_write
         self.move(x_pos, y_pos)
 
