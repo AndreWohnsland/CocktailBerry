@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from pywaffle import Waffle
+from dotenv import load_dotenv
 import warnings
 
 st.set_page_config(
@@ -20,7 +21,39 @@ mpl.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 DATABASE_NAME = "team"
 DIRPATH = os.path.dirname(__file__)
+load_dotenv(os.path.join(DIRPATH, ".language.env"))
 database_path = os.path.join(DIRPATH, "storage", f"{DATABASE_NAME}.db")
+
+
+def __choose_language(element: dict) -> str:
+    language = os.getenv("LANGUAGE")
+    return element.get(language, element["en"])
+
+
+TIME_SELECT = __choose_language({
+    "en": ("Today", "All time", ),
+    "de": ("Heute", "All time", ),
+})
+
+TIME_HEADER = __choose_language({
+    "en": "Select time",
+    "de": "Zeit aussuchen",
+})
+
+TYPE_SELECT = __choose_language({
+    "en": ("Amount", "Volume", ),
+    "de": ("Anzahl", "Volumen", ),
+})
+
+TYPE_HEADER = __choose_language({
+    "en": "Select aggregation",
+    "de": "Aggregation aussuchen",
+})
+
+DEFAULT_MESSAGE = __choose_language({
+    "en": "Drink cocktails to start ...",
+    "de": "Cocktails trinken zum starten ...",
+})
 
 
 def get_leaderboard(hourrange=None, limit=2, count=True):
@@ -44,7 +77,7 @@ def sort_dict_items(to_sort: dict):
 
 def extract_data(sort: bool, df: pd.DataFrame):
     if df.empty or sum(df.amount.to_list()) < 3:
-        waffle_data = {"Cocktails trinken zum starten ...": 3}
+        waffle_data = {DEFAULT_MESSAGE: 3}
     else:
         waffle_data = {f"{x} ({y})": y for x, y in zip(df.Team.to_list(), df.amount.to_list())}
     if sort:
@@ -104,13 +137,16 @@ footer {visibility: hidden;}
 .block-container {padding: 1rem 1rem 1rem 1rem !important;}
 </style> """, unsafe_allow_html=True)
 
-st.sidebar.header("Zeit aussuchen")
-selected_display = st.sidebar.radio("", ("Heute", "All time"))
-st.sidebar.header("Aggregation aussuchen")
-selected_type = st.sidebar.radio("", ("Anzahl", "Volumen"))
-use_count = selected_type == "Anzahl"
+st.sidebar.header(TIME_HEADER)
+selected_display = st.sidebar.radio("", TIME_SELECT)
+st.sidebar.header(TYPE_HEADER)
+selected_type = st.sidebar.radio("", TYPE_SELECT)
+use_count = selected_type == TYPE_SELECT[0]
 
-if selected_display == "Heute":
-    st.pyplot(generate_figure(title=f"Leaderboard ({selected_type}, Heute)", hourrange=24, sort=True, count=use_count))
+if selected_display == TIME_SELECT[0]:
+    st.pyplot(generate_figure(
+        title=f"Leaderboard ({selected_type}, {selected_display})",
+        hourrange=24, sort=True, count=use_count
+    ))
 else:
-    st.pyplot(generate_figure(title=f"Leaderboard ({selected_type}, All time)", limit=20, count=use_count))
+    st.pyplot(generate_figure(title=f"Leaderboard ({selected_type}, {selected_display})", limit=20, count=use_count))
