@@ -21,6 +21,7 @@ class HandaddWidget(QDialog, Ui_handadds):
                             Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         self.mainscreen = parent
         self.setWindowIcon(QIcon(parent.icon_path))
+        # generating a sorted by name list for all ingredients, all handadd first
         hand_list = DB_COMMANDER.get_ingredient_names_hand()
         machine_list = DB_COMMANDER.get_ingredient_names_machine()
         hand_list.sort()

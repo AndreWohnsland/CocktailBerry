@@ -291,10 +291,15 @@ class DisplayController(DialogHandler):
         self.fill_list_widget(w.LWRezepte, items)
 
     def remove_recipe_from_list_widgets(self, w, recipe_name):
-        self.delete_list_widget_item(w.LWRezepte, recipe_name)
-        self.delete_list_widget_item(w.LWMaker, recipe_name)
+        # block that trigger that no refetching of data (and shared.handadd overwrite) occurs
+        w.LWRezepte.blockSignals(True)
+        w.LWMaker.blockSignals(True)
         w.LWRezepte.clearSelection()
         w.LWMaker.clearSelection()
+        self.delete_list_widget_item(w.LWRezepte, recipe_name)
+        self.delete_list_widget_item(w.LWMaker, recipe_name)
+        w.LWRezepte.blockSignals(False)
+        w.LWMaker.blockSignals(False)
 
     def set_recipe_handadd_comment(self, w, handadd_data):
         comment = ""
@@ -305,6 +310,7 @@ class DisplayController(DialogHandler):
         w.LEKommentar.setText(comment)
 
     def set_recipe_data(self, w, recipe_name, ingredient_names, ingredient_volumes, enabled, handadd_data):
+        # TODO: bool(enabled) should work here
         if enabled:
             w.CHBenabled.setChecked(True)
         else:
