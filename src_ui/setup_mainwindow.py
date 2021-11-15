@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
-from config.config_manager import ConfigManager, shared
+from config.config_manager import ConfigManager
 from src import maker
 from src import ingredients
 from src import recipes
@@ -14,7 +14,6 @@ from src import bottles
 from src.supporter import plusminus
 from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
-from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 
@@ -103,9 +102,6 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
 
     def handwindow(self):
         """ Opens a window to enter additional ingrediends added by hand. """
-        if self.LWRezepte.selectedItems() and shared.handaddlist == []:
-            handadd_data = DB_COMMANDER.get_recipe_handadd_window_properties(self.LWRezepte.currentItem().text())
-            shared.handaddlist.extend([list(x) for x in handadd_data])
         self.handw = HandaddWidget(self)
         self.handw.show()
 

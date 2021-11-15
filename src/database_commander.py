@@ -41,13 +41,6 @@ class DatabaseCommander:
                 WHERE Zusammen.Rezept_ID = (SELECT ID FROM Rezepte WHERE Name =?)"""
         return self.handler.query_database(query, (recipe_name,))
 
-    def get_recipe_handadd_window_properties(self, recipe_name: str):
-        query = """SELECT Z.Zutaten_ID, Z.Menge, Z.Alkoholisch
-                FROM Zusammen AS Z 
-                INNER JOIN Rezepte AS R ON R.ID = Z.Rezept_ID 
-                WHERE R.Name = ? AND Z.Hand = 1"""
-        return self.handler.query_database(query, (recipe_name,))
-
     def get_recipe_ingredients_by_name_seperated_data(self, recipe_name: str):
         data = self.get_recipe_ingredients_by_name(recipe_name)
         handadd_data = []
