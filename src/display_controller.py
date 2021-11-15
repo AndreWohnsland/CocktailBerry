@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, List, Literal
 from PyQt5.QtCore import Qt
 
 from src.database_commander import DB_COMMANDER
@@ -224,7 +224,7 @@ class DisplayController(DialogHandler):
             for index in index_to_delete:
                 list_widget.takeItem(list_widget.row(index))
 
-    def fill_list_widget(self, list_widget, item_list: list):
+    def fill_list_widget(self, list_widget, item_list: List[Any]):
         for item in item_list:
             list_widget.addItem(item)
 
@@ -237,18 +237,15 @@ class DisplayController(DialogHandler):
     def clear_list_widget_ingredients(self, w):
         self.__clear_list_widget(w.LWZutaten)
 
-    def fill_list_widget_maker(self, w, recipe_names: list):
+    def fill_list_widget_maker(self, w, recipe_names: List[str]):
         self.fill_list_widget(w.LWMaker, recipe_names)
 
-    def fill_list_widget_recipes(self, w, recipe_names: list):
+    def fill_list_widget_recipes(self, w, recipe_names: List[str]):
         self.fill_list_widget(w.LWRezepte, recipe_names)
 
     # checkboxes
     def set_checkbox_value(self, checkbox, value):
-        if value:
-            checkbox.setChecked(True)
-        else:
-            checkbox.setChecked(False)
+        checkbox.setChecked(bool(value))
 
     # label
     def set_alcohol_level(self, w, value):

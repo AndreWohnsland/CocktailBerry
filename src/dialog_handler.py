@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import List, Literal, Union
 from PyQt5.QtWidgets import QMessageBox
 from config.config_manager import ConfigManager
 
@@ -256,7 +256,7 @@ class UiLanguage(ConfigManager):
         "de": "Eintragen",
     }
 
-    def __choose_language(self, element: dict) -> Union[str, list]:
+    def __choose_language(self, element: dict) -> Union[str, List[str]]:
         language = self.UI_LANGUAGE
         return element.get(language, element["en"])
 
