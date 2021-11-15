@@ -1,6 +1,7 @@
 import math
 import os
 import sqlite3
+import warnings
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 import pandas as pd
@@ -8,7 +9,6 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from pywaffle import Waffle
 from dotenv import load_dotenv
-import warnings
 
 st.set_page_config(
     page_title="Cocktail Dashboard",
@@ -62,8 +62,8 @@ def get_leaderboard(hourrange=None, limit=2, count=True):
         addition = f" WHERE Date >= datetime('now','-{hourrange} hours')"
     agg = "count(*)" if count else "sum(Volume)"
     conn = sqlite3.connect(database_path)
-    SQL = f"SELECT Team, {agg} as amount FROM Team{addition} GROUP BY Team ORDER BY {agg} DESC LIMIT ?"
-    board = pd.read_sql(SQL, conn, params=(limit,))
+    sql = f"SELECT Team, {agg} as amount FROM Team{addition} GROUP BY Team ORDER BY {agg} DESC LIMIT ?"
+    board = pd.read_sql(sql, conn, params=(limit,))
     board.reset_index(drop=True, inplace=True)
     conn.close()
     return board
