@@ -15,7 +15,7 @@ class ConfigManager:
     # Password to lock clean, delete and other critical operators
     UI_MASTERPASSWORD = "1337"
     # Language to use, use two chars look up documentation, if not provided fallback to en
-    UI_LANGUAGE = "de"
+    UI_LANGUAGE = "en"
     # RPi pins where pumps (ascending) are connected
     PUMP_PINS = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 20]
     # Volumeflow for the according pumps
