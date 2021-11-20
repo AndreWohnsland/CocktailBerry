@@ -14,7 +14,7 @@ matplotlib.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 
 def __choose_language(element: dict) -> str:
-    language = os.getenv("LANGUAGE")
+    language = os.getenv("UI_LANGUAGE")
     return element.get(language, element["en"])
 
 
