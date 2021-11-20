@@ -3,7 +3,7 @@ from pathlib import Path
 import sqlite3
 
 DATABASE_NAME = "failed_data"
-DIRPATH = os.path.dirname(__file__)
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
 
 
 class DatabaseHandler:

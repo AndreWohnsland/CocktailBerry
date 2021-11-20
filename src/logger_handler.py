@@ -1,7 +1,7 @@
 import os
 import logging
 
-dirpath = os.path.dirname(__file__)
+dirpath = os.path.dirname(os.path.abspath(__file__))
 
 
 class LoggerHandler:

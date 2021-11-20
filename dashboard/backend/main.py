@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 DATABASE_NAME = "team"
-DIRPATH = os.path.dirname(__file__)
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
 database_path = os.path.join(DIRPATH, "storage", f"{DATABASE_NAME}.db")
 
 app = FastAPI()

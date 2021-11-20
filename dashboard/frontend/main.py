@@ -20,7 +20,7 @@ warnings.filterwarnings("ignore", 'Starting a Matplotlib GUI outside of the main
 mpl.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 DATABASE_NAME = "team"
-DIRPATH = os.path.dirname(__file__)
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(DIRPATH, ".language.env"))
 database_path = os.path.join(DIRPATH, "storage", f"{DATABASE_NAME}.db")
 

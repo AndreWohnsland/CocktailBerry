@@ -6,7 +6,7 @@ from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
 from src.service_handler import SERVICE_HANDLER
 
-DIRPATH = os.path.dirname(__file__)
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
 
 
 class SaveHandler:
