@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>350</height>
+    <height>400</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>400</width>
-    <height>350</height>
+    <height>400</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>400</width>
-    <height>350</height>
+    <width>2000</width>
+    <height>1200</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -75,6 +75,29 @@ QComboBox:on { /* shift the text when the popup opens */
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="LHeader">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>80</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Select output ingredient</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QComboBox" name="CBingredient">
      <property name="minimumSize">
       <size>
@@ -84,8 +107,8 @@ QComboBox:on { /* shift the text when the popup opens */
      </property>
      <property name="maximumSize">
       <size>
-       <width>500</width>
-       <height>80</height>
+       <width>20000</width>
+       <height>120</height>
       </size>
      </property>
      <property name="font">
@@ -113,8 +136,8 @@ QComboBox:on { /* shift the text when the popup opens */
        </property>
        <property name="maximumSize">
         <size>
-         <width>100</width>
-         <height>100</height>
+         <width>1000</width>
+         <height>1000</height>
         </size>
        </property>
        <property name="font">
@@ -133,14 +156,14 @@ QComboBox:on { /* shift the text when the popup opens */
       <widget class="QLabel" name="LAmount">
        <property name="minimumSize">
         <size>
-         <width>65</width>
+         <width>150</width>
          <height>0</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>175</width>
-         <height>100</height>
+         <height>1000</height>
         </size>
        </property>
        <property name="font">
@@ -171,8 +194,8 @@ QComboBox:on { /* shift the text when the popup opens */
        </property>
        <property name="maximumSize">
         <size>
-         <width>100</width>
-         <height>100</height>
+         <width>1000</width>
+         <height>1000</height>
         </size>
        </property>
        <property name="font">
@@ -197,6 +220,12 @@ QComboBox:on { /* shift the text when the popup opens */
        <height>70</height>
       </size>
      </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>200</height>
+      </size>
+     </property>
      <property name="font">
       <font>
        <pointsize>20</pointsize>
@@ -215,6 +244,12 @@ QComboBox:on { /* shift the text when the popup opens */
       <size>
        <width>0</width>
        <height>70</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>200</height>
       </size>
      </property>
      <property name="font">
