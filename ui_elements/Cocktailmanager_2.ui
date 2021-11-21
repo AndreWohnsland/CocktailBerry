@@ -184,18 +184,6 @@ QLineEdit
     border: 1px solid  rgb(97, 97, 97);
 }
 
-#LEGehaltRezept{
-	color: rgb(239, 151, 0);
-}
-
-#LEZutatRezept{
-	color: rgb(239, 151, 0);
-}
-
-#LAlkoholgehalt{
-	color: rgb(239, 151, 0);
-}
-
 #LKommentar{
 	color: rgb(211, 211, 211);
 }
@@ -204,75 +192,34 @@ QLineEdit
 	color: rgb(170, 170, 170);
 }
 
-#LECocktail{
-	color: rgb(239, 151, 0);
-}
-
-#LEFlaschenvolumen{
-	color: rgb(239, 151, 0);
-}
-
 #MakerLMenge{
 	color:rgb(255, 255, 255);
 }
 
-#LRHandAdd{
+#LEGehaltRezept, #LEZutatRezept, #LEFlaschenvolumen, #LRHandAdd, #LECocktail, #LAlkoholgehalt{
 	color: rgb(239, 151, 0);
 }
 
-#LMZutat1 {
+#LMZutat1, #LMZutat2, #LMZutat3, #LMZutat4, #LMZutat5, #LMZutat6, #LMZutat7, #LMZutat8, #LMZutat9, #LMZutat10, #LER1, #LER2, #LER3, #LER4, #LER5, #LER6, #LER7, #LER8 {
 	color: rgb(239, 151, 0);
 }
-#LMZutat2 {
-	color: rgb(239, 151, 0);
+
+/* Inverted button style */
+#PBZubereiten_custom, #PBZutathinzu, #PBRezepthinzu, #PBZeinzelnd, #PBAvailable, #PBFlanwenden {
+	background-color: rgb(0, 123, 255);  
+	color: rgb(0, 0, 0);
+    border-width: 3px;
+	border-color: rgb(0, 123, 255);
+	border-style: solid;
+	border-radius: 7;
+	padding: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
-#LMZutat3 {
-	color: rgb(239, 151, 0);
-}
-#LMZutat4 {
-	color: rgb(239, 151, 0);
-}
-#LMZutat5 {
-	color: rgb(239, 151, 0);
-}
-#LMZutat6 {
-	color: rgb(239, 151, 0);
-}
-#LMZutat7 {
-	color: rgb(239, 151, 0);
-}
-#LMZutat8 {
-	color: rgb(239, 151, 0);
-}
-#LMZutat9 {
-	color: rgb(239, 151, 0);
-}
-#LMZutat10 {
-	color: rgb(239, 151, 0);
-}
-#LER1 {
-	color: rgb(239, 151, 0);
-}
-#LER2 {
-	color: rgb(239, 151, 0);
-}
-#LER3 {
-	color: rgb(239, 151, 0);
-}
-#LER4 {
-	color: rgb(239, 151, 0);
-}
-#LER5 {
-	color: rgb(239, 151, 0);
-}
-#LER6 {
-	color: rgb(239, 151, 0);
-}
-#LER7 {
-	color: rgb(239, 151, 0);
-}
-#LER8 {
-	color: rgb(239, 151, 0);
+
+#PBZubereiten_custom:pressed, #PBZutathinzu:pressed, #PBRezepthinzu:pressed,#PBZeinzelnd:pressed, #PBAvailable:pressed, #PBFlanwenden:pressed {
+	background-color: rgb(239, 151, 0);	
+	border-color: rgb(239, 151, 0);	
 }
 </string>
   </property>

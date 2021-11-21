@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>410</width>
-    <height>250</height>
+    <width>420</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>410</width>
-    <height>250</height>
+    <width>420</width>
+    <height>300</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>410</width>
-    <height>250</height>
+    <width>420</width>
+    <height>300</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -33,10 +33,10 @@
 }
 
 QPushButton {
-	background-color: rgb(97, 97, 97);
-	color: rgb(255, 255, 255);
-    border-width: 1px;
-	border-color: rgb(97, 97, 97);
+	background-color: rgb(0, 0, 0);
+	color: (0, 123, 255);
+    border-width: 4px;
+	border-color: rgb(0, 123, 255);
 	border-style: solid;
 	border-radius: 7;
 	padding: 3px;
@@ -46,15 +46,8 @@ QPushButton {
 
 QPushButton:pressed
 {
-	color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);
-	border-color: rgb(0, 123, 255);
-}
-
-QPushButton:checked
-{
-	color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);
+	color: rgb(239, 151, 0);	
+	border-color: rgb(239, 151, 0);
 }
 
 QComboBox {
@@ -81,7 +74,7 @@ QLineEdit
     border-radius: 5;
 }
 
-#Labbruch {
+#LHeader, #LEHandadd1, #LEHandadd2, #LEHandadd3, #LEHandadd4, #LEHandadd5 {
 	color: rgb(239, 151, 0);
 }</string>
   </property>
@@ -89,6 +82,29 @@ QLineEdit
    <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="LHeader">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Ingredients for hand add</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">

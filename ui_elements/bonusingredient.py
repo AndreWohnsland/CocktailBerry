@@ -59,6 +59,10 @@ class Ui_addingredient(object):
 "    border-top-left-radius: 7px;\n"
 "    border-bottom-left-radius: 0px;\n"
 "    color: rgb(239, 151, 0);\n"
+"}\n"
+"\n"
+"#LHeader {\n"
+"    color: rgb(239, 151, 0);\n"
 "}")
         addingredient.setModal(True)
         self.verticalLayout = QtWidgets.QVBoxLayout(addingredient)
