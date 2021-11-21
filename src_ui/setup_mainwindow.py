@@ -3,7 +3,7 @@ of the passed window. Also defines the Mode for controls.
 """
 import os
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIntValidator
+from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
 from config.config_manager import ConfigManager
@@ -42,6 +42,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.connect_other_windows()
         self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       "..", "ui_elements", "Cocktail-icon.png")
+        self.setWindowIcon(QIcon(self.icon_path))
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         if not self.UI_DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)
