@@ -8,13 +8,13 @@ from dotenv import load_dotenv
 
 from pywaffle import Waffle
 
-DIRPATH = os.path.dirname(__file__)
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(DIRPATH, ".language.env"))
 matplotlib.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 
 def __choose_language(element: dict) -> str:
-    language = os.getenv("LANGUAGE")
+    language = os.getenv("UI_LANGUAGE")
     return element.get(language, element["en"])
 
 

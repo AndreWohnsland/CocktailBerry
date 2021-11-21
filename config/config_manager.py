@@ -1,7 +1,7 @@
 import os
 import yaml
 
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), "..", "custom_config.yaml")
+CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "custom_config.yaml")
 
 
 class ConfigManager:

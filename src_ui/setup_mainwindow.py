@@ -40,7 +40,8 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.logger_handler.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
-        self.icon_path = os.path.join(os.path.dirname(__file__), "..", "ui_elements", "Cocktail-icon.png")
+        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                      "..", "ui_elements", "Cocktail-icon.png")
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         if not self.UI_DEVENVIRONMENT:
             self.setCursor(Qt.BlankCursor)

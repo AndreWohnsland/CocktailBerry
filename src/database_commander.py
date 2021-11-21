@@ -6,7 +6,7 @@ import sqlite3
 from typing import Any, Dict, List
 
 DATABASE_NAME = "Cocktail_database"
-DIRPATH = os.path.dirname(__file__)
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
 
 
 class DatabaseCommander:
