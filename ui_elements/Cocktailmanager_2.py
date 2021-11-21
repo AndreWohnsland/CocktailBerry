@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\Cocktailmanager_2.ui'
+# Form implementation generated from reading ui file '.\ui_elements\Cocktailmanager_2.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -82,10 +82,10 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QPushButton {\n"
-"    background-color: rgb(97, 97, 97);\n"
-"    color: rgb(255, 255, 255);\n"
-"    border-width: 1px;\n"
-"    border-color: rgb(97, 97, 97);\n"
+"    background-color: rgb(0, 0, 0);\n"
+"    color: (0, 123, 255);\n"
+"    border-width: 3px;\n"
+"    border-color: rgb(0, 123, 255);\n"
 "    border-style: solid;\n"
 "    border-radius: 7;\n"
 "    padding: 3px;\n"
@@ -95,16 +95,14 @@ class Ui_MainWindow(object):
 "\n"
 "QPushButton:checked\n"
 "{\n"
-"    color: rgb(255, 255, 255);    \n"
-"    background-color: rgb(0, 123, 255);\n"
-"    border-color: rgb(0, 123, 255);\n"
+"    color: rgb(239, 151, 0);    \n"
+"    border-color: rgb(239, 151, 0);\n"
 "}\n"
 "\n"
 "QPushButton:pressed\n"
 "{\n"
-"    color: rgb(255, 255, 255);    \n"
-"    background-color: rgb(0, 123, 255);\n"
-"    border-color: rgb(0, 123, 255);\n"
+"    color: rgb(239, 151, 0);    \n"
+"    border-color: rgb(239, 151, 0);\n"
 "}\n"
 "\n"
 "QProgressBar\n"
@@ -113,6 +111,7 @@ class Ui_MainWindow(object):
 "    color: rgb(0, 0, 0);\n"
 "    border: 2px rgb(166, 166, 166);\n"
 "    border-radius: 5px;\n"
+"    text-align: center;\n"
 "}\n"
 "\n"
 "QProgressBar::chunk {\n"
@@ -1301,7 +1300,7 @@ class Ui_MainWindow(object):
         self.PBneu1.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu1.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu1.setFont(font)
@@ -1313,7 +1312,7 @@ class Ui_MainWindow(object):
         self.PBneu2.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu2.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu2.setFont(font)
@@ -1324,7 +1323,7 @@ class Ui_MainWindow(object):
         self.PBneu3.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu3.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu3.setFont(font)
@@ -1335,7 +1334,7 @@ class Ui_MainWindow(object):
         self.PBneu4.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu4.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu4.setFont(font)
@@ -1346,7 +1345,7 @@ class Ui_MainWindow(object):
         self.PBneu5.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu5.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu5.setFont(font)
@@ -1357,7 +1356,7 @@ class Ui_MainWindow(object):
         self.PBneu6.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu6.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu6.setFont(font)
@@ -1368,7 +1367,7 @@ class Ui_MainWindow(object):
         self.PBneu7.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu7.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu7.setFont(font)
@@ -1379,7 +1378,7 @@ class Ui_MainWindow(object):
         self.PBneu8.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu8.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu8.setFont(font)
@@ -1390,7 +1389,7 @@ class Ui_MainWindow(object):
         self.PBneu9.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu9.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu9.setFont(font)
@@ -1401,7 +1400,7 @@ class Ui_MainWindow(object):
         self.PBneu10.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu10.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.PBneu10.setFont(font)
@@ -1516,7 +1515,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung1.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung1.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung1.setFont(font)
@@ -1528,7 +1527,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung2.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung2.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung2.setFont(font)
@@ -1540,7 +1539,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung3.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung3.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung3.setFont(font)
@@ -1552,7 +1551,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung4.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung4.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung4.setFont(font)
@@ -1564,7 +1563,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung5.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung5.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung5.setFont(font)
@@ -1576,7 +1575,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung6.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung6.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung6.setFont(font)
@@ -1588,7 +1587,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung7.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung7.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung7.setFont(font)
@@ -1600,7 +1599,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung8.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung8.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung8.setFont(font)
@@ -1612,7 +1611,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung9.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung9.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung9.setFont(font)
@@ -1624,7 +1623,7 @@ class Ui_MainWindow(object):
         self.ProBBelegung10.setMinimumSize(QtCore.QSize(250, 29))
         self.ProBBelegung10.setMaximumSize(QtCore.QSize(16777215, 29))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.ProBBelegung10.setFont(font)
@@ -2023,3 +2022,13 @@ class Ui_MainWindow(object):
         self.actionSlotbelegung.setText(_translate("MainWindow", "Slotbelegung"))
         self.actionRezeptverwalter.setText(_translate("MainWindow", "Rezeptverwalter"))
 from ui_elements.clickablelineedit import ClickableLineEdit
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())

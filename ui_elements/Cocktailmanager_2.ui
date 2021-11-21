@@ -89,10 +89,10 @@ QTabBar::tab:selected {
 }
 
 QPushButton {
-	background-color: rgb(97, 97, 97);
-	color: rgb(255, 255, 255);
-    border-width: 1px;
-	border-color: rgb(97, 97, 97);
+	background-color: rgb(0, 0, 0);
+	color: (0, 123, 255);
+    border-width: 3px;
+	border-color: rgb(0, 123, 255);
 	border-style: solid;
 	border-radius: 7;
 	padding: 3px;
@@ -102,16 +102,14 @@ QPushButton {
 
 QPushButton:checked
 {
-	color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);
-	border-color: rgb(0, 123, 255);
+	color: rgb(239, 151, 0);	
+	border-color: rgb(239, 151, 0);
 }
 
 QPushButton:pressed
 {
-	color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);
-	border-color: rgb(0, 123, 255);
+	color: rgb(239, 151, 0);	
+	border-color: rgb(239, 151, 0);
 }
 
 QProgressBar
@@ -120,6 +118,7 @@ QProgressBar
 	color: rgb(0, 0, 0);
     border: 2px rgb(166, 166, 166);
     border-radius: 5px;
+	text-align: center;
 }
 
 QProgressBar::chunk {
@@ -2482,7 +2481,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -2514,7 +2513,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -2543,7 +2542,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -2572,7 +2571,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -2601,7 +2600,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -2630,7 +2629,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -2659,7 +2658,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -2688,7 +2687,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -2717,7 +2716,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -2746,7 +2745,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3105,7 +3104,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3134,7 +3133,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3163,7 +3162,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3192,7 +3191,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3221,7 +3220,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3250,7 +3249,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3279,7 +3278,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3308,7 +3307,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3337,7 +3336,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -3366,7 +3365,7 @@ QLineEdit
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>

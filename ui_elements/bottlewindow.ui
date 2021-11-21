@@ -42,10 +42,10 @@
 }
 
 QPushButton {
-	background-color: rgb(97, 97, 97);
-	color: rgb(255, 255, 255);
-    border-width: 1px;
-	border-color: rgb(97, 97, 97);
+	background-color: rgb(0, 0, 0);
+	color: (0, 123, 255);
+    border-width: 3px;
+	border-color: rgb(0, 123, 255);
 	border-style: solid;
 	border-radius: 7;
 	padding: 3px;
@@ -53,17 +53,10 @@ QPushButton {
 	padding-right: 5px;
 }
 
-QPushButton:pressed
+QPushButton:pressed, QPushButton:checked
 {
-	color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);
-	border-color: rgb(0, 123, 255);
-}
-
-QPushButton:checked
-{
-	color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);
+	color: rgb(239, 151, 0);	
+	border-color: rgb(239, 151, 0);
 }
 
 QProgressBar
@@ -88,34 +81,7 @@ QProgressBar::chunk {
 #Labbruch {
 	color: rgb(239, 151, 0);
 }
-#LName1 {
-	color: rgb(239, 151, 0);
-}
-#LName2 {
-	color: rgb(239, 151, 0);
-}
-#LName3 {
-	color: rgb(239, 151, 0);
-}
-#LName4 {
-	color: rgb(239, 151, 0);
-}
-#LName5 {
-	color: rgb(239, 151, 0);
-}
-#LName6 {
-	color: rgb(239, 151, 0);
-}
-#LName7 {
-	color: rgb(239, 151, 0);
-}
-#LName8 {
-	color: rgb(239, 151, 0);
-}
-#LName9 {
-	color: rgb(239, 151, 0);
-}
-#LName10 {
+#LName1, #LName2, #LName3, #LName4, #LName5, #LName6, #LName7, #LName8, #LName9, #LName10 {
 	color: rgb(239, 151, 0);
 }
 
@@ -176,7 +142,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -234,7 +200,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -282,7 +248,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -340,7 +306,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -388,7 +354,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -446,7 +412,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -494,7 +460,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -552,7 +518,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -600,7 +566,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -658,7 +624,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -706,7 +672,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -764,7 +730,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -812,7 +778,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -870,7 +836,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -918,7 +884,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -976,7 +942,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -1024,7 +990,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -1082,7 +1048,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -1130,7 +1096,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -1188,7 +1154,7 @@ QProgressBar::chunk {
         </property>
         <property name="font">
          <font>
-          <pointsize>20</pointsize>
+          <pointsize>18</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
