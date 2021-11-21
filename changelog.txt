@@ -1,3 +1,8 @@
+--------------- 2021_11_21 ---------------------------------------------------------------------------------------------------------
+- Added timeout argument to not wait indefinitely on the rpi at failed request
+- Switched to none fullscreen windows to also place messages properly on the RPi
+- Adjusted window flags to no longer show any minimize window option on the RPi
+
 --------------- 2021_11_15 ---------------------------------------------------------------------------------------------------------
 - Adjusted remaining language for dashboard and missing pieces
 - Refactored ui access to display_controller

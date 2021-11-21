@@ -17,8 +17,7 @@ class HandaddWidget(QDialog, Ui_handadds):
     def __init__(self, parent):
         super(HandaddWidget, self).__init__(parent)
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint |
-                            Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         self.mainscreen = parent
         self.setWindowIcon(QIcon(parent.icon_path))
         # generating a sorted by name list for all ingredients, all handadd first

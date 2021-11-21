@@ -22,8 +22,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         super(GetIngredientWindow, self).__init__(parent)
         self.setupUi(self)
         # Set window properties
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint |
-                            Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
         if not self.mainscreen.UI_DEVENVIRONMENT:
@@ -36,6 +35,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         bottles = DB_COMMANDER.get_ingredients_at_bottles_without_empty_ones()
         DP_CONTROLLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
         UI_LANGUAGE.adjust_bonusingredient_screen(self)
+        self.move(100, 20)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """

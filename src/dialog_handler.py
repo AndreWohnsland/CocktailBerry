@@ -27,9 +27,8 @@ class DialogHandler(ConfigManager):
         if title is None:
             title = self.__choose_language(default_title)
         messagebox = QMessageBox()
-        messagebox.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint |
-                                  Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
         messagebox.setWindowIcon(QIcon(self.icon_path))
+        messagebox.setWindowFlags(Qt.Dialog | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         messagebox.setWindowTitle(title)
         messagebox.setStandardButtons(QMessageBox.Ok)
         buttonok = messagebox.button(QMessageBox.Ok)

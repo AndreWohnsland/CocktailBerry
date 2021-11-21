@@ -12,8 +12,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         """ Init. Connect all the buttons and set window policy. """
         super(PasswordScreen, self).__init__(parent)
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint |
-                            Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QIcon(parent.icon_path))
         # Connect all the buttons, generates a list of the numbers an objectnames to do that
         self.PBenter.clicked.connect(self.enter_clicked)
