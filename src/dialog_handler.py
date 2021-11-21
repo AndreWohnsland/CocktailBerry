@@ -1,4 +1,7 @@
+import os
 from typing import List, Union
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMessageBox
 from config.config_manager import ConfigManager
 
@@ -6,16 +9,28 @@ from config.config_manager import ConfigManager
 class DialogHandler(ConfigManager):
     """Class to hold all the dialoges for the popups and language settings"""
 
-    # def __init__(self) -> None:
-    #     super().__init__()
+    def __init__(self) -> None:
+        super().__init__()
+        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                      "..", "ui_elements", "Cocktail-icon.png")
 
     def __choose_language(self, element: dict) -> str:
         language = self.UI_LANGUAGE
         return element.get(language, element["en"])
 
-    def standard_box(self, textstring):
+    def standard_box(self, textstring, title=None):
         """ The default messagebox for the Maker. Uses a QMessageBox with OK-Button """
+        default_title = {
+            "en": "Information",
+            "de": "Information",
+        }
+        if title is None:
+            title = self.__choose_language(default_title)
         messagebox = QMessageBox()
+        messagebox.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint |
+                                  Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
+        messagebox.setWindowIcon(QIcon(self.icon_path))
+        messagebox.setWindowTitle(title)
         messagebox.setStandardButtons(QMessageBox.Ok)
         buttonok = messagebox.button(QMessageBox.Ok)
         buttonok.setText("     OK     ")
@@ -24,8 +39,8 @@ class DialogHandler(ConfigManager):
         messagebox.setStyleSheet(
             "QMessageBox QPushButton{background-color: rgb(0, 123, 255); color: rgb(0, 0, 0); font-size: 30pt;} QMessageBox{background-color: rgb(10, 10, 10); font-size: 16pt;} QMessageBox QLabel{color: rgb(0, 123, 255);}"
         )
-        messagebox.showFullScreen()
-        messagebox.move(100, 100)
+        # messagebox.showFullScreen()
+        messagebox.move(100, 50)
         messagebox.exec_()
 
     def __output_language_dialog(self, options: dict):
