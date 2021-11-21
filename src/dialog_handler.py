@@ -25,6 +25,7 @@ class DialogHandler(ConfigManager):
             "QMessageBox QPushButton{background-color: rgb(0, 123, 255); color: rgb(0, 0, 0); font-size: 30pt;} QMessageBox{background-color: rgb(10, 10, 10); font-size: 16pt;} QMessageBox QLabel{color: rgb(0, 123, 255);}"
         )
         messagebox.showFullScreen()
+        messagebox.move(100, 100)
         messagebox.exec_()
 
     def __output_language_dialog(self, options: dict):
