@@ -1,4 +1,4 @@
-from typing import Any, List, Literal
+from typing import Any, List
 from PyQt5.QtCore import Qt
 
 from src.database_commander import DB_COMMANDER
@@ -113,8 +113,10 @@ class DisplayController(DialogHandler):
     # UI "MANIPULATE" METHODS #
     ###########################
     # Misc
-    def plusminus(self, label, operator: Literal["+", "-"], minimal=0, maximal=1000, delta=10):
-        """ increases or decreases the value by a given amount in the boundaries"""
+    def plusminus(self, label, operator: str, minimal=0, maximal=1000, delta=10):
+        """ increases or decreases the value by a given amount in the boundaries
+        operator: '+' or '-'
+        """
         try:
             value_ = int(label.text())
             value_ = value_ + (delta if operator == "+" else -delta)
@@ -124,7 +126,10 @@ class DisplayController(DialogHandler):
         label.setText(str(value_))
 
     # TabWidget
-    def set_tabwidget_tab(self, w, tab: Literal["maker", "ingredients", "recipes", "bottles"]):
+    def set_tabwidget_tab(self, w, tab: str):
+        """Sets the tabwidget to the given tab.
+        tab: ['maker', 'ingredients', 'recipes', 'bottles']
+        """
         tabs = {
             "maker": 0,
             "ingredients": 1,

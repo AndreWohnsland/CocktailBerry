@@ -1,4 +1,4 @@
-from typing import List, Literal, Union
+from typing import List, Union
 from PyQt5.QtWidgets import QMessageBox
 from config.config_manager import ConfigManager
 
@@ -419,7 +419,10 @@ class UiLanguage(ConfigManager):
         }
         w.Lheader.setText(self.__choose_language(header))
 
-    def generate_password_header(self, headertype: Literal["password", "amount", "alcohol"] = "password") -> str:
+    def generate_password_header(self, headertype: str = "password") -> str:
+        """Selects the header of the passwordwindow.
+        headertype: 'password', 'amount', 'alcohol'
+        """
         password = {
             "en": "Please enter password!",
             "de": "Bitte Passwort eingeben!",
