@@ -61,9 +61,9 @@ class ServiceHandler(ConfigManager):
         """
         try:
             if payload is not None:
-                req = requests.post(endpoint, data=payload, headers=self.headers)
+                req = requests.post(endpoint, data=payload, headers=self.headers, timeout=3)
             elif files is not None:
-                req = requests.post(endpoint, files=files)
+                req = requests.post(endpoint, files=files, timeout=3)
             else:
                 raise Exception('Neither payload nor files given!')
             message = str(req.text).replace("\n", "")
@@ -72,7 +72,7 @@ class ServiceHandler(ConfigManager):
                 "status": req.status_code,
                 "message": message,
             }
-        except requests.exceptions.ConnectionError:
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             self.log_connection_error(endpoint)
             return {}
 
