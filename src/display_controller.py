@@ -125,6 +125,37 @@ class DisplayController(DialogHandler):
             value_ = maximal if operator == "+" else minimal
         label.setText(str(value_))
 
+    def set_dev_settings(self, window_object, resize=True):
+        """Checks dev environment, adjust cursor and resize accordingly, if resize is wished"""
+        if not self.UI_DEVENVIRONMENT:
+            window_object.setCursor(Qt.BlankCursor)
+        elif resize:
+            window_object.setFixedSize(self.UI_WIDTH, self.UI_HEIGHT)
+            window_object.resize(self.UI_WIDTH, self.UI_HEIGHT)
+
+    def set_tab_width(self, mainscreen):
+        """Hack to set tabs to full screen width, inheritance of custom tabBars dont work
+        This is incredibly painfull, since all the CSS from the ui needs to be copied here,
+        it will overwrite the whole class sheet and missing parts will not be used.
+        Any changes to the .ui file for the tab needs to be applied here as well"""
+        total_width = mainscreen.frameGeometry().width()
+        width = round(total_width / 4, 0) - 4
+        mainscreen.tabWidget.setStyleSheet(
+            "QTabBar::tab {" +
+            "background-color: rgb(97, 97, 97);" +
+            "color: rgb(255, 255, 255);" +
+            "border-width: 1px;" +
+            "border-color: rgb(255, 255, 255);" +
+            "border-style: solid;" +
+            "border-top-left-radius: 10px;" +
+            "border-top-right-radius: 10px;" +
+            "padding: 5px 0px 5px 0px;" +
+            f"width: {width}px;" + "}" +
+            "QTabBar::tab:selected {" +
+            "color: rgb(255, 255, 255);	" +
+            "background-color: rgb(0, 123, 255)};"
+        )
+
     # TabWidget
     def set_tabwidget_tab(self, w, tab: str):
         """Sets the tabwidget to the given tab.
@@ -265,12 +296,13 @@ class DisplayController(DialogHandler):
 
     # label
     def set_alcohol_level(self, w, value):
-        w.LAlkoholgehalt.setText(UI_LANGUAGE.get_volpc_for_dynamic(value))
+        w.LAlkoholgehalt.setText(f" {UI_LANGUAGE.get_volpc_for_dynamic(value)}")
 
     # others
     def fill_recipe_data_maker(self, w, display_data, total_volume, cocktailname):
         w.LAlkoholname.setText(cocktailname)
-        w.LMenge.setText(UI_LANGUAGE.get_volume_for_dynamic(total_volume))
+        w.LIngredientHeader.setText(UI_LANGUAGE.get_ingredient_header())
+        w.LMenge.setText(f"{UI_LANGUAGE.get_volume_for_dynamic(total_volume)} ")
         fields_ingredient = self.get_labels_maker_ingredients(w)[: len(display_data)]
         fields_volume = self.get_labels_maker_volume(w)[: len(display_data)]
         for field_ingredient, field_volume, (ingredient_name, volume) in zip(fields_ingredient, fields_volume, display_data):
@@ -281,10 +313,13 @@ class DisplayController(DialogHandler):
                 field_ingredient.setStyleSheet("color: rgb(170, 170, 170)")
             field_ingredient.setText(f"{ingredient_name} ")
 
-    def clear_recipe_data_maker(self, w):
+    def clear_recipe_data_maker(self, w, select_other_item=True):
         w.LAlkoholgehalt.setText("")
         w.LAlkoholname.setText("")
         w.LMenge.setText("")
+        w.LIngredientHeader.setText("")
+        if not select_other_item:
+            w.LWMaker.clearSelection()
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(w), self.get_labels_maker_volume(w)):
             field_ingredient.setText("")
             field_ingredient.setStyleSheet("color: rgb(0, 123, 255)")
@@ -345,10 +380,10 @@ class DisplayController(DialogHandler):
         return [getattr(w, f"CBB{x}") for x in range(1, 11)]
 
     def get_comboboxes_recipes(self, w):
-        return [getattr(w, f"CBR{x}") for x in range(1, 9)]
+        return [getattr(w, f"CBR{x}") for x in range(1, 8)]
 
     def get_lineedits_recipe(self, w):
-        return [getattr(w, f"LER{x}") for x in range(1, 9)]
+        return [getattr(w, f"LER{x}") for x in range(1, 8)]
 
     def get_ingredient_fields(self, w):
         """Returns [Name, Alcohol, Volume], CheckedHand, ListWidget Elements for Ingredients"""
