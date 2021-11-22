@@ -77,7 +77,7 @@ class RpiController(ConfigManager):
                 if pin_time > current_time:
                     consumption[element] += volume_flow * self.MAKER_SLEEP_TIME
                 elif pin not in already_closed_pins:
-                    self.close_pin(pin, current_time)
+                    self.close_pin(pin, current_time, max_time)
                     already_closed_pins.add(pin)
 
             self.consumption_print(consumption, current_time, max_time)
@@ -94,10 +94,10 @@ class RpiController(ConfigManager):
         w.prow_close()
         return consumption, current_time, max_time
 
-    def close_pin(self, pin: int, current_time: float):
+    def close_pin(self, pin: int, current_time: float, max_time: float):
         if not self.devenvironment:
             GPIO.output(pin, 1)
-        print(f"{current_time}s: Pin number <{pin}> is closed")
+        print(f"{current_time:.1f}/{max_time:.1f} s:\tPin number <{pin}> is closed")
 
     def activate_pinlist(self, pinlist: List[int]):
         print(f"Opening Pins: {pinlist}")
@@ -115,7 +115,7 @@ class RpiController(ConfigManager):
     def consumption_print(self, consumption: List[float], current_time: float, max_time: float, interval=1):
         if current_time % interval == 0:
             print(
-                f"Making Cocktail, {current_time}/{max_time} s:\tThe consumption is currently {[round(x) for x in consumption]}")
+                f"{current_time:.1f}/{max_time:.1f} s:\tMaking cocktail, consumption: {[round(x) for x in consumption]}")
 
     def clean_print(self, t_cleaned: float, interval=0.5):
         if t_cleaned % interval == 0:
