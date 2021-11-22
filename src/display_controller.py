@@ -296,13 +296,13 @@ class DisplayController(DialogHandler):
 
     # label
     def set_alcohol_level(self, w, value):
-        w.LAlkoholgehalt.setText(f" {UI_LANGUAGE.get_volpc_for_dynamic(value)}")
+        w.LAlkoholgehalt.setText(f"{value:.0f}%")
 
     # others
     def fill_recipe_data_maker(self, w, display_data, total_volume, cocktailname):
         w.LAlkoholname.setText(cocktailname)
-        w.LIngredientHeader.setText(UI_LANGUAGE.get_ingredient_header())
-        w.LMenge.setText(f"{UI_LANGUAGE.get_volume_for_dynamic(total_volume)} ")
+        # w.LIngredientHeader.setText("_" * 40)
+        w.LMenge.setText(f"{total_volume} ml")
         fields_ingredient = self.get_labels_maker_ingredients(w)[: len(display_data)]
         fields_volume = self.get_labels_maker_volume(w)[: len(display_data)]
         for field_ingredient, field_volume, (ingredient_name, volume) in zip(fields_ingredient, fields_volume, display_data):
@@ -315,9 +315,9 @@ class DisplayController(DialogHandler):
 
     def clear_recipe_data_maker(self, w, select_other_item=True):
         w.LAlkoholgehalt.setText("")
-        w.LAlkoholname.setText("")
+        w.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         w.LMenge.setText("")
-        w.LIngredientHeader.setText("")
+        # w.LIngredientHeader.setText("")
         if not select_other_item:
             w.LWMaker.clearSelection()
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(w), self.get_labels_maker_volume(w)):

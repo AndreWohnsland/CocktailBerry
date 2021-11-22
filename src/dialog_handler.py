@@ -296,10 +296,10 @@ class UiLanguage(ConfigManager):
         }
         return self.__choose_language(options)
 
-    def get_ingredient_header(self) -> str:
+    def get_cocktail_dummy(self) -> str:
         options = {
-            "en": "Ingredients",
-            "de": "Zutaten",
+            "en": "Choose Cocktail",
+            "de": "Cocktail aussuchen",
         }
         return self.__choose_language(options)
 
