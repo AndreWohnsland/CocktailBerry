@@ -296,6 +296,13 @@ class UiLanguage(ConfigManager):
         }
         return self.__choose_language(options)
 
+    def get_ingredient_header(self) -> str:
+        options = {
+            "en": "Ingredients",
+            "de": "Zutaten",
+        }
+        return self.__choose_language(options)
+
     def adjust_mainwindow(self, w):
         prepare_button = {
             "en": "Prepare",
@@ -345,7 +352,7 @@ class UiLanguage(ConfigManager):
             "en": "apply new bottles",
             "de": "neue Flaschen anwenden",
         }
-        w.PBZubereiten_custom.setText(self.__choose_language(prepare_button))  # Zubereiten
+        w.PBZubereiten_custom.setText(self.__choose_language(prepare_button))
         tabs = self.__choose_language(tab_names)
         for i, text in enumerate(tabs):
             w.tabWidget.setTabText(i, text)
@@ -381,10 +388,11 @@ class UiLanguage(ConfigManager):
     def adjust_handadds_window(self, w):
         title = {
             "en": "Ingredients for hand add",
-            "de": "Zutaten zum selbst hinzufügen",
+            "de": "Zutaten selbst hinzufügen",
         }
         w.PBAbbrechen.setText(self.__choose_language(self.cancel_button))
         w.PBEintragen.setText(self.__choose_language(self.enter_button))
+        w.LHeader.setText(self.__choose_language(title))
         w.setWindowTitle(self.__choose_language(title))
 
     def adjust_progress_screen(self, w, cocktail_type: str):
@@ -403,7 +411,7 @@ class UiLanguage(ConfigManager):
         w.PBabbrechen.setText(self.__choose_language(self.cancel_button))
         w.Labbruch.setText(self.__choose_language(cancel_label))
         w.LProgress.setText(self.__choose_language(progress_label))
-        w.Lheader.setText(self.__choose_language(header_label))
+        w.LHeader.setText(self.__choose_language(header_label))
 
     def adjust_bonusingredient_screen(self, w):
         spend_button = {
@@ -416,6 +424,7 @@ class UiLanguage(ConfigManager):
         }
         w.PBAbbrechen.setText(self.__choose_language(self.cancel_button))
         w.PBAusgeben.setText(self.__choose_language(spend_button))
+        w.LHeader.setText(self.__choose_language(title))
         w.setWindowTitle(self.__choose_language(title))
 
     def adjust_bottle_window(self, w):
@@ -432,23 +441,23 @@ class UiLanguage(ConfigManager):
             "en": "Select your Team",
             "de": "Team auswählen",
         }
-        w.Lheader.setText(self.__choose_language(header))
+        w.LHeader.setText(self.__choose_language(header))
 
     def generate_password_header(self, headertype: str = "password") -> str:
         """Selects the header of the passwordwindow.
         headertype: 'password', 'amount', 'alcohol'
         """
         password = {
-            "en": "Please enter password!",
-            "de": "Bitte Passwort eingeben!",
+            "en": "Enter password!",
+            "de": "Passwort eingeben!",
         }
         amount = {
-            "en": "Please enter amount!",
-            "de": "Bitte Menge eingeben!",
+            "en": "Enter amount!",
+            "de": "Menge eingeben!",
         }
         alcohol = {
-            "en": "Please enter alcohol!",
-            "de": "Bitte Alkoholgehalt eingeben!",
+            "en": "Enter alcohol!",
+            "de": "Alkoholgehalt eingeben!",
         }
         if headertype == "password":
             return self.__choose_language(password)
