@@ -551,7 +551,7 @@ QLineEdit
             </property>
            </widget>
           </item>
-          <item row="0" column="3" rowspan="2" colspan="4">
+          <item row="0" column="3" colspan="4">
            <layout class="QGridLayout" name="gridLayout_5">
             <item row="4" column="0">
              <widget class="QLabel" name="LZutat2">
@@ -1078,6 +1078,19 @@ QLineEdit
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="1" column="3" colspan="4">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
