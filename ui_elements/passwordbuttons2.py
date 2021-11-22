@@ -67,7 +67,7 @@ class Ui_PasswordWindow2(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(PasswordWindow2)
         self.verticalLayout.setObjectName("verticalLayout")
         self.LHeader = QtWidgets.QLabel(PasswordWindow2)
-        self.LHeader.setMaximumSize(QtCore.QSize(16777215, 30))
+        self.LHeader.setMaximumSize(QtCore.QSize(16777215, 35))
         font = QtGui.QFont()
         font.setPointSize(20)
         font.setBold(True)
