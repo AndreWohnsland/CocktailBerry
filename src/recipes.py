@@ -124,6 +124,7 @@ def enter_recipe(w, newrecipe):
         recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, comment
     )
     DP_CONTROLLER.fill_list_widget_recipes(w, [recipe_name])
+    DP_CONTROLLER.clear_recipe_data_maker(w, select_other_item=False)
     if enabled:
         refresh_recipe_maker_view(w, [recipe_id])
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
