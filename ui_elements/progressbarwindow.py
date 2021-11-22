@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\progressbarwindow.ui'
+# Form implementation generated from reading ui file '.\ui_elements\progressbarwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -31,10 +31,10 @@ class Ui_Progressbarwindow(object):
 "}\n"
 "\n"
 "QPushButton {\n"
-"    background-color: rgb(97, 97, 97);\n"
-"    color: rgb(255, 255, 255);\n"
-"    border-width: 1px;\n"
-"    border-color: rgb(97, 97, 97);\n"
+"    background-color: rgb(0, 0, 0);\n"
+"    color: (0, 123, 255);\n"
+"    border-width: 4px;\n"
+"    border-color: rgb(0, 123, 255);\n"
 "    border-style: solid;\n"
 "    border-radius: 7;\n"
 "    padding: 3px;\n"
@@ -42,10 +42,10 @@ class Ui_Progressbarwindow(object):
 "    padding-right: 5px;\n"
 "}\n"
 "\n"
-"QPushButton:checked\n"
+"QPushButton:pressed\n"
 "{\n"
-"    color: rgb(255, 255, 255);    \n"
-"    background-color: rgb(0, 123, 255);\n"
+"    color: rgb(239, 151, 0);    \n"
+"    border-color: rgb(239, 151, 0);\n"
 "}\n"
 "\n"
 "QProgressBar\n"
@@ -78,17 +78,17 @@ class Ui_Progressbarwindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.Lheader = QtWidgets.QLabel(self.centralwidget)
-        self.Lheader.setMinimumSize(QtCore.QSize(0, 100))
-        self.Lheader.setMaximumSize(QtCore.QSize(16777215, 90))
+        self.LHeader = QtWidgets.QLabel(self.centralwidget)
+        self.LHeader.setMinimumSize(QtCore.QSize(0, 100))
+        self.LHeader.setMaximumSize(QtCore.QSize(16777215, 90))
         font = QtGui.QFont()
         font.setPointSize(32)
         font.setBold(True)
         font.setWeight(75)
-        self.Lheader.setFont(font)
-        self.Lheader.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
-        self.Lheader.setObjectName("Lheader")
-        self.verticalLayout.addWidget(self.Lheader)
+        self.LHeader.setFont(font)
+        self.LHeader.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.LHeader.setObjectName("LHeader")
+        self.verticalLayout.addWidget(self.LHeader)
         self.LProgress = QtWidgets.QLabel(self.centralwidget)
         self.LProgress.setMinimumSize(QtCore.QSize(0, 50))
         self.LProgress.setMaximumSize(QtCore.QSize(16777215, 60))
@@ -143,8 +143,18 @@ class Ui_Progressbarwindow(object):
     def retranslateUi(self, Progressbarwindow):
         _translate = QtCore.QCoreApplication.translate
         Progressbarwindow.setWindowTitle(_translate("Progressbarwindow", "~~ Cocktail wird zubereitet ~~"))
-        self.Lheader.setText(_translate("Progressbarwindow", "<html><head/><body><p>Cocktail wird zubereitet!</p></body></html>"))
+        self.LHeader.setText(_translate("Progressbarwindow", "<html><head/><body><p>Cocktail wird zubereitet!</p></body></html>"))
         self.LProgress.setText(_translate("Progressbarwindow", "<html><head/><body><p><span style=\" color:#ef9700;\">Fortschritt:</span></p></body></html>"))
         self.progressBar.setFormat(_translate("Progressbarwindow", "%p%"))
         self.Labbruch.setText(_translate("Progressbarwindow", "Der Vorgang kann auch abgebrochen werden"))
         self.PBabbrechen.setText(_translate("Progressbarwindow", "Abbrechen"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Progressbarwindow = QtWidgets.QMainWindow()
+    ui = Ui_Progressbarwindow()
+    ui.setupUi(Progressbarwindow)
+    Progressbarwindow.show()
+    sys.exit(app.exec_())

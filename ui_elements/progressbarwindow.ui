@@ -43,10 +43,10 @@
 }
 
 QPushButton {
-	background-color: rgb(97, 97, 97);
-	color: rgb(255, 255, 255);
-    border-width: 1px;
-	border-color: rgb(97, 97, 97);
+	background-color: rgb(0, 0, 0);
+	color: (0, 123, 255);
+    border-width: 4px;
+	border-color: rgb(0, 123, 255);
 	border-style: solid;
 	border-radius: 7;
 	padding: 3px;
@@ -54,10 +54,10 @@ QPushButton {
 	padding-right: 5px;
 }
 
-QPushButton:checked
+QPushButton:pressed
 {
-	color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);
+	color: rgb(239, 151, 0);	
+	border-color: rgb(239, 151, 0);
 }
 
 QProgressBar
@@ -90,7 +90,7 @@ QProgressBar::chunk {
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="Lheader">
+     <widget class="QLabel" name="LHeader">
       <property name="minimumSize">
        <size>
         <width>0</width>

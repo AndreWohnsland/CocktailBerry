@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\teamselection.ui'
+# Form implementation generated from reading ui file '.\ui_elements\teamselection.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -53,21 +53,24 @@ class Ui_Teamselection(object):
 "}\n"
 "\n"
 "\n"
+"#LHeader {\n"
+"        color: rgb(239, 151, 0);\n"
+"}\n"
 "")
         Teamselection.setModal(True)
         self.verticalLayout = QtWidgets.QVBoxLayout(Teamselection)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.Lheader = QtWidgets.QLabel(Teamselection)
-        self.Lheader.setMinimumSize(QtCore.QSize(0, 100))
-        self.Lheader.setMaximumSize(QtCore.QSize(16777215, 100))
+        self.LHeader = QtWidgets.QLabel(Teamselection)
+        self.LHeader.setMinimumSize(QtCore.QSize(0, 100))
+        self.LHeader.setMaximumSize(QtCore.QSize(16777215, 100))
         font = QtGui.QFont()
         font.setPointSize(32)
         font.setBold(True)
         font.setWeight(75)
-        self.Lheader.setFont(font)
-        self.Lheader.setAlignment(QtCore.Qt.AlignCenter)
-        self.Lheader.setObjectName("Lheader")
-        self.verticalLayout.addWidget(self.Lheader)
+        self.LHeader.setFont(font)
+        self.LHeader.setAlignment(QtCore.Qt.AlignCenter)
+        self.LHeader.setObjectName("LHeader")
+        self.verticalLayout.addWidget(self.LHeader)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.PBteamone = QtWidgets.QPushButton(Teamselection)
@@ -98,6 +101,16 @@ class Ui_Teamselection(object):
     def retranslateUi(self, Teamselection):
         _translate = QtCore.QCoreApplication.translate
         Teamselection.setWindowTitle(_translate("Teamselection", "~~ Teamwahl ~~"))
-        self.Lheader.setText(_translate("Teamselection", "Team auswählen"))
+        self.LHeader.setText(_translate("Teamselection", "Team auswählen"))
         self.PBteamone.setText(_translate("Teamselection", "Team #1"))
         self.PBteamtwo.setText(_translate("Teamselection", "Team #2"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Teamselection = QtWidgets.QDialog()
+    ui = Ui_Teamselection()
+    ui.setupUi(Teamselection)
+    Teamselection.show()
+    sys.exit(app.exec_())

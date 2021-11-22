@@ -58,13 +58,28 @@ class Ui_available(object):
 "}\n"
 "\n"
 "\n"
-"#LAvailable {\n"
+"#LAvailable, #LPossible {\n"
 "    color: rgb(239, 151, 0);\n"
 "}\n"
 "\n"
-"#LPossible{\n"
-"    color: rgb(239, 151, 0);\n"
-"}")
+"/* Inverted button style */\n"
+"#PBOk_2 {\n"
+"    background-color: rgb(0, 123, 255);  \n"
+"    color: rgb(0, 0, 0);\n"
+"    border-width: 3px;\n"
+"    border-color: rgb(0, 123, 255);\n"
+"    border-style: solid;\n"
+"    border-radius: 7;\n"
+"    padding: 3px;\n"
+"    padding-left: 5px;\n"
+"    padding-right: 5px;\n"
+"}\n"
+"\n"
+"#PBOk_2:pressed {\n"
+"    background-color: rgb(239, 151, 0);    \n"
+"    border-color: rgb(239, 151, 0);    \n"
+"}\n"
+"")
         self.centralwidget = QtWidgets.QWidget(available)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)

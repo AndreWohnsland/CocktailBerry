@@ -63,6 +63,9 @@ QPushButton:checked {
 }
 
 
+#LHeader {
+		color: rgb(239, 151, 0);
+}
 </string>
   </property>
   <property name="modal">
@@ -70,7 +73,7 @@ QPushButton:checked {
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="Lheader">
+    <widget class="QLabel" name="LHeader">
      <property name="minimumSize">
       <size>
        <width>0</width>

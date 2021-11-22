@@ -69,7 +69,23 @@ QLineEdit
 #LName {
 	color: rgb(239, 151, 0);
 }
-</string>
+
+#enterButton {
+	background-color: rgb(0, 123, 255);  
+	color: rgb(0, 0, 0);
+    border-width: 3px;
+	border-color: rgb(0, 123, 255);
+	border-style: solid;
+	border-radius: 7;
+	padding: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#enterButton:pressed {
+	background-color: rgb(239, 151, 0);	
+	border-color: rgb(239, 151, 0);	
+}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
