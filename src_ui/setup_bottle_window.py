@@ -1,4 +1,3 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow
 
 from ui_elements.bottlewindow import Ui_Bottlewindow
@@ -14,16 +13,13 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
 
     def __init__(self, parent=None):
         """ Init. Connects all the buttons, gets the names from Mainwindow/DB. """
-        super(BottleWindow, self).__init__(parent)
+        super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint)
         # connects all the buttons
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
-        # sets cursor visualibility and assigns the names to the labels
         self.mainscreen = parent
-        if not self.mainscreen.UI_DEVENVIRONMENT:
-            self.setCursor(Qt.BlankCursor)
+        # Assigns the names to the labels
         # get all the DB values and assign the nececary to the level labels
         # note: since there can be blank bottles (id=0 so no match) this needs to be catched as well (no selection from DB)
         self.id_list = []
@@ -39,6 +35,8 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
             minus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.plusminus(
                 label=l, operator="-", minimal=50, maximal=b, delta=25))
         UI_LANGUAGE.adjust_bottle_window(self)
+        self.showFullScreen()
+        DP_CONTROLLER.set_dev_settings(self)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """

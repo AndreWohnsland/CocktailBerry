@@ -15,7 +15,7 @@ class HandaddWidget(QDialog, Ui_handadds):
     """ Creates a window where the user can define additional ingredients to add via hand after the machine. """
 
     def __init__(self, parent):
-        super(HandaddWidget, self).__init__(parent)
+        super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         self.mainscreen = parent
@@ -39,8 +39,10 @@ class HandaddWidget(QDialog, Ui_handadds):
             lineedit.setValidator(QIntValidator(0, 300))
             lineedit.setMaxLength(3)
         self.fill_elements()
-        self.move(0, 100)
+        self.move(20, 100)
         UI_LANGUAGE.adjust_handadds_window(self)
+        self.show()
+        DP_CONTROLLER.set_dev_settings(self, resize=False)
 
     def fill_elements(self):
         for i, row in enumerate(shared.handaddlist, start=1):

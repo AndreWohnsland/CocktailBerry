@@ -1,6 +1,7 @@
 import string
 from PyQt5.QtWidgets import QDialog
 
+from src.display_controller import DP_CONTROLLER
 from ui_elements.Keyboard import Ui_Keyboard
 
 
@@ -8,7 +9,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
     """ Creates a Keyboard where the user can enter names or similar strings to Lineedits. """
 
     def __init__(self, parent, le_to_write=None, max_char_len=30):
-        super(KeyboardWidget, self).__init__(parent)
+        super().__init__()
         self.setupUi(self)
         self.mainscreen = parent
         self.le_to_write = le_to_write
@@ -34,6 +35,8 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
                 inputvalue=iv, inputvalue_shift=iv_s))
         # restricting the Lineedit to a set up Char leng
         self.LName.setMaxLength(max_char_len)
+        self.showFullScreen()
+        DP_CONTROLLER.set_dev_settings(self)
 
     def backbutton_clicked(self):
         """ Closes the Window without any further action. """

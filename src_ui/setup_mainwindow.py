@@ -2,7 +2,6 @@
 of the passed window. Also defines the Mode for controls.
 """
 import os
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
@@ -30,9 +29,9 @@ from src_ui.setup_team_window import TeamScreen
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     """ Creates the Mainscreen. """
 
-    def __init__(self, parent=None):
+    def __init__(self):
         """ Init. Many of the button and List connects are in pass_setup. """
-        super(MainScreen, self).__init__(parent)
+        super().__init__()
         ConfigManager.__init__(self)
         self.setupUi(self)
         # Get the basic Logger
@@ -43,13 +42,6 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       "..", "ui_elements", "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
-        # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
-        if not self.UI_DEVENVIRONMENT:
-            self.setCursor(Qt.BlankCursor)
-        # Code for hide the curser. Still experimental!
-        # for count in range(1,10):
-        # 	CBSname = getattr(self, "CBB" + str(count))
-        # 	CBSname.setCursor(Qt.BlankCursor)
         # init the empty further screens
         self.pww: PasswordScreen = None
         self.kbw: KeyboardWidget = None
@@ -60,26 +52,26 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.availw: AvailableWindow = None
         self.teamw: TeamScreen = None
         UI_LANGUAGE.adjust_mainwindow(self)
+        self.showFullScreen()
+        # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
+        DP_CONTROLLER.set_dev_settings(self)
+        DP_CONTROLLER.set_tab_width(self)
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext="Password"):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
         self.pww = PasswordScreen(self, x_pos, y_pos, le_to_write, headertext)
-        self.pww.show()
 
-    def keyboard(self, le_to_write, headertext=None, max_char_len=30):
+    def keyboard(self, le_to_write, max_char_len=30):
         """ Opens up the Keyboard connected to the lineedit """
         self.kbw = KeyboardWidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
-        if headertext is not None:
-            self.kbw.setWindowTitle(headertext)
-        self.kbw.showFullScreen()
 
     def progressionqwindow(self, cocktail_type: str = "Cocktail"):
         """ Opens up the progressionwindow to show the Cocktail status. """
         self.prow = ProgressScreen(self, cocktail_type)
-        self.prow.show()
 
     def teamwindow(self):
         self.teamw = TeamScreen(self)
+        # don't abstract .exec_() into class otherwise you will get NameError in class!
         self.teamw.exec_()
 
     def prow_change(self, pbvalue):
@@ -93,32 +85,28 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     def bottleswindow(self):
         """ Opens the bottlewindow to change the volumelevels. """
         self.botw = BottleWindow(self)
-        self.botw.show()
 
     def ingredientdialog(self):
         """ Opens a window to spend one single ingredient. """
         self.ingd = GetIngredientWindow(self)
-        self.ingd.show()
 
     def handwindow(self):
         """ Opens a window to enter additional ingrediends added by hand. """
         self.handw = HandaddWidget(self)
-        self.handw.show()
 
     def availablewindow(self):
         self.availw = AvailableWindow(self)
-        self.availw.showFullScreen()
 
     def connect_other_windows(self):
         """Links the buttons and lineedits to the other ui elements"""
         password = UI_LANGUAGE.generate_password_header("password")
-        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw, headertext=password))
-        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2, headertext=password))
-        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine, headertext=password))
+        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw, 50, 50, password))
+        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2, 50, 50, password))
+        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine, 50, 50, password))
         self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
         alcohol = UI_LANGUAGE.generate_password_header("alcohol")
         self.LEGehaltRezept.clicked.connect(
-            lambda: self.passwordwindow(self.LEGehaltRezept, y_pos=50, headertext=alcohol)
+            lambda: self.passwordwindow(self.LEGehaltRezept, 50, 50, alcohol)
         )
         self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept, max_char_len=20))
         self.LEKommentar.clicked.connect(self.handwindow)
@@ -126,7 +114,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # connects all the Lineedits from the Recipe amount and gives them the validator
         amount = UI_LANGUAGE.generate_password_header("amount")
         for obj in DP_CONTROLLER.get_lineedits_recipe(self):
-            obj.clicked.connect(lambda o=obj: self.passwordwindow(o, 400, 50, amount))
+            obj.clicked.connect(lambda o=obj: self.passwordwindow(o, 50, 50, amount))
             obj.setValidator(QIntValidator(0, 300))
             obj.setMaxLength(3)
         # Setting up Validators for all the the fields (length and/or Types):

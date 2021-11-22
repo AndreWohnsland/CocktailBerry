@@ -13,7 +13,7 @@ class AvailableWindow(QMainWindow, Ui_available):
     """ Opens a window where the user can select all available ingredients. """
 
     def __init__(self, parent):
-        super(AvailableWindow, self).__init__(parent)
+        super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.mainscreen = parent
@@ -29,6 +29,8 @@ class AvailableWindow(QMainWindow, Ui_available):
         DP_CONTROLLER.fill_list_widget(self.LWVorhanden, ingredient_available)
         DP_CONTROLLER.fill_list_widget(self.LWAlle, entrylist)
         UI_LANGUAGE.adjust_available_windos(self)
+        self.showFullScreen()
+        DP_CONTROLLER.set_dev_settings(self)
 
     def abbrechen_clicked(self):
         """ Closes the window without any furter action. """

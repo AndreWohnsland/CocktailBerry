@@ -19,14 +19,11 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
 
     def __init__(self, parent=None):
         """ Init. Connects all the buttons and get values for the Combobox. """
-        super(GetIngredientWindow, self).__init__(parent)
+        super().__init__()
         self.setupUi(self)
         # Set window properties
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
-        if not self.mainscreen.UI_DEVENVIRONMENT:
-            self.setCursor(Qt.BlankCursor)
         # Connect all the buttons
         self.PBplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LAmount, "+", 20, 100, 10))
         self.PBminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LAmount, "-", 20, 100, 10))
@@ -35,7 +32,8 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         bottles = DB_COMMANDER.get_ingredients_at_bottles_without_empty_ones()
         DP_CONTROLLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
         UI_LANGUAGE.adjust_bonusingredient_screen(self)
-        self.move(100, 20)
+        self.showFullScreen()
+        DP_CONTROLLER.set_dev_settings(self)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """

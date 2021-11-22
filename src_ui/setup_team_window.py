@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QDialog
 
 from ui_elements.teamselection import Ui_Teamselection
 from config.config_manager import ConfigManager, shared
+from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 
 
@@ -11,7 +12,7 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
     """ Class for the Team selection Screen. """
 
     def __init__(self, parent=None):
-        super(TeamScreen, self).__init__(parent)
+        super().__init__()
         ConfigManager.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -21,10 +22,9 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         self.PBteamtwo.setText(self.TEAM_BUTTON_NAMES[1])
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
-        if not self.mainscreen.UI_DEVENVIRONMENT:
-            self.setCursor(Qt.BlankCursor)
         self.move(0, 0)
         UI_LANGUAGE.adjust_team_window(self)
+        DP_CONTROLLER.set_dev_settings(self)
 
         def set_team(team: str):
             shared.selected_team = team
