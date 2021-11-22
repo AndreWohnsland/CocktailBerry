@@ -58,7 +58,7 @@ def updated_clicked_recipe_maker(w):
     total_volume = sum([v[1] for v in machineadd_data] + [v[1] for v in handadd_data])
     ingredient_data = machineadd_data
     if handadd_data:
-        ingredient_data.extend([["", ""], ["HEADER", ""]])
+        ingredient_data.append(["HEADER", ""])
         ingredient_data.extend(handadd_data)
 
     DP_CONTROLLER.fill_recipe_data_maker(w, ingredient_data, total_volume, cocktailname)

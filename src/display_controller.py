@@ -139,7 +139,7 @@ class DisplayController(DialogHandler):
         it will overwrite the whole class sheet and missing parts will not be used.
         Any changes to the .ui file for the tab needs to be applied here as well"""
         total_width = mainscreen.frameGeometry().width()
-        width = round(total_width / 4, 0) - 4
+        width = round(total_width / 4, 0) - 10
         mainscreen.tabWidget.setStyleSheet(
             "QTabBar::tab {" +
             "background-color: rgb(97, 97, 97);" +
@@ -393,10 +393,10 @@ class DisplayController(DialogHandler):
         return [getattr(w, f"LBelegung{x}") for x in range(1, 11)]
 
     def get_labels_maker_volume(self, w):
-        return [getattr(w, f"LMZutat{x}") for x in range(1, 11)]
+        return [getattr(w, f"LMZutat{x}") for x in range(1, 10)]
 
     def get_labels_maker_ingredients(self, w):
-        return [getattr(w, f"LZutat{x}") for x in range(1, 11)]
+        return [getattr(w, f"LZutat{x}") for x in range(1, 10)]
 
 
 DP_CONTROLLER = DisplayController()

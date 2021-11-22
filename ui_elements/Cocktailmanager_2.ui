@@ -619,6 +619,26 @@ QLineEdit
               </property>
              </widget>
             </item>
+            <item row="4" column="1">
+             <widget class="QLabel" name="LMZutat2">
+              <property name="maximumSize">
+               <size>
+                <width>300</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat2</string>
+              </property>
+             </widget>
+            </item>
             <item row="6" column="1">
              <widget class="QLabel" name="LMZutat4">
               <property name="maximumSize">
@@ -659,8 +679,8 @@ QLineEdit
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
-             <widget class="QLabel" name="LMZutat2">
+            <item row="3" column="0">
+             <widget class="QLabel" name="LZutat1">
               <property name="maximumSize">
                <size>
                 <width>300</width>
@@ -670,35 +690,18 @@ QLineEdit
               <property name="font">
                <font>
                 <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat2</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" colspan="2">
-             <widget class="QLabel" name="LAlkoholname">
-              <property name="maximumSize">
-               <size>
-                <width>600</width>
-                <height>100</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>22</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
               <property name="text">
-               <string>LAlkoholname</string>
+               <string>LZutat1</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -728,8 +731,31 @@ QLineEdit
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="LZutat1">
+            <item row="0" column="0" colspan="2">
+             <widget class="QLabel" name="LAlkoholname">
+              <property name="maximumSize">
+               <size>
+                <width>600</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>22</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LAlkoholname</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0">
+             <widget class="QLabel" name="LZutat6">
               <property name="maximumSize">
                <size>
                 <width>300</width>
@@ -747,7 +773,7 @@ QLineEdit
                <enum>Qt::LeftToRight</enum>
               </property>
               <property name="text">
-               <string>LZutat1</string>
+               <string>LZutat6</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -803,8 +829,8 @@ QLineEdit
               </property>
              </widget>
             </item>
-            <item row="8" column="0">
-             <widget class="QLabel" name="LZutat6">
+            <item row="11" column="0">
+             <widget class="QLabel" name="LZutat9">
               <property name="maximumSize">
                <size>
                 <width>300</width>
@@ -822,7 +848,7 @@ QLineEdit
                <enum>Qt::LeftToRight</enum>
               </property>
               <property name="text">
-               <string>LZutat6</string>
+               <string>LZutat9</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -881,8 +907,8 @@ QLineEdit
               </property>
              </widget>
             </item>
-            <item row="11" column="0">
-             <widget class="QLabel" name="LZutat9">
+            <item row="10" column="0">
+             <widget class="QLabel" name="LZutat8">
               <property name="maximumSize">
                <size>
                 <width>300</width>
@@ -900,7 +926,7 @@ QLineEdit
                <enum>Qt::LeftToRight</enum>
               </property>
               <property name="text">
-               <string>LZutat9</string>
+               <string>LZutat8</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -930,8 +956,8 @@ QLineEdit
               </property>
              </widget>
             </item>
-            <item row="10" column="0">
-             <widget class="QLabel" name="LZutat8">
+            <item row="9" column="1">
+             <widget class="QLabel" name="LMZutat7">
               <property name="maximumSize">
                <size>
                 <width>300</width>
@@ -941,44 +967,12 @@ QLineEdit
               <property name="font">
                <font>
                 <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
+                <weight>50</weight>
+                <bold>false</bold>
                </font>
               </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
               <property name="text">
-               <string>LZutat8</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="12" column="0">
-             <widget class="QLabel" name="LZutat10">
-              <property name="maximumSize">
-               <size>
-                <width>300</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat10</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               <string>LMZutat7</string>
               </property>
              </widget>
             </item>
@@ -1002,8 +996,8 @@ QLineEdit
               </property>
              </widget>
             </item>
-            <item row="9" column="1">
-             <widget class="QLabel" name="LMZutat7">
+            <item row="11" column="1">
+             <widget class="QLabel" name="LMZutat9">
               <property name="maximumSize">
                <size>
                 <width>300</width>
@@ -1018,7 +1012,7 @@ QLineEdit
                </font>
               </property>
               <property name="text">
-               <string>LMZutat7</string>
+               <string>LMZutat9</string>
               </property>
              </widget>
             </item>
@@ -1039,46 +1033,6 @@ QLineEdit
               </property>
               <property name="text">
                <string>LMZutat8</string>
-              </property>
-             </widget>
-            </item>
-            <item row="12" column="1">
-             <widget class="QLabel" name="LMZutat10">
-              <property name="maximumSize">
-               <size>
-                <width>300</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat10</string>
-              </property>
-             </widget>
-            </item>
-            <item row="11" column="1">
-             <widget class="QLabel" name="LMZutat9">
-              <property name="maximumSize">
-               <size>
-                <width>300</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat9</string>
               </property>
              </widget>
             </item>
