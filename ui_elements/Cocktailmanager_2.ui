@@ -736,7 +736,7 @@ QLineEdit
               <property name="maximumSize">
                <size>
                 <width>600</width>
-                <height>100</height>
+                <height>35</height>
                </size>
               </property>
               <property name="font">
@@ -782,10 +782,16 @@ QLineEdit
             </item>
             <item row="1" column="1">
              <widget class="QLabel" name="LAlkoholgehalt">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>300</width>
-                <height>80</height>
+                <height>30</height>
                </size>
               </property>
               <property name="font">
@@ -935,10 +941,16 @@ QLineEdit
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="LMenge">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>300</width>
-                <height>80</height>
+                <height>30</height>
                </size>
               </property>
               <property name="font">
