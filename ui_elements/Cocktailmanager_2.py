@@ -185,6 +185,7 @@ class Ui_MainWindow(object):
 "    color: rgb(170, 170, 170);\n"
 "    border-bottom: 1px solid;\n"
 "    border-color: rgb(170, 170, 170);\n"
+"    margin-bottom: 5px;\n"
 "}\n"
 "\n"
 "#MakerLMenge{\n"
@@ -474,11 +475,11 @@ class Ui_MainWindow(object):
         self.LAlkoholgehalt.setMinimumSize(QtCore.QSize(0, 0))
         self.LAlkoholgehalt.setMaximumSize(QtCore.QSize(300, 30))
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
         self.LAlkoholgehalt.setFont(font)
-        self.LAlkoholgehalt.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.LAlkoholgehalt.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.LAlkoholgehalt.setObjectName("LAlkoholgehalt")
         self.gridLayout_5.addWidget(self.LAlkoholgehalt, 1, 1, 1, 1)
         self.LZutat4 = QtWidgets.QLabel(self.tab)
@@ -576,15 +577,15 @@ class Ui_MainWindow(object):
         self.LMenge.setMinimumSize(QtCore.QSize(0, 0))
         self.LMenge.setMaximumSize(QtCore.QSize(300, 30))
         font = QtGui.QFont()
-        font.setPointSize(18)
-        font.setBold(False)
-        font.setWeight(50)
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
         self.LMenge.setFont(font)
-        self.LMenge.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.LMenge.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.LMenge.setObjectName("LMenge")
         self.gridLayout_5.addWidget(self.LMenge, 1, 0, 1, 1)
         self.LAlkoholname = QtWidgets.QLabel(self.tab)
-        self.LAlkoholname.setMaximumSize(QtCore.QSize(600, 40))
+        self.LAlkoholname.setMaximumSize(QtCore.QSize(600, 35))
         font = QtGui.QFont()
         font.setPointSize(22)
         font.setBold(True)

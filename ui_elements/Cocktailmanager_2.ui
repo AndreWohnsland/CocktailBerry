@@ -192,6 +192,7 @@ QLineEdit
 	color: rgb(170, 170, 170);
 	border-bottom: 1px solid;
 	border-color: rgb(170, 170, 170);
+	margin-bottom: 5px;
 }
 
 #MakerLMenge{
@@ -778,7 +779,7 @@ QLineEdit
               </property>
               <property name="font">
                <font>
-                <pointsize>18</pointsize>
+                <pointsize>16</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
@@ -787,7 +788,7 @@ QLineEdit
                <string>yy %</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -1017,16 +1018,16 @@ QLineEdit
               </property>
               <property name="font">
                <font>
-                <pointsize>18</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
+                <pointsize>16</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
                </font>
               </property>
               <property name="text">
                <string>xx ml</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -1035,7 +1036,7 @@ QLineEdit
               <property name="maximumSize">
                <size>
                 <width>600</width>
-                <height>40</height>
+                <height>35</height>
                </size>
               </property>
               <property name="font">
