@@ -3,7 +3,6 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
 from ui_elements.customdialog import Ui_CustomDialog
-from config.config_manager import ConfigManager
 from src.display_controller import DP_CONTROLLER
 
 

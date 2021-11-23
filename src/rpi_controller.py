@@ -7,8 +7,10 @@ from config.config_manager import ConfigManager
 
 
 try:
+    # pylint: disable=import-error
     from RPi import GPIO
     GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
     DEV = False
 except ModuleNotFoundError:
     DEV = True
