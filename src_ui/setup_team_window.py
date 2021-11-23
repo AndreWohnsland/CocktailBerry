@@ -16,9 +16,9 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         ConfigManager.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.PBteamone.clicked.connect(lambda: set_team(self.TEAM_BUTTON_NAMES[0]))
+        self.PBteamone.clicked.connect(lambda: self.set_team(self.TEAM_BUTTON_NAMES[0]))
         self.PBteamone.setText(self.TEAM_BUTTON_NAMES[0])
-        self.PBteamtwo.clicked.connect(lambda: set_team(self.TEAM_BUTTON_NAMES[1]))
+        self.PBteamtwo.clicked.connect(lambda: self.set_team(self.TEAM_BUTTON_NAMES[1]))
         self.PBteamtwo.setText(self.TEAM_BUTTON_NAMES[1])
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
@@ -26,6 +26,6 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         UI_LANGUAGE.adjust_team_window(self)
         DP_CONTROLLER.set_dev_settings(self)
 
-        def set_team(team: str):
-            shared.selected_team = team
-            self.close()
+    def set_team(self, team: str):
+        shared.selected_team = team
+        self.close()
