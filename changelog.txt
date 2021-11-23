@@ -1,3 +1,14 @@
+--------------- 2021_11_23 ---------------------------------------------------------------------------------------------------------
+- Adjusted UI flags to not show any header, close- or minimize button on the RPI for any windowed screen
+- Adjusted some screens to be fullscreen instead of windowed mode and redesigned accordingly
+- Redesigned CSS to be more efficient and to highlight important buttons
+- Unified the CSS for different screens and buttons to be more alike over the application
+- Redesigned Windows to scale better with different resolution
+- Moved window call to own init method instead outside class
+- Introduced dynamic resizing of windows to given dimension if devmode is active
+- Further improved output from RPi module
+- Added some header messages to subwindows, standardized label names
+
 --------------- 2021_11_21 ---------------------------------------------------------------------------------------------------------
 - Added timeout argument to not wait indefinitely on the rpi at failed request
 - Switched to none fullscreen windows to also place messages properly on the RPi
