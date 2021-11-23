@@ -69,6 +69,7 @@ def __register_bottles(w):
 
     refresh_bottle_information(w)
     DP_CONTROLLER.clear_list_widget_maker(w)
+    DP_CONTROLLER.clear_recipe_data_maker(w, False)
     refresh_recipe_maker_view(w)
     set_fill_level_bars(w)
 
