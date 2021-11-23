@@ -22,7 +22,7 @@ class RpiController(ConfigManager):
     def __init__(self):
         super().__init__()
         self.devenvironment = DEV
-        print(f"Devenvironment on the RPi module {self.devenvironment}")
+        print(f"Devenvironment on the RPi module is {'on 'if self.devenvironment else 'off'}")
         self.initializing_pins()
 
     def clean_pumps(self):
