@@ -102,8 +102,9 @@ def __scale_and_sort_ingredient_data(ingredient_data, volume_factor):
 def __build_comment_maker(comment_data):
     """Build the additional comment for the completion message (if there are handadds)"""
     comment = ""
-    for ingredient_name, ingredient_volume in comment_data:
-        comment += f"\n- ca. {ingredient_volume:.0f} ml {ingredient_name}"
+    length_desc = sorted(comment_data, key=lambda x: len(x[0]), reverse=True)
+    for ingredient_name, ingredient_volume in length_desc:
+        comment += f"\n~{ingredient_volume:.0f} ml {ingredient_name}"
     return comment
 
 
@@ -148,11 +149,12 @@ def prepare_cocktail(w):
     DB_COMMANDER.set_recipe_counter(cocktailname)
     __generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
 
-    SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, cocktail_volume)
-    # only post team if cocktail was made over 60%
+    # only post if cocktail was made over 50%
     readiness = taken_time / max_time
-    if readiness >= 0.6:
-        SERVICE_HANDLER.post_team_data(shared.selected_team, round(cocktail_volume * readiness))
+    if readiness >= 0.5:
+        real_volume = round(cocktail_volume * readiness)
+        SERVICE_HANDLER.post_team_data(shared.selected_team, real_volume)
+        SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, real_volume)
 
     if shared.make_cocktail:
         DB_COMMANDER.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
