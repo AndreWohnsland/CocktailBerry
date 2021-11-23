@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_CustomDialog(object):
     def setupUi(self, CustomDialog):
         CustomDialog.setObjectName("CustomDialog")
-        CustomDialog.resize(614, 418)
+        CustomDialog.resize(800, 480)
         CustomDialog.setStyleSheet("QWidget\n"
 "{\n"
 "    color: rgb(0, 123, 255);    \n"

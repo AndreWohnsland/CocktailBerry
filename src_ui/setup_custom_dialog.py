@@ -7,12 +7,11 @@ from config.config_manager import ConfigManager
 from src.display_controller import DP_CONTROLLER
 
 
-class CustomDialog(QDialog, Ui_CustomDialog, ConfigManager):
+class CustomDialog(QDialog, Ui_CustomDialog):
     """ Class for the Team selection Screen. """
 
     def __init__(self, message: str, title: str = "Information", icon_path: str = None):
         super().__init__()
-        ConfigManager.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.informationLabel.setText(message)
