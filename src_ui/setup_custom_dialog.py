@@ -13,6 +13,7 @@ class CustomDialog(QDialog, Ui_CustomDialog):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.informationLabel.setText(message)
         self.setWindowTitle(title)
         self.closeButton.clicked.connect(self.close_clicked)

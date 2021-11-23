@@ -16,6 +16,7 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         ConfigManager.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.PBteamone.clicked.connect(lambda: self.set_team(self.TEAM_BUTTON_NAMES[0]))
         self.PBteamone.setText(self.TEAM_BUTTON_NAMES[0])
         self.PBteamtwo.clicked.connect(lambda: self.set_team(self.TEAM_BUTTON_NAMES[1]))
