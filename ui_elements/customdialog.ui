@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CustomDialog</class>
+ <widget class="QDialog" name="CustomDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>614</width>
+    <height>418</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Information</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget
+{
+	color: rgb(0, 123, 255);	
+	background-color: rgb(0, 0, 0);
+
+}
+
+/*
+QPushButton {
+	background-color: rgb(0, 0, 0);
+	color: (0, 123, 255);
+    border-width: 4px;
+	border-color: rgb(0, 123, 255);
+	border-style: solid;
+	border-radius: 7;
+	padding: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+QPushButton:pressed
+{
+	color: rgb(239, 151, 0);	
+	border-color: rgb(239, 151, 0);
+}
+*/
+
+#LHeader {
+	color: rgb(239, 151, 0);
+}
+
+
+/* Inverted button style */
+QPushButton {
+	background-color: rgb(0, 123, 255);  
+	color: rgb(0, 0, 0);
+    border-width: 3px;
+	border-color: rgb(0, 123, 255);
+	border-style: solid;
+	border-radius: 7;
+	padding: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+QPushButton:pressed {
+	background-color: rgb(239, 151, 0);	
+	border-color: rgb(239, 151, 0);	
+}
+
+#informationLabel {
+	padding: 5px 25px 5px 25px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="informationLabel">
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Message Label which is really damn long</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="closeButton">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Close</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

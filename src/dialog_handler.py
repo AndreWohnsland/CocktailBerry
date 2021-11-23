@@ -18,7 +18,7 @@ class DialogHandler(ConfigManager):
         language = self.UI_LANGUAGE
         return element.get(language, element["en"])
 
-    def standard_box(self, textstring, title=None):
+    def standard_box_qt(self, textstring, title=None):
         """ The default messagebox for the Maker. Uses a QMessageBox with OK-Button """
         default_title = {
             "en": "Information",
@@ -40,6 +40,22 @@ class DialogHandler(ConfigManager):
         )
         # messagebox.showFullScreen()
         messagebox.move(0, 0)
+        messagebox.exec_()
+
+    def standard_box(self, message, title=None):
+        """ The default messagebox for the Maker. Uses a Custom QDialog with Close-Button """
+        # otherwise circular import :(
+        # pylint: disable=import-outside-toplevel
+        from src_ui.setup_custom_dialog import CustomDialog
+        default_title = {
+            "en": "Information",
+            "de": "Information",
+        }
+        if title is None:
+            title = self.__choose_language(default_title)
+        fillstring = "-" * 70
+        fancy_message = f"{fillstring}\n{message}\n{fillstring}"
+        messagebox = CustomDialog(fancy_message, title, self.icon_path)
         messagebox.exec_()
 
     def __output_language_dialog(self, options: dict):
