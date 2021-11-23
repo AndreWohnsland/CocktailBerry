@@ -20,7 +20,8 @@ class RpiController(ConfigManager):
     def __init__(self):
         super().__init__()
         self.devenvironment = DEV
-        # print(f"Devenvironment is {self.devenvironment}")
+        print(f"Devenvironment on the RPi module {self.devenvironment}")
+        self.initializing_pins()
 
     def clean_pumps(self):
         """Clean the pumps for the defined time in the config.
@@ -99,11 +100,18 @@ class RpiController(ConfigManager):
             GPIO.output(pin, 1)
         print(f"{current_time:.1f}/{max_time:.1f} s:\tPin number <{pin}> is closed")
 
+    def initializing_pins(self):
+        active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
+        print(f"Initializing Pins: {active_pins}")
+        if not self.devenvironment:
+            for pin in active_pins:
+                GPIO.setup(pin, 0)
+                GPIO.output(pin, 1)
+
     def activate_pinlist(self, pinlist: List[int]):
         print(f"Opening Pins: {pinlist}")
         if not self.devenvironment:
             for pin in pinlist:
-                GPIO.setup(pin, 0)
                 GPIO.output(pin, 0)
 
     def close_pinlist(self, pinlist: List[int]):
