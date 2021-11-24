@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.uic import loadUi
 
 try:
+    # pylint: disable=import-error
     from RPi import GPIO
     GPIO.setmode(GPIO.BCM)
     DEV = False
@@ -22,6 +23,7 @@ def activate_pins():
     for pin in pinvector:
         if not DEV:
             GPIO.setup(pin, GPIO.OUT)
+            GPIO.output(pin, 0)
 
 
 def starbutton_click():
