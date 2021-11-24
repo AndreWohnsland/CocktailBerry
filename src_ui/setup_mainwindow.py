@@ -54,7 +54,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         UI_LANGUAGE.adjust_mainwindow(self)
         self.showFullScreen()
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
-        DP_CONTROLLER.set_dev_settings(self)
+        DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext="Password"):

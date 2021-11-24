@@ -208,8 +208,8 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 - `UI_PARTYMODE` En- or disables the recipe tab (to prevent user interaction)
 - `UI_MASTERPASSWORD` String for password, Use numbers for build in numpad like '1234'
 - `UI_LANGUAGE` 2 char code for the language, see [supported languages](#supported-languages) (version >= 1.3)
-- `UI_WIDTH` Simulated screen width when UI_DEVENVIRONMENT is true, default is 800 (version >= 1.4)
-- `UI_HEIGHT` Simulated screen height when UI_DEVENVIRONMENT is true, default is 480 (version >= 1.4)
+- `UI_WIDTH` Desired interface width, default is 800 (version >= 1.4)
+- `UI_HEIGHT` Desired interface height, default is 480 (version >= 1.4)
 - `PUMP_PINS` List of the RPi-Pins where each Pump is connected
 - `PUMP_VOLUMEFLOW` List of the according volume flow for each pump in ml/s
 - `MAKER_NUMBER_BOTTLES` Number of supported/displayed bottles. Currently, the UI is build for up to ten bottles

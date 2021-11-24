@@ -25,7 +25,7 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         self.mainscreen = parent
         self.move(0, 0)
         UI_LANGUAGE.adjust_team_window(self)
-        DP_CONTROLLER.set_dev_settings(self)
+        DP_CONTROLLER.set_display_settings(self)
 
     def set_team(self, team: str):
         shared.selected_team = team

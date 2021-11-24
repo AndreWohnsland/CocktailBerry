@@ -125,11 +125,11 @@ class DisplayController(DialogHandler):
             value_ = maximal if operator == "+" else minimal
         label.setText(str(value_))
 
-    def set_dev_settings(self, window_object, resize=True):
+    def set_display_settings(self, window_object, resize=True):
         """Checks dev environment, adjust cursor and resize accordingly, if resize is wished"""
         if not self.UI_DEVENVIRONMENT:
             window_object.setCursor(Qt.BlankCursor)
-        elif resize:
+        if resize:
             window_object.setFixedSize(self.UI_WIDTH, self.UI_HEIGHT)
             window_object.resize(self.UI_WIDTH, self.UI_HEIGHT)
 

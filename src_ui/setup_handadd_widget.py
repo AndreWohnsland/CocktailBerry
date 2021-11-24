@@ -43,7 +43,7 @@ class HandaddWidget(QDialog, Ui_handadds):
         self.move(20, 100)
         UI_LANGUAGE.adjust_handadds_window(self)
         self.show()
-        DP_CONTROLLER.set_dev_settings(self, resize=False)
+        DP_CONTROLLER.set_display_settings(self, resize=False)
 
     def fill_elements(self):
         for i, row in enumerate(shared.handaddlist, start=1):

@@ -19,4 +19,4 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         self.mainscreen = parent
         UI_LANGUAGE.adjust_progress_screen(self, cocktail_type)
         self.showFullScreen()
-        DP_CONTROLLER.set_dev_settings(self)
+        DP_CONTROLLER.set_display_settings(self)

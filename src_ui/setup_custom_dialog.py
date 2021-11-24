@@ -19,7 +19,7 @@ class CustomDialog(QDialog, Ui_CustomDialog):
         self.closeButton.clicked.connect(self.close_clicked)
         self.setWindowIcon(QIcon(icon_path))
         self.move(0, 0)
-        DP_CONTROLLER.set_dev_settings(self)
+        DP_CONTROLLER.set_display_settings(self)
 
     def close_clicked(self):
         self.close()

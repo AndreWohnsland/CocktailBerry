@@ -33,7 +33,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         DP_CONTROLLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
         UI_LANGUAGE.adjust_bonusingredient_screen(self)
         self.showFullScreen()
-        DP_CONTROLLER.set_dev_settings(self)
+        DP_CONTROLLER.set_display_settings(self)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """

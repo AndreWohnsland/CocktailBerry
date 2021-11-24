@@ -36,7 +36,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
                 label=l, operator="-", minimal=50, maximal=b, delta=25))
         UI_LANGUAGE.adjust_bottle_window(self)
         self.showFullScreen()
-        DP_CONTROLLER.set_dev_settings(self)
+        DP_CONTROLLER.set_display_settings(self)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """

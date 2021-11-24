@@ -30,7 +30,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         DP_CONTROLLER.fill_list_widget(self.LWAlle, entrylist)
         UI_LANGUAGE.adjust_available_windos(self)
         self.showFullScreen()
-        DP_CONTROLLER.set_dev_settings(self)
+        DP_CONTROLLER.set_display_settings(self)
 
     def abbrechen_clicked(self):
         """ Closes the window without any furter action. """
