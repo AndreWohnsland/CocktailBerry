@@ -7,7 +7,7 @@
 ![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/Cocktailmaker_AW?style=social)
 
-#### A Python and Qt Based App for a Cocktail machine
+#### A Python and Qt Based App for a Cocktail machine 🐍 + 🍸 = 🥳
 
 <br />
 
