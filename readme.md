@@ -202,24 +202,24 @@ All entered values are checked for reason and if something is wrong, an error me
 
 ## Setting up the Machine / Modifying other Values
 
-These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed:
+These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed. If any of the values got a wrong data type, a TypeError will be thrown with the message which one is wrong:
 
-- `UI_DEVENVIRONMENT` Boolean flag to enable some development features
-- `UI_PARTYMODE` En- or disables the recipe tab (to prevent user interaction)
-- `UI_MASTERPASSWORD` String for password, Use numbers for build in numpad like '1234'
-- `UI_LANGUAGE` 2 char code for the language, see [supported languages](#supported-languages) (version >= 1.3)
-- `UI_WIDTH` Desired interface width, default is 800 (version >= 1.4)
-- `UI_HEIGHT` Desired interface height, default is 480 (version >= 1.4)
-- `PUMP_PINS` List of the RPi-Pins where each Pump is connected
-- `PUMP_VOLUMEFLOW` List of the according volume flow for each pump in ml/s
-- `MAKER_NUMBER_BOTTLES` Number of supported/displayed bottles. Currently, the UI is build for up to ten bottles
-- `MAKER_CLEAN_TIME` Time the machine will execute the cleaning program
-- `MAKER_SLEEP_TIME` Sleep interval between each UI refresh and check of conditions while generating a cocktail
-- `MICROSERVICE_ACTIVE` Boolean flag to post to microservice set up by docker (optional) (version >= 1.1)
-- `MICROSERVICE_BASE_URL` Base URL for microservice (if default docker it is at http://127.0.0.1:5000) (optional)
-- `TEAMS_ACTIVE` Boolean flag to use teams feature (version >= 1.2) (optional)
-- `TEAM_BUTTON_NAMES` List of format ["Team1", "Team2"] (optional)
-- `TEAM_API_URL` Endpoint of teams API, default used port by API is 8080 (optional)
+- `UI_DEVENVIRONMENT` (_bool_): Boolean flag to enable some development features
+- `UI_PARTYMODE` (_bool_): En- or disables the recipe tab (to prevent user interaction)
+- `UI_MASTERPASSWORD` (_str_): String for password, Use numbers for build in numpad like '1234'
+- `UI_LANGUAGE` (_str_): 2 char code for the language, see [supported languages](#supported-languages) (version >= 1.3)
+- `UI_WIDTH` (_int_): Desired interface width, default is 800 (version >= 1.4)
+- `UI_HEIGHT` (_int_): Desired interface height, default is 480 (version >= 1.4)
+- `PUMP_PINS` (_list[int]_): List of the RPi-Pins where each Pump is connected
+- `PUMP_VOLUMEFLOW` (_list[int]_): List of the according volume flow for each pump in ml/s
+- `MAKER_NUMBER_BOTTLES` (_int_): Number of supported/displayed bottles. Currently, the UI is build for up to ten bottles
+- `MAKER_CLEAN_TIME` (_int_): Time the machine will execute the cleaning program
+- `MAKER_SLEEP_TIME` (_float_): Sleep interval between each UI refresh and check of conditions while generating a cocktail
+- `MICROSERVICE_ACTIVE` (_bool_): Boolean flag to post to microservice set up by docker (optional) (version >= 1.1)
+- `MICROSERVICE_BASE_URL` (_str_): Base URL for microservice (if default docker it is at http://127.0.0.1:5000) (optional)
+- `TEAMS_ACTIVE` (_bool_): Boolean flag to use teams feature (version >= 1.2) (optional)
+- `TEAM_BUTTON_NAMES` (_list[str]_): List of format ["Team1", "Team2"] (optional)
+- `TEAM_API_URL` (_str_): Endpoint of teams API, default used port by API is 8080 (optional)
 
 In addition, there is a `Shared` config class within the `config/config_manager.py`, with dynamic values. The only thing you may want to change is `suppress_error` to `True`, this will activate a wrapper function, catching and logging errors of the wrapped function. In production this will effectively prevent the app from crashing due to errors (bugs) and log them, but setting it to `True` is at own risk.
 
