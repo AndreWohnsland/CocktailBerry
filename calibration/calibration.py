@@ -23,7 +23,7 @@ def activate_pins():
     for pin in pinvector:
         if not DEV:
             GPIO.setup(pin, GPIO.OUT)
-            GPIO.output(pin, 0)
+            GPIO.output(pin, 1)
 
 
 def starbutton_click():
