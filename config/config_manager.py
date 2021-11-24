@@ -22,9 +22,9 @@ class ConfigManager:
     UI_WIDTH = 800
     UI_HEIGHT = 480
     # RPi pins where pumps (ascending) are connected
-    PUMP_PINS = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 20]
+    PUMP_PINS = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
     # Volumeflow for the according pumps
-    PUMP_VOLUMEFLOW = [30, 30, 25, 30, 30, 30, 25, 30, 30, 23, 30, 30]
+    PUMP_VOLUMEFLOW = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
     # Number of bottles possible at the machine
     MAKER_NUMBER_BOTTLES = 10
     # Time in seconds to execute clean programm
@@ -68,7 +68,47 @@ class ConfigManager:
         with open(CONFIG_FILE, "r", encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
             for k, value in configuration.items():
+                self.__validate_config_type(k, value)
                 setattr(self, k, value)
+
+    def __validate_config_type(self, configname, configvalue):
+        config_type = {
+            "UI_DEVENVIRONMENT": bool,
+            "UI_PARTYMODE": bool,
+            "UI_MASTERPASSWORD": str,
+            "UI_LANGUAGE": str,
+            "UI_WIDTH": int,
+            "UI_HEIGHT": int,
+            "PUMP_PINS": list,
+            "PUMP_VOLUMEFLOW": list,
+            "MAKER_NUMBER_BOTTLES": int,
+            "MAKER_CLEAN_TIME": int,
+            "MAKER_SLEEP_TIME": float,
+            "MICROSERVICE_ACTIVE": bool,
+            "MICROSERVICE_BASE_URL": str,
+            "TEAMS_ACTIVE": bool,
+            "TEAM_BUTTON_NAMES": list,
+            "TEAM_API_URL": str,
+        }
+        datatype = config_type.get(configname)
+        if datatype is None:
+            return
+        if isinstance(configvalue, datatype):
+            if isinstance(configvalue, list):
+                self.__validate_config_list_type(configname, configvalue)
+            return
+        raise ValueError(f"The config option {configname} is not of type {datatype}")
+
+    def __validate_config_list_type(self, configname, configlist):
+        config_type = {
+            "PUMP_PINS": int,
+            "PUMP_VOLUMEFLOW": int,
+            "TEAM_BUTTON_NAMES": str,
+        }
+        datatype = config_type.get(configname)
+        for i, config in enumerate(configlist, 1):
+            if not isinstance(config, datatype):
+                raise ValueError(f"The {i} position of {configname} is not of type {datatype}")
 
 
 class Shared:
