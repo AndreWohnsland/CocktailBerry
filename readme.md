@@ -48,7 +48,7 @@
 - [Development](#development)
   - [Program Schema](#program-schema)
   - [Pull Requests and Issues](#pull-requests-and-issues)
-- [ToDos](#todos)
+- [Contributing Possibilities](#contributing-possibilities)
 
 <!-- /TOC -->
 
@@ -401,6 +401,11 @@ In the following diagram, the schema and Classes / Containers are displayed in a
 
 If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue.
 
-# ToDos
+# Contributing Possibilities
 
-- Convert from basic sqlite to SQLAlchemy
+To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md). Here is a general list of features or refacturing things, I may do in the future. With your help, these things come even faster!
+
+- `easy`: Translate all dialogs / UI to your native language
+- `medium`: Improve the multi-language concept by refactoring to language file with templates
+- `hard`: Use 'cocktail-class-object' for maker selection attributes and change triggers
+- `hard`: Use a ORM instead of default SQL language
