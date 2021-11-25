@@ -269,7 +269,7 @@ QLineEdit
            <widget class="QListWidget" name="LWMaker">
             <property name="maximumSize">
              <size>
-              <width>700</width>
+              <width>900</width>
               <height>1200</height>
              </size>
             </property>
@@ -362,7 +362,7 @@ QLineEdit
               </property>
               <property name="maximumSize">
                <size>
-                <width>400</width>
+                <width>600</width>
                 <height>50</height>
                </size>
               </property>
@@ -431,7 +431,7 @@ QLineEdit
             </property>
             <property name="maximumSize">
              <size>
-              <width>300</width>
+              <width>500</width>
               <height>80</height>
              </size>
             </property>
@@ -509,7 +509,7 @@ QLineEdit
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>300</width>
               <height>80</height>
              </size>
             </property>
@@ -563,7 +563,7 @@ QLineEdit
              <widget class="QLabel" name="LZutat6">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -589,7 +589,7 @@ QLineEdit
              <widget class="QLabel" name="LZutat3">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -615,7 +615,7 @@ QLineEdit
              <widget class="QLabel" name="LMZutat2">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -635,7 +635,7 @@ QLineEdit
              <widget class="QLabel" name="LZutat2">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -661,7 +661,7 @@ QLineEdit
              <widget class="QLabel" name="LMZutat5">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -681,7 +681,7 @@ QLineEdit
              <widget class="QLabel" name="LMZutat1">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -701,7 +701,7 @@ QLineEdit
              <widget class="QLabel" name="LZutat1">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -727,7 +727,7 @@ QLineEdit
              <widget class="QLabel" name="LMZutat4">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -747,7 +747,7 @@ QLineEdit
              <widget class="QLabel" name="LMZutat3">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -773,7 +773,7 @@ QLineEdit
               </property>
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>30</height>
                </size>
               </property>
@@ -796,7 +796,7 @@ QLineEdit
              <widget class="QLabel" name="LZutat4">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -822,7 +822,7 @@ QLineEdit
              <widget class="QLabel" name="LZutat9">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -848,7 +848,7 @@ QLineEdit
              <widget class="QLabel" name="LZutat7">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -874,7 +874,7 @@ QLineEdit
              <widget class="QLabel" name="LZutat8">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -900,7 +900,7 @@ QLineEdit
              <widget class="QLabel" name="LZutat5">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -926,7 +926,7 @@ QLineEdit
              <widget class="QLabel" name="LMZutat7">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -946,7 +946,7 @@ QLineEdit
              <widget class="QLabel" name="LMZutat6">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -966,7 +966,7 @@ QLineEdit
              <widget class="QLabel" name="LMZutat8">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -986,7 +986,7 @@ QLineEdit
              <widget class="QLabel" name="LMZutat9">
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>80</height>
                </size>
               </property>
@@ -1012,7 +1012,7 @@ QLineEdit
               </property>
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>400</width>
                 <height>30</height>
                </size>
               </property>
@@ -1035,7 +1035,7 @@ QLineEdit
              <widget class="QLabel" name="LAlkoholname">
               <property name="maximumSize">
                <size>
-                <width>600</width>
+                <width>900</width>
                 <height>35</height>
                </size>
               </property>

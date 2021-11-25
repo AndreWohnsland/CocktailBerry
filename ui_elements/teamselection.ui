@@ -83,7 +83,7 @@ QPushButton:checked {
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>100</height>
+       <height>150</height>
       </size>
      </property>
      <property name="font">
@@ -113,8 +113,8 @@ QPushButton:checked {
        </property>
        <property name="maximumSize">
         <size>
-         <width>450</width>
-         <height>16777215</height>
+         <width>1000</width>
+         <height>1000</height>
         </size>
        </property>
        <property name="font">
@@ -139,8 +139,8 @@ QPushButton:checked {
        </property>
        <property name="maximumSize">
         <size>
-         <width>450</width>
-         <height>16777215</height>
+         <width>1000</width>
+         <height>1000</height>
         </size>
        </property>
        <property name="font">
@@ -152,6 +152,9 @@ QPushButton:checked {
        </property>
        <property name="text">
         <string>Team #2</string>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

@@ -104,8 +104,8 @@ QPushButton:pressed
         </property>
         <property name="maximumSize">
          <size>
-          <width>330</width>
-          <height>16777215</height>
+          <width>800</width>
+          <height>200</height>
          </size>
         </property>
         <property name="font">
@@ -124,7 +124,7 @@ QPushButton:pressed
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_2">
+       <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -146,8 +146,8 @@ QPushButton:pressed
         </property>
         <property name="maximumSize">
          <size>
-          <width>330</width>
-          <height>16777215</height>
+          <width>800</width>
+          <height>200</height>
          </size>
         </property>
         <property name="font">
@@ -171,6 +171,12 @@ QPushButton:pressed
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QListWidget" name="LWVorhanden">
+        <property name="maximumSize">
+         <size>
+          <width>1000</width>
+          <height>1000</height>
+         </size>
+        </property>
         <property name="font">
          <font>
           <pointsize>20</pointsize>
@@ -232,7 +238,7 @@ QPushButton:pressed
           <property name="maximumSize">
            <size>
             <width>200</width>
-            <height>200</height>
+            <height>600</height>
            </size>
           </property>
           <property name="font">
@@ -258,7 +264,7 @@ QPushButton:pressed
           <property name="maximumSize">
            <size>
             <width>200</width>
-            <height>200</height>
+            <height>600</height>
            </size>
           </property>
           <property name="font">
@@ -277,6 +283,12 @@ QPushButton:pressed
       </item>
       <item>
        <widget class="QListWidget" name="LWAlle">
+        <property name="maximumSize">
+         <size>
+          <width>1000</width>
+          <height>1000</height>
+         </size>
+        </property>
         <property name="font">
          <font>
           <pointsize>20</pointsize>
@@ -339,8 +351,8 @@ QPushButton:pressed
         </property>
         <property name="maximumSize">
          <size>
-          <width>340</width>
-          <height>16777215</height>
+          <width>800</width>
+          <height>200</height>
          </size>
         </property>
         <property name="font">
@@ -356,7 +368,7 @@ QPushButton:pressed
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
+       <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -378,8 +390,8 @@ QPushButton:pressed
         </property>
         <property name="maximumSize">
          <size>
-          <width>340</width>
-          <height>16777215</height>
+          <width>800</width>
+          <height>200</height>
          </size>
         </property>
         <property name="font">
