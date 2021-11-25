@@ -408,4 +408,4 @@ To get started, have a quick look into the [Guidelines for contributing](./CONTR
 - `easy`: Translate all dialogs / UI to your native language
 - `medium`: Improve the multi-language concept by refactoring to language file with templates
 - `hard`: Use 'cocktail-class-object' for maker selection attributes and change triggers
-- `hard`: Use a ORM instead of default SQL language
+- `hard`: Use an ORM instead of default SQL language
