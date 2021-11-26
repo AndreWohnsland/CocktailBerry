@@ -31,6 +31,7 @@
   - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
   - [Calibration of the Pumps](#calibration-of-the-pumps)
   - [Cleaning the Maker](#cleaning-the-maker)
+  - [Possible Ingredient SetUp](#possible-ingredient-setup)
 - [Supported Languages](#supported-languages)
 - [Advanced Topics](#advanced-topics)
   - [Microservices](#microservices)
@@ -240,6 +241,31 @@ Vnew = Vold \* expectation/output
 ## Cleaning the Maker
 
 The maker has a build in cleaning function for cleaning at the end of a party. You will find the feature under the `Bottles` tab. To start the cleaning process, the master password is needed to prevent unwanted cleaning attempts. The maker will then go to cleaning mode for the defined time within the config (default is 20 seconds). A message prompt will inform the user to provide enough water for the cleaning process. I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water and then running twice times again the cleaning program to fully clean all pumps from remaining fluid.
+
+## Possible Ingredient SetUp
+
+If you are unsure, which ingredients you may need or want to connect to the maker, here is a quick suggestion. You don't need to use all ten slot, but the more you use, the more recipes will be possible:
+
+- Vodka
+- White Rum
+- Brown Rum
+- Orange Juice
+- Passion Fruit Juice
+- Pineapple Juice
+- `optional` Gin
+- `optional` Malibu
+- `optional` Tequila
+- `optional` Grapefruit Juice
+
+In addition, there are some ingredients I would recommend not adding via the maker but by hand, the most important additional ingredients will be:
+
+- Soft Drinks (Cola, Fanta, Sprite)
+- Grenadine Syrup
+- Blue Curaçao
+- Lemon Juice (just a little, you can also use fresh lemons)
+- `optional` Cointreau (you may just not add it if not desired)
+
+With this as your base set up, even if not using the optional ingredients, your maker will be able to do plenty of different cocktails.
 
 # Supported Languages
 
