@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from pywaffle import Waffle
 
 DIRPATH = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(DIRPATH, ".language.env"))
+load_dotenv(os.path.join(DIRPATH, ".env"))
 matplotlib.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 

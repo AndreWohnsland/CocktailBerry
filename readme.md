@@ -296,7 +296,7 @@ With `version 1.2`, there is a team feature implemented into the maker. If enabl
 
 <img src="docs/pictures/dashboard.png" alt="Maker" width="600"/>
 
-The recommended way is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before, you should install the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to set up docker-compose in general. The language can be set within the `.language.env`, codes identical to [supported languages](#supported-languages).
+The recommended way is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before, you should install the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to set up docker-compose in general. The language can be set within the `.env` file, codes identical to [supported languages](#supported-languages). Just copy the `.env.example` file, rename the copy to `.env` and set your desired language.
 
 A second option is to use the `docker-compose.both.yaml` file with the docker-compose `--file` option. This will build up the backend API, as well as a Streamlit frontend Web App. Streamlit is using pyarrow, which the Raspberry Pi 3 (Armv7 Architecture) seems not be able to build without any tweaks. On other architectures (like x86) the container could be build without any problems. If these things confuse you, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
 
