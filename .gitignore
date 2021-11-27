@@ -11,3 +11,5 @@ team.db
 Cocktail_database.db
 failed_data.db
 custom_config.*
+# some testing files
+tmp_*
