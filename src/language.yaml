@@ -1,0 +1,234 @@
+# Language file to have a lookup for different supported language
+# Implement new languages here, please use two digits country code
+# Try to implement for each option the according language
+# identical to the existing structure
+# Template variables (indicated with {variable_name}) should use IDENTICAL names and brackets!
+
+##### GENERIC POP UP DIALOGS #####
+# All for dialog windows
+dialog:
+  box:
+    title:
+      en: 'Information'
+      de: 'Information'
+  wrong_password:
+    en: 'Wrong Password!'
+    de: 'Falsches Passwort!'
+  supply_water:
+    en: 'Machine will be cleaned, please provide enough water. OK to continue.'
+    de: 'Maschine wird gereinigt, genug Wasser bereitstellen! OK zum Fortfahren.'
+  done:
+    en: 'Done!'
+    de: 'Fertig!'
+  bottles_renewed:
+    en: 'Renewed selected bottles!'
+    de: 'Ausgewählte Flaschen erneuert!'
+  no_recipe_selected:
+    en: 'No recipe selected!'
+    de: 'Kein Rezept ausgewählt!'
+  no_ingredient_selected:
+    en: 'No ingredient selected!'
+    de: 'Keine Zutat ausgewählt!'
+  ingredient_still_at_bottle:
+    en: 'Error, the ingredient is still used at a bottle!'
+    de: 'Fehler, die Zutat ist noch in der Belegung registriert!'
+  ingredient_still_at_recipe:
+    en: "Recipe can not be deleted, it is still used at:\n<{recipe_string}>"
+    de: "Zutat kann nicht gelöscht werden, da sie in:\n<{recipe_string}>\ngenutzt wird"
+  ingredient_double_usage:
+    en: "One of the ingredient\n<{ingredient_name}>\nwas used multiple times!"
+    de: "Eine der Zutaten:\n<{ingredient_name}>\nwurde doppelt verwendet!"
+  ingredient_deleted:
+    en: "Ingredient:\n<{ingredient_name}>\ndeleted"
+    de: "Zutat mit dem Namen:\n<{ingredient_name}>\ngelöscht!"
+  ingredient_added:
+    en: "Ingredient\n<{ingredient_name}>\nentered"
+    de: "Zutat mit dem Namen:\n<{ingredient_name}>\neingetragen"
+  ingredient_changed:
+    en: "Ingredient\n<{selected_ingredient}>\nwas updated to\n<{ingredient_name}>"
+    de: "Zutat mit dem Namen:\n<{selected_ingredient}>\nunter\n<{ingredient_name}>\naktualisiert"
+  cocktail_canceled:
+    en: 'The cocktail was cancelled!'
+    de: 'Der Cocktail wurde abgebrochen!'
+  cocktail_ready:
+    en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
+    de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{full_comment}'
+  cocktail_ready_add:
+    en: 'Also add:'
+    de: 'Noch hinzufügen:'
+  enter_cocktailname:
+    en: 'Please enter cocktail name!'
+    de: 'Bitte Cocktailnamen eingeben!'
+  recipe_deleted:
+    en: "Recipe\n<{recipe_name}>\nwas deleted"
+    de: "Rezept mit dem Namen\n<{recipe_name}>\nwurde gelöscht!"
+  all_recipes_enabled:
+    en: 'All recipes are set to active!'
+    de: 'Alle Rezepte wurden wieder aktiv gesetzt!'
+  recipe_added:
+    en: "Recipe\n<{recipe_name}>\nwas added!"
+    de: "Rezept unter dem Namen:\n<{recipe_name}>\neingetragen!"
+  recipe_updated:
+    en: "Recipe\n<{old_name}>\nupdated to\n<{new_name}>"
+    de: "Rezept mit dem Namen:\n<{old_name}>\nunter dem Namen:\n<{new_name}>\naktualisiert!"
+  recipe_at_least_one_ingredient:
+    en: 'You need to use at least one ingredient!'
+    de: 'Es muss mindestens eine Zutat eingetragen sein!'
+  all_data_exported:
+    en: 'All data was exported and amount was reset!'
+    de: 'Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!'
+  not_enough_ingredient_volume:
+    en: '{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left.'
+    de: '{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden.'
+  name_already_exists:
+    en: 'This name is already used!'
+    de: 'Dieser Name wurde bereits verwendet!'
+  some_value_missing:
+    en: 'At least one value is missing!'
+    de: 'Irgendwo ist ein Wert vergessen worden!'
+  some_value_missing_specific:
+    en: '{value} is missing!'
+    de: '{value} wurde vergessen!'
+  needs_to_be_int:
+    en: 'Wrong value for a number field!'
+    de: 'Falscher Wert für ein Zahlenfeld'
+  needs_to_be_int_specific:
+    en: '{value} needs to be a number!'
+    de: '{value} muss eine ganze Zahl sein!'
+  alcohollevel_max_limit:
+    en: 'Alcohol level cann not exceed 100 percent!'
+    de: 'Alkoholgehalt kann nicht größer als 100 Prozent sein!'
+
+# Change of language in UI elements
+ui:
+  # Some commonly used elements within multiple windows
+  cancel_button:
+    en: 'Cancel'
+    de: 'Abbrechen'
+  enter_button:
+    en: 'Enter'
+    de: 'Eintragen'
+
+  # dynamic values for maker tab
+  maker:
+    add_self:
+      en: 'Add by hand:'
+      de: 'Selbst hinzufügen:'
+    cocktail_dummy:
+      en: 'Choose Cocktail'
+      de: 'Cocktail aussuchen'
+
+  ##### MAIN WINDOW #####
+  # all values for main window
+  main_window:
+    prepare_button:
+      en: 'Prepare'
+      de: 'Zubereiten'
+    tab_names:
+      en:
+        - 'Maker'
+        - 'Ingredients'
+        - 'Recipes'
+        - 'Bottles'
+      de:
+        - 'Maker'
+        - 'Zutaten'
+        - 'Rezepte'
+        - 'Flaschen'
+    ingredient_label:
+      en: 'Ingredient'
+      de: 'Zutat'
+    alcohol_level_label:
+      en: 'Alcohol (in %)'
+      de: 'Alkoholgehalt (in %)'
+    bottle_volume_label:
+      en: 'Bottle Volume (ml)'
+      de: 'Flaschenvolumen (ml)'
+    single_ingredient_button:
+      en: 'Spend single ingredient'
+      de: 'Einzelne Zutat Ausgeben'
+    handadd_check_label:
+      en: 'Only add self by hand'
+      de: 'Nur selbst hinzufügen'
+    available_button:
+      en: 'available'
+      de: 'verfügbar'
+    change_button:
+      en: 'change'
+      de: 'ändern'
+    add_button:
+      en: 'add'
+      de: 'hinzufügen'
+    hand_add_label:
+      en: 'Add self by hand:'
+      de: 'Selbst hinzufügen:'
+    renew_button:
+      en: 'apply new bottles'
+      de: 'neue Flaschen anwenden'
+
+  ##### AVAILABLE WINDOW #####
+  # all values for available window
+  available_window:
+    available_label:
+      en: 'Available'
+      de: 'Vorhanden'
+    possible_label:
+      en: 'Possible'
+      de: 'Möglich'
+
+  ##### HANDSADD WINDOW #####
+  # all values for handsadd window
+  handadds_window:
+    title:
+      en: 'Ingredients for hand add'
+      de: 'Zutaten selbst hinzufügen'
+
+  ##### PROCESS SCREEN #####
+  # all values for process screen
+  progress_screen:
+    cancel_label:
+      en: 'The Cocktail can also be canceled'
+      de: 'Der Coktail kann auch abgebrochen werden'
+    progress_label:
+      en: 'Progress:'
+      de: 'Fortschritt:'
+    header_label:
+      en: '{cocktail_type} is being prepared!'
+      de: '{cocktail_type} wird zubereitet!'
+
+  ##### BONUSINGREDIENT SCREEN #####
+  # all values for bonusingredient screen
+  bonusingredient_screen:
+    spend_button:
+      en: 'Spend'
+      de: 'Ausgeben'
+    title:
+      en: 'Select output ingredient'
+      de: 'Zutatenausgabe auswählen'
+
+  ##### BOTTLE WINDOW #####
+  # all values for bottle window
+  bottle_window:
+    header:
+      en: 'Select/change level of bottles'
+      de: 'Füllstand der Flaschen auswählen/ändern'
+
+  ##### TEAM WINDOW #####
+  # all values for team window
+  team_window:
+    header:
+      en: 'Select your Team'
+      de: 'Team auswählen'
+
+  ##### PASSWORD WINDOW #####
+  # all values for tepasswordam window
+  password_window:
+    password:
+      en: 'Enter password!'
+      de: 'Passwort eingeben!'
+    amount:
+      en: 'Enter amount!'
+      de: 'Menge eingeben!'
+    alcohol:
+      en: 'Enter alcohol!'
+      de: 'Alkoholgehalt eingeben!'
