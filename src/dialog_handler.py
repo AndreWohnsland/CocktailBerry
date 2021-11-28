@@ -1,9 +1,10 @@
 import os
 from typing import List, Union
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMessageBox
+import yaml
 from config.config_manager import ConfigManager
+
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
+LANGUAGE_FILE = os.path.join(DIRPATH, "language.yaml")
 
 
 class DialogHandler(ConfigManager):
@@ -11,46 +12,21 @@ class DialogHandler(ConfigManager):
 
     def __init__(self) -> None:
         super().__init__()
-        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                      "..", "ui_elements", "Cocktail-icon.png")
+        self.icon_path = os.path.join(DIRPATH, "..", "ui_elements", "Cocktail-icon.png")
+        with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
+            self.dialogs = yaml.safe_load(stream)["dialog"]
 
-    def __choose_language(self, element: dict) -> str:
+    def __choose_language(self, element: dict, **kwargs) -> str:
         language = self.UI_LANGUAGE
-        return element.get(language, element["en"])
-
-    def standard_box_qt(self, textstring, title=None):
-        """ The default messagebox for the Maker. Uses a QMessageBox with OK-Button """
-        default_title = {
-            "en": "Information",
-            "de": "Information",
-        }
-        if title is None:
-            title = self.__choose_language(default_title)
-        messagebox = QMessageBox()
-        messagebox.setWindowIcon(QIcon(self.icon_path))
-        messagebox.setWindowFlags(Qt.Dialog | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
-        messagebox.setWindowTitle(title)
-        messagebox.setStandardButtons(QMessageBox.Ok)
-        buttonok = messagebox.button(QMessageBox.Ok)
-        buttonok.setText("     OK     ")
-        fillstring = "-" * 70
-        messagebox.setText(f"{fillstring}\n{textstring}\n{fillstring}")
-        messagebox.setStyleSheet(
-            "QMessageBox QPushButton{background-color: rgb(0, 123, 255); color: rgb(0, 0, 0); font-size: 30pt;} QMessageBox{background-color: rgb(10, 10, 10); font-size: 16pt;} QMessageBox QLabel{color: rgb(0, 123, 255);}"
-        )
-        # messagebox.showFullScreen()
-        messagebox.move(0, 0)
-        messagebox.exec_()
+        tmpl = element.get(language, element["en"])
+        return tmpl.format(**kwargs)
 
     def standard_box(self, message, title=None):
         """ The default messagebox for the Maker. Uses a Custom QDialog with Close-Button """
         # otherwise circular import :(
         # pylint: disable=import-outside-toplevel
         from src_ui.setup_custom_dialog import CustomDialog
-        default_title = {
-            "en": "Information",
-            "de": "Information",
-        }
+        default_title = self.dialogs["box"]["title"]
         if title is None:
             title = self.__choose_language(default_title)
         fillstring = "-" * 70
@@ -58,96 +34,52 @@ class DialogHandler(ConfigManager):
         messagebox = CustomDialog(fancy_message, title, self.icon_path)
         messagebox.exec_()
 
-    def __output_language_dialog(self, options: dict):
-        msg = self.__choose_language(options)
+    def __output_language_dialog(self, options: dict, **kwargs):
+        msg = self.__choose_language(options, **kwargs)
         self.standard_box(msg)
 
     ############################
     # Methods for creating msg #
     ############################
     def say_wrong_password(self):
-        options = {
-            "en": "Wrong Password!",
-            "de": "Falsches Passwort!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["wrong_password"])
 
     def say_supply_water(self):
-        options = {
-            "en": "Machine will be cleaned, please provide enough water. OK to continue.",
-            "de": "Maschine wird gereinigt, genug Wasser bereitstellen! OK zum Fortfahren.",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["supply_water"])
 
     def say_done(self):
-        options = {
-            "en": "Done!",
-            "de": "Fertig!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["done"])
 
     def say_bottles_renewed(self):
-        options = {
-            "en": "Renewed selected bottles!",
-            "de": "Ausgewählte Flaschen erneuert!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["bottles_renewed"])
 
     def say_no_recipe_selected(self):
-        options = {
-            "en": "No recipe selected!",
-            "de": "Kein Rezept ausgewählt!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["no_recipe_selected"])
 
     def say_no_ingredient_selected(self):
-        options = {
-            "en": "No ingredient selected!",
-            "de": "Keine Zutat ausgewählt!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["no_ingredient_selected"])
 
     def say_ingredient_still_at_bottle(self):
-        options = {
-            "en": "Error, the ingredient is still used at a bottle!",
-            "de": "Fehler, die Zutat ist noch in der Belegung registriert!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["ingredient_still_at_bottle"])
 
     def say_ingredient_still_at_recipe(self, recipe_string: str):
-        options = {
-            "en": f"Recipe can't be deleted, it is still used at:\n<{recipe_string}>",
-            "de": f"Zutat kann nicht gelöscht werden, da sie in:\n<{recipe_string}>\ngenutzt wird!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["ingredient_still_at_recipe"], recipe_string=recipe_string)
 
     def say_ingredient_double_usage(self, ingredient_name: str):
-        options = {
-            "en": f"One of the ingredient\n<{ingredient_name}>\nwas used multiple times!",
-            "de": f"Eine der Zutaten:\n<{ingredient_name}>\nwurde doppelt verwendet!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["ingredient_double_usage"], ingredient_name=ingredient_name)
 
     def say_ingredient_deleted(self, ingredient_name: str):
-        options = {
-            "en": f"Ingredient:\n<{ingredient_name}>\ndeleted",
-            "de": f"Zutat mit dem Namen:\n<{ingredient_name}>\ngelöscht!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["ingredient_deleted"], ingredient_name=ingredient_name)
 
     def __say_ingredient_added(self, ingredient_name: str):
-        options = {
-            "en": f"Ingredient\n<{ingredient_name}>\nentered",
-            "de": f"Zutat mit dem Namen:\n<{ingredient_name}>\neingetragen",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["ingredient_added"], ingredient_name=ingredient_name)
 
     def __say_ingredient_changed(self, selected_ingredient: str, ingredient_name: str):
-        options = {
-            "en": f"Ingredient\n<{selected_ingredient}>\nwas updated to\n<{ingredient_name}>",
-            "de": f"Zutat mit dem Namen:\n<{selected_ingredient}>\nunter\n<{ingredient_name}>\naktualisiert",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(
+            self.dialogs["ingredient_changed"],
+            selected_ingredient=selected_ingredient,
+            ingredient_name=ingredient_name
+        )
 
     def say_ingredient_added_or_changed(self, ingredient_name: str, new_ingredient: bool, selected_ingredient: str = None):
         if new_ingredient:
@@ -156,124 +88,61 @@ class DialogHandler(ConfigManager):
             self.__say_ingredient_changed(selected_ingredient, ingredient_name)
 
     def say_cocktail_canceled(self):
-        options = {
-            "en": "The cocktail was cancelled!",
-            "de": "Der Cocktail wurde abgebrochen!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["cocktail_canceled"])
 
     def say_cocktail_ready(self, comment: str):
-        options_comment = {
-            "en": "Also add:",
-            "de": "Noch hinzufügen:",
-        }
         full_comment = ""
         if comment:
-            header_comment = self.__choose_language(options_comment)
+            header_comment = self.__choose_language(self.dialogs["cocktail_ready_add"])
             full_comment = f"\n\n{header_comment}{comment}"
-        options = {
-            "en": f"The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}",
-            "de": f"Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{full_comment}",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["cocktail_ready"], full_comment=full_comment)
 
     def say_enter_cocktailname(self):
-        options = {
-            "en": "Please enter cocktail name!",
-            "de": "Bitte Cocktailnamen eingeben!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["enter_cocktailname"])
 
     def say_recipe_deleted(self, recipe_name: str):
-        options = {
-            "en": f"Recipe\n<{recipe_name}>\nwas deleted",
-            "de": f"Rezept mit dem Namen\n<{recipe_name}>\nwurde gelöscht!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["recipe_deleted"], recipe_name=recipe_name)
 
     def say_all_recipes_enabled(self):
-        options = {
-            "en": "All recipes are set to active!",
-            "de": "Alle Rezepte wurden wieder aktiv gesetzt!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["all_recipes_enabled"])
 
     def say_recipe_added(self, recipe_name: str):
-        options = {
-            "en": f"Recipe\n<{recipe_name}>\nwas added!",
-            "de": f"Rezept unter dem Namen:\n<{recipe_name}>\neingetragen!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["recipe_added"], recipe_name=recipe_name)
 
     def say_recipe_updated(self, old_name: str, new_name: str):
-        options = {
-            "en": f"Recipe\n<{old_name}>\nupdated to\n<{new_name}>",
-            "de": f"Rezept mit dem Namen:\n<{old_name}>\nunter dem Namen:\n<{new_name}>\naktualisiert!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["recipe_updated"], old_name=old_name, new_name=new_name)
 
     def say_recipe_at_least_one_ingredient(self):
-        options = {
-            "en": "You need to use at least one ingredient!",
-            "de": "Es muss mindestens eine Zutat eingetragen sein!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["recipe_at_least_one_ingredient"])
 
     def say_all_data_exported(self):
-        options = {
-            "en": "All data was exported and amount was reset!",
-            "de": "Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["all_data_exported"])
 
     def say_not_enough_ingredient_volume(self, ingredient_name: str, level: int, volume: int):
-        options = {
-            "en": f"{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left.",
-            "de": f"{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden.",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(
+            self.dialogs["not_enough_ingredient_volume"],
+            ingredient_name=ingredient_name,
+            volume=volume,
+            level=level
+        )
 
     def say_name_already_exists(self):
-        options = {
-            "en": "This name is already used!",
-            "de": "Dieser Name wurde bereits verwendet!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["name_already_exists"])
 
     def say_some_value_missing(self, value: str = None):
-        options_default = {
-            "en": "At least one value is missing!",
-            "de": "Irgendwo ist ein Wert vergessen worden!",
-        }
-        options_specific = {
-            "en": f"{value} is missing!",
-            "de": f"{value} wurde vergessen!",
-        }
         if value is None:
-            self.__output_language_dialog(options_default)
+            self.__output_language_dialog(self.dialogs["some_value_missing"])
         else:
-            self.__output_language_dialog(options_specific)
+            self.__output_language_dialog(self.dialogs["some_value_missing_specific"], value=value)
 
     def say_needs_to_be_int(self, value: str = None):
-        options_default = {
-            "en": "Wrong value for a number field!",
-            "de": "Falscher Wert für ein Zahlenfeld!",
-        }
-        options_specific = {
-            "en": f"{value} needs to be a number!",
-            "de": f"{value} muss eine ganze Zahl sein!",
-        }
         if value is None:
-            self.__output_language_dialog(options_default)
+            self.__output_language_dialog(self.dialogs["needs_to_be_int"])
         else:
-            self.__output_language_dialog(options_specific)
+            self.__output_language_dialog(self.dialogs["needs_to_be_int_specific"], value=value)
 
     def say_alcohollevel_max_limit(self):
-        options = {
-            "en": "Alcohol level can't exceed 100 percent!",
-            "de": "Alkoholgehalt kann nicht größer als 100 Prozent sein!",
-        }
-        self.__output_language_dialog(options)
+        self.__output_language_dialog(self.dialogs["alcohollevel_max_limit"])
 
 
 class UiLanguage(ConfigManager):
@@ -287,200 +156,95 @@ class UiLanguage(ConfigManager):
         "de": "Eintragen",
     }
 
-    def __choose_language(self, element: dict) -> Union[str, List[str]]:
+    def __init__(self) -> None:
+        super().__init__()
+        with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
+            self.dialogs = yaml.safe_load(stream)["ui"]
+
+    def __choose_language(self, element: dict, **kwargs) -> Union[str, List[str]]:
         language = self.UI_LANGUAGE
-        return element.get(language, element["en"])
+        tmpl = element.get(language, element["en"])
+        # Return the list and not apply template!
+        if isinstance(tmpl, list):
+            return tmpl
+        return tmpl.format(**kwargs)
 
     def get_add_self(self) -> str:
-        options = {
-            "en": "Add by hand:",
-            "de": "Selbst hinzufügen:"
-        }
-        return self.__choose_language(options)
-
-    def get_volume_for_dynamic(self, value: int) -> str:
-        options = {
-            "en": f"Volume: {value} ml",
-            "de": f"Menge: {value} ml",
-        }
-        return self.__choose_language(options)
-
-    def get_volpc_for_dynamic(self, value: float) -> str:
-        options = {
-            "en": f"{value:.0f}% alcohol",
-            "de": f"{value:.0f}% Alkohol",
-        }
-        return self.__choose_language(options)
+        return self.__choose_language(self.dialogs["maker"]["add_self"])
 
     def get_cocktail_dummy(self) -> str:
-        options = {
-            "en": "Choose Cocktail",
-            "de": "Cocktail aussuchen",
-        }
-        return self.__choose_language(options)
+        return self.__choose_language(self.dialogs["maker"]["cocktail_dummy"])
 
     def adjust_mainwindow(self, w):
-        prepare_button = {
-            "en": "Prepare",
-            "de": "Zubereiten",
-        }
-        tab_names = {
-            "en": ["Maker", "Ingredients", "Recipes", "Bottles"],
-            "de": ["Maker", "Zutaten", "Rezepte", "Flaschen"],
-        }
-        ingredient_label = {
-            "en": "Ingredient",
-            "de": "Zutat",
-        }
-        alcohol_level_label = {
-            "en": "Alcohol (in %)",
-            "de": "Alkoholgehalt (in %)",
-        }
-        bottle_volume_label = {
-            "en": "Bottle Volume (ml)",
-            "de": "Flaschenvolumen (ml)",
-        }
-        single_ingredient_button = {
-            "en": "Spend single ingredient",
-            "de": "Einzelne Zutat Ausgeben",
-        }
-        handadd_check_label = {
-            "en": "Only add self by hand",
-            "de": "Nur selbst hinzufügen",
-        }
-        available_button = {
-            "en": "available",
-            "de": "verfügbar",
-        }
-        change_button = {
-            "en": "change",
-            "de": "ändern",
-        }
-        add_button = {
-            "en": "add",
-            "de": "hinzufügen",
-        }
-        hand_add_label = {
-            "en": "Add self by hand:",
-            "de": "Selbst hinzufügen:",
-        }
-        renew_button = {
-            "en": "apply new bottles",
-            "de": "neue Flaschen anwenden",
-        }
-        w.PBZubereiten_custom.setText(self.__choose_language(prepare_button))
-        tabs = self.__choose_language(tab_names)
+        window = self.dialogs["main_window"]
+        w.PBZubereiten_custom.setText(self.__choose_language(window["prepare_button"]))
+        tabs = self.__choose_language(window["tab_names"])
         for i, text in enumerate(tabs):
             w.tabWidget.setTabText(i, text)
-        w.PBZeinzelnd.setText(self.__choose_language(single_ingredient_button))
-        w.PBAvailable.setText(self.__choose_language(available_button))
-        w.PBZaktualisieren.setText(self.__choose_language(change_button))
-        w.PBZutathinzu.setText(self.__choose_language(add_button))
-        w.CHBHand.setText(self.__choose_language(handadd_check_label))
-        w.LIngredient.setText(self.__choose_language(ingredient_label))
-        w.LAlcoholLevel.setText(self.__choose_language(alcohol_level_label))
-        w.LBottleVolume.setText(self.__choose_language(bottle_volume_label))
+        w.PBZeinzelnd.setText(self.__choose_language(window["single_ingredient_button"]))
+        w.PBAvailable.setText(self.__choose_language(window["available_button"]))
+        w.PBZaktualisieren.setText(self.__choose_language(window["change_button"]))
+        w.PBZutathinzu.setText(self.__choose_language(window["add_button"]))
+        w.CHBHand.setText(self.__choose_language(window["handadd_check_label"]))
+        w.LIngredient.setText(self.__choose_language(window["ingredient_label"]))
+        w.LAlcoholLevel.setText(self.__choose_language(window["alcohol_level_label"]))
+        w.LBottleVolume.setText(self.__choose_language(window["bottle_volume_label"]))
 
-        w.LRHandAdd.setText(self.__choose_language(hand_add_label))
-        w.PBRezeptaktualisieren.setText(self.__choose_language(change_button))
-        w.PBRezepthinzu.setText(self.__choose_language(add_button))
+        w.LRHandAdd.setText(self.__choose_language(window["hand_add_label"]))
+        w.PBRezeptaktualisieren.setText(self.__choose_language(window["change_button"]))
+        w.PBRezepthinzu.setText(self.__choose_language(window["add_button"]))
 
-        w.PBBelegung.setText(self.__choose_language(change_button))
-        w.PBFlanwenden.setText(self.__choose_language(renew_button))
+        w.PBBelegung.setText(self.__choose_language(window["change_button"]))
+        w.PBFlanwenden.setText(self.__choose_language(window["renew_button"]))
 
     def adjust_available_windos(self, w):
-        available_label = {
-            "en": "Available",
-            "de": "Vorhanden",
-        }
-        possible_label = {
-            "en": "Possible",
-            "de": "Möglich",
-        }
-        w.PBAbbruch_2.setText(self.__choose_language(self.cancel_button))
-        w.LAvailable.setText(self.__choose_language(available_label))
-        w.LPossible.setText(self.__choose_language(possible_label))
+        window = self.dialogs["available_window"]
+        w.PBAbbruch_2.setText(self.__choose_language(self.dialogs["cancel_button"]))
+        w.LAvailable.setText(self.__choose_language(window["available_label"]))
+        w.LPossible.setText(self.__choose_language(window["possible_label"]))
 
     def adjust_handadds_window(self, w):
-        title = {
-            "en": "Ingredients for hand add",
-            "de": "Zutaten selbst hinzufügen",
-        }
-        w.PBAbbrechen.setText(self.__choose_language(self.cancel_button))
-        w.PBEintragen.setText(self.__choose_language(self.enter_button))
-        w.LHeader.setText(self.__choose_language(title))
-        w.setWindowTitle(self.__choose_language(title))
+        window = self.dialogs["handadds_window"]
+        w.PBAbbrechen.setText(self.__choose_language(self.dialogs["cancel_button"]))
+        w.PBEintragen.setText(self.__choose_language(self.dialogs["enter_button"]))
+        w.LHeader.setText(self.__choose_language(window["title"]))
+        w.setWindowTitle(self.__choose_language(window["title"]))
 
     def adjust_progress_screen(self, w, cocktail_type: str):
-        cancel_label = {
-            "en": "The Cocktail can also be canceled",
-            "de": "Der Vorgang kann auch abgebrochen werden",
-        }
-        progress_label = {
-            "en": "Progress:",
-            "de": "Fortschritt:",
-        }
-        header_label = {
-            "en": f"{cocktail_type} is being prepared!",
-            "de": f"{cocktail_type} wird zubereitet!",
-        }
-        w.PBabbrechen.setText(self.__choose_language(self.cancel_button))
-        w.Labbruch.setText(self.__choose_language(cancel_label))
-        w.LProgress.setText(self.__choose_language(progress_label))
-        w.LHeader.setText(self.__choose_language(header_label))
+        window = self.dialogs["progress_screen"]
+        w.PBabbrechen.setText(self.__choose_language(self.dialogs["cancel_button"]))
+        w.Labbruch.setText(self.__choose_language(window["cancel_label"]))
+        w.LProgress.setText(self.__choose_language(window["progress_label"]))
+        w.LHeader.setText(self.__choose_language(window["header_label"], cocktail_type=cocktail_type))
 
     def adjust_bonusingredient_screen(self, w):
-        spend_button = {
-            "en": "Spend",
-            "de": "Ausgeben",
-        }
-        title = {
-            "en": "Select output ingredient",
-            "de": "Zutatenausgabe auswählen",
-        }
-        w.PBAbbrechen.setText(self.__choose_language(self.cancel_button))
-        w.PBAusgeben.setText(self.__choose_language(spend_button))
-        w.LHeader.setText(self.__choose_language(title))
-        w.setWindowTitle(self.__choose_language(title))
+        window = self.dialogs["bonusingredient_screen"]
+        w.PBAbbrechen.setText(self.__choose_language(self.dialogs["cancel_button"]))
+        w.PBAusgeben.setText(self.__choose_language(window["spend_button"]))
+        w.LHeader.setText(self.__choose_language(window["title"]))
+        w.setWindowTitle(self.__choose_language(window["title"]))
 
     def adjust_bottle_window(self, w):
-        header = {
-            "en": "Select/change level of bottles",
-            "de": "Füllstand der Flaschen auswählen/ändern",
-        }
-        w.PBAbbrechen.setText(self.__choose_language(self.cancel_button))
-        w.PBEintragen.setText(self.__choose_language(self.enter_button))
-        w.LHeader.setText(self.__choose_language(header))
+        window = self.dialogs["bottle_window"]
+        w.PBAbbrechen.setText(self.__choose_language(self.dialogs["cancel_button"]))
+        w.PBEintragen.setText(self.__choose_language(self.dialogs["enter_button"]))
+        w.LHeader.setText(self.__choose_language(window["header"]))
 
     def adjust_team_window(self, w):
-        header = {
-            "en": "Select your Team",
-            "de": "Team auswählen",
-        }
-        w.LHeader.setText(self.__choose_language(header))
+        window = self.dialogs["team_window"]
+        w.LHeader.setText(self.__choose_language(window["header"]))
 
     def generate_password_header(self, headertype: str = "password") -> str:
         """Selects the header of the passwordwindow.
         headertype: 'password', 'amount', 'alcohol'
         """
-        password = {
-            "en": "Enter password!",
-            "de": "Passwort eingeben!",
-        }
-        amount = {
-            "en": "Enter amount!",
-            "de": "Menge eingeben!",
-        }
-        alcohol = {
-            "en": "Enter alcohol!",
-            "de": "Alkoholgehalt eingeben!",
-        }
+        window = self.dialogs["password_window"]
         if headertype == "password":
-            return self.__choose_language(password)
+            return self.__choose_language(window["password"])
         if headertype == "amount":
-            return self.__choose_language(amount)
+            return self.__choose_language(window["amount"])
         if headertype == "alcohol":
-            return self.__choose_language(alcohol)
+            return self.__choose_language(window["alcohol"])
         raise ValueError("Currently not possible")
 
 
