@@ -310,7 +310,7 @@ class DisplayController(DialogHandler):
                 field_volume.setText(f" {volume} ml")
             if ingredient_name == "HEADER":
                 ingredient_name = UI_LANGUAGE.get_add_self()
-                field_ingredient.setStyleSheet("color: rgb(170, 170, 170); margin-top: 5px;")
+                field_ingredient.setStyleSheet("color: rgb(170, 170, 170);")  # margin-top: 5px;
             field_ingredient.setText(f"{ingredient_name} ")
 
     def clear_recipe_data_maker(self, w, select_other_item=True):
