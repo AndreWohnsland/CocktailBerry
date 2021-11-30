@@ -432,6 +432,6 @@ If you want to support this project, feel free to fork it and create your own pu
 To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md). Here is a general list of features or refacturing things, I may do in the future. With your help, these things come even faster!
 
 - `easy`: Translate all dialogs / UI to your native language
-- `medium`: Improve the multi-language concept by refactoring to language file with templates
+- `medium`: Automatically scale bottles tab to only show and use bottle count in config
 - `hard`: Use 'cocktail-class-object' for maker selection attributes and change triggers
 - `hard`: Use an ORM instead of default SQL language
