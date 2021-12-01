@@ -2978,7 +2978,7 @@ QLineEdit
            </widget>
           </item>
           <item row="0" column="5">
-           <widget class="QLabel" name="label_11">
+           <widget class="QLabel" name="bottleLabel1">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -3629,7 +3629,7 @@ QLineEdit
            </widget>
           </item>
           <item row="3" column="5">
-           <widget class="QLabel" name="label_15">
+           <widget class="QLabel" name="bottleLabel4">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -3661,7 +3661,7 @@ QLineEdit
            </widget>
           </item>
           <item row="1" column="5">
-           <widget class="QLabel" name="label_12">
+           <widget class="QLabel" name="bottleLabel2">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -3693,7 +3693,7 @@ QLineEdit
            </widget>
           </item>
           <item row="2" column="5">
-           <widget class="QLabel" name="label_14">
+           <widget class="QLabel" name="bottleLabel3">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -3725,7 +3725,7 @@ QLineEdit
            </widget>
           </item>
           <item row="6" column="5">
-           <widget class="QLabel" name="label_18">
+           <widget class="QLabel" name="bottleLabel7">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -3757,7 +3757,7 @@ QLineEdit
            </widget>
           </item>
           <item row="5" column="5">
-           <widget class="QLabel" name="label_22">
+           <widget class="QLabel" name="bottleLabel6">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -3789,7 +3789,7 @@ QLineEdit
            </widget>
           </item>
           <item row="4" column="5">
-           <widget class="QLabel" name="label_16">
+           <widget class="QLabel" name="bottleLabel5">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -3821,7 +3821,7 @@ QLineEdit
            </widget>
           </item>
           <item row="8" column="5">
-           <widget class="QLabel" name="label_21">
+           <widget class="QLabel" name="bottleLabel9">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -3853,7 +3853,7 @@ QLineEdit
            </widget>
           </item>
           <item row="7" column="5">
-           <widget class="QLabel" name="label_19">
+           <widget class="QLabel" name="bottleLabel8">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -3885,7 +3885,7 @@ QLineEdit
            </widget>
           </item>
           <item row="9" column="5">
-           <widget class="QLabel" name="label_20">
+           <widget class="QLabel" name="bottleLabel10">
             <property name="minimumSize">
              <size>
               <width>0</width>
