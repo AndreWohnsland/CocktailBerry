@@ -29,7 +29,7 @@ class LoggerHandler:
         self.logger.log(getattr(logging, level), message)
 
     def log_header(self, level, message):
-        self.log_event(level, self.template.format(message,))
+        self.log_event(level, self.template.format(f" {message} ",))
 
     def log_start_program(self):
         self.log_header("INFO", "Starting the Programm")
