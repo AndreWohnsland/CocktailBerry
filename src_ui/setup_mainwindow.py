@@ -164,6 +164,10 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         if self.UI_PARTYMODE:
             self.tabWidget.setTabEnabled(2, False)
 
+        # Removes the elements not used depending on number of bottles in bottle tab
+        # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
+        DP_CONTROLLER.adjust_bottle_number_displayed(self)
+
         # gets the bottle ingredients into the global list
         bottles.get_bottle_ingredients()
         # Clear Help Marker

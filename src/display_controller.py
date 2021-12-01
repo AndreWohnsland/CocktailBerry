@@ -9,9 +9,8 @@ from config.config_manager import shared
 class DisplayController(DialogHandler):
     """ Controler Class to get Values from the UI"""
 
-    def __init__(self):
-        super().__init__()
-        self.database_commander = DB_COMMANDER
+    # def __init__(self):
+    #     super().__init__()
 
     ########################
     # UI "EXTRACT" METHODS #
@@ -370,14 +369,17 @@ class DisplayController(DialogHandler):
         self.fill_multiple_lineedit(labels, label_names)
 
     # Migration from supporter.py
-    def get_pushbottons_newbottle(self, w):
-        return [getattr(w, f"PBneu{x}") for x in range(1, 11)]
+    def get_pushbottons_newbottle(self, w, get_all=False):
+        number = self.__choose_bottle_number(get_all)
+        return [getattr(w, f"PBneu{x}") for x in range(1, number + 1)]
 
-    def get_levelbar_bottles(self, w):
-        return [getattr(w, f"ProBBelegung{x}") for x in range(1, 11)]
+    def get_levelbar_bottles(self, w, get_all=False):
+        number = self.__choose_bottle_number(get_all)
+        return [getattr(w, f"ProBBelegung{x}") for x in range(1, number + 1)]
 
-    def get_comboboxes_bottles(self, w):
-        return [getattr(w, f"CBB{x}") for x in range(1, 11)]
+    def get_comboboxes_bottles(self, w, get_all=False):
+        number = self.__choose_bottle_number(get_all)
+        return [getattr(w, f"CBB{x}") for x in range(1, number + 1)]
 
     def get_comboboxes_recipes(self, w):
         return [getattr(w, f"CBR{x}") for x in range(1, 8)]
@@ -389,14 +391,44 @@ class DisplayController(DialogHandler):
         """Returns [Name, Alcohol, Volume], CheckedHand, ListWidget Elements for Ingredients"""
         return [[w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen], w.CHBHand, w.LWZutaten]
 
-    def get_label_bottles(self, w):
-        return [getattr(w, f"LBelegung{x}") for x in range(1, 11)]
+    def get_label_bottles(self, w, get_all=False):
+        number = self.__choose_bottle_number(get_all)
+        return [getattr(w, f"LBelegung{x}") for x in range(1, number + 1)]
 
     def get_labels_maker_volume(self, w):
         return [getattr(w, f"LMZutat{x}") for x in range(1, 10)]
 
     def get_labels_maker_ingredients(self, w):
         return [getattr(w, f"LZutat{x}") for x in range(1, 10)]
+
+    def __choose_bottle_number(self, get_all):
+        """Selects the number of Bottles in the bottles tab, all is ten"""
+        if get_all:
+            return 10
+        return min(self.MAKER_NUMBER_BOTTLES, 10)
+
+    def get_numberlabel_bottles(self, w, get_all=False):
+        number = self.__choose_bottle_number(get_all)
+        return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]
+
+    def adjust_bottle_number_displayed(self, w):
+        """Removes the UI elements if not all ten bottles are used per config"""
+        used_bottles = min(self.MAKER_NUMBER_BOTTLES, 10)
+        # This needs to be done to get rid of registered bottles in the then removed bottles
+        all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
+        DB_COMMANDER.set_bottleorder(all_bottles[:used_bottles] + [""] * (10 - used_bottles))
+        comboboxes_bottles = self.get_comboboxes_bottles(w, True)
+        self.set_multiple_combobox_to_top_item(comboboxes_bottles[used_bottles::])
+        to_adjust = [
+            self.get_pushbottons_newbottle(w, True),
+            self.get_levelbar_bottles(w, True),
+            comboboxes_bottles,
+            self.get_label_bottles(w, True),
+            self.get_numberlabel_bottles(w, True),
+        ]
+        for elements in to_adjust:
+            for element in elements[used_bottles::]:
+                element.deleteLater()
 
 
 DP_CONTROLLER = DisplayController()
