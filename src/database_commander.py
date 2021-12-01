@@ -56,6 +56,7 @@ class DatabaseCommander:
         query = "SELECT ID, Name, Alkoholgehalt, Menge, Kommentar, Enabled FROM Rezepte"
         return self.handler.query_database(query)
 
+    # TODO: use this object in further code for better code usage
     def build_recipe_object(self) -> Dict[str, Dict]:
         recipe_object = {}
         recipe_data = self.get_all_recipes_properties()
@@ -67,6 +68,7 @@ class DatabaseCommander:
                 "volume": recipe[3],
                 "comment": recipe[4],
                 "enabled": recipe[5],
+                # TODO: Also use alcoholic property or other way to scale alcohol with slider
                 "ingredients": {a[0]: [a[1], a[2]] for a in ingredient_data},
             }
         return recipe_object
