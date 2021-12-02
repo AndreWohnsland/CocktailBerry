@@ -121,7 +121,10 @@ class DatabaseCommander:
 
     def get_ingredients_at_bottles(self) -> List[str]:
         """Return ingredient name for all bottles"""
-        query = "SELECT Zutat_F FROM Belegung"
+        query = """SELECT Zutaten.Name FROM Belegung
+                    LEFT JOIN Zutaten ON
+                    Zutaten.ID=Belegung.ID
+                    ORDER BY Belegung.Flasche"""
         result = self.handler.query_database(query)
         return [x[0] for x in result]
 
@@ -277,10 +280,9 @@ class DatabaseCommander:
         for i, ingredient in enumerate(ingredient_names):
             bottle = i + 1
             query = """UPDATE OR IGNORE Belegung
-                    SET ID = (SELECT ID FROM Zutaten WHERE Name = ?), 
-                    Zutat_F = ? 
+                    SET ID = (SELECT ID FROM Zutaten WHERE Name = ?)
                     WHERE Flasche = ?"""
-            searchtuple = (ingredient, ingredient, bottle)
+            searchtuple = (ingredient, bottle)
             self.handler.query_database(query, searchtuple)
 
     def set_bottle_volumelevel_to_max(self, boolean_list: List[bool]):
@@ -476,7 +478,6 @@ class DatabaseHandler:
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS Belegung(
                 Flasche INTEGER NOT NULL,
-                Zutat_F TEXT NOT NULL,
                 ID INTEGER,
                 CONSTRAINT fk_belegung_zutat
                     FOREIGN KEY (ID)
@@ -493,7 +494,7 @@ class DatabaseHandler:
 
         # Creating the Space Naming of the Bottles
         for bottle_count in range(1, 13):
-            self.cursor.execute("INSERT INTO Belegung(Flasche,Zutat_F) VALUES (?,?)", (bottle_count, ""))
+            self.cursor.execute("INSERT INTO Belegung(Flasche) VALUES (?)", (bottle_count))
         self.database.commit()
         self.database.close()
 
