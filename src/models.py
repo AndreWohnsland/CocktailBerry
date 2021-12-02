@@ -12,6 +12,7 @@ class Ingredient():
     fill_level: int
     hand: Union[bool, int]
     selected: str = None
+    recipe_volume: int = None
 
 
 @dataclass
@@ -34,3 +35,9 @@ class Cocktail():
     comment: str
     enabled: bool
     ingredients: List[IngredientData]
+
+    def get_handadds(self):
+        return [x for x in self.ingredients if x.hand]
+
+    def get_machineadds(self):
+        return [x for x in self.ingredients if not x.hand]

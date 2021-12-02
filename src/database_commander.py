@@ -3,9 +3,9 @@ import os
 import shutil
 from pathlib import Path
 import sqlite3
-from typing import Any, Dict, List, Union
+from typing import Dict, List, Union
 
-from src.models import Cocktail, IngredientData
+from src.models import Cocktail, Ingredient, IngredientData
 
 DATABASE_NAME = "Cocktail_database"
 DIRPATH = os.path.dirname(os.path.abspath(__file__))
@@ -81,14 +81,12 @@ class DatabaseCommander:
             cocktails[recipe[1]] = self.build_cocktail(*recipe)
         return cocktails
 
-    def get_cocktail(self, name: str = None, recipe_id: int = None) -> Union[Cocktail, None]:
+    def get_cocktail(self, search: Union[str, int]) -> Union[Cocktail, None]:
         """Get all neeeded data for the cocktail from ID or name"""
-        if name is not None:
+        if isinstance(search, str):
             condition = "Name"
-            search = name
         else:
             condition = "ID"
-            search = recipe_id
         query = f"SELECT ID, Name, Alkoholgehalt, Menge, Kommentar, Enabled FROM Rezepte WHERE {condition}=?"
         data = self.handler.query_database(query, (search,))
         # returns None if no data exists
@@ -176,20 +174,22 @@ class DatabaseCommander:
             levels.append(proportion)
         return levels
 
-    def get_ingredient_data(self, ingredient_name: str) -> Dict[str, Any]:
-        query = "SELECT ID, Name, Alkoholgehalt, Flaschenvolumen, Hand, Mengenlevel FROM Zutaten WHERE Name = ?"
-        values = self.handler.query_database(query, (ingredient_name,))
-        if values:
-            values = values[0]
-            return {
-                "ID": values[0],
-                "name": values[1],
-                "alcohollevel": values[2],
-                "volume": values[3],
-                "hand_add": values[4],
-                "volume_level": values[5],
-            }
-        return {}
+    def build_ingredient(self, ing_id: int, name: str, alcohol: int, volume: int, fill: int, hand: bool):
+        return Ingredient(ing_id, name, alcohol, volume, fill, hand)
+
+    def get_ingredient(self, search: Union[str, int]) -> Union[Ingredient, None]:
+        """Get all neeeded data for the ingredient from ID or name"""
+        if isinstance(search, str):
+            condition = "Name"
+        else:
+            condition = "ID"
+        query = f"SELECT ID, Name, Alkoholgehalt, Flaschenvolumen, Mengenlevel, Hand FROM Zutaten WHERE {condition}=?"
+        data = self.handler.query_database(query, (search,))
+        # returns None if no data exists
+        if not data:
+            return None
+        ingredient = data[0]
+        return Ingredient(*ingredient)
 
     def get_bottle_usage(self, ingredient_id: int):
         query = "SELECT COUNT(*) FROM Belegung WHERE ID = ?"

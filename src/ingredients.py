@@ -39,8 +39,8 @@ def enter_ingredient(w, newingredient=True):
 
 def __add_new_ingredient(w, ingredient_data):
     """Adds the ingredient into the database """
-    given_name_ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient_data["ingredient_name"])
-    if given_name_ingredient_data:
+    existing_ingredient = DB_COMMANDER.get_ingredient(ingredient_data["ingredient_name"])
+    if existing_ingredient:
         DP_CONTROLLER.say_name_already_exists()
         return False
 
@@ -59,25 +59,26 @@ def __add_new_ingredient(w, ingredient_data):
 
 def __change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
     """Changes the existing ingredient """
-    selected_ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient_data["selected_ingredient"])
     if not ingredient_data["selected_ingredient"]:
         DP_CONTROLLER.say_no_ingredient_selected()
         return False
+    old_ingredient = DB_COMMANDER.get_ingredient(ingredient_data["selected_ingredient"])
 
-    bottle_used = DB_COMMANDER.get_bottle_usage(selected_ingredient_data["ID"])
+    bottle_used = DB_COMMANDER.get_bottle_usage(old_ingredient.id)
+    # if change to handadd and still used, abort
     if ingredient_data["hand_add"] and bottle_used:
         DP_CONTROLLER.say_ingredient_still_at_bottle()
         return False
 
     # in case the volume was lowered below current level get the minimum of both
-    volume_level = min(selected_ingredient_data["volume_level"], ingredient_data["volume"])
+    volume_level = min(old_ingredient.fill_level, ingredient_data["volume"])
     DB_COMMANDER.set_ingredient_data(
         ingredient_data["ingredient_name"],
         ingredient_data["alcohollevel"],
         ingredient_data["volume"],
         volume_level,
         ingredient_data["hand_add"],
-        selected_ingredient_data["ID"],
+        old_ingredient.id,
     )
 
     DP_CONTROLLER.delete_list_widget_item(ingredient_list_widget, ingredient_data["selected_ingredient"])
@@ -85,7 +86,7 @@ def __change_existing_ingredient(w, ingredient_list_widget, ingredient_data):
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     both_boxes = combobox_recipes + combobox_bottles
 
-    if selected_ingredient_data["hand_add"] and not ingredient_data["hand_add"]:
+    if old_ingredient.hand and not ingredient_data["hand_add"]:
         DP_CONTROLLER.fill_multiple_combobox(both_boxes, [ingredient_data["ingredient_name"]])
     elif not ingredient_data["hand_add"]:
         DP_CONTROLLER.rename_multiple_combobox(
@@ -109,30 +110,30 @@ def load_ingredients(w):
 
 def delete_ingredient(w):
     """ Deletes an ingredient out of the DB if its not needed in any recipe."""
-    _, _, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+    _, _, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     if not DP_CONTROLLER.check_ingredient_password(w):
         DP_CONTROLLER.say_wrong_password()
         return
-    selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_list_widget)
+    selected_ingredient = DP_CONTROLLER.get_list_widget_selection(list_widget)
     if not selected_ingredient:
         DP_CONTROLLER.say_no_ingredient_selected()
         return
-    ingredient_data = DB_COMMANDER.get_ingredient_data(selected_ingredient)
-    if DB_COMMANDER.get_bottle_usage(ingredient_data["ID"]):
+    ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
+    if DB_COMMANDER.get_bottle_usage(ingredient.id):
         DP_CONTROLLER.say_ingredient_still_at_bottle()
         return
-    recipe_list = DB_COMMANDER.get_recipe_usage_list(ingredient_data["ID"])
+    recipe_list = DB_COMMANDER.get_recipe_usage_list(ingredient.id)
     if recipe_list:
         recipe_string = ", ".join(recipe_list[:10])
         DP_CONTROLLER.say_ingredient_still_at_recipe(recipe_string)
         return
 
-    DB_COMMANDER.delete_ingredient(ingredient_data["ID"])
-    DP_CONTROLLER.delete_item_in_multiple_combobox(DP_CONTROLLER.get_comboboxes_bottles(w), ingredient_data["name"])
-    DP_CONTROLLER.delete_item_in_multiple_combobox(DP_CONTROLLER.get_comboboxes_recipes(w), ingredient_data["name"])
+    DB_COMMANDER.delete_ingredient(ingredient.id)
+    DP_CONTROLLER.delete_item_in_multiple_combobox(DP_CONTROLLER.get_comboboxes_bottles(w), ingredient.name)
+    DP_CONTROLLER.delete_item_in_multiple_combobox(DP_CONTROLLER.get_comboboxes_recipes(w), ingredient.name)
     clear_ingredient_information(w)
     load_ingredients(w)
-    DP_CONTROLLER.say_ingredient_deleted(ingredient_data['name'])
+    DP_CONTROLLER.say_ingredient_deleted(ingredient.name)
 
 
 def display_selected_ingredient(w):
@@ -140,16 +141,16 @@ def display_selected_ingredient(w):
     lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(list_widget)
     if selected_ingredient:
-        ingredient_data = DB_COMMANDER.get_ingredient_data(selected_ingredient)
+        ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
         DP_CONTROLLER.fill_multiple_lineedit(
-            lineedits, [ingredient_data["name"], ingredient_data["alcohollevel"], ingredient_data["volume"]]
+            lineedits, [ingredient.name, ingredient.alcohol, ingredient.bottle_volume]
         )
-        DP_CONTROLLER.set_checkbox_value(checkbox, ingredient_data["hand_add"])
+        DP_CONTROLLER.set_checkbox_value(checkbox, ingredient.hand)
 
 
 def clear_ingredient_information(w):
     """ Clears all entries in the ingredient windows. """
-    ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
-    DP_CONTROLLER.clean_multiple_lineedit(ingredient_lineedits)
-    DP_CONTROLLER.unselect_list_widget_items(ingredient_list_widget)
-    DP_CONTROLLER.set_checkbox_value(ingredient_checkbox, False)
+    lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+    DP_CONTROLLER.clean_multiple_lineedit(lineedits)
+    DP_CONTROLLER.unselect_list_widget_items(list_widget)
+    DP_CONTROLLER.set_checkbox_value(checkbox, False)

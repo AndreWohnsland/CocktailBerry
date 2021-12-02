@@ -4,6 +4,7 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
 from collections import Counter
+from typing import List
 
 from src.maker import refresh_recipe_maker_view
 from src.error_suppression import logerror
@@ -11,6 +12,7 @@ from src.error_suppression import logerror
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from config.config_manager import shared
+from src.models import Ingredient
 
 
 @logerror
@@ -71,16 +73,16 @@ def __validate_extract_ingredients(ingredient_names, ingredient_volumes):
     return names, volumes, True
 
 
-def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, comment):
+def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data: List[Ingredient], comment):
     """Logic to insert/update data into DB"""
     if recipe_id:
         DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
     else:
         DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
         recipe_id = DB_COMMANDER.get_recipe_id_by_name(recipe_name)
-    for data in ingredient_data:
-        is_alcoholic = 1 if data["alcohollevel"] > 0 else 0
-        DB_COMMANDER.insert_recipe_data(recipe_id, data["ID"], data["recipe_volume"], is_alcoholic, 0)
+    for ingredient in ingredient_data:
+        is_alcoholic = int(ingredient.alcohol > 0)
+        DB_COMMANDER.insert_recipe_data(recipe_id, ingredient.id, ingredient.recipe_volume, is_alcoholic, 0)
     for hand_id, hand_volume, hand_alcoholic, _, _ in shared.handaddlist:
         DB_COMMANDER.insert_recipe_data(recipe_id, hand_id, hand_volume, hand_alcoholic, 1)
     return recipe_id
@@ -111,10 +113,10 @@ def enter_recipe(w, newrecipe):
     ingredient_data = []
     recipe_volume_concentration = 0
     for ingredient_name, ingredient_volume in zip(ingredient_names, ingredient_volumes):
-        data = DB_COMMANDER.get_ingredient_data(ingredient_name)
-        data["recipe_volume"] = ingredient_volume
-        recipe_volume_concentration += data["alcohollevel"] * ingredient_volume
-        ingredient_data.append(data)
+        ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
+        ingredient.recipe_volume = ingredient_volume
+        recipe_volume_concentration += ingredient.alcohol * ingredient_volume
+        ingredient_data.append(ingredient)
     for _, hand_volume, _, _, hand_alcohollevel in shared.handaddlist:  # id, volume, alcoholic, 1, alcohol_con
         recipe_volume += hand_volume
         recipe_volume_concentration += hand_volume * hand_alcohollevel

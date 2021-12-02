@@ -72,12 +72,11 @@ class HandaddWidget(QDialog, Ui_handadds):
         # if it passes all tests, generate the list for the later entry ands enter the comment into the according field
         shared.handaddlist = []
         commenttext = ""
-        for ingredient, amount in zip(ingredient_list, amount_list):
-            ingredient_data = DB_COMMANDER.get_ingredient_data(ingredient)
-            alcoholic = 1 if ingredient_data["alcohollevel"] > 0 else 0
-            shared.handaddlist.append(
-                [ingredient_data["ID"], amount, alcoholic, 1, ingredient_data["alcohollevel"]])
-            commenttext += f"{amount} ml {ingredient}, "
+        for ingredient_name, amount in zip(ingredient_list, amount_list):
+            ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
+            alcoholic = 1 if ingredient.alcohol > 0 else 0
+            shared.handaddlist.append([ingredient.id, amount, alcoholic, 1, ingredient.alcohol])
+            commenttext += f"{amount} ml {ingredient_name}, "
         commenttext = commenttext[:-2]
         self.mainscreen.LEKommentar.setText(commenttext)
         self.close()
