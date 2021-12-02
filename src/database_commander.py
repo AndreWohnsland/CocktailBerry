@@ -3,7 +3,9 @@ import os
 import shutil
 from pathlib import Path
 import sqlite3
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
+
+from src.models import Cocktail, IngredientData
 
 DATABASE_NAME = "Cocktail_database"
 DIRPATH = os.path.dirname(os.path.abspath(__file__))
@@ -16,6 +18,7 @@ class DatabaseCommander:
         self.handler = DatabaseHandler()
 
     def get_recipe_id_by_name(self, recipe_name: str) -> int:
+        """Returns the recipe ID for the given name"""
         query = "SELECT ID FROM Rezepte WHERE Name=?"
         value = self.handler.query_database(query, (recipe_name,))
         if not value:
@@ -23,18 +26,21 @@ class DatabaseCommander:
         return value[0][0]
 
     def get_recipe_ingredients_by_id(self, recipe_id: int):
-        query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID
+        """Return ingredient data for recipe from recipe ID"""
+        query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID, Zutaten.Alkoholgehalt
                 FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID 
                 WHERE Zusammen.Rezept_ID = ?"""
         return self.handler.query_database(query, (recipe_id,))
 
     def get_recipe_ingredients_by_name(self, recipe_name: str):
+        """Return ingredient data for recipe from recipe name"""
         query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.Alkoholgehalt
                 FROM Zusammen INNER JOIN Zutaten ON Zutaten.ID = Zusammen.Zutaten_ID 
                 WHERE Zusammen.Rezept_ID = (SELECT ID FROM Rezepte WHERE Name = ?)"""
         return self.handler.query_database(query, (recipe_name,))
 
     def get_recipe_ingredients_with_bottles(self, recipe_name: str):
+        """Return the recipe data needed for cocktail making process for given name"""
         query = """SELECT Zutaten.Name, Zusammen.Menge, Belegung.Flasche, Zusammen.Alkoholisch, Zutaten.Mengenlevel
                 FROM Zusammen LEFT JOIN Belegung ON Zusammen.Zutaten_ID = Belegung.ID 
                 INNER JOIN Zutaten ON Zutaten.ID = Zusammen.Zutaten_ID 
@@ -42,6 +48,7 @@ class DatabaseCommander:
         return self.handler.query_database(query, (recipe_name,))
 
     def get_recipe_ingredients_by_name_seperated_data(self, recipe_name: str):
+        """Return recipe ingredients as two list for machine add and hand add for a given name"""
         data = self.get_recipe_ingredients_by_name(recipe_name)
         handadd_data = []
         machineaddd_data = []
@@ -53,27 +60,45 @@ class DatabaseCommander:
         return machineaddd_data, handadd_data
 
     def get_all_recipes_properties(self):
+        """Get all neeeded data for all recipes"""
         query = "SELECT ID, Name, Alkoholgehalt, Menge, Kommentar, Enabled FROM Rezepte"
         return self.handler.query_database(query)
 
+    def build_cocktail(self, recipe_id: int, name: str, alcohol: int, amount: int, comment: str, enabled: bool):
+        """Build one cocktail object with the given data"""
+        ingredient_data = self.get_recipe_ingredients_by_id(recipe_id)
+        return Cocktail(
+            recipe_id, name, alcohol, amount, comment, bool(enabled),
+            [IngredientData(ing[3], ing[0], ing[4], ing[1], bool(ing[2])) for ing in ingredient_data]
+        )
+
     # TODO: use this object in further code for better code usage
-    def build_recipe_object(self) -> Dict[str, Dict]:
-        recipe_object = {}
+    def build_cocktail_dict(self) -> Dict[str, Cocktail]:
+        """Bilds a dict of all cocktails with name as key and object as value"""
+        cocktails = {}
         recipe_data = self.get_all_recipes_properties()
         for recipe in recipe_data:
-            ingredient_data = self.get_recipe_ingredients_by_id(recipe[0])
-            recipe_object[recipe[1]] = {
-                "ID": recipe[0],
-                "alcohollevel": recipe[2],
-                "volume": recipe[3],
-                "comment": recipe[4],
-                "enabled": recipe[5],
-                # TODO: Also use alcoholic property or other way to scale alcohol with slider
-                "ingredients": {a[0]: [a[1], a[2]] for a in ingredient_data},
-            }
-        return recipe_object
+            cocktails[recipe[1]] = self.build_cocktail(*recipe)
+        return cocktails
+
+    def get_cocktail(self, name: str = None, recipe_id: int = None) -> Union[Cocktail, None]:
+        """Get all neeeded data for the cocktail from ID or name"""
+        if name is not None:
+            condition = "Name"
+            search = name
+        else:
+            condition = "ID"
+            search = recipe_id
+        query = f"SELECT ID, Name, Alkoholgehalt, Menge, Kommentar, Enabled FROM Rezepte WHERE {condition}=?"
+        data = self.handler.query_database(query, (search,))
+        # returns None if no data exists
+        if not data:
+            return None
+        recipe = data[0]
+        return self.build_cocktail(*recipe)
 
     def get_recipe_ingredients_for_comment(self, recipe_name: str):
+        """Return data for handadd"""
         query = """SELECT Zutaten.Name, Zusammen.Menge, Zutaten.ID, Zusammen.Alkoholisch, Zutaten.Alkoholgehalt
                 FROM Zusammen 
                 INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID 
@@ -82,32 +107,39 @@ class DatabaseCommander:
         return self.handler.query_database(query, (recipe_name,))
 
     def get_enabled_recipes_id(self) -> List[int]:
+        """Return id of enabled recipes"""
         recipe_data = self.get_all_recipes_properties()
         return [x[0] for x in recipe_data if x[5]]
 
     def get_disabled_recipes_id(self) -> List[int]:
+        """Return id of disabled recipes"""
         recipe_data = self.get_all_recipes_properties()
         return [x[0] for x in recipe_data if not x[5]]
 
     def get_recipes_name(self) -> List[str]:
+        """Return names of all recipes"""
         recipe_data = self.get_all_recipes_properties()
         return [x[1] for x in recipe_data]
 
     def get_ingredients_at_bottles(self) -> List[str]:
+        """Return ingredient name for all bottles"""
         query = "SELECT Zutat_F FROM Belegung"
         result = self.handler.query_database(query)
         return [x[0] for x in result]
 
     def get_ingredients_at_bottles_without_empty_ones(self) -> List[str]:
+        """Return ingredient name for all bottles without empty bottles"""
         data = self.get_ingredients_at_bottles()
         return [x for x in data if x != ""]
 
     def get_ids_at_bottles(self) -> List[int]:
+        """Return all ingredient ids from bottles"""
         query = "SELECT ID FROM Belegung"
         result = self.handler.query_database(query)
         return [x[0] for x in result]
 
     def get_ingredient_names(self, condition_filter="") -> List[str]:
+        """Return all ingredient names, option to set a where condition"""
         query = "SELECT Name FROM Zutaten"
         if condition_filter != "":
             query = f"{query} {condition_filter}"
@@ -115,12 +147,15 @@ class DatabaseCommander:
         return [x[0] for x in names]
 
     def get_ingredient_names_hand(self) -> List[str]:
+        """Return all ingredient names, where hand is true"""
         return self.get_ingredient_names("WHERE Hand = 1")
 
     def get_ingredient_names_machine(self) -> List[str]:
+        """Return all ingredient names, where hand is false"""
         return self.get_ingredient_names("WHERE Hand = 0")
 
     def get_ingredient_name_from_id(self, ingredient_id: int) -> str:
+        """Return the according ingredient name from an ID"""
         query = "SELECT Name FROM Zutaten WHERE ID = ?"
         data = self.handler.query_database(query, (ingredient_id,))
         if data:
@@ -128,6 +163,7 @@ class DatabaseCommander:
         return ""
 
     def get_bottle_fill_levels(self) -> List[int]:
+        """Returns percentage of fill level, limited to [0, 100]"""
         query = """SELECT Zutaten.Mengenlevel, Zutaten.Flaschenvolumen FROM Belegung
                 LEFT JOIN Zutaten ON Zutaten.ID = Belegung.ID"""
         values = self.handler.query_database(query)
@@ -367,10 +403,11 @@ class DatabaseHandler:
         if not Path(self.database_path).exists():
             print("Copying default database for maker usage")
             self.copy_default_database()
-        self.database = None
-        self.cursor = None
+        self.database = sqlite3.connect(self.database_path)
+        self.cursor = self.database.cursor()
 
     def connect_database(self, path: str = None):
+        """Connects to the given path or own database and creates cursor"""
         if path:
             self.database = sqlite3.connect(path)
         else:
@@ -378,7 +415,7 @@ class DatabaseHandler:
         self.cursor = self.database.cursor()
 
     def query_database(self, sql: str, serachtuple=()):
-        self.connect_database()
+        """Executes the given querry, if select command, return the data"""
         self.cursor.execute(sql, serachtuple)
 
         if sql[0:6].lower() == "select":
@@ -387,13 +424,14 @@ class DatabaseHandler:
             self.database.commit()
             result = []
 
-        self.database.close()
         return result
 
     def copy_default_database(self):
+        """Creates a local copy of the database"""
         shutil.copy(self.database_path_default, self.database_path)
 
     def create_tables(self):
+        """Creates all needed tables and constraints"""
         self.connect_database(self.database_path_default)
         # Creates each Table
         self.cursor.execute(
