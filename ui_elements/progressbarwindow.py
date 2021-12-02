@@ -82,7 +82,7 @@ class Ui_Progressbarwindow(object):
         self.LHeader.setMinimumSize(QtCore.QSize(0, 100))
         self.LHeader.setMaximumSize(QtCore.QSize(16777215, 200))
         font = QtGui.QFont()
-        font.setPointSize(32)
+        font.setPointSize(48)
         font.setBold(True)
         font.setWeight(75)
         self.LHeader.setFont(font)
@@ -144,7 +144,7 @@ class Ui_Progressbarwindow(object):
     def retranslateUi(self, Progressbarwindow):
         _translate = QtCore.QCoreApplication.translate
         Progressbarwindow.setWindowTitle(_translate("Progressbarwindow", "~~ Cocktail wird zubereitet ~~"))
-        self.LHeader.setText(_translate("Progressbarwindow", "<html><head/><body><p>Cocktail wird zubereitet!</p></body></html>"))
+        self.LHeader.setText(_translate("Progressbarwindow", "Cocktailname very long"))
         self.LProgress.setText(_translate("Progressbarwindow", "<html><head/><body><p><span style=\" color:#ef9700;\">Fortschritt:</span></p></body></html>"))
         self.progressBar.setFormat(_translate("Progressbarwindow", "%p%"))
         self.Labbruch.setText(_translate("Progressbarwindow", "Der Vorgang kann auch abgebrochen werden"))

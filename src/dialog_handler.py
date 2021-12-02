@@ -119,6 +119,7 @@ class DialogHandler(ConfigManager):
         self.__output_language_dialog(self.dialogs["all_data_exported"])
 
     def say_not_enough_ingredient_volume(self, ingredient_name: str, level: int, volume: int):
+        level = max(0, level)
         self.__output_language_dialog(
             self.dialogs["not_enough_ingredient_volume"],
             ingredient_name=ingredient_name,
@@ -215,7 +216,8 @@ class UiLanguage(ConfigManager):
         w.PBabbrechen.setText(self.__choose_language(self.dialogs["cancel_button"]))
         w.Labbruch.setText(self.__choose_language(window["cancel_label"]))
         w.LProgress.setText(self.__choose_language(window["progress_label"]))
-        w.LHeader.setText(self.__choose_language(window["header_label"], cocktail_type=cocktail_type))
+        # w.LHeader.setText(self.__choose_language(window["header_label"], cocktail_type=cocktail_type))
+        w.LHeader.setText(cocktail_type)
 
     def adjust_bonusingredient_screen(self, w):
         window = self.dialogs["bonusingredient_screen"]

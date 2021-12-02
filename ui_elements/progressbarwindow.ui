@@ -105,13 +105,13 @@ QProgressBar::chunk {
       </property>
       <property name="font">
        <font>
-        <pointsize>32</pointsize>
+        <pointsize>48</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cocktail wird zubereitet!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>Cocktailname very long</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignHCenter|Qt::AlignTop</set>
