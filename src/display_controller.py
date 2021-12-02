@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
+from src.models import Ingredient
 from config.config_manager import shared
 
 
@@ -35,13 +36,7 @@ class DisplayController(DialogHandler):
         selected_ingredient = ""
         if list_widget.selectedItems():
             selected_ingredient = list_widget.currentItem().text()
-        return {
-            "ingredient_name": ingredient_name,
-            "alcohollevel": int(alcohollevel),
-            "volume": int(volume),
-            "hand_add": hand_add,
-            "selected_ingredient": selected_ingredient,
-        }
+        return Ingredient(None, ingredient_name, int(alcohollevel), int(volume), None, hand_add, selected_ingredient)
 
     def get_cocktail_data(self, w):
         cocktail_volume = int(w.LCustomMenge.text())
