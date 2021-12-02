@@ -87,6 +87,7 @@ class Ui_Progressbarwindow(object):
         font.setWeight(75)
         self.LHeader.setFont(font)
         self.LHeader.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.LHeader.setWordWrap(True)
         self.LHeader.setObjectName("LHeader")
         self.verticalLayout.addWidget(self.LHeader)
         self.LProgress = QtWidgets.QLabel(self.centralwidget)
