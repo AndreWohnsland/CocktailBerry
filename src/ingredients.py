@@ -137,14 +137,14 @@ def delete_ingredient(w):
 
 def display_selected_ingredient(w):
     """ Search the DB entry for the ingredient and displays them """
-    ingredient_lineedits, ingredient_checkbox, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
-    selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_list_widget)
+    lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+    selected_ingredient = DP_CONTROLLER.get_list_widget_selection(list_widget)
     if selected_ingredient:
         ingredient_data = DB_COMMANDER.get_ingredient_data(selected_ingredient)
         DP_CONTROLLER.fill_multiple_lineedit(
-            ingredient_lineedits, [ingredient_data["name"], ingredient_data["alcohollevel"], ingredient_data["volume"]]
+            lineedits, [ingredient_data["name"], ingredient_data["alcohollevel"], ingredient_data["volume"]]
         )
-        DP_CONTROLLER.set_checkbox_value(ingredient_checkbox, ingredient_data["hand_add"])
+        DP_CONTROLLER.set_checkbox_value(checkbox, ingredient_data["hand_add"])
 
 
 def clear_ingredient_information(w):
