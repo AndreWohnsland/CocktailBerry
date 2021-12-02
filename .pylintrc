@@ -3,7 +3,7 @@ disable=missing-docstring
 
 [FORMAT]
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,x,y,ex,df,rc,ax,w,app
+good-names=i,j,k,x,y,ex,df,rc,ax,w,app,id
 
 [DESIGN]
 # Maximum number of locals for function / method body
