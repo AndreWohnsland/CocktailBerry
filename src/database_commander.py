@@ -17,15 +17,7 @@ class DatabaseCommander:
     def __init__(self):
         self.handler = DatabaseHandler()
 
-    def get_recipe_id_by_name(self, recipe_name: str) -> int:
-        """Returns the recipe ID for the given name"""
-        query = "SELECT ID FROM Rezepte WHERE Name=?"
-        value = self.handler.query_database(query, (recipe_name,))
-        if not value:
-            return 0
-        return value[0][0]
-
-    def get_recipe_ingredients_by_id(self, recipe_id: int):
+    def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
         query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID,
                 Zutaten.Alkoholgehalt, Belegung.Flasche, Zutaten.Mengenlevel
@@ -34,41 +26,14 @@ class DatabaseCommander:
                 WHERE Zusammen.Rezept_ID = ?"""
         return self.handler.query_database(query, (recipe_id,))
 
-    def get_recipe_ingredients_by_name(self, recipe_name: str):
-        """Return ingredient data for recipe from recipe name"""
-        query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.Alkoholgehalt
-                FROM Zusammen INNER JOIN Zutaten ON Zutaten.ID = Zusammen.Zutaten_ID 
-                WHERE Zusammen.Rezept_ID = (SELECT ID FROM Rezepte WHERE Name = ?)"""
-        return self.handler.query_database(query, (recipe_name,))
-
-    def get_recipe_ingredients_with_bottles(self, recipe_name: str):
-        """Return the recipe data needed for cocktail making process for given name"""
-        query = """SELECT Zutaten.Name, Zusammen.Menge, Belegung.Flasche, Zusammen.Alkoholisch, Zutaten.Mengenlevel
-                FROM Zusammen LEFT JOIN Belegung ON Zusammen.Zutaten_ID = Belegung.ID 
-                INNER JOIN Zutaten ON Zutaten.ID = Zusammen.Zutaten_ID 
-                WHERE Zusammen.Rezept_ID = (SELECT ID FROM Rezepte WHERE Name =?)"""
-        return self.handler.query_database(query, (recipe_name,))
-
-    def get_recipe_ingredients_by_name_seperated_data(self, recipe_name: str):
-        """Return recipe ingredients as two list for machine add and hand add for a given name"""
-        data = self.get_recipe_ingredients_by_name(recipe_name)
-        handadd_data = []
-        machineaddd_data = []
-        for row in data:
-            if row[2]:
-                handadd_data.append(row[0:2])
-            else:
-                machineaddd_data.append(row[0:2])
-        return machineaddd_data, handadd_data
-
-    def get_all_recipes_properties(self):
+    def __get_all_recipes_properties(self):
         """Get all neeeded data for all recipes"""
         query = "SELECT ID, Name, Alkoholgehalt, Menge, Kommentar, Enabled FROM Rezepte"
         return self.handler.query_database(query)
 
-    def build_cocktail(self, recipe_id: int, name: str, alcohol: int, amount: int, comment: str, enabled: bool):
+    def __build_cocktail(self, recipe_id: int, name: str, alcohol: int, amount: int, comment: str, enabled: bool):
         """Build one cocktail object with the given data"""
-        ingredient_data = self.get_recipe_ingredients_by_id(recipe_id)
+        ingredient_data = self.__get_recipe_ingredients_by_id(recipe_id)
         return Cocktail(
             recipe_id, name, alcohol, amount, comment, bool(enabled),
             [IngredientData(i[3], i[0], i[4], i[1], bool(i[2]), i[5], i[6]) for i in ingredient_data]
@@ -86,46 +51,23 @@ class DatabaseCommander:
         if not data:
             return None
         recipe = data[0]
-        return self.build_cocktail(*recipe)
+        return self.__build_cocktail(*recipe)
 
-    def get_multiple_cocktails(self, searchlist: List[Union[str, int]]):
+    # TODO: is this needed? Currently not
+    def get_multiple_cocktails(self, searchlist: List[Union[str, int]]) -> List[Cocktail]:
         """Returns all cocktails for the name / id in the list"""
         return [self.get_cocktail(x) for x in searchlist]
 
     def get_all_cocktails(self, get_enabled=True, get_disabled=True) -> List[Cocktail]:
         """Bilds a list of all cocktails, option to filter by enabled status"""
         cocktails = []
-        recipe_data = self.get_all_recipes_properties()
+        recipe_data = self.__get_all_recipes_properties()
         for recipe in recipe_data:
             enabled = bool(recipe[5])
             if (enabled and not get_enabled) or (not enabled and not get_disabled):
                 continue
-            cocktails.append(self.build_cocktail(*recipe))
+            cocktails.append(self.__build_cocktail(*recipe))
         return cocktails
-
-    def get_recipe_ingredients_for_comment(self, recipe_name: str):
-        """Return data for handadd"""
-        query = """SELECT Zutaten.Name, Zusammen.Menge, Zutaten.ID, Zusammen.Alkoholisch, Zutaten.Alkoholgehalt
-                FROM Zusammen 
-                INNER JOIN Rezepte ON Rezepte.ID=Zusammen.Rezept_ID 
-                INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID 
-                WHERE Rezepte.Name = ? AND Zusammen.Hand = 1"""
-        return self.handler.query_database(query, (recipe_name,))
-
-    def get_enabled_recipes_id(self) -> List[int]:
-        """Return id of enabled recipes"""
-        recipe_data = self.get_all_recipes_properties()
-        return [x[0] for x in recipe_data if x[5]]
-
-    def get_disabled_recipes_id(self) -> List[int]:
-        """Return id of disabled recipes"""
-        recipe_data = self.get_all_recipes_properties()
-        return [x[0] for x in recipe_data if not x[5]]
-
-    def get_recipes_name(self) -> List[str]:
-        """Return names of all recipes"""
-        recipe_data = self.get_all_recipes_properties()
-        return [x[1] for x in recipe_data]
 
     def get_ingredients_at_bottles(self) -> List[str]:
         """Return ingredient name for all bottles"""
@@ -135,41 +77,6 @@ class DatabaseCommander:
                     ORDER BY Belegung.Flasche"""
         result = self.handler.query_database(query)
         return [x[0] for x in result]
-
-    def get_ingredients_at_bottles_without_empty_ones(self) -> List[str]:
-        """Return ingredient name for all bottles without empty bottles"""
-        data = self.get_ingredients_at_bottles()
-        return [x for x in data if x != ""]
-
-    def get_ids_at_bottles(self) -> List[int]:
-        """Return all ingredient ids from bottles"""
-        query = "SELECT ID FROM Belegung"
-        result = self.handler.query_database(query)
-        return [x[0] for x in result]
-
-    def get_ingredient_names(self, condition_filter="") -> List[str]:
-        """Return all ingredient names, option to set a where condition"""
-        query = "SELECT Name FROM Zutaten"
-        if condition_filter != "":
-            query = f"{query} {condition_filter}"
-        names = self.handler.query_database(query)
-        return [x[0] for x in names]
-
-    def get_ingredient_names_hand(self) -> List[str]:
-        """Return all ingredient names, where hand is true"""
-        return self.get_ingredient_names("WHERE Hand = 1")
-
-    def get_ingredient_names_machine(self) -> List[str]:
-        """Return all ingredient names, where hand is false"""
-        return self.get_ingredient_names("WHERE Hand = 0")
-
-    def get_ingredient_name_from_id(self, ingredient_id: int) -> str:
-        """Return the according ingredient name from an ID"""
-        query = "SELECT Name FROM Zutaten WHERE ID = ?"
-        data = self.handler.query_database(query, (ingredient_id,))
-        if data:
-            return data[0][0]
-        return ""
 
     def get_bottle_fill_levels(self) -> List[int]:
         """Returns percentage of fill level, limited to [0, 100]"""
@@ -185,6 +92,7 @@ class DatabaseCommander:
             levels.append(proportion)
         return levels
 
+    # TODO: Remove if not needed
     def build_ingredient(self, ing_id: int, name: str, alcohol: int, volume: int, fill: int, hand: bool):
         return Ingredient(ing_id, name, alcohol, volume, fill, hand)
 
@@ -202,7 +110,19 @@ class DatabaseCommander:
         ingredient = data[0]
         return Ingredient(*ingredient)
 
+    def get_all_ingredients(self, get_machine=True, get_hand=True) -> List[Ingredient]:
+        """Bilds a list of all ingredinets, option to filter by add status"""
+        ingredients = []
+        query = "SELECT ID, Name, Alkoholgehalt, Flaschenvolumen, Mengenlevel, Hand FROM Zutaten"
+        ingredient_data = self.handler.query_database(query)
+        for ing in ingredient_data:
+            hand = bool(ing[5])
+            if (not hand and get_machine) or (hand and get_hand):
+                ingredients.append(Ingredient(*ing))
+        return ingredients
+
     def get_bottle_usage(self, ingredient_id: int):
+        """Returns if the ingredient id is currently used at a bottle"""
         query = "SELECT COUNT(*) FROM Belegung WHERE ID = ?"
         if self.handler.query_database(query, (ingredient_id,))[0][0]:
             return True
@@ -215,59 +135,45 @@ class DatabaseCommander:
         recipe_list = self.handler.query_database(query, (ingredient_id,))
         return [recipe[0] for recipe in recipe_list]
 
-    def get_handadd_ids(self) -> List[int]:
-        query = "SELECT ID FROM Vorhanden"
-        result = self.handler.query_database(query)
-        return [x[0] for x in result]
-
-    def get_ingredients_seperated_by_handadd(self, recipe_id: int):
-        handadds = []
-        machineadds = []
-        ingredients = self.get_recipe_ingredients_by_id(recipe_id)
-        for ingredient in ingredients:
-            if ingredient[2]:
-                handadds.append(ingredient[3])
-            else:
-                machineadds.append(ingredient[3])
-        return handadds, machineadds
-
-    def get_multiple_recipe_names_from_ids(self, id_list: List[int]) -> List[str]:
-        questionmarks = ",".join(["?"] * len(id_list))
-        query = f"SELECT Name FROM Rezepte WHERE ID in ({questionmarks})"
-        result = self.handler.query_database(query, id_list)
-        return [x[0] for x in result]
-
-    def get_multiple_ingredient_ids_from_names(self, name_list: List[str]) -> List[int]:
+    # TODO: Check if this is nececary, or if just use the normal ingredeintes method?
+    def __get_multiple_ingredient_ids_from_names(self, name_list: List[str]) -> List[int]:
+        """Get all the ids for the selected names"""
         questionmarks = ",".join(["?"] * len(name_list))
         query = f"SELECT ID FROM Zutaten WHERE Name in ({questionmarks})"
         result = self.handler.query_database(query, name_list)
         return [x[0] for x in result]
 
     def get_consumption_data_lists_recipes(self):
+        """Return the recipe consumption data ready to export"""
         query = "SELECT Name, Anzahl, Anzahl_Lifetime FROM Rezepte"
         data = self.handler.query_database(query)
-        return self.convert_consumption_data(data)
+        return self.__convert_consumption_data(data)
 
     def get_consumption_data_lists_ingredients(self):
+        """Return the ingredient consumption data ready to export"""
         query = "SELECT Name, Verbrauch, Verbrauchsmenge FROM Zutaten"
         data = self.handler.query_database(query)
-        return self.convert_consumption_data(data)
+        return self.__convert_consumption_data(data)
 
-    def convert_consumption_data(self, data: List[List]):
+    def __convert_consumption_data(self, data: List[List]):
+        """Convert the data from the db cursor into needed csv format"""
         headers = [row[0] for row in data]
         resetable = [row[1] for row in data]
         lifetime = [row[2] for row in data]
         return [["date", *headers], [datetime.date.today(), *resetable], ["lifetime", *lifetime]]
 
-    def get_enabled_status(self, recipe_name: str) -> int:
-        query = "SELECT Enabled FROM Rezepte WHERE Name = ?"
-        return self.handler.query_database(query, (recipe_name,))[0][0]
-
     def get_available_ingredient_names(self) -> List[str]:
+        """Get the names for the available ingredients"""
         query = """SELECT Zutaten.Name FROM Zutaten
                 INNER JOIN Vorhanden ON Vorhanden.ID = Zutaten.ID"""
         data = self.handler.query_database(query)
         return [x[0] for x in data]
+
+    def get_available_ids(self) -> List[int]:
+        """Returns a list of the IDs of all available defined ingredients"""
+        query = "SELECT ID FROM Vorhanden"
+        result = self.handler.query_database(query)
+        return [x[0] for x in result]
 
     def get_bottle_data_bottle_window(self):
         query = """SELECT Zutaten.Name, Zutaten.Mengenlevel, Zutaten.ID, Zutaten.Flaschenvolumen
@@ -311,14 +217,14 @@ class DatabaseCommander:
         searchtuple = (ingredient_name, alcohollevel, volume, new_level, onlyhand, ingredient_id)
         self.handler.query_database(query, searchtuple)
 
-    def set_recipe_counter(self, recipe_name: str):
+    def increment_recipe_counter(self, recipe_name: str):
         query = """UPDATE OR IGNORE Rezepte
                 SET Anzahl_Lifetime = Anzahl_Lifetime + 1, 
                 Anzahl = Anzahl + 1 
                 WHERE Name = ?"""
         self.handler.query_database(query, (recipe_name,))
 
-    def set_ingredient_consumption(self, ingredient_name: str, ingredient_consumption: int):
+    def increment_ingredient_consumption(self, ingredient_name: str, ingredient_consumption: int):
         query = """UPDATE OR IGNORE Zutaten
                 SET Verbrauchsmenge = Verbrauchsmenge + ?, 
                 Verbrauch = Verbrauch + ?, 
@@ -329,7 +235,7 @@ class DatabaseCommander:
 
     def set_multiple_ingredient_consumption(self, ingredient_name_list: List[str], ingredient_consumption_list: List[int]):
         for ingredient_name, ingredient_consumption in zip(ingredient_name_list, ingredient_consumption_list):
-            self.set_ingredient_consumption(ingredient_name, ingredient_consumption)
+            self.increment_ingredient_consumption(ingredient_name, ingredient_consumption)
 
     def set_all_recipes_enabled(self):
         query = "UPDATE OR IGNORE Rezepte SET Enabled = 1"
@@ -367,7 +273,7 @@ class DatabaseCommander:
         self.handler.query_database(query, searchtuple)
 
     def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: List[str]):
-        ingredient_id = self.get_multiple_ingredient_ids_from_names(ingredient_names)
+        ingredient_id = self.__get_multiple_ingredient_ids_from_names(ingredient_names)
         questionmarks = ",".join(["(?)"] * len(ingredient_id))
         query = f"INSERT INTO Vorhanden(ID) VALUES {questionmarks}"
         self.handler.query_database(query, ingredient_id)
