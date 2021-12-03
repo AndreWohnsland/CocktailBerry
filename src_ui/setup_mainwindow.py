@@ -142,8 +142,10 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
         self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))
-        self.PBMplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LCustomMenge, "+", 100, 400, 25))
-        self.PBMminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LCustomMenge, "-", 100, 400, 25))
+        self.PBMplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(
+            self.LCustomMenge, "+", 100, 400, 25, lambda: maker.update_shown_recipe(self)))
+        self.PBMminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(
+            self.LCustomMenge, "-", 100, 400, 25, lambda: maker.update_shown_recipe(self)))
         self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
         self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients(self))
         self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes(self))
@@ -152,13 +154,13 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # Connect the Lists with the Functions
         self.LWZutaten.itemClicked.connect(lambda: ingredients.display_selected_ingredient(self))
         self.LWZutaten.currentTextChanged.connect(lambda: ingredients.display_selected_ingredient(self))
-        self.LWMaker.itemClicked.connect(lambda: maker.updated_clicked_recipe_maker(self))
-        self.LWMaker.currentTextChanged.connect(lambda: maker.updated_clicked_recipe_maker(self))
+        self.LWMaker.itemClicked.connect(lambda: maker.update_shown_recipe(self))
+        self.LWMaker.currentTextChanged.connect(lambda: maker.update_shown_recipe(self))
         self.LWRezepte.itemClicked.connect(lambda: recipes.load_selected_recipe_data(self))
         self.LWRezepte.currentTextChanged.connect(lambda: recipes.load_selected_recipe_data(self))
 
         # Connects the slider
-        self.HSIntensity.valueChanged.connect(lambda: maker.handle_alcohollevel_change(self))
+        self.HSIntensity.valueChanged.connect(lambda: maker.update_shown_recipe(self))
 
         # Disable some of the Tabs (for the UI_PARTYMODE, no one can access the recipes)
         if self.UI_PARTYMODE:

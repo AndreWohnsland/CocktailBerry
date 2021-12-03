@@ -1,9 +1,9 @@
-from typing import Any, List
+from typing import Any, Callable, List
 from PyQt5.QtCore import Qt
 
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
-from src.models import Ingredient
+from src.models import Cocktail, Ingredient
 from config.config_manager import shared
 
 
@@ -39,6 +39,7 @@ class DisplayController(DialogHandler):
         return Ingredient(None, ingredient_name, int(alcohollevel), int(volume), None, hand_add, selected_ingredient)
 
     def get_cocktail_data(self, w):
+        """Returns [name, volume, factor] from maker"""
         cocktail_volume = int(w.LCustomMenge.text())
         alcohol_faktor = 1 + (w.HSIntensity.value() / 100)
         cocktailname = ""
@@ -107,9 +108,10 @@ class DisplayController(DialogHandler):
     # UI "MANIPULATE" METHODS #
     ###########################
     # Misc
-    def plusminus(self, label, operator: str, minimal=0, maximal=1000, delta=10):
+    def plusminus(self, label, operator: str, minimal=0, maximal=1000, delta=10, side_effect: Callable = None):
         """ increases or decreases the value by a given amount in the boundaries
         operator: '+' or '-'
+        Also executes a sideeffect function, if one is given
         """
         try:
             value_ = int(label.text())
@@ -118,6 +120,8 @@ class DisplayController(DialogHandler):
         except ValueError:
             value_ = maximal if operator == "+" else minimal
         label.setText(str(value_))
+        if side_effect is not None:
+            side_effect()
 
     def set_display_settings(self, window_object, resize=True):
         """Checks dev environment, adjust cursor and resize accordingly, if resize is wished"""
@@ -288,23 +292,26 @@ class DisplayController(DialogHandler):
     def set_checkbox_value(self, checkbox, value):
         checkbox.setChecked(bool(value))
 
-    # label
-    def set_alcohol_level(self, w, value):
-        w.LAlkoholgehalt.setText(f"{value:.0f}%")
-
     # others
-    def fill_recipe_data_maker(self, w, display_data, total_volume, cocktailname):
-        w.LAlkoholname.setText(cocktailname)
+    def fill_recipe_data_maker(self, w, cocktail: Cocktail, total_volume: int):
+        w.LAlkoholname.setText(cocktail.name)
         # w.LIngredientHeader.setText("_" * 40)
         w.LMenge.setText(f"{total_volume} ml")
-        fields_ingredient = self.get_labels_maker_ingredients(w)[: len(display_data)]
-        fields_volume = self.get_labels_maker_volume(w)[: len(display_data)]
-        for field_ingredient, field_volume, (ingredient_name, volume) in zip(fields_ingredient, fields_volume, display_data):
-            if volume != "":
-                field_volume.setText(f" {volume} ml")
-            if ingredient_name == "HEADER":
+        w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.0f}%")
+        display_data = cocktail.get_machineadds()
+        hand = cocktail.get_handadds()
+        # when there is handadd, also build some additional data
+        if hand:
+            display_data.extend([""] + hand)
+        fields_ingredient = self.get_labels_maker_ingredients(w)
+        fields_volume = self.get_labels_maker_volume(w)
+        for field_ingredient, field_volume, ing in zip(fields_ingredient, fields_volume, display_data):
+            if isinstance(ing, str):
                 ingredient_name = UI_LANGUAGE.get_add_self()
                 field_ingredient.setStyleSheet("color: rgb(170, 170, 170);")  # margin-top: 5px;
+            else:
+                field_volume.setText(f" {ing.amount} ml")
+                ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
 
     def clear_recipe_data_maker(self, w, select_other_item=True):
