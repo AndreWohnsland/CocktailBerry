@@ -27,8 +27,10 @@ class DatabaseCommander:
 
     def get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
-        query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID, Zutaten.Alkoholgehalt
-                FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID 
+        query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID,
+                Zutaten.Alkoholgehalt, Belegung.Flasche, Zutaten.Mengenlevel
+                FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID
+                LEFT JOIN Belegung ON Belegung.ID = Zutaten.ID
                 WHERE Zusammen.Rezept_ID = ?"""
         return self.handler.query_database(query, (recipe_id,))
 
@@ -69,10 +71,9 @@ class DatabaseCommander:
         ingredient_data = self.get_recipe_ingredients_by_id(recipe_id)
         return Cocktail(
             recipe_id, name, alcohol, amount, comment, bool(enabled),
-            [IngredientData(ing[3], ing[0], ing[4], ing[1], bool(ing[2])) for ing in ingredient_data]
+            [IngredientData(i[3], i[0], i[4], i[1], bool(i[2]), i[5], i[6]) for i in ingredient_data]
         )
 
-    # TODO: use this object in further code for better code usage
     def build_cocktail_dict(self) -> Dict[str, Cocktail]:
         """Bilds a dict of all cocktails with name as key and object as value"""
         cocktails = {}
