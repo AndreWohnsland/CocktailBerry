@@ -3,7 +3,7 @@ import os
 import shutil
 from pathlib import Path
 import sqlite3
-from typing import Dict, List, Union
+from typing import List, Union
 
 from src.models import Cocktail, Ingredient, IngredientData
 
@@ -74,14 +74,6 @@ class DatabaseCommander:
             [IngredientData(i[3], i[0], i[4], i[1], bool(i[2]), i[5], i[6]) for i in ingredient_data]
         )
 
-    def build_cocktail_dict(self) -> Dict[str, Cocktail]:
-        """Bilds a dict of all cocktails with name as key and object as value"""
-        cocktails = {}
-        recipe_data = self.get_all_recipes_properties()
-        for recipe in recipe_data:
-            cocktails[recipe[1]] = self.build_cocktail(*recipe)
-        return cocktails
-
     def get_cocktail(self, search: Union[str, int]) -> Union[Cocktail, None]:
         """Get all neeeded data for the cocktail from ID or name"""
         if isinstance(search, str):
@@ -95,6 +87,21 @@ class DatabaseCommander:
             return None
         recipe = data[0]
         return self.build_cocktail(*recipe)
+
+    def get_multiple_cocktails(self, searchlist: List[Union[str, int]]):
+        """Returns all cocktails for the name / id in the list"""
+        return [self.get_cocktail(x) for x in searchlist]
+
+    def get_all_cocktails(self, get_enabled=True, get_disabled=True):
+        """Bilds a list of all cocktails, option to filter by enabled status"""
+        cocktails = []
+        recipe_data = self.get_all_recipes_properties()
+        for recipe in recipe_data:
+            enabled = bool(recipe[5])
+            if (enabled and not get_enabled) or (not enabled and not get_disabled):
+                continue
+            cocktails.append(self.build_cocktail(*recipe))
+        return cocktails
 
     def get_recipe_ingredients_for_comment(self, recipe_name: str):
         """Return data for handadd"""
