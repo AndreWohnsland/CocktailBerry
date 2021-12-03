@@ -60,7 +60,7 @@ def __register_bottles(w):
     """ Insert the selected Bottleorder into the DB. """
     # this import is neccecary on function level, otherwise there would be a circular import
     # pylint: disable=import-outside-toplevel
-    from src.maker import refresh_recipe_maker_view
+    from src.maker import evaluate_recipe_maker_view
 
     # Checks where are entries and appends them to a list
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
@@ -70,7 +70,7 @@ def __register_bottles(w):
     refresh_bottle_information(w)
     DP_CONTROLLER.clear_list_widget_maker(w)
     DP_CONTROLLER.clear_recipe_data_maker(w, False)
-    refresh_recipe_maker_view(w)
+    evaluate_recipe_maker_view(w)
     set_fill_level_bars(w)
 
 

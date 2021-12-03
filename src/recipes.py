@@ -6,13 +6,13 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 from collections import Counter
 from typing import List
 
-from src.maker import refresh_recipe_maker_view
+from src.maker import evaluate_recipe_maker_view
 from src.error_suppression import logerror
 
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
-from config.config_manager import shared
 from src.models import Ingredient
+from config.config_manager import shared
 
 
 @logerror
@@ -128,7 +128,7 @@ def enter_recipe(w, newrecipe):
     DP_CONTROLLER.fill_list_widget_recipes(w, [recipe_name])
     DP_CONTROLLER.clear_recipe_data_maker(w, select_other_item=False)
     if enabled:
-        refresh_recipe_maker_view(w, [recipe_id])
+        evaluate_recipe_maker_view(w, [recipe_id])
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
 
     if newrecipe:
@@ -184,6 +184,6 @@ def enableall_recipes(w):
     """Set all recipes to enabled """
     disabled_ids = DB_COMMANDER.get_disabled_recipes_id()
     DB_COMMANDER.set_all_recipes_enabled()
-    refresh_recipe_maker_view(w, disabled_ids)
+    evaluate_recipe_maker_view(w, disabled_ids)
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
     DP_CONTROLLER.say_all_recipes_enabled()

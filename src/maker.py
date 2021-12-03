@@ -20,29 +20,18 @@ LOG_HANDLER = LoggerHandler("maker_module", "production_logs")
 
 
 @logerror
-def refresh_recipe_maker_view(w, possible_recipes_id=None):
+def evaluate_recipe_maker_view(w, possible_recipes_id=None):
     """ Goes through every recipe in the list or all recipes if none given
     Checks if all ingredients are registered, if so, adds it to the list widget
     """
     if possible_recipes_id is None:
-        possible_recipes_id = DB_COMMANDER.get_enabled_recipes_id()
+        cocktails = DB_COMMANDER.get_all_cocktails(get_disabled=False)
+    else:
+        cocktails = DB_COMMANDER.get_multiple_cocktails(possible_recipes_id)
 
-    available_recipes_ids = []
-    bottle_ids = set(DB_COMMANDER.get_ids_at_bottles())
-    handadds_ids = set(DB_COMMANDER.get_handadd_ids())
-
-    for recipe_id in possible_recipes_id:
-        recipe_handadds, recipe_machineadds = DB_COMMANDER.get_ingredients_seperated_by_handadd(recipe_id)
-        recipe_handadds = set(recipe_handadds)
-        recipe_machineadds = set(recipe_machineadds)
-
-        if (not recipe_handadds.issubset(handadds_ids)) or (not recipe_machineadds.issubset(bottle_ids)):
-            continue
-
-        available_recipes_ids.append(recipe_id)
-
-    recipe_names = DB_COMMANDER.get_multiple_recipe_names_from_ids(available_recipes_ids)
-    DP_CONTROLLER.fill_list_widget_maker(w, recipe_names)
+    handadds_ids = DB_COMMANDER.get_handadd_ids()
+    available_cocktail_names = [x.name for x in cocktails if x.is_possible(handadds_ids)]
+    DP_CONTROLLER.fill_list_widget_maker(w, available_cocktail_names)
 
 
 @logerror

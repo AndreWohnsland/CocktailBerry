@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 
 from ui_elements.available import Ui_available
-from src.maker import refresh_recipe_maker_view
+from src.maker import evaluate_recipe_maker_view
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
@@ -43,7 +43,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         DB_COMMANDER.insert_multiple_existing_handadd_ingredients_by_name(ingredient_names)
         # reloads the maker screen and updates the shown available recipes
         self.mainscreen.LWMaker.clear()
-        refresh_recipe_maker_view(self.mainscreen)
+        evaluate_recipe_maker_view(self.mainscreen)
         DP_CONTROLLER.clear_recipe_data_maker(self.mainscreen)
         self.close()
 

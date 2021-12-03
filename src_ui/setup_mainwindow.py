@@ -187,7 +187,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # Load Existing Recipes from DB into Recipe List
         recipes.update_recipe_view(self)
         # Load Possible Recipes Into Maker List
-        maker.refresh_recipe_maker_view(self)
+        maker.evaluate_recipe_maker_view(self)
         # Load the Progressbar
         bottles.set_fill_level_bars(self)
 
