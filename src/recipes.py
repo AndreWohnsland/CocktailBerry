@@ -73,7 +73,7 @@ def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcoh
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
     for ingredient in ingredient_data:
         is_alcoholic = int(ingredient.alcohol > 0)
-        DB_COMMANDER.insert_recipe_data(recipe_id, ingredient.id, ingredient.recipe_volume,
+        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.recipe_volume,
                                         is_alcoholic, ingredient.recipe_hand)
     return cocktail
 
