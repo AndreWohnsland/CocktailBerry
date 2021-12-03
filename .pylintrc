@@ -1,5 +1,6 @@
 [MESSAGES CONTROL]
 disable=missing-docstring
+disable=no-name-in-module
 
 [FORMAT]
 # Good variable names which should always be accepted, separated by a comma
