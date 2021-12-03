@@ -61,7 +61,7 @@ class Cocktail():
         """Returns a list of all machine Ingredients"""
         return [x for x in self.adjusted_ingredients if not x.hand]
 
-    def is_possible(self, hand_available):
+    def is_possible(self, hand_available: List[int]):
         """Returns if the recipe is possible with given aditional hand add ingredients"""
         machine = self.get_machineadds()
         for ing in machine:
@@ -82,7 +82,7 @@ class Cocktail():
                 return [ing.name, ing.fill_level, ing.amount]
         return None
 
-    def scale_cocktail(self, amount, alcohol_facor):
+    def scale_cocktail(self, amount: int, alcohol_facor: float):
         """Scales the base cocktail recipe to given volume and alcohol factor
         The scaling is saved in the adjusted_* properties"""
         scaled_amount = 0
