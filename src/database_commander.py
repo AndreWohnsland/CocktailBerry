@@ -92,7 +92,7 @@ class DatabaseCommander:
         """Returns all cocktails for the name / id in the list"""
         return [self.get_cocktail(x) for x in searchlist]
 
-    def get_all_cocktails(self, get_enabled=True, get_disabled=True):
+    def get_all_cocktails(self, get_enabled=True, get_disabled=True) -> List[Cocktail]:
         """Bilds a list of all cocktails, option to filter by enabled status"""
         cocktails = []
         recipe_data = self.get_all_recipes_properties()
@@ -361,9 +361,9 @@ class DatabaseCommander:
         searchtuple = (name, alcohollevel, volume, comment, enabled)
         self.handler.query_database(query, searchtuple)
 
-    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, isalcoholic: int, hand_add: int):
+    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, is_alcoholic: int, hand_add: int):
         query = "INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, ?)"
-        searchtuple = (recipe_id, ingredient_id, ingredient_volume, isalcoholic, hand_add)
+        searchtuple = (recipe_id, ingredient_id, ingredient_volume, is_alcoholic, hand_add)
         self.handler.query_database(query, searchtuple)
 
     def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: List[str]):
