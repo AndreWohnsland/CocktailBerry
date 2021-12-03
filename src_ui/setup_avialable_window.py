@@ -24,8 +24,8 @@ class AvailableWindow(QMainWindow, Ui_available):
         self.PBRemove.clicked.connect(lambda: self.changeingredient(self.LWAlle, self.LWVorhanden))
         # gets the available ingredients out of the DB and assigns them to the LW
         ingredient_available = DB_COMMANDER.get_available_ingredient_names()
-        ingredient_all = DB_COMMANDER.get_ingredient_names()
-        entrylist = list(set(ingredient_all) - set(ingredient_available))
+        ingredients = DB_COMMANDER.get_all_ingredients()
+        entrylist = list({x.name for x in ingredients} - set(ingredient_available))
         DP_CONTROLLER.fill_list_widget(self.LWVorhanden, ingredient_available)
         DP_CONTROLLER.fill_list_widget(self.LWAlle, entrylist)
         UI_LANGUAGE.adjust_available_windos(self)

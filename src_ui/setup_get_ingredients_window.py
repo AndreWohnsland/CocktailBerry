@@ -29,7 +29,8 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.PBminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LAmount, "-", 20, 100, 10))
         self.PBAusgeben.clicked.connect(self.ausgeben_clicked)
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
-        bottles = DB_COMMANDER.get_ingredients_at_bottles_without_empty_ones()
+        all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
+        bottles = [x for x in all_bottles if x != ""]
         DP_CONTROLLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
         UI_LANGUAGE.adjust_bonusingredient_screen(self)
         self.showFullScreen()
@@ -52,7 +53,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
             return
 
         volume, _, _ = RPI_CONTROLLER.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name, False)
-        DB_COMMANDER.set_ingredient_consumption(ingredient_name, volume[0])
+        DB_COMMANDER.increment_ingredient_consumption(ingredient_name, volume[0])
         set_fill_level_bars(self.mainscreen)
         self.mainscreen.prow_close()
         shared.cocktail_started = False

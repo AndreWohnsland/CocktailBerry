@@ -185,7 +185,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # Load current Bottles into the Combobuttons
         bottles.read_in_bottles(self)
         # Load Existing Recipes from DB into Recipe List
-        recipes.update_recipe_view(self)
+        recipes.load_recipe_view_names(self)
         # Load Possible Recipes Into Maker List
         maker.evaluate_recipe_maker_view(self)
         # Load the Progressbar

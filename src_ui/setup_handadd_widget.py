@@ -22,10 +22,10 @@ class HandaddWidget(QDialog, Ui_handadds):
         self.mainscreen = parent
         self.setWindowIcon(QIcon(parent.icon_path))
         # generating a sorted by name list for all ingredients, all handadd first
-        hand_list = DB_COMMANDER.get_ingredient_names_hand()
-        machine_list = DB_COMMANDER.get_ingredient_names_machine()
-        hand_list.sort()
-        machine_list.sort()
+        hand_ingredients = DB_COMMANDER.get_all_ingredients(get_machine=False)
+        machine_ingredients = DB_COMMANDER.get_all_ingredients(get_hand=False)
+        hand_list = sorted([x.name for x in hand_ingredients])
+        machine_list = sorted([x.name for x in machine_ingredients])
         ingredient_list = hand_list + machine_list
         self.comboboxes_handadd = [getattr(self, f"CBHandadd{x}") for x in range(1, 6)]
         DP_CONTROLLER.fill_multiple_combobox(self.comboboxes_handadd, ingredient_list, sort_items=False)
@@ -47,7 +47,7 @@ class HandaddWidget(QDialog, Ui_handadds):
 
     def fill_elements(self):
         for i, row in enumerate(shared.handaddlist, start=1):
-            ingredient_name = DB_COMMANDER.get_ingredient_name_from_id(row[0])
+            ingredient_name = DB_COMMANDER.get_ingredient(row[0]).name
             combobox = getattr(self, f"CBHandadd{i}")
             lineedit = getattr(self, f"LEHandadd{i}")
             DP_CONTROLLER.set_combobox_item(combobox, ingredient_name)

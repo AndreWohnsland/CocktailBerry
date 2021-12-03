@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
-from src.models import Cocktail, Ingredient
+from src.models import Cocktail, Ingredient, IngredientData
 from config.config_manager import shared
 
 
@@ -350,20 +350,24 @@ class DisplayController(DialogHandler):
         w.LWRezepte.blockSignals(False)
         w.LWMaker.blockSignals(False)
 
-    def set_recipe_handadd_comment(self, w, handadd_data):
+    # TODO: Still fix this shared.handaddlist mess ...
+    def set_recipe_handadd_comment(self, w, handadd_data: List[IngredientData]):
         comment = ""
-        for ingredient_name, volume, ingredient_id, alcoholic, alcohol_level in handadd_data:
-            comment += f"{volume} ml {ingredient_name}, "
-            shared.handaddlist.append([ingredient_id, volume, alcoholic, 1, alcohol_level])
+        for ing in handadd_data:
+            comment += f"{ing.amount} ml {ing.name}, "
+            shared.handaddlist.append([ing.id, ing.amount, bool(ing.alcohol), 1, ing.alcohol])
         comment = comment[:-2]
         w.LEKommentar.setText(comment)
 
-    def set_recipe_data(self, w, recipe_name, ingredient_names, ingredient_volumes, enabled, handadd_data):
-        w.CHBenabled.setChecked(bool(enabled))
-        self.set_multiple_combobox_items(self.get_comboboxes_recipes(w)[: len(ingredient_names)], ingredient_names)
-        self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(ingredient_volumes)], ingredient_volumes)
-        w.LECocktail.setText(recipe_name)
-        self.set_recipe_handadd_comment(w, handadd_data)
+    def set_recipe_data(self, w, cocktail: Cocktail):
+        w.CHBenabled.setChecked(bool(cocktail.enabled))
+        machine_adds = cocktail.get_machineadds()
+        names = [x.name for x in machine_adds]
+        volumes = [x.amount for x in machine_adds]
+        self.set_multiple_combobox_items(self.get_comboboxes_recipes(w)[: len(names)], names)
+        self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(volumes)], volumes)
+        w.LECocktail.setText(cocktail.name)
+        self.set_recipe_handadd_comment(w, cocktail.get_handadds())
 
     # Some more "specific" function, not using generic but specified field sets
     def set_label_bottles(self, w, label_names):
