@@ -14,6 +14,7 @@ class Ingredient():
     hand: Union[bool, int]
     selected: str = None
     recipe_volume: int = None
+    recipe_hand: Union[bool, int] = None
 
 
 @dataclass
@@ -49,7 +50,7 @@ class Cocktail():
     def __post_init__(self):
         self.ingredients.sort()
         # shallow copy will keep same Ingredients as references
-        self.adjusted_ingredients = copy.deepcopy(self.ingredients.copy)
+        self.adjusted_ingredients = copy.deepcopy(self.ingredients)
         self.adjusted_alcohol = self.alcohol
         self.adjusted_amount = self.amount
 
