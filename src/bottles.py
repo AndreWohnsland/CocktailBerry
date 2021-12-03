@@ -39,23 +39,22 @@ def refresh_bottle_cb(w):
     shared.old_ingredient = new_order
 
 
-@logerror
 def calculate_combobox_bottles(w):
     """ Fills each bottle combobox with the possible remaining options
     """
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     used_ingredients = shared.old_ingredient
-    possible_ingredients = DB_COMMANDER.get_ingredient_names_machine()
+    possible_ingredients = DB_COMMANDER.get_all_ingredients(get_hand=False)
+    possible_names = [x.name for x in possible_ingredients]
 
     shown_ingredients = []
     for row, _ in enumerate(used_ingredients):
         used_without_self = {x for i, x in enumerate(used_ingredients) if i != row}
-        shown_ingredients.append(sorted(set(possible_ingredients) - used_without_self))
+        shown_ingredients.append(sorted(set(possible_names) - used_without_self))
 
     DP_CONTROLLER.fill_multiple_combobox_individually(combobox_bottles, shown_ingredients, True)
 
 
-@logerror
 def __register_bottles(w):
     """ Insert the selected Bottleorder into the DB. """
     # this import is neccecary on function level, otherwise there would be a circular import
@@ -74,7 +73,6 @@ def __register_bottles(w):
     set_fill_level_bars(w)
 
 
-@logerror
 def read_in_bottles(w):
     """ Reads the Bottleorder into the BottleTab. """
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
@@ -82,7 +80,6 @@ def read_in_bottles(w):
     DP_CONTROLLER.set_multiple_combobox_items(combobox_bottles, ingredient_names)
 
 
-@logerror
 def refresh_bottle_information(w):
     """ Loads or updates the Labels of the Bottles (Volumelevel). """
     label_names = DB_COMMANDER.get_ingredients_at_bottles()
@@ -90,7 +87,6 @@ def refresh_bottle_information(w):
     DP_CONTROLLER.set_label_bottles(w, label_names)
 
 
-@logerror
 def renew_checked_bottles(w):
     """ Renews all the Bottles which are checked as new. """
     pushbutton_new_list = DP_CONTROLLER.get_pushbottons_newbottle(w)
@@ -101,7 +97,6 @@ def renew_checked_bottles(w):
     DP_CONTROLLER.say_bottles_renewed()
 
 
-@logerror
 def set_fill_level_bars(w):
     """ Gets the proportion of actual and maximal volume of each connected bottle and asigns it"""
     progressbars = DP_CONTROLLER.get_levelbar_bottles(w)
@@ -109,7 +104,6 @@ def set_fill_level_bars(w):
     DP_CONTROLLER.set_progress_bar_values(progressbars, fill_levels)
 
 
-@logerror
 def clean_machine(w):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
     if not DP_CONTROLLER.check_bottles_password(w):

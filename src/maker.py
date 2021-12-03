@@ -28,7 +28,7 @@ def evaluate_recipe_maker_view(w, cocktails: List[Cocktail] = None):
     if cocktails is None:
         cocktails = DB_COMMANDER.get_all_cocktails(get_disabled=False)
 
-    handadds_ids = DB_COMMANDER.get_handadd_ids()
+    handadds_ids = DB_COMMANDER.get_available_ids()
     available_cocktail_names = [x.name for x in cocktails if x.is_possible(handadds_ids)]
     DP_CONTROLLER.fill_list_widget_maker(w, available_cocktail_names)
 
@@ -56,7 +56,7 @@ def __build_comment_maker(cocktail: Cocktail):
     return comment
 
 
-def __generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_time):
+def __generate_maker_log_entry(cocktail_volume: int, cocktail_name: str, taken_time: float, max_time: float):
     """Enters a log entry for the made cocktail"""
     volume_string = f"{cocktail_volume} ml"
     cancel_log_addition = ""
@@ -89,7 +89,7 @@ def prepare_cocktail(w):
     ingredient_volumes = [x.amount for x in cocktail.get_machineadds()]
     consumption, taken_time, max_time = RPI_CONTROLLER.make_cocktail(
         w, ingredient_bottles, ingredient_volumes, cocktailname)
-    DB_COMMANDER.set_recipe_counter(cocktailname)
+    DB_COMMANDER.increment_recipe_counter(cocktailname)
     __generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
 
     # only post if cocktail was made over 50%

@@ -19,7 +19,7 @@ from config.config_manager import shared
 def fill_recipe_box_with_ingredients(w):
     """ Asigns all ingredients to the Comboboxes in the recipe tab """
     comboboxes_recipe = DP_CONTROLLER.get_comboboxes_recipes(w)
-    ingredient_list = DB_COMMANDER.get_ingredient_names_machine()
+    ingredient_list = [x.name for x in DB_COMMANDER.get_all_ingredients(get_hand=False)]
     DP_CONTROLLER.fill_multiple_combobox(comboboxes_recipe, ingredient_list, clear_first=True)
 
 
@@ -136,9 +136,10 @@ def enter_recipe(w, newrecipe):
 
 
 @logerror
-def update_recipe_view(w):
+def load_recipe_view_names(w):
     """ Updates the ListWidget in the recipe Tab. """
-    recipe_list = DB_COMMANDER.get_recipes_name()
+    cocktails = DB_COMMANDER.get_all_cocktails()
+    recipe_list = [x.name for x in cocktails]
     DP_CONTROLLER.refill_recipes_list_widget(w, recipe_list)
 
 
@@ -151,13 +152,8 @@ def load_selected_recipe_data(w):
 
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
     # TODO: Adjsut to new class object and the further code
-    machineadd_data, _ = DB_COMMANDER.get_recipe_ingredients_by_name_seperated_data(recipe_name)
-    ingredient_names = [data[0] for data in machineadd_data]
-    ingredient_volumes = [data[1] for data in machineadd_data]
-    # This separation is needed here bc above data is only name, volume but for handadd also other parameters are needed
-    handadd_data = DB_COMMANDER.get_recipe_ingredients_for_comment(recipe_name)
-    enabled = DB_COMMANDER.get_enabled_status(recipe_name)
-    DP_CONTROLLER.set_recipe_data(w, recipe_name, ingredient_names, ingredient_volumes, enabled, handadd_data)
+    cocktail = DB_COMMANDER.get_cocktail(recipe_name)
+    DP_CONTROLLER.set_recipe_data(w, cocktail)
 
 
 @logerror

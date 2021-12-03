@@ -90,9 +90,9 @@ def __change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
 def load_ingredients(w):
     """ Load all ingredientnames into the ListWidget """
     DP_CONTROLLER.clear_list_widget_ingredients(w)
-    ingredient_names = DB_COMMANDER.get_ingredient_names()
+    ingredients = DB_COMMANDER.get_all_ingredients()
     _, _, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
-    DP_CONTROLLER.fill_list_widget(ingredient_list_widget, ingredient_names)
+    DP_CONTROLLER.fill_list_widget(ingredient_list_widget, [x.name for x in ingredients])
 
 
 def delete_ingredient(w):
