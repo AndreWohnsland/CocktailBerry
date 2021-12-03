@@ -7,6 +7,7 @@ from src.bottles import set_fill_level_bars
 from src.error_suppression import logerror
 
 from src.database_commander import DB_COMMANDER
+from src.models import Cocktail
 from src.rpi_controller import RPI_CONTROLLER
 from src.display_controller import DP_CONTROLLER
 from src.service_handler import SERVICE_HANDLER
@@ -45,76 +46,26 @@ def refresh_recipe_maker_view(w, possible_recipes_id=None):
 
 
 @logerror
-def updated_clicked_recipe_maker(w):
+def update_shown_recipe(w):
     """ Updates the maker display Data with the selected recipe"""
-    cocktailname, _, _ = DP_CONTROLLER.get_cocktail_data(w)
+    cocktailname, amount, factor = DP_CONTROLLER.get_cocktail_data(w)
     if not cocktailname:
         return
 
     DP_CONTROLLER.clear_recipe_data_maker(w)
-    handle_alcohollevel_change(w)
-
-    machineadd_data, handadd_data = DB_COMMANDER.get_recipe_ingredients_by_name_seperated_data(cocktailname)
-    total_volume = sum([v[1] for v in machineadd_data] + [v[1] for v in handadd_data])
-    ingredient_data = machineadd_data
-    if handadd_data:
-        ingredient_data.append(["HEADER", ""])
-        ingredient_data.extend(handadd_data)
-
-    DP_CONTROLLER.fill_recipe_data_maker(w, ingredient_data, total_volume, cocktailname)
+    cocktail = DB_COMMANDER.get_cocktail(cocktailname)
+    cocktail.scale_cocktail(amount, factor)
+    DP_CONTROLLER.fill_recipe_data_maker(w, cocktail, amount)
 
 
-def __create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume):
-    """Returns the comment and the machinedata if enough ingredients are there"""
-    adjusted_data = []
-    for ingredient_name, ingredient_volume, ingredient_bottle, ingredient_alcoholic, ingredient_level in ingredient_data:
-        factor = alcohol_faktor if ingredient_alcoholic else 1
-        adjusted_data.append([ingredient_name, ingredient_volume * factor, ingredient_bottle, ingredient_level])
-    total_volume = sum([x[1] for x in adjusted_data])
-    volume_factor = cocktail_volume / total_volume
-    update_data, volume_list, bottle_list, comment_data, error_data = __scale_and_sort_ingredient_data(
-        adjusted_data, volume_factor)
-    comment = __build_comment_maker(comment_data)
-    return update_data, volume_list, bottle_list, comment, error_data
-
-
-def __scale_and_sort_ingredient_data(ingredient_data, volume_factor):
-    """Scale all ingrediets by the volume factor, sorts them into bottle and volume"""
-    bottle_data = []
-    comment_data = []
-    bottle_list = []
-    volume_list = []
-    for ingredient_name, ingredient_volume, ingredient_bottle, ingredient_level in ingredient_data:
-        adjusted_volume = round(ingredient_volume * volume_factor)
-        if ingredient_bottle:
-            if not __enough_ingredient(ingredient_level, adjusted_volume):
-                error_data = [ingredient_name, ingredient_level, round(adjusted_volume, 0)]
-                return [], [], [], "", error_data
-            bottle_list.append(ingredient_bottle)
-            volume_list.append(adjusted_volume)
-            bottle_data.append([ingredient_name, adjusted_volume])
-        else:
-            comment_data.append([ingredient_name, adjusted_volume])
-        update_data = bottle_data + comment_data
-    return update_data, volume_list, bottle_list, comment_data, []
-
-
-def __build_comment_maker(comment_data):
+def __build_comment_maker(cocktail: Cocktail):
     """Build the additional comment for the completion message (if there are handadds)"""
     comment = ""
-    length_desc = sorted(comment_data, key=lambda x: len(x[0]), reverse=True)
-    for ingredient_name, ingredient_volume in length_desc:
-        comment += f"\n~{ingredient_volume:.0f} ml {ingredient_name}"
+    hand_add = cocktail.get_handadds()
+    length_desc = sorted(hand_add, key=lambda x: len(x.name), reverse=True)
+    for ing in length_desc:
+        comment += f"\n~{ing.amount:.0f} ml {ing.name}"
     return comment
-
-
-def __enough_ingredient(level, needed_volume):
-    """Checks if the needed volume is there
-    Accepts if there is at least 80% of needed volume
-    to be more efficient with the remainder volume in the bottle"""
-    if needed_volume * 0.8 > level:
-        return False
-    return True
 
 
 def __generate_maker_log_entry(cocktail_volume, cocktail_name, taken_time, max_time):
@@ -135,15 +86,19 @@ def prepare_cocktail(w):
     if not cocktailname:
         DP_CONTROLLER.say_no_recipe_selected()
         return
-    ingredient_data = DB_COMMANDER.get_recipe_ingredients_with_bottles(cocktailname)
-    production_props = __create_recipe_production_properties(ingredient_data, alcohol_faktor, cocktail_volume)
-    update_data, ingredient_volumes, ingredient_bottles, comment, error_data = production_props
-    if error_data:
-        DP_CONTROLLER.say_not_enough_ingredient_volume(error_data[0], error_data[1], error_data[2])
+
+    # Gets and scales cocktail, check if fill level is enough
+    cocktail = DB_COMMANDER.get_cocktail(cocktailname)
+    cocktail.scale_cocktail(cocktail_volume, alcohol_faktor)
+    error = cocktail.enough_fill_level()
+    if error is not None:
+        DP_CONTROLLER.say_not_enough_ingredient_volume(*error)
         DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
         return
 
     print(f"Preparing {cocktail_volume} ml {cocktailname}")
+    ingredient_bottles = [x.bottle for x in cocktail.get_machineadds()]
+    ingredient_volumes = [x.amount for x in cocktail.get_machineadds()]
     consumption, taken_time, max_time = RPI_CONTROLLER.make_cocktail(
         w, ingredient_bottles, ingredient_volumes, cocktailname)
     DB_COMMANDER.set_recipe_counter(cocktailname)
@@ -151,18 +106,23 @@ def prepare_cocktail(w):
 
     # only post if cocktail was made over 50%
     readiness = taken_time / max_time
+    real_volume = round(cocktail_volume * readiness)
     if readiness >= 0.5:
-        real_volume = round(cocktail_volume * readiness)
         SERVICE_HANDLER.post_team_data(shared.selected_team, real_volume)
         SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, real_volume)
 
-    if shared.make_cocktail:
-        DB_COMMANDER.set_multiple_ingredient_consumption([x[0] for x in update_data], [x[1] for x in update_data])
-        DP_CONTROLLER.say_cocktail_ready(comment)
-    else:
-        consumption_names = [x[0] for x in update_data][: len(consumption)]
-        DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption)
+    # the cocktail was canceled!
+    if not shared.make_cocktail:
+        consumption_names = [x.name for x in cocktail.get_machineadds()]
+        consumption_amount = consumption
+        DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
         DP_CONTROLLER.say_cocktail_canceled()
+    else:
+        consumption_names = [x.name for x in cocktail.adjusted_ingredients]
+        consumption_amount = [x.amount for x in cocktail.adjusted_ingredients]
+        DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
+        comment = __build_comment_maker(cocktail)
+        DP_CONTROLLER.say_cocktail_ready(comment)
 
     set_fill_level_bars(w)
     DP_CONTROLLER.reset_alcohol_slider(w)
@@ -173,21 +133,3 @@ def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
     shared.make_cocktail = False
     print("Canceling Recipe!")
-
-
-@logerror
-def handle_alcohollevel_change(w):
-    """ Recalculates the alcoholpercentage of the drink with the adjusted Value from the slider. """
-    cocktailname, _, alcohol_faktor = DP_CONTROLLER.get_cocktail_data(w)
-    if not cocktailname:
-        return
-
-    recipe_data = DB_COMMANDER.get_recipe_ingredients_by_name(cocktailname)
-    total_volume = 0
-    volume_concentration = 0
-    for _, volume, _, concentration in recipe_data:
-        factor_volume = 1 if concentration == 0 else alcohol_faktor
-        total_volume += volume * factor_volume
-        volume_concentration += volume * factor_volume * concentration
-    alcohol_level = volume_concentration / total_volume
-    DP_CONTROLLER.set_alcohol_level(w, alcohol_level)
