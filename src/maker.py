@@ -3,6 +3,7 @@
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
+from typing import List
 from src.bottles import set_fill_level_bars
 from src.error_suppression import logerror
 
@@ -20,14 +21,12 @@ LOG_HANDLER = LoggerHandler("maker_module", "production_logs")
 
 
 @logerror
-def evaluate_recipe_maker_view(w, possible_recipes_id=None):
+def evaluate_recipe_maker_view(w, cocktails: List[Cocktail] = None):
     """ Goes through every recipe in the list or all recipes if none given
     Checks if all ingredients are registered, if so, adds it to the list widget
     """
-    if possible_recipes_id is None:
+    if cocktails is None:
         cocktails = DB_COMMANDER.get_all_cocktails(get_disabled=False)
-    else:
-        cocktails = DB_COMMANDER.get_multiple_cocktails(possible_recipes_id)
 
     handadds_ids = DB_COMMANDER.get_handadd_ids()
     available_cocktail_names = [x.name for x in cocktails if x.is_possible(handadds_ids)]
