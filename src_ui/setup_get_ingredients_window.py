@@ -5,11 +5,14 @@ from PyQt5.QtWidgets import QDialog
 from ui_elements.bonusingredient import Ui_addingredient
 from config.config_manager import shared
 
+from src.logger_handler import LoggerHandler
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.rpi_controller import RPI_CONTROLLER
 from src.bottles import set_fill_level_bars
 from src.dialog_handler import UI_LANGUAGE
+
+LOG_HANDLER = LoggerHandler("additional_ingredient", "production_logs")
 
 
 class GetIngredientWindow(QDialog, Ui_addingredient):
@@ -52,8 +55,10 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
             self.mainscreen.tabWidget.setCurrentIndex(3)
             return
 
-        volume, _, _ = RPI_CONTROLLER.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name, False)
-        DB_COMMANDER.increment_ingredient_consumption(ingredient_name, volume[0])
+        made_volume, _, _ = RPI_CONTROLLER.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name, False)
+        DB_COMMANDER.increment_ingredient_consumption(ingredient_name, made_volume[0])
         set_fill_level_bars(self.mainscreen)
+        volume_string = f"{volume} ml"
+        LOG_HANDLER.log_event("INFO", f"{volume_string:6} | {ingredient_name}")
         self.mainscreen.prow_close()
         shared.cocktail_started = False

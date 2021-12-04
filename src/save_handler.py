@@ -4,9 +4,11 @@ import csv
 
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
+from src.logger_handler import LoggerHandler
 from src.service_handler import SERVICE_HANDLER
 
 DIRPATH = os.path.dirname(os.path.abspath(__file__))
+logger = LoggerHandler("save_handler", "production_logs")
 
 
 class SaveHandler:
@@ -17,6 +19,7 @@ class SaveHandler:
         consumption_list = DB_COMMANDER.get_consumption_data_lists_ingredients()
         self.save_quant("Zutaten_export.csv", consumption_list)
         DB_COMMANDER.delete_consumption_ingredients()
+        logger.log_event("INFO", "Ingredient data was exported")
 
     def export_recipes(self, w):
         if not DP_CONTROLLER.check_recipe_password(w):
@@ -25,6 +28,7 @@ class SaveHandler:
         consumption_list = DB_COMMANDER.get_consumption_data_lists_recipes()
         self.save_quant("Rezepte_export.csv", consumption_list)
         DB_COMMANDER.delete_consumption_recipes()
+        logger.log_event("INFO", "Recipe data was exported")
 
     def save_quant(self, filename, data):
         """ Saves all the amounts of the ingredients/recipes to a csv and reset the counter to zero"""

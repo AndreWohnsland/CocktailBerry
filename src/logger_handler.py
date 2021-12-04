@@ -33,3 +33,6 @@ class LoggerHandler:
 
     def log_start_program(self):
         self.log_header("INFO", "Starting the Programm")
+
+    def log_exception(self, message):
+        self.logger.exception(message)

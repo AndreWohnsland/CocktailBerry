@@ -350,12 +350,11 @@ class DisplayController(DialogHandler):
         w.LWRezepte.blockSignals(False)
         w.LWMaker.blockSignals(False)
 
-    # TODO: Still fix this shared.handaddlist mess ...
     def set_recipe_handadd_comment(self, w, handadd_data: List[IngredientData]):
         comment = ""
         for ing in handadd_data:
             comment += f"{ing.amount} ml {ing.name}, "
-            shared.handaddlist.append([ing.id, ing.amount, bool(ing.alcohol), 1, ing.alcohol])
+            shared.handaddlist.append(ing)
         comment = comment[:-2]
         w.LEKommentar.setText(comment)
 
