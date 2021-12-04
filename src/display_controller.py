@@ -1,4 +1,4 @@
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Tuple, Union
 from PyQt5.QtCore import Qt
 
 from src.database_commander import DB_COMMANDER
@@ -16,21 +16,22 @@ class DisplayController(DialogHandler):
     ########################
     # UI "EXTRACT" METHODS #
     ########################
-    def get_current_combobox_items(self, combobox_list):
+    def get_current_combobox_items(self, combobox_list: List[Any]) -> List[str]:
         return [combobox.currentText() for combobox in combobox_list]
 
-    def get_toggle_status(self, button_list):
+    def get_toggle_status(self, button_list: List[Any]) -> List[bool]:
         return [button.isChecked() for button in button_list]
 
-    def get_lineedit_text(self, lineedit_list):
+    def get_lineedit_text(self, lineedit_list: List[Any]) -> List[str]:
         return [lineedit.text().strip() for lineedit in lineedit_list]
 
-    def get_list_widget_selection(self, list_widget):
+    def get_list_widget_selection(self, list_widget) -> str:
         if not list_widget.selectedItems():
             return ""
         return list_widget.currentItem().text()
 
-    def get_ingredient_data(self, lineedit_list, checkbox, list_widget):
+    def get_ingredient_data(self, lineedit_list: List[Any], checkbox, list_widget):
+        """Returns an Ingredient Object from the ingredient data fields"""
         ingredient_name, alcohollevel, volume = self.get_lineedit_text(lineedit_list)
         hand_add = int(checkbox.isChecked())
         selected_ingredient = ""
@@ -38,7 +39,7 @@ class DisplayController(DialogHandler):
             selected_ingredient = list_widget.currentItem().text()
         return Ingredient(None, ingredient_name, int(alcohollevel), int(volume), None, hand_add, selected_ingredient)
 
-    def get_cocktail_data(self, w):
+    def get_cocktail_data(self, w) -> Tuple[str, int, int]:
         """Returns [name, volume, factor] from maker"""
         cocktail_volume = int(w.LCustomMenge.text())
         alcohol_faktor = 1 + (w.HSIntensity.value() / 100)
@@ -47,9 +48,11 @@ class DisplayController(DialogHandler):
             cocktailname = w.LWMaker.currentItem().text()
         return cocktailname, cocktail_volume, alcohol_faktor
 
-    def get_recipe_field_data(self, w):
+    def get_recipe_field_data(self, w) -> Tuple[str, str, List[str], List[str], int, str]:
+        """ Return [name, selected, [ingredients], [volumes], enabled, comment] """
         recipe_name = w.LECocktail.text().strip()
         selected_recipe = self.get_list_widget_selection(w.LWRezepte)
+        # this is also a str, because user may type non int char into box
         ingredient_volumes = self.get_lineedit_text(self.get_lineedits_recipe(w))
         ingredient_names = self.get_current_combobox_items(self.get_comboboxes_recipes(w))
         enabled = int(w.CHBenabled.isChecked())
@@ -57,11 +60,12 @@ class DisplayController(DialogHandler):
         return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, comment
 
     def validate_ingredient_data(self, lineedit_list) -> bool:
-        if self.lineedit_is_missing(lineedit_list):
+        """Validate the data from the ingredient window"""
+        if self.__lineedit_is_missing(lineedit_list):
             self.say_some_value_missing()
             return False
         _, ingredient_percentage, ingredient_volume = lineedit_list
-        if self.lineedit_is_no_int([ingredient_percentage, ingredient_volume]):
+        if self.__lineedit_is_no_int([ingredient_percentage, ingredient_volume]):
             self.say_needs_to_be_int()
             return False
         if int(ingredient_percentage.text()) > 100:
@@ -69,12 +73,14 @@ class DisplayController(DialogHandler):
             return False
         return True
 
-    def get_ingredient_window_data(self, w):
+    def get_ingredient_window_data(self, w) -> Tuple[str, int]:
+        """Returns the needed data from the ingredient window"""
         ingredient_name = w.CBingredient.currentText()
         volume = int(w.LAmount.text())
         return ingredient_name, volume
 
-    def check_password(self, lineedit):
+    def __check_password(self, lineedit):
+        """Compares the given lineedit to the master password"""
         password = lineedit.text()
         lineedit.setText("")
         if password == self.UI_MASTERPASSWORD:
@@ -82,21 +88,26 @@ class DisplayController(DialogHandler):
         return False
 
     def check_recipe_password(self, w):
-        return self.check_password(w.LEpw)
+        """Checks if the password in the recipe window is right"""
+        return self.__check_password(w.LEpw)
 
     def check_bottles_password(self, w):
-        return self.check_password(w.LECleanMachine)
+        """Checks if the password in the bottle window is right"""
+        return self.__check_password(w.LECleanMachine)
 
     def check_ingredient_password(self, w):
-        return self.check_password(w.LEpw2)
+        """Checks if the password in the ingredient window is right"""
+        return self.__check_password(w.LEpw2)
 
-    def lineedit_is_missing(self, lineedit_list) -> bool:
+    def __lineedit_is_missing(self, lineedit_list) -> bool:
+        """Checks if a lineedit is empty"""
         for lineedit in lineedit_list:
             if lineedit.text().strip() == "":
                 return True
         return False
 
-    def lineedit_is_no_int(self, lineedits) -> bool:
+    def __lineedit_is_no_int(self, lineedits) -> bool:
+        """Checks if a lineedit is no valid int"""
         for lineedit in lineedits:
             try:
                 int(lineedit.text())
@@ -165,7 +176,7 @@ class DisplayController(DialogHandler):
             "recipes": 2,
             "bottles": 3
         }
-        w.tabWidget.setCurrentIndex(tabs[tab])
+        w.tabWidget.setCurrentIndex(tabs.get(tab, 0))
 
     # Slider
     def __set_slider_value(self, slider, value):
@@ -175,16 +186,16 @@ class DisplayController(DialogHandler):
         self.__set_slider_value(w.HSIntensity, 0)
 
     # LineEdit
-    def clean_multiple_lineedit(self, lineedit_list):
+    def clean_multiple_lineedit(self, lineedit_list: List[Any]):
         for lineedit in lineedit_list:
             lineedit.clear()
 
-    def fill_multiple_lineedit(self, lineedit_list, text_list):
+    def fill_multiple_lineedit(self, lineedit_list: List[Any], text_list: List[Union[str, int]]):
         for lineedit, text in zip(lineedit_list, text_list):
             lineedit.setText(str(text))
 
     # Combobox
-    def fill_single_combobox(self, combobox, itemlist, clear_first=False, sort_items=True, first_empty=True):
+    def fill_single_combobox(self, combobox, itemlist: List[str], clear_first=False, sort_items=True, first_empty=True):
         if clear_first:
             combobox.clear()
         if combobox.count() == 0 and first_empty:
@@ -193,44 +204,48 @@ class DisplayController(DialogHandler):
         if sort_items:
             combobox.model().sort(0)
 
-    def fill_multiple_combobox(self, combobox_list, itemlist, clear_first=False, sort_items=True, first_empty=True):
+    def fill_multiple_combobox(self, combobox_list: List[Any], itemlist: List[str],
+                               clear_first=False, sort_items=True, first_empty=True):
         for combobox in combobox_list:
             self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
 
-    def fill_multiple_combobox_individually(self, combobox_list, list_of_itemlist, clear_first=False, sort_items=True, first_empty=True):
+    def fill_multiple_combobox_individually(self, combobox_list: List[Any], list_of_itemlist: List[List[str]],
+                                            clear_first=False, sort_items=True, first_empty=True):
         for combobox, itemlist in zip(combobox_list, list_of_itemlist):
             self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
 
-    def delete_single_combobox_item(self, combobox, item):
+    def delete_single_combobox_item(self, combobox, item: str):
         index = combobox.findText(item, Qt.MatchFixedString)
         if index >= 0:
             combobox.removeItem(index)
 
-    def delete_multiple_combobox_item(self, combobox, itemlist):
+    # This seeems to be currently unused
+    def delete_multiple_combobox_item(self, combobox, itemlist: List[str]):
         for item in itemlist:
             self.delete_single_combobox_item(combobox, item)
 
-    def delete_item_in_multiple_combobox(self, combobox_list, item):
+    def delete_item_in_multiple_combobox(self, combobox_list: List[Any], item: str):
         for combobox in combobox_list:
             self.delete_single_combobox_item(combobox, item)
 
-    def sort_multiple_combobox(self, combobox_list):
+    # This seeems to be currently unused
+    def sort_multiple_combobox(self, combobox_list: List[Any]):
         for combobox in combobox_list:
             combobox.sort()
 
-    def set_multiple_combobox_to_top_item(self, combobox_list):
+    def set_multiple_combobox_to_top_item(self, combobox_list: List[Any]):
         for combobox in combobox_list:
             combobox.setCurrentIndex(0)
 
-    def set_multiple_combobox_items(self, combobox_list, items_to_set):
+    def set_multiple_combobox_items(self, combobox_list: List[Any], items_to_set: List[str]):
         for combobox, item in zip(combobox_list, items_to_set):
             self.set_combobox_item(combobox, item)
 
-    def set_combobox_item(self, combobox, item):
+    def set_combobox_item(self, combobox, item: str):
         index = combobox.findText(item, Qt.MatchFixedString)
         combobox.setCurrentIndex(index)
 
-    def adjust_bottle_comboboxes(self, combobox_list, old_item, new_item):
+    def adjust_bottle_comboboxes(self, combobox_list: List[Any], old_item: str, new_item: str):
         for combobox in combobox_list:
             if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):
                 combobox.addItem(old_item)
@@ -238,38 +253,38 @@ class DisplayController(DialogHandler):
                 self.delete_single_combobox_item(combobox, new_item)
             combobox.model().sort(0)
 
-    def rename_single_combobox(self, combobox, old_item, new_item):
+    def rename_single_combobox(self, combobox, old_item: str, new_item: str):
         index = combobox.findText(old_item, Qt.MatchFixedString)
         if index >= 0:
             combobox.setItemText(index, new_item)
             combobox.model().sort(0)
 
-    def rename_multiple_combobox(self, combobox_list, old_item, new_item):
+    def rename_multiple_combobox(self, combobox_list: List[Any], old_item: str, new_item: str):
         for combobox in combobox_list:
             self.rename_single_combobox(combobox, old_item, new_item)
 
     # buttons / togglebuttons
-    def untoggle_buttons(self, button_list):
+    def untoggle_buttons(self, button_list: List[Any]):
         for button in button_list:
             button.setChecked(False)
 
     # progress bars
-    def set_progress_bar_values(self, progress_bar_list, value_list):
+    def set_progress_bar_values(self, progress_bar_list: List[Any], value_list: List[int]):
         for progress_bar, value in zip(progress_bar_list, value_list):
             progress_bar.setValue(value)
 
     # listwidget
-    def unselect_list_widget_items(self, list_widget):
+    def unselect_list_widget_items(self, list_widget: List[Any]):
         for i in range(list_widget.count()):
             list_widget.item(i).setSelected(False)
 
-    def delete_list_widget_item(self, list_widget, item):
+    def delete_list_widget_item(self, list_widget: List[Any], item: str):
         index_to_delete = list_widget.findItems(item, Qt.MatchExactly)
         if len(index_to_delete) > 0:
             for index in index_to_delete:
                 list_widget.takeItem(list_widget.row(index))
 
-    def fill_list_widget(self, list_widget, item_list: List[Any]):
+    def fill_list_widget(self, list_widget, item_list: List[str]):
         for item in item_list:
             list_widget.addItem(item)
 
@@ -289,11 +304,12 @@ class DisplayController(DialogHandler):
         self.fill_list_widget(w.LWRezepte, recipe_names)
 
     # checkboxes
-    def set_checkbox_value(self, checkbox, value):
+    def set_checkbox_value(self, checkbox, value: Union[int, bool]):
         checkbox.setChecked(bool(value))
 
     # others
     def fill_recipe_data_maker(self, w, cocktail: Cocktail, total_volume: int):
+        """Fill all the maker view data with the data from the given cocktail"""
         w.LAlkoholname.setText(cocktail.name)
         # w.LIngredientHeader.setText("_" * 40)
         w.LMenge.setText(f"{total_volume} ml")
@@ -315,6 +331,7 @@ class DisplayController(DialogHandler):
             field_ingredient.setText(f"{ingredient_name} ")
 
     def clear_recipe_data_maker(self, w, select_other_item=True):
+        """Clear the cocktail data in the maker view, only clears selection if no other item was selected"""
         w.LAlkoholgehalt.setText("")
         w.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         w.LMenge.setText("")
@@ -326,7 +343,8 @@ class DisplayController(DialogHandler):
             field_ingredient.setStyleSheet("color: rgb(0, 123, 255)")
             field_volume.setText("")
 
-    def clear_recipe_data_recipes(self, w, select_other_item):
+    def clear_recipe_data_recipes(self, w, select_other_item: bool):
+        """Clear the recipe data in recipe view, only clears selection if no other item was selected"""
         w.LECocktail.clear()
         w.LEKommentar.clear()
         if not select_other_item:
@@ -335,11 +353,12 @@ class DisplayController(DialogHandler):
         self.clean_multiple_lineedit(self.get_lineedits_recipe(w))
         shared.handaddlist = []
 
-    def refill_recipes_list_widget(self, w, items):
+    def refill_recipes_list_widget(self, w, items: List[str]):
         w.LWRezepte.clear()
         self.fill_list_widget(w.LWRezepte, items)
 
-    def remove_recipe_from_list_widgets(self, w, recipe_name):
+    def remove_recipe_from_list_widgets(self, w, recipe_name: str):
+        """Remove the recipe from the list widgets, suppress signals during process"""
         # block that trigger that no refetching of data (and shared.handadd overwrite) occurs
         w.LWRezepte.blockSignals(True)
         w.LWMaker.blockSignals(True)
@@ -350,7 +369,8 @@ class DisplayController(DialogHandler):
         w.LWRezepte.blockSignals(False)
         w.LWMaker.blockSignals(False)
 
-    def set_recipe_handadd_comment(self, w, handadd_data: List[IngredientData]):
+    def __set_recipe_handadd_comment(self, w, handadd_data: List[IngredientData]):
+        """Build the comment for the view from the handadd data"""
         comment = ""
         for ing in handadd_data:
             comment += f"{ing.amount} ml {ing.name}, "
@@ -359,6 +379,7 @@ class DisplayController(DialogHandler):
         w.LEKommentar.setText(comment)
 
     def set_recipe_data(self, w, cocktail: Cocktail):
+        """Fills the recipe data in the recipe view with the cocktail object"""
         w.CHBenabled.setChecked(bool(cocktail.enabled))
         machine_adds = cocktail.get_machineadds()
         names = [x.name for x in machine_adds]
@@ -366,10 +387,10 @@ class DisplayController(DialogHandler):
         self.set_multiple_combobox_items(self.get_comboboxes_recipes(w)[: len(names)], names)
         self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(volumes)], volumes)
         w.LECocktail.setText(cocktail.name)
-        self.set_recipe_handadd_comment(w, cocktail.get_handadds())
+        self.__set_recipe_handadd_comment(w, cocktail.get_handadds())
 
     # Some more "specific" function, not using generic but specified field sets
-    def set_label_bottles(self, w, label_names):
+    def set_label_bottles(self, w, label_names: List[str]):
         labels = self.get_label_bottles(w)
         self.fill_multiple_lineedit(labels, label_names)
 
