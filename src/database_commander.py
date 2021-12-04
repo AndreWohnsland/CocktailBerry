@@ -53,7 +53,7 @@ class DatabaseCommander:
         recipe = data[0]
         return self.__build_cocktail(*recipe)
 
-    # TODO: is this needed? Currently not
+    # TODO: Currently not used
     def get_multiple_cocktails(self, searchlist: List[Union[str, int]]) -> List[Cocktail]:
         """Returns all cocktails for the name / id in the list"""
         return [self.get_cocktail(x) for x in searchlist]
@@ -76,7 +76,7 @@ class DatabaseCommander:
                     Zutaten.ID=Belegung.ID
                     ORDER BY Belegung.Flasche"""
         result = self.handler.query_database(query)
-        return [x[0] for x in result]
+        return [x[0] if x[0] is not None else "" for x in result]
 
     def get_bottle_fill_levels(self) -> List[int]:
         """Returns percentage of fill level, limited to [0, 100]"""
@@ -91,10 +91,6 @@ class DatabaseCommander:
                 proportion = round(min(max(current_value / max_value * 100, 0), 100))
             levels.append(proportion)
         return levels
-
-    # TODO: Remove if not needed
-    def build_ingredient(self, ing_id: int, name: str, alcohol: int, volume: int, fill: int, hand: bool):
-        return Ingredient(ing_id, name, alcohol, volume, fill, hand)
 
     def get_ingredient(self, search: Union[str, int]) -> Union[Ingredient, None]:
         """Get all neeeded data for the ingredient from ID or name"""
@@ -135,7 +131,6 @@ class DatabaseCommander:
         recipe_list = self.handler.query_database(query, (ingredient_id,))
         return [recipe[0] for recipe in recipe_list]
 
-    # TODO: Check if this is nececary, or if just use the normal ingredeintes method?
     def __get_multiple_ingredient_ids_from_names(self, name_list: List[str]) -> List[int]:
         """Get all the ids for the selected names"""
         questionmarks = ",".join(["?"] * len(name_list))
