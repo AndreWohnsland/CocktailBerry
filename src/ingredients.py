@@ -77,9 +77,11 @@ def __change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     both_boxes = combobox_recipes + combobox_bottles
 
+    # Adjust the comboboxes, add if it was moved from hand to machine
+    # renames if it stays machine add, removes if it was moved to handadd
     if old_ingredient.hand and not ing.hand:
         DP_CONTROLLER.fill_multiple_combobox(both_boxes, [ing.name])
-    elif not ing.name:
+    elif not ing.hand:
         DP_CONTROLLER.rename_multiple_combobox(both_boxes, ing.selected, ing.name)
     else:
         DP_CONTROLLER.delete_item_in_multiple_combobox(both_boxes, ing.selected)

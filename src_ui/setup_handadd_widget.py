@@ -3,6 +3,7 @@ from collections import Counter
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon, QIntValidator
+from src.models import IngredientData
 
 from ui_elements.handadds import Ui_handadds
 from src.display_controller import DP_CONTROLLER
@@ -46,12 +47,11 @@ class HandaddWidget(QDialog, Ui_handadds):
         DP_CONTROLLER.set_display_settings(self, resize=False)
 
     def fill_elements(self):
-        for i, row in enumerate(shared.handaddlist, start=1):
-            ingredient_name = DB_COMMANDER.get_ingredient(row[0]).name
+        for i, ing in enumerate(shared.handaddlist, start=1):
             combobox = getattr(self, f"CBHandadd{i}")
             lineedit = getattr(self, f"LEHandadd{i}")
-            DP_CONTROLLER.set_combobox_item(combobox, ingredient_name)
-            lineedit.setText(str(row[1]))
+            DP_CONTROLLER.set_combobox_item(combobox, ing.name)
+            lineedit.setText(str(ing.amount))
 
     def abbrechen_clicked(self):
         """ Closes the window without any action. """
@@ -74,8 +74,8 @@ class HandaddWidget(QDialog, Ui_handadds):
         commenttext = ""
         for ingredient_name, amount in zip(ingredient_list, amount_list):
             ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
-            alcoholic = 1 if ingredient.alcohol > 0 else 0
-            shared.handaddlist.append([ingredient.id, amount, alcoholic, 1, ingredient.alcohol])
+            ingredient_data = IngredientData(ingredient.id, ingredient.name, ingredient.alcohol, amount, 1)
+            shared.handaddlist.append(ingredient_data)
             commenttext += f"{amount} ml {ingredient_name}, "
         commenttext = commenttext[:-2]
         self.mainscreen.LEKommentar.setText(commenttext)

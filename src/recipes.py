@@ -7,7 +7,6 @@ from collections import Counter
 from typing import List, Tuple
 
 from src.maker import evaluate_recipe_maker_view
-from src.error_suppression import logerror
 
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
@@ -15,7 +14,6 @@ from src.models import Ingredient
 from config.config_manager import shared
 
 
-@logerror
 def fill_recipe_box_with_ingredients(w):
     """ Asigns all ingredients to the Comboboxes in the recipe tab """
     comboboxes_recipe = DP_CONTROLLER.get_comboboxes_recipes(w)
@@ -78,7 +76,6 @@ def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcoh
     return cocktail
 
 
-@logerror
 def enter_recipe(w, newrecipe):
     """ Enters or updates the recipe into the db
     """
@@ -107,13 +104,13 @@ def enter_recipe(w, newrecipe):
         ingredient.recipe_hand = 0
         recipe_volume_concentration += ingredient.alcohol * ingredient_volume
         ingredient_data.append(ingredient)
-    # build also the handadd data into an ingredient -> maybe use dataclass in shared?
-    for hand_id, hand_volume, *_ in shared.handaddlist:  # id, volume, alcoholic, 1, alcohol_con
-        ingredient = DB_COMMANDER.get_ingredient(hand_id)
-        ingredient.recipe_volume = hand_volume
+    # build also the handadd data into an ingredient
+    for ing in shared.handaddlist:
+        ingredient = DB_COMMANDER.get_ingredient(ing.id)
+        ingredient.recipe_volume = ing.amount
         ingredient.recipe_hand = 1
-        recipe_volume += hand_volume
-        recipe_volume_concentration += ingredient.alcohol * hand_volume
+        recipe_volume += ing.amount
+        recipe_volume_concentration += ingredient.alcohol * ing.amount
         ingredient_data.append(ingredient)
     recipe_alcohollevel = int(recipe_volume_concentration / recipe_volume)
 
@@ -135,7 +132,6 @@ def enter_recipe(w, newrecipe):
         DP_CONTROLLER.say_recipe_updated(selected_name, recipe_name)
 
 
-@logerror
 def load_recipe_view_names(w):
     """ Updates the ListWidget in the recipe Tab. """
     cocktails = DB_COMMANDER.get_all_cocktails()
@@ -143,7 +139,6 @@ def load_recipe_view_names(w):
     DP_CONTROLLER.refill_recipes_list_widget(w, recipe_list)
 
 
-@logerror
 def load_selected_recipe_data(w):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
     _, recipe_name, *_ = DP_CONTROLLER.get_recipe_field_data(w)
@@ -151,12 +146,10 @@ def load_selected_recipe_data(w):
         return
 
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
-    # TODO: Adjsut to new class object and the further code
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
     DP_CONTROLLER.set_recipe_data(w, cocktail)
 
 
-@logerror
 def delete_recipe(w):
     """ Deletes the selected recipe, requires the Password """
     if not DP_CONTROLLER.check_recipe_password(w):
@@ -174,7 +167,6 @@ def delete_recipe(w):
     DP_CONTROLLER.say_recipe_deleted(recipe_name)
 
 
-@logerror
 def enableall_recipes(w):
     """Set all recipes to enabled """
     disabled_cocktails = DB_COMMANDER.get_all_cocktails(get_enabled=False)

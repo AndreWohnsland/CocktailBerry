@@ -5,7 +5,6 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 
 from typing import List
 from src.bottles import set_fill_level_bars
-from src.error_suppression import logerror
 
 from src.database_commander import DB_COMMANDER
 from src.models import Cocktail
@@ -20,7 +19,6 @@ from config.config_manager import shared
 LOG_HANDLER = LoggerHandler("maker_module", "production_logs")
 
 
-@logerror
 def evaluate_recipe_maker_view(w, cocktails: List[Cocktail] = None):
     """ Goes through every recipe in the list or all recipes if none given
     Checks if all ingredients are registered, if so, adds it to the list widget
@@ -33,7 +31,6 @@ def evaluate_recipe_maker_view(w, cocktails: List[Cocktail] = None):
     DP_CONTROLLER.fill_list_widget_maker(w, available_cocktail_names)
 
 
-@logerror
 def update_shown_recipe(w):
     """ Updates the maker display Data with the selected recipe"""
     cocktailname, amount, factor = DP_CONTROLLER.get_cocktail_data(w)
@@ -63,7 +60,7 @@ def __generate_maker_log_entry(cocktail_volume: int, cocktail_name: str, taken_t
     if not shared.make_cocktail:
         pumped_volume = round(cocktail_volume * (taken_time) / max_time)
         cancel_log_addition = f" - Recipe canceled at {round(taken_time, 1)} s - {pumped_volume} ml"
-    LOG_HANDLER.log_event("INFO", f"{volume_string:8} | {cocktail_name}{cancel_log_addition}")
+    LOG_HANDLER.log_event("INFO", f"{volume_string:6} | {cocktail_name}{cancel_log_addition}")
 
 
 def prepare_cocktail(w):

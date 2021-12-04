@@ -30,7 +30,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     """ Creates the Mainscreen. """
 
     def __init__(self):
-        """ Init. Many of the button and List connects are in pass_setup. """
+        """ Init the main window. Many of the button and List connects are in pass_setup. """
         super().__init__()
         ConfigManager.__init__(self)
         self.setupUi(self)

@@ -4,7 +4,6 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
 from config.config_manager import shared
-from src.error_suppression import logerror
 
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
@@ -18,7 +17,8 @@ LOG_HANDLER = LoggerHandler("bottles_module", "production_logs")
 def get_bottle_ingredients():
     """ At the start of the Programm, get all the ingredients from the DB. """
     bottles = DB_COMMANDER.get_ingredients_at_bottles()
-    shared.old_ingredient = bottles
+    # replace Nones with empty string, command will return none for empty bottles
+    shared.old_ingredient = [x if x is not None else "" for x in bottles]
 
 
 def refresh_bottle_cb(w):
@@ -83,7 +83,7 @@ def read_in_bottles(w):
 def refresh_bottle_information(w):
     """ Loads or updates the Labels of the Bottles (Volumelevel). """
     label_names = DB_COMMANDER.get_ingredients_at_bottles()
-    label_names = [f"  {x}:" if x != "" else "  -  " for x in label_names]
+    label_names = [f"  {x}:" if x else "  -  " for x in label_names]
     DP_CONTROLLER.set_label_bottles(w, label_names)
 
 
