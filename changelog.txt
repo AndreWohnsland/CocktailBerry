@@ -1,3 +1,11 @@
+--------------- 2021_12_03 ---------------------------------------------------------------------------------------------------------
+- Introduced new API Model for Cocktai, Ingredient and IngredientData
+- Using new Models within Database returns and in functions
+- Added dynamic removal of bottle selection within bottle tabs dependant on Bottle_count config
+- Added dynamic display of recipe property data
+- Refactored the error module to always log and reraise errors
+- Removed suppresserror config
+
 --------------- 2021_11_25 ---------------------------------------------------------------------------------------------------------
 - Added contribution markdown
 - Added templates for bug and feature request issues

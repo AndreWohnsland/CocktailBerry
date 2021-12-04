@@ -222,8 +222,6 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 - `TEAM_BUTTON_NAMES` (_list[str]_): List of format ["Team1", "Team2"] (optional)
 - `TEAM_API_URL` (_str_): Endpoint of teams API, default used port by API is 8080 (optional)
 
-In addition, there is a `Shared` config class within the `config/config_manager.py`, with dynamic values. The only thing you may want to change is `suppress_error` to `True`, this will activate a wrapper function, catching and logging errors of the wrapped function. In production this will effectively prevent the app from crashing due to errors (bugs) and log them, but setting it to `True` is at own risk.
-
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
 
 Setting up the machine is quite easy as well. Just go to the **Bottles** Tab and select via the dropdown boxes your assigned ingredients. In addition, you can define ingredients which are also there, but are not connected to the machine (under _Ingredients > available_). You can define ingredients in recipes (at _add self by hand_) which should be later added via hand, for example sticky ingredients which would not be optimal for your pump, or only very rarely used ones in cocktails.
@@ -333,7 +331,7 @@ docker run hello-world
 ## Problems while Running the Program
 
 All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled, and an info message should be displayed.\
-If in any case any unexpected behaviour occurs, feel free to open an issue. Usually, a part of the actions are also logged into the logfiles.
+If in any case any unexpected behaviour occurs, feel free to open an issue. Usually, a part of the actions are also logged into the logfiles. When submitting an error, please also provide the `logs/debuglog.log` file.
 
 ## Touchscreen Calibration
 
