@@ -98,12 +98,15 @@ def enter_recipe(w, newrecipe):
     recipe_volume = sum(volumes)
     ingredient_data = []
     recipe_volume_concentration = 0
+
+    # first build the ingredient objects for machine add
     for ingredient_name, ingredient_volume in zip(names, volumes):
         ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
         ingredient.recipe_volume = ingredient_volume
         ingredient.recipe_hand = 0
         recipe_volume_concentration += ingredient.alcohol * ingredient_volume
         ingredient_data.append(ingredient)
+
     # build also the handadd data into an ingredient
     for ing in shared.handaddlist:
         ingredient = DB_COMMANDER.get_ingredient(ing.id)
