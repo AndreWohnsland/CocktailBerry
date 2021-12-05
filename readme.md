@@ -5,6 +5,7 @@
 ![Python Version](https://img.shields.io/badge/python-%3E%3D%203.6-blue)
 ![GitHub](https://img.shields.io/github/license/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/Cocktailmaker_AW)
+![Lines of code](https://img.shields.io/tokei/lines/github/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/Cocktailmaker_AW?style=social)
 
 #### A Python and Qt Based App for a Cocktail Machine 🐍 + 🍸 = 🥳
