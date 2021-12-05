@@ -125,6 +125,7 @@ class DatabaseCommander:
         return False
 
     def get_recipe_usage_list(self, ingredient_id: int) -> List[str]:
+        """Get all the recipe names the ingredient is used in"""
         query = """SELECT Rezepte.Name FROM Zusammen
                 INNER JOIN Rezepte ON Rezepte.ID = Zusammen.Rezept_ID 
                 WHERE Zusammen.Zutaten_ID=?"""
@@ -171,11 +172,14 @@ class DatabaseCommander:
         return [x[0] for x in result]
 
     def get_bottle_data_bottle_window(self):
+        """Gets all needed data for bottles, ordered by bottle number
+        Returs [name, level, id, bottle_volume] for each slot"""
         query = """SELECT Zutaten.Name, Zutaten.Mengenlevel, Zutaten.ID, Zutaten.Flaschenvolumen
                 FROM Belegung LEFT JOIN Zutaten ON Zutaten.ID = Belegung.ID ORDER BY Belegung.Flasche"""
         return self.handler.query_database(query)
 
     def get_ingredient_bottle_and_level_by_name(self, ingredient_name):
+        """Returns (Bottle_number, level) for the given ingredient"""
         query = """SELECT Belegung.Flasche, Zutaten.Mengenlevel
                 FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID
                 WHERE Zutaten.Name = ?"""
@@ -186,6 +190,7 @@ class DatabaseCommander:
 
     # set (update) commands
     def set_bottleorder(self, ingredient_names: List[str]):
+        """Set bottles to the given list of bottles, need all bottles"""
         for i, ingredient in enumerate(ingredient_names):
             bottle = i + 1
             query = """UPDATE OR IGNORE Belegung
@@ -195,6 +200,7 @@ class DatabaseCommander:
             self.handler.query_database(query, searchtuple)
 
     def set_bottle_volumelevel_to_max(self, boolean_list: List[bool]):
+        """Sets the each i-th bottle to max level if arg is true"""
         query = """UPDATE OR IGNORE Zutaten
                 Set Mengenlevel = Flaschenvolumen
                 WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)"""
@@ -203,6 +209,7 @@ class DatabaseCommander:
                 self.handler.query_database(query, (bottle,))
 
     def set_ingredient_data(self, ingredient_name: str, alcohollevel: int, volume: int, new_level: int, onlyhand: int, ingredient_id: int):
+        """Updates the given ingredient id to new properties"""
         query = """UPDATE OR IGNORE Zutaten
                 SET Name = ?, Alkoholgehalt = ?,
                 Flaschenvolumen = ?,
@@ -213,6 +220,7 @@ class DatabaseCommander:
         self.handler.query_database(query, searchtuple)
 
     def increment_recipe_counter(self, recipe_name: str):
+        """Increase the recipe counter by one of given recipe name"""
         query = """UPDATE OR IGNORE Rezepte
                 SET Anzahl_Lifetime = Anzahl_Lifetime + 1, 
                 Anzahl = Anzahl + 1 
@@ -220,6 +228,7 @@ class DatabaseCommander:
         self.handler.query_database(query, (recipe_name,))
 
     def increment_ingredient_consumption(self, ingredient_name: str, ingredient_consumption: int):
+        """Increase the consumption of given ingredient name by a given amount"""
         query = """UPDATE OR IGNORE Zutaten
                 SET Verbrauchsmenge = Verbrauchsmenge + ?, 
                 Verbrauch = Verbrauch + ?, 
@@ -229,14 +238,17 @@ class DatabaseCommander:
         self.handler.query_database(query, searchtuple)
 
     def set_multiple_ingredient_consumption(self, ingredient_name_list: List[str], ingredient_consumption_list: List[int]):
+        """Increase multiple ingredients by the according given comsuption"""
         for ingredient_name, ingredient_consumption in zip(ingredient_name_list, ingredient_consumption_list):
             self.increment_ingredient_consumption(ingredient_name, ingredient_consumption)
 
     def set_all_recipes_enabled(self):
+        """Enables all recipes"""
         query = "UPDATE OR IGNORE Rezepte SET Enabled = 1"
         self.handler.query_database(query)
 
     def set_recipe(self, recipe_id: int, name: str, alcohollevel: int, volume: int, comment: str, enabled: int):
+        """Updates the given recipe id to new properties"""
         query = """UPDATE OR IGNORE Rezepte
                 SET Name = ?, Alkoholgehalt = ?, Menge = ?, Kommentar = ?, Enabled = ?
                 WHERE ID = ?"""
@@ -244,11 +256,13 @@ class DatabaseCommander:
         self.handler.query_database(query, searchtuple)
 
     def set_ingredient_level_to_value(self, ingredient_id: int, value: int):
+        """Sets the given ingredient id to a defined level"""
         query = "UPDATE OR IGNORE Zutaten SET Mengenlevel = ? WHERE ID = ?"
         self.handler.query_database(query, (value, ingredient_id))
 
     # insert commands
     def insert_new_ingredient(self, ingredient_name: str, alcohollevel: int, volume: int, onlyhand: int):
+        """Insert a new ingredient into the database"""
         query = """INSERT OR IGNORE INTO
                 Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel,Hand) 
                 VALUES (?,?,?,0,0,0,?)"""
@@ -256,6 +270,7 @@ class DatabaseCommander:
         self.handler.query_database(query, searchtuple)
 
     def insert_new_recipe(self, name: str, alcohollevel: int, volume: int, comment: str, enabled: int):
+        """Insert a new recipe into the database"""
         query = """INSERT OR IGNORE INTO
                 Rezepte(Name, Alkoholgehalt, Menge, Kommentar, Anzahl_Lifetime, Anzahl, Enabled) 
                 VALUES (?,?,?,?,0,0,?)"""
@@ -263,11 +278,13 @@ class DatabaseCommander:
         self.handler.query_database(query, searchtuple)
 
     def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, is_alcoholic: int, hand_add: int):
+        """Insert given data into the recipe_data table"""
         query = "INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, ?)"
         searchtuple = (recipe_id, ingredient_id, ingredient_volume, is_alcoholic, hand_add)
         self.handler.query_database(query, searchtuple)
 
     def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: List[str]):
+        """Insert the IDS of the given ingredient list into the available table"""
         ingredient_id = self.__get_multiple_ingredient_ids_from_names(ingredient_names)
         questionmarks = ",".join(["(?)"] * len(ingredient_id))
         query = f"INSERT INTO Vorhanden(ID) VALUES {questionmarks}"
@@ -275,28 +292,35 @@ class DatabaseCommander:
 
     # delete
     def delete_ingredient(self, ingredient_id: int):
+        """Deletes an ingredient by id"""
         query = "DELETE FROM Zutaten WHERE ID = ?"
         self.handler.query_database(query, (ingredient_id,))
 
     def delete_consumption_recipes(self):
+        """Sets the resetable consumption of all recipes to zero"""
         query = "UPDATE OR IGNORE Rezepte SET Anzahl = 0"
         self.handler.query_database(query)
 
     def delete_consumption_ingredients(self):
+        """Sets the resetable consumption of all ingredients to zero"""
         query = "UPDATE OR IGNORE Zutaten SET Verbrauch = 0"
         self.handler.query_database(query)
 
     def delete_recipe(self, recipe_name: str):
+        """Deletes the given recipe by name and all according ingredient_data"""
+        # if using FK with cascade delete, this will prob no longer nececary
         query1 = "DELETE FROM Zusammen WHERE Rezept_ID = (SELECT ID FROM Rezepte WHERE Name = ?)"
         query2 = "DELETE FROM Rezepte WHERE Name = ?"
         self.handler.query_database(query1, (recipe_name,))
         self.handler.query_database(query2, (recipe_name,))
 
     def delete_recipe_ingredient_data(self, recipe_id: int):
+        """Deletes ingredient_data by given ID"""
         query = "DELETE FROM Zusammen WHERE Rezept_ID = ?"
         self.handler.query_database(query, (recipe_id,))
 
     def delete_existing_handadd_ingredient(self):
+        """Deletes all ingredient in the available table"""
         self.handler.query_database(("DELETE FROM Vorhanden"))
 
 

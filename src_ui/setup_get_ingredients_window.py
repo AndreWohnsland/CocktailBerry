@@ -1,4 +1,3 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
@@ -47,7 +46,6 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         """ Calls the Progressbarwindow and spends the given amount of the ingredient. """
         ingredient_name, volume = DP_CONTROLLER.get_ingredient_window_data(self)
         bottle, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
-        print(f"Spending {volume} ml {self.CBingredient.currentText()}")
 
         self.close()
         if volume > level:
@@ -55,6 +53,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
             self.mainscreen.tabWidget.setCurrentIndex(3)
             return
 
+        print(f"Spending {volume} ml {self.CBingredient.currentText()}")
         made_volume, _, _ = RPI_CONTROLLER.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name, False)
         DB_COMMANDER.increment_ingredient_consumption(ingredient_name, made_volume[0])
         set_fill_level_bars(self.mainscreen)

@@ -17,15 +17,19 @@ class DisplayController(DialogHandler):
     # UI "EXTRACT" METHODS #
     ########################
     def get_current_combobox_items(self, combobox_list: List[Any]) -> List[str]:
+        """Get a list of the current combobox items"""
         return [combobox.currentText() for combobox in combobox_list]
 
     def get_toggle_status(self, button_list: List[Any]) -> List[bool]:
+        """Get a list of if the buttons are checked"""
         return [button.isChecked() for button in button_list]
 
     def get_lineedit_text(self, lineedit_list: List[Any]) -> List[str]:
+        """Get a list of the text of the lineedits"""
         return [lineedit.text().strip() for lineedit in lineedit_list]
 
     def get_list_widget_selection(self, list_widget) -> str:
+        """Returns the curent selected item of the list widget"""
         if not list_widget.selectedItems():
             return ""
         return list_widget.currentItem().text()
@@ -183,19 +187,23 @@ class DisplayController(DialogHandler):
         slider.setValue(value)
 
     def reset_alcohol_slider(self, w):
+        """Sets the alcohol slider to defaul (100%) value"""
         self.__set_slider_value(w.HSIntensity, 0)
 
     # LineEdit
     def clean_multiple_lineedit(self, lineedit_list: List[Any]):
+        """Clear a list of line edits"""
         for lineedit in lineedit_list:
             lineedit.clear()
 
     def fill_multiple_lineedit(self, lineedit_list: List[Any], text_list: List[Union[str, int]]):
+        """Fill a list of line edits"""
         for lineedit, text in zip(lineedit_list, text_list):
             lineedit.setText(str(text))
 
     # Combobox
     def fill_single_combobox(self, combobox, itemlist: List[str], clear_first=False, sort_items=True, first_empty=True):
+        """Fill a combobox with given items, with the option to sort and fill a empty element as first element"""
         if clear_first:
             combobox.clear()
         if combobox.count() == 0 and first_empty:
@@ -206,46 +214,50 @@ class DisplayController(DialogHandler):
 
     def fill_multiple_combobox(self, combobox_list: List[Any], itemlist: List[str],
                                clear_first=False, sort_items=True, first_empty=True):
+        """Fill multiple comboboxes with identical items, can sort and insert filler as first item"""
         for combobox in combobox_list:
             self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
 
     def fill_multiple_combobox_individually(self, combobox_list: List[Any], list_of_itemlist: List[List[str]],
                                             clear_first=False, sort_items=True, first_empty=True):
+        """Fill multiple comboboxes with different items, can sort and insert filler as first item"""
         for combobox, itemlist in zip(combobox_list, list_of_itemlist):
             self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
 
     def delete_single_combobox_item(self, combobox, item: str):
+        """Delete the given item from a combobox"""
         index = combobox.findText(item, Qt.MatchFixedString)
         if index >= 0:
             combobox.removeItem(index)
 
     # This seeems to be currently unused
     def delete_multiple_combobox_item(self, combobox, itemlist: List[str]):
+        """Delete the given items from a combobox"""
         for item in itemlist:
             self.delete_single_combobox_item(combobox, item)
 
     def delete_item_in_multiple_combobox(self, combobox_list: List[Any], item: str):
+        """Delete the given item from multiple comboboxed"""
         for combobox in combobox_list:
             self.delete_single_combobox_item(combobox, item)
 
-    # This seeems to be currently unused
-    def sort_multiple_combobox(self, combobox_list: List[Any]):
-        for combobox in combobox_list:
-            combobox.sort()
-
     def set_multiple_combobox_to_top_item(self, combobox_list: List[Any]):
+        """Set the list of comboboxes to the top item"""
         for combobox in combobox_list:
             combobox.setCurrentIndex(0)
 
     def set_multiple_combobox_items(self, combobox_list: List[Any], items_to_set: List[str]):
+        """Set a list of comboboxes to the according item"""
         for combobox, item in zip(combobox_list, items_to_set):
             self.set_combobox_item(combobox, item)
 
     def set_combobox_item(self, combobox, item: str):
+        """Set the combobox to the given item"""
         index = combobox.findText(item, Qt.MatchFixedString)
         combobox.setCurrentIndex(index)
 
     def adjust_bottle_comboboxes(self, combobox_list: List[Any], old_item: str, new_item: str):
+        """Remove the old itemname and add new one in given comboboxex, sorting afterwards"""
         for combobox in combobox_list:
             if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):
                 combobox.addItem(old_item)
@@ -254,57 +266,66 @@ class DisplayController(DialogHandler):
             combobox.model().sort(0)
 
     def rename_single_combobox(self, combobox, old_item: str, new_item: str):
+        """Rename the old item to new one in given box"""
         index = combobox.findText(old_item, Qt.MatchFixedString)
         if index >= 0:
             combobox.setItemText(index, new_item)
             combobox.model().sort(0)
 
     def rename_multiple_combobox(self, combobox_list: List[Any], old_item: str, new_item: str):
+        """Renames an item in multiple comboboxes"""
         for combobox in combobox_list:
             self.rename_single_combobox(combobox, old_item, new_item)
 
     # buttons / togglebuttons
     def untoggle_buttons(self, button_list: List[Any]):
+        """Set toggle to false in given button list"""
         for button in button_list:
             button.setChecked(False)
 
     # progress bars
     def set_progress_bar_values(self, progress_bar_list: List[Any], value_list: List[int]):
+        """Set values of progress bars to given value"""
         for progress_bar, value in zip(progress_bar_list, value_list):
             progress_bar.setValue(value)
 
     # listwidget
-    def unselect_list_widget_items(self, list_widget: List[Any]):
+    def unselect_list_widget_items(self, list_widget: Any):
+        """Unselect all items in the list widget"""
         for i in range(list_widget.count()):
             list_widget.item(i).setSelected(False)
 
-    def delete_list_widget_item(self, list_widget: List[Any], item: str):
+    def delete_list_widget_item(self, list_widget: Any, item: str):
+        """Deletes an item in the list widget"""
         index_to_delete = list_widget.findItems(item, Qt.MatchExactly)
         if len(index_to_delete) > 0:
             for index in index_to_delete:
                 list_widget.takeItem(list_widget.row(index))
 
     def fill_list_widget(self, list_widget, item_list: List[str]):
+        """Adds item list to list widget"""
         for item in item_list:
             list_widget.addItem(item)
 
-    def __clear_list_widget(self, listwidget):
-        listwidget.clear()
-
     def clear_list_widget_maker(self, w):
-        self.__clear_list_widget(w.LWMaker)
+        """Clears the maker list widget"""
+        w.LWMaker.clear()
 
     def clear_list_widget_ingredients(self, w):
-        self.__clear_list_widget(w.LWZutaten)
+        """Clears the ingredients list widget"""
+        w.LWZutaten.clear()
 
     def fill_list_widget_maker(self, w, recipe_names: List[str]):
+        """Fill the maker list widget with given recipes"""
         self.fill_list_widget(w.LWMaker, recipe_names)
 
     def fill_list_widget_recipes(self, w, recipe_names: List[str]):
+        """Fill the recipe list widget with given recipes"""
         self.fill_list_widget(w.LWRezepte, recipe_names)
 
     # checkboxes
     def set_checkbox_value(self, checkbox, value: Union[int, bool]):
+        """Set the checked state of the checkbox to given value"""
         checkbox.setChecked(bool(value))
 
     # others
@@ -354,6 +375,7 @@ class DisplayController(DialogHandler):
         shared.handaddlist = []
 
     def refill_recipes_list_widget(self, w, items: List[str]):
+        """Clear and fill again the recipes list widget"""
         w.LWRezepte.clear()
         self.fill_list_widget(w.LWRezepte, items)
 
@@ -391,26 +413,32 @@ class DisplayController(DialogHandler):
 
     # Some more "specific" function, not using generic but specified field sets
     def set_label_bottles(self, w, label_names: List[str]):
+        """Set the bottle label text to given names"""
         labels = self.get_label_bottles(w)
         self.fill_multiple_lineedit(labels, label_names)
 
     # Migration from supporter.py
     def get_pushbottons_newbottle(self, w, get_all=False):
+        """Returns all new bottles toggle button objects"""
         number = self.__choose_bottle_number(get_all)
         return [getattr(w, f"PBneu{x}") for x in range(1, number + 1)]
 
     def get_levelbar_bottles(self, w, get_all=False):
+        """Returns all bottles progress bar objects"""
         number = self.__choose_bottle_number(get_all)
         return [getattr(w, f"ProBBelegung{x}") for x in range(1, number + 1)]
 
     def get_comboboxes_bottles(self, w, get_all=False):
+        """Returns all bottles combo box objects"""
         number = self.__choose_bottle_number(get_all)
         return [getattr(w, f"CBB{x}") for x in range(1, number + 1)]
 
     def get_comboboxes_recipes(self, w):
+        """Returns all recipe combo box objects"""
         return [getattr(w, f"CBR{x}") for x in range(1, 8)]
 
     def get_lineedits_recipe(self, w):
+        """Returns all recipe line edit objects"""
         return [getattr(w, f"LER{x}") for x in range(1, 8)]
 
     def get_ingredient_fields(self, w):
@@ -418,13 +446,16 @@ class DisplayController(DialogHandler):
         return [[w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen], w.CHBHand, w.LWZutaten]
 
     def get_label_bottles(self, w, get_all=False):
+        """Returns all bottles label objects"""
         number = self.__choose_bottle_number(get_all)
         return [getattr(w, f"LBelegung{x}") for x in range(1, number + 1)]
 
     def get_labels_maker_volume(self, w):
+        """Returns all maker label objects for volumes of ingredients"""
         return [getattr(w, f"LMZutat{x}") for x in range(1, 10)]
 
     def get_labels_maker_ingredients(self, w):
+        """Returns all maker label objects for ingredient name"""
         return [getattr(w, f"LZutat{x}") for x in range(1, 10)]
 
     def __choose_bottle_number(self, get_all):
@@ -434,6 +465,7 @@ class DisplayController(DialogHandler):
         return min(self.MAKER_NUMBER_BOTTLES, 10)
 
     def get_numberlabel_bottles(self, w, get_all=False):
+        """Returns all label object for the number of the bottle"""
         number = self.__choose_bottle_number(get_all)
         return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]
 

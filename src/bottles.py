@@ -28,6 +28,7 @@ def refresh_bottle_cb(w):
     old_order = shared.old_ingredient
     new_order = DP_CONTROLLER.get_current_combobox_items(combobox_bottles)
 
+    # subtract the sets of old and new and vice versa to get the changing ingredient
     new_blist = list(set(new_order) - set(old_order))
     old_blist = list(set(old_order) - set(new_order))
     new_bottle = new_blist[0] if new_blist else ""
@@ -40,8 +41,7 @@ def refresh_bottle_cb(w):
 
 
 def calculate_combobox_bottles(w):
-    """ Fills each bottle combobox with the possible remaining options
-    """
+    """ Fills each bottle combobox with the possible remaining options"""
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     used_ingredients = shared.old_ingredient
     possible_ingredients = DB_COMMANDER.get_all_ingredients(get_hand=False)
