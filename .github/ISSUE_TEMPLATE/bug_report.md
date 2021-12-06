@@ -30,3 +30,6 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+**debuglog**
+Please provide the `logs/debuglog.log` file.
