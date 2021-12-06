@@ -4,9 +4,10 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
 from typing import List
-from src.bottles import set_fill_level_bars
+from src import bottles
 
 from src.database_commander import DB_COMMANDER
+from src.error_handler import logerror
 from src.models import Cocktail
 from src.rpi_controller import RPI_CONTROLLER
 from src.display_controller import DP_CONTROLLER
@@ -31,6 +32,7 @@ def evaluate_recipe_maker_view(w, cocktails: List[Cocktail] = None):
     DP_CONTROLLER.fill_list_widget_maker(w, available_cocktail_names)
 
 
+@logerror
 def update_shown_recipe(w):
     """ Updates the maker display Data with the selected recipe"""
     cocktailname, amount, factor = DP_CONTROLLER.get_cocktail_data(w)
@@ -63,6 +65,7 @@ def __generate_maker_log_entry(cocktail_volume: int, cocktail_name: str, taken_t
     LOG_HANDLER.log_event("INFO", f"{volume_string:6} | {cocktail_name}{cancel_log_addition}")
 
 
+@logerror
 def prepare_cocktail(w):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
     if shared.cocktail_started:
@@ -109,11 +112,12 @@ def prepare_cocktail(w):
         comment = __build_comment_maker(cocktail)
         DP_CONTROLLER.say_cocktail_ready(comment)
 
-    set_fill_level_bars(w)
+    bottles.set_fill_level_bars(w)
     DP_CONTROLLER.reset_alcohol_slider(w)
     shared.cocktail_started = False
 
 
+@logerror
 def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
     shared.make_cocktail = False

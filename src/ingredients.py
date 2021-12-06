@@ -2,13 +2,16 @@
 """ Module with all nececcary functions for the ingredients Tab.
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
-from src.bottles import set_fill_level_bars, refresh_bottle_information
+
+from src import bottles
 
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
+from src.error_handler import logerror
 from src.models import Ingredient
 
 
+@logerror
 def enter_ingredient(w, newingredient=True):
     """ Insert the new ingredient into the DB, if all values are given and its name is not already in the DB.
     Also can change the current selected ingredient (newingredient = False)
@@ -28,8 +31,8 @@ def enter_ingredient(w, newingredient=True):
 
     clear_ingredient_information(w)
     DP_CONTROLLER.fill_list_widget(list_widget, [ingredient.name])
-    set_fill_level_bars(w)
-    refresh_bottle_information(w)
+    bottles.set_fill_level_bars(w)
+    bottles.refresh_bottle_information(w)
     DP_CONTROLLER.say_ingredient_added_or_changed(ingredient.name, newingredient, ingredient.selected)
 
 
@@ -97,6 +100,7 @@ def load_ingredients(w):
     DP_CONTROLLER.fill_list_widget(ingredient_list_widget, [x.name for x in ingredients])
 
 
+@logerror
 def delete_ingredient(w):
     """ Deletes an ingredient out of the DB if its not needed in any recipe."""
     _, _, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
@@ -128,6 +132,7 @@ def delete_ingredient(w):
     DP_CONTROLLER.say_ingredient_deleted(ingredient.name)
 
 
+@logerror
 def display_selected_ingredient(w):
     """ Search the DB entry for the ingredient and displays them """
     lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
@@ -140,6 +145,7 @@ def display_selected_ingredient(w):
         DP_CONTROLLER.set_checkbox_value(checkbox, ingredient.hand)
 
 
+@logerror
 def clear_ingredient_information(w):
     """ Clears all entries in the ingredient windows. """
     lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)

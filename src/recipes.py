@@ -6,10 +6,11 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 from collections import Counter
 from typing import List, Tuple
 
-from src.maker import evaluate_recipe_maker_view
+from src import maker
 
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
+from src.error_handler import logerror
 from src.models import Ingredient
 from config.config_manager import shared
 
@@ -71,11 +72,12 @@ def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcoh
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
     for ingredient in ingredient_data:
         is_alcoholic = int(ingredient.alcohol > 0)
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.recipe_volume,
+        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount,
                                         is_alcoholic, ingredient.recipe_hand)
     return cocktail
 
 
+@logerror
 def enter_recipe(w, newrecipe: bool):
     """ Enters or updates the recipe into the db"""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
@@ -101,16 +103,16 @@ def enter_recipe(w, newrecipe: bool):
     # first build the ingredient objects for machine add
     for ingredient_name, ingredient_volume in zip(names, volumes):
         ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
-        ingredient.recipe_volume = ingredient_volume
-        ingredient.recipe_hand = 0
+        ingredient.amount = ingredient_volume
+        ingredient.recipe_hand = False
         recipe_volume_concentration += ingredient.alcohol * ingredient_volume
         ingredient_data.append(ingredient)
 
     # build also the handadd data into an ingredient
     for ing in shared.handaddlist:
         ingredient = DB_COMMANDER.get_ingredient(ing.id)
-        ingredient.recipe_volume = ing.amount
-        ingredient.recipe_hand = 1
+        ingredient.amount = ing.amount
+        ingredient.recipe_hand = True
         recipe_volume += ing.amount
         recipe_volume_concentration += ingredient.alcohol * ing.amount
         ingredient_data.append(ingredient)
@@ -125,7 +127,7 @@ def enter_recipe(w, newrecipe: bool):
     DP_CONTROLLER.fill_list_widget_recipes(w, [recipe_name])
     DP_CONTROLLER.clear_recipe_data_maker(w, select_other_item=False)
     if enabled:
-        evaluate_recipe_maker_view(w, [cocktail])
+        maker.evaluate_recipe_maker_view(w, [cocktail])
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
 
     if newrecipe:
@@ -141,6 +143,7 @@ def load_recipe_view_names(w):
     DP_CONTROLLER.refill_recipes_list_widget(w, recipe_list)
 
 
+@logerror
 def load_selected_recipe_data(w):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
     _, recipe_name, *_ = DP_CONTROLLER.get_recipe_field_data(w)
@@ -152,6 +155,7 @@ def load_selected_recipe_data(w):
     DP_CONTROLLER.set_recipe_data(w, cocktail)
 
 
+@logerror
 def delete_recipe(w):
     """ Deletes the selected recipe, requires the Password """
     if not DP_CONTROLLER.check_recipe_password(w):
@@ -169,10 +173,11 @@ def delete_recipe(w):
     DP_CONTROLLER.say_recipe_deleted(recipe_name)
 
 
+@logerror
 def enableall_recipes(w):
     """Set all recipes to enabled """
     disabled_cocktails = DB_COMMANDER.get_all_cocktails(get_enabled=False)
     DB_COMMANDER.set_all_recipes_enabled()
-    evaluate_recipe_maker_view(w, disabled_cocktails)
+    maker.evaluate_recipe_maker_view(w, disabled_cocktails)
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
     DP_CONTROLLER.say_all_recipes_enabled()

@@ -7,6 +7,7 @@ from config.config_manager import shared
 
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
+from src.error_handler import logerror
 from src.rpi_controller import RPI_CONTROLLER
 from src.logger_handler import LoggerHandler
 
@@ -21,6 +22,7 @@ def get_bottle_ingredients():
     shared.old_ingredient = [x if x is not None else "" for x in bottles]
 
 
+@logerror
 def refresh_bottle_cb(w):
     """ Adds or remove items to the bottle comboboxes depending on the changed value"""
     # Creating a list of the new and old bottles used
@@ -40,6 +42,7 @@ def refresh_bottle_cb(w):
     shared.old_ingredient = new_order
 
 
+@logerror
 def calculate_combobox_bottles(w):
     """ Fills each bottle combobox with the possible remaining options"""
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
@@ -59,7 +62,7 @@ def __register_bottles(w):
     """ Insert the selected Bottleorder into the DB. """
     # this import is neccecary on function level, otherwise there would be a circular import
     # pylint: disable=import-outside-toplevel
-    from src.maker import evaluate_recipe_maker_view
+    from src import maker
 
     # Checks where are entries and appends them to a list
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
@@ -69,7 +72,7 @@ def __register_bottles(w):
     refresh_bottle_information(w)
     DP_CONTROLLER.clear_list_widget_maker(w)
     DP_CONTROLLER.clear_recipe_data_maker(w, False)
-    evaluate_recipe_maker_view(w)
+    maker.evaluate_recipe_maker_view(w)
     set_fill_level_bars(w)
 
 
@@ -87,6 +90,7 @@ def refresh_bottle_information(w):
     DP_CONTROLLER.set_label_bottles(w, label_names)
 
 
+@logerror
 def renew_checked_bottles(w):
     """ Renews all the Bottles which are checked as new. """
     pushbutton_new_list = DP_CONTROLLER.get_pushbottons_newbottle(w)
@@ -104,6 +108,7 @@ def set_fill_level_bars(w):
     DP_CONTROLLER.set_progress_bar_values(progressbars, fill_levels)
 
 
+@logerror
 def clean_machine(w):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
     if not DP_CONTROLLER.check_bottles_password(w):
