@@ -8,7 +8,7 @@ from ui_elements.Keyboard import Ui_Keyboard
 class KeyboardWidget(QDialog, Ui_Keyboard):
     """ Creates a Keyboard where the user can enter names or similar strings to Lineedits. """
 
-    def __init__(self, parent, le_to_write=None, max_char_len=30):
+    def __init__(self, parent, le_to_write=None, max_char_len: int = 30):
         super().__init__()
         self.setupUi(self)
         self.mainscreen = parent
@@ -51,7 +51,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.le_to_write.setText(self.LName.text())
         self.close()
 
-    def inputbutton_clicked(self, inputvalue, inputvalue_shift):
+    def inputbutton_clicked(self, inputvalue: str, inputvalue_shift: str):
         """ Enters the inputvalue into the field, adds it to the string.
         Can either have the normal or the shift value, if there is no difference both imput arguments are the same.
         """

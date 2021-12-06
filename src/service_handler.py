@@ -78,6 +78,7 @@ class ServiceHandler(ConfigManager):
 
 
 def service_disabled():
+    """Return that microservice is disabled"""
     return {
         "status": 503,
         "message": "Microservice disabled",
@@ -85,6 +86,7 @@ def service_disabled():
 
 
 def team_disabled():
+    """Return that teams is disabled"""
     return {
         "status": 503,
         "message": "Teams disabled",

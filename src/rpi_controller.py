@@ -131,7 +131,7 @@ class RpiController(ConfigManager):
         if t_cleaned % interval == 0:
             print(f"Cleaning, {t_cleaned:.1f}/{self.MAKER_CLEAN_TIME:.1f} s {'.' * int(t_cleaned*2)}", end="\r")
 
-    def header_print(self, msg):
+    def header_print(self, msg: str):
         print(f"{' ' + msg + ' ':-^80}")
 
 

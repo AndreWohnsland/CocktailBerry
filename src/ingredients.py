@@ -107,6 +107,8 @@ def delete_ingredient(w):
     if not selected_ingredient:
         DP_CONTROLLER.say_no_ingredient_selected()
         return
+
+    # Check if still used at a bottle or within a recipe
     ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
     if DB_COMMANDER.get_bottle_usage(ingredient.id):
         DP_CONTROLLER.say_ingredient_still_at_bottle()
@@ -117,6 +119,7 @@ def delete_ingredient(w):
         DP_CONTROLLER.say_ingredient_still_at_recipe(recipe_string)
         return
 
+    # if everything is okay, delete from DB and remove from UI
     DB_COMMANDER.delete_ingredient(ingredient.id)
     DP_CONTROLLER.delete_item_in_multiple_combobox(DP_CONTROLLER.get_comboboxes_bottles(w), ingredient.name)
     DP_CONTROLLER.delete_item_in_multiple_combobox(DP_CONTROLLER.get_comboboxes_recipes(w), ingredient.name)

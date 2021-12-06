@@ -3,11 +3,12 @@ import sys
 import re
 import traceback
 from functools import wraps
+from typing import Callable
 
 from src.logger_handler import LoggerHandler
 
 
-def logerror(func):
+def logerror(func: Callable):
     """ Logs every time an error occours """
 
     @wraps(func)

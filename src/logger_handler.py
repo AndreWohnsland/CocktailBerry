@@ -5,11 +5,11 @@ dirpath = os.path.dirname(os.path.abspath(__file__))
 
 
 class LoggerHandler:
-    """Handler Class for Generating Logger and Logging events"""
+    """Handler class for generating logger and logging events"""
 
     log_folder = os.path.join(dirpath, "..", "logs")
 
-    def __init__(self, loggername, filename):
+    def __init__(self, loggername: str, filename: str):
         self.loggername = loggername
         self.path = os.path.join(LoggerHandler.log_folder, f"{filename}.log")
 
@@ -25,14 +25,18 @@ class LoggerHandler:
         self.logger = logging.getLogger(loggername)
         self.template = "{:-^80}"
 
-    def log_event(self, level, message):
+    def log_event(self, level, message: str):
+        """Simply logs a message of given level"""
         self.logger.log(getattr(logging, level), message)
 
-    def log_header(self, level, message):
+    def log_header(self, level, message: str):
+        """Logs a message of given level formated as header"""
         self.log_event(level, self.template.format(f" {message} ",))
 
     def log_start_program(self):
-        self.log_header("INFO", "Starting the Programm")
+        """Logs the start of the program"""
+        self.log_header("INFO", "Starting the program")
 
-    def log_exception(self, message):
+    def log_exception(self, message: str):
+        """Logs an exception with the given message"""
         self.logger.exception(message)

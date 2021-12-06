@@ -9,7 +9,7 @@ from ui_elements.passwordbuttons2 import Ui_PasswordWindow2
 class PasswordScreen(QDialog, Ui_PasswordWindow2):
     """ Creates the Passwordscreen. """
 
-    def __init__(self, parent, x_pos=0, y_pos=0, le_to_write=None, headertext="Password"):
+    def __init__(self, parent, x_pos: int = 0, y_pos: int = 0, le_to_write=None, headertext: str = "Password"):
         """ Init. Connect all the buttons and set window policy. """
         super().__init__()
         self.setupUi(self)
@@ -31,7 +31,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         self.show()
         DP_CONTROLLER.set_display_settings(self, resize=False)
 
-    def number_clicked(self, number):
+    def number_clicked(self, number: int):
         """  Adds the clicked number to the lineedit. """
         self.pwlineedit.setText(f"{self.pwlineedit.text()}{number}")
 

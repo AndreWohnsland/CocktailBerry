@@ -76,9 +76,8 @@ def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcoh
     return cocktail
 
 
-def enter_recipe(w, newrecipe):
-    """ Enters or updates the recipe into the db
-    """
+def enter_recipe(w, newrecipe: bool):
+    """ Enters or updates the recipe into the db"""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, comment = recipe_input
     if not recipe_name:

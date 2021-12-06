@@ -39,7 +39,7 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         self.PBteamone.setText(self.__split_team_names(self.TEAM_BUTTON_NAMES[0], width))
         self.PBteamtwo.setText(self.__split_team_names(self.TEAM_BUTTON_NAMES[1], width))
 
-    def __split_team_names(self, name, width):
+    def __split_team_names(self, name: str, width: int):
         """Pseudo line wrap, since its not available for button"""
         singles = name.split(" ")
         label = singles[0]
