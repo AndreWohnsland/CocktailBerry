@@ -5,7 +5,7 @@ from pathlib import Path
 import sqlite3
 from typing import List, Union
 
-from src.models import Cocktail, Ingredient, IngredientData
+from src.models import Cocktail, Ingredient
 
 DATABASE_NAME = "Cocktail_database"
 DIRPATH = os.path.dirname(os.path.abspath(__file__))
@@ -19,8 +19,8 @@ class DatabaseCommander:
 
     def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
-        query = """SELECT Zutaten.Name, Zusammen.Menge, Zusammen.Hand, Zutaten.ID,
-                Zutaten.Alkoholgehalt, Belegung.Flasche, Zutaten.Mengenlevel
+        query = """SELECT Zutaten.ID, Zutaten.Name, Zutaten.Alkoholgehalt, Zutaten.Flaschenvolumen, Zutaten.Mengenlevel,
+                Zutaten.Hand, Zusammen.Menge, Zusammen.Hand, Belegung.Flasche
                 FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID
                 LEFT JOIN Belegung ON Belegung.ID = Zutaten.ID
                 WHERE Zusammen.Rezept_ID = ?"""
@@ -36,7 +36,9 @@ class DatabaseCommander:
         ingredient_data = self.__get_recipe_ingredients_by_id(recipe_id)
         return Cocktail(
             recipe_id, name, alcohol, amount, comment, bool(enabled),
-            [IngredientData(i[3], i[0], i[4], i[1], bool(i[2]), i[5], i[6]) for i in ingredient_data]
+            [Ingredient(
+                i[0], i[1], i[2], i[3], i[4], bool(i[5]), i[6], bool(i[7]), i[8]
+            ) for i in ingredient_data]
         )
 
     def get_cocktail(self, search: Union[str, int]) -> Union[Cocktail, None]:
@@ -52,11 +54,6 @@ class DatabaseCommander:
             return None
         recipe = data[0]
         return self.__build_cocktail(*recipe)
-
-    # TODO: Currently not used
-    def get_multiple_cocktails(self, searchlist: List[Union[str, int]]) -> List[Cocktail]:
-        """Returns all cocktails for the name / id in the list"""
-        return [self.get_cocktail(x) for x in searchlist]
 
     def get_all_cocktails(self, get_enabled=True, get_disabled=True) -> List[Cocktail]:
         """Bilds a list of all cocktails, option to filter by enabled status"""
@@ -95,26 +92,28 @@ class DatabaseCommander:
     def get_ingredient(self, search: Union[str, int]) -> Union[Ingredient, None]:
         """Get all neeeded data for the ingredient from ID or name"""
         if isinstance(search, str):
-            condition = "Name"
+            condition = "Z.Name"
         else:
-            condition = "ID"
-        query = f"SELECT ID, Name, Alkoholgehalt, Flaschenvolumen, Mengenlevel, Hand FROM Zutaten WHERE {condition}=?"
+            condition = "Z.ID"
+        query = "SELECT Z.ID, Z.Name, Z.Alkoholgehalt, Z.Flaschenvolumen, Z.Mengenlevel, Z.Hand, B.Flasche " + \
+            f"FROM Zutaten as Z LEFT JOIN Belegung as B on B.ID = Z.ID WHERE {condition}=?"
         data = self.handler.query_database(query, (search,))
         # returns None if no data exists
         if not data:
             return None
-        ingredient = data[0]
-        return Ingredient(*ingredient)
+        ing = data[0]
+        return Ingredient(ing[0], ing[1], ing[2], ing[3], ing[4], bool(ing[5]), bottle=ing[6])
 
     def get_all_ingredients(self, get_machine=True, get_hand=True) -> List[Ingredient]:
         """Bilds a list of all ingredinets, option to filter by add status"""
         ingredients = []
-        query = "SELECT ID, Name, Alkoholgehalt, Flaschenvolumen, Mengenlevel, Hand FROM Zutaten"
+        query = """SELECT Z.ID, Z.Name, Z.Alkoholgehalt, Z.Flaschenvolumen, Z.Mengenlevel, Z.Hand, B.Flasche
+                    FROM Zutaten as Z LEFT JOIN Belegung as B on B.ID = Z.ID"""
         ingredient_data = self.handler.query_database(query)
         for ing in ingredient_data:
             hand = bool(ing[5])
             if (not hand and get_machine) or (hand and get_hand):
-                ingredients.append(Ingredient(*ing))
+                ingredients.append(Ingredient(ing[0], ing[1], ing[2], ing[3], ing[4], hand, bottle=ing[6]))
         return ingredients
 
     def get_bottle_usage(self, ingredient_id: int):
@@ -208,7 +207,7 @@ class DatabaseCommander:
             if set_to_max:
                 self.handler.query_database(query, (bottle,))
 
-    def set_ingredient_data(self, ingredient_name: str, alcohollevel: int, volume: int, new_level: int, onlyhand: int, ingredient_id: int):
+    def set_ingredient_data(self, ingredient_name: str, alcohollevel: int, volume: int, new_level: int, onlyhand: bool, ingredient_id: int):
         """Updates the given ingredient id to new properties"""
         query = """UPDATE OR IGNORE Zutaten
                 SET Name = ?, Alkoholgehalt = ?,
@@ -216,7 +215,7 @@ class DatabaseCommander:
                 Mengenlevel = ?,
                 Hand = ?
                 WHERE ID = ?"""
-        searchtuple = (ingredient_name, alcohollevel, volume, new_level, onlyhand, ingredient_id)
+        searchtuple = (ingredient_name, alcohollevel, volume, new_level, int(onlyhand), ingredient_id)
         self.handler.query_database(query, searchtuple)
 
     def increment_recipe_counter(self, recipe_name: str):
@@ -261,12 +260,12 @@ class DatabaseCommander:
         self.handler.query_database(query, (value, ingredient_id))
 
     # insert commands
-    def insert_new_ingredient(self, ingredient_name: str, alcohollevel: int, volume: int, onlyhand: int):
+    def insert_new_ingredient(self, ingredient_name: str, alcohollevel: int, volume: int, onlyhand: bool):
         """Insert a new ingredient into the database"""
         query = """INSERT OR IGNORE INTO
                 Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel,Hand) 
                 VALUES (?,?,?,0,0,0,?)"""
-        searchtuple = (ingredient_name, alcohollevel, volume, onlyhand)
+        searchtuple = (ingredient_name, alcohollevel, volume, int(onlyhand))
         self.handler.query_database(query, searchtuple)
 
     def insert_new_recipe(self, name: str, alcohollevel: int, volume: int, comment: str, enabled: int):
@@ -277,10 +276,10 @@ class DatabaseCommander:
         searchtuple = (name, alcohollevel, volume, comment, enabled)
         self.handler.query_database(query, searchtuple)
 
-    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, is_alcoholic: int, hand_add: int):
+    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, is_alcoholic: int, hand_add: bool):
         """Insert given data into the recipe_data table"""
         query = "INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, ?)"
-        searchtuple = (recipe_id, ingredient_id, ingredient_volume, is_alcoholic, hand_add)
+        searchtuple = (recipe_id, ingredient_id, ingredient_volume, is_alcoholic, int(hand_add))
         self.handler.query_database(query, searchtuple)
 
     def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: List[str]):

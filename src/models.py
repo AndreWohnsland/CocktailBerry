@@ -12,25 +12,16 @@ class Ingredient():
     bottle_volume: int
     fill_level: int
     hand: Union[bool, int]
-    selected: str = None
-    recipe_volume: int = None
+    amount: int = 0
     recipe_hand: Union[bool, int] = None
-
-
-@dataclass
-class IngredientData():
-    """Class to represent the data of one ingredient of a recipe/cocktail"""
-    id: int
-    name: str
-    alcohol: int
-    amount: int
-    hand: bool
     bottle: Union[int, None] = None
-    fill_level: int = None
+    selected: str = None
 
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name"""
-        return (int(self.hand), -self.amount, -len(self.name)) < (int(other.hand), -other.amount, -len(other.name))
+        self_hand = self.recipe_hand if self.recipe_hand is not None else self.hand
+        other_hand = other.recipe_hand if other.recipe_hand is not None else other.hand
+        return (int(self_hand), -self.amount, -len(self.name)) < (int(other_hand), -other.amount, -len(other.name))
 
 
 @dataclass
@@ -42,8 +33,8 @@ class Cocktail():
     amount: int
     comment: str
     enabled: bool
-    ingredients: List[IngredientData]
-    adjusted_ingredients: List[IngredientData] = None
+    ingredients: List[Ingredient]
+    adjusted_ingredients: List[Ingredient] = None
     adjusted_alcohol: int = 0
     adjusted_amount: int = 0
 
@@ -56,11 +47,11 @@ class Cocktail():
 
     def get_handadds(self):
         """Returns a list of all handadd Ingredients"""
-        return [x for x in self.adjusted_ingredients if x.hand]
+        return [x for x in self.adjusted_ingredients if x.recipe_hand]
 
     def get_machineadds(self):
         """Returns a list of all machine Ingredients"""
-        return [x for x in self.adjusted_ingredients if not x.hand]
+        return [x for x in self.adjusted_ingredients if not x.recipe_hand]
 
     def is_possible(self, hand_available: List[int]):
         """Returns if the recipe is possible with given aditional hand add ingredients"""

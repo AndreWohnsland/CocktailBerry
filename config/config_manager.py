@@ -2,7 +2,7 @@ import os
 from typing import List
 import yaml
 
-from src.models import IngredientData
+from src.models import Ingredient
 
 CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "custom_config.yaml")
 
@@ -122,7 +122,7 @@ class Shared:
         self.make_cocktail = True
         self.old_ingredient: List[str] = []
         self.selected_team = "Nothing"
-        self.handaddlist: List[IngredientData] = []
+        self.handaddlist: List[Ingredient] = []
 
 
 shared = Shared()

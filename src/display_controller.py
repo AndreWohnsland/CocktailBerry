@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
-from src.models import Cocktail, Ingredient, IngredientData
+from src.models import Cocktail, Ingredient
 from config.config_manager import shared
 
 
@@ -37,11 +37,11 @@ class DisplayController(DialogHandler):
     def get_ingredient_data(self, lineedit_list: List[Any], checkbox, list_widget):
         """Returns an Ingredient Object from the ingredient data fields"""
         ingredient_name, alcohollevel, volume = self.get_lineedit_text(lineedit_list)
-        hand_add = int(checkbox.isChecked())
+        hand_add = checkbox.isChecked()
         selected_ingredient = ""
         if list_widget.selectedItems():
             selected_ingredient = list_widget.currentItem().text()
-        return Ingredient(None, ingredient_name, int(alcohollevel), int(volume), None, hand_add, selected_ingredient)
+        return Ingredient(None, ingredient_name, int(alcohollevel), int(volume), None, hand_add, selected=selected_ingredient)
 
     def get_cocktail_data(self, w) -> Tuple[str, int, int]:
         """Returns [name, volume, factor] from maker"""
@@ -391,7 +391,7 @@ class DisplayController(DialogHandler):
         w.LWRezepte.blockSignals(False)
         w.LWMaker.blockSignals(False)
 
-    def __set_recipe_handadd_comment(self, w, handadd_data: List[IngredientData]):
+    def __set_recipe_handadd_comment(self, w, handadd_data: List[Ingredient]):
         """Build the comment for the view from the handadd data"""
         comment = ""
         for ing in handadd_data:

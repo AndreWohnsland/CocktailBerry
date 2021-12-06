@@ -3,7 +3,6 @@ from collections import Counter
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon, QIntValidator
-from src.models import IngredientData
 
 from ui_elements.handadds import Ui_handadds
 from src.display_controller import DP_CONTROLLER
@@ -74,8 +73,9 @@ class HandaddWidget(QDialog, Ui_handadds):
         commenttext = ""
         for ingredient_name, amount in zip(ingredient_list, amount_list):
             ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
-            ingredient_data = IngredientData(ingredient.id, ingredient.name, ingredient.alcohol, amount, 1)
-            shared.handaddlist.append(ingredient_data)
+            ingredient.amount = amount
+            ingredient.recipe_hand = True
+            shared.handaddlist.append(ingredient)
             commenttext += f"{amount} ml {ingredient_name}, "
         commenttext = commenttext[:-2]
         self.mainscreen.LEKommentar.setText(commenttext)
