@@ -1,8 +1,8 @@
 # pylint: disable=too-few-public-methods
 import configparser
-
 import os
 from pathlib import Path
+from sqlite3 import OperationalError
 from typing import Union
 
 from src.logger_handler import LoggerHandler
@@ -74,7 +74,11 @@ class Migrator:
             "ALTER TABLE Ingredients RENAME COLUMN Mengenlevel TO Fill_level",
         ]
         for command in commands:
-            db_handler.query_database(command)
+            try:
+                db_handler.query_database(command)
+            # this may occour if renaming already took place
+            except OperationalError:
+                pass
 
     def __add_team_buffer_to_database(self):
         """Adds an additional table for buffering not send team data"""
