@@ -2,8 +2,7 @@ import time
 from typing import List
 from PyQt5.QtWidgets import qApp
 
-from config.config_manager import shared
-from config.config_manager import ConfigManager
+from src.config_manager import shared, ConfigManager
 
 
 try:

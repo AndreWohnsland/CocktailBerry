@@ -8,7 +8,7 @@ from ui_elements.handadds import Ui_handadds
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
-from config.config_manager import shared
+from src.config_manager import shared
 
 
 class HandaddWidget(QDialog, Ui_handadds):

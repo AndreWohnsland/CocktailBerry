@@ -5,7 +5,7 @@ import os
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
-from config.config_manager import ConfigManager
+from src.config_manager import ConfigManager
 from src import maker
 from src import ingredients
 from src import recipes

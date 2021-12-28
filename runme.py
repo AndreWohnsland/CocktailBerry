@@ -1,9 +1,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication
-from src.error_handler import logerror
 
+from src.error_handler import logerror
+from src.config_manager import ConfigManager
 from src_ui.setup_mainwindow import MainScreen
-from config.config_manager import ConfigManager
 
 
 @logerror

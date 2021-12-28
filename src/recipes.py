@@ -12,7 +12,7 @@ from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.error_handler import logerror
 from src.models import Ingredient
-from config.config_manager import shared
+from src.config_manager import shared
 
 
 def fill_recipe_box_with_ingredients(w):

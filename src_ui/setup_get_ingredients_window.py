@@ -2,7 +2,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
 from ui_elements.bonusingredient import Ui_addingredient
-from config.config_manager import shared
+from src.config_manager import shared
 
 from src.logger_handler import LoggerHandler
 from src.display_controller import DP_CONTROLLER

@@ -1,7 +1,7 @@
 import os
 from typing import List, Union
 import yaml
-from config.config_manager import ConfigManager
+from src.config_manager import ConfigManager
 
 DIRPATH = os.path.dirname(os.path.abspath(__file__))
 LANGUAGE_FILE = os.path.join(DIRPATH, "language.yaml")
