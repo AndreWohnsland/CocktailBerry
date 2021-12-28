@@ -19,16 +19,17 @@ class DatabaseCommander:
 
     def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
-        query = """SELECT Zutaten.ID, Zutaten.Name, Zutaten.Alkoholgehalt, Zutaten.Flaschenvolumen, Zutaten.Mengenlevel,
-                Zutaten.Hand, Zusammen.Menge, Zusammen.Hand, Belegung.Flasche
-                FROM Zusammen INNER JOIN Zutaten ON Zusammen.Zutaten_ID = Zutaten.ID
-                LEFT JOIN Belegung ON Belegung.ID = Zutaten.ID
-                WHERE Zusammen.Rezept_ID = ?"""
+        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level,
+                I.Hand, RD.Amount, RD.Hand, B.Bottle
+                FROM RecipeData as RD INNER JOIN Ingredients as I 
+                ON RD.Ingredient_ID = I.ID
+                LEFT JOIN Bottles as B ON B.ID = I.ID
+                WHERE RD.Recipe_ID = ?"""
         return self.handler.query_database(query, (recipe_id,))
 
     def __get_all_recipes_properties(self):
         """Get all neeeded data for all recipes"""
-        query = "SELECT ID, Name, Alkoholgehalt, Menge, Kommentar, Enabled FROM Rezepte"
+        query = "SELECT ID, Name, Alcohol, Amount, Comment, Enabled FROM Recipes"
         return self.handler.query_database(query)
 
     def __build_cocktail(self, recipe_id: int, name: str, alcohol: int, amount: int, comment: str, enabled: bool):
@@ -47,7 +48,7 @@ class DatabaseCommander:
             condition = "Name"
         else:
             condition = "ID"
-        query = f"SELECT ID, Name, Alkoholgehalt, Menge, Kommentar, Enabled FROM Rezepte WHERE {condition}=?"
+        query = f"SELECT ID, Name, Alcohol, Amount, Comment, Enabled FROM Recipes WHERE {condition}=?"
         data = self.handler.query_database(query, (search,))
         # returns None if no data exists
         if not data:
@@ -68,17 +69,17 @@ class DatabaseCommander:
 
     def get_ingredients_at_bottles(self) -> List[str]:
         """Return ingredient name for all bottles"""
-        query = """SELECT Zutaten.Name FROM Belegung
-                    LEFT JOIN Zutaten ON
-                    Zutaten.ID=Belegung.ID
-                    ORDER BY Belegung.Flasche"""
+        query = """SELECT Ingredients.Name FROM Bottles
+                    LEFT JOIN Ingredients ON
+                    Ingredients.ID=Bottles.ID
+                    ORDER BY Bottles.Bottle"""
         result = self.handler.query_database(query)
         return [x[0] if x[0] is not None else "" for x in result]
 
     def get_bottle_fill_levels(self) -> List[int]:
         """Returns percentage of fill level, limited to [0, 100]"""
-        query = """SELECT Zutaten.Mengenlevel, Zutaten.Flaschenvolumen FROM Belegung
-                LEFT JOIN Zutaten ON Zutaten.ID = Belegung.ID"""
+        query = """SELECT Ingredients.Fill_level, Ingredients.Volume FROM Bottles
+                LEFT JOIN Ingredients ON Ingredients.ID = Bottles.ID"""
         values = self.handler.query_database(query)
         levels = []
         for current_value, max_value in values:
@@ -92,11 +93,11 @@ class DatabaseCommander:
     def get_ingredient(self, search: Union[str, int]) -> Union[Ingredient, None]:
         """Get all neeeded data for the ingredient from ID or name"""
         if isinstance(search, str):
-            condition = "Z.Name"
+            condition = "I.Name"
         else:
-            condition = "Z.ID"
-        query = "SELECT Z.ID, Z.Name, Z.Alkoholgehalt, Z.Flaschenvolumen, Z.Mengenlevel, Z.Hand, B.Flasche " + \
-            f"FROM Zutaten as Z LEFT JOIN Belegung as B on B.ID = Z.ID WHERE {condition}=?"
+            condition = "I.ID"
+        query = "SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, B.Bottle " + \
+            f"FROM Ingredients as I LEFT JOIN Bottles as B on B.ID = I.ID WHERE {condition}=?"
         data = self.handler.query_database(query, (search,))
         # returns None if no data exists
         if not data:
@@ -107,8 +108,8 @@ class DatabaseCommander:
     def get_all_ingredients(self, get_machine=True, get_hand=True) -> List[Ingredient]:
         """Bilds a list of all ingredinets, option to filter by add status"""
         ingredients = []
-        query = """SELECT Z.ID, Z.Name, Z.Alkoholgehalt, Z.Flaschenvolumen, Z.Mengenlevel, Z.Hand, B.Flasche
-                    FROM Zutaten as Z LEFT JOIN Belegung as B on B.ID = Z.ID"""
+        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, B.Bottle
+                    FROM Ingredients as I LEFT JOIN Bottles as B on B.ID = I.ID"""
         ingredient_data = self.handler.query_database(query)
         for ing in ingredient_data:
             hand = bool(ing[5])
@@ -118,35 +119,35 @@ class DatabaseCommander:
 
     def get_bottle_usage(self, ingredient_id: int):
         """Returns if the ingredient id is currently used at a bottle"""
-        query = "SELECT COUNT(*) FROM Belegung WHERE ID = ?"
+        query = "SELECT COUNT(*) FROM Bottles WHERE ID = ?"
         if self.handler.query_database(query, (ingredient_id,))[0][0]:
             return True
         return False
 
     def get_recipe_usage_list(self, ingredient_id: int) -> List[str]:
         """Get all the recipe names the ingredient is used in"""
-        query = """SELECT Rezepte.Name FROM Zusammen
-                INNER JOIN Rezepte ON Rezepte.ID = Zusammen.Rezept_ID 
-                WHERE Zusammen.Zutaten_ID=?"""
+        query = """SELECT Recipes.Name FROM RecipeData
+                INNER JOIN Recipes ON Recipes.ID = RecipeData.Recipe_ID 
+                WHERE RecipeData.Ingredient_ID=?"""
         recipe_list = self.handler.query_database(query, (ingredient_id,))
         return [recipe[0] for recipe in recipe_list]
 
     def __get_multiple_ingredient_ids_from_names(self, name_list: List[str]) -> List[int]:
         """Get all the ids for the selected names"""
         questionmarks = ",".join(["?"] * len(name_list))
-        query = f"SELECT ID FROM Zutaten WHERE Name in ({questionmarks})"
+        query = f"SELECT ID FROM Ingredients WHERE Name in ({questionmarks})"
         result = self.handler.query_database(query, name_list)
         return [x[0] for x in result]
 
     def get_consumption_data_lists_recipes(self):
         """Return the recipe consumption data ready to export"""
-        query = "SELECT Name, Anzahl, Anzahl_Lifetime FROM Rezepte"
+        query = "SELECT Name, Counter, Counter_lifetime FROM Recipes"
         data = self.handler.query_database(query)
         return self.__convert_consumption_data(data)
 
     def get_consumption_data_lists_ingredients(self):
         """Return the ingredient consumption data ready to export"""
-        query = "SELECT Name, Verbrauch, Verbrauchsmenge FROM Zutaten"
+        query = "SELECT Name, Consumption, Consumption_lifetime FROM Ingredients"
         data = self.handler.query_database(query)
         return self.__convert_consumption_data(data)
 
@@ -159,29 +160,29 @@ class DatabaseCommander:
 
     def get_available_ingredient_names(self) -> List[str]:
         """Get the names for the available ingredients"""
-        query = """SELECT Zutaten.Name FROM Zutaten
-                INNER JOIN Vorhanden ON Vorhanden.ID = Zutaten.ID"""
+        query = """SELECT Ingredients.Name FROM Ingredients
+                INNER JOIN Available ON Available.ID = Ingredients.ID"""
         data = self.handler.query_database(query)
         return [x[0] for x in data]
 
     def get_available_ids(self) -> List[int]:
         """Returns a list of the IDs of all available defined ingredients"""
-        query = "SELECT ID FROM Vorhanden"
+        query = "SELECT ID FROM Available"
         result = self.handler.query_database(query)
         return [x[0] for x in result]
 
     def get_bottle_data_bottle_window(self):
         """Gets all needed data for bottles, ordered by bottle number
         Returs [name, level, id, bottle_volume] for each slot"""
-        query = """SELECT Zutaten.Name, Zutaten.Mengenlevel, Zutaten.ID, Zutaten.Flaschenvolumen
-                FROM Belegung LEFT JOIN Zutaten ON Zutaten.ID = Belegung.ID ORDER BY Belegung.Flasche"""
+        query = """SELECT Ingredients.Name, Ingredients.Fill_level, Ingredients.ID, Ingredients.Volume
+                FROM Bottles LEFT JOIN Ingredients ON Ingredients.ID = Bottles.ID ORDER BY Bottles.Bottle"""
         return self.handler.query_database(query)
 
     def get_ingredient_bottle_and_level_by_name(self, ingredient_name):
         """Returns (Bottle_number, level) for the given ingredient"""
-        query = """SELECT Belegung.Flasche, Zutaten.Mengenlevel
-                FROM Belegung INNER JOIN Zutaten ON Zutaten.ID = Belegung.ID
-                WHERE Zutaten.Name = ?"""
+        query = """SELECT Bottles.Bottle, Ingredients.Fill_level
+                FROM Bottles INNER JOIN Ingredients ON Ingredients.ID = Bottles.ID
+                WHERE Ingredients.Name = ?"""
         data = self.handler.query_database(query, (ingredient_name,))
         if data:
             return data[0][0], data[0][1]
@@ -192,27 +193,27 @@ class DatabaseCommander:
         """Set bottles to the given list of bottles, need all bottles"""
         for i, ingredient in enumerate(ingredient_names):
             bottle = i + 1
-            query = """UPDATE OR IGNORE Belegung
-                    SET ID = (SELECT ID FROM Zutaten WHERE Name = ?)
-                    WHERE Flasche = ?"""
+            query = """UPDATE OR IGNORE Bottles
+                    SET ID = (SELECT ID FROM Ingredients WHERE Name = ?)
+                    WHERE Bottle = ?"""
             searchtuple = (ingredient, bottle)
             self.handler.query_database(query, searchtuple)
 
     def set_bottle_volumelevel_to_max(self, boolean_list: List[bool]):
         """Sets the each i-th bottle to max level if arg is true"""
-        query = """UPDATE OR IGNORE Zutaten
-                Set Mengenlevel = Flaschenvolumen
-                WHERE ID = (SELECT ID FROM Belegung WHERE Flasche = ?)"""
+        query = """UPDATE OR IGNORE Ingredients
+                Set Fill_level = Volume
+                WHERE ID = (SELECT ID FROM Bottles WHERE Bottle = ?)"""
         for bottle, set_to_max in enumerate(boolean_list, start=1):
             if set_to_max:
                 self.handler.query_database(query, (bottle,))
 
     def set_ingredient_data(self, ingredient_name: str, alcohollevel: int, volume: int, new_level: int, onlyhand: bool, ingredient_id: int):
         """Updates the given ingredient id to new properties"""
-        query = """UPDATE OR IGNORE Zutaten
-                SET Name = ?, Alkoholgehalt = ?,
-                Flaschenvolumen = ?,
-                Mengenlevel = ?,
+        query = """UPDATE OR IGNORE Ingredients
+                SET Name = ?, Alcohol = ?,
+                Volume = ?,
+                Fill_level = ?,
                 Hand = ?
                 WHERE ID = ?"""
         searchtuple = (ingredient_name, alcohollevel, volume, new_level, int(onlyhand), ingredient_id)
@@ -220,18 +221,18 @@ class DatabaseCommander:
 
     def increment_recipe_counter(self, recipe_name: str):
         """Increase the recipe counter by one of given recipe name"""
-        query = """UPDATE OR IGNORE Rezepte
-                SET Anzahl_Lifetime = Anzahl_Lifetime + 1, 
-                Anzahl = Anzahl + 1 
+        query = """UPDATE OR IGNORE Recipes
+                SET Counter_lifetime = Counter_lifetime + 1, 
+                Counter = Counter + 1 
                 WHERE Name = ?"""
         self.handler.query_database(query, (recipe_name,))
 
     def increment_ingredient_consumption(self, ingredient_name: str, ingredient_consumption: int):
         """Increase the consumption of given ingredient name by a given amount"""
-        query = """UPDATE OR IGNORE Zutaten
-                SET Verbrauchsmenge = Verbrauchsmenge + ?, 
-                Verbrauch = Verbrauch + ?, 
-                Mengenlevel = Mengenlevel - ? 
+        query = """UPDATE OR IGNORE Ingredients
+                SET Consumption_lifetime = Consumption_lifetime + ?, 
+                Consumption = Consumption + ?, 
+                Fill_level = Fill_level - ? 
                 WHERE Name = ?"""
         searchtuple = (ingredient_consumption, ingredient_consumption, ingredient_consumption, ingredient_name)
         self.handler.query_database(query, searchtuple)
@@ -243,27 +244,27 @@ class DatabaseCommander:
 
     def set_all_recipes_enabled(self):
         """Enables all recipes"""
-        query = "UPDATE OR IGNORE Rezepte SET Enabled = 1"
+        query = "UPDATE OR IGNORE Recipes SET Enabled = 1"
         self.handler.query_database(query)
 
     def set_recipe(self, recipe_id: int, name: str, alcohollevel: int, volume: int, comment: str, enabled: int):
         """Updates the given recipe id to new properties"""
-        query = """UPDATE OR IGNORE Rezepte
-                SET Name = ?, Alkoholgehalt = ?, Menge = ?, Kommentar = ?, Enabled = ?
+        query = """UPDATE OR IGNORE Recipes
+                SET Name = ?, Alcohol = ?, Amount = ?, Comment = ?, Enabled = ?
                 WHERE ID = ?"""
         searchtuple = (name, alcohollevel, volume, comment, enabled, recipe_id)
         self.handler.query_database(query, searchtuple)
 
     def set_ingredient_level_to_value(self, ingredient_id: int, value: int):
         """Sets the given ingredient id to a defined level"""
-        query = "UPDATE OR IGNORE Zutaten SET Mengenlevel = ? WHERE ID = ?"
+        query = "UPDATE OR IGNORE Ingredients SET Fill_level = ? WHERE ID = ?"
         self.handler.query_database(query, (value, ingredient_id))
 
     # insert commands
     def insert_new_ingredient(self, ingredient_name: str, alcohollevel: int, volume: int, onlyhand: bool):
         """Insert a new ingredient into the database"""
         query = """INSERT OR IGNORE INTO
-                Zutaten(Name,Alkoholgehalt,Flaschenvolumen,Verbrauchsmenge,Verbrauch,Mengenlevel,Hand) 
+                Ingredients(Name,Alcohol,Volume,Consumption_lifetime,Consumption,Fill_level,Hand) 
                 VALUES (?,?,?,0,0,0,?)"""
         searchtuple = (ingredient_name, alcohollevel, volume, int(onlyhand))
         self.handler.query_database(query, searchtuple)
@@ -271,14 +272,15 @@ class DatabaseCommander:
     def insert_new_recipe(self, name: str, alcohollevel: int, volume: int, comment: str, enabled: int):
         """Insert a new recipe into the database"""
         query = """INSERT OR IGNORE INTO
-                Rezepte(Name, Alkoholgehalt, Menge, Kommentar, Anzahl_Lifetime, Anzahl, Enabled) 
+                Recipes(Name, Alcohol, Amount, Comment, Counter_lifetime, Counter, Enabled) 
                 VALUES (?,?,?,?,0,0,?)"""
         searchtuple = (name, alcohollevel, volume, comment, enabled)
         self.handler.query_database(query, searchtuple)
 
+    # TODO: Is_alcoholic seems to be no longer used -> if so remove!
     def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, is_alcoholic: int, hand_add: bool):
         """Insert given data into the recipe_data table"""
-        query = "INSERT OR IGNORE INTO Zusammen(Rezept_ID, Zutaten_ID, Menge, Alkoholisch, Hand) VALUES (?, ?, ?, ?, ?)"
+        query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount, Is_alcoholic, Hand) VALUES (?, ?, ?, ?, ?)"
         searchtuple = (recipe_id, ingredient_id, ingredient_volume, is_alcoholic, int(hand_add))
         self.handler.query_database(query, searchtuple)
 
@@ -286,41 +288,41 @@ class DatabaseCommander:
         """Insert the IDS of the given ingredient list into the available table"""
         ingredient_id = self.__get_multiple_ingredient_ids_from_names(ingredient_names)
         questionmarks = ",".join(["(?)"] * len(ingredient_id))
-        query = f"INSERT INTO Vorhanden(ID) VALUES {questionmarks}"
+        query = f"INSERT INTO Available(ID) VALUES {questionmarks}"
         self.handler.query_database(query, ingredient_id)
 
     # delete
     def delete_ingredient(self, ingredient_id: int):
         """Deletes an ingredient by id"""
-        query = "DELETE FROM Zutaten WHERE ID = ?"
+        query = "DELETE FROM Ingredients WHERE ID = ?"
         self.handler.query_database(query, (ingredient_id,))
 
     def delete_consumption_recipes(self):
         """Sets the resetable consumption of all recipes to zero"""
-        query = "UPDATE OR IGNORE Rezepte SET Anzahl = 0"
+        query = "UPDATE OR IGNORE Recipes SET Counter = 0"
         self.handler.query_database(query)
 
     def delete_consumption_ingredients(self):
         """Sets the resetable consumption of all ingredients to zero"""
-        query = "UPDATE OR IGNORE Zutaten SET Verbrauch = 0"
+        query = "UPDATE OR IGNORE Ingredients SET Consumption = 0"
         self.handler.query_database(query)
 
     def delete_recipe(self, recipe_name: str):
         """Deletes the given recipe by name and all according ingredient_data"""
         # if using FK with cascade delete, this will prob no longer nececary
-        query1 = "DELETE FROM Zusammen WHERE Rezept_ID = (SELECT ID FROM Rezepte WHERE Name = ?)"
-        query2 = "DELETE FROM Rezepte WHERE Name = ?"
+        query1 = "DELETE FROM RecipeData WHERE Recipe_ID = (SELECT ID FROM Recipes WHERE Name = ?)"
+        query2 = "DELETE FROM Recipes WHERE Name = ?"
         self.handler.query_database(query1, (recipe_name,))
         self.handler.query_database(query2, (recipe_name,))
 
     def delete_recipe_ingredient_data(self, recipe_id: int):
         """Deletes ingredient_data by given ID"""
-        query = "DELETE FROM Zusammen WHERE Rezept_ID = ?"
+        query = "DELETE FROM RecipeData WHERE Recipe_ID = ?"
         self.handler.query_database(query, (recipe_id,))
 
     def delete_existing_handadd_ingredient(self):
         """Deletes all ingredient in the available table"""
-        self.handler.query_database(("DELETE FROM Vorhanden"))
+        self.handler.query_database("DELETE FROM Available")
 
 
 class DatabaseHandler:
@@ -369,64 +371,64 @@ class DatabaseHandler:
         self.connect_database(self.database_path_default)
         # Creates each Table
         self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS Rezepte(
+            """CREATE TABLE IF NOT EXISTS Recipes(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 Name TEXT NOT NULL,
-                Alkoholgehalt INTEGER NOT NULL,
-                Menge INTEGER NOT NULL,
-                Kommentar TEXT,
-                Anzahl_Lifetime INTEGER,
-                Anzahl INTEGER,
+                Alcohol INTEGER NOT NULL,
+                Amount INTEGER NOT NULL,
+                Comment TEXT,
+                Counter_lifetime INTEGER,
+                Counter INTEGER,
                 Enabled INTEGER);"""
         )
         self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS Zutaten(
+            """CREATE TABLE IF NOT EXISTS Ingredients(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 Name TEXT NOT NULL,
-                Alkoholgehalt INTEGER NOT NULL,
-                Flaschenvolumen INTEGER NOT NULL,
-                Verbrauchsmenge INTEGER,
-                Verbrauch INTEGER,
-                Mengenlevel INTEGER,
+                Alcohol INTEGER NOT NULL,
+                Volume INTEGER NOT NULL,
+                Consumption_lifetime INTEGER,
+                Consumption INTEGER,
+                Fill_level INTEGER,
                 Hand INTEGER);"""
         )
         self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS Zusammen(
-                Rezept_ID INTEGER NOT NULL,
-                Zutaten_ID INTEGER NOT NULL,
-                Menge INTEGER NOT NULL,
-                Alkoholisch INTEGER NOT NULL,
+            """CREATE TABLE IF NOT EXISTS RecipeData(
+                Recipe_ID INTEGER NOT NULL,
+                Ingredient_ID INTEGER NOT NULL,
+                Amount INTEGER NOT NULL,
+                Is_alcoholic INTEGER NOT NULL,
                 Hand INTEGER,
-                CONSTRAINT fk_zusammen_zutat
-                    FOREIGN KEY (Zutaten_ID)
-                    REFERENCES Zutaten (ID)
+                CONSTRAINT fk_data_ingredient
+                    FOREIGN KEY (Ingredient_ID)
+                    REFERENCES Ingredients (ID)
                     ON DELETE RESTRICT,
-                CONSTRAINT fk_zusammen_rezept
-                    FOREIGN KEY (Rezept_ID)
-                    REFERENCES Rezepte (ID)
+                CONSTRAINT fk_data_recipe
+                    FOREIGN KEY (Recipe_ID)
+                    REFERENCES Recipes (ID)
                     ON DELETE CASCADE
                 );"""
         )
         self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS Belegung(
-                Flasche INTEGER NOT NULL,
+            """CREATE TABLE IF NOT EXISTS Bottles(
+                Bottle INTEGER NOT NULL,
                 ID INTEGER,
-                CONSTRAINT fk_belegung_zutat
+                CONSTRAINT fk_bottle_ingredient
                     FOREIGN KEY (ID)
-                    REFERENCES Zutaten (ID)
+                    REFERENCES Ingredients (ID)
                     ON DELETE RESTRICT
                 );"""
         )
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS Vorhanden(ID INTEGER NOT NULL);")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS Available(ID INTEGER NOT NULL);")
 
         # Creating the Unique Indexes
-        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_zutaten_name ON Zutaten(Name)")
-        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_rezepte_name ON Rezepte(Name)")
-        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_flasche ON Belegung(Flasche)")
+        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_ingredient_name ON Ingredients(Name)")
+        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_recipe_name ON Recipes(Name)")
+        self.cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_bottle ON Bottles(Bottle)")
 
         # Creating the Space Naming of the Bottles
         for bottle_count in range(1, 13):
-            self.cursor.execute("INSERT INTO Belegung(Flasche) VALUES (?)", (bottle_count))
+            self.cursor.execute("INSERT INTO Bottles(Bottle) VALUES (?)", (bottle_count))
         self.database.commit()
         self.database.close()
 
