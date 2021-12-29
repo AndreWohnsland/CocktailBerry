@@ -37,11 +37,10 @@ class Updater:
         self.repo.remotes.origin.fetch()
         # Get the latest tag an compare the diff with the current branch
         # Usually this should work since the default is master branch and "normal" users shouldn't be chaning files
+        # Not using diff but local and remote tags to compare, since some problems exists comparing by diff
         latest_tag = self.repo.tags[-1]
-        # either build diff or just simply check local version with latest
-        diff_master_tag = latest_tag.commit.diff(self.repo.heads.master.commit)
-        update_available = bool(diff_master_tag)
-        # currently using local version tag, this will prob work best,
+        # Either build diff or just simply check local version with latest
+        # Currently using local version tag, this will prob work best,
         # if the programmer does not forget to update the version in the migrator
         migrator = Migrator()
         update_available = migrator.older_than_version(latest_tag.name.replace("v", ""))
