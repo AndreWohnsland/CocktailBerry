@@ -6,6 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/Cocktailmaker_AW?style=social)
+
 <!-- ![Lines of code](https://img.shields.io/tokei/lines/github/AndreWohnsland/Cocktailmaker_AW) -->
 
 #### A Python and Qt Based App for a Cocktail Machine 🐍 + 🍸 = 🥳
@@ -215,6 +216,7 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 - `PUMP_PINS` (_list[int]_): List of the RPi-Pins where each Pump is connected
 - `PUMP_VOLUMEFLOW` (_list[int]_): List of the according volume flow for each pump in ml/s
 - `MAKER_NUMBER_BOTTLES` (_int_): Number of supported/displayed bottles. Currently, the UI is build for up to ten bottles
+- `MAKER_SEARCH_UPDATES` (_bool_): Boolean flag to search for updates at program start
 - `MAKER_CLEAN_TIME` (_int_): Time the machine will execute the cleaning program
 - `MAKER_SLEEP_TIME` (_float_): Sleep interval between each UI refresh and check of conditions while generating a cocktail
 - `MICROSERVICE_ACTIVE` (_bool_): Boolean flag to post to microservice set up by docker (optional) (version >= 1.1)
