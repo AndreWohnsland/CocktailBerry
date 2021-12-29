@@ -1,6 +1,8 @@
 import os
 from typing import List, Union
 import yaml
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import Qt
 from src.config_manager import ConfigManager
 
 DIRPATH = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +36,24 @@ class DialogHandler(ConfigManager):
         fancy_message = f"{fillstring}\n{message}\n{fillstring}"
         messagebox = CustomDialog(fancy_message, title, self.icon_path)
         messagebox.exec_()
+
+    def user_okay(self, text):
+        msg_box = QMessageBox()
+        msg_box.setText(text)
+        msg_box.setWindowTitle(self.__choose_language(self.dialogs["confirmation_reqired"]))
+        yes_text = self.__choose_language(self.dialogs["yes_button"])
+        no_text = self.__choose_language(self.dialogs["no_button"])
+        yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)
+        msg_box.addButton(no_text, QMessageBox.NoRole)
+        msg_box.setStyleSheet(
+            "QMessageBox QPushButton{background-color: rgb(0, 123, 255); color: rgb(0, 0, 0); font-size: 30pt; padding: 5px 20px 5px 20px; min-width: 120px;} QMessageBox{background-color: rgb(10, 10, 10); font-size: 16pt;} QMessageBox QLabel{color: rgb(0, 123, 255);}"
+        )
+        msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        msg_box.move(50, 50)
+        msg_box.exec_()
+        if msg_box.clickedButton() == yes_button:
+            return True
+        return False
 
     def __output_language_dialog(self, options: dict, **kwargs):
         msg = self.__choose_language(options, **kwargs)
@@ -172,6 +192,10 @@ class DialogHandler(ConfigManager):
     def say_alcohollevel_max_limit(self):
         """Informs user that the alcohol level can not be greater than 100"""
         self.__output_language_dialog(self.dialogs["alcohollevel_max_limit"])
+
+    def ask_to_update(self):
+        message = self.__choose_language(self.dialogs["update_available"])
+        return self.user_okay(message)
 
 
 class UiLanguage(ConfigManager):
