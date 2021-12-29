@@ -29,19 +29,31 @@ class Migrator:
             local_version = None
         return local_version
 
+    def older_than_version(self, version: str) -> bool:
+        """Checks if the current version is below the given version"""
+        return self.local_version < _Version(version)
+
+    def __write_local_version(self):
+        """Writes the latest version to the local version"""
+        logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
+        self.config['DEFAULT']['LOCALVERSION'] = self.program_version.version
+        with open(CONFIG_PATH, 'w', encoding="utf-8") as configfile:
+            self.config.write(configfile)
+
     def make_migrations(self):
         """Make migration dependant on current local and program version"""
         # Database changes with version 1.5.0
-        logger.log_event("INFO", "Checking for necessary migrations")
-        logger.log_event("INFO", f"Local version is: {self.local_version}")
-        if self.__older_than_version("1.5.0"):
+        logger.log_event("INFO", f"Local version is: {self.local_version}, checking for necessary migrations")
+        if self.older_than_version("1.5.0"):
             logger.log_event("INFO", "Making migrations for v1.5.0")
-            self.__rename_database()
+            self.__rename_database_to_english()
             self.__add_team_buffer_to_database()
-        if self.__older_than_version(self.program_version.version):
+        if self.older_than_version(self.program_version.version):
             self.__write_local_version()
+        else:
+            logger.log_event("INFO", "Nothing to migrate")
 
-    def __rename_database(self):
+    def __rename_database_to_english(self):
         """Renames all German columns to English ones"""
         logger.log_event("INFO", "Renaming German column names to English ones")
         db_handler = DatabaseHandler()
@@ -90,17 +102,6 @@ class Migrator:
                 Payload TEXT NOT NULL);"""
         )
 
-    def __older_than_version(self, version: str):
-        """Checks if the current version is below the given version"""
-        return self.local_version < _Version(version)
-
-    def __write_local_version(self):
-        """Writes the latest version to the local version"""
-        logger.log_event("INFO", f"Updating local version from {self.local_version} to {self.program_version}")
-        self.config['DEFAULT']['LOCALVERSION'] = self.program_version.version
-        with open(CONFIG_PATH, 'w', encoding="utf-8") as configfile:
-            self.config.write(configfile)
-
 
 class _Version:
     """Class to compare semantic version numbers"""
@@ -114,10 +115,16 @@ class _Version:
             patch = 0
         # otherwise split version for later comparison
         else:
-            major, minor, patch = version_number.split(".")
+            major, minor, *patch = version_number.split(".")
         self.major = int(major)
         self.minor = int(minor)
-        self.patch = int(patch)
+        # Some version like 1.0 or 1.1 dont got a patch property
+        # List unpacking will return an empty list or a list of one
+        # Future version should contain patch (e.g. 1.1.0) as well
+        if patch:
+            self.patch = int(patch[0])
+        else:
+            self.patch = 0
 
     def __gt__(self, __o: object) -> bool:
         return (self.major, self.minor, self.patch) > (__o.major, __o.minor, __o.patch)
