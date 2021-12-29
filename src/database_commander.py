@@ -324,6 +324,21 @@ class DatabaseCommander:
         """Deletes all ingredient in the available table"""
         self.handler.query_database("DELETE FROM Available")
 
+    def save_failed_teamdata(self, payload):
+        """Saves the failed payload into the db to buffer"""
+        self.handler.query_database("INSERT INTO Teamdata(Payload) VALUES(?)", (payload,))
+
+    def get_failed_teamdata(self):
+        """Returns one failed teamdata payload"""
+        data = self.handler.query_database("SELECT * FROM Teamdata ORDER BY ID ASC LIMIT 1")
+        if data:
+            return data[0]
+        return []
+
+    def delete_failed_teamdata(self, data_id):
+        """Deletes the given teamdata by id"""
+        self.handler.query_database("DELETE FROM Teamdata WHERE ID=?", (data_id,))
+
 
 class DatabaseHandler:
     """Handler Class for Connecting and querring Databases"""
