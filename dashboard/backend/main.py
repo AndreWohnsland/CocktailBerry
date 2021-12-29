@@ -39,7 +39,7 @@ async def enter_cocktail_for_team(team: Teaminfo):
     cursor.execute(sql, (entry_datetime, team.team, team.volume,))
     conn.commit()
     conn.close()
-    return {"message": "Team entry was Successfull", "team": team.team, "volume": team.volume}
+    return {"message": "Team entry was successfull", "team": team.team, "volume": team.volume}
 
 
 def get_leaderboard(hourrange=None, limit=2, count=True):

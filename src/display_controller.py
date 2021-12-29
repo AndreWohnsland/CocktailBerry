@@ -10,9 +10,6 @@ from src.config_manager import shared
 class DisplayController(DialogHandler):
     """ Controler Class to get Values from the UI"""
 
-    # def __init__(self):
-    #     super().__init__()
-
     ########################
     # UI "EXTRACT" METHODS #
     ########################
