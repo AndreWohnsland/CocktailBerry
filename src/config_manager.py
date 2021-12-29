@@ -34,6 +34,8 @@ class ConfigManager:
     MAKER_CLEAN_TIME = 20
     # time between each check loop when making cocktail
     MAKER_SLEEP_TIME = 0.05
+    # If the maker should check automatically for updates
+    MAKER_SEARCH_UPDATES = False
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
@@ -63,9 +65,6 @@ class ConfigManager:
             config[attribute] = getattr(self, attribute)
         with open(CONFIG_FILE, 'w', encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
-        # with open(CONFIG_FILE, 'w', encoding="UTF-8") as stream:
-        #     data = json.dumps(config, indent=2)
-        #     stream.write(data)
 
     def __read_config(self):
         with open(CONFIG_FILE, "r", encoding="UTF-8") as stream:
