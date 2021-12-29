@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon, QIntValidator
 
-from ui_elements.handadds import Ui_handadds
+from src.ui_elements.handadds import Ui_handadds
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE

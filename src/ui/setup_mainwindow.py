@@ -17,15 +17,15 @@ from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
 
-from ui_elements.Cocktailmanager_2 import Ui_MainWindow
-from src_ui.setup_progress_screen import ProgressScreen
-from src_ui.setup_password_screen import PasswordScreen
-from src_ui.setup_bottle_window import BottleWindow
-from src_ui.setup_get_ingredients_window import GetIngredientWindow
-from src_ui.setup_keyboard_widget import KeyboardWidget
-from src_ui.setup_handadd_widget import HandaddWidget
-from src_ui.setup_avialable_window import AvailableWindow
-from src_ui.setup_team_window import TeamScreen
+from src.ui_elements.Cocktailmanager_2 import Ui_MainWindow
+from src.ui.setup_progress_screen import ProgressScreen
+from src.ui.setup_password_screen import PasswordScreen
+from src.ui.setup_bottle_window import BottleWindow
+from src.ui.setup_get_ingredients_window import GetIngredientWindow
+from src.ui.setup_keyboard_widget import KeyboardWidget
+from src.ui.setup_handadd_widget import HandaddWidget
+from src.ui.setup_avialable_window import AvailableWindow
+from src.ui.setup_team_window import TeamScreen
 
 
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
@@ -41,8 +41,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.logger_handler.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
-        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                      "..", "ui_elements", "Cocktail-icon.png")
+        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui_elements", "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
         # init the empty further screens
         self.pww: Union[PasswordScreen, None] = None

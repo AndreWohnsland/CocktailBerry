@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
 
-from ui_elements.progressbarwindow import Ui_Progressbarwindow
+from src.ui_elements.progressbarwindow import Ui_Progressbarwindow
 
 from src.maker import interrupt_cocktail
 from src.display_controller import DP_CONTROLLER

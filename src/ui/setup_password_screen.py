@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
 from src.display_controller import DP_CONTROLLER
-from ui_elements.passwordbuttons2 import Ui_PasswordWindow2
+from src.ui_elements.passwordbuttons2 import Ui_PasswordWindow2
 
 
 class PasswordScreen(QDialog, Ui_PasswordWindow2):

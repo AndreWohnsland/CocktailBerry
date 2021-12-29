@@ -2,7 +2,7 @@ import string
 from PyQt5.QtWidgets import QDialog
 
 from src.display_controller import DP_CONTROLLER
-from ui_elements.Keyboard import Ui_Keyboard
+from src.ui_elements.Keyboard import Ui_Keyboard
 
 
 class KeyboardWidget(QDialog, Ui_Keyboard):

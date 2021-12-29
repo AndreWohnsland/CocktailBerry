@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication
 from src.error_handler import logerror
 from src.config_manager import ConfigManager
 from src.migrator import Migrator
-from src_ui.setup_mainwindow import MainScreen
+from src.ui.setup_mainwindow import MainScreen
 
 
 @logerror

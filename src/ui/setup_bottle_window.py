@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow
 
-from ui_elements.bottlewindow import Ui_Bottlewindow
+from src.ui_elements.bottlewindow import Ui_Bottlewindow
 
 from src.config_manager import ConfigManager
 from src.bottles import set_fill_level_bars

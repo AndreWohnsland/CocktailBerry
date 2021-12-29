@@ -14,7 +14,7 @@ class DialogHandler(ConfigManager):
 
     def __init__(self) -> None:
         super().__init__()
-        self.icon_path = os.path.join(DIRPATH, "..", "ui_elements", "Cocktail-icon.png")
+        self.icon_path = os.path.join(DIRPATH, "ui_elements", "Cocktail-icon.png")
         with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
             self.dialogs = yaml.safe_load(stream)["dialog"]
 
@@ -28,7 +28,7 @@ class DialogHandler(ConfigManager):
         """ The default messagebox for the Maker. Uses a Custom QDialog with Close-Button """
         # otherwise circular import :(
         # pylint: disable=import-outside-toplevel
-        from src_ui.setup_custom_dialog import CustomDialog
+        from src.ui.setup_custom_dialog import CustomDialog
         default_title = self.dialogs["box"]["title"]
         if title is None:
             title = self.__choose_language(default_title)
