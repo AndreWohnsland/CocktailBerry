@@ -1,3 +1,12 @@
+--------------- 2021_12_30 ---------------------------------------------------------------------------------------------------------
+- Restructured maker structure to have all code within the src folder
+- Introduced migrator module to be able to make local migrations
+- Introduced updater module to programmatically check and fetch latest version from GitHub
+- Renamed German DB columns to English names
+- Introduced aditional table for failed team data buffering and according logic
+- Added new dialog method to ask a yes or no question 
+- Small code adjustments for cleaner code
+
 --------------- 2021_12_03 ---------------------------------------------------------------------------------------------------------
 - Introduced new API Model for Cocktai, Ingredient and IngredientData
 - Using new Models within Database returns and in functions
