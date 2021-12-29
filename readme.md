@@ -34,6 +34,7 @@
   - [Calibration of the Pumps](#calibration-of-the-pumps)
   - [Cleaning the Maker](#cleaning-the-maker)
   - [Possible Ingredient SetUp](#possible-ingredient-setup)
+  - [Updates](#updates)
 - [Supported Languages](#supported-languages)
 - [Advanced Topics](#advanced-topics)
   - [Microservices](#microservices)
@@ -156,8 +157,8 @@ The following components were used within the showcase for the Teams Dashboard:
 Disclaimer: since the adding of the new `requirements.txt` file, it should also be possible just to run `pip install -r requirements.txt` in the folder to get all requirements.
 
 ```
-- Python >= 3.6
-- PyQt5, requests, pyyaml
+- Python >= 3.7
+- PyQt5, requests, pyyaml, GitPython
 - RaspberryPi 3 (older may work but are not tested)
 ```
 
@@ -267,6 +268,10 @@ In addition, there are some ingredients I would recommend not adding via the mak
 - `optional` Cointreau (you may just not add it if not desired)
 
 With this as your base set up, even if not using the optional ingredients, your maker will be able to do plenty of different cocktails.
+
+## Updates
+
+With `version 1.5.0`, there is the option to enable the automatic search for updates at program start. The `MAKER_SEARCH_UPDATES` config can enable this feature. The maker will then check the GitHub repository for new releases and informs the user about it. If accepted, the maker will pull the latest version and restart the program afterwards. The migrator will also do any necessary steps to adjust local files, like the database to the latest release.
 
 # Supported Languages
 
