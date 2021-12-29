@@ -2,6 +2,7 @@
 of the passed window. Also defines the Mode for controls.
 """
 import os
+from typing import Union
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
@@ -14,6 +15,7 @@ from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
+from src.updater import Updater
 
 from ui_elements.Cocktailmanager_2 import Ui_MainWindow
 from src_ui.setup_progress_screen import ProgressScreen
@@ -43,19 +45,29 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
                                       "..", "ui_elements", "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
         # init the empty further screens
-        self.pww: PasswordScreen = None
-        self.kbw: KeyboardWidget = None
-        self.prow: ProgressScreen = None
-        self.botw: BottleWindow = None
-        self.ingd: GetIngredientWindow = None
-        self.handw: HandaddWidget = None
-        self.availw: AvailableWindow = None
-        self.teamw: TeamScreen = None
+        self.pww: Union[PasswordScreen, None] = None
+        self.kbw: Union[KeyboardWidget, None] = None
+        self.prow: Union[ProgressScreen, None] = None
+        self.botw: Union[BottleWindow, None] = None
+        self.ingd: Union[GetIngredientWindow, None] = None
+        self.handw: Union[HandaddWidget, None] = None
+        self.availw: Union[AvailableWindow, None] = None
+        self.teamw: Union[TeamScreen, None] = None
         UI_LANGUAGE.adjust_mainwindow(self)
         self.showFullScreen()
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
+        self.update_check()
+
+    def update_check(self):
+        if not self.MAKER_SEARCH_UPDATES:
+            return
+        updater = Updater()
+        if not updater.check_for_updates():
+            return
+        if DP_CONTROLLER.ask_to_update():
+            updater.update()
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext="Password"):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
