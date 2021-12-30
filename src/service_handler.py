@@ -75,20 +75,20 @@ class ServiceHandler(ConfigManager):
             else:
                 raise ValueError('Neither payload nor files given!')
             message = str(req.text).replace("\n", "")
-            self.logger.log_event("INFO", f"Posted {post_type.name} to {endpoint} | {req.status_code}: {message}")
+            self.logger.log_event("INFO", f"Posted {post_type.value} to {endpoint} | {req.status_code}: {message}")
             return {
                 "status": req.status_code,
                 "message": message,
             }
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-            self.__log_connection_error(endpoint)
+            self.__log_connection_error(endpoint, post_type)
             # only save failed team data for now
             if post_type is Posttype.TEAMDATA:
                 DB_COMMANDER.save_failed_teamdata(payload)
             return {}
 
-    def __log_connection_error(self, endpoint: str):
-        self.logger.log_event("ERROR", f"Could not connect to the microservice endpoint: '{endpoint}'")
+    def __log_connection_error(self, endpoint: str, post_type: Posttype):
+        self.logger.log_event("ERROR", f"Could not connect to: '{endpoint}' for {post_type.value}")
 
     def __check_failed_data(self):
         """Gets one failed teamdata and sends it"""
