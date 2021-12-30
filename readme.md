@@ -2,7 +2,7 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/Cocktailmaker_AW)
-![Python Version](https://img.shields.io/badge/python-%3E%3D%203.6-blue)
+![Python Version](https://img.shields.io/badge/python-%3E%3D%203.7-blue)
 ![GitHub](https://img.shields.io/github/license/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/Cocktailmaker_AW)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_Cocktailmaker_AW&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_Cocktailmaker_AW)
