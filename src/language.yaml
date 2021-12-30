@@ -98,6 +98,18 @@ dialog:
   alcohollevel_max_limit:
     en: 'Alcohol level cann not exceed 100 percent!'
     de: 'Alkoholgehalt kann nicht größer als 100 Prozent sein!'
+  update_available:
+    en: 'There is a new update available. Do you want to pull it from GitHub? The program will be restarted afterwards.'
+    de: 'Es ist ein neues Update verfügbar. Update von GitHub pullen? Das Programm wird danach neu gestarted.'
+  confirmation_reqired:
+    en: 'Confirmation required'
+    de: 'Bestätigung nötig'
+  yes_button:
+    en: 'Yes'
+    de: 'Ja'
+  no_button:
+    en: 'No'
+    de: 'Nein'
 
 # Change of language in UI elements
 ui:

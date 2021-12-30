@@ -2,8 +2,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
-from ui_elements.teamselection import Ui_Teamselection
-from config.config_manager import ConfigManager, shared
+from src.ui_elements.teamselection import Ui_Teamselection
+from src.config_manager import ConfigManager, shared
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 

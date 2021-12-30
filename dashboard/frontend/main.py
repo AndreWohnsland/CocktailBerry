@@ -21,12 +21,12 @@ mpl.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 DATABASE_NAME = "team"
 DIRPATH = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(DIRPATH, ".language.env"))
+load_dotenv(os.path.join(DIRPATH, ".env"))
 database_path = os.path.join(DIRPATH, "storage", f"{DATABASE_NAME}.db")
 
 
 def __choose_language(element: dict) -> str:
-    language = os.getenv("LANGUAGE")
+    language = os.getenv("UI_LANGUAGE")
     return element.get(language, element["en"])
 
 

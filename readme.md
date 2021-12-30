@@ -2,11 +2,12 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/Cocktailmaker_AW)
-![Python Version](https://img.shields.io/badge/python-%3E%3D%203.6-blue)
+![Python Version](https://img.shields.io/badge/python-%3E%3D%203.7-blue)
 ![GitHub](https://img.shields.io/github/license/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/Cocktailmaker_AW)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_Cocktailmaker_AW&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_Cocktailmaker_AW)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/Cocktailmaker_AW?style=social)
+
 <!-- ![Lines of code](https://img.shields.io/tokei/lines/github/AndreWohnsland/Cocktailmaker_AW) -->
 
 #### A Python and Qt Based App for a Cocktail Machine 🐍 + 🍸 = 🥳
@@ -34,6 +35,7 @@
   - [Calibration of the Pumps](#calibration-of-the-pumps)
   - [Cleaning the Maker](#cleaning-the-maker)
   - [Possible Ingredient SetUp](#possible-ingredient-setup)
+  - [Updates](#updates)
 - [Supported Languages](#supported-languages)
 - [Advanced Topics](#advanced-topics)
   - [Microservices](#microservices)
@@ -156,8 +158,8 @@ The following components were used within the showcase for the Teams Dashboard:
 Disclaimer: since the adding of the new `requirements.txt` file, it should also be possible just to run `pip install -r requirements.txt` in the folder to get all requirements.
 
 ```
-- Python >= 3.6
-- PyQt5, requests, pyyaml
+- Python >= 3.7
+- PyQt5, requests, pyyaml, GitPython
 - RaspberryPi 3 (older may work but are not tested)
 ```
 
@@ -216,6 +218,7 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 - `PUMP_PINS` (_list[int]_): List of the RPi-Pins where each Pump is connected
 - `PUMP_VOLUMEFLOW` (_list[int]_): List of the according volume flow for each pump in ml/s
 - `MAKER_NUMBER_BOTTLES` (_int_): Number of supported/displayed bottles. Currently, the UI is build for up to ten bottles
+- `MAKER_SEARCH_UPDATES` (_bool_): Boolean flag to search for updates at program start
 - `MAKER_CLEAN_TIME` (_int_): Time the machine will execute the cleaning program
 - `MAKER_SLEEP_TIME` (_float_): Sleep interval between each UI refresh and check of conditions while generating a cocktail
 - `MICROSERVICE_ACTIVE` (_bool_): Boolean flag to post to microservice set up by docker (optional) (version >= 1.1)
@@ -266,6 +269,10 @@ In addition, there are some ingredients I would recommend not adding via the mak
 - `optional` Cointreau (you may just not add it if not desired)
 
 With this as your base set up, even if not using the optional ingredients, your maker will be able to do plenty of different cocktails.
+
+## Updates
+
+With `version 1.5.0`, there is the option to enable the automatic search for updates at program start. The `MAKER_SEARCH_UPDATES` config can enable this feature. The maker will then check the GitHub repository for new releases and informs the user about it. If accepted, the maker will pull the latest version and restart the program afterwards. The migrator will also do any necessary steps to adjust local files, like the database to the latest release.
 
 # Supported Languages
 

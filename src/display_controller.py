@@ -4,14 +4,11 @@ from PyQt5.QtCore import Qt
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
 from src.models import Cocktail, Ingredient
-from config.config_manager import shared
+from src.config_manager import shared
 
 
 class DisplayController(DialogHandler):
     """ Controler Class to get Values from the UI"""
-
-    # def __init__(self):
-    #     super().__init__()
 
     ########################
     # UI "EXTRACT" METHODS #

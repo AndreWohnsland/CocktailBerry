@@ -1,19 +1,20 @@
 [tool.poetry]
 name = "Cocktailmaker"
-version = "1.1.0"
+version = "1.5.0"
 description = "A Python and Qt based App for a Cocktail Maker on a Raspberry Pi"
 authors = ["Andre Wohnsland <Andre_Wohnsland@web.de>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "3.6"
-PyQt5 = "^5.15.2"
-requests = "^2.25.1"
+python = "3.7"
+GitPython = "^3.1.24"
+PyQt5 = "^5.15.6"
+requests = "^2.26.0"
 PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.11.1"
-autopep8 = "^1.5.7"
+pylint = "^2.12.2"
+autopep8 = "^1.6.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

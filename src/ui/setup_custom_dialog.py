@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
-from ui_elements.customdialog import Ui_CustomDialog
+from src.ui_elements.customdialog import Ui_CustomDialog
 from src.display_controller import DP_CONTROLLER
 
 

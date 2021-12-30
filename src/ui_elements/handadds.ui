@@ -566,7 +566,7 @@ QLineEdit
   <customwidget>
    <class>ClickableLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>ui_elements.clickablelineedit.h</header>
+   <header>src.ui_elements.clickablelineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

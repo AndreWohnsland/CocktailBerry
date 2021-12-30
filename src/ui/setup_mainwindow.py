@@ -2,10 +2,11 @@
 of the passed window. Also defines the Mode for controls.
 """
 import os
+from typing import Union
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
-from config.config_manager import ConfigManager
+from src.config_manager import ConfigManager
 from src import maker
 from src import ingredients
 from src import recipes
@@ -14,16 +15,17 @@ from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
+from src.updater import Updater
 
-from ui_elements.Cocktailmanager_2 import Ui_MainWindow
-from src_ui.setup_progress_screen import ProgressScreen
-from src_ui.setup_password_screen import PasswordScreen
-from src_ui.setup_bottle_window import BottleWindow
-from src_ui.setup_get_ingredients_window import GetIngredientWindow
-from src_ui.setup_keyboard_widget import KeyboardWidget
-from src_ui.setup_handadd_widget import HandaddWidget
-from src_ui.setup_avialable_window import AvailableWindow
-from src_ui.setup_team_window import TeamScreen
+from src.ui_elements.Cocktailmanager_2 import Ui_MainWindow
+from src.ui.setup_progress_screen import ProgressScreen
+from src.ui.setup_password_screen import PasswordScreen
+from src.ui.setup_bottle_window import BottleWindow
+from src.ui.setup_get_ingredients_window import GetIngredientWindow
+from src.ui.setup_keyboard_widget import KeyboardWidget
+from src.ui.setup_handadd_widget import HandaddWidget
+from src.ui.setup_avialable_window import AvailableWindow
+from src.ui.setup_team_window import TeamScreen
 
 
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
@@ -39,23 +41,32 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.logger_handler.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
-        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                      "..", "ui_elements", "Cocktail-icon.png")
+        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui_elements", "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
         # init the empty further screens
-        self.pww: PasswordScreen = None
-        self.kbw: KeyboardWidget = None
-        self.prow: ProgressScreen = None
-        self.botw: BottleWindow = None
-        self.ingd: GetIngredientWindow = None
-        self.handw: HandaddWidget = None
-        self.availw: AvailableWindow = None
-        self.teamw: TeamScreen = None
+        self.pww: Union[PasswordScreen, None] = None
+        self.kbw: Union[KeyboardWidget, None] = None
+        self.prow: Union[ProgressScreen, None] = None
+        self.botw: Union[BottleWindow, None] = None
+        self.ingd: Union[GetIngredientWindow, None] = None
+        self.handw: Union[HandaddWidget, None] = None
+        self.availw: Union[AvailableWindow, None] = None
+        self.teamw: Union[TeamScreen, None] = None
         UI_LANGUAGE.adjust_mainwindow(self)
         self.showFullScreen()
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
+        self.update_check()
+
+    def update_check(self):
+        if not self.MAKER_SEARCH_UPDATES:
+            return
+        updater = Updater()
+        if not updater.check_for_updates():
+            return
+        if DP_CONTROLLER.ask_to_update():
+            updater.update()
 
     def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext="Password"):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """

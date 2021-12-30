@@ -13,9 +13,9 @@ class Ingredient():
     fill_level: int
     hand: Union[bool, int]
     amount: int = 0
-    recipe_hand: Union[bool, int] = None
+    recipe_hand: Union[bool, int, None] = None
     bottle: Union[int, None] = None
-    selected: str = None
+    selected: Union[str, None] = None
 
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name"""
@@ -34,7 +34,7 @@ class Cocktail():
     comment: str
     enabled: bool
     ingredients: List[Ingredient]
-    adjusted_ingredients: List[Ingredient] = None
+    adjusted_ingredients: Union[List[Ingredient], None] = None
     adjusted_alcohol: int = 0
     adjusted_amount: int = 0
 

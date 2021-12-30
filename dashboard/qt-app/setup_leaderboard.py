@@ -4,7 +4,6 @@ from itertools import cycle
 import time
 import matplotlib
 from mainwindow import Ui_Leaderboard
-# import datetime
 
 from PyQt5.QtCore import Qt, QRunnable, pyqtSlot, QObject, pyqtSignal, QThreadPool
 from PyQt5.QtWidgets import QMainWindow, qApp

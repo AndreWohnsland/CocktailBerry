@@ -14,7 +14,7 @@ from src.display_controller import DP_CONTROLLER
 from src.service_handler import SERVICE_HANDLER
 from src.logger_handler import LoggerHandler
 
-from config.config_manager import shared
+from src.config_manager import shared
 
 
 LOG_HANDLER = LoggerHandler("maker_module", "production_logs")
@@ -117,7 +117,6 @@ def prepare_cocktail(w):
     shared.cocktail_started = False
 
 
-@logerror
 def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
     shared.make_cocktail = False
