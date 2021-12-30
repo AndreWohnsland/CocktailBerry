@@ -117,7 +117,6 @@ def prepare_cocktail(w):
     shared.cocktail_started = False
 
 
-@logerror
 def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
     shared.make_cocktail = False
