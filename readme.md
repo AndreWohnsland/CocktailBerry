@@ -48,7 +48,6 @@
     - [How to get the GUI Running on Startup](#how-to-get-the-gui-running-on-startup)
     - [The GUI on the RPi Looks Different from the Screenshots](#the-gui-on-the-rpi-looks-different-from-the-screenshots)
 - [Development](#development)
-  - [Dev Notes](#dev-notes)
   - [Pull Requests and Issues](#pull-requests-and-issues)
 - [Contributing Possibilities](#contributing-possibilities)
 
@@ -416,8 +415,6 @@ sudo chmod 755 /home/pi/launcher.sh
 I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources. Using the pi user will result in the shown interfaces at the cocktailmaker (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
 
 # Development
-
-## Dev Notes
 
 For developers, there is [an additional section](docs/devnotes.md) with information available. See this docs for further information like the program schema or framework specific development problems.
 
