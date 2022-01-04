@@ -115,6 +115,11 @@ class RpiController(ConfigManager):
             for pin in pinlist:
                 GPIO.output(pin, 0)
 
+    def close_all_pins(self):
+        """Close all pins connected to the pumps"""
+        active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
+        self.close_pinlist(active_pins)
+
     def close_pinlist(self, pinlist: List[int]):
         print(f"Closing Pins: {pinlist}")
         if not self.devenvironment:
