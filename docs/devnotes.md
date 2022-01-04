@@ -4,8 +4,15 @@ This is an additional section for information, generally not relevant for the us
 
 ## TOC  <!-- omit in toc -->
 
+- [Program Schema](#program-schema)
 - [PyQt](#pyqt)
   - [Button clicked.connect behaviour](#button-clickedconnect-behaviour)
+
+# Program Schema
+
+In the following diagram, the schema and Classes / Containers are displayed in a simplified version.
+
+![ProgramSchema](diagrams/out/ProgramSchema.svg)
 
 # PyQt
 
