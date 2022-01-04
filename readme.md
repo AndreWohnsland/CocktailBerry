@@ -12,8 +12,6 @@
 
 #### A Python and Qt Based App for a Cocktail Machine 🐍 + 🍸 = 🥳 <!-- omit in toc -->
 
-<br />
-
 ## Table of Contents <!-- omit in toc -->
 
 - [Overview](#overview)
@@ -53,8 +51,6 @@
   - [Dev Notes](#dev-notes)
   - [Pull Requests and Issues](#pull-requests-and-issues)
 - [Contributing Possibilities](#contributing-possibilities)
-
-<br />
 
 # Overview
 
