@@ -1,9 +1,13 @@
+[MASTER]
+extension-pkg-whitelist=PyQt5
+
 [MESSAGES CONTROL]
-disable=missing-docstring,no-name-in-module
+disable=missing-docstring,no-name-in-module,no-self-use,line-too-long
 
 [FORMAT]
 # Good variable names which should always be accepted, separated by a comma
 good-names=i,j,k,x,y,ex,df,rc,ax,w,app,id
+max-line-length=120
 
 [DESIGN]
 # Maximum number of locals for function / method body

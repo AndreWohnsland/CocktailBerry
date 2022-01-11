@@ -4,9 +4,21 @@ This is an additional section for information, generally not relevant for the us
 
 ## TOC  <!-- omit in toc -->
 
+- [Python Version](#python-version)
 - [Program Schema](#program-schema)
 - [PyQt](#pyqt)
   - [Button clicked.connect behaviour](#button-clickedconnect-behaviour)
+
+
+# Python Version
+
+Currently used version:
+
+```
+Python Version 3.7.x
+```
+
+In the past, there were some issues due to not using the same Python version during development (PC) and at production (RPi). To prevent those issues, the same Python version (up to minor) like the current one shipped with the RPi system should be used. This will prevent making errors like using `list` instead of `List` for type hints (only works at Python 3.9+) and other features not yet available in the default RPi Python. Please use an according Python version for your local development.
 
 # Program Schema
 
