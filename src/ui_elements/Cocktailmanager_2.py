@@ -22,7 +22,23 @@ class Ui_MainWindow(object):
         MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMaximumSize(QtCore.QSize(800, 485))
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-        MainWindow.setStyleSheet("QWidget\n"
+        MainWindow.setAutoFillBackground(False)
+        MainWindow.setStyleSheet("QCheckBox::indicator:unchecked{\n"
+"   /* border: 2px solid rgb(200, 200, 200); */\n"
+"    width: 18px;\n"
+"    height: 18px;\n"
+"    image: url(./src/ui_elements/cross.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked{\n"
+"   /*border: 2px solid rgb(200, 200, 200); */\n"
+"    width: 18px;\n"
+"    height: 18px;\n"
+"    background-color: rgb(200, 200, 200);\n"
+"    image: url(./src/ui_elements/check.png);\n"
+"}\n"
+"\n"
+"QWidget\n"
 "{\n"
 "    color: rgb(0, 123, 255);    \n"
 "    background-color: rgb(0, 0, 0);\n"
@@ -141,6 +157,7 @@ class Ui_MainWindow(object):
 "    color: rgb(239, 151, 0);\n"
 "}\n"
 "\n"
+"\n"
 "/* QComboBox:hover\n"
 "{\n"
 "    color: rgb(239, 151, 0);\n"
@@ -223,7 +240,8 @@ class Ui_MainWindow(object):
 "#LAlkoholgehalt, #LMenge {\n"
 "    padding-left: 10px;\n"
 "    padding-right: 10px;\n"
-"}")
+"}\n"
+"")
         MainWindow.setDocumentMode(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -636,7 +654,7 @@ class Ui_MainWindow(object):
         self.gridLayout_6.addItem(spacerItem1, 7, 2, 1, 1)
         self.horizontalLayout_23 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_23.setObjectName("horizontalLayout_23")
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_23.addItem(spacerItem2)
         self.CHBHand = QtWidgets.QCheckBox(self.tab_2)
         self.CHBHand.setMaximumSize(QtCore.QSize(300, 30))
@@ -648,7 +666,7 @@ class Ui_MainWindow(object):
         self.CHBHand.setTristate(False)
         self.CHBHand.setObjectName("CHBHand")
         self.horizontalLayout_23.addWidget(self.CHBHand)
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_23.addItem(spacerItem3)
         self.gridLayout_6.addLayout(self.horizontalLayout_23, 6, 0, 1, 4)
         self.PBZnull = QtWidgets.QPushButton(self.tab_2)
@@ -1806,7 +1824,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(_translate("MainWindow", "ml"))
         self.label_3.setText(_translate("MainWindow", "ml"))
         self.label_6.setText(_translate("MainWindow", "ml"))
-        self.CHBenabled.setText(_translate("MainWindow", "  Enabled"))
+        self.CHBenabled.setText(_translate("MainWindow", "Enabled"))
         self.PBclear.setText(_translate("MainWindow", "clear"))
         self.PBdelete.setText(_translate("MainWindow", "del"))
         self.PBRezeptaktualisieren.setText(_translate("MainWindow", "ändern"))
