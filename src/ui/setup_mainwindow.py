@@ -42,7 +42,8 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.logger_handler.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
-        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui_elements", "Cocktail-icon.png")
+        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                      "..", "ui_elements", "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         # init the empty further screens
@@ -182,6 +183,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # Removes the elements not used depending on number of bottles in bottle tab
         # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
         DP_CONTROLLER.adjust_bottle_number_displayed(self)
+        DP_CONTROLLER.adjust_maker_label_size_cocktaildata(self)
 
         # gets the bottle ingredients into the global list
         bottles.get_bottle_ingredients()
