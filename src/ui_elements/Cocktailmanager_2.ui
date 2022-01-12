@@ -32,17 +32,18 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">QCheckBox::indicator:unchecked{
-   /* border: 2px solid rgb(200, 200, 200); */
+   <string notr="true">QCheckBox::indicator{
+    /*border: 1px solid rgb(120, 120, 120);
+	border-radius: 2px;*/
     width: 18px;
     height: 18px;
+}
+
+QCheckBox::indicator:unchecked{
 	image: url(./src/ui_elements/cross.png);
 }
 
 QCheckBox::indicator:checked{
-   /*border: 2px solid rgb(200, 200, 200); */
-    width: 18px;
-    height: 18px;
 	background-color: rgb(200, 200, 200);
 	image: url(./src/ui_elements/check.png);
 }
@@ -1174,10 +1175,10 @@ QLineEdit
                </font>
               </property>
               <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
+               <enum>Qt::RightToLeft</enum>
               </property>
               <property name="text">
-               <string>Nur selbst hinzufügen</string>
+               <string>Nur selbst hinzufügen:</string>
               </property>
               <property name="iconSize">
                <size>
@@ -2214,13 +2215,14 @@ QLineEdit
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <strikeout>false</strikeout>
                    </font>
                   </property>
                   <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
+                   <enum>Qt::RightToLeft</enum>
                   </property>
                   <property name="text">
-                   <string>Enabled</string>
+                   <string>Enabled:</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
