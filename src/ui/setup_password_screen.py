@@ -28,8 +28,8 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         self.LHeader.setText(headertext)
         self.pwlineedit = le_to_write
         self.move(x_pos, y_pos)
-        DP_CONTROLLER.set_display_settings(self, resize=False)
         self.show()
+        DP_CONTROLLER.set_display_settings(self, resize=False)
 
     def number_clicked(self, number: int):
         """  Adds the clicked number to the lineedit. """

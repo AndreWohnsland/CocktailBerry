@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
@@ -23,6 +24,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         """ Init. Connects all the buttons and get values for the Combobox. """
         super().__init__()
         self.setupUi(self)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         # Set window properties
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
