@@ -3,6 +3,7 @@ of the passed window. Also defines the Mode for controls.
 """
 import os
 from typing import Union
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
@@ -43,6 +44,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.connect_other_windows()
         self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui_elements", "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         # init the empty further screens
         self.pww: Union[PasswordScreen, None] = None
         self.kbw: Union[KeyboardWidget, None] = None
