@@ -1,5 +1,6 @@
 import string
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtCore import Qt
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.Keyboard import Ui_Keyboard
@@ -14,6 +15,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.mainscreen = parent
         self.le_to_write = le_to_write
         self.LName.setText(self.le_to_write.text())
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         # populating all the buttons
         self.backButton.clicked.connect(self.backbutton_clicked)
         self.clear.clicked.connect(self.clearbutton_clicked)
@@ -35,8 +37,8 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
                 inputvalue=iv, inputvalue_shift=iv_s))
         # restricting the Lineedit to a set up Char leng
         self.LName.setMaxLength(max_char_len)
-        self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
+        self.showFullScreen()
 
     def backbutton_clicked(self):
         """ Closes the Window without any further action. """

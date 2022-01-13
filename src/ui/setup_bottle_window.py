@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow
 
 from src.ui_elements.bottlewindow import Ui_Bottlewindow
+from PyQt5.QtCore import Qt
 
 from src.config_manager import ConfigManager
 from src.bottles import set_fill_level_bars
@@ -17,6 +18,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
         super().__init__()
         ConfigManager.__init__(self)
         self.setupUi(self)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         # connects all the buttons
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)

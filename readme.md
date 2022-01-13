@@ -1,4 +1,4 @@
-# The Cocktailmaker
+# The Cocktailmaker <!-- omit in toc -->
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/Cocktailmaker_AW)
@@ -10,13 +10,10 @@
 
 <!-- ![Lines of code](https://img.shields.io/tokei/lines/github/AndreWohnsland/Cocktailmaker_AW) -->
 
-#### A Python and Qt Based App for a Cocktail Machine 🐍 + 🍸 = 🥳
+#### A Python and Qt Based App for a Cocktail Machine 🐍 + 🍸 = 🥳 <!-- omit in toc -->
 
-<br />
+## Table of Contents <!-- omit in toc -->
 
-<!-- TOC -->
-
-- [The Cocktailmaker](#the-cocktailmaker)
 - [Overview](#overview)
   - [Features](#features)
   - [The Machine](#the-machine)
@@ -51,13 +48,8 @@
     - [How to get the GUI Running on Startup](#how-to-get-the-gui-running-on-startup)
     - [The GUI on the RPi Looks Different from the Screenshots](#the-gui-on-the-rpi-looks-different-from-the-screenshots)
 - [Development](#development)
-  - [Program Schema](#program-schema)
   - [Pull Requests and Issues](#pull-requests-and-issues)
 - [Contributing Possibilities](#contributing-possibilities)
-
-<!-- /TOC -->
-
-<br />
 
 # Overview
 
@@ -424,15 +416,11 @@ I've noticed when running as root (sudo python3) and running as the pi user (pyt
 
 # Development
 
-## Program Schema
-
-In the following diagram, the schema and Classes / Containers are displayed in a simplified version.
-
-![ProgramSchema](docs/diagrams/out/ProgramSchema.svg)
+For developers, there is [an additional section](docs/devnotes.md) with information available. See this docs for further information like the program schema or framework specific development problems.
 
 ## Pull Requests and Issues
 
-If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue.
+If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue. If you think there is a super important feature missing, open a feature request. It may be implemented in the future.
 
 # Contributing Possibilities
 

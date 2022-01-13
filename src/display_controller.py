@@ -1,5 +1,6 @@
 from typing import Any, Callable, List, Tuple, Union
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
@@ -484,6 +485,36 @@ class DisplayController(DialogHandler):
         for elements in to_adjust:
             for element in elements[used_bottles::]:
                 element.deleteLater()
+
+    def adjust_maker_label_size_cocktaildata(self, w):
+        """Adjusts the fontsize for larger screens"""
+        # iterate over all size types and adjust size relative to window height
+        # default height was 480 for provided UI
+        # so if its larger, the font should also be larger here
+        height = self.UI_HEIGHT
+        # no need to adjust if its near to the original height
+        default_height = 480
+        if height <= default_height + 20:
+            return
+        # creating list of all labels
+        big_labels = [w.LAlkoholname]
+        medium_labels = [w.LMenge, w.LAlkoholgehalt]
+        small_labels = self.get_labels_maker_volume(w)
+        small_labels_bold = self.get_labels_maker_ingredients(w)
+        all_labels = [big_labels, medium_labels, small_labels_bold, small_labels]
+
+        diff_from_default_height = height / default_height
+        # from large to small
+        default_sizes = [22, 16, 12, 12]
+        is_bold_list = [True, True, True, False]
+        for default_size, is_bold, labels in zip(default_sizes, is_bold_list, all_labels):
+            new_size = int(diff_from_default_height * default_size)
+            font = QFont()
+            font.setPointSize(new_size)
+            font.setBold(is_bold)
+            font.setWeight(50 + is_bold * 25)
+            for label in labels:
+                label.setFont(font)
 
 
 DP_CONTROLLER = DisplayController()

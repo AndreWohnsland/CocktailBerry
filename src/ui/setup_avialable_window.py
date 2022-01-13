@@ -15,7 +15,7 @@ class AvailableWindow(QMainWindow, Ui_available):
     def __init__(self, parent):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.mainscreen = parent
         # somehow the ui dont accept without _2 for those two buttons so they are _2
         self.PBAbbruch_2.clicked.connect(self.abbrechen_clicked)

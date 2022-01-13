@@ -6,6 +6,7 @@ from functools import wraps
 from typing import Callable
 
 from src.logger_handler import LoggerHandler
+from src.rpi_controller import RPI_CONTROLLER
 
 
 def logerror(func: Callable):
@@ -26,5 +27,6 @@ def logerror(func: Callable):
             msg = f"The function {func.__name__} did run into an error at module: {module} function {fname} in row: {row}!"
             logger.log_exception(msg)
             print(msg)
+            RPI_CONTROLLER.close_all_pins()
             raise
     return wrapper

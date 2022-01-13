@@ -160,8 +160,8 @@ ui:
       en: 'Spend single ingredient'
       de: 'Einzelne Zutat Ausgeben'
     handadd_check_label:
-      en: 'Only add self by hand'
-      de: 'Nur selbst hinzufügen'
+      en: 'Only add self by hand:'
+      de: 'Nur selbst hinzufügen:'
     available_button:
       en: 'available'
       de: 'verfügbar'
