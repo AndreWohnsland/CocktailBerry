@@ -17,7 +17,7 @@ class Migrator:
     """Class to do all neccecary migration locally for new versions"""
 
     def __init__(self) -> None:
-        self.program_version = _Version("1.5.1")
+        self.program_version = _Version("1.5.2")
         self.config = configparser.ConfigParser()
         self.config.read(CONFIG_PATH)
         self.local_version = _Version(self.__get_local_version())
