@@ -146,8 +146,13 @@ The following components were used within the showcase for the Teams Dashboard:
 # Installing Requirements
 
 ## Minimal Requirements
+The best way is to use the provided `requirements.txt` file. If Python is installed, just to run: 
 
-Disclaimer: since the adding of the new `requirements.txt` file, it should also be possible just to run `pip install -r requirements.txt` in the folder to get all requirements.
+```bash
+pip install -r requirements.txt
+``` 
+
+to get all requirements. Optionally, you can install the single dependenicies:
 
 ```
 - Python >= 3.7
@@ -155,7 +160,7 @@ Disclaimer: since the adding of the new `requirements.txt` file, it should also 
 - RaspberryPi 3 (older may work but are not tested)
 ```
 
-It's worth mentioning that I optimized the UI for a touch display with a 800x480 resolution ([this is my display](https://www.amazon.de/gp/product/B071XT9Z7H/ref=ppx_yo_dt_b_asin_title_o05_s00?ie=UTF8&psc=1)). When in dev mode, the full screen is also limited to these dimensions. So usually you won't have any problems with the usual HD or uHD screens. But some screens (like my little 13' Laptop screen) don't show the proper fonts/UI placements. The interface should use your maximum screen size if devenvironment is not activated. If the devenvironment is activated, you can limit width and height to simulate your screen sizes. See [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values) for more information.
+It's worth mentioning that I optimized the UI for a touch display with a 800x480 or a 1024x800 resolution ([this is my display](https://www.amazon.de/gp/product/B071XT9Z7H/ref=ppx_yo_dt_b_asin_title_o05_s00?ie=UTF8&psc=1)). By default, the full screen is also limited to 800x480. So usually you won't have any problems with the usual HD or uHD screens. But some screens (like my little 13' Laptop screen) don't show the proper fonts/UI placements. You can change the application size with the according config settings, if you want to use a different screen size. See [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values) for more information.
 
 ## Install PyQt5 on RaspberryPi
 
@@ -188,6 +193,8 @@ UI_DEVENVIRONMENT: true
 This includes the password (if needed/wanted), the configuration and physical connections of your hardware (like GPIO pin connection and pump volume), the names of the logger and restricted access to some tabs.
 
 # Setting up the Maker
+
+The maker will work after installing all requirements, but you can make your own adjustments.
 
 ## Adding new Recipes or Ingredients
 
@@ -283,6 +290,8 @@ If you are interested in implementing your own native language, feel free to con
 
 # Advanced Topics
 
+Here you can find some advanced features of the maker, which can you optionally use.
+
 ## Microservices
 
 As a further addition since `version 1.1`, there is the option to run a microservice within docker which handles some networking topics.
@@ -334,6 +343,8 @@ docker run hello-world
 ```
 
 # Troubleshooting
+
+If you run into any problems, check here first for a solution. If you don't find any, you can [open a ticket](https://github.com/AndreWohnsland/Cocktailmaker_AW/issues/new/choose)
 
 ## Problems while Running the Program
 
