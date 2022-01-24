@@ -151,7 +151,7 @@ Disclaimer: since the adding of the new `requirements.txt` file, it should also 
 
 ```
 - Python >= 3.7
-- PyQt5, requests, pyyaml, GitPython
+- PyQt5, requests, pyyaml, GitPython, typer
 - RaspberryPi 3 (older may work but are not tested)
 ```
 

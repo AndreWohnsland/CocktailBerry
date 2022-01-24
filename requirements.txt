@@ -2,3 +2,4 @@ PyQt5
 requests
 pyyaml
 GitPython
+typer
