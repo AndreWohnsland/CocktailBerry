@@ -1,3 +1,11 @@
+--------------- 2022_01_25 ---------------------------------------------------------------------------------------------------------
+- Preparation for release v1.5.3
+- Refactored calibration module into main src module
+- Introduced cli option --calibration or -c within main runme.py for calibration Started
+- Calibration using now custom_config data
+- Adjusted styling for calibration screen
+- Improved readme
+
 --------------- 2021_12_30 ---------------------------------------------------------------------------------------------------------
 - Restructured maker structure to have all code within the src folder
 - Introduced migrator module to be able to make local migrations
@@ -8,7 +16,7 @@
 - Small code adjustments for cleaner code
 
 --------------- 2021_12_03 ---------------------------------------------------------------------------------------------------------
-- Introduced new API Model for Cocktai, Ingredient and IngredientData
+- Introduced new API Model for Cocktail, Ingredient and IngredientData
 - Using new Models within Database returns and in functions
 - Added dynamic removal of bottle selection within bottle tabs dependant on Bottle_count config
 - Added dynamic display of recipe property data
