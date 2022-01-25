@@ -1,5 +1,4 @@
 import sys
-import os
 import time
 from pathlib import Path
 from PyQt5.QtWidgets import QApplication, QMainWindow
@@ -17,7 +16,7 @@ except ModuleNotFoundError:
     DEV = True
 
 
-ui_file = Path(os.path.abspath(__file__)).parents[0] / "ui_elements" / "Calibration.ui"
+ui_file = Path(__file__).parent.absolute() / "ui_elements" / "Calibration.ui"
 
 
 class CalibrationScreen(QMainWindow, ConfigManager):
@@ -27,14 +26,19 @@ class CalibrationScreen(QMainWindow, ConfigManager):
         ConfigManager.__init__(self)
         loadUi(ui_file, self)
         # Connect the Button
+        bottles = self.MAKER_NUMBER_BOTTLES
         self.PB_start.clicked.connect(self.output_volume)
+        self.channel_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, "+", 1, bottles, 1))
+        self.channel_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, "-", 1, bottles, 1))
+        self.amount_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "+", 10, 200, 10))
+        self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "-", 10, 200, 10))
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
     def output_volume(self):
         """Outputs the set number of volume according to defined volume flow"""
-        channel_number = self.sB_Kanal.value()
-        amount = self.sB_Menge.value()
+        channel_number = int(self.channel.text())
+        amount = int(self.amount.text())
         ind = channel_number - 1
         used_pin = self.PUMP_PINS[ind]
         print(f"Using pin number: {used_pin}")
