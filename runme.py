@@ -1,14 +1,16 @@
 import sys
+import typer
 from PyQt5.QtWidgets import QApplication
 
 from src.error_handler import logerror
 from src.config_manager import ConfigManager
 from src.migrator import Migrator
 from src.ui.setup_mainwindow import MainScreen
+from src.calibration import run_calibration
 
 
 @logerror
-def main():
+def run_cocktailmaker():
     migrator = Migrator()
     migrator.make_migrations()
     c_manager = ConfigManager()
@@ -18,5 +20,12 @@ def main():
     sys.exit(app.exec_())
 
 
+@logerror
+def main(calibration: bool = typer.Option(False, "--calibration", "-c", help="Run the calibration program.")):
+    if calibration:
+        run_calibration()
+    run_cocktailmaker()
+
+
 if __name__ == "__main__":
-    main()
+    typer.run(main)
