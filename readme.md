@@ -148,7 +148,7 @@ The following components were used within the showcase for the Teams Dashboard:
 # Installing Requirements
 
 ## Minimal Requirements
-The best way is to use the provided `requirements.txt` file. If Python is installed, just to run: 
+The best way is to use the provided `requirements.txt` file. If Python is installed, just run: 
 
 ```bash
 pip install -r requirements.txt
