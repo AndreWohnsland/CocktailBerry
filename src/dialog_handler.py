@@ -1,12 +1,12 @@
-import os
+from pathlib import Path
 from typing import List, Union
 import yaml
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
 from src.config_manager import ConfigManager
 
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
-LANGUAGE_FILE = os.path.join(DIRPATH, "language.yaml")
+DIRPATH = Path(__file__).parent.absolute()
+LANGUAGE_FILE = DIRPATH / "language.yaml"
 
 
 class DialogHandler(ConfigManager):
@@ -14,7 +14,7 @@ class DialogHandler(ConfigManager):
 
     def __init__(self) -> None:
         super().__init__()
-        self.icon_path = os.path.join(DIRPATH, "ui_elements", "Cocktail-icon.png")
+        self.icon_path = str(DIRPATH / "ui_elements" / "Cocktail-icon.png")
         with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
             self.dialogs = yaml.safe_load(stream)["dialog"]
 

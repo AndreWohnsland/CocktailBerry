@@ -1,6 +1,6 @@
-import os
 import datetime
 import csv
+from pathlib import Path
 from typing import List
 
 from src.database_commander import DB_COMMANDER
@@ -8,7 +8,7 @@ from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.service_handler import SERVICE_HANDLER
 
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
+DIRPATH = Path(__file__).parent.absolute()
 logger = LoggerHandler("save_handler", "production_logs")
 
 
@@ -44,7 +44,7 @@ class SaveHandler:
         dtime = dtime.replace("-", "")
         subfoldername = "saves"
         full_file_name = f"{dtime}_{filename}"
-        savepath = os.path.join(DIRPATH, "..", subfoldername, full_file_name)
+        savepath = DIRPATH.parent / subfoldername / full_file_name
         with open(savepath, mode="a", newline="", encoding="utf-8") as writer_file:
             csv_writer = csv.writer(writer_file, delimiter=",")
             for row in data_rows:

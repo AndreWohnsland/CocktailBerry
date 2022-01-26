@@ -1,17 +1,17 @@
-import os
 import logging
+from pathlib import Path
 
-dirpath = os.path.dirname(os.path.abspath(__file__))
+DIRPATH = Path(__file__).parent.absolute()
 
 
 class LoggerHandler:
     """Handler class for generating logger and logging events"""
 
-    log_folder = os.path.join(dirpath, "..", "logs")
+    log_folder = DIRPATH.parent / "logs"
 
     def __init__(self, loggername: str, filename: str):
         self.loggername = loggername
-        self.path = os.path.join(LoggerHandler.log_folder, f"{filename}.log")
+        self.path = LoggerHandler.log_folder / f"{filename}.log"
 
         logger = logging.getLogger(loggername)
         logger.setLevel(logging.DEBUG)

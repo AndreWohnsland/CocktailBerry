@@ -1,4 +1,3 @@
-import os
 import datetime
 from pathlib import Path
 import sqlite3
@@ -8,8 +7,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 DATABASE_NAME = "team"
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
-database_path = os.path.join(DIRPATH, "storage", f"{DATABASE_NAME}.db")
+DIRPATH = Path(__file__).parent.absolute()
+database_path = DIRPATH / "storage" / f"{DATABASE_NAME}.db"
 
 app = FastAPI()
 

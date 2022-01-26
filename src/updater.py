@@ -14,7 +14,7 @@ class Updater:
     """Class to get update from GitHub"""
 
     def __init__(self):
-        dirpath = Path(os.path.abspath(__file__)).parents[0]
+        dirpath = Path(__file__).parent.absolute()
         self.git_path = dirpath.parents[0]
         self.repo = Repo(self.git_path)
 

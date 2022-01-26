@@ -1,6 +1,7 @@
 import math
 import json
 import os
+from pathlib import Path
 import requests
 import matplotlib
 import matplotlib.pyplot as plt
@@ -8,8 +9,8 @@ from dotenv import load_dotenv
 
 from pywaffle import Waffle
 
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(DIRPATH, ".env"))
+DIRPATH = Path(__file__).parent.absolute()
+load_dotenv(DIRPATH / ".env")
 matplotlib.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 
