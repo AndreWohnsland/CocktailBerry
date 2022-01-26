@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "Cocktailmaker"
-version = "1.5.0"
+version = "1.5.3"
 description = "A Python and Qt based App for a Cocktail Maker on a Raspberry Pi"
 authors = ["Andre Wohnsland <Andre_Wohnsland@web.de>"]
+readme = "readme.md"
 license = "MIT"
 
 [tool.poetry.dependencies]
