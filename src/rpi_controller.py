@@ -21,8 +21,6 @@ class RpiController(ConfigManager):
     def __init__(self):
         super().__init__()
         self.devenvironment = DEV
-        print(f"Devenvironment on the RPi module is {'on 'if self.devenvironment else 'off'}")
-        self.initializing_pins()
 
     def clean_pumps(self):
         """Clean the pumps for the defined time in the config.
@@ -62,7 +60,8 @@ class RpiController(ConfigManager):
             w.teamwindow()
         shared.cocktail_started = True
         shared.make_cocktail = True
-        w.progressionqwindow(recipe)
+        if w is not None:
+            w.progressionqwindow(recipe)
         already_closed_pins = set()
         indexes = [x - 1 for x in bottle_list]
         pins = [self.PUMP_PINS[i] for i in indexes]
@@ -86,14 +85,16 @@ class RpiController(ConfigManager):
             current_time += self.MAKER_SLEEP_TIME
             current_time = round(current_time, 2)
             time.sleep(self.MAKER_SLEEP_TIME)
-            w.prow_change(current_time / max_time * 100)
+            if w is not None:
+                w.prow_change(current_time / max_time * 100)
             qApp.processEvents()
 
         self.close_pinlist(pins)
         consumption = [round(x) for x in consumption]
-        print("Total consumption: ", consumption)
+        print("Total calculated consumption:", consumption)
         self.header_print(f"Finished {recipe}")
-        w.prow_close()
+        if w is not None:
+            w.prow_close()
         return consumption, current_time, max_time
 
     def close_pin(self, pin: int, current_time: float, max_time: float):
@@ -102,6 +103,7 @@ class RpiController(ConfigManager):
         print(f"{current_time:.1f}/{max_time:.1f} s:\tPin number <{pin}> is closed")
 
     def initializing_pins(self):
+        print(f"Devenvironment on the RPi module is {'on 'if self.devenvironment else 'off'}")
         active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
         print(f"Initializing Pins: {active_pins}")
         if not self.devenvironment:
@@ -129,7 +131,7 @@ class RpiController(ConfigManager):
     def consumption_print(self, consumption: List[float], current_time: float, max_time: float, interval=1):
         if current_time % interval == 0:
             print(
-                f"{current_time:.1f}/{max_time:.1f} s:\tMaking cocktail, consumption: {[round(x) for x in consumption]}")
+                f"{current_time:.1f}/{max_time:.1f} s:\tpreparing, consumption: {[round(x) for x in consumption]}")
 
     def clean_print(self, t_cleaned: float, interval=0.5):
         if t_cleaned % interval == 0:
