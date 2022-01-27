@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Union
+from typing import Dict, List, Union
 import yaml
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
@@ -16,7 +16,7 @@ class DialogHandler(ConfigManager):
         super().__init__()
         self.icon_path = str(DIRPATH / "ui_elements" / "Cocktail-icon.png")
         with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
-            self.dialogs = yaml.safe_load(stream)["dialog"]
+            self.dialogs: Dict = yaml.safe_load(stream)["dialog"]
 
     def __choose_language(self, element: dict, **kwargs) -> str:
         """Choose either the given language if exists, or english if not piping additional info into template"""
@@ -212,7 +212,7 @@ class UiLanguage(ConfigManager):
     def __init__(self) -> None:
         super().__init__()
         with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
-            self.dialogs = yaml.safe_load(stream)["ui"]
+            self.dialogs: Dict = yaml.safe_load(stream)["ui"]
 
     def __choose_language(self, element: dict, **kwargs) -> Union[str, List[str]]:
         """Choose either the given language if exists, or english if not piping additional info into template"""
