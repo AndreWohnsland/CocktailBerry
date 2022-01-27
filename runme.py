@@ -33,6 +33,7 @@ def main(
 ):
     """
     Starts the cocktail maker. Optional, can start the calibration program.
+    For more information visit https://github.com/AndreWohnsland/Cocktailmaker_AW.
     """
     if calibration:
         run_calibration()
