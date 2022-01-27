@@ -1,14 +1,14 @@
 # pylint: disable=too-few-public-methods
 import configparser
-import os
 from pathlib import Path
 from sqlite3 import OperationalError
 from typing import Union
 
 from src.logger_handler import LoggerHandler
 from src.database_commander import DatabaseHandler
+from src import __version__
 
-DIRPATH = Path(os.path.abspath(__file__)).parents[0]
+DIRPATH = Path(__file__).parent.absolute()
 CONFIG_PATH = DIRPATH.parents[0] / ".version.ini"
 logger = LoggerHandler("migrator_module", "production_logs")
 
@@ -17,7 +17,7 @@ class Migrator:
     """Class to do all neccecary migration locally for new versions"""
 
     def __init__(self) -> None:
-        self.program_version = _Version("1.5.2")
+        self.program_version = _Version(__version__)
         self.config = configparser.ConfigParser()
         self.config.read(CONFIG_PATH)
         self.local_version = _Version(self.__get_local_version())
