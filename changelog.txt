@@ -1,3 +1,11 @@
+--------------- 2022_01_27 ---------------------------------------------------------------------------------------------------------
+- Refactored RPi init and make_cocktail to also work outside the maker e.g. the calibration module
+- Calibration module now using RPi module logic
+- Version is now kept within the src.__init__ file
+- Prettified CLI interface, added version command
+- Refactored os.path into pathlib.Path
+- Improved GUI of calibration screen
+
 --------------- 2022_01_25 ---------------------------------------------------------------------------------------------------------
 - Preparation for release v1.5.3
 - Refactored calibration module into main src module
