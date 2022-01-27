@@ -17,6 +17,7 @@
 ## Table of Contents <!-- omit in toc -->
 
 - [Overview](#overview)
+  - [tl;dr](#tldr)
   - [Features](#features)
   - [The Machine](#the-machine)
   - [Interface](#interface)
@@ -51,15 +52,15 @@
     - [The GUI on the RPi Looks Different from the Screenshots](#the-gui-on-the-rpi-looks-different-from-the-screenshots)
 - [Development](#development)
   - [Pull Requests and Issues](#pull-requests-and-issues)
-- [Contributing Possibilities](#contributing-possibilities)
+  - [Contributing Possibilities](#contributing-possibilities)
 
 # Overview
 
-Welcome to the official documentation of my Cocktail Maker!
+Welcome to the official documentation of my **Cocktail Maker**!
 
 This app is used to control a cocktail machine and prepare easily cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
 
-tl;dr:
+## tl;dr
 
 <img src="docs/pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
 
@@ -147,6 +148,8 @@ The following components were used within the showcase for the Teams Dashboard:
 
 # Installing Requirements
 
+Here you will find all the requirements. Since it's a Python program, you should already have Python installed.
+
 ## Minimal Requirements
 The best way is to use the provided `requirements.txt` file. If Python is installed, just run: 
 
@@ -161,8 +164,6 @@ to get all requirements. Optionally, you can install the single dependenicies:
 - PyQt5, requests, pyyaml, GitPython, typer
 - RaspberryPi 3 (older may work but are not tested)
 ```
-
-It's worth mentioning that I optimized the UI for a touch display with a 800x480 or a 1024x800 resolution ([this is my display](https://www.amazon.de/gp/product/B071XT9Z7H/ref=ppx_yo_dt_b_asin_title_o05_s00?ie=UTF8&psc=1)). By default, the full screen is also limited to 800x480. So usually you won't have any problems with the usual HD or uHD screens. But some screens (like my little 13' Laptop screen) don't show the proper fonts/UI placements. You can change the application size with the according config settings, if you want to use a different screen size. See [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values) for more information.
 
 ## Install PyQt5 on RaspberryPi
 
@@ -192,7 +193,7 @@ When you are working on another hardware (for example on a Windows or macOS engi
 UI_DEVENVIRONMENT: true
 ```
 
-This includes the password (if needed/wanted), the configuration and physical connections of your hardware (like GPIO pin connection and pump volume), the names of the logger and restricted access to some tabs.
+It's worth mentioning that I optimized the UI for a touch display with a 800x480 or a 1024x800 resolution ([this is my display](https://www.amazon.de/gp/product/B071XT9Z7H/ref=ppx_yo_dt_b_asin_title_o05_s00?ie=UTF8&psc=1)). By default, the full screen is also limited to 800x480. So usually you won't have any problems with the usual HD or uHD screens. But some screens (like my little 13' Laptop screen) don't show the proper fonts/UI placements. You can change the application size with the according config settings, if you want to use a different screen size. See [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values) for more information.
 
 # Setting up the Maker
 
@@ -239,7 +240,9 @@ The program will then evaluate which recipe meets all requirements to only show 
 You can use the provided calibration program to run a very simple overlay for pump adjustment. To start the calibration program you simply add the `--calibration` or `-c` flag to the python run command:
 
 ```bash
-python runme.py --calibration # or just -c
+python runme.py --calibration 
+# or just 
+python runme.py -c
 ```
 
 This will start the calibration overlay. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps. In the end, you can adjust each pump volume flow by the factor:
@@ -285,8 +288,11 @@ With `version 1.5.0`, there is the option to enable the automatic search for upd
 
 Version >= 1.3 includes multi-language support. You can change the language with the `UI_LANGUAGE` config option. Currently, supported languages are:
 
-- German (`de`)
-- English (`en`)
+
+| Language | Config Code | Since Version | Maker | Dashboard |
+| :------: | :---------: | :-----------: | :---: | :-------: |
+| English  |    `en`     |      1.3      |   ✔️   |     ✔️     |
+|  German  |    `de`     |      1.3      |   ✔️   |     ✔️     |
 
 If you are interested in implementing your own native language, feel free to contact me or submit an according pull request.
 
@@ -441,7 +447,7 @@ For developers, there is [an additional section](docs/devnotes.md) with informat
 
 If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue. If you think there is a super important feature missing, open a feature request. It may be implemented in the future.
 
-# Contributing Possibilities
+## Contributing Possibilities
 
 To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md). Here is a general list of features or refacturing things, I may do in the future. With your help, these things come even faster!
 
