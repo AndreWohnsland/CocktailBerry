@@ -1,4 +1,10 @@
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument,wrong-import-order,wrong-import-position,ungrouped-imports
+from src.migrator import Migrator
+
+# Migrations need to be made before imports, otherwise new needed packages will break the program
+migrator = Migrator()
+migrator.make_migrations()
+
 import sys
 from typing import Optional
 import typer
@@ -6,7 +12,6 @@ from PyQt5.QtWidgets import QApplication
 
 from src.error_handler import logerror
 from src.config_manager import ConfigManager, version_callback
-from src.migrator import Migrator
 from src.ui.setup_mainwindow import MainScreen
 from src.calibration import run_calibration
 
@@ -17,8 +22,6 @@ cli = typer.Typer(add_completion=False)
 @logerror
 def run_cocktailmaker():
     """Executes the cocktail maker"""
-    migrator = Migrator()
-    migrator.make_migrations()
     c_manager = ConfigManager()
     c_manager.sync_config_to_file()
     app = QApplication(sys.argv)
