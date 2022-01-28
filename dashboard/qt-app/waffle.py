@@ -2,6 +2,8 @@ import math
 import json
 import os
 from pathlib import Path
+from typing import Dict, List, Union
+import yaml
 import requests
 import matplotlib
 import matplotlib.pyplot as plt
@@ -11,33 +13,28 @@ from pywaffle import Waffle
 
 DIRPATH = Path(__file__).parent.absolute()
 load_dotenv(DIRPATH / ".env")
+
+# Getting the language file as dict
+LANGUAGE_FILE = DIRPATH / "language.yaml"
+with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
+    LANGUAGE_DATA: Dict = yaml.safe_load(stream)
+
+# Setting some plotting props
 matplotlib.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 
-def __choose_language(element: dict) -> str:
+def __choose_language(element: dict, **kwargs) -> Union[str, List[str]]:
+    """Choose either the given language if exists, or english if not piping additional info into template"""
     language = os.getenv("UI_LANGUAGE")
-    return element.get(language, element["en"])
+    tmpl = element.get(language, element["en"])
+    # Return the list and not apply template!
+    if isinstance(tmpl, list):
+        return tmpl
+    return tmpl.format(**kwargs)
 
 
-HEADER = __choose_language({
-    "en": [
-        "Amount (today)",
-        "Volume (today)",
-        "Amount (all time)",
-        "Volume (all time)"
-    ],
-    "de": [
-        "Anzahl (Heute)",
-        "Volumen (Heute)",
-        "Anzahl (Komplett)",
-        "Volumen (Komplett)"
-    ],
-})
-
-DEFAULT_MESSAGE = __choose_language({
-    "en": "Drink cocktails to start ...",
-    "de": "Cocktails trinken zum starten ...",
-})
+HEADER = __choose_language(LANGUAGE_DATA["header_label"])
+DEFAULT_MESSAGE = __choose_language(LANGUAGE_DATA["default_message"])
 
 
 def sort_dict_items(to_sort: dict):
