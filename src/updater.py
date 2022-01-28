@@ -31,6 +31,7 @@ class Updater:
             return
         # restart the programm, this will not work if executed over IDE
         print("Restarting the application!")
+        logger.log_event("INFO", "Restarting program to reload updated code")
         os.execl(sys.executable, self.git_path / "runme.py", *sys.argv)
 
     def check_for_updates(self) -> bool:
