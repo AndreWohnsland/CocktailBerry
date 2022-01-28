@@ -1,5 +1,7 @@
 # pylint: disable=too-few-public-methods
 import configparser
+import sys
+import subprocess
 from pathlib import Path
 from sqlite3 import OperationalError
 from typing import Union
@@ -9,7 +11,7 @@ from src.database_commander import DatabaseHandler
 from src import __version__
 
 DIRPATH = Path(__file__).parent.absolute()
-CONFIG_PATH = DIRPATH.parents[0] / ".version.ini"
+CONFIG_PATH = DIRPATH.parent / ".version.ini"
 logger = LoggerHandler("migrator_module", "production_logs")
 
 
@@ -48,6 +50,13 @@ class Migrator:
             logger.log_event("INFO", "Making migrations for v1.5.0")
             self.__rename_database_to_english()
             self.__add_team_buffer_to_database()
+        if self.older_than_version("1.5.3"):
+            logger.log_event("INFO", "Making migrations for v1.5.3")
+            self.__install_typer()
+        self.__check_local_version_data()
+
+    def __check_local_version_data(self):
+        """Checks to update the local version data"""
         if self.older_than_version(self.program_version.version):
             self.__write_local_version()
         else:
@@ -101,6 +110,16 @@ class Migrator:
                 ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 Payload TEXT NOT NULL);"""
         )
+
+    def __install_typer(self):
+        """Try to install typer over pip"""
+        logger.log_event("INFO", "Trying to install typer, it is needed since this version")
+        try:
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'typer'])
+            logger.log_event("INFO", "Successfully installed typer")
+        except subprocess.CalledProcessError as err:
+            logger.log_event("ERROR", "Could not install typer using pip. Please install it manually!")
+            logger.log_exception(err)
 
 
 class _Version:
