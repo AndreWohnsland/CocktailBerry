@@ -24,52 +24,56 @@ class Ui_Leaderboard(object):
         Leaderboard.setMaximumSize(QtCore.QSize(2000, 1200))
         Leaderboard.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         Leaderboard.setStyleSheet("QWidget\n"
-                                  "{\n"
-                                  "    color: rgb(0, 123, 255);    \n"
-                                  "    background-color: rgb(14, 17, 23);\n"
-                                  "\n"
-                                  "}\n"
-                                  "\n"
-                                  "QPushButton {\n"
-                                  "    background-color: rgb(97, 97, 97);\n"
-                                  "    color: rgb(255, 255, 255);\n"
-                                  "    border-width: 1px;\n"
-                                  "    border-color: rgb(97, 97, 97);\n"
-                                  "    border-style: solid;\n"
-                                  "    border-radius: 7;\n"
-                                  "    padding: 3px;\n"
-                                  "    padding-left: 5px;\n"
-                                  "    padding-right: 5px;\n"
-                                  "}\n"
-                                  "\n"
-                                  "QPushButton:checked\n"
-                                  "{\n"
-                                  "    color: rgb(255, 255, 255);    \n"
-                                  "    background-color: rgb(0, 123, 255);\n"
-                                  "}\n"
-                                  "\n"
-                                  "QProgressBar\n"
-                                  "{\n"
-                                  "    background-color: rgb(166, 166, 166);\n"
-                                  "    color: rgb(0, 0, 0);\n"
-                                  "    border: 2px rgb(166, 166, 166);\n"
-                                  "    border-radius: 5px;\n"
-                                  "}\n"
-                                  "\n"
-                                  "QProgressBar::chunk {\n"
-                                  "    border: 2px rgb(166, 166, 166);\n"
-                                  "    border-top-left-radius: 5px;\n"
-                                  "    border-bottom-left-radius: 5px;\n"
-                                  "    border-top-right-radius: 5px;\n"
-                                  "    border-bottom-right-radius: 5px;\n"
-                                  "    background-color: rgb(0, 123, 255);\n"
-                                  "   /* width: 40px;\n"
-                                  "    margin: 0.5px;*/\n"
-                                  "}\n"
-                                  "\n"
-                                  "#Labbruch {\n"
-                                  "    color: rgb(239, 151, 0);\n"
-                                  "}")
+"{\n"
+"    color: rgb(0, 123, 255);    \n"
+"    background-color: rgb(14, 17, 23);\n"
+"\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"    background-color: rgb(97, 97, 97);\n"
+"    color: rgb(255, 255, 255);\n"
+"    border-width: 1px;\n"
+"    border-color: rgb(97, 97, 97);\n"
+"    border-style: solid;\n"
+"    border-radius: 7;\n"
+"    padding: 3px;\n"
+"    padding-left: 5px;\n"
+"    padding-right: 5px;\n"
+"}\n"
+"\n"
+"QPushButton:checked\n"
+"{\n"
+"    color: rgb(255, 255, 255);    \n"
+"    background-color: rgb(0, 123, 255);\n"
+"}\n"
+"\n"
+"QProgressBar\n"
+"{\n"
+"    background-color: rgb(166, 166, 166);\n"
+"    color: rgb(0, 0, 0);\n"
+"    border: 2px rgb(166, 166, 166);\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QProgressBar::chunk {\n"
+"    border: 2px rgb(166, 166, 166);\n"
+"    border-top-left-radius: 5px;\n"
+"    border-bottom-left-radius: 5px;\n"
+"    border-top-right-radius: 5px;\n"
+"    border-bottom-right-radius: 5px;\n"
+"    background-color: rgb(0, 123, 255);\n"
+"   /* width: 40px;\n"
+"    margin: 0.5px;*/\n"
+"}\n"
+"\n"
+"#Labbruch {\n"
+"    color: rgb(239, 151, 0);\n"
+"}\n"
+"\n"
+"#time_label {\n"
+"    color: rgb(255, 255, 255);\n"
+"}")
         self.centralwidget = QtWidgets.QWidget(Leaderboard)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -89,6 +93,19 @@ class Ui_Leaderboard(object):
         self.selectbtn.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.selectbtn.setObjectName("selectbtn")
         self.horizontalLayout.addWidget(self.selectbtn)
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.time_label = QtWidgets.QLabel(self.centralwidget)
+        self.time_label.setMaximumSize(QtCore.QSize(16777215, 50))
+        font = QtGui.QFont()
+        font.setPointSize(26)
+        font.setBold(True)
+        font.setWeight(75)
+        self.time_label.setFont(font)
+        self.time_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.time_label.setObjectName("time_label")
+        self.verticalLayout.addWidget(self.time_label)
+        self.horizontalLayout.addLayout(self.verticalLayout)
         Leaderboard.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Leaderboard)
@@ -98,16 +115,27 @@ class Ui_Leaderboard(object):
         _translate = QtCore.QCoreApplication.translate
         Leaderboard.setWindowTitle(_translate("Leaderboard", "Leaderboard"))
         self.selectbtn.setText(_translate("Leaderboard", "C\n"
-                                          "h\n"
-                                          "a\n"
-                                          "n\n"
-                                          "g\n"
-                                          "e\n"
-                                          " \n"
-                                          "D\n"
-                                          "i\n"
-                                          "s\n"
-                                          "p\n"
-                                          "l\n"
-                                          "a\n"
-                                          "y"))
+"h\n"
+"a\n"
+"n\n"
+"g\n"
+"e\n"
+" \n"
+"D\n"
+"i\n"
+"s\n"
+"p\n"
+"l\n"
+"a\n"
+"y"))
+        self.time_label.setText(_translate("Leaderboard", "Time"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Leaderboard = QtWidgets.QMainWindow()
+    ui = Ui_Leaderboard()
+    ui.setupUi(Leaderboard)
+    Leaderboard.show()
+    sys.exit(app.exec_())
