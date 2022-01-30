@@ -120,6 +120,7 @@ class Migrator:
         except subprocess.CalledProcessError as err:
             logger.log_event("ERROR", "Could not install typer using pip. Please install it manually!")
             logger.log_exception(err)
+            raise CouldNotMigrateException("1.5.3") from err
 
 
 class _Version:
@@ -160,3 +161,11 @@ class _Version:
         if self.version is None:
             return "Version(not defined)"
         return f"Version({self.version})"
+
+
+class CouldNotMigrateException(Exception):
+    """Raised when there was an error with the migration"""
+
+    def __init__(self, version):
+        self.message = f"Error while migration to version: {version}"
+        super().__init__(self.message)
