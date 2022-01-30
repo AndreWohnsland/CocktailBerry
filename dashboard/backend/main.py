@@ -16,6 +16,7 @@ app = FastAPI()
 class Teaminfo(BaseModel):
     team: str
     volume: int
+    person: Optional[str] = "Team"
 
 
 class BoardConfig(BaseModel):
@@ -34,11 +35,11 @@ async def enter_cocktail_for_team(team: Teaminfo):
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     entry_datetime = datetime.datetime.now().replace(microsecond=0)
-    sql = "INSERT INTO TEAM(Date, Team, Volume) VALUES(?,?,?)"
-    cursor.execute(sql, (entry_datetime, team.team, team.volume,))
+    sql = "INSERT INTO TEAM(Date, Team, Volume, Person) VALUES(?,?,?,?)"
+    cursor.execute(sql, (entry_datetime, team.team, team.volume, team.person,))
     conn.commit()
     conn.close()
-    return {"message": "Team entry was successfull", "team": team.team, "volume": team.volume}
+    return {"message": "Team entry was successfull", "team": team.team, "volume": team.volume, "person": team.person}
 
 
 def get_leaderboard(hourrange=None, limit=2, count=True):
@@ -67,9 +68,23 @@ def create_tables():
         """CREATE TABLE IF NOT EXISTS
         Team(Date DATETIME NOT NULL,
         Team TEXT NOT NULL,
-        Volume INTEGER NOT NULL);"""
+        Volume INTEGER NOT NULL,
+        Person Text);"""
     )
     conn.commit()
+    conn.close()
+
+
+def add_person_to_db():
+    """Adds the new column to the db"""
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("ALTER TABLE Team ADD Person Text;")
+        cursor.execute("UPDATE Team SET Person='Team' WHERE Person is Null")
+        conn.commit()
+    except sqlite3.OperationalError:
+        pass
     conn.close()
 
 
@@ -77,4 +92,6 @@ if __name__ == "__main__":
     if not Path(database_path).exists():
         print("creating Database")
         create_tables()
+    # this is new, so add it
+    add_person_to_db()
     uvicorn.run("main:app", host="0.0.0.0", port=8080)
