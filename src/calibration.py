@@ -6,10 +6,12 @@ from PyQt5.uic import loadUi
 from src.config_manager import ConfigManager
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
+from src.logger_handler import LoggerHandler
 from src.rpi_controller import RPI_CONTROLLER
 
 
 ui_file = Path(__file__).parent.absolute() / "ui_elements" / "Calibration.ui"
+logger = LoggerHandler("calibration_module", "production_logs")
 
 
 class CalibrationScreen(QMainWindow, ConfigManager):
@@ -28,6 +30,7 @@ class CalibrationScreen(QMainWindow, ConfigManager):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
         RPI_CONTROLLER.initializing_pins()
+        logger.log_start_program("calibration")
 
     def output_volume(self):
         """Outputs the set number of volume according to defined volume flow"""
