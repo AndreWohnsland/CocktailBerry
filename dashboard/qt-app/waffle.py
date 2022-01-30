@@ -91,7 +91,7 @@ def decide_data(datatype: int):
     count = [True, False, True, False][index]
     sort = [True, True, False, False][index]
     hourrange = [24, 24, None, None][index]
-    limit = [5, 5, 10, 10][index]
+    limit = [5, 5, 4, 4][index]
     return (count, sort, hourrange, limit)
 
 
