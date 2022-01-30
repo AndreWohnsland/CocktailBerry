@@ -33,9 +33,9 @@ class LoggerHandler:
         """Logs a message of given level formated as header"""
         self.log_event(level, self.template.format(f" {message} ",))
 
-    def log_start_program(self):
-        """Logs the start of the program"""
-        self.log_header("INFO", "Starting the program")
+    def log_start_program(self, program_type: str = "maker"):
+        """Logs the start of the program, optionally can define program type"""
+        self.log_header("INFO", f"Starting the {program_type} program")
 
     def log_exception(self, message: str):
         """Logs an exception with the given message"""
