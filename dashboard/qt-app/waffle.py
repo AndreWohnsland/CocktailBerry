@@ -107,6 +107,7 @@ def generate_figure(datatype: int):
     data = get_data(count, hourrange, limit)
     waffle_data = extract_data(sort, data)
     dims = generate_dimensions(sum(data.values()), count)
+    icons = "cocktail" if count else None
     # close current (old) figure, to avoid memory leak
     # this is needed because old figures will keep open until explicitly closed
     plt.close('all')
@@ -120,6 +121,7 @@ def generate_figure(datatype: int):
                 'fontsize': 30
             }
         },
+        icons=icons,
         facecolor=(0.054, 0.066, 0.090, 1),
         legend={'loc': 'upper center', 'bbox_to_anchor': (0.5, 0.0),
                 'ncol': 2, 'framealpha': 0, 'fontsize': 18}
