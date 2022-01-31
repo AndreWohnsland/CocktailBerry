@@ -23,7 +23,7 @@ mpl.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 DATABASE_NAME = "team"
 DIRPATH = Path(__file__).parent.absolute()
 load_dotenv(DIRPATH / ".env")
-database_path = os.path.join(DIRPATH, "storage", f"{DATABASE_NAME}.db")
+database_path = DIRPATH / "storage" / f"{DATABASE_NAME}.db"
 
 
 def __choose_language(element: dict) -> str:
