@@ -12,7 +12,7 @@
 
 <!-- ![Lines of code](https://img.shields.io/tokei/lines/github/AndreWohnsland/Cocktailmaker_AW) -->
 
-#### A Python and Qt Based App for a Cocktail Machine 🐍 + 🍸 = 🥳 <!-- omit in toc -->
+#### The Cocktailmaker is a Python and Qt based app for a cocktail machine. Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳  <!-- omit in toc -->
 
 ## Table of Contents <!-- omit in toc -->
 
@@ -24,10 +24,9 @@
 - [Hardware](#hardware)
   - [Used Hardware in Showcase Maker](#used-hardware-in-showcase-maker)
   - [Used Hardware in Showcase Teams Dashboard](#used-hardware-in-showcase-teams-dashboard)
-- [Installing Requirements](#installing-requirements)
-  - [Minimal Requirements](#minimal-requirements)
+- [Installation](#installation)
+  - [Installing Requirements](#installing-requirements)
   - [Install PyQt5 on RaspberryPi](#install-pyqt5-on-raspberrypi)
-  - [Install PyQt5 on other Systems](#install-pyqt5-on-other-systems)
   - [Development on Non-Pi Hardware](#development-on-non-pi-hardware)
 - [Setting up the Maker](#setting-up-the-maker)
   - [Adding new Recipes or Ingredients](#adding-new-recipes-or-ingredients)
@@ -50,15 +49,16 @@
     - [Numpy Import Error at Matplotlib Import](#numpy-import-error-at-matplotlib-import)
     - [How to get the GUI Running on Startup](#how-to-get-the-gui-running-on-startup)
     - [The GUI on the RPi Looks Different from the Screenshots](#the-gui-on-the-rpi-looks-different-from-the-screenshots)
+    - [Some Python Things do not Work](#some-python-things-do-not-work)
 - [Development](#development)
   - [Pull Requests and Issues](#pull-requests-and-issues)
   - [Contributing Possibilities](#contributing-possibilities)
 
 # Overview
 
-Welcome to the official documentation of my **Cocktail Maker**!
+Welcome to the official documentation of the **Cocktail Maker**!
 
-This app is used to control a cocktail machine and prepare easily cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
+This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients. Track and display cocktail data for different teams to even further increase the fun. Let's get started!
 
 ## tl;dr
 
@@ -146,44 +146,37 @@ The following components were used within the showcase for the Teams Dashboard:
 - 1x Micro SD-Card (16 Gb is enough)
 - 1x 5V Power supply for the Raspberry Pi
 
-# Installing Requirements
+# Installation
 
-Here you will find all the requirements. Since it's a Python program, you should already have Python installed.
+Here you will find all the requirements. Since it's a Python program, you should already have [Python](https://www.python.org/) installed. In addition, we will use [git](https://git-scm.com/) for getting this project and it's new versions from GitHub. To clone this project run:
 
-## Minimal Requirements
+```bash
+git clone https://github.com/AndreWohnsland/Cocktailmaker_AW.git
+cd Cocktailmaker_AW
+```
+
+## Installing Requirements
 The best way is to use the provided `requirements.txt` file. If Python is installed, just run: 
 
 ```bash
 pip install -r requirements.txt
 ``` 
 
-to get all requirements. Optionally, you can install the single dependenicies:
+to get all requirements. Optionally, you can install the single needed dependenicies:
 
-```
-- Python >= 3.7
+- Python >= 3.7 and pip
 - PyQt5, requests, pyyaml, GitPython, typer
-- RaspberryPi 3 (older may work but are not tested)
-```
 
 ## Install PyQt5 on RaspberryPi
 
-You will need at least PyQt5 on your RaspberryPi. More information can be found at [riverbank](https://riverbankcomputing.com/software/pyqt/intro).\
-To install PyQt5 on your Pi run:
+The PyQt5 installation of pip will probably fail on your RaspberryPi. To install PyQt5 on your Pi run:
 
 ```
 sudo apt-get update
 sudo apt-get install qt5-default pyqt5-dev pyqt5-dev-tools
 ```
 
-## Install PyQt5 on other Systems
-
-If you want to run some testing on other systems, you can get PyQt5 [here](https://www.riverbankcomputing.com/software/pyqt/download5).\
-As long as you are using a supported version of Python, you can install PyQt5 from [PyPi](https://pypi.org/project/PyQt5/) by running:
-
-```bash
-pip install PyQt5 # if only python3 is installed
-pip3 install PyQt5 # if also python2 is installed
-```
+More information can be found at [riverbank](https://riverbankcomputing.com/software/pyqt/intro).
 
 ## Development on Non-Pi Hardware
 
@@ -438,6 +431,10 @@ sudo chmod 755 /home/pi/launcher.sh
 ### The GUI on the RPi Looks Different from the Screenshots
 
 I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources. Using the pi user will result in the shown interfaces at the cocktailmaker (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
+
+### Some Python Things do not Work
+
+Older Raspberry Pi OS version (older than _November 2021_) still deliver Python 2. Since Raspberry Pi OS Bullseye version (based on Debian 11) Python 3 is the default version if you type `python` or `pip`. Typing `python --version` or `pip --version` will show your version of Python. If it's still Python 2, consider upgrading your OS or check `python3 --version` and use the `pip3` as well as the `python3` command instead the usual ones.
 
 # Development
 
