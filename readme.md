@@ -207,20 +207,20 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 - `UI_DEVENVIRONMENT` (_bool_): Boolean flag to enable some development features
 - `UI_PARTYMODE` (_bool_): En- or disables the recipe tab (to prevent user interaction)
 - `UI_MASTERPASSWORD` (_str_): String for password, Use numbers for build in numpad like '1234'
-- `UI_LANGUAGE` (_str_): 2 char code for the language, see [supported languages](#supported-languages) (version >= 1.3)
-- `UI_WIDTH` (_int_): Desired interface width, default is 800 (version >= 1.4)
-- `UI_HEIGHT` (_int_): Desired interface height, default is 480 (version >= 1.4)
+- `UI_LANGUAGE` (_str_): 2 char code for the language, see [supported languages](#supported-languages) (since **v1.3.0**)
+- `UI_WIDTH` (_int_): Desired interface width, default is 800 (since **v1.4.0**)
+- `UI_HEIGHT` (_int_): Desired interface height, default is 480 (since **v1.4.0**)
 - `PUMP_PINS` (_list[int]_): List of the RPi-Pins where each Pump is connected
 - `PUMP_VOLUMEFLOW` (_list[int]_): List of the according volume flow for each pump in ml/s
 - `MAKER_NUMBER_BOTTLES` (_int_): Number of supported/displayed bottles. Currently, the UI is build for up to ten bottles
 - `MAKER_SEARCH_UPDATES` (_bool_): Boolean flag to search for updates at program start
 - `MAKER_CLEAN_TIME` (_int_): Time the machine will execute the cleaning program
 - `MAKER_SLEEP_TIME` (_float_): Sleep interval between each UI refresh and check of conditions while generating a cocktail
-- `MICROSERVICE_ACTIVE` (_bool_): Boolean flag to post to microservice set up by docker (optional) (version >= 1.1)
-- `MICROSERVICE_BASE_URL` (_str_): Base URL for microservice (if default docker it is at http://127.0.0.1:5000) (optional)
-- `TEAMS_ACTIVE` (_bool_): Boolean flag to use teams feature (version >= 1.2) (optional)
-- `TEAM_BUTTON_NAMES` (_list[str]_): List of format ["Team1", "Team2"] (optional)
-- `TEAM_API_URL` (_str_): Endpoint of teams API, default used port by API is 8080 (optional)
+- `MICROSERVICE_ACTIVE` (_bool_): Boolean flag to post to microservice set up by docker (since **v1.1.0**) (*optional*)
+- `MICROSERVICE_BASE_URL` (_str_): Base URL for microservice (if default docker it is at http://127.0.0.1:5000) (*optional*)
+- `TEAMS_ACTIVE` (_bool_): Boolean flag to use teams feature (since **v1.2.0**) (*optional*)
+- `TEAM_BUTTON_NAMES` (_list[str]_): List of format ["Team1", "Team2"] (*optional*)
+- `TEAM_API_URL` (_str_): Endpoint of teams API, default used port by API is 8080 (*optional*)
 
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
 
@@ -275,17 +275,17 @@ With this as your base set up, even if not using the optional ingredients, your 
 
 ## Updates
 
-With `version 1.5.0`, there is the option to enable the automatic search for updates at program start. The `MAKER_SEARCH_UPDATES` config can enable this feature. The maker will then check the GitHub repository for new releases and informs the user about it. If accepted, the maker will pull the latest version and restart the program afterwards. The migrator will also do any necessary steps to adjust local files, like the database to the latest release.
+With __version 1.5.0__, there is the option to enable the automatic search for updates at program start. The `MAKER_SEARCH_UPDATES` config can enable this feature. The maker will then check the GitHub repository for new releases and informs the user about it. If accepted, the maker will pull the latest version and restart the program afterwards. The migrator will also do any necessary steps to adjust local files, like the database to the latest release.
 
 # Supported Languages
 
-Version >= 1.3 includes multi-language support. You can change the language with the `UI_LANGUAGE` config option. Currently, supported languages are:
+__Version 1.3.0__ includes multi-language support. You can change the language with the `UI_LANGUAGE` config option. Currently, supported languages are:
 
 
 | Language | Config Code | Since Version | Maker | Dashboard |
 | :------: | :---------: | :-----------: | :---: | :-------: |
-| English  |    `en`     |      1.3      |   ✔️   |     ✔️     |
-|  German  |    `de`     |      1.3      |   ✔️   |     ✔️     |
+| English  |    `en`     |     1.3.0     |   ✔️   |     ✔️     |
+|  German  |    `de`     |     1.3.0     |   ✔️   |     ✔️     |
 
 If you are interested in implementing your own native language, feel free to contact me or submit an according pull request.
 
@@ -295,7 +295,7 @@ Here you can find some advanced features of the maker, which can you optionally 
 
 ## Microservices
 
-As a further addition since `version 1.1`, there is the option to run a microservice within docker which handles some networking topics.
+As a further addition since __version 1.1.0__, there is the option to run a microservice within docker which handles some networking topics.
 Currently, this is limited to:
 
 - Posting the cocktail name, used volume and current time to a given webhook
@@ -305,7 +305,7 @@ The separation was made here that a service class within the cocktailmaker needs
 
 ## Dashboard with Teams
 
-With `version 1.2`, there is a team feature implemented into the maker. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device, can be specified within the config. The cocktailmaker will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leader board. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the API / the dashboard for easy display on another screen.
+With __version 1.2.0__, there is a team feature implemented into the maker. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device, can be specified within the config. The cocktailmaker will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leader board. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the API / the dashboard for easy display on another screen.
 
 <img src="docs/pictures/teams_ui.png" alt="Maker" width="600"/>
 
