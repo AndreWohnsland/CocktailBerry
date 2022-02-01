@@ -4,3 +4,4 @@ requests
 PyQt5
 python-dotenv
 pyyaml
+plotly-express
