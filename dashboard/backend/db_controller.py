@@ -38,14 +38,16 @@ class DBController:
         return dict(self.cursor.fetchall())
 
     def generate_teamdata(self, hourrange: int, use_count: bool, limit: int):
-        addition = ""
+        addition1 = ""
+        addition2 = ""
         if hourrange is not None:
-            addition = f" AND Date >= datetime('now','-{hourrange} hours')"
+            addition1 = f" WHERE Date >= datetime('now','-{hourrange} hours')"
+            addition2 = f" AND Date >= datetime('now','-{hourrange} hours')"
         agg = self.__count_or_sum(use_count)
         sql = """SELECT Team, Person, {agg} as amount FROM Team
-                WHERE Team in (SELECT Team FROM Team GROUP BY Team ORDER BY {agg} DESC LIMIT ?){addition}
+                WHERE Team in (SELECT Team FROM Team {addition1} GROUP BY Team ORDER BY {agg} DESC LIMIT ?){addition2}
                 GROUP BY Team, Person ORDER BY {agg} DESC;
-        """.format(addition=addition, agg=agg)
+        """.format(addition1=addition1, addition2=addition2, agg=agg)
         self.cursor.execute(sql, (limit,))
         return self.cursor.fetchall()
 
