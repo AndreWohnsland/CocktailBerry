@@ -6,11 +6,13 @@ services:
     restart: always
     build: frontend
     ports:
-      - 8500:8500
+      - 8500:80
     depends_on:
       - backend
     volumes:
       - ./storage:/app/storage
+    environment:
+      - EXECUTOR=docker
   backend:
     container_name: cocktail-dashboard-backend
     restart: always

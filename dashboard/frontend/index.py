@@ -5,9 +5,9 @@ from dash import html  # type: ignore
 
 import callbacks
 from app import app
-# from app import server
 
 
+server = app.server
 # Connect to your app pages
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),

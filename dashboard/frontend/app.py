@@ -6,4 +6,3 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True,
                             'content': 'width=device-width, initial-scale=1.0'}]
                 )
 app.title = "Cocktail Dashboard"
-server = app.server

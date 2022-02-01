@@ -1,5 +1,6 @@
 import json
 import os
+import warnings
 from pathlib import Path
 from typing import Dict, List, Union
 import yaml
@@ -7,6 +8,9 @@ import requests
 import plotly.express as px
 import pandas as pd
 from dotenv import load_dotenv
+
+# something from plotly triggers pandas warnign
+warnings.filterwarnings("ignore")
 
 
 DIRPATH = Path(__file__).parent.absolute()
@@ -54,7 +58,10 @@ def get_plot_data(datatype: int):
     headers = {"content-type": "application/json"}
     payload = {"limit": limit, "count": count, "hourrange": hourrange}
     payload = json.dumps(payload)
-    res = requests.get("http://127.0.0.1:8080/teamdata", data=payload, headers=headers)
+    url = "http://127.0.0.1:8080/teamdata"
+    if os.getenv("EXECUTOR") is not None:
+        url = "http://backend:8080/teamdata"
+    res = requests.get(url, data=payload, headers=headers)
     data = pd.DataFrame(json.loads(res.text), columns=["Team", "Person", "Amount"])
     if data.empty:
         return DF_START

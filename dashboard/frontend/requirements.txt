@@ -2,3 +2,5 @@ requests
 python-dotenv
 pyyaml
 plotly-express
+dash
+gunicorn
