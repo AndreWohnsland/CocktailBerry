@@ -13,3 +13,7 @@ header_label:
 default_message:
   en: 'Drink cocktails to start ...'
   de: 'Cocktails trinken zum starten ...'
+
+call_to_action:
+  en: "Let's go!"
+  de: 'Auf gehts!'
