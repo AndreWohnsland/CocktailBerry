@@ -1,5 +1,4 @@
-streamlit
-streamlit-autorefresh
-matplotlib
-pywaffle
+requests
 python-dotenv
+pyyaml
+plotly-express

@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   background-color: rgb(14, 17, 23);
 }
 
@@ -20,7 +20,7 @@ ul {
 
 .clock {
   font-weight: 600;
-  font-size: 3rem;
+  font-size: 2.5rem;
 }
 
 .navbar {
@@ -48,7 +48,7 @@ ul {
 }
 
 .navbar ul li {
-  margin-left: 2rem;
+  margin-left: 1rem;
 }
 
 .treemap {

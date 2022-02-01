@@ -1,20 +1,18 @@
 import datetime
 import traceback
 import sys
-from pathlib import Path
 from itertools import cycle
 import time
+import matplotlib
+from mainwindow import Ui_Leaderboard
 
 from PyQt5.QtCore import Qt, QRunnable, pyqtSlot, QObject, pyqtSignal, QThreadPool
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWebEngineWidgets import QWebEngineView
 
-from mainwindow import Ui_Leaderboard
-from treemap import generate_treemap, get_plot_data
-from html_template import gen_html
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from waffle import generate_figure
 
-
-js_file = Path(__file__).parent.absolute() / "plotly-latest.min.js"
+matplotlib.use('Qt5Agg')
 
 
 class Leaderboard(QMainWindow, Ui_Leaderboard):
@@ -29,13 +27,9 @@ class Leaderboard(QMainWindow, Ui_Leaderboard):
         self.options = cycle([1, 2, 3, 4])
         self.curr_option = next(self.options)
 
-        self.data = get_plot_data(self.curr_option)
-        self.fig = generate_treemap(self.data)
-        self.browser = QWebEngineView(self)
-        self.browser.setStyleSheet("body {background-color: rgb(14, 17, 23);}")
-        html_fig = self.fig.to_html(include_plotlyjs=True, full_html=False, config={"displayModeBar": False})
-        self.browser.setHtml(gen_html(html_fig))
-        self.verticalLayout.addWidget(self.browser)
+        self.fig = generate_figure(self.curr_option)
+        self.canvas = FigureCanvas(self.fig)
+        self.verticalLayout.addWidget(self.canvas)
         self.time_label.setText(datetime.datetime.now().strftime('%H:%M'))
 
         # Spinning up a threadpool to constantly update
@@ -43,15 +37,14 @@ class Leaderboard(QMainWindow, Ui_Leaderboard):
         self.start_worker()
 
     def update(self, getnext=False):
+        # print(f"{datetime.datetime.now().strftime('%H:%M:%S')}: Update triggered with next {getnext}")
+        self.canvas.figure.get_axes().clear()
+        self.canvas.deleteLater()
         if getnext:
             self.curr_option = next(self.options)
-        data = get_plot_data(self.curr_option)
-        # Only if other diagram, or data did change update plot
-        if not self.data.equals(data):
-            self.data = data
-            self.fig = generate_treemap(self.data)
-            html_fig = self.fig.to_html(include_plotlyjs="cdn", full_html=False, config={"displayModeBar": False})
-            self.browser.setHtml(gen_html(html_fig))
+        self.fig = generate_figure(self.curr_option)
+        self.canvas = FigureCanvas(self.fig)
+        self.verticalLayout.addWidget(self.canvas)
         self.time_label.setText(datetime.datetime.now().strftime('%H:%M'))
         if not getnext:
             self.start_worker()

@@ -56,6 +56,8 @@ def get_plot_data(datatype: int):
     payload = json.dumps(payload)
     res = requests.get("http://127.0.0.1:8080/teamdata", data=payload, headers=headers)
     data = pd.DataFrame(json.loads(res.text), columns=["Team", "Person", "Amount"])
+    if data.empty:
+        return DF_START
     __give_team_number(data)
     return data
 
@@ -64,7 +66,7 @@ def generate_treemap(df: pd.DataFrame):
     """Generates a treemap out of the df"""
     fig = px.treemap(df, path=[px.Constant("Teams"), 'Team', 'Person'], values='Amount')
     fig.update_traces(root_color="darkgrey", texttemplate="<b>%{label}</b><br>(%{value:.0f})")
-    fig.update_layout(margin=dict(t=20, l=0, r=0, b=0), hovermode=False)
+    fig.update_layout(margin=dict(t=0, l=0, r=0, b=0), hovermode=False, font=dict(size=24))
     fig.layout.plot_bgcolor = 'rgb(14, 17, 23)'
     fig.layout.paper_bgcolor = 'rgb(14, 17, 23)'
     return fig

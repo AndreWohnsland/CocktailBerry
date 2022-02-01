@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "main.py", "--theme.base", "dark"]
+CMD ["python", "index.py"]
