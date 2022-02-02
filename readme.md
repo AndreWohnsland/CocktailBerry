@@ -311,20 +311,33 @@ With __version 1.2.0__, there is a team feature implemented into the maker. If e
 
 <img src="docs/pictures/dashboard.png" alt="Maker" width="600"/>
 
-The recommended way is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before, you should install the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to set up docker-compose in general. The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](#supported-languages). Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language.\
-**tl;dr**:
+The **recommended way** is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before, you should install the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to set up docker-compose in general. The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](#supported-languages). Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language. **tl;dr**:
 
 ```bash
 cd dashboard
-docker-compose up -d
+docker-compose up --build -d
 cd qt-app
 pip install -r requirements.txt
 cp .env.example .env
 python main.py
 ```
- 
 
-A second option is to use the `docker-compose.both.yaml` file with the docker-compose `--file` option. This will build up the backend API, as well as a Streamlit frontend Web App. Streamlit is using pyarrow, which the Raspberry Pi 3 (Armv7 Architecture) seems not be able to build without any tweaks. On other architectures (like x86) the container could be build without any problems. If these things confuse you, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
+A **second option** is to use either the `docker-compose.both.yaml` file with the docker-compose `--file` option, or to use the other provided frontent :
+
+```bash
+# Either both in docker
+cd dashboard
+docker-compose -f docker-compose.both.yaml up --build -d
+# or API in Docker, frontend over RPi CLI
+cd dashboard
+docker-compose up --build -d
+cd frontend
+pip install -r requirements.txt
+cp .env.example .env
+python index.py
+```
+
+ This will build up the backend API, as well as a Dash frontend Web App. Dash is using pandas, depending on your Raspberry Pi OS this installation it may run into issues, especially if running within the Docker container. You can then access the frontend over your browser at the RPi adress over your network or over http://127.0.0.1:8050 from the Pi. If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
 
 You can also set the second device up as a Wi-Fi hot-spot. This will give you the possibility to always connect to the dashboard, even if no connection to another home network or internet is available. For this, a very easy way is to use [RapsAp](https://raspap.com/).
 
@@ -333,10 +346,10 @@ You can also set the second device up as a Wi-Fi hot-spot. This will give you th
 Simply have `docker-compose` installed and run the command in the main folder for the cocktailmaker microservice or in the dashboard folder (on another device) for the dashboard service:
 
 ```
-docker-compose up -d
+docker-compose up --build -d
 ```
 
-This will handle the setup of all docker services. You will have to rename the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
+This will handle the setup of all docker services. You will have to rename the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully. If you are pulling for a later version, I recommend to run this command again, since the container may change in future version.
 
 ## Installing Docker
 
