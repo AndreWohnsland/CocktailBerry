@@ -1,0 +1,15 @@
+header_label:
+  en:
+    - 'Amount (today)'
+    - 'Volume (today)'
+    - 'Amount (all time)'
+    - 'Volume (all time)'
+  de:
+    - 'Anzahl (Heute)'
+    - 'Volumen (Heute)'
+    - 'Anzahl (Komplett)'
+    - 'Volumen (Komplett)'
+
+default_message:
+  en: 'Drink cocktails to start ...'
+  de: 'Cocktails trinken zum starten ...'

@@ -14,7 +14,7 @@ class Updater:
     """Class to get update from GitHub"""
 
     def __init__(self):
-        dirpath = Path(os.path.abspath(__file__)).parents[0]
+        dirpath = Path(__file__).parent.absolute()
         self.git_path = dirpath.parents[0]
         self.repo = Repo(self.git_path)
 
@@ -31,6 +31,7 @@ class Updater:
             return
         # restart the programm, this will not work if executed over IDE
         print("Restarting the application!")
+        logger.log_event("INFO", "Restarting program to reload updated code")
         os.execl(sys.executable, self.git_path / "runme.py", *sys.argv)
 
     def check_for_updates(self) -> bool:

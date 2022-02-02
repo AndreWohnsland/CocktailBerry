@@ -1,3 +1,4 @@
+import datetime
 import traceback
 import sys
 from itertools import cycle
@@ -6,7 +7,7 @@ import matplotlib
 from mainwindow import Ui_Leaderboard
 
 from PyQt5.QtCore import Qt, QRunnable, pyqtSlot, QObject, pyqtSignal, QThreadPool
-from PyQt5.QtWidgets import QMainWindow, qApp
+from PyQt5.QtWidgets import QMainWindow
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from waffle import generate_figure
@@ -28,7 +29,8 @@ class Leaderboard(QMainWindow, Ui_Leaderboard):
 
         self.fig = generate_figure(self.curr_option)
         self.canvas = FigureCanvas(self.fig)
-        self.horizontalLayout.addWidget(self.canvas)
+        self.verticalLayout.addWidget(self.canvas)
+        self.time_label.setText(datetime.datetime.now().strftime('%H:%M'))
 
         # Spinning up a threadpool to constantly update
         self.threadpool = QThreadPool()
@@ -42,7 +44,8 @@ class Leaderboard(QMainWindow, Ui_Leaderboard):
             self.curr_option = next(self.options)
         self.fig = generate_figure(self.curr_option)
         self.canvas = FigureCanvas(self.fig)
-        self.horizontalLayout.addWidget(self.canvas)
+        self.verticalLayout.addWidget(self.canvas)
+        self.time_label.setText(datetime.datetime.now().strftime('%H:%M'))
         if not getnext:
             self.start_worker()
 

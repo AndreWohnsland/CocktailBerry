@@ -81,6 +81,10 @@ QProgressBar::chunk {
 
 #Labbruch {
 	color: rgb(239, 151, 0);
+}
+
+#time_label {
+	color: rgb(255, 255, 255);
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -126,6 +130,33 @@ a
 y</string>
       </property>
      </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QLabel" name="time_label">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>26</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Time</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

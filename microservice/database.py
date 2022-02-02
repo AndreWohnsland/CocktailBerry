@@ -1,17 +1,16 @@
-import os
 from pathlib import Path
 import sqlite3
 
 DATABASE_NAME = "failed_data"
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
+DIRPATH = Path(__file__).parent.absolute()
 
 
 class DatabaseHandler:
     """Handler Class for Connecting and querring Databases"""
 
     def __init__(self):
-        self.database_path = os.path.join(DIRPATH, f"{DATABASE_NAME}.db")
-        if not Path(self.database_path).exists():
+        self.database_path = DIRPATH / f"{DATABASE_NAME}.db"
+        if not self.database_path.exists():
             print("creating Database")
             self.create_tables()
         self.database = sqlite3.connect(self.database_path)

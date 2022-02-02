@@ -1,10 +1,13 @@
-import os
+from pathlib import Path
 from typing import List
+import typer
 import yaml
 
 from src.models import Ingredient
+from src import __version__
 
-CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "custom_config.yaml")
+
+CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
 
 
 class ConfigManager:
@@ -59,6 +62,8 @@ class ConfigManager:
             pass
 
     def sync_config_to_file(self):
+        """Writes the config attributes to the config file.
+        Is used to sync new properties into the file"""
         attributes = [a for a in dir(self) if not (a.startswith('__') or a.startswith('_') or a.startswith('sync'))]
         config = {}
         for attribute in attributes:
@@ -122,6 +127,13 @@ class Shared:
         self.old_ingredient: List[str] = []
         self.selected_team = "Nothing"
         self.handaddlist: List[Ingredient] = []
+
+
+def version_callback(value: bool):
+    if value:
+        typer.echo(f"Cocktail Maker Version: {__version__}. Created by Andre Wohnsland.")
+        typer.echo(r"For more information visit https://github.com/AndreWohnsland/Cocktailmaker_AW.")
+        raise typer.Exit()
 
 
 shared = Shared()

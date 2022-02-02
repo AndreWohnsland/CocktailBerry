@@ -8,23 +8,25 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_Cocktailmaker_AW&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_Cocktailmaker_AW)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/Cocktailmaker_AW?style=social)
 
+[![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
+
 <!-- ![Lines of code](https://img.shields.io/tokei/lines/github/AndreWohnsland/Cocktailmaker_AW) -->
 
-#### A Python and Qt Based App for a Cocktail Machine 🐍 + 🍸 = 🥳 <!-- omit in toc -->
+#### The Cocktailmaker is a Python and Qt based app for a cocktail machine. Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳  <!-- omit in toc -->
 
 ## Table of Contents <!-- omit in toc -->
 
 - [Overview](#overview)
+  - [tl;dr](#tldr)
   - [Features](#features)
   - [The Machine](#the-machine)
   - [Interface](#interface)
 - [Hardware](#hardware)
   - [Used Hardware in Showcase Maker](#used-hardware-in-showcase-maker)
   - [Used Hardware in Showcase Teams Dashboard](#used-hardware-in-showcase-teams-dashboard)
-- [Installing Requirements](#installing-requirements)
-  - [Minimal Requirements](#minimal-requirements)
+- [Installation](#installation)
+  - [Installing Requirements](#installing-requirements)
   - [Install PyQt5 on RaspberryPi](#install-pyqt5-on-raspberrypi)
-  - [Install PyQt5 on other Systems](#install-pyqt5-on-other-systems)
   - [Development on Non-Pi Hardware](#development-on-non-pi-hardware)
 - [Setting up the Maker](#setting-up-the-maker)
   - [Adding new Recipes or Ingredients](#adding-new-recipes-or-ingredients)
@@ -47,17 +49,18 @@
     - [Numpy Import Error at Matplotlib Import](#numpy-import-error-at-matplotlib-import)
     - [How to get the GUI Running on Startup](#how-to-get-the-gui-running-on-startup)
     - [The GUI on the RPi Looks Different from the Screenshots](#the-gui-on-the-rpi-looks-different-from-the-screenshots)
+    - [Some Python Things do not Work](#some-python-things-do-not-work)
 - [Development](#development)
   - [Pull Requests and Issues](#pull-requests-and-issues)
-- [Contributing Possibilities](#contributing-possibilities)
+  - [Contributing Possibilities](#contributing-possibilities)
 
 # Overview
 
-Welcome to the official documentation of my Cocktail Maker!
+Welcome to the official documentation of the **Cocktail Maker**!
 
-This app is used to control a cocktail machine and prepare easily cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
+This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients. Track and display cocktail data for different teams to even further increase the fun. Let's get started!
 
-tl;dr:
+## tl;dr
 
 <img src="docs/pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
 
@@ -143,39 +146,37 @@ The following components were used within the showcase for the Teams Dashboard:
 - 1x Micro SD-Card (16 Gb is enough)
 - 1x 5V Power supply for the Raspberry Pi
 
-# Installing Requirements
+# Installation
 
-## Minimal Requirements
+Here you will find all the requirements. Since it's a Python program, you should already have [Python](https://www.python.org/) installed. In addition, we will use [git](https://git-scm.com/) for getting this project and it's new versions from GitHub. To clone this project run:
 
-Disclaimer: since the adding of the new `requirements.txt` file, it should also be possible just to run `pip install -r requirements.txt` in the folder to get all requirements.
-
-```
-- Python >= 3.7
-- PyQt5, requests, pyyaml, GitPython
-- RaspberryPi 3 (older may work but are not tested)
+```bash
+git clone https://github.com/AndreWohnsland/Cocktailmaker_AW.git
+cd Cocktailmaker_AW
 ```
 
-It's worth mentioning that I optimized the UI for a touch display with a 800x480 resolution ([this is my display](https://www.amazon.de/gp/product/B071XT9Z7H/ref=ppx_yo_dt_b_asin_title_o05_s00?ie=UTF8&psc=1)). When in dev mode, the full screen is also limited to these dimensions. So usually you won't have any problems with the usual HD or uHD screens. But some screens (like my little 13' Laptop screen) don't show the proper fonts/UI placements. The interface should use your maximum screen size if devenvironment is not activated. If the devenvironment is activated, you can limit width and height to simulate your screen sizes. See [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values) for more information.
+## Installing Requirements
+The best way is to use the provided `requirements.txt` file. If Python is installed, just run: 
+
+```bash
+pip install -r requirements.txt
+``` 
+
+to get all requirements. Optionally, you can install the single needed dependenicies:
+
+- Python >= 3.7 and pip
+- PyQt5, requests, pyyaml, GitPython, typer
 
 ## Install PyQt5 on RaspberryPi
 
-You will need at least PyQt5 on your RaspberryPi. More information can be found at [riverbank](https://riverbankcomputing.com/software/pyqt/intro).\
-To install PyQt5 on your Pi run:
+The PyQt5 installation of pip will probably fail on your RaspberryPi. To install PyQt5 on your Pi run:
 
 ```
 sudo apt-get update
 sudo apt-get install qt5-default pyqt5-dev pyqt5-dev-tools
 ```
 
-## Install PyQt5 on other Systems
-
-If you want to run some testing on other systems, you can get PyQt5 [here](https://www.riverbankcomputing.com/software/pyqt/download5).\
-As long as you are using a supported version of Python, you can install PyQt5 from [PyPi](https://pypi.org/project/PyQt5/) by running:
-
-```bash
-pip install PyQt5 # if only python3 is installed
-pip3 install PyQt5 # if also python2 is installed
-```
+More information can be found at [riverbank](https://riverbankcomputing.com/software/pyqt/intro).
 
 ## Development on Non-Pi Hardware
 
@@ -185,9 +186,11 @@ When you are working on another hardware (for example on a Windows or macOS engi
 UI_DEVENVIRONMENT: true
 ```
 
-This includes the password (if needed/wanted), the configuration and physical connections of your hardware (like GPIO pin connection and pump volume), the names of the logger and restricted access to some tabs.
+It's worth mentioning that I optimized the UI for a touch display with a 800x480 or a 1024x800 resolution ([this is my display](https://www.amazon.de/gp/product/B071XT9Z7H/ref=ppx_yo_dt_b_asin_title_o05_s00?ie=UTF8&psc=1)). By default, the full screen is also limited to 800x480. So usually you won't have any problems with the usual HD or uHD screens. But some screens (like my little 13' Laptop screen) don't show the proper fonts/UI placements. You can change the application size with the according config settings, if you want to use a different screen size. See [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values) for more information.
 
 # Setting up the Maker
+
+The maker will work after installing all requirements, but you can make your own adjustments.
 
 ## Adding new Recipes or Ingredients
 
@@ -204,20 +207,20 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 - `UI_DEVENVIRONMENT` (_bool_): Boolean flag to enable some development features
 - `UI_PARTYMODE` (_bool_): En- or disables the recipe tab (to prevent user interaction)
 - `UI_MASTERPASSWORD` (_str_): String for password, Use numbers for build in numpad like '1234'
-- `UI_LANGUAGE` (_str_): 2 char code for the language, see [supported languages](#supported-languages) (version >= 1.3)
-- `UI_WIDTH` (_int_): Desired interface width, default is 800 (version >= 1.4)
-- `UI_HEIGHT` (_int_): Desired interface height, default is 480 (version >= 1.4)
+- `UI_LANGUAGE` (_str_): 2 char code for the language, see [supported languages](#supported-languages) (since **v1.3.0**)
+- `UI_WIDTH` (_int_): Desired interface width, default is 800 (since **v1.4.0**)
+- `UI_HEIGHT` (_int_): Desired interface height, default is 480 (since **v1.4.0**)
 - `PUMP_PINS` (_list[int]_): List of the RPi-Pins where each Pump is connected
 - `PUMP_VOLUMEFLOW` (_list[int]_): List of the according volume flow for each pump in ml/s
 - `MAKER_NUMBER_BOTTLES` (_int_): Number of supported/displayed bottles. Currently, the UI is build for up to ten bottles
 - `MAKER_SEARCH_UPDATES` (_bool_): Boolean flag to search for updates at program start
 - `MAKER_CLEAN_TIME` (_int_): Time the machine will execute the cleaning program
 - `MAKER_SLEEP_TIME` (_float_): Sleep interval between each UI refresh and check of conditions while generating a cocktail
-- `MICROSERVICE_ACTIVE` (_bool_): Boolean flag to post to microservice set up by docker (optional) (version >= 1.1)
-- `MICROSERVICE_BASE_URL` (_str_): Base URL for microservice (if default docker it is at http://127.0.0.1:5000) (optional)
-- `TEAMS_ACTIVE` (_bool_): Boolean flag to use teams feature (version >= 1.2) (optional)
-- `TEAM_BUTTON_NAMES` (_list[str]_): List of format ["Team1", "Team2"] (optional)
-- `TEAM_API_URL` (_str_): Endpoint of teams API, default used port by API is 8080 (optional)
+- `MICROSERVICE_ACTIVE` (_bool_): Boolean flag to post to microservice set up by docker (since **v1.1.0**) (*optional*)
+- `MICROSERVICE_BASE_URL` (_str_): Base URL for microservice (if default docker it is at http://127.0.0.1:5000) (*optional*)
+- `TEAMS_ACTIVE` (_bool_): Boolean flag to use teams feature (since **v1.2.0**) (*optional*)
+- `TEAM_BUTTON_NAMES` (_list[str]_): List of format ["Team1", "Team2"] (*optional*)
+- `TEAM_API_URL` (_str_): Endpoint of teams API, default used port by API is 8080 (*optional*)
 
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
 
@@ -227,7 +230,15 @@ The program will then evaluate which recipe meets all requirements to only show 
 
 ## Calibration of the Pumps
 
-You can use the provided `calibration/calibration.py` script to run a very simple overlay for pump adjustment. Within the file, you can define your used pins (`pinvector`) and the default volume flow provided by the manufacture (`volumeflow`) for the calibration. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps. In the end, you can adjust each pump volume flow by the factor:
+You can use the provided calibration program to run a very simple overlay for pump adjustment. To start the calibration program you simply add the `--calibration` or `-c` flag to the python run command:
+
+```bash
+python runme.py --calibration 
+# or just 
+python runme.py -c
+```
+
+This will start the calibration overlay. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps. In the end, you can adjust each pump volume flow by the factor:
 
 Vnew = Vold \* expectation/output
 
@@ -264,22 +275,27 @@ With this as your base set up, even if not using the optional ingredients, your 
 
 ## Updates
 
-With `version 1.5.0`, there is the option to enable the automatic search for updates at program start. The `MAKER_SEARCH_UPDATES` config can enable this feature. The maker will then check the GitHub repository for new releases and informs the user about it. If accepted, the maker will pull the latest version and restart the program afterwards. The migrator will also do any necessary steps to adjust local files, like the database to the latest release.
+With __version 1.5.0__, there is the option to enable the automatic search for updates at program start. The `MAKER_SEARCH_UPDATES` config can enable this feature. The maker will then check the GitHub repository for new releases and informs the user about it. If accepted, the maker will pull the latest version and restart the program afterwards. The migrator will also do any necessary steps to adjust local files, like the database to the latest release.
 
 # Supported Languages
 
-Version >= 1.3 includes multi-language support. You can change the language with the `UI_LANGUAGE` config option. Currently, supported languages are:
+__Version 1.3.0__ includes multi-language support. You can change the language with the `UI_LANGUAGE` config option. Currently, supported languages are:
 
-- German (`de`)
-- English (`en`)
+
+| Language | Config Code | Since Version | Maker | Dashboard |
+| :------: | :---------: | :-----------: | :---: | :-------: |
+| English  |    `en`     |     1.3.0     |   ✔️   |     ✔️     |
+|  German  |    `de`     |     1.3.0     |   ✔️   |     ✔️     |
 
 If you are interested in implementing your own native language, feel free to contact me or submit an according pull request.
 
 # Advanced Topics
 
+Here you can find some advanced features of the maker, which can you optionally use.
+
 ## Microservices
 
-As a further addition since `version 1.1`, there is the option to run a microservice within docker which handles some networking topics.
+As a further addition since __version 1.1.0__, there is the option to run a microservice within docker which handles some networking topics.
 Currently, this is limited to:
 
 - Posting the cocktail name, used volume and current time to a given webhook
@@ -289,13 +305,24 @@ The separation was made here that a service class within the cocktailmaker needs
 
 ## Dashboard with Teams
 
-With `version 1.2`, there is a team feature implemented into the maker. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device, can be specified within the config. The cocktailmaker will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leader board. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the API / the dashboard for easy display on another screen.
+With __version 1.2.0__, there is a team feature implemented into the maker. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device, can be specified within the config. The cocktailmaker will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leader board. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the API / the dashboard for easy display on another screen.
 
 <img src="docs/pictures/teams_ui.png" alt="Maker" width="600"/>
 
 <img src="docs/pictures/dashboard.png" alt="Maker" width="600"/>
 
-The recommended way is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before, you should install the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to set up docker-compose in general. The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](#supported-languages). Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language.
+The recommended way is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before, you should install the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to set up docker-compose in general. The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](#supported-languages). Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language.\
+**tl;dr**:
+
+```bash
+cd dashboard
+docker-compose up -d
+cd qt-app
+pip install -r requirements.txt
+cp .env.example .env
+python main.py
+```
+ 
 
 A second option is to use the `docker-compose.both.yaml` file with the docker-compose `--file` option. This will build up the backend API, as well as a Streamlit frontend Web App. Streamlit is using pyarrow, which the Raspberry Pi 3 (Armv7 Architecture) seems not be able to build without any tweaks. On other architectures (like x86) the container could be build without any problems. If these things confuse you, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
 
@@ -328,6 +355,8 @@ docker run hello-world
 ```
 
 # Troubleshooting
+
+If you run into any problems, check here first for a solution. If you don't find any, you can [open a ticket](https://github.com/AndreWohnsland/Cocktailmaker_AW/issues/new/choose)
 
 ## Problems while Running the Program
 
@@ -414,6 +443,10 @@ sudo chmod 755 /home/pi/launcher.sh
 
 I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources. Using the pi user will result in the shown interfaces at the cocktailmaker (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
 
+### Some Python Things do not Work
+
+Older Raspberry Pi OS version (older than _November 2021_) still deliver Python 2. Since Raspberry Pi OS Bullseye version (based on Debian 11) Python 3 is the default version if you type `python` or `pip`. Typing `python --version` or `pip --version` will show your version of Python. If it's still Python 2, consider upgrading your OS or check `python3 --version` and use the `pip3` as well as the `python3` command instead the usual ones.
+
 # Development
 
 For developers, there is [an additional section](docs/devnotes.md) with information available. See this docs for further information like the program schema or framework specific development problems.
@@ -422,7 +455,7 @@ For developers, there is [an additional section](docs/devnotes.md) with informat
 
 If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue. If you think there is a super important feature missing, open a feature request. It may be implemented in the future.
 
-# Contributing Possibilities
+## Contributing Possibilities
 
 To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md). Here is a general list of features or refacturing things, I may do in the future. With your help, these things come even faster!
 

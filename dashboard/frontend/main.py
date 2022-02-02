@@ -1,5 +1,6 @@
 import math
 import os
+from pathlib import Path
 import sqlite3
 import warnings
 import streamlit as st
@@ -20,9 +21,9 @@ warnings.filterwarnings("ignore", 'Starting a Matplotlib GUI outside of the main
 mpl.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
 
 DATABASE_NAME = "team"
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(DIRPATH, ".env"))
-database_path = os.path.join(DIRPATH, "storage", f"{DATABASE_NAME}.db")
+DIRPATH = Path(__file__).parent.absolute()
+load_dotenv(DIRPATH / ".env")
+database_path = DIRPATH / "storage" / f"{DATABASE_NAME}.db"
 
 
 def __choose_language(element: dict) -> str:

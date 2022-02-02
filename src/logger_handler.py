@@ -1,17 +1,17 @@
-import os
 import logging
+from pathlib import Path
 
-dirpath = os.path.dirname(os.path.abspath(__file__))
+DIRPATH = Path(__file__).parent.absolute()
 
 
 class LoggerHandler:
     """Handler class for generating logger and logging events"""
 
-    log_folder = os.path.join(dirpath, "..", "logs")
+    log_folder = DIRPATH.parent / "logs"
 
     def __init__(self, loggername: str, filename: str):
         self.loggername = loggername
-        self.path = os.path.join(LoggerHandler.log_folder, f"{filename}.log")
+        self.path = LoggerHandler.log_folder / f"{filename}.log"
 
         logger = logging.getLogger(loggername)
         logger.setLevel(logging.DEBUG)
@@ -33,9 +33,9 @@ class LoggerHandler:
         """Logs a message of given level formated as header"""
         self.log_event(level, self.template.format(f" {message} ",))
 
-    def log_start_program(self):
-        """Logs the start of the program"""
-        self.log_header("INFO", "Starting the program")
+    def log_start_program(self, program_type: str = "maker"):
+        """Logs the start of the program, optionally can define program type"""
+        self.log_header("INFO", f"Starting the {program_type} program")
 
     def log_exception(self, message: str):
         """Logs an exception with the given message"""

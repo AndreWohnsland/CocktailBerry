@@ -1,15 +1,17 @@
 # pylint: disable=too-few-public-methods
 import configparser
-import os
+import sys
+import subprocess
 from pathlib import Path
 from sqlite3 import OperationalError
 from typing import Union
 
 from src.logger_handler import LoggerHandler
 from src.database_commander import DatabaseHandler
+from src import __version__
 
-DIRPATH = Path(os.path.abspath(__file__)).parents[0]
-CONFIG_PATH = DIRPATH.parents[0] / ".version.ini"
+DIRPATH = Path(__file__).parent.absolute()
+CONFIG_PATH = DIRPATH.parent / ".version.ini"
 logger = LoggerHandler("migrator_module", "production_logs")
 
 
@@ -17,7 +19,7 @@ class Migrator:
     """Class to do all neccecary migration locally for new versions"""
 
     def __init__(self) -> None:
-        self.program_version = _Version("1.5.2")
+        self.program_version = _Version(__version__)
         self.config = configparser.ConfigParser()
         self.config.read(CONFIG_PATH)
         self.local_version = _Version(self.__get_local_version())
@@ -48,6 +50,13 @@ class Migrator:
             logger.log_event("INFO", "Making migrations for v1.5.0")
             self.__rename_database_to_english()
             self.__add_team_buffer_to_database()
+        if self.older_than_version("1.5.3"):
+            logger.log_event("INFO", "Making migrations for v1.5.3")
+            self.__install_typer()
+        self.__check_local_version_data()
+
+    def __check_local_version_data(self):
+        """Checks to update the local version data"""
         if self.older_than_version(self.program_version.version):
             self.__write_local_version()
         else:
@@ -102,6 +111,17 @@ class Migrator:
                 Payload TEXT NOT NULL);"""
         )
 
+    def __install_typer(self):
+        """Try to install typer over pip"""
+        logger.log_event("INFO", "Trying to install typer, it is needed since this version")
+        try:
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'typer'])
+            logger.log_event("INFO", "Successfully installed typer")
+        except subprocess.CalledProcessError as err:
+            logger.log_event("ERROR", "Could not install typer using pip. Please install it manually!")
+            logger.log_exception(err)
+            raise CouldNotMigrateException("1.5.3") from err
+
 
 class _Version:
     """Class to compare semantic version numbers"""
@@ -141,3 +161,11 @@ class _Version:
         if self.version is None:
             return "Version(not defined)"
         return f"Version({self.version})"
+
+
+class CouldNotMigrateException(Exception):
+    """Raised when there was an error with the migration"""
+
+    def __init__(self, version):
+        self.message = f"Error while migration to version: {version}"
+        super().__init__(self.message)

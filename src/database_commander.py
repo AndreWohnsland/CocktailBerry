@@ -1,5 +1,4 @@
 import datetime
-import os
 import shutil
 from pathlib import Path
 import sqlite3
@@ -8,7 +7,7 @@ from typing import List, Union
 from src.models import Cocktail, Ingredient
 
 DATABASE_NAME = "Cocktail_database"
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
+DIRPATH = Path(__file__).parent.absolute()
 
 
 class DatabaseCommander:
@@ -343,15 +342,15 @@ class DatabaseCommander:
 class DatabaseHandler:
     """Handler Class for Connecting and querring Databases"""
 
-    database_path = os.path.join(DIRPATH, "..", f"{DATABASE_NAME}.db")
-    database_path_default = os.path.join(DIRPATH, "..", f"{DATABASE_NAME}_default.db")
+    database_path = DIRPATH.parent / f"{DATABASE_NAME}.db"
+    database_path_default = DIRPATH.parent / f"{DATABASE_NAME}_default.db"
 
     def __init__(self):
         self.database_path = DatabaseHandler.database_path
-        if not Path(self.database_path_default).exists():
+        if not self.database_path_default.exists():
             print("creating Database")
             self.create_tables()
-        if not Path(self.database_path).exists():
+        if not self.database_path.exists():
             print("Copying default database for maker usage")
             self.copy_default_database()
         self.database = sqlite3.connect(self.database_path)

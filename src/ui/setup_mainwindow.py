@@ -1,7 +1,7 @@
 """Connects all the functions to the Buttons as well the Lists
 of the passed window. Also defines the Mode for controls.
 """
-import os
+from pathlib import Path
 from typing import Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QIntValidator
@@ -15,6 +15,7 @@ from src import bottles
 from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
+from src.rpi_controller import RPI_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
 
@@ -42,8 +43,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.logger_handler.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
-        self.icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                      "..", "ui_elements", "Cocktail-icon.png")
+        self.icon_path = str(Path(__file__).parents[1].absolute() / "ui_elements" / "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         # init the empty further screens
@@ -60,6 +60,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
+        RPI_CONTROLLER.initializing_pins()
         self.update_check()
 
     def update_check(self):
