@@ -3,6 +3,7 @@ import dash  # type: ignore
 from dash import dcc  # type: ignore
 from dash import html  # type: ignore
 
+from language import language
 import callbacks
 from app import app
 
@@ -14,10 +15,10 @@ app.layout = html.Div([
     html.Div(
         html.Div([
             html.Ul(
-                [html.Li(dcc.Link('Amount Today', href='/n_today')),
-                 html.Li(dcc.Link('Volume Today', href='/vol_today')),
-                 html.Li(dcc.Link('Amout All Time', href='/n_all')),
-                 html.Li(dcc.Link('Volume All Time', href='/vol_all'))]
+                [html.Li(dcc.Link(language.AMOUNT_TODAY, href='/n_today')),
+                 html.Li(dcc.Link(language.VOLUME_TODAY, href='/vol_today')),
+                 html.Li(dcc.Link(language.AMOUNT_ALL, href='/n_all')),
+                 html.Li(dcc.Link(language.VOLUME_ALL, href='/vol_all'))]
             ),
             html.Div("00:00", id="timeclock", className="clock")
         ], className="container"), className="navbar"),

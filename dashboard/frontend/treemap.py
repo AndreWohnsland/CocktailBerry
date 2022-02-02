@@ -1,41 +1,19 @@
 import json
 import os
 import warnings
-from pathlib import Path
-from typing import Dict, List, Union
-import yaml
 import requests
 import plotly.express as px
 import pandas as pd
-from dotenv import load_dotenv
+from language import language
 
 # something from plotly triggers pandas warnign
 warnings.filterwarnings("ignore")
 
 
-DIRPATH = Path(__file__).parent.absolute()
-load_dotenv(DIRPATH / ".env")
-
-# Getting the language file as dict
-LANGUAGE_FILE = DIRPATH / "language.yaml"
-with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
-    LANGUAGE_DATA: Dict = yaml.safe_load(stream)
-
-
-def __choose_language(element: dict, **kwargs) -> Union[str, List[str]]:
-    """Choose either the given language if exists, or english if not piping additional info into template"""
-    language = os.getenv("UI_LANGUAGE")
-    tmpl = element.get(language, element["en"])
-    # Return the list and not apply template!
-    if isinstance(tmpl, list):
-        return tmpl
-    return tmpl.format(**kwargs)
-
-
-HEADER = __choose_language(LANGUAGE_DATA["header_label"])
-DEFAULT_MESSAGE = __choose_language(LANGUAGE_DATA["default_message"])
-CALL_TO_ACTION = __choose_language(LANGUAGE_DATA["call_to_action"])
-DF_START = pd.DataFrame([(DEFAULT_MESSAGE, CALL_TO_ACTION, 1), ], columns=["Team", "Person", "Amount"])
+DF_START = pd.DataFrame(
+    [(language.DEFAULT_MESSAGE, language.CALL_TO_ACTION, 1), ],
+    columns=["Team", "Person", "Amount"]
+)
 
 
 def __give_team_number(df: pd.DataFrame):
