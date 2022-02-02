@@ -11,6 +11,8 @@ services:
       - backend
     volumes:
       - ./storage:/app/storage
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     environment:
       - EXECUTOR=docker
   backend:
@@ -21,3 +23,5 @@ services:
       - 8080:8080
     volumes:
       - ./storage:/app/storage
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
