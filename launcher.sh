@@ -6,6 +6,7 @@
 # This for qt-app (recommended way)
 # python3 /home/pi/Cocktailmaker_AW/dashboard/qt-app/main.py
 # This for Dash (WebApp, advanced way)
+# cd /home/pi/Cocktailmaker_AW/dashboard/frontend
 # gunicorn --workers=5 --threads=1 -b :8050 index:server 
 
 # launcher.sh for cocktailmaker

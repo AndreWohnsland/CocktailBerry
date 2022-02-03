@@ -322,7 +322,7 @@ cp .env.example .env
 python main.py
 ```
 
-A **second option** is to use either the `docker-compose.both.yaml` file with the docker-compose `--file` option, or to use the other provided frontent :
+A **second option** is to use either the `docker-compose.both.yaml` file with the docker-compose `--file` option, or to use the other provided frontend:
 
 ```bash
 # Either both in docker
@@ -337,7 +337,13 @@ cp .env.example .env
 python index.py
 ```
 
- This will build up the backend API, as well as a Dash frontend Web App. Dash is using pandas, depending on your Raspberry Pi OS this installation it may run into issues, especially if running within the Docker container. You can then access the frontend over your browser at the RPi adress over your network or over http://127.0.0.1:8050 from the Pi. If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
+This will build up the backend API, as well as a Dash frontend Web App. Dash is using pandas, depending on your Raspberry Pi OS this installation it may run into issues, especially if running within the Docker container. You can then access the frontend over your browser at the RPi adress over your network or over http://127.0.0.1:8050 from the Pi. If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
+
+In addition, if you want to automatically open the chromium browser on start, you can add the command to the autostart file:
+
+```bash
+echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
+```
 
 You can also set the second device up as a Wi-Fi hot-spot. This will give you the possibility to always connect to the dashboard, even if no connection to another home network or internet is available. For this, a very easy way is to use [RapsAp](https://raspap.com/).
 
