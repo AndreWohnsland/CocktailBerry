@@ -13,6 +13,7 @@ PyQt5 = "^5.15.6"
 requests = "^2.26.0"
 PyYAML = "^6.0"
 typer = "^0.4.0"
+pyfiglet = "^0.8.post1"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.2"
