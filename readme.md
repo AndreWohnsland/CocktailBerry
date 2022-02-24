@@ -204,25 +204,25 @@ All entered values are checked for reason and if something is wrong, an error me
 
 These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed. If any of the values got a wrong data type, a TypeError will be thrown with the message which one is wrong.
 
-| Value Name              |    Type     | Version | Description                                                                   | Optional |
-| :---------------------- | :---------: | :-----: | :---------------------------------------------------------------------------- | :------: |
-| `UI_DEVENVIRONMENT`     |   _bool_    |    -    | Boolean flag to enable some development features                              |    ❌     |
-| `UI_PARTYMODE`          |   _bool_    |    -    | En- or disables the recipe tab (to prevent user interaction)                  |    ❌     |
-| `UI_MASTERPASSWORD`     |    _str_    |    -    | String for password, Use numbers for build in numpad like '1234'              |    ❌     |
-| `UI_LANGUAGE`           |    _str_    | v1.3.0  | 2 char code for the language, see [supported languages](#supported-languages) |    ❌     |
-| `UI_WIDTH`              |    _int_    | v1.4.0  | Desired interface width, default is 800                                       |    ❌     |
-| `UI_HEIGHT`             |    _int_    | v1.4.0  | Desired interface height, default is 480                                      |    ❌     |
-| `PUMP_PINS`             | _list[int]_ |    -    | List of the RPi-Pins where each Pump is connected                             |    ❌     |
-| `PUMP_VOLUMEFLOW`       | _list[int]_ |    -    | List of the according volume flow for each pump in ml/s                       |    ❌     |
-| `MAKER_NUMBER_BOTTLES`  |    _int_    |    -    | Number of supported/displayed bottles. Can use up to ten bottles              |    ❌     |
-| `MAKER_SEARCH_UPDATES`  |   _bool_    | v1.5.0  | Boolean flag to search for updates at program start                           |    ❌     |
-| `MAKER_CLEAN_TIME`      |    _int_    |    -    | Time the machine will execute the cleaning program                            |    ❌     |
-| `MAKER_SLEEP_TIME`      |   _float_   |    -    | Sleep interval between each UI refresh while generating a cocktail            |    ❌     |
-| `MICROSERVICE_ACTIVE`   |   _bool_    | v1.1.0  | Boolean flag to post to microservice set up by docker                         |    ✔️     |
-| `MICROSERVICE_BASE_URL` |    _str_    | v1.1.0  | Base URL for microservice (if default docker it is at http://127.0.0.1:5000)  |    ✔️     |
-| `TEAMS_ACTIVE`          |   _bool_    | v1.2.0  | Boolean flag to use teams feature                                             |    ✔️     |
-| `TEAM_BUTTON_NAMES`     | _list[str]_ | v1.2.0  | List of format ["Team1", "Team2"]                                             |    ✔️     |
-| `TEAM_API_URL`          |    _str_    | v1.2.0  | Endpoint of teams API, default used port by API is 8080                       |    ✔️     |
+| Value Name              |    Type     | Description                                                                   | Optional |
+| :---------------------- | :---------: | :---------------------------------------------------------------------------- | :------: |
+| `UI_DEVENVIRONMENT`     |   _bool_    | Boolean flag to enable some development features                              |    ❌     |
+| `UI_PARTYMODE`          |   _bool_    | En- or disables the recipe tab (to prevent user interaction)                  |    ❌     |
+| `UI_MASTERPASSWORD`     |    _str_    | String for password, Use numbers for build in numpad like '1234'              |    ❌     |
+| `UI_LANGUAGE`           |    _str_    | 2 char code for the language, see [supported languages](#supported-languages) |    ❌     |
+| `UI_WIDTH`              |    _int_    | Desired interface width, default is 800                                       |    ❌     |
+| `UI_HEIGHT`             |    _int_    | Desired interface height, default is 480                                      |    ❌     |
+| `PUMP_PINS`             | _list[int]_ | List of the RPi-Pins where each Pump is connected                             |    ❌     |
+| `PUMP_VOLUMEFLOW`       | _list[int]_ | List of the according volume flow for each pump in ml/s                       |    ❌     |
+| `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of supported/displayed bottles. Can use up to ten bottles              |    ❌     |
+| `MAKER_SEARCH_UPDATES`  |   _bool_    | Boolean flag to search for updates at program start                           |    ❌     |
+| `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                            |    ❌     |
+| `MAKER_SLEEP_TIME`      |   _float_   | Sleep interval between each UI refresh while generating a cocktail            |    ❌     |
+| `MICROSERVICE_ACTIVE`   |   _bool_    | Boolean flag to post to microservice set up by docker                         |    ✔️     |
+| `MICROSERVICE_BASE_URL` |    _str_    | Base URL for microservice (if default docker it is at http://127.0.0.1:5000)  |    ✔️     |
+| `TEAMS_ACTIVE`          |   _bool_    | Boolean flag to use teams feature                                             |    ✔️     |
+| `TEAM_BUTTON_NAMES`     | _list[str]_ | List of format ["Team1", "Team2"]                                             |    ✔️     |
+| `TEAM_API_URL`          |    _str_    | Endpoint of teams API, default used port by API is 8080                       |    ✔️     |
 
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
 
