@@ -52,7 +52,11 @@ class Migrator:
             self.__add_team_buffer_to_database()
         if self.older_than_version("1.5.3"):
             logger.log_event("INFO", "Making migrations for v1.5.3")
-            self.__install_typer()
+            self.__install_pip_package("typer", "1.5.3")
+        # TODO: Keep it so until next release
+        # if self.older_than_version("1.6.0"):
+        #     logger.log_event("INFO", "Making migrations for v1.6.0")
+        #     self.__install_pip_package("pyfiglet", "1.6.0")
         self.__check_local_version_data()
 
     def __check_local_version_data(self):
@@ -111,16 +115,16 @@ class Migrator:
                 Payload TEXT NOT NULL);"""
         )
 
-    def __install_typer(self):
-        """Try to install typer over pip"""
-        logger.log_event("INFO", "Trying to install typer, it is needed since this version")
+    def __install_pip_package(self, packagename: str, version_to_migrate: str):
+        """Try to install a python package over pip"""
+        logger.log_event("INFO", f"Trying to install {packagename}, it is needed since this version")
         try:
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'typer'])
-            logger.log_event("INFO", "Successfully installed typer")
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', packagename])
+            logger.log_event("INFO", f"Successfully installed {packagename}")
         except subprocess.CalledProcessError as err:
-            logger.log_event("ERROR", "Could not install typer using pip. Please install it manually!")
+            logger.log_event("ERROR", f"Could not install {packagename} using pip. Please install it manually!")
             logger.log_exception(err)
-            raise CouldNotMigrateException("1.5.3") from err
+            raise CouldNotMigrateException(version_to_migrate) from err
 
 
 class _Version:
