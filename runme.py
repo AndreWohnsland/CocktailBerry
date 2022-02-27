@@ -22,8 +22,8 @@ cli = typer.Typer(add_completion=False)
 
 
 @logerror
-def run_cocktailmaker():
-    """Executes the cocktail maker"""
+def run_cocktailprogram():
+    """Executes the cocktail program"""
     c_manager = ConfigManager()
     c_manager.sync_config_to_file()
     app = QApplication(sys.argv)
@@ -37,8 +37,8 @@ def main(
     version: Optional[bool] = typer.Option(None, "--version", callback=version_callback, help="Show current version.")
 ):
     """
-    Starts the cocktail maker. Optional, can start the calibration program.
-    For more information visit https://github.com/AndreWohnsland/Cocktailmaker_AW.
+    Starts the cocktail program. Optional, can start the calibration program.
+    For more information visit https://github.com/AndreWohnsland/CocktailBerry.
     """
     figlet = Figlet()
     start_message = f"{PROJECT_NAME} Version {__version__}"
@@ -46,7 +46,7 @@ def main(
     print(start_message)
     if calibration:
         run_calibration()
-    run_cocktailmaker()
+    run_cocktailprogram()
 
 
 if __name__ == "__main__":

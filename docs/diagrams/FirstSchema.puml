@@ -27,7 +27,7 @@ HIDE_STEREOTYPE()
   Container(savehandler, "Save Handler", "python", "Class to export data from DB to csv", "python")
 
   Container(microservice, "Microservice", "python", "Flask API to call services to interact with the www", "docker")
-  System(webhook, "Webhooks", "External webhooks or endpoints to post data from the cocktailmaker to", "send_o")
+  System(webhook, "Webhooks", "External webhooks or endpoints to post data from the cocktailmachine to", "send_o")
 
   Container(dbhandler, "Database Handler", "Python", "Handles and executes all SQL logic and connection", "python")
   ContainerDb(db, "Database", "Sqllite", "Holds data for cocktails, bottles and ingredients", "sqllite")

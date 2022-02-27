@@ -16,17 +16,17 @@ def send_mail(file_name: str, file_to_send):
     context = ssl.create_default_context()
 
     mail_content = (
-        "Hello Cocktail Maker Owner,\n\n"
+        "Hello CocktailBerry Owner,\n\n"
         f"As you have activated the sending of the export data via email, here is the {file_name} :) \n\n"
         "Enjoy the data!\n"
-        "Your local Cocktail Maker"
+        "Your local CocktailBerry"
     )
 
     message = MIMEMultipart()
     message["From"] = sender_address
     message["To"] = receiver_address
     message["Cc"] = sender_address
-    message["Subject"] = f"Your Cocktail Maker Data: {file_name}"
+    message["Subject"] = f"Your CocktailBerry Data: {file_name}"
     message["Date"] = formatdate(localtime=True)
     message.attach(MIMEText(mail_content, "plain"))
 

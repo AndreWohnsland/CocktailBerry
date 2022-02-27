@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "Cocktailmaker"
+name = "CocktailBerry"
 version = "1.5.3"
-description = "A Python and Qt based App for a Cocktail Maker on a Raspberry Pi"
+description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi"
 authors = ["Andre Wohnsland <Andre_Wohnsland@web.de>"]
 readme = "readme.md"
 license = "MIT"

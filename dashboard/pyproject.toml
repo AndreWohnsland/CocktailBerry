@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "dashboard"
 version = "0.1.0"
-description = "Dasboard app for the Cocktailmaker"
+description = "Dasboard app for CocktailBerry"
 authors = ["Andre <Andre_Wohnsland@web.de>"]
 
 [tool.poetry.dependencies]
