@@ -9,11 +9,13 @@ import sys
 from typing import Optional
 import typer
 from PyQt5.QtWidgets import QApplication
+from pyfiglet import Figlet
 
 from src.error_handler import logerror
 from src.config_manager import ConfigManager, version_callback
 from src.ui.setup_mainwindow import MainScreen
 from src.calibration import run_calibration
+from src import __version__, PROJECT_NAME
 
 
 cli = typer.Typer(add_completion=False)
@@ -38,6 +40,10 @@ def main(
     Starts the cocktail maker. Optional, can start the calibration program.
     For more information visit https://github.com/AndreWohnsland/Cocktailmaker_AW.
     """
+    figlet = Figlet()
+    start_message = f"{PROJECT_NAME} Version {__version__}"
+    print(figlet.renderText(start_message))
+    print(start_message)
     if calibration:
         run_calibration()
     run_cocktailmaker()
