@@ -4,7 +4,7 @@ import typer
 import yaml
 
 from src.models import Ingredient
-from src import __version__
+from src import __version__, PROJECT_NAME
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
@@ -131,7 +131,7 @@ class Shared:
 
 def version_callback(value: bool):
     if value:
-        typer.echo(f"Cocktail Maker Version: {__version__}. Created by Andre Wohnsland.")
+        typer.echo(f"{PROJECT_NAME} Version {__version__}. Created by Andre Wohnsland.")
         typer.echo(r"For more information visit https://github.com/AndreWohnsland/Cocktailmaker_AW.")
         raise typer.Exit()
 
