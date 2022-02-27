@@ -200,7 +200,7 @@ QLineEdit
     border: 1px solid  rgb(97, 97, 97);
 }
 
-#LWMaker {
+#LWMaker, #LWZutaten, #LWRezepte {
     border: 1px solid  rgb(97, 97, 97);
 }
 
@@ -254,44 +254,47 @@ QLineEdit
 
 /* Moving List Widget here from the single objects */
 
- QScrollBar:vertical {
-     border: 1px solid rgb(97, 97, 97);
-     background: rgb(0, 0, 0);
-     width: 30px;
-     margin: 31px 0 31px 0;
- }
- QScrollBar::handle:vertical {
-     background: rgb(0, 0, 0);
- }
- QScrollBar::add-line:vertical {
-     border: 1px solid rgb(97, 97, 97);
-     background: rgb(0, 0, 0);
-     height: 30px;
-     subcontrol-position: bottom;
-     subcontrol-origin: margin;
- }
 
- QScrollBar::sub-line:vertical {
-     border: 1px solid rgb(97, 97, 97);
-     background: rgb(0, 0, 0);
-     height: 30px;
-     subcontrol-position: top;
-     subcontrol-origin: margin;
- }
+QScrollBar:vertical {
+	border: 1px solid rgb(97, 97, 97);
+    background: rgb(97, 97, 97);
+    width: 30px;
+    margin: 31px 0 31px 0;
+}
 
+QScrollBar::handle:vertical {
+	background: rgb(0, 0, 0);
+}
+
+QScrollBar::add-line:vertical {
+	border: 1px solid rgb(97, 97, 97);
+    background: rgb(0, 0, 0);
+    height: 30px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+	border: 1px solid rgb(97, 97, 97);
+    background: rgb(0, 0, 0);
+    height: 30px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
 
 QScrollBar::down-arrow:vertical,  QScrollBar::up-arrow:vertical {
-    width: 20px;
-    height: 20px;
- }
+	width: 20px;
+	height: 20px;
+}
 
 QScrollBar::down-arrow:vertical {
-   	 image: url(./src/ui_elements/down.png);
- }
+	image: url(./src/ui_elements/down.png);
+}
 
- QScrollBar::up-arrow:vertical {
-   	 image: url(./src/ui_elements/up.png);
- }</string>
+QScrollBar::up-arrow:vertical {
+	image: url(./src/ui_elements/up.png);
+}
+</string>
   </property>
   <property name="documentMode">
    <bool>false</bool>
