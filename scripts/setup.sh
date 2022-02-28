@@ -13,27 +13,27 @@ touch ~/launcher.sh
 sudo chmod +x ~/launcher.sh
 
 # using desktop file for autostart
-cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
+sudo cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
 
 cd ~/CocktailBerry/
 # Making neccecary steps for the according program
 if [ "$1" = "dashboard" ]; then
   echo "Setting up Dashboard"
-  echo "cd ~/CocktailBerry/dashboard/frontend" > ~/launcher.sh
-  echo "gunicorn --workers=5 --threads=1 -b :8050 index:server" > ~/launcher.sh
+  echo "cd ~/CocktailBerry/dashboard/frontend" >> ~/launcher.sh
+  echo "gunicorn --workers=5 --threads=1 -b :8050 index:server" >> ~/launcher.sh
   cd dashboard/
   cp frontend/.env.example frontend/.env
   cp qt-app/.env.example qt-app/.env
-  docker-compose up --build -d || echo "Could not install backend over docker-compose, is docker installed?"
+  docker-compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?"
   cd frontend/
   pip3 install -r requirements.txt
   echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
 else
   echo "Setting up CocktailBerry"
-  echo "cd ~/CocktailBerry/" > ~/launcher.sh
-  echo "python3 runme.py" > ~/launcher.sh
+  echo "cd ~/CocktailBerry/" >> ~/launcher.sh
+  echo "python3 runme.py" >> ~/launcher.sh
   pip3 install requests pyyaml GitPython typer pyfiglet
-  pip3 install PyQt5 || sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "Could not install PyQt5"
+  sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   cp microservice/.env.example microservice/.env
   echo -n  "Also install microservice (y/n)? This needs docker installed - you can also install it later with docker-compose. "
   read answer
