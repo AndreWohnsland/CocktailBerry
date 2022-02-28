@@ -1,3 +1,12 @@
+--------------- 2022_02_28 ---------------------------------------------------------------------------------------------------------
+- Added scripts folder to hold the individual scripts
+- Added scripts for docker installation and machine setups
+- Prettified the UI, fixes scrollbars and listviews missing elements
+- Changed naming for the project name
+- Added new Frontend based on Dash for a webserver dashboard
+- Cleanup for dashboard code
+- Added welcoming message with version and name
+
 --------------- 2022_01_27 ---------------------------------------------------------------------------------------------------------
 - Refactored RPi init and make_cocktail to also work outside the maker e.g. the calibration module
 - Calibration module now using RPi module logic
