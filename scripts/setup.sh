@@ -19,15 +19,24 @@ cd ~/CocktailBerry/
 # Making neccecary steps for the according program
 if [ "$1" = "dashboard" ]; then
   echo "Setting up Dashboard"
-  echo "cd ~/CocktailBerry/dashboard/frontend" >> ~/launcher.sh
-  echo "gunicorn --workers=5 --threads=1 -b :8050 index:server" >> ~/launcher.sh
   cd dashboard/
   cp frontend/.env.example frontend/.env
   cp qt-app/.env.example qt-app/.env
   docker-compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?"
-  cd frontend/
+  # Letting user choose the frontend type (WebApp or Qt)
+  echo -n  "Using new dashboard (Dash WebApp), otherwise will use Qt-App (y/n)? "
+  read answer
+  if echo "$answer" | grep -iq "^y" ;then
+    echo "cd ~/CocktailBerry/dashboard/frontend/" >> ~/launcher.sh
+    echo "gunicorn --workers=5 --threads=1 -b :8050 index:server" >> ~/launcher.sh
+    echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
+    cd frontend/
+  else
+    echo "cd ~/CocktailBerry/dashboard/qt-app/" >> ~/launcher.sh
+    echo "python3 main.py" >> ~/launcher.sh
+    cd qt-app/
+  fi
   pip3 install -r requirements.txt
-  echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
 else
   echo "Setting up CocktailBerry"
   echo "cd ~/CocktailBerry/" >> ~/launcher.sh
@@ -39,6 +48,6 @@ else
   read answer
   if echo "$answer" | grep -iq "^y" ;then
       cd microservice/
-      docker-compose up --build -d || echo "Could not install microservice over docker-compose, is docker installed?"
+      docker-compose up --build -d || echo "ERROR: Could not install microservice over docker-compose, is docker installed?"
   fi
 fi
