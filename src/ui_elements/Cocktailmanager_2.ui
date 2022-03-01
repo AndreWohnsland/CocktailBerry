@@ -258,8 +258,8 @@ QLineEdit
 QScrollBar:vertical {
 	border: 1px solid rgb(97, 97, 97);
     background: rgb(97, 97, 97);
-    width: 30px;
-    margin: 31px 0 31px 0;
+    width: 35px;
+    margin: 36px 0 36px 0;
 }
 
 QScrollBar::handle:vertical {
@@ -269,7 +269,7 @@ QScrollBar::handle:vertical {
 QScrollBar::add-line:vertical {
 	border: 1px solid rgb(97, 97, 97);
     background: rgb(0, 0, 0);
-    height: 30px;
+    height: 35px;
     subcontrol-position: bottom;
     subcontrol-origin: margin;
 }
@@ -277,7 +277,7 @@ QScrollBar::add-line:vertical {
 QScrollBar::sub-line:vertical {
 	border: 1px solid rgb(97, 97, 97);
     background: rgb(0, 0, 0);
-    height: 30px;
+    height: 35px;
     subcontrol-position: top;
     subcontrol-origin: margin;
 }
@@ -868,13 +868,13 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="font">
                <font>
-                <pointsize>20</pointsize>
+                <pointsize>22</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
               <property name="text">
-               <string>-</string>
+               <string>–</string>
               </property>
              </widget>
             </item>
@@ -926,7 +926,7 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="font">
                <font>
-                <pointsize>20</pointsize>
+                <pointsize>22</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
@@ -1014,16 +1014,16 @@ QScrollBar::up-arrow:vertical {
                </font>
               </property>
               <property name="minimum">
-               <number>-20</number>
+               <number>-5</number>
               </property>
               <property name="maximum">
-               <number>20</number>
+               <number>5</number>
               </property>
               <property name="singleStep">
-               <number>2</number>
+               <number>1</number>
               </property>
               <property name="pageStep">
-               <number>2</number>
+               <number>1</number>
               </property>
               <property name="value">
                <number>0</number>
@@ -1033,6 +1033,9 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="tickPosition">
                <enum>QSlider::TicksBothSides</enum>
+              </property>
+              <property name="tickInterval">
+               <number>0</number>
               </property>
              </widget>
             </item>
