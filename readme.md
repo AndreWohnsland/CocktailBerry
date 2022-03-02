@@ -1,7 +1,5 @@
 <img src="docs/pictures/CocktailBerry.png" alt="CocktailBerry" width="750"/>
 
-<br/>
-
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/Cocktailmaker_AW)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/Cocktailmaker_AW)
 ![Python Version](https://img.shields.io/badge/python-%3E%3D%203.7-blue)
