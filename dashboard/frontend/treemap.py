@@ -56,7 +56,7 @@ def generate_treemap(df: pd.DataFrame):
     additional_config = {}
     if store.current_graph_type in [1, 2]:
         teamnames = sorted(df.Team.unique())
-        color_discrete_map = {x: y for (x, y) in zip(teamnames, pxcolors)}
+        color_discrete_map = dict(zip(teamnames, pxcolors))
         color_discrete_map["(?)"] = "darkgrey"
         additional_config = dict(color="Team", color_discrete_map=color_discrete_map)
     fig = px.treemap(df, path=[px.Constant("Teams"), 'Team', 'Person'], values='Amount', **additional_config)
