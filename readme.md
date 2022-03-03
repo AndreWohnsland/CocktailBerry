@@ -1,12 +1,12 @@
 <img src="docs/pictures/CocktailBerry.png" alt="CocktailBerry" width="750"/>
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/Cocktailmaker_AW)
-![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/Cocktailmaker_AW)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/CocktailBerry)
+![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/CocktailBerry)
 ![Python Version](https://img.shields.io/badge/python-%3E%3D%203.7-blue)
-![GitHub](https://img.shields.io/github/license/AndreWohnsland/Cocktailmaker_AW)
-![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/Cocktailmaker_AW)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_Cocktailmaker_AW&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_Cocktailmaker_AW)
-![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/Cocktailmaker_AW?style=social)
+![GitHub](https://img.shields.io/github/license/AndreWohnsland/CocktailBerry)
+![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/CocktailBerry)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_CocktailBerry&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_CocktailBerry)
+![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/CocktailBerry?style=social)
 
 [![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
