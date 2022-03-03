@@ -53,10 +53,10 @@ class Migrator:
         if self.older_than_version("1.5.3"):
             logger.log_event("INFO", "Making migrations for v1.5.3")
             self.__install_pip_package("typer", "1.5.3")
-        # TODO: Keep it so until next release
-        # if self.older_than_version("1.6.0"):
-        #     logger.log_event("INFO", "Making migrations for v1.6.0")
-        #     self.__install_pip_package("pyfiglet", "1.6.0")
+        if self.older_than_version("1.6.0"):
+            logger.log_event("INFO", "Making migrations for v1.6.0")
+            self.__change_git_repo()
+            self.__install_pip_package("pyfiglet", "1.6.0")
         self.__check_local_version_data()
 
     def __check_local_version_data(self):
@@ -114,6 +114,18 @@ class Migrator:
                 ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 Payload TEXT NOT NULL);"""
         )
+
+    def __change_git_repo(self):
+        """Sets the git source to the new named repo"""
+        logger.log_event("INFO", "Changing git origin to new repo name")
+        try:
+            subprocess.check_call(["git", "remote", "set-url", "origin",
+                                   "https://github.com/AndreWohnsland/CocktailBerry.git"])
+        except subprocess.CalledProcessError as err:
+            logger.log_event(
+                "ERROR", "Could not change origin. Check if you made any local file changes / use 'git restore .'!")
+            logger.log_exception(err)
+            raise CouldNotMigrateException("1.6.0") from err
 
     def __install_pip_package(self, packagename: str, version_to_migrate: str):
         """Try to install a python package over pip"""
