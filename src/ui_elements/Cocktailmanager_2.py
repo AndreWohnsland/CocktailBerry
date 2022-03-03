@@ -191,7 +191,7 @@ class Ui_MainWindow(object):
 "    border: 1px solid  rgb(97, 97, 97);\n"
 "}\n"
 "\n"
-"#LWMaker {\n"
+"#LWMaker, #LWZutaten, #LWRezepte {\n"
 "    border: 1px solid  rgb(97, 97, 97);\n"
 "}\n"
 "\n"
@@ -241,6 +241,49 @@ class Ui_MainWindow(object):
 "#LAlkoholgehalt, #LMenge {\n"
 "    padding-left: 10px;\n"
 "    padding-right: 10px;\n"
+"}\n"
+"\n"
+"/* Moving List Widget here from the single objects */\n"
+"\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    border: 1px solid rgb(97, 97, 97);\n"
+"    background: rgb(97, 97, 97);\n"
+"    width: 35px;\n"
+"    margin: 36px 0 36px 0;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: rgb(0, 0, 0);\n"
+"}\n"
+"\n"
+"QScrollBar::add-line:vertical {\n"
+"    border: 1px solid rgb(97, 97, 97);\n"
+"    background: rgb(0, 0, 0);\n"
+"    height: 35px;\n"
+"    subcontrol-position: bottom;\n"
+"    subcontrol-origin: margin;\n"
+"}\n"
+"\n"
+"QScrollBar::sub-line:vertical {\n"
+"    border: 1px solid rgb(97, 97, 97);\n"
+"    background: rgb(0, 0, 0);\n"
+"    height: 35px;\n"
+"    subcontrol-position: top;\n"
+"    subcontrol-origin: margin;\n"
+"}\n"
+"\n"
+"QScrollBar::down-arrow:vertical,  QScrollBar::up-arrow:vertical {\n"
+"    width: 20px;\n"
+"    height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::down-arrow:vertical {\n"
+"    image: url(./src/ui_elements/down.png);\n"
+"}\n"
+"\n"
+"QScrollBar::up-arrow:vertical {\n"
+"    image: url(./src/ui_elements/up.png);\n"
 "}\n"
 "")
         MainWindow.setDocumentMode(False)
@@ -489,7 +532,7 @@ class Ui_MainWindow(object):
         self.PBMminus.setMinimumSize(QtCore.QSize(60, 40))
         self.PBMminus.setMaximumSize(QtCore.QSize(100, 60))
         font = QtGui.QFont()
-        font.setPointSize(20)
+        font.setPointSize(22)
         font.setBold(True)
         font.setWeight(75)
         self.PBMminus.setFont(font)
@@ -511,7 +554,7 @@ class Ui_MainWindow(object):
         self.PBMplus.setMinimumSize(QtCore.QSize(60, 40))
         self.PBMplus.setMaximumSize(QtCore.QSize(100, 60))
         font = QtGui.QFont()
-        font.setPointSize(20)
+        font.setPointSize(22)
         font.setBold(True)
         font.setWeight(75)
         self.PBMplus.setFont(font)
@@ -548,13 +591,14 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.HSIntensity.setFont(font)
-        self.HSIntensity.setMinimum(-20)
-        self.HSIntensity.setMaximum(20)
-        self.HSIntensity.setSingleStep(2)
-        self.HSIntensity.setPageStep(2)
+        self.HSIntensity.setMinimum(-5)
+        self.HSIntensity.setMaximum(5)
+        self.HSIntensity.setSingleStep(1)
+        self.HSIntensity.setPageStep(1)
         self.HSIntensity.setProperty("value", 0)
         self.HSIntensity.setOrientation(QtCore.Qt.Horizontal)
         self.HSIntensity.setTickPosition(QtWidgets.QSlider.TicksBothSides)
+        self.HSIntensity.setTickInterval(0)
         self.HSIntensity.setObjectName("HSIntensity")
         self.horizontalLayout.addWidget(self.HSIntensity)
         self.gridLayout_4.addLayout(self.horizontalLayout, 4, 0, 1, 1)
@@ -563,42 +607,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWMaker.setFont(font)
-        self.LWMaker.setStyleSheet(" QScrollBar:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     width: 40px;\n"
-"     margin: 41px 0 41px 0;\n"
-" }\n"
-" QScrollBar::handle:vertical {\n"
-"     background: rgb(0, 0, 0);\n"
-"     min-width: 20px;\n"
-"     max-width: 100px;\n"
-" }\n"
-" QScrollBar::add-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 40px;\n"
-"     subcontrol-position: bottom;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"\n"
-" QScrollBar::sub-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 40px;\n"
-"     subcontrol-position: top;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"/*\n"
-" QScrollBar::sub-page:vertical {\n"
-"    height: 100px\n"
-"} */\n"
-"\n"
-" QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
-"        width: 12px;\n"
-"     height: 12px;\n"
-"     background: rgb(0, 123, 255);\n"
-" }")
+        self.LWMaker.setStyleSheet("")
         self.LWMaker.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWMaker.setTextElideMode(QtCore.Qt.ElideRight)
         self.LWMaker.setObjectName("LWMaker")
@@ -615,36 +624,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWZutaten.setFont(font)
-        self.LWZutaten.setStyleSheet(" QScrollBar:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     width: 30px;\n"
-"     margin: 31px 0 31px 0;\n"
-" }\n"
-" QScrollBar::handle:vertical {\n"
-"     background: rgb(0, 0, 0);\n"
-" }\n"
-" QScrollBar::add-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 30px;\n"
-"     subcontrol-position: bottom;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"\n"
-" QScrollBar::sub-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 30px;\n"
-"     subcontrol-position: top;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"\n"
-" QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
-"        width: 10px;\n"
-"     height: 10px;\n"
-"     background: rgb(0, 123, 255);\n"
-" }")
+        self.LWZutaten.setStyleSheet("")
         self.LWZutaten.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWZutaten.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
         self.LWZutaten.setObjectName("LWZutaten")
@@ -871,36 +851,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWRezepte.setFont(font)
-        self.LWRezepte.setStyleSheet(" QScrollBar:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     width: 30px;\n"
-"     margin: 31px 0 31px 0;\n"
-" }\n"
-" QScrollBar::handle:vertical {\n"
-"     background: rgb(0, 0, 0);\n"
-" }\n"
-" QScrollBar::add-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 30px;\n"
-"     subcontrol-position: bottom;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"\n"
-" QScrollBar::sub-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 30px;\n"
-"     subcontrol-position: top;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"\n"
-" QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
-"        width: 10px;\n"
-"     height: 10px;\n"
-"     background: rgb(0, 123, 255);\n"
-" }")
+        self.LWRezepte.setStyleSheet("")
         self.LWRezepte.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWRezepte.setObjectName("LWRezepte")
         self.horizontalLayout_3.addWidget(self.LWRezepte)
@@ -1111,6 +1062,7 @@ class Ui_MainWindow(object):
         self.CHBenabled.setMaximumSize(QtCore.QSize(16777215, 25))
         font = QtGui.QFont()
         font.setPointSize(14)
+        font.setStrikeOut(False)
         self.CHBenabled.setFont(font)
         self.CHBenabled.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.CHBenabled.setChecked(True)
@@ -1792,7 +1744,7 @@ class Ui_MainWindow(object):
         self.LZutat4.setText(_translate("MainWindow", "LZutat4"))
         self.LZutat3.setText(_translate("MainWindow", "LZutat3"))
         self.LZutat2.setText(_translate("MainWindow", "LZutat2"))
-        self.PBMminus.setText(_translate("MainWindow", "-"))
+        self.PBMminus.setText(_translate("MainWindow", "–"))
         self.LCustomMenge.setText(_translate("MainWindow", "200"))
         self.PBMplus.setText(_translate("MainWindow", "+"))
         self.PBZubereiten_custom.setText(_translate("MainWindow", "Zubereiten"))

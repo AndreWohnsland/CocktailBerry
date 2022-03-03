@@ -23,10 +23,10 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Python Version:
- - Cocktailmaker Version:
+**Versions (please complete the following information):**
+ - OS: [e.g. Rapsberry Pi OS Bullseye]
+ - Python Version: [run python --version or python3 --version]
+ - CocktailBerry Version: [run python runme.py --version]
 
 **Additional context**
 Add any other context about the problem here.

@@ -17,3 +17,19 @@ default_message:
 call_to_action:
   en: "Let's go!"
   de: 'Auf gehts!'
+
+amount_today:
+  en: 'Amount Today'
+  de: 'Anzahl Heute'
+
+volume_today:
+  en: 'Volume Today'
+  de: 'Menge Heute'
+
+amount_all:
+  en: 'Amout All Time'
+  de: 'Anzahl Komplett'
+
+volume_all:
+  en: 'Volume All Time'
+  de: 'Menge Komplett'

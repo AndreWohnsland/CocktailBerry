@@ -3,3 +3,4 @@ requests
 pyyaml
 GitPython
 typer
+pyfiglet

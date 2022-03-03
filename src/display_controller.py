@@ -44,7 +44,10 @@ class DisplayController(DialogHandler):
     def get_cocktail_data(self, w) -> Tuple[str, int, int]:
         """Returns [name, volume, factor] from maker"""
         cocktail_volume = int(w.LCustomMenge.text())
-        alcohol_faktor = 1 + (w.HSIntensity.value() / 100)
+        # when pulling, the slider can reach every integer value (eg, 1,2,...)
+        # but whe only want stepsize of *5 -> therefore it ranges from -5 to 5 but we
+        # multiply by *5 to get an effective range from -25 to 25 with a stepsize of 5
+        alcohol_faktor = 1 + (w.HSIntensity.value() * 5 / 100)
         cocktailname = ""
         if w.LWMaker.selectedItems():
             cocktailname = w.LWMaker.currentItem().text()

@@ -19,27 +19,28 @@ skinparam backgroundColor #fff
 
 HIDE_STEREOTYPE()
 
-  Container(configmanager, "Config Manager", "python", "Class to hold all configuration, used where needed for configs", "python")
-  Container(displaycontroller, "Display Controller", "python", "Class to get values from GUI", "python")
-  Container(dialoghandler, "Dialog Handler", "python", "Classes to manage the right language for displays", "python")
-  Container(rpicontroller, "RPI Controller", "python", "Class to controll the Raspberry Pi and the GPIOs", "python")
-  Container(apicontroller, "API Controller", "python", "Modules to handle logic for seperate views", "python")
-  Container(savehandler, "Save Handler", "python", "Class to export data from DB to csv", "python")
+Container(configmanager, "Config Manager", "python", "Class to hold all configuration, used where needed for configs", "python")
+Container(displaycontroller, "Display Controller", "python", "Class to get values from GUI", "python")
+Container(dialoghandler, "Dialog Handler", "python", "Classes to manage the right language for displays", "python")
+Container(rpicontroller, "RPI Controller", "python", "Class to controll the Raspberry Pi and the GPIOs", "python")
+Container(apicontroller, "API Controller", "python", "Modules to handle logic for seperate views", "python")
+Container(savehandler, "Save Handler", "python", "Class to export data from DB to csv", "python")
+Container(updater, "Updater / Migrator", "python", "Module to handle updates and local version adjustments", "python")
 
-  Container(microservice, "Microservice", "python", "Flask API to call services to interact with the www", "docker")
-  System(webhook, "Webhooks", "External webhooks or endpoints to post data from the cocktailmaker to", "send_o")
+Container(microservice, "Microservice", "python", "Flask API to call services to interact with the www", "docker")
+System(webhook, "Webhooks", "External webhooks or endpoints to post data from the cocktailmachine to", "send_o")
 
-  Container(dbhandler, "Database Handler", "Python", "Handles and executes all SQL logic and connection", "python")
-  ContainerDb(db, "Database", "Sqllite", "Holds data for cocktails, bottles and ingredients", "sqllite")
+Container(dbhandler, "Database Handler", "Python", "Handles and executes all SQL logic and connection", "python")
+ContainerDb(db, "Database", "Sqllite", "Holds data for cocktails, bottles and ingredients", "sqllite")
 
-  Container(mainwindow, "Mainwindow", "PyQt", "The main user interaction happens here", "python")
-  Container(dialogwindow, "Dialog windows", "PyQt", "User interaction popups for input / output", "python")
-  Container(progresscreen, "Progress Screen", "PyQt", "View for progress and interruption of cocktail", "python")
-  Person_Ext(user, "User", "Person who wants the exported data from the DB", "user")
-  System(email, "GMail", "Gmail account / service used as sender over smtp for the data", "send_o")
+Container(mainwindow, "Mainwindow", "PyQt", "The main user interaction happens here", "python")
+Container(dialogwindow, "Dialog windows", "PyQt", "User interaction popups for input / output", "python")
+Container(progresscreen, "Progress Screen", "PyQt", "View for progress and interruption of cocktail", "python")
+Person_Ext(user, "User", "Person who wants the exported data from the DB", "user")
+System(email, "GMail", "Gmail account / service used as sender over smtp for the data", "send_o")
 
-  Container(dashapi, "Dashboard API", "python", "FastAPI to get team Data for the leaderboard", "docker")
-  Container(dashfrontend, "Dashboard", "Streamlit/PyQt", "Python Streamlit Page or Qt-App to show leaderboard", "html5")
+Container(dashapi, "Dashboard API", "python", "FastAPI to get team Data for the leaderboard", "docker")
+Container(dashfrontend, "Dashboard", "Streamlit/PyQt", "Python Streamlit Page or Qt-App to show leaderboard", "html5")
 
 
 Rel(dbhandler, db, "Reads/Writes")
@@ -59,6 +60,7 @@ Rel(apicontroller, dialoghandler, "uses")
 Rel(apicontroller, dbhandler, "uses")
 Rel(apicontroller, rpicontroller, "calls")
 Rel(apicontroller, microservice, "post", "http")
+Rel_U(apicontroller, updater, "uses")
 
 Rel_L(apicontroller, dashapi, "post", "http")
 Rel(dashfrontend, dashapi, "uses", "http")

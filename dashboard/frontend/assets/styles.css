@@ -1,0 +1,56 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  background-color: rgb(14, 17, 23);
+}
+
+ul {
+  list-style-type: none;
+}
+
+.App {
+  max-height: 100vh;
+}
+
+.clock {
+  font-weight: 600;
+  font-size: 2.5rem;
+}
+
+.navbar {
+  background-color: rgb(14, 17, 23);
+  color: #fff;
+  height: 10vh;
+  padding: 0 20px 0 0;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+}
+
+.navbar ul {
+  display: flex;
+}
+
+.navbar ul li {
+  margin-left: 1rem;
+}
+
+.treemap {
+  height: 89vh;
+}
