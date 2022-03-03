@@ -19,6 +19,7 @@ PyQt5 = "^5.15.4"
 python-dotenv = "^0.19.2"
 PyYAML = "^6.0"
 plotly-express = "^0.4.1"
+dash = "^2.2.0"
 
 [tool.poetry.dev-dependencies]
 
