@@ -112,6 +112,8 @@ class Migrator:
         """Updates the bottles to support up to 16 bottles"""
         logger.log_event("INFO", "Adding bottle numbers 11 to 16 to DB")
         db_handler = DatabaseHandler()
+        # Adding constraint if still missing
+        db_handler.query_database("CREATE UNIQUE INDEX IF NOT EXISTS idx_bottle ON Bottles(Bottle)")
         for bottle_count in range(11, 17):
             db_handler.query_database("INSERT OR IGNORE INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
 
