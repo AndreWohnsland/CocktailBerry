@@ -7,6 +7,8 @@ from src.dialog_handler import DialogHandler, UI_LANGUAGE
 from src.models import Cocktail, Ingredient
 from src.config_manager import shared
 
+MAX_SUPPORTED_BOTTLES = 10
+
 
 class DisplayController(DialogHandler):
     """ Controler Class to get Values from the UI"""
@@ -462,8 +464,8 @@ class DisplayController(DialogHandler):
     def __choose_bottle_number(self, get_all):
         """Selects the number of Bottles in the bottles tab, all is ten"""
         if get_all:
-            return 10
-        return min(self.MAKER_NUMBER_BOTTLES, 10)
+            return MAX_SUPPORTED_BOTTLES
+        return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
 
     def get_numberlabel_bottles(self, w, get_all=False):
         """Returns all label object for the number of the bottle"""
@@ -472,10 +474,10 @@ class DisplayController(DialogHandler):
 
     def adjust_bottle_number_displayed(self, w):
         """Removes the UI elements if not all ten bottles are used per config"""
-        used_bottles = min(self.MAKER_NUMBER_BOTTLES, 10)
+        used_bottles = min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
         # This needs to be done to get rid of registered bottles in the then removed bottles
         all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
-        DB_COMMANDER.set_bottleorder(all_bottles[:used_bottles] + [""] * (10 - used_bottles))
+        DB_COMMANDER.set_bottleorder(all_bottles[:used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
         comboboxes_bottles = self.get_comboboxes_bottles(w, True)
         self.set_multiple_combobox_to_top_item(comboboxes_bottles[used_bottles::])
         to_adjust = [

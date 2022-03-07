@@ -1,13 +1,15 @@
 from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import Qt
 
 from src.ui_elements.bottlewindow import Ui_Bottlewindow
-from PyQt5.QtCore import Qt
 
 from src.config_manager import ConfigManager
 from src.bottles import set_fill_level_bars
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+
+MAX_SUPPORTED_BOTTLES = 10
 
 
 class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
@@ -54,7 +56,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
 
     def __choose_bottle_number(self):
         """Selects the number of Bottles in the bottles tab, all is ten"""
-        return min(self.MAKER_NUMBER_BOTTLES, 10)
+        return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
 
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """
