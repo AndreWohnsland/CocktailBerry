@@ -2,12 +2,14 @@ from pathlib import Path
 from typing import List
 import typer
 import yaml
+from src.logger_handler import LoggerHandler
 
 from src.models import Ingredient
 from src import __version__, PROJECT_NAME
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
+logger = LoggerHandler("config_manager", "production_logs")
 
 
 class ConfigManager:
@@ -116,6 +118,18 @@ class ConfigManager:
         for i, config in enumerate(configlist, 1):
             if not isinstance(config, datatype):
                 raise ValueError(f"The {i} position of {configname} is not of type {datatype}")
+        len_check = ["PUMP_PINS", "PUMP_VOLUMEFLOW"]
+        if configname in len_check:
+            self.__validate_list_length(configlist, configname)
+
+    def __validate_list_length(self, configlist, configname):
+        min_len = self.MAKER_NUMBER_BOTTLES
+        # limit the check to max 16 (supported) bottles
+        supported_bottle_count = 16
+        min_len = min(min_len, supported_bottle_count)
+        actual_len = len(configlist)
+        if actual_len < min_len:
+            raise ValueError(f"{configname} is only {actual_len} elements, but you need at least {min_len} elements")
 
 
 class Shared:
