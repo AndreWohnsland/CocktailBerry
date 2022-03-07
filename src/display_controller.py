@@ -7,7 +7,7 @@ from src.dialog_handler import DialogHandler, UI_LANGUAGE
 from src.models import Cocktail, Ingredient
 from src.config_manager import shared
 
-MAX_SUPPORTED_BOTTLES = 10
+MAX_SUPPORTED_BOTTLES = 16
 
 
 class DisplayController(DialogHandler):

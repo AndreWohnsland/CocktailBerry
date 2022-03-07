@@ -57,6 +57,9 @@ class Migrator:
             logger.log_event("INFO", "Making migrations for v1.6.0")
             self.__change_git_repo()
             self.__install_pip_package("pyfiglet", "1.6.0")
+        if self.older_than_version("1.6.1"):
+            logger.log_event("INFO", "Making migrations for v1.6.1")
+            self.__add_more_bottles_to_db()
         self.__check_local_version_data()
 
     def __check_local_version_data(self):
@@ -104,6 +107,13 @@ class Migrator:
             # this may occour if renaming already took place
             except OperationalError:
                 pass
+
+    def __add_more_bottles_to_db(self):
+        """Updates the bottles to support up to 16 bottles"""
+        logger.log_event("INFO", "Adding bottle numbers 11 to 16 to DB")
+        db_handler = DatabaseHandler()
+        for bottle_count in range(11, 17):
+            db_handler.query_database("INSERT OR IGNORE INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
 
     def __add_team_buffer_to_database(self):
         """Adds an additional table for buffering not send team data"""

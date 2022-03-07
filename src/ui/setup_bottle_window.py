@@ -9,7 +9,7 @@ from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 
-MAX_SUPPORTED_BOTTLES = 10
+MAX_SUPPORTED_BOTTLES = 16
 
 
 class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
@@ -33,10 +33,10 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
         self.asign_bottle_data()
         # creates lists of the objects and assings functions later through a loop
         number = self.__choose_bottle_number()
-        myplus = [getattr(self, f"PBMplus{x}") for x in range(1, 11)]
-        myminus = [getattr(self, f"PBMminus{x}") for x in range(1, 11)]
-        mylabel = [getattr(self, f"LAmount{x}") for x in range(1, 11)]
-        myname = [getattr(self, f"LName{x}") for x in range(1, 11)]
+        myplus = [getattr(self, f"PBMplus{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        myminus = [getattr(self, f"PBMminus{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        mylabel = [getattr(self, f"LAmount{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        myname = [getattr(self, f"LName{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
 
         #  since zip only goes to the minimal of all, only one [:number] is needed
         for plus, minus, field, vol in zip(myplus, myminus, mylabel[:number], self.maxvolume):
