@@ -106,7 +106,7 @@ class ConfigManager:
             if isinstance(configvalue, list):
                 self.__validate_config_list_type(configname, configvalue)
             return
-        raise ValueError(f"The config option {configname} is not of type {datatype}")
+        raise ConfigError(f"The config option {configname} is not of type {datatype}")
 
     def __validate_config_list_type(self, configname, configlist):
         config_type = {
@@ -117,7 +117,7 @@ class ConfigManager:
         datatype = config_type.get(configname)
         for i, config in enumerate(configlist, 1):
             if not isinstance(config, datatype):
-                raise ValueError(f"The {i} position of {configname} is not of type {datatype}")
+                raise ConfigError(f"The {i} position of {configname} is not of type {datatype}")
         len_check = ["PUMP_PINS", "PUMP_VOLUMEFLOW"]
         if configname in len_check:
             self.__validate_list_length(configlist, configname)
@@ -129,7 +129,7 @@ class ConfigManager:
         min_len = min(min_len, supported_bottle_count)
         actual_len = len(configlist)
         if actual_len < min_len:
-            raise ValueError(f"{configname} is only {actual_len} elements, but you need at least {min_len} elements")
+            raise ConfigError(f"{configname} is only {actual_len} elements, but you need at least {min_len} elements")
 
 
 class Shared:
@@ -141,6 +141,10 @@ class Shared:
         self.old_ingredient: List[str] = []
         self.selected_team = "Nothing"
         self.handaddlist: List[Ingredient] = []
+
+
+class ConfigError(Exception):
+    """Raised when there was an error with the configuration data"""
 
 
 def version_callback(value: bool):
