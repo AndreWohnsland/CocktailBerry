@@ -6,8 +6,7 @@ from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
 from src.models import Cocktail, Ingredient
 from src.config_manager import shared
-
-MAX_SUPPORTED_BOTTLES = 16
+from src import MAX_SUPPORTED_BOTTLES
 
 
 class DisplayController(DialogHandler):
@@ -423,17 +422,17 @@ class DisplayController(DialogHandler):
     # Migration from supporter.py
     def get_pushbottons_newbottle(self, w, get_all=False):
         """Returns all new bottles toggle button objects"""
-        number = self.__choose_bottle_number(get_all)
+        number = self._choose_bottle_number(get_all)
         return [getattr(w, f"PBneu{x}") for x in range(1, number + 1)]
 
     def get_levelbar_bottles(self, w, get_all=False):
         """Returns all bottles progress bar objects"""
-        number = self.__choose_bottle_number(get_all)
+        number = self._choose_bottle_number(get_all)
         return [getattr(w, f"ProBBelegung{x}") for x in range(1, number + 1)]
 
     def get_comboboxes_bottles(self, w, get_all=False):
         """Returns all bottles combo box objects"""
-        number = self.__choose_bottle_number(get_all)
+        number = self._choose_bottle_number(get_all)
         return [getattr(w, f"CBB{x}") for x in range(1, number + 1)]
 
     def get_comboboxes_recipes(self, w):
@@ -450,7 +449,7 @@ class DisplayController(DialogHandler):
 
     def get_label_bottles(self, w, get_all=False):
         """Returns all bottles label objects"""
-        number = self.__choose_bottle_number(get_all)
+        number = self._choose_bottle_number(get_all)
         return [getattr(w, f"LBelegung{x}") for x in range(1, number + 1)]
 
     def get_labels_maker_volume(self, w):
@@ -461,20 +460,14 @@ class DisplayController(DialogHandler):
         """Returns all maker label objects for ingredient name"""
         return [getattr(w, f"LZutat{x}") for x in range(1, 10)]
 
-    def __choose_bottle_number(self, get_all):
-        """Selects the number of Bottles in the bottles tab, all is ten"""
-        if get_all:
-            return MAX_SUPPORTED_BOTTLES
-        return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
-
     def get_numberlabel_bottles(self, w, get_all=False):
         """Returns all label object for the number of the bottle"""
-        number = self.__choose_bottle_number(get_all)
+        number = self._choose_bottle_number(get_all)
         return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]
 
     def adjust_bottle_number_displayed(self, w):
         """Removes the UI elements if not all ten bottles are used per config"""
-        used_bottles = min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
+        used_bottles = self._choose_bottle_number()
         # This needs to be done to get rid of registered bottles in the then removed bottles
         all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
         DB_COMMANDER.set_bottleorder(all_bottles[:used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
