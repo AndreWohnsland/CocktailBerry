@@ -1,13 +1,14 @@
 from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import Qt
 
 from src.ui_elements.bottlewindow import Ui_Bottlewindow
-from PyQt5.QtCore import Qt
 
 from src.config_manager import ConfigManager
 from src.bottles import set_fill_level_bars
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src import MAX_SUPPORTED_BOTTLES
 
 
 class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
@@ -30,11 +31,11 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
         self.maxvolume = []
         self.asign_bottle_data()
         # creates lists of the objects and assings functions later through a loop
-        number = self.__choose_bottle_number()
-        myplus = [getattr(self, f"PBMplus{x}") for x in range(1, 11)]
-        myminus = [getattr(self, f"PBMminus{x}") for x in range(1, 11)]
-        mylabel = [getattr(self, f"LAmount{x}") for x in range(1, 11)]
-        myname = [getattr(self, f"LName{x}") for x in range(1, 11)]
+        number = self._choose_bottle_number()
+        myplus = [getattr(self, f"PBMplus{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        myminus = [getattr(self, f"PBMminus{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        mylabel = [getattr(self, f"LAmount{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        myname = [getattr(self, f"LName{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
 
         #  since zip only goes to the minimal of all, only one [:number] is needed
         for plus, minus, field, vol in zip(myplus, myminus, mylabel[:number], self.maxvolume):
@@ -52,17 +53,13 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def __choose_bottle_number(self):
-        """Selects the number of Bottles in the bottles tab, all is ten"""
-        return min(self.MAKER_NUMBER_BOTTLES, 10)
-
     def abbrechen_clicked(self):
         """ Closes the Window without a change. """
         self.close()
 
     def eintragen_clicked(self):
         """ Enters the Data and closes the window. """
-        number = self.__choose_bottle_number()
+        number = self._choose_bottle_number()
         labelname = [getattr(self, f"LAmount{i}") for i in range(1, number + 1)]
         for label, ingredient_id, maxvolume in zip(labelname, self.id_list, self.maxvolume):
             new_amount = min(int(label.text()), maxvolume)
@@ -71,7 +68,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
         self.close()
 
     def asign_bottle_data(self):
-        number = self.__choose_bottle_number()
+        number = self._choose_bottle_number()
         bottle_data = DB_COMMANDER.get_bottle_data_bottle_window()[:number]
         for i, (ingredient_name, bottle_level, ingredient_id, ingredient_volume) in enumerate(bottle_data, start=1):
             labelobj = getattr(self, f"LName{i}")

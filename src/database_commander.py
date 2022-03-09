@@ -442,7 +442,7 @@ class DatabaseHandler:
 
         # Creating the Space Naming of the Bottles
         for bottle_count in range(1, 13):
-            self.cursor.execute("INSERT INTO Bottles(Bottle) VALUES (?)", (bottle_count))
+            self.cursor.execute("INSERT INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
         self.database.commit()
         self.database.close()
 

@@ -239,7 +239,7 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 | `UI_HEIGHT`             |    _int_    | Desired interface height, default is 480                                      |    ❌     |
 | `PUMP_PINS`             | _list[int]_ | List of the RPi-Pins where each Pump is connected                             |    ❌     |
 | `PUMP_VOLUMEFLOW`       | _list[int]_ | List of the according volume flow for each pump in ml/s                       |    ❌     |
-| `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of displayed bottles. Can use up to ten bottles                        |    ❌     |
+| `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of displayed bottles. Can use up to 16 bottles                         |    ❌     |
 | `MAKER_SEARCH_UPDATES`  |   _bool_    | Boolean flag to search for updates at program start                           |    ❌     |
 | `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                            |    ❌     |
 | `MAKER_SLEEP_TIME`      |   _float_   | Interval between each UI refresh while generating a cocktail                  |    ❌     |

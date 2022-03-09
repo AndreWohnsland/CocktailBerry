@@ -2,12 +2,14 @@ from pathlib import Path
 from typing import List
 import typer
 import yaml
+from src.logger_handler import LoggerHandler
 
 from src.models import Ingredient
-from src import __version__, PROJECT_NAME
+from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
+logger = LoggerHandler("config_manager", "production_logs")
 
 
 class ConfigManager:
@@ -72,6 +74,7 @@ class ConfigManager:
             yaml.dump(config, stream, default_flow_style=False)
 
     def __read_config(self):
+        """Reads all the config data from the file and validates it"""
         with open(CONFIG_FILE, "r", encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
             for k, value in configuration.items():
@@ -79,6 +82,7 @@ class ConfigManager:
                 setattr(self, k, value)
 
     def __validate_config_type(self, configname, configvalue):
+        """validates the configvalue if its fit the type / conditions"""
         config_type = {
             "UI_DEVENVIRONMENT": bool,
             "UI_PARTYMODE": bool,
@@ -104,18 +108,34 @@ class ConfigManager:
             if isinstance(configvalue, list):
                 self.__validate_config_list_type(configname, configvalue)
             return
-        raise ValueError(f"The config option {configname} is not of type {datatype}")
+        raise ConfigError(f"The config option {configname} is not of type {datatype}")
 
     def __validate_config_list_type(self, configname, configlist):
+        """Extra validation for list type in case len / types"""
+        min_bottles = self._choose_bottle_number()
         config_type = {
-            "PUMP_PINS": int,
-            "PUMP_VOLUMEFLOW": int,
-            "TEAM_BUTTON_NAMES": str,
+            "PUMP_PINS": (int, min_bottles),
+            "PUMP_VOLUMEFLOW": (int, min_bottles),
+            "TEAM_BUTTON_NAMES": (str, 2),
         }
-        datatype = config_type.get(configname)
+        datatype, min_len = config_type.get(configname)
         for i, config in enumerate(configlist, 1):
             if not isinstance(config, datatype):
-                raise ValueError(f"The {i} position of {configname} is not of type {datatype}")
+                raise ConfigError(f"The {i} position of {configname} is not of type {datatype}")
+        # aditional len check of the list data,
+        self.__validate_list_length(configlist, configname, min_len)
+
+    def __validate_list_length(self, configlist, configname, min_len):
+        """Checks if the list is at least a given size"""
+        actual_len = len(configlist)
+        if actual_len < min_len:
+            raise ConfigError(f"{configname} is only {actual_len} elements, but you need at least {min_len} elements")
+
+    def _choose_bottle_number(self, get_all=False):
+        """Selects the number of Bottles, limits by max supported count"""
+        if get_all:
+            return MAX_SUPPORTED_BOTTLES
+        return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
 
 
 class Shared:
@@ -127,6 +147,10 @@ class Shared:
         self.old_ingredient: List[str] = []
         self.selected_team = "Nothing"
         self.handaddlist: List[Ingredient] = []
+
+
+class ConfigError(Exception):
+    """Raised when there was an error with the configuration data"""
 
 
 def version_callback(value: bool):
