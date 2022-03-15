@@ -54,14 +54,14 @@ yourbutton.clicked.connect(some_function)
 
 Here are some todos, for now or later versions:
 
-- Add validation of countrycode and only use supported codes
-  - add supported codes paramter as a list to the src.init file
-- Add new config parameter for machine name
-  - Using `CocktailBerry (#RandomLongNumber)` as default (uuid?)
-  - Add validation of the length for the name, limit it by reasonable length (something like 30-50 chars?)
-- Review microservice and its features
-  - Email always is quite tricky, maybe get something more "working", or just remove it
-  - Review que logic for failed sending
-  - Add aditional logic for the new official endpoint + api key .env variable slot for example file
-  - Extend API for receiving as well as sending of language used and machine name
-  - Generally review this logic, maybe extend it to make it work with other custom endpoints using keys are other header auth features
+- [x] Add validation of countrycode and only use supported codes
+  - [x] add supported codes paramter as a list to the src.init file
+- [x] Add new config parameter for machine name
+  - [x] Using `CocktailBerry (#RandomLongNumber)` as default (uuid?)
+  - [x] Add validation of the length for the name, limit it by reasonable length (something like 30 chars?)
+- [ ] Review microservice and its features
+  - [ ] Email always is quite tricky, maybe get something more "working", or just remove it
+  - [x] Review que logic for failed sending
+  - [x] Add aditional logic for the new official endpoint + api key .env variable slot for example file
+  - [x] Extend API for receiving as well as sending of language used and machine name
+  - [x] Generally review this logic, maybe extend it to make it work with other custom endpoints using keys are other header auth features
