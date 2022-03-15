@@ -40,6 +40,8 @@ def post_cocktail_hook():
     cocktail = {
         "cocktailname": request.json["cocktailname"],
         "volume": request.json["volume"],
+        "machinename": request.json["machinename"],
+        "countrycode": request.json["countrycode"],
         "makedate": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
     }
     url = os.getenv("HOOK_ENDPOINT")
