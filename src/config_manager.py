@@ -1,3 +1,4 @@
+import random
 from pathlib import Path
 from typing import List
 import typer
@@ -5,7 +6,7 @@ import yaml
 from src.logger_handler import LoggerHandler
 
 from src.models import Ingredient
-from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES
+from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
@@ -33,6 +34,8 @@ class ConfigManager:
     PUMP_PINS = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
     # Volumeflow for the according pumps
     PUMP_VOLUMEFLOW = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
+    # Custom name of the Maker
+    MAKER_NAME = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
     MAKER_NUMBER_BOTTLES = 10
     # Time in seconds to execute clean programm
@@ -84,29 +87,34 @@ class ConfigManager:
     def __validate_config_type(self, configname, configvalue):
         """validates the configvalue if its fit the type / conditions"""
         config_type = {
-            "UI_DEVENVIRONMENT": bool,
-            "UI_PARTYMODE": bool,
-            "UI_MASTERPASSWORD": str,
-            "UI_LANGUAGE": str,
-            "UI_WIDTH": int,
-            "UI_HEIGHT": int,
-            "PUMP_PINS": list,
-            "PUMP_VOLUMEFLOW": list,
-            "MAKER_NUMBER_BOTTLES": int,
-            "MAKER_CLEAN_TIME": int,
-            "MAKER_SLEEP_TIME": float,
-            "MICROSERVICE_ACTIVE": bool,
-            "MICROSERVICE_BASE_URL": str,
-            "TEAMS_ACTIVE": bool,
-            "TEAM_BUTTON_NAMES": list,
-            "TEAM_API_URL": str,
+            "UI_DEVENVIRONMENT": (bool, []),
+            "UI_PARTYMODE": (bool, []),
+            "UI_MASTERPASSWORD": (str, []),
+            "UI_LANGUAGE": (str, [self.__validate_language_code]),
+            "UI_WIDTH": (int, []),
+            "UI_HEIGHT": (int, []),
+            "PUMP_PINS": (list, []),
+            "PUMP_VOLUMEFLOW": (list, []),
+            "MAKER_NAME": (str, [self.__validate_max_length]),
+            "MAKER_NUMBER_BOTTLES": (int, []),
+            "MAKER_CLEAN_TIME": (int, []),
+            "MAKER_SLEEP_TIME": (float, []),
+            "MAKER_SEARCH_UPDATES": (bool, []),
+            "MICROSERVICE_ACTIVE": (bool, []),
+            "MICROSERVICE_BASE_URL": (str, []),
+            "TEAMS_ACTIVE": (bool, []),
+            "TEAM_BUTTON_NAMES": (list, []),
+            "TEAM_API_URL": (str, []),
         }
-        datatype = config_type.get(configname)
-        if datatype is None:
+        config_setting = config_type.get(configname)
+        if config_setting is None:
             return
+        datatype, check_functions = config_setting
         if isinstance(configvalue, datatype):
             if isinstance(configvalue, list):
                 self.__validate_config_list_type(configname, configvalue)
+            for check_fun in check_functions:
+                check_fun(configname, configvalue)
             return
         raise ConfigError(f"The config option {configname} is not of type {datatype}")
 
@@ -130,6 +138,19 @@ class ConfigManager:
         actual_len = len(configlist)
         if actual_len < min_len:
             raise ConfigError(f"{configname} is only {actual_len} elements, but you need at least {min_len} elements")
+
+    def __validate_language_code(self, configname, countrycode):
+        """Checks if the defined language is available"""
+        if countrycode in SUPPORTED_LANGUAGES:
+            return
+        raise ConfigError(
+            f"The countrycode {countrycode} is not supported, please use any of {SUPPORTED_LANGUAGES} in {configname}")
+
+    def __validate_max_length(self, configname, data, max_len=30):
+        """Validates if data exceeds maximum length"""
+        if len(data) <= max_len:
+            return
+        raise ConfigError(f"{configname} is longer than {max_len}, please reduce length")
 
     def _choose_bottle_number(self, get_all=False):
         """Selects the number of Bottles, limits by max supported count"""
