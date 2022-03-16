@@ -110,6 +110,8 @@ class ConfigManager:
         if config_setting is None:
             return
         datatype, check_functions = config_setting
+        # check first if type fits, if list, also check listelements.
+        # Additionally run all check funktions provided
         if isinstance(configvalue, datatype):
             if isinstance(configvalue, list):
                 self.__validate_config_list_type(configname, configvalue)

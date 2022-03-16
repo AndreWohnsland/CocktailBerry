@@ -41,6 +41,7 @@ Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
 - [Advanced Topics](#advanced-topics)
   - [Usage of Services](#usage-of-services)
   - [Microservices](#microservices)
+    - [Posting Data to the Official API](#posting-data-to-the-official-api)
   - [Dashboard with Teams](#dashboard-with-teams)
   - [Installing Docker](#installing-docker)
 - [Troubleshooting](#troubleshooting)
@@ -239,7 +240,8 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 | `UI_HEIGHT`             |    _int_    | Desired interface height, default is 480                                      |    ❌     |
 | `PUMP_PINS`             | _list[int]_ | List of the RPi-Pins where each Pump is connected                             |    ❌     |
 | `PUMP_VOLUMEFLOW`       | _list[int]_ | List of the according volume flow for each pump in ml/s                       |    ❌     |
-| `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of displayed bottles. Can use up to 16 bottles                         |    ❌     |
+| `MAKER_NAME`            |    _str_    | Give your Cocktailberry a own name, max 30 chars                              |    ❌     |
+| `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of displayed bottles, can use up to 16 bottles                         |    ❌     |
 | `MAKER_SEARCH_UPDATES`  |   _bool_    | Boolean flag to search for updates at program start                           |    ❌     |
 | `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                            |    ❌     |
 | `MAKER_SLEEP_TIME`      |   _float_   | Interval between each UI refresh while generating a cocktail                  |    ❌     |
@@ -332,13 +334,18 @@ This will handle the setup of all docker services. You will have to copy the `.e
 
 ## Microservices
 
-As a further addition since __version 1.1.0__, there is the option to run a microservice within docker which handles some networking topics.
+As a further addition since __version 1.1.0__, there is the option to run a microservice within docker which handles some networking topics. Cocktail data currently includes cocktail name, produced volume, current time, used language in config and your machines name.
 Currently, this is limited to:
 
-- Posting the cocktail name, used volume and current time to a given webhook
+- Posting the cocktail data time to a given webhook
+- Posting the cocktail data to the official dashboard API (__v1.7.0__), see [detailed description](#posting-data-to-the-official-api)
 - Posting the export CSV as email to a receiver
 
 The separation was made here that a service class within CocktailBerry needs only to make a request to the microservice endpoint. Therefore, all logic is separated to the service, and there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithreading). In the future, new services can be added easily to the docker container to execute different tasks. One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktail-maker-now-with-home-assistant). The service will also temporary store the data within a database, if there was no connection to the endpoint, and try later again. This way, no data will get lost in the void.
+
+### Posting Data to the Official API
+
+When the microservice is active, you can use it not to only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) to submit your data. It will then appear on the [official dashboard](https://share.streamlit.io/andrewohnsland/cocktailberry-webapp/main/frontend/main.py). Don't worry, no private data is included, only some production data. A detailed write down [can be found on the dashboard site](https://share.streamlit.io/andrewohnsland/cocktailberry-webapp/main/frontend/main.py#how-to-participate) how you will receive your API key. You need to change the default `API_KEY` value in the `microservive/.env` file to the one you received after the submission. After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
 
 ## Dashboard with Teams
 
