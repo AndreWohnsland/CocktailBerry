@@ -54,14 +54,17 @@ yourbutton.clicked.connect(some_function)
 
 Here are some todos, for now or later versions:
 
-- [x] Add validation of countrycode and only use supported codes
-  - [x] add supported codes paramter as a list to the src.init file
-- [x] Add new config parameter for machine name
-  - [x] Using `CocktailBerry (#RandomLongNumber)` as default (uuid?)
-  - [x] Add validation of the length for the name, limit it by reasonable length (something like 30 chars?)
+- [ ] Extent RPi Controller API to be more generic for also other boards
+  - [ ] Introduce new config var to set board type
+  - [ ] Add list of supported board types to settings
+  - [ ] Check if setting is in list of supported types
+  - [ ] Refactor RPi to machine controller
+  - [ ] New board / pin controlller class for machine controller to inherit pin methods from
 - [ ] Review microservice and its features
   - [ ] Email always is quite tricky, maybe get something more "working", or just remove it
   - [x] Review que logic for failed sending
   - [x] Add aditional logic for the new official endpoint + api key .env variable slot for example file
   - [x] Extend API for receiving as well as sending of language used and machine name
-  - [x] Generally review this logic, maybe extend it to make it work with other custom endpoints using keys are other header auth features
+  - [ ] Generally review this logic, maybe extend it to make it work with other custom endpoints using keys are other header auth features
+    - [ ] Make it to work with any amount of urls / header things
+    - [x] Make it work with the official API
