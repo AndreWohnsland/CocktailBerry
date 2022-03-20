@@ -93,8 +93,8 @@ class ConfigManager:
             "UI_LANGUAGE": (str, [self.__validate_language_code]),
             "UI_WIDTH": (int, []),
             "UI_HEIGHT": (int, []),
-            "PUMP_PINS": (list, []),
-            "PUMP_VOLUMEFLOW": (list, []),
+            "PUMP_PINS": (list, [self.__validate_config_list_type]),
+            "PUMP_VOLUMEFLOW": (list, [self.__validate_config_list_type]),
             "MAKER_NAME": (str, [self.__validate_max_length]),
             "MAKER_NUMBER_BOTTLES": (int, []),
             "MAKER_CLEAN_TIME": (int, []),
@@ -103,7 +103,7 @@ class ConfigManager:
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
-            "TEAM_BUTTON_NAMES": (list, []),
+            "TEAM_BUTTON_NAMES": (list, [self.__validate_config_list_type]),
             "TEAM_API_URL": (str, []),
         }
         config_setting = config_type.get(configname)
@@ -113,8 +113,6 @@ class ConfigManager:
         # check first if type fits, if list, also check listelements.
         # Additionally run all check funktions provided
         if isinstance(configvalue, datatype):
-            if isinstance(configvalue, list):
-                self.__validate_config_list_type(configname, configvalue)
             for check_fun in check_functions:
                 check_fun(configname, configvalue)
             return
