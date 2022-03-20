@@ -31,6 +31,8 @@ def post_cocktail_hook():
         try:
             req = requests.post(url, data=payload, headers=headers)
             app.logger.info(f"{req.status_code}: Posted to {url} with payload: {payload}")
+            # Check if there is still querries data which was not send previously
+            try_send_querry_data(app)
         except requests.exceptions.ConnectionError:
             app.logger.error(f"Could not connect to {url} for the cocktail data!")
             db_handler = DatabaseHandler()
