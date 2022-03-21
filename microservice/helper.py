@@ -14,8 +14,8 @@ def generate_headers_and_urls() -> Tuple[Dict, List[str]]:
         "content-type": "application/json",
         "X-API-Key": api_key,
     }
-    use_hook = hookurl != DEFAULT_HOOK_EP
-    use_api = api_key != DEFAULT_API_KEY
+    use_hook = (hookurl != DEFAULT_HOOK_EP) and (hookurl is not None)
+    use_api = (api_key != DEFAULT_API_KEY) and (api_key is not None)
     urls = ([hookurl] if use_hook else []) + ([API_ENDPOINT] if use_api else [])
 
     return headers, urls
