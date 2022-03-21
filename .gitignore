@@ -6,6 +6,7 @@ venv
 *.csv
 __pycache__
 .env
+.env.dev
 .venv
 team.db
 Cocktail_database.db

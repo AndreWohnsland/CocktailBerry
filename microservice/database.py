@@ -1,5 +1,6 @@
 from pathlib import Path
 import sqlite3
+from typing import List
 
 DATABASE_NAME = "failed_data"
 DIRPATH = Path(__file__).parent.absolute()
@@ -15,12 +16,13 @@ class DatabaseHandler:
             self.create_tables()
         self.database = sqlite3.connect(self.database_path)
         self.cursor = self.database.cursor()
+        self.__add_url_to_db()
 
-    def save_failed_post(self, payload: str):
-        sql = "INSERT INTO Querry(Payload) VALUES(?)"
-        self.query_database(sql, (payload,))
+    def save_failed_post(self, payload: str, url: str):
+        sql = "INSERT INTO Querry(Payload, Url) VALUES(?,?)"
+        self.query_database(sql, (payload, url,))
 
-    def get_failed_data(self):
+    def get_failed_data(self) -> List[List]:
         sql = "SELECT * FROM Querry ORDER BY ID ASC"
         return self.query_database(sql)
 
@@ -43,7 +45,17 @@ class DatabaseHandler:
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS Querry(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                Payload TEXT NOT NULL);"""
+                Payload TEXT NOT NULL,
+                Url TEXT NOT NULL);"""
         )
         self.database.commit()
         self.database.close()
+
+    def __add_url_to_db(self):
+        """Adds the new column to the db"""
+        try:
+            self.cursor.execute("DELETE FROM Querry WHERE Url IS NULL")
+            self.cursor.execute("ALTER TABLE Querry ADD Url TEXT NOT NULL;")
+            self.database.commit()
+        except sqlite3.OperationalError:
+            pass

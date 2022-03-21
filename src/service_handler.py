@@ -27,7 +27,13 @@ class ServiceHandler(ConfigManager):
         if not self.MICROSERVICE_ACTIVE:
             return service_disabled()
         # calculate volume in litre
-        payload = json.dumps({"cocktailname": cocktailname, "volume": cocktail_volume / 1000})
+        data = {
+            "cocktailname": cocktailname,
+            "volume": cocktail_volume,
+            "machinename": self.MAKER_NAME,
+            "countrycode": self.UI_LANGUAGE,
+        }
+        payload = json.dumps(data)
         endpoint = f"{self.base_url}/hookhandler/cocktail"
         return self.__try_to_send(endpoint, Posttype.COCKTAIL, payload=payload)
 

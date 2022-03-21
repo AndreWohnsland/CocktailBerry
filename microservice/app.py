@@ -12,6 +12,7 @@ from flask import Flask, request, abort, jsonify
 from querry_sender import try_send_querry_data
 from email_sender import send_mail
 from database import DatabaseHandler
+from helper import generate_headers_and_urls
 
 load_dotenv()
 
@@ -29,25 +30,32 @@ def post_cocktail_hook():
     def post_to_hook(url: str, payload: str, headers: Dict):
         try:
             req = requests.post(url, data=payload, headers=headers)
-            app.logger.info(f"{req.status_code}: Posted to webhook with payload: {payload}")
+            app.logger.info(f"{req.status_code}: Posted to {url} with payload: {payload}")
+            # Check if there is still querries data which was not send previously
+            try_send_querry_data(app)
         except requests.exceptions.ConnectionError:
-            app.logger.error("Could not connect to the webhook for the cocktail!")
+            app.logger.error(f"Could not connect to {url} for the cocktail data!")
             db_handler = DatabaseHandler()
-            db_handler.save_failed_post(payload)
+            db_handler.save_failed_post(payload, url)
+        # pylint: disable=broad-except
+        except Exception as err:
+            app.logger.error(f"Some other error occured: {err}")
 
     if not request.json or not "cocktailname" in request.json:
         abort(400)
     cocktail = {
         "cocktailname": request.json["cocktailname"],
         "volume": request.json["volume"],
+        "machinename": request.json["machinename"],
+        "countrycode": request.json["countrycode"],
         "makedate": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
     }
-    url = os.getenv("HOOK_ENDPOINT")
-    headers = {"content-type": "application/json"}
+    headers, urls = generate_headers_and_urls()
     payload = json.dumps(cocktail)
 
-    thread = Thread(target=post_to_hook, args=(url, payload, headers,))
-    thread.start()
+    for url in urls:
+        thread = Thread(target=post_to_hook, args=(url, payload, headers,))
+        thread.start()
     return jsonify({"text": "Post to cocktail webhook started"}), 201
 
 

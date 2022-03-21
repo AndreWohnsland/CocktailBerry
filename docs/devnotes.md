@@ -8,6 +8,7 @@ This is an additional section for information, generally not relevant for the us
 - [Program Schema](#program-schema)
 - [PyQt](#pyqt)
   - [Button clicked.connect behaviour](#button-clickedconnect-behaviour)
+- [ToDos](#todos)
 
 
 # Python Version
@@ -47,3 +48,23 @@ yourbutton.clicked.connect(lambda: some_function())
 # and will call some_function(False)
 yourbutton.clicked.connect(some_function)
 ```
+
+
+# ToDos
+
+Here are some todos, for now or later versions:
+
+- [ ] Extent RPi Controller API to be more generic for also other boards
+  - [ ] Introduce new config var to set board type
+  - [ ] Add list of supported board types to settings
+  - [ ] Check if setting is in list of supported types
+  - [ ] Refactor RPi to machine controller
+  - [ ] New board / pin controlller class for machine controller to inherit pin methods from
+- [ ] Review microservice and its features
+  - [ ] Email always is quite tricky, maybe get something more "working", or just remove it
+  - [x] Review que logic for failed sending
+  - [x] Add aditional logic for the new official endpoint + api key .env variable slot for example file
+  - [x] Extend API for receiving as well as sending of language used and machine name
+  - [ ] Generally review this logic, maybe extend it to make it work with other custom endpoints using keys are other header auth features
+    - [ ] Make it to work with any amount of urls / header things
+    - [x] Make it work with the official API
