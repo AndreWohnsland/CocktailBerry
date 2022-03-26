@@ -50,6 +50,7 @@ class Migrator:
             logger.log_event("INFO", "Making migrations for v1.5.0")
             self.__rename_database_to_english()
             self.__add_team_buffer_to_database()
+            self.__install_pip_package("GitPython", "1.5.0")
         if self.older_than_version("1.5.3"):
             logger.log_event("INFO", "Making migrations for v1.5.3")
             self.__install_pip_package("typer", "1.5.3")
