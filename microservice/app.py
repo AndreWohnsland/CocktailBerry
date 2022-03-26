@@ -27,12 +27,14 @@ def welcome():
 
 @app.route("/hookhandler/cocktail", methods=["POST"])
 def post_cocktail_hook():
-    def post_to_hook(url: str, payload: str, headers: Dict):
+    def post_to_hook(url: str, payload: str, headers: Dict, send_querry: bool):
         try:
             req = requests.post(url, data=payload, headers=headers)
             app.logger.info(f"{req.status_code}: Posted to {url} with payload: {payload}")
             # Check if there is still querries data which was not send previously
-            try_send_querry_data(app)
+            # Needs to be specified to send, since multiple threads would cause double sending
+            if send_querry:
+                try_send_querry_data(app)
         except requests.exceptions.ConnectionError:
             app.logger.error(f"Could not connect to {url} for the cocktail data!")
             db_handler = DatabaseHandler()
@@ -53,8 +55,9 @@ def post_cocktail_hook():
     headers, urls = generate_headers_and_urls()
     payload = json.dumps(cocktail)
 
-    for url in urls:
-        thread = Thread(target=post_to_hook, args=(url, payload, headers,))
+    for pos, url in enumerate(urls):
+        send_querry = pos == 0
+        thread = Thread(target=post_to_hook, args=(url, payload, headers, send_querry,))
         thread.start()
     return jsonify({"text": "Post to cocktail webhook started"}), 201
 
