@@ -54,8 +54,8 @@ class DatabaseHandler:
     def __add_url_to_db(self):
         """Adds the new column to the db"""
         try:
+            self.cursor.execute("ALTER TABLE Querry ADD Url TEXT;")
             self.cursor.execute("DELETE FROM Querry WHERE Url IS NULL")
-            self.cursor.execute("ALTER TABLE Querry ADD Url TEXT NOT NULL;")
             self.database.commit()
         except sqlite3.OperationalError:
             pass
