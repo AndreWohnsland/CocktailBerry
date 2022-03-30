@@ -43,7 +43,7 @@ def post_cocktail_hook():
         except Exception as err:
             app.logger.error(f"Some other error occured: {err}")
 
-    if not request.json or not "cocktailname" in request.json:
+    if not request.json or "cocktailname" not in request.json:
         abort(400)
     cocktail = {
         "cocktailname": request.json["cocktailname"],
