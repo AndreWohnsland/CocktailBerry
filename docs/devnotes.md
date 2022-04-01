@@ -68,3 +68,6 @@ Here are some todos, for now or later versions:
   - [ ] Generally review this logic, maybe extend it to make it work with other custom endpoints using keys are other header auth features
     - [ ] Make it to work with any amount of urls / header things
     - [x] Make it work with the official API
+- [ ] Add progress bar to cleaning programm and possibility to cancel
+- [ ] Add config management into maker UI
+- [ ] Add restart / reboot control inot maker UI  
