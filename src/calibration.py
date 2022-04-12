@@ -7,7 +7,7 @@ from src.config_manager import ConfigManager
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.logger_handler import LoggerHandler
-from src.rpi_controller import MACHINE
+from src.machine.controller import MACHINE
 
 
 ui_file = Path(__file__).parent.absolute() / "ui_elements" / "Calibration.ui"

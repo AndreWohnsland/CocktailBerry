@@ -6,7 +6,7 @@ from functools import wraps
 from typing import Callable
 
 from src.logger_handler import LoggerHandler
-from src.rpi_controller import MACHINE
+from src.machine.controller import MACHINE
 
 
 def logerror(func: Callable):

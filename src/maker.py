@@ -9,7 +9,7 @@ from src import bottles
 from src.database_commander import DB_COMMANDER
 from src.error_handler import logerror
 from src.models import Cocktail
-from src.rpi_controller import MACHINE
+from src.machine.controller import MACHINE
 from src.display_controller import DP_CONTROLLER
 from src.service_handler import SERVICE_HANDLER
 from src.logger_handler import LoggerHandler

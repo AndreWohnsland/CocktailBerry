@@ -8,7 +8,7 @@ from src.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
-from src.rpi_controller import MACHINE
+from src.machine.controller import MACHINE
 from src.bottles import set_fill_level_bars
 from src.dialog_handler import UI_LANGUAGE
 

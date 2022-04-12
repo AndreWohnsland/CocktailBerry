@@ -8,7 +8,7 @@ from src.config_manager import shared
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
-from src.rpi_controller import MACHINE
+from src.machine.controller import MACHINE
 from src.logger_handler import LoggerHandler
 
 
