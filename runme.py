@@ -24,8 +24,6 @@ cli = typer.Typer(add_completion=False)
 @logerror
 def run_cocktailprogram():
     """Executes the cocktail program"""
-    c_manager = ConfigManager()
-    c_manager.sync_config_to_file()
     app = QApplication(sys.argv)
     MainScreen()
     sys.exit(app.exec_())
@@ -44,6 +42,8 @@ def main(
     start_message = f"{PROJECT_NAME} Version {__version__}"
     print(figlet.renderText(start_message))
     print(start_message)
+    c_manager = ConfigManager()
+    c_manager.sync_config_to_file()
     if calibration:
         run_calibration()
     run_cocktailprogram()
