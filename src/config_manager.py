@@ -44,6 +44,8 @@ class ConfigManager:
     MAKER_SLEEP_TIME = 0.05
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES = False
+    # Possibility to use different boards to controll Pins
+    MAKER_BOARD = "RPI"
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
