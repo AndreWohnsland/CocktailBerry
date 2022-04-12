@@ -41,6 +41,8 @@ def update_shown_recipe(w):
 
     DP_CONTROLLER.clear_recipe_data_maker(w)
     cocktail = DB_COMMANDER.get_cocktail(cocktailname)
+    if cocktail is None:
+        return
     cocktail.scale_cocktail(amount, factor)
     DP_CONTROLLER.fill_recipe_data_maker(w, cocktail, amount)
 
@@ -77,6 +79,8 @@ def prepare_cocktail(w):
 
     # Gets and scales cocktail, check if fill level is enough
     cocktail = DB_COMMANDER.get_cocktail(cocktailname)
+    if cocktail is None:
+        return
     cocktail.scale_cocktail(cocktail_volume, alcohol_faktor)
     error = cocktail.enough_fill_level()
     if error is not None:
