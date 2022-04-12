@@ -340,6 +340,7 @@ class DisplayController(DialogHandler):
         display_data = cocktail.get_machineadds()
         hand = cocktail.get_handadds()
         # when there is handadd, also build some additional data
+        # TODO: typing mixing here is probably not the best thing
         if hand:
             display_data.extend([""] + hand)
         fields_ingredient = self.get_labels_maker_ingredients(w)
