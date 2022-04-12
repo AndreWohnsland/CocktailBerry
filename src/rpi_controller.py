@@ -3,43 +3,43 @@ from typing import List
 from PyQt5.QtWidgets import qApp
 
 from src.config_manager import shared, ConfigManager
+from src.machine.interface import PinController
+from src.machine.raspberry import RpiController
 
 
-try:
-    # pylint: disable=import-error
-    from RPi import GPIO
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    DEV = False
-except ModuleNotFoundError:
-    DEV = True
-
-
-class RpiController(ConfigManager):
-    """Controler Class for all RPi related GPIO routines """
+class MachineController(ConfigManager):
+    """Controler Class for all Machine related Pin routines """
 
     def __init__(self):
         super().__init__()
-        self.devenvironment = DEV
+        self._pin_controller = self.__chose_controller()
+        self._set_up_pumps()
+
+    def __chose_controller(self) -> PinController:
+        """Selects the controller class for the Pin"""
+        if self.MAKER_BOARD == "RPI":
+            return RpiController()
+        # In case none is found, fall back to default (RPi)
+        return RpiController()
 
     def clean_pumps(self):
         """Clean the pumps for the defined time in the config.
         Acitvates all pumps for the given time
         """
         active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
-        t_cleaned = 0
-        self.header_print("Start Cleaning")
-        self.activate_pinlist(active_pins)
+        t_cleaned = 0.0
+        self._header_print("Start Cleaning")
+        self._open_pumps(active_pins)
         while t_cleaned < self.MAKER_CLEAN_TIME:
-            self.clean_print(t_cleaned)
+            self._clean_print(t_cleaned)
             t_cleaned += self.MAKER_SLEEP_TIME
             t_cleaned = round(t_cleaned, 2)
             time.sleep(self.MAKER_SLEEP_TIME)
             qApp.processEvents()
-        self.clean_print(self.MAKER_CLEAN_TIME)
+        self._clean_print(self.MAKER_CLEAN_TIME)
         print("")
-        self.close_pinlist(active_pins)
-        self.header_print("Done Cleaning")
+        self._close_pumps(active_pins)
+        self._header_print("Done Cleaning")
 
     def make_cocktail(self, w, bottle_list: List[int], volume_list: List[float], recipe="", is_cocktail=True):
         """RPI Logic to prepare the cocktail.
@@ -68,20 +68,21 @@ class RpiController(ConfigManager):
         volume_flows = [self.PUMP_VOLUMEFLOW[i] for i in indexes]
         pin_times = [round(volume / flow, 1) for volume, flow in zip(volume_list, volume_flows)]
         max_time = max(pin_times)
-        current_time = 0
-        consumption = [0] * len(indexes)
+        current_time = 0.0
+        consumption = [0.0] * len(indexes)
 
-        self.header_print(f"Starting {recipe}")
-        self.activate_pinlist(pins)
+        self._header_print(f"Starting {recipe}")
+        self._open_pumps(pins)
         while current_time < max_time and shared.make_cocktail:
             for element, (pin, pin_time, volume_flow) in enumerate(zip(pins, pin_times, volume_flows)):
                 if pin_time > current_time:
                     consumption[element] += volume_flow * self.MAKER_SLEEP_TIME
                 elif pin not in already_closed_pins:
-                    self.close_pin(pin, current_time, max_time)
+                    self._print_time(current_time, max_time)
+                    self._close_pumps([pin])
                     already_closed_pins.add(pin)
 
-            self.consumption_print(consumption, current_time, max_time)
+            self._consumption_print(consumption, current_time, max_time)
             current_time += self.MAKER_SLEEP_TIME
             current_time = round(current_time, 2)
             time.sleep(self.MAKER_SLEEP_TIME)
@@ -89,56 +90,53 @@ class RpiController(ConfigManager):
                 w.prow_change(current_time / max_time * 100)
             qApp.processEvents()
 
-        self.close_pinlist(pins)
+        self._close_pumps(pins)
         consumption = [round(x) for x in consumption]
         print("Total calculated consumption:", consumption)
-        self.header_print(f"Finished {recipe}")
+        self._header_print(f"Finished {recipe}")
         if w is not None:
             w.prow_close()
         return consumption, current_time, max_time
 
-    def close_pin(self, pin: int, current_time: float, max_time: float):
-        if not self.devenvironment:
-            GPIO.output(pin, 1)
-        print(f"{current_time:.1f}/{max_time:.1f} s:\tPin number <{pin}> is closed")
+    def _print_time(self, current_time: float, total_time: float):
+        """Prints the current passed time in relation to total time"""
+        print(f"{current_time:.1f}/{total_time:.1f} s:\t", end="")
 
-    def initializing_pins(self):
-        print(f"Devenvironment on the RPi module is {'on 'if self.devenvironment else 'off'}")
+    def _set_up_pumps(self):
+        """Gets all used pins, prints pins and uses controller class to set up"""
         active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
         print(f"Initializing Pins: {active_pins}")
-        if not self.devenvironment:
-            for pin in active_pins:
-                GPIO.setup(pin, 0)
-                GPIO.output(pin, 1)
+        self._pin_controller.initialize_pinlist(active_pins)
 
-    def activate_pinlist(self, pinlist: List[int]):
+    def _open_pumps(self, pinlist: List[int]):
+        """Informs and opens all given pins"""
         print(f"Opening Pins: {pinlist}")
-        if not self.devenvironment:
-            for pin in pinlist:
-                GPIO.output(pin, 0)
+        self._pin_controller.activate_pinlist(pinlist)
 
-    def close_all_pins(self):
+    def close_all_pumps(self):
         """Close all pins connected to the pumps"""
         active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
-        self.close_pinlist(active_pins)
+        self._close_pumps(active_pins)
 
-    def close_pinlist(self, pinlist: List[int]):
+    def _close_pumps(self, pinlist: List[int]):
+        """Informs and closes all given pins"""
         print(f"Closing Pins: {pinlist}")
-        if not self.devenvironment:
-            for pin in pinlist:
-                GPIO.output(pin, 1)
+        self._pin_controller.close_pinlist(pinlist)
 
-    def consumption_print(self, consumption: List[float], current_time: float, max_time: float, interval=1):
+    def _consumption_print(self, consumption: List[float], current_time: float, max_time: float, interval=1):
+        """Displays each interval seconds information for cocktail preparation"""
         if current_time % interval == 0:
             print(
                 f"{current_time:.1f}/{max_time:.1f} s:\tpreparing, consumption: {[round(x) for x in consumption]}")
 
-    def clean_print(self, t_cleaned: float, interval=0.5):
+    def _clean_print(self, t_cleaned: float, interval=0.5):
+        """Progress print for cleaning"""
         if t_cleaned % interval == 0:
             print(f"Cleaning, {t_cleaned:.1f}/{self.MAKER_CLEAN_TIME:.1f} s {'.' * int(t_cleaned*2)}", end="\r")
 
-    def header_print(self, msg: str):
+    def _header_print(self, msg: str):
+        """Formats the message with dashes around"""
         print(f"{' ' + msg + ' ':-^80}")
 
 
-RPI_CONTROLLER = RpiController()
+RPI_CONTROLLER = MachineController()

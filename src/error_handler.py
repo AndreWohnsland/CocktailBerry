@@ -27,6 +27,6 @@ def logerror(func: Callable):
             msg = f"The function {func.__name__} did run into an error at module: {module} function {fname} in row: {row}!"
             logger.log_exception(msg)
             print(msg)
-            RPI_CONTROLLER.close_all_pins()
+            RPI_CONTROLLER.close_all_pumps()
             raise
     return wrapper

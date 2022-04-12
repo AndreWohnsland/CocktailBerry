@@ -3,6 +3,7 @@ from typing import List
 
 
 class PinController(ABC):
+    """Interface to controll the pins"""
     @abstractmethod
     def initialize_pinlist(self, pinlist: List[int]):
         pass

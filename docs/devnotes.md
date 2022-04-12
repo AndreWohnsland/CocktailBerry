@@ -57,6 +57,7 @@ Here are some todos, for now or later versions:
 - [ ] Extent RPi Controller API to be more generic for also other boards
   - [ ] Introduce new config var to set board type
   - [ ] Add list of supported board types to settings
+  - [ ] Extend documentation for pin names / numbers
   - [ ] Check if setting is in list of supported types
   - [ ] Refactor RPi to machine controller
   - [ ] New board / pin controlller class for machine controller to inherit pin methods from
