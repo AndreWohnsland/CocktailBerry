@@ -24,13 +24,13 @@ class DialogHandler(ConfigManager):
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
-    def standard_box(self, message: str, title: str = None):
+    def standard_box(self, message: str, title: str = ""):
         """ The default messagebox for the Maker. Uses a Custom QDialog with Close-Button """
         # otherwise circular import :(
         # pylint: disable=import-outside-toplevel
         from src.ui.setup_custom_dialog import CustomDialog
         default_title = self.dialogs["box"]["title"]
-        if title is None:
+        if not title:
             title = self.__choose_language(default_title)
         fillstring = "-" * 70
         fancy_message = f"{fillstring}\n{message}\n{fillstring}"
@@ -175,14 +175,14 @@ class DialogHandler(ConfigManager):
         """Informs user that there is already an entry in the DB with that name"""
         self.__output_language_dialog(self.dialogs["name_already_exists"])
 
-    def say_some_value_missing(self, value: str = None):
+    def say_some_value_missing(self, value: Union[str, None] = None):
         """Informs user that he missed at least one value"""
         if value is None:
             self.__output_language_dialog(self.dialogs["some_value_missing"])
         else:
             self.__output_language_dialog(self.dialogs["some_value_missing_specific"], value=value)
 
-    def say_needs_to_be_int(self, value: str = None):
+    def say_needs_to_be_int(self, value: Union[str, None] = None):
         """Informs user that the given value is not a number"""
         if value is None:
             self.__output_language_dialog(self.dialogs["needs_to_be_int"])
