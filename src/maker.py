@@ -9,7 +9,7 @@ from src import bottles
 from src.database_commander import DB_COMMANDER
 from src.error_handler import logerror
 from src.models import Cocktail
-from src.rpi_controller import RPI_CONTROLLER
+from src.rpi_controller import MACHINE
 from src.display_controller import DP_CONTROLLER
 from src.service_handler import SERVICE_HANDLER
 from src.logger_handler import LoggerHandler
@@ -87,7 +87,7 @@ def prepare_cocktail(w):
     print(f"Preparing {cocktail_volume} ml {cocktailname}")
     ingredient_bottles = [x.bottle for x in cocktail.get_machineadds()]
     ingredient_volumes = [x.amount for x in cocktail.get_machineadds()]
-    consumption, taken_time, max_time = RPI_CONTROLLER.make_cocktail(
+    consumption, taken_time, max_time = MACHINE.make_cocktail(
         w, ingredient_bottles, ingredient_volumes, cocktailname)
     DB_COMMANDER.increment_recipe_counter(cocktailname)
     __generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)

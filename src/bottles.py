@@ -8,7 +8,7 @@ from src.config_manager import shared
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
-from src.rpi_controller import RPI_CONTROLLER
+from src.rpi_controller import MACHINE
 from src.logger_handler import LoggerHandler
 
 
@@ -117,5 +117,5 @@ def clean_machine(w):
 
     DP_CONTROLLER.say_supply_water()
     LOG_HANDLER.log_header("INFO", "Cleaning the Pumps")
-    RPI_CONTROLLER.clean_pumps()
+    MACHINE.clean_pumps()
     DP_CONTROLLER.say_done()

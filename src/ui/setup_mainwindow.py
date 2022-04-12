@@ -15,7 +15,6 @@ from src import bottles
 from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
-from src.rpi_controller import RPI_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
 
@@ -60,7 +59,6 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
-        RPI_CONTROLLER.initializing_pins()
         self.update_check()
 
     def update_check(self):

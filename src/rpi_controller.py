@@ -139,4 +139,4 @@ class MachineController(ConfigManager):
         print(f"{' ' + msg + ' ':-^80}")
 
 
-RPI_CONTROLLER = MachineController()
+MACHINE = MachineController()
