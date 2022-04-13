@@ -31,9 +31,9 @@ class Migrator:
             local_version = None
         return local_version
 
-    def older_than_version(self, version: str) -> bool:
+    def older_than_version(self, version: Union[str, None]) -> bool:
         """Checks if the current version is below the given version"""
-        return self.local_version < _Version(version)
+        return _Version(version) > self.local_version
 
     def __write_local_version(self):
         """Writes the latest version to the local version"""
