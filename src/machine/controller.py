@@ -62,18 +62,19 @@ class MachineController(ConfigManager):
         shared.make_cocktail = True
         if w is not None:
             w.progressionqwindow(recipe)
-        already_closed_pins = set()
         indexes = [x - 1 for x in bottle_list]
         pins = [self.PUMP_PINS[i] for i in indexes]
         volume_flows = [self.PUMP_VOLUMEFLOW[i] for i in indexes]
         pin_times = [round(volume / flow, 1) for volume, flow in zip(volume_list, volume_flows)]
         max_time = max(pin_times)
-        current_time = 0.0
-        consumption = [0.0] * len(indexes)
-
+        # Starting Making cocktail
         self._header_print(f"Starting {recipe}")
         self._open_pumps(pins)
+        already_closed_pins = set()
+        current_time = 0.0
+        consumption = [0.0] * len(indexes)
         while current_time < max_time and shared.make_cocktail:
+            # Iterate over each Pin and keep needed state
             for element, (pin, pin_time, volume_flow) in enumerate(zip(pins, pin_times, volume_flows)):
                 if pin_time > current_time:
                     consumption[element] += volume_flow * self.MAKER_SLEEP_TIME
@@ -81,7 +82,7 @@ class MachineController(ConfigManager):
                     self._print_time(current_time, max_time)
                     self._close_pumps([pin])
                     already_closed_pins.add(pin)
-
+            # Adjust needed data
             self._consumption_print(consumption, current_time, max_time)
             current_time += self.MAKER_SLEEP_TIME
             current_time = round(current_time, 2)
@@ -126,8 +127,8 @@ class MachineController(ConfigManager):
     def _consumption_print(self, consumption: List[float], current_time: float, max_time: float, interval=1):
         """Displays each interval seconds information for cocktail preparation"""
         if current_time % interval == 0:
-            print(
-                f"{current_time:.1f}/{max_time:.1f} s:\tpreparing, consumption: {[round(x) for x in consumption]}")
+            pretty_consumption = [round(x) for x in consumption]
+            print(f"{current_time:.1f}/{max_time:.1f} s:\tpreparing, consumption: {pretty_consumption}")
 
     def _clean_print(self, t_cleaned: float, interval=0.5):
         """Progress print for cleaning"""
