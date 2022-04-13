@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from src.ui_elements.bottlewindow import Ui_Bottlewindow
 
 from src.config_manager import ConfigManager
-from src.bottles import set_fill_level_bars
+from src.tabs.bottles import set_fill_level_bars
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER

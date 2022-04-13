@@ -8,10 +8,7 @@ from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
 from src.config_manager import ConfigManager
-from src import maker
-from src import ingredients
-from src import recipes
-from src import bottles
+from src.tabs import maker, ingredients, recipes, bottles
 from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE

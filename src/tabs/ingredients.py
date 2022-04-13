@@ -3,7 +3,7 @@
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
-from src import bottles
+from src.tabs import bottles
 
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER

@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 from src.ui_elements.progressbarwindow import Ui_Progressbarwindow
 
-from src.maker import interrupt_cocktail
+from src.tabs.maker import interrupt_cocktail
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 

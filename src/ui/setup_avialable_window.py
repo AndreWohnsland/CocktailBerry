@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 
 from src.ui_elements.available import Ui_available
-from src.maker import evaluate_recipe_maker_view
+from src.tabs.maker import evaluate_recipe_maker_view
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
