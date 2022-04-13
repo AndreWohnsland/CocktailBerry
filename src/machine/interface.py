@@ -1,17 +1,18 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from typing import Protocol
 from typing import List
 
 
-class PinController(ABC):
+class PinController(Protocol):
     """Interface to controll the pins"""
     @abstractmethod
     def initialize_pinlist(self, pinlist: List[int]):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def activate_pinlist(self, pinlist: List[int]):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def close_pinlist(self, pinlist: List[int]):
-        pass
+        raise NotImplementedError
