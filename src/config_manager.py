@@ -1,12 +1,12 @@
 import random
 from pathlib import Path
-from typing import List
+from typing import Any, List
 import typer
 import yaml
 from src.logger_handler import LoggerHandler
 
 from src.models import Ingredient
-from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES
+from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES, SUPPORTED_BOARDS
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
@@ -102,6 +102,7 @@ class ConfigManager:
             "MAKER_CLEAN_TIME": (int, []),
             "MAKER_SLEEP_TIME": (float, []),
             "MAKER_SEARCH_UPDATES": (bool, []),
+            "MAKER_BOARD": (str, [self.__validate_board]),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
@@ -120,7 +121,7 @@ class ConfigManager:
             return
         raise ConfigError(f"The config option {configname} is not of type {datatype}")
 
-    def __validate_config_list_type(self, configname, configlist):
+    def __validate_config_list_type(self, configname: str, configlist: List[Any]):
         """Extra validation for list type in case len / types"""
         min_bottles = self._choose_bottle_number()
         config_type = {
@@ -128,7 +129,10 @@ class ConfigManager:
             "PUMP_VOLUMEFLOW": (int, min_bottles),
             "TEAM_BUTTON_NAMES": (str, 2),
         }
-        datatype, min_len = config_type.get(configname)
+        config_setting = config_type.get(configname)
+        if config_setting is None:
+            return
+        datatype, min_len = config_setting
         for i, config in enumerate(configlist, 1):
             if not isinstance(config, datatype):
                 raise ConfigError(f"The {i} position of {configname} is not of type {datatype}")
@@ -143,10 +147,17 @@ class ConfigManager:
 
     def __validate_language_code(self, configname, countrycode):
         """Checks if the defined language is available"""
-        if countrycode in SUPPORTED_LANGUAGES:
+        self.__check_if_supported(configname, countrycode, SUPPORTED_LANGUAGES)
+
+    def __validate_board(self, configname, boardname):
+        """Checks if the defined board is implemented"""
+        self.__check_if_supported(configname, boardname, SUPPORTED_BOARDS)
+
+    def __check_if_supported(self, configname, configvalue, available: List[Any]):
+        """Check if the configvalue is within the supported List"""
+        if configvalue in available:
             return
-        raise ConfigError(
-            f"The countrycode {countrycode} is not supported, please use any of {SUPPORTED_LANGUAGES} in {configname}")
+        raise ConfigError(f"Value '{configvalue}' for {configname} is not supported, please use any of {available}")
 
     def __validate_max_length(self, configname, data, max_len=30):
         """Validates if data exceeds maximum length"""
