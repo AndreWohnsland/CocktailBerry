@@ -20,6 +20,7 @@ class RpiController(PinController):
     """Controller class to controll Raspberry Pi pins"""
 
     def __init__(self) -> None:
+        super().__init__()
         self.devenvironment = DEV
 
     def initialize_pinlist(self, pinlist: List[int]):
