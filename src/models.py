@@ -1,5 +1,5 @@
 import copy
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Union
 
 
@@ -34,9 +34,9 @@ class Cocktail():
     comment: str
     enabled: bool
     ingredients: List[Ingredient]
-    adjusted_ingredients: Union[List[Ingredient], None] = None
     adjusted_alcohol: int = 0
     adjusted_amount: int = 0
+    adjusted_ingredients = field(default_factory=list, init=False)
 
     def __post_init__(self):
         self.ingredients.sort()
