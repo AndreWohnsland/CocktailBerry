@@ -1,6 +1,5 @@
 from abc import abstractmethod
-from typing import Protocol
-from typing import List
+from typing import Protocol, List
 
 
 class PinController(Protocol):
