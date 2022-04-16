@@ -18,6 +18,13 @@ from src import __version__, PROJECT_NAME
 cli = typer.Typer(add_completion=False)
 
 
+def show_start_message():
+    figlet = Figlet()
+    start_message = f"{PROJECT_NAME} Version {__version__}"
+    print(figlet.renderText(start_message))
+    print(start_message)
+
+
 @cli.command()
 def main(
     calibration: bool = typer.Option(False, "--calibration", "-c", help="Run the calibration program."),
@@ -27,10 +34,7 @@ def main(
     Starts the cocktail program. Optional, can start the calibration program.
     For more information visit https://github.com/AndreWohnsland/CocktailBerry.
     """
-    figlet = Figlet()
-    start_message = f"{PROJECT_NAME} Version {__version__}"
-    print(figlet.renderText(start_message))
-    print(start_message)
+    show_start_message()
     c_manager = ConfigManager()
     c_manager.sync_config_to_file()
     if calibration:
