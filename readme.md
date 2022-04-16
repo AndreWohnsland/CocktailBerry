@@ -33,6 +33,7 @@ Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
 - [Setting up CocktailBerry](#setting-up-cocktailberry)
   - [Adding new Recipes or Ingredients](#adding-new-recipes-or-ingredients)
   - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
+    - [Different Seetings of the Pins / Boards](#different-seetings-of-the-pins--boards)
   - [Calibration of the Pumps](#calibration-of-the-pumps)
   - [Cleaning the Machine](#cleaning-the-machine)
   - [Possible Ingredient SetUp](#possible-ingredient-setup)
@@ -230,32 +231,39 @@ All entered values are checked for reason and if something is wrong, an error me
 
 These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed. If any of the values got a wrong data type, a TypeError will be thrown with the message which one is wrong.
 
-| Value Name              |    Type     | Description                                                                   | Optional |
-| :---------------------- | :---------: | :---------------------------------------------------------------------------- | :------: |
-| `UI_DEVENVIRONMENT`     |   _bool_    | Boolean flag to enable some development features                              |    ❌     |
-| `UI_PARTYMODE`          |   _bool_    | En- or disables the recipe tab (to prevent user interaction)                  |    ❌     |
-| `UI_MASTERPASSWORD`     |    _str_    | String for password, Use numbers for numpad like '1234'                       |    ❌     |
-| `UI_LANGUAGE`           |    _str_    | 2 char code for the language, see [supported languages](#supported-languages) |    ❌     |
-| `UI_WIDTH`              |    _int_    | Desired interface width, default is 800                                       |    ❌     |
-| `UI_HEIGHT`             |    _int_    | Desired interface height, default is 480                                      |    ❌     |
-| `PUMP_PINS`             | _list[int]_ | List of the RPi-Pins where each Pump is connected                             |    ❌     |
-| `PUMP_VOLUMEFLOW`       | _list[int]_ | List of the according volume flow for each pump in ml/s                       |    ❌     |
-| `MAKER_NAME`            |    _str_    | Give your Cocktailberry a own name, max 30 chars                              |    ❌     |
-| `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of displayed bottles, can use up to 16 bottles                         |    ❌     |
-| `MAKER_SEARCH_UPDATES`  |   _bool_    | Boolean flag to search for updates at program start                           |    ❌     |
-| `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                            |    ❌     |
-| `MAKER_SLEEP_TIME`      |   _float_   | Interval between each UI refresh while generating a cocktail                  |    ❌     |
-| `MICROSERVICE_ACTIVE`   |   _bool_    | Boolean flag to post to microservice set up by docker                         |    ✔️     |
-| `MICROSERVICE_BASE_URL` |    _str_    | Base URL for microservice (default: http://127.0.0.1:5000)                    |    ✔️     |
-| `TEAMS_ACTIVE`          |   _bool_    | Boolean flag to use teams feature                                             |    ✔️     |
-| `TEAM_BUTTON_NAMES`     | _list[str]_ | List of format ["Team1", "Team2"]                                             |    ✔️     |
-| `TEAM_API_URL`          |    _str_    | Endpoint of teams API, default used port by API is 8080                       |    ✔️     |
+| Value Name              |    Type     | Description                                                                              | Optional |
+| :---------------------- | :---------: | :--------------------------------------------------------------------------------------- | :------: |
+| `UI_DEVENVIRONMENT`     |   _bool_    | Boolean flag to enable some development features                                         |    ❌     |
+| `UI_PARTYMODE`          |   _bool_    | En- or disables the recipe tab (to prevent user interaction)                             |    ❌     |
+| `UI_MASTERPASSWORD`     |    _str_    | String for password, Use numbers for numpad like '1234'                                  |    ❌     |
+| `UI_LANGUAGE`           |    _str_    | 2 char code for the language, see [supported languages](#supported-languages)            |    ❌     |
+| `UI_WIDTH`              |    _int_    | Desired interface width, default is 800                                                  |    ❌     |
+| `UI_HEIGHT`             |    _int_    | Desired interface height, default is 480                                                 |    ❌     |
+| `PUMP_PINS`             | _list[int]_ | List of the [Pins](#different-seetings-of-the-pins--boards) where each Pump is connected |    ❌     |
+| `PUMP_VOLUMEFLOW`       | _list[int]_ | List of the according volume flow for each pump in ml/s                                  |    ❌     |
+| `MAKER_BOARD`           |    _str_    | Used [board](#different-seetings-of-the-pins--boards) for Hardware                       |    ❌     |
+| `MAKER_NAME`            |    _str_    | Give your Cocktailberry a own name, max 30 chars                                         |    ❌     |
+| `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of displayed bottles, can use up to 16 bottles                                    |    ❌     |
+| `MAKER_SEARCH_UPDATES`  |   _bool_    | Boolean flag to search for updates at program start                                      |    ❌     |
+| `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                                       |    ❌     |
+| `MAKER_SLEEP_TIME`      |   _float_   | Interval between each UI refresh while generating a cocktail                             |    ❌     |
+| `MICROSERVICE_ACTIVE`   |   _bool_    | Boolean flag to post to microservice set up by docker                                    |    ✔️     |
+| `MICROSERVICE_BASE_URL` |    _str_    | Base URL for microservice (default: http://127.0.0.1:5000)                               |    ✔️     |
+| `TEAMS_ACTIVE`          |   _bool_    | Boolean flag to use teams feature                                                        |    ✔️     |
+| `TEAM_BUTTON_NAMES`     | _list[str]_ | List of format ["Team1", "Team2"]                                                        |    ✔️     |
+| `TEAM_API_URL`          |    _str_    | Endpoint of teams API, default used port by API is 8080                                  |    ✔️     |
 
 Depending on your preferred use, these values can differ. Then just run `runme.py`.
 
 Setting up the machine is quite easy as well. Just go to the `Bottles` Tab and select via the dropdown boxes your assigned ingredients. In addition, you can define ingredients which are also there, but are not connected to the machine (under _Ingredients > available_). You can define ingredients in recipes (at _add self by hand_) which should be later added via hand, for example sticky ingredients which would not be optimal for your pump, or only very rarely used in cocktails.
 
 The program will then evaluate which recipe meets all requirements to only show the recipes where even the ingredients added via hand later are available, and the recipe will be shown in the `Maker` Tab.
+
+### Different Seetings of the Pins / Boards
+
+To set up your Board, you can choose between different platforms. The according contolling library for Python needs to be installed. If it's not shipped within the default OS of your board, this will be mentioned here. Currently supported options (boards) are:
+
+- **RPI (Raspberry Pi)**: Using GPIO according to [GPIO-Numbers](https://de.pinout.xyz/) for Pins.
 
 ## Calibration of the Pumps
 
