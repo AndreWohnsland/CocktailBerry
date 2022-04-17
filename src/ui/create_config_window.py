@@ -1,12 +1,17 @@
 
 from typing import List
+from pathlib import Path
 from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 
 from src.config_manager import ConfigManager
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_password_screen import PasswordScreen
+
+
+STYLE_FILE = Path(__file__).parents[0].absolute() / "styles.qss"
 
 
 class ConfigWindow(QMainWindow, ConfigManager):
@@ -44,6 +49,8 @@ class ConfigWindow(QMainWindow, ConfigManager):
         self.scroll_area.setWidget(self.widget)
         self.setCentralWidget(self.scroll_area)
 
+        with open(STYLE_FILE, "r", encoding="uft-8") as fh:
+            self.setStyleSheet(fh.read())
         self.show()
 
     def _save_config(self):
@@ -54,7 +61,9 @@ class ConfigWindow(QMainWindow, ConfigManager):
     def _choose_dispay_style(self, configname: str, configtype: type):
         """Creates the input face for the according config types"""
         # Add the elements header to the view
-        self.vbox.addWidget(QLabel(f"{configname}, {configtype}"))
+        header = QLabel(f"{configname}, {configtype}")
+        self._adjust_font(header, 16, True)
+        self.vbox.addWidget(header)
         # Reads out the current config value
         current_value = getattr(self, configname)
         # config_objects need to have the method to return the value of its type from the ui
@@ -130,3 +139,11 @@ class ConfigWindow(QMainWindow, ConfigManager):
 
     def _retrieve_values(self):
         return {key: getter() for key, getter in self.config_objects.items()}
+
+    def _adjust_font(self, element, fontsize: int, bold: bool):
+        font = QFont()
+        font.setPointSize(fontsize)
+        font.setBold(bold)
+        weight = 75 if bold else 50
+        font.setWeight(weight)
+        element.setFont(font)
