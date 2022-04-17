@@ -49,7 +49,7 @@ class ConfigWindow(QMainWindow, ConfigManager):
         self.scroll_area.setWidget(self.widget)
         self.setCentralWidget(self.scroll_area)
 
-        with open(STYLE_FILE, "r", encoding="uft-8") as fh:
+        with open(STYLE_FILE, "r", encoding="utf-8") as fh:
             self.setStyleSheet(fh.read())
         self.show()
 
