@@ -71,4 +71,12 @@ Here are some todos, for now or later versions:
     - [x] Make it work with the official API
 - [ ] Add progress bar to cleaning programm and possibility to cancel
 - [ ] Add config management into maker UI
-- [ ] Add restart / reboot control inot maker UI  
+  - [ ] replace cleaning with option button
+  - [ ] own window to have dedicated option settings
+  - [ ] Get all needed configs from manager
+  - [ ] Display with correct input option for user
+  - [ ] Check values before change
+- [ ] Add restart / reboot control into maker UI
+- [ ] Switch from in file stylesheets to one central stylesheet
+  - [ ] Create method to inject stylesheet into ui
+  - [ ] Merge individual stylesheets into one central one
