@@ -10,7 +10,7 @@ from src.models import Cocktail, Ingredient
 from src.config_manager import shared
 from src import MAX_SUPPORTED_BOTTLES
 
-STYLE_FILE = Path(__file__).parents[0].absolute() / "ui" / "styles.qss"
+STYLE_FILE = Path(__file__).parents[0].absolute() / "ui" / "styles" / "styles.qss"
 
 
 class DisplayController(DialogHandler):
@@ -153,6 +153,9 @@ class DisplayController(DialogHandler):
         if resize:
             window_object.setFixedSize(self.UI_WIDTH, self.UI_HEIGHT)
             window_object.resize(self.UI_WIDTH, self.UI_HEIGHT)
+
+    def inject_stylesheet(self, window_object: QWidget):
+        """Adds the central stylesheet to the gui"""
         with open(STYLE_FILE, "r", encoding="utf-8") as filehandler:
             window_object.setStyleSheet(filehandler.read())
 
@@ -342,7 +345,6 @@ class DisplayController(DialogHandler):
     def fill_recipe_data_maker(self, w, cocktail: Cocktail, total_volume: int):
         """Fill all the maker view data with the data from the given cocktail"""
         w.LAlkoholname.setText(cocktail.name)
-        # w.LIngredientHeader.setText("_" * 40)
         w.LMenge.setText(f"{total_volume} ml")
         w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.0f}%")
         display_data = cocktail.get_machineadds()
@@ -367,7 +369,6 @@ class DisplayController(DialogHandler):
         w.LAlkoholgehalt.setText("")
         w.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         w.LMenge.setText("")
-        # w.LIngredientHeader.setText("")
         if not select_other_item:
             w.LWMaker.clearSelection()
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(w), self.get_labels_maker_volume(w)):
