@@ -12,6 +12,7 @@ class CustomDialog(QDialog, Ui_CustomDialog):
     def __init__(self, message: str, title: str = "Information", icon_path: str = None):
         super().__init__()
         self.setupUi(self)
+        DP_CONTROLLER.inject_stylesheet(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.informationLabel.setText(message)

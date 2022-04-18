@@ -25,6 +25,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        DP_CONTROLLER.inject_stylesheet(self)
         # Set window properties
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent

@@ -17,6 +17,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.mainscreen = parent
+        DP_CONTROLLER.inject_stylesheet(self)
         # somehow the ui dont accept without _2 for those two buttons so they are _2
         self.PBAbbruch_2.clicked.connect(self.abbrechen_clicked)
         self.PBOk_2.clicked.connect(self.accepted_clicked)

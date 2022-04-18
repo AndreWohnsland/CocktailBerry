@@ -15,6 +15,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow2):
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
+        DP_CONTROLLER.inject_stylesheet(self)
         self.setWindowIcon(QIcon(parent.icon_path))
         # Connect all the buttons, generates a list of the numbers an objectnames to do that
         self.PBenter.clicked.connect(self.enter_clicked)

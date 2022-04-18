@@ -9,6 +9,8 @@ ProgressBG:	rgb(166, 166, 166)	| Grey
 Checkbup:		rgb(200, 200, 200)	| Grey
 TabSelect:	rgb(255, 255, 255)	| white
 SliderSpine #393939							| Darkgrey
+TeamOne:		rgb(235, 64, 52)		| Red
+TeamTwo:		rgb(52, 76, 235)		| Blue
 
 Regex to match all current:
 (rgb\(0, 123, 255\))|(rgb\(239, 151, 0\))|(rgb\(0, 0, 0\))|(rgb\(97, 97, 97\))|(rgb\(0, 233, 245\))|(rgb\(166, 166, 166\))|(rgb\(200, 200, 200\))|(rgb\(255, 255, 255\))
@@ -40,8 +42,16 @@ QWidget[cssClass~="secondary"] {
 	color: rgb(239, 151, 0);
 }
 
-QWidget:item:selected
-{
+*[cssClass~="header-underline"] {
+	color: rgb(166, 166, 166);
+	border-bottom: 1px solid;
+	border-color: rgb(166, 166, 166);
+	margin-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+QWidget:item:selected {
 	color: rgb(239, 151, 0);
   border: 1px solid rgb(239, 151, 0);
 	/*color: rgb(255, 255, 255);	
@@ -105,12 +115,7 @@ QPushButton {
 	padding-right: 5px;
 }
 
-QPushButton:checked {
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-
-QPushButton:pressed {
+QPushButton:checked, QPushButton:pressed {
 	color: rgb(239, 151, 0);	
 	border-color: rgb(239, 151, 0);
 }
@@ -128,9 +133,19 @@ QPushButton[cssClass~="btn-inverted"] {
 	padding-right: 5px;
 }
 
-QPushButton:pressed[cssClass~="btn-inverted"] {
+QPushButton:pressed[cssClass~="btn-inverted"], QPushButton:checked[cssClass~="btn-inverted"] {
 	background-color: rgb(239, 151, 0);	
 	border-color: rgb(239, 151, 0);	
+}
+
+QPushButton[cssClass~="btn-teamone"] {
+	background-color: rgb(235, 64, 52);
+	border-color: rgb(235, 64, 52);
+}
+
+QPushButton[cssClass~="btn-teamtwo"] {
+	background-color: rgb(52, 76, 235);
+	border-color: rgb(52, 76, 235);
 }
 
 QProgressBar {
@@ -180,40 +195,11 @@ QLineEdit {
   border-radius: 5;
 }
 
-#TBelegung {
-  border: 1px solid  rgb(97, 97, 97);
+QListWidget {
+  border: 1px solid rgb(97, 97, 97);
 }
 
-#LWMaker, #LWZutaten, #LWRezepte {
-  border: 1px solid  rgb(97, 97, 97);
-}
-
-#LKommentar {
-	color: rgb(200, 200, 200);
-}
-
-#LAlkoholname, #LIngredientHeader {
-	color: rgb(166, 166, 166);
-	border-bottom: 1px solid;
-	border-color: rgb(166, 166, 166);
-	margin-bottom: 5px;
-	padding-left: 10px;
-	padding-right: 10px;
-}
-
-#MakerLMenge {
-	color:rgb(255, 255, 255);
-}
-
-#LEGehaltRezept, #LEZutatRezept, #LEFlaschenvolumen, #LRHandAdd, #LECocktail, #LAlkoholgehalt {
-	color: rgb(239, 151, 0);
-}
-
-#LMZutat1, #LMZutat2, #LMZutat3, #LMZutat4, #LMZutat5, #LMZutat6, #LMZutat7, #LMZutat8, #LMZutat9, #LMZutat10, #LER1, #LER2, #LER3, #LER4, #LER5, #LER6, #LER7 {
-	color: rgb(239, 151, 0);
-}
-
-#LAlkoholgehalt, #LMenge {
+*[cssClass~="lr-padding"] {
 	padding-left: 10px;
 	padding-right: 10px;
 }
@@ -261,4 +247,8 @@ QScrollBar::up-arrow:vertical {
 
 #option_button {
 	image: url(./src/ui_elements/options.png);
+}
+
+#informationLabel {
+	padding: 5px 25px 5px 25px;
 }

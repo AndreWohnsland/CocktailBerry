@@ -20,6 +20,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
         ConfigManager.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        DP_CONTROLLER.inject_stylesheet(self)
         # connects all the buttons
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)

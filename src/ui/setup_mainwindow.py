@@ -43,6 +43,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.icon_path = str(Path(__file__).parents[1].absolute() / "ui_elements" / "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        DP_CONTROLLER.inject_stylesheet(self)
         # init the empty further screens
         self.pww: Union[PasswordScreen, None] = None
         self.kbw: Union[KeyboardWidget, None] = None

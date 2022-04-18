@@ -32,41 +32,7 @@
    <string>~~ Teamwahl ~~</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget {
-	color: rgb(0, 123, 255);	
-	background-color: rgb(0, 0, 0);
-}
-
-QPushButton {
-	color: rgb(255, 255, 255);
-    border-width: 1px;
-	border-style: solid;
-	border-radius: 40;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-#PBteamone {
-	background-color: rgb(235, 64, 52);
-	border-color: rgb(235, 64, 52);
-}
-
-#PBteamtwo {
-	background-color: rgb(52, 76, 235);
-	border-color: rgb(52, 76, 235);
-}
-
-QPushButton:checked {
-	color: rgb(255, 255, 255);	
-	background-color: rgb(52, 235, 143);
-}
-
-
-#LHeader {
-		color: rgb(239, 151, 0);
-}
-</string>
+   <string notr="true"/>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -99,6 +65,9 @@ QPushButton:checked {
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
+     <property name="cssClass" stdset="0">
+      <string>secondary</string>
+     </property>
     </widget>
    </item>
    <item>
@@ -126,6 +95,9 @@ QPushButton:checked {
        </property>
        <property name="text">
         <string>Team #1</string>
+       </property>
+       <property name="cssClass" stdset="0">
+        <string>btn-teamone</string>
        </property>
       </widget>
      </item>
@@ -155,6 +127,9 @@ QPushButton:checked {
        </property>
        <property name="flat">
         <bool>false</bool>
+       </property>
+       <property name="cssClass" stdset="0">
+        <string>btn-teamtwo</string>
        </property>
       </widget>
      </item>

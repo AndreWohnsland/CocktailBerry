@@ -32,273 +32,7 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">QCheckBox::indicator{
-    /*border: 1px solid rgb(120, 120, 120);
-	border-radius: 2px;*/
-    width: 18px;
-    height: 18px;
-}
-
-QCheckBox::indicator:unchecked{
-	image: url(./src/ui_elements/cross.png);
-}
-
-QCheckBox::indicator:checked{
-	background-color: rgb(200, 200, 200);
-	image: url(./src/ui_elements/check.png);
-}
-
-QWidget
-{
-	color: rgb(0, 123, 255);	
-	background-color: rgb(0, 0, 0);
-
-}
-
-QWidget:item:selected
-{
-	color: rgb(239, 151, 0);
-    border: 1px solid rgb(239, 151, 0);
-	/*color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);	*/
-}
-
-QTabWidget::pane {
-    border: 1px solid  rgb(97, 97, 97);
-    top: 1px;
-}
-
-QTabBar::tab {
-	background-color: rgb(97, 97, 97);
-	color: rgb(255, 255, 255);
-    border-width: 1px;
-	border-color: rgb(255, 255, 255);
-	border-style: solid;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-	padding: 5px 0px 5px 0px; 
-	width: 193px;
-}
-
-QTabBar::tab:selected {
-	color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);
-}
-
-.QMessageBox {font-size: 16pt}
-
-.QSlider {
-    min-height: 30px;
-    max-height: 50px;
-}
-
-.QSlider::groove:horizontal {
-    border: 1px solid;
-    height: 5px;
-    background: #393939;
-    margin: 0 12px;
-}
-
-.QSlider::handle:horizontal {
-    background: rgb(0, 123, 255);
-    width: 30px;
-    height: 30px;
-    margin: -24px -12px;
-}
-
-QPushButton {
-	background-color: rgb(0, 0, 0);
-	color: (0, 123, 255);
-    border-width: 3px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-QPushButton:checked
-{
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-
-QPushButton:pressed
-{
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-
-QProgressBar
-{
-	background-color: rgb(166, 166, 166);
-	color: rgb(0, 0, 0);
-    border: 2px rgb(166, 166, 166);
-    border-radius: 5px;
-	text-align: center;
-}
-
-QProgressBar::chunk {
-	border: 2px rgb(166, 166, 166);
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-	background-color: rgb(0, 233, 245);	
-/*background-color: rgb(0, 255, 132);
-    width: 40px;
-    margin: 0.5px;*/
-}
-
-QComboBox {
-	color: rgb(0, 123, 255);	
-    border: 1px solid  rgb(97, 97, 97);
-    border-top-left-radius: 7px;
-    border-bottom-left-radius: 7px;
-    padding: 1px 18px 1px 5px;
-    min-width: 6em;
-}
-
-QComboBox:on { /* shift the text when the popup opens */
-    border: 1px solid  rgb(97, 97, 97);
-    border-top-left-radius: 7px;
-    border-bottom-left-radius: 0px;
-	color: rgb(239, 151, 0);
-}
-
-
-/* QComboBox:hover
-{
-	color: rgb(239, 151, 0);
-}*/
-
-QComboBox QAbstractItemView {
-    border: 1px solid  rgb(97, 97, 97);
-}
-
-/*QComboBox:item:checked {
-	color: rgb(239, 151, 0);
-    border: 1px solid rgb(239, 151, 0);
-}
-
-QComboBox:item:selected {
-	color: rgb(239, 151, 0);
-    border: 1px solid rgb(239, 151, 0);
-} */
-
-QLineEdit
-{
-    padding: 1px;
-    border-style: solid;
-    border: 1px solid rgb(97, 97, 97);
-    border-radius: 5;
-}
-
-
-#TBelegung {
-    border: 1px solid  rgb(97, 97, 97);
-}
-
-#LWMaker, #LWZutaten, #LWRezepte {
-    border: 1px solid  rgb(97, 97, 97);
-}
-
-#LKommentar{
-	color: rgb(211, 211, 211);
-}
-
-#LAlkoholname, #LIngredientHeader{
-	color: rgb(170, 170, 170);
-	border-bottom: 1px solid;
-	border-color: rgb(170, 170, 170);
-	margin-bottom: 5px;
-	padding-left: 10px;
-	padding-right: 10px;
-}
-
-#MakerLMenge{
-	color:rgb(255, 255, 255);
-}
-
-#LEGehaltRezept, #LEZutatRezept, #LEFlaschenvolumen, #LRHandAdd, #LECocktail, #LAlkoholgehalt{
-	color: rgb(239, 151, 0);
-}
-
-#LMZutat1, #LMZutat2, #LMZutat3, #LMZutat4, #LMZutat5, #LMZutat6, #LMZutat7, #LMZutat8, #LMZutat9, #LMZutat10, #LER1, #LER2, #LER3, #LER4, #LER5, #LER6, #LER7 {
-	color: rgb(239, 151, 0);
-}
-
-/* Inverted button style */
-#PBZubereiten_custom, #PBZutathinzu, #PBRezepthinzu, #PBZeinzelnd, #PBAvailable, #PBFlanwenden {
-	background-color: rgb(0, 123, 255);  
-	color: rgb(0, 0, 0);
-    border-width: 3px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-#PBZubereiten_custom:pressed, #PBZutathinzu:pressed, #PBRezepthinzu:pressed,#PBZeinzelnd:pressed, #PBAvailable:pressed, #PBFlanwenden:pressed {
-	background-color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);	
-}
-
-#LAlkoholgehalt, #LMenge {
-	padding-left: 10px;
-	padding-right: 10px;
-}
-
-/* Moving List Widget here from the single objects */
-
-
-QScrollBar:vertical {
-	border: 1px solid rgb(97, 97, 97);
-    background: rgb(97, 97, 97);
-    width: 35px;
-    margin: 36px 0 36px 0;
-}
-
-QScrollBar::handle:vertical {
-	background: rgb(0, 0, 0);
-}
-
-QScrollBar::add-line:vertical {
-	border: 1px solid rgb(97, 97, 97);
-    background: rgb(0, 0, 0);
-    height: 35px;
-    subcontrol-position: bottom;
-    subcontrol-origin: margin;
-}
-
-QScrollBar::sub-line:vertical {
-	border: 1px solid rgb(97, 97, 97);
-    background: rgb(0, 0, 0);
-    height: 35px;
-    subcontrol-position: top;
-    subcontrol-origin: margin;
-}
-
-QScrollBar::down-arrow:vertical,  QScrollBar::up-arrow:vertical {
-	width: 20px;
-	height: 20px;
-}
-
-QScrollBar::down-arrow:vertical {
-	image: url(./src/ui_elements/down.png);
-}
-
-QScrollBar::up-arrow:vertical {
-	image: url(./src/ui_elements/up.png);
-}
-
-/*  Give options button the gear icon*/
-#option_button {
-	image: url(./src/ui_elements/options.png);
-}</string>
+   <string notr="true"/>
   </property>
   <property name="documentMode">
    <bool>false</bool>
@@ -318,7 +52,7 @@ QScrollBar::up-arrow:vertical {
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideMiddle</enum>
@@ -371,6 +105,9 @@ QScrollBar::up-arrow:vertical {
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>lr-padding</string>
+              </property>
              </widget>
             </item>
             <item row="12" column="0">
@@ -403,6 +140,9 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="text">
                <string>LMZutat1</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
               </property>
              </widget>
             </item>
@@ -453,6 +193,9 @@ QScrollBar::up-arrow:vertical {
               <property name="alignment">
                <set>Qt::AlignCenter</set>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>header-underline</string>
+              </property>
              </widget>
             </item>
             <item row="0" column="2">
@@ -482,6 +225,9 @@ QScrollBar::up-arrow:vertical {
               <property name="alignment">
                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary lr-padding</string>
+              </property>
              </widget>
             </item>
             <item row="4" column="2">
@@ -501,6 +247,9 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="text">
                <string>LMZutat2</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
               </property>
              </widget>
             </item>
@@ -522,6 +271,9 @@ QScrollBar::up-arrow:vertical {
               <property name="text">
                <string>LMZutat3</string>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
              </widget>
             </item>
             <item row="6" column="2">
@@ -541,6 +293,9 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="text">
                <string>LMZutat4</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
               </property>
              </widget>
             </item>
@@ -562,6 +317,9 @@ QScrollBar::up-arrow:vertical {
               <property name="text">
                <string>LMZutat5</string>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
              </widget>
             </item>
             <item row="8" column="2">
@@ -581,6 +339,9 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="text">
                <string>LMZutat6</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
               </property>
              </widget>
             </item>
@@ -602,6 +363,9 @@ QScrollBar::up-arrow:vertical {
               <property name="text">
                <string>LMZutat7</string>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
              </widget>
             </item>
             <item row="10" column="2">
@@ -622,6 +386,9 @@ QScrollBar::up-arrow:vertical {
               <property name="text">
                <string>LMZutat8</string>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
              </widget>
             </item>
             <item row="11" column="2">
@@ -641,6 +408,9 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="text">
                <string>LMZutat9</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
               </property>
              </widget>
             </item>
@@ -963,6 +733,9 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="text">
                <string>Zubereiten</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>btn-inverted</string>
               </property>
              </widget>
             </item>
@@ -1300,6 +1073,9 @@ QScrollBar::up-arrow:vertical {
             <property name="text">
              <string>hinzufügen</string>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
+            </property>
            </widget>
           </item>
           <item row="8" column="0" colspan="4">
@@ -1319,6 +1095,9 @@ QScrollBar::up-arrow:vertical {
             </property>
             <property name="text">
              <string>Einzelne Zutat ausgeben</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
             </property>
            </widget>
           </item>
@@ -1394,6 +1173,9 @@ QScrollBar::up-arrow:vertical {
             <property name="text">
              <string>verfügbar</string>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
+            </property>
            </widget>
           </item>
           <item row="4" column="0" colspan="4">
@@ -1458,6 +1240,9 @@ QScrollBar::up-arrow:vertical {
               <property name="alignment">
                <set>Qt::AlignCenter</set>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -1521,6 +1306,9 @@ QScrollBar::up-arrow:vertical {
               <pointsize>14</pointsize>
              </font>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
+            </property>
            </widget>
           </item>
           <item row="2" column="0" colspan="4">
@@ -1555,6 +1343,9 @@ QScrollBar::up-arrow:vertical {
              <font>
               <pointsize>14</pointsize>
              </font>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -1604,6 +1395,9 @@ QScrollBar::up-arrow:vertical {
               </property>
               <property name="placeholderText">
                <string/>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
               </property>
              </widget>
             </item>
@@ -1709,6 +1503,9 @@ QScrollBar::up-arrow:vertical {
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary</string>
                   </property>
                  </widget>
                 </item>
@@ -1877,6 +1674,9 @@ QScrollBar::up-arrow:vertical {
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary</string>
+                  </property>
                  </widget>
                 </item>
                 <item row="2" column="1">
@@ -1900,6 +1700,9 @@ QScrollBar::up-arrow:vertical {
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary</string>
                   </property>
                  </widget>
                 </item>
@@ -1945,6 +1748,9 @@ QScrollBar::up-arrow:vertical {
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary</string>
+                  </property>
                  </widget>
                 </item>
                 <item row="4" column="1">
@@ -1968,6 +1774,9 @@ QScrollBar::up-arrow:vertical {
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary</string>
                   </property>
                  </widget>
                 </item>
@@ -1993,6 +1802,9 @@ QScrollBar::up-arrow:vertical {
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary</string>
+                  </property>
                  </widget>
                 </item>
                 <item row="3" column="1">
@@ -2016,6 +1828,9 @@ QScrollBar::up-arrow:vertical {
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary</string>
                   </property>
                  </widget>
                 </item>
@@ -2307,6 +2122,9 @@ QScrollBar::up-arrow:vertical {
                   <property name="text">
                    <string>hinzufügen</string>
                   </property>
+                  <property name="cssClass" stdset="0">
+                   <string>btn-inverted</string>
+                  </property>
                  </widget>
                 </item>
                 <item row="0" column="1" colspan="3">
@@ -2323,10 +2141,13 @@ QScrollBar::up-arrow:vertical {
                    </font>
                   </property>
                   <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ef9700;&quot;&gt; Selbst hinzufügen:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>Add by Hand:</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary</string>
                   </property>
                  </widget>
                 </item>
@@ -2844,6 +2665,9 @@ QScrollBar::up-arrow:vertical {
             </property>
             <property name="text">
              <string>neue Flaschen anwenden</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
             </property>
            </widget>
           </item>

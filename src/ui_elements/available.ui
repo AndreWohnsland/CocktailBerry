@@ -26,69 +26,7 @@
    <string>Verfügbare Zutaten auswählen</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget
-{
-	color: rgb(0, 123, 255);	
-	background-color: rgb(0, 0, 0);
-
-}
-
-QWidget:item:selected
-{
-	color: rgb(239, 151, 0);
-    border: 1px solid rgb(239, 151, 0);
-	/*color: rgb(255, 255, 255);	
-	background-color: rgb(0, 123, 255);	*/
-}
-
-QTabWidget::pane {
-    border: 1px solid  rgb(97, 97, 97);
-    top: 1px;
-}
-
-.QMessageBox {font-size: 16pt}
-
-QPushButton {
-	background-color: rgb(0, 0, 0);
-	color: (0, 123, 255);
-    border-width: 4px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-QPushButton:pressed
-{
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-
-
-#LAvailable, #LPossible {
-	color: rgb(239, 151, 0);
-}
-
-/* Inverted button style */
-#PBOk_2 {
-	background-color: rgb(0, 123, 255);  
-	color: rgb(0, 0, 0);
-    border-width: 3px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-#PBOk_2:pressed {
-	background-color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);	
-}
-</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -116,10 +54,13 @@ QPushButton:pressed
          </font>
         </property>
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ef9700;&quot;&gt;Vorhanden&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>Vorhanden</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
         </property>
        </widget>
       </item>
@@ -158,10 +99,13 @@ QPushButton:pressed
          </font>
         </property>
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ef9700;&quot;&gt;Möglich&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>Möglich</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
         </property>
        </widget>
       </item>
@@ -364,6 +308,9 @@ QPushButton:pressed
         </property>
         <property name="text">
          <string>OK</string>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>btn-inverted</string>
         </property>
        </widget>
       </item>

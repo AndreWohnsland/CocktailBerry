@@ -17,52 +17,7 @@ class Ui_PasswordWindow2(object):
         PasswordWindow2.resize(360, 428)
         PasswordWindow2.setMinimumSize(QtCore.QSize(355, 362))
         PasswordWindow2.setMaximumSize(QtCore.QSize(362, 433))
-        PasswordWindow2.setStyleSheet("QWidget\n"
-"{\n"
-"    color: rgb(0, 123, 255);    \n"
-"    background-color: rgb(0, 0, 0);\n"
-"\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"    background-color: rgb(0, 0, 0);\n"
-"    color: (0, 123, 255);\n"
-"    border-width: 4px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed\n"
-"{\n"
-"    color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"#LHeader {\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"/* Inverted button style */\n"
-"#PBenter {\n"
-"    background-color: rgb(0, 123, 255);  \n"
-"    color: rgb(0, 0, 0);\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"#PBenter:pressed {\n"
-"    background-color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);    \n"
-"}")
+        PasswordWindow2.setStyleSheet("")
         PasswordWindow2.setModal(True)
         self.verticalLayout = QtWidgets.QVBoxLayout(PasswordWindow2)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -217,6 +172,7 @@ class Ui_PasswordWindow2(object):
         _translate = QtCore.QCoreApplication.translate
         PasswordWindow2.setWindowTitle(_translate("PasswordWindow2", "Passworteingabe"))
         self.LHeader.setText(_translate("PasswordWindow2", "Pinbar Header"))
+        self.LHeader.setProperty("cssClass", _translate("PasswordWindow2", "secondary"))
         self.PB2.setText(_translate("PasswordWindow2", "2"))
         self.PB3.setText(_translate("PasswordWindow2", "3"))
         self.PB5.setText(_translate("PasswordWindow2", "5"))
@@ -229,6 +185,7 @@ class Ui_PasswordWindow2(object):
         self.PB0.setText(_translate("PasswordWindow2", "0"))
         self.PBdel.setText(_translate("PasswordWindow2", "del"))
         self.PBenter.setText(_translate("PasswordWindow2", "OK"))
+        self.PBenter.setProperty("cssClass", _translate("PasswordWindow2", "btn-inverted"))
         self.PBdot.setText(_translate("PasswordWindow2", "."))
 
 

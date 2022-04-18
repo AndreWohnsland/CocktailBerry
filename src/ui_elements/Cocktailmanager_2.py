@@ -23,273 +23,7 @@ class Ui_MainWindow(object):
         MainWindow.setMaximumSize(QtCore.QSize(800, 700))
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         MainWindow.setAutoFillBackground(False)
-        MainWindow.setStyleSheet("QCheckBox::indicator{\n"
-"    /*border: 1px solid rgb(120, 120, 120);\n"
-"    border-radius: 2px;*/\n"
-"    width: 18px;\n"
-"    height: 18px;\n"
-"}\n"
-"\n"
-"QCheckBox::indicator:unchecked{\n"
-"    image: url(./src/ui_elements/cross.png);\n"
-"}\n"
-"\n"
-"QCheckBox::indicator:checked{\n"
-"    background-color: rgb(200, 200, 200);\n"
-"    image: url(./src/ui_elements/check.png);\n"
-"}\n"
-"\n"
-"QWidget\n"
-"{\n"
-"    color: rgb(0, 123, 255);    \n"
-"    background-color: rgb(0, 0, 0);\n"
-"\n"
-"}\n"
-"\n"
-"QWidget:item:selected\n"
-"{\n"
-"    color: rgb(239, 151, 0);\n"
-"    border: 1px solid rgb(239, 151, 0);\n"
-"    /*color: rgb(255, 255, 255);    \n"
-"    background-color: rgb(0, 123, 255);    */\n"
-"}\n"
-"\n"
-"QTabWidget::pane {\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"    top: 1px;\n"
-"}\n"
-"\n"
-"QTabBar::tab {\n"
-"    background-color: rgb(97, 97, 97);\n"
-"    color: rgb(255, 255, 255);\n"
-"    border-width: 1px;\n"
-"    border-color: rgb(255, 255, 255);\n"
-"    border-style: solid;\n"
-"    border-top-left-radius: 10px;\n"
-"    border-top-right-radius: 10px;\n"
-"    padding: 5px 0px 5px 0px; \n"
-"    width: 193px;\n"
-"}\n"
-"\n"
-"QTabBar::tab:selected {\n"
-"    color: rgb(255, 255, 255);    \n"
-"    background-color: rgb(0, 123, 255);\n"
-"}\n"
-"\n"
-".QMessageBox {font-size: 16pt}\n"
-"\n"
-".QSlider {\n"
-"    min-height: 30px;\n"
-"    max-height: 50px;\n"
-"}\n"
-"\n"
-".QSlider::groove:horizontal {\n"
-"    border: 1px solid;\n"
-"    height: 5px;\n"
-"    background: #393939;\n"
-"    margin: 0 12px;\n"
-"}\n"
-"\n"
-".QSlider::handle:horizontal {\n"
-"    background: rgb(0, 123, 255);\n"
-"    width: 30px;\n"
-"    height: 30px;\n"
-"    margin: -24px -12px;\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"    background-color: rgb(0, 0, 0);\n"
-"    color: (0, 123, 255);\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"QPushButton:checked\n"
-"{\n"
-"    color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"QPushButton:pressed\n"
-"{\n"
-"    color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"QProgressBar\n"
-"{\n"
-"    background-color: rgb(166, 166, 166);\n"
-"    color: rgb(0, 0, 0);\n"
-"    border: 2px rgb(166, 166, 166);\n"
-"    border-radius: 5px;\n"
-"    text-align: center;\n"
-"}\n"
-"\n"
-"QProgressBar::chunk {\n"
-"    border: 2px rgb(166, 166, 166);\n"
-"    border-top-left-radius: 5px;\n"
-"    border-bottom-left-radius: 5px;\n"
-"    border-top-right-radius: 5px;\n"
-"    border-bottom-right-radius: 5px;\n"
-"    background-color: rgb(0, 233, 245);    \n"
-"/*background-color: rgb(0, 255, 132);\n"
-"    width: 40px;\n"
-"    margin: 0.5px;*/\n"
-"}\n"
-"\n"
-"QComboBox {\n"
-"    color: rgb(0, 123, 255);    \n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"    border-top-left-radius: 7px;\n"
-"    border-bottom-left-radius: 7px;\n"
-"    padding: 1px 18px 1px 5px;\n"
-"    min-width: 6em;\n"
-"}\n"
-"\n"
-"QComboBox:on { /* shift the text when the popup opens */\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"    border-top-left-radius: 7px;\n"
-"    border-bottom-left-radius: 0px;\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"\n"
-"/* QComboBox:hover\n"
-"{\n"
-"    color: rgb(239, 151, 0);\n"
-"}*/\n"
-"\n"
-"QComboBox QAbstractItemView {\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"}\n"
-"\n"
-"/*QComboBox:item:checked {\n"
-"    color: rgb(239, 151, 0);\n"
-"    border: 1px solid rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"QComboBox:item:selected {\n"
-"    color: rgb(239, 151, 0);\n"
-"    border: 1px solid rgb(239, 151, 0);\n"
-"} */\n"
-"\n"
-"QLineEdit\n"
-"{\n"
-"    padding: 1px;\n"
-"    border-style: solid;\n"
-"    border: 1px solid rgb(97, 97, 97);\n"
-"    border-radius: 5;\n"
-"}\n"
-"\n"
-"\n"
-"#TBelegung {\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"}\n"
-"\n"
-"#LWMaker, #LWZutaten, #LWRezepte {\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"}\n"
-"\n"
-"#LKommentar{\n"
-"    color: rgb(211, 211, 211);\n"
-"}\n"
-"\n"
-"#LAlkoholname, #LIngredientHeader{\n"
-"    color: rgb(170, 170, 170);\n"
-"    border-bottom: 1px solid;\n"
-"    border-color: rgb(170, 170, 170);\n"
-"    margin-bottom: 5px;\n"
-"    padding-left: 10px;\n"
-"    padding-right: 10px;\n"
-"}\n"
-"\n"
-"#MakerLMenge{\n"
-"    color:rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"#LEGehaltRezept, #LEZutatRezept, #LEFlaschenvolumen, #LRHandAdd, #LECocktail, #LAlkoholgehalt{\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"#LMZutat1, #LMZutat2, #LMZutat3, #LMZutat4, #LMZutat5, #LMZutat6, #LMZutat7, #LMZutat8, #LMZutat9, #LMZutat10, #LER1, #LER2, #LER3, #LER4, #LER5, #LER6, #LER7 {\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"/* Inverted button style */\n"
-"#PBZubereiten_custom, #PBZutathinzu, #PBRezepthinzu, #PBZeinzelnd, #PBAvailable, #PBFlanwenden {\n"
-"    background-color: rgb(0, 123, 255);  \n"
-"    color: rgb(0, 0, 0);\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"#PBZubereiten_custom:pressed, #PBZutathinzu:pressed, #PBRezepthinzu:pressed,#PBZeinzelnd:pressed, #PBAvailable:pressed, #PBFlanwenden:pressed {\n"
-"    background-color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);    \n"
-"}\n"
-"\n"
-"#LAlkoholgehalt, #LMenge {\n"
-"    padding-left: 10px;\n"
-"    padding-right: 10px;\n"
-"}\n"
-"\n"
-"/* Moving List Widget here from the single objects */\n"
-"\n"
-"\n"
-"QScrollBar:vertical {\n"
-"    border: 1px solid rgb(97, 97, 97);\n"
-"    background: rgb(97, 97, 97);\n"
-"    width: 35px;\n"
-"    margin: 36px 0 36px 0;\n"
-"}\n"
-"\n"
-"QScrollBar::handle:vertical {\n"
-"    background: rgb(0, 0, 0);\n"
-"}\n"
-"\n"
-"QScrollBar::add-line:vertical {\n"
-"    border: 1px solid rgb(97, 97, 97);\n"
-"    background: rgb(0, 0, 0);\n"
-"    height: 35px;\n"
-"    subcontrol-position: bottom;\n"
-"    subcontrol-origin: margin;\n"
-"}\n"
-"\n"
-"QScrollBar::sub-line:vertical {\n"
-"    border: 1px solid rgb(97, 97, 97);\n"
-"    background: rgb(0, 0, 0);\n"
-"    height: 35px;\n"
-"    subcontrol-position: top;\n"
-"    subcontrol-origin: margin;\n"
-"}\n"
-"\n"
-"QScrollBar::down-arrow:vertical,  QScrollBar::up-arrow:vertical {\n"
-"    width: 20px;\n"
-"    height: 20px;\n"
-"}\n"
-"\n"
-"QScrollBar::down-arrow:vertical {\n"
-"    image: url(./src/ui_elements/down.png);\n"
-"}\n"
-"\n"
-"QScrollBar::up-arrow:vertical {\n"
-"    image: url(./src/ui_elements/up.png);\n"
-"}\n"
-"\n"
-"/*  Give options button the gear icon*/\n"
-"#option_button {\n"
-"    image: url(./src/ui_elements/options.png);\n"
-"}")
+        MainWindow.setStyleSheet("")
         MainWindow.setDocumentMode(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -2040,25 +1774,37 @@ class Ui_MainWindow(object):
         self.actionRezeptverwalter.setObjectName("actionRezeptverwalter")
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Cocktailmanager"))
         self.LMenge.setText(_translate("MainWindow", "xx ml"))
+        self.LMenge.setProperty("cssClass", _translate("MainWindow", "lr-padding"))
         self.LMZutat1.setText(_translate("MainWindow", "LMZutat1"))
+        self.LMZutat1.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LZutat1.setText(_translate("MainWindow", "LZutat1"))
         self.LAlkoholname.setText(_translate("MainWindow", "LAlkoholname"))
+        self.LAlkoholname.setProperty("cssClass", _translate("MainWindow", "header-underline"))
         self.LAlkoholgehalt.setText(_translate("MainWindow", "yy %"))
+        self.LAlkoholgehalt.setProperty("cssClass", _translate("MainWindow", "secondary lr-padding"))
         self.LMZutat2.setText(_translate("MainWindow", "LMZutat2"))
+        self.LMZutat2.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat3.setText(_translate("MainWindow", "LMZutat3"))
+        self.LMZutat3.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat4.setText(_translate("MainWindow", "LMZutat4"))
+        self.LMZutat4.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat5.setText(_translate("MainWindow", "LMZutat5"))
+        self.LMZutat5.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat6.setText(_translate("MainWindow", "LMZutat6"))
+        self.LMZutat6.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat7.setText(_translate("MainWindow", "LMZutat7"))
+        self.LMZutat7.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat8.setText(_translate("MainWindow", "LMZutat8"))
+        self.LMZutat8.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat9.setText(_translate("MainWindow", "LMZutat9"))
+        self.LMZutat9.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LZutat9.setText(_translate("MainWindow", "LZutat9"))
         self.LZutat8.setText(_translate("MainWindow", "LZutat8"))
         self.LZutat7.setText(_translate("MainWindow", "LZutat7"))
@@ -2071,6 +1817,7 @@ class Ui_MainWindow(object):
         self.LCustomMenge.setText(_translate("MainWindow", "200"))
         self.PBMplus.setText(_translate("MainWindow", "+"))
         self.PBZubereiten_custom.setText(_translate("MainWindow", "Zubereiten"))
+        self.PBZubereiten_custom.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.PBSetnull.setText(_translate("MainWindow", "O"))
         self.LWMaker.setSortingEnabled(True)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Maker"))
@@ -2080,32 +1827,48 @@ class Ui_MainWindow(object):
         self.PBZclear.setText(_translate("MainWindow", "clear"))
         self.PBZdelete.setText(_translate("MainWindow", "del"))
         self.PBZutathinzu.setText(_translate("MainWindow", "hinzufügen"))
+        self.PBZutathinzu.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.PBZeinzelnd.setText(_translate("MainWindow", "Einzelne Zutat ausgeben"))
+        self.PBZeinzelnd.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.PBZaktualisieren.setText(_translate("MainWindow", "ändern"))
         self.PBAvailable.setText(_translate("MainWindow", "verfügbar"))
+        self.PBAvailable.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.LBottleVolume.setText(_translate("MainWindow", "Flaschenvolume (ml)"))
         self.PBZminus.setText(_translate("MainWindow", "-"))
+        self.LEFlaschenvolumen.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.PBZplus.setText(_translate("MainWindow", "+"))
         self.LIngredient.setText(_translate("MainWindow", "Zutat"))
+        self.LEZutatRezept.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LAlcoholLevel.setText(_translate("MainWindow", "Alkoholgehalt"))
+        self.LEGehaltRezept.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Zutaten"))
         self.label_23.setText(_translate("MainWindow", "Cocktailname:"))
+        self.LECocktail.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.PBenable.setText(_translate("MainWindow", "Enable all"))
         self.PBRnull.setText(_translate("MainWindow", "export"))
         self.LWRezepte.setSortingEnabled(True)
+        self.LER1.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.label_8.setText(_translate("MainWindow", "ml"))
         self.label_7.setText(_translate("MainWindow", "ml"))
         self.label_5.setText(_translate("MainWindow", "ml"))
         self.label_10.setText(_translate("MainWindow", "ml"))
         self.label_9.setText(_translate("MainWindow", "ml"))
         self.label_3.setText(_translate("MainWindow", "ml"))
+        self.LER2.setProperty("cssClass", _translate("MainWindow", "secondary"))
+        self.LER3.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.label_6.setText(_translate("MainWindow", "ml"))
+        self.LER6.setProperty("cssClass", _translate("MainWindow", "secondary"))
+        self.LER5.setProperty("cssClass", _translate("MainWindow", "secondary"))
+        self.LER7.setProperty("cssClass", _translate("MainWindow", "secondary"))
+        self.LER4.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.CHBenabled.setText(_translate("MainWindow", "Enabled:"))
         self.PBclear.setText(_translate("MainWindow", "clear"))
         self.PBdelete.setText(_translate("MainWindow", "del"))
         self.PBRezeptaktualisieren.setText(_translate("MainWindow", "ändern"))
         self.PBRezepthinzu.setText(_translate("MainWindow", "hinzufügen"))
-        self.LRHandAdd.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#ef9700;\"> Selbst hinzufügen:</span></p></body></html>"))
+        self.PBRezepthinzu.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
+        self.LRHandAdd.setText(_translate("MainWindow", "Add by Hand:"))
+        self.LRHandAdd.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Rezepte"))
         self.PBneu8.setText(_translate("MainWindow", "new"))
         self.LBelegung2.setText(_translate("MainWindow", "LBelegung2"))
@@ -2123,6 +1886,7 @@ class Ui_MainWindow(object):
         self.PBneu2.setText(_translate("MainWindow", "new"))
         self.PBneu9.setText(_translate("MainWindow", "new"))
         self.PBFlanwenden.setText(_translate("MainWindow", "neue Flaschen anwenden"))
+        self.PBFlanwenden.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.PBneu7.setText(_translate("MainWindow", "new"))
         self.PBneu6.setText(_translate("MainWindow", "new"))
         self.LBelegung7.setText(_translate("MainWindow", "LBelegung7"))

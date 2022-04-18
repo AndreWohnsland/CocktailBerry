@@ -16,6 +16,7 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        DP_CONTROLLER.inject_stylesheet(self)
         self.PBabbrechen.clicked.connect(interrupt_cocktail)
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
