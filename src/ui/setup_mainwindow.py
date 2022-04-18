@@ -13,6 +13,7 @@ from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
+from src.ui.setup_option_window import OptionWindow
 from src.updater import Updater
 
 from src.ui_elements.Cocktailmanager_2 import Ui_MainWindow
@@ -79,11 +80,6 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         """ Opens up the progressionwindow to show the Cocktail status. """
         self.prow = ProgressScreen(self, cocktail_type)
 
-    def teamwindow(self):
-        self.teamw = TeamScreen(self)
-        # don't abstract .exec_() into class otherwise you will get NameError in class!
-        self.teamw.exec_()
-
     def prow_change(self, pbvalue):
         """ Changes the value of the Progressionbar of the ProBarWindow. """
         self.prow.progressBar.setValue(pbvalue)
@@ -91,6 +87,18 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     def prow_close(self):
         """ Closes the Progressionwindow at the end of the cyclus. """
         self.prow.close()
+
+    def teamwindow(self):
+        self.teamw = TeamScreen(self)
+        # don't abstract .exec_() into class otherwise you will get NameError in class!
+        self.teamw.exec_()
+
+    def optionwindow(self):
+        """Opens up the options"""
+        if not DP_CONTROLLER.check_bottles_password(self):
+            DP_CONTROLLER.say_wrong_password()
+            return
+        self.option_window = OptionWindow(self)
 
     def bottleswindow(self):
         """ Opens the bottlewindow to change the volumelevels. """
@@ -114,6 +122,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2, 50, 50, password))
         self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine, 50, 50, password))
         self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
+        self.option_button.clicked.connect(self.optionwindow)
         alcohol = UI_LANGUAGE.generate_password_header("alcohol")
         self.LEGehaltRezept.clicked.connect(
             lambda: self.passwordwindow(self.LEGehaltRezept, 50, 50, alcohol)
@@ -148,7 +157,6 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
         self.PBZaktualisieren.clicked.connect(lambda: ingredients.enter_ingredient(self, False))
         self.PBZubereiten_custom.clicked.connect(lambda: maker.prepare_cocktail(self))
-        self.PBCleanMachine.clicked.connect(lambda: bottles.clean_machine(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
         self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))

@@ -294,7 +294,11 @@ QScrollBar::down-arrow:vertical {
 QScrollBar::up-arrow:vertical {
 	image: url(./src/ui_elements/up.png);
 }
-</string>
+
+/*  Give options button the gear icon*/
+#option_button {
+	image: url(./src/ui_elements/options.png);
+}</string>
   </property>
   <property name="documentMode">
    <bool>false</bool>
@@ -314,7 +318,7 @@ QScrollBar::up-arrow:vertical {
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideMiddle</enum>
@@ -2600,7 +2604,7 @@ QScrollBar::up-arrow:vertical {
            </widget>
           </item>
           <item row="17" column="6">
-           <widget class="QPushButton" name="PBCleanMachine">
+           <widget class="QPushButton" name="option_button">
             <property name="maximumSize">
              <size>
               <width>200</width>
@@ -2615,7 +2619,7 @@ QScrollBar::up-arrow:vertical {
              </font>
             </property>
             <property name="text">
-             <string>CLEAN</string>
+             <string/>
             </property>
            </widget>
           </item>

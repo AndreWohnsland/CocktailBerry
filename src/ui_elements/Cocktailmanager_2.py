@@ -285,7 +285,11 @@ class Ui_MainWindow(object):
 "QScrollBar::up-arrow:vertical {\n"
 "    image: url(./src/ui_elements/up.png);\n"
 "}\n"
-"")
+"\n"
+"/*  Give options button the gear icon*/\n"
+"#option_button {\n"
+"    image: url(./src/ui_elements/options.png);\n"
+"}")
         MainWindow.setDocumentMode(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -1224,15 +1228,16 @@ class Ui_MainWindow(object):
         self.PBBelegung.setFont(font)
         self.PBBelegung.setObjectName("PBBelegung")
         self.gridLayout_2.addWidget(self.PBBelegung, 17, 4, 1, 1)
-        self.PBCleanMachine = QtWidgets.QPushButton(self.tab_4)
-        self.PBCleanMachine.setMaximumSize(QtCore.QSize(200, 100))
+        self.option_button = QtWidgets.QPushButton(self.tab_4)
+        self.option_button.setMaximumSize(QtCore.QSize(200, 100))
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
-        self.PBCleanMachine.setFont(font)
-        self.PBCleanMachine.setObjectName("PBCleanMachine")
-        self.gridLayout_2.addWidget(self.PBCleanMachine, 17, 6, 1, 1)
+        self.option_button.setFont(font)
+        self.option_button.setText("")
+        self.option_button.setObjectName("option_button")
+        self.gridLayout_2.addWidget(self.option_button, 17, 6, 1, 1)
         self.PBneu4 = QtWidgets.QPushButton(self.tab_4)
         self.PBneu4.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu4.setMaximumSize(QtCore.QSize(16777215, 100))
@@ -2035,7 +2040,7 @@ class Ui_MainWindow(object):
         self.actionRezeptverwalter.setObjectName("actionRezeptverwalter")
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -2110,7 +2115,6 @@ class Ui_MainWindow(object):
         self.LBelegung6.setText(_translate("MainWindow", "LBelegung6"))
         self.PBneu3.setText(_translate("MainWindow", "new"))
         self.PBBelegung.setText(_translate("MainWindow", "ändern"))
-        self.PBCleanMachine.setText(_translate("MainWindow", "CLEAN"))
         self.PBneu4.setText(_translate("MainWindow", "new"))
         self.bottleLabel1.setText(_translate("MainWindow", "1"))
         self.PBneu10.setText(_translate("MainWindow", "new"))
