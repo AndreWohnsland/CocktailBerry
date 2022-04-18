@@ -10,7 +10,7 @@ from src.models import Cocktail, Ingredient
 from src.config_manager import shared
 from src import MAX_SUPPORTED_BOTTLES
 
-STYLE_FILE = Path(__file__).parents[0].absolute() / "ui" / "styles" / "styles.qss"
+STYLE_FOLDER = Path(__file__).parents[0].absolute() / "ui" / "styles"
 
 
 class DisplayController(DialogHandler):
@@ -145,9 +145,7 @@ class DisplayController(DialogHandler):
             side_effect()
 
     def set_display_settings(self, window_object: QWidget, resize=True):
-        """Checks dev environment, adjust cursor and resize accordingly, if resize is wished
-        Also injects the stylesheet.
-        """
+        """Checks dev environment, adjust cursor and resize accordingly, if resize is wished"""
         if not self.UI_DEVENVIRONMENT:
             window_object.setCursor(Qt.BlankCursor)
         if resize:
@@ -156,7 +154,8 @@ class DisplayController(DialogHandler):
 
     def inject_stylesheet(self, window_object: QWidget):
         """Adds the central stylesheet to the gui"""
-        with open(STYLE_FILE, "r", encoding="utf-8") as filehandler:
+        style_file = f"{self.MAKER_THEME}.qss"
+        with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as filehandler:
             window_object.setStyleSheet(filehandler.read())
 
     def set_tab_width(self, mainscreen):
