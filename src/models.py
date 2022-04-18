@@ -36,7 +36,7 @@ class Cocktail():
     ingredients: List[Ingredient]
     adjusted_alcohol: int = 0
     adjusted_amount: int = 0
-    adjusted_ingredients = field(default_factory=list, init=False)
+    adjusted_ingredients: List[Ingredient] = field(default_factory=list, init=False)
 
     def __post_init__(self):
         self.ingredients.sort()

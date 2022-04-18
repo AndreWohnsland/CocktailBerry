@@ -37,7 +37,7 @@ class DialogHandler(ConfigManager):
         messagebox = CustomDialog(fancy_message, title, self.icon_path)
         messagebox.exec_()
 
-    def user_okay(self, text):
+    def user_okay(self, text: str):
         msg_box = QMessageBox()
         msg_box.setText(text)
         msg_box.setWindowTitle(self.__choose_language(self.dialogs["confirmation_reqired"]))
@@ -310,6 +310,13 @@ class UiLanguage(ConfigManager):
         if headertype == "alcohol":
             return self.__choose_language(window["alcohol"])
         raise ValueError("Currently not possible")
+
+    def adjust_option_window(self, w):
+        """Translates all needed elements of the available window"""
+        window = self.dialogs["option_window"]
+        w.button_clean.setText(self.__choose_language(window["cleaning"]))
+        w.button_config.setText(self.__choose_language(window["config"]))
+        w.button_back.setText(self.__choose_language(window["back"]))
 
 
 UI_LANGUAGE = UiLanguage()

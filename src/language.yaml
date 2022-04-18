@@ -244,3 +244,16 @@ ui:
     alcohol:
       en: 'Enter alcohol!'
       de: 'Alkoholgehalt eingeben!'
+
+  ##### OPTION WINDOW #####
+  # all values for tepasswordam window
+  option_window:
+    cleaning:
+      en: 'Clean Machine'
+      de: 'Machine Reinigen'
+    config:
+      en: 'Change Config'
+      de: 'Einstellungen Ändern'
+    back:
+      en: '< Back'
+      de: '< Zurück'

@@ -54,10 +54,10 @@ yourbutton.clicked.connect(some_function)
 
 Here are some todos, for now or later versions:
 
-- [ ] Extent RPi Controller API to be more generic for also other boards
+- [x] Extent RPi Controller API to be more generic for also other boards
   - [x] Introduce new config var to set board type
   - [x] Add list of supported board types to settings
-  - [ ] Extend documentation for pin names / numbers
+  - [x] Extend documentation for pin names / numbers
   - [x] Check if setting is in list of supported types
   - [x] Refactor RPi to machine controller
   - [x] New board / pin controlller class for machine controller to inherit pin methods from
