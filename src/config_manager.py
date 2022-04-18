@@ -63,6 +63,27 @@ class ConfigManager:
         attributes within the config, which is not a desired behaviour. The sync will include all latest features within
         the config as well as allow custom settings without git overriding changes.
         """
+        self.config_type = {
+            "UI_DEVENVIRONMENT": (bool, []),
+            "UI_PARTYMODE": (bool, []),
+            "UI_MASTERPASSWORD": (str, []),
+            "UI_LANGUAGE": (str, [self.__validate_language_code]),
+            "UI_WIDTH": (int, []),
+            "UI_HEIGHT": (int, []),
+            "PUMP_PINS": (list, [self.__validate_config_list_type]),
+            "PUMP_VOLUMEFLOW": (list, [self.__validate_config_list_type]),
+            "MAKER_NAME": (str, [self.__validate_max_length]),
+            "MAKER_NUMBER_BOTTLES": (int, []),
+            "MAKER_CLEAN_TIME": (int, []),
+            "MAKER_SLEEP_TIME": (float, []),
+            "MAKER_SEARCH_UPDATES": (bool, []),
+            "MAKER_BOARD": (str, [self.__validate_board]),
+            "MICROSERVICE_ACTIVE": (bool, []),
+            "MICROSERVICE_BASE_URL": (str, []),
+            "TEAMS_ACTIVE": (bool, []),
+            "TEAM_BUTTON_NAMES": (list, [self.__validate_config_list_type]),
+            "TEAM_API_URL": (str, []),
+        }
         try:
             self.__read_config()
         except FileNotFoundError:
@@ -88,28 +109,7 @@ class ConfigManager:
 
     def __validate_config_type(self, configname, configvalue):
         """validates the configvalue if its fit the type / conditions"""
-        config_type = {
-            "UI_DEVENVIRONMENT": (bool, []),
-            "UI_PARTYMODE": (bool, []),
-            "UI_MASTERPASSWORD": (str, []),
-            "UI_LANGUAGE": (str, [self.__validate_language_code]),
-            "UI_WIDTH": (int, []),
-            "UI_HEIGHT": (int, []),
-            "PUMP_PINS": (list, [self.__validate_config_list_type]),
-            "PUMP_VOLUMEFLOW": (list, [self.__validate_config_list_type]),
-            "MAKER_NAME": (str, [self.__validate_max_length]),
-            "MAKER_NUMBER_BOTTLES": (int, []),
-            "MAKER_CLEAN_TIME": (int, []),
-            "MAKER_SLEEP_TIME": (float, []),
-            "MAKER_SEARCH_UPDATES": (bool, []),
-            "MAKER_BOARD": (str, [self.__validate_board]),
-            "MICROSERVICE_ACTIVE": (bool, []),
-            "MICROSERVICE_BASE_URL": (str, []),
-            "TEAMS_ACTIVE": (bool, []),
-            "TEAM_BUTTON_NAMES": (list, [self.__validate_config_list_type]),
-            "TEAM_API_URL": (str, []),
-        }
-        config_setting = config_type.get(configname)
+        config_setting = self.config_type.get(configname)
         if config_setting is None:
             return
         datatype, check_functions = config_setting
@@ -124,12 +124,12 @@ class ConfigManager:
     def __validate_config_list_type(self, configname: str, configlist: List[Any]):
         """Extra validation for list type in case len / types"""
         min_bottles = self._choose_bottle_number()
-        config_type = {
+        config_type_list = {
             "PUMP_PINS": (int, min_bottles),
             "PUMP_VOLUMEFLOW": (int, min_bottles),
             "TEAM_BUTTON_NAMES": (str, 2),
         }
-        config_setting = config_type.get(configname)
+        config_setting = config_type_list.get(configname)
         if config_setting is None:
             return
         datatype, min_len = config_setting
