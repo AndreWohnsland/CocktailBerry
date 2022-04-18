@@ -63,6 +63,8 @@ class ConfigManager:
         attributes within the config, which is not a desired behaviour. The sync will include all latest features within
         the config as well as allow custom settings without git overriding changes.
         """
+        # Dict of Format "configname": (type, List[CheckCallbacks])
+        # The check function needs to be a callable with interface fn(configname, configvalue)
         self.config_type = {
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_PARTYMODE": (bool, []),
@@ -83,6 +85,13 @@ class ConfigManager:
             "TEAMS_ACTIVE": (bool, []),
             "TEAM_BUTTON_NAMES": (list, [self.__validate_config_list_type]),
             "TEAM_API_URL": (str, []),
+        }
+        # Dict of Format "configname": (type, List[CheckCallbacks]) for the single list elements
+        # only needed if the above config type was defined as list type, rest is identical to top schema
+        self.config_type_list = {
+            "PUMP_PINS": (int, []),
+            "PUMP_VOLUMEFLOW": (int, []),
+            "TEAM_BUTTON_NAMES": (str, []),
         }
         try:
             self.__read_config()
@@ -107,7 +116,7 @@ class ConfigManager:
                 self.__validate_config_type(k, value)
                 setattr(self, k, value)
 
-    def __validate_config_type(self, configname, configvalue):
+    def __validate_config_type(self, configname: str, configvalue: Any):
         """validates the configvalue if its fit the type / conditions"""
         config_setting = self.config_type.get(configname)
         if config_setting is None:
@@ -123,43 +132,48 @@ class ConfigManager:
 
     def __validate_config_list_type(self, configname: str, configlist: List[Any]):
         """Extra validation for list type in case len / types"""
-        min_bottles = self._choose_bottle_number()
-        config_type_list = {
-            "PUMP_PINS": (int, min_bottles),
-            "PUMP_VOLUMEFLOW": (int, min_bottles),
-            "TEAM_BUTTON_NAMES": (str, 2),
-        }
-        config_setting = config_type_list.get(configname)
+        config_setting = self.config_type_list.get(configname)
         if config_setting is None:
             return
-        datatype, min_len = config_setting
+        datatype, check_functions = config_setting
         for i, config in enumerate(configlist, 1):
             if not isinstance(config, datatype):
                 raise ConfigError(f"The {i} position of {configname} is not of type {datatype}")
+            for check_fun in check_functions:
+                check_fun(configname, config)
         # aditional len check of the list data,
+        min_bottles = self._choose_bottle_number()
+        min_len_config = {
+            "PUMP_PINS": min_bottles,
+            "PUMP_VOLUMEFLOW": min_bottles,
+            "TEAM_BUTTON_NAMES": 2,
+        }
+        min_len = min_len_config.get(configname)
+        if min_len is None:
+            return
         self.__validate_list_length(configlist, configname, min_len)
 
-    def __validate_list_length(self, configlist, configname, min_len):
+    def __validate_list_length(self, configlist: List[Any], configname: str, min_len: int):
         """Checks if the list is at least a given size"""
         actual_len = len(configlist)
         if actual_len < min_len:
             raise ConfigError(f"{configname} is only {actual_len} elements, but you need at least {min_len} elements")
 
-    def __validate_language_code(self, configname, countrycode):
+    def __validate_language_code(self, configname: str, countrycode: str):
         """Checks if the defined language is available"""
         self.__check_if_supported(configname, countrycode, SUPPORTED_LANGUAGES)
 
-    def __validate_board(self, configname, boardname):
+    def __validate_board(self, configname: str, boardname: str):
         """Checks if the defined board is implemented"""
         self.__check_if_supported(configname, boardname, SUPPORTED_BOARDS)
 
-    def __check_if_supported(self, configname, configvalue, available: List[Any]):
+    def __check_if_supported(self, configname: str, configvalue: Any, available: List[Any]):
         """Check if the configvalue is within the supported List"""
         if configvalue in available:
             return
         raise ConfigError(f"Value '{configvalue}' for {configname} is not supported, please use any of {available}")
 
-    def __validate_max_length(self, configname, data, max_len=30):
+    def __validate_max_length(self, configname: str, data: str, max_len=30):
         """Validates if data exceeds maximum length"""
         if len(data) <= max_len:
             return
