@@ -52,6 +52,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.handw: Union[HandaddWidget, None] = None
         self.availw: Union[AvailableWindow, None] = None
         self.teamw: Union[TeamScreen, None] = None
+        self.option_window: Union[OptionWindow, None] = None
         UI_LANGUAGE.adjust_mainwindow(self)
         self.showFullScreen()
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
@@ -82,10 +83,14 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
 
     def prow_change(self, pbvalue):
         """ Changes the value of the Progressionbar of the ProBarWindow. """
+        if self.prow is None:
+            return
         self.prow.progressBar.setValue(pbvalue)
 
     def prow_close(self):
         """ Closes the Progressionwindow at the end of the cyclus. """
+        if self.prow is None:
+            return
         self.prow.close()
 
     def teamwindow(self):
