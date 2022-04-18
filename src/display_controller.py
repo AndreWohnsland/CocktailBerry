@@ -1,12 +1,16 @@
+from pathlib import Path
 from typing import Any, Callable, List, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QWidget
 
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
 from src.models import Cocktail, Ingredient
 from src.config_manager import shared
 from src import MAX_SUPPORTED_BOTTLES
+
+STYLE_FILE = Path(__file__).parents[0].absolute() / "ui" / "styles.qss"
 
 
 class DisplayController(DialogHandler):
@@ -140,13 +144,17 @@ class DisplayController(DialogHandler):
         if side_effect is not None:
             side_effect()
 
-    def set_display_settings(self, window_object, resize=True):
-        """Checks dev environment, adjust cursor and resize accordingly, if resize is wished"""
+    def set_display_settings(self, window_object: QWidget, resize=True):
+        """Checks dev environment, adjust cursor and resize accordingly, if resize is wished
+        Also injects the stylesheet.
+        """
         if not self.UI_DEVENVIRONMENT:
             window_object.setCursor(Qt.BlankCursor)
         if resize:
             window_object.setFixedSize(self.UI_WIDTH, self.UI_HEIGHT)
             window_object.resize(self.UI_WIDTH, self.UI_HEIGHT)
+        with open(STYLE_FILE, "r", encoding="utf-8") as filehandler:
+            window_object.setStyleSheet(filehandler.read())
 
     def set_tab_width(self, mainscreen):
         """Hack to set tabs to full screen width, inheritance of custom tabBars dont work

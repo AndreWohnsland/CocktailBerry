@@ -15,7 +15,7 @@ Regex to match all current:
 */
 
 
-QCheckBox::indicator{
+QCheckBox::indicator {
     /*border: 1px solid rgb(120, 120, 120);
 	border-radius: 2px;*/
   width: 18px;
@@ -31,14 +31,12 @@ QCheckBox::indicator:checked{
 	image: url(./src/ui_elements/check.png);
 }
 
-QWidget
-{
+QWidget {
 	color: rgb(0, 123, 255);	
 	background-color: rgb(0, 0, 0);
 }
 
-QWidget[cssClass~="secondary"]
-{
+QWidget[cssClass~="secondary"] {
 	color: rgb(239, 151, 0);
 }
 
@@ -72,7 +70,9 @@ QTabBar::tab:selected {
 	background-color: rgb(0, 123, 255);
 }
 
-.QMessageBox {font-size: 16pt}
+.QMessageBox {
+	font-size: 16pt
+}
 
 .QSlider {
   min-height: 30px;
@@ -105,14 +105,12 @@ QPushButton {
 	padding-right: 5px;
 }
 
-QPushButton:checked
-{
+QPushButton:checked {
 	color: rgb(239, 151, 0);	
 	border-color: rgb(239, 151, 0);
 }
 
-QPushButton:pressed
-{
+QPushButton:pressed {
 	color: rgb(239, 151, 0);	
 	border-color: rgb(239, 151, 0);
 }
@@ -215,24 +213,6 @@ QLineEdit {
 	color: rgb(239, 151, 0);
 }
 
-/* Inverted button style */
-#PBZubereiten_custom, #PBZutathinzu, #PBRezepthinzu, #PBZeinzelnd, #PBAvailable, #PBFlanwenden {
-	background-color: rgb(0, 123, 255);  
-	color: rgb(0, 0, 0);
-  border-width: 3px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-#PBZubereiten_custom:pressed, #PBZutathinzu:pressed, #PBRezepthinzu:pressed,#PBZeinzelnd:pressed, #PBAvailable:pressed, #PBFlanwenden:pressed {
-	background-color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);	
-}
-
 #LAlkoholgehalt, #LMenge {
 	padding-left: 10px;
 	padding-right: 10px;
@@ -277,4 +257,8 @@ QScrollBar::down-arrow:vertical {
 
 QScrollBar::up-arrow:vertical {
 	image: url(./src/ui_elements/up.png);
+}
+
+#option_button {
+	image: url(./src/ui_elements/options.png);
 }
