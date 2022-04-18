@@ -194,8 +194,13 @@ class DialogHandler(ConfigManager):
         self.__output_language_dialog(self.dialogs["alcohollevel_max_limit"])
 
     def ask_to_update(self):
+        """Asks the user if he wants to get the latest update"""
         message = self.__choose_language(self.dialogs["update_available"])
         return self.user_okay(message)
+
+    def say_wrong_config(self, error: str):
+        """Informs the user that the config is wrong with the error message."""
+        self.__output_language_dialog(self.dialogs["wrong_config"], error=error)
 
 
 class UiLanguage(ConfigManager):

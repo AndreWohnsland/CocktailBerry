@@ -110,6 +110,9 @@ dialog:
   no_button:
     en: 'No'
     de: 'Nein'
+  wrong_config:
+    en: 'At least one value is wrong in the config: {error}'
+    de: 'Mindestens ein Wert ist Fehlerhaft: {error}'
 
 # Change of language in UI elements
 ui:
