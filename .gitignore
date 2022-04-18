@@ -15,3 +15,5 @@ custom_config.*
 .version.ini
 # some testing files
 tmp_*
+
+.qt_for_python/*
