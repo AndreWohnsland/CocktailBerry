@@ -1,12 +1,12 @@
 import random
 from pathlib import Path
-from typing import Any, List
+from typing import Any, Dict, List, Union
 import typer
 import yaml
 from src.logger_handler import LoggerHandler
 
 from src.models import Ingredient
-from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES, SUPPORTED_BOARDS
+from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES, SUPPORTED_BOARDS, SUPPORTED_THEMES
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
@@ -46,6 +46,8 @@ class ConfigManager:
     MAKER_SEARCH_UPDATES = False
     # Possibility to use different boards to controll Pins
     MAKER_BOARD = "RPI"
+    # Theme Setting to load according qss file
+    MAKER_THEME = "default"
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
@@ -70,16 +72,17 @@ class ConfigManager:
             "UI_PARTYMODE": (bool, []),
             "UI_MASTERPASSWORD": (str, []),
             "UI_LANGUAGE": (str, [self.__validate_language_code]),
-            "UI_WIDTH": (int, []),
-            "UI_HEIGHT": (int, []),
+            "UI_WIDTH": (int, [lambda x, y: self.__limit_number(x, y, 1, 10000)]),
+            "UI_HEIGHT": (int, [lambda x, y: self.__limit_number(x, y, 1, 3000)]),
             "PUMP_PINS": (list, [self.__validate_config_list_type]),
             "PUMP_VOLUMEFLOW": (list, [self.__validate_config_list_type]),
             "MAKER_NAME": (str, [self.__validate_max_length]),
-            "MAKER_NUMBER_BOTTLES": (int, []),
-            "MAKER_CLEAN_TIME": (int, []),
-            "MAKER_SLEEP_TIME": (float, []),
+            "MAKER_NUMBER_BOTTLES": (int, [lambda x, y: self.__limit_number(x, y, 1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_CLEAN_TIME": (int, [self.__limit_number]),
+            "MAKER_SLEEP_TIME": (float, [lambda x, y: self.__limit_number(x, y, 0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
             "MAKER_BOARD": (str, [self.__validate_board]),
+            "MAKER_THEME": (str, [self.__validate_theme]),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
@@ -90,7 +93,7 @@ class ConfigManager:
         # only needed if the above config type was defined as list type, rest is identical to top schema
         self.config_type_list = {
             "PUMP_PINS": (int, []),
-            "PUMP_VOLUMEFLOW": (int, []),
+            "PUMP_VOLUMEFLOW": (int, [lambda x, y: self.__limit_number(x, y, 1, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
         }
         try:
@@ -101,20 +104,29 @@ class ConfigManager:
     def sync_config_to_file(self):
         """Writes the config attributes to the config file.
         Is used to sync new properties into the file"""
-        attributes = [a for a in dir(self) if not (a.startswith('__') or a.startswith('_') or a.startswith('sync'))]
         config = {}
-        for attribute in attributes:
+        for attribute in self.config_type:
             config[attribute] = getattr(self, attribute)
         with open(CONFIG_FILE, 'w', encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
+
+    def validate_and_set_config(self, configuration: Dict, lists_later=True):
+        """Validates the config and set new values"""
+        # Some lists may depend on other config variables like number of bottles
+        # Therefore, by default, split list types from the rest and check them afterwards
+        if lists_later:
+            non_list_config = {k: value for k, value in configuration.items() if not isinstance(value, list)}
+            self.validate_and_set_config(non_list_config, False)
+            configuration = {k: value for k, value in configuration.items() if isinstance(value, list)}
+        for k, value in configuration.items():
+            self.__validate_config_type(k, value)
+            setattr(self, k, value)
 
     def __read_config(self):
         """Reads all the config data from the file and validates it"""
         with open(CONFIG_FILE, "r", encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
-            for k, value in configuration.items():
-                self.__validate_config_type(k, value)
-                setattr(self, k, value)
+            self.validate_and_set_config(configuration)
 
     def __validate_config_type(self, configname: str, configvalue: Any):
         """validates the configvalue if its fit the type / conditions"""
@@ -128,7 +140,7 @@ class ConfigManager:
             for check_fun in check_functions:
                 check_fun(configname, configvalue)
             return
-        raise ConfigError(f"The config option {configname} is not of type {datatype}")
+        raise ConfigError(f"The value {configvalue} for {configname} is not of type {datatype}")
 
     def __validate_config_list_type(self, configname: str, configlist: List[Any]):
         """Extra validation for list type in case len / types"""
@@ -138,7 +150,7 @@ class ConfigManager:
         datatype, check_functions = config_setting
         for i, config in enumerate(configlist, 1):
             if not isinstance(config, datatype):
-                raise ConfigError(f"The {i} position of {configname} is not of type {datatype}")
+                raise ConfigError(f"The value {config} at position {i} for {configname} is not of type {datatype}")
             for check_fun in check_functions:
                 check_fun(configname, config)
         # aditional len check of the list data,
@@ -157,7 +169,7 @@ class ConfigManager:
         """Checks if the list is at least a given size"""
         actual_len = len(configlist)
         if actual_len < min_len:
-            raise ConfigError(f"{configname} is only {actual_len} elements, but you need at least {min_len} elements")
+            raise ConfigError(f"{configname} got only {actual_len} elements, but you need at least {min_len} elements")
 
     def __validate_language_code(self, configname: str, countrycode: str):
         """Checks if the defined language is available"""
@@ -166,6 +178,10 @@ class ConfigManager:
     def __validate_board(self, configname: str, boardname: str):
         """Checks if the defined board is implemented"""
         self.__check_if_supported(configname, boardname, SUPPORTED_BOARDS)
+
+    def __validate_theme(self, configname: str, themename: str):
+        """Checks if the defined theme is implemented"""
+        self.__check_if_supported(configname, themename, SUPPORTED_THEMES)
 
     def __check_if_supported(self, configname: str, configvalue: Any, available: List[Any]):
         """Check if the configvalue is within the supported List"""
@@ -184,6 +200,11 @@ class ConfigManager:
         if get_all:
             return MAX_SUPPORTED_BOTTLES
         return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
+
+    def __limit_number(self, configname: str, data: Union[int, float], min_val: Union[int, float] = 1, max_val: Union[int, float] = 100):
+        """Check if the number is within the fiven limits"""
+        if data < min_val or data > max_val:
+            raise ConfigError(f"{configname} must be between {min_val} and {max_val}.")
 
 
 class Shared:
