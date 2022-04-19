@@ -10,7 +10,7 @@ from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 
 
-ui_file = Path(__file__).parent.absolute() / "ui_elements" / "Calibration.ui"
+ui_file = Path(__file__).parents[1].absolute() / "ui_elements" / "Calibration.ui"
 logger = LoggerHandler("calibration_module", "production_logs")
 
 
@@ -28,7 +28,9 @@ class CalibrationScreen(QMainWindow, ConfigManager):
         self.amount_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "+", 10, 200, 10))
         self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "-", 10, 200, 10))
         self.showFullScreen()
+        DP_CONTROLLER.inject_stylesheet(self)
         DP_CONTROLLER.set_display_settings(self)
+        MACHINE.set_up_pumps()
         logger.log_start_program("calibration")
 
     def output_volume(self):

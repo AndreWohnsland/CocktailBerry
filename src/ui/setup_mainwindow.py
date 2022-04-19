@@ -8,6 +8,7 @@ from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
 from src.config_manager import ConfigManager
+from src.machine.controller import MACHINE
 from src.tabs import maker, ingredients, recipes, bottles
 from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
@@ -55,6 +56,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.teamw: Union[TeamScreen, None] = None
         self.option_window: Union[OptionWindow, None] = None
         UI_LANGUAGE.adjust_mainwindow(self)
+        MACHINE.set_up_pumps()
         self.showFullScreen()
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)

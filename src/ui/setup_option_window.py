@@ -33,11 +33,11 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _open_config(self):
-        self.config_window = ConfigWindow(self.mainscreen)
         self.close()
+        self.config_window = ConfigWindow(self.mainscreen)
 
     def _init_clean_machine(self):
-        if not DP_CONTROLLER.user_okay("Starting Cleaning Progress?"):
+        if not DP_CONTROLLER.ask_to_start_cleaning():
             return
         self.close()
-        bottles.clean_machine(self.mainscreen)
+        bottles.clean_machine()

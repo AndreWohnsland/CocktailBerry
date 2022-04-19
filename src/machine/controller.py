@@ -13,7 +13,6 @@ class MachineController(ConfigManager):
     def __init__(self):
         super().__init__()
         self._pin_controller = self.__chose_controller()
-        self._set_up_pumps()
 
     def __chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""
@@ -103,7 +102,7 @@ class MachineController(ConfigManager):
         """Prints the current passed time in relation to total time"""
         print(f"{current_time:.1f}/{total_time:.1f} s:\t", end="")
 
-    def _set_up_pumps(self):
+    def set_up_pumps(self):
         """Gets all used pins, prints pins and uses controller class to set up"""
         active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
         print(f"Initializing Pins: {active_pins}")
