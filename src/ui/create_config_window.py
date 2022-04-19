@@ -1,29 +1,38 @@
 
+import os
+import sys
 from typing import Any, Callable, List, Union
 from pathlib import Path
 from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton, QBoxLayout
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QFont, QIcon
 
-from src.config_manager import ConfigManager
+from src.config_manager import ConfigError, ConfigManager
+from src.display_controller import DP_CONTROLLER
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_password_screen import PasswordScreen
 
-
-STYLE_FILE = Path(__file__).parents[0].absolute() / "styles.qss"
+FILE_PATH = Path(__file__).parents[0].absolute()
+EXECUTABLE = FILE_PATH.parents[1].absolute() / "runme.py"
 SMALL_FONT = 12
 MEDIUM_FONT = 14
 LARGE_FONT = 16
 
 
 class ConfigWindow(QMainWindow, ConfigManager):
-    def __init__(self):
+    def __init__(self, parent):
         super().__init__()
         ConfigManager.__init__(self)
-        self.icon_path = None
+        DP_CONTROLLER.inject_stylesheet(self)
+        self.mainscreen = parent
+        self.icon_path = parent.icon_path
+        self.setWindowIcon(QIcon(self.icon_path))
         self.config_objects = {}
         self._init_ui()
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.showFullScreen()
+        DP_CONTROLLER.set_display_settings(self)
 
     def _init_ui(self):
         self.setWindowTitle("Change Configuration")
@@ -37,10 +46,14 @@ class ConfigWindow(QMainWindow, ConfigManager):
 
         self.button_back = QPushButton("Back")
         self.button_back.clicked.connect(self.close)
+        self.button_back.setMaximumSize(QSize(16777215, 200))
+        self.button_back.setMinimumSize(QSize(0, 70))
         self._adjust_font(self.button_back, LARGE_FONT, True)
         self.button_save = QPushButton("Save")
         self.button_save.clicked.connect(self._save_config)
         self.button_save.setProperty("cssClass", "btn-inverted")
+        self.button_save.setMaximumSize(QSize(16777215, 200))
+        self.button_save.setMinimumSize(QSize(0, 70))
         self._adjust_font(self.button_save, LARGE_FONT, True)
         self.hbox = QHBoxLayout()
         self.hbox.addWidget(self.button_back)
@@ -55,15 +68,17 @@ class ConfigWindow(QMainWindow, ConfigManager):
         self.scroll_area.setWidget(self.widget)
         self.setCentralWidget(self.scroll_area)
 
-        # TODO: Refactor this into display controller and call it
-        with open(STYLE_FILE, "r", encoding="utf-8") as filehandler:
-            self.setStyleSheet(filehandler.read())
-        self.show()
-
     def _save_config(self):
-        print("TODO: Validation and Saving")
-        print(self._retrieve_values())
-        # self.close()
+        try:
+            self.validate_and_set_config(self._retrieve_values())
+            self.sync_config_to_file()
+        except ConfigError as err:
+            DP_CONTROLLER.say_wrong_config(str(err))
+            return
+        # Also asks if to restart programm to get new config
+        if DP_CONTROLLER.ask_to_restart_for_config():
+            os.execl(sys.executable, EXECUTABLE, *sys.argv)
+        self.close()
 
     def _choose_dispay_style(self, configname: str, configtype: type):
         """Creates the input face for the according config types"""
@@ -83,6 +98,8 @@ class ConfigWindow(QMainWindow, ConfigManager):
             layout = self.vbox
         if configtype == int:
             return self._build_int_field(layout, configname, current_value)
+        if configtype == float:
+            return self._build_float_field(layout, configname, current_value)
         if configtype == bool:
             return self._buid_bool_field(layout, current_value)
         if configtype == list:
@@ -93,14 +110,25 @@ class ConfigWindow(QMainWindow, ConfigManager):
         """Builds a field for integer input with numpad"""
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
-        config_input.clicked.connect(lambda: PasswordScreen(self, le_to_write=config_input, headertext=configname))
+        config_input.setProperty("cssClass", "secondary")
+        config_input.clicked.connect(lambda: PasswordScreen(self, 300, 50, config_input, configname))
         layout.addWidget(config_input)
         return lambda: int(config_input.text())
+
+    def _build_float_field(self, layout: QBoxLayout, configname: str, current_value: int) -> Callable[[], float]:
+        """Builds a field for integer input with numpad"""
+        config_input = ClickableLineEdit(str(current_value))
+        self._adjust_font(config_input, MEDIUM_FONT)
+        config_input.setProperty("cssClass", "secondary")
+        config_input.clicked.connect(lambda: PasswordScreen(self, 300, 50, config_input, configname, True))
+        layout.addWidget(config_input)
+        return lambda: float(config_input.text())
 
     def _buid_bool_field(self, layout: QBoxLayout, current_value: bool, displayed_text="on") -> Callable[[], bool]:
         """Builds a field for bool input with a checkbox"""
         config_input = QCheckBox(displayed_text)
         self._adjust_font(config_input, MEDIUM_FONT)
+        config_input.setProperty("cssClass", "secondary")
         config_input.setChecked(current_value)
         layout.addWidget(config_input)
         return config_input.isChecked
@@ -149,7 +177,8 @@ class ConfigWindow(QMainWindow, ConfigManager):
     def _build_fallback_field(self, layout: QBoxLayout, current_value) -> Callable[[], str]:
         """builds the default input field for string input"""
         config_input = ClickableLineEdit(str(current_value))
-        self._adjust_font(config_input, MEDIUM_FONT, True)
+        self._adjust_font(config_input, MEDIUM_FONT)
+        config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(lambda: KeyboardWidget(self, config_input, 200))
         layout.addWidget(config_input)
         return config_input.text
