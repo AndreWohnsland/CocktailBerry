@@ -6,7 +6,9 @@ This is an additional section for information, generally not relevant for the us
 
 - [Python Version](#python-version)
 - [Program Schema](#program-schema)
+- [Translating the UI](#translating-the-ui)
 - [PyQt](#pyqt)
+  - [Creating Styles](#creating-styles)
   - [Button clicked.connect behaviour](#button-clickedconnect-behaviour)
 - [ToDos](#todos)
 
@@ -27,9 +29,24 @@ In the following diagram, the schema and Classes / Containers are displayed in a
 
 ![ProgramSchema](diagrams/out/ProgramSchema.svg)
 
+# Translating the UI
+
+One contribution, that does not require any programming skill is the possibility to add a translation to your language.
+The language file is found in `src/language.yaml` for CocktailBerry and in `dashboard/frontend/language.yaml` for the Dashboard. In the best szenario, both files get the according translation. You can use any of the existing language to translate into your own language, in most cases english will probably be the best to use. Please add for every existing option a translation, following the current YAML schema. Using a common **two letter code** for your country / language is desired.
+
 # PyQt
 
 All Topics related to PyQt (or Qt in general).
+
+## Creating Styles
+
+To manage the style, a qss (qt-css) file is used. [qtsass](https://github.com/spyder-ide/qtsass) is used to convert a sass file into the used qss file. For conversion run:
+
+```bash
+qtsass /src/ui/styles/stylname.scss -o /src/ui/styles/stylname.qss   
+```
+
+If you want to implement a new style, copy the default.scss file, rename the copy to your style name and plug your colors into the variables. After that, just compile the file. You got a new style setting. To be supported, the style name needs to be added to the `src.__init__` file into the SUPPORTED_STYLES list.
 
 ## Button clicked.connect behaviour
 
