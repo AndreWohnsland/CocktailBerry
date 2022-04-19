@@ -193,14 +193,24 @@ class DialogHandler(ConfigManager):
         """Informs user that the alcohol level can not be greater than 100"""
         self.__output_language_dialog(self.dialogs["alcohollevel_max_limit"])
 
+    def say_wrong_config(self, error: str):
+        """Informs the user that the config is wrong with the error message."""
+        self.__output_language_dialog(self.dialogs["wrong_config"], error=error)
+
     def ask_to_update(self):
         """Asks the user if he wants to get the latest update"""
         message = self.__choose_language(self.dialogs["update_available"])
         return self.user_okay(message)
 
-    def say_wrong_config(self, error: str):
-        """Informs the user that the config is wrong with the error message."""
-        self.__output_language_dialog(self.dialogs["wrong_config"], error=error)
+    def ask_to_start_cleaning(self):
+        """Asks the user if he wants to start the cleaning process"""
+        message = self.__choose_language(self.dialogs["ask_to_clean"])
+        return self.user_okay(message)
+
+    def ask_to_restart_for_config(self):
+        """Asks the user if he wants to restart to apply new config"""
+        message = self.__choose_language(self.dialogs["restart_config"])
+        return self.user_okay(message)
 
 
 class UiLanguage(ConfigManager):
