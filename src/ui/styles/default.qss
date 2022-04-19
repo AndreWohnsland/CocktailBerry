@@ -17,16 +17,23 @@ QWidget[cssClass~='secondary'] {
   color: #ef9700; }
 
 *[cssClass~='header-underline'] {
-  color: #a6a6a6;
+  color: #96adba;
   border-bottom: 1px solid;
-  border-color: #a6a6a6;
+  border-color: #96adba;
   margin-bottom: 5px;
   padding-left: 10px;
   padding-right: 10px; }
 
+*[cssClass~='hand-seperator'] {
+  color: #96adba; }
+
+*[cssClass~='neutral'] {
+  color: #96adba; }
+
 QWidget:item:selected {
   color: #ef9700;
-  border: 1px solid #ef9700; }
+  font-weight: bold;
+  border: 3px solid #ef9700; }
 
 QTabWidget::pane {
   border: 1px solid #616161;
@@ -100,12 +107,14 @@ QPushButton:checked[cssClass~='btn-inverted'] {
   border-color: #ef9700; }
 
 QPushButton[cssClass~='btn-teamone'] {
-  background-color: #eb4034;
-  border-color: #eb4034; }
+  background-color: #007bff;
+  border-color: #007bff;
+  color: black; }
 
 QPushButton[cssClass~='btn-teamtwo'] {
-  background-color: #344ceb;
-  border-color: #344ceb; }
+  background-color: #ef9700;
+  border-color: #ef9700;
+  color: black; }
 
 QProgressBar {
   background-color: #a6a6a6;
@@ -127,7 +136,7 @@ QProgressBar::chunk {
 
 QComboBox {
   color: #007bff;
-  border: 1px solid #616161;
+  border: 2px solid #616161;
   border-top-left-radius: 7px;
   border-bottom-left-radius: 7px;
   padding: 1px 18px 1px 5px;
@@ -135,18 +144,18 @@ QComboBox {
 
 QComboBox:on {
   /* shift the text when the popup opens */
-  border: 1px solid #616161;
+  border: 2px solid #616161;
   border-top-left-radius: 7px;
   border-bottom-left-radius: 0px;
   color: #ef9700; }
 
 QComboBox QAbstractItemView {
-  border: 1px solid #616161; }
+  border: 2px solid #616161; }
 
 QLineEdit {
   padding: 1px;
   border-style: solid;
-  border: 1px solid #616161;
+  border: 2px solid #616161;
   border-radius: 5; }
 
 QListWidget {
@@ -196,3 +205,18 @@ QScrollBar::up-arrow:vertical {
 
 #informationLabel {
   padding: 5px 25px 5px 25px; }
+
+/* Message box from system */
+QMessageBox QPushButton {
+  background-color: #007bff;
+  color: black;
+  font-size: 30pt;
+  padding: 5px 20px 5px 20px;
+  min-width: 120px; }
+
+QMessageBox {
+  background-color: black;
+  font-size: 16pt; }
+
+QMessageBox QLabel {
+  color: #007bff; }

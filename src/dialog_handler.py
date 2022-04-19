@@ -45,9 +45,9 @@ class DialogHandler(ConfigManager):
         no_text = self.__choose_language(self.dialogs["no_button"])
         yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)
         msg_box.addButton(no_text, QMessageBox.NoRole)
-        msg_box.setStyleSheet(
-            "QMessageBox QPushButton{background-color: rgb(0, 123, 255); color: rgb(0, 0, 0); font-size: 30pt; padding: 5px 20px 5px 20px; min-width: 120px;} QMessageBox{background-color: rgb(10, 10, 10); font-size: 16pt;} QMessageBox QLabel{color: rgb(0, 123, 255);}"
-        )
+        style_sheet = str(DIRPATH / "ui" / "styles" / f"{self.MAKER_THEME}.qss")
+        with open(style_sheet, "r", encoding="utf-8") as filehandler:
+            msg_box.setStyleSheet(filehandler.read())
         msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         msg_box.move(50, 50)
         msg_box.exec_()

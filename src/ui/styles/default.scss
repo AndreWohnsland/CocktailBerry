@@ -1,5 +1,6 @@
 $primary: rgb(0, 123, 255);
 $secondary: rgb(239, 151, 0);
+$neutral: rgb(150, 173, 186);
 $background: rgb(0, 0, 0);
 $border: rgb(97, 97, 97);
 $progressbar: rgb(0, 233, 245);
@@ -7,7 +8,9 @@ $progressbg: rgb(166, 166, 166);
 $checkbgbackup: rgb(200, 200, 200);
 $tabborder: rgb(255, 255, 255);
 $sliderspine: #393939;
-$teamone: rgb(235, 64, 52);
-$teamtwo: rgb(52, 76, 235);
+$teamone: $primary;
+$teamtwo: $secondary;
+
+$element-border: 2px;
 
 @import 'elements';
