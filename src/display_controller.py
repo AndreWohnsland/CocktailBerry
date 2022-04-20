@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
 
+
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
 from src.models import Cocktail, Ingredient
@@ -357,8 +358,9 @@ class DisplayController(DialogHandler):
         for field_ingredient, field_volume, ing in zip(fields_ingredient, fields_volume, display_data):
             if isinstance(ing, str):
                 ingredient_name = UI_LANGUAGE.get_add_self()
-                field_ingredient.setStyleSheet("color: rgb(170, 170, 170);")  # margin-top: 5px;
+                field_ingredient.setProperty("cssClass", "hand-seperator")
             else:
+                field_ingredient.setProperty("cssClass", None)
                 field_volume.setText(f" {ing.amount} ml")
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
@@ -372,7 +374,6 @@ class DisplayController(DialogHandler):
             w.LWMaker.clearSelection()
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(w), self.get_labels_maker_volume(w)):
             field_ingredient.setText("")
-            field_ingredient.setStyleSheet("color: rgb(0, 123, 255)")
             field_volume.setText("")
 
     def clear_recipe_data_recipes(self, w, select_other_item: bool):
