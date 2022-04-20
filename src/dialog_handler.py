@@ -229,13 +229,10 @@ class UiLanguage(ConfigManager):
         with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
             self.dialogs: Dict = yaml.safe_load(stream)["ui"]
 
-    def __choose_language(self, element: dict, **kwargs) -> Union[str, List[str]]:
+    def __choose_language(self, element: dict, **kwargs) -> str:
         """Choose either the given language if exists, or english if not piping additional info into template"""
         language = self.UI_LANGUAGE
         tmpl = element.get(language, element["en"])
-        # Return the list and not apply template!
-        if isinstance(tmpl, list):
-            return tmpl
         return tmpl.format(**kwargs)
 
     def get_add_self(self) -> str:
@@ -250,7 +247,12 @@ class UiLanguage(ConfigManager):
         """Translates all needed elements of the main window (cocktail maker)"""
         window = self.dialogs["main_window"]
         w.PBZubereiten_custom.setText(self.__choose_language(window["prepare_button"]))
-        tabs = self.__choose_language(window["tab_names"])
+        tabs = [
+            self.__choose_language(window["tab_maker"]),
+            self.__choose_language(window["tab_ingredients"]),
+            self.__choose_language(window["tab_recipes"]),
+            self.__choose_language(window["tab_bottles"]),
+        ]
         for i, text in enumerate(tabs):
             w.tabWidget.setTabText(i, text)
         w.PBZeinzelnd.setText(self.__choose_language(window["single_ingredient_button"]))

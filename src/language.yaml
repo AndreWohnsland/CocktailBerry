@@ -145,17 +145,18 @@ ui:
     prepare_button:
       en: 'Prepare'
       de: 'Zubereiten'
-    tab_names:
-      en:
-        - 'Maker'
-        - 'Ingredients'
-        - 'Recipes'
-        - 'Bottles'
-      de:
-        - 'Maker'
-        - 'Zutaten'
-        - 'Rezepte'
-        - 'Flaschen'
+    tab_maker:
+      en: 'Maker'
+      de: 'Maker'
+    tab_ingredients:
+      en: 'Ingredients'
+      de: 'Zutaten'
+    tab_recipes:
+      en: 'Recipes'
+      de: 'Rezepte'
+    tab_bottles:
+      en: 'Bottles'
+      de: 'Flaschen'
     ingredient_label:
       en: 'Ingredient'
       de: 'Zutat'
