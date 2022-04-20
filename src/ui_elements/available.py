@@ -17,7 +17,6 @@ class Ui_available(object):
         available.resize(800, 480)
         available.setMinimumSize(QtCore.QSize(800, 480))
         available.setMaximumSize(QtCore.QSize(800, 480))
-        available.setStyleSheet("")
         self.centralwidget = QtWidgets.QWidget(available)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -56,36 +55,6 @@ class Ui_available(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWVorhanden.setFont(font)
-        self.LWVorhanden.setStyleSheet(" QScrollBar:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     width: 30px;\n"
-"     margin: 31px 0 31px 0;\n"
-" }\n"
-" QScrollBar::handle:vertical {\n"
-"     background: rgb(0, 0, 0);\n"
-" }\n"
-" QScrollBar::add-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 30px;\n"
-"     subcontrol-position: bottom;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"\n"
-" QScrollBar::sub-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 30px;\n"
-"     subcontrol-position: top;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"\n"
-" QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
-"        width: 10px;\n"
-"     height: 10px;\n"
-"     background: rgb(0, 123, 255);\n"
-" }")
         self.LWVorhanden.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWVorhanden.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
         self.LWVorhanden.setObjectName("LWVorhanden")
@@ -118,36 +87,6 @@ class Ui_available(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWAlle.setFont(font)
-        self.LWAlle.setStyleSheet(" QScrollBar:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     width: 30px;\n"
-"     margin: 31px 0 31px 0;\n"
-" }\n"
-" QScrollBar::handle:vertical {\n"
-"     background: rgb(0, 0, 0);\n"
-" }\n"
-" QScrollBar::add-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 30px;\n"
-"     subcontrol-position: bottom;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"\n"
-" QScrollBar::sub-line:vertical {\n"
-"     border: 1px solid rgb(97, 97, 97);\n"
-"     background: rgb(0, 0, 0);\n"
-"     height: 30px;\n"
-"     subcontrol-position: top;\n"
-"     subcontrol-origin: margin;\n"
-" }\n"
-"\n"
-" QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
-"        width: 10px;\n"
-"     height: 10px;\n"
-"     background: rgb(0, 123, 255);\n"
-" }")
         self.LWAlle.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWAlle.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
         self.LWAlle.setObjectName("LWAlle")

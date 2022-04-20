@@ -25,9 +25,6 @@
   <property name="windowTitle">
    <string>Verfügbare Zutaten auswählen</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true"/>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
@@ -126,38 +123,6 @@
           <pointsize>20</pointsize>
          </font>
         </property>
-        <property name="styleSheet">
-         <string notr="true"> QScrollBar:vertical {
-     border: 1px solid rgb(97, 97, 97);
-     background: rgb(0, 0, 0);
-     width: 30px;
-     margin: 31px 0 31px 0;
- }
- QScrollBar::handle:vertical {
-     background: rgb(0, 0, 0);
- }
- QScrollBar::add-line:vertical {
-     border: 1px solid rgb(97, 97, 97);
-     background: rgb(0, 0, 0);
-     height: 30px;
-     subcontrol-position: bottom;
-     subcontrol-origin: margin;
- }
-
- QScrollBar::sub-line:vertical {
-     border: 1px solid rgb(97, 97, 97);
-     background: rgb(0, 0, 0);
-     height: 30px;
-     subcontrol-position: top;
-     subcontrol-origin: margin;
- }
-
- QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
-   	 width: 10px;
-     height: 10px;
-     background: rgb(0, 123, 255);
- }</string>
-        </property>
         <property name="horizontalScrollBarPolicy">
          <enum>Qt::ScrollBarAlwaysOff</enum>
         </property>
@@ -237,38 +202,6 @@
          <font>
           <pointsize>20</pointsize>
          </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"> QScrollBar:vertical {
-     border: 1px solid rgb(97, 97, 97);
-     background: rgb(0, 0, 0);
-     width: 30px;
-     margin: 31px 0 31px 0;
- }
- QScrollBar::handle:vertical {
-     background: rgb(0, 0, 0);
- }
- QScrollBar::add-line:vertical {
-     border: 1px solid rgb(97, 97, 97);
-     background: rgb(0, 0, 0);
-     height: 30px;
-     subcontrol-position: bottom;
-     subcontrol-origin: margin;
- }
-
- QScrollBar::sub-line:vertical {
-     border: 1px solid rgb(97, 97, 97);
-     background: rgb(0, 0, 0);
-     height: 30px;
-     subcontrol-position: top;
-     subcontrol-origin: margin;
- }
-
- QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
-   	 width: 10px;
-     height: 10px;
-     background: rgb(0, 123, 255);
- }</string>
         </property>
         <property name="horizontalScrollBarPolicy">
          <enum>Qt::ScrollBarAlwaysOff</enum>

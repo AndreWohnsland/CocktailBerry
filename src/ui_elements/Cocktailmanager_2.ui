@@ -31,9 +31,6 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
-  <property name="styleSheet">
-   <string notr="true"/>
-  </property>
   <property name="documentMode">
    <bool>false</bool>
   </property>
@@ -831,9 +828,6 @@
               <pointsize>20</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="horizontalScrollBarPolicy">
              <enum>Qt::ScrollBarAlwaysOff</enum>
             </property>
@@ -872,9 +866,6 @@
            <font>
             <pointsize>20</pointsize>
            </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
           </property>
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -1466,9 +1457,6 @@
                <font>
                 <pointsize>20</pointsize>
                </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true"/>
               </property>
               <property name="horizontalScrollBarPolicy">
                <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -2259,11 +2247,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung2</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2286,11 +2274,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung3</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2313,11 +2301,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung4</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2340,11 +2328,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung5</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2367,11 +2355,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung6</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2494,14 +2482,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>1</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2582,11 +2570,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung9</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2767,11 +2755,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung7</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2794,11 +2782,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung8</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2850,11 +2838,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung1</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -2909,11 +2897,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung10</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3391,14 +3379,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>2</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3447,14 +3435,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>4</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3479,14 +3467,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>3</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3511,14 +3499,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>5</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3543,14 +3531,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>7</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3575,14 +3563,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>6</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3607,14 +3595,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>9</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3639,14 +3627,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>8</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3671,14 +3659,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>10</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3875,11 +3863,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung11</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3902,11 +3890,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung13</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3929,11 +3917,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung12</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3956,11 +3944,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung15</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -3983,11 +3971,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung14</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -4010,11 +3998,11 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>LBelegung16</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -4357,14 +4345,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>11</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -4389,14 +4377,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>12</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -4421,14 +4409,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>13</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -4453,14 +4441,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>14</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -4485,14 +4473,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>15</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
@@ -4517,14 +4505,14 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">	color: rgb(239, 151, 0);</string>
-            </property>
             <property name="text">
              <string>16</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary</string>
             </property>
            </widget>
           </item>
