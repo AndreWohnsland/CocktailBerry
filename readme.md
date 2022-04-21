@@ -34,6 +34,7 @@ Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
   - [Adding new Recipes or Ingredients](#adding-new-recipes-or-ingredients)
   - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
     - [Different Seetings of the Pins / Boards](#different-seetings-of-the-pins--boards)
+    - [Themes](#themes)
   - [Calibration of the Pumps](#calibration-of-the-pumps)
   - [Cleaning the Machine](#cleaning-the-machine)
   - [Possible Ingredient SetUp](#possible-ingredient-setup)
@@ -245,6 +246,7 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 | `MAKER_NAME`            |    _str_    | Give your Cocktailberry a own name, max 30 chars                                         |    ❌     |
 | `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of displayed bottles, can use up to 16 bottles                                    |    ❌     |
 | `MAKER_SEARCH_UPDATES`  |   _bool_    | Boolean flag to search for updates at program start                                      |    ❌     |
+| `MAKER_THEME`           |    _str_    | Choose which [theme](#themes) to use                                                     |    ❌     |
 | `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                                       |    ❌     |
 | `MAKER_SLEEP_TIME`      |   _float_   | Interval between each UI refresh while generating a cocktail                             |    ❌     |
 | `MICROSERVICE_ACTIVE`   |   _bool_    | Boolean flag to post to microservice set up by docker                                    |    ✔️     |
@@ -264,6 +266,13 @@ The program will then evaluate which recipe meets all requirements to only show 
 To set up your Board, you can choose between different platforms. The according contolling library for Python needs to be installed. If it's not shipped within the default OS of your board, this will be mentioned here. Currently supported options (boards) are:
 
 - **RPI (Raspberry Pi)**: Using GPIO according to [GPIO-Numbers](https://de.pinout.xyz/) for Pins.
+
+### Themes
+
+Currently, there are following themes:
+
+- **default**: The look and feel of the project pictures. Blue, Orange and Black as main colors.
+- **bavaria**: The somewhat light mode of the app. Blue, Black and White as main colors.
 
 ## Calibration of the Pumps
 
