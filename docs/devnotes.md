@@ -78,22 +78,22 @@ Here are some todos, for now or later versions:
   - [x] Check if setting is in list of supported types
   - [x] Refactor RPi to machine controller
   - [x] New board / pin controlller class for machine controller to inherit pin methods from
+- [x] Add config management into maker UI
+  - [x] replace cleaning with option button
+  - [x] own window to have dedicated option settings
+  - [x] Get all needed configs from manager
+  - [x] Display with correct input option for user
+  - [x] Check values before change
+- [x] Switch from in file stylesheets to one central stylesheet
+  - [x] Create method to inject stylesheet into ui
+  - [x] Merge individual stylesheets into one central one
 - [ ] Review microservice and its features
   - [ ] Email always is quite tricky, maybe get something more "working", or just remove it
-  - [x] Review que logic for failed sending
-  - [x] Add aditional logic for the new official endpoint + api key .env variable slot for example file
-  - [x] Extend API for receiving as well as sending of language used and machine name
   - [ ] Generally review this logic, maybe extend it to make it work with other custom endpoints using keys are other header auth features
     - [ ] Make it to work with any amount of urls / header things
     - [x] Make it work with the official API
+  - [x] Review que logic for failed sending
+  - [x] Add aditional logic for the new official endpoint + api key .env variable slot for example file
+  - [x] Extend API for receiving as well as sending of language used and machine name
 - [ ] Add progress bar to cleaning programm and possibility to cancel
-- [ ] Add config management into maker UI
-  - [ ] replace cleaning with option button
-  - [ ] own window to have dedicated option settings
-  - [ ] Get all needed configs from manager
-  - [ ] Display with correct input option for user
-  - [ ] Check values before change
 - [ ] Add restart / reboot control into maker UI
-- [ ] Switch from in file stylesheets to one central stylesheet
-  - [ ] Create method to inject stylesheet into ui
-  - [ ] Merge individual stylesheets into one central one
