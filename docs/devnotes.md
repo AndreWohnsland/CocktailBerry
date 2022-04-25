@@ -43,10 +43,10 @@ All Topics related to PyQt (or Qt in general).
 To manage the style, a qss (qt-css) file is used. [qtsass](https://github.com/spyder-ide/qtsass) is used to convert a sass file into the used qss file. For conversion run:
 
 ```bash
-qtsass /src/ui/styles/stylname.scss -o /src/ui/styles/stylname.qss   
+qtsass /src/ui/styles/ -o /src/ui/styles/  
 ```
 
-If you want to implement a new style, copy the default.scss file, rename the copy to your style name and plug your colors into the variables. After that, just compile the file. You got a new style setting. To be supported, the style name needs to be added to the `src.__init__` file into the SUPPORTED_STYLES list.
+If you want to implement a new style, copy the default.scss file, rename the copy to your style name and plug your colors into the variables. After that, just compile the file. You got a new style setting. To be supported, the style name needs to be added to the `src.__init__` file into the `SUPPORTED_STYLES` list.
 
 ## Button clicked.connect behaviour
 
