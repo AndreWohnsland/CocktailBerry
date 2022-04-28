@@ -6,7 +6,6 @@ QCheckBox::indicator:unchecked {
   image: url(./src/ui_elements/cross.png); }
 
 QCheckBox::indicator:checked {
-  background-color: #c8c8c8;
   image: url(./src/ui_elements/check.png); }
 
 QWidget {

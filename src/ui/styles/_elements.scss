@@ -8,7 +8,6 @@ QCheckBox::indicator:unchecked {
 }
 
 QCheckBox::indicator:checked {
-  background-color: $checkbgbackup;
   image: url(./src/ui_elements/check.png);
 }
 
