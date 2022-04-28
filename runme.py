@@ -7,22 +7,13 @@ migrator.make_migrations()
 
 from typing import Optional
 import typer
-from pyfiglet import Figlet
 
-from src.config_manager import ConfigManager, version_callback
+from src.config_manager import ConfigManager, version_callback, show_start_message
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.calibration import run_calibration
-from src import __version__, PROJECT_NAME
 
 
 cli = typer.Typer(add_completion=False)
-
-
-def show_start_message():
-    figlet = Figlet()
-    start_message = f"{PROJECT_NAME} Version {__version__}"
-    print(figlet.renderText(start_message))
-    print(start_message)
 
 
 @cli.command()

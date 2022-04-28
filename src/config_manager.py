@@ -3,8 +3,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Union
 import typer
 import yaml
-from src.logger_handler import LoggerHandler
+from pyfiglet import Figlet
 
+from src.logger_handler import LoggerHandler
 from src.models import Ingredient
 from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES, SUPPORTED_BOARDS, SUPPORTED_THEMES
 
@@ -22,7 +23,7 @@ class ConfigManager:
     # Locks the recipe tab, making it impossible to acesss
     UI_PARTYMODE = False
     # Password to lock clean, delete and other critical operators
-    UI_MASTERPASSWORD = "1337"
+    UI_MASTERPASSWORD = "1234"
     # Language to use, use two chars look up documentation, if not provided fallback to en
     UI_LANGUAGE = "en"
     # Width and height of the touchscreen
@@ -227,6 +228,13 @@ def version_callback(value: bool):
         typer.echo(f"{PROJECT_NAME} Version {__version__}. Created by Andre Wohnsland.")
         typer.echo(r"For more information visit https://github.com/AndreWohnsland/CocktailBerry.")
         raise typer.Exit()
+
+
+def show_start_message():
+    figlet = Figlet()
+    start_message = f"{PROJECT_NAME} Version {__version__}"
+    print(figlet.renderText(start_message))
+    print(start_message)
 
 
 shared = Shared()
