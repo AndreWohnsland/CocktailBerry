@@ -155,7 +155,7 @@ class DisplayController(DialogHandler):
 
     def inject_stylesheet(self, window_object: QWidget):
         """Adds the central stylesheet to the gui"""
-        style_file = f"{self.MAKER_THEME}.qss"
+        style_file = f"{self.MAKER_THEME}.css"
         with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as filehandler:
             window_object.setStyleSheet(filehandler.read())
 
