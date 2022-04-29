@@ -1,0 +1,27 @@
+site_name: CocktailBerry Docs
+site_description: Official CocktailBerry Documentation
+site_author: Andre Wohnsland
+copyright: © Copyright 2022, Andre Wohnsland & contributors
+# site_url: https://github.com/AndreWohnsland/CocktailBerry
+repo_url: https://github.com/AndreWohnsland/CocktailBerry
+nav:
+  - Home: index.md
+  - About: about.md
+  - Installation: installation.md
+  - Hardware: hardware.md
+  - Setup: setup.md
+  - Supported Languages: languages.md
+  - Advanced Topics: advanced.md
+  - Troubleshooting: troubleshooting.md
+  - Developement: developement.md
+markdown_extensions:
+  - toc:
+      permalink: '#'
+theme:
+  name: readthedocs
+  logo: pictures/CocktailBerry.svg
+# extra:
+#   version: 1.8.0
+plugins:
+  - search:
+      separator: '[\s\-\.]+'

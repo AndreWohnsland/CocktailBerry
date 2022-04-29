@@ -17,3 +17,4 @@ custom_config.*
 tmp_*
 
 .qt_for_python/*
+site/
