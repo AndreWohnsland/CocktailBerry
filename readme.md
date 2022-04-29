@@ -1,4 +1,4 @@
-<img src="docs/pictures/CocktailBerry.png" alt="CocktailBerry" width="750"/>
+<img src="docs/pictures/CocktailBerry.svg" alt="CocktailBerry" width="750"/>
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/CocktailBerry)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/CocktailBerry)
@@ -230,7 +230,7 @@ All entered values are checked for reason and if something is wrong, an error me
 
 ## Setting up the Machine / Modifying other Values
 
-These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed. If any of the values got a wrong data type, a TypeError will be thrown with the message which one is wrong.
+These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed. If any of the values got a wrong data type, a TypeError will be thrown with the message which one is wrong. You can also manage your config within CocktailBerry since __version 1.8.0__. Just go to the bottles tab, enter the default (1234) password into the lineedit and click the gear icon. You can then use the UI to change the configuration.
 
 | Value Name              |    Type     | Description                                                                              | Optional |
 | :---------------------- | :---------: | :--------------------------------------------------------------------------------------- | :------: |
