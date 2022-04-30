@@ -15,6 +15,15 @@ CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspber
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
+<div style="display: flex; justify-content: center; align-items: center; margin: 1rem 0rem 1rem 0rem;">
+  <a href="https://cocktailberry.readthedocs.io/"
+  style="padding: 15px; border-radius: 7px; margin: 0px 10px 0px; text-decoration: none; font-size: x-large; font-weight: bold; color: white !important; background-color: rgb(57, 72, 158);"> 
+  Documentation </a>
+  <a href="https://share.streamlit.io/andrewohnsland/cocktailberry-webapp"
+  style="padding: 15px; border-radius: 7px; margin: 0px 10px 0px; text-decoration: none; font-size: x-large; font-weight: bold; color: white !important; background-color: rgb(255, 40, 102);">
+  Dashboard </a>
+</div>
+
 This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients. Track and display cocktail data for different teams to even further increase the fun. Let's get started!
 
 ## tl;dr
