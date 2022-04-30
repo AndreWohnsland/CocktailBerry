@@ -1,6 +1,6 @@
 # Development
 
-For developers, there is [an additional section](https://github.com/AndreWohnsland/CocktailBerry/blob/master/docs/.devnotes.md) with information available. See this docs for further information like the program schema or framework specific development problems.
+For developers, there is [an additional section](https://github.com/AndreWohnsland/CocktailBerry/blob/master/docs/.devnotes.md) with information available. See this document for further information, like the program schema or framework specific development problems.
 
 ## Pull Requests and Issues
 

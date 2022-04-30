@@ -7,9 +7,10 @@ repo_url: https://github.com/AndreWohnsland/CocktailBerry
 nav:
   - Home: index.md
   - About: about.md
+  - Quickstart: quickstart.md
   - Installation: installation.md
   - Hardware: hardware.md
-  - Setup: setup.md
+  - Setup / Usage: setup.md
   - Supported Languages: languages.md
   - Advanced Topics: advanced.md
   - Troubleshooting: troubleshooting.md
@@ -25,3 +26,5 @@ theme:
 plugins:
   - search:
       separator: '[\s\-\.]+'
+extra_css:
+  - css/extra.css

@@ -37,7 +37,11 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 | `TEAM_BUTTON_NAMES`     | _list[str]_ | List of format ["Team1", "Team2"]                                                        |    ✔️     |
 | `TEAM_API_URL`          |    _str_    | Endpoint of teams API, default used port by API is 8080                                  |    ✔️     |
 
-Depending on your preferred use, these values can differ. Then just run `runme.py`.
+Depending on your preferred use, these values can differ. Then just run:
+
+```bash
+python runme.py
+```
 
 Setting up the machine is quite easy as well. Just go to the `Bottles` Tab and select via the dropdown boxes your assigned ingredients. In addition, you can define ingredients which are also there, but are not connected to the machine (under _Ingredients > available_). You can define ingredients in recipes (at _add self by hand_) which should be later added via hand, for example sticky ingredients which would not be optimal for your pump, or only very rarely used in cocktails.
 
@@ -76,7 +80,7 @@ Vnew = Vold \* expectation/output
 
 CocktailBerry has a build in cleaning function for cleaning at the end of a party. You will find the feature under the `Bottles` tab. To start the cleaning process, the master password is needed to prevent unwanted cleaning attempts. CocktailBerry will then go to cleaning mode for the defined time within the config (default is 20 seconds). A message prompt will inform the user to provide enough water for the cleaning process. I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water and then running twice times again the cleaning program to fully clean all pumps from remaining fluid.
 
-## Possible Ingredient SetUp
+## Possible Ingredient Choice
 
 If you are unsure, which ingredients you may need or want to connect to CocktailBerry, here is a quick suggestion. You don't need to use all ten slot, but the more you use, the more recipes will be possible:
 
