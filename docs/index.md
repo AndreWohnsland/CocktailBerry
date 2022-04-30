@@ -15,7 +15,11 @@ Welcome to the CocktailBerry documentation. Here you will find everything to get
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
-[Quickstart](quickstart.md){ .md-button .md-button--primary }
+<div class="mid-flex">
+  <a href="quickstart/" class="cta-btn primary-btn"> Quickstart </a>
+  <a href="setup/" class="cta-btn secondary-btn"> Set Up </a>
+</div>
+
 
 ## Features
 
