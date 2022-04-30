@@ -18,9 +18,11 @@ nav:
 markdown_extensions:
   - toc:
       permalink: '#'
+  - attr_list
 theme:
   name: readthedocs
   logo: pictures/CocktailBerry.svg
+  favicon: img/favicon.ico
 # extra:
 #   version: 1.8.0
 plugins:
