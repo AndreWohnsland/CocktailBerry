@@ -3,7 +3,7 @@
 This includes all functions for the Lists, DB and Buttos/Dropdowns.
 """
 
-from typing import List, Union
+from typing import List, Optional
 from src.tabs import bottles
 
 from src.database_commander import DB_COMMANDER
@@ -20,7 +20,7 @@ from src.config_manager import shared
 LOG_HANDLER = LoggerHandler("maker_module", "production_logs")
 
 
-def evaluate_recipe_maker_view(w, cocktails: Union[List[Cocktail], None] = None):
+def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):
     """ Goes through every recipe in the list or all recipes if none given
     Checks if all ingredients are registered, if so, adds it to the list widget
     """

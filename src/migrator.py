@@ -4,7 +4,7 @@ import sys
 import subprocess
 from pathlib import Path
 from sqlite3 import OperationalError
-from typing import Union
+from typing import Optional
 
 from src.logger_handler import LoggerHandler
 from src.database_commander import DatabaseHandler
@@ -31,7 +31,7 @@ class Migrator:
             local_version = None
         return local_version
 
-    def older_than_version(self, version: Union[str, None]) -> bool:
+    def older_than_version(self, version: Optional[str]) -> bool:
         """Checks if the current version is below the given version"""
         return _Version(version) > self.local_version
 
@@ -155,7 +155,7 @@ class Migrator:
 class _Version:
     """Class to compare semantic version numbers"""
 
-    def __init__(self, version_number: Union[str, None]) -> None:
+    def __init__(self, version_number: Optional[str]) -> None:
         self.version = version_number
         # no verison was found, just asume the worst, so using first version
         if version_number is None:

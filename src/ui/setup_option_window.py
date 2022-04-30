@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
@@ -27,7 +27,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_clean.clicked.connect(self._init_clean_machine)
         self.button_config.clicked.connect(self._open_config)
 
-        self.config_window: Union[None, ConfigWindow] = None
+        self.config_window: Optional[ConfigWindow] = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, Optional
 import yaml
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
@@ -175,14 +175,14 @@ class DialogHandler(ConfigManager):
         """Informs user that there is already an entry in the DB with that name"""
         self.__output_language_dialog(self.dialogs["name_already_exists"])
 
-    def say_some_value_missing(self, value: Union[str, None] = None):
+    def say_some_value_missing(self, value: Optional[str] = None):
         """Informs user that he missed at least one value"""
         if value is None:
             self.__output_language_dialog(self.dialogs["some_value_missing"])
         else:
             self.__output_language_dialog(self.dialogs["some_value_missing_specific"], value=value)
 
-    def say_needs_to_be_int(self, value: Union[str, None] = None):
+    def say_needs_to_be_int(self, value: Optional[str] = None):
         """Informs user that the given value is not a number"""
         if value is None:
             self.__output_language_dialog(self.dialogs["needs_to_be_int"])

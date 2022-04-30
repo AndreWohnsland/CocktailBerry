@@ -1,7 +1,7 @@
 
 import os
 import sys
-from typing import Any, Callable, List, Union
+from typing import Any, Callable, List, Optional
 from pathlib import Path
 from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton, QBoxLayout
 from PyQt5.QtCore import Qt, QSize
@@ -92,7 +92,7 @@ class ConfigWindow(QMainWindow, ConfigManager):
         # asigning the getter function for the config into the dict
         self.config_objects[configname] = getter_fn
 
-    def _build_input_field(self, configname: str, configtype: type, current_value: Any, layout: Union[QBoxLayout, None] = None):
+    def _build_input_field(self, configname: str, configtype: type, current_value: Any, layout: Optional[QBoxLayout] = None):
         """Builds the input field and returns its getter function"""
         if layout is None:
             layout = self.vbox

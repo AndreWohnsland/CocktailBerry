@@ -2,7 +2,7 @@
 of the passed window. Also defines the Mode for controls.
 """
 from pathlib import Path
-from typing import Union
+from typing import Optional
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
@@ -46,15 +46,15 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         DP_CONTROLLER.inject_stylesheet(self)
         # init the empty further screens
-        self.pww: Union[PasswordScreen, None] = None
-        self.kbw: Union[KeyboardWidget, None] = None
-        self.prow: Union[ProgressScreen, None] = None
-        self.botw: Union[BottleWindow, None] = None
-        self.ingd: Union[GetIngredientWindow, None] = None
-        self.handw: Union[HandaddWidget, None] = None
-        self.availw: Union[AvailableWindow, None] = None
-        self.teamw: Union[TeamScreen, None] = None
-        self.option_window: Union[OptionWindow, None] = None
+        self.pww: Optional[PasswordScreen] = None
+        self.kbw: Optional[KeyboardWidget] = None
+        self.prow: Optional[ProgressScreen] = None
+        self.botw: Optional[BottleWindow] = None
+        self.ingd: Optional[GetIngredientWindow] = None
+        self.handw: Optional[HandaddWidget] = None
+        self.availw: Optional[AvailableWindow] = None
+        self.teamw: Optional[TeamScreen] = None
+        self.option_window: Optional[OptionWindow] = None
         UI_LANGUAGE.adjust_mainwindow(self)
         MACHINE.set_up_pumps()
         self.showFullScreen()
