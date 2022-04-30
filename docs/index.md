@@ -13,13 +13,12 @@
 
 Welcome to the CocktailBerry documentation. Here you will find everything to get started! CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
 
-Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
-
 <div class="mid-flex">
   <a href="quickstart/" class="cta-btn primary-btn"> Quickstart </a>
   <a href="setup/" class="cta-btn secondary-btn"> Set Up </a>
 </div>
 
+Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
 ## Features
 
