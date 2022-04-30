@@ -5,8 +5,8 @@
 ![Python Version](https://img.shields.io/badge/python-%3E%3D%203.7-blue)
 ![GitHub](https://img.shields.io/github/license/AndreWohnsland/CocktailBerry)
 ![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/CocktailBerry)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_CocktailBerry&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_CocktailBerry)
 [![Documentation Status](https://readthedocs.org/projects/cocktailberry/badge/?version=latest)](https://cocktailberry.readthedocs.io/en/latest/?badge=latest)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_CocktailBerry&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_CocktailBerry)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/CocktailBerry?style=social)
 
 [![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
@@ -14,6 +14,8 @@
 Welcome to the CocktailBerry documentation. Here you will find everything to get started! CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
+
+[Quickstart](quickstart.md){ .md-button .md-button--primary }
 
 ## Features
 
