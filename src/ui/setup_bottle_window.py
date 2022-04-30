@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from src.ui_elements.bottlewindow import Ui_Bottlewindow
 
 from src.config_manager import ConfigManager
-from src.bottles import set_fill_level_bars
+from src.tabs.bottles import set_fill_level_bars
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -20,6 +20,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
         ConfigManager.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        DP_CONTROLLER.inject_stylesheet(self)
         # connects all the buttons
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         self.PBEintragen.clicked.connect(self.eintragen_clicked)

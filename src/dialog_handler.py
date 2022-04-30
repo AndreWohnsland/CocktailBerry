@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, Optional
 import yaml
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
@@ -24,20 +24,20 @@ class DialogHandler(ConfigManager):
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
-    def standard_box(self, message: str, title: str = None):
+    def standard_box(self, message: str, title: str = ""):
         """ The default messagebox for the Maker. Uses a Custom QDialog with Close-Button """
         # otherwise circular import :(
         # pylint: disable=import-outside-toplevel
         from src.ui.setup_custom_dialog import CustomDialog
         default_title = self.dialogs["box"]["title"]
-        if title is None:
+        if not title:
             title = self.__choose_language(default_title)
         fillstring = "-" * 70
         fancy_message = f"{fillstring}\n{message}\n{fillstring}"
         messagebox = CustomDialog(fancy_message, title, self.icon_path)
         messagebox.exec_()
 
-    def user_okay(self, text):
+    def user_okay(self, text: str):
         msg_box = QMessageBox()
         msg_box.setText(text)
         msg_box.setWindowTitle(self.__choose_language(self.dialogs["confirmation_reqired"]))
@@ -45,9 +45,9 @@ class DialogHandler(ConfigManager):
         no_text = self.__choose_language(self.dialogs["no_button"])
         yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)
         msg_box.addButton(no_text, QMessageBox.NoRole)
-        msg_box.setStyleSheet(
-            "QMessageBox QPushButton{background-color: rgb(0, 123, 255); color: rgb(0, 0, 0); font-size: 30pt; padding: 5px 20px 5px 20px; min-width: 120px;} QMessageBox{background-color: rgb(10, 10, 10); font-size: 16pt;} QMessageBox QLabel{color: rgb(0, 123, 255);}"
-        )
+        style_sheet = str(DIRPATH / "ui" / "styles" / f"{self.MAKER_THEME}.css")
+        with open(style_sheet, "r", encoding="utf-8") as filehandler:
+            msg_box.setStyleSheet(filehandler.read())
         msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         msg_box.move(50, 50)
         msg_box.exec_()
@@ -175,14 +175,14 @@ class DialogHandler(ConfigManager):
         """Informs user that there is already an entry in the DB with that name"""
         self.__output_language_dialog(self.dialogs["name_already_exists"])
 
-    def say_some_value_missing(self, value: str = None):
+    def say_some_value_missing(self, value: Optional[str] = None):
         """Informs user that he missed at least one value"""
         if value is None:
             self.__output_language_dialog(self.dialogs["some_value_missing"])
         else:
             self.__output_language_dialog(self.dialogs["some_value_missing_specific"], value=value)
 
-    def say_needs_to_be_int(self, value: str = None):
+    def say_needs_to_be_int(self, value: Optional[str] = None):
         """Informs user that the given value is not a number"""
         if value is None:
             self.__output_language_dialog(self.dialogs["needs_to_be_int"])
@@ -193,8 +193,23 @@ class DialogHandler(ConfigManager):
         """Informs user that the alcohol level can not be greater than 100"""
         self.__output_language_dialog(self.dialogs["alcohollevel_max_limit"])
 
+    def say_wrong_config(self, error: str):
+        """Informs the user that the config is wrong with the error message."""
+        self.__output_language_dialog(self.dialogs["wrong_config"], error=error)
+
     def ask_to_update(self):
+        """Asks the user if he wants to get the latest update"""
         message = self.__choose_language(self.dialogs["update_available"])
+        return self.user_okay(message)
+
+    def ask_to_start_cleaning(self):
+        """Asks the user if he wants to start the cleaning process"""
+        message = self.__choose_language(self.dialogs["ask_to_clean"])
+        return self.user_okay(message)
+
+    def ask_to_restart_for_config(self):
+        """Asks the user if he wants to restart to apply new config"""
+        message = self.__choose_language(self.dialogs["restart_config"])
         return self.user_okay(message)
 
 
@@ -214,13 +229,10 @@ class UiLanguage(ConfigManager):
         with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
             self.dialogs: Dict = yaml.safe_load(stream)["ui"]
 
-    def __choose_language(self, element: dict, **kwargs) -> Union[str, List[str]]:
+    def __choose_language(self, element: dict, **kwargs) -> str:
         """Choose either the given language if exists, or english if not piping additional info into template"""
         language = self.UI_LANGUAGE
         tmpl = element.get(language, element["en"])
-        # Return the list and not apply template!
-        if isinstance(tmpl, list):
-            return tmpl
         return tmpl.format(**kwargs)
 
     def get_add_self(self) -> str:
@@ -235,7 +247,12 @@ class UiLanguage(ConfigManager):
         """Translates all needed elements of the main window (cocktail maker)"""
         window = self.dialogs["main_window"]
         w.PBZubereiten_custom.setText(self.__choose_language(window["prepare_button"]))
-        tabs = self.__choose_language(window["tab_names"])
+        tabs = [
+            self.__choose_language(window["tab_maker"]),
+            self.__choose_language(window["tab_ingredients"]),
+            self.__choose_language(window["tab_recipes"]),
+            self.__choose_language(window["tab_bottles"]),
+        ]
         for i, text in enumerate(tabs):
             w.tabWidget.setTabText(i, text)
         w.PBZeinzelnd.setText(self.__choose_language(window["single_ingredient_button"]))
@@ -310,6 +327,13 @@ class UiLanguage(ConfigManager):
         if headertype == "alcohol":
             return self.__choose_language(window["alcohol"])
         raise ValueError("Currently not possible")
+
+    def adjust_option_window(self, w):
+        """Translates all needed elements of the available window"""
+        window = self.dialogs["option_window"]
+        w.button_clean.setText(self.__choose_language(window["cleaning"]))
+        w.button_config.setText(self.__choose_language(window["config"]))
+        w.button_back.setText(self.__choose_language(window["back"]))
 
 
 UI_LANGUAGE = UiLanguage()

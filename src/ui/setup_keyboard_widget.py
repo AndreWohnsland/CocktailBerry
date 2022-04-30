@@ -16,6 +16,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.le_to_write = le_to_write
         self.LName.setText(self.le_to_write.text())
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        DP_CONTROLLER.inject_stylesheet(self)
         # populating all the buttons
         self.backButton.clicked.connect(self.backbutton_clicked)
         self.clear.clicked.connect(self.clearbutton_clicked)
@@ -25,6 +26,8 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.shift.clicked.connect(self.shift_clicked)
         # generating the lists to populate all remaining buttons via iteration
         self.number_list = list(range(10))
+        # also gives the possibility to use some extra signs
+        self.sign_list = [".", ":", "/", "#", "'", '"', "-", "_", "(", ")"]
         self.char_list_lower = list(string.ascii_lowercase)
         self.char_list_upper = list(string.ascii_uppercase)
         self.attribute_chars = [getattr(self, f"Button{x}") for x in self.char_list_lower]
@@ -32,7 +35,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         for obj, char, char2 in zip(self.attribute_chars, self.char_list_lower, self.char_list_upper):
             obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(
                 inputvalue=iv, inputvalue_shift=iv_s))
-        for obj, char, char2 in zip(self.attribute_numbers, self.number_list, self.number_list):
+        for obj, char, char2 in zip(self.attribute_numbers, self.number_list, self.sign_list):
             obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(
                 inputvalue=iv, inputvalue_shift=iv_s))
         # restricting the Lineedit to a set up Char leng
@@ -72,7 +75,11 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
     def shift_clicked(self):
         if self.shift.isChecked():
             charchoose = self.char_list_upper
+            numberchoose = self.sign_list
         else:
             charchoose = self.char_list_lower
+            numberchoose = self.number_list
         for obj, char in zip(self.attribute_chars, charchoose):
+            obj.setText(str(char))
+        for obj, char in zip(self.attribute_numbers, numberchoose):
             obj.setText(str(char))

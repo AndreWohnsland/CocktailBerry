@@ -23,269 +23,6 @@ class Ui_MainWindow(object):
         MainWindow.setMaximumSize(QtCore.QSize(800, 700))
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         MainWindow.setAutoFillBackground(False)
-        MainWindow.setStyleSheet("QCheckBox::indicator{\n"
-"    /*border: 1px solid rgb(120, 120, 120);\n"
-"    border-radius: 2px;*/\n"
-"    width: 18px;\n"
-"    height: 18px;\n"
-"}\n"
-"\n"
-"QCheckBox::indicator:unchecked{\n"
-"    image: url(./src/ui_elements/cross.png);\n"
-"}\n"
-"\n"
-"QCheckBox::indicator:checked{\n"
-"    background-color: rgb(200, 200, 200);\n"
-"    image: url(./src/ui_elements/check.png);\n"
-"}\n"
-"\n"
-"QWidget\n"
-"{\n"
-"    color: rgb(0, 123, 255);    \n"
-"    background-color: rgb(0, 0, 0);\n"
-"\n"
-"}\n"
-"\n"
-"QWidget:item:selected\n"
-"{\n"
-"    color: rgb(239, 151, 0);\n"
-"    border: 1px solid rgb(239, 151, 0);\n"
-"    /*color: rgb(255, 255, 255);    \n"
-"    background-color: rgb(0, 123, 255);    */\n"
-"}\n"
-"\n"
-"QTabWidget::pane {\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"    top: 1px;\n"
-"}\n"
-"\n"
-"QTabBar::tab {\n"
-"    background-color: rgb(97, 97, 97);\n"
-"    color: rgb(255, 255, 255);\n"
-"    border-width: 1px;\n"
-"    border-color: rgb(255, 255, 255);\n"
-"    border-style: solid;\n"
-"    border-top-left-radius: 10px;\n"
-"    border-top-right-radius: 10px;\n"
-"    padding: 5px 0px 5px 0px; \n"
-"    width: 193px;\n"
-"}\n"
-"\n"
-"QTabBar::tab:selected {\n"
-"    color: rgb(255, 255, 255);    \n"
-"    background-color: rgb(0, 123, 255);\n"
-"}\n"
-"\n"
-".QMessageBox {font-size: 16pt}\n"
-"\n"
-".QSlider {\n"
-"    min-height: 30px;\n"
-"    max-height: 50px;\n"
-"}\n"
-"\n"
-".QSlider::groove:horizontal {\n"
-"    border: 1px solid;\n"
-"    height: 5px;\n"
-"    background: #393939;\n"
-"    margin: 0 12px;\n"
-"}\n"
-"\n"
-".QSlider::handle:horizontal {\n"
-"    background: rgb(0, 123, 255);\n"
-"    width: 30px;\n"
-"    height: 30px;\n"
-"    margin: -24px -12px;\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"    background-color: rgb(0, 0, 0);\n"
-"    color: (0, 123, 255);\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"QPushButton:checked\n"
-"{\n"
-"    color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"QPushButton:pressed\n"
-"{\n"
-"    color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"QProgressBar\n"
-"{\n"
-"    background-color: rgb(166, 166, 166);\n"
-"    color: rgb(0, 0, 0);\n"
-"    border: 2px rgb(166, 166, 166);\n"
-"    border-radius: 5px;\n"
-"    text-align: center;\n"
-"}\n"
-"\n"
-"QProgressBar::chunk {\n"
-"    border: 2px rgb(166, 166, 166);\n"
-"    border-top-left-radius: 5px;\n"
-"    border-bottom-left-radius: 5px;\n"
-"    border-top-right-radius: 5px;\n"
-"    border-bottom-right-radius: 5px;\n"
-"    background-color: rgb(0, 233, 245);    \n"
-"/*background-color: rgb(0, 255, 132);\n"
-"    width: 40px;\n"
-"    margin: 0.5px;*/\n"
-"}\n"
-"\n"
-"QComboBox {\n"
-"    color: rgb(0, 123, 255);    \n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"    border-top-left-radius: 7px;\n"
-"    border-bottom-left-radius: 7px;\n"
-"    padding: 1px 18px 1px 5px;\n"
-"    min-width: 6em;\n"
-"}\n"
-"\n"
-"QComboBox:on { /* shift the text when the popup opens */\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"    border-top-left-radius: 7px;\n"
-"    border-bottom-left-radius: 0px;\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"\n"
-"/* QComboBox:hover\n"
-"{\n"
-"    color: rgb(239, 151, 0);\n"
-"}*/\n"
-"\n"
-"QComboBox QAbstractItemView {\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"}\n"
-"\n"
-"/*QComboBox:item:checked {\n"
-"    color: rgb(239, 151, 0);\n"
-"    border: 1px solid rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"QComboBox:item:selected {\n"
-"    color: rgb(239, 151, 0);\n"
-"    border: 1px solid rgb(239, 151, 0);\n"
-"} */\n"
-"\n"
-"QLineEdit\n"
-"{\n"
-"    padding: 1px;\n"
-"    border-style: solid;\n"
-"    border: 1px solid rgb(97, 97, 97);\n"
-"    border-radius: 5;\n"
-"}\n"
-"\n"
-"\n"
-"#TBelegung {\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"}\n"
-"\n"
-"#LWMaker, #LWZutaten, #LWRezepte {\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"}\n"
-"\n"
-"#LKommentar{\n"
-"    color: rgb(211, 211, 211);\n"
-"}\n"
-"\n"
-"#LAlkoholname, #LIngredientHeader{\n"
-"    color: rgb(170, 170, 170);\n"
-"    border-bottom: 1px solid;\n"
-"    border-color: rgb(170, 170, 170);\n"
-"    margin-bottom: 5px;\n"
-"    padding-left: 10px;\n"
-"    padding-right: 10px;\n"
-"}\n"
-"\n"
-"#MakerLMenge{\n"
-"    color:rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"#LEGehaltRezept, #LEZutatRezept, #LEFlaschenvolumen, #LRHandAdd, #LECocktail, #LAlkoholgehalt{\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"#LMZutat1, #LMZutat2, #LMZutat3, #LMZutat4, #LMZutat5, #LMZutat6, #LMZutat7, #LMZutat8, #LMZutat9, #LMZutat10, #LER1, #LER2, #LER3, #LER4, #LER5, #LER6, #LER7 {\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"/* Inverted button style */\n"
-"#PBZubereiten_custom, #PBZutathinzu, #PBRezepthinzu, #PBZeinzelnd, #PBAvailable, #PBFlanwenden {\n"
-"    background-color: rgb(0, 123, 255);  \n"
-"    color: rgb(0, 0, 0);\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"#PBZubereiten_custom:pressed, #PBZutathinzu:pressed, #PBRezepthinzu:pressed,#PBZeinzelnd:pressed, #PBAvailable:pressed, #PBFlanwenden:pressed {\n"
-"    background-color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);    \n"
-"}\n"
-"\n"
-"#LAlkoholgehalt, #LMenge {\n"
-"    padding-left: 10px;\n"
-"    padding-right: 10px;\n"
-"}\n"
-"\n"
-"/* Moving List Widget here from the single objects */\n"
-"\n"
-"\n"
-"QScrollBar:vertical {\n"
-"    border: 1px solid rgb(97, 97, 97);\n"
-"    background: rgb(97, 97, 97);\n"
-"    width: 35px;\n"
-"    margin: 36px 0 36px 0;\n"
-"}\n"
-"\n"
-"QScrollBar::handle:vertical {\n"
-"    background: rgb(0, 0, 0);\n"
-"}\n"
-"\n"
-"QScrollBar::add-line:vertical {\n"
-"    border: 1px solid rgb(97, 97, 97);\n"
-"    background: rgb(0, 0, 0);\n"
-"    height: 35px;\n"
-"    subcontrol-position: bottom;\n"
-"    subcontrol-origin: margin;\n"
-"}\n"
-"\n"
-"QScrollBar::sub-line:vertical {\n"
-"    border: 1px solid rgb(97, 97, 97);\n"
-"    background: rgb(0, 0, 0);\n"
-"    height: 35px;\n"
-"    subcontrol-position: top;\n"
-"    subcontrol-origin: margin;\n"
-"}\n"
-"\n"
-"QScrollBar::down-arrow:vertical,  QScrollBar::up-arrow:vertical {\n"
-"    width: 20px;\n"
-"    height: 20px;\n"
-"}\n"
-"\n"
-"QScrollBar::down-arrow:vertical {\n"
-"    image: url(./src/ui_elements/down.png);\n"
-"}\n"
-"\n"
-"QScrollBar::up-arrow:vertical {\n"
-"    image: url(./src/ui_elements/up.png);\n"
-"}\n"
-"")
         MainWindow.setDocumentMode(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -607,7 +344,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWMaker.setFont(font)
-        self.LWMaker.setStyleSheet("")
         self.LWMaker.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWMaker.setTextElideMode(QtCore.Qt.ElideRight)
         self.LWMaker.setObjectName("LWMaker")
@@ -624,7 +360,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWZutaten.setFont(font)
-        self.LWZutaten.setStyleSheet("")
         self.LWZutaten.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWZutaten.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
         self.LWZutaten.setObjectName("LWZutaten")
@@ -851,7 +586,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.LWRezepte.setFont(font)
-        self.LWRezepte.setStyleSheet("")
         self.LWRezepte.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.LWRezepte.setObjectName("LWRezepte")
         self.horizontalLayout_3.addWidget(self.LWRezepte)
@@ -1165,7 +899,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung2.setFont(font)
-        self.LBelegung2.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung2.setObjectName("LBelegung2")
         self.gridLayout_2.addWidget(self.LBelegung2, 1, 1, 1, 1)
         self.LBelegung3 = QtWidgets.QLabel(self.tab_4)
@@ -1174,7 +907,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung3.setFont(font)
-        self.LBelegung3.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung3.setObjectName("LBelegung3")
         self.gridLayout_2.addWidget(self.LBelegung3, 2, 1, 1, 1)
         self.LBelegung4 = QtWidgets.QLabel(self.tab_4)
@@ -1183,7 +915,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung4.setFont(font)
-        self.LBelegung4.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung4.setObjectName("LBelegung4")
         self.gridLayout_2.addWidget(self.LBelegung4, 3, 1, 1, 1)
         self.LBelegung5 = QtWidgets.QLabel(self.tab_4)
@@ -1192,7 +923,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung5.setFont(font)
-        self.LBelegung5.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung5.setObjectName("LBelegung5")
         self.gridLayout_2.addWidget(self.LBelegung5, 4, 1, 1, 1)
         self.LBelegung6 = QtWidgets.QLabel(self.tab_4)
@@ -1201,7 +931,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung6.setFont(font)
-        self.LBelegung6.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung6.setObjectName("LBelegung6")
         self.gridLayout_2.addWidget(self.LBelegung6, 5, 1, 1, 1)
         self.PBneu3 = QtWidgets.QPushButton(self.tab_4)
@@ -1224,15 +953,16 @@ class Ui_MainWindow(object):
         self.PBBelegung.setFont(font)
         self.PBBelegung.setObjectName("PBBelegung")
         self.gridLayout_2.addWidget(self.PBBelegung, 17, 4, 1, 1)
-        self.PBCleanMachine = QtWidgets.QPushButton(self.tab_4)
-        self.PBCleanMachine.setMaximumSize(QtCore.QSize(200, 100))
+        self.option_button = QtWidgets.QPushButton(self.tab_4)
+        self.option_button.setMaximumSize(QtCore.QSize(200, 100))
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
-        self.PBCleanMachine.setFont(font)
-        self.PBCleanMachine.setObjectName("PBCleanMachine")
-        self.gridLayout_2.addWidget(self.PBCleanMachine, 17, 6, 1, 1)
+        self.option_button.setFont(font)
+        self.option_button.setText("")
+        self.option_button.setObjectName("option_button")
+        self.gridLayout_2.addWidget(self.option_button, 17, 6, 1, 1)
         self.PBneu4 = QtWidgets.QPushButton(self.tab_4)
         self.PBneu4.setMinimumSize(QtCore.QSize(50, 29))
         self.PBneu4.setMaximumSize(QtCore.QSize(16777215, 100))
@@ -1252,7 +982,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel1.setFont(font)
-        self.bottleLabel1.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel1.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel1.setObjectName("bottleLabel1")
         self.gridLayout_2.addWidget(self.bottleLabel1, 0, 6, 1, 1)
@@ -1284,7 +1013,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung9.setFont(font)
-        self.LBelegung9.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung9.setObjectName("LBelegung9")
         self.gridLayout_2.addWidget(self.LBelegung9, 8, 1, 1, 1)
         self.PBneu2 = QtWidgets.QPushButton(self.tab_4)
@@ -1352,7 +1080,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung7.setFont(font)
-        self.LBelegung7.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung7.setObjectName("LBelegung7")
         self.gridLayout_2.addWidget(self.LBelegung7, 6, 1, 1, 1)
         self.LBelegung8 = QtWidgets.QLabel(self.tab_4)
@@ -1361,7 +1088,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung8.setFont(font)
-        self.LBelegung8.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung8.setObjectName("LBelegung8")
         self.gridLayout_2.addWidget(self.LBelegung8, 7, 1, 1, 1)
         self.ProBBelegung1 = QtWidgets.QProgressBar(self.tab_4)
@@ -1382,7 +1108,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung1.setFont(font)
-        self.LBelegung1.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung1.setObjectName("LBelegung1")
         self.gridLayout_2.addWidget(self.LBelegung1, 0, 1, 1, 1)
         self.PBneu1 = QtWidgets.QPushButton(self.tab_4)
@@ -1403,7 +1128,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung10.setFont(font)
-        self.LBelegung10.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung10.setObjectName("LBelegung10")
         self.gridLayout_2.addWidget(self.LBelegung10, 9, 1, 1, 1)
         self.ProBBelegung3 = QtWidgets.QProgressBar(self.tab_4)
@@ -1594,7 +1318,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel2.setFont(font)
-        self.bottleLabel2.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel2.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel2.setObjectName("bottleLabel2")
         self.gridLayout_2.addWidget(self.bottleLabel2, 1, 6, 1, 1)
@@ -1615,7 +1338,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel4.setFont(font)
-        self.bottleLabel4.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel4.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel4.setObjectName("bottleLabel4")
         self.gridLayout_2.addWidget(self.bottleLabel4, 3, 6, 1, 1)
@@ -1627,7 +1349,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel3.setFont(font)
-        self.bottleLabel3.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel3.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel3.setObjectName("bottleLabel3")
         self.gridLayout_2.addWidget(self.bottleLabel3, 2, 6, 1, 1)
@@ -1639,7 +1360,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel5.setFont(font)
-        self.bottleLabel5.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel5.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel5.setObjectName("bottleLabel5")
         self.gridLayout_2.addWidget(self.bottleLabel5, 4, 6, 1, 1)
@@ -1651,7 +1371,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel7.setFont(font)
-        self.bottleLabel7.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel7.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel7.setObjectName("bottleLabel7")
         self.gridLayout_2.addWidget(self.bottleLabel7, 6, 6, 1, 1)
@@ -1663,7 +1382,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel6.setFont(font)
-        self.bottleLabel6.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel6.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel6.setObjectName("bottleLabel6")
         self.gridLayout_2.addWidget(self.bottleLabel6, 5, 6, 1, 1)
@@ -1675,7 +1393,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel9.setFont(font)
-        self.bottleLabel9.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel9.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel9.setObjectName("bottleLabel9")
         self.gridLayout_2.addWidget(self.bottleLabel9, 8, 6, 1, 1)
@@ -1687,7 +1404,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel8.setFont(font)
-        self.bottleLabel8.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel8.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel8.setObjectName("bottleLabel8")
         self.gridLayout_2.addWidget(self.bottleLabel8, 7, 6, 1, 1)
@@ -1699,7 +1415,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel10.setFont(font)
-        self.bottleLabel10.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel10.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel10.setObjectName("bottleLabel10")
         self.gridLayout_2.addWidget(self.bottleLabel10, 9, 6, 1, 1)
@@ -1775,7 +1490,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung11.setFont(font)
-        self.LBelegung11.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung11.setObjectName("LBelegung11")
         self.gridLayout_2.addWidget(self.LBelegung11, 10, 1, 1, 1)
         self.LBelegung13 = QtWidgets.QLabel(self.tab_4)
@@ -1784,7 +1498,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung13.setFont(font)
-        self.LBelegung13.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung13.setObjectName("LBelegung13")
         self.gridLayout_2.addWidget(self.LBelegung13, 13, 1, 1, 1)
         self.LBelegung12 = QtWidgets.QLabel(self.tab_4)
@@ -1793,7 +1506,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung12.setFont(font)
-        self.LBelegung12.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung12.setObjectName("LBelegung12")
         self.gridLayout_2.addWidget(self.LBelegung12, 11, 1, 1, 1)
         self.LBelegung15 = QtWidgets.QLabel(self.tab_4)
@@ -1802,7 +1514,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung15.setFont(font)
-        self.LBelegung15.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung15.setObjectName("LBelegung15")
         self.gridLayout_2.addWidget(self.LBelegung15, 15, 1, 1, 1)
         self.LBelegung14 = QtWidgets.QLabel(self.tab_4)
@@ -1811,7 +1522,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung14.setFont(font)
-        self.LBelegung14.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung14.setObjectName("LBelegung14")
         self.gridLayout_2.addWidget(self.LBelegung14, 14, 1, 1, 1)
         self.LBelegung16 = QtWidgets.QLabel(self.tab_4)
@@ -1820,7 +1530,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.LBelegung16.setFont(font)
-        self.LBelegung16.setStyleSheet("    color: rgb(239, 151, 0);")
         self.LBelegung16.setObjectName("LBelegung16")
         self.gridLayout_2.addWidget(self.LBelegung16, 16, 1, 1, 1)
         self.ProBBelegung12 = QtWidgets.QProgressBar(self.tab_4)
@@ -1957,7 +1666,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel11.setFont(font)
-        self.bottleLabel11.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel11.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel11.setObjectName("bottleLabel11")
         self.gridLayout_2.addWidget(self.bottleLabel11, 10, 6, 1, 1)
@@ -1969,7 +1677,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel12.setFont(font)
-        self.bottleLabel12.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel12.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel12.setObjectName("bottleLabel12")
         self.gridLayout_2.addWidget(self.bottleLabel12, 11, 6, 1, 1)
@@ -1981,7 +1688,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel13.setFont(font)
-        self.bottleLabel13.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel13.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel13.setObjectName("bottleLabel13")
         self.gridLayout_2.addWidget(self.bottleLabel13, 13, 6, 1, 1)
@@ -1993,7 +1699,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel14.setFont(font)
-        self.bottleLabel14.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel14.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel14.setObjectName("bottleLabel14")
         self.gridLayout_2.addWidget(self.bottleLabel14, 14, 6, 1, 1)
@@ -2005,7 +1710,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel15.setFont(font)
-        self.bottleLabel15.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel15.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel15.setObjectName("bottleLabel15")
         self.gridLayout_2.addWidget(self.bottleLabel15, 15, 6, 1, 1)
@@ -2017,7 +1721,6 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.bottleLabel16.setFont(font)
-        self.bottleLabel16.setStyleSheet("    color: rgb(239, 151, 0);")
         self.bottleLabel16.setAlignment(QtCore.Qt.AlignCenter)
         self.bottleLabel16.setObjectName("bottleLabel16")
         self.gridLayout_2.addWidget(self.bottleLabel16, 16, 6, 1, 1)
@@ -2042,18 +1745,30 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Cocktailmanager"))
         self.LMenge.setText(_translate("MainWindow", "xx ml"))
+        self.LMenge.setProperty("cssClass", _translate("MainWindow", "lr-padding"))
         self.LMZutat1.setText(_translate("MainWindow", "LMZutat1"))
+        self.LMZutat1.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LZutat1.setText(_translate("MainWindow", "LZutat1"))
         self.LAlkoholname.setText(_translate("MainWindow", "LAlkoholname"))
+        self.LAlkoholname.setProperty("cssClass", _translate("MainWindow", "header-underline"))
         self.LAlkoholgehalt.setText(_translate("MainWindow", "yy %"))
+        self.LAlkoholgehalt.setProperty("cssClass", _translate("MainWindow", "secondary lr-padding"))
         self.LMZutat2.setText(_translate("MainWindow", "LMZutat2"))
+        self.LMZutat2.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat3.setText(_translate("MainWindow", "LMZutat3"))
+        self.LMZutat3.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat4.setText(_translate("MainWindow", "LMZutat4"))
+        self.LMZutat4.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat5.setText(_translate("MainWindow", "LMZutat5"))
+        self.LMZutat5.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat6.setText(_translate("MainWindow", "LMZutat6"))
+        self.LMZutat6.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat7.setText(_translate("MainWindow", "LMZutat7"))
+        self.LMZutat7.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat8.setText(_translate("MainWindow", "LMZutat8"))
+        self.LMZutat8.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LMZutat9.setText(_translate("MainWindow", "LMZutat9"))
+        self.LMZutat9.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LZutat9.setText(_translate("MainWindow", "LZutat9"))
         self.LZutat8.setText(_translate("MainWindow", "LZutat8"))
         self.LZutat7.setText(_translate("MainWindow", "LZutat7"))
@@ -2066,6 +1781,7 @@ class Ui_MainWindow(object):
         self.LCustomMenge.setText(_translate("MainWindow", "200"))
         self.PBMplus.setText(_translate("MainWindow", "+"))
         self.PBZubereiten_custom.setText(_translate("MainWindow", "Zubereiten"))
+        self.PBZubereiten_custom.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.PBSetnull.setText(_translate("MainWindow", "O"))
         self.LWMaker.setSortingEnabled(True)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Maker"))
@@ -2075,66 +1791,102 @@ class Ui_MainWindow(object):
         self.PBZclear.setText(_translate("MainWindow", "clear"))
         self.PBZdelete.setText(_translate("MainWindow", "del"))
         self.PBZutathinzu.setText(_translate("MainWindow", "hinzufügen"))
+        self.PBZutathinzu.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.PBZeinzelnd.setText(_translate("MainWindow", "Einzelne Zutat ausgeben"))
+        self.PBZeinzelnd.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.PBZaktualisieren.setText(_translate("MainWindow", "ändern"))
         self.PBAvailable.setText(_translate("MainWindow", "verfügbar"))
+        self.PBAvailable.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.LBottleVolume.setText(_translate("MainWindow", "Flaschenvolume (ml)"))
         self.PBZminus.setText(_translate("MainWindow", "-"))
+        self.LEFlaschenvolumen.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.PBZplus.setText(_translate("MainWindow", "+"))
         self.LIngredient.setText(_translate("MainWindow", "Zutat"))
+        self.LEZutatRezept.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LAlcoholLevel.setText(_translate("MainWindow", "Alkoholgehalt"))
+        self.LEGehaltRezept.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Zutaten"))
         self.label_23.setText(_translate("MainWindow", "Cocktailname:"))
+        self.LECocktail.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.PBenable.setText(_translate("MainWindow", "Enable all"))
         self.PBRnull.setText(_translate("MainWindow", "export"))
         self.LWRezepte.setSortingEnabled(True)
+        self.LER1.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.label_8.setText(_translate("MainWindow", "ml"))
         self.label_7.setText(_translate("MainWindow", "ml"))
         self.label_5.setText(_translate("MainWindow", "ml"))
         self.label_10.setText(_translate("MainWindow", "ml"))
         self.label_9.setText(_translate("MainWindow", "ml"))
         self.label_3.setText(_translate("MainWindow", "ml"))
+        self.LER2.setProperty("cssClass", _translate("MainWindow", "secondary"))
+        self.LER3.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.label_6.setText(_translate("MainWindow", "ml"))
+        self.LER6.setProperty("cssClass", _translate("MainWindow", "secondary"))
+        self.LER5.setProperty("cssClass", _translate("MainWindow", "secondary"))
+        self.LER7.setProperty("cssClass", _translate("MainWindow", "secondary"))
+        self.LER4.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.CHBenabled.setText(_translate("MainWindow", "Enabled:"))
         self.PBclear.setText(_translate("MainWindow", "clear"))
         self.PBdelete.setText(_translate("MainWindow", "del"))
         self.PBRezeptaktualisieren.setText(_translate("MainWindow", "ändern"))
         self.PBRezepthinzu.setText(_translate("MainWindow", "hinzufügen"))
-        self.LRHandAdd.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#ef9700;\"> Selbst hinzufügen:</span></p></body></html>"))
+        self.PBRezepthinzu.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
+        self.LRHandAdd.setText(_translate("MainWindow", "Add by Hand:"))
+        self.LRHandAdd.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Rezepte"))
         self.PBneu8.setText(_translate("MainWindow", "new"))
         self.LBelegung2.setText(_translate("MainWindow", "LBelegung2"))
+        self.LBelegung2.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung3.setText(_translate("MainWindow", "LBelegung3"))
+        self.LBelegung3.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung4.setText(_translate("MainWindow", "LBelegung4"))
+        self.LBelegung4.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung5.setText(_translate("MainWindow", "LBelegung5"))
+        self.LBelegung5.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung6.setText(_translate("MainWindow", "LBelegung6"))
+        self.LBelegung6.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.PBneu3.setText(_translate("MainWindow", "new"))
         self.PBBelegung.setText(_translate("MainWindow", "ändern"))
-        self.PBCleanMachine.setText(_translate("MainWindow", "CLEAN"))
         self.PBneu4.setText(_translate("MainWindow", "new"))
         self.bottleLabel1.setText(_translate("MainWindow", "1"))
+        self.bottleLabel1.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.PBneu10.setText(_translate("MainWindow", "new"))
         self.PBneu5.setText(_translate("MainWindow", "new"))
         self.LBelegung9.setText(_translate("MainWindow", "LBelegung9"))
+        self.LBelegung9.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.PBneu2.setText(_translate("MainWindow", "new"))
         self.PBneu9.setText(_translate("MainWindow", "new"))
         self.PBFlanwenden.setText(_translate("MainWindow", "neue Flaschen anwenden"))
+        self.PBFlanwenden.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
         self.PBneu7.setText(_translate("MainWindow", "new"))
         self.PBneu6.setText(_translate("MainWindow", "new"))
         self.LBelegung7.setText(_translate("MainWindow", "LBelegung7"))
+        self.LBelegung7.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung8.setText(_translate("MainWindow", "LBelegung8"))
+        self.LBelegung8.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung1.setText(_translate("MainWindow", "LBelegung1"))
+        self.LBelegung1.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.PBneu1.setText(_translate("MainWindow", "new"))
         self.LBelegung10.setText(_translate("MainWindow", "LBelegung10"))
+        self.LBelegung10.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel2.setText(_translate("MainWindow", "2"))
+        self.bottleLabel2.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel4.setText(_translate("MainWindow", "4"))
+        self.bottleLabel4.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel3.setText(_translate("MainWindow", "3"))
+        self.bottleLabel3.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel5.setText(_translate("MainWindow", "5"))
+        self.bottleLabel5.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel7.setText(_translate("MainWindow", "7"))
+        self.bottleLabel7.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel6.setText(_translate("MainWindow", "6"))
+        self.bottleLabel6.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel9.setText(_translate("MainWindow", "9"))
+        self.bottleLabel9.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel8.setText(_translate("MainWindow", "8"))
+        self.bottleLabel8.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel10.setText(_translate("MainWindow", "10"))
+        self.bottleLabel10.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.PBneu12.setText(_translate("MainWindow", "new"))
         self.PBneu11.setText(_translate("MainWindow", "new"))
         self.PBneu13.setText(_translate("MainWindow", "new"))
@@ -2142,17 +1894,29 @@ class Ui_MainWindow(object):
         self.PBneu14.setText(_translate("MainWindow", "new"))
         self.PBneu16.setText(_translate("MainWindow", "new"))
         self.LBelegung11.setText(_translate("MainWindow", "LBelegung11"))
+        self.LBelegung11.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung13.setText(_translate("MainWindow", "LBelegung13"))
+        self.LBelegung13.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung12.setText(_translate("MainWindow", "LBelegung12"))
+        self.LBelegung12.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung15.setText(_translate("MainWindow", "LBelegung15"))
+        self.LBelegung15.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung14.setText(_translate("MainWindow", "LBelegung14"))
+        self.LBelegung14.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.LBelegung16.setText(_translate("MainWindow", "LBelegung16"))
+        self.LBelegung16.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel11.setText(_translate("MainWindow", "11"))
+        self.bottleLabel11.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel12.setText(_translate("MainWindow", "12"))
+        self.bottleLabel12.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel13.setText(_translate("MainWindow", "13"))
+        self.bottleLabel13.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel14.setText(_translate("MainWindow", "14"))
+        self.bottleLabel14.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel15.setText(_translate("MainWindow", "15"))
+        self.bottleLabel15.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.bottleLabel16.setText(_translate("MainWindow", "16"))
+        self.bottleLabel16.setProperty("cssClass", _translate("MainWindow", "secondary"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("MainWindow", "Belegung"))
         self.actionCocktailmaker.setText(_translate("MainWindow", "Cocktailmaker"))
         self.actionZutatenmanager.setText(_translate("MainWindow", "Zutatenmanager"))

@@ -7,10 +7,10 @@ from src.config_manager import ConfigManager
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.logger_handler import LoggerHandler
-from src.rpi_controller import RPI_CONTROLLER
+from src.machine.controller import MACHINE
 
 
-ui_file = Path(__file__).parent.absolute() / "ui_elements" / "Calibration.ui"
+ui_file = Path(__file__).parents[1].absolute() / "ui_elements" / "Calibration.ui"
 logger = LoggerHandler("calibration_module", "production_logs")
 
 
@@ -28,8 +28,9 @@ class CalibrationScreen(QMainWindow, ConfigManager):
         self.amount_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "+", 10, 200, 10))
         self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "-", 10, 200, 10))
         self.showFullScreen()
+        DP_CONTROLLER.inject_stylesheet(self)
         DP_CONTROLLER.set_display_settings(self)
-        RPI_CONTROLLER.initializing_pins()
+        MACHINE.set_up_pumps()
         logger.log_start_program("calibration")
 
     def output_volume(self):
@@ -37,7 +38,7 @@ class CalibrationScreen(QMainWindow, ConfigManager):
         channel_number = int(self.channel.text())
         amount = int(self.amount.text())
         display_name = f"{amount} ml volume, pump #{channel_number}"
-        RPI_CONTROLLER.make_cocktail(None, [channel_number], [amount], display_name, False)
+        MACHINE.make_cocktail(None, [channel_number], [amount], display_name, False)
 
 
 @logerror

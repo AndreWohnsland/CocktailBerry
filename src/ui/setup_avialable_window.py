@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 
 from src.ui_elements.available import Ui_available
-from src.maker import evaluate_recipe_maker_view
+from src.tabs.maker import evaluate_recipe_maker_view
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
@@ -17,6 +17,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.mainscreen = parent
+        DP_CONTROLLER.inject_stylesheet(self)
         # somehow the ui dont accept without _2 for those two buttons so they are _2
         self.PBAbbruch_2.clicked.connect(self.abbrechen_clicked)
         self.PBOk_2.clicked.connect(self.accepted_clicked)

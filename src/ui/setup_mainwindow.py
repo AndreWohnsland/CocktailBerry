@@ -2,21 +2,19 @@
 of the passed window. Also defines the Mode for controls.
 """
 from pathlib import Path
-from typing import Union
+from typing import Optional
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow
 
 from src.config_manager import ConfigManager
-from src import maker
-from src import ingredients
-from src import recipes
-from src import bottles
+from src.machine.controller import MACHINE
+from src.tabs import maker, ingredients, recipes, bottles
 from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
-from src.rpi_controller import RPI_CONTROLLER
 from src.logger_handler import LoggerHandler
+from src.ui.setup_option_window import OptionWindow
 from src.updater import Updater
 
 from src.ui_elements.Cocktailmanager_2 import Ui_MainWindow
@@ -46,21 +44,23 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.icon_path = str(Path(__file__).parents[1].absolute() / "ui_elements" / "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        DP_CONTROLLER.inject_stylesheet(self)
         # init the empty further screens
-        self.pww: Union[PasswordScreen, None] = None
-        self.kbw: Union[KeyboardWidget, None] = None
-        self.prow: Union[ProgressScreen, None] = None
-        self.botw: Union[BottleWindow, None] = None
-        self.ingd: Union[GetIngredientWindow, None] = None
-        self.handw: Union[HandaddWidget, None] = None
-        self.availw: Union[AvailableWindow, None] = None
-        self.teamw: Union[TeamScreen, None] = None
+        self.pww: Optional[PasswordScreen] = None
+        self.kbw: Optional[KeyboardWidget] = None
+        self.prow: Optional[ProgressScreen] = None
+        self.botw: Optional[BottleWindow] = None
+        self.ingd: Optional[GetIngredientWindow] = None
+        self.handw: Optional[HandaddWidget] = None
+        self.availw: Optional[AvailableWindow] = None
+        self.teamw: Optional[TeamScreen] = None
+        self.option_window: Optional[OptionWindow] = None
         UI_LANGUAGE.adjust_mainwindow(self)
+        MACHINE.set_up_pumps()
         self.showFullScreen()
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
-        RPI_CONTROLLER.initializing_pins()
         self.update_check()
 
     def update_check(self):
@@ -84,18 +84,29 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         """ Opens up the progressionwindow to show the Cocktail status. """
         self.prow = ProgressScreen(self, cocktail_type)
 
+    def prow_change(self, pbvalue):
+        """ Changes the value of the Progressionbar of the ProBarWindow. """
+        if self.prow is None:
+            return
+        self.prow.progressBar.setValue(pbvalue)
+
+    def prow_close(self):
+        """ Closes the Progressionwindow at the end of the cyclus. """
+        if self.prow is None:
+            return
+        self.prow.close()
+
     def teamwindow(self):
         self.teamw = TeamScreen(self)
         # don't abstract .exec_() into class otherwise you will get NameError in class!
         self.teamw.exec_()
 
-    def prow_change(self, pbvalue):
-        """ Changes the value of the Progressionbar of the ProBarWindow. """
-        self.prow.progressBar.setValue(pbvalue)
-
-    def prow_close(self):
-        """ Closes the Progressionwindow at the end of the cyclus. """
-        self.prow.close()
+    def optionwindow(self):
+        """Opens up the options"""
+        if not DP_CONTROLLER.check_bottles_password(self):
+            DP_CONTROLLER.say_wrong_password()
+            return
+        self.option_window = OptionWindow(self)
 
     def bottleswindow(self):
         """ Opens the bottlewindow to change the volumelevels. """
@@ -119,6 +130,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2, 50, 50, password))
         self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine, 50, 50, password))
         self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
+        self.option_button.clicked.connect(self.optionwindow)
         alcohol = UI_LANGUAGE.generate_password_header("alcohol")
         self.LEGehaltRezept.clicked.connect(
             lambda: self.passwordwindow(self.LEGehaltRezept, 50, 50, alcohol)
@@ -153,7 +165,6 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
         self.PBZaktualisieren.clicked.connect(lambda: ingredients.enter_ingredient(self, False))
         self.PBZubereiten_custom.clicked.connect(lambda: maker.prepare_cocktail(self))
-        self.PBCleanMachine.clicked.connect(lambda: bottles.clean_machine(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
         self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))

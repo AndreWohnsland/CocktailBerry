@@ -35,57 +35,7 @@
    <string>~~ Cocktail wird zubereitet ~~</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget
-{
-	color: rgb(0, 123, 255);	
-	background-color: rgb(0, 0, 0);
-
-}
-
-QPushButton {
-	background-color: rgb(0, 0, 0);
-	color: (0, 123, 255);
-    border-width: 4px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-QPushButton:pressed
-{
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-
-QProgressBar
-{
-	background-color: rgb(166, 166, 166);
-	color: rgb(0, 0, 0);
-    border: 2px rgb(166, 166, 166);
-    border-radius: 5px;
-}
-
-QProgressBar::chunk {
-	border: 2px rgb(166, 166, 166);
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-	background-color: rgb(0, 123, 255);
-   /* width: 40px;
-    margin: 0.5px;*/
-}
-
-#Labbruch {
-	color: rgb(239, 151, 0);
-}
-
-#LProgress{
-	color: rgb(239, 151, 0);
-}</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -143,10 +93,13 @@ QProgressBar::chunk {
        </font>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ef9700;&quot;&gt;Fortschritt:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>Progress</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignHCenter|Qt::AlignTop</set>
+      </property>
+      <property name="cssClass" stdset="0">
+       <string>secondary</string>
       </property>
      </widget>
     </item>
@@ -195,6 +148,9 @@ QProgressBar::chunk {
       </property>
       <property name="alignment">
        <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+      </property>
+      <property name="cssClass" stdset="0">
+       <string>secondary</string>
       </property>
      </widget>
     </item>

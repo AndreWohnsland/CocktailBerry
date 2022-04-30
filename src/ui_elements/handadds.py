@@ -17,75 +17,7 @@ class Ui_handadds(object):
         handadds.resize(420, 300)
         handadds.setMinimumSize(QtCore.QSize(420, 300))
         handadds.setMaximumSize(QtCore.QSize(420, 300))
-        handadds.setStyleSheet("QWidget\n"
-"{\n"
-"    color: rgb(0, 123, 255);    \n"
-"    background-color: rgb(0, 0, 0);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"    background-color: rgb(0, 0, 0);\n"
-"    color: (0, 123, 255);\n"
-"    border-width: 4px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed\n"
-"{\n"
-"    color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"QComboBox {\n"
-"    color: rgb(0, 123, 255);    \n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"    border-top-left-radius: 7px;\n"
-"    border-bottom-left-radius: 7px;\n"
-"    padding: 1px 18px 1px 5px;\n"
-"    min-width: 6em;\n"
-"}\n"
-"\n"
-"QComboBox:on { /* shift the text when the popup opens */\n"
-"    border: 1px solid  rgb(97, 97, 97);\n"
-"    border-top-left-radius: 7px;\n"
-"    border-bottom-left-radius: 0px;\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"QLineEdit\n"
-"{\n"
-"    padding: 1px;\n"
-"    border-style: solid;\n"
-"    border: 1px solid rgb(97, 97, 97);\n"
-"    border-radius: 5;\n"
-"}\n"
-"\n"
-"#LHeader, #LEHandadd1, #LEHandadd2, #LEHandadd3, #LEHandadd4, #LEHandadd5 {\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"/* Inverted button style */\n"
-"#PBEintragen {\n"
-"    background-color: rgb(0, 123, 255);  \n"
-"    color: rgb(0, 0, 0);\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"#PBEintragen:pressed {\n"
-"    background-color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);    \n"
-"}")
+        handadds.setStyleSheet("")
         handadds.setModal(True)
         self.verticalLayout = QtWidgets.QVBoxLayout(handadds)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -288,12 +220,19 @@ class Ui_handadds(object):
         _translate = QtCore.QCoreApplication.translate
         handadds.setWindowTitle(_translate("handadds", "Zutaten zum selbst hinzufügen"))
         self.LHeader.setText(_translate("handadds", "Ingredients for hand add"))
+        self.LHeader.setProperty("cssClass", _translate("handadds", "secondary"))
+        self.LEHandadd1.setProperty("cssClass", _translate("handadds", "secondary"))
+        self.LEHandadd2.setProperty("cssClass", _translate("handadds", "secondary"))
+        self.LEHandadd3.setProperty("cssClass", _translate("handadds", "secondary"))
+        self.LEHandadd4.setProperty("cssClass", _translate("handadds", "secondary"))
+        self.LEHandadd5.setProperty("cssClass", _translate("handadds", "secondary"))
         self.label_11.setText(_translate("handadds", "ml"))
         self.label_12.setText(_translate("handadds", "ml"))
         self.label_13.setText(_translate("handadds", "ml"))
         self.label_15.setText(_translate("handadds", "ml"))
         self.label_14.setText(_translate("handadds", "ml"))
         self.PBEintragen.setText(_translate("handadds", "Eintragen"))
+        self.PBEintragen.setProperty("cssClass", _translate("handadds", "btn-inverted"))
         self.PBAbbrechen.setText(_translate("handadds", "Abbrechen"))
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 

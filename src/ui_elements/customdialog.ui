@@ -14,59 +14,7 @@
    <string>Information</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget
-{
-	color: rgb(0, 123, 255);	
-	background-color: rgb(0, 0, 0);
-
-}
-
-/*
-QPushButton {
-	background-color: rgb(0, 0, 0);
-	color: (0, 123, 255);
-    border-width: 4px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-QPushButton:pressed
-{
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-*/
-
-#LHeader {
-	color: rgb(239, 151, 0);
-}
-
-
-/* Inverted button style */
-QPushButton {
-	background-color: rgb(0, 123, 255);  
-	color: rgb(0, 0, 0);
-    border-width: 3px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-QPushButton:pressed {
-	background-color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);	
-}
-
-#informationLabel {
-	padding: 5px 25px 5px 25px;
-}</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -114,6 +62,9 @@ QPushButton:pressed {
      </property>
      <property name="text">
       <string>Close</string>
+     </property>
+     <property name="cssClass" stdset="0">
+      <string>btn-inverted</string>
      </property>
     </widget>
    </item>

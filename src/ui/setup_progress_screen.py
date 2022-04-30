@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 from src.ui_elements.progressbarwindow import Ui_Progressbarwindow
 
-from src.maker import interrupt_cocktail
+from src.tabs.maker import interrupt_cocktail
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 
@@ -16,6 +16,7 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        DP_CONTROLLER.inject_stylesheet(self)
         self.PBabbrechen.clicked.connect(interrupt_cocktail)
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent

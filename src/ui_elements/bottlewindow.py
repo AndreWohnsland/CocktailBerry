@@ -23,74 +23,7 @@ class Ui_Bottlewindow(object):
         Bottlewindow.setMinimumSize(QtCore.QSize(800, 480))
         Bottlewindow.setMaximumSize(QtCore.QSize(800, 700))
         Bottlewindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-        Bottlewindow.setStyleSheet("QWidget\n"
-"{\n"
-"    color: rgb(0, 123, 255);    \n"
-"    background-color: rgb(0, 0, 0);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"    background-color: rgb(0, 0, 0);\n"
-"    color: (0, 123, 255);\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed, QPushButton:checked\n"
-"{\n"
-"    color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"QProgressBar\n"
-"{\n"
-"    background-color: rgb(166, 166, 166);\n"
-"    color: rgb(0, 0, 0);\n"
-"    border: 2px rgb(166, 166, 166);\n"
-"    border-radius: 5px;\n"
-"}\n"
-"\n"
-"QProgressBar::chunk {\n"
-"    border: 2px rgb(166, 166, 166);\n"
-"    border-top-left-radius: 5px;\n"
-"    border-bottom-left-radius: 5px;\n"
-"    border-top-right-radius: 5px;\n"
-"    border-bottom-right-radius: 5px;\n"
-"    background-color: rgb(0, 123, 255);\n"
-"   /* width: 40px;\n"
-"    margin: 0.5px;*/\n"
-"}\n"
-"\n"
-"#Labbruch {\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"#LName1, #LName2, #LName3, #LName4, #LName5, #LName6, #LName7, #LName8, #LName9, #LName10, #LName11, #LName12, #LName13, #LName14, #LName15, #LName16 {\n"
-"    color: rgb(239, 151, 0);\n"
-"}\n"
-"\n"
-"/* Inverted button style */\n"
-"#PBEintragen {\n"
-"    background-color: rgb(0, 123, 255);  \n"
-"    color: rgb(0, 0, 0);\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(0, 123, 255);\n"
-"    border-style: solid;\n"
-"    border-radius: 7;\n"
-"    padding: 3px;\n"
-"    padding-left: 5px;\n"
-"    padding-right: 5px;\n"
-"}\n"
-"\n"
-"#PBEintragen:pressed {\n"
-"    background-color: rgb(239, 151, 0);    \n"
-"    border-color: rgb(239, 151, 0);    \n"
-"}\n"
-"")
+        Bottlewindow.setStyleSheet("")
         self.centralwidget = QtWidgets.QWidget(Bottlewindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -776,6 +709,7 @@ class Ui_Bottlewindow(object):
         Bottlewindow.setWindowTitle(_translate("Bottlewindow", "~~ Füllstand der Flaschen auswählen ~~"))
         self.PBAbbrechen.setText(_translate("Bottlewindow", "Abbrechen"))
         self.PBEintragen.setText(_translate("Bottlewindow", "Eintragen"))
+        self.PBEintragen.setProperty("cssClass", _translate("Bottlewindow", "btn-inverted"))
         self.PBMplus10.setText(_translate("Bottlewindow", "+"))
         self.LHeader.setText(_translate("Bottlewindow", "Füllstand der Flaschen auswählen/ändern"))
         self.LAmount2.setText(_translate("Bottlewindow", "200"))
@@ -795,10 +729,15 @@ class Ui_Bottlewindow(object):
         self.LAmount7.setText(_translate("Bottlewindow", "200"))
         self.PBMminus8.setText(_translate("Bottlewindow", "-"))
         self.LName14.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName14.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName15.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName15.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName13.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName13.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName12.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName12.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName11.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName11.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.PBMminus7.setText(_translate("Bottlewindow", "-"))
         self.PBMminus6.setText(_translate("Bottlewindow", "-"))
         self.PBMplus7.setText(_translate("Bottlewindow", "+"))
@@ -807,22 +746,33 @@ class Ui_Bottlewindow(object):
         self.PBMplus1.setText(_translate("Bottlewindow", "+"))
         self.PBMminus2.setText(_translate("Bottlewindow", "-"))
         self.LName3.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName3.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName4.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName4.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName2.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName2.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName5.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName5.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.PBMminus4.setText(_translate("Bottlewindow", "-"))
         self.LName10.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName10.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.PBMminus1.setText(_translate("Bottlewindow", "-"))
         self.LName1.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName1.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LAmount9.setText(_translate("Bottlewindow", "200"))
         self.PBMminus5.setText(_translate("Bottlewindow", "-"))
         self.PBMminus3.setText(_translate("Bottlewindow", "-"))
         self.LAmount1.setText(_translate("Bottlewindow", "200"))
         self.LName6.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName6.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName9.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName9.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName7.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName7.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName8.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName8.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.LName16.setText(_translate("Bottlewindow", "TextLabel"))
+        self.LName16.setProperty("cssClass", _translate("Bottlewindow", "secondary"))
         self.PBMminus11.setText(_translate("Bottlewindow", "-"))
         self.PBMminus12.setText(_translate("Bottlewindow", "-"))
         self.PBMminus13.setText(_translate("Bottlewindow", "-"))

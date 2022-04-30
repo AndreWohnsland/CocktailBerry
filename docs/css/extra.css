@@ -1,0 +1,32 @@
+
+@media screen and (max-width: 768px) {
+img {
+    width: auto;
+    height: auto;
+}}
+
+.cta-btn {
+    padding: 15px;
+    border-radius: 7px;
+    margin: 0px 10px 0px;
+    text-decoration: none;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.primary-btn {
+    color: white !important;
+    background-color: rgb(57, 72, 158);
+}
+
+.secondary-btn {
+    color: white !important;
+    background-color: rgb(255, 40, 102);
+}
+
+.mid-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}

@@ -26,66 +26,7 @@
    <string>Zutatenname eingeben</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget
-{
-	color: rgb(0, 123, 255);	
-	background-color: rgb(0, 0, 0);
-
-}
-
-QPushButton {
-	background-color: rgb(0, 0, 0);
-	color: (0, 123, 255);
-    border-width: 4px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-QPushButton:pressed
-{
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-
-QPushButton:checked
-{
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-
-QLineEdit
-{
-	color: (0, 123, 255);
-    padding: 1px;
-    border-style: solid;
-    border: 1px solid rgb(97, 97, 97);
-    border-radius: 5;
-}
-
-#LName {
-	color: rgb(239, 151, 0);
-}
-
-#enterButton {
-	background-color: rgb(0, 123, 255);  
-	color: rgb(0, 0, 0);
-    border-width: 3px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-#enterButton:pressed {
-	background-color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);	
-}</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -102,6 +43,9 @@ QLineEdit
         <font>
          <pointsize>36</pointsize>
         </font>
+       </property>
+       <property name="cssClass" stdset="0">
+        <string>secondary</string>
        </property>
       </widget>
      </item>
@@ -1085,6 +1029,9 @@ QLineEdit
        </property>
        <property name="text">
         <string>Enter</string>
+       </property>
+       <property name="cssClass" stdset="0">
+        <string>btn-inverted</string>
        </property>
       </widget>
      </item>

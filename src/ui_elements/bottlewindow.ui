@@ -35,74 +35,7 @@
    <string>~~ Füllstand der Flaschen auswählen ~~</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget
-{
-	color: rgb(0, 123, 255);	
-	background-color: rgb(0, 0, 0);
-}
-
-QPushButton {
-	background-color: rgb(0, 0, 0);
-	color: (0, 123, 255);
-    border-width: 3px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-QPushButton:pressed, QPushButton:checked
-{
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-
-QProgressBar
-{
-	background-color: rgb(166, 166, 166);
-	color: rgb(0, 0, 0);
-    border: 2px rgb(166, 166, 166);
-    border-radius: 5px;
-}
-
-QProgressBar::chunk {
-	border: 2px rgb(166, 166, 166);
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-	background-color: rgb(0, 123, 255);
-   /* width: 40px;
-    margin: 0.5px;*/
-}
-
-#Labbruch {
-	color: rgb(239, 151, 0);
-}
-#LName1, #LName2, #LName3, #LName4, #LName5, #LName6, #LName7, #LName8, #LName9, #LName10, #LName11, #LName12, #LName13, #LName14, #LName15, #LName16 {
-	color: rgb(239, 151, 0);
-}
-
-/* Inverted button style */
-#PBEintragen {
-	background-color: rgb(0, 123, 255);  
-	color: rgb(0, 0, 0);
-    border-width: 3px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-#PBEintragen:pressed {
-	background-color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);	
-}
-</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -157,6 +90,9 @@ QProgressBar::chunk {
         </property>
         <property name="text">
          <string>Eintragen</string>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>btn-inverted</string>
         </property>
        </widget>
       </item>
@@ -693,6 +629,9 @@ QProgressBar::chunk {
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
+        </property>
        </widget>
       </item>
       <item row="15" column="0">
@@ -716,6 +655,9 @@ QProgressBar::chunk {
         </property>
         <property name="text">
          <string>TextLabel</string>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
         </property>
        </widget>
       </item>
@@ -741,6 +683,9 @@ QProgressBar::chunk {
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
+        </property>
        </widget>
       </item>
       <item row="12" column="0">
@@ -765,6 +710,9 @@ QProgressBar::chunk {
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
+        </property>
        </widget>
       </item>
       <item row="11" column="0">
@@ -788,6 +736,9 @@ QProgressBar::chunk {
         </property>
         <property name="text">
          <string>TextLabel</string>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
         </property>
        </widget>
       </item>
@@ -995,6 +946,9 @@ QProgressBar::chunk {
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
+        </property>
        </widget>
       </item>
       <item row="4" column="0">
@@ -1018,6 +972,9 @@ QProgressBar::chunk {
         </property>
         <property name="text">
          <string>TextLabel</string>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
         </property>
        </widget>
       </item>
@@ -1043,6 +1000,9 @@ QProgressBar::chunk {
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
+        </property>
        </widget>
       </item>
       <item row="5" column="0">
@@ -1066,6 +1026,9 @@ QProgressBar::chunk {
         </property>
         <property name="text">
          <string>TextLabel</string>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
         </property>
        </widget>
       </item>
@@ -1117,6 +1080,9 @@ QProgressBar::chunk {
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
+        </property>
        </widget>
       </item>
       <item row="1" column="1">
@@ -1166,6 +1132,9 @@ QProgressBar::chunk {
         </property>
         <property name="text">
          <string>TextLabel</string>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
         </property>
        </widget>
       </item>
@@ -1307,6 +1276,9 @@ QProgressBar::chunk {
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
+        </property>
        </widget>
       </item>
       <item row="9" column="0">
@@ -1330,6 +1302,9 @@ QProgressBar::chunk {
         </property>
         <property name="text">
          <string>TextLabel</string>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
         </property>
        </widget>
       </item>
@@ -1355,6 +1330,9 @@ QProgressBar::chunk {
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
+        </property>
        </widget>
       </item>
       <item row="8" column="0">
@@ -1379,6 +1357,9 @@ QProgressBar::chunk {
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
+        </property>
        </widget>
       </item>
       <item row="16" column="0">
@@ -1402,6 +1383,9 @@ QProgressBar::chunk {
         </property>
         <property name="text">
          <string>TextLabel</string>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>secondary</string>
         </property>
        </widget>
       </item>

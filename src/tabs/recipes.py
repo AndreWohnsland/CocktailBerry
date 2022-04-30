@@ -6,7 +6,7 @@ This includes all functions for the Lists, DB and Buttos/Dropdowns.
 from collections import Counter
 from typing import List, Tuple
 
-from src import maker
+from src.tabs import maker
 
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER

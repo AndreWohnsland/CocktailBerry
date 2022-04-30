@@ -26,75 +26,7 @@
    <string>Zutaten zum selbst hinzufügen</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget
-{
-	color: rgb(0, 123, 255);	
-	background-color: rgb(0, 0, 0);
-}
-
-QPushButton {
-	background-color: rgb(0, 0, 0);
-	color: (0, 123, 255);
-    border-width: 4px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-QPushButton:pressed
-{
-	color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);
-}
-
-QComboBox {
-	color: rgb(0, 123, 255);	
-    border: 1px solid  rgb(97, 97, 97);
-    border-top-left-radius: 7px;
-    border-bottom-left-radius: 7px;
-    padding: 1px 18px 1px 5px;
-    min-width: 6em;
-}
-
-QComboBox:on { /* shift the text when the popup opens */
-    border: 1px solid  rgb(97, 97, 97);
-    border-top-left-radius: 7px;
-    border-bottom-left-radius: 0px;
-	color: rgb(239, 151, 0);
-}
-
-QLineEdit
-{
-    padding: 1px;
-    border-style: solid;
-    border: 1px solid rgb(97, 97, 97);
-    border-radius: 5;
-}
-
-#LHeader, #LEHandadd1, #LEHandadd2, #LEHandadd3, #LEHandadd4, #LEHandadd5 {
-	color: rgb(239, 151, 0);
-}
-
-/* Inverted button style */
-#PBEintragen {
-	background-color: rgb(0, 123, 255);  
-	color: rgb(0, 0, 0);
-    border-width: 3px;
-	border-color: rgb(0, 123, 255);
-	border-style: solid;
-	border-radius: 7;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-#PBEintragen:pressed {
-	background-color: rgb(239, 151, 0);	
-	border-color: rgb(239, 151, 0);	
-}</string>
+   <string notr="true"/>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -120,6 +52,9 @@ QLineEdit
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+     <property name="cssClass" stdset="0">
+      <string>secondary</string>
      </property>
     </widget>
    </item>
@@ -274,6 +209,9 @@ QLineEdit
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
+         <property name="cssClass" stdset="0">
+          <string>secondary</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -297,6 +235,9 @@ QLineEdit
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="cssClass" stdset="0">
+          <string>secondary</string>
          </property>
         </widget>
        </item>
@@ -322,6 +263,9 @@ QLineEdit
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
+         <property name="cssClass" stdset="0">
+          <string>secondary</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -346,6 +290,9 @@ QLineEdit
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
+         <property name="cssClass" stdset="0">
+          <string>secondary</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -369,6 +316,9 @@ QLineEdit
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="cssClass" stdset="0">
+          <string>secondary</string>
          </property>
         </widget>
        </item>
@@ -535,6 +485,9 @@ QLineEdit
        </property>
        <property name="text">
         <string>Eintragen</string>
+       </property>
+       <property name="cssClass" stdset="0">
+        <string>btn-inverted</string>
        </property>
       </widget>
      </item>

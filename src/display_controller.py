@@ -1,12 +1,17 @@
+from pathlib import Path
 from typing import Any, Callable, List, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QWidget
+
 
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
 from src.models import Cocktail, Ingredient
 from src.config_manager import shared
 from src import MAX_SUPPORTED_BOTTLES
+
+STYLE_FOLDER = Path(__file__).parents[0].absolute() / "ui" / "styles"
 
 
 class DisplayController(DialogHandler):
@@ -140,13 +145,19 @@ class DisplayController(DialogHandler):
         if side_effect is not None:
             side_effect()
 
-    def set_display_settings(self, window_object, resize=True):
+    def set_display_settings(self, window_object: QWidget, resize=True):
         """Checks dev environment, adjust cursor and resize accordingly, if resize is wished"""
         if not self.UI_DEVENVIRONMENT:
             window_object.setCursor(Qt.BlankCursor)
         if resize:
             window_object.setFixedSize(self.UI_WIDTH, self.UI_HEIGHT)
             window_object.resize(self.UI_WIDTH, self.UI_HEIGHT)
+
+    def inject_stylesheet(self, window_object: QWidget):
+        """Adds the central stylesheet to the gui"""
+        style_file = f"{self.MAKER_THEME}.css"
+        with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as filehandler:
+            window_object.setStyleSheet(filehandler.read())
 
     def set_tab_width(self, mainscreen):
         """Hack to set tabs to full screen width, inheritance of custom tabBars dont work
@@ -334,12 +345,12 @@ class DisplayController(DialogHandler):
     def fill_recipe_data_maker(self, w, cocktail: Cocktail, total_volume: int):
         """Fill all the maker view data with the data from the given cocktail"""
         w.LAlkoholname.setText(cocktail.name)
-        # w.LIngredientHeader.setText("_" * 40)
         w.LMenge.setText(f"{total_volume} ml")
         w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.0f}%")
         display_data = cocktail.get_machineadds()
         hand = cocktail.get_handadds()
         # when there is handadd, also build some additional data
+        # TODO: typing mixing here is probably not the best thing
         if hand:
             display_data.extend([""] + hand)
         fields_ingredient = self.get_labels_maker_ingredients(w)
@@ -347,8 +358,9 @@ class DisplayController(DialogHandler):
         for field_ingredient, field_volume, ing in zip(fields_ingredient, fields_volume, display_data):
             if isinstance(ing, str):
                 ingredient_name = UI_LANGUAGE.get_add_self()
-                field_ingredient.setStyleSheet("color: rgb(170, 170, 170);")  # margin-top: 5px;
+                field_ingredient.setProperty("cssClass", "hand-seperator")
             else:
+                field_ingredient.setProperty("cssClass", None)
                 field_volume.setText(f" {ing.amount} ml")
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
@@ -358,12 +370,10 @@ class DisplayController(DialogHandler):
         w.LAlkoholgehalt.setText("")
         w.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         w.LMenge.setText("")
-        # w.LIngredientHeader.setText("")
         if not select_other_item:
             w.LWMaker.clearSelection()
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(w), self.get_labels_maker_volume(w)):
             field_ingredient.setText("")
-            field_ingredient.setStyleSheet("color: rgb(0, 123, 255)")
             field_volume.setText("")
 
     def clear_recipe_data_recipes(self, w, select_other_item: bool):

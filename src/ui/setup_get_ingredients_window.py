@@ -8,8 +8,8 @@ from src.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
-from src.rpi_controller import RPI_CONTROLLER
-from src.bottles import set_fill_level_bars
+from src.machine.controller import MACHINE
+from src.tabs.bottles import set_fill_level_bars
 from src.dialog_handler import UI_LANGUAGE
 
 LOG_HANDLER = LoggerHandler("additional_ingredient", "production_logs")
@@ -25,6 +25,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        DP_CONTROLLER.inject_stylesheet(self)
         # Set window properties
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
@@ -56,7 +57,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
             return
 
         print(f"Spending {volume} ml {self.CBingredient.currentText()}")
-        made_volume, _, _ = RPI_CONTROLLER.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name, False)
+        made_volume, _, _ = MACHINE.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name, False)
         DB_COMMANDER.increment_ingredient_consumption(ingredient_name, made_volume[0])
         set_fill_level_bars(self.mainscreen)
         volume_string = f"{volume} ml"

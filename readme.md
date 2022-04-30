@@ -1,66 +1,22 @@
-<img src="docs/pictures/CocktailBerry.png" alt="CocktailBerry" width="750"/>
+<img src="docs/pictures/CocktailBerry.svg" alt="CocktailBerry"/>
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/CocktailBerry)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/CocktailBerry)
 ![Python Version](https://img.shields.io/badge/python-%3E%3D%203.7-blue)
 ![GitHub](https://img.shields.io/github/license/AndreWohnsland/CocktailBerry)
 ![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/CocktailBerry)
+[![Documentation Status](https://readthedocs.org/projects/cocktailberry/badge/?version=latest)](https://cocktailberry.readthedocs.io/en/latest/?badge=latest)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_CocktailBerry&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_CocktailBerry)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/CocktailBerry?style=social)
 
 [![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
-CocktailBerry (formerly known as Cocktailmaker_AW) is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
+CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi. Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://cocktailberry.readthedocs.io/).
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
-## Table of Contents <!-- omit in toc -->
-
-- [Overview](#overview)
-  - [tl;dr](#tldr)
-  - [Features](#features)
-  - [The Machine](#the-machine)
-  - [Interface](#interface)
-- [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Set Up](#set-up)
-  - [Installing Requirements](#installing-requirements)
-  - [Install PyQt5 on RaspberryPi](#install-pyqt5-on-raspberrypi)
-  - [Development on Non-Pi Hardware](#development-on-non-pi-hardware)
-- [Hardware](#hardware)
-  - [Used Hardware in Showcase Machine](#used-hardware-in-showcase-machine)
-  - [Used Hardware in Showcase Teams Dashboard](#used-hardware-in-showcase-teams-dashboard)
-- [Setting up CocktailBerry](#setting-up-cocktailberry)
-  - [Adding new Recipes or Ingredients](#adding-new-recipes-or-ingredients)
-  - [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values)
-  - [Calibration of the Pumps](#calibration-of-the-pumps)
-  - [Cleaning the Machine](#cleaning-the-machine)
-  - [Possible Ingredient SetUp](#possible-ingredient-setup)
-  - [Updates](#updates)
-- [Supported Languages](#supported-languages)
-- [Advanced Topics](#advanced-topics)
-  - [Usage of Services](#usage-of-services)
-  - [Microservices](#microservices)
-    - [Posting Data to the Official API](#posting-data-to-the-official-api)
-  - [Dashboard with Teams](#dashboard-with-teams)
-  - [Installing Docker](#installing-docker)
-- [Troubleshooting](#troubleshooting)
-  - [Problems while Running the Program](#problems-while-running-the-program)
-  - [Icons are Missing](#icons-are-missing)
-  - [Touchscreen Calibration](#touchscreen-calibration)
-  - [Problems Installing Software on Raspberry Pi](#problems-installing-software-on-raspberry-pi)
-    - [PyQt can't be Installed](#pyqt-cant-be-installed)
-    - [Numpy Import Error at Matplotlib Import](#numpy-import-error-at-matplotlib-import)
-    - [How to get the GUI Running on Startup](#how-to-get-the-gui-running-on-startup)
-    - [The GUI on the RPi Looks Different from the Screenshots](#the-gui-on-the-rpi-looks-different-from-the-screenshots)
-    - [Some Python Things do not Work](#some-python-things-do-not-work)
-- [Development](#development)
-  - [Pull Requests and Issues](#pull-requests-and-issues)
-  - [Contributing Possibilities](#contributing-possibilities)
-
-# Overview
-
-Welcome to the official documentation of **CocktailBerry**!
+<a href="https://cocktailberry.readthedocs.io/"><img src="docs/pictures/docbutton.svg" alt="documentation" height="70"/></a>
+<a href="https://share.streamlit.io/andrewohnsland/cocktailberry-webapp"><img src="docs/pictures/dashboardbutton.svg" alt="dashboard" height="70"/></a>
 
 This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients. Track and display cocktail data for different teams to even further increase the fun. Let's get started!
 
@@ -68,7 +24,7 @@ This app is used to control a cocktail machine and easily prepare cocktails over
 
 <img src="docs/pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
 
-## Features
+# Features
 
 CocktailBerry can do:
 
@@ -88,19 +44,30 @@ In addition, there is the possibility to use and set up a second device as a das
 - Display different modes of data for a by team comparison
 - _Optional_: Use the dashboard as WiFi hot-spot
 
-## The Machine
 
-The Machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps, cabling and a custom design housing made out of bent, laser cut and welded stainless steel. The electronics are hidden in a waterproof housing, the pumps are within the casing. See [Hardware](#hardware) for a detailed list of components.
+# Quickstart
 
-Front view:
+Here are some simple steps to get CoktailBerry running. You need to have **Python 3.7** or newer and **git** installed.
 
-<img src="docs/pictures/Frontview.jpg" alt="Frontview" width="600"/>
+Run:
 
-Side view:
+```bash
+git clone https://github.com/AndreWohnsland/CocktailBerry.git
+cd CocktailBerry
+pip install -r requirements.txt
+# you can get help with python runme.py --help
+python runme.py
+```
 
-<img src="docs/pictures/Sideview.jpg" alt="Sideview" width="600"/>
+This will start the CocktailBerry program. You may want to run the provided installer script for the RPi instead of pip. See [Installation](https://cocktailberry.readthedocs.io/installation/) for more information.
 
-## Interface
+```bash
+sh scripts/setup.sh
+```
+
+Now you can [Set Up](https://cocktailberry.readthedocs.io/setup/#setting-up-the-machine-modifying-other-values) your CocktailBerry and tweak the settings to your liking.
+
+# Interface
 
 The interface was programmed with PyQt5 for the users to easily interact with CocktailBerry and enter new ingredients/recipes. There are different views for the tasks.
 
@@ -120,409 +87,13 @@ The Bottle GUI:
 
 <img src="docs/pictures/Bottles_ui.png" alt="Bottle" width="600"/>
 
-# Installation
+<br/>
 
-Here you can find all the requirements and installation steps. 
-
-## Prerequisites
-
-These are the minimal tools needed to get started:
-
-- [Python 3.7](https://www.python.org/) or newer
-- [Git](https://git-scm.com/)
-- recommended: **latest** [Rasperry Pi OS](https://www.raspberrypi.com/software/) (Desktop, Bullseye)
-
-The dektop version of Raspberry Pi OS is recommended, but if you just want to have a peak into the project, any OS having Python and Git will work just fine. The RPi is needed to control the Pumps in a real machine, but the program will work fine even without any physical machine.
-
-## Set Up
-
-After flashing the OS, you can use the provided shell scripts to set everything automatically up on your Raspberry Pi, or just install [the requirements](#installing-requirements), when you want to have a look into the program on your pc. You can always install the other things later, the docs provide information within each according section. To clone and setup this project run:
-
-```bash
-cd ~
-git clone https://github.com/AndreWohnsland/CocktailBerry.git
-cd ~/CocktailBerry
-# Setup for the RPi
-# Docker is optional but needed for some cool extra features
-sh scripts/install_docker.sh
-# This will set up everything important on your RPi
-cd ~/CocktailBerry
-sh scripts/setup.sh
-# now we are good to go
-python3 runme.py
-```
-
-## Installing Requirements
-The best way is to use the provided `requirements.txt` file. If Python is installed, just run: 
-
-```bash
-pip install -r requirements.txt
-``` 
-
-to get all requirements. Optionally, you can install the single needed dependenicies:
-
-- PyQt5, requests, pyyaml, GitPython, typer, pyfiglet
-
-## Install PyQt5 on RaspberryPi
-
-The PyQt5 installation of pip will probably fail on your RaspberryPi. To install PyQt5 on your Pi run:
-
-```
-sudo apt-get update
-sudo apt-get install qt5-default pyqt5-dev pyqt5-dev-tools
-```
-
-More information can be found at [riverbank](https://riverbankcomputing.com/software/pyqt/intro).
-
-## Development on Non-Pi Hardware
-
-When you are working on another hardware (for example on a Windows or macOS engine) it is recommended (but not necessary) to set `UI_DEVENVIRONMENT` to `true`. This will enable your cursor, for example. All configuration can be customized under `custom_config.yaml`:
-
-```yaml
-UI_DEVENVIRONMENT: true
-```
-
-It's worth mentioning that I optimized the UI for a touch display with a 800x480 or a 1024x800 resolution ([this is my display](https://www.amazon.de/gp/product/B071XT9Z7H/ref=ppx_yo_dt_b_asin_title_o05_s00?ie=UTF8&psc=1)). By default, the full screen is also limited to 800x480. So usually you won't have any problems with the usual HD or uHD screens. But some screens (like my little 13' Laptop screen) don't show the proper fonts/UI placements. You can change the application size with the according config settings, if you want to use a different screen size. See [Setting up the Machine / Modifying other Values](#setting-up-the-machine--modifying-other-values) for more information.
-
-# Hardware
-
-You can also run the interface on any non RPi hardware, but you won't be able to control the pins without a device supporting this. To build a functional machine, I provided a list of my used hardware.
-
-## Used Hardware in Showcase Machine
-
-The following component were used within the showcase for the Machine:
-
-- 1x [Raspberry Pi 3b+](http://www.amazon.de/dp/B00LPESRUK/) (or newer like [Model 4](https://www.amazon.de/gp/product/B07TD42S27))
-- 1x [5-inch Touch Screen](http://www.amazon.de/dp/B071XT9Z7H/) for the Raspberry Pi
-- 1x Micro SD-Card (16 Gb is enough)
-- 1x 5V Power supply for the Raspberry Pi
-- 1x or 2x [Relay-Boards](https://www.amazon.de/gp/product/B07MJF9Z4K) depending on pump count (important to have 5V input control)
-- 6-10x Pumps, depending on your setup (you can use a [peristaltic pump](https://www.amazon.de/gp/product/B07YWGSH3C/) or a [membrane pump](http://www.amazon.de/dp/B07L1FB18S/), it should be food save)
-- 1x Power supply for the pumps (a 12V/5A Laptop charger in my case, needs to match pump voltage)
-- Food safe hose/tubes for the pumps
-- Female to Female jumper wires
-- Female to Male HDMI and USB extension cable
-- Some wires
-
-## Used Hardware in Showcase Teams Dashboard
-
-The following components were used within the showcase for the Teams Dashboard:
-
-- 1x [Raspberry Pi 3b+](http://www.amazon.de/dp/B00LPESRUK/) (or newer, like [Model 4](https://www.amazon.de/gp/product/B07TD42S27))
-- 1x [7-inch Touch Screen](http://www.amazon.de/dp/B014WKCFR4/)
-- 1x [Display Casing](http://www.amazon.de/dp/B01GQFUWIC/)
-- 1x Micro SD-Card (16 Gb is enough)
-- 1x 5V Power supply for the Raspberry Pi
-
-# Setting up CocktailBerry
-
-CocktailBerry will work after installing all requirements, but you can make your own adjustments.
-
-## Adding new Recipes or Ingredients
-
-There are only limited ingredients and recipes. But you can add your own data to the program as well.
-This app uses a sqlite3 Database coupled to the UI. So, it's quite easy to implement new ingredients or even recipes.
-Just use the implemented UI for the procedure under the according tabs (**Ingredients** or **Recipes**).
-
-All entered values are checked for reason and if something is wrong, an error message will inform the user what is wrong with the data input. If you want to browse through the databse, I recommend some program like [DB Browser for sqlite](https://sqlitebrowser.org/).
-
-## Setting up the Machine / Modifying other Values
-
-These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed. If any of the values got a wrong data type, a TypeError will be thrown with the message which one is wrong.
-
-| Value Name              |    Type     | Description                                                                   | Optional |
-| :---------------------- | :---------: | :---------------------------------------------------------------------------- | :------: |
-| `UI_DEVENVIRONMENT`     |   _bool_    | Boolean flag to enable some development features                              |    ❌     |
-| `UI_PARTYMODE`          |   _bool_    | En- or disables the recipe tab (to prevent user interaction)                  |    ❌     |
-| `UI_MASTERPASSWORD`     |    _str_    | String for password, Use numbers for numpad like '1234'                       |    ❌     |
-| `UI_LANGUAGE`           |    _str_    | 2 char code for the language, see [supported languages](#supported-languages) |    ❌     |
-| `UI_WIDTH`              |    _int_    | Desired interface width, default is 800                                       |    ❌     |
-| `UI_HEIGHT`             |    _int_    | Desired interface height, default is 480                                      |    ❌     |
-| `PUMP_PINS`             | _list[int]_ | List of the RPi-Pins where each Pump is connected                             |    ❌     |
-| `PUMP_VOLUMEFLOW`       | _list[int]_ | List of the according volume flow for each pump in ml/s                       |    ❌     |
-| `MAKER_NAME`            |    _str_    | Give your Cocktailberry a own name, max 30 chars                              |    ❌     |
-| `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of displayed bottles, can use up to 16 bottles                         |    ❌     |
-| `MAKER_SEARCH_UPDATES`  |   _bool_    | Boolean flag to search for updates at program start                           |    ❌     |
-| `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                            |    ❌     |
-| `MAKER_SLEEP_TIME`      |   _float_   | Interval between each UI refresh while generating a cocktail                  |    ❌     |
-| `MICROSERVICE_ACTIVE`   |   _bool_    | Boolean flag to post to microservice set up by docker                         |    ✔️     |
-| `MICROSERVICE_BASE_URL` |    _str_    | Base URL for microservice (default: http://127.0.0.1:5000)                    |    ✔️     |
-| `TEAMS_ACTIVE`          |   _bool_    | Boolean flag to use teams feature                                             |    ✔️     |
-| `TEAM_BUTTON_NAMES`     | _list[str]_ | List of format ["Team1", "Team2"]                                             |    ✔️     |
-| `TEAM_API_URL`          |    _str_    | Endpoint of teams API, default used port by API is 8080                       |    ✔️     |
-
-Depending on your preferred use, these values can differ. Then just run `runme.py`.
-
-Setting up the machine is quite easy as well. Just go to the `Bottles` Tab and select via the dropdown boxes your assigned ingredients. In addition, you can define ingredients which are also there, but are not connected to the machine (under _Ingredients > available_). You can define ingredients in recipes (at _add self by hand_) which should be later added via hand, for example sticky ingredients which would not be optimal for your pump, or only very rarely used in cocktails.
-
-The program will then evaluate which recipe meets all requirements to only show the recipes where even the ingredients added via hand later are available, and the recipe will be shown in the `Maker` Tab.
-
-## Calibration of the Pumps
-
-You can use the provided calibration program to run a very simple overlay for pump adjustment. To start the calibration program you simply add the `--calibration` or `-c` flag to the python run command:
-
-```bash
-python runme.py --calibration 
-# or just 
-python runme.py -c
-```
-
-This will start the calibration overlay. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps. In the end, you can adjust each pump volume flow by the factor:
-
-Vnew = Vold \* expectation/output
-
-<!-- $\dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}}$ -->
-
-## Cleaning the Machine
-
-CocktailBerry has a build in cleaning function for cleaning at the end of a party. You will find the feature under the `Bottles` tab. To start the cleaning process, the master password is needed to prevent unwanted cleaning attempts. CocktailBerry will then go to cleaning mode for the defined time within the config (default is 20 seconds). A message prompt will inform the user to provide enough water for the cleaning process. I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water and then running twice times again the cleaning program to fully clean all pumps from remaining fluid.
-
-## Possible Ingredient SetUp
-
-If you are unsure, which ingredients you may need or want to connect to CocktailBerry, here is a quick suggestion. You don't need to use all ten slot, but the more you use, the more recipes will be possible:
-
-- Vodka
-- White Rum
-- Brown Rum
-- Orange Juice
-- Passion Fruit Juice
-- Pineapple Juice
-- *optional* Gin
-- *optional* Malibu
-- *optional* Tequila
-- *optional* Grapefruit Juice
-
-In addition, there are some ingredients I would recommend not adding via CocktailBerry but by hand, the most important additional ingredients will be:
-
-- Soft Drinks (Cola, Fanta, Sprite)
-- Grenadine Syrup
-- Blue Curaçao
-- Lemon Juice (just a little, you can also use fresh lemons)
-- *optional* Cointreau (you may just not add it if not desired)
-
-With this as your base set up, even if not using the optional ingredients, your CocktailBerry will be able to do plenty of different cocktails.
-
-## Updates
-
-With __version 1.5.0__, there is the option to enable the automatic search for updates at program start. The `MAKER_SEARCH_UPDATES` config can enable this feature. CocktailBerry will then check the GitHub repository for new releases and informs the user about it. If accepted, CocktailBerry will pull the latest version and restart the program afterwards. The migrator will also do any necessary steps to adjust local files, like the database to the latest release.
-
-# Supported Languages
-
-__Version 1.3.0__ includes multi-language support. You can change the language with the `UI_LANGUAGE` config option. Currently, supported languages are:
-
-
-| Language | Config Code | Since Version | CocktailBerry | Dashboard |
-| :------: | :---------: | :-----------: | :-----------: | :-------: |
-| English  |    `en`     |     1.3.0     |       ✔️       |     ✔️     |
-|  German  |    `de`     |     1.3.0     |       ✔️       |     ✔️     |
-
-If you are interested in implementing your own native language, feel free to contact me or submit an according pull request.
-
-# Advanced Topics
-
-Here you can find some advanced features of CocktailBerry, which you can optionally use.
-
-## Usage of Services
-
-Simply have `docker-compose` installed and run the command in the main folder for the CocktailBerry microservice or in the dashboard folder (on another device) for the dashboard service:
-
-```
-docker-compose up --build -d
-```
-
-This will handle the setup of all docker services. You will have to copy the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully. If you are pulling for a later version, I recommend to run this command again, since the container may change in future version.
-
-## Microservices
-
-As a further addition since __version 1.1.0__, there is the option to run a microservice within docker which handles some networking topics. Cocktail data currently includes cocktail name, produced volume, current time, used language in config and your machines name.
-Currently, this is limited to:
-
-- Posting the cocktail data time to a given webhook
-- Posting the cocktail data to the official dashboard API (__v1.7.0__), see [detailed description](#posting-data-to-the-official-api)
-- Posting the export CSV as email to a receiver
-
-The separation was made here that a service class within CocktailBerry needs only to make a request to the microservice endpoint. Therefore, all logic is separated to the service, and there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithreading). In the future, new services can be added easily to the docker container to execute different tasks. One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktail-maker-now-with-home-assistant). The service will also temporary store the data within a database, if there was no connection to the endpoint, and try later again. This way, no data will get lost in the void.
-
-### Posting Data to the Official API
-
-When the microservice is active, you can use it not to only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) to submit your data. It will then appear on the [official dashboard](https://share.streamlit.io/andrewohnsland/cocktailberry-webapp). Don't worry, no private data is included, only some production data. A detailed write down [can be found on the dashboard site](https://share.streamlit.io/andrewohnsland/cocktailberry-webapp#how-to-participate) how you will receive your API key. You need to change the default `API_KEY` value in the `microservive/.env` file to the one you received after the submission. After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
-
-## Dashboard with Teams
-
-With __version 1.2.0__, there is a team feature implemented into CocktailBerry. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device, can be specified within the config. CocktailBerry will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leader board. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the API / the dashboard for easy display on another screen.
-
-<img src="docs/pictures/teams_ui.png" alt="Maker" width="600"/>
-
-<img src="docs/pictures/dashboard.png" alt="Maker" width="600"/>
-
-The **recommended way** is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before, you should install the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to set up docker-compose in general. The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](#supported-languages). Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language. The easiest way is to use the provided shell script:
-
-
-```bash
-sh scripts/setup.sh dashboard
-```
-
-Or you can set it up yourself:
-
-```bash
-cd dashboard
-docker-compose up --build -d
-cd qt-app
-pip install -r requirements.txt
-cp .env.example .env
-python main.py
-```
-
-A **second option** is to use either the `docker-compose.both.yaml` file with the docker-compose `--file` option, or to use the other provided frontend:
-
-```bash
-# Either both in docker
-cd dashboard
-cp frontend/.env.example frontend/.env
-docker-compose -f docker-compose.both.yaml up --build -d
-# or API in Docker, frontend over RPi CLI
-cd dashboard
-docker-compose up --build -d
-cd frontend
-pip install -r requirements.txt
-cp .env.example .env
-python index.py
-```
-
-This will build up the backend API, as well as a Dash frontend Web App. Dash is using pandas, depending on your Raspberry Pi OS this installation it may run into issues, especially if running within the Docker container. You can then access the frontend over your browser at the RPi adress over your network or over http://127.0.0.1:8050 from the Pi. If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
-
-In addition, if you want to automatically open the chromium browser on start, you can add the command to the autostart file:
-
-```bash
-echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
-```
-
-You can also set the second device up as a Wi-Fi hot-spot. This will give you the possibility to always connect to the dashboard, even if no connection to another home network or internet is available. For this, a very easy way is to use [RapsAp](https://raspap.com/).
-
-## Installing Docker
-
-tl;dr: Just run these commands in sequence on the pi and reboot after the first half.
-
-```bash
-sudo apt-get update && sudo apt-get upgrade
-curl -sSL https://get.docker.com | sh
-sudo usermod -aG docker ${USER}
-# reboot here or run sudo su - ${USER}
-sudo apt-get install libffi-dev libssl-dev
-sudo pip3 install docker-compose
-sudo systemctl enable docker
-# tesing if it works
-docker run hello-world
-```
-
-# Troubleshooting
-
-If you run into any problems, check here first for a solution. If you don't find any, you can [open a ticket](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose)
-
-## Problems while Running the Program
-
-All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled, and an info message should be displayed.\
-If in any case any unexpected behaviour occurs, feel free to open an issue. Usually, a part of the actions are also logged into the logfiles. When submitting an error, please also provide the `logs/debuglog.log` file.
-
-## Icons are Missing
-
-If some of the icons (check / cross on the checkbox, up / down arrow on the listview) are missing, make sure you run the script within the folder (e.g. `python runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`). This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
-
-## Touchscreen Calibration
-
-Sometimes you need to calibrate your touchscreen, otherwise the touched points and cursor are out of sync. First you need to get and compile xinput. After that, you can execute the program and select the crosses on the touchscreen according to the shown order.
-
-```bash
-wget http://github.com/downloads/tias/xinput_calibrator/xinput_calibrator-0.7.5.tar.gz
-tar -zxvf xinput_calibrator-0.7.5.tar.gz
-cd xinput_calibrator-0.7.5
-sudo apt-get install libx11-dev libxext-dev libxi-dev x11proto-input-dev
-./configure
-make
-sudo make install
-sudo xinput_calibrator # sudo DISPLAY=:0.0 xinput_calibrator may also work
-```
-
-To adjust those new touch coordinates, they need to be saved. The xinput program should print out some block beginning with `Section "InputClass"` and ending with `EndSection`. This part needs to be copied to the `99-calibration.conf` file.
-
-```bash
-sudo mkdir /etc/X11/xorg.conf.d
-sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
-```
-
-After the reboot, the calibration should be okay.
-
-## Problems Installing Software on Raspberry Pi
-
-The Raspberry Pi can sometimes differ from other machines in terms of installation. Here are some issues that might occur.
-
-### PyQt can't be Installed
-
-You probably need to run `sudo apt install python3-pyqt5` instead of `pip install pyqt5` on the pi
-
-### Numpy Import Error at Matplotlib Import
-
-Try first running `pip3 install -U numpy` and `sudo apt install libatlas3-base`. If it is still not fixed, try uninstalling and installing numpy / matplotlib again. If really nothing else works, try `sudo pip3 install -U numpy`, then you will probably need to run the python file with root privilege as well, which may result in another GUI style used by the system.
-
-### How to get the GUI Running on Startup
-
-I found the easiest thing is to use RPis Autostart. Create a .desktop file with `sudo nano /etc/xdg/autostart/cocktail.desktop` and the `launcher.sh` in your `/home/pi` folder:
-
-```
-[Desktop Entry]
-Type=Application
-Name=CocktailScreen
-NoDisplay=false
-Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh
-```
-
-```bash
-#!/bin/bash
-# launcher.sh for dashboard
-# no need for sudo if there were no Numpy import errors
-cd /home/pi/CocktailBerry/dashboard/qt-app/
-sudo python3 main.py
-```
-
-```bash
-#!/bin/bash
-# launcher.sh for CocktailBerry
-cd /home/pi/CocktailBerry/
-python3 runme.py
-```
-
-If your setup is equal to mine (Raspberry Pi, CocktailBerry GitHub cloned to the home (`/home/pi/`) folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
-
-```bash
-cp ~/CocktailBerry/scripts/launcher.sh ~/
-cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
-```
-
-If there are any problems with the lxterminal window opening and instant closing, check the rights of the shell file, it needs executable (x) rights, otherwise use `chmod` to give x-rights:
-
-```bash
-sudo chmod +x ~/launcher.sh
-# or
-sudo chmod 755 ~/launcher.sh
-```
-
-### The GUI on the RPi Looks Different from the Screenshots
-
-I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources. Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
-
-### Some Python Things do not Work
-
-Older Raspberry Pi OS version (older than _November 2021_) still deliver Python 2. Since Raspberry Pi OS Bullseye version (based on Debian 11) Python 3 is the default version if you type `python` or `pip`. Typing `python --version` or `pip --version` will show your version of Python. If it's still Python 2, consider upgrading your OS or check `python3 --version` and use the `pip3` as well as the `python3` command instead the usual ones.
-
-# Development
-
-For developers, there is [an additional section](docs/devnotes.md) with information available. See this docs for further information like the program schema or framework specific development problems.
-
-## Pull Requests and Issues
+# Pull Requests and Issues
 
 If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue. If you think there is a super important feature missing, open a feature request. It may be implemented in the future.
 
-## Contributing Possibilities
+# Contributing Possibilities
 
 To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md). Here is a general list of features or refacturing things, I may do in the future. With your help, these things come even faster! If your idea is not on the list, feel free to open a feature request, I may consider it!
 

@@ -101,6 +101,9 @@ dialog:
   update_available:
     en: 'There is a new update available. Do you want to pull it from GitHub? The program will be restarted afterwards.'
     de: 'Es ist ein neues Update verfügbar. Update von GitHub pullen? Das Programm wird danach neu gestarted.'
+  restart_config:
+    en: 'Restart the program to apply new configuration?'
+    de: 'Programm neu starten, um die geänderten Einstellungen zu laden?'
   confirmation_reqired:
     en: 'Confirmation required'
     de: 'Bestätigung nötig'
@@ -110,6 +113,12 @@ dialog:
   no_button:
     en: 'No'
     de: 'Nein'
+  wrong_config:
+    en: "At least one value is wrong in the config:\n{error}"
+    de: "Mindestens ein Wert ist Fehlerhaft:\n{error}"
+  ask_to_clean:
+    en: 'Starting Cleaning Progress?'
+    de: 'Reinigung Starten?'
 
 # Change of language in UI elements
 ui:
@@ -124,8 +133,8 @@ ui:
   # dynamic values for maker tab
   maker:
     add_self:
-      en: 'Add by hand:'
-      de: 'Selbst hinzufügen:'
+      en: '~ Add by hand ~'
+      de: '~ Selbst hinzufügen ~'
     cocktail_dummy:
       en: 'Choose Cocktail'
       de: 'Cocktail aussuchen'
@@ -136,17 +145,18 @@ ui:
     prepare_button:
       en: 'Prepare'
       de: 'Zubereiten'
-    tab_names:
-      en:
-        - 'Maker'
-        - 'Ingredients'
-        - 'Recipes'
-        - 'Bottles'
-      de:
-        - 'Maker'
-        - 'Zutaten'
-        - 'Rezepte'
-        - 'Flaschen'
+    tab_maker:
+      en: 'Maker'
+      de: 'Maker'
+    tab_ingredients:
+      en: 'Ingredients'
+      de: 'Zutaten'
+    tab_recipes:
+      en: 'Recipes'
+      de: 'Rezepte'
+    tab_bottles:
+      en: 'Bottles'
+      de: 'Flaschen'
     ingredient_label:
       en: 'Ingredient'
       de: 'Zutat'
@@ -244,3 +254,16 @@ ui:
     alcohol:
       en: 'Enter alcohol!'
       de: 'Alkoholgehalt eingeben!'
+
+  ##### OPTION WINDOW #####
+  # all values for tepasswordam window
+  option_window:
+    cleaning:
+      en: 'Clean Machine'
+      de: 'Machine Reinigen'
+    config:
+      en: 'Change Config'
+      de: 'Einstellungen Ändern'
+    back:
+      en: '< Back'
+      de: '< Zurück'

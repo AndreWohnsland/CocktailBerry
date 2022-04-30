@@ -1,0 +1,263 @@
+QCheckBox::indicator {
+  width: 18px;
+  height: 18px;
+}
+
+QCheckBox::indicator:unchecked {
+  image: url(./src/ui_elements/cross.png);
+}
+
+QCheckBox::indicator:checked {
+  image: url(./src/ui_elements/check.png);
+}
+
+QWidget {
+  color: $primary;
+  background-color: $background;
+}
+
+QWidget[cssClass~='secondary'] {
+  color: $secondary;
+}
+
+*[cssClass~='header-underline'] {
+  color: $neutral;
+  border-bottom: 1px solid;
+  border-color: $neutral;
+  margin-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+*[cssClass~='hand-seperator'] {
+  color: $neutral;
+}
+
+*[cssClass~='neutral'] {
+  color: $neutral;
+}
+
+QWidget:item:selected {
+  color: $secondary;
+  font-weight: bold;
+  border: 3px solid $secondary;
+}
+
+QTabWidget::pane {
+  border: 1px solid $border;
+  top: 1px;
+}
+
+QTabBar::tab {
+  background-color: $border;
+  color: $tabborder;
+  border-width: 1px;
+  border-color: $tabborder;
+  border-style: solid;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 5px 0px 5px 0px;
+  width: 193px;
+}
+
+QTabBar::tab:selected {
+  color: $tabborder;
+  background-color: $primary;
+}
+
+.QMessageBox {
+  font-size: 16pt;
+}
+
+.QSlider {
+  min-height: 30px;
+  max-height: 50px;
+}
+
+.QSlider::groove:horizontal {
+  border: 1px solid;
+  height: 5px;
+  background: $sliderspine;
+  margin: 0 12px;
+}
+
+.QSlider::handle:horizontal {
+  background: $primary;
+  width: 30px;
+  height: 30px;
+  margin: -24px -12px;
+}
+
+QPushButton {
+  background-color: $background;
+  color: $primary;
+  border-width: 3px;
+  border-color: $primary;
+  border-style: solid;
+  border-radius: 7;
+  padding: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+QPushButton:checked,
+QPushButton:pressed {
+  color: $secondary;
+  border-color: $secondary;
+}
+
+/* Inverted */
+QPushButton[cssClass~='btn-inverted'] {
+  background-color: $primary;
+  color: $background;
+  border-width: 3px;
+  border-color: $primary;
+  border-style: solid;
+  border-radius: 7;
+  padding: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+QPushButton:pressed[cssClass~='btn-inverted'],
+QPushButton:checked[cssClass~='btn-inverted'] {
+  background-color: $secondary;
+  border-color: $secondary;
+}
+
+QPushButton[cssClass~='btn-teamone'] {
+  background-color: $teamone;
+  border-color: $teamone;
+  color: $background;
+}
+
+QPushButton[cssClass~='btn-teamtwo'] {
+  background-color: $teamtwo;
+  border-color: $teamtwo;
+  color: $background;
+}
+
+QProgressBar {
+  background-color: $progressbg;
+  color: $background;
+  border: 2px $progressbg;
+  border-radius: 5px;
+  text-align: center;
+}
+
+QProgressBar::chunk {
+  border: 2px $progressbg;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background-color: $progressbar;
+  /*background-color: rgb(0, 255, 132);
+  width: 40px;
+  margin: 0.5px;*/
+}
+
+QComboBox {
+  color: $primary;
+  border: $element-border solid $border;
+  border-top-left-radius: 7px;
+  border-bottom-left-radius: 7px;
+  padding: 1px 18px 1px 5px;
+  min-width: 6em;
+}
+
+QComboBox:on {
+  /* shift the text when the popup opens */
+  border: $element-border solid $border;
+  border-top-left-radius: 7px;
+  border-bottom-left-radius: 0px;
+  color: $secondary;
+}
+
+QComboBox QAbstractItemView {
+  border: $element-border solid $border;
+}
+
+QLineEdit {
+  padding: 1px;
+  border-style: solid;
+  border: $element-border solid $border;
+  border-radius: 5;
+}
+
+QListWidget {
+  border: 1px solid $border;
+}
+
+*[cssClass~='lr-padding'] {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Moving List Widget here from the single objects */
+QScrollBar:vertical {
+  border: 1px solid $border;
+  background: $border;
+  width: 35px;
+  margin: 36px 0 36px 0;
+}
+
+QScrollBar::handle:vertical {
+  background: $background;
+}
+
+QScrollBar::add-line:vertical {
+  border: 1px solid $border;
+  background: $background;
+  height: 35px;
+  subcontrol-position: bottom;
+  subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+  border: 1px solid $border;
+  background: $background;
+  height: 35px;
+  subcontrol-position: top;
+  subcontrol-origin: margin;
+}
+
+QScrollBar::down-arrow:vertical,
+QScrollBar::up-arrow:vertical {
+  width: 20px;
+  height: 20px;
+}
+
+QScrollBar::down-arrow:vertical {
+  image: url(./src/ui_elements/down.png);
+}
+
+QScrollBar::up-arrow:vertical {
+  image: url(./src/ui_elements/up.png);
+}
+
+#option_button {
+  image: url(./src/ui_elements/options.png);
+}
+
+#informationLabel {
+  padding: 5px 25px 5px 25px;
+}
+
+/* Message box from system */
+QMessageBox QPushButton {
+  background-color: $primary;
+  color: $background;
+  font-size: 30pt;
+  padding: 5px 20px 5px 20px;
+  min-width: 120px;
+}
+
+QMessageBox {
+  background-color: $background;
+  font-size: 16pt;
+}
+
+QMessageBox QLabel {
+  color: $primary;
+}
