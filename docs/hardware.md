@@ -1,8 +1,8 @@
 # Hardware
 
-You can also run the interface on any non RPi hardware, but you won't be able to control the pins without a device supporting this. To build a functional machine, I provided a list of my used hardware.
+You can also run the interface on any non RPi hardware, but you won't be able to control the pins without a device supporting this. To build a functional machine, I provided a list of my used hardware. This is merely a suggestion. How exactly you will build your CocktailBerry is completely up to you.
 
-## Used Hardware in Showcase Machine
+## Showcase Machine
 
 The following component were used within the showcase for the Machine:
 
@@ -18,7 +18,7 @@ The following component were used within the showcase for the Machine:
 - Female to Male HDMI and USB extension cable
 - Some wires
 
-## Used Hardware in Showcase Teams Dashboard
+## Showcase Teams Dashboard
 
 The following components were used within the showcase for the Teams Dashboard:
 
