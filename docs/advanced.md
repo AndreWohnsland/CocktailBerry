@@ -23,7 +23,7 @@ Currently, this is limited to:
 
 The separation was made here that a service class within CocktailBerry needs only to make a request to the microservice endpoint. Therefore, all logic is separated to the service, and there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithreading). In the future, new services can be added easily to the docker container to execute different tasks. One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktail-maker-now-with-home-assistant). The service will also temporary store the data within a database, if there was no connection to the endpoint, and try later again. This way, no data will get lost in the void.
 
-### Posting Data to the Official API
+## Posting Data to the Official API
 
 When the microservice is active, you can use it not to only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) to submit your data. It will then appear on the [official dashboard](https://share.streamlit.io/andrewohnsland/cocktailberry-webapp). Don't worry, no private data is included, only some production data. A detailed write down [can be found on the dashboard site](https://share.streamlit.io/andrewohnsland/cocktailberry-webapp#how-to-participate) how you will receive your API key. You need to change the default `API_KEY` value in the `microservive/.env` file to the one you received after the submission. After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
 
@@ -31,9 +31,9 @@ When the microservice is active, you can use it not to only to send data to your
 
 With __version 1.2.0__, there is a team feature implemented into CocktailBerry. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device, can be specified within the config. CocktailBerry will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leader board. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the API / the dashboard for easy display on another screen.
 
-<img src="docs/pictures/teams_ui.png" alt="Maker" width="600"/>
+<img src="../pictures/teams_ui.png" alt="Maker" width="600"/>
 
-<img src="docs/pictures/dashboard.png" alt="Maker" width="600"/>
+<img src="../pictures/dashboard.png" alt="Maker" width="600"/>
 
 The **recommended way** is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before, you should install the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to set up docker-compose in general. The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](languages.md#supported-languages). Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language. The easiest way is to use the provided shell script:
 
