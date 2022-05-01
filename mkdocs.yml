@@ -19,6 +19,7 @@ markdown_extensions:
   - toc:
       permalink: '#'
   - attr_list
+  - mdx_math
 theme:
   name: readthedocs
   logo: pictures/CocktailBerry.svg
@@ -30,3 +31,5 @@ plugins:
       separator: '[\s\-\.]+'
 extra_css:
   - css/extra.css
+extra_javascript:
+  - http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
