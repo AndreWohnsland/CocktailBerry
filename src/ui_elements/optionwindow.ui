@@ -39,6 +39,26 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <widget class="QPushButton" name="button_clean">
+      <property name="maximumSize">
+       <size>
+        <width>5000</width>
+        <height>300</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>28</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Clean Machine</string>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="0">
      <widget class="QPushButton" name="button_config">
       <property name="maximumSize">
@@ -59,7 +79,7 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item row="4" column="0">
      <widget class="QPushButton" name="button_back">
       <property name="maximumSize">
        <size>
@@ -79,25 +99,49 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="button_clean">
-      <property name="maximumSize">
-       <size>
-        <width>5000</width>
-        <height>300</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>28</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Clean Machine</string>
-      </property>
-     </widget>
+    <item row="3" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="button_reboot">
+        <property name="maximumSize">
+         <size>
+          <width>5000</width>
+          <height>300</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>28</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Reboot</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="button_shutdown">
+        <property name="maximumSize">
+         <size>
+          <width>5000</width>
+          <height>300</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>28</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Shutdown</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
