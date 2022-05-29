@@ -212,6 +212,16 @@ class DialogHandler(ConfigManager):
         message = self.__choose_language(self.dialogs["restart_config"])
         return self.user_okay(message)
 
+    def ask_to_reboot(self):
+        """Asks the user if he wants to reboot the system"""
+        message = self.__choose_language(self.dialogs["ask_to_reboot"])
+        return self.user_okay(message)
+
+    def ask_to_shutdow(self):
+        """Asks the user if he wants to shutdown the system"""
+        message = self.__choose_language(self.dialogs["ask_to_shutdown"])
+        return self.user_okay(message)
+
 
 class UiLanguage(ConfigManager):
     """Class to set the UI language to the appropriate Language"""
@@ -334,6 +344,9 @@ class UiLanguage(ConfigManager):
         w.button_clean.setText(self.__choose_language(window["cleaning"]))
         w.button_config.setText(self.__choose_language(window["config"]))
         w.button_back.setText(self.__choose_language(window["back"]))
+        w.button_calibration.setText(self.__choose_language(window["calibration"]))
+        w.button_reboot.setText(self.__choose_language(window["reboot"]))
+        w.button_shutdown.setText(self.__choose_language(window["shutdown"]))
 
 
 UI_LANGUAGE = UiLanguage()

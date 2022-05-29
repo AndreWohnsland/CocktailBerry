@@ -119,6 +119,12 @@ dialog:
   ask_to_clean:
     en: 'Starting Cleaning Progress?'
     de: 'Reinigung Starten?'
+  ask_to_shutdown:
+    en: 'Shutdown the System?'
+    de: 'Soll das System herunter gefahren werden?'
+  ask_to_reboot:
+    en: 'Reboot the System?'
+    de: 'Soll das System neu gestartet werden?'
 
 # Change of language in UI elements
 ui:
@@ -264,6 +270,15 @@ ui:
     config:
       en: 'Change Config'
       de: 'Einstellungen Ändern'
+    calibration:
+      en: 'Calibration'
+      de: 'Kalibrierung'
+    reboot:
+      en: 'Reboot'
+      de: 'Reboot'
+    shutdown:
+      en: 'Shutdown'
+      de: 'Shutdown'
     back:
       en: '< Back'
       de: '< Zurück'
