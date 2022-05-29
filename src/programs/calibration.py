@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.uic import loadUi
 
@@ -20,6 +21,7 @@ class CalibrationScreen(QMainWindow, ConfigManager):
         super().__init__()
         ConfigManager.__init__(self)
         loadUi(ui_file, self)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         # Connect the Button
         bottles = self.MAKER_NUMBER_BOTTLES
         self.PB_start.clicked.connect(self.output_volume)
@@ -27,6 +29,7 @@ class CalibrationScreen(QMainWindow, ConfigManager):
         self.channel_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, "-", 1, bottles, 1))
         self.amount_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "+", 10, 200, 10))
         self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "-", 10, 200, 10))
+        self.button_exit.clicked.connect(self.close)
         self.showFullScreen()
         DP_CONTROLLER.inject_stylesheet(self)
         DP_CONTROLLER.set_display_settings(self)
@@ -42,10 +45,12 @@ class CalibrationScreen(QMainWindow, ConfigManager):
 
 
 @logerror
-def run_calibration():
+def run_calibration(standalone=True):
     """Executes the calibration screen"""
-    app = QApplication(sys.argv)
+    if standalone:
+        app = QApplication(sys.argv)
     # this asignment is needed, otherwise the window will close in an instant
     # pylint: disable=unused-variable
     cali = CalibrationScreen()
-    sys.exit(app.exec_())
+    if standalone:
+        sys.exit(app.exec_())
