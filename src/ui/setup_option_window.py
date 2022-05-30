@@ -58,7 +58,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _shutdown_system(self):
         if not DP_CONTROLLER.ask_to_shutdow():
             return
-        os.system("sudo shutdown")
+        os.system("sudo shutdown now")
         self.close()
 
     def _open_calibration(self):
