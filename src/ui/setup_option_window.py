@@ -40,27 +40,32 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _open_config(self):
+        """Opens the config window."""
         self.close()
         self.config_window = ConfigWindow(self.mainscreen)
 
     def _init_clean_machine(self):
+        """Starting clean process if user confirms the action."""
         if not DP_CONTROLLER.ask_to_start_cleaning():
             return
         self.close()
         bottles.clean_machine()
 
     def _reboot_system(self):
+        """Reboots the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_reboot():
             return
         os.system("sudo reboot")
         self.close()
 
     def _shutdown_system(self):
+        """Shutdown the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_shutdow():
             return
         os.system("sudo shutdown now")
         self.close()
 
     def _open_calibration(self):
+        """Opens the calibration window."""
         self.close()
         run_calibration(standalone=False)
