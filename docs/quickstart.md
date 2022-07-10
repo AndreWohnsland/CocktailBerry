@@ -12,7 +12,7 @@ pip install -r requirements.txt
 python runme.py
 ```
 
-This will start the CocktailBerry program. You may want to run the provided installer script for the RPi instead of pip. See [Installation](setup.md#set-up) for more information.
+This will start the CocktailBerry program. You may want to run the provided installer script for the RPi instead of pip. See [Installation](installation.md) for more information.
 
 ```bash
 sh scripts/setup.sh
