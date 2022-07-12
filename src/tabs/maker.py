@@ -101,7 +101,7 @@ def prepare_cocktail(w):
     real_volume = round(cocktail_volume * readiness)
     if readiness >= 0.5:
         SERVICE_HANDLER.post_team_data(shared.selected_team, real_volume)
-        SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, real_volume)
+        SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, real_volume, cocktail)
 
     # the cocktail was canceled!
     if not shared.make_cocktail:

@@ -23,19 +23,19 @@ class ServiceHandler(ConfigManager):
         self.base_url = self.MICROSERVICE_BASE_URL
         self.logger = LoggerHandler("microservice", "service_logs")
         self.headers = {"content-type": "application/json"}
-        self.debug = os.getenv("DEBUG_MS", "False") == "True"
 
-    def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int, cocktailobject: Optional[Cocktail] = None) -> Dict:
+    def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int, cocktailobject: Cocktail) -> Dict:
         """Post the given cocktail data to the microservice handling internet traffic to send to defined webhook"""
         if not self.MICROSERVICE_ACTIVE:
             return service_disabled()
-        # calculate volume in litre
+        # Extracts the volume and name from the ingredient objects
+        ingredient_data = [{"name": i.name, "volume": i.amount} for i in cocktailobject.adjusted_ingredients]
         data = {
             "cocktailname": cocktailname,
             "volume": cocktail_volume,
             "machinename": self.MAKER_NAME,
             "countrycode": self.UI_LANGUAGE,
-            "cocktail": cocktailobject
+            "ingredients": ingredient_data
         }
         payload = json.dumps(data)
         endpoint = self._decide_debug_endpoint(f"{self.base_url}/hookhandler/cocktail")
@@ -59,7 +59,8 @@ class ServiceHandler(ConfigManager):
 
     def _decide_debug_endpoint(self, endpoint: str):
         """Checks if to use the given or the debug ep"""
-        if self.debug:
+        debug = os.getenv("DEBUG_MS", "False") == "True"
+        if debug:
             return f"{self.base_url}/debug"
         return endpoint
 
