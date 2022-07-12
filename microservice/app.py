@@ -70,6 +70,12 @@ def post_file_with_mail():
     return jsonify({"text": text}), 200
 
 
+@app.route("/debug", methods=["POST"])
+def debug_ep():
+    app.logger.info(request.json)
+    return jsonify({"text": "debug"}), 200
+
+
 if __name__ == "__main__":
     try_send_querry_data(app)
     app.run(host="0.0.0.0", port=os.getenv("PORT"))
