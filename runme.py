@@ -5,6 +5,7 @@ from src.migrator import Migrator
 migrator = Migrator()
 migrator.make_migrations()
 
+import os
 from typing import Optional
 import typer
 
@@ -19,6 +20,7 @@ cli = typer.Typer(add_completion=False)
 @cli.command()
 def main(
     calibration: bool = typer.Option(False, "--calibration", "-c", help="Run the calibration program."),
+    debug: bool = typer.Option(False, "--debug", "-d", help="Using debug instead of normal Endpoints."),
     version: Optional[bool] = typer.Option(None, "--version", callback=version_callback, help="Show current version.")
 ):
     """
@@ -28,6 +30,8 @@ def main(
     show_start_message()
     c_manager = ConfigManager()
     c_manager.sync_config_to_file()
+    if debug:
+        os.environ.setdefault('DEBUG_MS', 'True')
     if calibration:
         run_calibration()
     run_cocktailberry()
