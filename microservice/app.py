@@ -38,7 +38,7 @@ def post_cocktail_hook():
         except requests.exceptions.ConnectionError:
             app.logger.error(f"Could not connect to {url} for the cocktail data!")
             db_handler = DatabaseHandler()
-            db_handler.save_failed_post(payload, url)
+            db_handler.save_failed_post(payload, url, headers)
         # pylint: disable=broad-except
         except Exception as err:
             app.logger.error(f"Some other error occured: {err}")

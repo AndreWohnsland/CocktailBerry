@@ -20,7 +20,7 @@ class DatabaseHandler:
         self.__add_url_to_db()
         self.__add_header_to_db()
 
-    def save_failed_post(self, payload: str, url: str, headers=Dict):
+    def save_failed_post(self, payload: str, url: str, headers: Dict):
         sql = "INSERT INTO Querry(Payload, Url, Headers) VALUES(?,?,?)"
         self.query_database(sql, (payload, url, json.dumps(headers)))
 
