@@ -32,6 +32,7 @@ def main(
     c_manager.sync_config_to_file()
     if debug:
         os.environ.setdefault('DEBUG_MS', 'True')
+        print("Using debug mode")
     if calibration:
         run_calibration()
     run_cocktailberry()
