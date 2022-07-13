@@ -139,8 +139,8 @@ ui:
   # dynamic values for maker tab
   maker:
     add_self:
-      en: '~ Add by hand ~'
-      de: '~ Selbst hinzufügen ~'
+      en: 'Add by hand'
+      de: 'Selbst hinzufügen'
     cocktail_dummy:
       en: 'Choose Cocktail'
       de: 'Cocktail aussuchen'
@@ -193,6 +193,12 @@ ui:
     renew_button:
       en: 'apply new bottles'
       de: 'neue Flaschen anwenden'
+    virgin_possibility:
+      en: 'Allow Virgin Option'
+      de: 'Virgin Option erlauben'
+    activate_virgin:
+      en: 'Virgin (no alcohol)'
+      de: 'Virgin (kein Alkohol)'
 
   ##### AVAILABLE WINDOW #####
   # all values for available window
