@@ -9,7 +9,7 @@ class LoggerHandler:
 
     log_folder = DIRPATH.parent / "logs"
 
-    def __init__(self, loggername: str, filename: str):
+    def __init__(self, loggername: str, filename: str = "production_logs"):
         self.loggername = loggername
         self.path = LoggerHandler.log_folder / f"{filename}.log"
 
