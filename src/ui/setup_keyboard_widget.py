@@ -1,5 +1,5 @@
 import string
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QLineEdit
 from PyQt5.QtCore import Qt
 
 from src.display_controller import DP_CONTROLLER
@@ -9,13 +9,13 @@ from src.ui_elements.Keyboard import Ui_Keyboard
 class KeyboardWidget(QDialog, Ui_Keyboard):
     """ Creates a Keyboard where the user can enter names or similar strings to Lineedits. """
 
-    def __init__(self, parent, le_to_write=None, max_char_len: int = 30):
+    def __init__(self, parent, le_to_write: QLineEdit, max_char_len: int = 30):
         super().__init__()
         self.setupUi(self)
         self.mainscreen = parent
         self.le_to_write = le_to_write
         self.LName.setText(self.le_to_write.text())
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
         # populating all the buttons
         self.backButton.clicked.connect(self.backbutton_clicked)

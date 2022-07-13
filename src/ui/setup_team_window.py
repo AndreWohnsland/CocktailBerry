@@ -15,8 +15,8 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         super().__init__()
         ConfigManager.__init__(self)
         self.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
         self.PBteamone.clicked.connect(lambda: self.set_team(self.TEAM_BUTTON_NAMES[0]))
         self.PBteamone.setText(self.TEAM_BUTTON_NAMES[0])
