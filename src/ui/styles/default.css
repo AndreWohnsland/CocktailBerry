@@ -3,17 +3,33 @@ QCheckBox::indicator {
   height: 18px; }
 
 QCheckBox::indicator:unchecked {
-  image: url(./src/ui_elements/cross.png); }
+  border: 2px solid;
+  border-radius: 3px;
+  border-color: #cd0000; }
+
+QCheckBox::indicator:disabled {
+  border: 2px solid;
+  border-radius: 3px;
+  border-color: #96adba; }
 
 QCheckBox::indicator:checked {
-  image: url(./src/ui_elements/check.png); }
+  image: url(./src/ui_elements/check.png);
+  border: 2px solid;
+  border-radius: 3px;
+  border-color: #00ae4b; }
 
 QWidget {
   color: #007bff;
   background-color: black; }
 
+QTabBar::tab:disabled {
+  text-decoration: line-through; }
+
 QWidget[cssClass~='secondary'] {
   color: #ef9700; }
+
+QWidget[cssClass~='left-shift'] {
+  margin: 5px 0px 5px 20px; }
 
 *[cssClass~='header-underline'] {
   color: #96adba;

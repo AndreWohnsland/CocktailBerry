@@ -188,6 +188,9 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         # Connects the slider
         self.HSIntensity.valueChanged.connect(lambda: maker.update_shown_recipe(self))
 
+        # Connects the virgin checkbox
+        self.virgin_checkbox.clicked.connect(lambda: maker.update_shown_recipe(self, False))
+
         # Disable some of the Tabs (for the UI_PARTYMODE, no one can access the recipes)
         if self.UI_PARTYMODE:
             self.tabWidget.setTabEnabled(2, False)

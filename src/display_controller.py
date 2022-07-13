@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Callable, List, Tuple, Union
+from typing import Any, Callable, List, Optional, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
@@ -54,21 +54,25 @@ class DisplayController(DialogHandler):
         # but whe only want stepsize of *5 -> therefore it ranges from -5 to 5 but we
         # multiply by *5 to get an effective range from -25 to 25 with a stepsize of 5
         alcohol_faktor = 1 + (w.HSIntensity.value() * 5 / 100)
+        # If virgin is selected, just set alcohol_faktor to 0
+        if w.virgin_checkbox.isChecked():
+            alcohol_faktor = 0
         cocktailname = ""
         if w.LWMaker.selectedItems():
             cocktailname = w.LWMaker.currentItem().text()
         return cocktailname, cocktail_volume, alcohol_faktor
 
-    def get_recipe_field_data(self, w) -> Tuple[str, str, List[str], List[str], int, str]:
-        """ Return [name, selected, [ingredients], [volumes], enabled, comment] """
+    def get_recipe_field_data(self, w) -> Tuple[str, str, List[str], List[str], int, int, str]:
+        """ Return [name, selected, [ingredients], [volumes], enabled, virgin, comment] """
         recipe_name = w.LECocktail.text().strip()
         selected_recipe = self.get_list_widget_selection(w.LWRezepte)
         # this is also a str, because user may type non int char into box
         ingredient_volumes = self.get_lineedit_text(self.get_lineedits_recipe(w))
         ingredient_names = self.get_current_combobox_items(self.get_comboboxes_recipes(w))
         enabled = int(w.CHBenabled.isChecked())
+        virgin = int(w.offervirgin_checkbox.isChecked())
         comment = w.LEKommentar.text()
-        return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, comment
+        return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, virgin, comment
 
     def validate_ingredient_data(self, lineedit_list) -> bool:
         """Validate the data from the ingredient window"""
@@ -130,7 +134,7 @@ class DisplayController(DialogHandler):
     # UI "MANIPULATE" METHODS #
     ###########################
     # Misc
-    def plusminus(self, label, operator: str, minimal=0, maximal=1000, delta=10, side_effect: Callable = None):
+    def plusminus(self, label, operator: str, minimal=0, maximal=1000, delta=10, side_effect: Optional[Callable] = None):
         """ increases or decreases the value by a given amount in the boundaries
         operator: '+' or '-'
         Also executes a sideeffect function, if one is given
@@ -347,8 +351,13 @@ class DisplayController(DialogHandler):
         w.LAlkoholname.setText(cocktail.name)
         w.LMenge.setText(f"{total_volume} ml")
         w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.0f}%")
-        display_data = cocktail.get_machineadds()
-        hand = cocktail.get_handadds()
+        display_data = cocktail.machineadds
+        hand = cocktail.handadds
+        # Activates or deactivates the virgin checkbox, depending on the virgin flag
+        w.virgin_checkbox.setEnabled(cocktail.virgin_available)
+        # Styles does not work on strikeout, so we use internal qt things
+        # To be precise, they do work at start, but does not support dynamic changes
+        self._set_strike_through(w.virgin_checkbox, not cocktail.virgin_available)
         # when there is handadd, also build some additional data
         # TODO: typing mixing here is probably not the best thing
         if hand:
@@ -359,17 +368,32 @@ class DisplayController(DialogHandler):
             if isinstance(ing, str):
                 ingredient_name = UI_LANGUAGE.get_add_self()
                 field_ingredient.setProperty("cssClass", "hand-seperator")
+                self._set_underline(field_ingredient, True)
             else:
                 field_ingredient.setProperty("cssClass", None)
+                self._set_underline(field_ingredient, False)
                 field_volume.setText(f" {ing.amount} ml")
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
+
+    def _set_strike_through(self, element: QWidget, strike_through: bool):
+        """Set the strike through property of the font"""
+        font = element.font()
+        font.setStrikeOut(strike_through)
+        element.setFont(font)
+
+    def _set_underline(self, element: QWidget, underline: bool):
+        """Set the strike through property of the font"""
+        font = element.font()
+        font.setUnderline(underline)
+        element.setFont(font)
 
     def clear_recipe_data_maker(self, w, select_other_item=True):
         """Clear the cocktail data in the maker view, only clears selection if no other item was selected"""
         w.LAlkoholgehalt.setText("")
         w.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         w.LMenge.setText("")
+        w.virgin_checkbox.setChecked(False)
         if not select_other_item:
             w.LWMaker.clearSelection()
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(w), self.get_labels_maker_volume(w)):
@@ -380,6 +404,7 @@ class DisplayController(DialogHandler):
         """Clear the recipe data in recipe view, only clears selection if no other item was selected"""
         w.LECocktail.clear()
         w.LEKommentar.clear()
+        w.offervirgin_checkbox.setChecked(False)
         if not select_other_item:
             w.LWRezepte.clearSelection()
         self.set_multiple_combobox_to_top_item(self.get_comboboxes_recipes(w))
@@ -415,13 +440,14 @@ class DisplayController(DialogHandler):
     def set_recipe_data(self, w, cocktail: Cocktail):
         """Fills the recipe data in the recipe view with the cocktail object"""
         w.CHBenabled.setChecked(bool(cocktail.enabled))
-        machine_adds = cocktail.get_machineadds()
+        w.offervirgin_checkbox.setChecked(bool(cocktail.virgin_available))
+        machine_adds = cocktail.machineadds
         names = [x.name for x in machine_adds]
         volumes = [x.amount for x in machine_adds]
         self.set_multiple_combobox_items(self.get_comboboxes_recipes(w)[: len(names)], names)
         self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(volumes)], volumes)
         w.LECocktail.setText(cocktail.name)
-        self.__set_recipe_handadd_comment(w, cocktail.get_handadds())
+        self.__set_recipe_handadd_comment(w, cocktail.handadds)
 
     # Some more "specific" function, not using generic but specified field sets
     def set_label_bottles(self, w, label_names: List[str]):
