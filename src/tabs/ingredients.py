@@ -114,6 +114,8 @@ def delete_ingredient(w):
 
     # Check if still used at a bottle or within a recipe
     ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
+    if not ingredient:
+        return
     if DB_COMMANDER.get_bottle_usage(ingredient.id):
         DP_CONTROLLER.say_ingredient_still_at_bottle()
         return
@@ -139,6 +141,8 @@ def display_selected_ingredient(w):
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(list_widget)
     if selected_ingredient:
         ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
+        if not ingredient:
+            return
         DP_CONTROLLER.fill_multiple_lineedit(
             lineedits, [ingredient.name, ingredient.alcohol, ingredient.bottle_volume]
         )
