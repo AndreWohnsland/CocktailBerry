@@ -62,13 +62,13 @@ def __validate_extract_ingredients(ingredient_names: List[str], ingredient_volum
     return names, volumes, True
 
 
-def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data: List[Ingredient], comment):
+def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, virgin, ingredient_data: List[Ingredient], comment):
     """Logic to insert/update data into DB"""
     if recipe_id:
         DB_COMMANDER.delete_recipe_ingredient_data(recipe_id)
-        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
+        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled, virgin)
     else:
-        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
+        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled, virgin)
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
     for ingredient in ingredient_data:
         is_alcoholic = int(ingredient.alcohol > 0)
@@ -81,7 +81,7 @@ def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcoh
 def enter_recipe(w, newrecipe: bool):
     """ Enters or updates the recipe into the db"""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
-    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, comment = recipe_input
+    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, virgin, comment = recipe_input
     if not recipe_name:
         DP_CONTROLLER.say_enter_cocktailname()
         return
@@ -119,7 +119,7 @@ def enter_recipe(w, newrecipe: bool):
     recipe_alcohollevel = int(recipe_volume_concentration / recipe_volume)
 
     cocktail = __enter_or_update_recipe(
-        recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, comment
+        recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, virgin, ingredient_data, comment
     )
 
     # remove the old name
