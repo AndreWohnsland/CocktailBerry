@@ -2,7 +2,7 @@ import datetime
 import shutil
 from pathlib import Path
 import sqlite3
-from typing import List, Union
+from typing import List, Optional, Union
 
 from src.models import Cocktail, Ingredient
 
@@ -28,14 +28,14 @@ class DatabaseCommander:
 
     def __get_all_recipes_properties(self):
         """Get all neeeded data for all recipes"""
-        query = "SELECT ID, Name, Alcohol, Amount, Comment, Enabled FROM Recipes"
+        query = "SELECT ID, Name, Alcohol, Amount, Comment, Enabled, Virgin FROM Recipes"
         return self.handler.query_database(query)
 
-    def __build_cocktail(self, recipe_id: int, name: str, alcohol: int, amount: int, comment: str, enabled: bool):
+    def __build_cocktail(self, recipe_id: int, name: str, alcohol: int, amount: int, comment: str, enabled: bool, virgin: bool):
         """Build one cocktail object with the given data"""
         ingredient_data = self.__get_recipe_ingredients_by_id(recipe_id)
         return Cocktail(
-            recipe_id, name, alcohol, amount, comment, bool(enabled),
+            recipe_id, name, alcohol, amount, comment, bool(enabled), bool(virgin),
             [Ingredient(
                 i[0], i[1], i[2], i[3], i[4], bool(i[5]), i[6], bool(i[7]), i[8]
             ) for i in ingredient_data]
@@ -47,7 +47,7 @@ class DatabaseCommander:
             condition = "Name"
         else:
             condition = "ID"
-        query = f"SELECT ID, Name, Alcohol, Amount, Comment, Enabled FROM Recipes WHERE {condition}=?"
+        query = f"SELECT ID, Name, Alcohol, Amount, Comment, Enabled, Virgin FROM Recipes WHERE {condition}=?"
         data = self.handler.query_database(query, (search,))
         # returns None if no data exists
         if not data:
@@ -246,12 +246,12 @@ class DatabaseCommander:
         query = "UPDATE OR IGNORE Recipes SET Enabled = 1"
         self.handler.query_database(query)
 
-    def set_recipe(self, recipe_id: int, name: str, alcohollevel: int, volume: int, comment: str, enabled: int):
+    def set_recipe(self, recipe_id: int, name: str, alcohollevel: int, volume: int, comment: str, enabled: int, virgin: int):
         """Updates the given recipe id to new properties"""
         query = """UPDATE OR IGNORE Recipes
-                SET Name = ?, Alcohol = ?, Amount = ?, Comment = ?, Enabled = ?
+                SET Name = ?, Alcohol = ?, Amount = ?, Comment = ?, Enabled = ?, Virgin = ?
                 WHERE ID = ?"""
-        searchtuple = (name, alcohollevel, volume, comment, enabled, recipe_id)
+        searchtuple = (name, alcohollevel, volume, comment, enabled, virgin, recipe_id)
         self.handler.query_database(query, searchtuple)
 
     def set_ingredient_level_to_value(self, ingredient_id: int, value: int):
@@ -268,12 +268,12 @@ class DatabaseCommander:
         searchtuple = (ingredient_name, alcohollevel, volume, int(onlyhand))
         self.handler.query_database(query, searchtuple)
 
-    def insert_new_recipe(self, name: str, alcohollevel: int, volume: int, comment: str, enabled: int):
+    def insert_new_recipe(self, name: str, alcohollevel: int, volume: int, comment: str, enabled: int, virgin: int):
         """Insert a new recipe into the database"""
         query = """INSERT OR IGNORE INTO
-                Recipes(Name, Alcohol, Amount, Comment, Counter_lifetime, Counter, Enabled) 
-                VALUES (?,?,?,?,0,0,?)"""
-        searchtuple = (name, alcohollevel, volume, comment, enabled)
+                Recipes(Name, Alcohol, Amount, Comment, Counter_lifetime, Counter, Enabled, Virgin) 
+                VALUES (?,?,?,?,0,0,?,?)"""
+        searchtuple = (name, alcohollevel, volume, comment, enabled, virgin)
         self.handler.query_database(query, searchtuple)
 
     # TODO: Is_alcoholic seems to be no longer used -> if so remove!
@@ -356,7 +356,7 @@ class DatabaseHandler:
         self.database = sqlite3.connect(self.database_path)
         self.cursor = self.database.cursor()
 
-    def connect_database(self, path: str = None):
+    def connect_database(self, path: Optional[str] = None):
         """Connects to the given path or own database and creates cursor"""
         if path:
             self.database = sqlite3.connect(path)
@@ -382,7 +382,7 @@ class DatabaseHandler:
 
     def create_tables(self):
         """Creates all needed tables and constraints"""
-        self.connect_database(self.database_path_default)
+        self.connect_database(str(self.database_path_default))
         # Creates each Table
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS Recipes(

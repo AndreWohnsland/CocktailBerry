@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 import yaml
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
@@ -106,7 +106,7 @@ class DialogHandler(ConfigManager):
         """Informs user that the ingredient was added to the database"""
         self.__output_language_dialog(self.dialogs["ingredient_added"], ingredient_name=ingredient_name)
 
-    def __say_ingredient_changed(self, selected_ingredient: str, ingredient_name: str):
+    def __say_ingredient_changed(self, selected_ingredient: Union[str, None], ingredient_name: str):
         """Informs user that the ingredient was changed"""
         self.__output_language_dialog(
             self.dialogs["ingredient_changed"],
@@ -114,7 +114,7 @@ class DialogHandler(ConfigManager):
             ingredient_name=ingredient_name
         )
 
-    def say_ingredient_added_or_changed(self, ingredient_name: str, new_ingredient: bool, selected_ingredient: str = None):
+    def say_ingredient_added_or_changed(self, ingredient_name: str, new_ingredient: bool, selected_ingredient: Optional[str] = None):
         """Informs user that the ingredient was added or altered"""
         if new_ingredient:
             self.__say_ingredient_added(ingredient_name)
@@ -280,6 +280,9 @@ class UiLanguage(ConfigManager):
 
         w.PBBelegung.setText(self.__choose_language(window["change_button"]))
         w.PBFlanwenden.setText(self.__choose_language(window["renew_button"]))
+
+        w.virgin_checkbox.setText(self.__choose_language(window["activate_virgin"]))
+        w.offervirgin_checkbox.setText(self.__choose_language(window["virgin_possibility"]))
 
     def adjust_available_windos(self, w):
         """Translates all needed elements of the available window"""

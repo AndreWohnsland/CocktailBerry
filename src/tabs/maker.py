@@ -33,13 +33,14 @@ def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):
 
 
 @logerror
-def update_shown_recipe(w):
+def update_shown_recipe(w, clear_view: bool = True):
     """ Updates the maker display Data with the selected recipe"""
+    if clear_view:
+        DP_CONTROLLER.clear_recipe_data_maker(w)
+
     cocktailname, amount, factor = DP_CONTROLLER.get_cocktail_data(w)
     if not cocktailname:
         return
-
-    DP_CONTROLLER.clear_recipe_data_maker(w)
     cocktail = DB_COMMANDER.get_cocktail(cocktailname)
     if cocktail is None:
         return
@@ -50,7 +51,7 @@ def update_shown_recipe(w):
 def __build_comment_maker(cocktail: Cocktail):
     """Build the additional comment for the completion message (if there are handadds)"""
     comment = ""
-    hand_add = cocktail.get_handadds()
+    hand_add = cocktail.handadds
     length_desc = sorted(hand_add, key=lambda x: len(x.name), reverse=True)
     for ing in length_desc:
         comment += f"\n~{ing.amount:.0f} ml {ing.name}"
@@ -89,8 +90,9 @@ def prepare_cocktail(w):
         return
 
     print(f"Preparing {cocktail_volume} ml {cocktailname}")
-    ingredient_bottles = [x.bottle for x in cocktail.get_machineadds()]
-    ingredient_volumes = [x.amount for x in cocktail.get_machineadds()]
+    # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
+    ingredient_bottles = [x.bottle for x in cocktail.machineadds if x.amount > 0]
+    ingredient_volumes = [x.amount for x in cocktail.machineadds if x.amount > 0]
     consumption, taken_time, max_time = MACHINE.make_cocktail(
         w, ingredient_bottles, ingredient_volumes, cocktailname)
     DB_COMMANDER.increment_recipe_counter(cocktailname)
@@ -105,7 +107,7 @@ def prepare_cocktail(w):
 
     # the cocktail was canceled!
     if not shared.make_cocktail:
-        consumption_names = [x.name for x in cocktail.get_machineadds()]
+        consumption_names = [x.name for x in cocktail.machineadds]
         consumption_amount = consumption
         DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
         DP_CONTROLLER.say_cocktail_canceled()

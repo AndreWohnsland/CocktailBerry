@@ -61,6 +61,9 @@ class Migrator:
         if self.older_than_version("1.6.1"):
             logger.log_event("INFO", "Making migrations for v1.6.1")
             self.__add_more_bottles_to_db()
+        if self.older_than_version("1.9.0"):
+            logger.log_event("INFO", "Making migrations for v1.9.0")
+            self.__add_virgin_flag_to_db()
         self.__check_local_version_data()
 
     def __check_local_version_data(self):
@@ -127,6 +130,16 @@ class Migrator:
                 ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 Payload TEXT NOT NULL);"""
         )
+
+    def __add_virgin_flag_to_db(self):
+        """Adds the virgin flag column to the DB"""
+        logger.log_event("INFO", "Adding virgin flag column to DB")
+        db_handler = DatabaseHandler()
+        try:
+            db_handler.query_database("ALTER TABLE Recipes ADD COLUMN Virgin INTEGER DEFAULT 0;")
+            db_handler.query_database("Update Recipes SET Virgin = 0;")
+        except OperationalError:
+            logger.log_event("ERROR", "Could not add virgin flag column to DB, this may because it already exists")
 
     def __change_git_repo(self):
         """Sets the git source to the new named repo"""
