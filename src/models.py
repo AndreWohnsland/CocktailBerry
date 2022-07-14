@@ -56,6 +56,11 @@ class Cocktail():
         """Returns a list of all machine Ingredients"""
         return [x for x in self.adjusted_ingredients if not x.recipe_hand]
 
+    @property
+    def is_virgin(self):
+        """Returns if the cocktail is virgin"""
+        return self.adjusted_alcohol == 0
+
     def is_possible(self, hand_available: List[int]):
         """Returns if the recipe is possible with given aditional hand add ingredients"""
         machine = self.machineadds
