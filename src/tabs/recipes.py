@@ -34,7 +34,7 @@ def __check_enter_constraints(recipe_name: str, newrecipe: bool) -> Tuple[int, b
     return cocktail.id, False
 
 
-def __validate_extract_ingredients(ingredient_names: List[str], ingredient_volumes: List[int]) -> Tuple[List[str], List[int], bool]:
+def __validate_extract_ingredients(ingredient_names: List[str], ingredient_volumes: List[str]) -> Tuple[List[str], List[int], bool]:
     """Gives a list for names and volumens of ingredients.
     If some according value is missing, informs the user.
     Returns [names], [volumes], is_valid"""
@@ -70,10 +70,12 @@ def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcoh
     else:
         DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled, virgin)
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
+    if cocktail is None:
+        raise RuntimeError("Cocktail not found. This should not happen.")
     for ingredient in ingredient_data:
         is_alcoholic = int(ingredient.alcohol > 0)
         DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount,
-                                        is_alcoholic, ingredient.recipe_hand)
+                                        is_alcoholic, bool(ingredient.recipe_hand))
     return cocktail
 
 
@@ -102,7 +104,7 @@ def enter_recipe(w, newrecipe: bool):
 
     # first build the ingredient objects for machine add
     for ingredient_name, ingredient_volume in zip(names, volumes):
-        ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
+        ingredient: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore
         ingredient.amount = ingredient_volume
         ingredient.recipe_hand = False
         recipe_volume_concentration += ingredient.alcohol * ingredient_volume
@@ -110,7 +112,7 @@ def enter_recipe(w, newrecipe: bool):
 
     # build also the handadd data into an ingredient
     for ing in shared.handaddlist:
-        ingredient = DB_COMMANDER.get_ingredient(ing.id)
+        ingredient: Ingredient = DB_COMMANDER.get_ingredient(ing.id)  # type: ignore
         ingredient.amount = ing.amount
         ingredient.recipe_hand = True
         recipe_volume += ing.amount
@@ -152,6 +154,8 @@ def load_selected_recipe_data(w):
 
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
+    if cocktail is None:
+        return
     DP_CONTROLLER.set_recipe_data(w, cocktail)
 
 

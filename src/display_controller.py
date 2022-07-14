@@ -45,7 +45,7 @@ class DisplayController(DialogHandler):
         selected_ingredient = ""
         if list_widget.selectedItems():
             selected_ingredient = list_widget.currentItem().text()
-        return Ingredient(None, ingredient_name, int(alcohollevel), int(volume), None, hand_add, selected=selected_ingredient)
+        return Ingredient(-1, ingredient_name, int(alcohollevel), int(volume), 0, hand_add, selected=selected_ingredient)
 
     def get_cocktail_data(self, w) -> Tuple[str, int, int]:
         """Returns [name, volume, factor] from maker"""
@@ -152,7 +152,7 @@ class DisplayController(DialogHandler):
     def set_display_settings(self, window_object: QWidget, resize=True):
         """Checks dev environment, adjust cursor and resize accordingly, if resize is wished"""
         if not self.UI_DEVENVIRONMENT:
-            window_object.setCursor(Qt.BlankCursor)
+            window_object.setCursor(Qt.BlankCursor)  # type: ignore
         if resize:
             window_object.setFixedSize(self.UI_WIDTH, self.UI_HEIGHT)
             window_object.resize(self.UI_WIDTH, self.UI_HEIGHT)
@@ -243,7 +243,7 @@ class DisplayController(DialogHandler):
 
     def delete_single_combobox_item(self, combobox, item: str):
         """Delete the given item from a combobox"""
-        index = combobox.findText(item, Qt.MatchFixedString)
+        index = combobox.findText(item, Qt.MatchFixedString)  # type: ignore
         if index >= 0:
             combobox.removeItem(index)
 
@@ -270,13 +270,13 @@ class DisplayController(DialogHandler):
 
     def set_combobox_item(self, combobox, item: str):
         """Set the combobox to the given item"""
-        index = combobox.findText(item, Qt.MatchFixedString)
+        index = combobox.findText(item, Qt.MatchFixedString)  # type: ignore
         combobox.setCurrentIndex(index)
 
     def adjust_bottle_comboboxes(self, combobox_list: List[Any], old_item: str, new_item: str):
         """Remove the old itemname and add new one in given comboboxex, sorting afterwards"""
         for combobox in combobox_list:
-            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):
+            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):  # type: ignore
                 combobox.addItem(old_item)
             if (new_item != "") and (new_item != combobox.currentText()):
                 self.delete_single_combobox_item(combobox, new_item)
@@ -284,7 +284,7 @@ class DisplayController(DialogHandler):
 
     def rename_single_combobox(self, combobox, old_item: str, new_item: str):
         """Rename the old item to new one in given box"""
-        index = combobox.findText(old_item, Qt.MatchFixedString)
+        index = combobox.findText(old_item, Qt.MatchFixedString)  # type: ignore
         if index >= 0:
             combobox.setItemText(index, new_item)
             combobox.model().sort(0)
@@ -314,7 +314,7 @@ class DisplayController(DialogHandler):
 
     def delete_list_widget_item(self, list_widget: Any, item: str):
         """Deletes an item in the list widget"""
-        index_to_delete = list_widget.findItems(item, Qt.MatchExactly)
+        index_to_delete = list_widget.findItems(item, Qt.MatchExactly)  # type: ignore
         if len(index_to_delete) > 0:
             for index in index_to_delete:
                 list_widget.takeItem(list_widget.row(index))

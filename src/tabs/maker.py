@@ -94,7 +94,7 @@ def prepare_cocktail(w):
     ingredient_bottles = [x.bottle for x in cocktail.machineadds if x.amount > 0]
     ingredient_volumes = [x.amount for x in cocktail.machineadds if x.amount > 0]
     consumption, taken_time, max_time = MACHINE.make_cocktail(
-        w, ingredient_bottles, ingredient_volumes, cocktailname)
+        w, ingredient_bottles, ingredient_volumes, cocktailname)  # type: ignore
     DB_COMMANDER.increment_recipe_counter(cocktailname)
     __generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
 

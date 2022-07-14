@@ -1,13 +1,14 @@
 import logging
 from pathlib import Path
+from typing import Union
 
-DIRPATH = Path(__file__).parent.absolute()
+_DIRPATH = Path(__file__).parent.absolute()
 
 
 class LoggerHandler:
     """Handler class for generating logger and logging events"""
 
-    log_folder = DIRPATH.parent / "logs"
+    log_folder = _DIRPATH.parent / "logs"
 
     def __init__(self, loggername: str, filename: str = "production_logs"):
         self.loggername = loggername
@@ -37,6 +38,6 @@ class LoggerHandler:
         """Logs the start of the program, optionally can define program type"""
         self.log_header("INFO", f"Starting the {program_type} program")
 
-    def log_exception(self, message: str):
+    def log_exception(self, message: Union[str, object]):
         """Logs an exception with the given message"""
         self.logger.exception(message)

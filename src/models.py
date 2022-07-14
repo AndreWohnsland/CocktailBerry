@@ -87,7 +87,7 @@ class Cocktail():
         # scale alcoholic ingredients with factor
         for ing in self.adjusted_ingredients:
             factor = alcohol_facor if bool(ing.alcohol) else 1
-            ing.amount *= factor
+            ing.amount *= factor  # type: ignore
             scaled_amount += ing.amount
             concentration += ing.amount * ing.alcohol
         self.adjusted_alcohol = round(concentration / scaled_amount)

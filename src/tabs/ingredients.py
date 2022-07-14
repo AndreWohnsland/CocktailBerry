@@ -43,7 +43,7 @@ def __add_new_ingredient(w, ing: Ingredient):
         DP_CONTROLLER.say_name_already_exists()
         return False
 
-    DB_COMMANDER.insert_new_ingredient(ing.name, ing.alcohol, ing.bottle_volume, ing.hand)
+    DB_COMMANDER.insert_new_ingredient(ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand))
     if not ing.hand:
         combobox_recipes = DP_CONTROLLER.get_comboboxes_recipes(w)
         combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
@@ -57,6 +57,8 @@ def __change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
         DP_CONTROLLER.say_no_ingredient_selected()
         return False
     old_ingredient = DB_COMMANDER.get_ingredient(ing.selected)
+    if old_ingredient is None:
+        raise RuntimeError("This should not be happening. Ingredient not found in DB.")
 
     bottle_used = DB_COMMANDER.get_bottle_usage(old_ingredient.id)
     # if change to handadd and still used, abort
@@ -71,7 +73,7 @@ def __change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
         ing.alcohol,
         ing.bottle_volume,
         volume_level,
-        ing.hand,
+        bool(ing.hand),
         old_ingredient.id,
     )
 
