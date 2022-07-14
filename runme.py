@@ -25,6 +25,8 @@ def main(
 ):
     """
     Starts the cocktail program. Optional, can start the calibration program.
+    If you want to debug your microservice, you can use the --debug flag.
+
     For more information visit https://github.com/AndreWohnsland/CocktailBerry.
     """
     show_start_message()
