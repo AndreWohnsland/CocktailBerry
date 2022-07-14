@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Dict, Optional, Union
 import yaml
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget
 from PyQt5.QtCore import Qt
 from src.config_manager import ConfigManager
 
@@ -48,7 +48,7 @@ class DialogHandler(ConfigManager):
         style_sheet = str(DIRPATH / "ui" / "styles" / f"{self.MAKER_THEME}.css")
         with open(style_sheet, "r", encoding="utf-8") as filehandler:
             msg_box.setStyleSheet(filehandler.read())
-        msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         msg_box.move(50, 50)
         msg_box.exec_()
         if msg_box.clickedButton() == yes_button:
@@ -58,6 +58,9 @@ class DialogHandler(ConfigManager):
     def __output_language_dialog(self, options: dict, **kwargs):
         msg = self.__choose_language(options, **kwargs)
         self.standard_box(msg)
+
+    def _get_folder_location(self, w: QWidget, message: str):
+        return QFileDialog.getExistingDirectory(w, message)
 
     ############################
     # Methods for creating msg #
@@ -197,6 +200,14 @@ class DialogHandler(ConfigManager):
         """Informs the user that the config is wrong with the error message."""
         self.__output_language_dialog(self.dialogs["wrong_config"], error=error)
 
+    def say_backup_created(self, folder: str):
+        """Informs the user that the backup has been created."""
+        self.__output_language_dialog(self.dialogs["backup_created"], folder=folder)
+
+    def say_backup_failed(self, file: str):
+        """Informs the user that the backup has failed."""
+        self.__output_language_dialog(self.dialogs["backup_failed"], file=file)
+
     def ask_to_update(self):
         """Asks the user if he wants to get the latest update"""
         message = self.__choose_language(self.dialogs["update_available"])
@@ -217,9 +228,19 @@ class DialogHandler(ConfigManager):
         message = self.__choose_language(self.dialogs["ask_to_reboot"])
         return self.user_okay(message)
 
-    def ask_to_shutdow(self):
+    def ask_to_shutdown(self):
         """Asks the user if he wants to shutdown the system"""
         message = self.__choose_language(self.dialogs["ask_to_shutdown"])
+        return self.user_okay(message)
+
+    def ask_for_backup_location(self, w: QWidget):
+        """Asks the user where to get or store the backupoutput"""
+        message = self.__choose_language(self.dialogs["ask_for_backup_location"])
+        return self._get_folder_location(w, message)
+
+    def ask_backup_overwrite(self):
+        """Asks the user if he wants to use backup"""
+        message = self.__choose_language(self.dialogs["ask_backup_overwrite"])
         return self.user_okay(message)
 
 
