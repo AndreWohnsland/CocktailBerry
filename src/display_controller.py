@@ -207,6 +207,9 @@ class DisplayController(DialogHandler):
         """Sets the alcohol slider to defaul (100%) value"""
         self.__set_slider_value(w.HSIntensity, 0)
 
+    def reset_virgin_setting(self, w):
+        w.virgin_checkbox.setChecked(False)
+
     # LineEdit
     def clean_multiple_lineedit(self, lineedit_list: List[Any]):
         """Clear a list of line edits"""
