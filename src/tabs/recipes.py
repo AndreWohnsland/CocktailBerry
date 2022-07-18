@@ -73,9 +73,7 @@ def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcoh
     if cocktail is None:
         raise RuntimeError("Cocktail not found. This should not happen.")
     for ingredient in ingredient_data:
-        is_alcoholic = int(ingredient.alcohol > 0)
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount,
-                                        is_alcoholic, bool(ingredient.recipe_hand))
+        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount, bool(ingredient.recipe_hand))
     return cocktail
 
 

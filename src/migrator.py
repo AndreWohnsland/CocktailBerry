@@ -64,6 +64,7 @@ class Migrator:
         if self.older_than_version("1.9.0"):
             _logger.log_event("INFO", "Making migrations for v1.9.0")
             self._add_virgin_flag_to_db()
+            self._remove_is_alcoholic_column()
         self._check_local_version_data()
 
     def _check_local_version_data(self):
@@ -140,6 +141,16 @@ class Migrator:
             db_handler.query_database("Update Recipes SET Virgin = 0;")
         except OperationalError:
             _logger.log_event("ERROR", "Could not add virgin flag column to DB, this may because it already exists")
+
+    def _remove_is_alcoholic_column(self):
+        """Removes the is_alcoholic column from the DB"""
+        _logger.log_event("INFO", "Removing is_alcoholic column from DB")
+        db_handler = DatabaseHandler()
+        try:
+            db_handler.query_database("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
+        except OperationalError:
+            _logger.log_event(
+                "ERROR", "Could not remove is_alcoholic column from DB, this may because it does not exist")
 
     def _change_git_repo(self):
         """Sets the git source to the new named repo"""
