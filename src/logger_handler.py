@@ -1,8 +1,15 @@
 import logging
 from pathlib import Path
-from typing import Union
+from typing import Literal, Union
 
 _DIRPATH = Path(__file__).parent.absolute()
+_AceptedLogLevels = Union[
+    Literal["DEBUG"],
+    Literal["INFO"],
+    Literal["WARNING"],
+    Literal["ERROR"],
+    Literal["CRITICAL"]
+]
 
 
 class LoggerHandler:
@@ -26,11 +33,11 @@ class LoggerHandler:
         self.logger = logging.getLogger(loggername)
         self.template = "{:-^80}"
 
-    def log_event(self, level, message: str):
+    def log_event(self, level: _AceptedLogLevels, message: str):
         """Simply logs a message of given level"""
         self.logger.log(getattr(logging, level), message)
 
-    def log_header(self, level, message: str):
+    def log_header(self, level: _AceptedLogLevels, message: str):
         """Logs a message of given level formated as header"""
         self.log_event(level, self.template.format(f" {message} ",))
 
