@@ -276,11 +276,10 @@ class DatabaseCommander:
         searchtuple = (name, alcohollevel, volume, comment, enabled, virgin)
         self.handler.query_database(query, searchtuple)
 
-    # TODO: Is_alcoholic seems to be no longer used -> if so remove!
-    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, is_alcoholic: int, hand_add: bool):
+    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, hand_add: bool):
         """Insert given data into the recipe_data table"""
-        query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount, Is_alcoholic, Hand) VALUES (?, ?, ?, ?, ?)"
-        searchtuple = (recipe_id, ingredient_id, ingredient_volume, is_alcoholic, int(hand_add))
+        query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount, Hand) VALUES (?, ?, ?, ?)"
+        searchtuple = (recipe_id, ingredient_id, ingredient_volume, int(hand_add))
         self.handler.query_database(query, searchtuple)
 
     def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: List[str]):
