@@ -65,6 +65,10 @@ class Migrator:
             _logger.log_event("INFO", "Making migrations for v1.9.0")
             self._add_virgin_flag_to_db()
             self._remove_is_alcoholic_column()
+            self._install_pip_package("typing_extensions", "1.9.0")
+            if sys.version_info < (3, 9):
+                _logger.log_event("WARNING", "Your used python is deprecated, please upgrade to python 3.9 or higher")
+                _logger.log_event("WARNING", "Please read the release notes v1.9.0 for more information")
         self._check_local_version_data()
 
     def _check_local_version_data(self):
