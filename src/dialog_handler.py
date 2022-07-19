@@ -18,7 +18,7 @@ class DialogHandler(ConfigManager):
         with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
             self.dialogs: Dict = yaml.safe_load(stream)["dialog"]
 
-    def __choose_language(self, element: dict, **kwargs) -> str:
+    def __choose_language(self, element: Dict[str, str], **kwargs) -> str:
         """Choose either the given language if exists, or english if not piping additional info into template"""
         language = self.UI_LANGUAGE
         tmpl = element.get(language, element["en"])
