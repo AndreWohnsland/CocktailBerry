@@ -41,7 +41,7 @@ class DatabaseCommander:
             ) for i in ingredient_data]
         )
 
-    def get_cocktail(self, search: Union[str, int]) -> Union[Cocktail, None]:
+    def get_cocktail(self, search: Union[str, int]) -> Optional[Cocktail]:
         """Get all neeeded data for the cocktail from ID or name"""
         if isinstance(search, str):
             condition = "Name"
@@ -89,7 +89,7 @@ class DatabaseCommander:
             levels.append(proportion)
         return levels
 
-    def get_ingredient(self, search: Union[str, int]) -> Union[Ingredient, None]:
+    def get_ingredient(self, search: Union[str, int]) -> Optional[Ingredient]:
         """Get all neeeded data for the ingredient from ID or name"""
         if isinstance(search, str):
             condition = "I.Name"

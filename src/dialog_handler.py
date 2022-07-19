@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Optional, Union
+from typing import Dict, Optional
 import yaml
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget
 from PyQt5.QtCore import Qt
@@ -109,7 +109,7 @@ class DialogHandler(ConfigManager):
         """Informs user that the ingredient was added to the database"""
         self.__output_language_dialog(self.dialogs["ingredient_added"], ingredient_name=ingredient_name)
 
-    def __say_ingredient_changed(self, selected_ingredient: Union[str, None], ingredient_name: str):
+    def __say_ingredient_changed(self, selected_ingredient: Optional[str], ingredient_name: str):
         """Informs user that the ingredient was changed"""
         self.__output_language_dialog(
             self.dialogs["ingredient_changed"],

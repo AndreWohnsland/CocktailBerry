@@ -1,6 +1,6 @@
 import copy
 from dataclasses import dataclass, field
-from typing import List, Union
+from typing import List, Union, Optional
 
 
 @dataclass
@@ -14,8 +14,8 @@ class Ingredient():
     hand: Union[bool, int]
     amount: int = 0
     recipe_hand: Union[bool, int, None] = None
-    bottle: Union[int, None] = None
-    selected: Union[str, None] = None
+    bottle: Optional[int] = None
+    selected: Optional[str] = None
 
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name"""
