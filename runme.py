@@ -1,8 +1,4 @@
 # pylint: disable=unused-argument,wrong-import-order,wrong-import-position,ungrouped-imports
-from src.python_vcheck import check_python_version  # pylint: disable=unused-import
-# Version check takes place before anything, else other imports may throw an error
-check_python_version()
-
 from src.migrator import Migrator
 # Migrations need to be made before imports, otherwise new needed packages will break the program
 migrator = Migrator()

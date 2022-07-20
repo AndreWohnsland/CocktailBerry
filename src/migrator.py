@@ -1,4 +1,8 @@
-# pylint: disable=too-few-public-methods
+# pylint: disable=wrong-import-order,wrong-import-position,disable=too-few-public-methods
+from src.python_vcheck import check_python_version
+# Version check takes place before anything, else other imports may throw an error
+check_python_version()
+
 import configparser
 import sys
 import subprocess

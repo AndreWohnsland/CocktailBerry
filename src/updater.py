@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-from git import Repo, GitCommandError
+from git import Repo, GitCommandError  # type: ignore
 
 from src.migrator import Migrator
 from src.logger_handler import LoggerHandler
