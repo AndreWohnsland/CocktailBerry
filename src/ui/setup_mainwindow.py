@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QIntValidator
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
 from src.config_manager import ConfigManager
 from src.machine.controller import MACHINE
@@ -43,7 +43,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.connect_other_windows()
         self.icon_path = str(Path(__file__).parents[1].absolute() / "ui_elements" / "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
         # init the empty further screens
         self.pww: Optional[PasswordScreen] = None
@@ -72,9 +72,9 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         if DP_CONTROLLER.ask_to_update():
             updater.update()
 
-    def passwordwindow(self, le_to_write, x_pos=0, y_pos=0, headertext="Password"):
+    def passwordwindow(self, le_to_write: QLineEdit, x_pos=0, y_pos=0, headertext="Password"):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
-        self.pww = PasswordScreen(self, x_pos, y_pos, le_to_write, headertext)
+        self.pww = PasswordScreen(self, le_to_write, x_pos, y_pos, headertext)
 
     def keyboard(self, le_to_write, max_char_len=30):
         """ Opens up the Keyboard connected to the lineedit """
@@ -187,6 +187,9 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
 
         # Connects the slider
         self.HSIntensity.valueChanged.connect(lambda: maker.update_shown_recipe(self))
+
+        # Connects the virgin checkbox
+        self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))
 
         # Disable some of the Tabs (for the UI_PARTYMODE, no one can access the recipes)
         if self.UI_PARTYMODE:

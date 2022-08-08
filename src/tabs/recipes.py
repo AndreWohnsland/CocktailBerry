@@ -34,7 +34,7 @@ def __check_enter_constraints(recipe_name: str, newrecipe: bool) -> Tuple[int, b
     return cocktail.id, False
 
 
-def __validate_extract_ingredients(ingredient_names: List[str], ingredient_volumes: List[int]) -> Tuple[List[str], List[int], bool]:
+def __validate_extract_ingredients(ingredient_names: List[str], ingredient_volumes: List[str]) -> Tuple[List[str], List[int], bool]:
     """Gives a list for names and volumens of ingredients.
     If some according value is missing, informs the user.
     Returns [names], [volumes], is_valid"""
@@ -62,18 +62,18 @@ def __validate_extract_ingredients(ingredient_names: List[str], ingredient_volum
     return names, volumes, True
 
 
-def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data: List[Ingredient], comment):
+def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, virgin, ingredient_data: List[Ingredient], comment):
     """Logic to insert/update data into DB"""
     if recipe_id:
         DB_COMMANDER.delete_recipe_ingredient_data(recipe_id)
-        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
+        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled, virgin)
     else:
-        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled)
+        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled, virgin)
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
+    if cocktail is None:
+        raise RuntimeError("Cocktail not found. This should not happen.")
     for ingredient in ingredient_data:
-        is_alcoholic = int(ingredient.alcohol > 0)
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount,
-                                        is_alcoholic, ingredient.recipe_hand)
+        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount, bool(ingredient.recipe_hand))
     return cocktail
 
 
@@ -81,7 +81,7 @@ def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcoh
 def enter_recipe(w, newrecipe: bool):
     """ Enters or updates the recipe into the db"""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
-    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, comment = recipe_input
+    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, virgin, comment = recipe_input
     if not recipe_name:
         DP_CONTROLLER.say_enter_cocktailname()
         return
@@ -102,7 +102,7 @@ def enter_recipe(w, newrecipe: bool):
 
     # first build the ingredient objects for machine add
     for ingredient_name, ingredient_volume in zip(names, volumes):
-        ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
+        ingredient: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore
         ingredient.amount = ingredient_volume
         ingredient.recipe_hand = False
         recipe_volume_concentration += ingredient.alcohol * ingredient_volume
@@ -110,7 +110,7 @@ def enter_recipe(w, newrecipe: bool):
 
     # build also the handadd data into an ingredient
     for ing in shared.handaddlist:
-        ingredient = DB_COMMANDER.get_ingredient(ing.id)
+        ingredient: Ingredient = DB_COMMANDER.get_ingredient(ing.id)  # type: ignore
         ingredient.amount = ing.amount
         ingredient.recipe_hand = True
         recipe_volume += ing.amount
@@ -119,7 +119,7 @@ def enter_recipe(w, newrecipe: bool):
     recipe_alcohollevel = int(recipe_volume_concentration / recipe_volume)
 
     cocktail = __enter_or_update_recipe(
-        recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, ingredient_data, comment
+        recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, virgin, ingredient_data, comment
     )
 
     # remove the old name
@@ -152,6 +152,8 @@ def load_selected_recipe_data(w):
 
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
+    if cocktail is None:
+        return
     DP_CONTROLLER.set_recipe_data(w, cocktail)
 
 

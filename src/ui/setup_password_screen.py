@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QLineEdit
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.passwordbuttons2 import Ui_PasswordWindow2
@@ -9,12 +9,12 @@ from src.ui_elements.passwordbuttons2 import Ui_PasswordWindow2
 class PasswordScreen(QDialog, Ui_PasswordWindow2):
     """ Creates the Passwordscreen. """
 
-    def __init__(self, parent, x_pos: int = 0, y_pos: int = 0, le_to_write=None, headertext: str = "Password", use_float=False):
+    def __init__(self, parent, le_to_write: QLineEdit, x_pos: int = 0, y_pos: int = 0, headertext: str = "Password", use_float=False):
         """ Init. Connect all the buttons and set window policy. """
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
         self.setWindowIcon(QIcon(parent.icon_path))
         # Connect all the buttons, generates a list of the numbers an objectnames to do that

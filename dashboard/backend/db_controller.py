@@ -44,10 +44,10 @@ class DBController:
             addition1 = f" WHERE Date >= datetime('now','-{hourrange} hours')"
             addition2 = f" AND Date >= datetime('now','-{hourrange} hours')"
         agg = self.__count_or_sum(use_count)
-        sql = """SELECT Team, Person, {agg} as amount FROM Team
+        sql = f"""SELECT Team, Person, {agg} as amount FROM Team
                 WHERE Team in (SELECT Team FROM Team {addition1} GROUP BY Team ORDER BY {agg} DESC LIMIT ?){addition2}
                 GROUP BY Team, Person ORDER BY {agg} DESC;
-        """.format(addition1=addition1, addition2=addition2, agg=agg)
+        """
         self.cursor.execute(sql, (limit,))
         return self.cursor.fetchall()
 

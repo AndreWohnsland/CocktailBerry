@@ -12,7 +12,7 @@ from src.machine.controller import MACHINE
 from src.tabs.bottles import set_fill_level_bars
 from src.dialog_handler import UI_LANGUAGE
 
-LOG_HANDLER = LoggerHandler("additional_ingredient", "production_logs")
+_logger = LoggerHandler("additional_ingredient", "production_logs")
 
 
 class GetIngredientWindow(QDialog, Ui_addingredient):
@@ -24,7 +24,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         """ Init. Connects all the buttons and get values for the Combobox. """
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
         # Set window properties
         self.setWindowIcon(QIcon(parent.icon_path))
@@ -61,6 +61,6 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         DB_COMMANDER.increment_ingredient_consumption(ingredient_name, made_volume[0])
         set_fill_level_bars(self.mainscreen)
         volume_string = f"{volume} ml"
-        LOG_HANDLER.log_event("INFO", f"{volume_string:6} | {ingredient_name}")
+        _logger.log_event("INFO", f"{volume_string:6} | {ingredient_name}")
         self.mainscreen.prow_close()
         shared.cocktail_started = False

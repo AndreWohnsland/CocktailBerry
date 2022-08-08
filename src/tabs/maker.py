@@ -33,13 +33,14 @@ def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):
 
 
 @logerror
-def update_shown_recipe(w):
+def update_shown_recipe(w, clear_view: bool = True):
     """ Updates the maker display Data with the selected recipe"""
+    if clear_view:
+        DP_CONTROLLER.clear_recipe_data_maker(w)
+
     cocktailname, amount, factor = DP_CONTROLLER.get_cocktail_data(w)
     if not cocktailname:
         return
-
-    DP_CONTROLLER.clear_recipe_data_maker(w)
     cocktail = DB_COMMANDER.get_cocktail(cocktailname)
     if cocktail is None:
         return
@@ -50,7 +51,7 @@ def update_shown_recipe(w):
 def __build_comment_maker(cocktail: Cocktail):
     """Build the additional comment for the completion message (if there are handadds)"""
     comment = ""
-    hand_add = cocktail.get_handadds()
+    hand_add = cocktail.handadds
     length_desc = sorted(hand_add, key=lambda x: len(x.name), reverse=True)
     for ing in length_desc:
         comment += f"\n~{ing.amount:.0f} ml {ing.name}"
@@ -82,30 +83,33 @@ def prepare_cocktail(w):
     if cocktail is None:
         return
     cocktail.scale_cocktail(cocktail_volume, alcohol_faktor)
+    virgin_ending = " (Virgin)" if cocktail.is_virgin else ""
+    display_name = f"{cocktailname}{virgin_ending}"
     error = cocktail.enough_fill_level()
     if error is not None:
         DP_CONTROLLER.say_not_enough_ingredient_volume(*error)
         DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
         return
 
-    print(f"Preparing {cocktail_volume} ml {cocktailname}")
-    ingredient_bottles = [x.bottle for x in cocktail.get_machineadds()]
-    ingredient_volumes = [x.amount for x in cocktail.get_machineadds()]
+    print(f"Preparing {cocktail_volume} ml {display_name}")
+    # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
+    ingredient_bottles = [x.bottle for x in cocktail.machineadds if x.amount > 0]
+    ingredient_volumes = [x.amount for x in cocktail.machineadds if x.amount > 0]
     consumption, taken_time, max_time = MACHINE.make_cocktail(
-        w, ingredient_bottles, ingredient_volumes, cocktailname)
+        w, ingredient_bottles, ingredient_volumes, display_name)  # type: ignore
     DB_COMMANDER.increment_recipe_counter(cocktailname)
-    __generate_maker_log_entry(cocktail_volume, cocktailname, taken_time, max_time)
+    __generate_maker_log_entry(cocktail_volume, display_name, taken_time, max_time)
 
     # only post if cocktail was made over 50%
-    readiness = taken_time / max_time
-    real_volume = round(cocktail_volume * readiness)
-    if readiness >= 0.5:
+    percentage_made = taken_time / max_time
+    real_volume = round(cocktail_volume * percentage_made)
+    if percentage_made >= 0.5:
         SERVICE_HANDLER.post_team_data(shared.selected_team, real_volume)
-        SERVICE_HANDLER.post_cocktail_to_hook(cocktailname, real_volume)
+        SERVICE_HANDLER.post_cocktail_to_hook(display_name, real_volume, cocktail)
 
     # the cocktail was canceled!
     if not shared.make_cocktail:
-        consumption_names = [x.name for x in cocktail.get_machineadds()]
+        consumption_names = [x.name for x in cocktail.machineadds]
         consumption_amount = consumption
         DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
         DP_CONTROLLER.say_cocktail_canceled()
@@ -118,6 +122,7 @@ def prepare_cocktail(w):
 
     bottles.set_fill_level_bars(w)
     DP_CONTROLLER.reset_alcohol_slider(w)
+    DP_CONTROLLER.reset_virgin_setting(w)
     shared.cocktail_started = False
 
 

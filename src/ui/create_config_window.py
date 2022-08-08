@@ -30,7 +30,7 @@ class ConfigWindow(QMainWindow, ConfigManager):
         self.setWindowIcon(QIcon(self.icon_path))
         self.config_objects = {}
         self._init_ui()
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
@@ -62,8 +62,8 @@ class ConfigWindow(QMainWindow, ConfigManager):
 
         self.widget.setLayout(self.vbox)
 
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)  # type: ignore
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # type: ignore
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setWidget(self.widget)
         self.setCentralWidget(self.scroll_area)
@@ -111,7 +111,7 @@ class ConfigWindow(QMainWindow, ConfigManager):
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: PasswordScreen(self, 300, 50, config_input, configname))
+        config_input.clicked.connect(lambda: PasswordScreen(self, config_input, 300, 50, configname))
         layout.addWidget(config_input)
         return lambda: int(config_input.text())
 
@@ -120,7 +120,7 @@ class ConfigWindow(QMainWindow, ConfigManager):
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: PasswordScreen(self, 300, 50, config_input, configname, True))
+        config_input.clicked.connect(lambda: PasswordScreen(self, config_input, 300, 50, configname, True))
         layout.addWidget(config_input)
         return lambda: float(config_input.text())
 

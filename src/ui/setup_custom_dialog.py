@@ -1,3 +1,4 @@
+from typing import Optional
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
@@ -9,12 +10,12 @@ from src.display_controller import DP_CONTROLLER
 class CustomDialog(QDialog, Ui_CustomDialog):
     """ Class for the Team selection Screen. """
 
-    def __init__(self, message: str, title: str = "Information", icon_path: str = None):
+    def __init__(self, message: str, title: str = "Information", icon_path: Optional[str] = None):
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.inject_stylesheet(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
         self.informationLabel.setText(message)
         self.setWindowTitle(title)
         self.closeButton.clicked.connect(self.close_clicked)

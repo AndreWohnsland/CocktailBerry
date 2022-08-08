@@ -3,6 +3,7 @@ from collections import Counter
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon, QIntValidator
+from src.models import Ingredient
 
 from src.ui_elements.handadds import Ui_handadds
 from src.display_controller import DP_CONTROLLER
@@ -17,8 +18,8 @@ class HandaddWidget(QDialog, Ui_handadds):
     def __init__(self, parent):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
         self.mainscreen = parent
         self.setWindowIcon(QIcon(parent.icon_path))
@@ -73,7 +74,7 @@ class HandaddWidget(QDialog, Ui_handadds):
         shared.handaddlist = []
         commenttext = ""
         for ingredient_name, amount in zip(ingredient_list, amount_list):
-            ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
+            ingredient: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore
             ingredient.amount = amount
             ingredient.recipe_hand = True
             shared.handaddlist.append(ingredient)

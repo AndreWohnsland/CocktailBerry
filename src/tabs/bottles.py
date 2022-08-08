@@ -12,7 +12,7 @@ from src.machine.controller import MACHINE
 from src.logger_handler import LoggerHandler
 
 
-LOG_HANDLER = LoggerHandler("bottles_module", "production_logs")
+_logger = LoggerHandler("bottles_module", "production_logs")
 
 
 def get_bottle_ingredients():
@@ -112,6 +112,6 @@ def set_fill_level_bars(w):
 def clean_machine():
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
     DP_CONTROLLER.say_supply_water()
-    LOG_HANDLER.log_header("INFO", "Cleaning the Pumps")
+    _logger.log_header("INFO", "Cleaning the Pumps")
     MACHINE.clean_pumps()
     DP_CONTROLLER.say_done()

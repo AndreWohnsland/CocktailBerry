@@ -1,6 +1,6 @@
 import copy
 from dataclasses import dataclass, field
-from typing import List, Union
+from typing import List, Union, Optional
 
 
 @dataclass
@@ -14,8 +14,8 @@ class Ingredient():
     hand: Union[bool, int]
     amount: int = 0
     recipe_hand: Union[bool, int, None] = None
-    bottle: Union[int, None] = None
-    selected: Union[str, None] = None
+    bottle: Optional[int] = None
+    selected: Optional[str] = None
 
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name"""
@@ -33,6 +33,7 @@ class Cocktail():
     amount: int
     comment: str
     enabled: bool
+    virgin_available: bool
     ingredients: List[Ingredient]
     adjusted_alcohol: int = 0
     adjusted_amount: int = 0
@@ -45,21 +46,28 @@ class Cocktail():
         self.adjusted_alcohol = self.alcohol
         self.adjusted_amount = self.amount
 
-    def get_handadds(self):
+    @property
+    def handadds(self):
         """Returns a list of all handadd Ingredients"""
         return [x for x in self.adjusted_ingredients if x.recipe_hand]
 
-    def get_machineadds(self):
+    @property
+    def machineadds(self):
         """Returns a list of all machine Ingredients"""
         return [x for x in self.adjusted_ingredients if not x.recipe_hand]
 
+    @property
+    def is_virgin(self):
+        """Returns if the cocktail is virgin"""
+        return self.adjusted_alcohol == 0
+
     def is_possible(self, hand_available: List[int]):
         """Returns if the recipe is possible with given aditional hand add ingredients"""
-        machine = self.get_machineadds()
+        machine = self.machineadds
         for ing in machine:
             if ing.bottle is None:
                 return False
-        hand = self.get_handadds()
+        hand = self.handadds
         hand_id = {x.id for x in hand}
         if hand_id - set(hand_available):
             return False
@@ -69,7 +77,7 @@ class Cocktail():
         """Checks if the needed volume is there
         Accepts if there is at least 80% of needed volume
         to be more efficient with the remainder volume in the bottle"""
-        for ing in self.get_machineadds():
+        for ing in self.machineadds:
             if ing.amount * 0.8 > ing.fill_level:
                 return [ing.name, ing.fill_level, ing.amount]
         return None
@@ -84,7 +92,7 @@ class Cocktail():
         # scale alcoholic ingredients with factor
         for ing in self.adjusted_ingredients:
             factor = alcohol_facor if bool(ing.alcohol) else 1
-            ing.amount *= factor
+            ing.amount *= factor  # type: ignore
             scaled_amount += ing.amount
             concentration += ing.amount * ing.alcohol
         self.adjusted_alcohol = round(concentration / scaled_amount)

@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
-from models import Teaminfo, BoardConfig
 from db_controller import DBController
+from models import Teaminfo, BoardConfig
 
 app = FastAPI()
 
@@ -25,7 +25,7 @@ def leaderboard(conf: BoardConfig):
 
 
 @app.get("/teamdata")
-def leaderboard(conf: BoardConfig):
+def teamdata(conf: BoardConfig):
     controller = DBController()
     return controller.generate_teamdata(conf.hourrange, conf.count, conf.limit)
 

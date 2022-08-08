@@ -1,10 +1,12 @@
 import json
-from typing import Dict
+import os
+from typing import Dict, Optional
 from enum import Enum
 import requests
 from src.config_manager import ConfigManager
 from src.database_commander import DB_COMMANDER
 from src.logger_handler import LoggerHandler
+from src.models import Cocktail
 
 
 class Posttype(Enum):
@@ -22,26 +24,28 @@ class ServiceHandler(ConfigManager):
         self.logger = LoggerHandler("microservice", "service_logs")
         self.headers = {"content-type": "application/json"}
 
-    def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int) -> Dict:
+    def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int, cocktailobject: Cocktail) -> Dict:
         """Post the given cocktail data to the microservice handling internet traffic to send to defined webhook"""
         if not self.MICROSERVICE_ACTIVE:
             return service_disabled()
-        # calculate volume in litre
+        # Extracts the volume and name from the ingredient objects
+        ingredient_data = [{"name": i.name, "volume": i.amount} for i in cocktailobject.adjusted_ingredients]
         data = {
             "cocktailname": cocktailname,
             "volume": cocktail_volume,
             "machinename": self.MAKER_NAME,
             "countrycode": self.UI_LANGUAGE,
+            "ingredients": ingredient_data
         }
         payload = json.dumps(data)
-        endpoint = f"{self.base_url}/hookhandler/cocktail"
+        endpoint = self._decide_debug_endpoint(f"{self.base_url}/hookhandler/cocktail")
         return self.__try_to_send(endpoint, Posttype.COCKTAIL, payload=payload)
 
     def send_mail(self, file_name: str, binary_file) -> Dict:
         """Post the given file to the microservice handling internet traffic to send as mail"""
         if not self.MICROSERVICE_ACTIVE:
             return service_disabled()
-        endpoint = f"{self.base_url}/email"
+        endpoint = self._decide_debug_endpoint(f"{self.base_url}/email")
         files = {"upload_file": (file_name, binary_file,)}
         return self.__try_to_send(endpoint, Posttype.FILE, files=files)
 
@@ -50,10 +54,17 @@ class ServiceHandler(ConfigManager):
         if not self.TEAMS_ACTIVE:
             return team_disabled()
         payload = json.dumps({"team": team_name, "volume": cocktail_volume})
-        endpoint = f"{self.TEAM_API_URL}/cocktail"
+        endpoint = self._decide_debug_endpoint(f"{self.TEAM_API_URL}/cocktail")
         return self.__try_to_send(endpoint, Posttype.TEAMDATA, payload=payload)
 
-    def __try_to_send(self, endpoint: str, post_type: Posttype, payload: str = None, files: dict = None) -> Dict:
+    def _decide_debug_endpoint(self, endpoint: str):
+        """Checks if to use the given or the debug ep"""
+        debug = os.getenv("DEBUG_MS", "False") == "True"
+        if debug:
+            return f"{self.base_url}/debug"
+        return endpoint
+
+    def __try_to_send(self, endpoint: str, post_type: Posttype, payload: Optional[str] = None, files: Optional[dict] = None) -> Dict:
         """Try to send the data to the given endpoint.
         Logs the action, catches and logs if there is no connection.
         Raises an exception if there is no data to send.

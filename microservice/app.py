@@ -12,7 +12,7 @@ from flask import Flask, request, abort, jsonify
 from querry_sender import try_send_querry_data
 from email_sender import send_mail
 from database import DatabaseHandler
-from helper import generate_headers_and_urls
+from helper import generate_urls_and_headers
 
 load_dotenv()
 
@@ -38,7 +38,7 @@ def post_cocktail_hook():
         except requests.exceptions.ConnectionError:
             app.logger.error(f"Could not connect to {url} for the cocktail data!")
             db_handler = DatabaseHandler()
-            db_handler.save_failed_post(payload, url)
+            db_handler.save_failed_post(payload, url, headers)
         # pylint: disable=broad-except
         except Exception as err:
             app.logger.error(f"Some other error occured: {err}")
@@ -50,12 +50,15 @@ def post_cocktail_hook():
         "volume": request.json["volume"],
         "machinename": request.json["machinename"],
         "countrycode": request.json["countrycode"],
+        "ingredients": request.json["ingredients"],
         "makedate": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
     }
-    headers, urls = generate_headers_and_urls()
+    endpoint_data = generate_urls_and_headers()
     payload = json.dumps(cocktail)
+    if not endpoint_data:
+        return jsonify({"text": "No endpoints activated"}), 201
 
-    for pos, url in enumerate(urls):
+    for pos, (url, headers) in enumerate(endpoint_data):
         send_querry = pos == 0
         thread = Thread(target=post_to_hook, args=(url, payload, headers, send_querry,))
         thread.start()
@@ -70,6 +73,12 @@ def post_file_with_mail():
     return jsonify({"text": text}), 200
 
 
+@app.route("/debug", methods=["POST"])
+def debug_ep():
+    app.logger.info(request.json)
+    return jsonify({"text": "debug"}), 200
+
+
 if __name__ == "__main__":
     try_send_querry_data(app)
-    app.run(host="0.0.0.0", port=os.getenv("PORT"))
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")))

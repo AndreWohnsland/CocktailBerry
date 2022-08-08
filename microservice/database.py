@@ -1,6 +1,7 @@
+import json
 from pathlib import Path
 import sqlite3
-from typing import List
+from typing import Dict, List, Tuple
 
 DATABASE_NAME = "failed_data"
 DIRPATH = Path(__file__).parent.absolute()
@@ -17,12 +18,13 @@ class DatabaseHandler:
         self.database = sqlite3.connect(self.database_path)
         self.cursor = self.database.cursor()
         self.__add_url_to_db()
+        self.__add_header_to_db()
 
-    def save_failed_post(self, payload: str, url: str):
-        sql = "INSERT INTO Querry(Payload, Url) VALUES(?,?)"
-        self.query_database(sql, (payload, url,))
+    def save_failed_post(self, payload: str, url: str, headers: Dict):
+        sql = "INSERT INTO Querry(Payload, Url, Headers) VALUES(?,?,?)"
+        self.query_database(sql, (payload, url, json.dumps(headers)))
 
-    def get_failed_data(self) -> List[List]:
+    def get_failed_data(self) -> List[Tuple[int, str, str, str]]:
         sql = "SELECT * FROM Querry ORDER BY ID ASC"
         return self.query_database(sql)
 
@@ -56,6 +58,14 @@ class DatabaseHandler:
         try:
             self.cursor.execute("ALTER TABLE Querry ADD Url TEXT;")
             self.cursor.execute("DELETE FROM Querry WHERE Url IS NULL")
+            self.database.commit()
+        except sqlite3.OperationalError:
+            pass
+
+    def __add_header_to_db(self):
+        try:
+            self.cursor.execute("ALTER TABLE Querry ADD Headers TEXT;")
+            self.cursor.execute("DELETE FROM Querry WHERE Headers IS NULL")
             self.database.commit()
         except sqlite3.OperationalError:
             pass
