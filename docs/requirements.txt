@@ -1,2 +1,2 @@
-jinja2==3.0.3
+jinja2
 python-markdown-math
