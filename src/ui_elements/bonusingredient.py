@@ -104,10 +104,10 @@ class Ui_addingredient(object):
         _translate = QtCore.QCoreApplication.translate
         addingredient.setWindowTitle(_translate("addingredient", "Zutatenausgabe auswählen"))
         self.LHeader.setText(_translate("addingredient", "Select output ingredient"))
-        self.LHeader.setProperty("cssClass", _translate("addingredient", "secondary"))
+        self.LHeader.setProperty("cssClass", _translate("addingredient", "secondary bold"))
         self.PBminus.setText(_translate("addingredient", "-"))
         self.LAmount.setText(_translate("addingredient", "50"))
-        self.LAmount.setProperty("cssClass", _translate("addingredient", "secondary"))
+        self.LAmount.setProperty("cssClass", _translate("addingredient", "secondary bold"))
         self.PBplus.setText(_translate("addingredient", "+"))
         self.PBAbbrechen.setText(_translate("addingredient", "Abbrechen"))
         self.PBAusgeben.setText(_translate("addingredient", "Ausgeben"))

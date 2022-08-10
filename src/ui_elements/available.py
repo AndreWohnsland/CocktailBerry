@@ -126,9 +126,9 @@ class Ui_available(object):
         _translate = QtCore.QCoreApplication.translate
         available.setWindowTitle(_translate("available", "Verfügbare Zutaten auswählen"))
         self.LAvailable.setText(_translate("available", "Vorhanden"))
-        self.LAvailable.setProperty("cssClass", _translate("available", "secondary"))
+        self.LAvailable.setProperty("cssClass", _translate("available", "secondary bold"))
         self.LPossible.setText(_translate("available", "Möglich"))
-        self.LPossible.setProperty("cssClass", _translate("available", "secondary"))
+        self.LPossible.setProperty("cssClass", _translate("available", "secondary bold"))
         self.LWVorhanden.setSortingEnabled(True)
         self.PBAdd.setText(_translate("available", "<-"))
         self.PBRemove.setText(_translate("available", "->"))

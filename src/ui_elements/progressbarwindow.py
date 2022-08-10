@@ -95,11 +95,13 @@ class Ui_Progressbarwindow(object):
         _translate = QtCore.QCoreApplication.translate
         Progressbarwindow.setWindowTitle(_translate("Progressbarwindow", "~~ Cocktail wird zubereitet ~~"))
         self.LHeader.setText(_translate("Progressbarwindow", "Cocktailname very long"))
+        self.LHeader.setProperty("cssClass", _translate("Progressbarwindow", "bold"))
         self.LProgress.setText(_translate("Progressbarwindow", "Progress"))
-        self.LProgress.setProperty("cssClass", _translate("Progressbarwindow", "secondary"))
+        self.LProgress.setProperty("cssClass", _translate("Progressbarwindow", "secondary bold"))
         self.progressBar.setFormat(_translate("Progressbarwindow", "%p%"))
+        self.progressBar.setProperty("cssClass", _translate("Progressbarwindow", "bold"))
         self.Labbruch.setText(_translate("Progressbarwindow", "Der Vorgang kann auch abgebrochen werden"))
-        self.Labbruch.setProperty("cssClass", _translate("Progressbarwindow", "secondary"))
+        self.Labbruch.setProperty("cssClass", _translate("Progressbarwindow", "secondary bold"))
         self.PBabbrechen.setText(_translate("Progressbarwindow", "Abbrechen"))
 
 

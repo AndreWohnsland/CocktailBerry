@@ -172,7 +172,7 @@ class Ui_PasswordWindow2(object):
         _translate = QtCore.QCoreApplication.translate
         PasswordWindow2.setWindowTitle(_translate("PasswordWindow2", "Passworteingabe"))
         self.LHeader.setText(_translate("PasswordWindow2", "Pinbar Header"))
-        self.LHeader.setProperty("cssClass", _translate("PasswordWindow2", "secondary"))
+        self.LHeader.setProperty("cssClass", _translate("PasswordWindow2", "secondary bold"))
         self.PB2.setText(_translate("PasswordWindow2", "2"))
         self.PB3.setText(_translate("PasswordWindow2", "3"))
         self.PB5.setText(_translate("PasswordWindow2", "5"))
