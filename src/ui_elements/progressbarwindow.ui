@@ -69,6 +69,9 @@
       <property name="wordWrap">
        <bool>true</bool>
       </property>
+      <property name="cssClass" stdset="0">
+       <string>bold</string>
+      </property>
      </widget>
     </item>
     <item>
@@ -99,7 +102,7 @@
        <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
       <property name="cssClass" stdset="0">
-       <string>secondary</string>
+       <string>secondary bold</string>
       </property>
      </widget>
     </item>
@@ -126,6 +129,9 @@
       <property name="format">
        <string>%p%</string>
       </property>
+      <property name="cssClass" stdset="0">
+       <string>bold</string>
+      </property>
      </widget>
     </item>
     <item>
@@ -150,7 +156,7 @@
        <set>Qt::AlignBottom|Qt::AlignHCenter</set>
       </property>
       <property name="cssClass" stdset="0">
-       <string>secondary</string>
+       <string>secondary bold</string>
       </property>
      </widget>
     </item>
