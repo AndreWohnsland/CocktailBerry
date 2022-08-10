@@ -215,6 +215,34 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "pyqt6"
+version = "6.3.1"
+description = "Python bindings for the Qt cross platform application toolkit"
+category = "main"
+optional = false
+python-versions = ">=3.6.1"
+
+[package.dependencies]
+PyQt6-Qt6 = ">=6.3.0"
+PyQt6-sip = ">=13.4,<14"
+
+[[package]]
+name = "pyqt6-qt6"
+version = "6.3.1"
+description = "The subset of a Qt installation needed by PyQt6."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "pyqt6-sip"
+version = "13.4.0"
+description = "The sip module support for PyQt6"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
@@ -324,8 +352,8 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 
 [metadata]
 lock-version = "1.1"
-python-versions = "3.7"
-content-hash = "63aafd796f3555f0bd0063ac1747950c7fd224bd4bb09158f6f7974fad03469b"
+python-versions = "^3.7"
+content-hash = "5d7b9876e7fa82c1caa9f61278c97073bb0d53b3a23fec8d18789ecc3f2ab310"
 
 [metadata.files]
 astroid = [
@@ -467,6 +495,9 @@ pyqt5-sip = [
     {file = "PyQt5_sip-12.9.0-cp39-cp39-win_amd64.whl", hash = "sha256:b09f4cd36a4831229fb77c424d89635fa937d97765ec90685e2f257e56a2685a"},
     {file = "PyQt5_sip-12.9.0.tar.gz", hash = "sha256:d3e4489d7c2b0ece9d203ae66e573939f7f60d4d29e089c9f11daa17cfeaae32"},
 ]
+pyqt6 = []
+pyqt6-qt6 = []
+pyqt6-sip = []
 pyyaml = [
     {file = "PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d4db7c7aef085872ef65a8fd7d6d09a14ae91f691dec3e87ee5ee0539d516f53"},
     {file = "PyYAML-6.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9df7ed3b3d2e0ecfe09e14741b857df43adb5a3ddadc919a2d94fbdf78fea53c"},
