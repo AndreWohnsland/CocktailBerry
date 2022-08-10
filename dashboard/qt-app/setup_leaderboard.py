@@ -21,7 +21,7 @@ class Leaderboard(QMainWindow, Ui_Leaderboard):
     def __init__(self):
         super(Leaderboard, self).__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint)  # type: ignore
 
         self.selectbtn.clicked.connect(lambda: self.update(getnext=True))
         self.options = cycle([1, 2, 3, 4])

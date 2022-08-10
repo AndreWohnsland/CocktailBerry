@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Callable, List, Optional, Tuple, Union
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar
 
 
 from src.database_commander import DB_COMMANDER
@@ -248,7 +248,7 @@ class DisplayController(DialogHandler):
 
     def delete_single_combobox_item(self, combobox: QComboBox, item: str):
         """Delete the given item from a combobox"""
-        index = combobox.findText(item, Qt.MatchFixedString)  # type: ignore
+        index = combobox.findText(item, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             combobox.removeItem(index)
 
@@ -275,13 +275,13 @@ class DisplayController(DialogHandler):
 
     def set_combobox_item(self, combobox: QComboBox, item: str):
         """Set the combobox to the given item"""
-        index = combobox.findText(item, Qt.MatchFixedString)  # type: ignore
+        index = combobox.findText(item, Qt.MatchFlag.MatchFixedString)
         combobox.setCurrentIndex(index)
 
     def adjust_bottle_comboboxes(self, combobox_list: List[QComboBox], old_item: str, new_item: str):
         """Remove the old itemname and add new one in given comboboxex, sorting afterwards"""
         for combobox in combobox_list:
-            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):  # type: ignore
+            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFlag.MatchFixedString) < 0):
                 combobox.addItem(old_item)
             if (new_item != "") and (new_item != combobox.currentText()):
                 self.delete_single_combobox_item(combobox, new_item)
@@ -289,7 +289,7 @@ class DisplayController(DialogHandler):
 
     def rename_single_combobox(self, combobox: QComboBox, old_item: str, new_item: str):
         """Rename the old item to new one in given box"""
-        index = combobox.findText(old_item, Qt.MatchFixedString)  # type: ignore
+        index = combobox.findText(old_item, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             combobox.setItemText(index, new_item)
             combobox.model().sort(0)

@@ -1,8 +1,8 @@
 from collections import Counter
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtGui import QIcon, QIntValidator
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QDialog
+from PyQt6.QtGui import QIcon, QIntValidator
 from src.models import Ingredient
 
 from src.ui_elements.handadds import Ui_handadds
@@ -18,8 +18,12 @@ class HandaddWidget(QDialog, Ui_handadds):
     def __init__(self, parent):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
+        self.setWindowFlags(
+            Qt.WindowType.Window |
+            Qt.WindowType.CustomizeWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         DP_CONTROLLER.inject_stylesheet(self)
         self.mainscreen = parent
         self.setWindowIcon(QIcon(parent.icon_path))

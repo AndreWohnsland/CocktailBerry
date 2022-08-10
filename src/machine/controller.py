@@ -1,6 +1,6 @@
 import time
 from typing import List, Union
-from PyQt5.QtWidgets import qApp
+from PyQt6.QtWidgets import QApplication
 
 from src.config_manager import shared, ConfigManager
 from src.machine.interface import PinController
@@ -34,7 +34,7 @@ class MachineController(ConfigManager):
             t_cleaned += self.MAKER_SLEEP_TIME
             t_cleaned = round(t_cleaned, 2)
             time.sleep(self.MAKER_SLEEP_TIME)
-            qApp.processEvents()
+            QApplication.processEvents()
         self._clean_print(self.MAKER_CLEAN_TIME)
         print("")
         self._close_pumps(active_pins)
@@ -88,7 +88,7 @@ class MachineController(ConfigManager):
             time.sleep(self.MAKER_SLEEP_TIME)
             if w is not None:
                 w.prow_change(current_time / max_time * 100)
-            qApp.processEvents()
+            QApplication.processEvents()
 
         self._close_pumps(pins)
         consumption = [round(x) for x in consumption]

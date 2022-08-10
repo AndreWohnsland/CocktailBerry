@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QMainWindow
 
 
 from src.ui_elements.available import Ui_available
@@ -15,7 +15,10 @@ class AvailableWindow(QMainWindow, Ui_available):
     def __init__(self, parent):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        self.setWindowFlags(
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint
+        )
         self.mainscreen = parent
         DP_CONTROLLER.inject_stylesheet(self)
         # somehow the ui dont accept without _2 for those two buttons so they are _2

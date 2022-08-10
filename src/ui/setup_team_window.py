@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QDialog
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QDialog
 
 from src.ui_elements.teamselection import Ui_Teamselection
 from src.config_manager import ConfigManager, shared
@@ -15,8 +15,11 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         super().__init__()
         ConfigManager.__init__(self)
         self.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
+        self.setWindowFlags(
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         DP_CONTROLLER.inject_stylesheet(self)
         self.PBteamone.clicked.connect(lambda: self.set_team(self.TEAM_BUTTON_NAMES[0]))
         self.PBteamone.setText(self.TEAM_BUTTON_NAMES[0])

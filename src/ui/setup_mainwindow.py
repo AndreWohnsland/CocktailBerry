@@ -3,9 +3,9 @@ of the passed window. Also defines the Mode for controls.
 """
 from pathlib import Path
 from typing import Optional
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon, QIntValidator
-from PyQt5.QtWidgets import QMainWindow, QLineEdit
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon, QIntValidator
+from PyQt6.QtWidgets import QMainWindow, QLineEdit
 
 from src.config_manager import ConfigManager
 from src.machine.controller import MACHINE
@@ -43,7 +43,11 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.connect_other_windows()
         self.icon_path = str(Path(__file__).parents[1].absolute() / "ui_elements" / "Cocktail-icon.png")
         self.setWindowIcon(QIcon(self.icon_path))
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        self.setWindowFlags(
+            Qt.WindowType.Window |
+            Qt.WindowType.CustomizeWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint
+        )
         DP_CONTROLLER.inject_stylesheet(self)
         # init the empty further screens
         self.pww: Optional[PasswordScreen] = None
@@ -98,8 +102,8 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
 
     def teamwindow(self):
         self.teamw = TeamScreen(self)
-        # don't abstract .exec_() into class otherwise you will get NameError in class!
-        self.teamw.exec_()
+        # don't abstract .exec() into class otherwise you will get NameError in class!
+        self.teamw.exec()
 
     def optionwindow(self):
         """Opens up the options"""

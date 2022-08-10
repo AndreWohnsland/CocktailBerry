@@ -3,9 +3,9 @@ import os
 import sys
 from typing import Any, Callable, List, Optional
 from pathlib import Path
-from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton, QBoxLayout
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QFont, QIcon
+from PyQt6.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton, QBoxLayout
+from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QFont, QIcon
 
 from src.config_manager import ConfigError, ConfigManager
 from src.display_controller import DP_CONTROLLER
@@ -30,7 +30,10 @@ class ConfigWindow(QMainWindow, ConfigManager):
         self.setWindowIcon(QIcon(self.icon_path))
         self.config_objects = {}
         self._init_ui()
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        self.setWindowFlags(
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint
+        )
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 

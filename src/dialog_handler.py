@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Dict, Optional
 import yaml
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QMessageBox, QFileDialog, QWidget
+from PyQt6.QtCore import Qt
 from src.config_manager import ConfigManager
 
 DIRPATH = Path(__file__).parent.absolute()
@@ -35,7 +35,7 @@ class DialogHandler(ConfigManager):
         fillstring = "-" * 70
         fancy_message = f"{fillstring}\n{message}\n{fillstring}"
         messagebox = CustomDialog(fancy_message, title, self.icon_path)
-        messagebox.exec_()
+        messagebox.exec()
 
     def user_okay(self, text: str):
         msg_box = QMessageBox()
@@ -43,14 +43,18 @@ class DialogHandler(ConfigManager):
         msg_box.setWindowTitle(self.__choose_language(self.dialogs["confirmation_reqired"]))
         yes_text = self.__choose_language(self.dialogs["yes_button"])
         no_text = self.__choose_language(self.dialogs["no_button"])
-        yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)
-        msg_box.addButton(no_text, QMessageBox.NoRole)
+        yes_button = msg_box.addButton(yes_text, QMessageBox.ButtonRole.YesRole)
+        msg_box.addButton(no_text, QMessageBox.ButtonRole.NoRole)
         style_sheet = str(DIRPATH / "ui" / "styles" / f"{self.MAKER_THEME}.css")
         with open(style_sheet, "r", encoding="utf-8") as filehandler:
             msg_box.setStyleSheet(filehandler.read())
-        msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        msg_box.setWindowFlags(
+            Qt.WindowType.Window |
+            Qt.WindowType.CustomizeWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint
+        )
         msg_box.move(50, 50)
-        msg_box.exec_()
+        msg_box.exec()
         if msg_box.clickedButton() == yes_button:
             return True
         return False

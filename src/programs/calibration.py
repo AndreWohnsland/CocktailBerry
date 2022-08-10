@@ -1,8 +1,8 @@
 import sys
 from pathlib import Path
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.uic import loadUi
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6 import uic
 
 from src.config_manager import ConfigManager
 from src.display_controller import DP_CONTROLLER
@@ -20,8 +20,12 @@ class CalibrationScreen(QMainWindow, ConfigManager):
         """ Init the calibration Screen. """
         super().__init__()
         ConfigManager.__init__(self)
-        loadUi(ui_file, self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        uic.loadUi(ui_file, self)
+        self.setWindowFlags(
+            Qt.WindowType.Window |
+            Qt.WindowType.CustomizeWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint
+        )
         # Connect the Button
         bottles = self.MAKER_NUMBER_BOTTLES
         self.PB_start.clicked.connect(self.output_volume)
@@ -53,4 +57,4 @@ def run_calibration(standalone=True):
     # pylint: disable=unused-variable
     cali = CalibrationScreen()
     if standalone:
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
