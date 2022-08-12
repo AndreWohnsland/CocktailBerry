@@ -17,7 +17,7 @@ from src.logger_handler import LoggerHandler
 from src.ui.setup_option_window import OptionWindow
 from src.updater import Updater
 
-from src.ui_elements.Cocktailmanager_2 import Ui_MainWindow
+from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui.setup_progress_screen import ProgressScreen
 from src.ui.setup_password_screen import PasswordScreen
 from src.ui.setup_bottle_window import BottleWindow
@@ -77,7 +77,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.pww = PasswordScreen(self, le_to_write, x_pos, y_pos, headertext)
 
     def keyboard(self, le_to_write, max_char_len=30):
-        """ Opens up the Keyboard connected to the lineedit """
+        """ Opens up the keyboard connected to the lineedit """
         self.kbw = KeyboardWidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
 
     def progressionqwindow(self, cocktail_type: str = "Cocktail"):

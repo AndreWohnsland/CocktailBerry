@@ -3,11 +3,11 @@ from PyQt5.QtWidgets import QDialog, QLineEdit
 from PyQt5.QtCore import Qt
 
 from src.display_controller import DP_CONTROLLER
-from src.ui_elements.Keyboard import Ui_Keyboard
+from src.ui_elements.keyboard import Ui_Keyboard
 
 
 class KeyboardWidget(QDialog, Ui_Keyboard):
-    """ Creates a Keyboard where the user can enter names or similar strings to Lineedits. """
+    """ Creates a keyboard where the user can enter names or similar strings to Lineedits. """
 
     def __init__(self, parent, le_to_write: QLineEdit, max_char_len: int = 30):
         super().__init__()
