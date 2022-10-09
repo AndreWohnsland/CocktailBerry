@@ -20,7 +20,7 @@ skinparam class {
 }
 
 table( Ingredients ) {
-  primary_key( id ): INTEGER AUTOINCREMENT 
+  primary_key( ID ): INTEGER AUTOINCREMENT 
   column_req( Name ): TEXT 
   column_req( Alcohol ): INTEGER
   column_req( Volume ): INTEGER
@@ -31,7 +31,7 @@ table( Ingredients ) {
 }
 
 table( Recipes ) {
-  primary_key( id ): INTEGER AUTOINCREMENT
+  primary_key( ID ): INTEGER AUTOINCREMENT
   column_req( Name ): TEXT 
   column_req( Alcohol ): INTEGER
   column_req( Amount ): INTEGER
