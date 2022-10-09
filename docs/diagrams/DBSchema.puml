@@ -63,8 +63,8 @@ table( Teamdata ) {
   column_req( Payload ) TEXT
 }
 
-Ingredients }|--o{ RecipeData
-Recipes }|--o{ RecipeData
+Ingredients ||--o{ RecipeData
+Recipes ||--|{ RecipeData
 Bottles |o--o| Ingredients
 Available |o--o| Ingredients
 
