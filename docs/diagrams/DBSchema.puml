@@ -1,0 +1,71 @@
+@startuml DBSchema
+
+!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
+!define foreign_key(x) <color:#aaaaaa><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define column_req(x) <color:#000000><&media-record></color> x
+!define table(x) entity x << (T, white) >>
+
+skinparam backgroundColor #e6e6e6
+left to right direction
+skinparam roundcorner 5
+skinparam linetype ortho
+skinparam shadowing false
+skinparam handwritten false
+
+skinparam class {
+    BackgroundColor white
+    ArrowColor #2688d4
+    BorderColor #2688d4
+}
+
+table( Ingredients ) {
+  primary_key( ID ): INTEGER AUTOINCREMENT 
+  column_req( Name ): TEXT 
+  column_req( Alcohol ): INTEGER
+  column_req( Volume ): INTEGER
+  column( Consumption_lifetime ): INTEGER
+  column( Consumption ): INTEGER
+  column( Fill_level ): INTEGER
+  column( Hand ): INTEGER
+}
+
+table( Recipes ) {
+  primary_key( ID ): INTEGER AUTOINCREMENT
+  column_req( Name ): TEXT 
+  column_req( Alcohol ): INTEGER
+  column_req( Amount ): INTEGER
+  column( Comment ): TEXT
+  column( Counter_lifetime ): INTEGER
+  column( Counter ): INTEGER
+  column( Enabled ): INTEGER
+  column( Virgin ): INTEGER Default 0
+}
+
+table( RecipeData ) {
+  foreign_key( Recipe_ID ): INTEGER <<FK>>
+  foreign_key( Ingredient_ID ): INTEGER  <<FK>>
+  column_req( Amount ): INTEGER
+  column( Hand ): INTEGER
+}
+
+table( Bottles ) {
+  column_req( Bottle ): INTEGER
+  foreign_key( ID ): INTEGER <<FK>>
+}
+
+table( Available ) {
+  foreign_key( ID ): INTEGER <<FK>>
+}
+
+table( Teamdata ) {
+  primary_key( ID ): INTEGER AUTOINCREMENT
+  column_req( Payload ) TEXT
+}
+
+Ingredients ||--o{ RecipeData
+Recipes ||--|{ RecipeData
+Bottles |o--o| Ingredients
+Available |o--o| Ingredients
+
+@enduml

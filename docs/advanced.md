@@ -25,7 +25,7 @@ The separation was made here that a service class within CocktailBerry needs onl
 
 ## Posting Data to the Official API
 
-When the microservice is active, you can use it not to only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) to submit your data. It will then appear on the [official dashboard](https://share.streamlit.io/andrewohnsland/cocktailberry-webapp). Don't worry, no private data is included, only some production data. A detailed write down [can be found on the dashboard site](https://share.streamlit.io/andrewohnsland/cocktailberry-webapp#how-to-participate) how you will receive your API key. You need to change the default `API_KEY` value in the `microservive/.env` file to the one you received after the submission. After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
+When the microservice is active, you can use it not to only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) to submit your data. It will then appear on the [official dashboard](https://stats-cocktailberry.streamlitapp.com/). Don't worry, no private data is included, only some production data. A detailed write down [can be found on the dashboard site](https://stats-cocktailberry.streamlitapp.com#how-to-participate) how you will receive your API key. You need to change the default `API_KEY` value in the `microservive/.env` file to the one you received after the submission. After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
 
 ## Dashboard with Teams
 
