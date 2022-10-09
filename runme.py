@@ -6,11 +6,13 @@ migrator.make_migrations()
 
 import os
 from typing import Optional
+from pathlib import Path
 import typer
 
 from src.config_manager import ConfigManager, version_callback, show_start_message
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.calibration import run_calibration
+from src.programs.data_import import importer
 
 
 cli = typer.Typer(add_completion=False)
@@ -37,6 +39,14 @@ def main(
     if calibration:
         run_calibration()
     run_cocktailberry()
+
+
+@cli.command()
+def dataimport(
+    path: Path,
+    conversion: float = typer.Option(1.0, "--conversion", "-c", help="Conversion factor to ml")
+):
+    importer(path, conversion)
 
 
 if __name__ == "__main__":
