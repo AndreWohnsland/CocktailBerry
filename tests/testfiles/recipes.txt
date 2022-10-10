@@ -1,0 +1,15 @@
+Recipename1
+50 ml Ingredient B
+30 ml Ingredient A
+30 ml Ingredient C
+30 ml Ingredient D
+
+Recipename2
+50 ml Kokusmilch
+30 ml Ingredient A
+30 ml Ingredient C
+
+Bahama Mama
+50 ml Kokusmilch
+30 ml Ingredient A
+30 ml Ingredient C
