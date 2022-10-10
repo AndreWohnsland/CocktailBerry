@@ -18,8 +18,9 @@ from src.programs.data_import import importer
 cli = typer.Typer(add_completion=False)
 
 
-@cli.command()
+@cli.callback(invoke_without_command=True)
 def main(
+    ctx: typer.Context,
     calibration: bool = typer.Option(False, "--calibration", "-c", help="Run the calibration program."),
     debug: bool = typer.Option(False, "--debug", "-d", help="Using debug instead of normal Endpoints."),
     version: Optional[bool] = typer.Option(None, "--version", callback=version_callback, help="Show current version.")
@@ -30,6 +31,8 @@ def main(
 
     For more information visit https://github.com/AndreWohnsland/CocktailBerry.
     """
+    if ctx.invoked_subcommand is not None:
+        return
     show_start_message()
     c_manager = ConfigManager()
     c_manager.sync_config_to_file()
@@ -44,9 +47,17 @@ def main(
 @cli.command()
 def dataimport(
     path: Path,
-    conversion: float = typer.Option(1.0, "--conversion", "-c", help="Conversion factor to ml")
+    conversion: float = typer.Option(1.0, "--conversion", "-c", help="Conversion factor to ml"),
+    no_unit: bool = typer.Option(False, "--no-unit", "-ni", help="Ingredient data got no unit text")
 ):
-    importer(path, conversion)
+    """
+    Imports the recipe data from a file.
+    If the units are not in ml, please provide the conversion factor into ml.
+
+    The file should contain the cocktail name, followed by ingredient data (amount, name)
+    For furter information regarding the file structure, please see TODO.
+    """
+    importer(path, conversion, no_unit)
 
 
 if __name__ == "__main__":
