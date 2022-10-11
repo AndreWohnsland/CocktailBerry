@@ -27,11 +27,11 @@ class _RecipeInformation:
         return f"{self.name}: {self.ingredients}"
 
 
-def importer(file_path: Path, factor: float = 1.0, no_unit=False):
+def importer(file_path: Path, factor: float = 1.0, no_unit=False, sep="\n"):
     _check_file(file_path)
     print(f"Loading data from: {file_path.absolute()}\nUsing factor: {factor}, data got no unit: {no_unit}")
     recipe_text = file_path.read_text()
-    recipes = _parse_recipe_text(recipe_text, no_unit)
+    recipes = _parse_recipe_text(recipe_text, no_unit, sep)
     distinct_ingredients = _data_inspection(recipes)
     _insert_not_existing_ingredients(distinct_ingredients)
     _insert_recipes(recipes)
@@ -44,10 +44,10 @@ def _check_file(file_path: Path):
         _abort("ERROR: The path does not lead to a file!")
 
 
-def _parse_recipe_text(recipe_text: str, no_unit=False):
+def _parse_recipe_text(recipe_text: str, no_unit=False, sep="\n"):
     """Extracts the recipe information out of the given text"""
     # split by newline, remove empty lines
-    line_list = [x for x in recipe_text.split("\n") if x]
+    line_list = [x.strip() for x in recipe_text.split(sep) if x.strip()]
     # Define regex for recipes and ingredients
     # Usually a recipe name should contain one or more words
     # A ingredient line should contain an amount, the unit and a name consisting of one or more words
