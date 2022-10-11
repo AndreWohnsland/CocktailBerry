@@ -94,3 +94,55 @@ sudo systemctl enable docker
 # tesing if it works
 docker run hello-world
 ```
+
+## Importing Recipes from File
+
+With **version 1.10.0**, a new functionality to import batch recipe data was introduced.
+You can now provide a `.txt` or similar text file to quickly insert a lot of new recipes, as well as ingredients.
+To use this functionality, just use the CLI, similar to running CocktailBerry:
+
+```bash
+runme.py dataimport [OPTIONS] PATH
+
+#   This will also be shown if you use the --help flag
+#   Imports the recipe data from a file. If the units are not in ml, please
+#   provide the conversion factor into ml.
+
+#   The file should contain the cocktail name, followed by ingredient data
+#   (amount, name). For furter information regarding the file structure, please
+#   see https://cocktailberry.readthedocs.io/advanced/#importing-recipes-from-
+#   file.
+
+# Arguments:
+#   PATH  [required]
+
+# Options:
+#   -c, --conversion FLOAT  Conversion factor to ml  [default: 1.0]
+#   -ni, --no-unit          Ingredient data got no unit text
+#   --help                  Show this message and exit.
+```
+
+As usual, you can use the `--help` flag to get help on this functionality.
+The data should be in the format:
+
+```
+Recipe Name1
+Amount [unit] Ingredient1 Name
+Amount [unit] Ingredient2 Name
+...
+Recipe Name2
+Amount [unit] Ingredient1 Name
+Amount [unit] Ingredient2 Name
+```
+
+You need to adjust the alcohol level, the bottle volume and hand add flag after the import, if there are new added ingredients.
+The script will use a default of 0%, 1000 ml and not only handadd for each new ingredient.
+
+The amount of newlines can be one or more between each line.
+If there is another type of separator, please use a text editor to change it accordingly.
+The script will check for duplicates and wait for user prompt, if there are any issues.
+If the data got no unit between amount and name, use the `--no-unit` or `-ni` flag.
+If the recipe use another unit than ml, please provide the according conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
+
+I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
+You can also use the build-in backup functionality in CocktailBerry for this.
