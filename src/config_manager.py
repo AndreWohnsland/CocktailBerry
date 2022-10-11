@@ -1,6 +1,6 @@
 import random
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 import typer
 import yaml
 from pyfiglet import Figlet
@@ -58,6 +58,9 @@ class ConfigManager:
     TEAMS_ACTIVE = False
     TEAM_BUTTON_NAMES = ["Team 1", "Team 2"]
     TEAM_API_URL = "http://127.0.0.1:8080"
+    # Config to change the displayed values in the maker to another unit
+    EXP_MAKER_UNIT = "ml"
+    EXP_MAKER_FAKTOR = 1.0
 
     def __init__(self) -> None:
         """Try to read in the custom configs. If the file is not there, ignores the error.
@@ -68,7 +71,7 @@ class ConfigManager:
         """
         # Dict of Format "configname": (type, List[CheckCallbacks])
         # The check function needs to be a callable with interface fn(configname, configvalue)
-        self.config_type = {
+        self.config_type: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_PARTYMODE": (bool, []),
             "UI_MASTERPASSWORD": (str, []),
@@ -89,6 +92,8 @@ class ConfigManager:
             "TEAMS_ACTIVE": (bool, []),
             "TEAM_BUTTON_NAMES": (list, [self._validate_config_list_type]),
             "TEAM_API_URL": (str, []),
+            "EXP_MAKER_UNIT": (str, []),
+            "EXP_MAKER_FAKTOR": (float, [lambda x, y: self._limit_number(x, y, 0.01, 100)]),
         }
         # Dict of Format "configname": (type, List[CheckCallbacks]) for the single list elements
         # only needed if the above config type was defined as list type, rest is identical to top schema
@@ -238,3 +243,4 @@ def show_start_message():
 
 
 shared = Shared()
+CONFIG = ConfigManager()
