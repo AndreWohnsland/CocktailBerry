@@ -129,7 +129,39 @@
                <set>Qt::AlignCenter</set>
               </property>
               <property name="cssClass" stdset="0">
-               <string>bold</string>
+               <string>bold secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="LSelect_unit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>20</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>ml</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
               </property>
              </widget>
             </item>
