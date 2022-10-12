@@ -17,10 +17,10 @@ def enter_ingredient(w, newingredient=True):
     Also can change the current selected ingredient (newingredient = False)
     """
     lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
-    valid_data = DP_CONTROLLER.validate_ingredient_data(lineedits)
+    valid_data = DP_CONTROLLER.validate_ingredient_data(list(lineedits))
     if not valid_data:
         return
-    ingredient = DP_CONTROLLER.get_ingredient_data(lineedits, checkbox, list_widget)
+    ingredient = DP_CONTROLLER.get_ingredient_data(list(lineedits), checkbox, list_widget)
 
     if newingredient:
         succesfull = __add_new_ingredient(w, ingredient)
@@ -146,7 +146,7 @@ def display_selected_ingredient(w):
         if not ingredient:
             return
         DP_CONTROLLER.fill_multiple_lineedit(
-            lineedits, [ingredient.name, ingredient.alcohol, ingredient.bottle_volume]
+            list(lineedits), [ingredient.name, ingredient.alcohol, ingredient.bottle_volume]
         )
         DP_CONTROLLER.set_checkbox_value(checkbox, ingredient.hand)
 
@@ -155,6 +155,6 @@ def display_selected_ingredient(w):
 def clear_ingredient_information(w):
     """ Clears all entries in the ingredient windows. """
     lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
-    DP_CONTROLLER.clean_multiple_lineedit(lineedits)
+    DP_CONTROLLER.clean_multiple_lineedit(list(lineedits))
     DP_CONTROLLER.unselect_list_widget_items(list_widget)
     DP_CONTROLLER.set_checkbox_value(checkbox, False)
