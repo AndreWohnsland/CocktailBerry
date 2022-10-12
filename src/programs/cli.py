@@ -43,7 +43,7 @@ def main(
 def dataimport(
     path: Path,
     conversion: float = typer.Option(1.0, "--conversion", "-c", help="Conversion factor to ml"),
-    no_unit: bool = typer.Option(False, "--no-unit", "-ni", help="Ingredient data got no unit text"),
+    no_unit: bool = typer.Option(False, "--no-unit", "-nu", help="Ingredient data got no unit text"),
 ):
     """
     Imports the recipe data from a file.

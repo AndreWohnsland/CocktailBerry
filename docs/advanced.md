@@ -118,7 +118,7 @@ runme.py dataimport [OPTIONS] PATH
 
 # Options:
 #   -c, --conversion FLOAT  Conversion factor to ml  [default: 1.0]
-#   -ni, --no-unit          Ingredient data got no unit text
+#   -nu, --no-unit          Ingredient data got no unit text
 #   --help                  Show this message and exit.
 ```
 
@@ -141,7 +141,7 @@ The script will use a default of 0%, 1000 ml and not only handadd for each new i
 The amount of newlines can be one or more between each line.
 If there is another type of separator, please use a text editor to change it accordingly.
 The script will check for duplicates and wait for user prompt, if there are any issues.
-If the data got no unit between amount and name, use the `--no-unit` or `-ni` flag.
+If the data got no unit between amount and name, use the `--no-unit` or `-nu` flag.
 If the recipe use another unit than ml, please provide the according conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
 
 I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
