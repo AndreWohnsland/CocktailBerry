@@ -1,7 +1,7 @@
 from collections import Counter
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Set
 import re
 import typer
 
@@ -28,23 +28,25 @@ class _RecipeInformation:
 
 
 def importer(file_path: Path, factor: float = 1.0, no_unit=False, sep="\n"):
+    """Imports the recipe data from the file into the database"""
     _check_file(file_path)
-    print(f"Loading data from: {file_path.absolute()}\nUsing factor: {factor}, data got no unit: {no_unit}")
+    print(f"Loading data from: {file_path.absolute()}\nUsing factor: {factor}, data got no unit: {no_unit}\n")
     recipe_text = file_path.read_text()
-    recipes = _parse_recipe_text(recipe_text, no_unit, sep)
+    recipes = _parse_recipe_text(recipe_text, factor, no_unit, sep)
     distinct_ingredients = _data_inspection(recipes)
     _insert_not_existing_ingredients(distinct_ingredients)
     _insert_recipes(recipes)
 
 
 def _check_file(file_path: Path):
+    """Check if path exists and path is a file"""
     if not file_path.exists():
         _abort("ERROR: This file does not exists!")
     if not file_path.is_file():
         _abort("ERROR: The path does not lead to a file!")
 
 
-def _parse_recipe_text(recipe_text: str, no_unit=False, sep="\n"):
+def _parse_recipe_text(recipe_text: str, factor: float, no_unit=False, sep="\n"):
     """Extracts the recipe information out of the given text"""
     # split by newline, remove empty lines
     line_list = [x.strip() for x in recipe_text.split(sep) if x.strip()]
@@ -70,7 +72,7 @@ def _parse_recipe_text(recipe_text: str, no_unit=False, sep="\n"):
         elif recipe is None:
             continue
         else:
-            ingredient = _IngredientInformation(regex_match.group(3), float(regex_match.group(2)))
+            ingredient = _IngredientInformation(regex_match.group(3), round(factor * float(regex_match.group(2)), 2))
             recipe.ingredients.append(ingredient)
     return recipe_data
 
@@ -88,12 +90,12 @@ def _data_inspection(recipes: List[_RecipeInformation]):
         all_ingredient_names.extend([x.name for x in recipe.ingredients])
     unique_ingredients = set(all_ingredient_names)
     print(f"{len(unique_ingredients)} unique ingredients found:")
-    print(sorted(unique_ingredients))
+    print(sorted(unique_ingredients), "\n")
     # get all recipe names, check if there is a duplicate
     recipe_names = [x.name for x in recipes]
     unique_recipes = set(recipe_names)
     print(f"{len(recipe_names)} recipes found, {len(unique_recipes)} have unique names:")
-    print(sorted(recipe_names))
+    print(sorted(recipe_names), "\n")
     # if duplicate recipes are in data, abort
     if len(unique_recipes) != len(recipes):
         duplicates = [x for (x, y) in Counter(recipe_names).items() if y > 1]
@@ -110,11 +112,12 @@ def _check_data_length(recipes: List[_RecipeInformation]):
         print(recipes[0])
         print(f"{'Last parsed recipe':-^30}")
         print(recipes[-1])
+        print("")
     else:
         _abort("No recipes found in file")
 
 
-def _check_intersection(recipes: List[_RecipeInformation], unique_recipes):
+def _check_intersection(recipes: List[_RecipeInformation], unique_recipes: Set[str]):
     """Check if there is an intersection with existing data in the database
     If an intersection exists, ask the user to continue.
     If all recipes already exist, abort.
@@ -129,15 +132,15 @@ def _check_intersection(recipes: List[_RecipeInformation], unique_recipes):
         _abort("All recipes from the file already exist in the DB")
     # if some already exists, ask the user if continue is ok
     if len(collision_recipes):
-        print("Some of the recipes already exist in the DB:")
-        print(list(collision_recipes))
+        typer.echo(typer.style("Some of the recipes already exist in the DB:", fg=typer.colors.RED, bold=True))
+        print(list(collision_recipes), "\n")
         typer.confirm("Will ignore existing recipes, continue?", abort=True)
         # modify the list, remove douplicate elements
         for item in recipes.copy():
             if item.name in list(collision_recipes):
                 recipes.remove(item)
-        print("Ok, Using remaining recipes:")
-        print([r.name for r in recipes])
+        typer.echo(typer.style("Ok, Using remaining recipes:", fg=typer.colors.GREEN, bold=True))
+        print([r.name for r in recipes], "\n")
 
 
 def _insert_not_existing_ingredients(ingredients: List[str]):
@@ -145,8 +148,8 @@ def _insert_not_existing_ingredients(ingredients: List[str]):
     existing_ingrendients = DB_COMMANDER.get_all_ingredients()
     existing_names = [x.name for x in existing_ingrendients]
     not_existing_names = list(set(ingredients).difference(set(existing_names)))
-    print("Ingredients, that will be added to the DB:")
-    print(sorted(not_existing_names))
+    typer.echo(typer.style("Ingredients, that will be added to the DB:", fg=typer.colors.GREEN, bold=True))
+    print(sorted(not_existing_names), "\n")
     print("Please note that a default alcohol of 0, bottle volume of 1000 ml and no handadd will be used.")
     print("This can be changed later over the CocktailBerry program")
     typer.confirm("Does everything looks all right? If so, continue?", abort=True)
@@ -187,5 +190,6 @@ def _insert_recipe_data(recipe: _RecipeInformation, ingredient_mapping: Dict[str
 
 
 def _abort(msg: str):
-    print(f"{msg}, aborting...")
+    """Raising typer exit, with given message before"""
+    typer.echo(typer.style(f"{msg}, aborting...", fg=typer.colors.RED, bold=True))
     raise typer.Exit()
