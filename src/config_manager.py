@@ -229,6 +229,7 @@ class ConfigError(Exception):
 
 
 def version_callback(value: bool):
+    """Returns the version of the program"""
     if value:
         typer.echo(f"{PROJECT_NAME} Version {__version__}. Created by Andre Wohnsland.")
         typer.echo(r"For more information visit https://github.com/AndreWohnsland/CocktailBerry.")
@@ -236,6 +237,7 @@ def version_callback(value: bool):
 
 
 def show_start_message():
+    """Shows the starting message in both Figlet and normal font"""
     figlet = Figlet()
     start_message = f"{PROJECT_NAME} Version {__version__}"
     print(figlet.renderText(start_message))
