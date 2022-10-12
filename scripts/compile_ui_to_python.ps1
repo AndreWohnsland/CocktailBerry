@@ -5,3 +5,5 @@ $files = @("available", "bonusingredient", "bottlewindow", "cocktailmanager", "c
 foreach ($f in $files) {
   pyuic5 -x .\$f.ui -o .\$f.py
 }
+
+cd ..\..
