@@ -13,8 +13,8 @@ DIRPATH = Path(__file__).parent.absolute()
 class DatabaseCommander:
     """Commander Class to execute queries and return the results as lists """
 
-    def __init__(self):
-        self.handler = DatabaseHandler()
+    def __init__(self, use_default=False):
+        self.handler = DatabaseHandler(use_default)
 
     def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
@@ -344,19 +344,21 @@ class DatabaseHandler:
     database_path = DIRPATH.parent / f"{DATABASE_NAME}.db"
     database_path_default = DIRPATH.parent / f"{DATABASE_NAME}_default.db"
 
-    def __init__(self):
+    def __init__(self, use_default=False):
         self.database_path = DatabaseHandler.database_path
         if not self.database_path_default.exists():
-            print("creating Database")
+            print("Creating Database")
             self.create_tables()
         if not self.database_path.exists():
             print("Copying default database for maker usage")
             self.copy_default_database()
-        self.database = sqlite3.connect(self.database_path)
-        self.cursor = self.database.cursor()
+        if use_default:
+            self.connect_database()
+        else:
+            self.connect_database(str(self.database_path.absolute()))
 
     def connect_database(self, path: Optional[str] = None):
-        """Connects to the given path or own database and creates cursor"""
+        """Connects to the given path or default database, creates cursor"""
         if path:
             self.database = sqlite3.connect(path)
         else:
