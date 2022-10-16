@@ -5,11 +5,11 @@ from typing import List
 
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 from src.service_handler import SERVICE_HANDLER
 
 _DIRPATH = Path(__file__).parent.absolute()
-_logger = LoggerHandler("save_handler", "production_logs")
+_logger = LoggerHandler("save_handler", LogFiles.PRODUCTION)
 
 
 class SaveHandler:

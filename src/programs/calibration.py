@@ -5,12 +5,12 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from src.config_manager import ConfigManager
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 from src.machine.controller import MACHINE
 from src.ui_elements.calibration import Ui_MainWindow
 
 
-logger = LoggerHandler("calibration_module", "production_logs")
+logger = LoggerHandler("calibration_module", LogFiles.PRODUCTION)
 
 
 class CalibrationScreen(QMainWindow, Ui_MainWindow, ConfigManager):

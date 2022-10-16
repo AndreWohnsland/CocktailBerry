@@ -12,13 +12,13 @@ from src.models import Cocktail
 from src.machine.controller import MACHINE
 from src.display_controller import DP_CONTROLLER
 from src.service_handler import SERVICE_HANDLER
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LogFiles, LoggerHandler
 from src.config_manager import CONFIG
 
 from src.config_manager import shared
 
 
-LOG_HANDLER = LoggerHandler("maker_module", "production_logs")
+LOG_HANDLER = LoggerHandler("maker_module", LogFiles.PRODUCTION)
 
 
 def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):

@@ -4,10 +4,10 @@ from pathlib import Path
 from git import Repo, GitCommandError  # type: ignore
 
 from src.migration.migrator import Migrator
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 
 
-logger = LoggerHandler("updater_module", "production_logs")
+logger = LoggerHandler("updater_module", LogFiles.PRODUCTION)
 
 
 class Updater:

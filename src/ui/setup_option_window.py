@@ -16,7 +16,7 @@ from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
 from src.programs.calibration import run_calibration
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LogFiles, LoggerHandler
 
 
 _ROOT_PATH = Path(__file__).parents[2].absolute()
@@ -25,7 +25,7 @@ _CONFIG_NAME = "custom_config.yaml"
 _VERSION_NAME = ".version.ini"
 _NEEDED_FILES = [_DATABASE_NAME, _CONFIG_NAME, _VERSION_NAME]
 _EXECUTABLE = _ROOT_PATH / "runme.py"
-_logger = LoggerHandler("option_window")
+_logger = LoggerHandler("option_window", LogFiles.PRODUCTION)
 
 
 class OptionWindow(QMainWindow, Ui_Optionwindow):

@@ -5,13 +5,13 @@ import typer
 import yaml
 from pyfiglet import Figlet
 
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 from src.models import Ingredient
 from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES, SUPPORTED_BOARDS, SUPPORTED_THEMES
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
-logger = LoggerHandler("config_manager", "production_logs")
+logger = LoggerHandler("config_manager", LogFiles.PRODUCTION)
 
 
 class ConfigManager:

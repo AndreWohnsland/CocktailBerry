@@ -5,7 +5,7 @@ import traceback
 from functools import wraps
 from typing import Callable
 
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 from src.machine.controller import MACHINE
 
 
@@ -14,7 +14,7 @@ def logerror(func: Callable):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logger = LoggerHandler("error_logger", "debuglog")
+        logger = LoggerHandler("error_logger", LogFiles.DEBUG)
         try:
             func(*args, **kwargs)
         # pylint: disable=broad-except

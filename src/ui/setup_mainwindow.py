@@ -13,7 +13,7 @@ from src.tabs import maker, ingredients, recipes, bottles
 from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LogFiles, LoggerHandler
 from src.ui.setup_option_window import OptionWindow
 from src.updater import Updater
 
@@ -37,7 +37,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         ConfigManager.__init__(self)
         self.setupUi(self)
         # Get the basic Logger
-        self.logger_handler = LoggerHandler("cocktail_application", "production_logs")
+        self.logger_handler = LoggerHandler("cocktail_application", LogFiles.PRODUCTION)
         self.logger_handler.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
