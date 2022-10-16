@@ -140,9 +140,16 @@ The script will use a default of 0%, 1000 ml and not only handadd for each new i
 
 The amount of newlines can be one or more between each line.
 If there is another type of separator, please use a text editor to change it accordingly.
+Also, if the recipe uses different types of units, please convert to the one provided by the conversion argument.
 The script will check for duplicates and wait for user prompt, if there are any issues.
 If the data got no unit between amount and name, use the `--no-unit` or `-nu` flag.
 If the recipe use another unit than ml, please provide the according conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
 
 I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
 You can also use the build-in backup functionality in CocktailBerry for this.
+
+*As a side note*: You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
+In cases of many ingredients, it's quite exhausting to select the right one. 
+Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
+The recipes provided by default with CocktailBerry try to aim a good balance betweeen the amount of cocktails, as well as a moderate common amount of ingredients within the singe cocktails.
+This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
