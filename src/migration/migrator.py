@@ -12,10 +12,11 @@ from typing import Optional, Tuple
 
 from src.logger_handler import LoggerHandler
 from src.database_commander import DatabaseHandler
+from src.migration.updata_data import add_new_recipes_for_1_10
 from src import __version__
 
 _DIRPATH = Path(__file__).parent.absolute()
-_CONFIG_PATH = _DIRPATH.parent / ".version.ini"
+_CONFIG_PATH = _DIRPATH.parents[1] / ".version.ini"
 _logger = LoggerHandler("migrator_module", "production_logs")
 
 
@@ -74,6 +75,7 @@ class Migrator:
         if self.older_than_version("1.10.0"):
             _logger.log_event("INFO", "Making migrations for v1.10.0")
             self._python_to_old_warning((3, 9), "1.9.0")
+            add_new_recipes_for_1_10()
         self._check_local_version_data()
 
     def _python_to_old_warning(self, least_python: Tuple[int, int], relase: str):
