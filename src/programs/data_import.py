@@ -12,7 +12,7 @@ from src.models import Ingredient
 @dataclass
 class _IngredientInformation:
     name: str
-    volume: float
+    volume: int
 
     def __repr__(self) -> str:
         return f"{self.volume} ml {self.name}"
@@ -72,7 +72,7 @@ def _parse_recipe_text(recipe_text: str, factor: float, no_unit=False, sep="\n")
         elif recipe is None:
             continue
         else:
-            ingredient = _IngredientInformation(regex_match.group(3), round(factor * float(regex_match.group(2)), 2))
+            ingredient = _IngredientInformation(regex_match.group(3), int(factor * float(regex_match.group(2))))
             recipe.ingredients.append(ingredient)
     return recipe_data
 
