@@ -11,6 +11,12 @@ If in any case any unexpected behaviour occurs, feel free to open an issue. Usua
 
 If some of the icons (check / cross on the checkbox, up / down arrow on the listview) are missing, make sure you run the script within the folder (e.g. `python runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`). This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
 
+## Changing Volume Unit
+
+For the users of the machine, there is the possibility to set the `EXP_MAKER_UNIT` and `EXP_MAKER_FAKTOR` option to change the displayed unit, for example to oz.
+Please take note that the units stored in the database are still in ml, and if inserting new recipes, you still need to provide them in ml.
+This feature is purely cosmetic and for the user of the maker tab when making cocktails, that no calculations need to be done while making cocktails.
+
 ## Touchscreen Calibration
 
 Sometimes you need to calibrate your touchscreen, otherwise the touched points and cursor are out of sync. First you need to get and compile xinput. After that, you can execute the program and select the crosses on the touchscreen according to the shown order.
