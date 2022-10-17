@@ -5,13 +5,13 @@ import sqlite3
 from typing import List, Optional, Union
 
 from src.models import Cocktail, Ingredient
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 
 DATABASE_NAME = "Cocktail_database"
 DIRPATH = Path(__file__).parent.absolute()
 BACKUP_NAME = f"{DATABASE_NAME}_backup"
 
-_logger = LoggerHandler("database_module", "production_logs")
+_logger = LoggerHandler("database_module", LogFiles.PRODUCTION)
 
 
 class DatabaseCommander:
