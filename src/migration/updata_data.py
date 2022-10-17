@@ -1,10 +1,12 @@
 from typing import Dict, List
+from sqlite3 import OperationalError
 
+from src.logger_handler import LoggerHandler
 from src.models import Cocktail, Ingredient
-from src.database_commander import DatabaseCommander
+from src.database_commander import DatabaseCommander, DatabaseHandler
 
 
-def add_new_recipes_for_1_10():
+def add_new_recipes_for_1_10(_logger: LoggerHandler):
     """Adds the new recipes from 1.10.0"""
     new_names = [
         "Beachbum",
@@ -25,10 +27,17 @@ def add_new_recipes_for_1_10():
         "Cantarito",
         "Paloma",
     ]
+    _logger.log_event("INFO", "Adding new recipes from v1.10.0")
+    _add_new_recipes_from_list(new_names)
+
+
+def _add_new_recipes_from_list(new_names: List[str]):
+    """Adds the new recipes from the given list"""
     # build connection to provided and local db
     # gets the new recipe data, check whats missing and insert it
     default_db = DatabaseCommander(use_default=True)
     local_db = DatabaseCommander()
+    local_db.create_backup()
     cocktails_to_add = _get_new_cocktails(new_names, default_db, local_db)
     ingredient_to_add = _get_new_ingredients(local_db, cocktails_to_add)
     _insert_new_ingredients(default_db, local_db, ingredient_to_add)
@@ -79,3 +88,86 @@ def _get_new_cocktails(new_names: List[str], default_db: DatabaseCommander, loca
     cocktail_difference = list(set(new_names).difference(set(already_existing_names)))
     cocktails_to_add = [x for x in default_db.get_all_cocktails() if x.name in cocktail_difference]
     return cocktails_to_add
+
+
+def rename_database_to_english(_logger: LoggerHandler):
+    """Renames all German columns to English ones"""
+    _logger.log_event("INFO", "Renaming German column names to English ones")
+    db_handler = DatabaseHandler()
+    commands = [
+        # Rename all bottle things
+        "ALTER TABLE Belegung RENAME TO Bottles",
+        "ALTER TABLE Bottles RENAME COLUMN Flasche TO Bottle",
+        "ALTER TABLE Bottles DROP COLUMN Mengenlevel",
+        # Rename all recipe things
+        "ALTER TABLE Rezepte RENAME TO Recipes",
+        "ALTER TABLE Recipes RENAME COLUMN Alkoholgehalt TO Alcohol",
+        "ALTER TABLE Recipes RENAME COLUMN Menge TO Amount",
+        "ALTER TABLE Recipes RENAME COLUMN Kommentar TO Comment",
+        "ALTER TABLE Recipes RENAME COLUMN Anzahl TO Counter",
+        "ALTER TABLE Recipes RENAME COLUMN Anzahl_Lifetime TO Counter_lifetime",
+        # Rename all available things
+        "ALTER TABLE Vorhanden RENAME TO Available",
+        # Rename all recipe data things
+        "ALTER TABLE Zusammen RENAME TO RecipeData",
+        "ALTER TABLE RecipeData RENAME COLUMN Rezept_ID TO Recipe_ID",
+        "ALTER TABLE RecipeData RENAME COLUMN Zutaten_ID TO Ingredient_ID",
+        "ALTER TABLE RecipeData RENAME COLUMN Menge TO Amount",
+        "ALTER TABLE RecipeData RENAME COLUMN Alkoholisch TO Is_alcoholic",
+        # Rename all ingredient things
+        "ALTER TABLE Zutaten RENAME TO Ingredients",
+        "ALTER TABLE Ingredients RENAME COLUMN Alkoholgehalt TO Alcohol",
+        "ALTER TABLE Ingredients RENAME COLUMN Flaschenvolumen TO Volume",
+        "ALTER TABLE Ingredients RENAME COLUMN Verbrauchsmenge TO Consumption_lifetime",
+        "ALTER TABLE Ingredients RENAME COLUMN Verbrauch TO Consumption",
+        "ALTER TABLE Ingredients RENAME COLUMN Mengenlevel TO Fill_level",
+    ]
+    for command in commands:
+        try:
+            db_handler.query_database(command)
+        # this may occour if renaming already took place
+        except OperationalError:
+            pass
+
+
+def add_more_bottles_to_db(_logger: LoggerHandler):
+    """Updates the bottles to support up to 16 bottles"""
+    _logger.log_event("INFO", "Adding bottle numbers 11 to 16 to DB")
+    db_handler = DatabaseHandler()
+    # Adding constraint if still missing
+    db_handler.query_database("CREATE UNIQUE INDEX IF NOT EXISTS idx_bottle ON Bottles(Bottle)")
+    for bottle_count in range(11, 17):
+        db_handler.query_database("INSERT OR IGNORE INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
+
+
+def add_team_buffer_to_database(_logger: LoggerHandler):
+    """Adds an additional table for buffering not send team data"""
+    _logger.log_event("INFO", "Adding team buffer table to database")
+    db_handler = DatabaseHandler()
+    db_handler.query_database(
+        """CREATE TABLE IF NOT EXISTS Teamdata(
+            ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            Payload TEXT NOT NULL);"""
+    )
+
+
+def add_virgin_flag_to_db(_logger: LoggerHandler):
+    """Adds the virgin flag column to the DB"""
+    _logger.log_event("INFO", "Adding virgin flag column to DB")
+    db_handler = DatabaseHandler()
+    try:
+        db_handler.query_database("ALTER TABLE Recipes ADD COLUMN Virgin INTEGER DEFAULT 0;")
+        db_handler.query_database("Update Recipes SET Virgin = 0;")
+    except OperationalError:
+        _logger.log_event("ERROR", "Could not add virgin flag column to DB, this may because it already exists")
+
+
+def remove_is_alcoholic_column(_logger: LoggerHandler):
+    """Removes the is_alcoholic column from the DB"""
+    _logger.log_event("INFO", "Removing is_alcoholic column from DB")
+    db_handler = DatabaseHandler()
+    try:
+        db_handler.query_database("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
+    except OperationalError:
+        _logger.log_event(
+            "ERROR", "Could not remove is_alcoholic column from DB, this may because it does not exist")
