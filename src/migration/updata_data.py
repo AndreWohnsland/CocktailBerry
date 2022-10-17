@@ -1,13 +1,15 @@
 from typing import Dict, List
 from sqlite3 import OperationalError
 
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 from src.models import Cocktail, Ingredient
 from src.database_commander import DatabaseCommander, DatabaseHandler
 
+_logger = LoggerHandler("update_data_module", LogFiles.PRODUCTION)
 
-def add_new_recipes_for_1_10(_logger: LoggerHandler):
-    """Adds the new recipes from 1.10.0"""
+
+def add_new_recipes_from_default_db():
+    """Adds the new recipes since the initial creation of the db"""
     new_names = [
         "Beachbum",
         "Bay Breeze",
@@ -27,7 +29,7 @@ def add_new_recipes_for_1_10(_logger: LoggerHandler):
         "Cantarito",
         "Paloma",
     ]
-    _logger.log_event("INFO", "Adding new recipes from v1.10.0")
+    _logger.log_event("INFO", "Adding new recipes from default db, if any are missing.")
     _add_new_recipes_from_list(new_names)
 
 
@@ -50,6 +52,7 @@ def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: List[Cock
     ing_mapping: Dict[str, Ingredient] = {}
     for ing in all_ingredients:
         ing_mapping[ing.name] = ing
+    _logger.log_event("INFO", f"Adding recipes: {[c.name for c in cocktails_to_add]}")
     for rec in cocktails_to_add:
         local_db.insert_new_recipe(
             rec.name, rec.alcohol, rec.amount,
@@ -65,6 +68,7 @@ def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: List[Cock
 
 def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCommander, ingredient_to_add: List[str]):
     """Gets and inserts the given ingredients into the local db"""
+    _logger.log_event("INFO", f"Adding ingredients: {ingredient_to_add}")
     for ingredient in ingredient_to_add:
         ing = default_db.get_ingredient(ingredient)
         if ing is None:
@@ -90,7 +94,7 @@ def _get_new_cocktails(new_names: List[str], default_db: DatabaseCommander, loca
     return cocktails_to_add
 
 
-def rename_database_to_english(_logger: LoggerHandler):
+def rename_database_to_english():
     """Renames all German columns to English ones"""
     _logger.log_event("INFO", "Renaming German column names to English ones")
     db_handler = DatabaseHandler()
@@ -130,7 +134,7 @@ def rename_database_to_english(_logger: LoggerHandler):
             pass
 
 
-def add_more_bottles_to_db(_logger: LoggerHandler):
+def add_more_bottles_to_db():
     """Updates the bottles to support up to 16 bottles"""
     _logger.log_event("INFO", "Adding bottle numbers 11 to 16 to DB")
     db_handler = DatabaseHandler()
@@ -140,7 +144,7 @@ def add_more_bottles_to_db(_logger: LoggerHandler):
         db_handler.query_database("INSERT OR IGNORE INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
 
 
-def add_team_buffer_to_database(_logger: LoggerHandler):
+def add_team_buffer_to_database():
     """Adds an additional table for buffering not send team data"""
     _logger.log_event("INFO", "Adding team buffer table to database")
     db_handler = DatabaseHandler()
@@ -151,7 +155,7 @@ def add_team_buffer_to_database(_logger: LoggerHandler):
     )
 
 
-def add_virgin_flag_to_db(_logger: LoggerHandler):
+def add_virgin_flag_to_db():
     """Adds the virgin flag column to the DB"""
     _logger.log_event("INFO", "Adding virgin flag column to DB")
     db_handler = DatabaseHandler()
@@ -162,7 +166,7 @@ def add_virgin_flag_to_db(_logger: LoggerHandler):
         _logger.log_event("ERROR", "Could not add virgin flag column to DB, this may because it already exists")
 
 
-def remove_is_alcoholic_column(_logger: LoggerHandler):
+def remove_is_alcoholic_column():
     """Removes the is_alcoholic column from the DB"""
     _logger.log_event("INFO", "Removing is_alcoholic column from DB")
     db_handler = DatabaseHandler()
