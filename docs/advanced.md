@@ -153,3 +153,20 @@ In cases of many ingredients, it's quite exhausting to select the right one.
 Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
 The recipes provided by default with CocktailBerry try to aim a good balance betweeen the amount of cocktails, as well as a moderate common amount of ingredients within the singe cocktails.
 This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
+
+
+## Updating Local Database
+
+With **version 1.10.0**, the CLI got the command to merge the latest recipes in your local database.
+This can be usefull if your CocktailBerry has been running for quite a while and you want to get more recipes.
+The new recipes will be added to your database, including any missing ingredients.
+Please take in consideration that if you made a lot of changes, especially renaming of your ingredients, this may add existing ingredients under a different name, since the names are in german.
+It is best to make a backup before running the command, to have the possibilty to restore the old state.
+The script will also create a local backup, which you can use if you did not backup your data manually.
+To update run the command:
+
+```bash
+python runme.py update-database
+```
+
+You can use the `--help` flag, like with the other commands, to get more insight into the command.
