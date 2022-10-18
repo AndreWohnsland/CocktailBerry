@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Literal, Optional, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar
@@ -136,7 +136,7 @@ class DisplayController(DialogHandler):
     ###########################
     # Misc
     def plusminus(
-        self, label: QLabel, operator: str, minimal=0, maximal=1000,
+        self, label: QLabel, operator: Literal["+", "-"], minimal=0, maximal=1000,
         delta=10, side_effect: Optional[Callable] = None
     ):
         """ increases or decreases the value by a given amount in the boundaries

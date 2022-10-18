@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Literal, Optional
 import yaml
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget
 from PyQt5.QtCore import Qt
@@ -349,7 +349,7 @@ class UiLanguage(ConfigManager):
         window = self.dialogs["team_window"]
         w.LHeader.setText(self.__choose_language(window["header"]))
 
-    def generate_password_header(self, headertype: str = "password") -> str:
+    def generate_password_header(self, headertype: Literal['password', 'amount', 'alcohol'] = "password") -> str:
         """Selects the header of the passwordwindow.
         headertype: 'password', 'amount', 'alcohol'
         """
