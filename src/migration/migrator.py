@@ -53,8 +53,8 @@ class Migrator:
 
     def make_migrations(self):
         """Make migration dependant on current local and program version"""
-        # Database changes with version 1.5.0
         _logger.log_event("INFO", f"Local version is: {self.local_version}, checking for necessary migrations")
+        self._python_to_old_warning((3, 9))
         if self.older_than_version("1.5.0"):
             _logger.log_event("INFO", "Making migrations for v1.5.0")
             rename_database_to_english()
@@ -75,17 +75,14 @@ class Migrator:
             add_virgin_flag_to_db()
             remove_is_alcoholic_column()
             self._install_pip_package("typing_extensions", "1.9.0")
-            self._python_to_old_warning((3, 9), "1.9.0")
-        if self.older_than_version("1.10.0"):
-            _logger.log_event("INFO", "Making migrations for v1.10.0")
-            self._python_to_old_warning((3, 9), "1.9.0")
         self._check_local_version_data()
 
-    def _python_to_old_warning(self, least_python: Tuple[int, int], relase: str):
+    def _python_to_old_warning(self, least_python: Tuple[int, int]):
         if sys.version_info < least_python:
             pv_format = f"Python {least_python[0]}.{least_python[1]}"
+            release_version_notes = f"v{self.program_version.major}.{self.program_version.minor}"
             _logger.log_event("WARNING", f"Your used Python is deprecated, please upgrade to {pv_format} or higher")
-            _logger.log_event("WARNING", f"Please read the release notes v{relase} for more information")
+            _logger.log_event("WARNING", f"Please read the release notes {release_version_notes} for more information")
 
     def _check_local_version_data(self):
         """Checks to update the local version data"""

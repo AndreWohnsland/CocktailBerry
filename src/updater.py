@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 from git import Repo, GitCommandError  # type: ignore
 
-from src.migration.migrator import Migrator
+from src.migration.migrator import Migrator, _Version
 from src.logger_handler import LoggerHandler, LogFiles
 
 
@@ -20,7 +20,7 @@ class Updater:
 
     def update(self):
         """Updates from the Git remote"""
-        latest_tag = self.repo.tags[-1]
+        latest_tag = self._get_latest_tag()
         logger.log_event("INFO", f"Updating to {latest_tag.name}")
         # Is there a better way to pull the state of a specific tag, without checking out to that tag?
         try:
@@ -48,7 +48,7 @@ class Updater:
         # Get the latest tag an compare the diff with the current branch
         # Usually this should work since the default is master branch and "normal" users shouldn't be chaning files
         # Not using diff but local and remote tags to compare, since some problems exists comparing by diff
-        latest_tag = self.repo.tags[-1]
+        latest_tag = self._get_latest_tag()
         # Either build diff or just simply check local version with latest
         # Currently using local version tag, this will prob work best,
         # if the programmer does not forget to update the version in the migrator
@@ -57,3 +57,7 @@ class Updater:
         if update_available:
             logger.log_event("INFO", f"Update {latest_tag.name} is available")
         return update_available
+
+    def _get_latest_tag(self):
+        latest_tag = sorted(self.repo.tags, key=lambda t: _Version(t.name.replace("v", "")))[-1]
+        return latest_tag
