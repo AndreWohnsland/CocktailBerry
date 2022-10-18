@@ -69,11 +69,19 @@ def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcoh
         DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled, virgin)
     else:
         DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled, virgin)
+    cocktail = _get_and_check_cocktail(recipe_name)
+    for ingredient in ingredient_data:
+        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount, bool(ingredient.recipe_hand))
+    # important to get the cocktail again, since the first time getting it, we only got it for its id
+    # at this time the cocktail got no recipe data. Getting it again will fix this
+    cocktail = _get_and_check_cocktail(recipe_name)
+    return cocktail
+
+
+def _get_and_check_cocktail(recipe_name: str):
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
     if cocktail is None:
         raise RuntimeError("Cocktail not found. This should not happen.")
-    for ingredient in ingredient_data:
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount, bool(ingredient.recipe_hand))
     return cocktail
 
 

@@ -7,16 +7,21 @@ import configparser
 import sys
 import subprocess
 from pathlib import Path
-from sqlite3 import OperationalError
-from typing import Optional
+from typing import Optional, Tuple
 
-from src.logger_handler import LoggerHandler
-from src.database_commander import DatabaseHandler
+from src.logger_handler import LoggerHandler, LogFiles
+from src.migration.updata_data import (
+    rename_database_to_english,
+    add_more_bottles_to_db,
+    add_team_buffer_to_database,
+    add_virgin_flag_to_db,
+    remove_is_alcoholic_column
+)
 from src import __version__
 
 _DIRPATH = Path(__file__).parent.absolute()
-_CONFIG_PATH = _DIRPATH.parent / ".version.ini"
-_logger = LoggerHandler("migrator_module", "production_logs")
+_CONFIG_PATH = _DIRPATH.parents[1] / ".version.ini"
+_logger = LoggerHandler("migrator_module", LogFiles.PRODUCTION)
 
 
 class Migrator:
@@ -52,8 +57,8 @@ class Migrator:
         _logger.log_event("INFO", f"Local version is: {self.local_version}, checking for necessary migrations")
         if self.older_than_version("1.5.0"):
             _logger.log_event("INFO", "Making migrations for v1.5.0")
-            self._rename_database_to_english()
-            self._add_team_buffer_to_database()
+            rename_database_to_english()
+            add_team_buffer_to_database()
             self._install_pip_package("GitPython", "1.5.0")
         if self.older_than_version("1.5.3"):
             _logger.log_event("INFO", "Making migrations for v1.5.3")
@@ -64,16 +69,23 @@ class Migrator:
             self._install_pip_package("pyfiglet", "1.6.0")
         if self.older_than_version("1.6.1"):
             _logger.log_event("INFO", "Making migrations for v1.6.1")
-            self._add_more_bottles_to_db()
+            add_more_bottles_to_db()
         if self.older_than_version("1.9.0"):
             _logger.log_event("INFO", "Making migrations for v1.9.0")
-            self._add_virgin_flag_to_db()
-            self._remove_is_alcoholic_column()
+            add_virgin_flag_to_db()
+            remove_is_alcoholic_column()
             self._install_pip_package("typing_extensions", "1.9.0")
-            if sys.version_info < (3, 9):
-                _logger.log_event("WARNING", "Your used Python is deprecated, please upgrade to Python 3.9 or higher")
-                _logger.log_event("WARNING", "Please read the release notes v1.9.0 for more information")
+            self._python_to_old_warning((3, 9), "1.9.0")
+        if self.older_than_version("1.10.0"):
+            _logger.log_event("INFO", "Making migrations for v1.10.0")
+            self._python_to_old_warning((3, 9), "1.9.0")
         self._check_local_version_data()
+
+    def _python_to_old_warning(self, least_python: Tuple[int, int], relase: str):
+        if sys.version_info < least_python:
+            pv_format = f"Python {least_python[0]}.{least_python[1]}"
+            _logger.log_event("WARNING", f"Your used Python is deprecated, please upgrade to {pv_format} or higher")
+            _logger.log_event("WARNING", f"Please read the release notes v{relase} for more information")
 
     def _check_local_version_data(self):
         """Checks to update the local version data"""
@@ -81,84 +93,6 @@ class Migrator:
             self._write_local_version()
         else:
             _logger.log_event("INFO", "Nothing to migrate")
-
-    def _rename_database_to_english(self):
-        """Renames all German columns to English ones"""
-        _logger.log_event("INFO", "Renaming German column names to English ones")
-        db_handler = DatabaseHandler()
-        commands = [
-            # Rename all bottle things
-            "ALTER TABLE Belegung RENAME TO Bottles",
-            "ALTER TABLE Bottles RENAME COLUMN Flasche TO Bottle",
-            "ALTER TABLE Bottles DROP COLUMN Mengenlevel",
-            # Rename all recipe things
-            "ALTER TABLE Rezepte RENAME TO Recipes",
-            "ALTER TABLE Recipes RENAME COLUMN Alkoholgehalt TO Alcohol",
-            "ALTER TABLE Recipes RENAME COLUMN Menge TO Amount",
-            "ALTER TABLE Recipes RENAME COLUMN Kommentar TO Comment",
-            "ALTER TABLE Recipes RENAME COLUMN Anzahl TO Counter",
-            "ALTER TABLE Recipes RENAME COLUMN Anzahl_Lifetime TO Counter_lifetime",
-            # Rename all available things
-            "ALTER TABLE Vorhanden RENAME TO Available",
-            # Rename all recipe data things
-            "ALTER TABLE Zusammen RENAME TO RecipeData",
-            "ALTER TABLE RecipeData RENAME COLUMN Rezept_ID TO Recipe_ID",
-            "ALTER TABLE RecipeData RENAME COLUMN Zutaten_ID TO Ingredient_ID",
-            "ALTER TABLE RecipeData RENAME COLUMN Menge TO Amount",
-            "ALTER TABLE RecipeData RENAME COLUMN Alkoholisch TO Is_alcoholic",
-            # Rename all ingredient things
-            "ALTER TABLE Zutaten RENAME TO Ingredients",
-            "ALTER TABLE Ingredients RENAME COLUMN Alkoholgehalt TO Alcohol",
-            "ALTER TABLE Ingredients RENAME COLUMN Flaschenvolumen TO Volume",
-            "ALTER TABLE Ingredients RENAME COLUMN Verbrauchsmenge TO Consumption_lifetime",
-            "ALTER TABLE Ingredients RENAME COLUMN Verbrauch TO Consumption",
-            "ALTER TABLE Ingredients RENAME COLUMN Mengenlevel TO Fill_level",
-        ]
-        for command in commands:
-            try:
-                db_handler.query_database(command)
-            # this may occour if renaming already took place
-            except OperationalError:
-                pass
-
-    def _add_more_bottles_to_db(self):
-        """Updates the bottles to support up to 16 bottles"""
-        _logger.log_event("INFO", "Adding bottle numbers 11 to 16 to DB")
-        db_handler = DatabaseHandler()
-        # Adding constraint if still missing
-        db_handler.query_database("CREATE UNIQUE INDEX IF NOT EXISTS idx_bottle ON Bottles(Bottle)")
-        for bottle_count in range(11, 17):
-            db_handler.query_database("INSERT OR IGNORE INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
-
-    def _add_team_buffer_to_database(self):
-        """Adds an additional table for buffering not send team data"""
-        _logger.log_event("INFO", "Adding team buffer table to database")
-        db_handler = DatabaseHandler()
-        db_handler.query_database(
-            """CREATE TABLE IF NOT EXISTS Teamdata(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                Payload TEXT NOT NULL);"""
-        )
-
-    def _add_virgin_flag_to_db(self):
-        """Adds the virgin flag column to the DB"""
-        _logger.log_event("INFO", "Adding virgin flag column to DB")
-        db_handler = DatabaseHandler()
-        try:
-            db_handler.query_database("ALTER TABLE Recipes ADD COLUMN Virgin INTEGER DEFAULT 0;")
-            db_handler.query_database("Update Recipes SET Virgin = 0;")
-        except OperationalError:
-            _logger.log_event("ERROR", "Could not add virgin flag column to DB, this may because it already exists")
-
-    def _remove_is_alcoholic_column(self):
-        """Removes the is_alcoholic column from the DB"""
-        _logger.log_event("INFO", "Removing is_alcoholic column from DB")
-        db_handler = DatabaseHandler()
-        try:
-            db_handler.query_database("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
-        except OperationalError:
-            _logger.log_event(
-                "ERROR", "Could not remove is_alcoholic column from DB, this may because it does not exist")
 
     def _change_git_repo(self):
         """Sets the git source to the new named repo"""

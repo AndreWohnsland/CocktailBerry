@@ -60,6 +60,9 @@
       <property name="documentMode">
        <bool>false</bool>
       </property>
+      <property name="cssClass" stdset="0">
+       <string>bold</string>
+      </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
         <string>Maker</string>
@@ -124,6 +127,41 @@
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="LSelect_unit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>20</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>ml</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
               </property>
              </widget>
             </item>
@@ -318,7 +356,7 @@
              <bool>false</bool>
             </property>
             <property name="cssClass" stdset="0">
-             <string>left-shift</string>
+             <string>left-shift bold</string>
             </property>
            </widget>
           </item>
@@ -358,7 +396,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="cssClass" stdset="0">
-               <string>lr-padding</string>
+               <string>lr-padding bold</string>
               </property>
              </widget>
             </item>
@@ -422,6 +460,9 @@
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
              </widget>
             </item>
             <item row="2" column="0" colspan="3">
@@ -446,7 +487,7 @@
                <set>Qt::AlignCenter</set>
               </property>
               <property name="cssClass" stdset="0">
-               <string>header-underline</string>
+               <string>header-underline bold</string>
               </property>
              </widget>
             </item>
@@ -478,7 +519,7 @@
                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
               </property>
               <property name="cssClass" stdset="0">
-               <string>secondary lr-padding</string>
+               <string>secondary lr-padding bold</string>
               </property>
              </widget>
             </item>
@@ -690,6 +731,9 @@
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
              </widget>
             </item>
             <item row="10" column="0" colspan="2">
@@ -715,6 +759,9 @@
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
               </property>
              </widget>
             </item>
@@ -742,6 +789,9 @@
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
              </widget>
             </item>
             <item row="8" column="0" colspan="2">
@@ -767,6 +817,9 @@
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
               </property>
              </widget>
             </item>
@@ -794,6 +847,9 @@
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
              </widget>
             </item>
             <item row="6" column="0" colspan="2">
@@ -819,6 +875,9 @@
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
               </property>
              </widget>
             </item>
@@ -846,6 +905,9 @@
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
              </widget>
             </item>
             <item row="4" column="0" colspan="2">
@@ -871,6 +933,9 @@
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
               </property>
              </widget>
             </item>
@@ -975,6 +1040,9 @@
               </property>
               <property name="tristate">
                <bool>false</bool>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
               </property>
              </widget>
             </item>
@@ -1146,6 +1214,9 @@
             <property name="echoMode">
              <enum>QLineEdit::Password</enum>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="11" column="2">
@@ -1217,10 +1288,18 @@
             <property name="font">
              <font>
               <pointsize>14</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
              </font>
             </property>
             <property name="text">
              <string>Flaschenvolume (ml)</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string/>
             </property>
            </widget>
           </item>
@@ -1269,7 +1348,7 @@
                <set>Qt::AlignCenter</set>
               </property>
               <property name="cssClass" stdset="0">
-               <string>secondary</string>
+               <string>secondary bold</string>
               </property>
              </widget>
             </item>
@@ -1319,6 +1398,12 @@
             <property name="text">
              <string>Zutat</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string/>
+            </property>
            </widget>
           </item>
           <item row="1" column="0" colspan="4">
@@ -1335,7 +1420,7 @@
              </font>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -1357,6 +1442,12 @@
             <property name="text">
              <string>Alkoholgehalt</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string/>
+            </property>
            </widget>
           </item>
           <item row="3" column="0" colspan="4">
@@ -1373,7 +1464,7 @@
              </font>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -1425,7 +1516,7 @@
                <string/>
               </property>
               <property name="cssClass" stdset="0">
-               <string>secondary</string>
+               <string>secondary bold</string>
               </property>
              </widget>
             </item>
@@ -1567,7 +1658,7 @@
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>secondary</string>
+                   <string>secondary bold</string>
                   </property>
                  </widget>
                 </item>
@@ -1737,7 +1828,7 @@
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>secondary</string>
+                   <string>secondary bold</string>
                   </property>
                  </widget>
                 </item>
@@ -1764,7 +1855,7 @@
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>secondary</string>
+                   <string>secondary bold</string>
                   </property>
                  </widget>
                 </item>
@@ -1811,7 +1902,7 @@
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>secondary</string>
+                   <string>secondary bold</string>
                   </property>
                  </widget>
                 </item>
@@ -1838,7 +1929,7 @@
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>secondary</string>
+                   <string>secondary bold</string>
                   </property>
                  </widget>
                 </item>
@@ -1865,7 +1956,7 @@
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>secondary</string>
+                   <string>secondary bold</string>
                   </property>
                  </widget>
                 </item>
@@ -1892,7 +1983,7 @@
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>secondary</string>
+                   <string>secondary bold</string>
                   </property>
                  </widget>
                 </item>
@@ -2061,6 +2152,9 @@
                   <property name="checked">
                    <bool>true</bool>
                   </property>
+                  <property name="cssClass" stdset="0">
+                   <string>bold</string>
+                  </property>
                  </widget>
                 </item>
                 <item row="1" column="0">
@@ -2158,6 +2252,9 @@
                   <property name="echoMode">
                    <enum>QLineEdit::Password</enum>
                   </property>
+                  <property name="cssClass" stdset="0">
+                   <string>bold</string>
+                  </property>
                  </widget>
                 </item>
                 <item row="2" column="3">
@@ -2202,6 +2299,9 @@
                     <width>16777215</width>
                     <height>60</height>
                    </size>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>bold</string>
                   </property>
                  </widget>
                 </item>
@@ -2325,7 +2425,7 @@
              <string>LBelegung2</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2352,7 +2452,7 @@
              <string>LBelegung3</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2379,7 +2479,7 @@
              <string>LBelegung4</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2406,7 +2506,7 @@
              <string>LBelegung5</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2433,7 +2533,7 @@
              <string>LBelegung6</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2563,7 +2663,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2648,7 +2748,7 @@
              <string>LBelegung9</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2808,6 +2908,9 @@
             <property name="echoMode">
              <enum>QLineEdit::Password</enum>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="6" column="1">
@@ -2833,7 +2936,7 @@
              <string>LBelegung7</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2860,7 +2963,7 @@
              <string>LBelegung8</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2891,6 +2994,9 @@
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -2916,7 +3022,7 @@
              <string>LBelegung1</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -2975,7 +3081,7 @@
              <string>LBelegung10</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3006,6 +3112,9 @@
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="6" column="3">
@@ -3034,6 +3143,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
             </property>
            </widget>
           </item>
@@ -3064,6 +3176,9 @@
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="5" column="3">
@@ -3092,6 +3207,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
             </property>
            </widget>
           </item>
@@ -3122,6 +3240,9 @@
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="3" column="3">
@@ -3150,6 +3271,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
             </property>
            </widget>
           </item>
@@ -3180,6 +3304,9 @@
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="9" column="3">
@@ -3209,6 +3336,9 @@
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="7" column="3">
@@ -3237,6 +3367,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
             </property>
            </widget>
           </item>
@@ -3460,7 +3593,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3516,7 +3649,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3548,7 +3681,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3580,7 +3713,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3612,7 +3745,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3644,7 +3777,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3676,7 +3809,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3708,7 +3841,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3740,7 +3873,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3941,7 +4074,7 @@
              <string>LBelegung11</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3968,7 +4101,7 @@
              <string>LBelegung13</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -3995,7 +4128,7 @@
              <string>LBelegung12</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -4022,7 +4155,7 @@
              <string>LBelegung15</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -4049,7 +4182,7 @@
              <string>LBelegung14</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -4076,7 +4209,7 @@
              <string>LBelegung16</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -4107,6 +4240,9 @@
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="10" column="3">
@@ -4135,6 +4271,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
             </property>
            </widget>
           </item>
@@ -4165,6 +4304,9 @@
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="14" column="3">
@@ -4193,6 +4335,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
             </property>
            </widget>
           </item>
@@ -4223,6 +4368,9 @@
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
+            </property>
            </widget>
           </item>
           <item row="16" column="3">
@@ -4251,6 +4399,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>bold</string>
             </property>
            </widget>
           </item>
@@ -4426,7 +4577,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -4458,7 +4609,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -4490,7 +4641,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -4522,7 +4673,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -4554,7 +4705,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -4586,7 +4737,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>secondary</string>
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>

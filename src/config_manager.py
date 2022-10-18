@@ -1,17 +1,17 @@
 import random
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 import typer
 import yaml
 from pyfiglet import Figlet
 
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 from src.models import Ingredient
 from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES, SUPPORTED_BOARDS, SUPPORTED_THEMES
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
-logger = LoggerHandler("config_manager", "production_logs")
+logger = LoggerHandler("config_manager", LogFiles.PRODUCTION)
 
 
 class ConfigManager:
@@ -58,6 +58,9 @@ class ConfigManager:
     TEAMS_ACTIVE = False
     TEAM_BUTTON_NAMES = ["Team 1", "Team 2"]
     TEAM_API_URL = "http://127.0.0.1:8080"
+    # Config to change the displayed values in the maker to another unit
+    EXP_MAKER_UNIT = "ml"
+    EXP_MAKER_FAKTOR = 1.0
 
     def __init__(self) -> None:
         """Try to read in the custom configs. If the file is not there, ignores the error.
@@ -68,33 +71,35 @@ class ConfigManager:
         """
         # Dict of Format "configname": (type, List[CheckCallbacks])
         # The check function needs to be a callable with interface fn(configname, configvalue)
-        self.config_type = {
+        self.config_type: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_PARTYMODE": (bool, []),
             "UI_MASTERPASSWORD": (str, []),
-            "UI_LANGUAGE": (str, [self._validate_language_code]),
-            "UI_WIDTH": (int, [lambda x, y: self._limit_number(x, y, 1, 10000)]),
-            "UI_HEIGHT": (int, [lambda x, y: self._limit_number(x, y, 1, 3000)]),
+            "UI_LANGUAGE": (str, [_build_support_checker(SUPPORTED_LANGUAGES)]),
+            "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
+            "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),
             "PUMP_PINS": (list, [self._validate_config_list_type]),
             "PUMP_VOLUMEFLOW": (list, [self._validate_config_list_type]),
-            "MAKER_NAME": (str, [self._validate_max_length]),
-            "MAKER_NUMBER_BOTTLES": (int, [lambda x, y: self._limit_number(x, y, 1, MAX_SUPPORTED_BOTTLES)]),
-            "MAKER_CLEAN_TIME": (int, [self._limit_number]),
-            "MAKER_SLEEP_TIME": (float, [lambda x, y: self._limit_number(x, y, 0.01, 0.2)]),
+            "MAKER_NAME": (str, [_validate_max_length]),
+            "MAKER_NUMBER_BOTTLES": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
+            "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
-            "MAKER_BOARD": (str, [self._validate_board]),
-            "MAKER_THEME": (str, [self._validate_theme]),
+            "MAKER_BOARD": (str, [_build_support_checker(SUPPORTED_BOARDS)]),
+            "MAKER_THEME": (str, [_build_support_checker(SUPPORTED_THEMES)]),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
             "TEAM_BUTTON_NAMES": (list, [self._validate_config_list_type]),
             "TEAM_API_URL": (str, []),
+            "EXP_MAKER_UNIT": (str, []),
+            "EXP_MAKER_FAKTOR": (float, [_build_number_limiter(0.01, 100)]),
         }
         # Dict of Format "configname": (type, List[CheckCallbacks]) for the single list elements
         # only needed if the above config type was defined as list type, rest is identical to top schema
         self.config_type_list = {
             "PUMP_PINS": (int, []),
-            "PUMP_VOLUMEFLOW": (int, [lambda x, y: self._limit_number(x, y, 1, 1000)]),
+            "PUMP_VOLUMEFLOW": (int, [_build_number_limiter(1, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
         }
         try:
@@ -164,37 +169,7 @@ class ConfigManager:
         min_len = min_len_config.get(configname)
         if min_len is None:
             return
-        self._validate_list_length(configlist, configname, min_len)
-
-    def _validate_list_length(self, configlist: List[Any], configname: str, min_len: int):
-        """Checks if the list is at least a given size"""
-        actual_len = len(configlist)
-        if actual_len < min_len:
-            raise ConfigError(f"{configname} got only {actual_len} elements, but you need at least {min_len} elements")
-
-    def _validate_language_code(self, configname: str, countrycode: str):
-        """Checks if the defined language is available"""
-        self._check_if_supported(configname, countrycode, SUPPORTED_LANGUAGES)
-
-    def _validate_board(self, configname: str, boardname: str):
-        """Checks if the defined board is implemented"""
-        self._check_if_supported(configname, boardname, SUPPORTED_BOARDS)
-
-    def _validate_theme(self, configname: str, themename: str):
-        """Checks if the defined theme is implemented"""
-        self._check_if_supported(configname, themename, SUPPORTED_THEMES)
-
-    def _check_if_supported(self, configname: str, configvalue: Any, available: List[Any]):
-        """Check if the configvalue is within the supported List"""
-        if configvalue in available:
-            return
-        raise ConfigError(f"Value '{configvalue}' for {configname} is not supported, please use any of {available}")
-
-    def _validate_max_length(self, configname: str, data: str, max_len=30):
-        """Validates if data exceeds maximum length"""
-        if len(data) <= max_len:
-            return
-        raise ConfigError(f"{configname} is longer than {max_len}, please reduce length")
+        _validate_list_length(configlist, configname, min_len)
 
     def _choose_bottle_number(self, get_all=False):
         """Selects the number of Bottles, limits by max supported count"""
@@ -202,10 +177,36 @@ class ConfigManager:
             return MAX_SUPPORTED_BOTTLES
         return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
 
-    def _limit_number(self, configname: str, data: Union[int, float], min_val: Union[int, float] = 1, max_val: Union[int, float] = 100):
-        """Check if the number is within the fiven limits"""
+
+def _validate_list_length(configlist: List[Any], configname: str, min_len: int):
+    """Checks if the list is at least a given size"""
+    actual_len = len(configlist)
+    if actual_len < min_len:
+        raise ConfigError(f"{configname} got only {actual_len} elements, but you need at least {min_len} elements")
+
+
+def _build_support_checker(supported: List[Any]):
+    """Builds the function: Check if the configvalue is within the supported List"""
+    def check_if_supported(configname: str, configvalue: Any):
+        if configvalue in supported:
+            return
+        raise ConfigError(f"Value '{configvalue}' for {configname} is not supported, please use any of {supported}")
+    return check_if_supported
+
+
+def _validate_max_length(configname: str, data: str, max_len=30):
+    """Validates if data exceeds maximum length"""
+    if len(data) <= max_len:
+        return
+    raise ConfigError(f"{configname} is longer than {max_len}, please reduce length")
+
+
+def _build_number_limiter(min_val: Union[int, float] = 1, max_val: Union[int, float] = 100):
+    """Builds the function: Check if the number is within the given limits"""
+    def limit_number(configname: str, data: Union[int, float]):
         if data < min_val or data > max_val:
             raise ConfigError(f"{configname} must be between {min_val} and {max_val}.")
+    return limit_number
 
 
 class Shared:
@@ -224,6 +225,7 @@ class ConfigError(Exception):
 
 
 def version_callback(value: bool):
+    """Returns the version of the program"""
     if value:
         typer.echo(f"{PROJECT_NAME} Version {__version__}. Created by Andre Wohnsland.")
         typer.echo(r"For more information visit https://github.com/AndreWohnsland/CocktailBerry.")
@@ -231,6 +233,7 @@ def version_callback(value: bool):
 
 
 def show_start_message():
+    """Shows the starting message in both Figlet and normal font"""
     figlet = Figlet()
     start_message = f"{PROJECT_NAME} Version {__version__}"
     print(figlet.renderText(start_message))
@@ -238,3 +241,4 @@ def show_start_message():
 
 
 shared = Shared()
+CONFIG = ConfigManager()

@@ -69,7 +69,7 @@ class Ui_Teamselection(object):
         _translate = QtCore.QCoreApplication.translate
         Teamselection.setWindowTitle(_translate("Teamselection", "~~ Teamwahl ~~"))
         self.LHeader.setText(_translate("Teamselection", "Team auswählen"))
-        self.LHeader.setProperty("cssClass", _translate("Teamselection", "neutral"))
+        self.LHeader.setProperty("cssClass", _translate("Teamselection", "neutral bold"))
         self.PBteamone.setText(_translate("Teamselection", "Team #1"))
         self.PBteamone.setProperty("cssClass", _translate("Teamselection", "btn-teamone"))
         self.PBteamtwo.setText(_translate("Teamselection", "Team #2"))

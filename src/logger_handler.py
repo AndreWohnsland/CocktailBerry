@@ -1,3 +1,4 @@
+from enum import Enum
 import logging
 from pathlib import Path
 from typing import Union
@@ -10,6 +11,12 @@ except ImportError:
 
 _DIRPATH = Path(__file__).parent.absolute()
 _AceptedLogLevels = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+
+
+class LogFiles():
+    PRODUCTION = "production_logs"
+    SERVICE = "service_logs"
+    DEBUG = "debuglog"
 
 
 class LoggerHandler:

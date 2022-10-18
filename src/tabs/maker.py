@@ -12,12 +12,13 @@ from src.models import Cocktail
 from src.machine.controller import MACHINE
 from src.display_controller import DP_CONTROLLER
 from src.service_handler import SERVICE_HANDLER
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LogFiles, LoggerHandler
+from src.config_manager import CONFIG
 
 from src.config_manager import shared
 
 
-LOG_HANDLER = LoggerHandler("maker_module", "production_logs")
+LOG_HANDLER = LoggerHandler("maker_module", LogFiles.PRODUCTION)
 
 
 def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):
@@ -54,7 +55,9 @@ def __build_comment_maker(cocktail: Cocktail):
     hand_add = cocktail.handadds
     length_desc = sorted(hand_add, key=lambda x: len(x.name), reverse=True)
     for ing in length_desc:
-        comment += f"\n~{ing.amount:.0f} ml {ing.name}"
+        amount = ing.amount * CONFIG.EXP_MAKER_FAKTOR
+        amount = int(amount) if amount >= 8 else round(amount, 1)
+        comment += f"\n~{amount} {CONFIG.EXP_MAKER_UNIT} {ing.name}"
     return comment
 
 

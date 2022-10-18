@@ -5,7 +5,7 @@ from enum import Enum
 import requests
 from src.config_manager import ConfigManager
 from src.database_commander import DB_COMMANDER
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 from src.models import Cocktail
 
 
@@ -21,7 +21,7 @@ class ServiceHandler(ConfigManager):
     def __init__(self):
         super().__init__()
         self.base_url = self.MICROSERVICE_BASE_URL
-        self.logger = LoggerHandler("microservice", "service_logs")
+        self.logger = LoggerHandler("microservice", LogFiles.SERVICE)
         self.headers = {"content-type": "application/json"}
 
     def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int, cocktailobject: Cocktail) -> Dict:

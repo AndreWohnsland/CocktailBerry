@@ -220,7 +220,7 @@ class Ui_handadds(object):
         _translate = QtCore.QCoreApplication.translate
         handadds.setWindowTitle(_translate("handadds", "Zutaten zum selbst hinzufügen"))
         self.LHeader.setText(_translate("handadds", "Ingredients for hand add"))
-        self.LHeader.setProperty("cssClass", _translate("handadds", "secondary"))
+        self.LHeader.setProperty("cssClass", _translate("handadds", "secondary bold"))
         self.LEHandadd1.setProperty("cssClass", _translate("handadds", "secondary"))
         self.LEHandadd2.setProperty("cssClass", _translate("handadds", "secondary"))
         self.LEHandadd3.setProperty("cssClass", _translate("handadds", "secondary"))

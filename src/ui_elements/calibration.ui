@@ -35,6 +35,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="1" column="2" rowspan="2">
@@ -51,6 +54,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>
@@ -226,6 +232,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="1" column="0" rowspan="2">
@@ -254,6 +263,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>

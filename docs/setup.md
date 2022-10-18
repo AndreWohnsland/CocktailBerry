@@ -12,7 +12,7 @@ All entered values are checked for reason and if something is wrong, an error me
 
 ## Setting up the Machine / Modifying other Values
 
-These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed. If any of the values got a wrong data type, a ConfigError will be thrown with the message which one is wrong. You can also manage your config within CocktailBerry since __version 1.8.0__. Just go to the bottles tab, enter the default (1234) password into the lineedit and click the gear icon. You can then use the UI to change the configuration.
+These values are stored under the `custom_config.yaml` file. This file will be created at the first machine run and inherit all default values. Depending on your pumps and connection to the Pi, these can differ from mine and can be changed. If any of the values got a wrong data type, a ConfigError will be thrown with the message which one is wrong. You can also manage your config within CocktailBerry since __version 1.8.0__. Just go to the bottles tab, enter the default (1234) password into the lineedit and click the gear icon. You can then use the UI to change the configuration. Names starting with `EXP` are experimental and may be changed in the future. They can be used at own risk of CocktailBerry not working 100% properly.
 
 | Value Name              |    Type     | Description                                                                          | Optional |
 | :---------------------- | :---------: | :----------------------------------------------------------------------------------- | :------: |
@@ -36,6 +36,12 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 | `TEAMS_ACTIVE`          |   _bool_    | Boolean flag to use teams feature                                                    |    ✔️     |
 | `TEAM_BUTTON_NAMES`     | _list[str]_ | List of format ["Team1", "Team2"]                                                    |    ✔️     |
 | `TEAM_API_URL`          |    _str_    | Endpoint of teams API, default used port by API is 8080                              |    ✔️     |
+| `EXP_MAKER_UNIT`        |    _str_    | Change the displayed unit in the maker tab (visual only\*)                           |    ✔️     |
+| `EXP_MAKER_FAKTOR`      |   _float_   | Multiply the displayed unit in the maker tab (visual only\*)                         |    ✔️     |
+
+\* You still need to provide the units in ml for the DB (recipes / ingredients).
+This is purely visual in the maker tab, at least for now.
+If you want to display oz in the maker tab, use 'oz' and 0.033814 for unit and factor.
 
 Depending on your preferred use, these values can differ. Then just run:
 
@@ -108,3 +114,10 @@ With this as your base set up, even if not using the optional ingredients, your 
 ## Updates
 
 With __version 1.5.0__, there is the option to enable the automatic search for updates at program start. The `MAKER_SEARCH_UPDATES` config can enable this feature. CocktailBerry will then check the GitHub repository for new releases and informs the user about it. If accepted, CocktailBerry will pull the latest version and restart the program afterwards. The migrator will also do any necessary steps to adjust local files, like the database to the latest release.
+
+## Backups
+
+Since **version 1.9.0**, you can backup your local data (local database, config-file) to a desired folder or external device.
+You can later use this backup to restore the data, or recover the progress and recipes after doing a OS reinstall.
+Just go to the `bottles` tab, enter your master password, and click on the gear icon to get to the options window.
+There you will find both options for backup and restoring your data.

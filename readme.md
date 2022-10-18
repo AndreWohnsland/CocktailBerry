@@ -31,8 +31,9 @@ CocktailBerry can do:
 - Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
 - Add new ingredients and recipes with needed information over the UI
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
-- Define connected ingredients to the machine and also existing additional ingredients over the UI
+- Define connected ingredients to the machine and existing additional ingredients over the UI
 - Auto calculates and displays possible recipes dependent on given information
+- Option to serve cocktails without alcohol
 - Execute a cleaning program to get rid of remaining fluids
 - Export data for later data analysis, send data as mail to a receiver
 - Send cocktail production data to a given endpoint, for example a webhook

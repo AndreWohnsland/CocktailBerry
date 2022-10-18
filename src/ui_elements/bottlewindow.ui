@@ -173,6 +173,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="9" column="1">
@@ -231,6 +234,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="10" column="2">
@@ -262,6 +268,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>
@@ -295,6 +304,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="5" column="2">
@@ -327,6 +339,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="8" column="2">
@@ -358,6 +373,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>
@@ -416,6 +434,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>
@@ -578,6 +599,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>
@@ -1168,6 +1192,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="5" column="1">
@@ -1251,6 +1278,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>
@@ -1601,6 +1631,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="12" column="2">
@@ -1632,6 +1665,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>
@@ -1665,6 +1701,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="14" column="2">
@@ -1696,6 +1735,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>
@@ -1729,6 +1771,9 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
+        </property>
        </widget>
       </item>
       <item row="16" column="2">
@@ -1760,6 +1805,9 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssClass" stdset="0">
+         <string>bold</string>
         </property>
        </widget>
       </item>

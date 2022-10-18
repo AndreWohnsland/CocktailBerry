@@ -39,6 +39,9 @@ QWidget[cssClass~='left-shift'] {
   padding-left: 10px;
   padding-right: 10px; }
 
+*[cssClass~='bold'] {
+  font-weight: bold; }
+
 *[cssClass~='hand-seperator'] {
   color: #44648d; }
 
@@ -97,7 +100,8 @@ QPushButton {
   border-radius: 7;
   padding: 3px;
   padding-left: 5px;
-  padding-right: 5px; }
+  padding-right: 5px;
+  font-weight: bold; }
 
 QPushButton:checked,
 QPushButton:pressed {

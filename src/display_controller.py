@@ -4,12 +4,13 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar
 
-
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
 from src.models import Cocktail, Ingredient
 from src.config_manager import shared
 from src import MAX_SUPPORTED_BOTTLES
+from src.ui_elements.cocktailmanager import Ui_MainWindow
+from src.ui_elements.bonusingredient import Ui_addingredient
 
 STYLE_FOLDER = Path(__file__).parents[0].absolute() / "ui" / "styles"
 
@@ -47,7 +48,7 @@ class DisplayController(DialogHandler):
             selected_ingredient = list_widget.currentItem().text()
         return Ingredient(-1, ingredient_name, int(alcohollevel), int(volume), 0, hand_add, selected=selected_ingredient)
 
-    def get_cocktail_data(self, w) -> Tuple[str, int, float]:
+    def get_cocktail_data(self, w: Ui_MainWindow) -> Tuple[str, int, float]:
         """Returns [name, volume, factor] from maker"""
         cocktail_volume = int(w.LCustomMenge.text())
         # when pulling, the slider can reach every integer value (eg, 1,2,...)
@@ -62,7 +63,7 @@ class DisplayController(DialogHandler):
             cocktailname: str = w.LWMaker.currentItem().text()
         return cocktailname, cocktail_volume, alcohol_faktor
 
-    def get_recipe_field_data(self, w) -> Tuple[str, str, List[str], List[str], int, int, str]:
+    def get_recipe_field_data(self, w: Ui_MainWindow) -> Tuple[str, str, List[str], List[str], int, int, str]:
         """ Return [name, selected, [ingredients], [volumes], enabled, virgin, comment] """
         recipe_name: str = w.LECocktail.text().strip()
         selected_recipe = self.get_list_widget_selection(w.LWRezepte)
@@ -88,7 +89,7 @@ class DisplayController(DialogHandler):
             return False
         return True
 
-    def get_ingredient_window_data(self, w) -> Tuple[str, int]:
+    def get_ingredient_window_data(self, w: Ui_addingredient) -> Tuple[str, int]:
         """Returns the needed data from the ingredient window"""
         ingredient_name = w.CBingredient.currentText()
         volume = int(w.LAmount.text())
@@ -102,15 +103,15 @@ class DisplayController(DialogHandler):
             return True
         return False
 
-    def check_recipe_password(self, w):
+    def check_recipe_password(self, w: Ui_MainWindow):
         """Checks if the password in the recipe window is right"""
         return self.__check_password(w.LEpw)
 
-    def check_bottles_password(self, w):
+    def check_bottles_password(self, w: Ui_MainWindow):
         """Checks if the password in the bottle window is right"""
         return self.__check_password(w.LECleanMachine)
 
-    def check_ingredient_password(self, w):
+    def check_ingredient_password(self, w: Ui_MainWindow):
         """Checks if the password in the ingredient window is right"""
         return self.__check_password(w.LEpw2)
 
@@ -134,7 +135,10 @@ class DisplayController(DialogHandler):
     # UI "MANIPULATE" METHODS #
     ###########################
     # Misc
-    def plusminus(self, label: QLabel, operator: str, minimal=0, maximal=1000, delta=10, side_effect: Optional[Callable] = None):
+    def plusminus(
+        self, label: QLabel, operator: str, minimal=0, maximal=1000,
+        delta=10, side_effect: Optional[Callable] = None
+    ):
         """ increases or decreases the value by a given amount in the boundaries
         operator: '+' or '-'
         Also executes a sideeffect function, if one is given
@@ -187,7 +191,7 @@ class DisplayController(DialogHandler):
         )
 
     # TabWidget
-    def set_tabwidget_tab(self, w, tab: str):
+    def set_tabwidget_tab(self, w: Ui_MainWindow, tab: str):
         """Sets the tabwidget to the given tab.
         tab: ['maker', 'ingredients', 'recipes', 'bottles']
         """
@@ -203,11 +207,11 @@ class DisplayController(DialogHandler):
     def __set_slider_value(self, slider: QSlider, value: int):
         slider.setValue(value)
 
-    def reset_alcohol_slider(self, w):
+    def reset_alcohol_slider(self, w: Ui_MainWindow):
         """Sets the alcohol slider to defaul (100%) value"""
         self.__set_slider_value(w.HSIntensity, 0)
 
-    def reset_virgin_setting(self, w):
+    def reset_virgin_setting(self, w: Ui_MainWindow):
         w.virgin_checkbox.setChecked(False)
 
     # LineEdit
@@ -222,7 +226,10 @@ class DisplayController(DialogHandler):
             lineedit.setText(str(text))
 
     # Combobox
-    def fill_single_combobox(self, combobox: QComboBox, itemlist: List[str], clear_first=False, sort_items=True, first_empty=True):
+    def fill_single_combobox(
+            self, combobox: QComboBox, itemlist: List[str],
+            clear_first=False, sort_items=True, first_empty=True
+    ):
         """Fill a combobox with given items, with the option to sort and fill a empty element as first element"""
         if clear_first:
             combobox.clear()
@@ -232,8 +239,10 @@ class DisplayController(DialogHandler):
         if sort_items:
             combobox.model().sort(0)
 
-    def fill_multiple_combobox(self, combobox_list: List[QComboBox], itemlist: List[str],
-                               clear_first=False, sort_items=True, first_empty=True):
+    def fill_multiple_combobox(
+            self, combobox_list: List[QComboBox], itemlist: List[str],
+            clear_first=False, sort_items=True, first_empty=True
+    ):
         """Fill multiple comboboxes with identical items, can sort and insert filler as first item"""
         for combobox in combobox_list:
             self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
@@ -329,19 +338,19 @@ class DisplayController(DialogHandler):
         for item in item_list:
             list_widget.addItem(item)
 
-    def clear_list_widget_maker(self, w):
+    def clear_list_widget_maker(self, w: Ui_MainWindow):
         """Clears the maker list widget"""
         w.LWMaker.clear()
 
-    def clear_list_widget_ingredients(self, w):
+    def clear_list_widget_ingredients(self, w: Ui_MainWindow):
         """Clears the ingredients list widget"""
         w.LWZutaten.clear()
 
-    def fill_list_widget_maker(self, w, recipe_names: List[str]):
+    def fill_list_widget_maker(self, w: Ui_MainWindow, recipe_names: List[str]):
         """Fill the maker list widget with given recipes"""
         self.fill_list_widget(w.LWMaker, recipe_names)
 
-    def fill_list_widget_recipes(self, w, recipe_names: List[str]):
+    def fill_list_widget_recipes(self, w: Ui_MainWindow, recipe_names: List[str]):
         """Fill the recipe list widget with given recipes"""
         self.fill_list_widget(w.LWRezepte, recipe_names)
 
@@ -351,10 +360,11 @@ class DisplayController(DialogHandler):
         checkbox.setChecked(bool(value))
 
     # others
-    def fill_recipe_data_maker(self, w, cocktail: Cocktail, total_volume: int):
+    def fill_recipe_data_maker(self, w: Ui_MainWindow, cocktail: Cocktail, total_volume: int):
         """Fill all the maker view data with the data from the given cocktail"""
         w.LAlkoholname.setText(cocktail.name)
-        w.LMenge.setText(f"{total_volume} ml")
+        display_volume = self._decide_rounding(total_volume * self.EXP_MAKER_FAKTOR, 20)
+        w.LMenge.setText(f"{display_volume} {self.EXP_MAKER_UNIT}")
         w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.0f}%")
         display_data = cocktail.machineadds
         hand = cocktail.handadds
@@ -377,9 +387,15 @@ class DisplayController(DialogHandler):
             else:
                 field_ingredient.setProperty("cssClass", None)
                 self._set_underline(field_ingredient, False)
-                field_volume.setText(f" {ing.amount} ml")
+                display_amount = self._decide_rounding(ing.amount * self.EXP_MAKER_FAKTOR)
+                field_volume.setText(f" {display_amount} {self.EXP_MAKER_UNIT}")
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
+
+    def _decide_rounding(self, val: float, threshold=8):
+        if val >= threshold:
+            return int(val)
+        return round(val, 1)
 
     def _set_strike_through(self, element: QWidget, strike_through: bool):
         """Set the strike through property of the font"""
@@ -393,7 +409,7 @@ class DisplayController(DialogHandler):
         font.setUnderline(underline)
         element.setFont(font)
 
-    def clear_recipe_data_maker(self, w, select_other_item=True):
+    def clear_recipe_data_maker(self, w: Ui_MainWindow, select_other_item=True):
         """Clear the cocktail data in the maker view, only clears selection if no other item was selected"""
         w.LAlkoholgehalt.setText("")
         w.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
@@ -405,7 +421,7 @@ class DisplayController(DialogHandler):
             field_ingredient.setText("")
             field_volume.setText("")
 
-    def clear_recipe_data_recipes(self, w, select_other_item: bool):
+    def clear_recipe_data_recipes(self, w: Ui_MainWindow, select_other_item: bool):
         """Clear the recipe data in recipe view, only clears selection if no other item was selected"""
         w.LECocktail.clear()
         w.LEKommentar.clear()
@@ -416,12 +432,12 @@ class DisplayController(DialogHandler):
         self.clean_multiple_lineedit(self.get_lineedits_recipe(w))
         shared.handaddlist = []
 
-    def refill_recipes_list_widget(self, w, items: List[str]):
+    def refill_recipes_list_widget(self, w: Ui_MainWindow, items: List[str]):
         """Clear and fill again the recipes list widget"""
         w.LWRezepte.clear()
         self.fill_list_widget(w.LWRezepte, items)
 
-    def remove_recipe_from_list_widgets(self, w, recipe_name: str):
+    def remove_recipe_from_list_widgets(self, w: Ui_MainWindow, recipe_name: str):
         """Remove the recipe from the list widgets, suppress signals during process"""
         # block that trigger that no refetching of data (and shared.handadd overwrite) occurs
         w.LWRezepte.blockSignals(True)
@@ -433,7 +449,7 @@ class DisplayController(DialogHandler):
         w.LWRezepte.blockSignals(False)
         w.LWMaker.blockSignals(False)
 
-    def __set_recipe_handadd_comment(self, w, handadd_data: List[Ingredient]):
+    def __set_recipe_handadd_comment(self, w: Ui_MainWindow, handadd_data: List[Ingredient]):
         """Build the comment for the view from the handadd data"""
         comment = ""
         for ing in handadd_data:
@@ -442,7 +458,7 @@ class DisplayController(DialogHandler):
         comment = comment[:-2]
         w.LEKommentar.setText(comment)
 
-    def set_recipe_data(self, w, cocktail: Cocktail):
+    def set_recipe_data(self, w: Ui_MainWindow, cocktail: Cocktail):
         """Fills the recipe data in the recipe view with the cocktail object"""
         w.CHBenabled.setChecked(bool(cocktail.enabled))
         w.offervirgin_checkbox.setChecked(bool(cocktail.virgin_available))
@@ -455,58 +471,58 @@ class DisplayController(DialogHandler):
         self.__set_recipe_handadd_comment(w, cocktail.handadds)
 
     # Some more "specific" function, not using generic but specified field sets
-    def set_label_bottles(self, w, label_names: List[str]):
+    def set_label_bottles(self, w: Ui_MainWindow, label_names: List[str]):
         """Set the bottle label text to given names"""
         labels = self.get_label_bottles(w)
         self.fill_multiple_lineedit(labels, label_names)  # type: ignore
 
     # Migration from supporter.py
-    def get_pushbottons_newbottle(self, w, get_all=False):
+    def get_pushbottons_newbottle(self, w: Ui_MainWindow, get_all=False) -> List[QPushButton]:
         """Returns all new bottles toggle button objects"""
         number = self._choose_bottle_number(get_all)
         return [getattr(w, f"PBneu{x}") for x in range(1, number + 1)]
 
-    def get_levelbar_bottles(self, w, get_all=False):
+    def get_levelbar_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QProgressBar]:
         """Returns all bottles progress bar objects"""
         number = self._choose_bottle_number(get_all)
         return [getattr(w, f"ProBBelegung{x}") for x in range(1, number + 1)]
 
-    def get_comboboxes_bottles(self, w, get_all=False):
+    def get_comboboxes_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QComboBox]:
         """Returns all bottles combo box objects"""
         number = self._choose_bottle_number(get_all)
         return [getattr(w, f"CBB{x}") for x in range(1, number + 1)]
 
-    def get_comboboxes_recipes(self, w):
+    def get_comboboxes_recipes(self, w: Ui_MainWindow) -> List[QComboBox]:
         """Returns all recipe combo box objects"""
         return [getattr(w, f"CBR{x}") for x in range(1, 8)]
 
-    def get_lineedits_recipe(self, w):
+    def get_lineedits_recipe(self, w: Ui_MainWindow) -> List[QLineEdit]:
         """Returns all recipe line edit objects"""
         return [getattr(w, f"LER{x}") for x in range(1, 8)]
 
-    def get_ingredient_fields(self, w):
+    def get_ingredient_fields(self, w: Ui_MainWindow) -> Tuple[Tuple[QLineEdit, QLineEdit, QLineEdit], QCheckBox, QListWidget]:
         """Returns [Name, Alcohol, Volume], CheckedHand, ListWidget Elements for Ingredients"""
-        return [[w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen], w.CHBHand, w.LWZutaten]
+        return (w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen), w.CHBHand, w.LWZutaten
 
-    def get_label_bottles(self, w, get_all=False):
+    def get_label_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
         """Returns all bottles label objects"""
         number = self._choose_bottle_number(get_all)
         return [getattr(w, f"LBelegung{x}") for x in range(1, number + 1)]
 
-    def get_labels_maker_volume(self, w):
+    def get_labels_maker_volume(self, w: Ui_MainWindow) -> List[QLabel]:
         """Returns all maker label objects for volumes of ingredients"""
         return [getattr(w, f"LMZutat{x}") for x in range(1, 10)]
 
-    def get_labels_maker_ingredients(self, w):
+    def get_labels_maker_ingredients(self, w: Ui_MainWindow) -> List[QLabel]:
         """Returns all maker label objects for ingredient name"""
         return [getattr(w, f"LZutat{x}") for x in range(1, 10)]
 
-    def get_numberlabel_bottles(self, w, get_all=False):
+    def get_numberlabel_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
         """Returns all label object for the number of the bottle"""
         number = self._choose_bottle_number(get_all)
         return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]
 
-    def adjust_bottle_number_displayed(self, w):
+    def adjust_bottle_number_displayed(self, w: Ui_MainWindow):
         """Removes the UI elements if not all ten bottles are used per config"""
         used_bottles = self._choose_bottle_number()
         # This needs to be done to get rid of registered bottles in the then removed bottles
@@ -525,7 +541,7 @@ class DisplayController(DialogHandler):
             for element in elements[used_bottles::]:
                 element.deleteLater()
 
-    def adjust_maker_label_size_cocktaildata(self, w):
+    def adjust_maker_label_size_cocktaildata(self, w: Ui_MainWindow):
         """Adjusts the fontsize for larger screens"""
         # iterate over all size types and adjust size relative to window height
         # default height was 480 for provided UI

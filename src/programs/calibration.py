@@ -1,27 +1,25 @@
 import sys
-from pathlib import Path
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.uic import loadUi
 
 from src.config_manager import ConfigManager
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LoggerHandler, LogFiles
 from src.machine.controller import MACHINE
+from src.ui_elements.calibration import Ui_MainWindow
 
 
-ui_file = Path(__file__).parents[1].absolute() / "ui_elements" / "Calibration.ui"
-logger = LoggerHandler("calibration_module", "production_logs")
+logger = LoggerHandler("calibration_module", LogFiles.PRODUCTION)
 
 
-class CalibrationScreen(QMainWindow, ConfigManager):
+class CalibrationScreen(QMainWindow, Ui_MainWindow, ConfigManager):
     def __init__(self):
         """ Init the calibration Screen. """
         super().__init__()
         ConfigManager.__init__(self)
-        loadUi(ui_file, self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        self.setupUi(self)
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         # Connect the Button
         bottles = self.MAKER_NUMBER_BOTTLES
         self.PB_start.clicked.connect(self.output_volume)
