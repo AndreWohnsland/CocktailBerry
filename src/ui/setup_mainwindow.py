@@ -168,10 +168,16 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
         self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))
-        self.PBMplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(
-            self.LCustomMenge, "+", 100, 400, 25, lambda: maker.update_shown_recipe(self)))
-        self.PBMminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(
-            self.LCustomMenge, "-", 100, 400, 25, lambda: maker.update_shown_recipe(self)))
+        self.PBMplus.clicked.connect(
+            lambda: DP_CONTROLLER.plusminus(
+                self.LCustomMenge, "+", 100, 400, 25,
+                lambda: maker.update_shown_recipe(self, False)
+            ))
+        self.PBMminus.clicked.connect(
+            lambda: DP_CONTROLLER.plusminus(
+                self.LCustomMenge, "-", 100, 400, 25,
+                lambda: maker.update_shown_recipe(self, False)
+            ))
         self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
         self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients(self))
         self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes(self))
@@ -186,7 +192,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.LWRezepte.currentTextChanged.connect(lambda: recipes.load_selected_recipe_data(self))
 
         # Connects the slider
-        self.HSIntensity.valueChanged.connect(lambda: maker.update_shown_recipe(self))
+        self.HSIntensity.valueChanged.connect(lambda: maker.update_shown_recipe(self, False))
 
         # Connects the virgin checkbox
         self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))
