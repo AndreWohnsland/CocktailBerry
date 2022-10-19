@@ -33,8 +33,11 @@ dialog:
     en: 'Error, the ingredient is still used at a bottle!'
     de: 'Fehler, die Zutat ist noch in der Belegung registriert!'
   ingredient_still_at_recipe:
-    en: "Recipe can not be deleted, it is still used at:\n<{recipe_string}>"
+    en: "Ingredient can not be deleted, it is still used at:\n<{recipe_string}>"
     de: "Zutat kann nicht gelöscht werden, da sie in:\n<{recipe_string}>\ngenutzt wird"
+  ingredient_still_as_machine_add:
+    en: "Ingredient can not be changed to hand add, it is still used as machine add at:\n{recipe_list}"
+    de: "Zutat kann nicht auf Hand geändert werden, da sie in:\n{recipe_list}\nmit der Maschine genutzt wird"
   ingredient_double_usage:
     en: "One of the ingredient\n<{ingredient_name}>\nwas used multiple times!"
     de: "Eine der Zutaten:\n<{ingredient_name}>\nwurde doppelt verwendet!"
@@ -134,6 +137,9 @@ dialog:
   ask_backup_overwrite:
     en: 'Load selected backup in? This will overwrite local DB and configuration. The program will restart afterwards.'
     de: 'Ausgewähltes Backup verwenden? Lokale Daten werden überschrieben. Ein Neustart wird danach ausgeführt.'
+  ask_enable_all_recipes:
+    en: 'Do you want to enable all recipes? All possible ones will be then shown at the maker tab.'
+    de: 'Alle Rezepte aktiv setzen? Machbare Rezepte werden dann im Maker Tab angezeigt.'
   backup_created:
     en: 'Backup has been created at: {folder}.'
     de: 'Backup wurde unter {folder} gespeichert.'

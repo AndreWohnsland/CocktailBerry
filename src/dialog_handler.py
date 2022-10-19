@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Literal, Optional
+from typing import Dict, List, Literal, Optional
 import yaml
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget
 from PyQt5.QtCore import Qt
@@ -96,6 +96,11 @@ class DialogHandler(ConfigManager):
     def say_ingredient_still_at_recipe(self, recipe_string: str):
         """Informs user that the ingrdient is still used in a recipe"""
         self.__output_language_dialog(self.dialogs["ingredient_still_at_recipe"], recipe_string=recipe_string)
+
+    def say_ingredient_still_as_machine_in_recipe(self, recipe_list: List[str]):
+        """Informs user that the ingrdient is still used in a recipe as machine add"""
+        formatted_string = ", ".join(recipe_list)
+        self.__output_language_dialog(self.dialogs["ingredient_still_as_machine_add"], recipe_list=formatted_string)
 
     def say_ingredient_double_usage(self, ingredient_name: str):
         """Informs user that the ingredient is already used at least one other time"""
@@ -241,6 +246,11 @@ class DialogHandler(ConfigManager):
     def ask_backup_overwrite(self):
         """Asks the user if he wants to use backup"""
         message = self.__choose_language(self.dialogs["ask_backup_overwrite"])
+        return self.user_okay(message)
+
+    def ask_enable_all_recipes(self):
+        """Asks the user if he wants to set all recipes to active"""
+        message = self.__choose_language(self.dialogs["ask_enable_all_recipes"])
         return self.user_okay(message)
 
 
