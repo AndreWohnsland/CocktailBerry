@@ -199,6 +199,15 @@ class DatabaseCommander:
             return data[0][0], data[0][1]
         return 0, 0
 
+    def get_recipes_using_ingredient_by_machine(self, ingredient_id: int) -> List[str]:
+        """Returns a list of recipes names still using the ingredient as machine add"""
+        query = """SELECT DISTINCT R.Name FROM
+                Recipes R INNER JOIN RecipeData RD 
+                ON R.ID = RD.Recipe_ID
+                WHERE RD.Ingredient_ID=?
+                AND RD.Hand=0"""
+        return [x[0] for x in self.handler.query_database(query, (ingredient_id,))]
+
     # set (update) commands
     def set_bottleorder(self, ingredient_names: List[str]):
         """Set bottles to the given list of bottles, need all bottles"""
