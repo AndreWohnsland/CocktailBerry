@@ -29,7 +29,7 @@ def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):
         cocktails = DB_COMMANDER.get_all_cocktails(get_disabled=False)
 
     handadds_ids = DB_COMMANDER.get_available_ids()
-    available_cocktail_names = [x.name for x in cocktails if x.is_possible(handadds_ids)]
+    available_cocktail_names = [x for x in cocktails if x.is_possible(handadds_ids)]
     DP_CONTROLLER.fill_list_widget_maker(w, available_cocktail_names)
 
 
