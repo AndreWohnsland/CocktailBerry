@@ -55,6 +55,15 @@ sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
 
 After the reboot, the calibration should be okay.
 
+## How to Have the Right Time
+
+With version __Version 1.11.0__, there is the new config value `MAKER_CHECK_INTERNET`.
+If you wish to use your microservice, but got no internet at the moment, the data will be saved and send later.
+One problem that arised, is that, for example on a standard raspberry pi, the clock and therefore the timestamp will probably be wrong.
+This new option tackles that. If it's set active with an active microservice, it will check for internet connection at startup.
+If there is no connection, a dialog will pop up and give the user the possibility to adjust the time.
+In case the machine got a RTC build in and under usage, this option can usually be set to `false`, because due to the RTC, the time should be correct.
+
 ## Problems Installing Software on Raspberry Pi
 
 The Raspberry Pi can sometimes differ from other machines in terms of installation. Here are some issues that might occur.
