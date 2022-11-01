@@ -49,6 +49,8 @@ class ConfigManager:
     MAKER_BOARD = "RPI"
     # Theme Setting to load according qss file
     MAKER_THEME = "default"
+    # Flag to check if internet is up at start
+    MAKER_CHECK_INTERNET = True
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
@@ -87,6 +89,7 @@ class ConfigManager:
             "MAKER_SEARCH_UPDATES": (bool, []),
             "MAKER_BOARD": (str, [_build_support_checker(SUPPORTED_BOARDS)]),
             "MAKER_THEME": (str, [_build_support_checker(SUPPORTED_THEMES)]),
+            "MAKER_CHECK_INTERNET": (bool, []),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
