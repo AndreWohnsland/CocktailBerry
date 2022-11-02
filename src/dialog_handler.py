@@ -253,6 +253,11 @@ class DialogHandler(ConfigManager):
         message = self.__choose_language(self.dialogs["ask_enable_all_recipes"])
         return self.user_okay(message)
 
+    def ask_to_adjust_time(self):
+        """Asks the user if he wants to adjust the time"""
+        message = self.__choose_language(self.dialogs["ask_adjust_time"])
+        return self.user_okay(message)
+
 
 class UiLanguage(ConfigManager):
     """Class to set the UI language to the appropriate Language"""
@@ -381,6 +386,11 @@ class UiLanguage(ConfigManager):
         w.button_calibration.setText(self.__choose_language(window["calibration"]))
         w.button_reboot.setText(self.__choose_language(window["reboot"]))
         w.button_shutdown.setText(self.__choose_language(window["shutdown"]))
+
+    def adjust_datepicker_window(self, w):
+        """Translate all the labels from the datepicker window"""
+        window = self.dialogs["datepicker"]
+        w.header.setText(self.__choose_language(window["header"]))
 
 
 UI_LANGUAGE = UiLanguage()
