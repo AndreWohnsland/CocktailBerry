@@ -16,6 +16,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LogFiles, LoggerHandler
 from src.ui.setup_option_window import OptionWindow
 from src.updater import Updater
+from src.utils import has_connection
 
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui.setup_progress_screen import ProgressScreen
@@ -26,6 +27,7 @@ from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_handadd_widget import HandaddWidget
 from src.ui.setup_avialable_window import AvailableWindow
 from src.ui.setup_team_window import TeamScreen
+from src.ui.setup_datepicker import DatePicker
 
 
 class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
@@ -55,6 +57,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.availw: Optional[AvailableWindow] = None
         self.teamw: Optional[TeamScreen] = None
         self.option_window: Optional[OptionWindow] = None
+        self.datepicker: Optional[DatePicker] = None
         UI_LANGUAGE.adjust_mainwindow(self)
         MACHINE.set_up_pumps()
         self.showFullScreen()
@@ -62,8 +65,10 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
         self.update_check()
+        self._connection_check()
 
     def update_check(self):
+        """Checks if there is an update and asks to update, if exists"""
         if not self.MAKER_SEARCH_UPDATES:
             return
         updater = Updater()
@@ -71,6 +76,20 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
             return
         if DP_CONTROLLER.ask_to_update():
             updater.update()
+
+    def _connection_check(self):
+        """Checks if there is an internet connection
+        Asks user to adjust time, if there is no no connection
+        """
+        # TODO: Finish here with also microservice active when done with testing
+        if not self.MAKER_CHECK_INTERNET:  # or not self.MICROSERVICE_ACTIVE:
+            return
+        # Also first check if there is no connection b4 using this
+        # if has_connection():
+        #     return
+        # And also asks the user if he want to adjust the time
+        if DP_CONTROLLER.ask_to_adjust_time():
+            self.datepicker = DatePicker()
 
     def passwordwindow(self, le_to_write: QLineEdit, x_pos=0, y_pos=0, headertext="Password"):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
