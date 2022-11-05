@@ -1,3 +1,6 @@
+import platform
+from typing import Literal, Tuple
+from dataclasses import dataclass
 import http.client as httplib
 
 
@@ -12,3 +15,23 @@ def has_connection() -> bool:
         return False
     finally:
         conn.close()
+
+
+@dataclass
+class PlatformData:
+    platform: str   # eg. Windows-10-...
+    machine: str    # eg. AMD64
+    architecture: Tuple[str, str]   # eg. ('64bit', 'WindowsPE')
+    system: Literal["Linux", "Darwin", "Java", "Windows", ""]
+    release: str  # eg. 10
+
+
+def get_platform_data() -> PlatformData:
+    """Returns the specified platform data"""
+    return PlatformData(
+        platform.platform(),
+        platform.machine(),
+        platform.architecture(),
+        platform.system(),  # type: ignore | this usually only gives the literals specified
+        platform.release(),
+    )
