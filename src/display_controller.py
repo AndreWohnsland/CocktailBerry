@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, List, Literal, Optional, Tuple, Union
+from typing import Callable, List, Optional, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar, QListWidgetItem
@@ -11,6 +11,12 @@ from src.config_manager import shared
 from src import MAX_SUPPORTED_BOTTLES
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui_elements.bonusingredient import Ui_addingredient
+
+# Grace period, will be switched once Python 3.8+ is mandatory
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 STYLE_FOLDER = Path(__file__).parents[0].absolute() / "ui" / "styles"
 
