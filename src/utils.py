@@ -1,7 +1,18 @@
 import platform
-from typing import Literal, Tuple
+import os
+from typing import Tuple
 from dataclasses import dataclass
 import http.client as httplib
+
+from src.logger_handler import LoggerHandler
+
+# Grace period, will be switched once Python 3.8+ is mandatory
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
+_logger = LoggerHandler("utils")
 
 
 def has_connection() -> bool:
@@ -35,3 +46,19 @@ def get_platform_data() -> PlatformData:
         platform.system(),  # type: ignore | this usually only gives the literals specified
         platform.release(),
     )
+
+
+def set_system_time(time_string: str):
+    """Sets the system time to the given time, uses YYYY-MM-DD HH:MM:SS as format"""
+    p_data = get_platform_data()
+    # checking system, currently only setting on Linux (RPi), bc. its only one supported
+    supported_os = ["Linux"]
+    _logger.log_event("INFO", f"Setting time to: {time_string}")
+    if p_data.system == "Linux":
+        time_command = f"timedatectl set-time {time_string}"
+        os.system(time_command)
+    else:
+        _logger.log_event(
+            "WARNING",
+            f"Could not set time, your OS is: {p_data.system} currently supported OS are: {supported_os}"
+        )
