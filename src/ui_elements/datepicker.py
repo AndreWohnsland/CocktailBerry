@@ -58,7 +58,7 @@ class Ui_datepicker(object):
         self.pb_ok.setMinimumSize(QtCore.QSize(0, 70))
         self.pb_ok.setMaximumSize(QtCore.QSize(16777215, 200))
         font = QtGui.QFont()
-        font.setPointSize(20)
+        font.setPointSize(28)
         font.setBold(True)
         font.setWeight(75)
         self.pb_ok.setFont(font)
