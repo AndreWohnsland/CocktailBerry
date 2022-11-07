@@ -36,6 +36,9 @@ class PlatformData:
     system: Literal["Linux", "Darwin", "Java", "Windows", ""]
     release: str  # eg. 10
 
+    def __str__(self) -> str:
+        return f"Running on {self.system}, {self.architecture[0]} rel. {self.release}, machine: {self.machine} ({self.platform})"
+
 
 def get_platform_data() -> PlatformData:
     """Returns the specified platform data"""
