@@ -82,6 +82,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         Asks user to adjust time, if there is no no connection
         """
         # TODO: Finish here with also microservice active when done with testing
+        # only needed if microservice is also active
         if not self.MAKER_CHECK_INTERNET:  # or not self.MICROSERVICE_ACTIVE:
             return
         # Also first check if there is no connection b4 using this
