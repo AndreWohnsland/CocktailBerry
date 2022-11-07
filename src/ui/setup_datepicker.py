@@ -5,6 +5,7 @@ from src.ui_elements.datepicker import Ui_datepicker
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.utils import set_system_time
 
 
 class DatePicker(QMainWindow, Ui_datepicker):
@@ -28,10 +29,10 @@ class DatePicker(QMainWindow, Ui_datepicker):
         """Submits the selected Time in the interface to the OS"""
         d: QDate = self.selected_date.date()  # pylint: disable=invalid-name
         t: QTime = self.selected_time.time()  # pylint: disable=invalid-name
-        # TODO: Finish setting here
         # Need the format = timedatectl set-time YYYY-MM-DD HH:MM:SS
         time_string = f"{d.year()}-{d.month():02}-{d.day():02} {t.hour():02}:{t.minute():02}:00"
-        print(time_string)
+        set_system_time(time_string)
+        self.close()
 
     def _init_date_and_time(self):
         self.selected_time.setTime(QTime.currentTime())
