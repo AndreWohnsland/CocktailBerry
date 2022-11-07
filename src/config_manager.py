@@ -7,6 +7,7 @@ from pyfiglet import Figlet
 
 from src.logger_handler import LoggerHandler, LogFiles
 from src.models import Ingredient
+from src.utils import get_platform_data
 from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES, SUPPORTED_BOARDS, SUPPORTED_THEMES
 
 
@@ -241,6 +242,7 @@ def show_start_message():
     start_message = f"{PROJECT_NAME} Version {__version__}"
     print(figlet.renderText(start_message))
     print(start_message)
+    print(get_platform_data())
 
 
 shared = Shared()
