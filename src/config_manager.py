@@ -101,7 +101,7 @@ class ConfigManager:
         }
         # Dict of Format "configname": (type, List[CheckCallbacks]) for the single list elements
         # only needed if the above config type was defined as list type, rest is identical to top schema
-        self.config_type_list = {
+        self.config_type_list: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
             "PUMP_PINS": (int, []),
             "PUMP_VOLUMEFLOW": (int, [_build_number_limiter(1, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
@@ -164,7 +164,7 @@ class ConfigManager:
             for check_fun in check_functions:
                 check_fun(configname, config)
         # aditional len check of the list data,
-        min_bottles = self._choose_bottle_number()
+        min_bottles = self.choose_bottle_number()
         min_len_config = {
             "PUMP_PINS": min_bottles,
             "PUMP_VOLUMEFLOW": min_bottles,
@@ -175,7 +175,7 @@ class ConfigManager:
             return
         _validate_list_length(configlist, configname, min_len)
 
-    def _choose_bottle_number(self, get_all=False):
+    def choose_bottle_number(self, get_all=False):
         """Selects the number of Bottles, limits by max supported count"""
         if get_all:
             return MAX_SUPPORTED_BOTTLES
