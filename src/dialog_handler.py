@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 import yaml
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget
 from PyQt5.QtCore import Qt
-from src.config_manager import ConfigManager
+from src.config_manager import CONFIG as cfg
 
 # Grace period, will be switched once Python 3.8+ is mandatory
 try:
@@ -15,7 +15,7 @@ DIRPATH = Path(__file__).parent.absolute()
 LANGUAGE_FILE = DIRPATH / "language.yaml"
 
 
-class DialogHandler(ConfigManager):
+class DialogHandler():
     """Class to hold all the dialoges for the popups and language settings"""
 
     def __init__(self) -> None:
@@ -26,7 +26,7 @@ class DialogHandler(ConfigManager):
 
     def __choose_language(self, element: Dict[str, str], **kwargs) -> str:
         """Choose either the given language if exists, or english if not piping additional info into template"""
-        language = self.UI_LANGUAGE
+        language = cfg.UI_LANGUAGE
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
@@ -51,7 +51,7 @@ class DialogHandler(ConfigManager):
         no_text = self.__choose_language(self.dialogs["no_button"])
         yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)
         msg_box.addButton(no_text, QMessageBox.NoRole)
-        style_sheet = str(DIRPATH / "ui" / "styles" / f"{self.MAKER_THEME}.css")
+        style_sheet = str(DIRPATH / "ui" / "styles" / f"{cfg.MAKER_THEME}.css")
         with open(style_sheet, "r", encoding="utf-8") as filehandler:
             msg_box.setStyleSheet(filehandler.read())
         msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
@@ -219,6 +219,13 @@ class DialogHandler(ConfigManager):
         """Informs the user that the backup has failed."""
         self.__output_language_dialog(self.dialogs["backup_failed"], file=file)
 
+    def say_python_deprecated(self, sys_python: str, program_python: str):
+        self.__output_language_dialog(
+            self.dialogs["python_deprecated"],
+            sys_python=sys_python,
+            program_python=program_python
+        )
+
     def ask_to_update(self):
         """Asks the user if he wants to get the latest update"""
         message = self.__choose_language(self.dialogs["update_available"])
@@ -265,7 +272,7 @@ class DialogHandler(ConfigManager):
         return self.user_okay(message)
 
 
-class UiLanguage(ConfigManager):
+class UiLanguage():
     """Class to set the UI language to the appropriate Language"""
     cancel_button = {
         "en": "Cancel",
@@ -283,7 +290,7 @@ class UiLanguage(ConfigManager):
 
     def __choose_language(self, element: dict, **kwargs) -> str:
         """Choose either the given language if exists, or english if not piping additional info into template"""
-        language = self.UI_LANGUAGE
+        language = cfg.UI_LANGUAGE
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 

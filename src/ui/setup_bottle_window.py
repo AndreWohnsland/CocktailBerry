@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 
 from src.ui_elements.bottlewindow import Ui_Bottlewindow
 
-from src.config_manager import ConfigManager
+from src.config_manager import CONFIG as cfg
 from src.tabs.bottles import set_fill_level_bars
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
@@ -11,13 +11,12 @@ from src.display_controller import DP_CONTROLLER
 from src import MAX_SUPPORTED_BOTTLES
 
 
-class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
+class BottleWindow(QMainWindow, Ui_Bottlewindow):
     """ Creates the Window to change to levels of the bottles. """
 
     def __init__(self, parent=None):
         """ Init. Connects all the buttons, gets the names from Mainwindow/DB. """
         super().__init__()
-        ConfigManager.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
@@ -32,7 +31,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
         self.maxvolume = []
         self.asign_bottle_data()
         # creates lists of the objects and assings functions later through a loop
-        number = self._choose_bottle_number()
+        number = cfg.choose_bottle_number()
         myplus = [getattr(self, f"PBMplus{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
         myminus = [getattr(self, f"PBMminus{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
         mylabel = [getattr(self, f"LAmount{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
@@ -60,7 +59,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
 
     def eintragen_clicked(self):
         """ Enters the Data and closes the window. """
-        number = self._choose_bottle_number()
+        number = cfg.choose_bottle_number()
         labelname = [getattr(self, f"LAmount{i}") for i in range(1, number + 1)]
         for label, ingredient_id, maxvolume in zip(labelname, self.id_list, self.maxvolume):
             new_amount = min(int(label.text()), maxvolume)
@@ -69,7 +68,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow, ConfigManager):
         self.close()
 
     def asign_bottle_data(self):
-        number = self._choose_bottle_number()
+        number = cfg.choose_bottle_number()
         bottle_data = DB_COMMANDER.get_bottle_data_bottle_window()[:number]
         for i, (ingredient_name, bottle_level, ingredient_id, ingredient_volume) in enumerate(bottle_data, start=1):
             labelobj = getattr(self, f"LName{i}")

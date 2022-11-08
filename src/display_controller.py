@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar, QListWidgetItem
 
+from src.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
 from src.models import Cocktail, Ingredient
@@ -104,7 +105,7 @@ class DisplayController(DialogHandler):
         """Compares the given lineedit to the master password"""
         password = lineedit.text()
         lineedit.setText("")
-        if password == self.UI_MASTERPASSWORD:
+        if password == cfg.UI_MASTERPASSWORD:
             return True
         return False
 
@@ -160,15 +161,15 @@ class DisplayController(DialogHandler):
 
     def set_display_settings(self, window_object: QWidget, resize=True):
         """Checks dev environment, adjust cursor and resize accordingly, if resize is wished"""
-        if not self.UI_DEVENVIRONMENT:
+        if not cfg.UI_DEVENVIRONMENT:
             window_object.setCursor(Qt.BlankCursor)  # type: ignore
         if resize:
-            window_object.setFixedSize(self.UI_WIDTH, self.UI_HEIGHT)
-            window_object.resize(self.UI_WIDTH, self.UI_HEIGHT)
+            window_object.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
+            window_object.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
 
     def inject_stylesheet(self, window_object: QWidget):
         """Adds the central stylesheet to the gui"""
-        style_file = f"{self.MAKER_THEME}.css"
+        style_file = f"{cfg.MAKER_THEME}.css"
         with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as filehandler:
             window_object.setStyleSheet(filehandler.read())
 
@@ -383,8 +384,8 @@ class DisplayController(DialogHandler):
     def fill_recipe_data_maker(self, w: Ui_MainWindow, cocktail: Cocktail, total_volume: int):
         """Fill all the maker view data with the data from the given cocktail"""
         w.LAlkoholname.setText(cocktail.name)
-        display_volume = self._decide_rounding(total_volume * self.EXP_MAKER_FAKTOR, 20)
-        w.LMenge.setText(f"{display_volume} {self.EXP_MAKER_UNIT}")
+        display_volume = self._decide_rounding(total_volume * cfg.EXP_MAKER_FAKTOR, 20)
+        w.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")
         w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.0f}%")
         display_data = cocktail.machineadds
         hand = cocktail.handadds
@@ -407,8 +408,8 @@ class DisplayController(DialogHandler):
             else:
                 field_ingredient.setProperty("cssClass", None)
                 self._set_underline(field_ingredient, False)
-                display_amount = self._decide_rounding(ing.amount * self.EXP_MAKER_FAKTOR)
-                field_volume.setText(f" {display_amount} {self.EXP_MAKER_UNIT}")
+                display_amount = self._decide_rounding(ing.amount * cfg.EXP_MAKER_FAKTOR)
+                field_volume.setText(f" {display_amount} {cfg.EXP_MAKER_UNIT}")
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
 
@@ -494,17 +495,17 @@ class DisplayController(DialogHandler):
     # Migration from supporter.py
     def get_pushbottons_newbottle(self, w: Ui_MainWindow, get_all=False) -> List[QPushButton]:
         """Returns all new bottles toggle button objects"""
-        number = self._choose_bottle_number(get_all)
+        number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"PBneu{x}") for x in range(1, number + 1)]
 
     def get_levelbar_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QProgressBar]:
         """Returns all bottles progress bar objects"""
-        number = self._choose_bottle_number(get_all)
+        number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"ProBBelegung{x}") for x in range(1, number + 1)]
 
     def get_comboboxes_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QComboBox]:
         """Returns all bottles combo box objects"""
-        number = self._choose_bottle_number(get_all)
+        number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"CBB{x}") for x in range(1, number + 1)]
 
     def get_comboboxes_recipes(self, w: Ui_MainWindow) -> List[QComboBox]:
@@ -521,7 +522,7 @@ class DisplayController(DialogHandler):
 
     def get_label_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
         """Returns all bottles label objects"""
-        number = self._choose_bottle_number(get_all)
+        number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"LBelegung{x}") for x in range(1, number + 1)]
 
     def get_labels_maker_volume(self, w: Ui_MainWindow) -> List[QLabel]:
@@ -534,12 +535,12 @@ class DisplayController(DialogHandler):
 
     def get_numberlabel_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
         """Returns all label object for the number of the bottle"""
-        number = self._choose_bottle_number(get_all)
+        number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]
 
     def adjust_bottle_number_displayed(self, w: Ui_MainWindow):
         """Removes the UI elements if not all ten bottles are used per config"""
-        used_bottles = self._choose_bottle_number()
+        used_bottles = cfg.choose_bottle_number()
         # This needs to be done to get rid of registered bottles in the then removed bottles
         all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
         DB_COMMANDER.set_bottleorder(all_bottles[: used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
@@ -561,7 +562,7 @@ class DisplayController(DialogHandler):
         # iterate over all size types and adjust size relative to window height
         # default height was 480 for provided UI
         # so if its larger, the font should also be larger here
-        height = self.UI_HEIGHT
+        height = cfg.UI_HEIGHT
         # no need to adjust if its near to the original height
         default_height = 480
         if height <= default_height + 20:

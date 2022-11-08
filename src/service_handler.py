@@ -3,7 +3,7 @@ import os
 from typing import Dict, Optional
 from enum import Enum
 import requests
-from src.config_manager import ConfigManager
+from src.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.logger_handler import LoggerHandler, LogFiles
 from src.models import Cocktail
@@ -15,26 +15,26 @@ class Posttype(Enum):
     FILE = "file"
 
 
-class ServiceHandler(ConfigManager):
+class ServiceHandler():
     """Class to handle all calls to the mircoservice within the docker"""
 
     def __init__(self):
         super().__init__()
-        self.base_url = self.MICROSERVICE_BASE_URL
+        self.base_url = cfg.MICROSERVICE_BASE_URL
         self.logger = LoggerHandler("microservice", LogFiles.SERVICE)
         self.headers = {"content-type": "application/json"}
 
     def post_cocktail_to_hook(self, cocktailname: str, cocktail_volume: int, cocktailobject: Cocktail) -> Dict:
         """Post the given cocktail data to the microservice handling internet traffic to send to defined webhook"""
-        if not self.MICROSERVICE_ACTIVE:
+        if not cfg.MICROSERVICE_ACTIVE:
             return service_disabled()
         # Extracts the volume and name from the ingredient objects
         ingredient_data = [{"name": i.name, "volume": i.amount} for i in cocktailobject.adjusted_ingredients]
         data = {
             "cocktailname": cocktailname,
             "volume": cocktail_volume,
-            "machinename": self.MAKER_NAME,
-            "countrycode": self.UI_LANGUAGE,
+            "machinename": cfg.MAKER_NAME,
+            "countrycode": cfg.UI_LANGUAGE,
             "ingredients": ingredient_data
         }
         payload = json.dumps(data)
@@ -43,7 +43,7 @@ class ServiceHandler(ConfigManager):
 
     def send_mail(self, file_name: str, binary_file) -> Dict:
         """Post the given file to the microservice handling internet traffic to send as mail"""
-        if not self.MICROSERVICE_ACTIVE:
+        if not cfg.MICROSERVICE_ACTIVE:
             return service_disabled()
         endpoint = self._decide_debug_endpoint(f"{self.base_url}/email")
         files = {"upload_file": (file_name, binary_file,)}
@@ -51,10 +51,10 @@ class ServiceHandler(ConfigManager):
 
     def post_team_data(self, team_name: str, cocktail_volume: int) -> Dict:
         """Post the given team name to the team api if activated"""
-        if not self.TEAMS_ACTIVE:
+        if not cfg.TEAMS_ACTIVE:
             return team_disabled()
         payload = json.dumps({"team": team_name, "volume": cocktail_volume})
-        endpoint = self._decide_debug_endpoint(f"{self.TEAM_API_URL}/cocktail")
+        endpoint = self._decide_debug_endpoint(f"{cfg.TEAM_API_URL}/cocktail")
         return self.__try_to_send(endpoint, Posttype.TEAMDATA, payload=payload)
 
     def _decide_debug_endpoint(self, endpoint: str):
@@ -109,7 +109,7 @@ class ServiceHandler(ConfigManager):
 
     def __check_failed_data(self):
         """Gets one failed teamdata and sends it"""
-        endpoint = f"{self.TEAM_API_URL}/cocktail"
+        endpoint = f"{cfg.TEAM_API_URL}/cocktail"
         failed_data = DB_COMMANDER.get_failed_teamdata()
         if failed_data:
             msg_id, payload = failed_data

@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBo
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QIcon
 
-from src.config_manager import ConfigError, ConfigManager
+from src.config_manager import ConfigError, CONFIG as cfg
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.setup_keyboard_widget import KeyboardWidget
@@ -20,10 +20,9 @@ MEDIUM_FONT = 14
 LARGE_FONT = 16
 
 
-class ConfigWindow(QMainWindow, ConfigManager):
+class ConfigWindow(QMainWindow):
     def __init__(self, parent):
         super().__init__()
-        ConfigManager.__init__(self)
         DP_CONTROLLER.inject_stylesheet(self)
         self.mainscreen = parent
         self.icon_path = parent.icon_path
@@ -40,7 +39,7 @@ class ConfigWindow(QMainWindow, ConfigManager):
         self.widget = QWidget()
         self.vbox = QVBoxLayout()
 
-        for key, value in self.config_type.items():
+        for key, value in cfg.config_type.items():
             needed_type, _ = value
             self._choose_dispay_style(key, needed_type)
 
@@ -70,8 +69,8 @@ class ConfigWindow(QMainWindow, ConfigManager):
 
     def _save_config(self):
         try:
-            self.validate_and_set_config(self._retrieve_values())
-            self.sync_config_to_file()
+            cfg.validate_and_set_config(self._retrieve_values())
+            cfg.sync_config_to_file()
         except ConfigError as err:
             DP_CONTROLLER.say_wrong_config(str(err))
             return
@@ -87,7 +86,7 @@ class ConfigWindow(QMainWindow, ConfigManager):
         self._adjust_font(header, LARGE_FONT, True)
         self.vbox.addWidget(header)
         # Reads out the current config value
-        current_value = getattr(self, configname)
+        current_value = getattr(cfg, configname)
         getter_fn = self._build_input_field(configname, configtype, current_value)
         # asigning the getter function for the config into the dict
         self.config_objects[configname] = getter_fn
@@ -111,7 +110,7 @@ class ConfigWindow(QMainWindow, ConfigManager):
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: PasswordScreen(self, config_input, 300, 50, configname))
+        config_input.clicked.connect(lambda: PasswordScreen(self, config_input, 300, 50, configname))  # type: ignore
         layout.addWidget(config_input)
         return lambda: int(config_input.text())
 
@@ -120,7 +119,8 @@ class ConfigWindow(QMainWindow, ConfigManager):
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: PasswordScreen(self, config_input, 300, 50, configname, True))
+        config_input.clicked.connect(lambda: PasswordScreen(
+            self, config_input, 300, 50, configname, True))  # type: ignore
         layout.addWidget(config_input)
         return lambda: float(config_input.text())
 
@@ -154,7 +154,12 @@ class ConfigWindow(QMainWindow, ConfigManager):
     def _add_ui_element_to_list(self, initial_value, getter_fn_list: List, configname: str, container: QBoxLayout):
         """Adds an additional input element for list buildup"""
         # Gets the type of the list elements
-        list_type, _ = self.config_type_list.get(configname)
+        list_config = cfg.config_type_list.get(configname)
+        # if new added list elements get forgotten, this may happen in this occasion. Catch it here
+        if list_config is None:
+            raise RuntimeError(
+                f"Tried to access list config [{configname}] that is not defined. That should not happen. Please report the error.")
+        list_type, _ = list_config
         h_container = QHBoxLayout()
         getter_fn = self._build_input_field(configname, list_type, initial_value, h_container)
         remove_button = QPushButton("x")
@@ -179,7 +184,7 @@ class ConfigWindow(QMainWindow, ConfigManager):
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: KeyboardWidget(self, config_input, 200))
+        config_input.clicked.connect(lambda: KeyboardWidget(self, config_input, 200))  # type: ignore
         layout.addWidget(config_input)
         return config_input.text
 

@@ -2,12 +2,12 @@ import time
 from typing import List, Union
 from PyQt5.QtWidgets import qApp
 
-from src.config_manager import shared, ConfigManager
+from src.config_manager import shared, CONFIG as cfg
 from src.machine.interface import PinController
 from src.machine.raspberry import RpiController
 
 
-class MachineController(ConfigManager):
+class MachineController():
     """Controler Class for all Machine related Pin routines """
 
     def __init__(self):
@@ -16,7 +16,7 @@ class MachineController(ConfigManager):
 
     def __chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""
-        if self.MAKER_BOARD == "RPI":
+        if cfg.MAKER_BOARD == "RPI":
             return RpiController()
         # In case none is found, fall back to default (RPi)
         return RpiController()
@@ -25,17 +25,17 @@ class MachineController(ConfigManager):
         """Clean the pumps for the defined time in the config.
         Acitvates all pumps for the given time
         """
-        active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
+        active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         t_cleaned = 0.0
         self._header_print("Start Cleaning")
         self._open_pumps(active_pins)
-        while t_cleaned < self.MAKER_CLEAN_TIME:
+        while t_cleaned < cfg.MAKER_CLEAN_TIME:
             self._clean_print(t_cleaned)
-            t_cleaned += self.MAKER_SLEEP_TIME
+            t_cleaned += cfg.MAKER_SLEEP_TIME
             t_cleaned = round(t_cleaned, 2)
-            time.sleep(self.MAKER_SLEEP_TIME)
+            time.sleep(cfg.MAKER_SLEEP_TIME)
             qApp.processEvents()
-        self._clean_print(self.MAKER_CLEAN_TIME)
+        self._clean_print(cfg.MAKER_CLEAN_TIME)
         print("")
         self._close_pumps(active_pins)
         self._header_print("Done Cleaning")
@@ -55,15 +55,15 @@ class MachineController(ConfigManager):
             tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
         """
         # Only shwo team dialog if it is enabled
-        if self.TEAMS_ACTIVE and is_cocktail:
+        if cfg.TEAMS_ACTIVE and is_cocktail:
             w.teamwindow()
         shared.cocktail_started = True
         shared.make_cocktail = True
         if w is not None:
             w.progressionqwindow(recipe)
         indexes = [x - 1 for x in bottle_list]
-        pins = [self.PUMP_PINS[i] for i in indexes]
-        volume_flows = [self.PUMP_VOLUMEFLOW[i] for i in indexes]
+        pins = [cfg.PUMP_PINS[i] for i in indexes]
+        volume_flows = [cfg.PUMP_VOLUMEFLOW[i] for i in indexes]
         pin_times = [round(volume / flow, 1) for volume, flow in zip(volume_list, volume_flows)]
         max_time = max(pin_times)
         # Starting Making cocktail
@@ -76,16 +76,16 @@ class MachineController(ConfigManager):
             # Iterate over each Pin and keep needed state
             for element, (pin, pin_time, volume_flow) in enumerate(zip(pins, pin_times, volume_flows)):
                 if pin_time > current_time:
-                    consumption[element] += volume_flow * self.MAKER_SLEEP_TIME
+                    consumption[element] += volume_flow * cfg.MAKER_SLEEP_TIME
                 elif pin not in already_closed_pins:
                     self._print_time(current_time, max_time)
                     self._close_pumps([pin])
                     already_closed_pins.add(pin)
             # Adjust needed data
             self._consumption_print(consumption, current_time, max_time)
-            current_time += self.MAKER_SLEEP_TIME
+            current_time += cfg.MAKER_SLEEP_TIME
             current_time = round(current_time, 2)
-            time.sleep(self.MAKER_SLEEP_TIME)
+            time.sleep(cfg.MAKER_SLEEP_TIME)
             if w is not None:
                 w.prow_change(current_time / max_time * 100)
             qApp.processEvents()
@@ -104,7 +104,7 @@ class MachineController(ConfigManager):
 
     def set_up_pumps(self):
         """Gets all used pins, prints pins and uses controller class to set up"""
-        active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
+        active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         print(f"Initializing Pins: {active_pins}")
         self._pin_controller.initialize_pinlist(active_pins)
 
@@ -115,7 +115,7 @@ class MachineController(ConfigManager):
 
     def close_all_pumps(self):
         """Close all pins connected to the pumps"""
-        active_pins = self.PUMP_PINS[: self.MAKER_NUMBER_BOTTLES]
+        active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         self._close_pumps(active_pins)
 
     def _close_pumps(self, pinlist: List[int]):
@@ -132,7 +132,7 @@ class MachineController(ConfigManager):
     def _clean_print(self, t_cleaned: float, interval=0.5):
         """Progress print for cleaning"""
         if t_cleaned % interval == 0:
-            print(f"Cleaning, {t_cleaned:.1f}/{self.MAKER_CLEAN_TIME:.1f} s {'.' * int(t_cleaned*2)}", end="\r")
+            print(f"Cleaning, {t_cleaned:.1f}/{cfg.MAKER_CLEAN_TIME:.1f} s {'.' * int(t_cleaned*2)}", end="\r")
 
     def _header_print(self, msg: str):
         """Formats the message with dashes around"""

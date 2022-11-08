@@ -4,7 +4,7 @@ from typing import Optional
 from pathlib import Path
 import typer
 
-from src.config_manager import ConfigManager, version_callback, show_start_message
+from src.config_manager import CONFIG as cfg, version_callback, show_start_message
 from src.migration.updata_data import add_new_recipes_from_default_db
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.calibration import run_calibration
@@ -30,8 +30,7 @@ def main(
     if ctx.invoked_subcommand is not None:
         return
     show_start_message()
-    c_manager = ConfigManager()
-    c_manager.sync_config_to_file()
+    cfg.sync_config_to_file()
     if debug:
         os.environ.setdefault('DEBUG_MS', 'True')
         print("Using debug mode")

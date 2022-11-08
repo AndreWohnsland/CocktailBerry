@@ -7,13 +7,13 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
-from src.config_manager import ConfigManager
+from src.config_manager import CONFIG as cfg
 from src.machine.controller import MACHINE
 from src.tabs import maker, ingredients, recipes, bottles
 from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
-from src.logger_handler import LogFiles, LoggerHandler
+from src.logger_handler import LoggerHandler
 from src.ui.setup_option_window import OptionWindow
 from src.updater import Updater
 from src.utils import has_connection
@@ -30,17 +30,16 @@ from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
 
 
-class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
+class MainScreen(QMainWindow, Ui_MainWindow):
     """ Creates the Mainscreen. """
 
     def __init__(self):
         """ Init the main window. Many of the button and List connects are in pass_setup. """
         super().__init__()
-        ConfigManager.__init__(self)
         self.setupUi(self)
         # Get the basic Logger
-        self.logger_handler = LoggerHandler("cocktail_application", LogFiles.PRODUCTION)
-        self.logger_handler.log_start_program()
+        self.logger = LoggerHandler("cocktail_application")
+        self.logger.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
         self.icon_path = str(Path(__file__).parents[1].absolute() / "ui_elements" / "Cocktail-icon.png")
@@ -69,7 +68,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
 
     def update_check(self):
         """Checks if there is an update and asks to update, if exists"""
-        if not self.MAKER_SEARCH_UPDATES:
+        if not cfg.MAKER_SEARCH_UPDATES:
             return
         updater = Updater()
         if not updater.check_for_updates():
@@ -81,13 +80,12 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         """Checks if there is an internet connection
         Asks user to adjust time, if there is no no connection
         """
-        # TODO: Finish here with also microservice active when done with testing
         # only needed if microservice is also active
-        if not self.MAKER_CHECK_INTERNET:  # or not self.MICROSERVICE_ACTIVE:
+        if not cfg.MAKER_CHECK_INTERNET or not cfg.MICROSERVICE_ACTIVE:
             return
         # Also first check if there is no connection b4 using this
-        # if has_connection():
-        #     return
+        if has_connection():
+            return
         # And also asks the user if he want to adjust the time
         if DP_CONTROLLER.ask_to_adjust_time():
             self.datepicker = DatePicker()
@@ -218,7 +216,7 @@ class MainScreen(QMainWindow, Ui_MainWindow, ConfigManager):
         self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))
 
         # Disable some of the Tabs (for the UI_PARTYMODE, no one can access the recipes)
-        if self.UI_PARTYMODE:
+        if cfg.UI_PARTYMODE:
             self.tabWidget.setTabEnabled(2, False)
 
         # Removes the elements not used depending on number of bottles in bottle tab
