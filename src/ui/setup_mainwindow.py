@@ -1,6 +1,8 @@
 """Connects all the functions to the Buttons as well the Lists
 of the passed window. Also defines the Mode for controls.
 """
+import sys
+import platform
 from pathlib import Path
 from typing import Optional
 from PyQt5.QtCore import Qt
@@ -28,6 +30,8 @@ from src.ui.setup_handadd_widget import HandaddWidget
 from src.ui.setup_avialable_window import AvailableWindow
 from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
+
+from src import FUTURE_PYTHON_VERSION
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -65,6 +69,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         DP_CONTROLLER.set_tab_width(self)
         self.update_check()
         self._connection_check()
+        self._deprecation_check()
 
     def update_check(self):
         """Checks if there is an update and asks to update, if exists"""
@@ -89,6 +94,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # And also asks the user if he want to adjust the time
         if DP_CONTROLLER.ask_to_adjust_time():
             self.datepicker = DatePicker()
+
+    def _deprecation_check(self):
+        """Checks if to display the deprecation warning for newer python version install"""
+        sys_python = sys.version_info
+        if FUTURE_PYTHON_VERSION > sys_python:
+            DP_CONTROLLER.say_python_deprecated(platform.python_version(), f"{sys_python[0]}.{sys_python[1]}")
 
     def passwordwindow(self, le_to_write: QLineEdit, x_pos=0, y_pos=0, headertext="Password"):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """

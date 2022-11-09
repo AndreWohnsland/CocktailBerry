@@ -147,8 +147,8 @@ dialog:
     en: 'There seems to be no internet connection, your date/time may be wrong. This is important when sending data with the service. Do you want to adjust time?'
     de: 'Es scheint keine Internetverbindung zu bestehen, Datum/Zeit könnte falsch sein. Dies ist wichtig, wenn Daten über den Service versand werden. Zeit anpassen?'
   python_deprecated:
-    en: 'Your system Python is {sys_python}, in the future {program_python} is required. Please upgrade, otherwise a future CocktailBerry update will break your program.'
-    de: 'Die Python Version des Systems is {sys_python}, in Zukunft wird {program_python} benötigt. Bitte upgrade diese bald, sonst wird mit einem kommenden Update CocktailBerry nicht mehr funktionieren.'
+    en: 'Your system Python is {sys_python}. In the future, {program_python} is required. Please upgrade, otherwise a future CocktailBerry update will break your program.'
+    de: 'Die Python Version des Systems is {sys_python}. In Zukunft wird {program_python} benötigt. Bitte upgrade diese bald, sonst wird mit einem kommenden Update CocktailBerry nicht mehr funktionieren.'
 
 # Change of language in UI elements
 ui:
