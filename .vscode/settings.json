@@ -1,0 +1,33 @@
+{
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+      "--disable=C0301,C0114,C0115,C0116,R0201",
+      "--max-line-length=120",
+      "--extension-pkg-whitelist=PyQt5"
+    ],
+    "python.formatting.autopep8Args": [
+      "--max-line-length=120",
+      "--ignore",
+      "E402"
+  ],
+    "plantuml.exportSubFolder": false,
+    "plantuml.exportOutDir": "docs/diagrams/out",
+    "plantuml.diagramsRoot": "docs/diagrams",
+    "python.linting.flake8Args": [
+      "\"python.linting.pycodestyleArgs\": [\"--max-line-length=120\"]"
+    ],
+    "cSpell.words": [
+      "Cocktailmaker",
+      "Frontview",
+      "Matplotlib",
+      "Microservices",
+      "multithreading",
+      "numpad",
+      "pyarrow",
+      "pyqt",
+      "pyyaml",
+      "runme",
+      "Sideview"
+    ]
+}

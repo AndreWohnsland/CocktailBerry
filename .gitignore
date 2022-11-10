@@ -161,7 +161,7 @@ cython_debug/
 
 # custom project specifi ones
 venv
-.vscode
+# .vscode
 *.pyc
 *.autosave
 *.log
