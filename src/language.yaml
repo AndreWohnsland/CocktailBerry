@@ -7,10 +7,9 @@
 ##### GENERIC POP UP DIALOGS #####
 # All for dialog windows
 dialog:
-  box:
-    title:
-      en: 'Information'
-      de: 'Information'
+  box_title:
+    en: 'Information'
+    de: 'Information'
   wrong_password:
     en: 'Wrong Password!'
     de: 'Falsches Passwort!'
@@ -153,12 +152,13 @@ dialog:
 # Change of language in UI elements
 ui:
   # Some commonly used elements within multiple windows
-  cancel_button:
-    en: 'Cancel'
-    de: 'Abbrechen'
-  enter_button:
-    en: 'Enter'
-    de: 'Eintragen'
+  generics:
+    cancel_button:
+      en: 'Cancel'
+      de: 'Abbrechen'
+    enter_button:
+      en: 'Enter'
+      de: 'Eintragen'
 
   # dynamic values for maker tab
   maker:
