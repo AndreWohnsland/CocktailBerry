@@ -159,6 +159,12 @@ ui:
     enter_button:
       en: 'Enter'
       de: 'Eintragen'
+    close_button:
+      en: 'Close'
+      de: 'Schließen'
+    ok_button:
+      en: 'Ok'
+      de: 'Ok'
 
   # dynamic values for maker tab
   maker:
