@@ -15,6 +15,22 @@ CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
 logger = LoggerHandler("config_manager", LogFiles.PRODUCTION)
 
 
+class ChooseType:
+    allowed: List[str] = []
+
+
+class LanguageChoose(ChooseType):
+    allowed = SUPPORTED_LANGUAGES
+
+
+class BoardChoose(ChooseType):
+    allowed = SUPPORTED_BOARDS
+
+
+class ThemeChoose(ChooseType):
+    allowed = SUPPORTED_THEMES
+
+
 class ConfigManager:
     """Manager for all static configuration of the machine.
     The Settings defined here are the default settings and will be overritten by the config file"""
@@ -78,7 +94,7 @@ class ConfigManager:
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_PARTYMODE": (bool, []),
             "UI_MASTERPASSWORD": (str, []),
-            "UI_LANGUAGE": (str, [_build_support_checker(SUPPORTED_LANGUAGES)]),
+            "UI_LANGUAGE": (LanguageChoose, [_build_support_checker(SUPPORTED_LANGUAGES)]),
             "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),
             "PUMP_PINS": (list, [self._validate_config_list_type]),
@@ -88,8 +104,8 @@ class ConfigManager:
             "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
             "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
-            "MAKER_BOARD": (str, [_build_support_checker(SUPPORTED_BOARDS)]),
-            "MAKER_THEME": (str, [_build_support_checker(SUPPORTED_THEMES)]),
+            "MAKER_BOARD": (BoardChoose, [_build_support_checker(SUPPORTED_BOARDS)]),
+            "MAKER_THEME": (ThemeChoose, [_build_support_checker(SUPPORTED_THEMES)]),
             "MAKER_CHECK_INTERNET": (bool, []),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
@@ -146,7 +162,8 @@ class ConfigManager:
         datatype, check_functions = config_setting
         # check first if type fits, if list, also check listelements.
         # Additionally run all check funktions provided
-        if isinstance(configvalue, datatype):
+        # if it's a choosetype ignore typing for now, the function will check if the value is in the list.
+        if isinstance(configvalue, datatype) or issubclass(datatype, ChooseType):
             for check_fun in check_functions:
                 check_fun(configname, configvalue)
             return

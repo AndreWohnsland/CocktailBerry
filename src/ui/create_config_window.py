@@ -3,11 +3,11 @@ import os
 import sys
 from typing import Any, Callable, List, Optional
 from pathlib import Path
-from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton, QBoxLayout
+from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton, QBoxLayout, QComboBox
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QIcon
 
-from src.config_manager import ConfigError, CONFIG as cfg
+from src.config_manager import ChooseType, ConfigError, CONFIG as cfg
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.setup_keyboard_widget import KeyboardWidget
@@ -34,6 +34,7 @@ class ConfigWindow(QMainWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _init_ui(self):
+        # This is not shown (fullscreen) and only for dev reasons. need no translation
         self.setWindowTitle("Change Configuration")
         self.scroll_area = QScrollArea()
         self.widget = QWidget()
@@ -103,6 +104,9 @@ class ConfigWindow(QMainWindow):
             return self._buid_bool_field(layout, current_value)
         if configtype == list:
             return self._build_list_field(configname, current_value)
+        if issubclass(configtype, ChooseType):
+            selection = configtype.allowed
+            return self._build_selection_filed(layout, current_value, selection)
         return self._build_fallback_field(layout, current_value)
 
     def _build_int_field(self, layout: QBoxLayout, configname: str, current_value: int) -> Callable[[], int]:
@@ -187,6 +191,17 @@ class ConfigWindow(QMainWindow):
         config_input.clicked.connect(lambda: KeyboardWidget(self, config_input, 200))  # type: ignore
         layout.addWidget(config_input)
         return config_input.text
+
+    def _build_selection_filed(self, layout: QBoxLayout, current_value: bool, selection: List[str]) -> Callable[[], str]:
+        """Builds a field for selection of values with a dropdown / combobox"""
+        config_input = QComboBox()
+        config_input.addItems(selection)
+        self._adjust_font(config_input, MEDIUM_FONT)
+        config_input.setProperty("cssClass", "secondary")
+        index = config_input.findText(current_value, Qt.MatchFixedString)  # type: ignore
+        config_input.setCurrentIndex(index)
+        layout.addWidget(config_input)
+        return config_input.currentText
 
     def _retrieve_values(self):
         return {key: getter() for key, getter in self.config_objects.items()}
