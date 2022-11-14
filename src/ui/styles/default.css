@@ -20,7 +20,7 @@ QCheckBox::indicator:checked {
 
 QWidget {
   color: #007bff;
-  background-color: black; }
+  background-color: #000000; }
 
 QTabBar::tab:disabled {
   text-decoration: line-through; }
@@ -59,9 +59,9 @@ QTabWidget::pane {
 
 QTabBar::tab {
   background-color: #616161;
-  color: white;
+  color: #ffffff;
   border-width: 1px;
-  border-color: white;
+  border-color: #ffffff;
   border-style: solid;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
@@ -69,7 +69,7 @@ QTabBar::tab {
   width: 193px; }
 
 QTabBar::tab:selected {
-  color: white;
+  color: #ffffff;
   background-color: #007bff; }
 
 .QMessageBox {
@@ -92,7 +92,7 @@ QTabBar::tab:selected {
   margin: -24px -12px; }
 
 QPushButton {
-  background-color: black;
+  background-color: #000000;
   color: #007bff;
   border-width: 3px;
   border-color: #007bff;
@@ -111,7 +111,7 @@ QPushButton:pressed {
 /* Inverted */
 QPushButton[cssClass~='btn-inverted'] {
   background-color: #007bff;
-  color: black;
+  color: #000000;
   border-width: 3px;
   border-color: #007bff;
   border-style: solid;
@@ -128,16 +128,16 @@ QPushButton:checked[cssClass~='btn-inverted'] {
 QPushButton[cssClass~='btn-teamone'] {
   background-color: #007bff;
   border-color: #007bff;
-  color: black; }
+  color: #000000; }
 
 QPushButton[cssClass~='btn-teamtwo'] {
   background-color: #ef9700;
   border-color: #ef9700;
-  color: black; }
+  color: #000000; }
 
 QProgressBar {
   background-color: #a6a6a6;
-  color: black;
+  color: #000000;
   border: 2px #a6a6a6;
   border-radius: 5px;
   text-align: center; }
@@ -192,18 +192,18 @@ QScrollBar:vertical {
   margin: 36px 0 36px 0; }
 
 QScrollBar::handle:vertical {
-  background: black; }
+  background: #000000; }
 
 QScrollBar::add-line:vertical {
   border: 1px solid #616161;
-  background: black;
+  background: #000000;
   height: 35px;
   subcontrol-position: bottom;
   subcontrol-origin: margin; }
 
 QScrollBar::sub-line:vertical {
   border: 1px solid #616161;
-  background: black;
+  background: #000000;
   height: 35px;
   subcontrol-position: top;
   subcontrol-origin: margin; }
@@ -219,22 +219,19 @@ QScrollBar::down-arrow:vertical {
 QScrollBar::up-arrow:vertical {
   image: url(./src/ui_elements/up.png); }
 
-#option_button {
-  image: url(./src/ui_elements/options.png); }
-
 #informationLabel {
   padding: 5px 25px 5px 25px; }
 
 /* Message box from system */
 QMessageBox QPushButton {
   background-color: #007bff;
-  color: black;
+  color: #000000;
   font-size: 30pt;
   padding: 5px 20px 5px 20px;
   min-width: 120px; }
 
 QMessageBox {
-  background-color: black;
+  background-color: #000000;
   font-size: 16pt; }
 
 QMessageBox QLabel {

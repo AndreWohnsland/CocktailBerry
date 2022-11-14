@@ -219,9 +219,6 @@ QScrollBar::down-arrow:vertical {
 QScrollBar::up-arrow:vertical {
   image: url(./src/ui_elements/up.png); }
 
-#option_button {
-  image: url(./src/ui_elements/options.png); }
-
 #informationLabel {
   padding: 5px 25px 5px 25px; }
 
