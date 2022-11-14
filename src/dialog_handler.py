@@ -30,7 +30,7 @@ class DialogHandler():
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
-    def standard_box(self, message: str, title: str = ""):
+    def standard_box(self, message: str, title: str = "", use_ok=False):
         """ The default messagebox for the Maker. Uses a Custom QDialog with Close-Button """
         # otherwise circular import :(
         # pylint: disable=import-outside-toplevel
@@ -39,7 +39,7 @@ class DialogHandler():
             title = self.__choose_language("box_title")
         fillstring = "-" * 70
         fancy_message = f"{fillstring}\n{message}\n{fillstring}"
-        messagebox = CustomDialog(fancy_message, title, self.icon_path)
+        messagebox = CustomDialog(fancy_message, title, self.icon_path, use_ok)
         messagebox.exec_()
 
     def user_okay(self, text: str):
@@ -60,9 +60,9 @@ class DialogHandler():
             return True
         return False
 
-    def __output_language_dialog(self, dialog_name: str, **kwargs):
+    def __output_language_dialog(self, dialog_name: str, use_ok=False, **kwargs):
         msg = self.__choose_language(dialog_name, **kwargs)
-        self.standard_box(msg)
+        self.standard_box(msg, use_ok=use_ok)
 
     def _get_folder_location(self, w: QWidget, message: str):
         return QFileDialog.getExistingDirectory(w, message)
@@ -76,7 +76,7 @@ class DialogHandler():
 
     def say_supply_water(self):
         """Informs user that enough water needs to be supplied for cleaning"""
-        self.__output_language_dialog("supply_water")
+        self.__output_language_dialog("supply_water", True)
 
     def say_done(self):
         """Informs user that process is done"""
@@ -396,6 +396,14 @@ class UiLanguage():
             (w.button_shutdown, "shutdown"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
+
+    def adjust_custom_dialog(self, w, use_ok: bool):
+        """Translate all the labels from the datepicker window"""
+        if use_ok:
+            label = self.__choose_language("ok_button")
+        else:
+            label = self.__choose_language("close_button")
+        w.closeButton.setText(label)
 
     def adjust_datepicker_window(self, w):
         """Translate all the labels from the datepicker window"""
