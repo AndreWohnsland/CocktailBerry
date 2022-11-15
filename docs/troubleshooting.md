@@ -11,6 +11,8 @@ If in any case any unexpected behaviour occurs, feel free to open an issue. Usua
 
 If some of the icons (check / cross on the checkbox, up / down arrow on the listview) are missing, make sure you run the script within the folder (e.g. `python runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`). This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
 
+Another reason may be, if you are using a custom style sheet with colors using rgb. If thats the case, please change the color codes to the hexa reprensetation of the color, because qtawesome can't handle rgb color codes.
+
 ## Changing Volume Unit
 
 For the users of the machine, there is the possibility to set the `EXP_MAKER_UNIT` and `EXP_MAKER_FAKTOR` option to change the displayed unit, for example to oz.
