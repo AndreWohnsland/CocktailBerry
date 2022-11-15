@@ -75,6 +75,9 @@ class Migrator:
             add_virgin_flag_to_db()
             remove_is_alcoholic_column()
             self._install_pip_package("typing_extensions", "1.9.0")
+        if self.older_than_version("1.11.0"):
+            _logger.log_event("INFO", "Making migrations for v1.11.0")
+            self._install_pip_package("qtawesome", "1.11.0")
         self._check_local_version_data()
 
     def _python_to_old_warning(self, least_python: Tuple[int, int]):
