@@ -21,7 +21,7 @@ class MachineController():
         # In case none is found, fall back to default (RPi)
         return RpiController()
 
-    def clean_pumps(self):
+    def clean_pumps(self, w):
         """Clean the pumps for the defined time in the config.
         Acitvates all pumps for the given time
         """
@@ -29,16 +29,21 @@ class MachineController():
         t_cleaned = 0.0
         self._header_print("Start Cleaning")
         self._open_pumps(active_pins)
-        while t_cleaned < cfg.MAKER_CLEAN_TIME:
+        w.progressionqwindow("Cleaning")
+        # also using same button cancel from prepare cocktail
+        shared.make_cocktail = True
+        while t_cleaned < cfg.MAKER_CLEAN_TIME and shared.make_cocktail:
             self._clean_print(t_cleaned)
             t_cleaned += cfg.MAKER_SLEEP_TIME
             t_cleaned = round(t_cleaned, 2)
             time.sleep(cfg.MAKER_SLEEP_TIME)
+            w.prow_change(t_cleaned / cfg.MAKER_CLEAN_TIME * 100)
             qApp.processEvents()
         self._clean_print(cfg.MAKER_CLEAN_TIME)
         print("")
         self._close_pumps(active_pins)
         self._header_print("Done Cleaning")
+        w.prow_close()
 
     def make_cocktail(self, w, bottle_list: List[int], volume_list: List[Union[float, int]], recipe="", is_cocktail=True):
         """RPI Logic to prepare the cocktail.
