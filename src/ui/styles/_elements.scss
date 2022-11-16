@@ -60,6 +60,7 @@ QWidget {
     color: $secondary;
     font-weight: bold;
     border: 3px solid $secondary;
+    border-radius: 3px;
   }
   &[cssClass~='secondary'] {
     color: $secondary;

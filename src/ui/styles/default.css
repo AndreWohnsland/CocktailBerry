@@ -41,7 +41,8 @@ QWidget {
   QWidget:item:selected {
     color: #ef9700;
     font-weight: bold;
-    border: 3px solid #ef9700; }
+    border: 3px solid #ef9700;
+    border-radius: 3px; }
   QWidget[cssClass~='secondary'] {
     color: #ef9700; }
   QWidget[cssClass~='left-shift'] {
