@@ -30,6 +30,7 @@ from src.ui.setup_handadd_widget import HandaddWidget
 from src.ui.setup_avialable_window import AvailableWindow
 from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
+from src.ui.icons import ICONS
 
 from src import FUTURE_PYTHON_VERSION
 
@@ -67,6 +68,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
+        ICONS.set_mainwindow_icons(self)
         self.update_check()
         self._connection_check()
         self._deprecation_check()
