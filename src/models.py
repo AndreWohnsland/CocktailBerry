@@ -46,15 +46,17 @@ class Cocktail():
         self.adjusted_alcohol = self.alcohol
         self.adjusted_amount = self.amount
 
+    # also changes handadd to machineadd if the handadd is currently at the machine
+    # this way the user needs to add less, if it happens to be also on the machine
     @property
     def handadds(self):
         """Returns a list of all handadd Ingredients"""
-        return [x for x in self.adjusted_ingredients if x.recipe_hand]
+        return [x for x in self.adjusted_ingredients if (x.recipe_hand and x.bottle is None)]
 
     @property
     def machineadds(self):
         """Returns a list of all machine Ingredients"""
-        return [x for x in self.adjusted_ingredients if not x.recipe_hand]
+        return [x for x in self.adjusted_ingredients if (not x.recipe_hand or x.bottle is not None)]
 
     @property
     def is_virgin(self):
