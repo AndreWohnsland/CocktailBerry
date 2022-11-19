@@ -285,10 +285,20 @@ QTimeEdit {
     width: 50px;
     height: 50px;
   }
+  &::down-arrow,
+  &::up-arrow {
+    border: 3px solid $background;
+    background-color: $primary;
+    &:pressed {
+      background-color: $secondary;
+    }
+  }
   &::down-arrow {
-    image: url(./src/ui_elements/down.png);
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
   }
   &::up-arrow {
-    image: url(./src/ui_elements/up.png);
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
   }
 }

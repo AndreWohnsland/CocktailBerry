@@ -226,9 +226,20 @@ QTimeEdit {
   QTimeEdit QSpinBox {
     width: 50px;
     height: 50px; }
+  QDateEdit::down-arrow, QDateEdit::up-arrow,
+  QTimeEdit::down-arrow,
+  QTimeEdit::up-arrow {
+    border: 3px solid #000000;
+    background-color: #007bff; }
+    QDateEdit::down-arrow:pressed, QDateEdit::up-arrow:pressed,
+    QTimeEdit::down-arrow:pressed,
+    QTimeEdit::up-arrow:pressed {
+      background-color: #ef9700; }
   QDateEdit::down-arrow,
   QTimeEdit::down-arrow {
-    image: url(./src/ui_elements/down.png); }
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px; }
   QDateEdit::up-arrow,
   QTimeEdit::up-arrow {
-    image: url(./src/ui_elements/up.png); }
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px; }
