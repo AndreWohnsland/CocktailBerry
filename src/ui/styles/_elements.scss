@@ -200,16 +200,15 @@ QLineEdit {
 }
 
 QListWidget {
-  border-top: $default-element-border;
-  border-bottom: $default-element-border;
-  border-left: $default-element-border;
-  border-bottom-right-radius: $scrollbar-border-radius + 4px;
-  border-top-right-radius: $scrollbar-border-radius + 4px;
+  border: $default-element-border;
+  border-bottom-right-radius: $scrollbar-border-radius + 6px;
+  border-top-right-radius: $scrollbar-border-radius + 6px;
 }
 
 /* Moving List Widget here from the single objects */
 QScrollBar:vertical {
   border: $default-element-border;
+  border-right: 0px solid $border;
   border-radius: $scrollbar-border-radius;
   background: $background;
   width: 40px;
