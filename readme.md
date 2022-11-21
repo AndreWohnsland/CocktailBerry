@@ -33,6 +33,7 @@ CocktailBerry can do:
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
 - Define connected ingredients to the machine and existing additional ingredients over the UI
 - Auto calculates and displays possible recipes dependent on given information
+- Supports up to 16 Bottles / Pumps
 - Option to serve cocktails without alcohol
 - Execute a cleaning program to get rid of remaining fluids
 - Export data for later data analysis, send data as mail to a receiver
