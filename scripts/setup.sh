@@ -41,7 +41,7 @@ else
   echo "Setting up CocktailBerry"
   echo "cd ~/CocktailBerry/" >> ~/launcher.sh
   echo "python3 runme.py" >> ~/launcher.sh
-  pip3 install requests pyyaml GitPython typer pyfiglet
+  pip3 install requests pyyaml GitPython typer pyfiglet qtawesome
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   cp microservice/.env.example microservice/.env
   echo -n  "Also install microservice (y/n)? This needs docker installed - you can also install it later with docker-compose. "
