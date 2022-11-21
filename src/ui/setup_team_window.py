@@ -3,26 +3,26 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
 from src.ui_elements.teamselection import Ui_Teamselection
-from src.config_manager import ConfigManager, shared
+from src.config_manager import CONFIG as cfg, shared
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 
 
-class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
+class TeamScreen(QDialog, Ui_Teamselection):
     """ Class for the Team selection Screen. """
 
     def __init__(self, parent=None):
         super().__init__()
-        ConfigManager.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
-        self.PBteamone.clicked.connect(lambda: self.set_team(self.TEAM_BUTTON_NAMES[0]))
-        self.PBteamone.setText(self.TEAM_BUTTON_NAMES[0])
-        self.PBteamtwo.clicked.connect(lambda: self.set_team(self.TEAM_BUTTON_NAMES[1]))
-        self.PBteamtwo.setText(self.TEAM_BUTTON_NAMES[1])
-        self.setWindowIcon(QIcon(parent.icon_path))
+        self.PBteamone.clicked.connect(lambda: self.set_team(cfg.TEAM_BUTTON_NAMES[0]))
+        self.PBteamone.setText(cfg.TEAM_BUTTON_NAMES[0])
+        self.PBteamtwo.clicked.connect(lambda: self.set_team(cfg.TEAM_BUTTON_NAMES[1]))
+        self.PBteamtwo.setText(cfg.TEAM_BUTTON_NAMES[1])
+        if parent is not None:
+            self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
         self.move(0, 0)
         UI_LANGUAGE.adjust_team_window(self)
@@ -37,8 +37,8 @@ class TeamScreen(QDialog, Ui_Teamselection, ConfigManager):
         """Adds new lines if neccecary to team button labels"""
         # ~ 12 upper chars / 400 px
         width = self.PBteamone.frameGeometry().width()
-        self.PBteamone.setText(self.__split_team_names(self.TEAM_BUTTON_NAMES[0], width))
-        self.PBteamtwo.setText(self.__split_team_names(self.TEAM_BUTTON_NAMES[1], width))
+        self.PBteamone.setText(self.__split_team_names(cfg.TEAM_BUTTON_NAMES[0], width))
+        self.PBteamtwo.setText(self.__split_team_names(cfg.TEAM_BUTTON_NAMES[1], width))
 
     def __split_team_names(self, name: str, width: int):
         """Pseudo line wrap, since its not available for button"""

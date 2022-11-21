@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
-from src.config_manager import ConfigManager
+from src.config_manager import CONFIG as cfg
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.logger_handler import LoggerHandler, LogFiles
@@ -13,15 +13,14 @@ from src.ui_elements.calibration import Ui_MainWindow
 logger = LoggerHandler("calibration_module", LogFiles.PRODUCTION)
 
 
-class CalibrationScreen(QMainWindow, Ui_MainWindow, ConfigManager):
+class CalibrationScreen(QMainWindow, Ui_MainWindow):
     def __init__(self):
         """ Init the calibration Screen. """
         super().__init__()
-        ConfigManager.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         # Connect the Button
-        bottles = self.MAKER_NUMBER_BOTTLES
+        bottles = cfg.MAKER_NUMBER_BOTTLES
         self.PB_start.clicked.connect(self.output_volume)
         self.channel_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, "+", 1, bottles, 1))
         self.channel_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, "-", 1, bottles, 1))

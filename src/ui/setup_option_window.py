@@ -65,7 +65,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if not DP_CONTROLLER.ask_to_start_cleaning():
             return
         self.close()
-        bottles.clean_machine()
+        bottles.clean_machine(self.mainscreen)
 
     def _reboot_system(self):
         """Reboots the system if the user confirms the action."""

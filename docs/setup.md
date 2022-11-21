@@ -31,6 +31,7 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 | `MAKER_THEME`           |    _str_    | Choose which [theme](#themes) to use                                                 |    ❌     |
 | `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                                   |    ❌     |
 | `MAKER_SLEEP_TIME`      |   _float_   | Interval between each UI refresh while generating a cocktail                         |    ❌     |
+| `MAKER_CHECK_INTERNET`  |   _bool_    | If to do a connection check at start and option for time adjustment window           |    ❌     |
 | `MICROSERVICE_ACTIVE`   |   _bool_    | Boolean flag to post to microservice set up by docker                                |    ✔️     |
 | `MICROSERVICE_BASE_URL` |    _str_    | Base URL for microservice (default: http://127.0.0.1:5000)                           |    ✔️     |
 | `TEAMS_ACTIVE`          |   _bool_    | Boolean flag to use teams feature                                                    |    ✔️     |

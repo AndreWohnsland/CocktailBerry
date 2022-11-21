@@ -7,11 +7,28 @@ from pyfiglet import Figlet
 
 from src.logger_handler import LoggerHandler, LogFiles
 from src.models import Ingredient
+from src.utils import get_platform_data
 from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES, SUPPORTED_BOARDS, SUPPORTED_THEMES
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
 logger = LoggerHandler("config_manager", LogFiles.PRODUCTION)
+
+
+class ChooseType:
+    allowed: List[str] = []
+
+
+class LanguageChoose(ChooseType):
+    allowed = SUPPORTED_LANGUAGES
+
+
+class BoardChoose(ChooseType):
+    allowed = SUPPORTED_BOARDS
+
+
+class ThemeChoose(ChooseType):
+    allowed = SUPPORTED_THEMES
 
 
 class ConfigManager:
@@ -49,6 +66,8 @@ class ConfigManager:
     MAKER_BOARD = "RPI"
     # Theme Setting to load according qss file
     MAKER_THEME = "default"
+    # Flag to check if internet is up at start
+    MAKER_CHECK_INTERNET = True
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
@@ -75,7 +94,7 @@ class ConfigManager:
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_PARTYMODE": (bool, []),
             "UI_MASTERPASSWORD": (str, []),
-            "UI_LANGUAGE": (str, [_build_support_checker(SUPPORTED_LANGUAGES)]),
+            "UI_LANGUAGE": (LanguageChoose, [_build_support_checker(SUPPORTED_LANGUAGES)]),
             "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),
             "PUMP_PINS": (list, [self._validate_config_list_type]),
@@ -85,8 +104,9 @@ class ConfigManager:
             "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
             "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
-            "MAKER_BOARD": (str, [_build_support_checker(SUPPORTED_BOARDS)]),
-            "MAKER_THEME": (str, [_build_support_checker(SUPPORTED_THEMES)]),
+            "MAKER_BOARD": (BoardChoose, [_build_support_checker(SUPPORTED_BOARDS)]),
+            "MAKER_THEME": (ThemeChoose, [_build_support_checker(SUPPORTED_THEMES)]),
+            "MAKER_CHECK_INTERNET": (bool, []),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
@@ -97,7 +117,7 @@ class ConfigManager:
         }
         # Dict of Format "configname": (type, List[CheckCallbacks]) for the single list elements
         # only needed if the above config type was defined as list type, rest is identical to top schema
-        self.config_type_list = {
+        self.config_type_list: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
             "PUMP_PINS": (int, []),
             "PUMP_VOLUMEFLOW": (int, [_build_number_limiter(1, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
@@ -142,7 +162,8 @@ class ConfigManager:
         datatype, check_functions = config_setting
         # check first if type fits, if list, also check listelements.
         # Additionally run all check funktions provided
-        if isinstance(configvalue, datatype):
+        # if it's a choosetype ignore typing for now, the function will check if the value is in the list.
+        if isinstance(configvalue, datatype) or issubclass(datatype, ChooseType):
             for check_fun in check_functions:
                 check_fun(configname, configvalue)
             return
@@ -160,7 +181,7 @@ class ConfigManager:
             for check_fun in check_functions:
                 check_fun(configname, config)
         # aditional len check of the list data,
-        min_bottles = self._choose_bottle_number()
+        min_bottles = self.choose_bottle_number()
         min_len_config = {
             "PUMP_PINS": min_bottles,
             "PUMP_VOLUMEFLOW": min_bottles,
@@ -171,7 +192,7 @@ class ConfigManager:
             return
         _validate_list_length(configlist, configname, min_len)
 
-    def _choose_bottle_number(self, get_all=False):
+    def choose_bottle_number(self, get_all=False):
         """Selects the number of Bottles, limits by max supported count"""
         if get_all:
             return MAX_SUPPORTED_BOTTLES
@@ -238,6 +259,7 @@ def show_start_message():
     start_message = f"{PROJECT_NAME} Version {__version__}"
     print(figlet.renderText(start_message))
     print(start_message)
+    print(get_platform_data())
 
 
 shared = Shared()

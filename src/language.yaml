@@ -7,10 +7,9 @@
 ##### GENERIC POP UP DIALOGS #####
 # All for dialog windows
 dialog:
-  box:
-    title:
-      en: 'Information'
-      de: 'Information'
+  box_title:
+    en: 'Information'
+    de: 'Information'
   wrong_password:
     en: 'Wrong Password!'
     de: 'Falsches Passwort!'
@@ -33,8 +32,11 @@ dialog:
     en: 'Error, the ingredient is still used at a bottle!'
     de: 'Fehler, die Zutat ist noch in der Belegung registriert!'
   ingredient_still_at_recipe:
-    en: "Recipe can not be deleted, it is still used at:\n<{recipe_string}>"
+    en: "Ingredient can not be deleted, it is still used at:\n<{recipe_string}>"
     de: "Zutat kann nicht gelöscht werden, da sie in:\n<{recipe_string}>\ngenutzt wird"
+  ingredient_still_as_machine_add:
+    en: "Ingredient can not be changed to hand add, it is still used as machine add at:\n{recipe_list}"
+    de: "Zutat kann nicht auf Hand geändert werden, da sie in:\n{recipe_list}\nmit der Maschine genutzt wird"
   ingredient_double_usage:
     en: "One of the ingredient\n<{ingredient_name}>\nwas used multiple times!"
     de: "Eine der Zutaten:\n<{ingredient_name}>\nwurde doppelt verwendet!"
@@ -134,19 +136,35 @@ dialog:
   ask_backup_overwrite:
     en: 'Load selected backup in? This will overwrite local DB and configuration. The program will restart afterwards.'
     de: 'Ausgewähltes Backup verwenden? Lokale Daten werden überschrieben. Ein Neustart wird danach ausgeführt.'
+  ask_enable_all_recipes:
+    en: 'Do you want to enable all recipes? All possible ones will be then shown at the maker tab.'
+    de: 'Alle Rezepte aktiv setzen? Machbare Rezepte werden dann im Maker Tab angezeigt.'
   backup_created:
     en: 'Backup has been created at: {folder}.'
     de: 'Backup wurde unter {folder} gespeichert.'
+  ask_adjust_time:
+    en: 'There seems to be no internet connection, your date/time may be wrong. This is important when sending data with the service. Do you want to adjust time?'
+    de: 'Es scheint keine Internetverbindung zu bestehen, Datum/Zeit könnte falsch sein. Dies ist wichtig, wenn Daten über den Service versand werden. Zeit anpassen?'
+  python_deprecated:
+    en: 'Your system Python is {sys_python}. In the future, {program_python} is required. Please upgrade, otherwise a future CocktailBerry update will break your program.'
+    de: 'Die Python Version des Systems is {sys_python}. In Zukunft wird {program_python} benötigt. Bitte upgrade diese bald, sonst wird mit einem kommenden Update CocktailBerry nicht mehr funktionieren.'
 
 # Change of language in UI elements
 ui:
   # Some commonly used elements within multiple windows
-  cancel_button:
-    en: 'Cancel'
-    de: 'Abbrechen'
-  enter_button:
-    en: 'Enter'
-    de: 'Eintragen'
+  generics:
+    cancel_button:
+      en: 'Cancel'
+      de: 'Abbrechen'
+    enter_button:
+      en: 'Enter'
+      de: 'Eintragen'
+    close_button:
+      en: 'Close'
+      de: 'Schließen'
+    ok_button:
+      en: 'Ok'
+      de: 'Ok'
 
   # dynamic values for maker tab
   maker:
@@ -306,3 +324,10 @@ ui:
     restore:
       en: 'Restore'
       de: 'Wiederherstellen'
+
+  ##### DATEPICKER WINDOW #####
+  # all values for datepicker window
+  datepicker:
+    header:
+      en: 'Select Date and Time'
+      de: 'Datum und Zeit bestimmen'

@@ -148,7 +148,8 @@ def load_recipe_view_names(w):
     """ Updates the ListWidget in the recipe Tab. """
     cocktails = DB_COMMANDER.get_all_cocktails()
     recipe_list = [x.name for x in cocktails]
-    DP_CONTROLLER.refill_recipes_list_widget(w, recipe_list)
+    DP_CONTROLLER.clear_list_widget_recipes(w)
+    DP_CONTROLLER.fill_list_widget_recipes(w, recipe_list)
 
 
 @logerror
@@ -186,6 +187,8 @@ def delete_recipe(w):
 @logerror
 def enableall_recipes(w):
     """Set all recipes to enabled """
+    if not DP_CONTROLLER.ask_enable_all_recipes():
+        return
     disabled_cocktails = DB_COMMANDER.get_all_cocktails(get_enabled=False)
     DB_COMMANDER.set_all_recipes_enabled()
     maker.evaluate_recipe_maker_view(w, disabled_cocktails)

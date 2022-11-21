@@ -11,6 +11,8 @@ If in any case any unexpected behaviour occurs, feel free to open an issue. Usua
 
 If some of the icons (check / cross on the checkbox, up / down arrow on the listview) are missing, make sure you run the script within the folder (e.g. `python runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`). This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
 
+Another reason may be, if you are using a custom style sheet with colors using rgb. If thats the case, please change the color codes to the hexa reprensetation of the color, because qtawesome can't handle rgb color codes.
+
 ## Changing Volume Unit
 
 For the users of the machine, there is the possibility to set the `EXP_MAKER_UNIT` and `EXP_MAKER_FAKTOR` option to change the displayed unit, for example to oz.
@@ -54,6 +56,15 @@ sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
 ```
 
 After the reboot, the calibration should be okay.
+
+## How to Have the Right Time
+
+With version __Version 1.11.0__, there is the new config value `MAKER_CHECK_INTERNET`.
+If you wish to use your microservice, but got no internet at the moment, the data will be saved and send later.
+One problem that arised, is that, for example on a standard raspberry pi, the clock and therefore the timestamp will probably be wrong.
+This new option tackles that. If it's set active with an active microservice, it will check for internet connection at startup.
+If there is no connection, a dialog will pop up and give the user the possibility to adjust the time.
+In case the machine got a RTC build in and under usage, this option can usually be set to `false`, because due to the RTC, the time should be correct.
 
 ## Problems Installing Software on Raspberry Pi
 

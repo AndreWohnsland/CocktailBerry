@@ -5,7 +5,7 @@
 ![Python Version](https://img.shields.io/badge/python-%3E%3D%203.7-blue)
 ![GitHub](https://img.shields.io/github/license/AndreWohnsland/CocktailBerry)
 ![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/CocktailBerry)
-[![Documentation Status](https://readthedocs.org/projects/cocktailberry/badge/?version=latest)](https://cocktailberry.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/cocktailberry/badge/?version=latest)](https://cocktailberry.readthedocs.io)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_CocktailBerry&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_CocktailBerry)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/CocktailBerry?style=social)
 

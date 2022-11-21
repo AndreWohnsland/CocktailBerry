@@ -65,6 +65,12 @@ def __change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
     if ing.hand and bottle_used:
         DP_CONTROLLER.say_ingredient_still_at_bottle()
         return False
+    # also abort if the ingredient is set to hand and still used in recipes via machine
+    # This is neccecary, because the recipe interface does not show hand only ingredients
+    ing_used_by_machine = DB_COMMANDER.get_recipes_using_ingredient_by_machine(old_ingredient.id)
+    if ing.hand and ing_used_by_machine:
+        DP_CONTROLLER.say_ingredient_still_as_machine_in_recipe(ing_used_by_machine)
+        return False
 
     # in case the volume was lowered below current level get the minimum of both
     volume_level = min(old_ingredient.fill_level, ing.bottle_volume)

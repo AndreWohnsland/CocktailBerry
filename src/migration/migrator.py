@@ -17,7 +17,7 @@ from src.migration.updata_data import (
     add_virgin_flag_to_db,
     remove_is_alcoholic_column
 )
-from src import __version__
+from src import __version__, FUTURE_PYTHON_VERSION
 
 _DIRPATH = Path(__file__).parent.absolute()
 _CONFIG_PATH = _DIRPATH.parents[1] / ".version.ini"
@@ -54,7 +54,7 @@ class Migrator:
     def make_migrations(self):
         """Make migration dependant on current local and program version"""
         _logger.log_event("INFO", f"Local version is: {self.local_version}, checking for necessary migrations")
-        self._python_to_old_warning((3, 9))
+        self._python_to_old_warning(FUTURE_PYTHON_VERSION)
         if self.older_than_version("1.5.0"):
             _logger.log_event("INFO", "Making migrations for v1.5.0")
             rename_database_to_english()
@@ -75,6 +75,9 @@ class Migrator:
             add_virgin_flag_to_db()
             remove_is_alcoholic_column()
             self._install_pip_package("typing_extensions", "1.9.0")
+        if self.older_than_version("1.11.0"):
+            _logger.log_event("INFO", "Making migrations for v1.11.0")
+            self._install_pip_package("qtawesome", "1.11.0")
         self._check_local_version_data()
 
     def _python_to_old_warning(self, least_python: Tuple[int, int]):

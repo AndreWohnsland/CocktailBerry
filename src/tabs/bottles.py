@@ -109,9 +109,9 @@ def set_fill_level_bars(w):
 
 
 @logerror
-def clean_machine():
+def clean_machine(w):
     """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
     DP_CONTROLLER.say_supply_water()
     _logger.log_header("INFO", "Cleaning the Pumps")
-    MACHINE.clean_pumps()
+    MACHINE.clean_pumps(w)
     DP_CONTROLLER.say_done()

@@ -1,6 +1,6 @@
 # Quickstart
 
-Here are some simple steps to get CoktailBerry running. You need to have **Python 3.7** or newer and **git** installed.
+Here are some simple steps to get CocktailBerry running. You need to have [**Python 3.7**](https://www.python.org/downloads/) or newer and [**git**](https://git-scm.com/downloads) installed.
 
 Run:
 

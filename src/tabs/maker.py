@@ -13,7 +13,7 @@ from src.machine.controller import MACHINE
 from src.display_controller import DP_CONTROLLER
 from src.service_handler import SERVICE_HANDLER
 from src.logger_handler import LogFiles, LoggerHandler
-from src.config_manager import CONFIG
+from src.config_manager import CONFIG as cfg
 
 from src.config_manager import shared
 
@@ -29,7 +29,7 @@ def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):
         cocktails = DB_COMMANDER.get_all_cocktails(get_disabled=False)
 
     handadds_ids = DB_COMMANDER.get_available_ids()
-    available_cocktail_names = [x.name for x in cocktails if x.is_possible(handadds_ids)]
+    available_cocktail_names = [x for x in cocktails if x.is_possible(handadds_ids)]
     DP_CONTROLLER.fill_list_widget_maker(w, available_cocktail_names)
 
 
@@ -55,9 +55,9 @@ def __build_comment_maker(cocktail: Cocktail):
     hand_add = cocktail.handadds
     length_desc = sorted(hand_add, key=lambda x: len(x.name), reverse=True)
     for ing in length_desc:
-        amount = ing.amount * CONFIG.EXP_MAKER_FAKTOR
+        amount = ing.amount * cfg.EXP_MAKER_FAKTOR
         amount = int(amount) if amount >= 8 else round(amount, 1)
-        comment += f"\n~{amount} {CONFIG.EXP_MAKER_UNIT} {ing.name}"
+        comment += f"\n~{amount} {cfg.EXP_MAKER_UNIT} {ing.name}"
     return comment
 
 

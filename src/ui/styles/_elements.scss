@@ -1,48 +1,9 @@
 $not-selected-color: rgb(205, 0, 0);
 $selected-color: rgb(0, 174, 75);
+$scrollbar-border-radius: 15px;
+$default-element-border: $element-border solid $border;
 
-QCheckBox::indicator {
-  width: 18px;
-  height: 18px;
-}
-
-QCheckBox::indicator:unchecked {
-  // image: url(./src/ui_elements/cross.png);
-  border: 2px solid;
-  border-radius: 3px;
-  border-color: $not-selected-color;
-}
-
-QCheckBox::indicator:disabled {
-  border: 2px solid;
-  border-radius: 3px;
-  border-color: $neutral;
-}
-
-QCheckBox::indicator:checked {
-  image: url(./src/ui_elements/check.png);
-  border: 2px solid;
-  border-radius: 3px;
-  border-color: $selected-color;
-}
-
-QWidget {
-  color: $primary;
-  background-color: $background;
-}
-
-QTabBar::tab:disabled {
-  text-decoration: line-through;
-}
-
-QWidget[cssClass~='secondary'] {
-  color: $secondary;
-}
-
-QWidget[cssClass~='left-shift'] {
-  margin: 5px 0px 5px 20px;
-}
-
+// For generic classes
 *[cssClass~='header-underline'] {
   color: $neutral;
   border-bottom: 1px solid;
@@ -64,10 +25,49 @@ QWidget[cssClass~='left-shift'] {
   color: $neutral;
 }
 
-QWidget:item:selected {
-  color: $secondary;
-  font-weight: bold;
-  border: 3px solid $secondary;
+*[cssClass~='lr-padding'] {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+// specific classes
+#informationLabel {
+  padding: 5px 25px 5px 25px;
+}
+
+// Other Elements
+QCheckBox::indicator {
+  width: 18px;
+  height: 18px;
+  border: 2px solid;
+  border-radius: 3px;
+  &:unchecked {
+    border-color: $not-selected-color;
+  }
+  &:disabled {
+    border-color: $neutral;
+  }
+  &:checked {
+    image: url(./src/ui_elements/check.png);
+    border-color: $selected-color;
+  }
+}
+
+QWidget {
+  color: $primary;
+  background-color: $background;
+  &:item:selected {
+    color: $secondary;
+    font-weight: bold;
+    border: 3px solid $secondary;
+    border-radius: 3px;
+  }
+  &[cssClass~='secondary'] {
+    color: $secondary;
+  }
+  &[cssClass~='left-shift'] {
+    margin: 5px 0px 5px 20px;
+  }
 }
 
 QTabWidget::pane {
@@ -85,34 +85,34 @@ QTabBar::tab {
   border-top-right-radius: 10px;
   padding: 5px 0px 5px 0px;
   width: 193px;
-}
-
-QTabBar::tab:selected {
-  color: $tabborder;
-  background-color: $primary;
-}
-
-.QMessageBox {
-  font-size: 16pt;
+  &:selected {
+    color: $tabborder;
+    background-color: $primary;
+  }
+  &:disabled {
+    text-decoration: line-through;
+  }
 }
 
 .QSlider {
   min-height: 30px;
   max-height: 50px;
-}
-
-.QSlider::groove:horizontal {
-  border: 1px solid;
-  height: 5px;
-  background: $sliderspine;
-  margin: 0 12px;
-}
-
-.QSlider::handle:horizontal {
-  background: $primary;
-  width: 30px;
-  height: 30px;
-  margin: -24px -12px;
+  &::groove:horizontal {
+    border: 1px solid;
+    height: 5px;
+    background: $border;
+    margin: 0 12px;
+  }
+  &::handle:horizontal {
+    background: $primary;
+    border-radius: $scrollbar-border-radius;
+    width: 40px;
+    height: 30px;
+    margin: -24px -12px;
+    &:pressed {
+      background: $secondary;
+    }
+  }
 }
 
 QPushButton {
@@ -121,48 +121,37 @@ QPushButton {
   border-width: 3px;
   border-color: $primary;
   border-style: solid;
-  border-radius: 7;
+  border-radius: 7px;
   padding: 3px;
   padding-left: 5px;
   padding-right: 5px;
   font-weight: bold;
-}
-
-QPushButton:checked,
-QPushButton:pressed {
-  color: $secondary;
-  border-color: $secondary;
-}
-
-/* Inverted */
-QPushButton[cssClass~='btn-inverted'] {
-  background-color: $primary;
-  color: $background;
-  border-width: 3px;
-  border-color: $primary;
-  border-style: solid;
-  border-radius: 7;
-  padding: 3px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-QPushButton:pressed[cssClass~='btn-inverted'],
-QPushButton:checked[cssClass~='btn-inverted'] {
-  background-color: $secondary;
-  border-color: $secondary;
-}
-
-QPushButton[cssClass~='btn-teamone'] {
-  background-color: $teamone;
-  border-color: $teamone;
-  color: $background;
-}
-
-QPushButton[cssClass~='btn-teamtwo'] {
-  background-color: $teamtwo;
-  border-color: $teamtwo;
-  color: $background;
+  &:checked,
+  &:pressed {
+    color: $secondary;
+    border-color: $secondary;
+  }
+  /* Inverted */
+  &[cssClass~='btn-inverted'] {
+    background-color: $primary;
+    color: $background;
+    &:checked,
+    &:pressed {
+      background-color: $secondary;
+      border-color: $secondary;
+    }
+  }
+  /* for teams */
+  &[cssClass~='btn-teamone'] {
+    background-color: $teamone;
+    border-color: $teamone;
+    color: $background;
+  }
+  &[cssClass~='btn-teamtwo'] {
+    background-color: $teamtwo;
+    border-color: $teamtwo;
+    color: $background;
+  }
 }
 
 QProgressBar {
@@ -171,121 +160,145 @@ QProgressBar {
   border: 2px $progressbg;
   border-radius: 5px;
   text-align: center;
-}
-
-QProgressBar::chunk {
-  border: 2px $progressbg;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: $progressbar;
-  /*background-color: rgb(0, 255, 132);
-  width: 40px;
-  margin: 0.5px;*/
+  &::chunk {
+    border: 2px $progressbg;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: $progressbar;
+    /*background-color: rgb(0, 255, 132);
+    width: 40px;
+    margin: 0.5px;*/
+  }
 }
 
 QComboBox {
   color: $primary;
-  border: $element-border solid $border;
+  border: $default-element-border;
   border-top-left-radius: 7px;
   border-bottom-left-radius: 7px;
   padding: 1px 18px 1px 5px;
   min-width: 6em;
-}
-
-QComboBox:on {
-  /* shift the text when the popup opens */
-  border: $element-border solid $border;
-  border-top-left-radius: 7px;
-  border-bottom-left-radius: 0px;
-  color: $secondary;
-}
-
-QComboBox QAbstractItemView {
-  border: $element-border solid $border;
+  &:on {
+    /* shift the text when the popup opens */
+    border: $default-element-border;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 0px;
+    color: $secondary;
+  }
+  & QAbstractItemView {
+    border: $default-element-border;
+  }
 }
 
 QLineEdit {
   padding: 1px;
   border-style: solid;
-  border: $element-border solid $border;
+  border: $default-element-border;
   border-radius: 5;
 }
 
 QListWidget {
-  border: 1px solid $border;
-}
-
-*[cssClass~='lr-padding'] {
-  padding-left: 10px;
-  padding-right: 10px;
+  border-top: $default-element-border;
+  border-bottom: $default-element-border;
+  border-left: $default-element-border;
+  border-bottom-right-radius: $scrollbar-border-radius + 4px;
+  border-top-right-radius: $scrollbar-border-radius + 4px;
 }
 
 /* Moving List Widget here from the single objects */
 QScrollBar:vertical {
-  border: 1px solid $border;
-  background: $border;
-  width: 35px;
-  margin: 36px 0 36px 0;
+  border: $default-element-border;
+  border-radius: $scrollbar-border-radius;
+  background: $background;
+  width: 40px;
+  margin: 25px 0 25px 0;
 }
 
 QScrollBar::handle:vertical {
-  background: $background;
+  background: $primary;
+  border-radius: $scrollbar-border-radius;
+  &:pressed {
+    background-color: $secondary;
+  }
 }
 
+// bottom button
 QScrollBar::add-line:vertical {
-  border: 1px solid $border;
-  background: $background;
-  height: 35px;
+  border: $default-element-border;
+  border-bottom-left-radius: $scrollbar-border-radius;
+  border-bottom-right-radius: $scrollbar-border-radius;
+  background-color: $border;
+  height: 38px;
   subcontrol-position: bottom;
   subcontrol-origin: margin;
 }
 
+// top button
 QScrollBar::sub-line:vertical {
-  border: 1px solid $border;
-  background: $background;
-  height: 35px;
+  border: $default-element-border;
+  border-top-left-radius: $scrollbar-border-radius;
+  border-top-right-radius: $scrollbar-border-radius;
+  background-color: $border;
+  height: 38px;
   subcontrol-position: top;
   subcontrol-origin: margin;
 }
 
-QScrollBar::down-arrow:vertical,
-QScrollBar::up-arrow:vertical {
-  width: 20px;
-  height: 20px;
+// remove the grid thingy from bg
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+  background: none;
 }
 
-QScrollBar::down-arrow:vertical {
-  image: url(./src/ui_elements/down.png);
-}
-
-QScrollBar::up-arrow:vertical {
-  image: url(./src/ui_elements/up.png);
-}
-
-#option_button {
-  image: url(./src/ui_elements/options.png);
-}
-
-#informationLabel {
-  padding: 5px 25px 5px 25px;
+QScrollBar::sub-line:vertical:pressed,
+QScrollBar::add-line:vertical:pressed {
+  background-color: $secondary;
+  border-color: $secondary;
 }
 
 /* Message box from system */
-QMessageBox QPushButton {
-  background-color: $primary;
-  color: $background;
-  font-size: 30pt;
-  padding: 5px 20px 5px 20px;
-  min-width: 120px;
+.QMessageBox {
+  font-size: 16pt;
 }
 
 QMessageBox {
   background-color: $background;
   font-size: 16pt;
+  & QPushButton {
+    background-color: $primary;
+    color: $background;
+    font-size: 30pt;
+    padding: 5px 20px 5px 20px;
+    min-width: 120px;
+  }
+  & QLabel {
+    color: $primary;
+  }
 }
 
-QMessageBox QLabel {
-  color: $primary;
+QDateEdit,
+QTimeEdit {
+  border: $default-element-border;
+  & QSpinBox {
+    width: 50px;
+    height: 50px;
+  }
+  &::down-arrow,
+  &::up-arrow {
+    border: 3px solid $background;
+    background-color: $primary;
+    &:pressed {
+      background-color: $secondary;
+    }
+  }
+  &::down-arrow {
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+  }
+  &::up-arrow {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+  }
 }
