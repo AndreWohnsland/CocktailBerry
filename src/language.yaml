@@ -169,8 +169,8 @@ ui:
   # dynamic values for maker tab
   maker:
     add_self:
-      en: 'Add by hand'
-      de: 'Selbst hinzufügen'
+      en: 'Add by hand:'
+      de: 'Selbst hinzufügen:'
     cocktail_dummy:
       en: 'Choose Cocktail'
       de: 'Cocktail aussuchen'
