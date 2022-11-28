@@ -33,14 +33,14 @@ if [ "$1" = "dashboard" ]; then
     cd frontend/
   else
     echo "cd ~/CocktailBerry/dashboard/qt-app/" >> ~/launcher.sh
-    echo "python3 main.py" >> ~/launcher.sh
+    echo "python3 main.py &>> ~/CocktailBerry/logs/shelllogs.txt" >> ~/launcher.sh
     cd qt-app/
   fi
   pip3 install -r requirements.txt
 else
   echo "Setting up CocktailBerry"
   echo "cd ~/CocktailBerry/" >> ~/launcher.sh
-  echo "python3 runme.py" >> ~/launcher.sh
+  echo "python3 runme.py &>> ~/CocktailBerry/logs/shelllogs.txt" >> ~/launcher.sh
   pip3 install requests pyyaml GitPython typer pyfiglet qtawesome
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   cp microservice/.env.example microservice/.env

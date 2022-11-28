@@ -12,4 +12,4 @@
 
 # launcher.sh for CocktailBerry
 cd ~/CocktailBerry/
-python3 runme.py &>> ~/CocktailBerry/logs/shelllogs.txt  
+python3 runme.py &>> ~/CocktailBerry/logs/shelllogs.txt
