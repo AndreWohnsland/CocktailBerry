@@ -1,0 +1,59 @@
+name: Build & publish CocktaiBerry images
+on:
+  release:
+    types: [published]
+
+env:
+  IMAGE_BASE_NAME: ${{ github.repository }}
+  DOCKER_NAMESPACE: andrewo92
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./microservice/Dockerfile
+            image: ${{ env.DOCKER_NAMESPACE }}/${{ env.IMAGE_BASE_NAME }}-microservice
+          - dockerfile: ./dashboard/backend/Dockerfile
+            image: ${{ env.DOCKER_NAMESPACE }}/${{ env.IMAGE_BASE_NAME }}-dashboard-be
+          - dockerfile: ./dashboard/frontend/Dockerfile
+            image: ${{ env.DOCKER_NAMESPACE }}/${{ env.IMAGE_BASE_NAME }}-dashboard-fe
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ matrix.image }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push Docker image CocktaiBerry
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          platform: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
