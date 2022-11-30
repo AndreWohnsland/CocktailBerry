@@ -166,6 +166,7 @@ venv
 *.autosave
 *.log
 *.csv
+logs/*.txt
 __pycache__
 .env
 .env.dev
