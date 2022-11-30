@@ -37,11 +37,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Convert docker image name to lower case
+        id: string
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ matrix.image }}
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ matrix.image }}
+          images: steps.string.outputs.lowercase
           tags: |
             type=ref,event=branch
             type=ref,event=pr
