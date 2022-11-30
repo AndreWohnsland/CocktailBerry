@@ -8,6 +8,6 @@ If you want to support this project, feel free to fork it and create your own pu
 
 ## Contributing Possibilities
 
-To get started, have a quick look into the [Guidelines for contributing](https://github.com/AndreWohnsland/CocktailBerry/blob/master/CONTRIBUTING.md). Here is a general list of features or refacturing things, I may do in the future. With your help, these things come even faster! If your idea is not on the list, feel free to open a feature request, I may consider it!
+To get started, have a quick look into the [Guidelines for contributing](https://github.com/AndreWohnsland/CocktailBerry/blob/master/CONTRIBUTING.md). Here is a general list of features or refactoring things, I may do in the future. With your help, these things come even faster! If your idea is not on the list, feel free to open a feature request, I may consider it!
 
 - `easy`: Translate all dialogs / UI to your native language

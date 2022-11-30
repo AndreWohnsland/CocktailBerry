@@ -10,7 +10,9 @@ Simply have `docker-compose` installed and run the command in the main folder fo
 docker-compose up --build -d
 ```
 
-This will handle the setup of all docker services. You will have to copy the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully. If you are pulling for a later version, I recommend to run this command again, since the container may change in future version.
+This will handle the setup of all docker services. You will have to copy the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully. If you are pulling for a later version, I recommend to run this command again, since the container may change in future version. 
+
+There is now also the option to install directly from dockerhub, a GitHub action should build a new tag every release. Just visit [DockerHub](https://hub.docker.com/search?q=andrewo92) and pull the according images over docker or compose.
 
 ## Microservices
 
@@ -25,7 +27,7 @@ The separation was made here that a service class within CocktailBerry needs onl
 
 ## Posting Data to the Official API
 
-When the microservice is active, you can use it not to only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) to submit your data. It will then appear on the [official dashboard](https://stats-cocktailberry.streamlitapp.com/). Don't worry, no private data is included, only some production data. A detailed write down [can be found on the dashboard site](https://stats-cocktailberry.streamlitapp.com#how-to-participate) how you will receive your API key. You need to change the default `API_KEY` value in the `microservive/.env` file to the one you received after the submission. After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
+When the microservice is active, you can use it not to only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) to submit your data. It will then appear on the [official dashboard](https://stats-cocktailberry.streamlitapp.com/). Don't worry, no private data is included, only some production data. A detailed write down [can be found on the dashboard site](https://stats-cocktailberry.streamlitapp.com#how-to-participate) how you will receive your API key. You need to change the default `API_KEY` value in the `microservice/.env` file to the one you received after the submission. After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
 
 ## Dashboard with Teams
 
@@ -69,7 +71,7 @@ cp .env.example .env
 python index.py
 ```
 
-This will build up the backend API, as well as a Dash frontend Web App. Dash is using pandas, depending on your Raspberry Pi OS this installation it may run into issues, especially if running within the Docker container. You can then access the frontend over your browser at the RPi adress over your network or over http://127.0.0.1:8050 from the Pi. If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
+This will build up the backend API, as well as a Dash frontend Web App. Dash is using pandas, depending on your Raspberry Pi OS this installation it may run into issues, especially if running within the Docker container. You can then access the frontend over your browser at the RPi address over your network or over http://127.0.0.1:8050 from the Pi. If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
 
 In addition, if you want to automatically open the chromium browser on start, you can add the command to the autostart file:
 
@@ -91,7 +93,7 @@ sudo usermod -aG docker ${USER}
 sudo apt-get install libffi-dev libssl-dev
 sudo pip3 install docker-compose
 sudo systemctl enable docker
-# tesing if it works
+# testing if it works
 docker run hello-world
 ```
 
@@ -109,7 +111,7 @@ runme.py dataimport [OPTIONS] PATH
 #   provide the conversion factor into ml.
 
 #   The file should contain the cocktail name, followed by ingredient data
-#   (amount, name). For furter information regarding the file structure, please
+#   (amount, name). For further information regarding the file structure, please
 #   see https://cocktailberry.readthedocs.io/advanced/#importing-recipes-from-
 #   file.
 
@@ -151,17 +153,17 @@ You can also use the build-in backup functionality in CocktailBerry for this.
 *As a side note*: You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
 In cases of many ingredients, it's quite exhausting to select the right one. 
 Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
-The recipes provided by default with CocktailBerry try to aim a good balance betweeen the amount of cocktails, as well as a moderate common amount of ingredients within the singe cocktails.
+The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the singe cocktails.
 This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
 
 
 ## Updating Local Database
 
 With **version 1.10.0**, the CLI got the command to merge the latest recipes in your local database.
-This can be usefull if your CocktailBerry has been running for quite a while and you want to get more recipes.
+This can be useful if your CocktailBerry has been running for quite a while and you want to get more recipes.
 The new recipes will be added to your database, including any missing ingredients.
 Please take in consideration that if you made a lot of changes, especially renaming of your ingredients, this may add existing ingredients under a different name, since the names are in german.
-It is best to make a backup before running the command, to have the possibilty to restore the old state.
+It is best to make a backup before running the command, to have the possibility to restore the old state.
 The script will also create a local backup, which you can use if you did not backup your data manually.
 To update run the command:
 

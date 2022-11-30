@@ -8,9 +8,9 @@ These are the minimal tools needed to get started:
 
 - [Python 3.7](https://www.python.org/downloads/) or newer
 - [Git](https://git-scm.com/downloads)
-- recommended: **latest** [Rasperry Pi OS](https://www.raspberrypi.com/software/) (Desktop, Bullseye)
+- recommended: **latest** [Raspberry Pi OS](https://www.raspberrypi.com/software/) (Desktop, Bullseye)
 
-The dektop version of Raspberry Pi OS is recommended, but if you just want to have a peak into the project, any OS having Python and Git will work just fine. The RPi is needed to control the Pumps in a real machine, but the program will work fine even without any physical machine.
+The desktop version of Raspberry Pi OS is recommended, but if you just want to have a peak into the project, any OS having Python and Git will work just fine. The RPi is needed to control the Pumps in a real machine, but the program will work fine even without any physical machine.
 
 ## Set Up
 
@@ -37,7 +37,7 @@ The best way is to use the provided `requirements.txt` file. If Python is instal
 pip install -r requirements.txt
 ``` 
 
-to get all requirements. Optionally, you can install the single needed dependenicies:
+to get all requirements. Optionally, you can install the single needed dependencies:
 
 - PyQt5, requests, pyyaml, GitPython, typer, pyfiglet
 

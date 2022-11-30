@@ -5,27 +5,27 @@ If you run into any problems, check here first for a solution. If you don't find
 ## Problems while Running the Program
 
 All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled, and an info message should be displayed.\
-If in any case any unexpected behaviour occurs, feel free to open an issue. Usually, a part of the actions are also logged into the logfiles. When submitting an error, please also provide the `logs/debuglog.log` file.
+If in any case any unexpected behavior occurs, feel free to open an issue. Usually, a part of the actions are also logged into the log files. When submitting an error, please also provide the `logs/debuglog.log` file.
 
 ## Icons are Missing
 
-If some of the icons (check / cross on the checkbox, up / down arrow on the listview) are missing, make sure you run the script within the folder (e.g. `python runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`). This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
+If some of the icons (check / cross on the checkbox, up / down arrow on the list view) are missing, make sure you run the script within the folder (e.g. `python runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`). This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
 
-Another reason may be, if you are using a custom style sheet with colors using rgb. If thats the case, please change the color codes to the hexa reprensetation of the color, because qtawesome can't handle rgb color codes.
+Another reason may be, if you are using a custom style sheet with colors using rgb. If thats the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
 
 ## Changing Volume Unit
 
-For the users of the machine, there is the possibility to set the `EXP_MAKER_UNIT` and `EXP_MAKER_FAKTOR` option to change the displayed unit, for example to oz.
+For the users of the machine, there is the possibility to set the `EXP_MAKER_UNIT` and `EXP_MAKER_FACTOR` option to change the displayed unit, for example to oz.
 Please take note that the units stored in the database are still in ml, and if inserting new recipes, you still need to provide them in ml.
 This feature is purely cosmetic and for the user of the maker tab when making cocktails, that no calculations need to be done while making cocktails.
 
 ## Restoring Database
 
 Some of the migrations create a backup of the database before doing the mutation steps, like adding new recipes.
-If you rather don't want to have the new recipes, you can overwrite the local `Cockatail_database.db` with the `Cockatail_database_backup.db` file.
+If you rather don't want to have the new recipes, you can overwrite the local `Cocktail_database.db` with the `Cocktail_database_backup.db` file.
 
 ```bash
-cp Cockatail_database_backup.db Cockatail_database.db
+cp Cocktail_database_backup.db Cocktail_database.db
 ```
 
 This will restore the state of the backup previous this migration step.
@@ -61,7 +61,7 @@ After the reboot, the calibration should be okay.
 
 With version __Version 1.11.0__, there is the new config value `MAKER_CHECK_INTERNET`.
 If you wish to use your microservice, but got no internet at the moment, the data will be saved and send later.
-One problem that arised, is that, for example on a standard raspberry pi, the clock and therefore the timestamp will probably be wrong.
+One problem that occurred, is that, for example on a standard raspberry pi, the clock and therefore the timestamp will probably be wrong.
 This new option tackles that. If it's set active with an active microservice, it will check for internet connection at startup.
 If there is no connection, a dialog will pop up and give the user the possibility to adjust the time.
 In case the machine got a RTC build in and under usage, this option can usually be set to `false`, because due to the RTC, the time should be correct.
