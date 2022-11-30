@@ -3,10 +3,6 @@ on:
   release:
     types: [published]
 
-env:
-  IMAGE_BASE_NAME: ${{ github.repository }}
-  DOCKER_NAMESPACE: andrewo92
-
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -15,11 +11,11 @@ jobs:
       matrix:
         include:
           - dockerfile: ./microservice/Dockerfile
-            image: $DOCKER_NAMESPACE/$IMAGE_BASE_NAME-microservice
+            image: andrewo92/cocktailberry-microservice
           - dockerfile: ./dashboard/backend/Dockerfile
-            image: $DOCKER_NAMESPACE/$IMAGE_BASE_NAME-dashboard-be
+            image: andrewo92/cocktailberry-dashboard-be
           - dockerfile: ./dashboard/frontend/Dockerfile
-            image: $DOCKER_NAMESPACE/$IMAGE_BASE_NAME-dashboard-fe
+            image: andrewo92/cocktailberry-dashboard-fe
     permissions:
       contents: read
       packages: write
@@ -37,17 +33,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Convert docker image name to lower case
-        id: string
-        uses: ASzc/change-string-case-action@v5
-        with:
-          string: ${{ matrix.image }}
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ steps.string.outputs.lowercase }}
+          images: ${{ matrix.image }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
