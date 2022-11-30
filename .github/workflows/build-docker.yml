@@ -1,4 +1,4 @@
-name: Build & publish CocktaiBerry images
+name: Build & publish CocktailBerry images
 on:
   release:
     types: [published]
@@ -47,19 +47,19 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: steps.string.outputs.lowercase
+          images: ${{ steps.string.outputs.lowercase }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Build and push Docker image CocktaiBerry
+      - name: Build and push Docker image CocktailBerry
         uses: docker/build-push-action@v3
         with:
           context: .
           file: ${{ matrix.dockerfile }}
-          platform: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
