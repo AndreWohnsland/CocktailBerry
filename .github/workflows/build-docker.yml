@@ -15,11 +15,11 @@ jobs:
       matrix:
         include:
           - dockerfile: ./microservice/Dockerfile
-            image: ${{ env.DOCKER_NAMESPACE }}/${{ env.IMAGE_BASE_NAME }}-microservice
+            image: $DOCKER_NAMESPACE/$IMAGE_BASE_NAME-microservice
           - dockerfile: ./dashboard/backend/Dockerfile
-            image: ${{ env.DOCKER_NAMESPACE }}/${{ env.IMAGE_BASE_NAME }}-dashboard-be
+            image: $DOCKER_NAMESPACE/$IMAGE_BASE_NAME-dashboard-be
           - dockerfile: ./dashboard/frontend/Dockerfile
-            image: ${{ env.DOCKER_NAMESPACE }}/${{ env.IMAGE_BASE_NAME }}-dashboard-fe
+            image: $DOCKER_NAMESPACE/$IMAGE_BASE_NAME-dashboard-fe
     permissions:
       contents: read
       packages: write
