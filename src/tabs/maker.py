@@ -55,7 +55,7 @@ def __build_comment_maker(cocktail: Cocktail):
     hand_add = cocktail.handadds
     length_desc = sorted(hand_add, key=lambda x: len(x.name), reverse=True)
     for ing in length_desc:
-        amount = ing.amount * cfg.EXP_MAKER_FAKTOR
+        amount = ing.amount * cfg.EXP_MAKER_FACTOR
         amount = int(amount) if amount >= 8 else round(amount, 1)
         comment += f"\n~{amount} {cfg.EXP_MAKER_UNIT} {ing.name}"
     return comment

@@ -384,7 +384,7 @@ class DisplayController(DialogHandler):
     def fill_recipe_data_maker(self, w: Ui_MainWindow, cocktail: Cocktail, total_volume: int):
         """Fill all the maker view data with the data from the given cocktail"""
         w.LAlkoholname.setText(cocktail.name)
-        display_volume = self._decide_rounding(total_volume * cfg.EXP_MAKER_FAKTOR, 20)
+        display_volume = self._decide_rounding(total_volume * cfg.EXP_MAKER_FACTOR, 20)
         w.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")
         w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.0f}%")
         display_data = cocktail.machineadds
@@ -408,7 +408,7 @@ class DisplayController(DialogHandler):
             else:
                 field_ingredient.setProperty("cssClass", None)
                 self._set_underline(field_ingredient, False)
-                display_amount = self._decide_rounding(ing.amount * cfg.EXP_MAKER_FAKTOR)
+                display_amount = self._decide_rounding(ing.amount * cfg.EXP_MAKER_FACTOR)
                 field_volume.setText(f" {display_amount} {cfg.EXP_MAKER_UNIT}")
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")

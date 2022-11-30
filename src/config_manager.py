@@ -79,7 +79,7 @@ class ConfigManager:
     TEAM_API_URL = "http://127.0.0.1:8080"
     # Config to change the displayed values in the maker to another unit
     EXP_MAKER_UNIT = "ml"
-    EXP_MAKER_FAKTOR = 1.0
+    EXP_MAKER_FACTOR = 1.0
 
     def __init__(self) -> None:
         """Try to read in the custom configs. If the file is not there, ignores the error.
@@ -113,7 +113,7 @@ class ConfigManager:
             "TEAM_BUTTON_NAMES": (list, [self._validate_config_list_type]),
             "TEAM_API_URL": (str, []),
             "EXP_MAKER_UNIT": (str, []),
-            "EXP_MAKER_FAKTOR": (float, [_build_number_limiter(0.01, 100)]),
+            "EXP_MAKER_FACTOR": (float, [_build_number_limiter(0.01, 100)]),
         }
         # Dict of Format "configname": (type, List[CheckCallbacks]) for the single list elements
         # only needed if the above config type was defined as list type, rest is identical to top schema
