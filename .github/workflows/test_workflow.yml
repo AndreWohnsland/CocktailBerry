@@ -1,0 +1,15 @@
+name: Testing global variables
+
+on: workflow_dispatch
+
+env:
+  IMAGE_BASE_NAME: ${{ github.repository }}
+  DOCKER_NAMESPACE: andrewo92
+
+jobs:
+  greeting_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Test the tag'
+        run: echo "$DOCKER_NAMESPACE/$IMAGE_BASE_NAME-microservice"
