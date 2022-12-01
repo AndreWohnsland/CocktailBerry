@@ -1,6 +1,7 @@
 requests
 python-dotenv
 pyyaml
-plotly-express
+plotly
 dash
+scipy==1.8.1
 gunicorn
