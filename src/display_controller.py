@@ -402,7 +402,7 @@ class DisplayController(DialogHandler):
             # -1 indicates no ingredient
             if ing.id == -1:
                 ingredient_name = UI_LANGUAGE.get_add_self()
-                field_ingredient.setProperty("cssClass", "hand-seperator")
+                field_ingredient.setProperty("cssClass", "hand-separator")
                 self._set_underline(field_ingredient, True)
             else:
                 field_ingredient.setProperty("cssClass", None)
