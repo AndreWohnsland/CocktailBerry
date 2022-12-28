@@ -27,7 +27,7 @@ from src.ui.setup_bottle_window import BottleWindow
 from src.ui.setup_get_ingredients_window import GetIngredientWindow
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_handadd_widget import HandaddWidget
-from src.ui.setup_avialable_window import AvailableWindow
+from src.ui.setup_available_window import AvailableWindow
 from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
 from src.ui.icons import ICONS
