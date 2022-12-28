@@ -22,10 +22,10 @@ class CalibrationScreen(QMainWindow, Ui_MainWindow):
         # Connect the Button
         bottles = cfg.MAKER_NUMBER_BOTTLES
         self.PB_start.clicked.connect(self.output_volume)
-        self.channel_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, "+", 1, bottles, 1))
-        self.channel_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, "-", 1, bottles, 1))
-        self.amount_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "+", 10, 200, 10))
-        self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, "-", 10, 200, 10))
+        self.channel_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, 1, bottles, 1))
+        self.channel_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, 1, bottles, -1))
+        self.amount_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, 10, 200, 10))
+        self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, 10, 200, -10))
         self.button_exit.clicked.connect(self.close)
         self.showFullScreen()
         DP_CONTROLLER.inject_stylesheet(self)
@@ -46,7 +46,7 @@ def run_calibration(standalone=True):
     """Executes the calibration screen"""
     if standalone:
         app = QApplication(sys.argv)
-    # this asignment is needed, otherwise the window will close in an instant
+    # this assignment is needed, otherwise the window will close in an instant
     # pylint: disable=unused-variable
     cali = CalibrationScreen()
     if standalone:

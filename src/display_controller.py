@@ -142,19 +142,18 @@ class DisplayController(DialogHandler):
     ###########################
     # Misc
     def plusminus(
-        self, label: QLabel, operator: Literal["+", "-"], minimal=0, maximal=1000,
+        self, label: QLabel, minimal=0, maximal=1000,
         delta=10, side_effect: Optional[Callable] = None
     ):
         """ increases or decreases the value by a given amount in the boundaries
-        operator: '+' or '-'
-        Also executes a sideeffect function, if one is given
+        Also executes a side effect function, if one is given
         """
         try:
-            value_ = int(label.text())
-            value_ = value_ + (delta if operator == "+" else -delta)
+            value_ = int(label.text(), base=10)
+            value_ = value_ + delta
             value_ = min(maximal, max(minimal, (value_ // delta) * delta))
         except ValueError:
-            value_ = maximal if operator == "+" else minimal
+            value_ = maximal if delta > 0 else minimal
         label.setText(str(value_))
         if side_effect is not None:
             side_effect()

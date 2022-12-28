@@ -25,12 +25,12 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         self.PBEintragen.clicked.connect(self.eintragen_clicked)
         self.mainscreen = parent
         # Assigns the names to the labels
-        # get all the DB values and assign the nececary to the level labels
+        # get all the DB values and assign the necessary to the level labels
         # note: since there can be blank bottles (id=0 so no match) this needs to be catched as well (no selection from DB)
         self.id_list = []
         self.maxvolume = []
         self.asign_bottle_data()
-        # creates lists of the objects and assings functions later through a loop
+        # creates lists of the objects and assigns functions later through a loop
         number = cfg.choose_bottle_number()
         myplus = [getattr(self, f"PBMplus{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
         myminus = [getattr(self, f"PBMminus{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
@@ -40,9 +40,9 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         #  since zip only goes to the minimal of all, only one [:number] is needed
         for plus, minus, field, vol in zip(myplus, myminus, mylabel[:number], self.maxvolume):
             plus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.plusminus(
-                label=l, operator="+", minimal=50, maximal=b, delta=25))
+                label=l, minimal=50, maximal=b, delta=25))
             minus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.plusminus(
-                label=l, operator="-", minimal=50, maximal=b, delta=25))
+                label=l, minimal=50, maximal=b, delta=-25))
 
         # remove the elements exceeding the bottle number
         for elements in [myplus, myminus, mylabel, myname]:
