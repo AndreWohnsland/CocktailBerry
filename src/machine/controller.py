@@ -29,7 +29,7 @@ class MachineController():
         t_cleaned = 0.0
         self._header_print("Start Cleaning")
         self._open_pumps(active_pins)
-        w.progressionqwindow("Cleaning")
+        w.open_progression_window("Cleaning")
         # also using same button cancel from prepare cocktail
         shared.make_cocktail = True
         while t_cleaned < cfg.MAKER_CLEAN_TIME and shared.make_cocktail:
@@ -37,13 +37,13 @@ class MachineController():
             t_cleaned += cfg.MAKER_SLEEP_TIME
             t_cleaned = round(t_cleaned, 2)
             time.sleep(cfg.MAKER_SLEEP_TIME)
-            w.prow_change(t_cleaned / cfg.MAKER_CLEAN_TIME * 100)
+            w.change_progression_window(t_cleaned / cfg.MAKER_CLEAN_TIME * 100)
             qApp.processEvents()
         self._clean_print(cfg.MAKER_CLEAN_TIME)
         print("")
         self._close_pumps(active_pins)
         self._header_print("Done Cleaning")
-        w.prow_close()
+        w.close_progression_window()
 
     def make_cocktail(self, w, bottle_list: List[int], volume_list: List[Union[float, int]], recipe="", is_cocktail=True):
         """RPI Logic to prepare the cocktail.
@@ -61,11 +61,11 @@ class MachineController():
         """
         # Only shwo team dialog if it is enabled
         if cfg.TEAMS_ACTIVE and is_cocktail:
-            w.teamwindow()
+            w.open_team_window()
         shared.cocktail_started = True
         shared.make_cocktail = True
         if w is not None:
-            w.progressionqwindow(recipe)
+            w.open_progression_window(recipe)
         indexes = [x - 1 for x in bottle_list]
         pins = [cfg.PUMP_PINS[i] for i in indexes]
         volume_flows = [cfg.PUMP_VOLUMEFLOW[i] for i in indexes]
@@ -92,7 +92,7 @@ class MachineController():
             current_time = round(current_time, 2)
             time.sleep(cfg.MAKER_SLEEP_TIME)
             if w is not None:
-                w.prow_change(current_time / max_time * 100)
+                w.change_progression_window(current_time / max_time * 100)
             qApp.processEvents()
 
         self._close_pumps(pins)
@@ -100,7 +100,7 @@ class MachineController():
         print("Total calculated consumption:", consumption)
         self._header_print(f"Finished {recipe}")
         if w is not None:
-            w.prow_close()
+            w.close_progression_window()
         return consumption, current_time, max_time
 
     def _print_time(self, current_time: float, total_time: float):

@@ -52,14 +52,14 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
         # init the empty further screens
-        self.pww: Optional[PasswordScreen] = None
-        self.kbw: Optional[KeyboardWidget] = None
-        self.prow: Optional[ProgressScreen] = None
-        self.botw: Optional[BottleWindow] = None
-        self.ingd: Optional[GetIngredientWindow] = None
-        self.handw: Optional[HandaddWidget] = None
-        self.availw: Optional[AvailableWindow] = None
-        self.teamw: Optional[TeamScreen] = None
+        self.numpad_window: Optional[PasswordScreen] = None
+        self.keyboard_window: Optional[KeyboardWidget] = None
+        self.progress_window: Optional[ProgressScreen] = None
+        self.bottle_window: Optional[BottleWindow] = None
+        self.ingredient_window: Optional[GetIngredientWindow] = None
+        self.handadd_window: Optional[HandaddWidget] = None
+        self.available_window: Optional[AvailableWindow] = None
+        self.team_window: Optional[TeamScreen] = None
         self.option_window: Optional[OptionWindow] = None
         self.datepicker: Optional[DatePicker] = None
         UI_LANGUAGE.adjust_mainwindow(self)
@@ -106,76 +106,76 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
             )
 
-    def passwordwindow(self, le_to_write: QLineEdit, x_pos=0, y_pos=0, headertext="Password"):
+    def open_numpad(self, le_to_write: QLineEdit, x_pos=0, y_pos=0, header_text="Password"):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
-        self.pww = PasswordScreen(self, le_to_write, x_pos, y_pos, headertext)
+        self.numpad_window = PasswordScreen(self, le_to_write, x_pos, y_pos, header_text)
 
-    def keyboard(self, le_to_write, max_char_len=30):
+    def open_keyboard(self, le_to_write, max_char_len=30):
         """ Opens up the keyboard connected to the lineedit """
-        self.kbw = KeyboardWidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
+        self.keyboard_window = KeyboardWidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
 
-    def progressionqwindow(self, cocktail_type: str = "Cocktail"):
-        """ Opens up the progressionwindow to show the Cocktail status. """
-        self.prow = ProgressScreen(self, cocktail_type)
+    def open_progression_window(self, cocktail_type: str = "Cocktail"):
+        """ Opens up the progression window to show the Cocktail status. """
+        self.progress_window = ProgressScreen(self, cocktail_type)
 
-    def prow_change(self, pbvalue):
-        """ Changes the value of the Progressionbar of the ProBarWindow. """
-        if self.prow is None:
+    def change_progression_window(self, pb_value):
+        """ Changes the value of the progression bar of the ProBarWindow. """
+        if self.progress_window is None:
             return
-        self.prow.progressBar.setValue(pbvalue)
+        self.progress_window.progressBar.setValue(pb_value)
 
-    def prow_close(self):
-        """ Closes the Progressionwindow at the end of the cyclus. """
-        if self.prow is None:
+    def close_progression_window(self):
+        """ Closes the progression window at the end of the cycle. """
+        if self.progress_window is None:
             return
-        self.prow.close()
+        self.progress_window.close()
 
-    def teamwindow(self):
-        self.teamw = TeamScreen(self)
+    def open_team_window(self):
+        self.team_window = TeamScreen(self)
         # don't abstract .exec_() into class otherwise you will get NameError in class!
-        self.teamw.exec_()
+        self.team_window.exec_()
 
-    def optionwindow(self):
+    def open_option_window(self):
         """Opens up the options"""
         if not DP_CONTROLLER.check_bottles_password(self):
             DP_CONTROLLER.say_wrong_password()
             return
         self.option_window = OptionWindow(self)
 
-    def bottleswindow(self):
-        """ Opens the bottlewindow to change the volumelevels. """
-        self.botw = BottleWindow(self)
+    def open_bottle_window(self):
+        """ Opens the bottle window to change the volume levels. """
+        self.bottle_window = BottleWindow(self)
 
-    def ingredientdialog(self):
+    def open_ingredient_window(self):
         """ Opens a window to spend one single ingredient. """
-        self.ingd = GetIngredientWindow(self)
+        self.ingredient_window = GetIngredientWindow(self)
 
-    def handwindow(self):
-        """ Opens a window to enter additional ingrediends added by hand. """
-        self.handw = HandaddWidget(self)
+    def open_handadd_window(self):
+        """ Opens a window to enter additional ingredients added by hand. """
+        self.handadd_window = HandaddWidget(self)
 
-    def availablewindow(self):
-        self.availw = AvailableWindow(self)
+    def open_available_window(self):
+        self.available_window = AvailableWindow(self)
 
     def connect_other_windows(self):
         """Links the buttons and lineedits to the other ui elements"""
         password = UI_LANGUAGE.generate_password_header("password")
-        self.LEpw.clicked.connect(lambda: self.passwordwindow(self.LEpw, 50, 50, password))
-        self.LEpw2.clicked.connect(lambda: self.passwordwindow(self.LEpw2, 50, 50, password))
-        self.LECleanMachine.clicked.connect(lambda: self.passwordwindow(self.LECleanMachine, 50, 50, password))
-        self.LECocktail.clicked.connect(lambda: self.keyboard(self.LECocktail))
-        self.option_button.clicked.connect(self.optionwindow)
+        self.LEpw.clicked.connect(lambda: self.open_numpad(self.LEpw, 50, 50, password))
+        self.LEpw2.clicked.connect(lambda: self.open_numpad(self.LEpw2, 50, 50, password))
+        self.LECleanMachine.clicked.connect(lambda: self.open_numpad(self.LECleanMachine, 50, 50, password))
+        self.LECocktail.clicked.connect(lambda: self.open_keyboard(self.LECocktail))
+        self.option_button.clicked.connect(self.open_option_window)
         alcohol = UI_LANGUAGE.generate_password_header("alcohol")
         self.LEGehaltRezept.clicked.connect(
-            lambda: self.passwordwindow(self.LEGehaltRezept, 50, 50, alcohol)
+            lambda: self.open_numpad(self.LEGehaltRezept, 50, 50, alcohol)
         )
-        self.LEZutatRezept.clicked.connect(lambda: self.keyboard(self.LEZutatRezept, max_char_len=20))
-        self.LEKommentar.clicked.connect(self.handwindow)
-        self.PBAvailable.clicked.connect(self.availablewindow)
+        self.LEZutatRezept.clicked.connect(lambda: self.open_keyboard(self.LEZutatRezept, max_char_len=20))
+        self.LEKommentar.clicked.connect(self.open_handadd_window)
+        self.PBAvailable.clicked.connect(self.open_available_window)
         # connects all the Lineedits from the Recipe amount and gives them the validator
         amount = UI_LANGUAGE.generate_password_header("amount")
         for obj in DP_CONTROLLER.get_lineedits_recipe(self):
-            obj.clicked.connect(lambda o=obj: self.passwordwindow(o, 50, 50, amount))
+            obj.clicked.connect(lambda o=obj: self.open_numpad(o, 50, 50, amount))
             obj.setValidator(QIntValidator(0, 300))
             obj.setMaxLength(3)
         # Setting up Validators for all the the fields (length and/or Types):
@@ -187,11 +187,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """
-        # First, connect all the Pushbuttons with the Functions
+        # First, connect all the push buttons with the Functions
         self.PBZutathinzu.clicked.connect(lambda: ingredients.enter_ingredient(self))
         self.PBRezepthinzu.clicked.connect(lambda: recipes.enter_recipe(self, True))
-        self.PBBelegung.clicked.connect(self.bottleswindow)
-        self.PBZeinzelnd.clicked.connect(self.ingredientdialog)
+        self.PBBelegung.clicked.connect(self.open_bottle_window)
+        self.PBZeinzelnd.clicked.connect(self.open_ingredient_window)
         self.PBclear.clicked.connect(lambda: DP_CONTROLLER.clear_recipe_data_recipes(self, False))
         self.PBRezeptaktualisieren.clicked.connect(lambda: recipes.enter_recipe(self, False))
         self.PBdelete.clicked.connect(lambda: recipes.delete_recipe(self))
@@ -200,16 +200,16 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBZaktualisieren.clicked.connect(lambda: ingredients.enter_ingredient(self, False))
         self.PBZubereiten_custom.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
-        self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "+", 500, 1500, 50))
-        self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, "-", 500, 1500, 50))
+        self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, 500, 1500, 50))
+        self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, 500, 1500, -50))
         self.PBMplus.clicked.connect(
             lambda: DP_CONTROLLER.plusminus(
-                self.LCustomMenge, "+", 100, 400, 25,
+                self.LCustomMenge, 100, 400, 25,
                 lambda: maker.update_shown_recipe(self, False)
             ))
         self.PBMminus.clicked.connect(
             lambda: DP_CONTROLLER.plusminus(
-                self.LCustomMenge, "-", 100, 400, 25,
+                self.LCustomMenge, 100, 400, -25,
                 lambda: maker.update_shown_recipe(self, False)
             ))
         self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
