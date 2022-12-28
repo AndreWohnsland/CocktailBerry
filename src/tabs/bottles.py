@@ -93,7 +93,7 @@ def refresh_bottle_information(w):
 @logerror
 def renew_checked_bottles(w):
     """ Renews all the Bottles which are checked as new. """
-    pushbutton_new_list = DP_CONTROLLER.get_pushbottons_newbottle(w)
+    pushbutton_new_list = DP_CONTROLLER.get_pushbuttons_newbottle(w)
     renew_bottle = DP_CONTROLLER.get_toggle_status(pushbutton_new_list)
     DB_COMMANDER.set_bottle_volumelevel_to_max(renew_bottle)
     DP_CONTROLLER.untoggle_buttons(pushbutton_new_list)

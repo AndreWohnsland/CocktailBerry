@@ -174,7 +174,7 @@ class DisplayController(DialogHandler):
 
     def set_tab_width(self, mainscreen: QMainWindow):
         """Hack to set tabs to full screen width, inheritance of custom tabBars dont work
-        This is incredibly painfull, since all the CSS from the ui needs to be copied here,
+        This is incredibly painful, since all the CSS from the ui needs to be copied here,
         it will overwrite the whole class sheet and missing parts will not be used.
         Any changes to the .ui file for the tab needs to be applied here as well"""
         total_width = mainscreen.frameGeometry().width()
@@ -213,7 +213,7 @@ class DisplayController(DialogHandler):
         slider.setValue(value)
 
     def reset_alcohol_slider(self, w: Ui_MainWindow):
-        """Sets the alcohol slider to defaul (100%) value"""
+        """Sets the alcohol slider to default (100%) value"""
         self.__set_slider_value(w.HSIntensity, 0)
 
     def reset_virgin_setting(self, w: Ui_MainWindow):
@@ -232,7 +232,7 @@ class DisplayController(DialogHandler):
 
     # Combobox
     def fill_single_combobox(
-            self, combobox: QComboBox, itemlist: List[str],
+            self, combobox: QComboBox, item_list: List[str],
             clear_first=False, sort_items=True, first_empty=True
     ):
         """Fill a combobox with given items, with the option to sort and fill a empty element as first element"""
@@ -240,25 +240,25 @@ class DisplayController(DialogHandler):
             combobox.clear()
         if combobox.count() == 0 and first_empty:
             combobox.addItem("")
-        combobox.addItems(itemlist)
+        combobox.addItems(item_list)
         if sort_items:
             combobox.model().sort(0)
 
     def fill_multiple_combobox(
-            self, combobox_list: List[QComboBox], itemlist: List[str],
+            self, combobox_list: List[QComboBox], item_list: List[str],
             clear_first=False, sort_items=True, first_empty=True
     ):
         """Fill multiple comboboxes with identical items, can sort and insert filler as first item"""
         for combobox in combobox_list:
-            self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
+            self.fill_single_combobox(combobox, item_list, clear_first, sort_items, first_empty)
 
     def fill_multiple_combobox_individually(
-        self, combobox_list: List[QComboBox], list_of_itemlist: List[List[str]],
+        self, combobox_list: List[QComboBox], list_of_item_list: List[List[str]],
         clear_first=False, sort_items=True, first_empty=True
     ):
         """Fill multiple comboboxes with different items, can sort and insert filler as first item"""
-        for combobox, itemlist in zip(combobox_list, list_of_itemlist):
-            self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
+        for combobox, item_list in zip(combobox_list, list_of_item_list):
+            self.fill_single_combobox(combobox, item_list, clear_first, sort_items, first_empty)
 
     def delete_single_combobox_item(self, combobox: QComboBox, item: str):
         """Delete the given item from a combobox"""
@@ -266,14 +266,14 @@ class DisplayController(DialogHandler):
         if index >= 0:
             combobox.removeItem(index)
 
-    # This seeems to be currently unused
-    def delete_multiple_combobox_item(self, combobox: QComboBox, itemlist: List[str]):
+    # This seems to be currently unused
+    def delete_multiple_combobox_item(self, combobox: QComboBox, item_list: List[str]):
         """Delete the given items from a combobox"""
-        for item in itemlist:
+        for item in item_list:
             self.delete_single_combobox_item(combobox, item)
 
     def delete_item_in_multiple_combobox(self, combobox_list: List[QComboBox], item: str):
-        """Delete the given item from multiple comboboxed"""
+        """Delete the given item from multiple comboboxes"""
         for combobox in combobox_list:
             self.delete_single_combobox_item(combobox, item)
 
@@ -293,7 +293,7 @@ class DisplayController(DialogHandler):
         combobox.setCurrentIndex(index)
 
     def adjust_bottle_comboboxes(self, combobox_list: List[QComboBox], old_item: str, new_item: str):
-        """Remove the old itemname and add new one in given comboboxex, sorting afterwards"""
+        """Remove the old item name and add new one in given comboboxes, sorting afterwards"""
         for combobox in combobox_list:
             if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):  # type: ignore
                 combobox.addItem(old_item)
@@ -313,7 +313,7 @@ class DisplayController(DialogHandler):
         for combobox in combobox_list:
             self.rename_single_combobox(combobox, old_item, new_item)
 
-    # buttons / togglebuttons
+    # buttons / toggle buttons
     def untoggle_buttons(self, button_list: List[QPushButton]):
         """Set toggle to false in given button list"""
         for button in button_list:
@@ -325,7 +325,7 @@ class DisplayController(DialogHandler):
         for progress_bar, value in zip(progress_bar_list, value_list):
             progress_bar.setValue(value)
 
-    # listwidget
+    # list widget
     def unselect_list_widget_items(self, list_widget: QListWidget):
         """Unselect all items in the list widget"""
         for i in range(list_widget.count()):
@@ -492,7 +492,7 @@ class DisplayController(DialogHandler):
         self.fill_multiple_lineedit(labels, label_names)  # type: ignore
 
     # Migration from supporter.py
-    def get_pushbottons_newbottle(self, w: Ui_MainWindow, get_all=False) -> List[QPushButton]:
+    def get_pushbuttons_newbottle(self, w: Ui_MainWindow, get_all=False) -> List[QPushButton]:
         """Returns all new bottles toggle button objects"""
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"PBneu{x}") for x in range(1, number + 1)]
@@ -546,7 +546,7 @@ class DisplayController(DialogHandler):
         comboboxes_bottles = self.get_comboboxes_bottles(w, True)
         self.set_multiple_combobox_to_top_item(comboboxes_bottles[used_bottles::])
         to_adjust = [
-            self.get_pushbottons_newbottle(w, True),
+            self.get_pushbuttons_newbottle(w, True),
             self.get_levelbar_bottles(w, True),
             comboboxes_bottles,
             self.get_label_bottles(w, True),
@@ -557,7 +557,7 @@ class DisplayController(DialogHandler):
                 element.deleteLater()
 
     def adjust_maker_label_size_cocktaildata(self, w: Ui_MainWindow):
-        """Adjusts the fontsize for larger screens"""
+        """Adjusts the font size for larger screens"""
         # iterate over all size types and adjust size relative to window height
         # default height was 480 for provided UI
         # so if its larger, the font should also be larger here
