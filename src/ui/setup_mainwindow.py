@@ -101,7 +101,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """Checks if to display the deprecation warning for newer python version install"""
         sys_python = sys.version_info
         if FUTURE_PYTHON_VERSION > sys_python:
-            DP_CONTROLLER.say_python_deprecated(platform.python_version(), f"{sys_python[0]}.{sys_python[1]}")
+            DP_CONTROLLER.say_python_deprecated(
+                platform.python_version(),
+                f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
+            )
 
     def passwordwindow(self, le_to_write: QLineEdit, x_pos=0, y_pos=0, headertext="Password"):
         """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
