@@ -200,22 +200,22 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBZaktualisieren.clicked.connect(lambda: ingredients.enter_ingredient(self, False))
         self.PBZubereiten_custom.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
-        self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, 500, 1500, 50))
-        self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LEFlaschenvolumen, 500, 1500, -50))
+        self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, 50))
+        self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, -50))
         self.PBMplus.clicked.connect(
-            lambda: DP_CONTROLLER.plusminus(
+            lambda: DP_CONTROLLER.change_input_value(
                 self.LCustomMenge, 100, 400, 25,
                 lambda: maker.update_shown_recipe(self, False)
             ))
         self.PBMminus.clicked.connect(
-            lambda: DP_CONTROLLER.plusminus(
+            lambda: DP_CONTROLLER.change_input_value(
                 self.LCustomMenge, 100, 400, -25,
                 lambda: maker.update_shown_recipe(self, False)
             ))
         self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
         self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients(self))
         self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes(self))
-        self.PBenable.clicked.connect(lambda: recipes.enableall_recipes(self))
+        self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
         # Connect the Lists with the Functions
         self.LWZutaten.itemClicked.connect(lambda: ingredients.display_selected_ingredient(self))
@@ -248,11 +248,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         ingredients.load_ingredients(self)
         # Load Bottles into the Labels
         bottles.refresh_bottle_information(self)
-        # Load Combobuttons Recipes
+        # Load combo buttons Recipes
         recipes.fill_recipe_box_with_ingredients(self)
-        # Load Combobuttons Bottles
+        # Load combo buttons Bottles
         bottles.calculate_combobox_bottles(self)
-        # Load current Bottles into the Combobuttons
+        # Load current Bottles into the combo buttons
         bottles.read_in_bottles(self)
         # Load Existing Recipes from DB into Recipe List
         recipes.load_recipe_view_names(self)

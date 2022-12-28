@@ -22,10 +22,10 @@ class CalibrationScreen(QMainWindow, Ui_MainWindow):
         # Connect the Button
         bottles = cfg.MAKER_NUMBER_BOTTLES
         self.PB_start.clicked.connect(self.output_volume)
-        self.channel_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, 1, bottles, 1))
-        self.channel_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.channel, 1, bottles, -1))
-        self.amount_plus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, 10, 200, 10))
-        self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.amount, 10, 200, -10))
+        self.channel_plus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.channel, 1, bottles, 1))
+        self.channel_minus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.channel, 1, bottles, -1))
+        self.amount_plus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.amount, 10, 200, 10))
+        self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.amount, 10, 200, -10))
         self.button_exit.clicked.connect(self.close)
         self.showFullScreen()
         DP_CONTROLLER.inject_stylesheet(self)

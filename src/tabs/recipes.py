@@ -185,7 +185,7 @@ def delete_recipe(w):
 
 
 @logerror
-def enableall_recipes(w):
+def enable_all_recipes(w):
     """Set all recipes to enabled """
     if not DP_CONTROLLER.ask_enable_all_recipes():
         return

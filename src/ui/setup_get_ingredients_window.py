@@ -30,8 +30,8 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
         # Connect all the buttons
-        self.PBplus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LAmount, 20, 100, 10))
-        self.PBminus.clicked.connect(lambda: DP_CONTROLLER.plusminus(self.LAmount, 20, 100, -10))
+        self.PBplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LAmount, 20, 100, 10))
+        self.PBminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LAmount, 20, 100, -10))
         self.PBAusgeben.clicked.connect(self.ausgeben_clicked)
         self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
         all_bottles = DB_COMMANDER.get_ingredients_at_bottles()

@@ -39,9 +39,9 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
 
         #  since zip only goes to the minimal of all, only one [:number] is needed
         for plus, minus, field, vol in zip(myplus, myminus, mylabel[:number], self.maxvolume):
-            plus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.plusminus(
+            plus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.change_input_value(
                 label=l, minimal=50, maximal=b, delta=25))
-            minus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.plusminus(
+            minus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.change_input_value(
                 label=l, minimal=50, maximal=b, delta=-25))
 
         # remove the elements exceeding the bottle number

@@ -141,7 +141,7 @@ class DisplayController(DialogHandler):
     # UI "MANIPULATE" METHODS #
     ###########################
     # Misc
-    def plusminus(
+    def change_input_value(
         self, label: QLabel, minimal=0, maximal=1000,
         delta=10, side_effect: Optional[Callable] = None
     ):
