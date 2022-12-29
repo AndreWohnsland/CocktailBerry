@@ -8,7 +8,7 @@ from src.machine.raspberry import RpiController
 
 
 class MachineController():
-    """Controler Class for all Machine related Pin routines """
+    """Controller Class for all Machine related Pin routines """
 
     def __init__(self):
         super().__init__()
@@ -23,7 +23,7 @@ class MachineController():
 
     def clean_pumps(self, w):
         """Clean the pumps for the defined time in the config.
-        Acitvates all pumps for the given time
+        Activates all pumps for the given time
         """
         active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         t_cleaned = 0.0
@@ -53,13 +53,13 @@ class MachineController():
         Args:
             w (QtMainWindow): MainWindow Object
             bottle_list (List[int]): Number of bottles to be used
-            volume_list (List[float]): Corresponding Volumens needed of bottles
-            labelchange (str, optional): Option to change the display text of Progress Screen. Defaults to "".
+            volume_list (List[float]): Corresponding Volume needed of bottles
+            recipe (str, optional): Option to change the display text of Progress Screen. Defaults to "".
 
         Returns:
             tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
         """
-        # Only shwo team dialog if it is enabled
+        # Only show team dialog if it is enabled
         if cfg.TEAMS_ACTIVE and is_cocktail:
             w.open_team_window()
         shared.cocktail_started = True
@@ -111,22 +111,22 @@ class MachineController():
         """Gets all used pins, prints pins and uses controller class to set up"""
         active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         print(f"Initializing Pins: {active_pins}")
-        self._pin_controller.initialize_pinlist(active_pins)
+        self._pin_controller.initialize_pin_list(active_pins)
 
-    def _open_pumps(self, pinlist: List[int]):
+    def _open_pumps(self, pin_list: List[int]):
         """Informs and opens all given pins"""
-        print(f"Opening Pins: {pinlist}")
-        self._pin_controller.activate_pinlist(pinlist)
+        print(f"Opening Pins: {pin_list}")
+        self._pin_controller.activate_pin_list(pin_list)
 
     def close_all_pumps(self):
         """Close all pins connected to the pumps"""
         active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         self._close_pumps(active_pins)
 
-    def _close_pumps(self, pinlist: List[int]):
+    def _close_pumps(self, pin_list: List[int]):
         """Informs and closes all given pins"""
-        print(f"Closing Pins: {pinlist}")
-        self._pin_controller.close_pinlist(pinlist)
+        print(f"Closing Pins: {pin_list}")
+        self._pin_controller.close_pin_list(pin_list)
 
     def _consumption_print(self, consumption: List[float], current_time: float, max_time: float, interval=1):
         """Displays each interval seconds information for cocktail preparation"""
