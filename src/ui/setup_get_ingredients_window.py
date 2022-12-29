@@ -20,7 +20,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
     to spend this ingredient.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         """ Init. Connects all the buttons and get values for the Combobox. """
         super().__init__()
         self.setupUi(self)
@@ -32,8 +32,8 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         # Connect all the buttons
         self.PBplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LAmount, 20, 100, 10))
         self.PBminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LAmount, 20, 100, -10))
-        self.PBAusgeben.clicked.connect(self.ausgeben_clicked)
-        self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
+        self.PBAusgeben.clicked.connect(self._spend_clicked)
+        self.PBAbbrechen.clicked.connect(self._cancel_clicked)
         all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
         bottles = [x for x in all_bottles if x != ""]
         DP_CONTROLLER.fill_single_combobox(self.CBingredient, bottles, first_empty=False)
@@ -41,12 +41,12 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def abbrechen_clicked(self):
+    def _cancel_clicked(self):
         """ Closes the Window without a change. """
         self.close()
 
-    def ausgeben_clicked(self):
-        """ Calls the Progressbarwindow and spends the given amount of the ingredient. """
+    def _spend_clicked(self):
+        """ Calls the progressbar window and spends the given amount of the ingredient. """
         ingredient_name, volume = DP_CONTROLLER.get_ingredient_window_data(self)
         bottle, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
 

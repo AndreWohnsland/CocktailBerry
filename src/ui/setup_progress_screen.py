@@ -10,9 +10,9 @@ from src.dialog_handler import UI_LANGUAGE
 
 
 class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
-    """ Class for the Progressscreen during Cocktail making. """
+    """ Class for the Progress screen during Cocktail making. """
 
-    def __init__(self, parent=None, cocktail_type="Cocktail"):
+    def __init__(self, parent, cocktail_type="Cocktail"):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore

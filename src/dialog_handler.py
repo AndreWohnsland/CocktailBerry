@@ -327,7 +327,7 @@ class UiLanguage():
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 
-    def adjust_available_windos(self, w):
+    def adjust_available_windows(self, w):
         """Translates all needed elements of the available window"""
         window = "available_window"
         w.PBAbbruch_2.setText(self.__choose_language("cancel_button"))

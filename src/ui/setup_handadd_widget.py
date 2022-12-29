@@ -32,8 +32,8 @@ class HandaddWidget(QDialog, Ui_handadds):
         self.comboboxes_handadd = [getattr(self, f"CBHandadd{x}") for x in range(1, 6)]
         DP_CONTROLLER.fill_multiple_combobox(self.comboboxes_handadd, ingredient_list, sort_items=False)
         # connect the buttons
-        self.PBAbbrechen.clicked.connect(self.abbrechen_clicked)
-        self.PBEintragen.clicked.connect(self.eintragen_clicked)
+        self.PBAbbrechen.clicked.connect(self._cancel_clicked)
+        self.PBEintragen.clicked.connect(self._enter_clicked)
 
         self.lineedit_hand = [getattr(self, f"LEHandadd{x}") for x in range(1, 6)]
         msg = UI_LANGUAGE.generate_password_header("amount")
@@ -54,11 +54,11 @@ class HandaddWidget(QDialog, Ui_handadds):
             DP_CONTROLLER.set_combobox_item(combobox, ing.name)
             lineedit.setText(str(ing.amount))
 
-    def abbrechen_clicked(self):
+    def _cancel_clicked(self):
         """ Closes the window without any action. """
         self.close()
 
-    def eintragen_clicked(self):
+    def _enter_clicked(self):
         """ Closes the window and enters the values into the DB/LE. """
         ingredient_list, amount_list, error = self.build_list_pairs()
         if error:
@@ -72,15 +72,15 @@ class HandaddWidget(QDialog, Ui_handadds):
             return
         # if it passes all tests, generate the list for the later entry ands enter the comment into the according field
         shared.handaddlist = []
-        commenttext = ""
+        comment_text = ""
         for ingredient_name, amount in zip(ingredient_list, amount_list):
             ingredient: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore
             ingredient.amount = amount
             ingredient.recipe_hand = True
             shared.handaddlist.append(ingredient)
-            commenttext += f"{amount} ml {ingredient_name}, "
-        commenttext = commenttext[:-2]
-        self.mainscreen.LEKommentar.setText(commenttext)
+            comment_text += f"{amount} ml {ingredient_name}, "
+        comment_text = comment_text[:-2]
+        self.mainscreen.LEKommentar.setText(comment_text)
         self.close()
 
     def missing_pairs(self, combobox, lineedit):

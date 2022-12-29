@@ -19,26 +19,26 @@ class AvailableWindow(QMainWindow, Ui_available):
         self.mainscreen = parent
         DP_CONTROLLER.inject_stylesheet(self)
         # somehow the ui dont accept without _2 for those two buttons so they are _2
-        self.PBAbbruch_2.clicked.connect(self.abbrechen_clicked)
-        self.PBOk_2.clicked.connect(self.accepted_clicked)
-        self.PBAdd.clicked.connect(lambda: self.changeingredient(self.LWVorhanden, self.LWAlle))
-        self.PBRemove.clicked.connect(lambda: self.changeingredient(self.LWAlle, self.LWVorhanden))
+        self.PBAbbruch_2.clicked.connect(self._cancel_click)
+        self.PBOk_2.clicked.connect(self._accepted_clicked)
+        self.PBAdd.clicked.connect(lambda: self._change_ingredient(self.LWVorhanden, self.LWAlle))
+        self.PBRemove.clicked.connect(lambda: self._change_ingredient(self.LWAlle, self.LWVorhanden))
         # gets the available ingredients out of the DB and assigns them to the LW
         ingredient_available = DB_COMMANDER.get_available_ingredient_names()
         ingredients = DB_COMMANDER.get_all_ingredients()
-        entrylist = list({x.name for x in ingredients} - set(ingredient_available))
+        entry_list = list({x.name for x in ingredients} - set(ingredient_available))
         DP_CONTROLLER.fill_list_widget(self.LWVorhanden, ingredient_available)
-        DP_CONTROLLER.fill_list_widget(self.LWAlle, entrylist)
-        UI_LANGUAGE.adjust_available_windos(self)
+        DP_CONTROLLER.fill_list_widget(self.LWAlle, entry_list)
+        UI_LANGUAGE.adjust_available_windows(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def abbrechen_clicked(self):
-        """ Closes the window without any furter action. """
+    def _cancel_click(self):
+        """ Closes the window without any further action. """
         self.close()
 
-    def accepted_clicked(self):
-        """ Writes the new availibility into the DB. """
+    def _accepted_clicked(self):
+        """ Writes the new availability into the DB. """
         DB_COMMANDER.delete_existing_handadd_ingredient()
         ingredient_names = [self.LWVorhanden.item(i).text() for i in range(self.LWVorhanden.count())]
         DB_COMMANDER.insert_multiple_existing_handadd_ingredients_by_name(ingredient_names)
@@ -48,11 +48,11 @@ class AvailableWindow(QMainWindow, Ui_available):
         DP_CONTROLLER.clear_recipe_data_maker(self.mainscreen)
         self.close()
 
-    def changeingredient(self, lwadd, lwremove):
-        if not lwremove.selectedItems():
+    def _change_ingredient(self, lw_to_add, lw_removed):
+        if not lw_removed.selectedItems():
             return
 
-        ingredientname = lwremove.currentItem().text()
-        lwadd.addItem(ingredientname)
-        DP_CONTROLLER.delete_list_widget_item(lwremove, ingredientname)
-        DP_CONTROLLER.unselect_list_widget_items(lwremove)
+        ingredient_name = lw_removed.currentItem().text()
+        lw_to_add.addItem(ingredient_name)
+        DP_CONTROLLER.delete_list_widget_item(lw_removed, ingredient_name)
+        DP_CONTROLLER.unselect_list_widget_items(lw_removed)

@@ -31,7 +31,7 @@ _logger = LoggerHandler("option_window", LogFiles.PRODUCTION)
 class OptionWindow(QMainWindow, Ui_Optionwindow):
     """ Class for the Option selection window. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
@@ -87,7 +87,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         run_calibration(standalone=False)
 
     def _create_backup(self):
-        """Prompts the user for a folder path to save the backupt to.
+        """Prompts the user for a folder path to save the backup to.
         Saves the config, custom database and version to the location."""
         location = self._get_user_folder_response()
         if not location:
