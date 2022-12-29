@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-""" Module with all nececcary functions for the ingredients Tab.
-This includes all functions for the Lists, DB and Buttos/Dropdowns.
+""" Module with all necessary functions for the ingredients Tab.
+This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
 from src.tabs import bottles
@@ -12,9 +12,9 @@ from src.models import Ingredient
 
 
 @logerror
-def enter_ingredient(w, newingredient=True):
+def enter_ingredient(w, new_ingredient=True):
     """ Insert the new ingredient into the DB, if all values are given and its name is not already in the DB.
-    Also can change the current selected ingredient (newingredient = False)
+    Also can change the current selected ingredient (new_ingredient = False)
     """
     lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     valid_data = DP_CONTROLLER.validate_ingredient_data(list(lineedits))
@@ -22,18 +22,18 @@ def enter_ingredient(w, newingredient=True):
         return
     ingredient = DP_CONTROLLER.get_ingredient_data(list(lineedits), checkbox, list_widget)
 
-    if newingredient:
-        succesfull = __add_new_ingredient(w, ingredient)
+    if new_ingredient:
+        successful = __add_new_ingredient(w, ingredient)
     else:
-        succesfull = __change_existing_ingredient(w, list_widget, ingredient)
-    if not succesfull:
+        successful = __change_existing_ingredient(w, list_widget, ingredient)
+    if not successful:
         return
 
     clear_ingredient_information(w)
     DP_CONTROLLER.fill_list_widget(list_widget, [ingredient.name])
     bottles.set_fill_level_bars(w)
     bottles.refresh_bottle_information(w)
-    DP_CONTROLLER.say_ingredient_added_or_changed(ingredient.name, newingredient, ingredient.selected)
+    DP_CONTROLLER.say_ingredient_added_or_changed(ingredient.name, new_ingredient, ingredient.selected)
 
 
 def __add_new_ingredient(w, ing: Ingredient):
@@ -66,7 +66,7 @@ def __change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
         DP_CONTROLLER.say_ingredient_still_at_bottle()
         return False
     # also abort if the ingredient is set to hand and still used in recipes via machine
-    # This is neccecary, because the recipe interface does not show hand only ingredients
+    # This is necessary, because the recipe interface does not show hand only ingredients
     ing_used_by_machine = DB_COMMANDER.get_recipes_using_ingredient_by_machine(old_ingredient.id)
     if ing.hand and ing_used_by_machine:
         DP_CONTROLLER.say_ingredient_still_as_machine_in_recipe(ing_used_by_machine)
@@ -101,7 +101,7 @@ def __change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
 
 
 def load_ingredients(w):
-    """ Load all ingredientnames into the ListWidget """
+    """ Load all ingredient names into the ListWidget """
     DP_CONTROLLER.clear_list_widget_ingredients(w)
     ingredients = DB_COMMANDER.get_all_ingredients()
     _, _, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)

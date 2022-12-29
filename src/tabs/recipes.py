@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-""" Module with all nececcary functions for the recipes Tab.
-This includes all functions for the Lists, DB and Buttos/Dropdowns.
+""" Module with all necessary functions for the recipes Tab.
+This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
 from collections import Counter
@@ -16,17 +16,17 @@ from src.config_manager import shared
 
 
 def fill_recipe_box_with_ingredients(w):
-    """ Asigns all ingredients to the Comboboxes in the recipe tab """
+    """ Assigns all ingredients to the Comboboxes in the recipe tab """
     comboboxes_recipe = DP_CONTROLLER.get_comboboxes_recipes(w)
     ingredient_list = [x.name for x in DB_COMMANDER.get_all_ingredients(get_hand=False)]
     DP_CONTROLLER.fill_multiple_combobox(comboboxes_recipe, ingredient_list, clear_first=True)
 
 
-def __check_enter_constraints(recipe_name: str, newrecipe: bool) -> Tuple[int, bool]:
+def __check_enter_constraints(recipe_name: str, new_recipe: bool) -> Tuple[int, bool]:
     """Checks if either the recipe already exists (new recipe) or if one is selected (update)
     Returns cocktail, got_error"""
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)
-    if cocktail is not None and newrecipe:
+    if cocktail is not None and new_recipe:
         DP_CONTROLLER.say_name_already_exists()
         return cocktail.id, True
     if cocktail is None:
@@ -35,7 +35,7 @@ def __check_enter_constraints(recipe_name: str, newrecipe: bool) -> Tuple[int, b
 
 
 def __validate_extract_ingredients(ingredient_names: List[str], ingredient_volumes: List[str]) -> Tuple[List[str], List[int], bool]:
-    """Gives a list for names and volumens of ingredients.
+    """Gives a list for names and volume of ingredients.
     If some according value is missing, informs the user.
     Returns [names], [volumes], is_valid"""
     names, volumes = [], []
@@ -49,8 +49,8 @@ def __validate_extract_ingredients(ingredient_names: List[str], ingredient_volum
     if len(names) == 0:
         DP_CONTROLLER.say_recipe_at_least_one_ingredient()
         return [], [], False
-    conter_names = Counter(names)
-    double_names = [x[0] for x in conter_names.items() if x[1] > 1]
+    counter_names = Counter(names)
+    double_names = [x[0] for x in counter_names.items() if x[1] > 1]
     if len(double_names) != 0:
         DP_CONTROLLER.say_ingredient_double_usage(double_names[0])
         return [], [], False
@@ -62,13 +62,22 @@ def __validate_extract_ingredients(ingredient_names: List[str], ingredient_volum
     return names, volumes, True
 
 
-def __enter_or_update_recipe(recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, virgin, ingredient_data: List[Ingredient], comment):
+def __enter_or_update_recipe(
+    recipe_id,
+    recipe_name,
+    recipe_volume,
+    recipe_alcohol_level,
+    enabled,
+    virgin,
+    ingredient_data: List[Ingredient],
+    comment
+):
     """Logic to insert/update data into DB"""
     if recipe_id:
         DB_COMMANDER.delete_recipe_ingredient_data(recipe_id)
-        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled, virgin)
+        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, comment, enabled, virgin)
     else:
-        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohollevel, recipe_volume, comment, enabled, virgin)
+        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohol_level, recipe_volume, comment, enabled, virgin)
     cocktail = _get_and_check_cocktail(recipe_name)
     for ingredient in ingredient_data:
         DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount, bool(ingredient.recipe_hand))
@@ -86,21 +95,21 @@ def _get_and_check_cocktail(recipe_name: str):
 
 
 @logerror
-def enter_recipe(w, newrecipe: bool):
+def enter_recipe(w, new_recipe: bool):
     """ Enters or updates the recipe into the db"""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, virgin, comment = recipe_input
     if not recipe_name:
         DP_CONTROLLER.say_enter_cocktailname()
         return
-    if not newrecipe and not selected_name:
+    if not new_recipe and not selected_name:
         DP_CONTROLLER.say_no_recipe_selected()
         return
     names, volumes, valid = __validate_extract_ingredients(ingredient_names, ingredient_volumes)
     if not valid:
         return
 
-    recipe_id, error_message = __check_enter_constraints(recipe_name, newrecipe)
+    recipe_id, error_message = __check_enter_constraints(recipe_name, new_recipe)
     if error_message:
         return
 
@@ -124,10 +133,10 @@ def enter_recipe(w, newrecipe: bool):
         recipe_volume += ing.amount
         recipe_volume_concentration += ingredient.alcohol * ing.amount
         ingredient_data.append(ingredient)
-    recipe_alcohollevel = int(recipe_volume_concentration / recipe_volume)
+    recipe_alcohol_level = int(recipe_volume_concentration / recipe_volume)
 
     cocktail = __enter_or_update_recipe(
-        recipe_id, recipe_name, recipe_volume, recipe_alcohollevel, enabled, virgin, ingredient_data, comment
+        recipe_id, recipe_name, recipe_volume, recipe_alcohol_level, enabled, virgin, ingredient_data, comment
     )
 
     # remove the old name
@@ -138,7 +147,7 @@ def enter_recipe(w, newrecipe: bool):
         maker.evaluate_recipe_maker_view(w, [cocktail])
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
 
-    if newrecipe:
+    if new_recipe:
         DP_CONTROLLER.say_recipe_added(recipe_name)
     else:
         DP_CONTROLLER.say_recipe_updated(selected_name, recipe_name)
