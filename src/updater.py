@@ -29,7 +29,7 @@ class Updater:
             logger.log_event("ERROR", "Something went wrong while pulling the update")
             logger.log_exception(err)
             return
-        # restart the programm, this will not work if executed over IDE
+        # restart the program, this will not work if executed over IDE
         print("Restarting the application!")
         logger.log_event("INFO", "Restarting program to reload updated code")
         os.execl(sys.executable, self.git_path / "runme.py", *sys.argv)
@@ -46,7 +46,7 @@ class Updater:
         except GitCommandError:
             return False
         # Get the latest tag an compare the diff with the current branch
-        # Usually this should work since the default is master branch and "normal" users shouldn't be chaning files
+        # Usually this should work since the default is master branch and "normal" users shouldn't be changing files
         # Not using diff but local and remote tags to compare, since some problems exists comparing by diff
         latest_tag = self._get_latest_tag()
         # Either build diff or just simply check local version with latest

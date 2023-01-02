@@ -13,17 +13,12 @@ from src import MAX_SUPPORTED_BOTTLES
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui_elements.bonusingredient import Ui_addingredient
 
-# Grace period, will be switched once Python 3.8+ is mandatory
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
 
 STYLE_FOLDER = Path(__file__).parents[0].absolute() / "ui" / "styles"
 
 
 class DisplayController(DialogHandler):
-    """ Controler Class to get Values from the UI"""
+    """ Controller Class to get Values from the UI"""
 
     ########################
     # UI "EXTRACT" METHODS #
@@ -41,7 +36,7 @@ class DisplayController(DialogHandler):
         return [lineedit.text().strip() for lineedit in lineedit_list]
 
     def get_list_widget_selection(self, list_widget: QListWidget) -> str:
-        """Returns the curent selected item of the list widget"""
+        """Returns the current selected item of the list widget"""
         if not list_widget.selectedItems():
             return ""
         user_data = list_widget.currentItem().data(Qt.UserRole)  # type: ignore
@@ -60,14 +55,14 @@ class DisplayController(DialogHandler):
         """Returns [name, volume, factor] from maker"""
         cocktail_volume = int(w.LCustomMenge.text())
         # when pulling, the slider can reach every integer value (eg, 1,2,...)
-        # but whe only want stepsize of *5 -> therefore it ranges from -5 to 5 but we
-        # multiply by *5 to get an effective range from -25 to 25 with a stepsize of 5
-        alcohol_faktor: float = 1 + (w.HSIntensity.value() * 5 / 100)
-        # If virgin is selected, just set alcohol_faktor to 0
+        # but whe only want step size of *5 -> therefore it ranges from -5 to 5 but we
+        # multiply by *5 to get an effective range from -25 to 25 with a step size of 5
+        alcohol_factor: float = 1 + (w.HSIntensity.value() * 5 / 100)
+        # If virgin is selected, just set alcohol_factor to 0
         if w.virgin_checkbox.isChecked():
-            alcohol_faktor = 0.0
-        cocktailname = self.get_list_widget_selection(w.LWMaker)
-        return cocktailname, cocktail_volume, alcohol_faktor
+            alcohol_factor = 0.0
+        cocktail_name = self.get_list_widget_selection(w.LWMaker)
+        return cocktail_name, cocktail_volume, alcohol_factor
 
     def get_recipe_field_data(self, w: Ui_MainWindow) -> Tuple[str, str, List[str], List[str], int, int, str]:
         """ Return [name, selected, [ingredients], [volumes], enabled, virgin, comment] """

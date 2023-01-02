@@ -39,7 +39,7 @@ class DatabaseCommander:
         return self.handler.query_database(query, (recipe_id,))
 
     def __get_all_recipes_properties(self):
-        """Get all neeeded data for all recipes"""
+        """Get all needed data for all recipes"""
         query = "SELECT ID, Name, Alcohol, Amount, Comment, Enabled, Virgin FROM Recipes"
         return self.handler.query_database(query)
 
@@ -54,7 +54,7 @@ class DatabaseCommander:
         )
 
     def get_cocktail(self, search: Union[str, int]) -> Optional[Cocktail]:
-        """Get all neeeded data for the cocktail from ID or name"""
+        """Get all needed data for the cocktail from ID or name"""
         if isinstance(search, str):
             condition = "Name"
         else:
@@ -68,7 +68,7 @@ class DatabaseCommander:
         return self.__build_cocktail(*recipe)
 
     def get_all_cocktails(self, get_enabled=True, get_disabled=True) -> List[Cocktail]:
-        """Bilds a list of all cocktails, option to filter by enabled status"""
+        """Builds a list of all cocktails, option to filter by enabled status"""
         cocktails = []
         recipe_data = self.__get_all_recipes_properties()
         for recipe in recipe_data:
@@ -102,7 +102,7 @@ class DatabaseCommander:
         return levels
 
     def get_ingredient(self, search: Union[str, int]) -> Optional[Ingredient]:
-        """Get all neeeded data for the ingredient from ID or name"""
+        """Get all needed data for the ingredient from ID or name"""
         if isinstance(search, str):
             condition = "I.Name"
         else:
@@ -117,7 +117,7 @@ class DatabaseCommander:
         return Ingredient(ing[0], ing[1], ing[2], ing[3], ing[4], bool(ing[5]), bottle=ing[6])
 
     def get_all_ingredients(self, get_machine=True, get_hand=True) -> List[Ingredient]:
-        """Bilds a list of all ingredinets, option to filter by add status"""
+        """Builds a list of all ingredients, option to filter by add status"""
         ingredients = []
         query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, B.Bottle
                     FROM Ingredients as I LEFT JOIN Bottles as B on B.ID = I.ID"""
@@ -184,7 +184,7 @@ class DatabaseCommander:
 
     def get_bottle_data_bottle_window(self):
         """Gets all needed data for bottles, ordered by bottle number
-        Returs [name, level, id, bottle_volume] for each slot"""
+        Returns [name, level, id, bottle_volume] for each slot"""
         query = """SELECT Ingredients.Name, Ingredients.Fill_level, Ingredients.ID, Ingredients.Volume
                 FROM Bottles LEFT JOIN Ingredients ON Ingredients.ID = Bottles.ID ORDER BY Bottles.Bottle"""
         return self.handler.query_database(query)
@@ -258,7 +258,7 @@ class DatabaseCommander:
         self.handler.query_database(query, searchtuple)
 
     def set_multiple_ingredient_consumption(self, ingredient_name_list: List[str], ingredient_consumption_list: List[int]):
-        """Increase multiple ingredients by the according given comsuption"""
+        """Increase multiple ingredients by the according given consumption"""
         for ingredient_name, ingredient_consumption in zip(ingredient_name_list, ingredient_consumption_list):
             self.increment_ingredient_consumption(ingredient_name, ingredient_consumption)
 
@@ -317,18 +317,18 @@ class DatabaseCommander:
         self.handler.query_database(query, (ingredient_id,))
 
     def delete_consumption_recipes(self):
-        """Sets the resetable consumption of all recipes to zero"""
+        """Sets the resettable consumption of all recipes to zero"""
         query = "UPDATE OR IGNORE Recipes SET Counter = 0"
         self.handler.query_database(query)
 
     def delete_consumption_ingredients(self):
-        """Sets the resetable consumption of all ingredients to zero"""
+        """Sets the resettable consumption of all ingredients to zero"""
         query = "UPDATE OR IGNORE Ingredients SET Consumption = 0"
         self.handler.query_database(query)
 
     def delete_recipe(self, recipe_name: str):
         """Deletes the given recipe by name and all according ingredient_data"""
-        # if using FK with cascade delete, this will prob no longer nececary
+        # if using FK with cascade delete, this will prob no longer necessary
         query1 = "DELETE FROM RecipeData WHERE Recipe_ID = (SELECT ID FROM Recipes WHERE Name = ?)"
         query2 = "DELETE FROM Recipes WHERE Name = ?"
         self.handler.query_database(query1, (recipe_name,))
@@ -360,7 +360,7 @@ class DatabaseCommander:
 
 
 class DatabaseHandler:
-    """Handler Class for Connecting and querring Databases"""
+    """Handler Class for Connecting and querying Databases"""
 
     database_path = DIRPATH.parent / f"{DATABASE_NAME}.db"
     database_path_default = DIRPATH.parent / f"{DATABASE_NAME}_default.db"
@@ -387,7 +387,7 @@ class DatabaseHandler:
         self.cursor = self.database.cursor()
 
     def query_database(self, sql: str, serachtuple=()):
-        """Executes the given querry, if select command, return the data"""
+        """Executes the given query, if select command, return the data"""
         self.cursor.execute(sql, serachtuple)
 
         if sql[0:6].lower() == "select":

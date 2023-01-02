@@ -16,7 +16,7 @@ LANGUAGE_FILE = DIRPATH / "language.yaml"
 
 
 class DialogHandler():
-    """Class to hold all the dialoges for the popups and language settings"""
+    """Class to hold all the dialogues for the popups and language settings"""
 
     def __init__(self) -> None:
         self.icon_path = str(DIRPATH / "ui_elements" / "Cocktail-icon.png")
@@ -99,11 +99,11 @@ class DialogHandler():
         self.__output_language_dialog("ingredient_still_at_bottle")
 
     def say_ingredient_still_at_recipe(self, recipe_string: str):
-        """Informs user that the ingrdient is still used in a recipe"""
+        """Informs user that the ingredient is still used in a recipe"""
         self.__output_language_dialog("ingredient_still_at_recipe", recipe_string=recipe_string)
 
     def say_ingredient_still_as_machine_in_recipe(self, recipe_list: List[str]):
-        """Informs user that the ingrdient is still used in a recipe as machine add"""
+        """Informs user that the ingredient is still used in a recipe as machine add"""
         formatted_string = ", ".join(recipe_list)
         self.__output_language_dialog("ingredient_still_as_machine_add", recipe_list=formatted_string)
 
@@ -147,7 +147,7 @@ class DialogHandler():
         self.__output_language_dialog("cocktail_ready", full_comment=full_comment)
 
     def say_enter_cocktailname(self):
-        """Informs user that no cocktailname was supplied"""
+        """Informs user that no cocktail name was supplied"""
         self.__output_language_dialog("enter_cocktailname")
 
     def say_recipe_deleted(self, recipe_name: str):
@@ -251,7 +251,7 @@ class DialogHandler():
         return self.user_okay(message)
 
     def ask_for_backup_location(self, w: QWidget):
-        """Asks the user where to get or store the backupoutput"""
+        """Asks the user where to get or store the backup output"""
         message = self.__choose_language("ask_for_backup_location")
         return self._get_folder_location(w, message)
 
@@ -297,7 +297,7 @@ class UiLanguage():
     def adjust_mainwindow(self, w):
         """Translates all needed elements of the main window (cocktail maker)"""
         window = "main_window"
-        # iterate overtabs and set the name
+        # iterate over tabs and set the name
         tab_names = [
             "tab_maker",
             "tab_ingredients",
@@ -372,7 +372,7 @@ class UiLanguage():
         w.LHeader.setText(self.__choose_language("header", window))
 
     def generate_password_header(self, headertype: Literal['password', 'amount', 'alcohol'] = "password") -> str:
-        """Selects the header of the passwordwindow.
+        """Selects the header of the password window.
         headertype: 'password', 'amount', 'alcohol'
         """
         window = "password_window"
