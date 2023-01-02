@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional, Tuple
 
 from src.logger_handler import LoggerHandler, LogFiles
-from src.migration.updata_data import (
+from src.migration.update_data import (
     rename_database_to_english,
     add_more_bottles_to_db,
     add_team_buffer_to_database,
