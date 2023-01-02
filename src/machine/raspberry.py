@@ -27,18 +27,14 @@ class RpiController(PinController):
         """Set up the given pin list"""
         print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
         if not self.devenvironment:
-            for pin in pin_list:
-                GPIO.setup(pin, 0)
-                GPIO.output(pin, 1)
+            GPIO.setup(pin_list, GPIO.OUT, initial=1)
 
     def activate_pin_list(self, pin_list: List[int]):
         """Activates the given pin list"""
         if not self.devenvironment:
-            for pin in pin_list:
-                GPIO.output(pin, 0)
+            GPIO.output(pin_list, 0)
 
     def close_pin_list(self, pin_list: List[int]):
         """Closes the given pin_list"""
         if not self.devenvironment:
-            for pin in pin_list:
-                GPIO.output(pin, 1)
+            GPIO.output(pin_list, 1)
