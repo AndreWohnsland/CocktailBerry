@@ -57,7 +57,7 @@ def _parse_recipe_text(recipe_text: str, factor: float, no_unit=False, sep="\n")
     if no_unit:
         volume_part = r"((\d+))\s*"
     name_part = r"([a-zA-Z0-9_\- ]*)"
-    # stucture is g1: (volume unit) g2: (volume) g3: (name)
+    # structure is g1: (volume unit) g2: (volume) g3: (name)
     ingredient_regex = volume_part + name_part
     # build list of recipes, iterate over data
     recipe_data: List[_RecipeInformation] = []
@@ -135,7 +135,7 @@ def _check_intersection(recipes: List[_RecipeInformation], unique_recipes: Set[s
         typer.echo(typer.style("Some of the recipes already exist in the DB:", fg=typer.colors.RED, bold=True))
         print(list(collision_recipes), "\n")
         typer.confirm("Will ignore existing recipes, continue?", abort=True)
-        # modify the list, remove douplicate elements
+        # modify the list, remove duplicate elements
         for item in recipes.copy():
             if item.name in list(collision_recipes):
                 recipes.remove(item)
@@ -145,8 +145,8 @@ def _check_intersection(recipes: List[_RecipeInformation], unique_recipes: Set[s
 
 def _insert_not_existing_ingredients(ingredients: List[str]):
     """Checks the given ingredients with the DB and insert missing ones"""
-    existing_ingrendients = DB_COMMANDER.get_all_ingredients()
-    existing_names = [x.name for x in existing_ingrendients]
+    existing_ingredients = DB_COMMANDER.get_all_ingredients()
+    existing_names = [x.name for x in existing_ingredients]
     not_existing_names = list(set(ingredients).difference(set(existing_names)))
     typer.echo(typer.style("Ingredients, that will be added to the DB:", fg=typer.colors.GREEN, bold=True))
     print(sorted(not_existing_names), "\n")
@@ -165,11 +165,11 @@ def _insert_recipes(recipes: List[_RecipeInformation]):
     Gets missing ingredient data from the database.
     Only using handadd at recipe data if ingredient is handadd only.
     """
-    # first get all ingredient data and map them for later fast acess to a dict
-    ingrendients = DB_COMMANDER.get_all_ingredients()
+    # first get all ingredient data and map them for later fast access to a dict
+    ingredients = DB_COMMANDER.get_all_ingredients()
     ingredient_mapping: Dict[str, Ingredient] = {}
-    for ingrendient in ingrendients:
-        ingredient_mapping[ingrendient.name] = ingrendient
+    for ingredient in ingredients:
+        ingredient_mapping[ingredient.name] = ingredient
     print("Inserting recipe:", end=" ")
     for rec in recipes:
         print(rec.name, end=", ")
