@@ -16,6 +16,7 @@ from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
 from src.programs.calibration import run_calibration
+from src.machine.controller import MACHINE
 from src.logger_handler import LogFiles, LoggerHandler
 
 
@@ -71,6 +72,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Reboots the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_reboot():
             return
+        MACHINE.cleanup()
         os.system("sudo reboot")
         self.close()
 
@@ -78,6 +80,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Shutdown the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_shutdown():
             return
+        MACHINE.cleanup()
         os.system("sudo shutdown now")
         self.close()
 
