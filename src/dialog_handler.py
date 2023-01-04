@@ -349,6 +349,8 @@ class UiLanguage():
         w.Labbruch.setText(self.__choose_language("cancel_label", window))
         w.LProgress.setText(self.__choose_language("progress_label", window))
         # w.LHeader.setText(self.__choose_language(window["header_label"], cocktail_type=cocktail_type))
+        if cocktail_type.lower() == "cleaning":
+            cocktail_type = self.__choose_language("cleaning_label", window)
         w.LHeader.setText(cocktail_type)
 
     def adjust_bonusingredient_screen(self, w):
