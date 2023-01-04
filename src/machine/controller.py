@@ -28,7 +28,7 @@ class MachineController():
         active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         t_cleaned = 0.0
         self._header_print("Start Cleaning")
-        self._open_pumps(active_pins)
+        self._start_pumps(active_pins)
         w.open_progression_window("Cleaning")
         # also using same button cancel from prepare cocktail
         shared.make_cocktail = True
@@ -41,7 +41,7 @@ class MachineController():
             qApp.processEvents()
         self._clean_print(cfg.MAKER_CLEAN_TIME)
         print("")
-        self._close_pumps(active_pins)
+        self._stop_pumps(active_pins)
         self._header_print("Done Cleaning")
         w.close_progression_window()
 
@@ -73,7 +73,7 @@ class MachineController():
         max_time = max(pin_times)
         # Starting Making cocktail
         self._header_print(f"Starting {recipe}")
-        self._open_pumps(pins)
+        self._start_pumps(pins)
         already_closed_pins = set()
         current_time = 0.0
         consumption = [0.0] * len(indexes)
@@ -84,7 +84,7 @@ class MachineController():
                     consumption[element] += volume_flow * cfg.MAKER_SLEEP_TIME
                 elif pin not in already_closed_pins:
                     self._print_time(current_time, max_time)
-                    self._close_pumps([pin])
+                    self._stop_pumps([pin])
                     already_closed_pins.add(pin)
             # Adjust needed data
             self._consumption_print(consumption, current_time, max_time)
@@ -95,7 +95,7 @@ class MachineController():
                 w.change_progression_window(current_time / max_time * 100)
             qApp.processEvents()
 
-        self._close_pumps(pins)
+        self._stop_pumps(pins)
         consumption = [round(x) for x in consumption]
         print("Total calculated consumption:", consumption)
         self._header_print(f"Finished {recipe}")
@@ -113,7 +113,7 @@ class MachineController():
         print(f"Initializing Pins: {active_pins}")
         self._pin_controller.initialize_pin_list(active_pins)
 
-    def _open_pumps(self, pin_list: List[int]):
+    def _start_pumps(self, pin_list: List[int]):
         """Informs and opens all given pins"""
         print(f"Opening Pins: {pin_list}")
         self._pin_controller.activate_pin_list(pin_list)
@@ -121,14 +121,14 @@ class MachineController():
     def close_all_pumps(self):
         """Close all pins connected to the pumps"""
         active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
-        self._close_pumps(active_pins)
+        self._stop_pumps(active_pins)
 
     def cleanup(self):
         """Cleanup for shutdown the machine"""
         self.close_all_pumps()
         self._pin_controller.cleanup_pin_list()
 
-    def _close_pumps(self, pin_list: List[int]):
+    def _stop_pumps(self, pin_list: List[int]):
         """Informs and closes all given pins"""
         print(f"Closing Pins: {pin_list}")
         self._pin_controller.close_pin_list(pin_list)
