@@ -251,14 +251,17 @@ ui:
   # all values for process screen
   progress_screen:
     cancel_label:
-      en: 'The Cocktail can also be canceled'
-      de: 'Der Coktail kann auch abgebrochen werden'
+      en: 'The process can also be canceled'
+      de: 'Der Vorgang kann auch abgebrochen werden'
     progress_label:
       en: 'Progress:'
       de: 'Fortschritt:'
     header_label:
       en: '{cocktail_type} is being prepared!'
       de: '{cocktail_type} wird zubereitet!'
+    cleaning_label:
+      en: 'Cleaning'
+      de: 'Reinigen'
 
   ##### BONUSINGREDIENT SCREEN #####
   # all values for bonusingredient screen
