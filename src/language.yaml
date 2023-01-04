@@ -54,13 +54,13 @@ dialog:
     de: 'Der Cocktail wurde abgebrochen!'
   cocktail_ready:
     en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
-    de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nachtropft.{full_comment}'
+    de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nach tropft.{full_comment}'
   cocktail_ready_add:
     en: 'Also add:'
     de: 'Noch hinzufügen:'
   enter_cocktailname:
     en: 'Please enter cocktail name!'
-    de: 'Bitte Cocktailnamen eingeben!'
+    de: 'Bitte Cocktail Namen eingeben!'
   recipe_deleted:
     en: "Recipe\n<{recipe_name}>\nwas deleted"
     de: "Rezept mit dem Namen\n<{recipe_name}>\nwurde gelöscht!"
@@ -78,7 +78,7 @@ dialog:
     de: 'Es muss mindestens eine Zutat eingetragen sein!'
   all_data_exported:
     en: 'All data was exported and amount was reset!'
-    de: 'Alle Daten wurden exportiert und die zurücksetzbaren Mengen zurückgesetzt!'
+    de: 'Alle Daten wurden exportiert und die Mengen zurückgesetzt!'
   not_enough_ingredient_volume:
     en: '{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left.'
     de: '{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden.'
@@ -98,15 +98,15 @@ dialog:
     en: '{value} needs to be a number!'
     de: '{value} muss eine ganze Zahl sein!'
   alcohollevel_max_limit:
-    en: 'Alcohol level cann not exceed 100 percent!'
+    en: 'Alcohol level can not exceed 100 percent!'
     de: 'Alkoholgehalt kann nicht größer als 100 Prozent sein!'
   update_available:
     en: 'There is a new update available. Do you want to pull it from GitHub? The program will be restarted afterwards.'
-    de: 'Es ist ein neues Update verfügbar. Update von GitHub pullen? Das Programm wird danach neu gestarted.'
+    de: 'Es ist ein neues Update verfügbar. Update von GitHub pullen? Das Programm wird danach neu gestartet.'
   restart_config:
     en: 'Restart the program to apply new configuration?'
     de: 'Programm neu starten, um die geänderten Einstellungen zu laden?'
-  confirmation_reqired:
+  confirmation_required:
     en: 'Confirmation required'
     de: 'Bestätigung nötig'
   yes_button:
@@ -240,8 +240,8 @@ ui:
       en: 'Possible'
       de: 'Möglich'
 
-  ##### HANDSADD WINDOW #####
-  # all values for handsadd window
+  ##### HAND ADD WINDOW #####
+  # all values for hand add window
   handadds_window:
     title:
       en: 'Ingredients for hand add'
@@ -271,7 +271,7 @@ ui:
       de: 'Ausgeben'
     title:
       en: 'Select output ingredient'
-      de: 'Zutatenausgabe auswählen'
+      de: 'Zutaten Ausgabe auswählen'
 
   ##### BOTTLE WINDOW #####
   # all values for bottle window
@@ -288,7 +288,7 @@ ui:
       de: 'Team auswählen'
 
   ##### PASSWORD WINDOW #####
-  # all values for tepasswordam window
+  # all values for password window
   password_window:
     password:
       en: 'Enter password!'
@@ -301,7 +301,7 @@ ui:
       de: 'Alkoholgehalt eingeben!'
 
   ##### OPTION WINDOW #####
-  # all values for tepasswordam window
+  # all values for option window
   option_window:
     cleaning:
       en: 'Cleaning'
@@ -328,8 +328,8 @@ ui:
       en: 'Restore'
       de: 'Wiederherstellen'
 
-  ##### DATEPICKER WINDOW #####
-  # all values for datepicker window
+  ##### DATE PICKER WINDOW #####
+  # all values for date picker window
   datepicker:
     header:
       en: 'Select Date and Time'

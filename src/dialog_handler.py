@@ -45,7 +45,7 @@ class DialogHandler():
     def user_okay(self, text: str):
         msg_box = QMessageBox()
         msg_box.setText(text)
-        msg_box.setWindowTitle(self.__choose_language("confirmation_reqired"))
+        msg_box.setWindowTitle(self.__choose_language("confirmation_required"))
         yes_text = self.__choose_language("yes_button")
         no_text = self.__choose_language("no_button")
         yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)
