@@ -123,6 +123,11 @@ class MachineController():
         active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         self._close_pumps(active_pins)
 
+    def cleanup(self):
+        """Cleanup for shutdown the machine"""
+        self.close_all_pumps()
+        self._pin_controller.cleanup_pin_list()
+
     def _close_pumps(self, pin_list: List[int]):
         """Informs and closes all given pins"""
         print(f"Closing Pins: {pin_list}")

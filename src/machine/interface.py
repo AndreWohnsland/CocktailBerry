@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import List
+from typing import List, Optional
 
 # Grace period, will be switched once Python 3.8+ is mandatory
 try:
@@ -21,3 +21,7 @@ class PinController(Protocol):  # type: ignore
     @abstractmethod
     def close_pin_list(self, pin_list: List[int]):
         raise NotImplementedError
+
+    @abstractmethod
+    def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
+        pass

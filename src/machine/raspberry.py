@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from src.machine.interface import PinController
 from src.logger_handler import LoggerHandler, LogFiles
 
@@ -38,3 +38,11 @@ class RpiController(PinController):
         """Closes the given pin_list"""
         if not self.devenvironment:
             GPIO.output(pin_list, 1)
+
+    def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
+        if self.devenvironment:
+            return
+        if pin_list is None:
+            GPIO.cleanup()
+        else:
+            GPIO.cleanup(pin_list)
