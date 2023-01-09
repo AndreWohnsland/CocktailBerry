@@ -137,7 +137,7 @@ class DisplayController(DialogHandler):
     ###########################
     # Misc
     def change_input_value(
-        self, label: QLabel, minimal=0, maximal=1000,
+        self, label: Union[QLabel, QLineEdit], minimal=0, maximal=1000,
         delta=10, side_effect: Optional[Callable] = None
     ):
         """ increases or decreases the value by a given amount in the boundaries
