@@ -5,6 +5,7 @@ from git import Repo, GitCommandError  # type: ignore
 
 from src.migration.migrator import Migrator, _Version
 from src.logger_handler import LoggerHandler, LogFiles
+from src import FUTURE_PYTHON_VERSION
 
 
 logger = LoggerHandler("updater_module", LogFiles.PRODUCTION)
@@ -38,6 +39,10 @@ class Updater:
         """Check if there is a new version available"""
         # if not on master (e.g. dev) return false
         if self.repo.active_branch.name != "master":
+            return False
+        # Also do not make updates if current version does
+        # not satisfy the future version requirement
+        if sys.version_info < FUTURE_PYTHON_VERSION:
             return False
         # First fetch the origin latest data
         try:
