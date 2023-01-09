@@ -31,6 +31,9 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <property name="documentMode">
    <bool>false</bool>
   </property>
@@ -46,7 +49,7 @@
        </font>
       </property>
       <property name="autoFillBackground">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="currentIndex">
        <number>0</number>
@@ -1732,7 +1735,7 @@
                  <widget class="QComboBox" name="CBR1">
                   <property name="minimumSize">
                    <size>
-                    <width>103</width>
+                    <width>105</width>
                     <height>28</height>
                    </size>
                   </property>
@@ -1997,7 +2000,7 @@
                  <widget class="QComboBox" name="CBR2">
                   <property name="minimumSize">
                    <size>
-                    <width>103</width>
+                    <width>105</width>
                     <height>28</height>
                    </size>
                   </property>
@@ -2020,7 +2023,7 @@
                  <widget class="QComboBox" name="CBR3">
                   <property name="minimumSize">
                    <size>
-                    <width>103</width>
+                    <width>105</width>
                     <height>28</height>
                    </size>
                   </property>
@@ -2043,7 +2046,7 @@
                  <widget class="QComboBox" name="CBR4">
                   <property name="minimumSize">
                    <size>
-                    <width>103</width>
+                    <width>105</width>
                     <height>28</height>
                    </size>
                   </property>
@@ -2066,7 +2069,7 @@
                  <widget class="QComboBox" name="CBR5">
                   <property name="minimumSize">
                    <size>
-                    <width>103</width>
+                    <width>105</width>
                     <height>28</height>
                    </size>
                   </property>
@@ -2089,7 +2092,7 @@
                  <widget class="QComboBox" name="CBR6">
                   <property name="minimumSize">
                    <size>
-                    <width>103</width>
+                    <width>105</width>
                     <height>28</height>
                    </size>
                   </property>
@@ -2112,7 +2115,7 @@
                  <widget class="QComboBox" name="CBR7">
                   <property name="minimumSize">
                    <size>
-                    <width>103</width>
+                    <width>105</width>
                     <height>28</height>
                    </size>
                   </property>
@@ -2356,7 +2359,7 @@
            <widget class="QComboBox" name="CBB1">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -3386,7 +3389,7 @@
            <widget class="QComboBox" name="CBB2">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -3410,7 +3413,7 @@
            <widget class="QComboBox" name="CBB3">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -3434,7 +3437,7 @@
            <widget class="QComboBox" name="CBB4">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -3458,7 +3461,7 @@
            <widget class="QComboBox" name="CBB5">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -3482,7 +3485,7 @@
            <widget class="QComboBox" name="CBB6">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -3506,7 +3509,7 @@
            <widget class="QComboBox" name="CBB7">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -3530,7 +3533,7 @@
            <widget class="QComboBox" name="CBB8">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -3554,7 +3557,7 @@
            <widget class="QComboBox" name="CBB9">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -3610,7 +3613,7 @@
            <widget class="QComboBox" name="CBB10">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -4418,7 +4421,7 @@
            <widget class="QComboBox" name="CBB11">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -4442,7 +4445,7 @@
            <widget class="QComboBox" name="CBB12">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -4466,7 +4469,7 @@
            <widget class="QComboBox" name="CBB13">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -4490,7 +4493,7 @@
            <widget class="QComboBox" name="CBB14">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -4514,7 +4517,7 @@
            <widget class="QComboBox" name="CBB15">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
@@ -4538,7 +4541,7 @@
            <widget class="QComboBox" name="CBB16">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>29</height>
              </size>
             </property>
