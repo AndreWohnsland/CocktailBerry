@@ -133,7 +133,7 @@ class _Version:
             major, minor, *patch = version_number.split(".")
         self.major = int(major)
         self.minor = int(minor)
-        # Some version like 1.0 or 1.1 dont got a patch property
+        # Some version like 1.0 or 1.1 don't got a patch property
         # List unpacking will return an empty list or a list of one
         # Future version should contain patch (e.g. 1.1.0) as well
         if patch:
