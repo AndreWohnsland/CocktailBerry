@@ -24,7 +24,7 @@ class DisplayController(DialogHandler):
     # UI "EXTRACT" METHODS #
     ########################
     def get_current_combobox_items(self, combobox_list: List[QComboBox]) -> List[str]:
-        """Get a list of the current combobox items"""
+        """Get a list of the current combo box items"""
         return [combobox.currentText() for combobox in combobox_list]
 
     def get_toggle_status(self, button_list: List[QPushButton]) -> List[bool]:
@@ -46,10 +46,10 @@ class DisplayController(DialogHandler):
 
     def get_ingredient_data(self, lineedit_list: List[QLineEdit], checkbox: QCheckBox, list_widget: QListWidget):
         """Returns an Ingredient Object from the ingredient data fields"""
-        ingredient_name, alcohollevel, volume = self.get_lineedit_text(lineedit_list)
+        ingredient_name, alcohol_level, volume = self.get_lineedit_text(lineedit_list)
         hand_add = checkbox.isChecked()
         selected_ingredient = self.get_list_widget_selection(list_widget)
-        return Ingredient(-1, ingredient_name, int(alcohollevel), int(volume), 0, hand_add, selected=selected_ingredient)
+        return Ingredient(-1, ingredient_name, int(alcohol_level), int(volume), 0, hand_add, selected=selected_ingredient)
 
     def get_cocktail_data(self, w: Ui_MainWindow) -> Tuple[str, int, float]:
         """Returns [name, volume, factor] from maker"""
@@ -86,7 +86,7 @@ class DisplayController(DialogHandler):
             self.say_needs_to_be_int()
             return False
         if int(ingredient_percentage.text()) > 100:
-            self.say_alcohollevel_max_limit()
+            self.say_alcohol_level_max_limit()
             return False
         return True
 
@@ -513,7 +513,7 @@ class DisplayController(DialogHandler):
         """Returns all maker label objects for ingredient name"""
         return [getattr(w, f"LZutat{x}") for x in range(1, 10)]
 
-    def get_numberlabel_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
+    def get_number_label_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
         """Returns all label object for the number of the bottle"""
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]
@@ -523,7 +523,7 @@ class DisplayController(DialogHandler):
         used_bottles = cfg.choose_bottle_number()
         # This needs to be done to get rid of registered bottles in the then removed bottles
         all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
-        DB_COMMANDER.set_bottleorder(all_bottles[: used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
+        DB_COMMANDER.set_bottle_order(all_bottles[: used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
         comboboxes_bottles = self.get_comboboxes_bottles(w, True)
         self.set_multiple_combobox_to_top_item(comboboxes_bottles[used_bottles::])
         to_adjust = [
@@ -531,7 +531,7 @@ class DisplayController(DialogHandler):
             self.get_levelbar_bottles(w, True),
             comboboxes_bottles,
             self.get_label_bottles(w, True),
-            self.get_numberlabel_bottles(w, True),
+            self.get_number_label_bottles(w, True),
         ]
         for elements in to_adjust:
             for element in elements[used_bottles::]:

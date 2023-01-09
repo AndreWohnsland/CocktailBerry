@@ -202,7 +202,7 @@ class DialogHandler():
         else:
             self.__output_language_dialog("needs_to_be_int_specific", value=value)
 
-    def say_alcohollevel_max_limit(self):
+    def say_alcohol_level_max_limit(self):
         """Informs user that the alcohol level can not be greater than 100"""
         self.__output_language_dialog("alcohollevel_max_limit")
 

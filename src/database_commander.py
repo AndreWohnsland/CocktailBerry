@@ -209,7 +209,7 @@ class DatabaseCommander:
         return [x[0] for x in self.handler.query_database(query, (ingredient_id,))]
 
     # set (update) commands
-    def set_bottleorder(self, ingredient_names: List[str]):
+    def set_bottle_order(self, ingredient_names: List[str]):
         """Set bottles to the given list of bottles, need all bottles"""
         for i, ingredient in enumerate(ingredient_names):
             bottle = i + 1

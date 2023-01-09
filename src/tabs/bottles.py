@@ -67,7 +67,7 @@ def __register_bottles(w):
     # Checks where are entries and appends them to a list
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     ingredient_names = DP_CONTROLLER.get_current_combobox_items(combobox_bottles)
-    DB_COMMANDER.set_bottleorder(ingredient_names)
+    DB_COMMANDER.set_bottle_order(ingredient_names)
 
     refresh_bottle_information(w)
     DP_CONTROLLER.clear_list_widget_maker(w)
