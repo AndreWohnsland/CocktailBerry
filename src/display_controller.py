@@ -164,30 +164,16 @@ class DisplayController(DialogHandler):
     def inject_stylesheet(self, window_object: QWidget):
         """Adds the central stylesheet to the gui"""
         style_file = f"{cfg.MAKER_THEME}.css"
-        with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as filehandler:
-            window_object.setStyleSheet(filehandler.read())
+        with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as file_handler:
+            window_object.setStyleSheet(file_handler.read())
 
     def set_tab_width(self, mainscreen: QMainWindow):
-        """Hack to set tabs to full screen width, inheritance of custom tabBars dont work
-        This is incredibly painful, since all the CSS from the ui needs to be copied here,
-        it will overwrite the whole class sheet and missing parts will not be used.
-        Any changes to the .ui file for the tab needs to be applied here as well"""
+        """Hack to set tabs to full screen width, inheritance, change the with to approximately match full width"""
         total_width = mainscreen.frameGeometry().width()
         width = round(total_width / 4, 0) - 10
         mainscreen.tabWidget.setStyleSheet(
             "QTabBar::tab {" +
-            "background-color: rgb(97, 97, 97);" +
-            "color: rgb(255, 255, 255);" +
-            "border-width: 1px;" +
-            "border-color: rgb(255, 255, 255);" +
-            "border-style: solid;" +
-            "border-top-left-radius: 10px;" +
-            "border-top-right-radius: 10px;" +
-            "padding: 5px 0px 5px 0px;" +
-            f"width: {width}px;" + "}" +
-            "QTabBar::tab:selected {" +
-            "color: rgb(255, 255, 255);	" +
-            "background-color: rgb(0, 123, 255)};"
+            f"width: {width}px;" + "}"
         )
 
     # TabWidget
