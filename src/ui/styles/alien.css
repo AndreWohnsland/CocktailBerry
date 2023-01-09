@@ -36,15 +36,15 @@ QCheckBox::indicator {
     border-color: #00ae4b; }
 
 QWidget {
-  color: #00e54c;
+  color: #00dd4a;
   background-color: #111111; }
   QWidget:item:selected {
-    color: #00cab9;
+    color: #00e4d1;
     font-weight: bold;
-    border: 3px solid #00cab9;
+    border: 3px solid #00e4d1;
     border-radius: 3px; }
   QWidget[cssClass~='secondary'] {
-    color: #00cab9; }
+    color: #00e4d1; }
   QWidget[cssClass~='left-shift'] {
     margin: 5px 0px 5px 20px; }
 
@@ -54,17 +54,18 @@ QTabWidget::pane {
 
 QTabBar::tab {
   background-color: #586c5b;
-  color: #fcfcd6;
+  font-weight: bold;
+  color: #1e1e1e;
   border-width: 1px;
-  border-color: #fcfcd6;
+  border-color: #1e1e1e;
   border-style: solid;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 5px 0px 5px 0px;
   width: 193px; }
   QTabBar::tab:selected {
-    color: #fcfcd6;
-    background-color: #00e54c; }
+    color: #1e1e1e;
+    background-color: #00dd4a; }
   QTabBar::tab:disabled {
     text-decoration: line-through; }
 
@@ -77,19 +78,19 @@ QTabBar::tab {
     background: #586c5b;
     margin: 0 12px; }
   .QSlider::handle:horizontal {
-    background: #00e54c;
+    background: #00dd4a;
     border-radius: 15px;
     width: 40px;
     height: 30px;
     margin: -24px -12px; }
     .QSlider::handle:horizontal:pressed {
-      background: #00cab9; }
+      background: #00e4d1; }
 
 QPushButton {
   background-color: #111111;
-  color: #00e54c;
+  color: #00dd4a;
   border-width: 3px;
-  border-color: #00e54c;
+  border-color: #00dd4a;
   border-style: solid;
   border-radius: 7px;
   padding: 3px;
@@ -99,21 +100,21 @@ QPushButton {
   /* Inverted */
   /* for teams */ }
   QPushButton:checked, QPushButton:pressed {
-    color: #00cab9;
-    border-color: #00cab9; }
+    color: #00e4d1;
+    border-color: #00e4d1; }
   QPushButton[cssClass~='btn-inverted'] {
-    background-color: #00e54c;
+    background-color: #00dd4a;
     color: #111111; }
     QPushButton[cssClass~='btn-inverted']:checked, QPushButton[cssClass~='btn-inverted']:pressed {
-      background-color: #00cab9;
-      border-color: #00cab9; }
+      background-color: #00e4d1;
+      border-color: #00e4d1; }
   QPushButton[cssClass~='btn-teamone'] {
-    background-color: #00e54c;
-    border-color: #00e54c;
+    background-color: #00dd4a;
+    border-color: #00dd4a;
     color: #111111; }
   QPushButton[cssClass~='btn-teamtwo'] {
-    background-color: #00cab9;
-    border-color: #00cab9;
+    background-color: #00e4d1;
+    border-color: #00e4d1;
     color: #111111; }
 
 QProgressBar {
@@ -134,7 +135,7 @@ QProgressBar {
     margin: 0.5px;*/ }
 
 QComboBox {
-  color: #00e54c;
+  color: #00dd4a;
   border: 2px solid #586c5b;
   border-top-left-radius: 7px;
   border-bottom-left-radius: 7px;
@@ -145,7 +146,7 @@ QComboBox {
     border: 2px solid #586c5b;
     border-top-left-radius: 7px;
     border-bottom-left-radius: 0px;
-    color: #00cab9; }
+    color: #00e4d1; }
   QComboBox QAbstractItemView {
     border: 2px solid #586c5b; }
 
@@ -170,10 +171,10 @@ QScrollBar:vertical {
   margin: 25px 0 25px 0; }
 
 QScrollBar::handle:vertical {
-  background: #00e54c;
+  background: #00dd4a;
   border-radius: 15px; }
   QScrollBar::handle:vertical:pressed {
-    background-color: #00cab9; }
+    background-color: #00e4d1; }
 
 QScrollBar::add-line:vertical {
   border: 2px solid #586c5b;
@@ -199,8 +200,8 @@ QScrollBar::sub-page:vertical {
 
 QScrollBar::sub-line:vertical:pressed,
 QScrollBar::add-line:vertical:pressed {
-  background-color: #00cab9;
-  border-color: #00cab9; }
+  background-color: #00e4d1;
+  border-color: #00e4d1; }
 
 /* Message box from system */
 .QMessageBox {
@@ -210,13 +211,13 @@ QMessageBox {
   background-color: #111111;
   font-size: 16pt; }
   QMessageBox QPushButton {
-    background-color: #00e54c;
+    background-color: #00dd4a;
     color: #111111;
     font-size: 30pt;
     padding: 5px 20px 5px 20px;
     min-width: 120px; }
   QMessageBox QLabel {
-    color: #00e54c; }
+    color: #00dd4a; }
 
 QDateEdit,
 QTimeEdit {
@@ -229,11 +230,11 @@ QTimeEdit {
   QTimeEdit::down-arrow,
   QTimeEdit::up-arrow {
     border: 3px solid #111111;
-    background-color: #00e54c; }
+    background-color: #00dd4a; }
     QDateEdit::down-arrow:pressed, QDateEdit::up-arrow:pressed,
     QTimeEdit::down-arrow:pressed,
     QTimeEdit::up-arrow:pressed {
-      background-color: #00cab9; }
+      background-color: #00e4d1; }
   QDateEdit::down-arrow,
   QTimeEdit::down-arrow {
     border-bottom-left-radius: 30px;
