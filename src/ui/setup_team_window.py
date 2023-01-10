@@ -34,7 +34,7 @@ class TeamScreen(QDialog, Ui_Teamselection):
         self.close()
 
     def __set_icon_text_breaks(self):
-        """Adds new lines if neccecary to team button labels"""
+        """Adds new lines if necessary to team button labels"""
         # ~ 12 upper chars / 400 px
         width = self.PBteamone.frameGeometry().width()
         self.PBteamone.setText(self.__split_team_names(cfg.TEAM_BUTTON_NAMES[0], width))

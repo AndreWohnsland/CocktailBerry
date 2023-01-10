@@ -18,10 +18,10 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
         # populating all the buttons
-        self.backButton.clicked.connect(self.backbutton_clicked)
-        self.clear.clicked.connect(self.clearbutton_clicked)
-        self.enterButton.clicked.connect(self.enterbutton_clicked)
-        self.space.clicked.connect(lambda: self.inputbutton_clicked(" ", " "))
+        self.backButton.clicked.connect(self.back_button_clicked)
+        self.clear.clicked.connect(self.clear_button_clicked)
+        self.enterButton.clicked.connect(self.enter_button_clicked)
+        self.space.clicked.connect(lambda: self.input_button_clicked(" ", " "))
         self.delButton.clicked.connect(self.delete_clicked)
         self.shift.clicked.connect(self.shift_clicked)
         # generating the lists to populate all remaining buttons via iteration
@@ -33,53 +33,53 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.attribute_chars = [getattr(self, f"Button{x}") for x in self.char_list_lower]
         self.attribute_numbers = [getattr(self, f"Button{x}") for x in self.number_list]
         for obj, char, char2 in zip(self.attribute_chars, self.char_list_lower, self.char_list_upper):
-            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(
-                inputvalue=iv, inputvalue_shift=iv_s))
+            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.input_button_clicked(
+                input_value=iv, input_value_shift=iv_s))
         for obj, char, char2 in zip(self.attribute_numbers, self.number_list, self.sign_list):
-            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.inputbutton_clicked(
-                inputvalue=iv, inputvalue_shift=iv_s))
-        # restricting the Lineedit to a set up Char leng
+            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.input_button_clicked(
+                input_value=iv, input_value_shift=iv_s))
+        # restricting the Lineedit to a set up Char length
         self.LName.setMaxLength(max_char_len)
         DP_CONTROLLER.set_display_settings(self)
         self.showFullScreen()
 
-    def backbutton_clicked(self):
+    def back_button_clicked(self):
         """ Closes the Window without any further action. """
         self.close()
 
-    def clearbutton_clicked(self):
+    def clear_button_clicked(self):
         """ Clears the input. """
         self.LName.setText("")
 
-    def enterbutton_clicked(self):
+    def enter_button_clicked(self):
         """ Closes and enters the String value back to the Lineedit. """
         self.le_to_write.setText(self.LName.text())
         self.close()
 
-    def inputbutton_clicked(self, inputvalue: str, inputvalue_shift: str):
-        """ Enters the inputvalue into the field, adds it to the string.
-        Can either have the normal or the shift value, if there is no difference both imput arguments are the same.
+    def input_button_clicked(self, input_value: str, input_value_shift: str):
+        """ Enters the input_value into the field, adds it to the string.
+        Can either have the normal or the shift value, if there is no difference both input arguments are the same.
         """
-        stringvalue = self.LName.text()
+        string_value = self.LName.text()
         if self.shift.isChecked():
-            addvalue = inputvalue_shift
+            add_value = input_value_shift
         else:
-            addvalue = inputvalue
-        stringvalue += str(addvalue)
-        self.LName.setText(stringvalue)
+            add_value = input_value
+        string_value += str(add_value)
+        self.LName.setText(string_value)
 
     def delete_clicked(self):
-        stringvalue = self.LName.text()
-        self.LName.setText(stringvalue[:-1])
+        string_value = self.LName.text()
+        self.LName.setText(string_value[:-1])
 
     def shift_clicked(self):
         if self.shift.isChecked():
-            charchoose = self.char_list_upper
-            numberchoose = self.sign_list
+            char_choose = self.char_list_upper
+            number_choose = self.sign_list
         else:
-            charchoose = self.char_list_lower
-            numberchoose = self.number_list
-        for obj, char in zip(self.attribute_chars, charchoose):
+            char_choose = self.char_list_lower
+            number_choose = self.number_list
+        for obj, char in zip(self.attribute_chars, char_choose):
             obj.setText(str(char))
-        for obj, char in zip(self.attribute_numbers, numberchoose):
+        for obj, char in zip(self.attribute_numbers, number_choose):
             obj.setText(str(char))

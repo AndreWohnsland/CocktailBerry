@@ -7,9 +7,9 @@ from src.ui_elements.passwordbuttons import Ui_PasswordWindow
 
 
 class PasswordScreen(QDialog, Ui_PasswordWindow):
-    """ Creates the Passwordscreen. """
+    """ Creates the Password screen. """
 
-    def __init__(self, parent, le_to_write: QLineEdit, x_pos: int = 0, y_pos: int = 0, headertext: str = "Password", use_float=False):
+    def __init__(self, parent, le_to_write: QLineEdit, x_pos: int = 0, y_pos: int = 0, header_text: str = "Password", use_float=False):
         """ Init. Connect all the buttons and set window policy. """
         super().__init__()
         self.setupUi(self)
@@ -25,8 +25,8 @@ class PasswordScreen(QDialog, Ui_PasswordWindow):
         for obj, number in zip(self.attribute_numbers, self.number_list):
             obj.clicked.connect(lambda _, n=number: self.number_clicked(number=n))
         self.mainscreen = parent
-        self.setWindowTitle(headertext)
-        self.LHeader.setText(headertext)
+        self.setWindowTitle(header_text)
+        self.LHeader.setText(header_text)
         self.pwlineedit = le_to_write
         self._add_float(use_float)
         self.move(x_pos, y_pos)
@@ -43,8 +43,8 @@ class PasswordScreen(QDialog, Ui_PasswordWindow):
 
     def del_clicked(self):
         """ Deletes the last digit in the lineedit. """
-        strstor = self.pwlineedit.text()
-        self.pwlineedit.setText(strstor[:-1])
+        current_string = self.pwlineedit.text()
+        self.pwlineedit.setText(current_string[:-1])
 
     def _add_float(self, use_float: bool):
         if not use_float:
@@ -54,7 +54,7 @@ class PasswordScreen(QDialog, Ui_PasswordWindow):
 
     def _dot_clicked(self):
         """Adds a dot if its not the first letter or a dot already exists"""
-        strstor = self.pwlineedit.text()
-        if "." in strstor or len(strstor) == 0:
+        current_string = self.pwlineedit.text()
+        if "." in current_string or len(current_string) == 0:
             return
         self.pwlineedit.setText(f"{self.pwlineedit.text()}.")

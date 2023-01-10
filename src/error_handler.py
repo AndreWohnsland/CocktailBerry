@@ -10,7 +10,7 @@ from src.machine.controller import MACHINE
 
 
 def logerror(func: Callable):
-    """ Logs every time an error occours """
+    """ Logs every time an error occurs """
 
     @wraps(func)
     def wrapper(*args, **kwargs):

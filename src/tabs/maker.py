@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-""" Module with all nececcary functions for the maker Tab.
-This includes all functions for the Lists, DB and Buttos/Dropdowns.
+""" Module with all necessary functions for the maker Tab.
+This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
 from typing import List, Optional
@@ -39,10 +39,10 @@ def update_shown_recipe(w, clear_view: bool = True):
     if clear_view:
         DP_CONTROLLER.clear_recipe_data_maker(w)
 
-    cocktailname, amount, factor = DP_CONTROLLER.get_cocktail_data(w)
-    if not cocktailname:
+    cocktail_name, amount, factor = DP_CONTROLLER.get_cocktail_data(w)
+    if not cocktail_name:
         return
-    cocktail = DB_COMMANDER.get_cocktail(cocktailname)
+    cocktail = DB_COMMANDER.get_cocktail(cocktail_name)
     if cocktail is None:
         return
     cocktail.scale_cocktail(amount, factor)
@@ -76,18 +76,18 @@ def prepare_cocktail(w):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
     if shared.cocktail_started:
         return
-    cocktailname, cocktail_volume, alcohol_faktor = DP_CONTROLLER.get_cocktail_data(w)
-    if not cocktailname:
+    cocktail_name, cocktail_volume, alcohol_factor = DP_CONTROLLER.get_cocktail_data(w)
+    if not cocktail_name:
         DP_CONTROLLER.say_no_recipe_selected()
         return
 
     # Gets and scales cocktail, check if fill level is enough
-    cocktail = DB_COMMANDER.get_cocktail(cocktailname)
+    cocktail = DB_COMMANDER.get_cocktail(cocktail_name)
     if cocktail is None:
         return
-    cocktail.scale_cocktail(cocktail_volume, alcohol_faktor)
+    cocktail.scale_cocktail(cocktail_volume, alcohol_factor)
     virgin_ending = " (Virgin)" if cocktail.is_virgin else ""
-    display_name = f"{cocktailname}{virgin_ending}"
+    display_name = f"{cocktail_name}{virgin_ending}"
     error = cocktail.enough_fill_level()
     if error is not None:
         DP_CONTROLLER.say_not_enough_ingredient_volume(*error)
@@ -100,7 +100,7 @@ def prepare_cocktail(w):
     ingredient_volumes = [x.amount for x in cocktail.machineadds if x.amount > 0]
     consumption, taken_time, max_time = MACHINE.make_cocktail(
         w, ingredient_bottles, ingredient_volumes, display_name)  # type: ignore
-    DB_COMMANDER.increment_recipe_counter(cocktailname)
+    DB_COMMANDER.increment_recipe_counter(cocktail_name)
     __generate_maker_log_entry(cocktail_volume, display_name, taken_time, max_time)
 
     # only post if cocktail was made over 50%

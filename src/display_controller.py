@@ -13,23 +13,18 @@ from src import MAX_SUPPORTED_BOTTLES
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui_elements.bonusingredient import Ui_addingredient
 
-# Grace period, will be switched once Python 3.8+ is mandatory
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
 
 STYLE_FOLDER = Path(__file__).parents[0].absolute() / "ui" / "styles"
 
 
 class DisplayController(DialogHandler):
-    """ Controler Class to get Values from the UI"""
+    """ Controller Class to get Values from the UI"""
 
     ########################
     # UI "EXTRACT" METHODS #
     ########################
     def get_current_combobox_items(self, combobox_list: List[QComboBox]) -> List[str]:
-        """Get a list of the current combobox items"""
+        """Get a list of the current combo box items"""
         return [combobox.currentText() for combobox in combobox_list]
 
     def get_toggle_status(self, button_list: List[QPushButton]) -> List[bool]:
@@ -41,7 +36,7 @@ class DisplayController(DialogHandler):
         return [lineedit.text().strip() for lineedit in lineedit_list]
 
     def get_list_widget_selection(self, list_widget: QListWidget) -> str:
-        """Returns the curent selected item of the list widget"""
+        """Returns the current selected item of the list widget"""
         if not list_widget.selectedItems():
             return ""
         user_data = list_widget.currentItem().data(Qt.UserRole)  # type: ignore
@@ -51,23 +46,23 @@ class DisplayController(DialogHandler):
 
     def get_ingredient_data(self, lineedit_list: List[QLineEdit], checkbox: QCheckBox, list_widget: QListWidget):
         """Returns an Ingredient Object from the ingredient data fields"""
-        ingredient_name, alcohollevel, volume = self.get_lineedit_text(lineedit_list)
+        ingredient_name, alcohol_level, volume = self.get_lineedit_text(lineedit_list)
         hand_add = checkbox.isChecked()
         selected_ingredient = self.get_list_widget_selection(list_widget)
-        return Ingredient(-1, ingredient_name, int(alcohollevel), int(volume), 0, hand_add, selected=selected_ingredient)
+        return Ingredient(-1, ingredient_name, int(alcohol_level), int(volume), 0, hand_add, selected=selected_ingredient)
 
     def get_cocktail_data(self, w: Ui_MainWindow) -> Tuple[str, int, float]:
         """Returns [name, volume, factor] from maker"""
         cocktail_volume = int(w.LCustomMenge.text())
         # when pulling, the slider can reach every integer value (eg, 1,2,...)
-        # but whe only want stepsize of *5 -> therefore it ranges from -5 to 5 but we
-        # multiply by *5 to get an effective range from -25 to 25 with a stepsize of 5
-        alcohol_faktor: float = 1 + (w.HSIntensity.value() * 5 / 100)
-        # If virgin is selected, just set alcohol_faktor to 0
+        # but whe only want step size of *5 -> therefore it ranges from -5 to 5 but we
+        # multiply by *5 to get an effective range from -25 to 25 with a step size of 5
+        alcohol_factor: float = 1 + (w.HSIntensity.value() * 5 / 100)
+        # If virgin is selected, just set alcohol_factor to 0
         if w.virgin_checkbox.isChecked():
-            alcohol_faktor = 0.0
-        cocktailname = self.get_list_widget_selection(w.LWMaker)
-        return cocktailname, cocktail_volume, alcohol_faktor
+            alcohol_factor = 0.0
+        cocktail_name = self.get_list_widget_selection(w.LWMaker)
+        return cocktail_name, cocktail_volume, alcohol_factor
 
     def get_recipe_field_data(self, w: Ui_MainWindow) -> Tuple[str, str, List[str], List[str], int, int, str]:
         """ Return [name, selected, [ingredients], [volumes], enabled, virgin, comment] """
@@ -91,7 +86,7 @@ class DisplayController(DialogHandler):
             self.say_needs_to_be_int()
             return False
         if int(ingredient_percentage.text()) > 100:
-            self.say_alcohollevel_max_limit()
+            self.say_alcohol_level_max_limit()
             return False
         return True
 
@@ -141,20 +136,19 @@ class DisplayController(DialogHandler):
     # UI "MANIPULATE" METHODS #
     ###########################
     # Misc
-    def plusminus(
-        self, label: QLabel, operator: Literal["+", "-"], minimal=0, maximal=1000,
+    def change_input_value(
+        self, label: Union[QLabel, QLineEdit], minimal=0, maximal=1000,
         delta=10, side_effect: Optional[Callable] = None
     ):
         """ increases or decreases the value by a given amount in the boundaries
-        operator: '+' or '-'
-        Also executes a sideeffect function, if one is given
+        Also executes a side effect function, if one is given
         """
         try:
-            value_ = int(label.text())
-            value_ = value_ + (delta if operator == "+" else -delta)
+            value_ = int(label.text(), base=10)
+            value_ = value_ + delta
             value_ = min(maximal, max(minimal, (value_ // delta) * delta))
         except ValueError:
-            value_ = maximal if operator == "+" else minimal
+            value_ = maximal if delta > 0 else minimal
         label.setText(str(value_))
         if side_effect is not None:
             side_effect()
@@ -170,30 +164,16 @@ class DisplayController(DialogHandler):
     def inject_stylesheet(self, window_object: QWidget):
         """Adds the central stylesheet to the gui"""
         style_file = f"{cfg.MAKER_THEME}.css"
-        with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as filehandler:
-            window_object.setStyleSheet(filehandler.read())
+        with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as file_handler:
+            window_object.setStyleSheet(file_handler.read())
 
     def set_tab_width(self, mainscreen: QMainWindow):
-        """Hack to set tabs to full screen width, inheritance of custom tabBars dont work
-        This is incredibly painfull, since all the CSS from the ui needs to be copied here,
-        it will overwrite the whole class sheet and missing parts will not be used.
-        Any changes to the .ui file for the tab needs to be applied here as well"""
+        """Hack to set tabs to full screen width, inheritance, change the with to approximately match full width"""
         total_width = mainscreen.frameGeometry().width()
         width = round(total_width / 4, 0) - 10
         mainscreen.tabWidget.setStyleSheet(
             "QTabBar::tab {" +
-            "background-color: rgb(97, 97, 97);" +
-            "color: rgb(255, 255, 255);" +
-            "border-width: 1px;" +
-            "border-color: rgb(255, 255, 255);" +
-            "border-style: solid;" +
-            "border-top-left-radius: 10px;" +
-            "border-top-right-radius: 10px;" +
-            "padding: 5px 0px 5px 0px;" +
-            f"width: {width}px;" + "}" +
-            "QTabBar::tab:selected {" +
-            "color: rgb(255, 255, 255);	" +
-            "background-color: rgb(0, 123, 255)};"
+            f"width: {width}px;" + "}"
         )
 
     # TabWidget
@@ -214,7 +194,7 @@ class DisplayController(DialogHandler):
         slider.setValue(value)
 
     def reset_alcohol_slider(self, w: Ui_MainWindow):
-        """Sets the alcohol slider to defaul (100%) value"""
+        """Sets the alcohol slider to default (100%) value"""
         self.__set_slider_value(w.HSIntensity, 0)
 
     def reset_virgin_setting(self, w: Ui_MainWindow):
@@ -233,7 +213,7 @@ class DisplayController(DialogHandler):
 
     # Combobox
     def fill_single_combobox(
-            self, combobox: QComboBox, itemlist: List[str],
+            self, combobox: QComboBox, item_list: List[str],
             clear_first=False, sort_items=True, first_empty=True
     ):
         """Fill a combobox with given items, with the option to sort and fill a empty element as first element"""
@@ -241,25 +221,25 @@ class DisplayController(DialogHandler):
             combobox.clear()
         if combobox.count() == 0 and first_empty:
             combobox.addItem("")
-        combobox.addItems(itemlist)
+        combobox.addItems(item_list)
         if sort_items:
             combobox.model().sort(0)
 
     def fill_multiple_combobox(
-            self, combobox_list: List[QComboBox], itemlist: List[str],
+            self, combobox_list: List[QComboBox], item_list: List[str],
             clear_first=False, sort_items=True, first_empty=True
     ):
         """Fill multiple comboboxes with identical items, can sort and insert filler as first item"""
         for combobox in combobox_list:
-            self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
+            self.fill_single_combobox(combobox, item_list, clear_first, sort_items, first_empty)
 
     def fill_multiple_combobox_individually(
-        self, combobox_list: List[QComboBox], list_of_itemlist: List[List[str]],
+        self, combobox_list: List[QComboBox], list_of_item_list: List[List[str]],
         clear_first=False, sort_items=True, first_empty=True
     ):
         """Fill multiple comboboxes with different items, can sort and insert filler as first item"""
-        for combobox, itemlist in zip(combobox_list, list_of_itemlist):
-            self.fill_single_combobox(combobox, itemlist, clear_first, sort_items, first_empty)
+        for combobox, item_list in zip(combobox_list, list_of_item_list):
+            self.fill_single_combobox(combobox, item_list, clear_first, sort_items, first_empty)
 
     def delete_single_combobox_item(self, combobox: QComboBox, item: str):
         """Delete the given item from a combobox"""
@@ -267,14 +247,14 @@ class DisplayController(DialogHandler):
         if index >= 0:
             combobox.removeItem(index)
 
-    # This seeems to be currently unused
-    def delete_multiple_combobox_item(self, combobox: QComboBox, itemlist: List[str]):
+    # This seems to be currently unused
+    def delete_multiple_combobox_item(self, combobox: QComboBox, item_list: List[str]):
         """Delete the given items from a combobox"""
-        for item in itemlist:
+        for item in item_list:
             self.delete_single_combobox_item(combobox, item)
 
     def delete_item_in_multiple_combobox(self, combobox_list: List[QComboBox], item: str):
-        """Delete the given item from multiple comboboxed"""
+        """Delete the given item from multiple comboboxes"""
         for combobox in combobox_list:
             self.delete_single_combobox_item(combobox, item)
 
@@ -294,7 +274,7 @@ class DisplayController(DialogHandler):
         combobox.setCurrentIndex(index)
 
     def adjust_bottle_comboboxes(self, combobox_list: List[QComboBox], old_item: str, new_item: str):
-        """Remove the old itemname and add new one in given comboboxex, sorting afterwards"""
+        """Remove the old item name and add new one in given comboboxes, sorting afterwards"""
         for combobox in combobox_list:
             if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):  # type: ignore
                 combobox.addItem(old_item)
@@ -314,7 +294,7 @@ class DisplayController(DialogHandler):
         for combobox in combobox_list:
             self.rename_single_combobox(combobox, old_item, new_item)
 
-    # buttons / togglebuttons
+    # buttons / toggle buttons
     def untoggle_buttons(self, button_list: List[QPushButton]):
         """Set toggle to false in given button list"""
         for button in button_list:
@@ -326,7 +306,7 @@ class DisplayController(DialogHandler):
         for progress_bar, value in zip(progress_bar_list, value_list):
             progress_bar.setValue(value)
 
-    # listwidget
+    # list widget
     def unselect_list_widget_items(self, list_widget: QListWidget):
         """Unselect all items in the list widget"""
         for i in range(list_widget.count()):
@@ -403,7 +383,7 @@ class DisplayController(DialogHandler):
             # -1 indicates no ingredient
             if ing.id == -1:
                 ingredient_name = UI_LANGUAGE.get_add_self()
-                field_ingredient.setProperty("cssClass", "hand-seperator")
+                field_ingredient.setProperty("cssClass", "hand-separator")
                 self._set_underline(field_ingredient, True)
             else:
                 field_ingredient.setProperty("cssClass", None)
@@ -493,7 +473,7 @@ class DisplayController(DialogHandler):
         self.fill_multiple_lineedit(labels, label_names)  # type: ignore
 
     # Migration from supporter.py
-    def get_pushbottons_newbottle(self, w: Ui_MainWindow, get_all=False) -> List[QPushButton]:
+    def get_pushbuttons_newbottle(self, w: Ui_MainWindow, get_all=False) -> List[QPushButton]:
         """Returns all new bottles toggle button objects"""
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"PBneu{x}") for x in range(1, number + 1)]
@@ -533,7 +513,7 @@ class DisplayController(DialogHandler):
         """Returns all maker label objects for ingredient name"""
         return [getattr(w, f"LZutat{x}") for x in range(1, 10)]
 
-    def get_numberlabel_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
+    def get_number_label_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
         """Returns all label object for the number of the bottle"""
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]
@@ -543,22 +523,22 @@ class DisplayController(DialogHandler):
         used_bottles = cfg.choose_bottle_number()
         # This needs to be done to get rid of registered bottles in the then removed bottles
         all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
-        DB_COMMANDER.set_bottleorder(all_bottles[: used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
+        DB_COMMANDER.set_bottle_order(all_bottles[: used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
         comboboxes_bottles = self.get_comboboxes_bottles(w, True)
         self.set_multiple_combobox_to_top_item(comboboxes_bottles[used_bottles::])
         to_adjust = [
-            self.get_pushbottons_newbottle(w, True),
+            self.get_pushbuttons_newbottle(w, True),
             self.get_levelbar_bottles(w, True),
             comboboxes_bottles,
             self.get_label_bottles(w, True),
-            self.get_numberlabel_bottles(w, True),
+            self.get_number_label_bottles(w, True),
         ]
         for elements in to_adjust:
             for element in elements[used_bottles::]:
                 element.deleteLater()
 
     def adjust_maker_label_size_cocktaildata(self, w: Ui_MainWindow):
-        """Adjusts the fontsize for larger screens"""
+        """Adjusts the font size for larger screens"""
         # iterate over all size types and adjust size relative to window height
         # default height was 480 for provided UI
         # so if its larger, the font should also be larger here

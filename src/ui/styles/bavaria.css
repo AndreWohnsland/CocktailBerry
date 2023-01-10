@@ -9,7 +9,7 @@
 *[cssClass~='bold'] {
   font-weight: bold; }
 
-*[cssClass~='hand-seperator'] {
+*[cssClass~='hand-separator'] {
   color: #44648d; }
 
 *[cssClass~='neutral'] {
@@ -54,6 +54,7 @@ QTabWidget::pane {
 
 QTabBar::tab {
   background-color: #0b0e41;
+  font-weight: bold;
   color: #292929;
   border-width: 1px;
   border-color: #292929;

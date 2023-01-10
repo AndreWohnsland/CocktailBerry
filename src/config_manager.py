@@ -33,18 +33,18 @@ class ThemeChoose(ChooseType):
 
 class ConfigManager:
     """Manager for all static configuration of the machine.
-    The Settings defined here are the default settings and will be overritten by the config file"""
+    The Settings defined here are the default settings and will be overwritten by the config file"""
 
     # Activating some dev features like mouse cursor
     UI_DEVENVIRONMENT = True
-    # Locks the recipe tab, making it impossible to acesss
+    # Locks the recipe tab, making it impossible to access
     UI_PARTYMODE = False
     # Password to lock clean, delete and other critical operators
     UI_MASTERPASSWORD = "1234"
     # Language to use, use two chars look up documentation, if not provided fallback to en
     UI_LANGUAGE = "en"
     # Width and height of the touchscreen
-    # Mainly used for dev and comparison for the desired touch dimesions
+    # Mainly used for dev and comparison for the desired touch dimensions
     # Used if UI_DEVENVIRONMENT is set to True
     UI_WIDTH = 800
     UI_HEIGHT = 480
@@ -56,13 +56,13 @@ class ConfigManager:
     MAKER_NAME = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
     MAKER_NUMBER_BOTTLES = 10
-    # Time in seconds to execute clean programm
+    # Time in seconds to execute clean program
     MAKER_CLEAN_TIME = 20
     # time between each check loop when making cocktail
     MAKER_SLEEP_TIME = 0.05
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES = False
-    # Possibility to use different boards to controll Pins
+    # Possibility to use different boards to control Pins
     MAKER_BOARD = "RPI"
     # Theme Setting to load according qss file
     MAKER_THEME = "default"
@@ -83,9 +83,9 @@ class ConfigManager:
 
     def __init__(self) -> None:
         """Try to read in the custom configs. If the file is not there, ignores the error.
-        At the initialisation of the programm the config is synced to the file, therefore creating it at the first start.
-        The sync is not within the __init__ because the initialisation of the inheriting classes would also add their
-        attributes within the config, which is not a desired behaviour. The sync will include all latest features within
+        At the initialization of the program the config is synced to the file, therefore creating it at the first start.
+        The sync is not within the __init__ because the initialization of the inheriting classes would also add their
+        attributes within the config, which is not a desired behavior. The sync will include all latest features within
         the config as well as allow custom settings without git overriding changes.
         """
         # Dict of Format "configname": (type, List[CheckCallbacks])
@@ -160,9 +160,9 @@ class ConfigManager:
         if config_setting is None:
             return
         datatype, check_functions = config_setting
-        # check first if type fits, if list, also check listelements.
-        # Additionally run all check funktions provided
-        # if it's a choosetype ignore typing for now, the function will check if the value is in the list.
+        # check first if type fits, if list, also check list elements.
+        # Additionally run all check functions provided
+        # if it's a choose type ignore typing for now, the function will check if the value is in the list.
         if isinstance(configvalue, datatype) or issubclass(datatype, ChooseType):
             for check_fun in check_functions:
                 check_fun(configname, configvalue)
@@ -180,7 +180,7 @@ class ConfigManager:
                 raise ConfigError(f"The value {config} at position {i} for {configname} is not of type {datatype}")
             for check_fun in check_functions:
                 check_fun(configname, config)
-        # aditional len check of the list data,
+        # additional len check of the list data,
         min_bottles = self.choose_bottle_number()
         min_len_config = {
             "PUMP_PINS": min_bottles,

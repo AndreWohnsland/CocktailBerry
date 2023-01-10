@@ -17,7 +17,7 @@ $default-element-border: $element-border solid $border;
   font-weight: bold;
 }
 
-*[cssClass~='hand-seperator'] {
+*[cssClass~='hand-separator'] {
   color: $neutral;
 }
 
@@ -77,6 +77,7 @@ QTabWidget::pane {
 
 QTabBar::tab {
   background-color: $border;
+  font-weight: bold;
   color: $tabborder;
   border-width: 1px;
   border-color: $tabborder;

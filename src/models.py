@@ -46,7 +46,7 @@ class Cocktail():
         self.adjusted_alcohol = self.alcohol
         self.adjusted_amount = self.amount
 
-    # also changes handadd to machineadd if the handadd is currently at the machine
+    # also changes handadd to machine add if the handadd is currently at the machine
     # this way the user needs to add less, if it happens to be also on the machine
     @property
     def handadds(self):
@@ -64,7 +64,7 @@ class Cocktail():
         return self.adjusted_alcohol == 0
 
     def is_possible(self, hand_available: List[int]):
-        """Returns if the recipe is possible with given aditional hand add ingredients"""
+        """Returns if the recipe is possible with given additional hand add ingredients"""
         machine = self.machineadds
         for ing in machine:
             if ing.bottle is None:
@@ -84,7 +84,7 @@ class Cocktail():
                 return [ing.name, ing.fill_level, ing.amount]
         return None
 
-    def scale_cocktail(self, amount: int, alcohol_facor: float):
+    def scale_cocktail(self, amount: int, alcohol_factor: float):
         """Scales the base cocktail recipe to given volume and alcohol factor
         The scaling is saved in the adjusted_* properties"""
         scaled_amount = 0
@@ -93,7 +93,7 @@ class Cocktail():
         self.adjusted_ingredients = copy.deepcopy(self.ingredients)
         # scale alcoholic ingredients with factor
         for ing in self.adjusted_ingredients:
-            factor = alcohol_facor if bool(ing.alcohol) else 1
+            factor = alcohol_factor if bool(ing.alcohol) else 1
             ing.amount *= factor  # type: ignore
             scaled_amount += ing.amount
             concentration += ing.amount * ing.alcohol

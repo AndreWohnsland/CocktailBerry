@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from src.machine.interface import PinController
 from src.logger_handler import LoggerHandler, LogFiles
 
@@ -13,32 +13,36 @@ try:
     DEV = False
 except ModuleNotFoundError:
     DEV = True
-    logger.log_event("WARNING", "Could not import RPi.GPIO. Will not be able to controll pins")
+    logger.log_event("WARNING", "Could not import RPi.GPIO. Will not be able to control pins")
 
 
 class RpiController(PinController):
-    """Controller class to controll Raspberry Pi pins"""
+    """Controller class to control Raspberry Pi pins"""
 
     def __init__(self) -> None:
         super().__init__()
         self.devenvironment = DEV
 
-    def initialize_pinlist(self, pinlist: List[int]):
-        """Set up the given pinlist"""
+    def initialize_pin_list(self, pin_list: List[int]):
+        """Set up the given pin list"""
         print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
         if not self.devenvironment:
-            for pin in pinlist:
-                GPIO.setup(pin, 0)
-                GPIO.output(pin, 1)
+            GPIO.setup(pin_list, GPIO.OUT, initial=1)
 
-    def activate_pinlist(self, pinlist: List[int]):
-        """Activates the given pinlist"""
+    def activate_pin_list(self, pin_list: List[int]):
+        """Activates the given pin list"""
         if not self.devenvironment:
-            for pin in pinlist:
-                GPIO.output(pin, 0)
+            GPIO.output(pin_list, 0)
 
-    def close_pinlist(self, pinlist: List[int]):
-        """Closes the given pinlist"""
+    def close_pin_list(self, pin_list: List[int]):
+        """Closes the given pin_list"""
         if not self.devenvironment:
-            for pin in pinlist:
-                GPIO.output(pin, 1)
+            GPIO.output(pin_list, 1)
+
+    def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
+        if self.devenvironment:
+            return
+        if pin_list is None:
+            GPIO.cleanup()
+        else:
+            GPIO.cleanup(pin_list)

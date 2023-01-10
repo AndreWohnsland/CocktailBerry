@@ -14,15 +14,15 @@ _MINUS_ICON = "fa5s.minus"
 _BUTTON_SIZE = QSize(36, 36)
 
 
-def _parse_color(colorname: str) -> str:
+def _parse_color(color_name: str) -> str:
     """Gets the color out of the theme file"""
-    deault_color = "#007bff"
+    default_color = "#007bff"
     content = UI_FILE.read_text().split("\n")
     for line in content:
         name, *color_info = line.split(": ")
-        if colorname in name:
+        if color_name in name:
             return color_info[0].replace(";", "")
-    return deault_color
+    return default_color
 
 
 class IconSetter:

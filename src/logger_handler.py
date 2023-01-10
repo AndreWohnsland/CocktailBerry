@@ -9,7 +9,7 @@ except ImportError:
     from typing_extensions import Literal
 
 _DIRPATH = Path(__file__).parent.absolute()
-_AceptedLogLevels = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+_AcceptedLogLevels = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 class LogFiles():
@@ -23,11 +23,11 @@ class LoggerHandler:
 
     log_folder = _DIRPATH.parent / "logs"
 
-    def __init__(self, loggername: str, filename: str = LogFiles.PRODUCTION):
-        self.loggername = loggername
+    def __init__(self, logger_name: str, filename: str = LogFiles.PRODUCTION):
+        self.logger_name = logger_name
         self.path = LoggerHandler.log_folder / f"{filename}.log"
 
-        logger = logging.getLogger(loggername)
+        logger = logging.getLogger(logger_name)
         logger.setLevel(logging.DEBUG)
         if not logger.hasHandlers():
             filehandler = logging.FileHandler(self.path)
@@ -36,15 +36,15 @@ class LoggerHandler:
             filehandler.setFormatter(formatter)
             logger.addHandler(filehandler)
 
-        self.logger = logging.getLogger(loggername)
+        self.logger = logging.getLogger(logger_name)
         self.template = "{:-^80}"
 
-    def log_event(self, level: _AceptedLogLevels, message: str):
+    def log_event(self, level: _AcceptedLogLevels, message: str):
         """Simply logs a message of given level"""
         self.logger.log(getattr(logging, level), message)
 
-    def log_header(self, level: _AceptedLogLevels, message: str):
-        """Logs a message of given level formated as header"""
+    def log_header(self, level: _AcceptedLogLevels, message: str):
+        """Logs a message of given level formatted as header"""
         self.log_event(level, self.template.format(f" {message} ",))
 
     def log_start_program(self, program_type: str = "maker"):

@@ -16,6 +16,7 @@ from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
 from src.programs.calibration import run_calibration
+from src.machine.controller import MACHINE
 from src.logger_handler import LogFiles, LoggerHandler
 
 
@@ -31,7 +32,7 @@ _logger = LoggerHandler("option_window", LogFiles.PRODUCTION)
 class OptionWindow(QMainWindow, Ui_Optionwindow):
     """ Class for the Option selection window. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
@@ -71,6 +72,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Reboots the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_reboot():
             return
+        MACHINE.cleanup()
         os.system("sudo reboot")
         self.close()
 
@@ -78,6 +80,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Shutdown the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_shutdown():
             return
+        MACHINE.cleanup()
         os.system("sudo shutdown now")
         self.close()
 
@@ -87,7 +90,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         run_calibration(standalone=False)
 
     def _create_backup(self):
-        """Prompts the user for a folder path to save the backupt to.
+        """Prompts the user for a folder path to save the backup to.
         Saves the config, custom database and version to the location."""
         location = self._get_user_folder_response()
         if not location:

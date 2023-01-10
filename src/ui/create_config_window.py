@@ -34,7 +34,7 @@ class ConfigWindow(QMainWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _init_ui(self):
-        # This is not shown (fullscreen) and only for dev reasons. need no translation
+        # This is not shown (full screen) and only for dev reasons. need no translation
         self.setWindowTitle("Change Configuration")
         self.scroll_area = QScrollArea()
         self.widget = QWidget()
@@ -42,7 +42,7 @@ class ConfigWindow(QMainWindow):
 
         for key, value in cfg.config_type.items():
             needed_type, _ = value
-            self._choose_dispay_style(key, needed_type)
+            self._choose_display_style(key, needed_type)
 
         self.button_back = QPushButton("Back")
         self.button_back.clicked.connect(self.close)
@@ -75,60 +75,60 @@ class ConfigWindow(QMainWindow):
         except ConfigError as err:
             DP_CONTROLLER.say_wrong_config(str(err))
             return
-        # Also asks if to restart programm to get new config
+        # Also asks if to restart program to get new config
         if DP_CONTROLLER.ask_to_restart_for_config():
             os.execl(sys.executable, EXECUTABLE, *sys.argv)
         self.close()
 
-    def _choose_dispay_style(self, configname: str, configtype: type):
+    def _choose_display_style(self, config_name: str, config_type: type):
         """Creates the input face for the according config types"""
         # Add the elements header to the view
-        header = QLabel(f"{configname}:")
+        header = QLabel(f"{config_name}:")
         self._adjust_font(header, LARGE_FONT, True)
         self.vbox.addWidget(header)
         # Reads out the current config value
-        current_value = getattr(cfg, configname)
-        getter_fn = self._build_input_field(configname, configtype, current_value)
-        # asigning the getter function for the config into the dict
-        self.config_objects[configname] = getter_fn
+        current_value = getattr(cfg, config_name)
+        getter_fn = self._build_input_field(config_name, config_type, current_value)
+        # assigning the getter function for the config into the dict
+        self.config_objects[config_name] = getter_fn
 
-    def _build_input_field(self, configname: str, configtype: type, current_value: Any, layout: Optional[QBoxLayout] = None):
+    def _build_input_field(self, config_name: str, config_type: type, current_value: Any, layout: Optional[QBoxLayout] = None):
         """Builds the input field and returns its getter function"""
         if layout is None:
             layout = self.vbox
-        if configtype == int:
-            return self._build_int_field(layout, configname, current_value)
-        if configtype == float:
-            return self._build_float_field(layout, configname, current_value)
-        if configtype == bool:
-            return self._buid_bool_field(layout, current_value)
-        if configtype == list:
-            return self._build_list_field(configname, current_value)
-        if issubclass(configtype, ChooseType):
-            selection = configtype.allowed
+        if config_type == int:
+            return self._build_int_field(layout, config_name, current_value)
+        if config_type == float:
+            return self._build_float_field(layout, config_name, current_value)
+        if config_type == bool:
+            return self._build_bool_field(layout, current_value)
+        if config_type == list:
+            return self._build_list_field(config_name, current_value)
+        if issubclass(config_type, ChooseType):
+            selection = config_type.allowed
             return self._build_selection_filed(layout, current_value, selection)
         return self._build_fallback_field(layout, current_value)
 
-    def _build_int_field(self, layout: QBoxLayout, configname: str, current_value: int) -> Callable[[], int]:
+    def _build_int_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], int]:
         """Builds a field for integer input with numpad"""
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: PasswordScreen(self, config_input, 300, 50, configname))  # type: ignore
+        config_input.clicked.connect(lambda: PasswordScreen(self, config_input, 300, 50, config_name))  # type: ignore
         layout.addWidget(config_input)
         return lambda: int(config_input.text())
 
-    def _build_float_field(self, layout: QBoxLayout, configname: str, current_value: int) -> Callable[[], float]:
+    def _build_float_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], float]:
         """Builds a field for integer input with numpad"""
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(lambda: PasswordScreen(
-            self, config_input, 300, 50, configname, True))  # type: ignore
+            self, config_input, 300, 50, config_name, True))  # type: ignore
         layout.addWidget(config_input)
         return lambda: float(config_input.text())
 
-    def _buid_bool_field(self, layout: QBoxLayout, current_value: bool, displayed_text="on") -> Callable[[], bool]:
+    def _build_bool_field(self, layout: QBoxLayout, current_value: bool, displayed_text="on") -> Callable[[], bool]:
         """Builds a field for bool input with a checkbox"""
         config_input = QCheckBox(displayed_text)
         self._adjust_font(config_input, MEDIUM_FONT)
@@ -137,35 +137,35 @@ class ConfigWindow(QMainWindow):
         layout.addWidget(config_input)
         return config_input.isChecked
 
-    def _build_list_field(self, configname: str, current_value: List) -> Callable[[], List[Any]]:
+    def _build_list_field(self, config_name: str, current_value: List) -> Callable[[], List[Any]]:
         """Builds a list of fields for a list input"""
         config_input = QVBoxLayout()
         getter_fn_list = []
         # iterate over each list value and build the according field
         for initial_value in current_value:
-            self._add_ui_element_to_list(initial_value, getter_fn_list, configname, config_input)
+            self._add_ui_element_to_list(initial_value, getter_fn_list, config_name, config_input)
         # adds a button for adding new list entries
         add_button = QPushButton("+ add")
         self._adjust_font(add_button, MEDIUM_FONT, True)
-        add_button.clicked.connect(lambda: self._add_ui_element_to_list("", getter_fn_list, configname, config_input))
-        # build container that new added elements are above add button seperately
+        add_button.clicked.connect(lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input))
+        # build container that new added elements are above add button separately
         v_container = QVBoxLayout()
         v_container.addLayout(config_input)
         v_container.addWidget(add_button)
         self.vbox.addLayout(v_container)
         return lambda: [x() for x in getter_fn_list]
 
-    def _add_ui_element_to_list(self, initial_value, getter_fn_list: List, configname: str, container: QBoxLayout):
+    def _add_ui_element_to_list(self, initial_value, getter_fn_list: List, config_name: str, container: QBoxLayout):
         """Adds an additional input element for list buildup"""
         # Gets the type of the list elements
-        list_config = cfg.config_type_list.get(configname)
+        list_config = cfg.config_type_list.get(config_name)
         # if new added list elements get forgotten, this may happen in this occasion. Catch it here
         if list_config is None:
             raise RuntimeError(
-                f"Tried to access list config [{configname}] that is not defined. That should not happen. Please report the error.")
+                f"Tried to access list config [{config_name}] that is not defined. That should not happen. Please report the error.")
         list_type, _ = list_config
         h_container = QHBoxLayout()
-        getter_fn = self._build_input_field(configname, list_type, initial_value, h_container)
+        getter_fn = self._build_input_field(config_name, list_type, initial_value, h_container)
         remove_button = QPushButton("x")
         self._adjust_font(remove_button, MEDIUM_FONT, True)
         # the first argument in lambda is needed since the object reference within the loop
@@ -206,9 +206,9 @@ class ConfigWindow(QMainWindow):
     def _retrieve_values(self):
         return {key: getter() for key, getter in self.config_objects.items()}
 
-    def _adjust_font(self, element: QWidget, fontsize: int, bold: bool = False):
+    def _adjust_font(self, element: QWidget, font_size: int, bold: bool = False):
         font = QFont()
-        font.setPointSize(fontsize)
+        font.setPointSize(font_size)
         font.setBold(bold)
         weight = 75 if bold else 50
         font.setWeight(weight)

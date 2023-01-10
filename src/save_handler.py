@@ -19,7 +19,7 @@ class SaveHandler:
             DP_CONTROLLER.say_wrong_password()
             return
         consumption_list = DB_COMMANDER.get_consumption_data_lists_ingredients()
-        self._save_quant("Zutaten_export.csv", consumption_list)
+        self._save_quant("Ingredient_export.csv", consumption_list)
         DB_COMMANDER.delete_consumption_ingredients()
         _logger.log_event("INFO", "Ingredient data was exported")
 
@@ -29,7 +29,7 @@ class SaveHandler:
             DP_CONTROLLER.say_wrong_password()
             return
         consumption_list = DB_COMMANDER.get_consumption_data_lists_recipes()
-        self._save_quant("Rezepte_export.csv", consumption_list)
+        self._save_quant("Recipe_export.csv", consumption_list)
         DB_COMMANDER.delete_consumption_recipes()
         _logger.log_event("INFO", "Recipe data was exported")
 
@@ -39,17 +39,17 @@ class SaveHandler:
         DP_CONTROLLER.say_all_data_exported()
 
     def _write_rows_to_csv(self, filename: str, data_rows: List):
-        """Write the data to the csv file, activate servicehandler for mail"""
+        """Write the data to the csv file, activate service handler for mail"""
         dtime = str(datetime.date.today())
         dtime = dtime.replace("-", "")
-        subfoldername = "saves"
+        subfolder_name = "saves"
         full_file_name = f"{dtime}_{filename}"
-        savepath = _DIRPATH.parent / subfoldername / full_file_name
-        with open(savepath, mode="a", newline="", encoding="utf-8") as writer_file:
+        save_path = _DIRPATH.parent / subfolder_name / full_file_name
+        with open(save_path, mode="a", newline="", encoding="utf-8") as writer_file:
             csv_writer = csv.writer(writer_file, delimiter=",")
             for row in data_rows:
                 csv_writer.writerow(row)
-        with open(savepath, "rb") as read_file:
+        with open(save_path, "rb") as read_file:
             SERVICE_HANDLER.send_mail(full_file_name, read_file)
 
 

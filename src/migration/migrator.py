@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional, Tuple
 
 from src.logger_handler import LoggerHandler, LogFiles
-from src.migration.updata_data import (
+from src.migration.update_data import (
     rename_database_to_english,
     add_more_bottles_to_db,
     add_team_buffer_to_database,
@@ -25,7 +25,7 @@ _logger = LoggerHandler("migrator_module", LogFiles.PRODUCTION)
 
 
 class Migrator:
-    """Class to do all neccecary migration locally for new versions"""
+    """Class to do all necessary migration locally for new versions"""
 
     def __init__(self) -> None:
         self.program_version = _Version(__version__)
@@ -48,8 +48,8 @@ class Migrator:
         """Writes the latest version to the local version"""
         _logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
         self.config['DEFAULT']['LOCALVERSION'] = str(self.program_version.version)
-        with open(_CONFIG_PATH, 'w', encoding="utf-8") as configfile:
-            self.config.write(configfile)
+        with open(_CONFIG_PATH, 'w', encoding="utf-8") as config_file:
+            self.config.write(config_file)
 
     def make_migrations(self):
         """Make migration dependant on current local and program version"""
@@ -106,14 +106,14 @@ class Migrator:
             _logger.log_exception(err)
             raise CouldNotMigrateException("1.6.0") from err
 
-    def _install_pip_package(self, packagename: str, version_to_migrate: str):
+    def _install_pip_package(self, package_name: str, version_to_migrate: str):
         """Try to install a python package over pip"""
-        _logger.log_event("INFO", f"Trying to install {packagename}, it is needed since this version")
+        _logger.log_event("INFO", f"Trying to install {package_name}, it is needed since this version")
         try:
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', packagename])
-            _logger.log_event("INFO", f"Successfully installed {packagename}")
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', package_name])
+            _logger.log_event("INFO", f"Successfully installed {package_name}")
         except subprocess.CalledProcessError as err:
-            _logger.log_event("ERROR", f"Could not install {packagename} using pip. Please install it manually!")
+            _logger.log_event("ERROR", f"Could not install {package_name} using pip. Please install it manually!")
             _logger.log_exception(err)
             raise CouldNotMigrateException(version_to_migrate) from err
 
@@ -123,7 +123,7 @@ class _Version:
 
     def __init__(self, version_number: Optional[str]) -> None:
         self.version = version_number
-        # no verison was found, just asume the worst, so using first version
+        # no version was found, just assume the worst, so using first version
         if version_number is None:
             major = 1
             minor = 0
@@ -133,7 +133,7 @@ class _Version:
             major, minor, *patch = version_number.split(".")
         self.major = int(major)
         self.minor = int(minor)
-        # Some version like 1.0 or 1.1 dont got a patch property
+        # Some version like 1.0 or 1.1 don't got a patch property
         # List unpacking will return an empty list or a list of one
         # Future version should contain patch (e.g. 1.1.0) as well
         if patch:
