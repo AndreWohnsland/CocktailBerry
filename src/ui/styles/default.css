@@ -37,7 +37,7 @@ QCheckBox::indicator {
 
 QWidget {
   color: #007bff;
-  background-color: #000000; }
+  background-color: #0d0d0d; }
   QWidget:item:selected {
     color: #ef9700;
     font-weight: bold;
@@ -87,7 +87,7 @@ QTabBar::tab {
       background: #ef9700; }
 
 QPushButton {
-  background-color: #000000;
+  background-color: #0d0d0d;
   color: #007bff;
   border-width: 3px;
   border-color: #007bff;
@@ -104,22 +104,22 @@ QPushButton {
     border-color: #ef9700; }
   QPushButton[cssClass~='btn-inverted'] {
     background-color: #007bff;
-    color: #000000; }
+    color: #0d0d0d; }
     QPushButton[cssClass~='btn-inverted']:checked, QPushButton[cssClass~='btn-inverted']:pressed {
       background-color: #ef9700;
       border-color: #ef9700; }
   QPushButton[cssClass~='btn-teamone'] {
     background-color: #007bff;
     border-color: #007bff;
-    color: #000000; }
+    color: #0d0d0d; }
   QPushButton[cssClass~='btn-teamtwo'] {
     background-color: #ef9700;
     border-color: #ef9700;
-    color: #000000; }
+    color: #0d0d0d; }
 
 QProgressBar {
   background-color: #a6a6a6;
-  color: #000000;
+  color: #0d0d0d;
   border: 2px #a6a6a6;
   border-radius: 5px;
   text-align: center; }
@@ -166,7 +166,7 @@ QScrollBar:vertical {
   border: 2px solid #616161;
   border-right: 0px solid #616161;
   border-radius: 15px;
-  background: #000000;
+  background: #0d0d0d;
   width: 40px;
   margin: 25px 0 25px 0; }
 
@@ -208,11 +208,11 @@ QScrollBar::add-line:vertical:pressed {
   font-size: 16pt; }
 
 QMessageBox {
-  background-color: #000000;
+  background-color: #0d0d0d;
   font-size: 16pt; }
   QMessageBox QPushButton {
     background-color: #007bff;
-    color: #000000;
+    color: #0d0d0d;
     font-size: 30pt;
     padding: 5px 20px 5px 20px;
     min-width: 120px; }
@@ -229,7 +229,7 @@ QTimeEdit {
   QDateEdit::down-arrow, QDateEdit::up-arrow,
   QTimeEdit::down-arrow,
   QTimeEdit::up-arrow {
-    border: 3px solid #000000;
+    border: 3px solid #0d0d0d;
     background-color: #007bff; }
     QDateEdit::down-arrow:pressed, QDateEdit::up-arrow:pressed,
     QTimeEdit::down-arrow:pressed,

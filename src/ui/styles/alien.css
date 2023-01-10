@@ -55,16 +55,16 @@ QTabWidget::pane {
 QTabBar::tab {
   background-color: #586c5b;
   font-weight: bold;
-  color: #1e1e1e;
+  color: #000000;
   border-width: 1px;
-  border-color: #1e1e1e;
+  border-color: #000000;
   border-style: solid;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 5px 0px 5px 0px;
   width: 193px; }
   QTabBar::tab:selected {
-    color: #1e1e1e;
+    color: #000000;
     background-color: #00dd4a; }
   QTabBar::tab:disabled {
     text-decoration: line-through; }
@@ -129,7 +129,7 @@ QProgressBar {
     border-bottom-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    background-color: #bfe500;
+    background-color: #82e500;
     /*background-color: rgb(0, 255, 132);
     width: 40px;
     margin: 0.5px;*/ }
