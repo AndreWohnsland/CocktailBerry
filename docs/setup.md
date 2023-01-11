@@ -66,6 +66,8 @@ Currently, there are following themes:
 
 - **default**: The look and feel of the project pictures. Blue, Orange and Black as main colors.
 - **bavaria**: The somewhat light mode of the app. Blue, Black and White as main colors.
+- **berry**: Pink mixed with dark blue and dark background.
+- **alien**: Different shades of green and dark background.
 
 ## Calibration of the Pumps
 
