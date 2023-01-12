@@ -58,7 +58,7 @@ The program will then evaluate which recipe meets all requirements to only show 
 
 To set up your Board, you can choose between different platforms. The according controlling library for Python needs to be installed. If it's not shipped within the default OS of your board, this will be mentioned here. Currently supported options (boards) are:
 
-- **RPI (Raspberry Pi)**: Using GPIO according to [GPIO-Numbers](https://de.pinout.xyz/) for Pins.
+- **RPI (Raspberry Pi)**: Using GPIO according to [GPIO-Numbers](https://en.pinout.xyz/) for Pins.
 
 ## Themes
 
@@ -79,7 +79,7 @@ python runme.py --calibration
 python runme.py -c
 ```
 
-This will start the calibration overlay. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps. In the end, you can adjust each pump volume flow by the factor:
+You can also use the CocktailBerry program to get to the calibration - it's located under your settings (option gear). This will start the calibration overlay. You can use water and a weight scale for the process. Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps. In the end, you can adjust each pump volume flow by the factor:
 
 Vnew = Vold \* expectation/output
 
