@@ -204,16 +204,23 @@ QListWidget {
   border: $default-element-border;
   border-bottom-right-radius: $scrollbar-border-radius + 6px;
   border-top-right-radius: $scrollbar-border-radius + 6px;
+  & QScrollBar:vertical {
+    border-right: 0px solid $border;
+  }
+}
+
+QScrollArea QScrollBar:vertical {
+  border-right: $default-element-border;
 }
 
 /* Moving List Widget here from the single objects */
 QScrollBar:vertical {
   border: $default-element-border;
-  border-right: 0px solid $border;
+  border-right: 1px solid $border;
   border-radius: $scrollbar-border-radius;
   background: $background;
   width: 40px;
-  margin: 25px 0 25px 0;
+  margin: 25px 0px 25px 0px;
 }
 
 QScrollBar::handle:vertical {
