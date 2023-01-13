@@ -49,7 +49,7 @@ In addition, there is the possibility to use and set up a second device as a das
 
 # Quickstart
 
-Here are some simple steps to get CocktailBerry running. You need to have **Python 3.7** or newer and **git** installed.
+Here are some simple steps to get CocktailBerry running. You need to have **Python 3.9** or newer and **git** installed.
 
 Run:
 

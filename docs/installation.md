@@ -6,7 +6,7 @@ Here you can find all the requirements and installation steps.
 
 These are the minimal tools needed to get started:
 
-- [Python 3.7](https://www.python.org/downloads/) or newer
+- [Python 3.9](https://www.python.org/downloads/) or newer
 - [Git](https://git-scm.com/downloads)
 - recommended: **latest** [Raspberry Pi OS](https://www.raspberrypi.com/software/) (Desktop, Bullseye)
 

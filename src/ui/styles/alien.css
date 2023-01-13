@@ -160,15 +160,20 @@ QListWidget {
   border: 2px solid #586c5b;
   border-bottom-right-radius: 21px;
   border-top-right-radius: 21px; }
+  QListWidget QScrollBar:vertical {
+    border-right: 0px solid #586c5b; }
+
+QScrollArea QScrollBar:vertical {
+  border-right: 2px solid #586c5b; }
 
 /* Moving List Widget here from the single objects */
 QScrollBar:vertical {
   border: 2px solid #586c5b;
-  border-right: 0px solid #586c5b;
+  border-right: 1px solid #586c5b;
   border-radius: 15px;
   background: #111111;
   width: 40px;
-  margin: 25px 0 25px 0; }
+  margin: 25px 0px 25px 0px; }
 
 QScrollBar::handle:vertical {
   background: #00dd4a;
