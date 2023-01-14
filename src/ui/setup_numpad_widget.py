@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QLineEdit
 
 from src.display_controller import DP_CONTROLLER
-from src.ui_elements.passwordbuttons import Ui_NumpadWindow
+from src.ui_elements.numpad import Ui_NumpadWindow
 
 
 class NumpadWidget(QDialog, Ui_NumpadWindow):
