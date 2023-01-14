@@ -11,22 +11,22 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Steps to reproduce the behaviour:
+Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behaviour**
+**Expected behavior**
 A clear and concise description of what you expected to happen.
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
 **Versions (please complete the following information):**
- - OS: [e.g. Rapsberry Pi OS Bullseye]
- - Python Version: [run python --version or python3 --version]
- - CocktailBerry Version: [run python runme.py --version]
+ - OS: [e.g. Raspberry Pi OS Bullseye, run `cat /etc/os-release`] 
+ - Python Version: [run `python --version` or `python3 --version`]
+ - CocktailBerry Version: [run `python runme.py --version`]
 
 **Additional context**
 Add any other context about the problem here.
