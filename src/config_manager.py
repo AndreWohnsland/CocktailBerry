@@ -50,7 +50,7 @@ class ConfigManager:
     UI_HEIGHT = 480
     # RPi pins where pumps (ascending) are connected
     PUMP_PINS = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
-    # Volumeflow for the according pumps
+    # Volume flow for the according pumps
     PUMP_VOLUMEFLOW = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
     # Custom name of the Maker
     MAKER_NAME = f"CocktailBerry (#{random.randint(0, 1000000):07})"
