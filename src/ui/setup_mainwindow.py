@@ -137,8 +137,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def open_option_window(self):
         """Opens up the options"""
-        if not DP_CONTROLLER.check_bottles_password(self):
-            DP_CONTROLLER.say_wrong_password()
+        if not DP_CONTROLLER.password_prompt():
             return
         self.option_window = OptionWindow(self)
 
@@ -214,7 +213,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             ))
         self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
         self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients(self))
-        self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes(self))
+        self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes())  # pylint: ignore
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
         # Connect the Lists with the Functions
@@ -234,10 +233,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Disable some of the Tabs (for the UI_PARTYMODE, no one can access the recipes)
         if cfg.UI_PARTYMODE:
             # self.tabWidget.setTabEnabled(1, False)
-            # self.tabWidget.setTabEnabled(2, False)
+            self.tabWidget.setTabEnabled(2, False)
             # self.tabWidget.setTabEnabled(3, False)
             # also activate password click events
-            self.tabWidget.currentChanged.connect(self.handle_tab_bar_clicked)
+            # self.tabWidget.currentChanged.connect(self.handle_tab_bar_clicked)
 
         # Removes the elements not used depending on number of bottles in bottle tab
         # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered

@@ -178,8 +178,7 @@ def load_selected_recipe_data(w):
 @logerror
 def delete_recipe(w):
     """ Deletes the selected recipe, requires the Password """
-    if not DP_CONTROLLER.check_recipe_password(w):
-        DP_CONTROLLER.say_wrong_password()
+    if not DP_CONTROLLER.password_prompt():
         return
     _, recipe_name, *_ = DP_CONTROLLER.get_recipe_field_data(w)
     if not recipe_name:

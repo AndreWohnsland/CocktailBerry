@@ -15,18 +15,16 @@ _logger = LoggerHandler("save_handler", LogFiles.PRODUCTION)
 class SaveHandler:
     def export_ingredients(self, w):
         """Export the ingredients to a csv file, resets consumption"""
-        if not DP_CONTROLLER.check_ingredient_password(w):
-            DP_CONTROLLER.say_wrong_password()
+        if not DP_CONTROLLER.password_prompt():
             return
         consumption_list = DB_COMMANDER.get_consumption_data_lists_ingredients()
         self._save_quant("Ingredient_export.csv", consumption_list)
         DB_COMMANDER.delete_consumption_ingredients()
         _logger.log_event("INFO", "Ingredient data was exported")
 
-    def export_recipes(self, w):
+    def export_recipes(self):
         """Export the recipes to a csv file, resets count"""
-        if not DP_CONTROLLER.check_recipe_password(w):
-            DP_CONTROLLER.say_wrong_password()
+        if not DP_CONTROLLER.password_prompt():
             return
         consumption_list = DB_COMMANDER.get_consumption_data_lists_recipes()
         self._save_quant("Recipe_export.csv", consumption_list)

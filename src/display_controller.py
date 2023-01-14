@@ -96,26 +96,6 @@ class DisplayController(DialogHandler):
         volume = int(w.LAmount.text())
         return ingredient_name, volume
 
-    def _check_password(self, lineedit: QLineEdit) -> bool:
-        """Compares the given lineedit to the master password"""
-        password = lineedit.text()
-        lineedit.setText("")
-        if password == cfg.UI_MASTERPASSWORD:
-            return True
-        return False
-
-    def check_recipe_password(self, w: Ui_MainWindow):
-        """Checks if the password in the recipe window is right"""
-        return self._check_password(w.LEpw)
-
-    def check_bottles_password(self, w: Ui_MainWindow):
-        """Checks if the password in the bottle window is right"""
-        return self._check_password(w.LECleanMachine)
-
-    def check_ingredient_password(self, w: Ui_MainWindow):
-        """Checks if the password in the ingredient window is right"""
-        return self._check_password(w.LEpw2)
-
     def _lineedit_is_missing(self, lineedit_list: List[QLineEdit]) -> bool:
         """Checks if a lineedit is empty"""
         for lineedit in lineedit_list:
