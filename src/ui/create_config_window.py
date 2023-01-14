@@ -11,7 +11,7 @@ from src.config_manager import ChooseType, ConfigError, CONFIG as cfg
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.setup_keyboard_widget import KeyboardWidget
-from src.ui.setup_password_screen import PasswordScreen
+from src.ui.setup_numpad_widget import NumpadWidget
 
 FILE_PATH = Path(__file__).parents[0].absolute()
 EXECUTABLE = FILE_PATH.parents[1].absolute() / "runme.py"
@@ -114,7 +114,7 @@ class ConfigWindow(QMainWindow):
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: PasswordScreen(self, config_input, 300, 50, config_name))  # type: ignore
+        config_input.clicked.connect(lambda: NumpadWidget(self, config_input, 300, 50, config_name))  # type: ignore
         layout.addWidget(config_input)
         return lambda: int(config_input.text())
 
@@ -123,7 +123,7 @@ class ConfigWindow(QMainWindow):
         config_input = ClickableLineEdit(str(current_value))
         self._adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: PasswordScreen(
+        config_input.clicked.connect(lambda: NumpadWidget(
             self, config_input, 300, 50, config_name, True))  # type: ignore
         layout.addWidget(config_input)
         return lambda: float(config_input.text())

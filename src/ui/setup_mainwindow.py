@@ -22,7 +22,7 @@ from src.utils import has_connection
 
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui.setup_progress_screen import ProgressScreen
-from src.ui.setup_password_screen import PasswordScreen
+from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui.setup_bottle_window import BottleWindow
 from src.ui.setup_get_ingredients_window import GetIngredientWindow
 from src.ui.setup_keyboard_widget import KeyboardWidget
@@ -52,7 +52,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         DP_CONTROLLER.inject_stylesheet(self)
         # init the empty further screens
-        self.numpad_window: Optional[PasswordScreen] = None
+        self.numpad_window: Optional[NumpadWidget] = None
         self.keyboard_window: Optional[KeyboardWidget] = None
         self.progress_window: Optional[ProgressScreen] = None
         self.bottle_window: Optional[BottleWindow] = None
@@ -107,8 +107,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             )
 
     def open_numpad(self, le_to_write: QLineEdit, x_pos=0, y_pos=0, header_text="Password"):
-        """ Opens up the PasswordScreen connected to the lineedit offset from the left upper side """
-        self.numpad_window = PasswordScreen(self, le_to_write, x_pos, y_pos, header_text)
+        """ Opens up the NumpadWidget connected to the lineedit offset from the left upper side """
+        self.numpad_window = NumpadWidget(self, le_to_write, x_pos, y_pos, header_text)
 
     def open_keyboard(self, le_to_write, max_char_len=30):
         """ Opens up the keyboard connected to the lineedit """
