@@ -1,6 +1,7 @@
 """Connects all the functions to the Buttons as well the Lists
 of the passed window. Also defines the Mode for controls.
 """
+# pylint: disable=unnecessary-lambda
 import sys
 import platform
 from pathlib import Path
@@ -158,10 +159,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def connect_other_windows(self):
         """Links the buttons and lineedits to the other ui elements"""
-        password = UI_LANGUAGE.generate_password_header("password")
-        self.LEpw.clicked.connect(lambda: self.open_numpad(self.LEpw, 50, 50, password))
-        self.LEpw2.clicked.connect(lambda: self.open_numpad(self.LEpw2, 50, 50, password))
-        self.LECleanMachine.clicked.connect(lambda: self.open_numpad(self.LECleanMachine, 50, 50, password))
         self.LECocktail.clicked.connect(lambda: self.open_keyboard(self.LECocktail))
         self.option_button.clicked.connect(self.open_option_window)
         alcohol = UI_LANGUAGE.generate_password_header("alcohol")
@@ -174,7 +171,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # connects all the Lineedits from the Recipe amount and gives them the validator
         amount = UI_LANGUAGE.generate_password_header("amount")
         for obj in DP_CONTROLLER.get_lineedits_recipe(self):
-            obj.clicked.connect(lambda o=obj: self.open_numpad(o, 50, 50, amount))
+            obj.clicked.connect(lambda o=obj: self.open_numpad(o, 50, 50, amount))  # type: ignore
             obj.setValidator(QIntValidator(0, 300))
             obj.setMaxLength(3)
         # Setting up Validators for all the the fields (length and/or Types):
@@ -213,7 +210,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             ))
         self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
         self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients(self))
-        self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes())  # pylint: ignore
+        self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes())
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
         # Connect the Lists with the Functions
@@ -230,13 +227,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Connects the virgin checkbox
         self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))
 
-        # Disable some of the Tabs (for the UI_PARTYMODE, no one can access the recipes)
+        # Protect other tabs with password in party mode
         if cfg.UI_PARTYMODE:
-            # self.tabWidget.setTabEnabled(1, False)
-            self.tabWidget.setTabEnabled(2, False)
-            # self.tabWidget.setTabEnabled(3, False)
-            # also activate password click events
-            # self.tabWidget.currentChanged.connect(self.handle_tab_bar_clicked)
+            self.tabWidget.currentChanged.connect(self.handle_tab_bar_clicked)
 
         # Removes the elements not used depending on number of bottles in bottle tab
         # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
@@ -268,7 +261,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
 
     def handle_tab_bar_clicked(self, index):
+        """Protects tabs other than maker tab with a password"""
         if index == 0:
             return
-        print("Switched index:", index)
+        if DP_CONTROLLER.password_prompt():
+            return
+        # Set back to 1st tab if password not right
         self.tabWidget.setCurrentIndex(0)
