@@ -3,10 +3,10 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QLineEdit
 
 from src.display_controller import DP_CONTROLLER
-from src.ui_elements.passwordbuttons import Ui_PasswordWindow
+from src.ui_elements.passwordbuttons import Ui_NumpadWindow
 
 
-class NumpadWidget(QDialog, Ui_PasswordWindow):
+class NumpadWidget(QDialog, Ui_NumpadWindow):
     """ Creates the Numpad screen. """
 
     def __init__(self, parent, le_to_write: QLineEdit, x_pos: int = 0, y_pos: int = 0, header_text: str = "Password", use_float=False):
