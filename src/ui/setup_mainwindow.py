@@ -233,7 +233,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         # Disable some of the Tabs (for the UI_PARTYMODE, no one can access the recipes)
         if cfg.UI_PARTYMODE:
-            self.tabWidget.setTabEnabled(2, False)
+            # self.tabWidget.setTabEnabled(1, False)
+            # self.tabWidget.setTabEnabled(2, False)
+            # self.tabWidget.setTabEnabled(3, False)
+            # also activate password click events
+            self.tabWidget.currentChanged.connect(self.handle_tab_bar_clicked)
 
         # Removes the elements not used depending on number of bottles in bottle tab
         # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
@@ -263,3 +267,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
             combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
+
+    def handle_tab_bar_clicked(self, index):
+        if index == 0:
+            return
+        print("Switched index:", index)
+        self.tabWidget.setCurrentIndex(0)
