@@ -151,7 +151,7 @@ class DisplayController(DialogHandler):
         """Hack to set tabs to full screen width, inheritance, change the with to approximately match full width"""
         total_width = mainscreen.frameGeometry().width()
         width = round(total_width / 4, 0) - 10
-        mainscreen.tabWidget.setStyleSheet(
+        mainscreen.tabWidget.setStyleSheet(  # type: ignore
             "QTabBar::tab {" +
             f"width: {width}px;" + "}"
         )
