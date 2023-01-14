@@ -118,7 +118,7 @@ class ConfigManager:
         # Dict of Format "configname": (type, List[CheckCallbacks]) for the single list elements
         # only needed if the above config type was defined as list type, rest is identical to top schema
         self.config_type_list: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
-            "PUMP_PINS": (int, []),
+            "PUMP_PINS": (int, [self._validate_pin_numbers]),
             "PUMP_VOLUMEFLOW": (int, [_build_number_limiter(1, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
         }
@@ -198,6 +198,16 @@ class ConfigManager:
             return MAX_SUPPORTED_BOTTLES
         return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
 
+    def _validate_pin_numbers(self, configname: str, data: int):
+        """Validates that the given pin numbers exists on the board"""
+        # RPI
+        rpi_allowed = list(range(0, 28))
+        allowed_pins = []
+        if self.MAKER_BOARD == "RPI":
+            allowed_pins = rpi_allowed
+        if data not in allowed_pins:
+            raise ConfigError(f"{configname} must be one of the values: {allowed_pins}")
+
 
 def _validate_list_length(configlist: List[Any], configname: str, min_len: int):
     """Checks if the list is at least a given size"""
@@ -249,7 +259,8 @@ def version_callback(value: bool):
     """Returns the version of the program"""
     if value:
         typer.echo(f"{PROJECT_NAME} Version {__version__}. Created by Andre Wohnsland.")
-        typer.echo(r"For more information visit https://github.com/AndreWohnsland/CocktailBerry.")
+        typer.echo(r"For more information visit the docs: https://cocktailberry.readthedocs.io")
+        typer.echo(r"Or the GitHub: https://github.com/AndreWohnsland/CocktailBerry.")
         raise typer.Exit()
 
 
