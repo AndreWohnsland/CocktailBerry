@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>481</height>
+    <height>625</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -63,7 +63,7 @@
       <property name="cssClass" stdset="0">
        <string>bold</string>
       </property>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tab_maker">
        <attribute name="title">
         <string>Maker</string>
        </attribute>
@@ -951,7 +951,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="tab_ingredients">
        <attribute name="title">
         <string>Zutaten</string>
        </attribute>
@@ -1478,7 +1478,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_3">
+      <widget class="QWidget" name="tab_recipes">
        <attribute name="title">
         <string>Rezepte</string>
        </attribute>
@@ -2345,7 +2345,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_4">
+      <widget class="QWidget" name="tab_bottles">
        <attribute name="title">
         <string>Belegung</string>
        </attribute>
