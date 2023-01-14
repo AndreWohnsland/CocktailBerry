@@ -289,6 +289,7 @@ ui:
 
   ##### PASSWORD WINDOW #####
   # all values for password window
+  # TODO: RENAMING
   password_window:
     password:
       en: 'Enter password!'
@@ -334,3 +335,10 @@ ui:
     header:
       en: 'Select Date and Time'
       de: 'Datum und Zeit bestimmen'
+
+  ##### DATE PICKER WINDOW #####
+  # all values for password dialog window
+  password_dialog:
+    header:
+      en: 'Enter Password'
+      de: 'Passwort eingeben:'
