@@ -1,3 +1,6 @@
+# otherwise circular import :(
+# pylint: disable=import-outside-toplevel
+
 from pathlib import Path
 from typing import Dict, List, Optional
 import yaml
@@ -32,13 +35,11 @@ class DialogHandler():
 
     def standard_box(self, message: str, title: str = "", use_ok=False):
         """ The default messagebox for the Maker. Uses a Custom QDialog with Close-Button """
-        # otherwise circular import :(
-        # pylint: disable=import-outside-toplevel
         from src.ui.setup_custom_dialog import CustomDialog
         if not title:
             title = self.__choose_language("box_title")
-        fillstring = "-" * 70
-        fancy_message = f"{fillstring}\n{message}\n{fillstring}"
+        fill_string = "-" * 70
+        fancy_message = f"{fill_string}\n{message}\n{fill_string}"
         messagebox = CustomDialog(fancy_message, title, self.icon_path, use_ok)
         messagebox.exec_()
 
@@ -51,12 +52,20 @@ class DialogHandler():
         yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)
         msg_box.addButton(no_text, QMessageBox.NoRole)
         style_sheet = str(DIRPATH / "ui" / "styles" / f"{cfg.MAKER_THEME}.css")
-        with open(style_sheet, "r", encoding="utf-8") as filehandler:
-            msg_box.setStyleSheet(filehandler.read())
+        with open(style_sheet, "r", encoding="utf-8") as file_handler:
+            msg_box.setStyleSheet(file_handler.read())
         msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         msg_box.move(50, 50)
         msg_box.exec_()
         if msg_box.clickedButton() == yes_button:
+            return True
+        return False
+
+    def password_prompt(self):
+        """Opens a password prompt, return if successful entered password"""
+        from src.ui.setup_password_dialog import PasswordDialog
+        password_dialog = PasswordDialog()
+        if password_dialog.exec_():
             return True
         return False
 
