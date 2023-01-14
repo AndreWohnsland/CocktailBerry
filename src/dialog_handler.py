@@ -412,5 +412,10 @@ class UiLanguage():
         window = "datepicker"
         w.header.setText(self.__choose_language("header", window))
 
+    def adjust_password_window(self, w):
+        """Translate all the labels from the password window"""
+        window = "password_dialog"
+        w.header.setText(self.__choose_language("header", window))
+
 
 UI_LANGUAGE = UiLanguage()
