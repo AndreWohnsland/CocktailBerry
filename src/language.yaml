@@ -58,7 +58,7 @@ dialog:
   cocktail_ready_add:
     en: 'Also add:'
     de: 'Noch hinzufügen:'
-  enter_cocktailname:
+  enter_cocktail_name:
     en: 'Please enter cocktail name!'
     de: 'Bitte Cocktail Namen eingeben!'
   recipe_deleted:
@@ -97,7 +97,7 @@ dialog:
   needs_to_be_int_specific:
     en: '{value} needs to be a number!'
     de: '{value} muss eine ganze Zahl sein!'
-  alcohollevel_max_limit:
+  alcohol_level_max_limit:
     en: 'Alcohol level can not exceed 100 percent!'
     de: 'Alkoholgehalt kann nicht größer als 100 Prozent sein!'
   update_available:

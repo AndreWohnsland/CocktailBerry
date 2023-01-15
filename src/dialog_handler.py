@@ -150,9 +150,9 @@ class DialogHandler():
             full_comment = f"\n\n{header_comment}{comment}"
         self.__output_language_dialog("cocktail_ready", full_comment=full_comment)
 
-    def say_enter_cocktailname(self):
+    def say_enter_cocktail_name(self):
         """Informs user that no cocktail name was supplied"""
-        self.__output_language_dialog("enter_cocktailname")
+        self.__output_language_dialog("enter_cocktail_name")
 
     def say_recipe_deleted(self, recipe_name: str):
         """Informs user that the recipe was deleted"""
@@ -208,7 +208,7 @@ class DialogHandler():
 
     def say_alcohol_level_max_limit(self):
         """Informs user that the alcohol level can not be greater than 100"""
-        self.__output_language_dialog("alcohollevel_max_limit")
+        self.__output_language_dialog("alcohol_level_max_limit")
 
     def say_wrong_config(self, error: str):
         """Informs the user that the config is wrong with the error message."""
@@ -377,16 +377,16 @@ class UiLanguage():
         window = "team_window"
         w.LHeader.setText(self.__choose_language("header", window))
 
-    def generate_password_header(self, headertype: Literal['password', 'amount', 'alcohol'] = "password") -> str:
+    def generate_password_header(self, header_type: Literal['password', 'amount', 'alcohol'] = "password") -> str:
         """Selects the header of the password window.
-        headertype: 'password', 'amount', 'alcohol'
+        header_type: 'password', 'amount', 'alcohol'
         """
         window = "password_window"
-        if headertype == "password":
+        if header_type == "password":
             return self.__choose_language("password", window)
-        if headertype == "amount":
+        if header_type == "amount":
             return self.__choose_language("amount", window)
-        if headertype == "alcohol":
+        if header_type == "alcohol":
             return self.__choose_language("alcohol", window)
         raise ValueError("Currently not possible")
 
