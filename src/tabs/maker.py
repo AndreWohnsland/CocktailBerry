@@ -91,7 +91,9 @@ def prepare_cocktail(w):
     error = cocktail.enough_fill_level()
     if error is not None:
         DP_CONTROLLER.say_not_enough_ingredient_volume(*error)
-        DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
+        # Only switch tabs if they are not locked!
+        if not cfg.UI_PARTYMODE:
+            DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
         return
 
     print(f"Preparing {cocktail_volume} ml {display_name}")
