@@ -209,7 +209,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 lambda: maker.update_shown_recipe(self, False)
             ))
         self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
-        self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients(self))
+        self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients())
         self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes())
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
