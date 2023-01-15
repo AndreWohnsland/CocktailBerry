@@ -36,7 +36,7 @@ class HandaddWidget(QDialog, Ui_handadds):
         self.PBEintragen.clicked.connect(self._enter_clicked)
 
         self.lineedit_hand = [getattr(self, f"LEHandadd{x}") for x in range(1, 6)]
-        msg = UI_LANGUAGE.generate_password_header("amount")
+        msg = UI_LANGUAGE.generate_numpad_header("amount")
         for lineedit in self.lineedit_hand:
             lineedit.clicked.connect(lambda o=lineedit: self.mainscreen.open_numpad(o, 400, 50, msg))
             lineedit.setValidator(QIntValidator(0, 300))

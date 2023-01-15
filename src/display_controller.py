@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Literal, Optional, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar, QListWidgetItem
@@ -96,26 +96,6 @@ class DisplayController(DialogHandler):
         volume = int(w.LAmount.text())
         return ingredient_name, volume
 
-    def _check_password(self, lineedit: QLineEdit) -> bool:
-        """Compares the given lineedit to the master password"""
-        password = lineedit.text()
-        lineedit.setText("")
-        if password == cfg.UI_MASTERPASSWORD:
-            return True
-        return False
-
-    def check_recipe_password(self, w: Ui_MainWindow):
-        """Checks if the password in the recipe window is right"""
-        return self._check_password(w.LEpw)
-
-    def check_bottles_password(self, w: Ui_MainWindow):
-        """Checks if the password in the bottle window is right"""
-        return self._check_password(w.LECleanMachine)
-
-    def check_ingredient_password(self, w: Ui_MainWindow):
-        """Checks if the password in the ingredient window is right"""
-        return self._check_password(w.LEpw2)
-
     def _lineedit_is_missing(self, lineedit_list: List[QLineEdit]) -> bool:
         """Checks if a lineedit is empty"""
         for lineedit in lineedit_list:
@@ -171,13 +151,13 @@ class DisplayController(DialogHandler):
         """Hack to set tabs to full screen width, inheritance, change the with to approximately match full width"""
         total_width = mainscreen.frameGeometry().width()
         width = round(total_width / 4, 0) - 10
-        mainscreen.tabWidget.setStyleSheet(
+        mainscreen.tabWidget.setStyleSheet(  # type: ignore
             "QTabBar::tab {" +
             f"width: {width}px;" + "}"
         )
 
     # TabWidget
-    def set_tabwidget_tab(self, w: Ui_MainWindow, tab: str):
+    def set_tabwidget_tab(self, w: Ui_MainWindow, tab: Literal["maker", 'ingredients', 'recipes', 'bottles']):
         """Sets the tabwidget to the given tab.
         tab: ['maker', 'ingredients', 'recipes', 'bottles']
         """

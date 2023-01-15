@@ -1,16 +1,11 @@
 import platform
 import os
-from typing import Tuple
+from typing import Tuple, Literal
 from dataclasses import dataclass
 import http.client as httplib
 
 from src.logger_handler import LoggerHandler
 
-# Grace period, will be switched once Python 3.8+ is mandatory
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
 
 _logger = LoggerHandler("utils")
 

@@ -1,4 +1,4 @@
-__version__ = "1.12.1"
+__version__ = "1.12.2"
 PROJECT_NAME = "CocktailBerry"
 MAX_SUPPORTED_BOTTLES = 16
 SUPPORTED_LANGUAGES = ["en", "de"]

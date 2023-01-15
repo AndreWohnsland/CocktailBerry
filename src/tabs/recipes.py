@@ -100,7 +100,7 @@ def enter_recipe(w, new_recipe: bool):
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, virgin, comment = recipe_input
     if not recipe_name:
-        DP_CONTROLLER.say_enter_cocktailname()
+        DP_CONTROLLER.say_enter_cocktail_name()
         return
     if not new_recipe and not selected_name:
         DP_CONTROLLER.say_no_recipe_selected()
@@ -178,12 +178,11 @@ def load_selected_recipe_data(w):
 @logerror
 def delete_recipe(w):
     """ Deletes the selected recipe, requires the Password """
-    if not DP_CONTROLLER.check_recipe_password(w):
-        DP_CONTROLLER.say_wrong_password()
-        return
     _, recipe_name, *_ = DP_CONTROLLER.get_recipe_field_data(w)
     if not recipe_name:
         DP_CONTROLLER.say_no_recipe_selected()
+        return
+    if not DP_CONTROLLER.password_prompt():
         return
 
     DB_COMMANDER.delete_recipe(recipe_name)

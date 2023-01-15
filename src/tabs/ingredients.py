@@ -112,12 +112,11 @@ def load_ingredients(w):
 def delete_ingredient(w):
     """ Deletes an ingredient out of the DB if its not needed in any recipe."""
     _, _, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
-    if not DP_CONTROLLER.check_ingredient_password(w):
-        DP_CONTROLLER.say_wrong_password()
-        return
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(list_widget)
     if not selected_ingredient:
         DP_CONTROLLER.say_no_ingredient_selected()
+        return
+    if not DP_CONTROLLER.password_prompt():
         return
 
     # Check if still used at a bottle or within a recipe

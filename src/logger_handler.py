@@ -1,12 +1,7 @@
 import logging
 from pathlib import Path
-from typing import Union
+from typing import Union, Literal
 
-# Grace period, will be switched once Python 3.8+ is mandatory
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
 
 _DIRPATH = Path(__file__).parent.absolute()
 _AcceptedLogLevels = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]

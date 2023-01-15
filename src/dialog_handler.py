@@ -1,15 +1,13 @@
+# otherwise circular import :(
+# pylint: disable=import-outside-toplevel
+
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Literal
 import yaml
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget
 from PyQt5.QtCore import Qt
 from src.config_manager import CONFIG as cfg
 
-# Grace period, will be switched once Python 3.8+ is mandatory
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
 
 DIRPATH = Path(__file__).parent.absolute()
 LANGUAGE_FILE = DIRPATH / "language.yaml"
@@ -32,13 +30,11 @@ class DialogHandler():
 
     def standard_box(self, message: str, title: str = "", use_ok=False):
         """ The default messagebox for the Maker. Uses a Custom QDialog with Close-Button """
-        # otherwise circular import :(
-        # pylint: disable=import-outside-toplevel
         from src.ui.setup_custom_dialog import CustomDialog
         if not title:
             title = self.__choose_language("box_title")
-        fillstring = "-" * 70
-        fancy_message = f"{fillstring}\n{message}\n{fillstring}"
+        fill_string = "-" * 70
+        fancy_message = f"{fill_string}\n{message}\n{fill_string}"
         messagebox = CustomDialog(fancy_message, title, self.icon_path, use_ok)
         messagebox.exec_()
 
@@ -48,15 +44,23 @@ class DialogHandler():
         msg_box.setWindowTitle(self.__choose_language("confirmation_required"))
         yes_text = self.__choose_language("yes_button")
         no_text = self.__choose_language("no_button")
-        yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)
-        msg_box.addButton(no_text, QMessageBox.NoRole)
+        yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)  # type: ignore
+        msg_box.addButton(no_text, QMessageBox.NoRole)  # type: ignore
         style_sheet = str(DIRPATH / "ui" / "styles" / f"{cfg.MAKER_THEME}.css")
-        with open(style_sheet, "r", encoding="utf-8") as filehandler:
-            msg_box.setStyleSheet(filehandler.read())
+        with open(style_sheet, "r", encoding="utf-8") as file_handler:
+            msg_box.setStyleSheet(file_handler.read())
         msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         msg_box.move(50, 50)
         msg_box.exec_()
         if msg_box.clickedButton() == yes_button:
+            return True
+        return False
+
+    def password_prompt(self):
+        """Opens a password prompt, return if successful entered password"""
+        from src.ui.setup_password_dialog import PasswordDialog
+        password_dialog = PasswordDialog()
+        if password_dialog.exec_():
             return True
         return False
 
@@ -146,9 +150,9 @@ class DialogHandler():
             full_comment = f"\n\n{header_comment}{comment}"
         self.__output_language_dialog("cocktail_ready", full_comment=full_comment)
 
-    def say_enter_cocktailname(self):
+    def say_enter_cocktail_name(self):
         """Informs user that no cocktail name was supplied"""
-        self.__output_language_dialog("enter_cocktailname")
+        self.__output_language_dialog("enter_cocktail_name")
 
     def say_recipe_deleted(self, recipe_name: str):
         """Informs user that the recipe was deleted"""
@@ -204,7 +208,7 @@ class DialogHandler():
 
     def say_alcohol_level_max_limit(self):
         """Informs user that the alcohol level can not be greater than 100"""
-        self.__output_language_dialog("alcohollevel_max_limit")
+        self.__output_language_dialog("alcohol_level_max_limit")
 
     def say_wrong_config(self, error: str):
         """Informs the user that the config is wrong with the error message."""
@@ -373,16 +377,14 @@ class UiLanguage():
         window = "team_window"
         w.LHeader.setText(self.__choose_language("header", window))
 
-    def generate_password_header(self, headertype: Literal['password', 'amount', 'alcohol'] = "password") -> str:
+    def generate_numpad_header(self, header_type: Literal['amount', 'alcohol'] = "amount") -> str:
         """Selects the header of the password window.
-        headertype: 'password', 'amount', 'alcohol'
+        header_type: 'password', 'amount', 'alcohol'
         """
-        window = "password_window"
-        if headertype == "password":
-            return self.__choose_language("password", window)
-        if headertype == "amount":
+        window = "numpad_window"
+        if header_type == "amount":
             return self.__choose_language("amount", window)
-        if headertype == "alcohol":
+        if header_type == "alcohol":
             return self.__choose_language("alcohol", window)
         raise ValueError("Currently not possible")
 
@@ -411,6 +413,13 @@ class UiLanguage():
         """Translate all the labels from the datepicker window"""
         window = "datepicker"
         w.header.setText(self.__choose_language("header", window))
+
+    def adjust_password_window(self, w):
+        """Translate all the labels from the password window"""
+        window = "password_dialog"
+        w.header.setText(self.__choose_language("header", window))
+        w.cancel_button.setText(self.__choose_language("cancel_button"))
+        w.enter_button.setText(self.__choose_language("ok_button"))
 
 
 UI_LANGUAGE = UiLanguage()
