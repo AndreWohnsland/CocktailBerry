@@ -161,7 +161,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """Links the buttons and lineedits to the other ui elements"""
         self.LECocktail.clicked.connect(lambda: self.open_keyboard(self.LECocktail))
         self.option_button.clicked.connect(self.open_option_window)
-        alcohol = UI_LANGUAGE.generate_password_header("alcohol")
+        alcohol = UI_LANGUAGE.generate_numpad_header("alcohol")
         self.LEGehaltRezept.clicked.connect(
             lambda: self.open_numpad(self.LEGehaltRezept, 50, 50, alcohol)
         )
@@ -169,7 +169,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEKommentar.clicked.connect(self.open_handadd_window)
         self.PBAvailable.clicked.connect(self.open_available_window)
         # connects all the Lineedits from the Recipe amount and gives them the validator
-        amount = UI_LANGUAGE.generate_password_header("amount")
+        amount = UI_LANGUAGE.generate_numpad_header("amount")
         for obj in DP_CONTROLLER.get_lineedits_recipe(self):
             obj.clicked.connect(lambda o=obj: self.open_numpad(o, 50, 50, amount))  # type: ignore
             obj.setValidator(QIntValidator(0, 300))

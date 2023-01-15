@@ -287,13 +287,9 @@ ui:
       en: 'Select your Team'
       de: 'Team auswählen'
 
-  ##### PASSWORD WINDOW #####
+  ##### numpad WINDOW #####
   # all values for password window
-  # TODO: RENAMING
-  password_window:
-    password:
-      en: 'Enter password!'
-      de: 'Passwort eingeben!'
+  numpad_window:
     amount:
       en: 'Enter amount!'
       de: 'Menge eingeben!'

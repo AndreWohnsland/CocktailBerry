@@ -377,13 +377,11 @@ class UiLanguage():
         window = "team_window"
         w.LHeader.setText(self.__choose_language("header", window))
 
-    def generate_password_header(self, header_type: Literal['password', 'amount', 'alcohol'] = "password") -> str:
+    def generate_numpad_header(self, header_type: Literal['amount', 'alcohol'] = "amount") -> str:
         """Selects the header of the password window.
         header_type: 'password', 'amount', 'alcohol'
         """
-        window = "password_window"
-        if header_type == "password":
-            return self.__choose_language("password", window)
+        window = "numpad_window"
         if header_type == "amount":
             return self.__choose_language("amount", window)
         if header_type == "alcohol":
