@@ -2,17 +2,12 @@
 # pylint: disable=import-outside-toplevel
 
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Literal
 import yaml
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget
 from PyQt5.QtCore import Qt
 from src.config_manager import CONFIG as cfg
 
-# Grace period, will be switched once Python 3.8+ is mandatory
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
 
 DIRPATH = Path(__file__).parent.absolute()
 LANGUAGE_FILE = DIRPATH / "language.yaml"
