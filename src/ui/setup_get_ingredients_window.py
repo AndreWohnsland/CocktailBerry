@@ -46,7 +46,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.close()
 
     def _spend_clicked(self):
-        """ Calls the progressbar window and spends the given amount of the ingredient. """
+        """ Calls the progress bar window and spends the given amount of the ingredient. """
         ingredient_name, volume = DP_CONTROLLER.get_ingredient_window_data(self)
         bottle, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
 
