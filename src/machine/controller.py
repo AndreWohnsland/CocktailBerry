@@ -142,7 +142,9 @@ class MachineController():
     def _clean_print(self, t_cleaned: float, interval=0.5):
         """Progress print for cleaning"""
         if t_cleaned % interval == 0:
-            print(f"Cleaning, {t_cleaned:.1f}/{cfg.MAKER_CLEAN_TIME:.1f} s {'.' * int(t_cleaned*2)}", end="\r")
+            print(
+                f"Cleaning, {t_cleaned:.1f}/{cfg.MAKER_CLEAN_TIME:.1f} s {'.' * int(t_cleaned*2)}", end="\r"
+            )  # type: ignore
 
     def _header_print(self, msg: str):
         """Formats the message with dashes around"""
