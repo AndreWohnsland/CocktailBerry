@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Literal, Optional, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar, QListWidgetItem
@@ -157,7 +157,7 @@ class DisplayController(DialogHandler):
         )
 
     # TabWidget
-    def set_tabwidget_tab(self, w: Ui_MainWindow, tab: str):
+    def set_tabwidget_tab(self, w: Ui_MainWindow, tab: Literal["maker", 'ingredients', 'recipes', 'bottles']):
         """Sets the tabwidget to the given tab.
         tab: ['maker', 'ingredients', 'recipes', 'bottles']
         """
