@@ -44,6 +44,7 @@ class Ui_PasswordDialog(object):
         font.setPointSize(36)
         self.password_field.setFont(font)
         self.password_field.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.password_field.setAlignment(QtCore.Qt.AlignCenter)
         self.password_field.setObjectName("password_field")
         self.verticalLayout.addWidget(self.password_field)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
