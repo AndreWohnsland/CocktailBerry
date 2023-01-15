@@ -418,6 +418,8 @@ class UiLanguage():
         """Translate all the labels from the password window"""
         window = "password_dialog"
         w.header.setText(self.__choose_language("header", window))
+        w.cancel_button.setText(self.__choose_language("cancel_button"))
+        w.enter_button.setText(self.__choose_language("ok_button"))
 
 
 UI_LANGUAGE = UiLanguage()
