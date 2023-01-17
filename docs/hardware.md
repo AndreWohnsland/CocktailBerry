@@ -27,3 +27,19 @@ The following components were used within the showcase for the Teams Dashboard:
 - 1x [Display Casing](http://www.amazon.de/dp/B01GQFUWIC/)
 - 1x Micro SD-Card (16 Gb is enough)
 - 1x 5V Power supply for the Raspberry Pi
+
+## Possible Basic Circuit
+
+The following picture shows a possible circuit for CocktailBerry.
+The Raspberry Pi will provide too litte power / current to operate the pumps.
+You have to use two power circuits, one for powering the Raspberry Pi and one for the pumps.
+The pump circuit will be most likely 12 or 24 V.
+You can either use two different power supplies or use a step down converter for the RPi.
+The RPi will control a relay, mosfet or another electrical switch over the GPIO output.
+
+<img src="../pictures/circuit.jpg" alt="circuit"/>
+
+You can use any of the GPIOs of the RPi, the connected pump to that pin can be defined in the config.
+The switch will then turn the pump on or of over the RPi.
+How you will build your CocktailBerry is still completely up to you.
+The only restriction by the software is that the GPIO pins are turned on / off over the RPi.
