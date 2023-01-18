@@ -355,6 +355,8 @@ class UiLanguage():
         # w.LHeader.setText(self.__choose_language(window["header_label"], cocktail_type=cocktail_type))
         if cocktail_type.lower() == "cleaning":
             cocktail_type = self.__choose_language("cleaning_label", window)
+        elif cocktail_type.lower() == "renew":
+            cocktail_type = self.__choose_language("bottle_renew_label", window)
         w.LHeader.setText(cocktail_type)
 
     def adjust_bonusingredient_screen(self, w):

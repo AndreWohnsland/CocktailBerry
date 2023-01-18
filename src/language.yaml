@@ -262,6 +262,9 @@ ui:
     cleaning_label:
       en: 'Cleaning'
       de: 'Reinigen'
+    bottle_renew_label:
+      en: 'Renewing Bottles'
+      de: 'Flaschen erneuern'
 
   ##### BONUSINGREDIENT SCREEN #####
   # all values for bonusingredient screen
