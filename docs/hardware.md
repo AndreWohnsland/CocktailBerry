@@ -43,3 +43,12 @@ You can use any of the GPIOs of the RPi, the connected pump to that pin can be d
 The switch will then turn the pump on or of over the RPi.
 How you will build your CocktailBerry is still completely up to you.
 The only restriction by the software is that the GPIO pins are turned on / off over the RPi.
+
+## Custom PCBs or STLs
+
+I am currently working on a custom PCB for even easier connection and cable management.
+This topic is quite new to me, so if you are interested in helping [reach out to me](mailto:cocktailmakeraw@gmail.com).
+With your help, we can make this project even better.
+
+When the PCB is in an acceptable state, I will also work on a new design fitting for that PCB.
+Somewhen in the future, you may find the according files here at this place, or a link to its origin.
