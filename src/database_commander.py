@@ -219,14 +219,13 @@ class DatabaseCommander:
             search_tuple = (ingredient, bottle)
             self.handler.query_database(query, search_tuple)
 
-    def set_bottle_volumelevel_to_max(self, boolean_list: List[bool]):
+    def set_bottle_volumelevel_to_max(self, bottle_number_list: List[int]):
         """Sets the each i-th bottle to max level if arg is true"""
         query = """UPDATE OR IGNORE Ingredients
                 Set Fill_level = Volume
                 WHERE ID = (SELECT ID FROM Bottles WHERE Bottle = ?)"""
-        for bottle, set_to_max in enumerate(boolean_list, start=1):
-            if set_to_max:
-                self.handler.query_database(query, (bottle,))
+        for bottle in bottle_number_list:
+            self.handler.query_database(query, (bottle,))
 
     def set_ingredient_data(self, ingredient_name: str, alcohol_level: int, volume: int, new_level: int, only_hand: bool, ingredient_id: int):
         """Updates the given ingredient id to new properties"""
