@@ -1,17 +1,23 @@
 # Troubleshooting
 
-If you run into any problems, check here first for a solution. If you don't find any, you can [open a ticket](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose)
+If you run into any problems, check here first for a solution.
+Please ensure that you are running the latest 64 bit Raspberry Pi OS and CocktailBerry version.
+If you don't find any solution here, you can [open a ticket](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose)
 
 ## Problems while Running the Program
 
-All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled, and an info message should be displayed.\
-If in any case any unexpected behavior occurs, feel free to open an issue. Usually, a part of the actions are also logged into the log files. When submitting an error, please also provide the `logs/debuglog.log` file.
+All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled, and an info message should be displayed.
+If in any case any unexpected behavior occurs, feel free to open an issue.
+Usually, a part of the actions are also logged into the log files.
+When submitting an error, please also provide the `logs/debuglog.log` file.
 
 ## Icons are Missing
 
-If some of the icons (check / cross on the checkbox, up / down arrow on the list view) are missing, make sure you run the script within the folder (e.g. `python runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`). This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
+If some of the icons (check / cross on the checkbox, up / down arrow on the list view) are missing, make sure you run the script within the folder (e.g. `python runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`).
+This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
 
-Another reason may be, if you are using a custom style sheet with colors using rgb. If thats the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
+Another reason may be, if you are using a custom style sheet with colors using rgb.
+If thats the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
 
 ## Changing Volume Unit
 
@@ -33,9 +39,23 @@ Please take a look into the production_log file, if a backup was created.
 Otherwise, you may up ending using an older one.
 A backup usually only done in migration steps which are optional, like adding new recipes.
 
+## Using a High Resolution Screen
+
+The UI of the program is somewhat dynamic, but Qt got some limitations.
+To ensure that the UI looks nice and like in the screenshots, a resolution not higher than ~1200px on the long side (width) is recommended.
+If you happen to use a high res screen, there is a easy fix, tough.
+For example an with a 2560x1600 screen, I would recommend divide the value by `x` (for example x=2).
+In the CocktailBerry config set width to 2560/2 = 1280 and height to 1600/2 = 800.
+In case you used the provided setup change the first line in the ~/launcher.sh file `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case).
+This will use the lower dimensions for the application but scale it up by the factor of two so it occupies the whole screen.
+If you use your own startup script or similar, just add the export line with an according value to it, or set the environment variable in any other desired way.
+
+
 ## Touchscreen Calibration
 
-Sometimes you need to calibrate your touchscreen, otherwise the touched points and cursor are out of sync. First you need to get and compile xinput. After that, you can execute the program and select the crosses on the touchscreen according to the shown order.
+Sometimes you need to calibrate your touchscreen, otherwise the touched points and cursor are out of sync.
+First you need to get and compile xinput.
+After that, you can execute the program and select the crosses on the touchscreen according to the shown order.
 
 ```bash
 wget http://github.com/downloads/tias/xinput_calibrator/xinput_calibrator-0.7.5.tar.gz
