@@ -68,6 +68,8 @@ class ConfigManager:
     MAKER_THEME = "default"
     # Flag to check if internet is up at start
     MAKER_CHECK_INTERNET = True
+    # Volume to pump up if a bottle gets changed
+    MAKER_TUBE_VOLUME = 0
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
@@ -107,6 +109,7 @@ class ConfigManager:
             "MAKER_BOARD": (BoardChoose, [_build_support_checker(SUPPORTED_BOARDS)]),
             "MAKER_THEME": (ThemeChoose, [_build_support_checker(SUPPORTED_THEMES)]),
             "MAKER_CHECK_INTERNET": (bool, []),
+            "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
