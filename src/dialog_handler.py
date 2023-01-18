@@ -45,7 +45,9 @@ class DialogHandler():
         yes_text = self.__choose_language("yes_button")
         no_text = self.__choose_language("no_button")
         yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)  # type: ignore
-        msg_box.addButton(no_text, QMessageBox.NoRole)  # type: ignore
+        yes_button.setProperty("cssClass", "btn-inverted")
+        no_button = msg_box.addButton(no_text, QMessageBox.NoRole)  # type: ignore
+        no_button.setProperty("cssClass", "btn-inverted")
         style_sheet = str(DIRPATH / "ui" / "styles" / f"{cfg.MAKER_THEME}.css")
         with open(style_sheet, "r", encoding="utf-8") as file_handler:
             msg_box.setStyleSheet(file_handler.read())
