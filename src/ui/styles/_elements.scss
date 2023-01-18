@@ -30,6 +30,14 @@ $default-element-border: $element-border solid $border;
   padding-right: 10px;
 }
 
+*[cssClass~='center'] {
+  text-align: center;
+}
+
+*[cssClass~='right'] {
+  text-align: right;
+}
+
 // specific classes
 #informationLabel {
   padding: 5px 25px 5px 25px;
