@@ -17,7 +17,7 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 | Value Name              |    Type     | Description                                                                          | Optional |
 | :---------------------- | :---------: | :----------------------------------------------------------------------------------- | :------: |
 | `UI_DEVENVIRONMENT`     |   _bool_    | Boolean flag to enable some development features                                     |    ❌     |
-| `UI_PARTYMODE`          |   _bool_    | En- or disables the recipe tab (to prevent user interaction)                         |    ❌     |
+| `UI_PARTYMODE`          |   _bool_    | En- or disables other tabs than maker tab (to prevent user interaction)              |    ❌     |
 | `UI_MASTERPASSWORD`     |    _str_    | String for password, Use numbers for numpad like '1234'                              |    ❌     |
 | `UI_LANGUAGE`           |    _str_    | 2 char code for the language, see [supported languages](languages.md)                |    ❌     |
 | `UI_WIDTH`              |    _int_    | Desired interface width, default is 800                                              |    ❌     |
@@ -32,7 +32,7 @@ These values are stored under the `custom_config.yaml` file. This file will be c
 | `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                                   |    ❌     |
 | `MAKER_SLEEP_TIME`      |   _float_   | Interval between each UI refresh while generating a cocktail                         |    ❌     |
 | `MAKER_CHECK_INTERNET`  |   _bool_    | If to do a connection check at start and option for time adjustment window           |    ❌     |
-| `MAKER_TUBE_VOLUME`     |    _int_    | Volume to pump up when bottle is set to new, use mean if different values            |    ❌     |
+| `MAKER_TUBE_VOLUME`     |    _int_    | Volume in ml/s to pump up when bottle is set to new, use mean if different values    |    ❌     |
 | `MICROSERVICE_ACTIVE`   |   _bool_    | Boolean flag to post to microservice set up by docker                                |    ✔️     |
 | `MICROSERVICE_BASE_URL` |    _str_    | Base URL for microservice (default: http://127.0.0.1:5000)                           |    ✔️     |
 | `TEAMS_ACTIVE`          |   _bool_    | Boolean flag to use teams feature                                                    |    ✔️     |
