@@ -14,8 +14,7 @@ nav:
   - Supported Languages: languages.md
   - Advanced Topics: advanced.md
   - Troubleshooting: troubleshooting.md
-  - FAQ: faq.md
-  - Development: developement.md
+  - Developement: developement.md
 markdown_extensions:
   - toc:
       permalink: '#'
