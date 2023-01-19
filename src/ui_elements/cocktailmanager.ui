@@ -988,6 +988,32 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_6">
+          <item row="10" column="0">
+           <widget class="QPushButton" name="PBZdelete">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>del</string>
+            </property>
+           </widget>
+          </item>
           <item row="9" column="0">
            <widget class="QPushButton" name="PBZclear">
             <property name="minimumSize">
@@ -1014,32 +1040,6 @@
             </property>
             <property name="text">
              <string>clear</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QPushButton" name="PBZdelete">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>del</string>
             </property>
            </widget>
           </item>
@@ -1152,32 +1152,77 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0" colspan="3">
-           <widget class="QPushButton" name="PBZeinzelnd">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
+          <item row="2" column="0" colspan="3">
+           <widget class="QLabel" name="LAlcoholLevel">
             <property name="maximumSize">
              <size>
-              <width>600</width>
-              <height>200</height>
+              <width>16777215</width>
+              <height>25</height>
              </size>
             </property>
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
+              <pointsize>14</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
              </font>
             </property>
             <property name="text">
-             <string>Einzelne Zutat ausgeben</string>
+             <string>Alkoholgehalt</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
-             <string>btn-inverted</string>
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="ClickableLineEdit" name="LEGehaltRezept">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary bold</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="ClickableLineEdit" name="LEZutatRezept">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary bold</string>
             </property>
            </widget>
           </item>
@@ -1243,80 +1288,6 @@
              </spacer>
             </item>
            </layout>
-          </item>
-          <item row="3" column="0" colspan="3">
-           <widget class="ClickableLineEdit" name="LEGehaltRezept">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>100</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-             </font>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string>secondary bold</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="3">
-           <widget class="ClickableLineEdit" name="LEZutatRezept">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>100</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-             </font>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string>secondary bold</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="3">
-           <widget class="QLabel" name="LAlcoholLevel">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Alkoholgehalt</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string/>
-            </property>
-           </widget>
           </item>
           <item row="7" column="0" colspan="3">
            <spacer name="verticalSpacer_17">
@@ -1415,6 +1386,35 @@
             </property>
             <property name="text">
              <string>hinzufügen</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0" colspan="3">
+           <widget class="QPushButton" name="PBZeinzelnd">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>600</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Einzelne Zutat ausgeben</string>
             </property>
             <property name="cssClass" stdset="0">
              <string>btn-inverted</string>
@@ -2244,7 +2244,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-235</y>
              <width>741</width>
              <height>788</height>
             </rect>

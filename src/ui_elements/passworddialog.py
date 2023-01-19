@@ -191,7 +191,7 @@ class Ui_PasswordDialog(object):
         PasswordDialog.setWindowTitle(_translate("PasswordDialog", "~~ Enter Password ~~"))
         self.header.setText(_translate("PasswordDialog", "Enter Password:"))
         self.header.setProperty("cssClass", _translate("PasswordDialog", "neutral bold"))
-        self.password_field.setProperty("cssClass", _translate("PasswordDialog", "bold"))
+        self.password_field.setProperty("cssClass", _translate("PasswordDialog", "bold secondary"))
         self.PB2.setText(_translate("PasswordDialog", "2"))
         self.PB1.setText(_translate("PasswordDialog", "1"))
         self.PB0.setText(_translate("PasswordDialog", "0"))
