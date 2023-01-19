@@ -11,7 +11,9 @@
 
 [![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
-Welcome to the CocktailBerry documentation. Here you will find everything to get started! CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
+Welcome to the CocktailBerry documentation.
+Here you will find everything to get started!
+CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
 
 <div class="mid-flex">
   <a href="quickstart/" class="cta-btn primary-btn"> Quickstart </a>
@@ -32,9 +34,11 @@ CocktailBerry can do:
 - Supports up to 16 Bottles / Pumps
 - Option to serve cocktails without alcohol
 - Execute a cleaning program to get rid of remaining fluids
-- Export data for later data analysis, send data as mail to a receiver
+- Export data for later data analysis
 - Send cocktail production data to a given endpoint, for example a webhook
 - Keep track of cocktail count and volume from different teams for some fun competition
+- Select different themes to fit your liking
+- Switch between user interface languages
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
 
