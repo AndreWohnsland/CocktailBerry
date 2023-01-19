@@ -2,7 +2,9 @@
 
 Here you will find a list of commonly asked questions about the Software or Hardware.
 Please make sure to check here first, before asking similar questions.
-Also, you may find your solution under the [troubleshooting](troubleshooting.md) section, if it's not here.
+You may find your solution under the [troubleshooting](troubleshooting.md) section, if it's not here.
+Also, there is plenty information at the [setup section](setup.md).
+
 
 ## Hardware
 
@@ -81,6 +83,24 @@ If you want to have a look into the software, you can also install / run it on y
 There are different ways to auto start an application on the Raspberry Pi.
 The installer script automatically sets up a way, that the program starts after the system is booted.
 So after the installation, you just need to turn on your Pi!
+
+### What is the Available Button
+
+If you click the available button under ingredients, you get to another window, were you can select ingredients.
+On the right side (possible) are all known ingredients, currently not on the left side.
+You can put them to the left side (available) or vice versa with the arrow buttons.
+Available means, that this ingredient exists / stands besides the maker, but is not connected to a pump.
+If a recipe got an ingredient, which should be added via hand / the user later, the machine knows it exists.
+So CocktailBerry can accurately offer only recipes where both, machine and hand ingredients are there.
+
+A little tip here: If a ingredient is defined as a hand-add ingredient, but is connected to the maker, CocktailBerry is smart enough to use it and not prompt the user to add it.
+
+### What is the Password
+
+The default password is 1234.
+A password is at some steps used to prevent unwanted modification of the maker.
+Depending on your users, this might be more or less useful but a safety measure.
+You can change the password under the settings.
 
 ### Do I Need Docker
 
