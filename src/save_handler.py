@@ -47,8 +47,6 @@ class SaveHandler:
             csv_writer = csv.writer(writer_file, delimiter=",")
             for row in data_rows:
                 csv_writer.writerow(row)
-        with open(save_path, "rb") as read_file:
-            SERVICE_HANDLER.send_mail(full_file_name, read_file)
 
 
 SAVE_HANDLER = SaveHandler()
