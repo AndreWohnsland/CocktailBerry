@@ -13,7 +13,7 @@ These are the minimal tools needed to get started:
 The desktop version of Raspberry Pi OS is recommended, but if you just want to have a peak into the project, any OS having Python and Git will work just fine.
 The RPi is needed to control the Pumps in a real machine, but the program will work fine even without any physical machine.
 
-## Set Up
+## Install CocktailBerry
 
 After flashing the latest Raspberry Pi 64 bit OS, you can use the provided shell scripts to set everything automatically up on your Raspberry Pi.
 Or just install [the requirements](#installing-requirements), when you want to have a look into the program on your PC.

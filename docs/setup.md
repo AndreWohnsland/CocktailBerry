@@ -5,7 +5,7 @@ CocktailBerry will work after installing all requirements, but you can make your
 ## Adding new Recipes or Ingredients
 
 There are only limited ingredients and recipes. But you can add your own data to the program as well.
-This app uses a sqlite3 Database coupled to the UI.
+This app uses a sqlite3 database coupled to the UI.
 So, it's quite easy to implement new ingredients or even recipes.
 Just use the implemented UI for the procedure under the according tabs (**Ingredients** or **Recipes**).
 
@@ -61,13 +61,13 @@ Depending on your preferred use, these values can differ.
 
 The choice is up to you what you want to connect.
 See [here](#possible-ingredient-choice) for a possible ingredient setting.
-Select under `Bottles` your assigned ingredients for each pump over the dropdown boxes.
-In addition, you can define ingredients which are also there, but are not connected to the machine (under `Ingredients` >  _available_).
+Select under **Bottles** your assigned ingredients for each pump over the dropdown boxes.
+In addition, you can define ingredients which are also there, but are not connected to the machine (under **Ingredients** >  _available_).
 You can define ingredients in recipes (at _add self by hand_) which should be later added via hand, for example sticky ingredients.
 This can be ingredients, which would not be optimal for your pump, or are only very rarely used in cocktails.
 
 The program will then evaluate which recipe meets all requirements to only show the recipes where even the ingredients added via hand later are available.
-All possible recipes will be shown in the `Maker` Tab.
+All possible recipes will be shown in the **Maker** Tab.
 See also [faq](faq.md#what-is-the-available-button) for more information on this topic.
 
 ## Configuring the Pins or used Board
@@ -111,7 +111,7 @@ $$ \dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}} $$
 ## Cleaning the Machine
 
 CocktailBerry has a build in cleaning function for cleaning at the end of a party.
-You will find the feature at the option gear under the `Bottles` tab.
+You will find the feature at the option gear under the **Bottles** tab.
 CocktailBerry will then go to cleaning mode for the defined time within the config (default is 20 seconds).
 A message prompt will inform the user to provide enough water for the cleaning process.
 I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water.
@@ -155,5 +155,5 @@ The migrator will also do any necessary steps to adjust local files, like the da
 
 Since **version 1.9.0**, you can backup your local data (local database, config-file) to a desired folder or external device.
 You can later use this backup to restore the data, or recover the progress and recipes after doing a OS reinstall.
-Just go to the `Bottles` tab, click on the gear icon and enter your master password to get to the options window.
+Just go to the **Bottles** tab, click on the gear icon and enter your master password to get to the options window.
 There you will find both options for backup and restoring your data.
