@@ -988,38 +988,6 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="9" column="1">
-           <widget class="QPushButton" name="PBAvailable">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>440</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>verfügbar</string>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string>btn-inverted</string>
-            </property>
-           </widget>
-          </item>
           <item row="9" column="0">
            <widget class="QPushButton" name="PBZclear">
             <property name="minimumSize">
@@ -1046,35 +1014,6 @@
             </property>
             <property name="text">
              <string>clear</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="2">
-           <widget class="QPushButton" name="PBZnull">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>440</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>export</string>
             </property>
            </widget>
           </item>
@@ -1476,6 +1415,38 @@
             </property>
            </widget>
           </item>
+          <item row="9" column="1" colspan="2">
+           <widget class="QPushButton" name="PBAvailable">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>440</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>verfügbar</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -1545,29 +1516,6 @@
               </property>
               <property name="text">
                <string>Enable all</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="PBRnull">
-              <property name="maximumSize">
-               <size>
-                <width>220</width>
-                <height>100</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>16</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>export</string>
               </property>
              </widget>
             </item>
@@ -2349,7 +2297,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>741</width>
+             <width>621</width>
              <height>788</height>
             </rect>
            </property>

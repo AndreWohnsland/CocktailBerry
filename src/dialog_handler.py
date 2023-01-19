@@ -176,9 +176,9 @@ class DialogHandler():
         """Informs user that the recipe got no according ingredients"""
         self.__output_language_dialog("recipe_at_least_one_ingredient")
 
-    def say_all_data_exported(self):
+    def say_all_data_exported(self, file_path: str):
         """Informs user that all data have been exported"""
-        self.__output_language_dialog("all_data_exported")
+        self.__output_language_dialog("all_data_exported", file_path=file_path)
 
     def say_not_enough_ingredient_volume(self, ingredient_name: str, level: int, volume: int):
         """Informs user that the ingredient got not enough volume for cocktail"""
@@ -274,6 +274,11 @@ class DialogHandler():
     def ask_to_adjust_time(self):
         """Asks the user if he wants to adjust the time"""
         message = self.__choose_language("ask_adjust_time")
+        return self.user_okay(message)
+
+    def ask_to_export_data(self):
+        """Asks the user if he wants to export the data"""
+        message = self.__choose_language("ask_export_data")
         return self.user_okay(message)
 
 
@@ -402,6 +407,7 @@ class UiLanguage():
             (w.button_calibration, "calibration"),
             (w.button_reboot, "reboot"),
             (w.button_shutdown, "shutdown"),
+            (w.button_export, "export"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 
