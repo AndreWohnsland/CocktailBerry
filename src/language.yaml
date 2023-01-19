@@ -162,6 +162,12 @@ ui:
     enter_button:
       en: 'Enter'
       de: 'Eintragen'
+    change_button:
+      en: 'change'
+      de: 'ändern'
+    add_button:
+      en: 'add'
+      de: 'hinzufügen'
     close_button:
       en: 'Close'
       de: 'Schließen'

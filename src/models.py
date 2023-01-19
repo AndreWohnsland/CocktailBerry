@@ -75,13 +75,13 @@ class Cocktail():
             return False
         return True
 
-    def enough_fill_level(self):
+    def enough_fill_level(self) -> Union[None, tuple[str, int, int]]:
         """Checks if the needed volume is there
         Accepts if there is at least 80% of needed volume
         to be more efficient with the remainder volume in the bottle"""
         for ing in self.machineadds:
             if ing.amount * 0.8 > ing.fill_level:
-                return [ing.name, ing.fill_level, ing.amount]
+                return ing.name, ing.fill_level, ing.amount
         return None
 
     def scale_cocktail(self, amount: int, alcohol_factor: float):

@@ -183,16 +183,14 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """
         # First, connect all the push buttons with the Functions
-        self.PBZutathinzu.clicked.connect(lambda: ingredients.enter_ingredient(self))
-        self.PBRezepthinzu.clicked.connect(lambda: recipes.enter_recipe(self, True))
+        self.PBZutathinzu.clicked.connect(lambda: ingredients.handle_enter_ingredient(self))
+        self.PBRezepthinzu.clicked.connect(lambda: recipes.handle_enter_recipe(self))
         self.PBBelegung.clicked.connect(self.open_bottle_window)
         self.PBZeinzelnd.clicked.connect(self.open_ingredient_window)
         self.PBclear.clicked.connect(lambda: DP_CONTROLLER.clear_recipe_data_recipes(self, False))
-        self.PBRezeptaktualisieren.clicked.connect(lambda: recipes.enter_recipe(self, False))
         self.PBdelete.clicked.connect(lambda: recipes.delete_recipe(self))
         self.PBZdelete.clicked.connect(lambda: ingredients.delete_ingredient(self))
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
-        self.PBZaktualisieren.clicked.connect(lambda: ingredients.enter_ingredient(self, False))
         self.PBZubereiten_custom.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, 50))

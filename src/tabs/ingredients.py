@@ -12,20 +12,22 @@ from src.models import Ingredient
 
 
 @logerror
-def enter_ingredient(w, new_ingredient=True):
-    """ Insert the new ingredient into the DB, if all values are given and its name is not already in the DB.
-    Also can change the current selected ingredient (new_ingredient = False)
+def handle_enter_ingredient(w):
+    """ Insert or update the ingredient into the DB,
+    if all values are given and its name is not already in the DB.
     """
-    lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
-    valid_data = DP_CONTROLLER.validate_ingredient_data(list(lineedits))
-    if not valid_data:
+    if not DP_CONTROLLER.validate_ingredient_data(w):
         return
-    ingredient = DP_CONTROLLER.get_ingredient_data(list(lineedits), checkbox, list_widget)
+    ingredient = DP_CONTROLLER.get_ingredient_data(w)
+    _, _, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+
+    # it's a new ingredient if nothing from the lw is selected
+    new_ingredient = not bool(ingredient.selected)
 
     if new_ingredient:
-        successful = __add_new_ingredient(w, ingredient)
+        successful = _add_new_ingredient(w, ingredient)
     else:
-        successful = __change_existing_ingredient(w, list_widget, ingredient)
+        successful = _change_existing_ingredient(w, list_widget, ingredient)
     if not successful:
         return
 
@@ -36,7 +38,7 @@ def enter_ingredient(w, new_ingredient=True):
     DP_CONTROLLER.say_ingredient_added_or_changed(ingredient.name, new_ingredient, ingredient.selected)
 
 
-def __add_new_ingredient(w, ing: Ingredient):
+def _add_new_ingredient(w, ing: Ingredient):
     """Adds the ingredient into the database """
     existing_ingredient = DB_COMMANDER.get_ingredient(ing.name)
     if existing_ingredient:
@@ -51,7 +53,7 @@ def __add_new_ingredient(w, ing: Ingredient):
     return True
 
 
-def __change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
+def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
     """Changes the existing ingredient """
     if not ing.selected:
         DP_CONTROLLER.say_no_ingredient_selected()
@@ -146,6 +148,7 @@ def display_selected_ingredient(w):
     """ Search the DB entry for the ingredient and displays them """
     lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(list_widget)
+    DP_CONTROLLER.set_ingredient_add_label(w, selected_ingredient != "")
     if selected_ingredient:
         ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
         if not ingredient:
@@ -163,3 +166,4 @@ def clear_ingredient_information(w):
     DP_CONTROLLER.clean_multiple_lineedit(list(lineedits))
     DP_CONTROLLER.unselect_list_widget_items(list_widget)
     DP_CONTROLLER.set_checkbox_value(checkbox, False)
+    DP_CONTROLLER.set_ingredient_add_label(w, False)

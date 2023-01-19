@@ -305,6 +305,14 @@ class UiLanguage():
         """Returns cocktail header dummy"""
         return self.__choose_language("cocktail_dummy", "maker")
 
+    def get_add_text(self) -> str:
+        """Returns the add text"""
+        return self.__choose_language("add_button")
+
+    def get_change_text(self) -> str:
+        """Returns the add text"""
+        return self.__choose_language("change_button")
+
     def adjust_mainwindow(self, w):
         """Translates all needed elements of the main window (cocktail maker)"""
         window = "main_window"
@@ -322,14 +330,12 @@ class UiLanguage():
             (w.PBZubereiten_custom, "prepare_button"),
             (w.PBZeinzelnd, "single_ingredient_button"),
             (w.PBAvailable, "available_button"),
-            (w.PBZaktualisieren, "change_button"),
             (w.PBZutathinzu, "add_button"),
             (w.CHBHand, "handadd_check_label"),
             (w.LIngredient, "ingredient_label"),
             (w.LAlcoholLevel, "alcohol_level_label"),
             (w.LBottleVolume, "bottle_volume_label"),
             (w.LRHandAdd, "hand_add_label"),
-            (w.PBRezeptaktualisieren, "change_button"),
             (w.PBRezepthinzu, "add_button"),
             (w.PBBelegung, "change_button"),
             (w.PBFlanwenden, "renew_button"),

@@ -44,9 +44,10 @@ class DisplayController(DialogHandler):
             return user_data
         return list_widget.currentItem().text()
 
-    def get_ingredient_data(self, lineedit_list: List[QLineEdit], checkbox: QCheckBox, list_widget: QListWidget):
+    def get_ingredient_data(self, w: Ui_MainWindow):
         """Returns an Ingredient Object from the ingredient data fields"""
-        ingredient_name, alcohol_level, volume = self.get_lineedit_text(lineedit_list)
+        line_edits, checkbox, list_widget = self.get_ingredient_fields(w)
+        ingredient_name, alcohol_level, volume = self.get_lineedit_text(list(line_edits))
         hand_add = checkbox.isChecked()
         selected_ingredient = self.get_list_widget_selection(list_widget)
         return Ingredient(-1, ingredient_name, int(alcohol_level), int(volume), 0, hand_add, selected=selected_ingredient)
@@ -76,9 +77,11 @@ class DisplayController(DialogHandler):
         comment: str = w.LEKommentar.text()
         return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, virgin, comment
 
-    def validate_ingredient_data(self, lineedit_list: List[QLineEdit]) -> bool:
+    def validate_ingredient_data(self, w: Ui_MainWindow) -> bool:
         """Validate the data from the ingredient window"""
-        if self._lineedit_is_missing(lineedit_list):
+        line_edits, _, _ = self.get_ingredient_fields(w)
+        lineedit_list = line_edits
+        if self._lineedit_is_missing(list(lineedit_list)):
             self.say_some_value_missing()
             return False
         _, ingredient_percentage, ingredient_volume = lineedit_list
@@ -546,6 +549,21 @@ class DisplayController(DialogHandler):
             font.setWeight(50 + is_bold * 25)
             for label in labels:
                 label.setFont(font)
+
+    def set_ingredient_add_label(self, w: Ui_MainWindow, item_selected: bool):
+        """Changes the label of the ingredient button"""
+        self._choose_button_label(w.PBZutathinzu, item_selected)
+
+    def set_recipe_add_label(self, w: Ui_MainWindow, item_selected: bool):
+        """Changes the label of the ingredient button"""
+        self._choose_button_label(w.PBRezepthinzu, item_selected)
+
+    def _choose_button_label(self, button: QPushButton, item_selected: bool):
+        """Chooses the right labeling for the button"""
+        if item_selected:
+            button.setText(UI_LANGUAGE.get_change_text())
+        else:
+            button.setText(UI_LANGUAGE.get_add_text())
 
 
 DP_CONTROLLER = DisplayController()

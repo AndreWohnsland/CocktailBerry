@@ -1017,61 +1017,6 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="2">
-           <widget class="QPushButton" name="PBZutathinzu">
-            <property name="minimumSize">
-             <size>
-              <width>90</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>hinzufügen</string>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string>btn-inverted</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="1">
-           <widget class="QPushButton" name="PBZaktualisieren">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>ändern</string>
-            </property>
-           </widget>
-          </item>
           <item row="10" column="0">
            <widget class="QPushButton" name="PBZdelete">
             <property name="minimumSize">
@@ -1441,6 +1386,35 @@
             </property>
             <property name="text">
              <string>verfügbar</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="1" colspan="2">
+           <widget class="QPushButton" name="PBZutathinzu">
+            <property name="minimumSize">
+             <size>
+              <width>90</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>hinzufügen</string>
             </property>
             <property name="cssClass" stdset="0">
              <string>btn-inverted</string>
@@ -2165,61 +2139,6 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
-                 <widget class="QPushButton" name="PBRezeptaktualisieren">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>60</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>ändern</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QPushButton" name="PBRezepthinzu">
-                  <property name="minimumSize">
-                   <size>
-                    <width>90</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>60</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>hinzufügen</string>
-                  </property>
-                  <property name="cssClass" stdset="0">
-                   <string>btn-inverted</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="1" column="1" colspan="2">
                  <widget class="ClickableLineEdit" name="LEKommentar">
                   <property name="minimumSize">
@@ -2263,6 +2182,35 @@
                   </property>
                  </widget>
                 </item>
+                <item row="2" column="1" colspan="2">
+                 <widget class="QPushButton" name="PBRezepthinzu">
+                  <property name="minimumSize">
+                   <size>
+                    <width>90</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>60</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>16</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>hinzufügen</string>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>btn-inverted</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
              </layout>
@@ -2297,7 +2245,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>621</width>
+             <width>741</width>
              <height>788</height>
             </rect>
            </property>
