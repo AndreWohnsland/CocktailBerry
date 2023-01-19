@@ -220,12 +220,6 @@ ui:
     available_button:
       en: 'available'
       de: 'verfügbar'
-    change_button:
-      en: 'change'
-      de: 'ändern'
-    add_button:
-      en: 'add'
-      de: 'hinzufügen'
     hand_add_label:
       en: 'Add self by hand:'
       de: 'Selbst hinzufügen:'

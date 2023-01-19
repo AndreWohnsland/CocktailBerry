@@ -330,19 +330,23 @@ class UiLanguage():
             (w.PBZubereiten_custom, "prepare_button"),
             (w.PBZeinzelnd, "single_ingredient_button"),
             (w.PBAvailable, "available_button"),
-            (w.PBZutathinzu, "add_button"),
             (w.CHBHand, "handadd_check_label"),
             (w.LIngredient, "ingredient_label"),
             (w.LAlcoholLevel, "alcohol_level_label"),
             (w.LBottleVolume, "bottle_volume_label"),
             (w.LRHandAdd, "hand_add_label"),
-            (w.PBRezepthinzu, "add_button"),
-            (w.PBBelegung, "change_button"),
             (w.PBFlanwenden, "renew_button"),
             (w.virgin_checkbox, "activate_virgin"),
             (w.offervirgin_checkbox, "virgin_possibility"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
+
+        for ui_element, text_name in [
+            (w.PBZutathinzu, "add_button"),
+            (w.PBRezepthinzu, "add_button"),
+            (w.PBBelegung, "change_button"),
+        ]:
+            ui_element.setText(self.__choose_language(text_name))
 
     def adjust_available_windows(self, w):
         """Translates all needed elements of the available window"""
