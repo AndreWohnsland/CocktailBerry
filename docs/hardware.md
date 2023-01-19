@@ -1,10 +1,13 @@
 # Hardware
 
-You can also run the interface on any non RPi hardware, but you won't be able to control the pins without a device supporting this. To build a functional machine, I provided a list of my used hardware. This is merely a suggestion. How exactly you will build your CocktailBerry is completely up to you.
+You can also run the interface on any non RPi hardware, but you won't be able to control the pins without a device supporting this.
+To build a functional machine, I provided a list of my used hardware.
+This is merely a suggestion.
+How exactly you will build your CocktailBerry is completely up to you.
 
 ## Showcase Machine
 
-The following component were used within the showcase for the Machine:
+The following components were used within the showcase for the Machine:
 
 - 1x [Raspberry Pi 3b+](http://www.amazon.de/dp/B00LPESRUK/) (or newer like [Model 4](https://www.amazon.de/gp/product/B07TD42S27))
 - 1x [5-inch Touch Screen](http://www.amazon.de/dp/B071XT9Z7H/) for the Raspberry Pi

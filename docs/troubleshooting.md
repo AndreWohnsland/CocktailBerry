@@ -2,7 +2,7 @@
 
 If you run into any problems, check here first for a solution.
 Please ensure that you are running the latest 64 bit Raspberry Pi OS and CocktailBerry version.
-If you don't find any solution here, you can [open a ticket](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose)
+If you don't find any solution here, you can [open a ticket](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose).
 
 ## Problems while Running the Program
 
@@ -37,17 +37,18 @@ cp Cocktail_database_backup.db Cocktail_database.db
 This will restore the state of the backup previous this migration step.
 Please take a look into the production_log file, if a backup was created.
 Otherwise, you may up ending using an older one.
-A backup usually only done in migration steps which are optional, like adding new recipes.
+A backup is usually only done in migration steps which are optional, like adding new recipes.
 
 ## Using a High Resolution Screen
 
-The UI of the program is somewhat dynamic, but Qt got some limitations.
-To ensure that the UI looks nice and like in the screenshots, a resolution not higher than ~1200px on the long side (width) is recommended.
+The UI of the program is somewhat dynamic, but Qt got it's limitations.
+To ensure that the UI looks nice like in the screenshots, a resolution not higher than ~1200px on the long side (width) is recommended.
 If you happen to use a high res screen, there is a easy fix, tough.
-For example an with a 2560x1600 screen, I would recommend divide the value by `x` (for example x=2).
+For example, when using a screen with a 2560x1600 resolution, I would recommend divide the value by `x` (for example x=2).
 In the CocktailBerry config set width to 2560/2 = 1280 and height to 1600/2 = 800.
-In case you used the provided setup change the first line in the ~/launcher.sh file `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case).
+In case you used the provided setup, just change the first line in the ~/launcher.sh file `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case).
 This will use the lower dimensions for the application but scale it up by the factor of two so it occupies the whole screen.
+Decimal numbers for x do also work, just try not to get decimals for width / height.
 If you use your own startup script or similar, just add the export line with an according value to it, or set the environment variable in any other desired way.
 
 
@@ -81,10 +82,10 @@ After the reboot, the calibration should be okay.
 
 With version __Version 1.11.0__, there is the new config value `MAKER_CHECK_INTERNET`.
 If you wish to use your microservice, but got no internet at the moment, the data will be saved and send later.
-One problem that occurred, is that, for example on a standard raspberry pi, the clock and therefore the timestamp will probably be wrong.
+One problem that occurred, is that, for example on a standard Raspberry Pi, the clock and therefore the timestamp will probably be wrong.
 This new option tackles that. If it's set active with an active microservice, it will check for internet connection at startup.
 If there is no connection, a dialog will pop up and give the user the possibility to adjust the time.
-In case the machine got a RTC build in and under usage, this option can usually be set to `false`, because due to the RTC, the time should be correct.
+In case the machine got a RTC build in and uses it, this option can usually be set to `false`, because due to the RTC, the time should be correct.
 
 ## Problems Installing Software on Raspberry Pi
 
@@ -92,15 +93,18 @@ The Raspberry Pi can sometimes differ from other machines in terms of installati
 
 ### PyQt can't be Installed
 
-You probably need to run `sudo apt install python3-pyqt5` instead of `pip install pyqt5` on the pi
+You probably need to run `sudo apt install python3-pyqt5` instead of `pip install pyqt5` on the Pi. 
 
 ### Numpy Import Error at Matplotlib Import
 
-Try first running `pip3 install -U numpy` and `sudo apt install libatlas3-base`. If it is still not fixed, try uninstalling and installing numpy / matplotlib again. If really nothing else works, try `sudo pip3 install -U numpy`, then you will probably need to run the python file with root privilege as well, which may result in another GUI style used by the system.
+Try first running `pip3 install -U numpy` and `sudo apt install libatlas3-base`.
+If it is still not fixed, try uninstalling and installing numpy / matplotlib again.
+If really nothing else works, try `sudo pip3 install -U numpy`, then you will probably need to run the python file with root privilege as well, which may result in another GUI style used by the system.
 
 ### How to get the GUI Running on Startup
 
-I found the easiest thing is to use RPis Autostart. Create a .desktop file with `sudo nano /etc/xdg/autostart/cocktail.desktop` and the `launcher.sh` in your `/home/pi` folder:
+I found the easiest thing is to use RPis Autostart.
+Create a .desktop file with `sudo nano /etc/xdg/autostart/cocktail.desktop` and the `launcher.sh` in your `/home/pi` folder:
 
 ```
 [Desktop Entry]
@@ -140,10 +144,17 @@ sudo chmod +x ~/launcher.sh
 sudo chmod 755 ~/launcher.sh
 ```
 
+**By the way**: The provided installer script does all that steps for you.
+
 ### The GUI on the RPi Looks Different from the Screenshots
 
-I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources. Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege). Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
+I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources.
+Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
+Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
 
 ### Some Python Things do not Work
 
-Older Raspberry Pi OS version (older than _November 2021_) still deliver Python 2. Since Raspberry Pi OS Bullseye version (based on Debian 11) Python 3 is the default version if you type `python` or `pip`. Typing `python --version` or `pip --version` will show your version of Python. If it's still Python 2, consider upgrading your OS or check `python3 --version` and use the `pip3` as well as the `python3` command instead the usual ones.
+Older Raspberry Pi OS version (older than _November 2021_) still deliver Python 2.
+Since Raspberry Pi OS Bullseye version (based on Debian 11) Python 3 is the default version if you type `python` or `pip`.
+Typing `python --version` or `pip --version` will show your version of Python.
+If it's still Python 2, consider upgrading your OS or check `python3 --version` and use the `pip3` as well as the `python3` command instead the usual ones.
