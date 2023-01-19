@@ -37,7 +37,7 @@ def handle_enter_recipe(w):
     if not valid:
         return
 
-    recipe_id, error_message = _check_enter_constraints(recipe_name, new_recipe)
+    recipe_id, error_message = _check_enter_constraints(selected_name, recipe_name, new_recipe)
     if error_message:
         return
 
@@ -91,16 +91,24 @@ def _validate_extract_ingredients(ingredient_names: List[str], ingredient_volume
     return names, int_volumes, True
 
 
-def _check_enter_constraints(recipe_name: str, new_recipe: bool) -> Tuple[int, bool]:
+def _check_enter_constraints(current_recipe_name: str, new_recipe_name: str, new_recipe: bool) -> Tuple[int, bool]:
     """Checks if either the recipe already exists (new recipe) or if one is selected (update)
     Returns cocktail, got_error"""
-    cocktail = DB_COMMANDER.get_cocktail(recipe_name)
-    if cocktail is not None and new_recipe:
+    # First checks if the new cocktail already exists
+    cocktail_new = DB_COMMANDER.get_cocktail(new_recipe_name)
+    if cocktail_new is not None and new_recipe:
         DP_CONTROLLER.say_name_already_exists()
-        return cocktail.id, True
-    if cocktail is None:
+        return cocktail_new.id, True
+    # then gets the current cocktail, if it's none, we got a new recipe
+    cocktail_current = DB_COMMANDER.get_cocktail(current_recipe_name)
+    if cocktail_current is None:
         return 0, False
-    return cocktail.id, False
+    # also need to check if the new cocktail name collides with another existing one
+    # this would be the case if we are finding a cocktail for the new name but got an different old name
+    if cocktail_new is not None and cocktail_new.name != cocktail_current.name:
+        DP_CONTROLLER.say_name_already_exists()
+        return cocktail_new.id, True
+    return cocktail_current.id, False
 
 
 def _build_recipe_data(names: list[str], volumes: list[int]):
