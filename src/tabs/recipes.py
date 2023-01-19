@@ -99,11 +99,11 @@ def enter_recipe(w, new_recipe: bool):
     """ Enters or updates the recipe into the db"""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, virgin, comment = recipe_input
-    if not recipe_name:
-        DP_CONTROLLER.say_enter_cocktail_name()
-        return
     if not new_recipe and not selected_name:
         DP_CONTROLLER.say_no_recipe_selected()
+        return
+    if not recipe_name:
+        DP_CONTROLLER.say_enter_cocktail_name()
         return
     names, volumes, valid = __validate_extract_ingredients(ingredient_names, ingredient_volumes)
     if not valid:
