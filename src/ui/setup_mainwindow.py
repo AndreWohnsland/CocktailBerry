@@ -211,12 +211,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
         # Connect the Lists with the Functions
-        self.LWZutaten.itemClicked.connect(lambda: ingredients.display_selected_ingredient(self))
-        self.LWZutaten.currentTextChanged.connect(lambda: ingredients.display_selected_ingredient(self))
-        self.LWMaker.itemClicked.connect(lambda: maker.update_shown_recipe(self))
-        self.LWMaker.currentTextChanged.connect(lambda: maker.update_shown_recipe(self))
-        self.LWRezepte.itemClicked.connect(lambda: recipes.load_selected_recipe_data(self))
-        self.LWRezepte.currentTextChanged.connect(lambda: recipes.load_selected_recipe_data(self))
+        self.LWZutaten.itemSelectionChanged.connect(lambda: ingredients.display_selected_ingredient(self))
+        self.LWMaker.itemSelectionChanged.connect(lambda: maker.update_shown_recipe(self))
+        self.LWRezepte.itemSelectionChanged.connect(lambda: recipes.load_selected_recipe_data(self))
 
         # Connects the slider
         self.HSIntensity.valueChanged.connect(lambda: maker.update_shown_recipe(self, False))
