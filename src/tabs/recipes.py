@@ -139,8 +139,9 @@ def enter_recipe(w, new_recipe: bool):
         recipe_id, recipe_name, recipe_volume, recipe_alcohol_level, enabled, virgin, ingredient_data, comment
     )
 
-    # remove the old name
-    DP_CONTROLLER.remove_recipe_from_list_widgets(w, selected_name)
+    # remove the old name only if update
+    if not new_recipe:
+        DP_CONTROLLER.remove_recipe_from_list_widgets(w, selected_name)
     DP_CONTROLLER.fill_list_widget_recipes(w, [recipe_name])
     DP_CONTROLLER.clear_recipe_data_maker(w, select_other_item=False)
     if enabled:
