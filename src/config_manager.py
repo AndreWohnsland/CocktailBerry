@@ -252,6 +252,8 @@ class Shared:
         self.old_ingredient: List[str] = []
         self.selected_team = "Nothing"
         self.handaddlist: List[Ingredient] = []
+        self.cocktail_volume: int = 200
+        self.alcohol_factor: float = 1.0
 
 
 class ConfigError(Exception):
