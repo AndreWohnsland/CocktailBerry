@@ -54,11 +54,8 @@ class DisplayController(DialogHandler):
 
     def get_cocktail_data(self, w: Ui_MainWindow) -> Tuple[str, int, float]:
         """Returns [name, volume, factor] from maker"""
-        cocktail_volume = int(w.LCustomMenge.text())
-        # when pulling, the slider can reach every integer value (eg, 1,2,...)
-        # but whe only want step size of *5 -> therefore it ranges from -5 to 5 but we
-        # multiply by *5 to get an effective range from -25 to 25 with a step size of 5
-        alcohol_factor: float = 1 + (w.HSIntensity.value() * 5 / 100)
+        cocktail_volume = shared.cocktail_volume
+        alcohol_factor = shared.alcohol_factor
         # If virgin is selected, just set alcohol_factor to 0
         if w.virgin_checkbox.isChecked():
             alcohol_factor = 0.0
@@ -172,13 +169,9 @@ class DisplayController(DialogHandler):
         }
         w.tabWidget.setCurrentIndex(tabs.get(tab, 0))
 
-    # Slider
-    def __set_slider_value(self, slider: QSlider, value: int):
-        slider.setValue(value)
-
-    def reset_alcohol_slider(self, w: Ui_MainWindow):
+    def reset_alcohol_factor(self):
         """Sets the alcohol slider to default (100%) value"""
-        self.__set_slider_value(w.HSIntensity, 0)
+        shared.alcohol_factor = 1.0
 
     def reset_virgin_setting(self, w: Ui_MainWindow):
         w.virgin_checkbox.setChecked(False)

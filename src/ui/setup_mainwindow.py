@@ -195,26 +195,17 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, 50))
         self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, -50))
-        self.PBMplus.clicked.connect(
-            lambda: DP_CONTROLLER.change_input_value(
-                self.LCustomMenge, 100, 400, 25,
-                lambda: maker.update_shown_recipe(self, False)
-            ))
-        self.PBMminus.clicked.connect(
-            lambda: DP_CONTROLLER.change_input_value(
-                self.LCustomMenge, 100, 400, -25,
-                lambda: maker.update_shown_recipe(self, False)
-            ))
-        self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
+
+        self.increase_volume.clicked.connect(lambda: maker.adjust_volume(self, 25))
+        self.decrease_volume.clicked.connect(lambda: maker.adjust_volume(self, -25))
+        self.increase_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, 0.1))
+        self.decrease_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, -0.1))
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
         # Connect the Lists with the Functions
         self.LWZutaten.itemSelectionChanged.connect(lambda: ingredients.display_selected_ingredient(self))
         self.LWMaker.itemSelectionChanged.connect(lambda: maker.update_shown_recipe(self))
         self.LWRezepte.itemSelectionChanged.connect(lambda: recipes.load_selected_recipe_data(self))
-
-        # Connects the slider
-        self.HSIntensity.valueChanged.connect(lambda: maker.update_shown_recipe(self, False))
 
         # Connects the virgin checkbox
         self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))
