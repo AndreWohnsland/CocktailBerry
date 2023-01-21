@@ -35,7 +35,7 @@ class Cocktail():
     enabled: bool
     virgin_available: bool
     ingredients: List[Ingredient]
-    adjusted_alcohol: int = 0
+    adjusted_alcohol: float = 0
     adjusted_amount: int = 0
     adjusted_ingredients: List[Ingredient] = field(default_factory=list, init=False)
 
@@ -97,7 +97,7 @@ class Cocktail():
             ing.amount *= factor  # type: ignore
             scaled_amount += ing.amount
             concentration += ing.amount * ing.alcohol
-        self.adjusted_alcohol = round(concentration / scaled_amount)
+        self.adjusted_alcohol = round(concentration / scaled_amount, 1)
         # scale all to desired amount
         scaling = amount / scaled_amount
         for ing in self.adjusted_ingredients:

@@ -2,7 +2,12 @@ from pathlib import Path
 from typing import Callable, List, Literal, Optional, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar, QListWidgetItem
+from PyQt5.QtWidgets import (
+    QWidget, QComboBox, QLabel,
+    QLineEdit, QPushButton, QListWidget,
+    QCheckBox, QMainWindow, QProgressBar,
+    QListWidgetItem
+)
 
 from src.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
@@ -342,7 +347,7 @@ class DisplayController(DialogHandler):
         w.LAlkoholname.setText(cocktail.name)
         display_volume = self._decide_rounding(total_volume * cfg.EXP_MAKER_FACTOR, 20)
         w.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")
-        w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.0f}%")
+        w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.1f}%")
         display_data = cocktail.machineadds
         hand = cocktail.handadds
         # Activates or deactivates the virgin checkbox, depending on the virgin flag
@@ -392,6 +397,8 @@ class DisplayController(DialogHandler):
         w.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         w.LMenge.setText("")
         w.virgin_checkbox.setChecked(False)
+        # Also resets the alcohol factor
+        self.reset_alcohol_factor()
         if not select_other_item:
             w.LWMaker.clearSelection()
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(w), self.get_labels_maker_volume(w)):
