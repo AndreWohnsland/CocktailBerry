@@ -313,6 +313,16 @@ class UiLanguage():
         """Returns the add text"""
         return self.__choose_language("change_button")
 
+    def get_config_description(self, config_name: str) -> str:
+        """Returns the according description for the configuration.
+        Returns empty string if there was nothing found
+        """
+        try:
+            return self.__choose_language(config_name, "settings_dialog")
+        # if there is nothing for this settings, we will get an attribute error
+        except AttributeError:
+            return ""
+
     def adjust_mainwindow(self, w):
         """Translates all needed elements of the main window (cocktail maker)"""
         window = "main_window"

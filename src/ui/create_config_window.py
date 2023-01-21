@@ -8,6 +8,7 @@ from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QIcon
 
 from src.config_manager import ChooseType, ConfigError, CONFIG as cfg
+from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.setup_keyboard_widget import KeyboardWidget
@@ -86,6 +87,11 @@ class ConfigWindow(QMainWindow):
         header = QLabel(f"{config_name}:")
         self._adjust_font(header, LARGE_FONT, True)
         self.vbox.addWidget(header)
+        description_text = UI_LANGUAGE.get_config_description(config_name)
+        if description_text:
+            description = QLabel(description_text)
+            self._adjust_font(description, SMALL_FONT)
+            self.vbox.addWidget(description)
         # Reads out the current config value
         current_value = getattr(cfg, config_name)
         getter_fn = self._build_input_field(config_name, config_type, current_value)
