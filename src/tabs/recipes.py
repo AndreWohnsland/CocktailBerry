@@ -28,7 +28,6 @@ def handle_enter_recipe(w):
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, virgin, comment = recipe_input
     new_recipe = not bool(selected_name)
-    print(f"{new_recipe=}")
 
     if not recipe_name:
         DP_CONTROLLER.say_enter_cocktail_name()
