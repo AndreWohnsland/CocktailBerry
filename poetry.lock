@@ -22,19 +22,19 @@ wrapt = [
 
 [[package]]
 name = "autopep8"
-version = "1.7.0"
+version = "2.0.1"
 description = "A tool that automatically formats Python code to conform to the PEP 8 style guide"
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 files = [
-    {file = "autopep8-1.7.0-py2.py3-none-any.whl", hash = "sha256:6f09e90a2be784317e84dc1add17ebfc7abe3924239957a37e5040e27d812087"},
-    {file = "autopep8-1.7.0.tar.gz", hash = "sha256:ca9b1a83e53a7fad65d731dc7a2a2d50aa48f43850407c59f6a1a306c4201142"},
+    {file = "autopep8-2.0.1-py2.py3-none-any.whl", hash = "sha256:be5bc98c33515b67475420b7b1feafc8d32c1a69862498eda4983b45bffd2687"},
+    {file = "autopep8-2.0.1.tar.gz", hash = "sha256:d27a8929d8dcd21c0f4b3859d2d07c6c25273727b98afc984c039df0f0d86566"},
 ]
 
 [package.dependencies]
-pycodestyle = ">=2.9.1"
-toml = "*"
+pycodestyle = ">=2.10.0"
+tomli = {version = "*", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "certifi"
@@ -470,18 +470,6 @@ files = [
 ]
 
 [[package]]
-name = "toml"
-version = "0.10.2"
-description = "Python Library for Tom's Obvious, Minimal Language"
-category = "dev"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-files = [
-    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
-    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
-]
-
-[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -632,4 +620,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "b012c31664e3290dfac7f54634f1be05c11ffc5b819e397d77a2f906da914b3e"
+content-hash = "9bf5c60630d619c095b02b532e9b69956da74fcb974fbd1c610c74b64c86e405"
