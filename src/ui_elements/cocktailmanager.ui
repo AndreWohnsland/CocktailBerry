@@ -80,7 +80,7 @@
               <property name="maximumSize">
                <size>
                 <width>300</width>
-                <height>40</height>
+                <height>60</height>
                </size>
               </property>
               <property name="font">
@@ -147,7 +147,7 @@
             <property name="rightMargin">
              <number>0</number>
             </property>
-            <item row="3" column="2">
+            <item row="4" column="2">
              <widget class="QLabel" name="LMZutat1">
               <property name="maximumSize">
                <size>
@@ -167,490 +167,6 @@
               </property>
               <property name="cssClass" stdset="0">
                <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="11" column="2">
-             <widget class="QLabel" name="LMZutat9">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat9</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat8">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat8</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="11" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat9">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat9</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" colspan="3">
-             <widget class="QLabel" name="LAlkoholname">
-              <property name="maximumSize">
-               <size>
-                <width>900</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>22</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LAlkoholname</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>header-underline bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat3">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat3</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat6">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat6</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="2">
-             <widget class="QLabel" name="LMZutat7">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat7</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat5">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat5</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat2">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat2</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="2">
-             <widget class="QLabel" name="LMZutat6">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat6</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="2">
-             <widget class="QLabel" name="LMZutat8">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat8</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="2">
-             <widget class="QLabel" name="LMZutat3">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat3</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="2">
-             <widget class="QLabel" name="LMZutat2">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat2</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat4">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat4</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="12" column="0">
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="3" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat1">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat1</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="2">
-             <widget class="QLabel" name="LMZutat4">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat4</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="2">
-             <widget class="QLabel" name="LMZutat5">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat5</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat7">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat7</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
               </property>
              </widget>
             </item>
@@ -674,9 +190,9 @@
                   </property>
                   <property name="font">
                    <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
+                    <pointsize>20</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
                    </font>
                   </property>
                   <property name="text">
@@ -735,9 +251,9 @@
                   </property>
                   <property name="font">
                    <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
+                    <pointsize>20</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
                    </font>
                   </property>
                   <property name="text">
@@ -768,9 +284,9 @@
                   </property>
                   <property name="font">
                    <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
+                    <pointsize>20</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
                    </font>
                   </property>
                   <property name="text">
@@ -829,9 +345,9 @@
                   </property>
                   <property name="font">
                    <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
+                    <pointsize>20</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
                    </font>
                   </property>
                   <property name="text">
@@ -846,6 +362,506 @@
               </item>
              </layout>
             </item>
+            <item row="12" column="2">
+             <widget class="QLabel" name="LMZutat9">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat9</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat8">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat8</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat9">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat9</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0" colspan="3">
+             <widget class="QLabel" name="LAlkoholname">
+              <property name="maximumSize">
+               <size>
+                <width>900</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>22</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LAlkoholname</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>header-underline bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat3">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat3</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat6">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat6</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="2">
+             <widget class="QLabel" name="LMZutat7">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat7</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat5">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat5</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat2">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat2</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="2">
+             <widget class="QLabel" name="LMZutat6">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat6</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="2">
+             <widget class="QLabel" name="LMZutat8">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat8</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="2">
+             <widget class="QLabel" name="LMZutat3">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat3</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QLabel" name="LMZutat2">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat2</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat4">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat4</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="0">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="4" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat1">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat1</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="2">
+             <widget class="QLabel" name="LMZutat4">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat4</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="2">
+             <widget class="QLabel" name="LMZutat5">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat5</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat7">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat7</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Maximum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>15</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </item>
           <item row="4" column="3">
@@ -858,8 +874,8 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>500</width>
-              <height>60</height>
+              <width>1000</width>
+              <height>80</height>
              </size>
             </property>
             <property name="font">
