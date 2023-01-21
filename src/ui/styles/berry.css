@@ -116,6 +116,7 @@ QPushButton {
       border-color: #ec407a; }
   QPushButton[cssClass~='no-border'] {
     border-width: 0;
+    padding: 1px;
     padding-left: 1px;
     padding-right: 1px; }
   QPushButton[cssClass~='secondary'] {
