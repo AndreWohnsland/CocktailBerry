@@ -150,6 +150,19 @@ QPushButton {
       border-color: $secondary;
     }
   }
+  &[cssClass~='no-border'] {
+    border-width: 0;
+    padding-left: 1px;
+    padding-right: 1px;
+  }
+  &[cssClass~='secondary'] {
+    color: $secondary;
+    border-color: $secondary;
+    &:pressed {
+      color: $primary;
+      border-color: $primary;
+    }
+  }
   /* for teams */
   &[cssClass~='btn-teamone'] {
     background-color: $teamone;

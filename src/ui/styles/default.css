@@ -114,6 +114,16 @@ QPushButton {
     QPushButton[cssClass~='btn-inverted']:checked, QPushButton[cssClass~='btn-inverted']:pressed {
       background-color: #ef9700;
       border-color: #ef9700; }
+  QPushButton[cssClass~='no-border'] {
+    border-width: 0;
+    padding-left: 1px;
+    padding-right: 1px; }
+  QPushButton[cssClass~='secondary'] {
+    color: #ef9700;
+    border-color: #ef9700; }
+    QPushButton[cssClass~='secondary']:pressed {
+      color: #007bff;
+      border-color: #007bff; }
   QPushButton[cssClass~='btn-teamone'] {
     background-color: #007bff;
     border-color: #007bff;
