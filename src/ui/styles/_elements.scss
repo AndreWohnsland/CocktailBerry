@@ -61,7 +61,7 @@ QCheckBox::indicator {
     border-color: $border;
   }
   &:disabled {
-    border-color: $neutral;
+    border-color: $background;
   }
   &:checked {
     image: url(./src/ui_elements/check.png);

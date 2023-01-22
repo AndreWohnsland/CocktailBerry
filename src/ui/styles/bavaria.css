@@ -42,7 +42,7 @@ QCheckBox::indicator {
   QCheckBox::indicator:unchecked {
     border-color: #0b0e41; }
   QCheckBox::indicator:disabled {
-    border-color: #44648d; }
+    border-color: #dad9d9; }
   QCheckBox::indicator:checked {
     image: url(./src/ui_elements/check.png);
     border-color: #00ae4b; }
