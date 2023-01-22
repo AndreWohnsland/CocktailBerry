@@ -32,6 +32,7 @@ class IconSetter:
     def __init__(self):
         self.primary_color = _parse_color("primary")
         self.secondary_color = _parse_color("secondary")
+        self.neutral_color = _parse_color("neutral")
         self.destructive_color = _parse_color("destructive")
         self.background = _parse_color("background")
 
@@ -42,14 +43,14 @@ class IconSetter:
             (w.option_button, _SETTING_ICON),
             (w.PBZdelete, _DELETE_ICON),
             (w.PBdelete, _DELETE_ICON),
-        ]:
-            self._set_icon(ui_element, qta.icon(icon, color=self.background))
-        # For outline buttons
-        for ui_element, icon in [
             (w.PBZclear, _CLEAR_ICON),
             (w.PBclear, _CLEAR_ICON),
         ]:
-            self._set_icon(ui_element, qta.icon(icon, color=self.primary_color, color_active=self.primary_color))
+            self._set_icon(ui_element, qta.icon(icon, color=self.background))
+        # For outline buttons
+        for ui_element, icon, color in [
+        ]:
+            self._set_icon(ui_element, qta.icon(icon, color=color))
 
     def _set_icon(self, ui_element: QPushButton, icon):
         ui_element.setIcon(icon)

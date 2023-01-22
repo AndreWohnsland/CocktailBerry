@@ -995,6 +995,9 @@
             <property name="text">
              <string>clear</string>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>neutral btn-inverted</string>
+            </property>
            </widget>
           </item>
           <item row="5" column="0" colspan="3">
@@ -2129,6 +2132,9 @@
                   </property>
                   <property name="text">
                    <string>clear</string>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>neutral btn-inverted</string>
                   </property>
                  </widget>
                 </item>
