@@ -165,6 +165,14 @@ QPushButton {
         border-color: $destructive;
       }
     }
+    &[cssClass~='neutral'] {
+      background-color: $neutral;
+      color: $background;
+      &:pressed {
+        background-color: $neutral;
+        border-color: $neutral;
+      }
+    }
   }
   &[cssClass~='no-border'] {
     border-width: 0;
@@ -189,6 +197,14 @@ QPushButton {
     &:pressed {
       color: $destructive;
       border-color: $destructive;
+    }
+  }
+  &[cssClass~='neutral'] {
+    color: $neutral;
+    border-color: $neutral;
+    &:pressed {
+      color: $neutral;
+      border-color: $neutral;
     }
   }
   /* for teams */

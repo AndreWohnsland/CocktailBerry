@@ -126,6 +126,12 @@ QPushButton {
       QPushButton[cssClass~='btn-inverted'][cssClass~='destructive']:pressed {
         background-color: #d00000;
         border-color: #d00000; }
+    QPushButton[cssClass~='btn-inverted'][cssClass~='neutral'] {
+      background-color: #44648d;
+      color: #dad9d9; }
+      QPushButton[cssClass~='btn-inverted'][cssClass~='neutral']:pressed {
+        background-color: #44648d;
+        border-color: #44648d; }
   QPushButton[cssClass~='no-border'] {
     border-width: 0;
     padding: 1px;
@@ -145,6 +151,12 @@ QPushButton {
     QPushButton[cssClass~='destructive']:pressed {
       color: #d00000;
       border-color: #d00000; }
+  QPushButton[cssClass~='neutral'] {
+    color: #44648d;
+    border-color: #44648d; }
+    QPushButton[cssClass~='neutral']:pressed {
+      color: #44648d;
+      border-color: #44648d; }
   QPushButton[cssClass~='btn-teamone'] {
     background-color: #eb4034;
     border-color: #eb4034;
