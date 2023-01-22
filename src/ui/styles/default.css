@@ -31,6 +31,12 @@
 *[cssClass~='ml'] {
   margin-left: 10px; }
 
+*[cssClass~='mt'] {
+  margin-top: 5px; }
+
+*[cssClass~='mb'] {
+  margin-bottom: 5px; }
+
 #informationLabel {
   padding: 5px 25px 5px 25px; }
 

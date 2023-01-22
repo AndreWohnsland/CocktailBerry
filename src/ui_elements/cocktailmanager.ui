@@ -1034,7 +1034,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>20</height>
+              <height>40</height>
              </size>
             </property>
            </spacer>
@@ -1083,7 +1083,7 @@
               </property>
               <property name="font">
                <font>
-                <pointsize>14</pointsize>
+                <pointsize>16</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
@@ -1140,10 +1140,13 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>14</pointsize>
+              <pointsize>16</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
              <string>secondary bold</string>
@@ -1218,10 +1221,13 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>14</pointsize>
+              <pointsize>16</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
              <string>secondary bold</string>
@@ -1303,8 +1309,8 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>70</width>
-              <height>200</height>
+              <width>80</width>
+              <height>60</height>
              </size>
             </property>
             <property name="font">
@@ -1332,8 +1338,8 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
-              <height>200</height>
+              <width>80</width>
+              <height>60</height>
              </size>
             </property>
             <property name="font">
@@ -1469,7 +1475,7 @@
                    <bool>false</bool>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>ml bold</string>
+                   <string>ml bold mt mb</string>
                   </property>
                  </widget>
                 </item>
@@ -1499,7 +1505,7 @@
                    <bool>true</bool>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>bold mr</string>
+                   <string>bold mr mt mb</string>
                   </property>
                  </widget>
                 </item>
@@ -2058,7 +2064,7 @@
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>70</width>
+                    <width>80</width>
                     <height>60</height>
                    </size>
                   </property>
@@ -2087,7 +2093,7 @@
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>80</width>
                     <height>60</height>
                    </size>
                   </property>
@@ -2117,7 +2123,7 @@
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>60</height>
+                    <height>70</height>
                    </size>
                   </property>
                   <property name="cssClass" stdset="0">
@@ -2162,7 +2168,7 @@
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>60</height>
+                    <height>70</height>
                    </size>
                   </property>
                   <property name="font">

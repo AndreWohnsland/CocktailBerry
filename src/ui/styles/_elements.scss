@@ -45,6 +45,14 @@ $default-element-border: $element-border solid $border;
   margin-left: 10px;
 }
 
+*[cssClass~='mt'] {
+  margin-top: 5px;
+}
+
+*[cssClass~='mb'] {
+  margin-bottom: 5px;
+}
+
 // specific classes
 // Information dialog
 #informationLabel {
