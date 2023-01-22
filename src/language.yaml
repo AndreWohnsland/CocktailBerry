@@ -209,11 +209,11 @@ ui:
       en: 'Alcohol (in %)'
       de: 'Alkoholgehalt (in %)'
     bottle_volume_label:
-      en: 'Bottle Volume (ml)'
+      en: 'Bottle volume (ml)'
       de: 'Flaschenvolumen (ml)'
     single_ingredient_button:
       en: 'Spend single ingredient'
-      de: 'Einzelne Zutat Ausgeben'
+      de: 'Einzelne Zutat ausgeben'
     handadd_check_label:
       en: 'Only add self by hand:'
       de: 'Nur selbst hinzufügen:'
@@ -224,10 +224,10 @@ ui:
       en: 'Add self by hand:'
       de: 'Selbst hinzufügen:'
     renew_button:
-      en: 'apply new bottles'
-      de: 'neue Flaschen anwenden'
+      en: 'apply'
+      de: 'anwenden'
     virgin_possibility:
-      en: 'Allow Virgin'
+      en: 'Allow virgin'
       de: 'Virgin erlauben'
     activate_virgin:
       en: 'Virgin (no alcohol)'
@@ -266,7 +266,7 @@ ui:
       en: 'Cleaning'
       de: 'Reinigen'
     bottle_renew_label:
-      en: 'Renewing Bottles'
+      en: 'Renewing bottles'
       de: 'Flaschen erneuern'
 
   ##### BONUSINGREDIENT SCREEN #####
