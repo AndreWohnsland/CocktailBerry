@@ -1501,7 +1501,7 @@
                    <bool>false</bool>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>left-shift</string>
+                   <string>ml bold</string>
                   </property>
                  </widget>
                 </item>
@@ -1531,7 +1531,7 @@
                    <bool>true</bool>
                   </property>
                   <property name="cssClass" stdset="0">
-                   <string>bold right-shift</string>
+                   <string>bold mr</string>
                   </property>
                  </widget>
                 </item>
