@@ -9,6 +9,8 @@ Let's get started!
 
 <img src="../pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
 
+User selects recipe > clicks button > cocktail is prepared > profit.
+
 ## Interface
 
 The interface was programmed with PyQt5 for the users to easily interact with CocktailBerry and enter new ingredients/recipes. There are different views for the tasks.
@@ -17,18 +19,37 @@ The interface was programmed with PyQt5 for the users to easily interact with Co
 
 <img src="../pictures/Main_ui.png" alt="Maker" width="600"/>
 
+This is the main window of the application and the window your guest will interact with.
+They can choose a cocktail of their choice, a star indicates that there is also a virgin option of this cocktail.
+The cocktail data is displayed after selection.
+The user can increase or decrease the volume, as well as the alcohol level of the cocktail.
+
 **The Ingredient GUI:**
 
 <img src="../pictures/Ingredients_ui.png" alt="Ingredient" width="600"/>
+
+Here you can manage all your ingredients.
+Define the name, volume and alcohol level of each ingredient here.
+Also, you can set ingredients for hand add and let CocktailBerry spend a single ingredient.
 
 **The Recipe GUI:**
 
 <img src="../pictures/Recipes_ui.png" alt="Recipe" width="600"/>
 
+Here you can manage all your recipes.
+Define the name and ingredients with corresponding volume.
+You can disable recipes, you currently don't want to serve, or activates the virgin option for a cocktail.
+Also additional ingredients added later by the user can be defined for a recipe.
+
 **The Bottle GUI:**
 
 <img src="../pictures/Bottles_ui.png" alt="Bottle" width="600"/>
 
+Here you can manage your connected ingredients.
+Toggle the new button and apply a new ingredient if you change to a new bottle.
+You can also change the current fill level of each bottle.
+Use the gear icon to get to the option window.
+Within this, you can export data, change settings, make and restore backups or reboot and shutdown the system.
 
 ## The Machine
 
