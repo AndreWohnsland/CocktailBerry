@@ -357,7 +357,7 @@ ui:
       de: 'Schaltet die Entwicklungseinstellung ein'
     UI_PARTYMODE:
       en: 'Protects other tabs than maker with password'
-      de: 'Schützt alle außer Maker Tab mit Passwort'
+      de: 'Schützt alle Tabs außer Maker Tab mit Passwort'
     UI_MASTERPASSWORD:
       en: 'Password for some actions'
       de: 'Passwort für manche Aktionen'
@@ -372,7 +372,7 @@ ui:
       de: 'Höhe des Programms'
     PUMP_PINS:
       en: 'Pin number of each connected pump'
-      de: 'Pinnummer für jede verbunden Pumpe'
+      de: 'Pin Nummer für jede verbunden Pumpe'
     PUMP_VOLUMEFLOW:
       en: 'Volume flow in ml/s for according pump'
       de: 'Volumenstrom in ml/s der zugehörigen Pumpe'
@@ -390,10 +390,10 @@ ui:
       de: 'Abtastintervall zwischen den Volumenberechnungen'
     MAKER_SEARCH_UPDATES:
       en: 'Search for updates, if available internet connection'
-      de: 'Sucht nach Updates, wenn Internetverbindung vorhanden'
+      de: 'Sucht nach Updates, wenn Internetverbindung besteht'
     MAKER_BOARD:
       en: 'Type of microcomputer / board used'
-      de: 'Typ des Microcomputers / Board'
+      de: 'Typ des Microcomputers / Boards'
     MAKER_THEME:
       en: 'Color theme of the application'
       de: 'Farbeinstellung des Programms'
@@ -404,7 +404,7 @@ ui:
       en: 'Empty tube volume from bottle to pump'
       de: 'Leeres Schlauchvolumen von Flasche zu Pumpe'
     MICROSERVICE_ACTIVE:
-      en: 'Activates the interaction to the microservice'
+      en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'
     MICROSERVICE_BASE_URL:
       en: 'URL address for the microservice'
@@ -413,7 +413,7 @@ ui:
       en: 'Activates the team function'
       de: 'Aktiviert die Team Funktion'
     TEAM_BUTTON_NAMES:
-      en: 'Name of the teams'
+      en: 'Names of the teams'
       de: 'Name der Teams'
     TEAM_API_URL:
       en: 'URL address for teams API'
