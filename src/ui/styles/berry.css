@@ -170,18 +170,12 @@ QProgressBar {
   background-color: #9395ab;
   color: #0d0d0d;
   border: 2px #9395ab;
-  border-radius: 5px;
+  border-radius: 20px;
   text-align: center; }
   QProgressBar::chunk {
     border: 2px #9395ab;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background-color: #666ad1;
-    /*background-color: rgb(0, 255, 132);
-    width: 40px;
-    margin: 0.5px;*/ }
+    border-radius: 20px;
+    background-color: #666ad1; }
 
 QComboBox {
   color: #3a4cbf;
