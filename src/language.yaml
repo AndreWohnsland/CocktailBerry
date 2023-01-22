@@ -227,8 +227,8 @@ ui:
       en: 'apply new bottles'
       de: 'neue Flaschen anwenden'
     virgin_possibility:
-      en: 'Allow Virgin Option'
-      de: 'Virgin Option erlauben'
+      en: 'Allow Virgin'
+      de: 'Virgin erlauben'
     activate_virgin:
       en: 'Virgin (no alcohol)'
       de: 'Virgin (kein Alkohol)'
