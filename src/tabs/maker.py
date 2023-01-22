@@ -58,6 +58,8 @@ def __build_comment_maker(cocktail: Cocktail):
     for ing in length_desc:
         amount = ing.amount * cfg.EXP_MAKER_FACTOR
         amount = int(amount) if amount >= 8 else round(amount, 1)
+        if amount <= 0:
+            continue
         comment += f"\n~{amount} {cfg.EXP_MAKER_UNIT} {ing.name}"
     return comment
 
