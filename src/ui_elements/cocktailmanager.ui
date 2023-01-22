@@ -869,7 +869,7 @@
             <property name="minimumSize">
              <size>
               <width>400</width>
-              <height>50</height>
+              <height>60</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -885,11 +885,14 @@
               <bold>true</bold>
              </font>
             </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <property name="text">
              <string>Zubereiten</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>btn-inverted</string>
+             <string>btn-inverted mr ml round</string>
             </property>
            </widget>
           </item>
@@ -946,7 +949,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
+              <width>70</width>
               <height>200</height>
              </size>
             </property>
@@ -959,6 +962,9 @@
             </property>
             <property name="text">
              <string>del</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted destructive</string>
             </property>
            </widget>
           </item>
@@ -1460,39 +1466,73 @@
             <item row="0" column="0">
              <layout class="QVBoxLayout" name="verticalLayout_2">
               <item>
-               <widget class="QCheckBox" name="offervirgin_checkbox">
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="text">
-                 <string>Offer Virgin</string>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>50</width>
-                  <height>50</height>
-                 </size>
-                </property>
-                <property name="tristate">
-                 <bool>false</bool>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>left-shift</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item>
+                 <widget class="QCheckBox" name="offervirgin_checkbox">
+                  <property name="maximumSize">
+                   <size>
+                    <width>300</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="text">
+                   <string>Offer Virgin</string>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>50</width>
+                    <height>50</height>
+                   </size>
+                  </property>
+                  <property name="tristate">
+                   <bool>false</bool>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>left-shift</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="CHBenabled">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::RightToLeft</enum>
+                  </property>
+                  <property name="text">
+                   <string>Enabled:</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>bold right-shift</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item>
                <widget class="QListWidget" name="LWRezepte">
@@ -2037,36 +2077,6 @@
               </item>
               <item>
                <layout class="QGridLayout" name="gridLayout_7">
-                <item row="0" column="0">
-                 <widget class="QCheckBox" name="CHBenabled">
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>14</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                    <strikeout>false</strikeout>
-                   </font>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::RightToLeft</enum>
-                  </property>
-                  <property name="text">
-                   <string>Enabled:</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                  <property name="cssClass" stdset="0">
-                   <string>bold</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="2" column="0">
                  <widget class="QPushButton" name="PBdelete">
                   <property name="minimumSize">
@@ -2077,7 +2087,7 @@
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>70</width>
                     <height>60</height>
                    </size>
                   </property>
@@ -2090,6 +2100,9 @@
                   </property>
                   <property name="text">
                    <string>del</string>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>btn-inverted destructive</string>
                   </property>
                  </widget>
                 </item>

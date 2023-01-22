@@ -1,4 +1,3 @@
-$not-selected-color: rgb(205, 0, 0);
 $selected-color: rgb(0, 174, 75);
 $scrollbar-border-radius: 15px;
 $default-element-border: $element-border solid $border;
@@ -38,6 +37,14 @@ $default-element-border: $element-border solid $border;
   text-align: right;
 }
 
+*[cssClass~='mr'] {
+  margin-right: 10px;
+}
+
+*[cssClass~='ml'] {
+  margin-left: 10px;
+}
+
 // specific classes
 #informationLabel {
   padding: 5px 25px 5px 25px;
@@ -50,7 +57,7 @@ QCheckBox::indicator {
   border: 2px solid;
   border-radius: 3px;
   &:unchecked {
-    border-color: $not-selected-color;
+    border-color: $border;
   }
   &:disabled {
     border-color: $neutral;
@@ -75,6 +82,9 @@ QWidget {
   }
   &[cssClass~='left-shift'] {
     margin: 5px 0px 5px 20px;
+  }
+  &[cssClass~='right-shift'] {
+    margin: 5px 20px 5px 0px;
   }
 }
 
@@ -127,9 +137,7 @@ QTabBar::tab {
 QPushButton {
   background-color: $background;
   color: $primary;
-  border-width: 3px;
-  border-color: $primary;
-  border-style: solid;
+  border: 3px solid $primary;
   border-radius: 7px;
   padding: 3px;
   padding-left: 5px;
@@ -149,6 +157,14 @@ QPushButton {
       background-color: $secondary;
       border-color: $secondary;
     }
+    &[cssClass~='destructive'] {
+      background-color: $destructive;
+      color: $background;
+      &:pressed {
+        background-color: $destructive;
+        border-color: $destructive;
+      }
+    }
   }
   &[cssClass~='no-border'] {
     border-width: 0;
@@ -156,12 +172,23 @@ QPushButton {
     padding-left: 1px;
     padding-right: 1px;
   }
+  &[cssClass~='round'] {
+    border-radius: 20px;
+  }
   &[cssClass~='secondary'] {
     color: $secondary;
     border-color: $secondary;
     &:pressed {
       color: $primary;
       border-color: $primary;
+    }
+  }
+  &[cssClass~='destructive'] {
+    color: $destructive;
+    border-color: $destructive;
+    &:pressed {
+      color: $destructive;
+      border-color: $destructive;
     }
   }
   /* for teams */

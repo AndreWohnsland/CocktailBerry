@@ -25,6 +25,12 @@
 *[cssClass~='right'] {
   text-align: right; }
 
+*[cssClass~='mr'] {
+  margin-right: 10px; }
+
+*[cssClass~='ml'] {
+  margin-left: 10px; }
+
 #informationLabel {
   padding: 5px 25px 5px 25px; }
 
@@ -34,7 +40,7 @@ QCheckBox::indicator {
   border: 2px solid;
   border-radius: 3px; }
   QCheckBox::indicator:unchecked {
-    border-color: #cd0000; }
+    border-color: #6f6f87; }
   QCheckBox::indicator:disabled {
     border-color: #5761a1; }
   QCheckBox::indicator:checked {
@@ -53,6 +59,8 @@ QWidget {
     color: #ec407a; }
   QWidget[cssClass~='left-shift'] {
     margin: 5px 0px 5px 20px; }
+  QWidget[cssClass~='right-shift'] {
+    margin: 5px 20px 5px 0px; }
 
 QTabWidget::pane {
   border: 1px solid #6f6f87;
@@ -95,9 +103,7 @@ QTabBar::tab {
 QPushButton {
   background-color: #0d0d0d;
   color: #3a4cbf;
-  border-width: 3px;
-  border-color: #3a4cbf;
-  border-style: solid;
+  border: 3px solid #3a4cbf;
   border-radius: 7px;
   padding: 3px;
   padding-left: 5px;
@@ -114,17 +120,31 @@ QPushButton {
     QPushButton[cssClass~='btn-inverted']:checked, QPushButton[cssClass~='btn-inverted']:pressed {
       background-color: #ec407a;
       border-color: #ec407a; }
+    QPushButton[cssClass~='btn-inverted'][cssClass~='destructive'] {
+      background-color: #d00000;
+      color: #0d0d0d; }
+      QPushButton[cssClass~='btn-inverted'][cssClass~='destructive']:pressed {
+        background-color: #d00000;
+        border-color: #d00000; }
   QPushButton[cssClass~='no-border'] {
     border-width: 0;
     padding: 1px;
     padding-left: 1px;
     padding-right: 1px; }
+  QPushButton[cssClass~='round'] {
+    border-radius: 20px; }
   QPushButton[cssClass~='secondary'] {
     color: #ec407a;
     border-color: #ec407a; }
     QPushButton[cssClass~='secondary']:pressed {
       color: #3a4cbf;
       border-color: #3a4cbf; }
+  QPushButton[cssClass~='destructive'] {
+    color: #d00000;
+    border-color: #d00000; }
+    QPushButton[cssClass~='destructive']:pressed {
+      color: #d00000;
+      border-color: #d00000; }
   QPushButton[cssClass~='btn-teamone'] {
     background-color: #3a4cbf;
     border-color: #3a4cbf;
