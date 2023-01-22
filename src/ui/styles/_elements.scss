@@ -225,11 +225,11 @@ QProgressBar {
   background-color: $progressbg;
   color: $background;
   border: 2px $progressbg;
-  border-radius: 20px;
+  border-radius: 19px;
   text-align: center;
   &::chunk {
     border: 2px $progressbg;
-    border-radius: 20px;
+    border-radius: 19px;
     background-color: $progressbar;
   }
 }
