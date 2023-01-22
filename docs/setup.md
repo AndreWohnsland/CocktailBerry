@@ -62,7 +62,7 @@ Depending on your preferred use, these values can differ.
 The choice is up to you what you want to connect.
 See [here](#possible-ingredient-choice) for a possible ingredient setting.
 Select under **Bottles** your assigned ingredients for each pump over the dropdown boxes.
-In addition, you can define ingredients which are also there, but are not connected to the machine (under **Ingredients** >  _available_).
+In addition, you can define ingredients which are also there, but are not connected to the machine (under **Bottles** >  _available_).
 You can define ingredients in recipes (at _add self by hand_) which should be later added via hand, for example sticky ingredients.
 This can be ingredients, which would not be optimal for your pump, or are only very rarely used in cocktails.
 

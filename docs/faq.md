@@ -86,7 +86,7 @@ So after the installation, you just need to turn on your Pi!
 
 ### What is the Available Button
 
-If you click the available button under ingredients, you get to another window, were you can select ingredients.
+If you click the available button under bottles, you get to another window, were you can select ingredients.
 On the right side (possible) are all known ingredients, currently not on the left side.
 You can put them to the left side (available) or vice versa with the arrow buttons.
 Available means, that this ingredient exists / stands besides the maker, but is not connected to a pump.
