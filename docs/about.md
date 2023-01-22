@@ -58,7 +58,7 @@ MK1 is made with custom design housing out of bent, laser cut and welded stainle
 Mk2 is printed on a 3D printer.
 But there may be some other custom builds out there, check out the [official dashboard](https://stats-cocktailberry.streamlit.app/#existing-machines) for more impressions.
 The electronics are hidden in a waterproof housing, the pumps are within the casing.
-See [Hardware](#hardware) for a detailed list of components.
+See [Hardware](hardware.md) for a detailed list of components.
 
 **Front view:**
 
