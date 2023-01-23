@@ -184,3 +184,4 @@ tmp_*
 site/
 # ignoring automatic compiled files for now
 src/ui_elements/ui_*.py
+tmp.py
