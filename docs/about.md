@@ -7,9 +7,9 @@ Let's get started!
 
 ## tl;dr
 
-<img src="../pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
-
 User selects recipe > clicks button > cocktail is prepared > profit.
+
+<img src="../pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
 
 ## Interface
 
