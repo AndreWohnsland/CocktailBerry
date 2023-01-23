@@ -3,7 +3,7 @@ import os
 import sys
 from typing import Any, Callable, List, Optional
 from pathlib import Path
-from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton, QBoxLayout, QComboBox
+from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton, QBoxLayout, QComboBox, QFrame, QSpacerItem, QSizePolicy
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QIcon
 
@@ -26,8 +26,9 @@ class ConfigWindow(QMainWindow):
         super().__init__()
         DP_CONTROLLER.inject_stylesheet(self)
         self.mainscreen = parent
-        self.icon_path = parent.icon_path
-        self.setWindowIcon(QIcon(self.icon_path))
+        if parent is not None:
+            self.icon_path = parent.icon_path
+            self.setWindowIcon(QIcon(self.icon_path))
         self.config_objects = {}
         self._init_ui()
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
@@ -37,37 +38,51 @@ class ConfigWindow(QMainWindow):
     def _init_ui(self):
         # This is not shown (full screen) and only for dev reasons. need no translation
         self.setWindowTitle("Change Configuration")
-        self.scroll_area = QScrollArea()
-        self.widget = QWidget()
-        self.vbox = QVBoxLayout()
+        # init the central widget with its container layout
+        self.central_widget = QWidget(self)
+        self.layout_container = QVBoxLayout(self.central_widget)
+        # adds a scroll area with props, and its contents
+        self.scroll_area = QScrollArea(self.central_widget)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)  # type: ignore
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # type: ignore
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setFrameShape(QFrame.NoFrame)  # type: ignore
+        self.scroll_area.setFrameShadow(QFrame.Plain)  # type: ignore
+        self.scroll_area_widget_contents = QWidget()
+        # this is the layout inside the scroll area
+        self.vbox = QVBoxLayout(self.scroll_area_widget_contents)
 
+        # adds all the configs to the window
         for key, value in cfg.config_type.items():
             needed_type, _ = value
             self._choose_display_style(key, needed_type)
 
+        # adds a spacer
+        spacer_item = QSpacerItem(40, 30, QSizePolicy.Minimum, QSizePolicy.Fixed)  # type: ignore
+        self.vbox.addItem(spacer_item)
+        # adds the back button
         self.button_back = QPushButton("Back")
         self.button_back.clicked.connect(self.close)
         self.button_back.setMaximumSize(QSize(16777215, 200))
         self.button_back.setMinimumSize(QSize(0, 70))
         self._adjust_font(self.button_back, LARGE_FONT, True)
+        # adds the save button
         self.button_save = QPushButton("Save")
         self.button_save.clicked.connect(self._save_config)
         self.button_save.setProperty("cssClass", "btn-inverted")
         self.button_save.setMaximumSize(QSize(16777215, 200))
         self.button_save.setMinimumSize(QSize(0, 70))
         self._adjust_font(self.button_save, LARGE_FONT, True)
+        # places them side by side in a container
         self.hbox = QHBoxLayout()
         self.hbox.addWidget(self.button_back)
         self.hbox.addWidget(self.button_save)
         self.vbox.addLayout(self.hbox)
 
-        self.widget.setLayout(self.vbox)
-
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)  # type: ignore
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # type: ignore
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setWidget(self.widget)
-        self.setCentralWidget(self.scroll_area)
+        # Sets widget of scroll area, adds to container, sets main widget
+        self.scroll_area.setWidget(self.scroll_area_widget_contents)
+        self.layout_container.addWidget(self.scroll_area)
+        self.setCentralWidget(self.central_widget)
 
     def _save_config(self):
         try:
