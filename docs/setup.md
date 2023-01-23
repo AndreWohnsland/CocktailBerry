@@ -106,6 +106,8 @@ In the end, you can adjust each pump volume flow by the factor:
 
 Vnew = Vold \* expectation/output
 
+$$ \dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}} $$
+
 ## Cleaning the Machine
 
 CocktailBerry has a build in cleaning function for cleaning at the end of a party.
