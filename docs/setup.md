@@ -24,32 +24,32 @@ If any of the values got a wrong data type, a ConfigError will be thrown with th
 Names starting with `EXP` are experimental and may be changed in the future.
 They can be used at own risk of CocktailBerry not working 100% properly.
 
-| Value Name              |    Type     | Description                                                                          | Optional |
-| :---------------------- | :---------: | :----------------------------------------------------------------------------------- | :------: |
-| `UI_DEVENVIRONMENT`     |   _bool_    | Enables some development features, like a cursor                                     |    ❌     |
-| `UI_PARTYMODE`          |   _bool_    | Protects other tabs than maker tab with a password (to prevent user interaction)     |    ❌     |
-| `UI_MASTERPASSWORD`     |    _str_    | String for password, Use numbers for numpad like '1234'                              |    ❌     |
-| `UI_LANGUAGE`           |    _str_    | 2 char code for the language, see [supported languages](languages.md)                |    ❌     |
-| `UI_WIDTH`              |    _int_    | Desired interface width, default is 800                                              |    ❌     |
-| `UI_HEIGHT`             |    _int_    | Desired interface height, default is 480                                             |    ❌     |
-| `PUMP_PINS`             | _list[int]_ | List of the [Pins](#configuring-the-pins-or-used-board) where each Pump is connected |    ❌     |
-| `PUMP_VOLUMEFLOW`       | _list[int]_ | List of the according volume flow for each pump in ml/s                              |    ❌     |
-| `MAKER_BOARD`           |    _str_    | Used [board](#configuring-the-pins-or-used-board) for Hardware                       |    ❌     |
-| `MAKER_NAME`            |    _str_    | Give your CocktailBerry an own name, max 30 chars                                    |    ❌     |
-| `MAKER_NUMBER_BOTTLES`  |    _int_    | Number of displayed bottles, can use up to 16 bottles                                |    ❌     |
-| `MAKER_SEARCH_UPDATES`  |   _bool_    | Search for updates at program start                                                  |    ❌     |
-| `MAKER_THEME`           |    _str_    | Choose which [theme](#themes) to use                                                 |    ❌     |
-| `MAKER_CLEAN_TIME`      |    _int_    | Time the machine will execute the cleaning program                                   |    ❌     |
-| `MAKER_SLEEP_TIME`      |   _float_   | Interval between each time check while generating a cocktail                         |    ❌     |
-| `MAKER_CHECK_INTERNET`  |   _bool_    | Do a connection check at start and option for time adjustment window                 |    ❌     |
-| `MAKER_TUBE_VOLUME`     |    _int_    | Volume in ml to pump up when bottle is set to new, use mean if different values      |    ❌     |
-| `MICROSERVICE_ACTIVE`   |   _bool_    | Post to microservice set up by docker                                                |    ✔️     |
-| `MICROSERVICE_BASE_URL` |    _str_    | Base URL for microservice (default: http://127.0.0.1:5000)                           |    ✔️     |
-| `TEAMS_ACTIVE`          |   _bool_    | Use teams feature                                                                    |    ✔️     |
-| `TEAM_BUTTON_NAMES`     | _list[str]_ | List of format ["Team1", "Team2"]                                                    |    ✔️     |
-| `TEAM_API_URL`          |    _str_    | Endpoint of teams API, default used port by API is 8080                              |    ✔️     |
-| `EXP_MAKER_UNIT`        |    _str_    | Change the displayed unit in the maker tab (visual only\*)                           |    ✔️     |
-| `EXP_MAKER_FACTOR`      |   _float_   | Multiply the displayed unit in the maker tab (visual only\*)                         |    ✔️     |
+| Value Name              | Description                                                                          |
+| :---------------------- | :----------------------------------------------------------------------------------- |
+| `UI_DEVENVIRONMENT`     | Enables some development features, like a cursor                                     |
+| `UI_PARTYMODE`          | Protects other tabs than maker tab with a password                                   |
+| `UI_MASTERPASSWORD`     | String for password, Use numbers for numpad like '1234'                              |
+| `UI_LANGUAGE`           | 2 char code for the language, see [supported languages](languages.md)                |
+| `UI_WIDTH`              | Desired interface width, default is 800                                              |
+| `UI_HEIGHT`             | Desired interface height, default is 480                                             |
+| `PUMP_PINS`             | List of the [Pins](#configuring-the-pins-or-used-board) where each Pump is connected |
+| `PUMP_VOLUMEFLOW`       | List of the according volume flow for each pump in ml/s                              |
+| `MAKER_BOARD`           | Used [board](#configuring-the-pins-or-used-board) for Hardware                       |
+| `MAKER_NAME`            | Give your CocktailBerry an own name, max 30 chars                                    |
+| `MAKER_NUMBER_BOTTLES`  | Number of displayed bottles, can use up to 16 bottles                                |
+| `MAKER_SEARCH_UPDATES`  | Search for updates at program start                                                  |
+| `MAKER_THEME`           | Choose which [theme](#themes) to use                                                 |
+| `MAKER_CLEAN_TIME`      | Time the machine will execute the cleaning program                                   |
+| `MAKER_SLEEP_TIME`      | Interval between each time check while generating a cocktail                         |
+| `MAKER_CHECK_INTERNET`  | Do a connection check at start for time adjustment window                            |
+| `MAKER_TUBE_VOLUME`     | Volume in ml to pump up when bottle is set to new                                    |
+| `MICROSERVICE_ACTIVE`   | Post to microservice set up by docker                                                |
+| `MICROSERVICE_BASE_URL` | Base URL for microservice (default: http://127.0.0.1:5000)                           |
+| `TEAMS_ACTIVE`          | Use teams feature                                                                    |
+| `TEAM_BUTTON_NAMES`     | List of format ["Team1", "Team2"]                                                    |
+| `TEAM_API_URL`          | Endpoint of teams API, default used port by API is 8080                              |
+| `EXP_MAKER_UNIT`        | Change the displayed unit in the maker tab (visual only\*)                           |
+| `EXP_MAKER_FACTOR`      | Multiply the displayed unit in the maker tab (visual only\*)                         |
 
 \* You still need to provide the units in ml for the DB (recipes / ingredients).
 This is purely visual in the maker tab, at least for now.
