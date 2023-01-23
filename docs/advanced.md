@@ -18,8 +18,11 @@ This will handle the setup of all docker services.
 You will have to copy the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
 If you are pulling for a later version, I recommend to run this command again, since the container may change in future version. 
 
-There is now also the option to install directly from dockerhub, a GitHub action should build a new tag every release.
-Just visit [DockerHub](https://hub.docker.com/search?q=andrewo92) and pull the according images over docker or compose.
+!!! tip
+    There is now also the option to install directly from DockerHub, a GitHub action should build a new tag every release.
+    Just visit [DockerHub](https://hub.docker.com/search?q=andrewo92) and pull the according images over docker or compose and follow the instruction on DockerHub.
+    Best is to create the according `docker-compose.yaml` file on your desktop, or anywhere outside the project, since you enter your personal credentials there.
+    Building from DockerHub is probably faster and easier, but using the local self build instruction will also work.
 
 ## Microservices
 
@@ -29,7 +32,9 @@ Currently, this is limited to:
 
 - Posting the cocktail data time to a given webhook, adding header information
 - Posting the cocktail data to the official dashboard API (__v1.7.0__), see [detailed description](#posting-data-to-the-official-api)
-- Posting the export CSV as email to a receiver
+
+!!! info
+    This is optional, if you don't want this feature, you don't need the microservice.
 
 The separation was made here that a service class within CocktailBerry needs only to make a request to the microservice endpoint.
 Therefore, all logic is separated to the service, and there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithreading).
@@ -70,7 +75,6 @@ The language can be set within the `dashboard/qt-app/.env` file, codes identical
 Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language.
 The easiest way is to use the provided shell script:
 
-
 ```bash
 sh scripts/setup.sh dashboard
 ```
@@ -107,6 +111,10 @@ Dash is using pandas, depending on your Raspberry Pi OS this installation it may
 You can then access the frontend over your browser at the RPi address over your network or over http://127.0.0.1:8050 from the Pi. 
 If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
 
+!!! tip
+    Both of these images are also available at [DockerHub](https://hub.docker.com/search?q=andrewo92), so if you want to avoid build issues, you can just use the pre-build image.
+    Again, create the according `docker-compose.yaml` file on your desktop, or in a separate location.
+
 In addition, if you want to automatically open the chromium browser on start, you can add the command to the autostart file:
 
 ```bash
@@ -119,19 +127,25 @@ For this, a very easy way is to use [RapsAp](https://raspap.com/).
 
 ## Installing Docker
 
-tl;dr: Just run these commands in sequence on the pi and reboot after the first half.
+tl;dr: Just run these commands in sequence on the pi.
 
 ```bash
-sudo apt-get update && sudo apt-get upgrade
-curl -sSL https://get.docker.com | sh
-sudo usermod -aG docker ${USER}
-# reboot here or run sudo su - ${USER}
-sudo apt-get install libffi-dev libssl-dev
-sudo pip3 install docker-compose
-sudo systemctl enable docker
-# testing if it works
+sudo apt-get update && sudo apt-get -y upgrade
+sudo apt install docker.io -y
+docker --version || echo "Docker installation failed :("
+sudo usermod -aG docker $USER
+newgrp docker
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-linux-aarch64 -o ~/.docker/cli-plugins/docker-compose
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+docker compose version || echo "Compose installation failed :("
 docker run hello-world
 ```
+
+!!! info
+    Using the included script `sh scripts/install_docker.sh` will also do that for you.
+    You may have executed it at the setup of you CocktailBerry and therefore already installed docker.
 
 ## Importing Recipes from File
 
@@ -183,15 +197,16 @@ The script will check for duplicates and wait for user prompt, if there are any 
 If the data got no unit between amount and name, use the `--no-unit` or `-nu` flag.
 If the recipe use another unit than ml, please provide the according conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
 
-I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
-You can also use the build-in backup functionality in CocktailBerry for this.
+!!! warning
+    I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
+    You can also use the build-in backup functionality in CocktailBerry for this.
 
-*As a side note*: You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
-In cases of many ingredients, it's quite exhausting to select the right one. 
-Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
-The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the singe cocktails.
-This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
-
+!!! info "As a Side Note"
+    You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
+    In cases of many ingredients, it's quite exhausting to select the right one. 
+    Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
+    The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the singe cocktails.
+    This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
 
 ## Updating Local Database
 
