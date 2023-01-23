@@ -705,7 +705,7 @@ class Ui_Bottlewindow(object):
         self.LHeader = QtWidgets.QLabel(self.scrollAreaWidgetContents)
         self.LHeader.setMinimumSize(QtCore.QSize(0, 40))
         font = QtGui.QFont()
-        font.setPointSize(14)
+        font.setPointSize(16)
         self.LHeader.setFont(font)
         self.LHeader.setAlignment(QtCore.Qt.AlignCenter)
         self.LHeader.setObjectName("LHeader")
@@ -821,6 +821,7 @@ class Ui_Bottlewindow(object):
         self.LAmount11.setText(_translate("Bottlewindow", "200"))
         self.LAmount11.setProperty("cssClass", _translate("Bottlewindow", "bold"))
         self.LHeader.setText(_translate("Bottlewindow", "Füllstand der Flaschen auswählen/ändern"))
+        self.LHeader.setProperty("cssClass", _translate("Bottlewindow", "bold secondary"))
 
 
 if __name__ == "__main__":

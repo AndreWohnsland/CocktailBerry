@@ -1966,7 +1966,7 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>14</pointsize>
+              <pointsize>16</pointsize>
              </font>
             </property>
             <property name="text">
@@ -1974,6 +1974,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>bold secondary</string>
             </property>
            </widget>
           </item>
