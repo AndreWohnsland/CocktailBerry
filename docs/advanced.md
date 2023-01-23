@@ -11,6 +11,9 @@ Simply have `docker-compose` installed and run the command in the main folder fo
 docker-compose up --build -d
 ```
 
+!!! info
+    You may need to type `docker compose` instead of `docker-compose` at the latest (v2) version of compose.
+
 This will handle the setup of all docker services.
 You will have to copy the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
 If you are pulling for a later version, I recommend to run this command again, since the container may change in future version. 
