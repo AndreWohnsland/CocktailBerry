@@ -45,7 +45,9 @@ class DialogHandler():
         yes_text = self.__choose_language("yes_button")
         no_text = self.__choose_language("no_button")
         yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)  # type: ignore
-        msg_box.addButton(no_text, QMessageBox.NoRole)  # type: ignore
+        yes_button.setProperty("cssClass", "btn-inverted")
+        no_button = msg_box.addButton(no_text, QMessageBox.NoRole)  # type: ignore
+        no_button.setProperty("cssClass", "btn-inverted")
         style_sheet = str(DIRPATH / "ui" / "styles" / f"{cfg.MAKER_THEME}.css")
         with open(style_sheet, "r", encoding="utf-8") as file_handler:
             msg_box.setStyleSheet(file_handler.read())
@@ -174,9 +176,9 @@ class DialogHandler():
         """Informs user that the recipe got no according ingredients"""
         self.__output_language_dialog("recipe_at_least_one_ingredient")
 
-    def say_all_data_exported(self):
+    def say_all_data_exported(self, file_path: str):
         """Informs user that all data have been exported"""
-        self.__output_language_dialog("all_data_exported")
+        self.__output_language_dialog("all_data_exported", file_path=file_path)
 
     def say_not_enough_ingredient_volume(self, ingredient_name: str, level: int, volume: int):
         """Informs user that the ingredient got not enough volume for cocktail"""
@@ -274,6 +276,11 @@ class DialogHandler():
         message = self.__choose_language("ask_adjust_time")
         return self.user_okay(message)
 
+    def ask_to_export_data(self):
+        """Asks the user if he wants to export the data"""
+        message = self.__choose_language("ask_export_data")
+        return self.user_okay(message)
+
 
 class UiLanguage():
     """Class to set the UI language to the appropriate Language"""
@@ -298,6 +305,24 @@ class UiLanguage():
         """Returns cocktail header dummy"""
         return self.__choose_language("cocktail_dummy", "maker")
 
+    def get_add_text(self) -> str:
+        """Returns the add text"""
+        return self.__choose_language("add_button")
+
+    def get_change_text(self) -> str:
+        """Returns the add text"""
+        return self.__choose_language("change_button")
+
+    def get_config_description(self, config_name: str) -> str:
+        """Returns the according description for the configuration.
+        Returns empty string if there was nothing found
+        """
+        try:
+            return self.__choose_language(config_name, "settings_dialog")
+        # if there is nothing for this settings, we will get an attribute error
+        except AttributeError:
+            return ""
+
     def adjust_mainwindow(self, w):
         """Translates all needed elements of the main window (cocktail maker)"""
         window = "main_window"
@@ -315,21 +340,23 @@ class UiLanguage():
             (w.PBZubereiten_custom, "prepare_button"),
             (w.PBZeinzelnd, "single_ingredient_button"),
             (w.PBAvailable, "available_button"),
-            (w.PBZaktualisieren, "change_button"),
-            (w.PBZutathinzu, "add_button"),
             (w.CHBHand, "handadd_check_label"),
             (w.LIngredient, "ingredient_label"),
             (w.LAlcoholLevel, "alcohol_level_label"),
             (w.LBottleVolume, "bottle_volume_label"),
             (w.LRHandAdd, "hand_add_label"),
-            (w.PBRezeptaktualisieren, "change_button"),
-            (w.PBRezepthinzu, "add_button"),
-            (w.PBBelegung, "change_button"),
             (w.PBFlanwenden, "renew_button"),
             (w.virgin_checkbox, "activate_virgin"),
             (w.offervirgin_checkbox, "virgin_possibility"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
+
+        for ui_element, text_name in [
+            (w.PBZutathinzu, "add_button"),
+            (w.PBRezepthinzu, "add_button"),
+            (w.PBBelegung, "change_button"),
+        ]:
+            ui_element.setText(self.__choose_language(text_name))
 
     def adjust_available_windows(self, w):
         """Translates all needed elements of the available window"""
@@ -355,6 +382,8 @@ class UiLanguage():
         # w.LHeader.setText(self.__choose_language(window["header_label"], cocktail_type=cocktail_type))
         if cocktail_type.lower() == "cleaning":
             cocktail_type = self.__choose_language("cleaning_label", window)
+        elif cocktail_type.lower() == "renew":
+            cocktail_type = self.__choose_language("bottle_renew_label", window)
         w.LHeader.setText(cocktail_type)
 
     def adjust_bonusingredient_screen(self, w):
@@ -398,6 +427,7 @@ class UiLanguage():
             (w.button_calibration, "calibration"),
             (w.button_reboot, "reboot"),
             (w.button_shutdown, "shutdown"),
+            (w.button_export, "export"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 

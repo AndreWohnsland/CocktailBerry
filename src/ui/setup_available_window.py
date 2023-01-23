@@ -43,9 +43,9 @@ class AvailableWindow(QMainWindow, Ui_available):
         ingredient_names = [self.LWVorhanden.item(i).text() for i in range(self.LWVorhanden.count())]
         DB_COMMANDER.insert_multiple_existing_handadd_ingredients_by_name(ingredient_names)
         # reloads the maker screen and updates the shown available recipes
-        self.mainscreen.LWMaker.clear()
+        DP_CONTROLLER.clear_list_widget_maker(self.mainscreen)
         evaluate_recipe_maker_view(self.mainscreen)
-        DP_CONTROLLER.clear_recipe_data_maker(self.mainscreen)
+        DP_CONTROLLER.clear_recipe_data_maker(self.mainscreen, False)
         self.close()
 
     def _change_ingredient(self, lw_to_add, lw_removed):

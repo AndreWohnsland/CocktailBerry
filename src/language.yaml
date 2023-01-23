@@ -77,8 +77,8 @@ dialog:
     en: 'You need to use at least one ingredient!'
     de: 'Es muss mindestens eine Zutat eingetragen sein!'
   all_data_exported:
-    en: 'All data was exported and amount was reset!'
-    de: 'Alle Daten wurden exportiert und die Mengen zurückgesetzt!'
+    en: 'All data was exported and amount was reset! File is at: {file_path}'
+    de: 'Alle Daten wurden exportiert und die Mengen zurückgesetzt! Datei ist unter: {file_path}'
   not_enough_ingredient_volume:
     en: '{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left.'
     de: '{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden.'
@@ -148,6 +148,9 @@ dialog:
   python_deprecated:
     en: 'Your system Python is {sys_python}. In the future, {program_python} is required. Please upgrade, otherwise a future CocktailBerry update will break your program.'
     de: 'Die Python Version des Systems is {sys_python}. In Zukunft wird {program_python} benötigt. Bitte upgrade diese bald, sonst wird mit einem kommenden Update CocktailBerry nicht mehr funktionieren.'
+  ask_export_data:
+    en: 'Export cocktail and ingredient data, as well reset possible values?'
+    de: 'Cocktail und Zutaten Daten exportieren und mögliche Werte zurücksetzen?'
 
 # Change of language in UI elements
 ui:
@@ -159,6 +162,12 @@ ui:
     enter_button:
       en: 'Enter'
       de: 'Eintragen'
+    change_button:
+      en: 'change'
+      de: 'ändern'
+    add_button:
+      en: 'add'
+      de: 'hinzufügen'
     close_button:
       en: 'Close'
       de: 'Schließen'
@@ -200,32 +209,26 @@ ui:
       en: 'Alcohol (in %)'
       de: 'Alkoholgehalt (in %)'
     bottle_volume_label:
-      en: 'Bottle Volume (ml)'
+      en: 'Bottle volume (ml)'
       de: 'Flaschenvolumen (ml)'
     single_ingredient_button:
       en: 'Spend single ingredient'
-      de: 'Einzelne Zutat Ausgeben'
+      de: 'Einzelne Zutat ausgeben'
     handadd_check_label:
       en: 'Only add self by hand:'
       de: 'Nur selbst hinzufügen:'
     available_button:
       en: 'available'
       de: 'verfügbar'
-    change_button:
-      en: 'change'
-      de: 'ändern'
-    add_button:
-      en: 'add'
-      de: 'hinzufügen'
     hand_add_label:
       en: 'Add self by hand:'
       de: 'Selbst hinzufügen:'
     renew_button:
-      en: 'apply new bottles'
-      de: 'neue Flaschen anwenden'
+      en: 'apply'
+      de: 'anwenden'
     virgin_possibility:
-      en: 'Allow Virgin Option'
-      de: 'Virgin Option erlauben'
+      en: 'Allow virgin'
+      de: 'Virgin erlauben'
     activate_virgin:
       en: 'Virgin (no alcohol)'
       de: 'Virgin (kein Alkohol)'
@@ -262,6 +265,9 @@ ui:
     cleaning_label:
       en: 'Cleaning'
       de: 'Reinigen'
+    bottle_renew_label:
+      en: 'Renewing bottles'
+      de: 'Flaschen erneuern'
 
   ##### BONUSINGREDIENT SCREEN #####
   # all values for bonusingredient screen
@@ -304,8 +310,8 @@ ui:
       en: 'Cleaning'
       de: 'Reinigen'
     config:
-      en: 'Change Config'
-      de: 'Einstellungen Ändern'
+      en: 'Configuration'
+      de: 'Einstellungen'
     calibration:
       en: 'Calibration'
       de: 'Kalibrierung'
@@ -324,6 +330,9 @@ ui:
     restore:
       en: 'Restore'
       de: 'Wiederherstellen'
+    export:
+      en: 'Data Export'
+      de: 'Datenexport'
 
   ##### DATE PICKER WINDOW #####
   # all values for date picker window
@@ -338,3 +347,80 @@ ui:
     header:
       en: 'Enter Password'
       de: 'Passwort eingeben:'
+
+  ##### SETTINGS WINDOW #####
+  # all values for settings window
+  # Use same names as config names
+  settings_dialog:
+    UI_DEVENVIRONMENT:
+      en: 'Activates the development setting'
+      de: 'Schaltet die Entwicklungseinstellung ein'
+    UI_PARTYMODE:
+      en: 'Protects other tabs than maker with password'
+      de: 'Schützt alle Tabs außer Maker Tab mit Passwort'
+    UI_MASTERPASSWORD:
+      en: 'Password for some actions'
+      de: 'Passwort für manche Aktionen'
+    UI_LANGUAGE:
+      en: 'Displayed language of the program'
+      de: 'Spracheinstellung vom Programm'
+    UI_WIDTH:
+      en: 'Width of the application'
+      de: 'Breite des Programms'
+    UI_HEIGHT:
+      en: 'Height of the application'
+      de: 'Höhe des Programms'
+    PUMP_PINS:
+      en: 'Pin number of each connected pump'
+      de: 'Pin Nummer für jede verbunden Pumpe'
+    PUMP_VOLUMEFLOW:
+      en: 'Volume flow in ml/s for according pump'
+      de: 'Volumenstrom in ml/s der zugehörigen Pumpe'
+    MAKER_NAME:
+      en: 'Name of your CocktailBerry machine'
+      de: 'Name von deiner CocktailBerry Maschine'
+    MAKER_NUMBER_BOTTLES:
+      en: 'Number of bottles of the machine'
+      de: 'Flaschenanzahl der Maschine'
+    MAKER_CLEAN_TIME:
+      en: 'Time in seconds the cleaning program is executed'
+      de: 'Zeit in Sekunden, die das Reinigungsprogramm ausgeführt wird'
+    MAKER_SLEEP_TIME:
+      en: 'Refresh interval between each volume calculation'
+      de: 'Abtastintervall zwischen den Volumenberechnungen'
+    MAKER_SEARCH_UPDATES:
+      en: 'Search for updates, if available internet connection'
+      de: 'Sucht nach Updates, wenn Internetverbindung besteht'
+    MAKER_BOARD:
+      en: 'Type of microcomputer / board used'
+      de: 'Typ des Microcomputers / Boards'
+    MAKER_THEME:
+      en: 'Color theme of the application'
+      de: 'Farbeinstellung des Programms'
+    MAKER_CHECK_INTERNET:
+      en: 'Checks if machine is connected to the internet at startup'
+      de: 'Prüft ob beim Programmstart eine Internetverbindung besteht'
+    MAKER_TUBE_VOLUME:
+      en: 'Empty tube volume from bottle to pump'
+      de: 'Leeres Schlauchvolumen von Flasche zu Pumpe'
+    MICROSERVICE_ACTIVE:
+      en: 'Activates the interaction with the microservice'
+      de: 'Aktiviert die Interaktion mit dem Microservice'
+    MICROSERVICE_BASE_URL:
+      en: 'URL address for the microservice'
+      de: 'URL Adresse des Microservice'
+    TEAMS_ACTIVE:
+      en: 'Activates the team function'
+      de: 'Aktiviert die Team Funktion'
+    TEAM_BUTTON_NAMES:
+      en: 'Names of the teams'
+      de: 'Name der Teams'
+    TEAM_API_URL:
+      en: 'URL address for teams API'
+      de: 'URL Adresse der Teams API'
+    EXP_MAKER_UNIT:
+      en: 'Unit to show in the maker tab for volume'
+      de: 'Anzeigeeinheit der Volumen im Maker Tab'
+    EXP_MAKER_FACTOR:
+      en: 'Multiplication factor for the displayed volumes in the maker tab'
+      de: 'Multiplikationsfaktor für die angezeigten Volumen im Maker Tab'

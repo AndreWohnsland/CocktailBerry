@@ -1,4 +1,3 @@
-$not-selected-color: rgb(205, 0, 0);
 $selected-color: rgb(0, 174, 75);
 $scrollbar-border-radius: 15px;
 $default-element-border: $element-border solid $border;
@@ -30,7 +29,32 @@ $default-element-border: $element-border solid $border;
   padding-right: 10px;
 }
 
+*[cssClass~='center'] {
+  text-align: center;
+}
+
+*[cssClass~='right'] {
+  text-align: right;
+}
+
+*[cssClass~='mr'] {
+  margin-right: 10px;
+}
+
+*[cssClass~='ml'] {
+  margin-left: 10px;
+}
+
+*[cssClass~='mt'] {
+  margin-top: 5px;
+}
+
+*[cssClass~='mb'] {
+  margin-bottom: 5px;
+}
+
 // specific classes
+// Information dialog
 #informationLabel {
   padding: 5px 25px 5px 25px;
 }
@@ -42,10 +66,10 @@ QCheckBox::indicator {
   border: 2px solid;
   border-radius: 3px;
   &:unchecked {
-    border-color: $not-selected-color;
+    border-color: $border;
   }
   &:disabled {
-    border-color: $neutral;
+    border-color: $background;
   }
   &:checked {
     image: url(./src/ui_elements/check.png);
@@ -67,6 +91,9 @@ QWidget {
   }
   &[cssClass~='left-shift'] {
     margin: 5px 0px 5px 20px;
+  }
+  &[cssClass~='right-shift'] {
+    margin: 5px 20px 5px 0px;
   }
 }
 
@@ -119,9 +146,7 @@ QTabBar::tab {
 QPushButton {
   background-color: $background;
   color: $primary;
-  border-width: 3px;
-  border-color: $primary;
-  border-style: solid;
+  border: 3px solid $primary;
   border-radius: 7px;
   padding: 3px;
   padding-left: 5px;
@@ -141,6 +166,55 @@ QPushButton {
       background-color: $secondary;
       border-color: $secondary;
     }
+    &[cssClass~='destructive'] {
+      background-color: $destructive;
+      color: $background;
+      &:pressed {
+        background-color: $destructive;
+        border-color: $destructive;
+      }
+    }
+    &[cssClass~='neutral'] {
+      background-color: $neutral;
+      color: $background;
+      &:pressed {
+        background-color: $neutral;
+        border-color: $neutral;
+      }
+    }
+  }
+  &[cssClass~='no-border'] {
+    border-width: 0;
+    padding: 1px;
+    padding-left: 1px;
+    padding-right: 1px;
+  }
+  &[cssClass~='round'] {
+    border-radius: 20px;
+  }
+  &[cssClass~='secondary'] {
+    color: $secondary;
+    border-color: $secondary;
+    &:pressed {
+      color: $primary;
+      border-color: $primary;
+    }
+  }
+  &[cssClass~='destructive'] {
+    color: $destructive;
+    border-color: $destructive;
+    &:pressed {
+      color: $destructive;
+      border-color: $destructive;
+    }
+  }
+  &[cssClass~='neutral'] {
+    color: $neutral;
+    border-color: $neutral;
+    &:pressed {
+      color: $neutral;
+      border-color: $neutral;
+    }
   }
   /* for teams */
   &[cssClass~='btn-teamone'] {
@@ -159,18 +233,12 @@ QProgressBar {
   background-color: $progressbg;
   color: $background;
   border: 2px $progressbg;
-  border-radius: 5px;
+  border-radius: 19px;
   text-align: center;
   &::chunk {
     border: 2px $progressbg;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-radius: 19px;
     background-color: $progressbar;
-    /*background-color: rgb(0, 255, 132);
-    width: 40px;
-    margin: 0.5px;*/
   }
 }
 

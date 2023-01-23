@@ -18,6 +18,7 @@ from src.tabs import bottles
 from src.programs.calibration import run_calibration
 from src.machine.controller import MACHINE
 from src.logger_handler import LogFiles, LoggerHandler
+from src.save_handler import SAVE_HANDLER
 
 
 _ROOT_PATH = Path(__file__).parents[2].absolute()
@@ -50,6 +51,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_calibration.clicked.connect(self._open_calibration)
         self.button_backup.clicked.connect(self._create_backup)
         self.button_restore.clicked.connect(self._upload_backup)
+        self.button_export.clicked.connect(SAVE_HANDLER.export_data)
 
         self.config_window: Optional[ConfigWindow] = None
         UI_LANGUAGE.adjust_option_window(self)
@@ -106,7 +108,6 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         for _file in _NEEDED_FILES:
             shutil.copy(_ROOT_PATH / _file, backup_folder)
         DP_CONTROLLER.say_backup_created(str(backup_folder))
-        self.close()
 
     def _upload_backup(self):
         """Prompts the user for a folder path to load the backup from.

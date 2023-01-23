@@ -1,6 +1,7 @@
 # Advanced Topics
 
 Here you can find some advanced features of CocktailBerry, which you can optionally use.
+Take note that none of this section is required to run the base program.
 
 ## Usage of Services
 
@@ -10,35 +11,69 @@ Simply have `docker-compose` installed and run the command in the main folder fo
 docker-compose up --build -d
 ```
 
-This will handle the setup of all docker services. You will have to copy the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully. If you are pulling for a later version, I recommend to run this command again, since the container may change in future version. 
+!!! info
+    You may need to type `docker compose` instead of `docker-compose` at the latest (v2) version of compose.
 
-There is now also the option to install directly from dockerhub, a GitHub action should build a new tag every release. Just visit [DockerHub](https://hub.docker.com/search?q=andrewo92) and pull the according images over docker or compose.
+This will handle the setup of all docker services.
+You will have to copy the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
+If you are pulling for a later version, I recommend to run this command again, since the container may change in future version. 
+
+!!! tip
+    There is now also the option to install directly from DockerHub, a GitHub action should build a new tag every release.
+    Just visit [DockerHub](https://hub.docker.com/search?q=andrewo92) and pull the according images over docker or compose and follow the instruction on DockerHub.
+    Best is to create the according `docker-compose.yaml` file on your desktop, or anywhere outside the project, since you enter your personal credentials there.
+    Building from DockerHub is probably faster and easier, but using the local self build instruction will also work.
 
 ## Microservices
 
-As a further addition since __version 1.1.0__, there is the option to run a microservice within docker which handles some networking topics. Cocktail data currently includes cocktail name, produced volume, current time, used language in config and your machines name.
+As a further addition since __version 1.1.0__, there is the option to run a microservice within docker which handles some networking topics.
+Cocktail data currently includes cocktail name, produced volume, ingredients, current time, used language in config and your machines name.
 Currently, this is limited to:
 
-- Posting the cocktail data time to a given webhook
+- Posting the cocktail data time to a given webhook, adding header information
 - Posting the cocktail data to the official dashboard API (__v1.7.0__), see [detailed description](#posting-data-to-the-official-api)
-- Posting the export CSV as email to a receiver
 
-The separation was made here that a service class within CocktailBerry needs only to make a request to the microservice endpoint. Therefore, all logic is separated to the service, and there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithreading). In the future, new services can be added easily to the docker container to execute different tasks. One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktail-maker-now-with-home-assistant). The service will also temporary store the data within a database, if there was no connection to the endpoint, and try later again. This way, no data will get lost in the void.
+!!! info
+    This is optional, if you don't want this feature, you don't need the microservice.
+
+The separation was made here that a service class within CocktailBerry needs only to make a request to the microservice endpoint.
+Therefore, all logic is separated to the service, and there is no need for multiple worker to not block the thread when the webhook endpoint is not up (Which would result in a delay of the display without multithreading).
+In the future, new services can be added easily to the docker container to execute different tasks.
+One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktailberry-now-with-home-assistant).
+The service will also temporary store the data within a database, if there was no connection to the endpoint, and try later again.
+This way, no data will get lost in the void.
 
 ## Posting Data to the Official API
 
-When the microservice is active, you can use it not to only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) to submit your data. It will then appear on the [official dashboard](https://stats-cocktailberry.streamlitapp.com/). Don't worry, no private data is included, only some production data. A detailed write down [can be found on the dashboard site](https://stats-cocktailberry.streamlitapp.com#how-to-participate) how you will receive your API key. You need to change the default `API_KEY` value in the `microservice/.env` file to the one you received after the submission. After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
+When the microservice is active, you can use it not to only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) to submit your data.
+It will then appear on the [official dashboard](https://stats-cocktailberry.streamlitapp.com/).
+Don't worry, no private data is included, only some production data.
+A detailed write down [can be found on the dashboard site](https://stats-cocktailberry.streamlitapp.com#how-to-participate) how you will receive your API key.
+You need to change the default `API_KEY` value in the `microservice/.env` file to the one you received after the submission.
+After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
 
 ## Dashboard with Teams
 
-With __version 1.2.0__, there is a team feature implemented into CocktailBerry. If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to. The names of the teams, as well the URL of the dashboard device, can be specified within the config. CocktailBerry will then send the information to the Teams API. The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team. In addition, there is the option to display all time data of the leader board. By default, the latest 24 hours, so mostly this party, will be shown. You should use a second device for the API / the dashboard for easy display on another screen.
+With __version 1.2.0__, there is a team feature implemented into CocktailBerry.
+If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to.
+The names of the teams, as well the URL of the dashboard device, can be specified within the config.
+CocktailBerry will then send the information to the teams API.
+The Dashboard will use the API to display the current status in either amount of cocktails or volume of cocktails per team.
+In addition, there is the option to display all time data of the leader board.
+By default, the latest 24 hours, so mostly this party, will be shown.
+You should use a second device for the API / the dashboard for easy display on another screen.
 
 <img src="../pictures/teams_ui.png" alt="Maker" width="600"/>
 
 <img src="../pictures/dashboard.png" alt="Maker" width="600"/>
 
-The **recommended way** is to use a second Raspberry Pi with a touchscreen attached. Then build the docker-compose file and execute the `dashboard/qt-app/main.py`. In before, you should install the `requirements.txt` within the same folder using pip. See [Usage of Services](#usage-of-services) how to set up docker-compose in general. The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](languages.md#supported-languages). Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language. The easiest way is to use the provided shell script:
-
+The **recommended way** is to use a second Raspberry Pi with a touchscreen attached.
+Then build the docker-compose file and execute the `dashboard/qt-app/main.py`.
+In before, you should install the `requirements.txt` within the same folder using pip.
+See [Usage of Services](#usage-of-services) how to set up docker-compose in general.
+The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](languages.md#supported-languages).
+Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language.
+The easiest way is to use the provided shell script:
 
 ```bash
 sh scripts/setup.sh dashboard
@@ -71,7 +106,14 @@ cp .env.example .env
 python index.py
 ```
 
-This will build up the backend API, as well as a Dash frontend Web App. Dash is using pandas, depending on your Raspberry Pi OS this installation it may run into issues, especially if running within the Docker container. You can then access the frontend over your browser at the RPi address over your network or over http://127.0.0.1:8050 from the Pi. If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
+This will build up the backend API, as well as a Dash frontend Web App.
+Dash is using pandas, depending on your Raspberry Pi OS this installation it may run into issues, especially if running within the Docker container.
+You can then access the frontend over your browser at the RPi address over your network or over http://127.0.0.1:8050 from the Pi. 
+If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
+
+!!! tip
+    Both of these images are also available at [DockerHub](https://hub.docker.com/search?q=andrewo92), so if you want to avoid build issues, you can just use the pre-build image.
+    Again, create the according `docker-compose.yaml` file on your desktop, or in a separate location.
 
 In addition, if you want to automatically open the chromium browser on start, you can add the command to the autostart file:
 
@@ -79,23 +121,31 @@ In addition, if you want to automatically open the chromium browser on start, yo
 echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
 ```
 
-You can also set the second device up as a Wi-Fi hot-spot. This will give you the possibility to always connect to the dashboard, even if no connection to another home network or internet is available. For this, a very easy way is to use [RapsAp](https://raspap.com/).
+You can also set the second device up as a Wi-Fi hot-spot.
+This will give you the possibility to always connect to the dashboard, even if no connection to another home network or internet is available.
+For this, a very easy way is to use [RapsAp](https://raspap.com/).
 
 ## Installing Docker
 
-tl;dr: Just run these commands in sequence on the pi and reboot after the first half.
+tl;dr: Just run these commands in sequence on the pi.
 
 ```bash
-sudo apt-get update && sudo apt-get upgrade
-curl -sSL https://get.docker.com | sh
-sudo usermod -aG docker ${USER}
-# reboot here or run sudo su - ${USER}
-sudo apt-get install libffi-dev libssl-dev
-sudo pip3 install docker-compose
-sudo systemctl enable docker
-# testing if it works
+sudo apt-get update && sudo apt-get -y upgrade
+sudo apt install docker.io -y
+docker --version || echo "Docker installation failed :("
+sudo usermod -aG docker $USER
+newgrp docker
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-linux-aarch64 -o ~/.docker/cli-plugins/docker-compose
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+docker compose version || echo "Compose installation failed :("
 docker run hello-world
 ```
+
+!!! info
+    Using the included script `sh scripts/install_docker.sh` will also do that for you.
+    You may have executed it at the setup of you CocktailBerry and therefore already installed docker.
 
 ## Importing Recipes from File
 
@@ -147,15 +197,16 @@ The script will check for duplicates and wait for user prompt, if there are any 
 If the data got no unit between amount and name, use the `--no-unit` or `-nu` flag.
 If the recipe use another unit than ml, please provide the according conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
 
-I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
-You can also use the build-in backup functionality in CocktailBerry for this.
+!!! warning
+    I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
+    You can also use the build-in backup functionality in CocktailBerry for this.
 
-*As a side note*: You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
-In cases of many ingredients, it's quite exhausting to select the right one. 
-Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
-The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the singe cocktails.
-This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
-
+!!! info "As a Side Note"
+    You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
+    In cases of many ingredients, it's quite exhausting to select the right one. 
+    Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
+    The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the singe cocktails.
+    This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
 
 ## Updating Local Database
 

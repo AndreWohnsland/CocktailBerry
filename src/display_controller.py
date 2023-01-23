@@ -2,7 +2,12 @@ from pathlib import Path
 from typing import Callable, List, Literal, Optional, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QLineEdit, QPushButton, QListWidget, QCheckBox, QMainWindow, QSlider, QProgressBar, QListWidgetItem
+from PyQt5.QtWidgets import (
+    QWidget, QComboBox, QLabel,
+    QLineEdit, QPushButton, QListWidget,
+    QCheckBox, QMainWindow, QProgressBar,
+    QListWidgetItem
+)
 
 from src.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
@@ -44,20 +49,18 @@ class DisplayController(DialogHandler):
             return user_data
         return list_widget.currentItem().text()
 
-    def get_ingredient_data(self, lineedit_list: List[QLineEdit], checkbox: QCheckBox, list_widget: QListWidget):
+    def get_ingredient_data(self, w: Ui_MainWindow):
         """Returns an Ingredient Object from the ingredient data fields"""
-        ingredient_name, alcohol_level, volume = self.get_lineedit_text(lineedit_list)
+        line_edits, checkbox, list_widget = self.get_ingredient_fields(w)
+        ingredient_name, alcohol_level, volume = self.get_lineedit_text(list(line_edits))
         hand_add = checkbox.isChecked()
         selected_ingredient = self.get_list_widget_selection(list_widget)
         return Ingredient(-1, ingredient_name, int(alcohol_level), int(volume), 0, hand_add, selected=selected_ingredient)
 
     def get_cocktail_data(self, w: Ui_MainWindow) -> Tuple[str, int, float]:
         """Returns [name, volume, factor] from maker"""
-        cocktail_volume = int(w.LCustomMenge.text())
-        # when pulling, the slider can reach every integer value (eg, 1,2,...)
-        # but whe only want step size of *5 -> therefore it ranges from -5 to 5 but we
-        # multiply by *5 to get an effective range from -25 to 25 with a step size of 5
-        alcohol_factor: float = 1 + (w.HSIntensity.value() * 5 / 100)
+        cocktail_volume = shared.cocktail_volume
+        alcohol_factor = shared.alcohol_factor
         # If virgin is selected, just set alcohol_factor to 0
         if w.virgin_checkbox.isChecked():
             alcohol_factor = 0.0
@@ -76,9 +79,11 @@ class DisplayController(DialogHandler):
         comment: str = w.LEKommentar.text()
         return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, virgin, comment
 
-    def validate_ingredient_data(self, lineedit_list: List[QLineEdit]) -> bool:
+    def validate_ingredient_data(self, w: Ui_MainWindow) -> bool:
         """Validate the data from the ingredient window"""
-        if self._lineedit_is_missing(lineedit_list):
+        line_edits, _, _ = self.get_ingredient_fields(w)
+        lineedit_list = line_edits
+        if self._lineedit_is_missing(list(lineedit_list)):
             self.say_some_value_missing()
             return False
         _, ingredient_percentage, ingredient_volume = lineedit_list
@@ -169,13 +174,9 @@ class DisplayController(DialogHandler):
         }
         w.tabWidget.setCurrentIndex(tabs.get(tab, 0))
 
-    # Slider
-    def __set_slider_value(self, slider: QSlider, value: int):
-        slider.setValue(value)
-
-    def reset_alcohol_slider(self, w: Ui_MainWindow):
+    def reset_alcohol_factor(self):
         """Sets the alcohol slider to default (100%) value"""
-        self.__set_slider_value(w.HSIntensity, 0)
+        shared.alcohol_factor = 1.0
 
     def reset_virgin_setting(self, w: Ui_MainWindow):
         w.virgin_checkbox.setChecked(False)
@@ -346,7 +347,7 @@ class DisplayController(DialogHandler):
         w.LAlkoholname.setText(cocktail.name)
         display_volume = self._decide_rounding(total_volume * cfg.EXP_MAKER_FACTOR, 20)
         w.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")
-        w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.0f}%")
+        w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.1f}%")
         display_data = cocktail.machineadds
         hand = cocktail.handadds
         # Activates or deactivates the virgin checkbox, depending on the virgin flag
@@ -396,6 +397,8 @@ class DisplayController(DialogHandler):
         w.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         w.LMenge.setText("")
         w.virgin_checkbox.setChecked(False)
+        # Also resets the alcohol factor
+        self.reset_alcohol_factor()
         if not select_other_item:
             w.LWMaker.clearSelection()
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(w), self.get_labels_maker_volume(w)):
@@ -546,6 +549,21 @@ class DisplayController(DialogHandler):
             font.setWeight(50 + is_bold * 25)
             for label in labels:
                 label.setFont(font)
+
+    def set_ingredient_add_label(self, w: Ui_MainWindow, item_selected: bool):
+        """Changes the label of the ingredient button"""
+        self._choose_button_label(w.PBZutathinzu, item_selected)
+
+    def set_recipe_add_label(self, w: Ui_MainWindow, item_selected: bool):
+        """Changes the label of the ingredient button"""
+        self._choose_button_label(w.PBRezepthinzu, item_selected)
+
+    def _choose_button_label(self, button: QPushButton, item_selected: bool):
+        """Chooses the right labeling for the button"""
+        if item_selected:
+            button.setText(UI_LANGUAGE.get_change_text())
+        else:
+            button.setText(UI_LANGUAGE.get_add_text())
 
 
 DP_CONTROLLER = DisplayController()

@@ -35,7 +35,7 @@ class Cocktail():
     enabled: bool
     virgin_available: bool
     ingredients: List[Ingredient]
-    adjusted_alcohol: int = 0
+    adjusted_alcohol: float = 0
     adjusted_amount: int = 0
     adjusted_ingredients: List[Ingredient] = field(default_factory=list, init=False)
 
@@ -75,13 +75,13 @@ class Cocktail():
             return False
         return True
 
-    def enough_fill_level(self):
+    def enough_fill_level(self) -> Union[None, tuple[str, int, int]]:
         """Checks if the needed volume is there
         Accepts if there is at least 80% of needed volume
         to be more efficient with the remainder volume in the bottle"""
         for ing in self.machineadds:
             if ing.amount * 0.8 > ing.fill_level:
-                return [ing.name, ing.fill_level, ing.amount]
+                return ing.name, ing.fill_level, ing.amount
         return None
 
     def scale_cocktail(self, amount: int, alcohol_factor: float):
@@ -97,7 +97,7 @@ class Cocktail():
             ing.amount *= factor  # type: ignore
             scaled_amount += ing.amount
             concentration += ing.amount * ing.alcohol
-        self.adjusted_alcohol = round(concentration / scaled_amount)
+        self.adjusted_alcohol = round(concentration / scaled_amount, 1)
         # scale all to desired amount
         scaling = amount / scaled_amount
         for ing in self.adjusted_ingredients:

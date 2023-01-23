@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>792</width>
     <height>625</height>
    </rect>
   </property>
@@ -70,242 +70,50 @@
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="4" column="3" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QPushButton" name="PBMminus">
-              <property name="minimumSize">
-               <size>
-                <width>60</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>60</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>22</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>–</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="LCustomMenge">
-              <property name="minimumSize">
-               <size>
-                <width>65</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>300</width>
-                <height>60</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>20</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="lineWidth">
-               <number>1</number>
-              </property>
-              <property name="text">
-               <string>200</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="LSelect_unit">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>60</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>20</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>ml</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="PBMplus">
-              <property name="minimumSize">
-               <size>
-                <width>60</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>60</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>22</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>+</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="PBZubereiten_custom">
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>500</width>
-                <height>60</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>18</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Zubereiten</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>btn-inverted</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
           <item row="4" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QPushButton" name="PBSetnull">
-              <property name="minimumSize">
-               <size>
-                <width>60</width>
-                <height>40</height>
-               </size>
+             <widget class="QCheckBox" name="virgin_checkbox">
+              <property name="enabled">
+               <bool>false</bool>
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>300</width>
                 <height>60</height>
                </size>
               </property>
               <property name="font">
                <font>
-                <pointsize>16</pointsize>
+                <pointsize>14</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
+                <strikeout>true</strikeout>
                </font>
               </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
               <property name="text">
-               <string>O</string>
+               <string>Virgin (No Alkohol)</string>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="HSIntensity">
-              <property name="minimumSize">
+              <property name="iconSize">
                <size>
-                <width>300</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
+                <width>50</width>
                 <height>50</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
+              <property name="tristate">
+               <bool>false</bool>
               </property>
-              <property name="minimum">
-               <number>-5</number>
-              </property>
-              <property name="maximum">
-               <number>5</number>
-              </property>
-              <property name="singleStep">
-               <number>1</number>
-              </property>
-              <property name="pageStep">
-               <number>1</number>
-              </property>
-              <property name="value">
-               <number>0</number>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="tickPosition">
-               <enum>QSlider::TicksBothSides</enum>
-              </property>
-              <property name="tickInterval">
-               <number>0</number>
+              <property name="cssClass" stdset="0">
+               <string>left-shift bold</string>
               </property>
              </widget>
             </item>
            </layout>
           </item>
-          <item row="1" column="0" rowspan="2">
+          <item row="1" column="0" rowspan="3">
            <widget class="QListWidget" name="LWMaker">
             <property name="maximumSize">
              <size>
@@ -316,6 +124,8 @@
             <property name="font">
              <font>
               <pointsize>20</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
             <property name="horizontalScrollBarPolicy">
@@ -329,44 +139,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="virgin_checkbox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>300</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-              <strikeout>true</strikeout>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>Virgin (No Alkohol)</string>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>50</width>
-              <height>50</height>
-             </size>
-            </property>
-            <property name="tristate">
-             <bool>false</bool>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string>left-shift bold</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3" rowspan="3" colspan="2">
+          <item row="1" column="3" rowspan="3">
            <layout class="QGridLayout" name="gridLayout_5">
             <property name="leftMargin">
              <number>0</number>
@@ -374,52 +147,7 @@
             <property name="rightMargin">
              <number>0</number>
             </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="LMenge">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>16</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>xx ml</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>lr-padding bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="12" column="0">
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="3" column="2">
+            <item row="4" column="2">
              <widget class="QLabel" name="LMZutat1">
               <property name="maximumSize">
                <size>
@@ -442,255 +170,199 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat1">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat1</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
+            <item row="1" column="0" colspan="3">
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <item>
+                 <widget class="QPushButton" name="decrease_volume">
+                  <property name="minimumSize">
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>60</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>20</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>–</string>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>bold no-border</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="LMenge">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>400</width>
+                    <height>80</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>16</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>xx ml</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>lr-padding bold</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="increase_volume">
+                  <property name="minimumSize">
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>60</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>20</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>+</string>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>bold no-border</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <item>
+                 <widget class="QPushButton" name="decrease_alcohol">
+                  <property name="minimumSize">
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>60</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>20</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>–</string>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>bold no-border secondary</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="LAlkoholgehalt">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>400</width>
+                    <height>80</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>16</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>yy %</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary lr-padding bold</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="increase_alcohol">
+                  <property name="minimumSize">
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>60</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>20</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>+</string>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>bold no-border secondary</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </item>
-            <item row="2" column="0" colspan="3">
-             <widget class="QLabel" name="LAlkoholname">
-              <property name="maximumSize">
-               <size>
-                <width>900</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>22</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LAlkoholname</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>header-underline bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="LAlkoholgehalt">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>16</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>yy %</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary lr-padding bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="2">
-             <widget class="QLabel" name="LMZutat2">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat2</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="2">
-             <widget class="QLabel" name="LMZutat3">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat3</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="2">
-             <widget class="QLabel" name="LMZutat4">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat4</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="2">
-             <widget class="QLabel" name="LMZutat5">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat5</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="2">
-             <widget class="QLabel" name="LMZutat6">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat6</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="2">
-             <widget class="QLabel" name="LMZutat7">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat7</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="2">
-             <widget class="QLabel" name="LMZutat8">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>LMZutat8</string>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>secondary</string>
-              </property>
-             </widget>
-            </item>
-            <item row="11" column="2">
+            <item row="12" column="2">
              <widget class="QLabel" name="LMZutat9">
               <property name="maximumSize">
                <size>
@@ -714,35 +386,6 @@
              </widget>
             </item>
             <item row="11" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat9">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat9</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="0" colspan="2">
              <widget class="QLabel" name="LZutat8">
               <property name="maximumSize">
                <size>
@@ -771,8 +414,8 @@
               </property>
              </widget>
             </item>
-            <item row="9" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat7">
+            <item row="12" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat9">
               <property name="maximumSize">
                <size>
                 <width>400</width>
@@ -790,7 +433,7 @@
                <enum>Qt::LeftToRight</enum>
               </property>
               <property name="text">
-               <string>LZutat7</string>
+               <string>LZutat9</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -800,94 +443,33 @@
               </property>
              </widget>
             </item>
-            <item row="8" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat6">
+            <item row="3" column="0" colspan="3">
+             <widget class="QLabel" name="LAlkoholname">
               <property name="maximumSize">
                <size>
-                <width>400</width>
+                <width>900</width>
                 <height>80</height>
                </size>
               </property>
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <pointsize>22</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
               <property name="text">
-               <string>LZutat6</string>
+               <string>LAlkoholname</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               <set>Qt::AlignCenter</set>
               </property>
               <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat5">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat5</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
+               <string>header-underline bold</string>
               </property>
              </widget>
             </item>
             <item row="6" column="0" colspan="2">
-             <widget class="QLabel" name="LZutat4">
-              <property name="maximumSize">
-               <size>
-                <width>400</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>LZutat4</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0" colspan="2">
              <widget class="QLabel" name="LZutat3">
               <property name="maximumSize">
                <size>
@@ -916,7 +498,88 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="0" colspan="2">
+            <item row="9" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat6">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat6</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="2">
+             <widget class="QLabel" name="LMZutat7">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat7</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat5">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat5</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0" colspan="2">
              <widget class="QLabel" name="LZutat2">
               <property name="maximumSize">
                <size>
@@ -945,7 +608,293 @@
               </property>
              </widget>
             </item>
+            <item row="9" column="2">
+             <widget class="QLabel" name="LMZutat6">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat6</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="2">
+             <widget class="QLabel" name="LMZutat8">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat8</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="2">
+             <widget class="QLabel" name="LMZutat3">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat3</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QLabel" name="LMZutat2">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat2</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat4">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat4</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="0">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="4" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat1">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat1</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="2">
+             <widget class="QLabel" name="LMZutat4">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat4</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="2">
+             <widget class="QLabel" name="LMZutat5">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>LMZutat5</string>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0" colspan="2">
+             <widget class="QLabel" name="LZutat7">
+              <property name="maximumSize">
+               <size>
+                <width>400</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>LZutat7</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Maximum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>15</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
+          </item>
+          <item row="4" column="3">
+           <widget class="QPushButton" name="PBZubereiten_custom">
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>60</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>1000</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>18</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Zubereiten</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted mr ml round</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -973,6 +922,8 @@
           <property name="font">
            <font>
             <pointsize>20</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
           <property name="horizontalScrollBarPolicy">
@@ -988,8 +939,8 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="9" column="1">
-           <widget class="QPushButton" name="PBAvailable">
+          <item row="8" column="1" colspan="2">
+           <widget class="QPushButton" name="PBZeinzelnd">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -998,7 +949,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>440</width>
+              <width>16777215</width>
               <height>200</height>
              </size>
             </property>
@@ -1009,76 +960,41 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
             <property name="text">
-             <string>verfügbar</string>
+             <string>Einzelne Zutat ausgeben</string>
             </property>
             <property name="cssClass" stdset="0">
-             <string>btn-inverted</string>
+             <string/>
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
-           <widget class="QPushButton" name="PBZclear">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
+          <item row="0" column="0" colspan="3">
+           <widget class="QLabel" name="LIngredient">
             <property name="maximumSize">
              <size>
-              <width>200</width>
-              <height>200</height>
+              <width>16777215</width>
+              <height>25</height>
              </size>
             </property>
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
+              <pointsize>14</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
              </font>
             </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
             <property name="text">
-             <string>clear</string>
+             <string>Zutat</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string/>
             </property>
            </widget>
           </item>
-          <item row="9" column="2">
-           <widget class="QPushButton" name="PBZnull">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>440</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>export</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="2">
+          <item row="9" column="1" colspan="2">
            <widget class="QPushButton" name="PBZutathinzu">
             <property name="minimumSize">
              <size>
@@ -1107,57 +1023,21 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="1">
-           <widget class="QPushButton" name="PBZaktualisieren">
-            <property name="minimumSize">
+          <item row="7" column="0" colspan="3">
+           <spacer name="verticalSpacer_17">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Maximum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
              <size>
-              <width>0</width>
+              <width>20</width>
               <height>40</height>
              </size>
             </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>ändern</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QPushButton" name="PBZdelete">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>del</string>
-            </property>
-           </widget>
+           </spacer>
           </item>
           <item row="5" column="0" colspan="3">
            <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -1203,7 +1083,9 @@
               </property>
               <property name="font">
                <font>
-                <pointsize>14</pointsize>
+                <pointsize>16</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
                </font>
               </property>
               <property name="alignment">
@@ -1242,124 +1124,6 @@
             </item>
            </layout>
           </item>
-          <item row="4" column="0" colspan="3">
-           <widget class="QLabel" name="LBottleVolume">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Flaschenvolume (ml)</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0" colspan="3">
-           <widget class="QPushButton" name="PBZeinzelnd">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>600</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Einzelne Zutat ausgeben</string>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string>btn-inverted</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="3">
-           <layout class="QHBoxLayout" name="horizontalLayout_24">
-            <item>
-             <spacer name="horizontalSpacer_14">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="CHBHand">
-              <property name="maximumSize">
-               <size>
-                <width>300</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>14</pointsize>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::RightToLeft</enum>
-              </property>
-              <property name="text">
-               <string>Nur selbst hinzufügen:</string>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>50</width>
-                <height>50</height>
-               </size>
-              </property>
-              <property name="tristate">
-               <bool>false</bool>
-              </property>
-              <property name="cssClass" stdset="0">
-               <string>bold</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_15">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
           <item row="3" column="0" colspan="3">
            <widget class="ClickableLineEdit" name="LEGehaltRezept">
             <property name="minimumSize">
@@ -1376,32 +1140,13 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>14</pointsize>
+              <pointsize>16</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
-            <property name="cssClass" stdset="0">
-             <string>secondary bold</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="3">
-           <widget class="ClickableLineEdit" name="LEZutatRezept">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>100</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-             </font>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
              <string>secondary bold</string>
@@ -1434,24 +1179,8 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0" colspan="3">
-           <spacer name="verticalSpacer_17">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Maximum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QLabel" name="LIngredient">
+          <item row="4" column="0" colspan="3">
+           <widget class="QLabel" name="LBottleVolume">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -1466,13 +1195,168 @@
              </font>
             </property>
             <property name="text">
-             <string>Zutat</string>
+             <string>Flaschenvolume (ml)</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
             </property>
             <property name="cssClass" stdset="0">
              <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="ClickableLineEdit" name="LEZutatRezept">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>secondary bold</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="3">
+           <layout class="QHBoxLayout" name="horizontalLayout_24">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="CHBHand">
+              <property name="maximumSize">
+               <size>
+                <width>800</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string>Nur selbst hinzufügen:</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>50</width>
+                <height>50</height>
+               </size>
+              </property>
+              <property name="tristate">
+               <bool>false</bool>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>bold center</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="9" column="0">
+           <widget class="QPushButton" name="PBZdelete">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>60</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>del</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted destructive</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QPushButton" name="PBZclear">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>60</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>clear</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>neutral btn-inverted</string>
             </property>
            </widget>
           </item>
@@ -1500,6 +1384,8 @@
               <property name="font">
                <font>
                 <pointsize>14</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
                </font>
               </property>
               <property name="text">
@@ -1518,6 +1404,8 @@
               <property name="font">
                <font>
                 <pointsize>14</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
                </font>
               </property>
               <property name="placeholderText">
@@ -1548,29 +1436,6 @@
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QPushButton" name="PBRnull">
-              <property name="maximumSize">
-               <size>
-                <width>220</width>
-                <height>100</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>16</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>export</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </item>
           <item>
@@ -1578,37 +1443,73 @@
             <item row="0" column="0">
              <layout class="QVBoxLayout" name="verticalLayout_2">
               <item>
-               <widget class="QCheckBox" name="offervirgin_checkbox">
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="text">
-                 <string>Offer Virgin</string>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>50</width>
-                  <height>50</height>
-                 </size>
-                </property>
-                <property name="tristate">
-                 <bool>false</bool>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>left-shift</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item>
+                 <widget class="QCheckBox" name="offervirgin_checkbox">
+                  <property name="maximumSize">
+                   <size>
+                    <width>300</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="text">
+                   <string>Offer Virgin</string>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>50</width>
+                    <height>50</height>
+                   </size>
+                  </property>
+                  <property name="tristate">
+                   <bool>false</bool>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>ml bold mt mb</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="CHBenabled">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::RightToLeft</enum>
+                  </property>
+                  <property name="text">
+                   <string>Enabled:</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>bold mr mt mb</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item>
                <widget class="QListWidget" name="LWRezepte">
@@ -1627,6 +1528,8 @@
                 <property name="font">
                  <font>
                   <pointsize>20</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="horizontalScrollBarPolicy">
@@ -1660,6 +1563,8 @@
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="alignment">
@@ -1830,6 +1735,8 @@
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="alignment">
@@ -1857,6 +1764,8 @@
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="alignment">
@@ -1904,6 +1813,8 @@
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="alignment">
@@ -1931,6 +1842,8 @@
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="alignment">
@@ -1958,6 +1871,8 @@
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="alignment">
@@ -1985,6 +1900,8 @@
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="alignment">
@@ -2137,34 +2054,6 @@
               </item>
               <item>
                <layout class="QGridLayout" name="gridLayout_7">
-                <item row="0" column="0">
-                 <widget class="QCheckBox" name="CHBenabled">
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>14</pointsize>
-                    <strikeout>false</strikeout>
-                   </font>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::RightToLeft</enum>
-                  </property>
-                  <property name="text">
-                   <string>Enabled:</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                  <property name="cssClass" stdset="0">
-                   <string>bold</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="2" column="0">
                  <widget class="QPushButton" name="PBdelete">
                   <property name="minimumSize">
@@ -2175,7 +2064,7 @@
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>80</width>
                     <height>60</height>
                    </size>
                   </property>
@@ -2189,6 +2078,9 @@
                   <property name="text">
                    <string>del</string>
                   </property>
+                  <property name="cssClass" stdset="0">
+                   <string>btn-inverted destructive</string>
+                  </property>
                  </widget>
                 </item>
                 <item row="1" column="0">
@@ -2201,7 +2093,7 @@
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>80</width>
                     <height>60</height>
                    </size>
                   </property>
@@ -2215,60 +2107,8 @@
                   <property name="text">
                    <string>clear</string>
                   </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QPushButton" name="PBRezeptaktualisieren">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>60</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>ändern</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QPushButton" name="PBRezepthinzu">
-                  <property name="minimumSize">
-                   <size>
-                    <width>90</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>60</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>hinzufügen</string>
-                  </property>
                   <property name="cssClass" stdset="0">
-                   <string>btn-inverted</string>
+                   <string>neutral btn-inverted</string>
                   </property>
                  </widget>
                 </item>
@@ -2283,7 +2123,7 @@
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>60</height>
+                    <height>70</height>
                    </size>
                   </property>
                   <property name="cssClass" stdset="0">
@@ -2302,6 +2142,8 @@
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="text">
@@ -2312,6 +2154,35 @@
                   </property>
                   <property name="cssClass" stdset="0">
                    <string>secondary</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1" colspan="2">
+                 <widget class="QPushButton" name="PBRezepthinzu">
+                  <property name="minimumSize">
+                   <size>
+                    <width>90</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>70</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>16</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>hinzufügen</string>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>btn-inverted</string>
                   </property>
                  </widget>
                 </item>
@@ -2348,9 +2219,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>741</width>
-             <height>788</height>
+             <y>-203</y>
+             <width>733</width>
+             <height>756</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2368,12 +2239,485 @@
             </property>
             <item>
              <layout class="QGridLayout" name="gridLayout_2">
-              <item row="5" column="1">
-               <widget class="QLabel" name="LBelegung6">
+              <item row="15" column="4" colspan="2">
+               <widget class="QComboBox" name="CBB15">
+                <property name="minimumSize">
+                 <size>
+                  <width>105</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="maxVisibleItems">
+                 <number>11</number>
+                </property>
+               </widget>
+              </item>
+              <item row="14" column="4" colspan="2">
+               <widget class="QComboBox" name="CBB14">
+                <property name="minimumSize">
+                 <size>
+                  <width>105</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="maxVisibleItems">
+                 <number>11</number>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="6">
+               <widget class="QLabel" name="bottleLabel13">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>22</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>13</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="6">
+               <widget class="QLabel" name="bottleLabel11">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>22</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>11</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="16" column="4" colspan="2">
+               <widget class="QComboBox" name="CBB16">
+                <property name="minimumSize">
+                 <size>
+                  <width>105</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="maxVisibleItems">
+                 <number>11</number>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="6">
+               <widget class="QLabel" name="bottleLabel12">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>22</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>12</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="14" column="6">
+               <widget class="QLabel" name="bottleLabel14">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>22</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>14</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="16" column="6">
+               <widget class="QLabel" name="bottleLabel16">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>22</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>16</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="15" column="6">
+               <widget class="QLabel" name="bottleLabel15">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>22</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>15</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="0">
+               <widget class="QPushButton" name="PBneu12">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>new</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="0">
+               <widget class="QPushButton" name="PBneu13">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>new</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QPushButton" name="PBneu7">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>new</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="0">
+               <widget class="QPushButton" name="PBneu11">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>new</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="PBneu2">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>new</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QPushButton" name="PBneu9">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>new</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QPushButton" name="PBneu6">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>new</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QLabel" name="LBelegung8">
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2385,13 +2729,294 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
-                 <string>LBelegung6</string>
+                 <string>LBelegung8</string>
                 </property>
                 <property name="cssClass" stdset="0">
                  <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="LBelegung1">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>LBelegung1</string>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLabel" name="LBelegung7">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>LBelegung7</string>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="PBneu1">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>new</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QProgressBar" name="ProBBelegung1">
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>1000</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="value">
+                 <number>88</number>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QLabel" name="LBelegung10">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>LBelegung10</string>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QProgressBar" name="ProBBelegung2">
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>1000</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="value">
+                 <number>50</number>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="3">
+               <widget class="QProgressBar" name="ProBBelegung3">
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>1000</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="value">
+                 <number>70</number>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="3">
+               <widget class="QProgressBar" name="ProBBelegung7">
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>1000</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="value">
+                 <number>67</number>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="3">
+               <widget class="QProgressBar" name="ProBBelegung6">
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>1000</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="value">
+                 <number>90</number>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>bold</string>
                 </property>
                </widget>
               </item>
@@ -2400,7 +3025,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2412,6 +3037,8 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
@@ -2427,7 +3054,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2439,6 +3066,8 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
@@ -2449,12 +3078,12 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QLabel" name="LBelegung3">
+              <item row="5" column="1">
+               <widget class="QLabel" name="LBelegung6">
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2466,10 +3095,12 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
-                 <string>LBelegung3</string>
+                 <string>LBelegung6</string>
                 </property>
                 <property name="cssClass" stdset="0">
                  <string>secondary bold</string>
@@ -2505,12 +3136,41 @@
                 </property>
                </widget>
               </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="LBelegung3">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>LBelegung3</string>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
               <item row="3" column="0">
                <widget class="QPushButton" name="PBneu4">
                 <property name="minimumSize">
                  <size>
                   <width>50</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2539,7 +3199,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>50</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2568,7 +3228,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>50</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2597,7 +3257,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>50</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2626,7 +3286,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2653,66 +3313,12 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
-               <widget class="QLabel" name="LBelegung9">
-                <property name="minimumSize">
-                 <size>
-                  <width>120</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>LBelegung9</string>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="4" colspan="2">
-               <widget class="QComboBox" name="CBB1">
-                <property name="minimumSize">
-                 <size>
-                  <width>105</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>ArrowCursor</cursorShape>
-                </property>
-                <property name="maxVisibleItems">
-                 <number>11</number>
-                </property>
-               </widget>
-              </item>
               <item row="7" column="0">
                <widget class="QPushButton" name="PBneu8">
                 <property name="minimumSize">
                  <size>
                   <width>50</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2736,12 +3342,12 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="LBelegung2">
+              <item row="8" column="1">
+               <widget class="QLabel" name="LBelegung9">
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2753,45 +3359,44 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
-                 <string>LBelegung2</string>
+                 <string>LBelegung9</string>
                 </property>
                 <property name="cssClass" stdset="0">
                  <string>secondary bold</string>
                 </property>
                </widget>
               </item>
-              <item row="7" column="6">
-               <widget class="QLabel" name="bottleLabel8">
+              <item row="0" column="4" colspan="2">
+               <widget class="QComboBox" name="CBB1">
                 <property name="minimumSize">
                  <size>
-                  <width>0</width>
-                  <height>40</height>
+                  <width>105</width>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
+                  <width>300</width>
                   <height>100</height>
                  </size>
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>22</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
-                <property name="text">
-                 <string>8</string>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
+                <property name="maxVisibleItems">
+                 <number>11</number>
                 </property>
                </widget>
               </item>
@@ -2800,7 +3405,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2827,12 +3432,41 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="6">
-               <widget class="QLabel" name="bottleLabel6">
+              <item row="1" column="1">
+               <widget class="QLabel" name="LBelegung2">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>LBelegung2</string>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="6">
+               <widget class="QLabel" name="bottleLabel8">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2849,7 +3483,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>6</string>
+                 <string>8</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -2859,12 +3493,41 @@
                 </property>
                </widget>
               </item>
+              <item row="15" column="0">
+               <widget class="QPushButton" name="PBneu15">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>new</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
               <item row="8" column="6">
                <widget class="QLabel" name="bottleLabel9">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -2891,186 +3554,12 @@
                 </property>
                </widget>
               </item>
-              <item row="15" column="0">
-               <widget class="QPushButton" name="PBneu15">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="13" column="0">
-               <widget class="QPushButton" name="PBneu13">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="10" column="0">
-               <widget class="QPushButton" name="PBneu11">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="11" column="0">
-               <widget class="QPushButton" name="PBneu12">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QPushButton" name="PBneu7">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QPushButton" name="PBneu2">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="17" column="0" colspan="4">
-               <widget class="QPushButton" name="PBFlanwenden">
+              <item row="5" column="6">
+               <widget class="QLabel" name="bottleLabel6">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>50</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3081,406 +3570,19 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>16</pointsize>
+                  <pointsize>22</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
-                 <string>neue Flaschen anwenden</string>
+                 <string>6</string>
                 </property>
-                <property name="cssClass" stdset="0">
-                 <string>btn-inverted</string>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="0">
-               <widget class="QPushButton" name="PBneu9">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QPushButton" name="PBneu6">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="1">
-               <widget class="QLabel" name="LBelegung8">
-                <property name="minimumSize">
-                 <size>
-                  <width>120</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>LBelegung8</string>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                 <property name="cssClass" stdset="0">
                  <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QLabel" name="LBelegung7">
-                <property name="minimumSize">
-                 <size>
-                  <width>120</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>LBelegung7</string>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="LBelegung1">
-                <property name="minimumSize">
-                 <size>
-                  <width>120</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>LBelegung1</string>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QProgressBar" name="ProBBelegung1">
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>1000</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="value">
-                 <number>88</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="PBneu1">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-                <property name="checked">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="1">
-               <widget class="QLabel" name="LBelegung10">
-                <property name="minimumSize">
-                 <size>
-                  <width>120</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>LBelegung10</string>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
-               <widget class="QProgressBar" name="ProBBelegung2">
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>1000</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="value">
-                 <number>50</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="3">
-               <widget class="QProgressBar" name="ProBBelegung3">
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>1000</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="value">
-                 <number>70</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="3">
-               <widget class="QProgressBar" name="ProBBelegung7">
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>1000</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="value">
-                 <number>67</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="3">
-               <widget class="QProgressBar" name="ProBBelegung6">
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>1000</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="value">
-                 <number>90</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="3">
-               <widget class="QProgressBar" name="ProBBelegung9">
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>1000</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="value">
-                 <number>24</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>bold</string>
                 </property>
                </widget>
               </item>
@@ -3489,7 +3591,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>250</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3516,12 +3618,44 @@
                 </property>
                </widget>
               </item>
+              <item row="8" column="3">
+               <widget class="QProgressBar" name="ProBBelegung9">
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>1000</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="value">
+                 <number>24</number>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>bold</string>
+                </property>
+               </widget>
+              </item>
               <item row="4" column="3">
                <widget class="QProgressBar" name="ProBBelegung5">
                 <property name="minimumSize">
                  <size>
                   <width>250</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3553,7 +3687,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>105</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3565,42 +3699,12 @@
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="maxVisibleItems">
-                 <number>11</number>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="3">
-               <widget class="QProgressBar" name="ProBBelegung10">
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>1000</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
-                <property name="value">
-                 <number>10</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>bold</string>
+                <property name="maxVisibleItems">
+                 <number>11</number>
                 </property>
                </widget>
               </item>
@@ -3609,7 +3713,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>250</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3636,27 +3740,35 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="4" colspan="2">
-               <widget class="QComboBox" name="CBB3">
+              <item row="9" column="3">
+               <widget class="QProgressBar" name="ProBBelegung10">
                 <property name="minimumSize">
                  <size>
-                  <width>105</width>
-                  <height>40</height>
+                  <width>250</width>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>300</width>
+                  <width>1000</width>
                   <height>100</height>
                  </size>
                 </property>
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
-                <property name="maxVisibleItems">
-                 <number>11</number>
+                <property name="value">
+                 <number>10</number>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>bold</string>
                 </property>
                </widget>
               </item>
@@ -3665,7 +3777,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>105</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3677,6 +3789,34 @@
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="maxVisibleItems">
+                 <number>11</number>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="4" colspan="2">
+               <widget class="QComboBox" name="CBB3">
+                <property name="minimumSize">
+                 <size>
+                  <width>105</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="maxVisibleItems">
@@ -3689,7 +3829,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>105</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3701,6 +3841,8 @@
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="maxVisibleItems">
@@ -3713,7 +3855,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>105</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3725,6 +3867,8 @@
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="maxVisibleItems">
@@ -3737,7 +3881,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>105</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3749,6 +3893,8 @@
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="maxVisibleItems">
@@ -3761,7 +3907,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>105</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3773,6 +3919,8 @@
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="maxVisibleItems">
@@ -3785,7 +3933,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>105</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3797,6 +3945,34 @@
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="maxVisibleItems">
+                 <number>11</number>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="4" colspan="2">
+               <widget class="QComboBox" name="CBB10">
+                <property name="minimumSize">
+                 <size>
+                  <width>105</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="maxVisibleItems">
@@ -3809,7 +3985,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3836,27 +4012,35 @@
                 </property>
                </widget>
               </item>
-              <item row="9" column="4" colspan="2">
-               <widget class="QComboBox" name="CBB10">
+              <item row="4" column="6">
+               <widget class="QLabel" name="bottleLabel5">
                 <property name="minimumSize">
                  <size>
-                  <width>105</width>
-                  <height>40</height>
+                  <width>0</width>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>300</width>
+                  <width>16777215</width>
                   <height>100</height>
                  </size>
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>14</pointsize>
+                  <pointsize>22</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
-                <property name="maxVisibleItems">
-                 <number>11</number>
+                <property name="text">
+                 <string>5</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
                 </property>
                </widget>
               </item>
@@ -3865,7 +4049,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3897,7 +4081,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3924,12 +4108,12 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="6">
-               <widget class="QLabel" name="bottleLabel5">
+              <item row="16" column="0">
+               <widget class="QPushButton" name="PBneu16">
                 <property name="minimumSize">
                  <size>
-                  <width>0</width>
-                  <height>40</height>
+                  <width>50</width>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3940,19 +4124,16 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>22</pointsize>
+                  <pointsize>14</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
-                 <string>5</string>
+                 <string>new</string>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
+                <property name="checkable">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -3961,7 +4142,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -3988,41 +4169,12 @@
                 </property>
                </widget>
               </item>
-              <item row="16" column="0">
-               <widget class="QPushButton" name="PBneu16">
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>new</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
               <item row="10" column="1">
                <widget class="QLabel" name="LBelegung11">
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4034,6 +4186,8 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
@@ -4049,7 +4203,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>50</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4078,7 +4232,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4090,37 +4244,12 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
                  <string>LBelegung13</string>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="11" column="1">
-               <widget class="QLabel" name="LBelegung12">
-                <property name="minimumSize">
-                 <size>
-                  <width>120</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>LBelegung12</string>
                 </property>
                 <property name="cssClass" stdset="0">
                  <string>secondary bold</string>
@@ -4132,7 +4261,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4144,6 +4273,8 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
@@ -4154,12 +4285,12 @@
                 </property>
                </widget>
               </item>
-              <item row="16" column="1">
-               <widget class="QLabel" name="LBelegung16">
+              <item row="11" column="1">
+               <widget class="QLabel" name="LBelegung12">
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4171,10 +4302,12 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
-                 <string>LBelegung16</string>
+                 <string>LBelegung12</string>
                 </property>
                 <property name="cssClass" stdset="0">
                  <string>secondary bold</string>
@@ -4186,7 +4319,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4198,10 +4331,41 @@
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
                  <string>LBelegung15</string>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>secondary bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="16" column="1">
+               <widget class="QLabel" name="LBelegung16">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>LBelegung16</string>
                 </property>
                 <property name="cssClass" stdset="0">
                  <string>secondary bold</string>
@@ -4213,7 +4377,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>250</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4245,7 +4409,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>250</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4277,7 +4441,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>250</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4309,39 +4473,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>250</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>1000</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="value">
-                 <number>10</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="14" column="3">
-               <widget class="QProgressBar" name="ProBBelegung14">
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4373,7 +4505,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>250</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4405,7 +4537,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>105</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4417,6 +4549,66 @@
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="maxVisibleItems">
+                 <number>11</number>
+                </property>
+               </widget>
+              </item>
+              <item row="14" column="3">
+               <widget class="QProgressBar" name="ProBBelegung14">
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>1000</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="value">
+                 <number>10</number>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>bold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="4" colspan="2">
+               <widget class="QComboBox" name="CBB13">
+                <property name="minimumSize">
+                 <size>
+                  <width>105</width>
+                  <height>38</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="maxVisibleItems">
@@ -4429,7 +4621,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>105</width>
-                  <height>40</height>
+                  <height>38</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -4441,302 +4633,77 @@
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="maxVisibleItems">
                  <number>11</number>
-                </property>
-               </widget>
-              </item>
-              <item row="13" column="4" colspan="2">
-               <widget class="QComboBox" name="CBB13">
-                <property name="minimumSize">
-                 <size>
-                  <width>105</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="maxVisibleItems">
-                 <number>11</number>
-                </property>
-               </widget>
-              </item>
-              <item row="15" column="4" colspan="2">
-               <widget class="QComboBox" name="CBB15">
-                <property name="minimumSize">
-                 <size>
-                  <width>105</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="maxVisibleItems">
-                 <number>11</number>
-                </property>
-               </widget>
-              </item>
-              <item row="14" column="4" colspan="2">
-               <widget class="QComboBox" name="CBB14">
-                <property name="minimumSize">
-                 <size>
-                  <width>105</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="maxVisibleItems">
-                 <number>11</number>
-                </property>
-               </widget>
-              </item>
-              <item row="13" column="6">
-               <widget class="QLabel" name="bottleLabel13">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>22</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>13</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="16" column="4" colspan="2">
-               <widget class="QComboBox" name="CBB16">
-                <property name="minimumSize">
-                 <size>
-                  <width>105</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="maxVisibleItems">
-                 <number>11</number>
-                </property>
-               </widget>
-              </item>
-              <item row="11" column="6">
-               <widget class="QLabel" name="bottleLabel12">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>22</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>12</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="10" column="6">
-               <widget class="QLabel" name="bottleLabel11">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>22</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>11</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="15" column="6">
-               <widget class="QLabel" name="bottleLabel15">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>22</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>15</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="14" column="6">
-               <widget class="QLabel" name="bottleLabel14">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>22</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>14</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="16" column="6">
-               <widget class="QLabel" name="bottleLabel16">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>40</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>22</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>16</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="cssClass" stdset="0">
-                 <string>secondary bold</string>
                 </property>
                </widget>
               </item>
               <item row="17" column="4" colspan="2">
+               <widget class="QPushButton" name="PBAvailable">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>600</width>
+                  <height>200</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="text">
+                 <string>verfügbar</string>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>btn-inverted</string>
+                </property>
+               </widget>
+              </item>
+              <item row="17" column="0" colspan="2">
+               <widget class="QPushButton" name="PBFlanwenden">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>anwenden</string>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>btn-inverted</string>
+                </property>
+               </widget>
+              </item>
+              <item row="17" column="3">
                <widget class="QPushButton" name="PBBelegung">
                 <property name="minimumSize">
                  <size>
@@ -4746,7 +4713,7 @@
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>200</width>
+                  <width>1000</width>
                   <height>100</height>
                  </size>
                 </property>

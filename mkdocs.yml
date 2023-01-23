@@ -1,7 +1,7 @@
 site_name: CocktailBerry Docs
 site_description: Official CocktailBerry Documentation
 site_author: Andre Wohnsland
-copyright: © Copyright 2022, Andre Wohnsland & contributors
+copyright: © Copyright 2023, Andre Wohnsland & contributors
 # site_url: https://github.com/AndreWohnsland/CocktailBerry
 repo_url: https://github.com/AndreWohnsland/CocktailBerry
 nav:
@@ -14,12 +14,18 @@ nav:
   - Supported Languages: languages.md
   - Advanced Topics: advanced.md
   - Troubleshooting: troubleshooting.md
-  - Developement: developement.md
+  - FAQ: faq.md
+  - Development: developement.md
 markdown_extensions:
   - toc:
       permalink: '#'
   - attr_list
-  - mdx_math
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.arithmatex:
+      generic: true
 theme:
   name: readthedocs
   # logo: pictures/CocktailBerry.svg
@@ -32,4 +38,6 @@ plugins:
 extra_css:
   - css/extra.css
 extra_javascript:
-  - http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+  # - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

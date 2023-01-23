@@ -13,7 +13,6 @@ from PyQt5.QtWidgets import QMainWindow, QLineEdit
 from src.config_manager import CONFIG as cfg
 from src.machine.controller import MACHINE
 from src.tabs import maker, ingredients, recipes, bottles
-from src.save_handler import SAVE_HANDLER
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
@@ -184,45 +183,29 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """
         # First, connect all the push buttons with the Functions
-        self.PBZutathinzu.clicked.connect(lambda: ingredients.enter_ingredient(self))
-        self.PBRezepthinzu.clicked.connect(lambda: recipes.enter_recipe(self, True))
+        self.PBZutathinzu.clicked.connect(lambda: ingredients.handle_enter_ingredient(self))
+        self.PBRezepthinzu.clicked.connect(lambda: recipes.handle_enter_recipe(self))
         self.PBBelegung.clicked.connect(self.open_bottle_window)
         self.PBZeinzelnd.clicked.connect(self.open_ingredient_window)
         self.PBclear.clicked.connect(lambda: DP_CONTROLLER.clear_recipe_data_recipes(self, False))
-        self.PBRezeptaktualisieren.clicked.connect(lambda: recipes.enter_recipe(self, False))
         self.PBdelete.clicked.connect(lambda: recipes.delete_recipe(self))
         self.PBZdelete.clicked.connect(lambda: ingredients.delete_ingredient(self))
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
-        self.PBZaktualisieren.clicked.connect(lambda: ingredients.enter_ingredient(self, False))
         self.PBZubereiten_custom.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, 50))
         self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, -50))
-        self.PBMplus.clicked.connect(
-            lambda: DP_CONTROLLER.change_input_value(
-                self.LCustomMenge, 100, 400, 25,
-                lambda: maker.update_shown_recipe(self, False)
-            ))
-        self.PBMminus.clicked.connect(
-            lambda: DP_CONTROLLER.change_input_value(
-                self.LCustomMenge, 100, 400, -25,
-                lambda: maker.update_shown_recipe(self, False)
-            ))
-        self.PBSetnull.clicked.connect(lambda: DP_CONTROLLER.reset_alcohol_slider(self))
-        self.PBZnull.clicked.connect(lambda: SAVE_HANDLER.export_ingredients())
-        self.PBRnull.clicked.connect(lambda: SAVE_HANDLER.export_recipes())
+
+        self.increase_volume.clicked.connect(lambda: maker.adjust_volume(self, 25))
+        self.decrease_volume.clicked.connect(lambda: maker.adjust_volume(self, -25))
+        self.increase_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, 0.1))
+        self.decrease_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, -0.1))
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
         # Connect the Lists with the Functions
-        self.LWZutaten.itemClicked.connect(lambda: ingredients.display_selected_ingredient(self))
-        self.LWZutaten.currentTextChanged.connect(lambda: ingredients.display_selected_ingredient(self))
-        self.LWMaker.itemClicked.connect(lambda: maker.update_shown_recipe(self))
-        self.LWMaker.currentTextChanged.connect(lambda: maker.update_shown_recipe(self))
-        self.LWRezepte.itemClicked.connect(lambda: recipes.load_selected_recipe_data(self))
-        self.LWRezepte.currentTextChanged.connect(lambda: recipes.load_selected_recipe_data(self))
-
-        # Connects the slider
-        self.HSIntensity.valueChanged.connect(lambda: maker.update_shown_recipe(self, False))
+        self.LWZutaten.itemSelectionChanged.connect(lambda: ingredients.display_selected_ingredient(self))
+        self.LWMaker.itemSelectionChanged.connect(lambda: maker.update_shown_recipe(self))
+        self.LWRezepte.itemSelectionChanged.connect(lambda: recipes.load_selected_recipe_data(self))
 
         # Connects the virgin checkbox
         self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))

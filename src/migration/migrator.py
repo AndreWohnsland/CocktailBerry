@@ -1,4 +1,4 @@
-# pylint: disable=wrong-import-order,wrong-import-position,disable=too-few-public-methods
+# pylint: disable=wrong-import-order,wrong-import-position,too-few-public-methods,ungrouped-imports
 from src.python_vcheck import check_python_version
 # Version check takes place before anything, else other imports may throw an error
 check_python_version()
@@ -6,9 +6,11 @@ check_python_version()
 import configparser
 import sys
 import subprocess
+import pkg_resources
 from pathlib import Path
 from typing import Optional, Tuple
 
+from src import __version__, FUTURE_PYTHON_VERSION
 from src.logger_handler import LoggerHandler, LogFiles
 from src.migration.update_data import (
     rename_database_to_english,
@@ -17,11 +19,11 @@ from src.migration.update_data import (
     add_virgin_flag_to_db,
     remove_is_alcoholic_column
 )
-from src import __version__, FUTURE_PYTHON_VERSION
 
 _DIRPATH = Path(__file__).parent.absolute()
 _CONFIG_PATH = _DIRPATH.parents[1] / ".version.ini"
 _logger = LoggerHandler("migrator_module", LogFiles.PRODUCTION)
+_INSTALLED_PACKAGES = [pkg.key for pkg in list(pkg_resources.working_set)]
 
 
 class Migrator:
@@ -98,8 +100,10 @@ class Migrator:
         """Sets the git source to the new named repo"""
         _logger.log_event("INFO", "Changing git origin to new repo name")
         try:
-            subprocess.check_call(["git", "remote", "set-url", "origin",
-                                   "https://github.com/AndreWohnsland/CocktailBerry.git"])
+            subprocess.check_call([
+                "git", "remote", "set-url", "origin",
+                "https://github.com/AndreWohnsland/CocktailBerry.git"
+            ])
         except subprocess.CalledProcessError as err:
             _logger.log_event(
                 "ERROR", "Could not change origin. Check if you made any local file changes / use 'git restore .'!")
@@ -108,7 +112,9 @@ class Migrator:
 
     def _install_pip_package(self, package_name: str, version_to_migrate: str):
         """Try to install a python package over pip"""
-        _logger.log_event("INFO", f"Trying to install {package_name}, it is needed since this version")
+        _logger.log_event("INFO", f"Trying to install {package_name}, it is needed since v{version_to_migrate}")
+        if package_name in _INSTALLED_PACKAGES:
+            _logger.log_event("INFO", f"Package {package_name} is already installed, skipping installation.")
         try:
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', package_name])
             _logger.log_event("INFO", f"Successfully installed {package_name}")

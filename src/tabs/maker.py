@@ -3,7 +3,7 @@
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
-from typing import List, Optional
+from typing import List, Optional, TypeVar
 from src.tabs import bottles
 
 from src.database_commander import DB_COMMANDER
@@ -19,6 +19,7 @@ from src.config_manager import shared
 
 
 LOG_HANDLER = LoggerHandler("maker_module", LogFiles.PRODUCTION)
+T = TypeVar('T', int, float)
 
 
 def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):
@@ -57,6 +58,8 @@ def __build_comment_maker(cocktail: Cocktail):
     for ing in length_desc:
         amount = ing.amount * cfg.EXP_MAKER_FACTOR
         amount = int(amount) if amount >= 8 else round(amount, 1)
+        if amount <= 0:
+            continue
         comment += f"\n~{amount} {cfg.EXP_MAKER_UNIT} {ing.name}"
     return comment
 
@@ -126,9 +129,30 @@ def prepare_cocktail(w):
         DP_CONTROLLER.say_cocktail_ready(comment)
 
     bottles.set_fill_level_bars(w)
-    DP_CONTROLLER.reset_alcohol_slider(w)
+    DP_CONTROLLER.reset_alcohol_factor()
     DP_CONTROLLER.reset_virgin_setting(w)
     shared.cocktail_started = False
+
+
+def adjust_alcohol(w, amount: float):
+    """changes the alcohol factor"""
+    new_factor = shared.alcohol_factor + amount
+    shared.alcohol_factor = _limit_number(new_factor, 0.7, 1.3)
+    update_shown_recipe(w, False)
+
+
+def adjust_volume(w, amount: int):
+    """changes the volume amount"""
+    new_volume = shared.cocktail_volume + amount
+    shared.cocktail_volume = _limit_number(new_volume, 100, 400)
+    update_shown_recipe(w, False)
+
+
+def _limit_number(val: T, min_val: T, max_val: T) -> T:
+    """Limits the number in the boundaries"""
+    limited = max(min_val, val)
+    limited = min(max_val, limited)
+    return limited
 
 
 def interrupt_cocktail():

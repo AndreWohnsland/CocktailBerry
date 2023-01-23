@@ -11,5 +11,6 @@
 # gunicorn --workers=5 --threads=1 -b :8050 index:server 
 
 # launcher.sh for CocktailBerry
+export QT_SCALE_FACTOR=1
 cd ~/CocktailBerry/
 python3 runme.py

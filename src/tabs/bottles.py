@@ -10,6 +10,7 @@ from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.machine.controller import MACHINE
 from src.logger_handler import LogFiles, LoggerHandler
+from src.config_manager import CONFIG as cfg
 
 
 _logger = LoggerHandler("bottles_module", LogFiles.PRODUCTION)
@@ -95,9 +96,14 @@ def renew_checked_bottles(w):
     """ Renews all the Bottles which are checked as new. """
     pushbutton_new_list = DP_CONTROLLER.get_pushbuttons_newbottle(w)
     renew_bottle = DP_CONTROLLER.get_toggle_status(pushbutton_new_list)
-    DB_COMMANDER.set_bottle_volumelevel_to_max(renew_bottle)
+    # build the number of bottles to renew
+    bottle_numbers = [x for x, y in enumerate(renew_bottle, 1) if y]
+    DB_COMMANDER.set_bottle_volumelevel_to_max(bottle_numbers)
     DP_CONTROLLER.untoggle_buttons(pushbutton_new_list)
     set_fill_level_bars(w)
+    # if a tube volume is defined, pump that amount up:
+    if cfg.MAKER_TUBE_VOLUME > 0:
+        MACHINE.make_cocktail(w, bottle_numbers, [cfg.MAKER_TUBE_VOLUME for _ in bottle_numbers], "renew", False)
     DP_CONTROLLER.say_bottles_renewed()
 
 

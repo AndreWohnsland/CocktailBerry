@@ -8,4 +8,6 @@ __Version 1.3.0__ includes multi-language support. You can change the language w
 | English  |    `en`     |     1.3.0     |       ✔️       |     ✔️     |
 |  German  |    `de`     |     1.3.0     |       ✔️       |     ✔️     |
 
-If you are interested in implementing your own native language, feel free to contact me or submit an according pull request.
+!!! info "Not your Language?"
+    If you are interested in implementing your own native language, feel free to contact me or submit an according pull request.
+    So you can also become a part of CocktailBerry.

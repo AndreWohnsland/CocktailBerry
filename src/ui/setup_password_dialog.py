@@ -38,6 +38,7 @@ class PasswordDialog(QDialog, Ui_PasswordDialog):
             self.accept()
             return
         DP_CONTROLLER.say_wrong_password()
+        self.password_field.clear()
 
     def _cancel_clicked(self):
         """Cancel the password confirmation an aborts process"""
