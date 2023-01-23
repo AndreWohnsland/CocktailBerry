@@ -22,6 +22,8 @@ pylint = "^2.15.9"
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.1"
 qtsass = "^0.3.2"
+mkdocs-material = "^9.0.6"
+mkdocs = "^1.4.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
