@@ -68,7 +68,7 @@ This can be ingredients, which would not be optimal for your pump, or are only v
 
 The program will then evaluate which recipe meets all requirements to only show the recipes where even the ingredients added via hand later are available.
 All possible recipes will be shown in the **Maker** Tab.
-See also [faq](faq.md#what-is-the-available-button) for more information on this topic.
+See also [this FAQ](faq.md#what-is-the-available-button) for more information on this topic.
 
 ## Configuring the Pins or used Board
 
@@ -78,6 +78,11 @@ If it's not shipped within the default OS of your board, this will be mentioned 
 Currently supported options (boards) are:
 
 - **RPI (Raspberry Pi)**: Using GPIO according to [GPIO-Numbers](https://en.pinout.xyz/) for Pins.
+
+!!! info "Not your Board?"
+    Even if your board is not listed here, it may work.
+    This value is used to determinate the control method for the pins of the board.
+    If it's controlled identical to a listed board here, you can try to use this existing value for your board.
 
 ## Themes
 
@@ -117,6 +122,11 @@ A message prompt will inform the user to provide enough water for the cleaning p
 I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water.
 Then running twice times again the cleaning program to fully clean all pumps from remaining fluid.
 
+!!! info
+    Depending on the build specification of your machine, it is a good practice to execute the cleaning of the machine before usage.
+    This depends on the frequency you use CocktailBerry, where it's stored, how good it was cleaned and so on.
+
+
 ## Possible Ingredient Choice
 
 If you are unsure, which ingredients you may need or want to connect to CocktailBerry, here is a quick suggestion.
@@ -142,6 +152,10 @@ In addition, there are some ingredients I would recommend not adding via Cocktai
 - *optional* Cointreau (you may just not add it if not desired)
 
 With this as your base set up, even if not using the optional ingredients, your CocktailBerry will be able to do plenty of different cocktails.
+
+!!! tip
+    You can export the CocktailBerry data to a CSV file over the interface.
+    With this information you may identify popular drinks and ingredients.
 
 ## Updates
 
