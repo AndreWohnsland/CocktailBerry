@@ -93,6 +93,8 @@ class ConfigWindow(QMainWindow):
             return
         # Also asks if to restart program to get new config
         if DP_CONTROLLER.ask_to_restart_for_config():
+            print(sys.argv)
+            print(EXECUTABLE)
             os.execl(sys.executable, EXECUTABLE, *sys.argv)
         self.close()
 
