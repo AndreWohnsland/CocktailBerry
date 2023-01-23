@@ -102,6 +102,14 @@ A password is at some steps used to prevent unwanted modification of the maker.
 Depending on your users, this might be more or less useful but a safety measure.
 You can change the password under the settings.
 
+### How many Pumps are Supported
+
+Currently, CocktailBerry supports up to 16 pumps.
+This should usually be more than enough and goes well hand in hand with the hardware.
+Relays-arrays can have up to 8 switches controlled with one 5V input.
+The usual size is 8 (or 16 with an build in converter) relays for a relay board.
+In theory, the RPi could control up to 26 pumps when using all possible GPIOs, but that overkill IMHO.
+
 ### Do I Need Docker
 
 No, docker is optional.
