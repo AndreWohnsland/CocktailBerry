@@ -1,5 +1,7 @@
 import platform
 import os
+import sys
+from pathlib import Path
 from typing import Tuple, Literal
 from dataclasses import dataclass
 import http.client as httplib
@@ -7,6 +9,8 @@ import http.client as httplib
 from src.logger_handler import LoggerHandler
 
 
+FILE_PATH = Path(__file__).parents[0].absolute()
+EXECUTABLE = FILE_PATH.parents[0].absolute() / "runme.py"
 _logger = LoggerHandler("utils")
 
 
@@ -32,7 +36,7 @@ class PlatformData:
     release: str  # eg. 10
 
     def __str__(self) -> str:
-        return f"Running on {self.system}, {self.architecture[0]} rel. {self.release}, machine: {self.machine} ({self.platform})"
+        return f"Running on {self.system}, {self.architecture[0]} rel. {self.release}, machine: {self.machine} ({self.platform})"  # noqa
 
 
 def get_platform_data() -> PlatformData:
@@ -60,3 +64,7 @@ def set_system_time(time_string: str):
             "WARNING",
             f"Could not set time, your OS is: {p_data.system} currently supported OS are: {supported_os}"
         )
+
+
+def restart_program():
+    os.execl(sys.executable, "python", EXECUTABLE, *sys.argv[1:])

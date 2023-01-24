@@ -1,6 +1,5 @@
 
 import os
-import sys
 import datetime
 import shutil
 from typing import Optional
@@ -19,6 +18,7 @@ from src.programs.calibration import run_calibration
 from src.machine.controller import MACHINE
 from src.logger_handler import LogFiles, LoggerHandler
 from src.save_handler import SAVE_HANDLER
+from src.utils import restart_program
 
 
 _ROOT_PATH = Path(__file__).parents[2].absolute()
@@ -26,7 +26,6 @@ _DATABASE_NAME = "Cocktail_database.db"
 _CONFIG_NAME = "custom_config.yaml"
 _VERSION_NAME = ".version.ini"
 _NEEDED_FILES = [_DATABASE_NAME, _CONFIG_NAME, _VERSION_NAME]
-_EXECUTABLE = _ROOT_PATH / "runme.py"
 _logger = LoggerHandler("option_window", LogFiles.PRODUCTION)
 
 
@@ -123,7 +122,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
                 return
         for _file in _NEEDED_FILES:
             shutil.copy(location / _file, _ROOT_PATH)
-        os.execl(sys.executable, _EXECUTABLE, *sys.argv)
+        restart_program()
 
     def _get_user_folder_response(self):
         """Returns the user selected folder path."""

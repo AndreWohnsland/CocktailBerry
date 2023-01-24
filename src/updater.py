@@ -1,4 +1,3 @@
-import os
 import sys
 from pathlib import Path
 from git import Repo, GitCommandError  # type: ignore
@@ -6,6 +5,7 @@ from git import Repo, GitCommandError  # type: ignore
 from src.migration.migrator import Migrator, _Version
 from src.logger_handler import LoggerHandler, LogFiles
 from src import FUTURE_PYTHON_VERSION
+from src.utils import restart_program
 
 
 logger = LoggerHandler("updater_module", LogFiles.PRODUCTION)
@@ -33,7 +33,7 @@ class Updater:
         # restart the program, this will not work if executed over IDE
         print("Restarting the application!")
         logger.log_event("INFO", "Restarting program to reload updated code")
-        os.execl(sys.executable, self.git_path / "runme.py", *sys.argv)
+        restart_program()
 
     def check_for_updates(self) -> bool:
         """Check if there is a new version available"""

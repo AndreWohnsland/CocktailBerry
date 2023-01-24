@@ -1,21 +1,22 @@
-
-import os
-import sys
 from typing import Any, Callable, List, Optional
-from pathlib import Path
-from PyQt5.QtWidgets import QScrollArea, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QPushButton, QBoxLayout, QComboBox, QFrame, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import (
+    QScrollArea, QMainWindow, QWidget,
+    QVBoxLayout, QHBoxLayout, QLabel,
+    QCheckBox, QPushButton, QBoxLayout,
+    QComboBox, QFrame, QSpacerItem,
+    QSizePolicy
+)
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QIcon
 
 from src.config_manager import ChooseType, ConfigError, CONFIG as cfg
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.utils import restart_program
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
 
-FILE_PATH = Path(__file__).parents[0].absolute()
-EXECUTABLE = FILE_PATH.parents[1].absolute() / "runme.py"
 SMALL_FONT = 12
 MEDIUM_FONT = 14
 LARGE_FONT = 16
@@ -93,9 +94,7 @@ class ConfigWindow(QMainWindow):
             return
         # Also asks if to restart program to get new config
         if DP_CONTROLLER.ask_to_restart_for_config():
-            print(sys.argv)
-            print(EXECUTABLE)
-            os.execl(sys.executable, EXECUTABLE, *sys.argv)
+            restart_program()
         self.close()
 
     def _choose_display_style(self, config_name: str, config_type: type):
@@ -115,7 +114,11 @@ class ConfigWindow(QMainWindow):
         # assigning the getter function for the config into the dict
         self.config_objects[config_name] = getter_fn
 
-    def _build_input_field(self, config_name: str, config_type: type, current_value: Any, layout: Optional[QBoxLayout] = None):
+    def _build_input_field(
+        self, config_name: str,
+        config_type: type, current_value: Any,
+        layout: Optional[QBoxLayout] = None
+    ):
         """Builds the input field and returns its getter function"""
         if layout is None:
             layout = self.vbox
@@ -185,7 +188,9 @@ class ConfigWindow(QMainWindow):
         # if new added list elements get forgotten, this may happen in this occasion. Catch it here
         if list_config is None:
             raise RuntimeError(
-                f"Tried to access list config [{config_name}] that is not defined. That should not happen. Please report the error.")
+                f"Tried to access list config [{config_name}] that is not defined. " +
+                "That should not happen. Please report the error."
+            )
         list_type, _ = list_config
         h_container = QHBoxLayout()
         getter_fn = self._build_input_field(config_name, list_type, initial_value, h_container)
@@ -215,7 +220,10 @@ class ConfigWindow(QMainWindow):
         layout.addWidget(config_input)
         return config_input.text
 
-    def _build_selection_filed(self, layout: QBoxLayout, current_value: bool, selection: List[str]) -> Callable[[], str]:
+    def _build_selection_filed(
+        self, layout: QBoxLayout,
+        current_value: bool, selection: List[str]
+    ) -> Callable[[], str]:
         """Builds a field for selection of values with a dropdown / combobox"""
         config_input = QComboBox()
         config_input.addItems(selection)
