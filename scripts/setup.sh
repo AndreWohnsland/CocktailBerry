@@ -39,7 +39,6 @@ if [ "$1" = "dashboard" ]; then
   pip3 install -r requirements.txt
 else
   echo "Setting up CocktailBerry"
-  sudo chmod +x ~/CocktailBerry/runme.py
   echo "export QT_SCALE_FACTOR=1" >> ~/launcher.sh
   echo "cd ~/CocktailBerry/" >> ~/launcher.sh
   echo "python3 runme.py" >> ~/launcher.sh
