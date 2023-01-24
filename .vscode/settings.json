@@ -25,5 +25,6 @@
     "runme",
     "Sideview"
   ],
-  "cSpell.language": "en,de"
+  "cSpell.language": "en,de",
+  "ruff.args": ["--line-length=120", "--ignore=E402"]
 }
