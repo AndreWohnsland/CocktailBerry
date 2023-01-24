@@ -10,7 +10,7 @@ class _PythonVersionTooLowError(Exception):
     """Raised when used Python version is too low."""
 
     def __init__(self) -> None:
-        self.message = f"This program requires Python {_needed_python_version_str} or higher. You are using Python {platform.python_version()}"
+        self.message = f"This program requires Python {_needed_python_version_str} or higher. You are using Python {platform.python_version()}"  # noqa
         super().__init__(self.message)
 
 

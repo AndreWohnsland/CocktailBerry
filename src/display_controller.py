@@ -55,7 +55,11 @@ class DisplayController(DialogHandler):
         ingredient_name, alcohol_level, volume = self.get_lineedit_text(list(line_edits))
         hand_add = checkbox.isChecked()
         selected_ingredient = self.get_list_widget_selection(list_widget)
-        return Ingredient(-1, ingredient_name, int(alcohol_level), int(volume), 0, hand_add, selected=selected_ingredient)
+        return Ingredient(
+            -1, ingredient_name, int(alcohol_level),
+            int(volume), 0, hand_add,
+            selected=selected_ingredient
+        )
 
     def get_cocktail_data(self, w: Ui_MainWindow) -> Tuple[str, int, float]:
         """Returns [name, volume, factor] from maker"""
@@ -401,7 +405,10 @@ class DisplayController(DialogHandler):
         self.reset_alcohol_factor()
         if not select_other_item:
             w.LWMaker.clearSelection()
-        for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(w), self.get_labels_maker_volume(w)):
+        for field_ingredient, field_volume in zip(
+            self.get_labels_maker_ingredients(w),
+            self.get_labels_maker_volume(w)
+        ):
             field_ingredient.setText("")
             field_volume.setText("")
 
@@ -479,7 +486,9 @@ class DisplayController(DialogHandler):
         """Returns all recipe line edit objects"""
         return [getattr(w, f"LER{x}") for x in range(1, 8)]
 
-    def get_ingredient_fields(self, w: Ui_MainWindow) -> Tuple[Tuple[QLineEdit, QLineEdit, QLineEdit], QCheckBox, QListWidget]:
+    def get_ingredient_fields(
+        self, w: Ui_MainWindow
+    ) -> Tuple[Tuple[QLineEdit, QLineEdit, QLineEdit], QCheckBox, QListWidget]:
         """Returns [Name, Alcohol, Volume], CheckedHand, ListWidget Elements for Ingredients"""
         return (w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen), w.CHBHand, w.LWZutaten
 

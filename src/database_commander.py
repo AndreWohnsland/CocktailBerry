@@ -43,7 +43,12 @@ class DatabaseCommander:
         query = "SELECT ID, Name, Alcohol, Amount, Comment, Enabled, Virgin FROM Recipes"
         return self.handler.query_database(query)
 
-    def __build_cocktail(self, recipe_id: int, name: str, alcohol: int, amount: int, comment: str, enabled: bool, virgin: bool):
+    def __build_cocktail(
+        self, recipe_id: int,
+        name: str, alcohol: int,
+        amount: int, comment: str,
+        enabled: bool, virgin: bool
+    ):
         """Build one cocktail object with the given data"""
         ingredient_data = self.__get_recipe_ingredients_by_id(recipe_id)
         return Cocktail(
@@ -227,7 +232,12 @@ class DatabaseCommander:
         for bottle in bottle_number_list:
             self.handler.query_database(query, (bottle,))
 
-    def set_ingredient_data(self, ingredient_name: str, alcohol_level: int, volume: int, new_level: int, only_hand: bool, ingredient_id: int):
+    def set_ingredient_data(
+        self, ingredient_name: str,
+        alcohol_level: int, volume: int,
+        new_level: int, only_hand: bool,
+        ingredient_id: int
+    ):
         """Updates the given ingredient id to new properties"""
         query = """UPDATE OR IGNORE Ingredients
                 SET Name = ?, Alcohol = ?,
@@ -256,7 +266,11 @@ class DatabaseCommander:
         search_tuple = (ingredient_consumption, ingredient_consumption, ingredient_consumption, ingredient_name)
         self.handler.query_database(query, search_tuple)
 
-    def set_multiple_ingredient_consumption(self, ingredient_name_list: List[str], ingredient_consumption_list: List[int]):
+    def set_multiple_ingredient_consumption(
+        self,
+        ingredient_name_list: List[str],
+        ingredient_consumption_list: List[int]
+    ):
         """Increase multiple ingredients by the according given consumption"""
         for ingredient_name, ingredient_consumption in zip(ingredient_name_list, ingredient_consumption_list):
             self.increment_ingredient_consumption(ingredient_name, ingredient_consumption)
@@ -266,7 +280,12 @@ class DatabaseCommander:
         query = "UPDATE OR IGNORE Recipes SET Enabled = 1"
         self.handler.query_database(query)
 
-    def set_recipe(self, recipe_id: int, name: str, alcohol_level: int, volume: int, comment: str, enabled: int, virgin: int):
+    def set_recipe(
+        self, recipe_id: int,
+        name: str, alcohol_level: int,
+        volume: int, comment: str,
+        enabled: int, virgin: int
+    ):
         """Updates the given recipe id to new properties"""
         query = """UPDATE OR IGNORE Recipes
                 SET Name = ?, Alcohol = ?, Amount = ?, Comment = ?, Enabled = ?, Virgin = ?

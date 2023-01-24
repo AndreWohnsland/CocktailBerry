@@ -61,7 +61,10 @@ def handle_enter_recipe(w):
         DP_CONTROLLER.say_recipe_updated(selected_name, cocktail.name)
 
 
-def _validate_extract_ingredients(ingredient_names: List[str], ingredient_volumes: List[str]) -> Tuple[List[str], List[int], bool]:
+def _validate_extract_ingredients(
+    ingredient_names: List[str],
+    ingredient_volumes: List[str]
+) -> Tuple[List[str], List[int], bool]:
     """Gives a list for names and volume of ingredients.
     If some according value is missing, informs the user.
     Returns [names], [volumes], is_valid"""

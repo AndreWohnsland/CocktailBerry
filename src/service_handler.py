@@ -64,7 +64,13 @@ class ServiceHandler():
             return f"{self.base_url}/debug"
         return endpoint
 
-    def __try_to_send(self, endpoint: str, post_type: PostType, payload: Optional[str] = None, files: Optional[dict] = None) -> Dict:
+    def __try_to_send(
+        self,
+        endpoint: str,
+        post_type: PostType,
+        payload: Optional[str] = None,
+        files: Optional[dict] = None
+    ) -> Dict:
         """Try to send the data to the given endpoint.
         Logs the action, catches and logs if there is no connection.
         Raises an exception if there is no data to send.

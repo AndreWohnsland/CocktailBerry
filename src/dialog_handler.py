@@ -133,7 +133,12 @@ class DialogHandler():
             ingredient_name=ingredient_name
         )
 
-    def say_ingredient_added_or_changed(self, ingredient_name: str, new_ingredient: bool, selected_ingredient: Optional[str] = None):
+    def say_ingredient_added_or_changed(
+        self,
+        ingredient_name: str,
+        new_ingredient: bool,
+        selected_ingredient: Optional[str] = None
+    ):
         """Informs user that the ingredient was added or altered"""
         if new_ingredient:
             self.__say_ingredient_added(ingredient_name)
