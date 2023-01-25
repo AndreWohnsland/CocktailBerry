@@ -191,7 +191,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBdelete.clicked.connect(lambda: recipes.delete_recipe(self))
         self.PBZdelete.clicked.connect(lambda: ingredients.delete_ingredient(self))
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
-        self.PBZubereiten_custom.clicked.connect(lambda: maker.prepare_cocktail(self))
+        self.prepare_button.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, 50))
         self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, -50))

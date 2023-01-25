@@ -342,7 +342,7 @@ class UiLanguage():
             text = self.__choose_language(tab_name, window)
             w.tabWidget.setTabText(i, text)
         for ui_element, text_name in [
-            (w.PBZubereiten_custom, "prepare_button"),
+            (w.prepare_button, "prepare_button"),
             (w.PBZeinzelnd, "single_ingredient_button"),
             (w.PBAvailable, "available_button"),
             (w.CHBHand, "handadd_check_label"),
