@@ -187,9 +187,10 @@ ui:
   ##### MAIN WINDOW #####
   # all values for main window
   main_window:
+    # best is to use some space before to get a padding for icon
     prepare_button:
-      en: 'Prepare'
-      de: 'Zubereiten'
+      en: '  Prepare'
+      de: '  Zubereiten'
     tab_maker:
       en: 'Maker'
       de: 'Maker'
