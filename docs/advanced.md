@@ -11,14 +11,14 @@ Simply have `docker-compose` installed and run the command in the main folder fo
 docker-compose up --build -d
 ```
 
-!!! info
+!!! info "Newer Compose Version"
     You may need to type `docker compose` instead of `docker-compose` at the latest (v2) version of compose.
 
 This will handle the setup of all docker services.
 You will have to copy the `.env.example` file to `.env` and enter the needed secrets there for the container to work fully.
 If you are pulling for a later version, I recommend to run this command again, since the container may change in future version. 
 
-!!! tip
+!!! tip "Try the Pre-build Image"
     There is now also the option to install directly from DockerHub, a GitHub action should build a new tag every release.
     Just visit [DockerHub](https://hub.docker.com/search?q=andrewo92) and pull the according images over docker or compose and follow the instruction on DockerHub.
     Best is to create the according `docker-compose.yaml` file on your desktop, or anywhere outside the project, since you enter your personal credentials there.
@@ -26,12 +26,12 @@ If you are pulling for a later version, I recommend to run this command again, s
 
 ## Microservices
 
-As a further addition since __version 1.1.0__, there is the option to run a microservice within docker which handles some networking topics.
+As a further addition, there is the option to run a microservice within docker which handles some networking topics.
 Cocktail data currently includes cocktail name, produced volume, ingredients, current time, used language in config and your machines name.
 Currently, this is limited to:
 
 - Posting the cocktail data time to a given webhook, adding header information
-- Posting the cocktail data to the official dashboard API (__v1.7.0__), see [detailed description](#posting-data-to-the-official-api)
+- Posting the cocktail data to the official dashboard API, see [detailed description](#posting-data-to-the-official-api)
 
 !!! info
     This is optional, if you don't want this feature, you don't need the microservice.
@@ -54,7 +54,7 @@ After that, your CocktailBerry will be able to also submit data and help populat
 
 ## Dashboard with Teams
 
-With __version 1.2.0__, there is a team feature implemented into CocktailBerry.
+There is a team feature implemented into CocktailBerry.
 If enabled within the config, the user can choose one of two teams to book the cocktail and according volume to.
 The names of the teams, as well the URL of the dashboard device, can be specified within the config.
 CocktailBerry will then send the information to the teams API.
@@ -71,7 +71,7 @@ The **recommended way** is to use a second Raspberry Pi with a touchscreen attac
 Then build the docker-compose file and execute the `dashboard/qt-app/main.py`.
 In before, you should install the `requirements.txt` within the same folder using pip.
 See [Usage of Services](#usage-of-services) how to set up docker-compose in general.
-The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](languages.md#supported-languages).
+The language can be set within the `dashboard/qt-app/.env` file, codes identical to [supported languages](languages.md).
 Just copy the `dashboard/qt-app/.env.example` file, rename the copy to `.env` and set your desired language.
 The easiest way is to use the provided shell script:
 
@@ -111,7 +111,7 @@ Dash is using pandas, depending on your Raspberry Pi OS this installation it may
 You can then access the frontend over your browser at the RPi address over your network or over http://127.0.0.1:8050 from the Pi. 
 If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
 
-!!! tip
+!!! tip "Easy and Fast"
     Both of these images are also available at [DockerHub](https://hub.docker.com/search?q=andrewo92), so if you want to avoid build issues, you can just use the pre-build image.
     Again, create the according `docker-compose.yaml` file on your desktop, or in a separate location.
 
@@ -143,83 +143,6 @@ docker compose version || echo "Compose installation failed :("
 docker run hello-world
 ```
 
-!!! info
+!!! info "Less Typing"
     Using the included script `sh scripts/install_docker.sh` will also do that for you.
     You may have executed it at the setup of you CocktailBerry and therefore already installed docker.
-
-## Importing Recipes from File
-
-With **version 1.10.0**, a new functionality to import batch recipe data was introduced.
-You can now provide a `.txt` or similar text file to quickly insert a lot of new recipes, as well as ingredients.
-To use this functionality, just use the CLI, similar to running CocktailBerry:
-
-```bash
-runme.py dataimport [OPTIONS] PATH
-
-#   This will also be shown if you use the --help flag
-#   Imports the recipe data from a file. If the units are not in ml, please
-#   provide the conversion factor into ml.
-
-#   The file should contain the cocktail name, followed by ingredient data
-#   (amount, name). For further information regarding the file structure, please
-#   see https://cocktailberry.readthedocs.io/advanced/#importing-recipes-from-
-#   file.
-
-# Arguments:
-#   PATH  [required]
-
-# Options:
-#   -c, --conversion FLOAT  Conversion factor to ml  [default: 1.0]
-#   -nu, --no-unit          Ingredient data got no unit text
-#   --help                  Show this message and exit.
-```
-
-As usual, you can use the `--help` flag to get help on this functionality.
-The data should be in the format:
-
-```
-Recipe Name1
-Amount [unit] Ingredient1 Name
-Amount [unit] Ingredient2 Name
-...
-Recipe Name2
-Amount [unit] Ingredient1 Name
-Amount [unit] Ingredient2 Name
-```
-
-You need to adjust the alcohol level, the bottle volume and hand add flag after the import, if there are new added ingredients.
-The script will use a default of 0%, 1000 ml and not only handadd for each new ingredient.
-
-The amount of newlines can be one or more between each line.
-If there is another type of separator, please use a text editor to change it accordingly.
-Also, if the recipe uses different types of units, please convert to the one provided by the conversion argument.
-The script will check for duplicates and wait for user prompt, if there are any issues.
-If the data got no unit between amount and name, use the `--no-unit` or `-nu` flag.
-If the recipe use another unit than ml, please provide the according conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
-
-!!! warning
-    I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
-    You can also use the build-in backup functionality in CocktailBerry for this.
-
-!!! info "As a Side Note"
-    You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
-    In cases of many ingredients, it's quite exhausting to select the right one. 
-    Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
-    The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the singe cocktails.
-    This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
-
-## Updating Local Database
-
-With **version 1.10.0**, the CLI got the command to merge the latest recipes in your local database.
-This can be useful if your CocktailBerry has been running for quite a while and you want to get more recipes.
-The new recipes will be added to your database, including any missing ingredients.
-Please take in consideration that if you made a lot of changes, especially renaming of your ingredients, this may add existing ingredients under a different name, since the names are in german.
-It is best to make a backup before running the command, to have the possibility to restore the old state.
-The script will also create a local backup, which you can use if you did not backup your data manually.
-To update run the command:
-
-```bash
-python runme.py update-database
-```
-
-You can use the `--help` flag, like with the other commands, to get more insight into the command.
