@@ -52,7 +52,7 @@ def dataimport(
 
     The file should contain the cocktail name, followed by ingredient data (amount, name).
     For further information regarding the file structure,
-    please see https://cocktailberry.readthedocs.io/advanced/#importing-recipes-from-file.
+    please see https://cocktailberry.readthedocs.io/commands/#importing-recipes-from-file.
     """
     importer(path, conversion, no_unit)
 
@@ -70,7 +70,7 @@ def update_database():
     this will most likely add all ingredients from the new recipes in german to your local database.
     If you are not satisfied the result, consult the documentation how to use the backup.
     You can also create a own backup with the build in CocktailBerry backup function over the program interface.
-    More information also at https://cocktailberry.readthedocs.io/advanced/#updating-local-database
+    More information also at https://cocktailberry.readthedocs.io/commands/#updating-local-database
     """
     add_new_recipes_from_default_db()
 
@@ -82,7 +82,6 @@ def clear_database():
     After this action, there will be no recipes or ingredients in your local CocktailBerry data.
     A backup of your local database is created before deleting.
     Use this if you want to build your own custom database and not use any of the supplied data.
-    See also: LINK
+    See also: https://cocktailberry.readthedocs.io/commands/#clearing-local-database
     """
-    # TODO: LINK
     clear_local_database()
