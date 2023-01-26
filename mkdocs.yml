@@ -12,9 +12,11 @@ nav:
   - Hardware: hardware.md
   - Setup / Usage: setup.md
   - Supported Languages: languages.md
+  - CLI commands: commands.md
   - Advanced Topics: advanced.md
   - Troubleshooting: troubleshooting.md
   - FAQ: faq.md
+  - Feature Timetable: features.md
   - Development: developement.md
 markdown_extensions:
   - toc:
