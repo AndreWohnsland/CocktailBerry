@@ -129,7 +129,7 @@ def rename_database_to_english():
     for command in commands:
         try:
             db_handler.query_database(command)
-        # this may occour if renaming already took place
+        # this may occur if renaming already took place
         except OperationalError:
             pass
 
