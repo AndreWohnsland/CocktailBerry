@@ -8,13 +8,15 @@ There are only limited ingredients and recipes. But you can add your own data to
 This app uses a sqlite3 database coupled to the UI.
 So, it's quite easy to implement new ingredients or even recipes.
 Just use the implemented UI for the procedure under the according tabs (**Ingredients** or **Recipes**).
-
 All entered values are checked for reason and if something is wrong, an error message will inform the user what is wrong with the data input.
-If you want to browse through the database, I recommend some program like [DB Browser for SQLite](https://sqlitebrowser.org/).
+
+!!! info "Database Structure"
+    If you want to browse through the data in the database, I recommend some program like [DB Browser for SQLite](https://sqlitebrowser.org/).
+    You can view the DB schema [here](https://github.com/AndreWohnsland/CocktailBerry/blob/master/docs/.devnotes.md#db-schema).
 
 ## Setting up the Machine / Modifying other Values
 
-You can also manage your config within CocktailBerry since __version 1.8.0__.
+You can manage your config within CocktailBerry.
 Just go to the bottles tab, click the gear icon and enter the password (default: 1234).
 You can then use the UI to change the configuration.
 These values are stored under the local `custom_config.yaml` file.
@@ -122,7 +124,7 @@ A message prompt will inform the user to provide enough water for the cleaning p
 I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water.
 Then running twice times again the cleaning program to fully clean all pumps from remaining fluid.
 
-!!! info
+!!! tip "When to Clean"
     Depending on the build specification of your machine, it is a good practice to execute the cleaning of the machine before usage.
     This depends on the frequency you use CocktailBerry, where it's stored, how good it was cleaned and so on.
 
@@ -153,13 +155,13 @@ In addition, there are some ingredients I would recommend not adding via Cocktai
 
 With this as your base set up, even if not using the optional ingredients, your CocktailBerry will be able to do plenty of different cocktails.
 
-!!! tip
+!!! tip "Data Insights"
     You can export the CocktailBerry data to a CSV file over the interface.
     With this information you may identify popular drinks and ingredients.
 
 ## Updates
 
-With __version 1.5.0__, there is the option to enable the automatic search for updates at program start.
+There is the option to enable the automatic search for updates at program start.
 The `MAKER_SEARCH_UPDATES` config can enable this feature.
 CocktailBerry will then check the GitHub repository for new releases and informs the user about it.
 If accepted, CocktailBerry will pull the latest version and restart the program afterwards.
@@ -167,7 +169,7 @@ The migrator will also do any necessary steps to adjust local files, like the da
 
 ## Backups
 
-Since **version 1.9.0**, you can backup your local data (local database, config-file) to a desired folder or external device.
+You can backup your local data (local database, config-file) to a desired folder or external device.
 You can later use this backup to restore the data, or recover the progress and recipes after doing a OS reinstall.
 Just go to the **Bottles** tab, click on the gear icon and enter your master password to get to the options window.
 There you will find both options for backup and restoring your data.
