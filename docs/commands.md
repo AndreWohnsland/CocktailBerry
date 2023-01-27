@@ -14,6 +14,11 @@ You can run it with:
 ```bash
 python runme.py [OPTIONS]
 
+# Options:
+#   -c, --calibration  Run the calibration program.
+#   -d, --debug        Using debug instead of normal Endpoints.
+#   --version          Show current version.
+#   --help             Show help
 ```
 
 You can run the calibration interface instead the usual main program when using the `-c` flag.
@@ -29,13 +34,10 @@ You can use the CLI command to merge the latest recipes in your local database.
 To update run the command:
 
 ```bash
-python runme.py [OPTIONS]
+python runme.py update-database [OPTIONS]
 
 # Options:
-#   -c, --calibration  Run the calibration program.
-#   -d, --debug        Using debug instead of normal Endpoints.
-#   --version          Show current version.
-#   --help                  Show help
+#   --help  Show help
 ```
 
 This can be useful if your CocktailBerry has been running for quite a while and you want to get more recipes.
@@ -69,7 +71,7 @@ You can now provide a `.txt` or similar text file to quickly insert a lot of new
 To use this functionality, just use the CLI, similar to running CocktailBerry:
 
 ```bash
-python runme.py dataimport [OPTIONS] PATH
+python runme.py data-import [OPTIONS] PATH
 
 # Arguments:
 #   PATH  [required]
