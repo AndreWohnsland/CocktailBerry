@@ -22,6 +22,8 @@ CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspber
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
+Like this project? Give it a star on [GitHub](https://github.com/AndreWohnsland/CocktailBerry)! ⭐
+
 ## Features
 
 CocktailBerry can do:
