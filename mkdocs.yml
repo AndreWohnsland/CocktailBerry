@@ -29,7 +29,7 @@ markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
 theme:
-  name: readthedocs
+  name: material
   # logo: pictures/CocktailBerry.svg
   favicon: img/favicon.ico
 # extra:
