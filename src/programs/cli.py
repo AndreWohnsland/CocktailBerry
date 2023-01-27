@@ -41,7 +41,7 @@ def main(
 
 
 @cli.command()
-def dataimport(
+def data_import(
     path: Path,
     conversion: float = typer.Option(1.0, "--conversion", "-c", help="Conversion factor to ml"),
     no_unit: bool = typer.Option(False, "--no-unit", "-nu", help="Ingredient data got no unit text"),
