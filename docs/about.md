@@ -9,7 +9,7 @@ Let's get started!
 
 User selects recipe > clicks button > cocktail is prepared > profit.
 
-<img src="../pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
+<img src="../pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="500"/>
 
 ## Interface
 
@@ -17,7 +17,7 @@ The interface was programmed with PyQt5 for the users to easily interact with Co
 
 **The Maker GUI:**
 
-<img src="../pictures/Main_ui.png" alt="Maker" width="600"/>
+<img src="../pictures/Main_ui.png" alt="Maker" width="700"/>
 
 This is the main window of the application and the window your guest will interact with.
 They can choose a cocktail of their choice, a star indicates that there is also a virgin option of this cocktail.
@@ -26,7 +26,7 @@ The user can increase or decrease the volume, as well as the alcohol level of th
 
 **The Ingredient GUI:**
 
-<img src="../pictures/Ingredients_ui.png" alt="Ingredient" width="600"/>
+<img src="../pictures/Ingredients_ui.png" alt="Ingredient" width="700"/>
 
 Here you can manage all your ingredients.
 Define the name, volume and alcohol level of each ingredient here.
@@ -34,7 +34,7 @@ Also, you can set ingredients for hand add and let CocktailBerry spend a single 
 
 **The Recipe GUI:**
 
-<img src="../pictures/Recipes_ui.png" alt="Recipe" width="600"/>
+<img src="../pictures/Recipes_ui.png" alt="Recipe" width="700"/>
 
 Here you can manage all your recipes.
 Define the name and ingredients with corresponding volume.
@@ -43,7 +43,7 @@ Also additional ingredients added later by the user can be defined for a recipe.
 
 **The Bottle GUI:**
 
-<img src="../pictures/Bottles_ui.png" alt="Bottle" width="600"/>
+<img src="../pictures/Bottles_ui.png" alt="Bottle" width="700"/>
 
 Here you can manage your connected ingredients.
 Toggle the new button and apply a new ingredient if you change to a new bottle.
@@ -62,8 +62,8 @@ See [Hardware](hardware.md) for a detailed list of components.
 
 **Front view:**
 
-<img src="../pictures/Frontview.jpg" alt="Frontview" width="600"/>
+<img src="../pictures/Frontview.jpg" alt="Frontview" width="700"/>
 
 **Side view:**
 
-<img src="../pictures/Sideview.jpg" alt="Sideview" width="600"/>
+<img src="../pictures/Sideview.jpg" alt="Sideview" width="700"/>
