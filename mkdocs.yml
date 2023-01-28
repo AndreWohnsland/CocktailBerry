@@ -18,7 +18,7 @@ nav:
   - Troubleshooting: troubleshooting.md
   - FAQ: faq.md
   - Feature Timetable: features.md
-  - Development: developement.md
+  - Development: development.md
 markdown_extensions:
   - toc:
       permalink: '#'
