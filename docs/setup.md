@@ -124,7 +124,7 @@ A message prompt will inform the user to provide enough water for the cleaning p
 I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water.
 Then running twice times again the cleaning program to fully clean all pumps from remaining fluid.
 
-!!! tip "When to Clean"
+!!! question "When to Clean"
     Depending on the build specification of your machine, it is a good practice to execute the cleaning of the machine before usage.
     This depends on the frequency you use CocktailBerry, where it's stored, how good it was cleaned and so on.
 

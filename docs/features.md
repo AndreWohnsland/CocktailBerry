@@ -19,6 +19,6 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.10.0** | Importing recipes from a file over the CLI         |
 | **v1.13.1** | Clearing the database over the CLI                 |
 
-!!! info "And much More"
+!!! abstract "And much More"
     This list is by no means a full list of changes.
     For that, you can check the [release notes](https://github.com/AndreWohnsland/CocktailBerry/releases).

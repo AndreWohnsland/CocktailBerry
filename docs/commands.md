@@ -105,11 +105,11 @@ The script will check for duplicates and wait for user prompt, if there are any 
 If the data got no unit between amount and name, use the `--no-unit` or `-nu` flag.
 If the recipe use another unit than ml, please provide the according conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
 
-!!! warning "Safety First"
+!!! danger "Safety First"
     I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
     You can also use the build-in backup functionality in CocktailBerry for this.
 
-!!! info "As a Side Note"
+!!! note "As a Side Note"
     You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
     In cases of many ingredients, it's quite exhausting to select the right one. 
     Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
