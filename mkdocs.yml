@@ -4,6 +4,7 @@ site_author: Andre Wohnsland
 copyright: © Copyright 2023, Andre Wohnsland & contributors
 # site_url: https://github.com/AndreWohnsland/CocktailBerry
 repo_url: https://github.com/AndreWohnsland/CocktailBerry
+repo_name: 'GitHub Cocktailberry'
 nav:
   - Home: index.md
   - About: about.md
@@ -26,10 +27,29 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: true
 theme:
   name: material
+  logo: img/berry.svg
+  palette:
+    - media: '(prefers-color-scheme: light)'
+      scheme: default
+      primary: pink
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      primary: pink
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
   # logo: pictures/CocktailBerry.svg
   favicon: img/favicon.ico
 # extra:
