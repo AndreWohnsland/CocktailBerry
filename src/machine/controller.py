@@ -46,7 +46,14 @@ class MachineController():
         self._header_print("Done Cleaning")
         w.close_progression_window()
 
-    def make_cocktail(self, w, bottle_list: List[int], volume_list: list[Union[float, int]], recipe="", is_cocktail=True):
+    def make_cocktail(
+        self,
+        w,
+        bottle_list: List[int],
+        volume_list: list[Union[float, int]],
+        recipe="",
+        is_cocktail=True
+    ):
         """RPI Logic to prepare the cocktail.
         Calculates needed time for each slot according to data and config.
         Updates Progressbar status. Returns data for DB updates.
