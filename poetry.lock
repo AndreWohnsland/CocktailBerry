@@ -731,6 +731,18 @@ files = [
 six = ">=1.5"
 
 [[package]]
+name = "python-periphery"
+version = "2.3.0"
+description = "A pure Python 2/3 library for peripheral I/O (GPIO, LED, PWM, SPI, I2C, MMIO, Serial) in Linux."
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "python-periphery-2.3.0.tar.gz", hash = "sha256:8a8ec019d9b330a6a6f69a7de61d14b4c98b102d76359047c5ce0263e12246a6"},
+    {file = "python_periphery-2.3.0-py2.py3-none-any.whl", hash = "sha256:fad31a38003521b686f3834dfd7b03b041ec29ab9aa3783a8e801baab4d0c761"},
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
@@ -1221,4 +1233,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "9890edb88db66303c1e2c1ecb7adb88343ddc9301efd71f3e9243d8e8e066267"
+content-hash = "47d774b3014150a363e3a7a543678b90156e2121ad67d56b1607b9ffe817a6de"
