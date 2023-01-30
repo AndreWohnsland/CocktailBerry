@@ -91,7 +91,7 @@ In case the machine got a RTC build in and uses it, this option can usually be s
 ## Ui Seems Wrong on none RaspOS System
 On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
 This can be dependant on the flavour of Linux, as well as the desktop variant you are using.
-I had best experience when using a LXDE variant, for example of a Debian Linux, on a none Raspberry Pi single board computer.
+I had best experience when using a LXDE/XFCE variant, for example of a Debian Linux, on a none Raspberry Pi single board computer.
 Other desktop variants may do not respect the always on top property, resulting in the taskbar show up on top the app when running the program and pop ups appear.
 Please take note that CocktailBerry will run on other systems than the Raspberry Pi OS and RPi, but may take some tweaking and testing in the settings.
 Since I probably don't own that combination of Hardware and OS, you probably need to figure out that settings by yourself.
