@@ -1,11 +1,11 @@
 from typing import Dict, List
 from sqlite3 import OperationalError
 
-from src.logger_handler import LoggerHandler, LogFiles
+from src.logger_handler import LoggerHandler
 from src.models import Cocktail, Ingredient
 from src.database_commander import DatabaseCommander, DatabaseHandler
 
-_logger = LoggerHandler("update_data_module", LogFiles.PRODUCTION)
+_logger = LoggerHandler("update_data_module")
 
 
 def add_new_recipes_from_default_db():

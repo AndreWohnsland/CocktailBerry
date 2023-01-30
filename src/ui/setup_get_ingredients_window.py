@@ -5,14 +5,14 @@ from PyQt5.QtWidgets import QDialog
 from src.ui_elements.bonusingredient import Ui_addingredient
 from src.config_manager import shared
 
-from src.logger_handler import LogFiles, LoggerHandler
+from src.logger_handler import LoggerHandler
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.machine.controller import MACHINE
 from src.tabs.bottles import set_fill_level_bars
 from src.dialog_handler import UI_LANGUAGE
 
-_logger = LoggerHandler("additional_ingredient", LogFiles.PRODUCTION)
+_logger = LoggerHandler("additional_ingredient")
 
 
 class GetIngredientWindow(QDialog, Ui_addingredient):

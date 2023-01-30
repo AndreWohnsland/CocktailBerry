@@ -9,11 +9,11 @@ from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.machine.controller import MACHINE
-from src.logger_handler import LogFiles, LoggerHandler
+from src.logger_handler import LoggerHandler
 from src.config_manager import CONFIG as cfg
 
 
-_logger = LoggerHandler("bottles_module", LogFiles.PRODUCTION)
+_logger = LoggerHandler("bottles_module")
 
 
 def get_bottle_ingredients():

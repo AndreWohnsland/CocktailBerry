@@ -5,7 +5,7 @@ import typer
 import yaml
 from pyfiglet import Figlet
 
-from src.logger_handler import LoggerHandler, LogFiles
+from src.logger_handler import LoggerHandler
 from src.models import Ingredient
 from src.utils import get_platform_data
 from src import (
@@ -19,7 +19,7 @@ from src import (
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
-logger = LoggerHandler("config_manager", LogFiles.PRODUCTION)
+logger = LoggerHandler("config_manager")
 
 
 class ChooseType:

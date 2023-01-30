@@ -1,9 +1,9 @@
 from typing import List, Optional
 from src.machine.interface import PinController
-from src.logger_handler import LoggerHandler, LogFiles
+from src.logger_handler import LoggerHandler
 
 
-logger = LoggerHandler("RpiController", LogFiles.PRODUCTION)
+logger = LoggerHandler("RpiController")
 
 try:
     # pylint: disable=import-error

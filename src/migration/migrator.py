@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Optional, Tuple
 
 from src import __version__, FUTURE_PYTHON_VERSION
-from src.logger_handler import LoggerHandler, LogFiles
+from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
     rename_database_to_english,
     add_more_bottles_to_db,
@@ -22,7 +22,7 @@ from src.migration.update_data import (
 
 _DIRPATH = Path(__file__).parent.absolute()
 _CONFIG_PATH = _DIRPATH.parents[1] / ".version.ini"
-_logger = LoggerHandler("migrator_module", LogFiles.PRODUCTION)
+_logger = LoggerHandler("migrator_module")
 _INSTALLED_PACKAGES = [pkg.key for pkg in list(pkg_resources.working_set)]
 
 

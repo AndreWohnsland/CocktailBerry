@@ -3,12 +3,12 @@ from pathlib import Path
 from git import Repo, GitCommandError  # type: ignore
 
 from src.migration.migrator import Migrator, _Version
-from src.logger_handler import LoggerHandler, LogFiles
+from src.logger_handler import LoggerHandler
 from src import FUTURE_PYTHON_VERSION
 from src.utils import restart_program
 
 
-logger = LoggerHandler("updater_module", LogFiles.PRODUCTION)
+logger = LoggerHandler("updater_module")
 
 
 class Updater:
