@@ -11,7 +11,7 @@ try:
     DEV = False
 except ModuleNotFoundError:
     DEV = True
-    logger.log_event("WARNING", "Could not import periphery. GPIO. Will not be able to control pins")
+    logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
     logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
 
 
