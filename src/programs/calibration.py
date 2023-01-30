@@ -48,6 +48,6 @@ def run_calibration(standalone=True):
         app = QApplication(sys.argv)
     # this assignment is needed, otherwise the window will close in an instant
     # pylint: disable=unused-variable
-    calibration = CalibrationScreen()
+    calibration = CalibrationScreen()  # noqa
     if standalone:
         sys.exit(app.exec_())  # type: ignore
