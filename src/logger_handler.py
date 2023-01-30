@@ -25,11 +25,11 @@ class LoggerHandler:
         logger = logging.getLogger(logger_name)
         logger.setLevel(logging.DEBUG)
         if not logger.hasHandlers():
-            filehandler = logging.FileHandler(self.path)
-            filehandler.setLevel(logging.DEBUG)
+            file_handler = logging.FileHandler(self.path)
+            file_handler.setLevel(logging.DEBUG)
             formatter = logging.Formatter("%(asctime)s | %(name)s | %(levelname)s: %(message)s", "%Y-%m-%d %H:%M")
-            filehandler.setFormatter(formatter)
-            logger.addHandler(filehandler)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
 
         self.logger = logging.getLogger(logger_name)
         self.template = "{:-^80}"
