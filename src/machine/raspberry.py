@@ -13,7 +13,6 @@ try:
     DEV = False
 except ModuleNotFoundError:
     DEV = True
-    logger.log_event("WARNING", "Could not import RPi.GPIO. Will not be able to control pins")
 
 
 class RpiController(PinController):
@@ -28,6 +27,8 @@ class RpiController(PinController):
         print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
         if not self.devenvironment:
             GPIO.setup(pin_list, GPIO.OUT, initial=1)
+        else:
+            logger.log_event("WARNING", "Could not import RPi.GPIO. Will not be able to control pins")
 
     def activate_pin_list(self, pin_list: List[int]):
         """Activates the given pin list"""

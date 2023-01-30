@@ -11,8 +11,6 @@ try:
     DEV = False
 except ModuleNotFoundError:
     DEV = True
-    logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
-    logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
 
 
 class GenericController(PinController):
@@ -29,6 +27,9 @@ class GenericController(PinController):
         if not self.devenvironment:
             for pin in pin_list:
                 self.gpios[pin] = GPIO(pin, "out")
+        else:
+            logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
+            logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
 
     def activate_pin_list(self, pin_list: List[int]):
         """Activates the given pin list"""
