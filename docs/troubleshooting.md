@@ -87,6 +87,16 @@ This new option tackles that. If it's set active with an active microservice, it
 If there is no connection, a dialog will pop up and give the user the possibility to adjust the time.
 In case the machine got a RTC build in and uses it, this option can usually be set to `false`, because due to the RTC, the time should be correct.
 
+
+## Ui Seems Wrong on none RaspOS System
+On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
+This can be dependant on the flavour of Linux, as well as the desktop variant you are using.
+I had best experience when using a LXCE variant, for example of a Debian Linux, on a none Raspberry Pi single board computer.
+Other desktop variants may do not respect the always on top property, resulting in the taskbar show up on top the app when running the program and pop ups appear.
+Please take note that CocktailBerry will run on other systems than the Raspberry Pi OS and RPi, but may take some tweaking and testing in the settings.
+Since I probably don't own that combination of Hardware and OS, you probably need to figure out that settings by yourself.
+If you are a unexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
+
 ## Problems Installing Software on Raspberry Pi
 
 The Raspberry Pi can sometimes differ from other machines in terms of installation. Here are some issues that might occur.
