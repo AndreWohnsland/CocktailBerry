@@ -8,7 +8,14 @@ from pyfiglet import Figlet
 from src.logger_handler import LoggerHandler, LogFiles
 from src.models import Ingredient
 from src.utils import get_platform_data
-from src import __version__, PROJECT_NAME, MAX_SUPPORTED_BOTTLES, SUPPORTED_LANGUAGES, SUPPORTED_BOARDS, SUPPORTED_THEMES
+from src import (
+    __version__,
+    PROJECT_NAME,
+    MAX_SUPPORTED_BOTTLES,
+    SUPPORTED_LANGUAGES,
+    SUPPORTED_BOARDS,
+    SUPPORTED_THEMES
+)
 
 
 CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
@@ -205,7 +212,8 @@ class ConfigManager:
         """Validates that the given pin numbers exists on the board"""
         # RPI
         rpi_allowed = list(range(0, 28))
-        allowed_pins = []
+        # Generic Pins, 200 should probably be enough, RockPi got numbers up to 160
+        allowed_pins = list(range(0, 201))
         if self.MAKER_BOARD == "RPI":
             allowed_pins = rpi_allowed
         if data not in allowed_pins:
