@@ -17,6 +17,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.9.0**  | Backup and restore local data from external device |
 | **v1.10.0** | Update local database with new available recipes   |
 | **v1.10.0** | Importing recipes from a file over the CLI         |
+| **v1.11.0** | Internet check and time adjustment feature         |
 | **v1.13.1** | Clearing the database over the CLI                 |
 
 !!! abstract "And much More"
