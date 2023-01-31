@@ -112,8 +112,6 @@ You can use water and a weight scale for the process.
 Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps.
 In the end, you can adjust each pump volume flow by the factor:
 
-Vnew = Vold \* expectation/output
-
 $$ \dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}} $$
 
 ## Cleaning the Machine
