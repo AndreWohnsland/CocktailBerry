@@ -222,8 +222,8 @@ ui:
       en: 'available'
       de: 'verfügbar'
     hand_add_label:
-      en: 'Add self by hand:'
-      de: 'Selbst hinzufügen:'
+      en: 'Add self:'
+      de: 'Selbst:'
     renew_button:
       en: 'apply'
       de: 'anwenden'
