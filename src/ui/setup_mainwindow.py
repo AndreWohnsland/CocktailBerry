@@ -198,8 +198,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         self.increase_volume.clicked.connect(lambda: maker.adjust_volume(self, 25))
         self.decrease_volume.clicked.connect(lambda: maker.adjust_volume(self, -25))
-        self.increase_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, 0.1))
-        self.decrease_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, -0.1))
+        self.increase_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, 0.15))
+        self.decrease_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, -0.15))
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
         # Connect the Lists with the Functions
