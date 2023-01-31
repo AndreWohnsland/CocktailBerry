@@ -31,7 +31,7 @@ Some of the migrations create a backup of the database before doing the mutation
 If you rather don't want to have the new recipes, you can overwrite the local `Cocktail_database.db` with the `Cocktail_database_backup.db` file.
 
 ```bash
-cp Cocktail_database_backup.db Cocktail_database.db
+cp Cocktail_database_backup-{your-date-string}.db Cocktail_database.db
 ```
 
 This will restore the state of the backup previous this migration step.
@@ -80,7 +80,7 @@ After the reboot, the calibration should be okay.
 
 ## How to Have the Right Time
 
-With version __Version 1.11.0__, there is the new config value `MAKER_CHECK_INTERNET`.
+There is the config value `MAKER_CHECK_INTERNET`.
 If you wish to use your microservice, but got no internet at the moment, the data will be saved and send later.
 One problem that occurred, is that, for example on a standard Raspberry Pi, the clock and therefore the timestamp will probably be wrong.
 This new option tackles that. If it's set active with an active microservice, it will check for internet connection at startup.
@@ -154,7 +154,8 @@ sudo chmod +x ~/launcher.sh
 sudo chmod 755 ~/launcher.sh
 ```
 
-**By the way**: The provided installer script does all that steps for you.
+!!! info "By the Way"
+    The provided installer script does all that steps for you.
 
 ### The GUI on the RPi Looks Different from the Screenshots
 
