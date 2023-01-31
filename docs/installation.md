@@ -31,8 +31,10 @@ sh scripts/install_docker.sh
 cd ~/CocktailBerry
 sh scripts/setup.sh
 # now we are good to go
-python3 runme.py
+python3 runme.py # (1)!
 ```
+
+1.  Newer systems may execute python instead of python3
 
 ## Installing Requirements
 The best way is to use the provided `requirements.txt` file.
