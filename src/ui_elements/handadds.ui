@@ -210,7 +210,7 @@
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -237,7 +237,7 @@
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -264,7 +264,7 @@
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -291,7 +291,7 @@
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -318,7 +318,7 @@
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
