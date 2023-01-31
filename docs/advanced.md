@@ -63,9 +63,15 @@ In addition, there is the option to display all time data of the leader board.
 By default, the latest 24 hours, so mostly this party, will be shown.
 You should use a second device for the API / the dashboard for easy display on another screen.
 
-<img src="../pictures/teams_ui.png" alt="Maker" width="600"/>
+<figure markdown>
+  ![Teamselection](pictures/teams_ui.png)
+  <figcaption>Teams Selection in CocktailBerry</figcaption>
+</figure>
 
-<img src="../pictures/dashboard.png" alt="Maker" width="600"/>
+<figure markdown>
+  ![Team_dashboard](pictures/dashboard.png)
+  <figcaption>Dashboard View for Teams</figcaption>
+</figure>
 
 The **recommended way** is to use a second Raspberry Pi with a touchscreen attached.
 Then build the docker-compose file and execute the `dashboard/qt-app/main.py`.
