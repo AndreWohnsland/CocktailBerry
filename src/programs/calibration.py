@@ -5,12 +5,12 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from src.config_manager import CONFIG as cfg
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
-from src.logger_handler import LoggerHandler, LogFiles
+from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.ui_elements.calibration import Ui_MainWindow
 
 
-logger = LoggerHandler("calibration_module", LogFiles.PRODUCTION)
+logger = LoggerHandler("calibration_module")
 
 
 class CalibrationScreen(QMainWindow, Ui_MainWindow):
@@ -48,6 +48,6 @@ def run_calibration(standalone=True):
         app = QApplication(sys.argv)
     # this assignment is needed, otherwise the window will close in an instant
     # pylint: disable=unused-variable
-    calibration = CalibrationScreen()
+    calibration = CalibrationScreen()  # noqa
     if standalone:
         sys.exit(app.exec_())  # type: ignore

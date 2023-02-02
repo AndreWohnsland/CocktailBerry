@@ -20,7 +20,30 @@ CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspber
   <a href="setup/" class="cta-btn secondary-btn"> Set Up </a>
 </div>
 
+<!-- <div class="grid cards" markdown>
+
+-   :material-clock-fast:{ .lg .middle } __Quick and Easy__
+
+    ---
+
+    Run the provided setup script on your Pi
+
+    [:octicons-arrow-right-24: Quickstart](quickstart.md)
+
+-   :fontawesome-brands-markdown:{ .lg .middle } __Customize to your needs__
+
+    ---
+
+    Change the settings depending on your custom build
+
+    [:fontawesome-solid-gear: Set Up](setup.md)
+
+</div> -->
+
+
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
+
+Like this project? Give it a star on [GitHub](https://github.com/AndreWohnsland/CocktailBerry)! ⭐
 
 ## Features
 

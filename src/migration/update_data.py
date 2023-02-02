@@ -1,11 +1,11 @@
 from typing import Dict, List
 from sqlite3 import OperationalError
 
-from src.logger_handler import LoggerHandler, LogFiles
+from src.logger_handler import LoggerHandler
 from src.models import Cocktail, Ingredient
 from src.database_commander import DatabaseCommander, DatabaseHandler
 
-_logger = LoggerHandler("update_data_module", LogFiles.PRODUCTION)
+_logger = LoggerHandler("update_data_module")
 
 
 def add_new_recipes_from_default_db():
@@ -129,7 +129,7 @@ def rename_database_to_english():
     for command in commands:
         try:
             db_handler.query_database(command)
-        # this may occour if renaming already took place
+        # this may occur if renaming already took place
         except OperationalError:
             pass
 

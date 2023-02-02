@@ -16,7 +16,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
 from src.programs.calibration import run_calibration
 from src.machine.controller import MACHINE
-from src.logger_handler import LogFiles, LoggerHandler
+from src.logger_handler import LoggerHandler
 from src.save_handler import SAVE_HANDLER
 from src.utils import restart_program
 
@@ -26,7 +26,7 @@ _DATABASE_NAME = "Cocktail_database.db"
 _CONFIG_NAME = "custom_config.yaml"
 _VERSION_NAME = ".version.ini"
 _NEEDED_FILES = [_DATABASE_NAME, _CONFIG_NAME, _VERSION_NAME]
-_logger = LoggerHandler("option_window", LogFiles.PRODUCTION)
+_logger = LoggerHandler("option_window")
 
 
 class OptionWindow(QMainWindow, Ui_Optionwindow):

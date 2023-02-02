@@ -12,6 +12,6 @@ To get started, have a quick look into the [Guidelines for contributing](https:/
 
 - `easy`: Translate all dialogs / UI to your native language
 
-!!! info "Stay Updated"
-    You may also want to have a look into the GitHub repository.
+!!! success "Stay Updated"
+    You may also want to have a look into the [GitHub](https://github.com/AndreWohnsland/CocktailBerry) repository.
     Maybe there are some open issues, which get closed even faster with your help.

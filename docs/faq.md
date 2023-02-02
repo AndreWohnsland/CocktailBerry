@@ -37,6 +37,20 @@ It depends on how you build your machine, but you will most likely want some sor
 Even an 5-inch 800x480 will work, but in my opinion a 7-inch 1024x600 is quite good.
 Higher resolution screen can be used, for high-res screens I recommend [this setting](troubleshooting.md#using-a-high-resolution-screen) for the best user experience.
 
+
+### Can I use another Board / SBC
+
+You probably can use a wide variety of Single Board Computers (SBCs) beside the Raspberry Pi.
+The software should work on any system, but there are still some considerations.
+Especially if you are unexperienced with programming and Linux, I strongly suggest to stick to the recommended Pi setup.
+If you are experienced with Linux, you can probably get almost any SBC to work properly.
+I recommend using a LXDE/XFCE based desktop variant, for example a Debian Linux for the OS.
+The autorun / installation may differ a bit from the Pi. 
+You also probably need to run the python package installation and program as sudo.
+You can switch the board config variable to Generic, this will use the [python-periphery](https://github.com/vsergeev/python-periphery) library.
+This library supports a broad variety of SBCs, but the Python process usually needs root permission to access the GPIOs.
+In case of any issues related to the GUI (like window positioning, overlap), please take note that officially only the RPi is supported and tested.
+
 ## Software
 
 ### Which Raspberry Pi OS to Use

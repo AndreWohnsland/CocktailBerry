@@ -40,7 +40,10 @@ The pump circuit will be most likely 12 or 24 V.
 You can either use two different power supplies or use a step down converter for the RPi.
 The RPi will control a relay, mosfet or another electrical switch over the GPIO output.
 
-<img src="../pictures/circuit.jpg" alt="circuit"/>
+<figure markdown>
+  ![circuit](pictures/circuit.jpg)
+  <figcaption>Possible Circuit Schema</figcaption>
+</figure>
 
 You can use any of the GPIOs of the RPi, the connected pump to that pin can be defined in the config.
 The switch will then turn the pump on or of over the RPi.

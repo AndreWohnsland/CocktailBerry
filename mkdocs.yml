@@ -4,6 +4,7 @@ site_author: Andre Wohnsland
 copyright: © Copyright 2023, Andre Wohnsland & contributors
 # site_url: https://github.com/AndreWohnsland/CocktailBerry
 repo_url: https://github.com/AndreWohnsland/CocktailBerry
+repo_name: 'GitHub Cocktailberry'
 nav:
   - Home: index.md
   - About: about.md
@@ -12,22 +13,51 @@ nav:
   - Hardware: hardware.md
   - Setup / Usage: setup.md
   - Supported Languages: languages.md
+  - CLI commands: commands.md
   - Advanced Topics: advanced.md
   - Troubleshooting: troubleshooting.md
   - FAQ: faq.md
-  - Development: developement.md
+  - Feature Timetable: features.md
+  - Development: development.md
 markdown_extensions:
   - toc:
       permalink: '#'
   - attr_list
+  - md_in_html
   - admonition
   - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 theme:
-  name: readthedocs
+  features:
+    - navigation.footer
+    - content.code.copy
+    - content.code.annotate
+  name: material
+  logo: img/berry.svg
+  palette:
+    - media: '(prefers-color-scheme: light)'
+      scheme: default
+      primary: pink
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      primary: pink
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
   # logo: pictures/CocktailBerry.svg
   favicon: img/favicon.ico
 # extra:

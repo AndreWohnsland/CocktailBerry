@@ -14,6 +14,7 @@ _PLUS_ICON = "fa5s.plus"
 _MINUS_ICON = "fa5s.minus"
 _DELETE_ICON = "fa5s.trash-alt"
 _CLEAR_ICON = "fa5s.eraser"
+_COCKTAIL_ICON = "fa5s.cocktail"
 _BUTTON_SIZE = QSize(36, 36)
 
 
@@ -38,24 +39,27 @@ class IconSetter:
 
     def set_mainwindow_icons(self, w):
         """Sets the icons of the main window according to style sheets props"""
-        # For solid buttons
-        for ui_element, icon in [
-            (w.option_button, _SETTING_ICON),
-            (w.PBZdelete, _DELETE_ICON),
-            (w.PBdelete, _DELETE_ICON),
-            (w.PBZclear, _CLEAR_ICON),
-            (w.PBclear, _CLEAR_ICON),
+        # For solid buttons, they use bg color for icon
+        for ui_element, icon, no_text in [
+            (w.option_button, _SETTING_ICON, True),
+            (w.PBZdelete, _DELETE_ICON, True),
+            (w.PBdelete, _DELETE_ICON, True),
+            (w.PBZclear, _CLEAR_ICON, True),
+            (w.PBclear, _CLEAR_ICON, True),
+            (w.prepare_button, _COCKTAIL_ICON, False),
         ]:
-            self._set_icon(ui_element, qta.icon(icon, color=self.background))
-        # For outline buttons
-        for ui_element, icon, color in [
+            icon = qta.icon(icon, color=self.background)
+            self._set_icon(ui_element, icon, no_text)
+        # For outline buttons, they use button color for icon
+        for ui_element, icon, color, no_text in [
         ]:
-            self._set_icon(ui_element, qta.icon(icon, color=color))
+            self._set_icon(ui_element, qta.icon(icon, color=color), no_text)
 
-    def _set_icon(self, ui_element: QPushButton, icon):
+    def _set_icon(self, ui_element: QPushButton, icon, no_text: bool):
         ui_element.setIcon(icon)
         ui_element.setIconSize(_BUTTON_SIZE)
-        ui_element.setText("")
+        if no_text:
+            ui_element.setText("")
 
     def _set_plus_minus_mw_experimental(self, w):
         w.PBMminus.setIcon(qta.icon(_MINUS_ICON, color=self.primary_color))

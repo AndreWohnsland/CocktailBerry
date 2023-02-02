@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>792</width>
+    <width>800</width>
     <height>625</height>
    </rect>
   </property>
@@ -865,7 +865,7 @@
            </layout>
           </item>
           <item row="4" column="3">
-           <widget class="QPushButton" name="PBZubereiten_custom">
+           <widget class="QPushButton" name="prepare_button">
             <property name="minimumSize">
              <size>
               <width>400</width>
@@ -1034,7 +1034,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>40</height>
+              <height>30</height>
              </size>
             </property>
            </spacer>
@@ -2054,35 +2054,6 @@
               </item>
               <item>
                <layout class="QGridLayout" name="gridLayout_7">
-                <item row="2" column="0">
-                 <widget class="QPushButton" name="PBdelete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>80</width>
-                    <height>60</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>del</string>
-                  </property>
-                  <property name="cssClass" stdset="0">
-                   <string>btn-inverted destructive</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="1" column="0">
                  <widget class="QPushButton" name="PBclear">
                   <property name="minimumSize">
@@ -2112,7 +2083,36 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1" colspan="2">
+                <item row="2" column="0">
+                 <widget class="QPushButton" name="PBdelete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>80</width>
+                    <height>60</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>16</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>del</string>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>btn-inverted destructive</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2" colspan="2">
                  <widget class="ClickableLineEdit" name="LEKommentar">
                   <property name="minimumSize">
                    <size>
@@ -2131,12 +2131,12 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1" colspan="2">
+                <item row="1" column="1">
                  <widget class="QLabel" name="LRHandAdd">
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
-                    <height>25</height>
+                    <width>100</width>
+                    <height>70</height>
                    </size>
                   </property>
                   <property name="font">
@@ -2147,7 +2147,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>Add by Hand:</string>
+                   <string>Hand:</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -2157,7 +2157,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1" colspan="2">
+                <item row="2" column="1" colspan="3">
                  <widget class="QPushButton" name="PBRezepthinzu">
                   <property name="minimumSize">
                    <size>
@@ -2219,8 +2219,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-203</y>
-             <width>733</width>
+             <y>0</y>
+             <width>741</width>
              <height>756</height>
             </rect>
            </property>

@@ -31,7 +31,7 @@ Some of the migrations create a backup of the database before doing the mutation
 If you rather don't want to have the new recipes, you can overwrite the local `Cocktail_database.db` with the `Cocktail_database_backup.db` file.
 
 ```bash
-cp Cocktail_database_backup.db Cocktail_database.db
+cp Cocktail_database_backup-{your-date-string}.db Cocktail_database.db
 ```
 
 This will restore the state of the backup previous this migration step.
@@ -80,12 +80,22 @@ After the reboot, the calibration should be okay.
 
 ## How to Have the Right Time
 
-With version __Version 1.11.0__, there is the new config value `MAKER_CHECK_INTERNET`.
+There is the config value `MAKER_CHECK_INTERNET`.
 If you wish to use your microservice, but got no internet at the moment, the data will be saved and send later.
 One problem that occurred, is that, for example on a standard Raspberry Pi, the clock and therefore the timestamp will probably be wrong.
 This new option tackles that. If it's set active with an active microservice, it will check for internet connection at startup.
 If there is no connection, a dialog will pop up and give the user the possibility to adjust the time.
 In case the machine got a RTC build in and uses it, this option can usually be set to `false`, because due to the RTC, the time should be correct.
+
+
+## Ui Seems Wrong on none RaspOS System
+On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
+This can be dependant on the flavour of Linux, as well as the desktop variant you are using.
+I had best experience when using a LXDE/XFCE variant, for example of a Debian Linux, on a none Raspberry Pi single board computer.
+Other desktop variants may do not respect the always on top property, resulting in the taskbar show up on top the app when running the program and pop ups appear.
+Please take note that CocktailBerry will run on other systems than the Raspberry Pi OS and RPi, but may take some tweaking and testing in the settings.
+Since I probably don't own that combination of Hardware and OS, you probably need to figure out that settings by yourself.
+If you are a unexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
 
 ## Problems Installing Software on Raspberry Pi
 
@@ -144,7 +154,8 @@ sudo chmod +x ~/launcher.sh
 sudo chmod 755 ~/launcher.sh
 ```
 
-**By the way**: The provided installer script does all that steps for you.
+!!! info "By the Way"
+    The provided installer script does all that steps for you.
 
 ### The GUI on the RPi Looks Different from the Screenshots
 

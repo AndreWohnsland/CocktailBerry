@@ -40,8 +40,8 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
                 input_value=iv, input_value_shift=iv_s))
         # restricting the Lineedit to a set up Char length
         self.LName.setMaxLength(max_char_len)
-        DP_CONTROLLER.set_display_settings(self)
         self.showFullScreen()
+        DP_CONTROLLER.set_display_settings(self)
 
     def back_button_clicked(self):
         """ Closes the Window without any further action. """

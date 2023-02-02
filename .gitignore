@@ -173,7 +173,7 @@ __pycache__
 .venv
 team.db
 Cocktail_database.db
-Cocktail_database_backup.db
+Cocktail_database_backup*.db
 failed_data.db
 custom_config.*
 .version.ini

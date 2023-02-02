@@ -3,6 +3,7 @@ from typing import List, Union
 from PyQt5.QtWidgets import qApp
 
 from src.config_manager import shared, CONFIG as cfg
+from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.raspberry import RpiController
 
@@ -18,8 +19,8 @@ class MachineController():
         """Selects the controller class for the Pin"""
         if cfg.MAKER_BOARD == "RPI":
             return RpiController()
-        # In case none is found, fall back to default (RPi)
-        return RpiController()
+        # In case none is found, fall back to generic using python-periphery
+        return GenericController()
 
     def clean_pumps(self, w):
         """Clean the pumps for the defined time in the config.
@@ -45,7 +46,14 @@ class MachineController():
         self._header_print("Done Cleaning")
         w.close_progression_window()
 
-    def make_cocktail(self, w, bottle_list: List[int], volume_list: list[Union[float, int]], recipe="", is_cocktail=True):
+    def make_cocktail(
+        self,
+        w,
+        bottle_list: List[int],
+        volume_list: list[Union[float, int]],
+        recipe="",
+        is_cocktail=True
+    ):
         """RPI Logic to prepare the cocktail.
         Calculates needed time for each slot according to data and config.
         Updates Progressbar status. Returns data for DB updates.

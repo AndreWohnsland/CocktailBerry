@@ -5,13 +5,13 @@ import sqlite3
 from typing import List, Optional, Union
 
 from src.models import Cocktail, Ingredient
-from src.logger_handler import LoggerHandler, LogFiles
+from src.logger_handler import LoggerHandler
 
 DATABASE_NAME = "Cocktail_database"
 DIRPATH = Path(__file__).parent.absolute()
 BACKUP_NAME = f"{DATABASE_NAME}_backup"
 
-_logger = LoggerHandler("database_module", LogFiles.PRODUCTION)
+_logger = LoggerHandler("database_module")
 
 
 class DatabaseCommander:
@@ -22,9 +22,12 @@ class DatabaseCommander:
 
     def create_backup(self):
         """Creates a backup locally in the same folder, used before migrations"""
+        dtime = datetime.datetime.now()
+        suffix = dtime.strftime("%Y-%m-%d-%H-%M-%S")
         database_path = DIRPATH.parent / f"{DATABASE_NAME}.db"
-        backup_path = DIRPATH.parent / f"{BACKUP_NAME}.db"
-        _logger.log_event("INFO", f"Creating backup with name: {BACKUP_NAME}")
+        full_backup_name = f"{BACKUP_NAME}-{suffix}"
+        backup_path = DIRPATH.parent / f"{full_backup_name}.db"
+        _logger.log_event("INFO", f"Creating backup with name: {full_backup_name}")
         _logger.log_event("INFO", f"Use this to overwrite: {DATABASE_NAME} in case of failure")
         shutil.copy(database_path, backup_path)
 
@@ -360,6 +363,18 @@ class DatabaseCommander:
     def delete_existing_handadd_ingredient(self):
         """Deletes all ingredient in the available table"""
         self.handler.query_database("DELETE FROM Available")
+
+    def delete_database_data(self):
+        """Removes all the data from the db for a local reset"""
+        commands = [
+            "DELETE FROM Available",
+            "UPDATE Bottles set ID = Null",
+            "DELETE FROM RecipeData",
+            "DELETE FROM Recipes",
+            "DELETE FROM Ingredients",
+        ]
+        for command in commands:
+            self.handler.query_database(command)
 
     def save_failed_teamdata(self, payload):
         """Saves the failed payload into the db to buffer"""

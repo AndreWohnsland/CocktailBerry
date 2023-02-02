@@ -20,6 +20,8 @@ Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
 
 This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients. Track and display cocktail data for different teams to even further increase the fun. Let's get started!
 
+Like this project? Give it a star on GitHub! ⭐
+
 ## tl;dr
 
 <img src="docs/pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
