@@ -383,6 +383,9 @@ ui:
     MAKER_NUMBER_BOTTLES:
       en: 'Number of bottles of the machine'
       de: 'Flaschenanzahl der Maschine'
+    MAKER_SIMULTANEOUSLY_PUMPS:
+      en: 'Maximum Number of Pumps simultaneously on'
+      de: 'Maximale Pumpenanzahl, die gleichzeitig an ist'
     MAKER_CLEAN_TIME:
       en: 'Time in seconds the cleaning program is executed'
       de: 'Zeit in Sekunden, die das Reinigungsprogramm ausgeführt wird'
