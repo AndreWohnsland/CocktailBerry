@@ -23,9 +23,9 @@ class MachineController():
 
     def __init__(self):
         super().__init__()
-        self._pin_controller = self.__chose_controller()
+        self._pin_controller = self._chose_controller()
 
-    def __chose_controller(self) -> PinController:
+    def _chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""
         if cfg.MAKER_BOARD == "RPI":
             return RpiController()
@@ -34,25 +34,13 @@ class MachineController():
 
     def clean_pumps(self, w):
         """Clean the pumps for the defined time in the config.
-        Activates all pumps for the given time
+        Activates all pumps for the given time.
         """
-        active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
-        _header_print("Start Cleaning")
-        t_cleaned = 0.0
+        prep_data = self._build_clean_data()
         w.open_progression_window("Cleaning")
-        self._start_pumps(active_pins)
-        # also using same button cancel from prepare cocktail
+        _header_print("Start Cleaning")
         shared.make_cocktail = True
-        while t_cleaned < cfg.MAKER_CLEAN_TIME and shared.make_cocktail:
-            _clean_print(t_cleaned)
-            t_cleaned += cfg.MAKER_SLEEP_TIME
-            t_cleaned = round(t_cleaned, 2)
-            time.sleep(cfg.MAKER_SLEEP_TIME)
-            w.change_progression_window(t_cleaned / cfg.MAKER_CLEAN_TIME * 100)
-            qApp.processEvents()
-        _clean_print(cfg.MAKER_CLEAN_TIME)
-        print("")
-        self._stop_pumps(active_pins)
+        self._start_preparation(w, prep_data, False)
         _header_print("Done Cleaning")
         w.close_progression_window()
 
@@ -73,6 +61,7 @@ class MachineController():
             bottle_list (List[int]): Number of bottles to be used
             volume_list (List[float]): Corresponding Volume needed of bottles
             recipe (str, optional): Option to change the display text of Progress Screen. Defaults to "".
+            is_cocktail (bool, optional): If the preparation is a cocktail. Default to True.
 
         Returns:
             tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
@@ -94,7 +83,7 @@ class MachineController():
             w.close_progression_window()
         return consumption, current_time, max_time
 
-    def _start_preparation(self, w, prep_data: list[_PreparationData]):
+    def _start_preparation(self, w, prep_data: list[_PreparationData], verbose: bool = True):
         """Prepares the volumes of the given data"""
         current_time = 0.0
         # need to cut data into chunks
@@ -119,7 +108,8 @@ class MachineController():
             while section_time < section_max and shared.make_cocktail:
                 self._process_preparation_section(current_time, max_time, section, section_time)
                 # Adjust needed data
-                _consumption_print([x.consumption for x in prep_data], current_time, max_time)
+                if verbose:
+                    _consumption_print([x.consumption for x in prep_data], current_time, max_time)
                 current_time = round(current_time + cfg.MAKER_SLEEP_TIME, 2)
                 section_time = round(section_time + cfg.MAKER_SLEEP_TIME, 2)
                 time.sleep(cfg.MAKER_SLEEP_TIME)
@@ -212,14 +202,6 @@ def _consumption_print(consumption: List[float], current_time: float, max_time: 
         pretty_consumption = [round(x) for x in consumption]
         _print_time(current_time, max_time)
         print(f"Volumes: {pretty_consumption}")
-
-
-def _clean_print(t_cleaned: float, interval=0.5):
-    """Progress print for cleaning"""
-    if t_cleaned % interval == 0:
-        print(
-            f"Cleaning, {t_cleaned:.1f}/{cfg.MAKER_CLEAN_TIME:.1f} s {'.' * int(t_cleaned*2)}", end="\r"
-        )  # type: ignore
 
 
 def _header_print(msg: str):
