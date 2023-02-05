@@ -222,9 +222,10 @@ class DialogHandler():
             program_python=program_python
         )
 
-    def ask_to_update(self):
+    def ask_to_update(self, release_information):
         """Asks the user if he wants to get the latest update"""
         message = self.__choose_language("update_available")
+        message = f"{message}\n\n{release_information}"
         return self.user_okay(message)
 
     def ask_to_start_cleaning(self):
