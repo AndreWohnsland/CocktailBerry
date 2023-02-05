@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 from git import Repo, GitCommandError  # type: ignore
 import requests
+from requests import Response
 
 from src.migration.migrator import Migrator, _Version
 from src.logger_handler import LoggerHandler
@@ -10,7 +11,7 @@ from src.utils import restart_program
 
 
 _logger = LoggerHandler("updater_module")
-_GITHUB_RELEASE_URL = "https://api.github.com/repos/andrewohnsland/cocktailberry/releases/latest"
+_GITHUB_RELEASE_URL = "https://api.github.com/repos/andrewohnsland/cocktailberry/releases"
 
 
 class Updater:
@@ -64,10 +65,20 @@ class Updater:
         info = ""
         if update_available:
             _logger.log_event("INFO", f"Update {latest_tag.name} is available")
-            release_data = requests.get(_GITHUB_RELEASE_URL, timeout=5000)
-            info = release_data.json().get("body", "")
+            release_data = requests.get(f"{_GITHUB_RELEASE_URL}?per_page=5", timeout=5000)
+            info = self._parse_release_data(release_data)
         return update_available, info
 
     def _get_latest_tag(self):
         latest_tag = sorted(self.repo.tags, key=lambda t: _Version(t.name.replace("v", "")))[-1]
         return latest_tag
+
+    def _parse_release_data(self, response: Response):
+        """Converts the response into a string to display """
+        text = ""
+        for release in response.json():
+            name = release.get('name', '')
+            body = release.get("body", '')
+            sep = 70 * "_"
+            text += f"Release: {name}\n{body}\n{sep}\n\n"
+        return text
