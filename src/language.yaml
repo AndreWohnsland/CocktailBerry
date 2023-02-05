@@ -174,7 +174,12 @@ ui:
     ok_button:
       en: 'Ok'
       de: 'Ok'
-
+    yes_button:
+      en: 'Yes'
+      de: 'Ja'
+    no_button:
+      en: 'No'
+      de: 'Nein'
   # dynamic values for maker tab
   maker:
     add_self:
@@ -342,7 +347,7 @@ ui:
       en: 'Select Date and Time'
       de: 'Datum und Zeit bestimmen'
 
-  ##### DATE PICKER WINDOW #####
+  ##### PASSWORD WINDOW #####
   # all values for password dialog window
   password_dialog:
     header:

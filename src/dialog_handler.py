@@ -4,8 +4,7 @@
 from pathlib import Path
 from typing import Dict, List, Optional, Literal
 import yaml
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QFileDialog, QWidget
 from src.config_manager import CONFIG as cfg
 
 
@@ -39,22 +38,9 @@ class DialogHandler():
         messagebox.exec_()
 
     def user_okay(self, text: str):
-        msg_box = QMessageBox()
-        msg_box.setText(text)
-        msg_box.setWindowTitle(self.__choose_language("confirmation_required"))
-        yes_text = self.__choose_language("yes_button")
-        no_text = self.__choose_language("no_button")
-        yes_button = msg_box.addButton(yes_text, QMessageBox.YesRole)  # type: ignore
-        yes_button.setProperty("cssClass", "btn-inverted")
-        no_button = msg_box.addButton(no_text, QMessageBox.NoRole)  # type: ignore
-        no_button.setProperty("cssClass", "btn-inverted")
-        style_sheet = str(DIRPATH / "ui" / "styles" / f"{cfg.MAKER_THEME}.css")
-        with open(style_sheet, "r", encoding="utf-8") as file_handler:
-            msg_box.setStyleSheet(file_handler.read())
-        msg_box.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        msg_box.move(50, 50)
-        msg_box.exec_()
-        if msg_box.clickedButton() == yes_button:
+        from src.ui.setup_custom_prompt import CustomPrompt
+        msg_box = CustomPrompt(text)
+        if msg_box.exec_():
             return True
         return False
 
@@ -455,6 +441,11 @@ class UiLanguage():
         w.header.setText(self.__choose_language("header", window))
         w.cancel_button.setText(self.__choose_language("cancel_button"))
         w.enter_button.setText(self.__choose_language("ok_button"))
+
+    def adjust_custom_prompt(self, w):
+        """Translate all the labels from the password window"""
+        w.yes_button.setText(self.__choose_language("yes_button"))
+        w.no_button.setText(self.__choose_language("no_button"))
 
 
 UI_LANGUAGE = UiLanguage()
