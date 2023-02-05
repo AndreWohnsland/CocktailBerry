@@ -293,9 +293,10 @@ QScrollBar:vertical {
 
 QScrollBar::handle:vertical {
   background: $primary;
-  border-radius: $scrollbar-border-radius;
+  border-radius: $scrollbar-border-radius - 5px;
   &:pressed {
     background-color: $secondary;
+    border-color: $secondary;
   }
 }
 

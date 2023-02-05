@@ -226,9 +226,10 @@ QScrollBar:vertical {
 
 QScrollBar::handle:vertical {
   background: #007bff;
-  border-radius: 15px; }
+  border-radius: 10px; }
   QScrollBar::handle:vertical:pressed {
-    background-color: #01276a; }
+    background-color: #01276a;
+    border-color: #01276a; }
 
 QScrollBar::add-line:vertical {
   border: 2px solid #0b0e41;
