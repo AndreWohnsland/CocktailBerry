@@ -1,12 +1,17 @@
+from __future__ import annotations
 from dataclasses import dataclass
 import time
-from typing import List, Union
+from typing import List, Union, TYPE_CHECKING
 from PyQt5.QtWidgets import qApp
+
 
 from src.config_manager import shared, CONFIG as cfg
 from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.raspberry import RpiController
+
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
 
 
 @dataclass
@@ -32,21 +37,20 @@ class MachineController():
         # In case none is found, fall back to generic using python-periphery
         return GenericController()
 
-    def clean_pumps(self, w):
+    def clean_pumps(self, w: MainScreen):
         """Clean the pumps for the defined time in the config.
         Activates all pumps for the given time.
         """
-        prep_data = self._build_clean_data()
+        prep_data = _build_clean_data()
         w.open_progression_window("Cleaning")
         _header_print("Start Cleaning")
-        shared.make_cocktail = True
         self._start_preparation(w, prep_data, False)
         _header_print("Done Cleaning")
         w.close_progression_window()
 
     def make_cocktail(
         self,
-        w,
+        w: MainScreen,
         bottle_list: List[int],
         volume_list: list[Union[float, int]],
         recipe="",
@@ -70,10 +74,9 @@ class MachineController():
         if cfg.TEAMS_ACTIVE and is_cocktail:
             w.open_team_window()
         shared.cocktail_started = True
-        shared.make_cocktail = True
         if w is not None:
             w.open_progression_window(recipe)
-        prep_data = self._build_preparation_data(bottle_list, volume_list)
+        prep_data = _build_preparation_data(bottle_list, volume_list)
         _header_print(f"Starting {recipe}")
         current_time, max_time = self._start_preparation(w, prep_data)
         consumption = [round(x.consumption) for x in prep_data]
@@ -83,8 +86,14 @@ class MachineController():
             w.close_progression_window()
         return consumption, current_time, max_time
 
-    def _start_preparation(self, w, prep_data: list[_PreparationData], verbose: bool = True):
+    def _start_preparation(
+        self,
+        w: MainScreen,
+        prep_data: list[_PreparationData],
+        verbose: bool = True
+    ):
         """Prepares the volumes of the given data"""
+        shared.make_cocktail = True
         current_time = 0.0
         # need to cut data into chunks
         chunk = cfg.MAKER_SIMULTANEOUSLY_PUMPS
@@ -162,33 +171,34 @@ class MachineController():
         print(f"Closing Pins: {pin_list}")
         self._pin_controller.close_pin_list(pin_list)
 
-    def _build_preparation_data(
-        self,
-        bottle_list: List[int],
-        volume_list: list[Union[float, int]]
-    ) -> list[_PreparationData]:
-        """Builds the data needed for machine preparation"""
-        indexes = [x - 1 for x in bottle_list]
-        pins = [cfg.PUMP_PINS[i] for i in indexes]
-        volume_flows = [cfg.PUMP_VOLUMEFLOW[i] for i in indexes]
-        pin_times = [round(volume / flow, 1) for volume, flow in zip(volume_list, volume_flows)]
-        prep_data = []
-        for pin, flow, pin_time in zip(pins, volume_flows, pin_times):
-            prep_data.append(
-                _PreparationData(pin, flow, pin_time)
-            )
-        return prep_data
 
-    def _build_clean_data(self) -> list[_PreparationData]:
-        """Builds a list of needed cleaning data objects"""
-        active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
-        volume_flow = cfg.PUMP_VOLUMEFLOW[: cfg.MAKER_NUMBER_BOTTLES]
-        prep_data = []
-        for pin, flow in zip(active_pins, volume_flow):
-            prep_data.append(
-                _PreparationData(pin, flow, cfg.MAKER_CLEAN_TIME)
-            )
-        return prep_data
+def _build_preparation_data(
+    bottle_list: List[int],
+    volume_list: list[Union[float, int]]
+) -> list[_PreparationData]:
+    """Builds the data needed for machine preparation"""
+    indexes = [x - 1 for x in bottle_list]
+    pins = [cfg.PUMP_PINS[i] for i in indexes]
+    volume_flows = [cfg.PUMP_VOLUMEFLOW[i] for i in indexes]
+    pin_times = [round(volume / flow, 1) for volume, flow in zip(volume_list, volume_flows)]
+    prep_data = []
+    for pin, flow, pin_time in zip(pins, volume_flows, pin_times):
+        prep_data.append(
+            _PreparationData(pin, flow, pin_time)
+        )
+    return prep_data
+
+
+def _build_clean_data() -> list[_PreparationData]:
+    """Builds a list of needed cleaning data objects"""
+    active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
+    volume_flow = cfg.PUMP_VOLUMEFLOW[: cfg.MAKER_NUMBER_BOTTLES]
+    prep_data = []
+    for pin, flow in zip(active_pins, volume_flow):
+        prep_data.append(
+            _PreparationData(pin, flow, cfg.MAKER_CLEAN_TIME)
+        )
+    return prep_data
 
 
 def _print_time(current_time: float, total_time: float):
