@@ -63,6 +63,8 @@ class ConfigManager:
     MAKER_NAME = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
     MAKER_NUMBER_BOTTLES = 10
+    # Number of pumps parallel in production
+    MAKER_SIMULTANEOUSLY_PUMPS = 16
     # Time in seconds to execute clean program
     MAKER_CLEAN_TIME = 20
     # time between each check loop when making cocktail
@@ -110,6 +112,7 @@ class ConfigManager:
             "PUMP_VOLUMEFLOW": (list, [self._validate_config_list_type]),
             "MAKER_NAME": (str, [_validate_max_length]),
             "MAKER_NUMBER_BOTTLES": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_SIMULTANEOUSLY_PUMPS": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
             "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
             "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),

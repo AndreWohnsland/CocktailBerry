@@ -174,7 +174,12 @@ ui:
     ok_button:
       en: 'Ok'
       de: 'Ok'
-
+    yes_button:
+      en: 'Yes'
+      de: 'Ja'
+    no_button:
+      en: 'No'
+      de: 'Nein'
   # dynamic values for maker tab
   maker:
     add_self:
@@ -342,7 +347,7 @@ ui:
       en: 'Select Date and Time'
       de: 'Datum und Zeit bestimmen'
 
-  ##### DATE PICKER WINDOW #####
+  ##### PASSWORD WINDOW #####
   # all values for password dialog window
   password_dialog:
     header:
@@ -383,6 +388,9 @@ ui:
     MAKER_NUMBER_BOTTLES:
       en: 'Number of bottles of the machine'
       de: 'Flaschenanzahl der Maschine'
+    MAKER_SIMULTANEOUSLY_PUMPS:
+      en: 'Maximum number of pumps simultaneously on'
+      de: 'Maximale Pumpenanzahl, die gleichzeitig an ist'
     MAKER_CLEAN_TIME:
       en: 'Time in seconds the cleaning program is executed'
       de: 'Zeit in Sekunden, die das Reinigungsprogramm ausgeführt wird'

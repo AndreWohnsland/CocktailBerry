@@ -78,9 +78,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if not cfg.MAKER_SEARCH_UPDATES:
             return
         updater = Updater()
-        if not updater.check_for_updates():
+        update_available, info = updater.check_for_updates()
+        if not update_available:
             return
-        if DP_CONTROLLER.ask_to_update():
+        if DP_CONTROLLER.ask_to_update(info):
             updater.update()
 
     def _connection_check(self):

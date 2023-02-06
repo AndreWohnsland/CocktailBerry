@@ -176,11 +176,11 @@ QProgressBar {
   background-color: #9395ab;
   color: #0d0d0d;
   border: 2px #9395ab;
-  border-radius: 19px;
+  border-radius: 5px;
   text-align: center; }
   QProgressBar::chunk {
     border: 2px #9395ab;
-    border-radius: 19px;
+    border-radius: 5px;
     background-color: #666ad1; }
 
 QComboBox {
@@ -226,9 +226,10 @@ QScrollBar:vertical {
 
 QScrollBar::handle:vertical {
   background: #3a4cbf;
-  border-radius: 15px; }
+  border-radius: 10px; }
   QScrollBar::handle:vertical:pressed {
-    background-color: #ec407a; }
+    background-color: #ec407a;
+    border-color: #ec407a; }
 
 QScrollBar::add-line:vertical {
   border: 2px solid #6f6f87;

@@ -158,4 +158,4 @@ def _limit_number(val: T, min_val: T, max_val: T) -> T:
 def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
     shared.make_cocktail = False
-    print("Canceling Recipe!")
+    print("Canceling!")
