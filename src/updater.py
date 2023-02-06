@@ -75,10 +75,15 @@ class Updater:
 
     def _parse_release_data(self, response: Response):
         """Converts the response into a string to display """
+        migrator = Migrator()
         text = ""
         for release in response.json():
             name = release.get('name', '')
             body = release.get("body", '')
+            tag_name = release.get("tag_name", '')
+            # only add release information newer than local version
+            if not migrator.older_than_version(tag_name.replace("v", "")):
+                break
             sep = 70 * "_"
             text += f"Release: {name}\n{body}\n{sep}\n\n"
         return text
