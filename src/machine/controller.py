@@ -54,7 +54,8 @@ class MachineController():
         bottle_list: List[int],
         volume_list: list[Union[float, int]],
         recipe="",
-        is_cocktail=True
+        is_cocktail=True,
+        verbose=True,
     ):
         """RPI Logic to prepare the cocktail.
         Calculates needed time for each slot according to data and config.
@@ -78,12 +79,13 @@ class MachineController():
             w.open_progression_window(recipe)
         prep_data = _build_preparation_data(bottle_list, volume_list)
         _header_print(f"Starting {recipe}")
-        current_time, max_time = self._start_preparation(w, prep_data)
+        current_time, max_time = self._start_preparation(w, prep_data, verbose)
         consumption = [round(x.consumption) for x in prep_data]
         print("Total calculated consumption:", consumption)
         _header_print(f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
+        shared.cocktail_started = False
         return consumption, current_time, max_time
 
     def _start_preparation(
