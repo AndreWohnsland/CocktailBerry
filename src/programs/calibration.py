@@ -14,7 +14,7 @@ logger = LoggerHandler("calibration_module")
 
 
 class CalibrationScreen(QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, standalone: bool):
         """ Init the calibration Screen. """
         super().__init__()
         self.setupUi(self)
@@ -30,7 +30,8 @@ class CalibrationScreen(QMainWindow, Ui_MainWindow):
         self.showFullScreen()
         DP_CONTROLLER.inject_stylesheet(self)
         DP_CONTROLLER.set_display_settings(self)
-        MACHINE.set_up_pumps()
+        if standalone:
+            MACHINE.set_up_pumps()
         logger.log_start_program("calibration")
 
     def output_volume(self):
@@ -38,7 +39,14 @@ class CalibrationScreen(QMainWindow, Ui_MainWindow):
         channel_number = int(self.channel.text())
         amount = int(self.amount.text())
         display_name = f"{amount} ml volume, pump #{channel_number}"
-        MACHINE.make_cocktail(None, [channel_number], [amount], display_name, False)
+        MACHINE.make_cocktail(
+            w=None,
+            bottle_list=[channel_number],
+            volume_list=[amount],
+            recipe=display_name,
+            is_cocktail=False,
+            verbose=False,
+        )
 
 
 @logerror
@@ -48,6 +56,6 @@ def run_calibration(standalone=True):
         app = QApplication(sys.argv)
     # this assignment is needed, otherwise the window will close in an instant
     # pylint: disable=unused-variable
-    calibration = CalibrationScreen()  # noqa
+    calibration = CalibrationScreen(standalone)  # noqa
     if standalone:
         sys.exit(app.exec_())  # type: ignore

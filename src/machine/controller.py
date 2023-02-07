@@ -33,9 +33,9 @@ class MachineController():
     def _chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""
         if cfg.MAKER_BOARD == "RPI":
-            return RpiController()
+            return RpiController(cfg.MAKER_PINS_INVERTED)
         # In case none is found, fall back to generic using python-periphery
-        return GenericController()
+        return GenericController(cfg.MAKER_PINS_INVERTED)
 
     def clean_pumps(self, w: MainScreen):
         """Clean the pumps for the defined time in the config.
@@ -50,11 +50,12 @@ class MachineController():
 
     def make_cocktail(
         self,
-        w: MainScreen,
+        w: Union[MainScreen, None],
         bottle_list: List[int],
         volume_list: list[Union[float, int]],
         recipe="",
-        is_cocktail=True
+        is_cocktail=True,
+        verbose=True,
     ):
         """RPI Logic to prepare the cocktail.
         Calculates needed time for each slot according to data and config.
@@ -71,24 +72,25 @@ class MachineController():
             tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
         """
         # Only show team dialog if it is enabled
-        if cfg.TEAMS_ACTIVE and is_cocktail:
+        if cfg.TEAMS_ACTIVE and is_cocktail and w is not None:
             w.open_team_window()
         shared.cocktail_started = True
         if w is not None:
             w.open_progression_window(recipe)
         prep_data = _build_preparation_data(bottle_list, volume_list)
         _header_print(f"Starting {recipe}")
-        current_time, max_time = self._start_preparation(w, prep_data)
+        current_time, max_time = self._start_preparation(w, prep_data, verbose)
         consumption = [round(x.consumption) for x in prep_data]
         print("Total calculated consumption:", consumption)
         _header_print(f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
+        shared.cocktail_started = False
         return consumption, current_time, max_time
 
     def _start_preparation(
         self,
-        w: MainScreen,
+        w: Union[MainScreen, None],
         prep_data: list[_PreparationData],
         verbose: bool = True
     ):

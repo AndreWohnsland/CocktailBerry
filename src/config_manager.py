@@ -71,6 +71,8 @@ class ConfigManager:
     MAKER_SLEEP_TIME = 0.05
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES = False
+    # Inverts the pin signal (on is low, off is high)
+    MAKER_PINS_INVERTED = True
     # Possibility to use different boards to control Pins
     MAKER_BOARD = "RPI"
     # Theme Setting to load according qss file
@@ -116,6 +118,7 @@ class ConfigManager:
             "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
             "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
+            "MAKER_PINS_INVERTED": (bool, []),
             "MAKER_BOARD": (BoardChoose, [_build_support_checker(SUPPORTED_BOARDS)]),
             "MAKER_THEME": (ThemeChoose, [_build_support_checker(SUPPORTED_THEMES)]),
             "MAKER_CHECK_INTERNET": (bool, []),

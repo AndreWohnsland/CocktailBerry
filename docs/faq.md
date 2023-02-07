@@ -124,6 +124,13 @@ Relays-arrays can have up to 8 switches controlled with one 5V input.
 The usual size is 8 (or 16 with an build in converter) relays for a relay board.
 In theory, the RPi could control up to 26 pumps when using all possible GPIOs, but that overkill IMHO.
 
+### What is the Inverted Option
+
+Depending on your controlling unit (relay, mosfet, eg.) the on / off signal may be inverted.
+The relay arrays I've seen use a high state for switching off and a low state for switching on.
+This is the inverted state to a regular n-channel mosfet without any extra elements.
+The default setting is set to True, so it's inverted by default and should work as expected with usual relay arrays.
+
 ### Do I Need Docker
 
 No, docker is optional.

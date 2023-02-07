@@ -41,6 +41,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `MAKER_NUMBER_BOTTLES`       | Number of displayed bottles, can use up to 16 bottles                                |
 | `MAKER_SIMULTANEOUSLY_PUMPS` | Number of pumps which can be simultaneously active                                   |
 | `MAKER_SEARCH_UPDATES`       | Search for updates at program start                                                  |
+| `MAKER_PINS_INVERTED`        | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)          |
 | `MAKER_THEME`                | Choose which [theme](#themes) to use                                                 |
 | `MAKER_CLEAN_TIME`           | Time the machine will execute the cleaning program                                   |
 | `MAKER_SLEEP_TIME`           | Interval between each time check while generating a cocktail                         |

@@ -16,17 +16,22 @@ except ModuleNotFoundError:
 class GenericController(PinController):
     """Controller class to control pins on a generic board"""
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, inverted: bool) -> None:
+        super().__init__(inverted)
         self.devenvironment = DEV
+        self.low = False
+        self.high = True
+        if inverted:
+            self.low, self.high = self.high, self.low
         self.gpios: dict[int, GPIO] = {}
 
     def initialize_pin_list(self, pin_list: List[int]):
         """Set up the given pin list"""
         print(f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}")
+        init_value = "high" if self.inverted else "out"
         if not self.devenvironment:
             for pin in pin_list:
-                self.gpios[pin] = GPIO(pin, "out")
+                self.gpios[pin] = GPIO(pin, init_value)
         else:
             logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
             logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
@@ -35,13 +40,13 @@ class GenericController(PinController):
         """Activates the given pin list"""
         if not self.devenvironment:
             for pin in pin_list:
-                self.gpios[pin].write(True)
+                self.gpios[pin].write(self.high)
 
     def close_pin_list(self, pin_list: List[int]):
         """Closes the given pin_list"""
         if not self.devenvironment:
             for pin in pin_list:
-                self.gpios[pin].write(False)
+                self.gpios[pin].write(self.low)
 
     def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
         if self.devenvironment:
