@@ -3,7 +3,6 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
 from src.ui_elements.bonusingredient import Ui_addingredient
-from src.config_manager import shared
 
 from src.logger_handler import LoggerHandler
 from src.display_controller import DP_CONTROLLER
@@ -62,5 +61,3 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         set_fill_level_bars(self.mainscreen)
         volume_string = f"{volume} ml"
         _logger.log_event("INFO", f"{volume_string:6} | {ingredient_name}")
-        self.mainscreen.close_progression_window()
-        shared.cocktail_started = False

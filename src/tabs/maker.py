@@ -131,7 +131,6 @@ def prepare_cocktail(w):
     bottles.set_fill_level_bars(w)
     DP_CONTROLLER.reset_alcohol_factor()
     DP_CONTROLLER.reset_virgin_setting(w)
-    shared.cocktail_started = False
 
 
 def adjust_alcohol(w, amount: float):
