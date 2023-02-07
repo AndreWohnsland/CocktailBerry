@@ -33,9 +33,9 @@ class MachineController():
     def _chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""
         if cfg.MAKER_BOARD == "RPI":
-            return RpiController()
+            return RpiController(cfg.MAKER_PINS_INVERTED)
         # In case none is found, fall back to generic using python-periphery
-        return GenericController()
+        return GenericController(cfg.MAKER_PINS_INVERTED)
 
     def clean_pumps(self, w: MainScreen):
         """Clean the pumps for the defined time in the config.

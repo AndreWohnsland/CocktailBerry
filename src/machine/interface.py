@@ -10,6 +10,10 @@ except ImportError:
 
 class PinController(Protocol):  # type: ignore
     """Interface to control the pins"""
+
+    def __init__(self, inverted: bool):
+        self.inverted = inverted
+
     @abstractmethod
     def initialize_pin_list(self, pin_list: List[int]):
         raise NotImplementedError
