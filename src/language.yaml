@@ -401,8 +401,8 @@ ui:
       en: 'Search for updates, if available internet connection'
       de: 'Sucht nach Updates, wenn Internetverbindung besteht'
     MAKER_PINS_INVERTED:
-      en: 'Inverts the pin signal (on is low, off is high)'
-      de: 'Vertauscht das Pin Signal (an ist low, aus ist high)'
+      en: 'Inverts the pin signal (on is low, off is high), needed for most relays'
+      de: 'Vertauscht das Pin Signal (an ist low, aus ist high), benötigt von vielen Relays'
     MAKER_BOARD:
       en: 'Type of microcomputer / board used'
       de: 'Typ des Microcomputers / Boards'
