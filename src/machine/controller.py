@@ -50,7 +50,7 @@ class MachineController():
 
     def make_cocktail(
         self,
-        w: MainScreen,
+        w: Union[MainScreen, None],
         bottle_list: List[int],
         volume_list: list[Union[float, int]],
         recipe="",
@@ -71,7 +71,7 @@ class MachineController():
             tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
         """
         # Only show team dialog if it is enabled
-        if cfg.TEAMS_ACTIVE and is_cocktail:
+        if cfg.TEAMS_ACTIVE and is_cocktail and w is not None:
             w.open_team_window()
         shared.cocktail_started = True
         if w is not None:
@@ -88,7 +88,7 @@ class MachineController():
 
     def _start_preparation(
         self,
-        w: MainScreen,
+        w: Union[MainScreen, None],
         prep_data: list[_PreparationData],
         verbose: bool = True
     ):
