@@ -84,6 +84,10 @@ class ConfigManager:
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
+    # List of LED pins for control
+    MAKER_LED_PINS = []
+    # If the led is as ws-x series (and controllable)
+    MAKER_LED_IS_WS = True
     # if to use the teams function and according options.
     # URL should be 'device_ip:8080' where dashboard container is running and in the same network
     # Button names must be two strings in the list
@@ -123,6 +127,8 @@ class ConfigManager:
             "MAKER_THEME": (ThemeChoose, [_build_support_checker(SUPPORTED_THEMES)]),
             "MAKER_CHECK_INTERNET": (bool, []),
             "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
+            "MAKER_LED_PINS": (list, [self._validate_config_list_type]),
+            "MAKER_LED_IS_WS": (bool, []),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
@@ -137,6 +143,7 @@ class ConfigManager:
             "PUMP_PINS": (int, [self._validate_pin_numbers]),
             "PUMP_VOLUMEFLOW": (int, [_build_number_limiter(1, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
+            "MAKER_LED_PINS": (str, [_build_number_limiter(0, 200)]),
         }
         try:
             self._read_config()
