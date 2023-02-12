@@ -312,7 +312,7 @@ class UiLanguage():
         try:
             return self.__choose_language(config_name, "settings_dialog")
         # if there is nothing for this settings, we will get an attribute error
-        except AttributeError:
+        except (AttributeError, KeyError):
             return ""
 
     def adjust_mainwindow(self, w):
