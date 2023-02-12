@@ -415,6 +415,12 @@ ui:
     MAKER_TUBE_VOLUME:
       en: 'Empty tube volume from bottle to pump'
       de: 'Leeres Schlauchvolumen von Flasche zu Pumpe'
+    MAKER_LED_PINS:
+      en: 'List of pins controlling LEDs during preparation'
+      de: 'Liste an Pins, die LEDs bei der Zubereitung kontrollieren'
+    MAKER_LED_IS_WS:
+      en: 'Is the LED a controllable (WS281x) LED'
+      de: 'Ist der LED ein ansteuerbarer (WS281x) LED'
     MICROSERVICE_ACTIVE:
       en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'
