@@ -47,6 +47,9 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `MAKER_SLEEP_TIME`           | Interval between each time check while generating a cocktail                         |
 | `MAKER_CHECK_INTERNET`       | Do a connection check at start for time adjustment window                            |
 | `MAKER_TUBE_VOLUME`          | Volume in ml to pump up when bottle is set to new                                    |
+| `MAKER_LED_PINS`             | List of pins connected to LEDs for preparation                                       |
+| `MAKER_LED_COUNT`            | Number of LEDs on the WS281x                                                         |
+| `MAKER_LED_IS_WS`            | Is the led a controllable WS281x LED                                                 |
 | `MICROSERVICE_ACTIVE`        | Post to microservice set up by docker                                                |
 | `MICROSERVICE_BASE_URL`      | Base URL for microservice (default: http://127.0.0.1:5000)                           |
 | `TEAMS_ACTIVE`               | Use teams feature                                                                    |
