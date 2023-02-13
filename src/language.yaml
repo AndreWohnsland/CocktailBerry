@@ -418,6 +418,9 @@ ui:
     MAKER_LED_PINS:
       en: 'List of pins controlling LEDs during preparation'
       de: 'Liste an Pins, die LEDs bei der Zubereitung kontrollieren'
+    MAKER_LED_COUNT:
+      en: 'Number of LEDs on the WS281x'
+      de: 'Anzahl der LEDs an dem WS281x'
     MAKER_LED_IS_WS:
       en: 'Is the LED a controllable (WS281x) LED'
       de: 'Ist der LED ein ansteuerbarer (WS281x) LED'
