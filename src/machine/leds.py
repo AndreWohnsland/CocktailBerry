@@ -74,6 +74,7 @@ class _normalLED(_LED):
         """Effect during preparation"""
         self._turn_off()
         blinker = Thread(target=self._blink_for, kwargs={"duration": duration})
+        blinker.daemon = True
         blinker.start()
 
     def _blink_for(self, duration: int = 5, interval: float = 0.1):
@@ -118,7 +119,7 @@ class _controllableLED(_LED):
 
     def turn_off(self):
         for i in range(0, self.strip.numPixels()):
-            self.strip.setPixelColor(i, 0)
+            self.strip.setPixelColor(i, Color(0, 0, 0))
 
     def _wheel(self, pos: int):
         """Generate rainbow colors across 0-255 positions."""
@@ -152,10 +153,12 @@ class _controllableLED(_LED):
         """Effect during preparation"""
         self.is_preparing = True
         cycler = Thread(target=self._preparation_thread)
+        cycler.daemon = True
         cycler.start()
 
     def preparation_end(self, duration: int = 5):
         """Plays an effect after the preparation for x seconds"""
         self.is_preparing = False
         rainbow = Thread(target=self._end_thread, kwargs={"duration": duration})
+        rainbow.daemon = True
         rainbow.start()
