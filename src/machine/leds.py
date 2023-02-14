@@ -97,7 +97,7 @@ class _controllableLED(_LED):
             10,         # DMA 5 / 10
             False,      # invert
             255,        # brightness
-            1           # channel
+            0           # channel
         )
         self.strip.begin()
         self.is_preparing = False
