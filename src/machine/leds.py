@@ -23,12 +23,32 @@ class LedController:
         self.pins = cfg.MAKER_LED_PINS
         enabled = len(cfg.MAKER_LED_PINS) > 0
         self.controllable = cfg.MAKER_LED_IS_WS and MODULE_AVAILABLE
+        self.led_list: list[_LED] = []
         if enabled and cfg.MAKER_LED_IS_WS and not MODULE_AVAILABLE:
-            _logger.log_event("WARNING", "Could not import rpi_ws281x. Will only be able to use basic light effects")
-        self.led_list: list[_LED] = [
-            _controllableLED(pin) if self.controllable else _normalLED(pin, self.pin_controller)
-            for pin in self.pins
-        ]
+            _logger.log_event(
+                "ERROR",
+                "Could not import rpi_ws281x. Will not be able to control the WS281x, please install the library."
+            )
+            return
+        # If not controllable use normal LEDs
+        if not cfg.MAKER_LED_IS_WS:
+            self.led_list: list[_LED] = [
+                _normalLED(pin, self.pin_controller)
+                for pin in self.pins
+            ]
+            return
+        # If controllable try to set up the WS281x LEDs
+        try:
+            self.led_list: list[_LED] = [
+                _controllableLED(pin)
+                for pin in self.pins
+            ]
+        # Will be thrown if ws281x module init (.begin()) as none root
+        except RuntimeError:
+            _logger.log_event(
+                "ERROR",
+                "Could not set up the WS281x, is the program running as root?"
+            )
 
     def preparation_start(self):
         for led in self.led_list:
@@ -67,25 +87,26 @@ class _normalLED(_LED):
         self.pin_controller.close_pin_list([self.pin])
 
     def preparation_start(self):
-        """Plays an effect after the preparation for x seconds"""
+        """Turn the LED on during preparation"""
         self._turn_on()
 
     def preparation_end(self, duration: int = 5):
-        """Effect during preparation"""
+        """Blink for some time after preparation"""
         self._turn_off()
         blinker = Thread(target=self._blink_for, kwargs={"duration": duration})
         blinker.daemon = True
         blinker.start()
 
-    def _blink_for(self, duration: int = 5, interval: float = 0.1):
+    def _blink_for(self, duration: int = 5, interval: float = 0.2):
         current_time = 0
+        step = interval / 2
         while current_time <= duration:
             self._turn_on()
-            time.sleep(interval)
-            current_time += interval
+            time.sleep(step)
+            current_time += step
             self._turn_off()
-            time.sleep(interval)
-            current_time += interval
+            time.sleep(step)
+            current_time += step
 
 
 class _controllableLED(_LED):
@@ -93,13 +114,14 @@ class _controllableLED(_LED):
         self.pin = pin
         self.strip = Adafruit_NeoPixel(
             cfg.MAKER_LED_COUNT,
-            pin,
-            800000,     # freq
-            10,         # DMA 5 / 10
-            False,      # invert
-            255,        # brightness
-            0           # channel
+            pin,                    # best to use 12 or 18
+            800000,                 # freq
+            10,                     # DMA 5 / 10
+            False,                  # invert
+            255,                    # brightness
+            0                       # channel 0 or 1
         )
+        # will throw a RuntimeError as none root user here
         self.strip.begin()
         self.is_preparing = False
 
@@ -116,7 +138,6 @@ class _controllableLED(_LED):
                 self.strip.setPixelColor(i, color)
                 self.strip.show()
                 time.sleep(wait_ms / 1000)
-        print("Preparation DONE")
 
     def turn_off(self):
         for i in range(0, self.strip.numPixels()):
@@ -153,7 +174,6 @@ class _controllableLED(_LED):
                 # break out of loop (its long) when we are finished
                 if current_time > duration:
                     break
-        print("END Thread")
         self.turn_off()
 
     def preparation_start(self):
