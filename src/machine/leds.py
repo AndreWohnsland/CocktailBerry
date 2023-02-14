@@ -120,6 +120,7 @@ class _controllableLED(_LED):
     def turn_off(self):
         for i in range(0, self.strip.numPixels()):
             self.strip.setPixelColor(i, Color(0, 0, 0))
+            self.strip.show()
 
     def _wheel(self, pos: int):
         """Generate rainbow colors across 0-255 positions."""
