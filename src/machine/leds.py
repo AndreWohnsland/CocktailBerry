@@ -105,7 +105,7 @@ class _controllableLED(_LED):
 
     def _preparation_thread(self):
         """Fills one by one with same random color, then repeats / overwrites old ones"""
-        wait_ms = 25
+        wait_ms = 50
         while self.is_preparing:
             color = Color(
                 randint(0, 255),
@@ -133,7 +133,7 @@ class _controllableLED(_LED):
 
     def _end_thread(self, duration: int = 5):
         """Rainbow movie theater light style chaser animation."""
-        wait_ms = 25
+        wait_ms = 50
         current_time = 0
         wheel_order = range(256)
         start = randint(0, 255)
@@ -145,6 +145,7 @@ class _controllableLED(_LED):
                         self.strip.setPixelColor(i + k, self._wheel((i + j) % 255))
                     self.strip.show()
                     time.sleep(wait_ms / 1000)
+                    current_time += wait_ms / 1000
                     for i in range(0, self.strip.numPixels(), 3):
                         self.strip.setPixelColor(i + k, 0)
         self.turn_off()
