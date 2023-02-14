@@ -172,6 +172,7 @@ class _controllableLED(_LED):
                     self.strip.setPixelColor(i, self._wheel((i + j) & 255))
                 self.strip.show()
                 time.sleep(wait_ms / 1000.0)
+                current_time += wait_ms / 1000
                 # break out of loop (its long) when we are finished
                 if current_time > duration:
                     break
