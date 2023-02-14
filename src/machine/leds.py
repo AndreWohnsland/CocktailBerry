@@ -127,7 +127,7 @@ class _controllableLED(_LED):
 
     def _preparation_thread(self):
         """Fills one by one with same random color, then repeats / overwrites old ones"""
-        wait_ms = 50
+        wait_ms = 40
         while self.is_preparing:
             color = Color(
                 randint(0, 255),
@@ -136,6 +136,11 @@ class _controllableLED(_LED):
             )
             for i in range(self.strip.numPixels()):
                 self.strip.setPixelColor(i, color)
+                # Turn of 2 leading LEDs to have a more spinner like light effect
+                of_pos = i + 1 if i != self.strip.numPixels() - 1 else 0
+                of_pos2 = i + 2 if i != self.strip.numPixels() - 2 else 0
+                self.strip.setPixelColor(of_pos, Color(0, 0, 0))
+                self.strip.setPixelColor(of_pos2, Color(0, 0, 0))
                 self.strip.show()
                 time.sleep(wait_ms / 1000)
 
@@ -155,22 +160,18 @@ class _controllableLED(_LED):
         return Color(0, pos * 3, 255 - pos * 3)
 
     def _end_thread(self, duration: int = 5):
-        """Rainbow movie theater light style chaser animation."""
-        wait_ms = 50
+        """Rainbow animation fades across all pixels at once"""
+        wait_ms = 10
         current_time = 0
         wheel_order = range(256)
         start = randint(0, 255)
         wheel_order = list(wheel_order[start::]) + list(wheel_order[0:start])
         while current_time <= duration:
             for j in wheel_order:
-                for k in range(3):
-                    for i in range(0, self.strip.numPixels(), 3):
-                        self.strip.setPixelColor(i + k, self._wheel((i + j) % 255))
-                    self.strip.show()
-                    time.sleep(wait_ms / 1000)
-                    current_time += wait_ms / 1000
-                    for i in range(0, self.strip.numPixels(), 3):
-                        self.strip.setPixelColor(i + k, 0)
+                for i in range(self.strip.numPixels()):
+                    self.strip.setPixelColor(i, self._wheel((i + j) & 255))
+                self.strip.show()
+                time.sleep(wait_ms / 1000.0)
                 # break out of loop (its long) when we are finished
                 if current_time > duration:
                     break
