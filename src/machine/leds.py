@@ -11,7 +11,7 @@ _logger = LoggerHandler("LedController")
 
 try:
     # pylint: disable=import-error
-    from rpi_ws281x import PixelStrip, Color  # type: ignore
+    from rpi_ws281x import Adafruit_NeoPixel, Color  # type: ignore
     MODULE_AVAILABLE = True
 except ModuleNotFoundError:
     MODULE_AVAILABLE = False
@@ -91,7 +91,7 @@ class _normalLED(_LED):
 class _controllableLED(_LED):
     def __init__(self, pin: int) -> None:
         self.pin = pin
-        self.strip = PixelStrip(
+        self.strip = Adafruit_NeoPixel(
             cfg.MAKER_LED_COUNT,
             pin,
             800000,     # freq
@@ -116,6 +116,7 @@ class _controllableLED(_LED):
                 self.strip.setPixelColor(i, color)
                 self.strip.show()
                 time.sleep(wait_ms / 1000)
+        print("Preparation DONE")
 
     def turn_off(self):
         for i in range(0, self.strip.numPixels()):
@@ -149,6 +150,7 @@ class _controllableLED(_LED):
                     current_time += wait_ms / 1000
                     for i in range(0, self.strip.numPixels(), 3):
                         self.strip.setPixelColor(i + k, 0)
+        print("END Thread")
         self.turn_off()
 
     def preparation_start(self):
