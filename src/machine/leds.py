@@ -150,6 +150,9 @@ class _controllableLED(_LED):
                     current_time += wait_ms / 1000
                     for i in range(0, self.strip.numPixels(), 3):
                         self.strip.setPixelColor(i + k, 0)
+                # break out of loop (its long) when we are finished
+                if current_time > duration:
+                    break
         print("END Thread")
         self.turn_off()
 
