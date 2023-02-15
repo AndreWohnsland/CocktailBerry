@@ -62,6 +62,7 @@ CocktailBerry can do:
 - Keep track of cocktail count and volume from different teams for some fun competition
 - Select different themes to fit your liking
 - Switch between user interface languages
+- Support WS281x LEDs on your machine
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
 
