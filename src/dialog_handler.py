@@ -2,10 +2,14 @@
 # pylint: disable=import-outside-toplevel
 
 from pathlib import Path
+import time
 from typing import Dict, List, Optional, Literal
+from threading import Thread, Event
 import yaml
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from src.config_manager import CONFIG as cfg
+from src.utils import get_platform_data
+from src import __version__
 
 
 DIRPATH = Path(__file__).parent.absolute()
@@ -27,15 +31,30 @@ class DialogHandler():
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
-    def standard_box(self, message: str, title: str = "", use_ok=False):
+    def standard_box(self, message: str, title: str = "", use_ok=False, close_time: Optional[int] = None):
         """ The default messagebox for the Maker. Uses a Custom QDialog with Close-Button """
         from src.ui.setup_custom_dialog import CustomDialog
+
+        def close_thread(event: Event, box: CustomDialog, close_time: int):
+            """Function to control auto close"""
+            time.sleep(close_time)
+            if event.is_set():
+                return
+            box.close()
+
         if not title:
             title = self.__choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
         messagebox = CustomDialog(fancy_message, title, self.icon_path, use_ok)
+        event = Event()
+        # If there is a close time, start auto close
+        if close_time is not None:
+            auto_closer = Thread(target=close_thread, args=(event, messagebox, close_time), daemon=True)
+            auto_closer.start()
         messagebox.exec_()
+        # Need to set event, in case thread is still waiting
+        event.set()
 
     def user_okay(self, text: str):
         from src.ui.setup_custom_prompt import CustomPrompt
@@ -52,9 +71,9 @@ class DialogHandler():
             return True
         return False
 
-    def __output_language_dialog(self, dialog_name: str, use_ok=False, **kwargs):
+    def __output_language_dialog(self, dialog_name: str, use_ok=False, close_time: Optional[int] = None, **kwargs):
         msg = self.__choose_language(dialog_name, **kwargs)
-        self.standard_box(msg, use_ok=use_ok)
+        self.standard_box(msg, use_ok=use_ok, close_time=close_time)
 
     def _get_folder_location(self, w: QWidget, message: str):
         return QFileDialog.getExistingDirectory(w, message)
@@ -133,7 +152,7 @@ class DialogHandler():
 
     def say_cocktail_canceled(self):
         """Informs user that the cocktail was canceled"""
-        self.__output_language_dialog("cocktail_canceled")
+        self.__output_language_dialog("cocktail_canceled", close_time=10)
 
     def say_cocktail_ready(self, comment: str):
         """Informs user that the cocktail is done with additional information what to add"""
@@ -141,7 +160,7 @@ class DialogHandler():
         if comment:
             header_comment = self.__choose_language("cocktail_ready_add")
             full_comment = f"\n\n{header_comment}{comment}"
-        self.__output_language_dialog("cocktail_ready", full_comment=full_comment)
+        self.__output_language_dialog("cocktail_ready", close_time=60, full_comment=full_comment)
 
     def say_enter_cocktail_name(self):
         """Informs user that no cocktail name was supplied"""
@@ -220,6 +239,13 @@ class DialogHandler():
             "python_deprecated",
             sys_python=sys_python,
             program_python=program_python
+        )
+
+    def say_welcome_message(self):
+        self.__output_language_dialog(
+            "welcome_dialog",
+            version=__version__,
+            platform=get_platform_data()
         )
 
     def ask_to_update(self, release_information):
