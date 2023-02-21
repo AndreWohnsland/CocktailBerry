@@ -151,6 +151,9 @@ dialog:
   ask_export_data:
     en: 'Export cocktail and ingredient data, as well reset possible values?'
     de: 'Cocktail und Zutaten Daten exportieren und mögliche Werte zurücksetzen?'
+  welcome_dialog:
+    en: "CocktailBerry Software Version {version} by Andre Wohnsland.\n{platform}.\n\nCheck https://cocktailberry.readthedocs.io for more information."
+    de: "CocktailBerry Software Version {version} von Andre Wohnsland.\n{platform}.\n\nMehr Informationen unter https://cocktailberry.readthedocs.io."
 
 # Change of language in UI elements
 ui:
