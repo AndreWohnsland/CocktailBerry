@@ -97,7 +97,7 @@ Also, install the rpi_ws281x python package with:
 
 ```
 sudo pip install rpi_ws281x
-sudo pin install PyQt5 requests pyyaml GitPython typer pyfiglet qtawesome
+sudo pip install PyQt5 requests pyyaml GitPython typer pyfiglet qtawesome
 ```
 
 See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.
@@ -180,7 +180,7 @@ sudo chmod 755 ~/launcher.sh
 I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources.
 Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
 Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
-Using the users environment with `sudo -E python runme.y` should also do the trick.
+Using the users environment with `sudo -E python runme.py` should also do the trick.
 
 ### Some Python Things do not Work
 
