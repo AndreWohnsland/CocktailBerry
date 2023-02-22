@@ -288,6 +288,7 @@ def version_callback(value: bool):
     """Returns the version of the program"""
     if value:
         typer.echo(f"{PROJECT_NAME} Version {__version__}. Created by Andre Wohnsland.")
+        typer.echo(get_platform_data())
         typer.echo(r"For more information visit the docs: https://cocktailberry.readthedocs.io")
         typer.echo(r"Or the GitHub: https://github.com/AndreWohnsland/CocktailBerry.")
         raise typer.Exit()
