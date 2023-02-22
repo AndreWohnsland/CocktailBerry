@@ -115,6 +115,14 @@ Please take note that CocktailBerry will run on other systems than the Raspberry
 Since I probably don't own that combination of Hardware and OS, you probably need to figure out that settings by yourself.
 If you are a unexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
 
+## Task Bar Overlap / Push GUI
+
+This may happen (especially at older versions os RPi OS or higher res screens) when running the program and some dialog windows opens.
+The task bar (bar with programs on it) may overlap the dialog window or push it down by it's height.
+Ensure that you have unchecked the "Reserve space, and not covered by maximised windows" option.
+You can find it under the panel preferences (right click the task bar > panel settings > Advanced).
+Unchecking this box usually fixes this problem.
+
 ## Problems Installing Software on Raspberry Pi
 
 The Raspberry Pi can sometimes differ from other machines in terms of installation. Here are some issues that might occur.
