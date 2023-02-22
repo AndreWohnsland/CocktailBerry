@@ -25,10 +25,14 @@ class GenericController(PinController):
         if inverted:
             self.low, self.high = self.high, self.low
         self.gpios: dict[int, GPIO] = {}
-        print(f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}")
+        self.dev_displayed = False
 
     def initialize_pin_list(self, pin_list: List[int]):
         """Set up the given pin list"""
+        if not self.dev_displayed:
+            print(f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}")
+            self.dev_displayed = True
+
         init_value = "high" if self.inverted else "out"
         if not self.devenvironment:
             for pin in pin_list:

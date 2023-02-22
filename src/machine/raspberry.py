@@ -26,10 +26,13 @@ class RpiController(PinController):
         self.high = GPIO.HIGH if not DEV else 1
         if inverted:
             self.low, self.high = self.high, self.low
-        print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
+        self.dev_displayed = False
 
     def initialize_pin_list(self, pin_list: List[int]):
         """Set up the given pin list"""
+        if not self.dev_displayed:
+            print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
+            self.dev_displayed = True
         if not self.devenvironment:
             GPIO.setup(pin_list, GPIO.OUT, initial=self.low)
         else:
