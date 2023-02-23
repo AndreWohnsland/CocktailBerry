@@ -424,6 +424,9 @@ ui:
     MAKER_LED_COUNT:
       en: 'Number of LEDs on the WS281x'
       de: 'Anzahl der LEDs an dem WS281x'
+    MAKER_NUMBER_RING_LED:
+      en: 'Number of IDENTICAL daisy chained ring LEDs. Use 1 if different LED count per ring.'
+      de: 'Anzahl der IDENTISCHEN in Serie verbundene Ring LEDs. Verwende 1, wenn verschiedene LED Anzahl pro Ring.'
     MAKER_LED_IS_WS:
       en: 'Is the LED a controllable (WS281x) LED'
       de: 'Ist der LED ein ansteuerbarer (WS281x) LED'
