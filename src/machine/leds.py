@@ -128,6 +128,7 @@ class _controllableLED(_LED):
     def _preparation_thread(self):
         """Fills one by one with same random color, then repeats / overwrites old ones"""
         wait_ms = 40
+        self.turn_on(Color(randint(0, 255), randint(0, 255), randint(0, 255)))
         while self.is_preparing:
             color = Color(
                 randint(0, 255),
@@ -145,8 +146,15 @@ class _controllableLED(_LED):
                 time.sleep(wait_ms / 1000)
 
     def turn_off(self):
+        """Turns all leds off"""
         for i in range(0, self.strip.numPixels()):
             self.strip.setPixelColor(i, Color(0, 0, 0))
+            self.strip.show()
+
+    def turn_on(self, color):
+        """Turns all leds on to given color"""
+        for i in range(0, self.strip.numPixels()):
+            self.strip.setPixelColor(i, color)
             self.strip.show()
 
     def _wheel(self, pos: int):
