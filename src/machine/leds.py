@@ -141,8 +141,8 @@ class _controllableLED(_LED):
                     iter_pos = k * cfg.MAKER_LED_COUNT + i
                     self.strip.setPixelColor(iter_pos, color)
                     # Turn of 2 leading LEDs to have a more spinner like light effect
-                    of_pos = iter_pos + 1 if i != cfg.MAKER_LED_COUNT - 1 else 0 + iter_pos
-                    of_pos2 = iter_pos + 2 if i != cfg.MAKER_LED_COUNT - 2 else 0 + iter_pos
+                    of_pos = iter_pos + 1 if i != cfg.MAKER_LED_COUNT - 1 else 0 + k * cfg.MAKER_LED_COUNT
+                    of_pos2 = iter_pos + 2 if i != cfg.MAKER_LED_COUNT - 2 else 0 + k * cfg.MAKER_LED_COUNT
                     self.strip.setPixelColor(of_pos, Color(0, 0, 0))
                     self.strip.setPixelColor(of_pos2, Color(0, 0, 0))
                 self.strip.show()
