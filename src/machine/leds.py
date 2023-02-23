@@ -113,7 +113,7 @@ class _controllableLED(_LED):
     def __init__(self, pin: int) -> None:
         self.pin = pin
         self.strip = Adafruit_NeoPixel(
-            cfg.MAKER_LED_COUNT,
+            cfg.MAKER_LED_COUNT * cfg.MAKER_NUMBER_RING_LED,
             pin,                    # best to use 12 or 18
             800000,                 # freq
             10,                     # DMA 5 / 10
@@ -135,14 +135,14 @@ class _controllableLED(_LED):
                 randint(0, 255),
                 randint(0, 255),
             )
-            for i in range(self.strip.numPixels()):
+            for i in range(cfg.MAKER_LED_COUNT):
                 # If multiple identical ring LEDs operate them simultaneously
                 for k in range(0, cfg.MAKER_NUMBER_RING_LED):
                     iter_pos = k * cfg.MAKER_LED_COUNT + i
                     self.strip.setPixelColor(iter_pos, color)
                     # Turn of 2 leading LEDs to have a more spinner like light effect
-                    of_pos = iter_pos + 1 if i != self.strip.numPixels() - 1 else 0 + iter_pos
-                    of_pos2 = iter_pos + 2 if i != self.strip.numPixels() - 2 else 0 + iter_pos
+                    of_pos = iter_pos + 1 if i != cfg.MAKER_LED_COUNT - 1 else 0 + iter_pos
+                    of_pos2 = iter_pos + 2 if i != cfg.MAKER_LED_COUNT - 2 else 0 + iter_pos
                     self.strip.setPixelColor(of_pos, Color(0, 0, 0))
                     self.strip.setPixelColor(of_pos2, Color(0, 0, 0))
                 self.strip.show()
@@ -151,7 +151,7 @@ class _controllableLED(_LED):
     def turn_off(self):
         """Turns all leds off"""
         for k in range(0, cfg.MAKER_NUMBER_RING_LED):
-            for i in range(0, self.strip.numPixels()):
+            for i in range(0, cfg.MAKER_LED_COUNT):
                 iter_pos = k * cfg.MAKER_LED_COUNT + i
                 self.strip.setPixelColor(iter_pos, Color(0, 0, 0))
         self.strip.show()
@@ -159,7 +159,7 @@ class _controllableLED(_LED):
     def turn_on(self, color):
         """Turns all leds on to given color"""
         for k in range(0, cfg.MAKER_NUMBER_RING_LED):
-            for i in range(0, self.strip.numPixels()):
+            for i in range(0, cfg.MAKER_LED_COUNT):
                 iter_pos = k * cfg.MAKER_LED_COUNT + i
                 self.strip.setPixelColor(iter_pos, color)
         self.strip.show()
@@ -183,10 +183,10 @@ class _controllableLED(_LED):
         wheel_order = list(wheel_order[start::]) + list(wheel_order[0:start])
         while current_time <= duration:
             for j in wheel_order:
-                for i in range(self.strip.numPixels()):
+                for i in range(cfg.MAKER_LED_COUNT):
                     for k in range(0, cfg.MAKER_NUMBER_RING_LED):
                         iter_pos = k * cfg.MAKER_LED_COUNT + i
-                        self.strip.setPixelColor(i, self._wheel((iter_pos + j) & 255))
+                        self.strip.setPixelColor(iter_pos, self._wheel((i + j) & 255))
                 self.strip.show()
                 time.sleep(wait_ms / 1000.0)
                 current_time += wait_ms / 1000
