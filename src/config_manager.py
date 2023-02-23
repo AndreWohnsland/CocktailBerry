@@ -85,6 +85,8 @@ class ConfigManager:
     MAKER_LED_PINS = []
     # List of LED pins for control
     MAKER_LED_COUNT = 24
+    # If there are multiple identical (ring) LEDs
+    MAKER_NUMBER_RING_LED = 1
     # If the led is as ws-x series (and controllable)
     MAKER_LED_IS_WS = True
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
@@ -131,6 +133,7 @@ class ConfigManager:
             "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
             "MAKER_LED_PINS": (list, [self._validate_config_list_type]),
             "MAKER_LED_COUNT": (int, [_build_number_limiter(1, 500)]),
+            "MAKER_NUMBER_RING_LED": (int, [_build_number_limiter(1, 10)]),
             "MAKER_LED_IS_WS": (bool, []),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
