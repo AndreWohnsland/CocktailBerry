@@ -422,8 +422,8 @@ ui:
       en: 'List of pins controlling LEDs during preparation'
       de: 'Liste an Pins, die LEDs bei der Zubereitung kontrollieren'
     MAKER_LED_COUNT:
-      en: 'Number of LEDs on the WS281x'
-      de: 'Anzahl der LEDs an dem WS281x'
+      en: 'Number of LEDs on the WS281x / LEDs per ring, if IDENTICAL daisy chained.'
+      de: 'Anzahl der LEDs an dem WS281x / LEDs pro Ring, wenn IDENTISCHEN in Serie verbunden.'
     MAKER_NUMBER_RING_LED:
       en: 'Number of IDENTICAL daisy chained ring LEDs. Use 1 if different LED count per ring.'
       de: 'Anzahl der IDENTISCHEN in Serie verbundene Ring LEDs. Verwende 1, wenn verschiedene LED Anzahl pro Ring.'
