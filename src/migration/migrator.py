@@ -1,4 +1,5 @@
 # pylint: disable=wrong-import-order,wrong-import-position,too-few-public-methods,ungrouped-imports
+import platform
 from src.python_vcheck import check_python_version
 # Version check takes place before anything, else other imports may throw an error
 check_python_version()
@@ -83,9 +84,14 @@ class Migrator:
         self._check_local_version_data()
 
     def _python_to_old_warning(self, least_python: Tuple[int, int]):
-        if sys.version_info < least_python:
-            pv_format = f"Python {least_python[0]}.{least_python[1]}"
-            _logger.log_event("WARNING", f"Your used Python is deprecated, please upgrade to {pv_format} or higher")
+        sys_python = sys.version_info
+        if sys_python < least_python:
+            future_format = f"Python {least_python[0]}.{least_python[1]}"
+            sys_format = f"{platform.python_version()}"
+            _logger.log_event(
+                "WARNING",
+                f"Your used Python ({sys_format}) is deprecated, please upgrade to {future_format} or higher"
+            )
 
     def _check_local_version_data(self):
         """Checks to update the local version data"""
