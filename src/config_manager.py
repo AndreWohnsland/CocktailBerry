@@ -82,13 +82,15 @@ class ConfigManager:
     # Volume to pump up if a bottle gets changed
     MAKER_TUBE_VOLUME = 0
     # List of LED pins for control
-    MAKER_LED_PINS = []
-    # List of LED pins for control
-    MAKER_LED_COUNT = 24
+    LED_PINS = []
+    # Value for LED brightness
+    LED_BRIGHTNESS = 255
+    # Number of LEDs, only important for controllable
+    LED_COUNT = 24
     # If there are multiple identical (ring) LEDs
-    MAKER_NUMBER_RING_LED = 1
+    LED_NUMBER_RINGS = 1
     # If the led is as ws-x series (and controllable)
-    MAKER_LED_IS_WS = True
+    LED_IS_WS = True
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
@@ -131,10 +133,11 @@ class ConfigManager:
             "MAKER_THEME": (ThemeChoose, [_build_support_checker(SUPPORTED_THEMES)]),
             "MAKER_CHECK_INTERNET": (bool, []),
             "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
-            "MAKER_LED_PINS": (list, [self._validate_config_list_type]),
-            "MAKER_LED_COUNT": (int, [_build_number_limiter(1, 500)]),
-            "MAKER_NUMBER_RING_LED": (int, [_build_number_limiter(1, 10)]),
-            "MAKER_LED_IS_WS": (bool, []),
+            "LED_PINS": (list, [self._validate_config_list_type]),
+            "LED_BRIGHTNESS": (int, [_build_number_limiter(1, 255)]),
+            "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
+            "LED_NUMBER_RINGS": (int, [_build_number_limiter(1, 10)]),
+            "LED_IS_WS": (bool, []),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
@@ -149,7 +152,7 @@ class ConfigManager:
             "PUMP_PINS": (int, [self._validate_pin_numbers]),
             "PUMP_VOLUMEFLOW": (int, [_build_number_limiter(1, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
-            "MAKER_LED_PINS": (int, [_build_number_limiter(0, 200)]),
+            "LED_PINS": (int, [_build_number_limiter(0, 200)]),
         }
         try:
             self._read_config()
