@@ -117,7 +117,7 @@ If you are a unexperienced user with Linux, I recommend you stick to the recomme
 
 ## Task Bar Overlap / Push GUI
 
-This may happen (especially at older versions os RPi OS or higher res screens) when running the program and some dialog windows opens.
+This may happen (especially at older versions os RPi OS or higher res screens) when running the program and some dialog window opens.
 The task bar (bar with programs on it) may overlap the dialog window or push it down by it's height.
 Ensure that you have unchecked the "Reserve space, and not covered by maximised windows" option.
 You can find it under the panel preferences (right click the task bar > panel settings > Advanced).
