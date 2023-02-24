@@ -152,5 +152,7 @@ You can define one or more pins which control a LED (array).
 The LEDs will light up during cocktail preparation, as well when the cocktail is finished.
 If it's an controllable WS28x LED you can activate the setting.
 Instead of just turning on / off / blinking, the LED will then have some advanced light effects.
+If you want to have multiple ring LEDs having the effect synchronously, you can define the number of identical daisy chained rings.
+The program will then not treat this chain as one, but as multiple chains.
 This does not include some default LEDs used for general lighting of the machine, because they usually don't need controlling.
 It's better to directly connect them to the main source current and turn them on when the machine is turned on.
