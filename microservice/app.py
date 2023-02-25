@@ -8,9 +8,9 @@ from typing import Dict
 import requests
 from dotenv import load_dotenv
 from flask import Flask, request, abort, jsonify
+from flask.logging import create_logger
 
-from querry_sender import try_send_querry_data
-from email_sender import send_mail
+from query_sender import try_send_query_data
 from database import DatabaseHandler
 from helper import generate_urls_and_headers
 
@@ -18,6 +18,7 @@ load_dotenv()
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
+_logger = create_logger(app)
 
 
 @app.route("/")
@@ -27,21 +28,21 @@ def welcome():
 
 @app.route("/hookhandler/cocktail", methods=["POST"])
 def post_cocktail_hook():
-    def post_to_hook(url: str, payload: str, headers: Dict, send_querry: bool):
+    def post_to_hook(url: str, payload: str, headers: Dict, send_query: bool):
         try:
-            req = requests.post(url, data=payload, headers=headers)
-            app.logger.info(f"{req.status_code}: Posted to {url} with payload: {payload}")
+            req = requests.post(url, data=payload, headers=headers, timeout=10)
+            _logger.info("%s: Posted to %s with payload: %s", req.status_code, url, payload)
             # Check if there is still querries data which was not send previously
             # Needs to be specified to send, since multiple threads would cause double sending
-            if send_querry:
-                try_send_querry_data(app)
+            if send_query:
+                try_send_query_data(app)
         except requests.exceptions.ConnectionError:
-            app.logger.error(f"Could not connect to {url} for the cocktail data!")
+            _logger.error("Could not connect to %s for the cocktail data!", url)
             db_handler = DatabaseHandler()
             db_handler.save_failed_post(payload, url, headers)
         # pylint: disable=broad-except
         except Exception as err:
-            app.logger.error(f"Some other error occured: {err}")
+            _logger.error("Some other error occurred: %s", err)
 
     if not request.json or "cocktailname" not in request.json:
         abort(400)
@@ -59,8 +60,8 @@ def post_cocktail_hook():
         return jsonify({"text": "No endpoints activated"}), 201
 
     for pos, (url, headers) in enumerate(endpoint_data):
-        send_querry = pos == 0
-        thread = Thread(target=post_to_hook, args=(url, payload, headers, send_querry,))
+        send_query = pos == 0
+        thread = Thread(target=post_to_hook, args=(url, payload, headers, send_query,))
         thread.start()
     return jsonify({"text": "Post to cocktail webhook started"}), 201
 
@@ -68,17 +69,18 @@ def post_cocktail_hook():
 @app.route("/email", methods=["POST"])
 def post_file_with_mail():
     data_file = request.files["upload_file"]
-    text = send_mail(data_file.filename, data_file)
-    app.logger.info(text)
+    # TODO: Implement new sender / Endpoint
+    text = f"Not implemented sending data. Datatype is {type(data_file)}"
+    _logger.info(text)
     return jsonify({"text": text}), 200
 
 
 @app.route("/debug", methods=["POST"])
 def debug_ep():
-    app.logger.info(request.json)
+    _logger.info(request.json)
     return jsonify({"text": "debug"}), 200
 
 
 if __name__ == "__main__":
-    try_send_querry_data(app)
+    try_send_query_data(app)
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")))
