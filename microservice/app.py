@@ -66,7 +66,7 @@ def post_cocktail_hook():
     return jsonify({"text": "Post to cocktail webhook started"}), 201
 
 
-@app.route("/email", methods=["POST"])
+@app.route("/data-export", methods=["POST"])
 def post_file_with_mail():
     data_file = request.files["upload_file"]
     # TODO: Implement new sender / Endpoint
