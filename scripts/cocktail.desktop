@@ -2,4 +2,4 @@
 Type=Application
 Name=CocktailScreen
 NoDisplay=false
-Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh
+Exec=/usr/bin/lxterminal -e "~/launcher.sh; read -p 'Press Enter to Close'""
