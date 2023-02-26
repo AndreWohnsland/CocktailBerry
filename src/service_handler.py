@@ -41,15 +41,16 @@ class ServiceHandler():
         endpoint = self._decide_debug_endpoint(f"{self.base_url}/hookhandler/cocktail")
         return self.__try_to_send(endpoint, PostType.COCKTAIL, payload=payload)
 
-    def send_export_data(self, file_name: str, binary_file) -> Dict:
+    def send_export_data(self, file_name: str, binary_file, is_disabled=True) -> Dict:
         """Post the given file to the microservice handling internet traffic to send data to external source"""
         if not cfg.MICROSERVICE_ACTIVE:
             return service_disabled()
         endpoint = self._decide_debug_endpoint(f"{self.base_url}/data-export")
         files = {"upload_file": (file_name, binary_file,)}
-        # TODO: Generate new data logic
         # Currently not configured
-        return service_disabled()
+        if is_disabled:
+            return service_disabled()
+        return self.__try_to_send(endpoint, PostType.FILE, files=files)
 
     def post_team_data(self, team_name: str, cocktail_volume: int) -> Dict:
         """Post the given team name to the team api if activated"""
