@@ -27,7 +27,7 @@ class ServiceHandler():
     def post_cocktail_to_hook(self, cocktail_name: str, cocktail_volume: int, cocktail_object: Cocktail) -> Dict:
         """Post the given cocktail data to the microservice handling internet traffic to send to defined webhook"""
         if not cfg.MICROSERVICE_ACTIVE:
-            return service_disabled()
+            return _service_disabled()
         # Extracts the volume and name from the ingredient objects
         ingredient_data = [{"name": i.name, "volume": i.amount} for i in cocktail_object.adjusted_ingredients]
         data = {
@@ -39,26 +39,26 @@ class ServiceHandler():
         }
         payload = json.dumps(data)
         endpoint = self._decide_debug_endpoint(f"{self.base_url}/hookhandler/cocktail")
-        return self.__try_to_send(endpoint, PostType.COCKTAIL, payload=payload)
+        return self._try_to_send(endpoint, PostType.COCKTAIL, payload=payload)
 
     def send_export_data(self, file_name: str, binary_file, is_disabled=True) -> Dict:
         """Post the given file to the microservice handling internet traffic to send data to external source"""
         if not cfg.MICROSERVICE_ACTIVE:
-            return service_disabled()
+            return _service_disabled()
         endpoint = self._decide_debug_endpoint(f"{self.base_url}/data-export")
         files = {"upload_file": (file_name, binary_file,)}
         # Currently not configured
         if is_disabled:
-            return service_disabled()
-        return self.__try_to_send(endpoint, PostType.FILE, files=files)
+            return _service_disabled()
+        return self._try_to_send(endpoint, PostType.FILE, files=files)
 
     def post_team_data(self, team_name: str, cocktail_volume: int) -> Dict:
         """Post the given team name to the team api if activated"""
         if not cfg.TEAMS_ACTIVE:
-            return team_disabled()
+            return _team_disabled()
         payload = json.dumps({"team": team_name, "volume": cocktail_volume})
         endpoint = self._decide_debug_endpoint(f"{cfg.TEAM_API_URL}/cocktail")
-        return self.__try_to_send(endpoint, PostType.TEAMDATA, payload=payload)
+        return self._try_to_send(endpoint, PostType.TEAMDATA, payload=payload)
 
     def _decide_debug_endpoint(self, endpoint: str):
         """Checks if to use the given or the debug ep"""
@@ -67,7 +67,7 @@ class ServiceHandler():
             return f"{self.base_url}/debug"
         return endpoint
 
-    def __try_to_send(
+    def _try_to_send(
         self,
         endpoint: str,
         post_type: PostType,
@@ -92,12 +92,12 @@ class ServiceHandler():
         """
         try:
             if payload is not None:
-                req = requests.post(endpoint, data=payload, headers=self.headers, timeout=3)
+                req = requests.post(endpoint, data=payload, headers=self.headers, timeout=2)
                 # if successfully send to teams, see if there are other to send.
                 if post_type is PostType.TEAMDATA:
-                    self.__check_failed_data()
+                    self._check_failed_data()
             elif files is not None:
-                req = requests.post(endpoint, files=files, timeout=3)
+                req = requests.post(endpoint, files=files, timeout=2)
             else:
                 raise ValueError('Neither payload nor files given!')
             message = str(req.text).replace("\n", "")
@@ -107,16 +107,16 @@ class ServiceHandler():
                 "message": message,
             }
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-            self.__log_connection_error(endpoint, post_type)
+            self._log_connection_error(endpoint, post_type)
             # only save failed team data for now
             if post_type is PostType.TEAMDATA:
                 DB_COMMANDER.save_failed_teamdata(payload)
             return {}
 
-    def __log_connection_error(self, endpoint: str, post_type: PostType):
+    def _log_connection_error(self, endpoint: str, post_type: PostType):
         self.logger.log_event("ERROR", f"Could not connect to: '{endpoint}' for {post_type.value}")
 
-    def __check_failed_data(self):
+    def _check_failed_data(self):
         """Gets one failed teamdata and sends it"""
         endpoint = f"{cfg.TEAM_API_URL}/cocktail"
         failed_data = DB_COMMANDER.get_failed_teamdata()
@@ -124,10 +124,10 @@ class ServiceHandler():
             msg_id, payload = failed_data
             # Delete the old thing before recursion hell comes live
             DB_COMMANDER.delete_failed_teamdata(msg_id)
-            self.__try_to_send(endpoint, PostType.TEAMDATA, payload)
+            self._try_to_send(endpoint, PostType.TEAMDATA, payload)
 
 
-def service_disabled():
+def _service_disabled():
     """Return that microservice is disabled"""
     return {
         "status": 503,
@@ -135,7 +135,7 @@ def service_disabled():
     }
 
 
-def team_disabled():
+def _team_disabled():
     """Return that teams is disabled"""
     return {
         "status": 503,
