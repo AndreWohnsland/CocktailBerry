@@ -3,7 +3,7 @@
 This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface.
 It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
 Track and display cocktail data for different teams to even further increase the fun.
-Have also a look into the [User Guide](assets/CocktailBerryUserGuide.pdf)
+Have also a look into the [User Guide](assets/CocktailBerryUserGuide.pdf).
 Let's get started!
 
 ## tl;dr
