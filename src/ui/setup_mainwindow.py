@@ -69,6 +69,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
         ICONS.set_mainwindow_icons(self)
+        DP_CONTROLLER.say_welcome_message()
         self.update_check()
         self._connection_check()
         self._deprecation_check()

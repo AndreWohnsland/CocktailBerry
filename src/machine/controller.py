@@ -9,6 +9,7 @@ from src.config_manager import shared, CONFIG as cfg
 from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.raspberry import RpiController
+from src.machine.leds import LedController
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -29,6 +30,7 @@ class MachineController():
     def __init__(self):
         super().__init__()
         self._pin_controller = self._chose_controller()
+        self._led_controller = LedController(self._pin_controller)
 
     def _chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""
@@ -79,7 +81,9 @@ class MachineController():
             w.open_progression_window(recipe)
         prep_data = _build_preparation_data(bottle_list, volume_list)
         _header_print(f"Starting {recipe}")
+        self._led_controller.preparation_start()
         current_time, max_time = self._start_preparation(w, prep_data, verbose)
+        self._led_controller.preparation_end()
         consumption = [round(x.consumption) for x in prep_data]
         print("Total calculated consumption:", consumption)
         _header_print(f"Finished {recipe}")

@@ -20,7 +20,8 @@ def main(
     ctx: typer.Context,
     calibration: bool = typer.Option(False, "--calibration", "-c", help="Run the calibration program."),
     debug: bool = typer.Option(False, "--debug", "-d", help="Using debug instead of normal Endpoints."),
-    version: Optional[bool] = typer.Option(None, "--version", callback=version_callback, help="Show current version.")
+    version: Optional[bool] = typer.Option(
+        None, "--version", "-V", callback=version_callback, help="Show current version.")
 ):
     """
     Starts the cocktail program. Optional, can start the calibration program.

@@ -32,8 +32,8 @@ class DatabaseHandler:
         sql = "DELETE FROM Querry WHERE ID = ?"
         self.query_database(sql, (data_id,))
 
-    def query_database(self, sql: str, serachtuple=()):
-        self.cursor.execute(sql, serachtuple)
+    def query_database(self, sql: str, serach_tuple=()):
+        self.cursor.execute(sql, serach_tuple)
         if sql[0:6].lower() == "select":
             result = self.cursor.fetchall()
         else:

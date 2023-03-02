@@ -36,6 +36,11 @@ python3 runme.py # (1)!
 
 1.  Newer systems may execute python instead of python3
 
+!!! note "This Should be All"
+    As long as you are on the recommended Raspberry Pi + OS, this should be all you need to execute for a complete setup.
+    This provided script will probably not properly work on other systems, since each OS may handle things differently.
+    If you are on another system, have a look into the other instructions, [faq](faq.md) or [troubleshooting](troubleshooting.md).
+
 ## Installing Requirements
 The best way is to use the provided `requirements.txt` file.
 If Python is installed, just run: 

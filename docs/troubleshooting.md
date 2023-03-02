@@ -87,6 +87,24 @@ This new option tackles that. If it's set active with an active microservice, it
 If there is no connection, a dialog will pop up and give the user the possibility to adjust the time.
 In case the machine got a RTC build in and uses it, this option can usually be set to `false`, because due to the RTC, the time should be correct.
 
+## Get the LED Working
+
+Getting the WS281x to work may be a little bit tricky.
+You MUST run the program as sudo (`sudo python runme.py`), so you also need to change this in `~/launcher.sh`.
+If the GUI looks different than when you run it without sudo, try `sudo -E python runme.y` this should use your environment for Qt.
+If you ran the program as non root, you will need to install the required python packages for the main program with sudo pip install.
+Also, install the rpi_ws281x python package with:
+
+```
+sudo pip install rpi_ws281x
+sudo pip install PyQt5 requests pyyaml GitPython typer pyfiglet qtawesome
+```
+
+See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.
+I had success using the 12 and 18 PWM0 pin, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.
+Other described pins may also work, but are untested, so I recommend to stick to the both one that should work.
+If you use any other non controllable LED connected over the relay, you can use any pin you want, since it's only activating the relay.
+
 
 ## Ui Seems Wrong on none RaspOS System
 On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
@@ -96,6 +114,14 @@ Other desktop variants may do not respect the always on top property, resulting 
 Please take note that CocktailBerry will run on other systems than the Raspberry Pi OS and RPi, but may take some tweaking and testing in the settings.
 Since I probably don't own that combination of Hardware and OS, you probably need to figure out that settings by yourself.
 If you are a unexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
+
+## Task Bar Overlap / Push GUI
+
+This may happen (especially at older versions os RPi OS or higher res screens) when running the program and some dialog window opens.
+The task bar (bar with programs on it) may overlap the dialog window or push it down by it's height.
+Ensure that you have unchecked the "Reserve space, and not covered by maximised windows" option.
+You can find it under the panel preferences (right click the task bar > panel settings > Advanced).
+Unchecking this box usually fixes this problem.
 
 ## Problems Installing Software on Raspberry Pi
 
@@ -162,6 +188,7 @@ sudo chmod 755 ~/launcher.sh
 I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources.
 Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
 Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
+Using the users environment with `sudo -E python runme.py` should also do the trick.
 
 ### Some Python Things do not Work
 

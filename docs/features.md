@@ -20,6 +20,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.11.0** | Internet check and time adjustment feature                 |
 | **v1.13.1** | Clearing the database over the CLI                         |
 | **v1.14.0** | Can invert pin, set simultaneous pump count, generic board |
+| **v1.15.0** | Control a LED during cocktail preparation                  |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.
