@@ -66,6 +66,9 @@ class DialogHandler():
     def password_prompt(self):
         """Opens a password prompt, return if successful entered password"""
         from src.ui.setup_password_dialog import PasswordDialog
+        # if password is empty, return true
+        if cfg.UI_MASTERPASSWORD == "":
+            return True
         password_dialog = PasswordDialog()
         if password_dialog.exec_():
             return True
