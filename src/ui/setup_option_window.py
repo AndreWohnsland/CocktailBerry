@@ -10,6 +10,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
 
 from src.ui.create_config_window import ConfigWindow
+from src.ui.setup_log_window import LogWindow
 from src.ui_elements.optionwindow import Ui_Optionwindow
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
@@ -51,8 +52,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_backup.clicked.connect(self._create_backup)
         self.button_restore.clicked.connect(self._upload_backup)
         self.button_export.clicked.connect(SAVE_HANDLER.export_data)
+        self.button_logs.clicked.connect(self._show_logs)
 
         self.config_window: Optional[ConfigWindow] = None
+        self.log_window: Optional[LogWindow] = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -131,3 +134,12 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if not selected_path:
             return None
         return Path(selected_path).absolute()
+
+    def _show_logs(self):
+        """Opens the logs window"""
+        self.close()
+        self.log_window = LogWindow()
+
+    def _open_rfid_writer(self):
+        """Opens the rfid writer window"""
+        # TODO: Implement the rfid logic
