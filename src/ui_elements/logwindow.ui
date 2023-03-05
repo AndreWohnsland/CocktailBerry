@@ -32,7 +32,7 @@
    <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>Options</string>
+   <string>Logs</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -48,7 +48,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="lineWidth">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="widgetResizable">
        <bool>true</bool>

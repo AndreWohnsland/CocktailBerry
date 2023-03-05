@@ -31,7 +31,7 @@ class Ui_LogWindow(object):
         self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)
         self.scrollArea.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.scrollArea.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.scrollArea.setLineWidth(1)
+        self.scrollArea.setLineWidth(0)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
@@ -78,7 +78,7 @@ class Ui_LogWindow(object):
 
     def retranslateUi(self, LogWindow):
         _translate = QtCore.QCoreApplication.translate
-        LogWindow.setWindowTitle(_translate("LogWindow", "Options"))
+        LogWindow.setWindowTitle(_translate("LogWindow", "Logs"))
         self.button_back.setText(_translate("LogWindow", "< Back"))
         self.button_back.setProperty("cssClass", _translate("LogWindow", "btn-inverted"))
 
