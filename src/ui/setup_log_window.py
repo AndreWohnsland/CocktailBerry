@@ -49,5 +49,5 @@ class LogWindow(QMainWindow, Ui_LogWindow):
             return
         log_path = _LOG_FOLDER / log_name
         log_text = log_path.read_text()
-        latest_to_oldest = "\n".join(log_text.splitlines()[::-1])
-        self.text_display.setText(latest_to_oldest)
+        latest_to_oldest_list = log_text.splitlines()[::-1]
+        self.text_display.setText("\n".join(latest_to_oldest_list))
