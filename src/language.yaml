@@ -183,6 +183,9 @@ ui:
     no_button:
       en: 'No'
       de: 'Nein'
+    back:
+      en: '< Back'
+      de: '< Zurück'
   # dynamic values for maker tab
   maker:
     add_self:
