@@ -67,6 +67,8 @@ QWidget {
     margin: 5px 0px 5px 20px; }
   QWidget[cssClass~='right-shift'] {
     margin: 5px 20px 5px 0px; }
+  QWidget:disabled {
+    text-decoration: line-through; }
 
 QTabWidget::pane {
   border: 1px solid #6f6f87;
