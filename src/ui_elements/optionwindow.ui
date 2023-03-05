@@ -258,7 +258,7 @@
            </widget>
           </item>
           <item row="4" column="0">
-           <widget class="QPushButton" name="log_button">
+           <widget class="QPushButton" name="button_logs">
             <property name="maximumSize">
              <size>
               <width>5000</width>
@@ -278,7 +278,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QPushButton" name="rfid_button">
+           <widget class="QPushButton" name="button_rfid">
             <property name="enabled">
              <bool>false</bool>
             </property>
