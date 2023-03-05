@@ -1,4 +1,6 @@
+import re
 from pathlib import Path
+from collections import Counter
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow
 from src.dialog_handler import UI_LANGUAGE
@@ -8,6 +10,7 @@ from src.ui_elements.logwindow import Ui_LogWindow
 _DIRPATH = Path(__file__).parent.absolute()
 _LOG_FOLDER = _DIRPATH.parents[1] / "logs"
 _DEFAULT_SELECTED = "production_logs.log"
+_DEBUG_FILE = "debuglog.log"
 
 
 class LogWindow(QMainWindow, Ui_LogWindow):
@@ -49,5 +52,44 @@ class LogWindow(QMainWindow, Ui_LogWindow):
             return
         log_path = _LOG_FOLDER / log_name
         log_text = log_path.read_text()
-        latest_to_oldest_list = log_text.splitlines()[::-1]
-        self.text_display.setText("\n".join(latest_to_oldest_list))
+        # Handle debug logs differently, since they save error traces,
+        # just display the read in text from log in this case
+        if log_name == _DEBUG_FILE:
+            logs_to_render = self._parse_debug_logs(log_text)
+        else:
+            logs_to_render = self._parse_log(log_text)
+        self.text_display.setText(logs_to_render)
+
+    def _parse_log(self, log_text: str):
+        """Parse all logs and return display object.
+        Needs logs from new to old, if same message was already there, skip it.
+        """
+        data: dict[str, str] = {}
+        counter = Counter()
+        for line in log_text.splitlines()[::-1]:
+            date, message = self._parse_log_line(line)
+            if message not in data:
+                data[message] = date
+                counter[message] = 1
+            else:
+                counter[message] += 1
+        log_list_data = [f"{key} ({counter[key]}x, latest: {value})" for key, value in data.items()]
+        return "\n".join(log_list_data)
+
+    def _parse_log_line(self, line: str):
+        """Parse the log message and return the timestamp + msg"""
+        parts = line.split(" | ", maxsplit=1)
+        parsed_date = parts[0]
+        # usually, we only get 2 parts, due to the maxsplit
+        parsed_message = " | ".join(parts[1::])
+        return parsed_date, parsed_message
+
+    def _parse_debug_logs(self, log):
+        """Parses and inverts the debug logs"""
+        # having into group returns also the matched date
+        # This needs to be joined before inverting.
+        # Also, the first value is an empty string
+        date_regex = r"(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2})"
+        information_list = [x for x in re.split(date_regex, log) if x != ""]
+        pairs = [" ".join(information_list[i:i + 2]) for i in range(0, len(information_list), 2)]
+        return "\n".join(pairs[::-1])
