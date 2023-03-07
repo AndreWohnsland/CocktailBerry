@@ -91,6 +91,8 @@ class ConfigManager:
     LED_NUMBER_RINGS = 1
     # If the led is as ws-x series (and controllable)
     LED_IS_WS = True
+    # if a RFID reader exists
+    RFID_EXISTS = False
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
@@ -138,6 +140,7 @@ class ConfigManager:
             "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
             "LED_NUMBER_RINGS": (int, [_build_number_limiter(1, 10)]),
             "LED_IS_WS": (bool, []),
+            "RFID_EXISTS": (bool, []),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
