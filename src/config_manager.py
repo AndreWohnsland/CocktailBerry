@@ -283,7 +283,8 @@ class Shared:
         self.cocktail_started = False
         self.make_cocktail = True
         self.old_ingredient: List[str] = []
-        self.selected_team = "Nothing"
+        self.selected_team = "No Team"
+        self.team_member_name: Union[str, None] = None
         self.handaddlist: List[Ingredient] = []
         self.cocktail_volume: int = 200
         self.alcohol_factor: float = 1.0
