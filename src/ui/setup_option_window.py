@@ -53,6 +53,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_restore.clicked.connect(self._upload_backup)
         self.button_export.clicked.connect(SAVE_HANDLER.export_data)
         self.button_logs.clicked.connect(self._show_logs)
+        self.button_rfid.clicked.connect(self._open_rfid_writer)
 
         self.config_window: Optional[ConfigWindow] = None
         self.log_window: Optional[LogWindow] = None
