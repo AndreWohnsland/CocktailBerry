@@ -129,6 +129,8 @@ class _controllableLED(_LED):
         """Fills one by one with same random color, then repeats / overwrites old ones"""
         # Make the circle / dot approximate 2 rounds per second
         wait_ms = 500 / cfg.LED_COUNT
+        # not faster than 10ms
+        wait_ms = max(10, wait_ms)
         self.turn_on(Color(randint(0, 255), randint(0, 255), randint(0, 255)))
         while self.is_preparing:
             color = Color(
