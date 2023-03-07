@@ -67,6 +67,8 @@ QWidget {
     margin: 5px 0px 5px 20px; }
   QWidget[cssClass~='right-shift'] {
     margin: 5px 20px 5px 0px; }
+  QWidget:disabled {
+    text-decoration: line-through; }
 
 QTabWidget::pane {
   border: 1px solid #6f6f87;
@@ -211,9 +213,14 @@ QListWidget {
   border-top-right-radius: 21px; }
   QListWidget QScrollBar:vertical {
     border-right: 0px solid #6f6f87; }
+  QListWidget QScrollBar:horizontal {
+    border-bottom: 0px solid #6f6f87; }
 
 QScrollArea QScrollBar:vertical {
   border-right: 2px solid #6f6f87; }
+
+QScrollArea QScrollBar:horizontal {
+  border-bottom: 2px solid #6f6f87; }
 
 /* Moving List Widget here from the single objects */
 QScrollBar:vertical {
@@ -224,10 +231,18 @@ QScrollBar:vertical {
   width: 40px;
   margin: 25px 0px 25px 0px; }
 
-QScrollBar::handle:vertical {
+QScrollBar:horizontal {
+  border: 2px solid #6f6f87;
+  border-bottom: 1px solid #6f6f87;
+  border-radius: 15px;
+  background: #0d0d0d;
+  height: 40px;
+  margin: 0px 25px 0px 25px; }
+
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
   background: #3a4cbf;
   border-radius: 10px; }
-  QScrollBar::handle:vertical:pressed {
+  QScrollBar::handle:vertical:pressed, QScrollBar::handle:horizontal:pressed {
     background-color: #ec407a;
     border-color: #ec407a; }
 
@@ -240,6 +255,15 @@ QScrollBar::add-line:vertical {
   subcontrol-position: bottom;
   subcontrol-origin: margin; }
 
+QScrollBar::add-line:horizontal {
+  border: 2px solid #6f6f87;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  background-color: #6f6f87;
+  width: 38px;
+  subcontrol-position: right;
+  subcontrol-origin: margin; }
+
 QScrollBar::sub-line:vertical {
   border: 2px solid #6f6f87;
   border-top-left-radius: 15px;
@@ -249,12 +273,25 @@ QScrollBar::sub-line:vertical {
   subcontrol-position: top;
   subcontrol-origin: margin; }
 
+QScrollBar::sub-line:horizontal {
+  border: 2px solid #6f6f87;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  background-color: #6f6f87;
+  width: 38px;
+  subcontrol-position: left;
+  subcontrol-origin: margin; }
+
 QScrollBar::add-page:vertical,
-QScrollBar::sub-page:vertical {
+QScrollBar::sub-page:vertical,
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
   background: none; }
 
 QScrollBar::sub-line:vertical:pressed,
-QScrollBar::add-line:vertical:pressed {
+QScrollBar::add-line:vertical:pressed,
+QScrollBar::sub-line:horizontal:pressed,
+QScrollBar::add-line:horizontal:pressed {
   background-color: #ec407a;
   border-color: #ec407a; }
 

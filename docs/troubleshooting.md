@@ -123,6 +123,11 @@ Ensure that you have unchecked the "Reserve space, and not covered by maximised 
 You can find it under the panel preferences (right click the task bar > panel settings > Advanced).
 Unchecking this box usually fixes this problem.
 
+## Reset Config
+
+In case you want to reset the configuration, it is the best way to just delete the custom_config.yaml in the main folder.
+This file holds your configuration and will be created with the defaults if it does not exists.
+
 ## Problems Installing Software on Raspberry Pi
 
 The Raspberry Pi can sometimes differ from other machines in terms of installation. Here are some issues that might occur.

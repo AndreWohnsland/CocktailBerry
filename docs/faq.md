@@ -138,6 +138,18 @@ If you don't understand what docker is or what it does, don't worry.
 CocktailBerry will perfectly run without Docker installed.
 It's for some optional advanced features you can add anytime you are interested or ready for them.
 
+### How to Exit the Program
+
+If you want to exit the program to get to the desktop, because you want to do some adjustments,
+just press alt+F4 in the main program on your keyboard.
+Like with most programs, this will exit the current opened program.
+You will then be on your desktop.
+
+### I don't Need a Password
+
+Just set the password empty / delete all numbers.
+If the password setting ist empty, actions requiring a password will automatically succeed without prompting a password.
+
 ## Other
 
 ### What about Tube Volume
@@ -146,7 +158,7 @@ If your pumps got a long tube to the bottle, the first cocktail may have too lit
 You can set the `MAKER_TUBE_VOLUME` to an approximate value which corresponds to the average of the tube volume.
 When applying a new bottle, CocktailBerry will also pump that much volume up.
 
-### Whats up with LEDs
+### Implementing LEDs
 
 You can define one or more pins which control a LED (array).
 The LEDs will light up during cocktail preparation, as well when the cocktail is finished.
@@ -156,3 +168,11 @@ If you want to have multiple ring LEDs having the effect synchronously, you can 
 The program will then not treat this chain as one, but as multiple chains.
 This does not include some default LEDs used for general lighting of the machine, because they usually don't need controlling.
 It's better to directly connect them to the main source current and turn them on when the machine is turned on.
+
+### View Logs
+
+You can either go to the logs folder to have the raw logs.
+Or you can go to the option window and select the logs option.
+Then you will get a summarized view of the logs.
+The latest logs are shown on top. 
+Identical logs are only shown once, with their latest occurrence time, as well as count.

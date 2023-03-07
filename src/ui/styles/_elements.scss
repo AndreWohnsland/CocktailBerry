@@ -95,6 +95,9 @@ QWidget {
   &[cssClass~='right-shift'] {
     margin: 5px 20px 5px 0px;
   }
+  &:disabled {
+    text-decoration: line-through;
+  }
 }
 
 QTabWidget::pane {
@@ -275,10 +278,17 @@ QListWidget {
   & QScrollBar:vertical {
     border-right: 0px solid $border;
   }
+  & QScrollBar:horizontal {
+    border-bottom: 0px solid $border;
+  }
 }
 
 QScrollArea QScrollBar:vertical {
   border-right: $default-element-border;
+}
+
+QScrollArea QScrollBar:horizontal {
+  border-bottom: $default-element-border;
 }
 
 /* Moving List Widget here from the single objects */
@@ -291,12 +301,24 @@ QScrollBar:vertical {
   margin: 25px 0px 25px 0px;
 }
 
-QScrollBar::handle:vertical {
-  background: $primary;
-  border-radius: $scrollbar-border-radius - 5px;
-  &:pressed {
-    background-color: $secondary;
-    border-color: $secondary;
+QScrollBar:horizontal {
+  border: $default-element-border;
+  border-bottom: 1px solid $border;
+  border-radius: $scrollbar-border-radius;
+  background: $background;
+  height: 40px;
+  margin: 0px 25px 0px 25px;
+}
+
+QScrollBar::handle {
+  &:vertical,
+  &:horizontal {
+    background: $primary;
+    border-radius: $scrollbar-border-radius - 5px;
+    &:pressed {
+      background-color: $secondary;
+      border-color: $secondary;
+    }
   }
 }
 
@@ -311,6 +333,16 @@ QScrollBar::add-line:vertical {
   subcontrol-origin: margin;
 }
 
+QScrollBar::add-line:horizontal {
+  border: $default-element-border;
+  border-top-right-radius: $scrollbar-border-radius;
+  border-bottom-right-radius: $scrollbar-border-radius;
+  background-color: $border;
+  width: 38px;
+  subcontrol-position: right;
+  subcontrol-origin: margin;
+}
+
 // top button
 QScrollBar::sub-line:vertical {
   border: $default-element-border;
@@ -322,14 +354,28 @@ QScrollBar::sub-line:vertical {
   subcontrol-origin: margin;
 }
 
+QScrollBar::sub-line:horizontal {
+  border: $default-element-border;
+  border-top-left-radius: $scrollbar-border-radius;
+  border-bottom-left-radius: $scrollbar-border-radius;
+  background-color: $border;
+  width: 38px;
+  subcontrol-position: left;
+  subcontrol-origin: margin;
+}
+
 // remove the grid thingy from bg
 QScrollBar::add-page:vertical,
-QScrollBar::sub-page:vertical {
+QScrollBar::sub-page:vertical,
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
   background: none;
 }
 
 QScrollBar::sub-line:vertical:pressed,
-QScrollBar::add-line:vertical:pressed {
+QScrollBar::add-line:vertical:pressed,
+QScrollBar::sub-line:horizontal:pressed,
+QScrollBar::add-line:horizontal:pressed {
   background-color: $secondary;
   border-color: $secondary;
 }

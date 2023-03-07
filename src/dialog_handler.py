@@ -66,6 +66,9 @@ class DialogHandler():
     def password_prompt(self):
         """Opens a password prompt, return if successful entered password"""
         from src.ui.setup_password_dialog import PasswordDialog
+        # if password is empty, return true
+        if cfg.UI_MASTERPASSWORD == "":
+            return True
         password_dialog = PasswordDialog()
         if password_dialog.exec_():
             return True
@@ -473,6 +476,10 @@ class UiLanguage():
         """Translate all the labels from the password window"""
         w.yes_button.setText(self.__choose_language("yes_button"))
         w.no_button.setText(self.__choose_language("no_button"))
+
+    def adjust_log_window(self, w):
+        """Translates the elements from the logs window"""
+        w.button_back.setText(self.__choose_language("back"))
 
 
 UI_LANGUAGE = UiLanguage()

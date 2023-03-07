@@ -21,6 +21,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.13.1** | Clearing the database over the CLI                         |
 | **v1.14.0** | Can invert pin, set simultaneous pump count, generic board |
 | **v1.15.0** | Control a LED during cocktail preparation                  |
+| **v1.16.0** | Summarized logs over the GUI                               |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.

@@ -27,7 +27,7 @@ class LoggerHandler:
         if not logger.hasHandlers():
             file_handler = logging.FileHandler(self.path)
             file_handler.setLevel(logging.DEBUG)
-            formatter = logging.Formatter("%(asctime)s | %(name)s | %(levelname)s: %(message)s", "%Y-%m-%d %H:%M")
+            formatter = logging.Formatter("%(asctime)s | %(levelname)-8s | %(message)s [%(name)s]", "%Y-%m-%d %H:%M")
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
 

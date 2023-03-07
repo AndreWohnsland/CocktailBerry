@@ -18,7 +18,7 @@ from src.config_manager import CONFIG as cfg
 from src.config_manager import shared
 
 
-LOG_HANDLER = LoggerHandler("maker_module")
+_LOGGER = LoggerHandler("maker_module")
 T = TypeVar('T', int, float)
 
 
@@ -71,7 +71,7 @@ def __generate_maker_log_entry(cocktail_volume: int, cocktail_name: str, taken_t
     if not shared.make_cocktail:
         pumped_volume = round(cocktail_volume * (taken_time) / max_time)
         cancel_log_addition = f" - Recipe canceled at {round(taken_time, 1)} s - {pumped_volume} ml"
-    LOG_HANDLER.log_event("INFO", f"{volume_string:6} | {cocktail_name}{cancel_log_addition}")
+    _LOGGER.log_event("INFO", f"{volume_string:6} - {cocktail_name}{cancel_log_addition}")
 
 
 @logerror

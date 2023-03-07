@@ -39,201 +39,272 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="5" column="0">
-     <widget class="QPushButton" name="button_back">
-      <property name="maximumSize">
-       <size>
-        <width>5000</width>
-        <height>300</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>28</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>&lt; Back</string>
-      </property>
-     </widget>
-    </item>
     <item row="4" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QPushButton" name="button_reboot">
-        <property name="maximumSize">
-         <size>
-          <width>5000</width>
-          <height>300</height>
-         </size>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>782</width>
+         <height>462</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="leftMargin">
+         <number>0</number>
         </property>
-        <property name="font">
-         <font>
-          <pointsize>28</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
+        <property name="topMargin">
+         <number>0</number>
         </property>
-        <property name="text">
-         <string>Reboot</string>
+        <property name="rightMargin">
+         <number>4</number>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="button_shutdown">
-        <property name="maximumSize">
-         <size>
-          <width>5000</width>
-          <height>300</height>
-         </size>
+        <property name="bottomMargin">
+         <number>0</number>
         </property>
-        <property name="font">
-         <font>
-          <pointsize>28</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Shutdown</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QPushButton" name="button_clean">
-        <property name="maximumSize">
-         <size>
-          <width>5000</width>
-          <height>300</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>28</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Cleaning</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="button_calibration">
-        <property name="maximumSize">
-         <size>
-          <width>5000</width>
-          <height>300</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>28</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Calibration</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="3" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QPushButton" name="button_backup">
-        <property name="maximumSize">
-         <size>
-          <width>5000</width>
-          <height>300</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>28</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Backup</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="button_restore">
-        <property name="maximumSize">
-         <size>
-          <width>5000</width>
-          <height>300</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>28</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Restore</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="2" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
-       <widget class="QPushButton" name="button_config">
-        <property name="maximumSize">
-         <size>
-          <width>5000</width>
-          <height>300</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>28</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Change Config</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="button_export">
-        <property name="maximumSize">
-         <size>
-          <width>5000</width>
-          <height>300</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>28</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Export</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="3" column="1">
+           <widget class="QPushButton" name="button_shutdown">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Shutdown</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="button_config">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Change Config</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="button_export">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Export</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="button_calibration">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Calibration</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="button_clean">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Cleaning</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="button_backup">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Backup</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="button_reboot">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Reboot</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="button_restore">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Restore</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QPushButton" name="button_back">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>&lt; Back</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="button_logs">
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Logs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QPushButton" name="button_rfid">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Write RFID</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
