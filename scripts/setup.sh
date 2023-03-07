@@ -24,31 +24,31 @@ if [ "$1" = "dashboard" ]; then
   cp qt-app/.env.example qt-app/.env
   docker-compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?"
   # Letting user choose the frontend type (WebApp or Qt)
-  echo -n  "Using new dashboard (Dash WebApp), otherwise will use Qt-App (y/n)? "
+  echo -n "Using new dashboard (Dash WebApp), otherwise will use Qt-App (y/n)? "
   read answer
-  if echo "$answer" | grep -iq "^y" ;then
-    echo "cd ~/CocktailBerry/dashboard/frontend/" >> ~/launcher.sh
-    echo "gunicorn --workers=5 --threads=1 -b :8050 index:server" >> ~/launcher.sh
+  if echo "$answer" | grep -iq "^y"; then
+    echo "cd ~/CocktailBerry/dashboard/frontend/" >>~/launcher.sh
+    echo "gunicorn --workers=5 --threads=1 -b :8050 index:server" >>~/launcher.sh
     echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
     cd frontend/
   else
-    echo "cd ~/CocktailBerry/dashboard/qt-app/" >> ~/launcher.sh
-    echo "python3 main.py" >> ~/launcher.sh
+    echo "cd ~/CocktailBerry/dashboard/qt-app/" >>~/launcher.sh
+    echo "python3 main.py" >>~/launcher.sh
     cd qt-app/
   fi
   pip3 install -r requirements.txt
 else
   echo "Setting up CocktailBerry"
-  echo "export QT_SCALE_FACTOR=1" >> ~/launcher.sh
-  echo "cd ~/CocktailBerry/" >> ~/launcher.sh
-  echo "python3 runme.py" >> ~/launcher.sh
-  pip3 install requests pyyaml GitPython typer pyfiglet qtawesome
+  echo "export QT_SCALE_FACTOR=1" >>~/launcher.sh
+  echo "cd ~/CocktailBerry/" >>~/launcher.sh
+  echo "python3 runme.py" >>~/launcher.sh
+  pip3 install requests pyyaml GitPython typer pyfiglet qtawesome piicodev
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   cp microservice/.env.example microservice/.env
-  echo -n  "Also install microservice (y/n)? This needs docker installed - you can also install it later with docker-compose. "
+  echo -n "Also install microservice (y/n)? This needs docker installed - you can also install it later with docker-compose. "
   read answer
-  if echo "$answer" | grep -iq "^y" ;then
-      cd microservice/
-      docker-compose up --build -d || echo "ERROR: Could not install microservice over docker-compose, is docker installed?"
+  if echo "$answer" | grep -iq "^y"; then
+    cd microservice/
+    docker-compose up --build -d || echo "ERROR: Could not install microservice over docker-compose, is docker installed?"
   fi
 fi
