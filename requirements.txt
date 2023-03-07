@@ -5,3 +5,4 @@ GitPython
 typer
 pyfiglet
 qtawesome
+piicodev

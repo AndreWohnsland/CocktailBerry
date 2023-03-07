@@ -552,6 +552,24 @@ files = [
 ]
 
 [[package]]
+name = "piicodev"
+version = "1.10.0"
+description = "Drivers for the PiicoDev ecosystem of sensors and modules"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "piicodev-1.10.0-py3-none-any.whl", hash = "sha256:6a4f04563eb913cbced1356e85d40d18073cad4d28f3166fad9bbdfc63593062"},
+    {file = "piicodev-1.10.0.tar.gz", hash = "sha256:2d778f93a5946adf29821385708598557917cf778e3da53277c685a3baca79fa"},
+]
+
+[package.dependencies]
+smbus2 = ">=0.4.1"
+
+[package.extras]
+dev = ["pytest (>=3.7)"]
+
+[[package]]
 name = "platformdirs"
 version = "2.6.2"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
@@ -1014,6 +1032,23 @@ files = [
 ]
 
 [[package]]
+name = "smbus2"
+version = "0.4.2"
+description = "smbus2 is a drop-in replacement for smbus-cffi/smbus-python in pure Python"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "smbus2-0.4.2-py2.py3-none-any.whl", hash = "sha256:50f3c78e436b42a9583948be06961a8104cf020ebad5edfaaf2657528bef0818"},
+    {file = "smbus2-0.4.2.tar.gz", hash = "sha256:634541ed794068a822fe7499f1577468b9d4641b68dd9bfb6d0eb7270f4d2a32"},
+]
+
+[package.extras]
+docs = ["sphinx (>=1.5.3)"]
+qa = ["flake8"]
+test = ["mock", "nose"]
+
+[[package]]
 name = "smmap"
 version = "5.0.0"
 description = "A pure Python implementation of a sliding window memory map manager"
@@ -1233,4 +1268,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "47d774b3014150a363e3a7a543678b90156e2121ad67d56b1607b9ffe817a6de"
+content-hash = "f5a16f625f23c61279d072bae81389dd4f1ebb65d2940bf018d729f6ad99265a"
