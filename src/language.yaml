@@ -360,6 +360,20 @@ ui:
       en: 'Enter Password'
       de: 'Passwort eingeben:'
 
+  rfid_writer:
+    write:
+      en: 'Write RFID'
+      de: 'RFID Schreiben'
+    success:
+      en: 'Write successful'
+      de: 'Erfolgreich geschrieben'
+    prompt:
+      en: 'Put RFID to terminal'
+      de: 'RFID an Terminal halten'
+    error:
+      en: 'Text needs to be 3+ chars'
+      de: 'Text muss min. 3 Zeichen sein'
+
   ##### SETTINGS WINDOW #####
   # all values for settings window
   # Use same names as config names
