@@ -6,6 +6,7 @@ from src.ui_elements.teamselection import Ui_Teamselection
 from src.config_manager import CONFIG as cfg, shared
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
+from src.machine.rfid import RFIDReader
 
 
 class TeamScreen(QDialog, Ui_Teamselection):
@@ -28,9 +29,22 @@ class TeamScreen(QDialog, Ui_Teamselection):
         UI_LANGUAGE.adjust_team_window(self)
         DP_CONTROLLER.set_display_settings(self)
         self.__set_icon_text_breaks()
+        self._rfid_reader = None
+        # reset the team name, since this needs to be read over rfid
+        shared.team_member_name = None
+        self.person_label.setText("")
+        if cfg.RFID_EXISTS:
+            self._rfid_reader = RFIDReader()
+            self._rfid_reader.read_rfid(self._write_rfid_value)
+
+    def _write_rfid_value(self, text: str):
+        shared.team_member_name = text
+        self.person_label.setText(text)
 
     def set_team(self, team: str):
         shared.selected_team = team
+        if self._rfid_reader is not None:
+            self._rfid_reader.cancel_reading()
         self.close()
 
     def __set_icon_text_breaks(self):
