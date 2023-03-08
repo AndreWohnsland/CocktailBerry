@@ -11,20 +11,20 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_RFIDWindow(object):
-    def setupUi(self, RFIDWindow):
-        RFIDWindow.setObjectName("RFIDWindow")
-        RFIDWindow.resize(800, 480)
+class Ui_RFIDWriterWindow(object):
+    def setupUi(self, RFIDWriterWindow):
+        RFIDWriterWindow.setObjectName("RFIDWriterWindow")
+        RFIDWriterWindow.resize(800, 480)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(RFIDWindow.sizePolicy().hasHeightForWidth())
-        RFIDWindow.setSizePolicy(sizePolicy)
-        RFIDWindow.setMinimumSize(QtCore.QSize(800, 480))
-        RFIDWindow.setMaximumSize(QtCore.QSize(800, 480))
-        RFIDWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-        RFIDWindow.setStyleSheet("")
-        self.centralwidget = QtWidgets.QWidget(RFIDWindow)
+        sizePolicy.setHeightForWidth(RFIDWriterWindow.sizePolicy().hasHeightForWidth())
+        RFIDWriterWindow.setSizePolicy(sizePolicy)
+        RFIDWriterWindow.setMinimumSize(QtCore.QSize(800, 480))
+        RFIDWriterWindow.setMaximumSize(QtCore.QSize(800, 480))
+        RFIDWriterWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        RFIDWriterWindow.setStyleSheet("")
+        self.centralwidget = QtWidgets.QWidget(RFIDWriterWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
@@ -61,26 +61,26 @@ class Ui_RFIDWindow(object):
         self.input_text.setFont(font)
         self.input_text.setObjectName("input_text")
         self.gridLayout.addWidget(self.input_text, 0, 0, 1, 2)
-        RFIDWindow.setCentralWidget(self.centralwidget)
+        RFIDWriterWindow.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(RFIDWindow)
-        QtCore.QMetaObject.connectSlotsByName(RFIDWindow)
+        self.retranslateUi(RFIDWriterWindow)
+        QtCore.QMetaObject.connectSlotsByName(RFIDWriterWindow)
 
-    def retranslateUi(self, RFIDWindow):
+    def retranslateUi(self, RFIDWriterWindow):
         _translate = QtCore.QCoreApplication.translate
-        RFIDWindow.setWindowTitle(_translate("RFIDWindow", "Write RFID"))
-        self.button_back.setText(_translate("RFIDWindow", "< Back"))
-        self.button_write.setText(_translate("RFIDWindow", "Write"))
-        self.button_write.setProperty("cssClass", _translate("RFIDWindow", "btn-inverted"))
-        self.label_information.setText(_translate("RFIDWindow", "Information"))
-        self.label_information.setProperty("cssClass", _translate("RFIDWindow", "secondary bold"))
+        RFIDWriterWindow.setWindowTitle(_translate("RFIDWriterWindow", "Write RFID"))
+        self.button_back.setText(_translate("RFIDWriterWindow", "< Back"))
+        self.button_write.setText(_translate("RFIDWriterWindow", "Write"))
+        self.button_write.setProperty("cssClass", _translate("RFIDWriterWindow", "btn-inverted"))
+        self.label_information.setText(_translate("RFIDWriterWindow", "Information"))
+        self.label_information.setProperty("cssClass", _translate("RFIDWriterWindow", "secondary bold"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    RFIDWindow = QtWidgets.QMainWindow()
-    ui = Ui_RFIDWindow()
-    ui.setupUi(RFIDWindow)
-    RFIDWindow.show()
+    RFIDWriterWindow = QtWidgets.QMainWindow()
+    ui = Ui_RFIDWriterWindow()
+    ui.setupUi(RFIDWriterWindow)
+    RFIDWriterWindow.show()
     sys.exit(app.exec_())
