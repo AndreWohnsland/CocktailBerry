@@ -19,6 +19,7 @@ except ModuleNotFoundError:
 
 
 class RFIDReader:
+    instance = None
 
     def __init__(self) -> None:
         self.check_id = False
@@ -28,6 +29,11 @@ class RFIDReader:
         if _ERROR is not None:
             _logger.log_event("ERROR", _ERROR)
         self.rfid = PiicoDev_RFID()
+
+    def __new__(cls):
+        if not isinstance(cls._instance, cls):
+            cls._instance = object.__new__(cls)
+        return cls._instance
 
     def read_rfid(self, side_effect: Callable[[str], None]):
         """Start the rfid reader, calls an side effect with the read value"""
