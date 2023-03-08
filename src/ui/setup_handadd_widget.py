@@ -5,14 +5,14 @@ from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon, QIntValidator
 from src.models import Ingredient
 
-from src.ui_elements.handadds import Ui_handadds
+from src.ui_elements.handadds import Ui_Handadds
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.config_manager import shared
 
 
-class HandaddWidget(QDialog, Ui_handadds):
+class HandaddWidget(QDialog, Ui_Handadds):
     """ Creates a window where the user can define additional ingredients to add via hand after the machine. """
 
     def __init__(self, parent):

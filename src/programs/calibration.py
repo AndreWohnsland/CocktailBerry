@@ -7,13 +7,13 @@ from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
-from src.ui_elements.calibration import Ui_MainWindow
+from src.ui_elements.calibration import Ui_CalibrationWindow
 
 
 logger = LoggerHandler("calibration_module")
 
 
-class CalibrationScreen(QMainWindow, Ui_MainWindow):
+class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
     def __init__(self, standalone: bool):
         """ Init the calibration Screen. """
         super().__init__()
