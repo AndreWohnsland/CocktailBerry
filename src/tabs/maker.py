@@ -112,7 +112,7 @@ def prepare_cocktail(w):
     percentage_made = taken_time / max_time
     real_volume = round(cocktail_volume * percentage_made)
     if percentage_made >= 0.5:
-        SERVICE_HANDLER.post_team_data(shared.selected_team, real_volume)
+        SERVICE_HANDLER.post_team_data(shared.selected_team, real_volume, shared.team_member_name)
         SERVICE_HANDLER.post_cocktail_to_hook(display_name, real_volume, cocktail)
 
     # the cocktail was canceled!
