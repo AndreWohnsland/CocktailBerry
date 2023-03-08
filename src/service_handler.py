@@ -52,11 +52,14 @@ class ServiceHandler():
             return _service_disabled()
         return self._try_to_send(endpoint, PostType.FILE, files=files)
 
-    def post_team_data(self, team_name: str, cocktail_volume: int) -> Dict:
+    def post_team_data(self, team_name: str, cocktail_volume: int, person: Optional[str] = None) -> Dict:
         """Post the given team name to the team api if activated"""
         if not cfg.TEAMS_ACTIVE:
             return _team_disabled()
-        payload = json.dumps({"team": team_name, "volume": cocktail_volume})
+        data = {"team": team_name, "volume": cocktail_volume}
+        if person is not None:
+            data["person"] = person
+        payload = json.dumps(data)
         endpoint = self._decide_debug_endpoint(f"{cfg.TEAM_API_URL}/cocktail")
         return self._try_to_send(endpoint, PostType.TEAMDATA, payload=payload)
 
