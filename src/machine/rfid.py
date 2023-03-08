@@ -1,6 +1,6 @@
 
 import time
-from typing import Callable
+from typing import Callable, Optional
 from threading import Thread
 
 from src.logger_handler import LoggerHandler
@@ -59,6 +59,26 @@ class RFIDReader:
         if text is None:
             return
         side_effect(text)
+
+    def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
+        """Writes the value to the RFID"""
+        if _NO_MODULE:
+            return
+        self.check_id = True
+        rfid_thread = Thread(target=self._write_thread, args=(value, side_effect,), daemon=True)
+        rfid_thread.start()
+
+    def _write_thread(self, text: str, side_effect: Optional[Callable[[str], None]] = None):
+        """Executes the writing until successful or canceled"""
+        if self.rfid is None:
+            return
+        while self.check_id:
+            success = self.rfid.writeText(text)
+            if success:
+                if side_effect:
+                    side_effect(text)
+                break
+            time.sleep(100)
 
     def cancel_reading(self):
         """Cancels the reading loop"""
