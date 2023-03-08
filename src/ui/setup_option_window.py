@@ -11,7 +11,8 @@ from PyQt5.QtWidgets import QMainWindow
 
 from src.ui.create_config_window import ConfigWindow
 from src.ui.setup_log_window import LogWindow
-from src.ui_elements.optionwindow import Ui_Optionwindow
+from src.ui.setup_rfid_writer_window import RFIDWriterWindow
+from src.ui_elements import Ui_Optionwindow
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
@@ -20,6 +21,7 @@ from src.machine.controller import MACHINE
 from src.logger_handler import LoggerHandler
 from src.save_handler import SAVE_HANDLER
 from src.utils import restart_program
+from src.config_manager import CONFIG as cfg
 
 
 _ROOT_PATH = Path(__file__).parents[2].absolute()
@@ -55,8 +57,11 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_logs.clicked.connect(self._show_logs)
         self.button_rfid.clicked.connect(self._open_rfid_writer)
 
+        self.button_rfid.setEnabled(cfg.RFID_EXISTS)
+
         self.config_window: Optional[ConfigWindow] = None
         self.log_window: Optional[LogWindow] = None
+        self.rfid_writer_window: Optional[RFIDWriterWindow] = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -143,4 +148,5 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def _open_rfid_writer(self):
         """Opens the rfid writer window"""
-        # TODO: Implement the rfid logic
+        self.close()
+        self.rfid_writer_window = RFIDWriterWindow()
