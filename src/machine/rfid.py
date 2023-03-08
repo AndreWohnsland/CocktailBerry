@@ -19,7 +19,7 @@ except ModuleNotFoundError:
 
 
 class RFIDReader:
-    instance = None
+    _instance = None
 
     def __init__(self) -> None:
         self.check_id = False
