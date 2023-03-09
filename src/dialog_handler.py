@@ -491,8 +491,9 @@ class UiLanguage():
     def adjust_rfid_reader_window(self, w: Ui_RFIDWriterWindow):
         """Translates the elements on the RFID reader window"""
         window = "rfid_writer"
-        w.button_write.setText(self.__choose_language("write", window))
         w.button_back.setText(self.__choose_language("back"))
+        w.button_write.setText(self.__choose_language("write", window))
+        w.label_information.setText(self.__choose_language("start_text", window))
 
     def get_rfid_information_display(self, element: Literal['success', 'prompt', 'error']):
         """Returns the information element for rfid"""

@@ -364,6 +364,9 @@ ui:
     write:
       en: 'Write RFID'
       de: 'RFID Schreiben'
+    start_text:
+      en: 'Please enter text and select write'
+      de: 'Bitte Text eingeben und schreiben auswählen'
     success:
       en: 'Write successful'
       de: 'Erfolgreich geschrieben'
