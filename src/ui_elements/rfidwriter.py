@@ -47,18 +47,20 @@ class Ui_RFIDWriterWindow(object):
         self.button_write.setObjectName("button_write")
         self.gridLayout.addWidget(self.button_write, 2, 1, 1, 1)
         self.label_information = QtWidgets.QLabel(self.centralwidget)
+        self.label_information.setMaximumSize(QtCore.QSize(16777215, 600))
         font = QtGui.QFont()
         font.setPointSize(26)
         self.label_information.setFont(font)
         self.label_information.setAlignment(QtCore.Qt.AlignCenter)
         self.label_information.setObjectName("label_information")
         self.gridLayout.addWidget(self.label_information, 1, 0, 1, 2)
-        self.input_text = QtWidgets.QLineEdit(self.centralwidget)
+        self.input_text = ClickableLineEdit(self.centralwidget)
         self.input_text.setMinimumSize(QtCore.QSize(0, 50))
-        self.input_text.setMaximumSize(QtCore.QSize(16777215, 100))
+        self.input_text.setMaximumSize(QtCore.QSize(16777215, 120))
         font = QtGui.QFont()
-        font.setPointSize(20)
+        font.setPointSize(28)
         self.input_text.setFont(font)
+        self.input_text.setAlignment(QtCore.Qt.AlignCenter)
         self.input_text.setObjectName("input_text")
         self.gridLayout.addWidget(self.input_text, 0, 0, 1, 2)
         RFIDWriterWindow.setCentralWidget(self.centralwidget)
@@ -74,6 +76,8 @@ class Ui_RFIDWriterWindow(object):
         self.button_write.setProperty("cssClass", _translate("RFIDWriterWindow", "btn-inverted"))
         self.label_information.setText(_translate("RFIDWriterWindow", "Information"))
         self.label_information.setProperty("cssClass", _translate("RFIDWriterWindow", "secondary bold"))
+        self.input_text.setProperty("cssClass", _translate("RFIDWriterWindow", "bold"))
+from src.ui_elements.clickablelineedit import ClickableLineEdit
 
 
 if __name__ == "__main__":

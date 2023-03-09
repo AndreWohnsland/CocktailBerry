@@ -1,8 +1,9 @@
 
+from __future__ import annotations
 import os
 import datetime
 import shutil
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from pathlib import Path
 
 from PyQt5.QtCore import Qt
@@ -24,6 +25,9 @@ from src.utils import restart_program
 from src.config_manager import CONFIG as cfg
 
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 _ROOT_PATH = Path(__file__).parents[2].absolute()
 _DATABASE_NAME = "Cocktail_database.db"
 _CONFIG_NAME = "custom_config.yaml"
@@ -35,7 +39,7 @@ _logger = LoggerHandler("option_window")
 class OptionWindow(QMainWindow, Ui_Optionwindow):
     """ Class for the Option selection window. """
 
-    def __init__(self, parent):
+    def __init__(self, parent: MainScreen):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
@@ -149,4 +153,4 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _open_rfid_writer(self):
         """Opens the rfid writer window"""
         self.close()
-        self.rfid_writer_window = RFIDWriterWindow()
+        self.rfid_writer_window = RFIDWriterWindow(self.mainscreen)
