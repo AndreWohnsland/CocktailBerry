@@ -13,7 +13,7 @@ try:
     from PiicoDev_RFID import PiicoDev_RFID
     _NO_MODULE = False
 except AttributeError:
-    _ERROR = "Could not import PiicoDev, if it's installed it is probably not for your OS!"
+    _ERROR = "Could not import PiicoDev, if it's installed it is probably not for your OS! RFID will not work."
 except ModuleNotFoundError:
     _ERROR = "Please install piicodev to use the RFID reader."
 
@@ -23,11 +23,11 @@ class RFIDReader:
 
     def __init__(self) -> None:
         self.check_id = False
+        if _ERROR is not None:
+            _logger.log_event("ERROR", _ERROR)
         if _NO_MODULE:
             self.rfid = None
             return
-        if _ERROR is not None:
-            _logger.log_event("ERROR", _ERROR)
         self.rfid = PiicoDev_RFID()
 
     def __new__(cls):
