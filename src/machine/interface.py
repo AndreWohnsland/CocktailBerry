@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Union
 
 # Grace period, will be switched once Python 3.8+ is mandatory
 try:
@@ -25,3 +25,14 @@ class PinController(Protocol):  # type: ignore
     @abstractmethod
     def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
         pass
+
+
+class RFIDController(Protocol):
+    """Interface for the RFID reader"""
+    @abstractmethod
+    def read_card(self) -> Union[str, None]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def write_card(self, text: str) -> bool:
+        raise NotImplementedError
