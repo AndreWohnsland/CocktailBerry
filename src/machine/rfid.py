@@ -1,9 +1,10 @@
 
 import time
-from typing import Callable, Optional
+from typing import Callable, Optional, Union
 from threading import Thread
 
 from src.logger_handler import LoggerHandler
+from src.machine.interface import RFIDController
 
 _logger = LoggerHandler("RFIDReader")
 
@@ -83,3 +84,26 @@ class RFIDReader:
     def cancel_reading(self):
         """Cancels the reading loop"""
         self.check_id = False
+
+
+class PiicoDevReader(RFIDController):
+    def __init__(self) -> None:
+        self.rfid = PiicoDev_RFID()
+
+    def read_card(self) -> Union[str, None]:
+        text = None
+        if self.rfid.tagPresent():
+            text = self.rfid.readText()
+            print(f"Read {text=} from RFID")
+        return text
+
+    def write_card(self, text: str) -> bool:
+        return self.rfid.writeText(text)
+
+
+class BasicMFRC522(RFIDController):
+    def read_card(self) -> Union[str, None]:
+        return ""
+
+    def write_card(self, text: str) -> bool:
+        return False
