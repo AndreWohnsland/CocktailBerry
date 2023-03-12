@@ -5,8 +5,25 @@ from threading import Thread
 
 from src.logger_handler import LoggerHandler
 from src.machine.interface import RFIDController
+from src.config_manager import CONFIG as cfg
 
 _logger = LoggerHandler("RFIDReader")
+
+
+_NOT_ACTIVATED = "Please select RFID type other than 'No' to use RFID"
+_BASE_NOT_POSSIBLE = "Could not import {}, if it's installed it is probably not for your OS! RFID will not work."
+
+_ERROR_SELECTION_NOT_INSTALLED = {
+    "No": _NOT_ACTIVATED,
+    "PiicoDev": "Please install piicodev to use the RFID reader.",
+    "MFRC522": "Please install mfrc522 to use the RFID reader.",
+}
+
+_ERROR_SELECTION_NOT_POSSIBLE = {
+    "No": _NOT_ACTIVATED,
+    "PiicoDev": _BASE_NOT_POSSIBLE.format(cfg.RFID_READER),
+    "MFRC522": _BASE_NOT_POSSIBLE.format(cfg.RFID_READER),
+}
 
 _NO_MODULE = True
 _ERROR = None
@@ -14,9 +31,9 @@ try:
     from PiicoDev_RFID import PiicoDev_RFID
     _NO_MODULE = False
 except AttributeError:
-    _ERROR = "Could not import PiicoDev, if it's installed it is probably not for your OS! RFID will not work."
+    _ERROR = _ERROR_SELECTION_NOT_POSSIBLE[cfg.RFID_READER]
 except ModuleNotFoundError:
-    _ERROR = "Please install piicodev to use the RFID reader."
+    _ERROR = _ERROR_SELECTION_NOT_INSTALLED[cfg.RFID_READER]
 
 
 class RFIDReader:
@@ -26,10 +43,16 @@ class RFIDReader:
         self.check_id = False
         if _ERROR is not None:
             _logger.log_event("ERROR", _ERROR)
-        if _NO_MODULE:
-            self.rfid = None
-            return
-        self.rfid = PiicoDev_RFID()
+        self.rfid = self._select_rfid()
+
+    def _select_rfid(self) -> Union[RFIDController, None]:
+        """Selects the controller defined in config"""
+        if _NO_MODULE or cfg.RFID_READER == "No":
+            return None
+        if cfg.RFID_READER == "PiicoDev":
+            return PiicoDevReader()
+        if cfg.RFID_READER == "MFRC522":
+            return BasicMFRC522()
 
     def __new__(cls):
         if not isinstance(cls._instance, cls):
@@ -50,10 +73,9 @@ class RFIDReader:
             return
         text = None
         while self.check_id:
-            if self.rfid.tagPresent():
-                text = self.rfid.readText()
-                print(f"Read {text=} from RFID")
-                break
+            text = self.rfid.read_card()
+            if text is not None:
+                return
             time.sleep(0.5)
         # If no text, execute no side effect
         # TODO: Check the logic here, it is probably necessary to read until canceled
@@ -74,7 +96,7 @@ class RFIDReader:
         if self.rfid is None:
             return
         while self.check_id:
-            success = self.rfid.writeText(text)
+            success = self.rfid.write_card(text)
             if success:
                 if side_effect:
                     side_effect(text)
@@ -102,6 +124,10 @@ class PiicoDevReader(RFIDController):
 
 
 class BasicMFRC522(RFIDController):
+    # TODO: Init
+    def __init__(self) -> None:
+        pass
+
     def read_card(self) -> Union[str, None]:
         return ""
 
