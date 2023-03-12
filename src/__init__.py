@@ -4,5 +4,6 @@ MAX_SUPPORTED_BOTTLES = 16
 SUPPORTED_LANGUAGES = ["en", "de"]
 SUPPORTED_BOARDS = ["RPI", "Generic"]
 SUPPORTED_THEMES = ["default", "bavaria", "alien", "berry"]
+SUPPORTED_RFID = ["No", "PiicoDev", "MFRC522"]
 NEEDED_PYTHON_VERSION = (3, 9)
 FUTURE_PYTHON_VERSION = (3, 9)
