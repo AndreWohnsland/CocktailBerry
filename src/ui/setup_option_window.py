@@ -61,7 +61,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_logs.clicked.connect(self._show_logs)
         self.button_rfid.clicked.connect(self._open_rfid_writer)
 
-        self.button_rfid.setEnabled(cfg.RFID_EXISTS)
+        self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 
         self.config_window: Optional[ConfigWindow] = None
         self.log_window: Optional[LogWindow] = None

@@ -453,7 +453,7 @@ ui:
     LED_IS_WS:
       en: 'Is the LED a controllable (WS281x) LED'
       de: 'Ist der LED ein ansteuerbarer (WS281x) LED'
-    RFID_EXISTS:
+    RFID_READER:
       en: 'Is a RFID reader connected to SDA, SCL, GND and 5V'
       de: 'Ist ein RFID Leser an SDA, SCL, GND und 5V angeschlossen'
     MICROSERVICE_ACTIVE:

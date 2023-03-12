@@ -33,7 +33,7 @@ class TeamScreen(QDialog, Ui_Teamselection):
         # reset the team name, since this needs to be read over rfid
         shared.team_member_name = None
         self.person_label.setText("")
-        if cfg.RFID_EXISTS:
+        if cfg.RFID_READER != "No":
             self._rfid_reader = RFIDReader()
             self._rfid_reader.read_rfid(self._write_rfid_value)
 

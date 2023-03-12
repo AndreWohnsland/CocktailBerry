@@ -14,7 +14,8 @@ from src import (
     MAX_SUPPORTED_BOTTLES,
     SUPPORTED_LANGUAGES,
     SUPPORTED_BOARDS,
-    SUPPORTED_THEMES
+    SUPPORTED_THEMES,
+    SUPPORTED_RFID,
 )
 
 
@@ -36,6 +37,10 @@ class BoardChoose(ChooseType):
 
 class ThemeChoose(ChooseType):
     allowed = SUPPORTED_THEMES
+
+
+class RFIDChoose(ChooseType):
+    allowed = SUPPORTED_RFID
 
 
 class ConfigManager:
@@ -92,7 +97,7 @@ class ConfigManager:
     # If the led is as ws-x series (and controllable)
     LED_IS_WS = True
     # if a RFID reader exists
-    RFID_EXISTS = False
+    RFID_READER = "No"
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE = False
     MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
@@ -140,7 +145,7 @@ class ConfigManager:
             "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
             "LED_NUMBER_RINGS": (int, [_build_number_limiter(1, 10)]),
             "LED_IS_WS": (bool, []),
-            "RFID_EXISTS": (bool, []),
+            "RFID_READER": (RFIDChoose, [_build_support_checker(SUPPORTED_RFID)]),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
