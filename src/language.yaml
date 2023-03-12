@@ -454,8 +454,8 @@ ui:
       en: 'Is the LED a controllable (WS281x) LED'
       de: 'Ist der LED ein ansteuerbarer (WS281x) LED'
     RFID_READER:
-      en: 'Is a RFID reader connected to SDA, SCL, GND and 5V'
-      de: 'Ist ein RFID Leser an SDA, SCL, GND und 5V angeschlossen'
+      en: 'Using a RFID Reader: PiicoDev (I2C) or basic MFRC522 (SPI)'
+      de: 'Wird ein RFID Reader verwendet: PiicoDev (I2C) oder standard MFRC522 (SPI)'
     MICROSERVICE_ACTIVE:
       en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'
