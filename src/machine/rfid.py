@@ -101,7 +101,7 @@ class RFIDReader:
                 if side_effect:
                     side_effect(text)
                 break
-            time.sleep(100)
+            time.sleep(0.1)
 
     def cancel_reading(self):
         """Cancels the reading loop"""
