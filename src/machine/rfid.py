@@ -75,13 +75,11 @@ class RFIDReader:
         while self.check_id:
             text = self.rfid.read_card()
             if text is not None:
-                return
+                side_effect(text)
+                break
             time.sleep(0.5)
         # If no text, execute no side effect
         # TODO: Check the logic here, it is probably necessary to read until canceled
-        if text is None:
-            return
-        side_effect(text)
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
         """Writes the value to the RFID"""
