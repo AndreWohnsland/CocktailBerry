@@ -27,6 +27,7 @@ cd ~/CocktailBerry
 # Setup for the RPi
 # Docker is optional but needed for some cool extra features
 sh scripts/install_docker.sh
+sh scripts/install_compose.sh
 # This will set up everything important on your RPi
 cd ~/CocktailBerry
 sh scripts/setup.sh
