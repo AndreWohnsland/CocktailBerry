@@ -52,7 +52,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `LED_COUNT`                  | Number of LEDs on the WS281x                                                             |
 | `LED_NUMBER_RINGS`           | Number of IDENTICAL daisy chained WS281x LED rings                                       |
 | `LED_IS_WS`                  | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
-| `RFID_READER`                | Enables connected RFID reader, [more info]()                                             |
+| `RFID_READER`                | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
 | `MICROSERVICE_ACTIVE`        | Post to microservice set up by docker                                                    |
 | `MICROSERVICE_BASE_URL`      | Base URL for microservice (default: http://127.0.0.1:5000)                               |
 | `TEAMS_ACTIVE`               | Use teams feature                                                                        |
