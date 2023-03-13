@@ -28,7 +28,11 @@ _ERROR_SELECTION_NOT_POSSIBLE = {
 _NO_MODULE = True
 _ERROR = None
 try:
-    from PiicoDev_RFID import PiicoDev_RFID
+    if cfg.RFID_READER == "PiicoDev":
+        from PiicoDev_RFID import PiicoDev_RFID
+    elif cfg.RFID_READER == "MFRC522":
+        # pylint: disable=import-error
+        from mfrc522 import SimpleMFRC522  # type: ignore
     _NO_MODULE = False
 except AttributeError:
     _ERROR = _ERROR_SELECTION_NOT_POSSIBLE[cfg.RFID_READER]
@@ -106,6 +110,7 @@ class RFIDReader:
         self.check_id = False
 
 
+# TODO: Remove debug prints when working
 class PiicoDevReader(RFIDController):
     def __init__(self) -> None:
         self.rfid = PiicoDev_RFID()
@@ -122,12 +127,15 @@ class PiicoDevReader(RFIDController):
 
 
 class BasicMFRC522(RFIDController):
-    # TODO: Init
     def __init__(self) -> None:
-        pass
+        self.rfid = SimpleMFRC522()
 
     def read_card(self) -> Union[str, None]:
-        return ""
+        _, text = self.rfid.read()
+        print(f"Read {text=}")
+        return text
 
     def write_card(self, text: str) -> bool:
-        return False
+        _id, _ = self.rfid.write(text)
+        print(f"Id is: {id=}")
+        return _id is not None
