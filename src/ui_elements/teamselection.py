@@ -80,6 +80,7 @@ class Ui_Teamselection(object):
         self.LHeader.setText(_translate("Teamselection", "Team auswählen"))
         self.LHeader.setProperty("cssClass", _translate("Teamselection", "neutral bold"))
         self.person_label.setText(_translate("Teamselection", "Scanned Name"))
+        self.person_label.setProperty("cssClass", _translate("Teamselection", "bold"))
         self.PBteamone.setText(_translate("Teamselection", "Team #1"))
         self.PBteamone.setProperty("cssClass", _translate("Teamselection", "btn-teamone"))
         self.PBteamtwo.setText(_translate("Teamselection", "Team #2"))

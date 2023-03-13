@@ -95,6 +95,9 @@
      <property name="alignment">
       <set>Qt::AlignHCenter|Qt::AlignTop</set>
      </property>
+     <property name="cssClass" stdset="0">
+      <string>bold</string>
+     </property>
     </widget>
    </item>
    <item>
