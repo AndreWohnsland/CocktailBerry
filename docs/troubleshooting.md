@@ -106,6 +106,23 @@ Other described pins may also work, but are untested, so I recommend to stick to
 If you use any other non controllable LED connected over the relay, you can use any pin you want, since it's only activating the relay.
 
 
+## Set Up RFID Reader
+
+Setting up a RFID reader and integrate it into the program is an intermediate task.
+So I would not recommend it for complete beginners, and it may include some tinkering.
+Currently you can use two different types of reader:
+
+- basic MFRC522 ([like this](https://www.amazon.de/dp/B074S8MRQ7), SPI Protocol)
+- PiicoDev RFID ([only this](https://core-electronics.com.au/piicodev-rfid-module.html), I2C Protocol)
+
+Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/) and [here for the PiicoDev](https://core-electronics.com.au/guides/piicodev-rfid-module-guide-for-raspberry-pi/).
+You only need the wiring and the installation of the libraries.
+The according code is integrated into CocktailBerry.
+A word of caution: Depending on your reader, the interruption of a write/read operation may take some time, if you don't finish but cancel the process.
+After that, you select the according option in the settings dropdown for the reader.
+When using the teams function, you can then also use a rfid chip.
+In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
+
 ## Ui Seems Wrong on none RaspOS System
 On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
 This can be dependant on the flavour of Linux, as well as the desktop variant you are using.
