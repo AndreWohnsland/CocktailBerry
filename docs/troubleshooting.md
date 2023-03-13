@@ -123,6 +123,11 @@ After that, you select the according option in the settings dropdown for the rea
 When using the teams function, you can then also use a rfid chip.
 In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
 
+Take care that you don't use any of the connected pins of the RFID reader in the CocktailBerry config for a pump or a LED.
+If you do so, remove them or replace them with another pin.
+Otherwise, the RFID will not work.
+Best is to restart the Pi afterwards and then check if the RFID is working as intended.
+
 ## Ui Seems Wrong on none RaspOS System
 On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
 This can be dependant on the flavour of Linux, as well as the desktop variant you are using.
