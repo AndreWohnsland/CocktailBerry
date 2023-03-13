@@ -81,12 +81,12 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>40</height>
+       <height>50</height>
       </size>
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <pointsize>28</pointsize>
       </font>
      </property>
      <property name="text">
