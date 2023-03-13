@@ -119,6 +119,8 @@ class PiicoDevReader(RFIDController):
         text = None
         if self.rfid.tagPresent():
             text = self.rfid.readText()
+            if text is not None:
+                text.strip()
             print(f"Read {text=} from RFID")
         return text
 
@@ -132,6 +134,8 @@ class BasicMFRC522(RFIDController):
 
     def read_card(self) -> Union[str, None]:
         _, text = self.rfid.read()
+        if text is not None:
+            text = text.strip()
         print(f"Read {text=}")
         return text
 
