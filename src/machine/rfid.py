@@ -137,5 +137,5 @@ class BasicMFRC522(RFIDController):
 
     def write_card(self, text: str) -> bool:
         _id, _ = self.rfid.write(text)
-        print(f"Id is: {id=}")
+        print(f"Id is: {_id=}")
         return _id is not None
