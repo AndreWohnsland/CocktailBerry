@@ -65,7 +65,6 @@ class RFIDReader:
 
     def read_rfid(self, side_effect: Callable[[str], None]):
         """Start the rfid reader, calls an side effect with the read value"""
-        print(f"{self.is_active=}")
         if _NO_MODULE or self.is_active:
             return
         self.is_active = True
@@ -77,21 +76,20 @@ class RFIDReader:
         if self.rfid is None:
             return
         text = None
-        print("Starting read thread")
+        # It's important to not have infinite reads (hence the break)
+        # because it seems some frameworks can not be canceled during write / read
+        # This would result in them still happily reading even it's canceled.
+        # The new read would not work and we would get a segmentation fault >.<
         while self.is_active:
             text = self.rfid.read_card()
             if text is not None:
                 side_effect(text)
-                # break
+                break
             time.sleep(0.5)
-        # If no text, execute no side effect
-        print("Ending read thread")
         self.is_active = False
-        # TODO: Check the logic here, it is probably necessary to read until canceled
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
         """Writes the value to the RFID"""
-        print(f"{self.is_active=}")
         if _NO_MODULE or self.is_active:
             return
         self.is_active = True
@@ -102,7 +100,6 @@ class RFIDReader:
         """Executes the writing until successful or canceled"""
         if self.rfid is None:
             return
-        print("Starting write thread")
         while self.is_active:
             success = self.rfid.write_card(text)
             if success:
@@ -110,7 +107,6 @@ class RFIDReader:
                     side_effect(text)
                 break
             time.sleep(0.1)
-        print("Ending write thread")
         self.is_active = False
 
     def cancel_reading(self):
@@ -118,7 +114,6 @@ class RFIDReader:
         self.is_active = False
 
 
-# TODO: Remove debug prints when working
 class PiicoDevReader(RFIDController):
     def __init__(self) -> None:
         self.rfid = PiicoDev_RFID()
@@ -129,7 +124,6 @@ class PiicoDevReader(RFIDController):
             text = self.rfid.readText()
             if text is not None:
                 text.strip()
-            print(f"Read {text=} from RFID")
         return text
 
     def write_card(self, text: str) -> bool:
@@ -144,12 +138,10 @@ class BasicMFRC522(RFIDController):
         _, text = self.rfid.read()
         if text is not None:
             text = text.strip()
-        print(f"Read {text=}")
         return text
 
     def write_card(self, text: str) -> bool:
         _id, _ = self.rfid.write(text)
-        print(f"Id is: {_id=}")
         return _id is not None
 
 
