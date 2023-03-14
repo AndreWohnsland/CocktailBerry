@@ -25,7 +25,7 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
         self.move(0, 0)
         self.mainscreen = mainscreen
 
-        self.button_back.clicked.connect(self.close)
+        self.button_back.clicked.connect(self._close_window)
         self.button_write.clicked.connect(self._write_rfid)
         self.input_text.clicked.connect(lambda: self._open_keyboard(self.input_text))
 
@@ -45,6 +45,10 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
         self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("prompt"))
         self.button_write.setDisabled(True)
         self.rfid.write_rfid(text, self._display_success)
+
+    def _close_window(self):
+        self.rfid.cancel_reading()
+        self.close()
 
     def __del__(self):
         self.rfid.cancel_reading()
