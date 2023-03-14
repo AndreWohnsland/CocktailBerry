@@ -44,7 +44,7 @@ class RFIDReader:
     _instance = None
 
     def __init__(self) -> None:
-        self.check_id = False
+        self.is_active = False
         if _ERROR is not None:
             _logger.log_event("ERROR", _ERROR)
         self.rfid = self._select_rfid()
@@ -65,9 +65,10 @@ class RFIDReader:
 
     def read_rfid(self, side_effect: Callable[[str], None]):
         """Start the rfid reader, calls an side effect with the read value"""
-        if _NO_MODULE:
+        print(f"{self.is_active=}")
+        if _NO_MODULE or self.is_active:
             return
-        self.check_id = True
+        self.is_active = True
         rfid_thread = Thread(target=self._read_thread, args=(side_effect,), daemon=True)
         rfid_thread.start()
 
@@ -77,7 +78,7 @@ class RFIDReader:
             return
         text = None
         print("Starting read thread")
-        while self.check_id:
+        while self.is_active:
             text = self.rfid.read_card()
             if text is not None:
                 side_effect(text)
@@ -85,13 +86,15 @@ class RFIDReader:
             time.sleep(0.5)
         # If no text, execute no side effect
         print("Ending read thread")
+        self.is_active = False
         # TODO: Check the logic here, it is probably necessary to read until canceled
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
         """Writes the value to the RFID"""
-        if _NO_MODULE:
+        print(f"{self.is_active=}")
+        if _NO_MODULE or self.is_active:
             return
-        self.check_id = True
+        self.is_active = True
         rfid_thread = Thread(target=self._write_thread, args=(value, side_effect,), daemon=True)
         rfid_thread.start()
 
@@ -100,7 +103,7 @@ class RFIDReader:
         if self.rfid is None:
             return
         print("Starting write thread")
-        while self.check_id:
+        while self.is_active:
             success = self.rfid.write_card(text)
             if success:
                 if side_effect:
@@ -108,10 +111,11 @@ class RFIDReader:
                 break
             time.sleep(0.1)
         print("Ending write thread")
+        self.is_active = False
 
     def cancel_reading(self):
         """Cancels the reading loop"""
-        self.check_id = False
+        self.is_active = False
 
 
 # TODO: Remove debug prints when working
@@ -147,3 +151,8 @@ class BasicMFRC522(RFIDController):
         _id, _ = self.rfid.write(text)
         print(f"Id is: {_id=}")
         return _id is not None
+
+
+RFID = None
+if cfg.RFID_READER != "No":
+    RFID = RFIDReader()
