@@ -80,12 +80,14 @@ class RFIDReader:
         # because it seems some frameworks can not be canceled during write / read
         # This would result in them still happily reading even it's canceled.
         # The new read would not work and we would get a segmentation fault >.<
+        print("Start read")
         while self.is_active:
             text = self.rfid.read_card()
             if text is not None:
                 side_effect(text)
-                break
+                # break
             time.sleep(0.5)
+            print("Done sleeping")
         self.is_active = False
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
@@ -135,13 +137,13 @@ class BasicMFRC522(RFIDController):
         self.rfid = SimpleMFRC522()
 
     def read_card(self) -> Union[str, None]:
-        _, text = self.rfid.read()
+        _, text = self.rfid.read_no_block()
         if text is not None:
             text = text.strip()
         return text
 
     def write_card(self, text: str) -> bool:
-        _id, _ = self.rfid.write(text)
+        _id, _ = self.rfid.write_no_block(text)
         return _id is not None
 
 
