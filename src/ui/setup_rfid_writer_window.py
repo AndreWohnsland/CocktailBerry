@@ -50,9 +50,6 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
         self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("success"))
         self.button_write.setDisabled(False)
 
-    def __del__(self):
-        self.rfid.cancel_reading()
-
     def _open_keyboard(self, le_to_write, max_char_len=30):
         """ Opens up the keyboard connected to the lineedit """
         self.keyboard_window = KeyboardWidget(self.mainscreen, le_to_write=le_to_write, max_char_len=max_char_len)
