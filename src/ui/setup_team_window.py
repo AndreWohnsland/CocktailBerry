@@ -47,6 +47,10 @@ class TeamScreen(QDialog, Ui_Teamselection):
             self._rfid_reader.cancel_reading()
         self.close()
 
+    def __del__(self):
+        if self._rfid_reader is not None:
+            self._rfid_reader.cancel_reading()
+
     def __set_icon_text_breaks(self):
         """Adds new lines if necessary to team button labels"""
         # ~ 12 upper chars / 400 px

@@ -46,6 +46,9 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
         self.button_write.setDisabled(True)
         self.rfid.write_rfid(text, self._display_success)
 
+    def __del__(self):
+        self.rfid.cancel_reading()
+
     def _display_success(self, _: str):
         self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("success"))
         self.button_write.setDisabled(False)
