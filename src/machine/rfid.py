@@ -76,15 +76,10 @@ class RFIDReader:
         if self.rfid is None:
             return
         text = None
-        # It's important to not have infinite reads (hence the break)
-        # because it seems some frameworks can not be canceled during write / read
-        # This would result in them still happily reading even it's canceled.
-        # The new read would not work and we would get a segmentation fault >.<
         while self.is_active:
             text = self.rfid.read_card()
             if text is not None:
                 side_effect(text)
-                # break
             time.sleep(0.5)
         self.is_active = False
 
@@ -112,7 +107,6 @@ class RFIDReader:
     def cancel_reading(self):
         """Cancels the reading loop"""
         self.is_active = False
-        print("Canceled Reading")
 
 
 class PiicoDevReader(RFIDController):
