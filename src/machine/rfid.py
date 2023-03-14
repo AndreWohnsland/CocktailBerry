@@ -76,13 +76,15 @@ class RFIDReader:
         if self.rfid is None:
             return
         text = None
+        print("Starting read thread")
         while self.check_id:
             text = self.rfid.read_card()
             if text is not None:
                 side_effect(text)
-                break
+                # break
             time.sleep(0.5)
         # If no text, execute no side effect
+        print("Ending read thread")
         # TODO: Check the logic here, it is probably necessary to read until canceled
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
@@ -97,6 +99,7 @@ class RFIDReader:
         """Executes the writing until successful or canceled"""
         if self.rfid is None:
             return
+        print("Starting write thread")
         while self.check_id:
             success = self.rfid.write_card(text)
             if success:
@@ -104,6 +107,7 @@ class RFIDReader:
                     side_effect(text)
                 break
             time.sleep(0.1)
+        print("Ending write thread")
 
     def cancel_reading(self):
         """Cancels the reading loop"""
