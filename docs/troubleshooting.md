@@ -115,12 +115,23 @@ Currently you can use two different types of reader:
 - basic MFRC522 ([like this](https://www.amazon.de/dp/B074S8MRQ7), SPI Protocol)
 - PiicoDev RFID ([only this](https://core-electronics.com.au/piicodev-rfid-module.html), I2C Protocol)
 
+!!! bug "Please Read"
+    Reading / Writing RFIDs while still having a interactive GUI may cause a lot of troubles.
+    Some reader frameworks lock themselves until the read or write is done and have no direct cancel methods.
+    So even using threads only fixes the responsiveness of the app.
+    Therefore, if you trigger a write, finish the write. 
+    If you enabled the reading function, for eg. the teams feature, always do a read.
+    If you don't do the read or write and cancel / go on, the reader may not work anymore until a program restart.
+    There will currently (limited by the frameworks) be only one read.
+    This means, reading the value (name) from the card and using it can not be overwritten by another card in sequence.
+    If you have experience with the reader + python feel free to contact me, so we can improve this feature.
+
 Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/) and [here for the PiicoDev](https://core-electronics.com.au/guides/piicodev-rfid-module-guide-for-raspberry-pi/).
 You only need the wiring and the installation of the libraries.
 The according code is integrated into CocktailBerry.
 A word of caution: Depending on your reader, the interruption of a write/read operation may take some time, if you don't finish but cancel the process.
 After that, you select the according option in the settings dropdown for the reader.
-When using the teams function, you can then also use a rfid chip.
+When using the teams function, you can then also use a rfid chip, which inserts the information (name of person) for the leaderboard.
 In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
 
 Take care that you don't use any of the connected pins of the RFID reader in the CocktailBerry config for a pump or a LED.
