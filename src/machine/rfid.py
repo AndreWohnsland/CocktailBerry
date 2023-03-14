@@ -80,14 +80,12 @@ class RFIDReader:
         # because it seems some frameworks can not be canceled during write / read
         # This would result in them still happily reading even it's canceled.
         # The new read would not work and we would get a segmentation fault >.<
-        print("Start read")
         while self.is_active:
             text = self.rfid.read_card()
             if text is not None:
                 side_effect(text)
                 # break
             time.sleep(0.5)
-            print("Done sleeping")
         self.is_active = False
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
@@ -114,6 +112,7 @@ class RFIDReader:
     def cancel_reading(self):
         """Cancels the reading loop"""
         self.is_active = False
+        print("Canceled Reading")
 
 
 class PiicoDevReader(RFIDController):
