@@ -54,9 +54,10 @@ class RFIDReader:
         if _NO_MODULE or cfg.RFID_READER == "No":
             return None
         if cfg.RFID_READER == "PiicoDev":
-            return PiicoDevReader()
+            return _PiicoDevReader()
         if cfg.RFID_READER == "MFRC522":
-            return BasicMFRC522()
+            return _BasicMFRC522()
+        return None
 
     def __new__(cls):
         if not isinstance(cls._instance, cls):
@@ -65,17 +66,15 @@ class RFIDReader:
 
     def read_rfid(self, side_effect: Callable[[str], None]):
         """Start the rfid reader, calls an side effect with the read value"""
-        if _NO_MODULE or self.is_active:
-            return
-        self.is_active = True
         rfid_thread = Thread(target=self._read_thread, args=(side_effect,), daemon=True)
         rfid_thread.start()
 
     def _read_thread(self, side_effect: Callable[[str], None]):
         """Execute the reading until reads a value or got canceled"""
-        if self.rfid is None:
+        if self.rfid is None or self.is_active:
             return
         text = None
+        self.is_active = True
         while self.is_active:
             text = self.rfid.read_card()
             if text is not None:
@@ -85,16 +84,14 @@ class RFIDReader:
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
         """Writes the value to the RFID"""
-        if _NO_MODULE or self.is_active:
-            return
-        self.is_active = True
         rfid_thread = Thread(target=self._write_thread, args=(value, side_effect,), daemon=True)
         rfid_thread.start()
 
     def _write_thread(self, text: str, side_effect: Optional[Callable[[str], None]] = None):
         """Executes the writing until successful or canceled"""
-        if self.rfid is None:
+        if self.rfid is None or self.is_active:
             return
+        self.is_active = True
         while self.is_active:
             success = self.rfid.write_card(text)
             if success:
@@ -109,7 +106,9 @@ class RFIDReader:
         self.is_active = False
 
 
-class PiicoDevReader(RFIDController):
+class _PiicoDevReader(RFIDController):
+    """Reader for the PiicoDev RFID Module"""
+
     def __init__(self) -> None:
         self.rfid = PiicoDev_RFID()
 
@@ -125,7 +124,9 @@ class PiicoDevReader(RFIDController):
         return self.rfid.writeText(text)
 
 
-class BasicMFRC522(RFIDController):
+class _BasicMFRC522(RFIDController):
+    """Reader for common RC522 modules"""
+
     def __init__(self) -> None:
         self.rfid = SimpleMFRC522()
 
