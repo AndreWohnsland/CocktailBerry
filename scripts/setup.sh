@@ -8,12 +8,19 @@ echo "Installing updates, this may take a while..."
 sudo apt-get update && sudo apt-get -y upgrade
 
 # Generating launcher script
+echo "(Re-)Generating launcher script at: ~/launcher.sh"
 rm ~/launcher.sh
 touch ~/launcher.sh
 sudo chmod +x ~/launcher.sh
 
 # using desktop file for autostart
+echo "Copying desktop file to: /etc/xdg/autostart/cocktail.desktop"
 sudo cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
+
+# Making write permission for all to wpa
+# We need this if we want to change wifi settings within CocktailBerry
+echo "Giving write permission to /etc/wpa_supplicant/wpa_supplicant.conf"
+sudo chmod a+w /etc/wpa_supplicant/wpa_supplicant.conf
 
 cd ~/CocktailBerry/
 # Making neccecary steps for the according program
