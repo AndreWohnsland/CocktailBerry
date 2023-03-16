@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QMainWindow
 from src.ui.create_config_window import ConfigWindow
 from src.ui.setup_log_window import LogWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
+from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
@@ -21,7 +22,7 @@ from src.programs.calibration import run_calibration
 from src.machine.controller import MACHINE
 from src.logger_handler import LoggerHandler
 from src.save_handler import SAVE_HANDLER
-from src.utils import restart_program
+from src.utils import has_connection, restart_program
 from src.config_manager import CONFIG as cfg
 
 
@@ -60,19 +61,22 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_export.clicked.connect(SAVE_HANDLER.export_data)
         self.button_logs.clicked.connect(self._show_logs)
         self.button_rfid.clicked.connect(self._open_rfid_writer)
+        self.button_wifi.clicked.connect(self._open_wifi_window)
+        self.button_check_internet.clicked.connect(self._check_internet_connection)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 
         self.config_window: Optional[ConfigWindow] = None
         self.log_window: Optional[LogWindow] = None
         self.rfid_writer_window: Optional[RFIDWriterWindow] = None
+        self.wifi_window: Optional[WiFiWindow] = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
     def _open_config(self):
         """Opens the config window."""
-        self.close()
+        # self.close()
         self.config_window = ConfigWindow(self.mainscreen)
 
     def _init_clean_machine(self):
@@ -147,10 +151,20 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def _show_logs(self):
         """Opens the logs window"""
-        self.close()
+        # self.close()
         self.log_window = LogWindow()
 
     def _open_rfid_writer(self):
         """Opens the rfid writer window"""
         self.close()
         self.rfid_writer_window = RFIDWriterWindow(self.mainscreen)
+
+    def _open_wifi_window(self):
+        """Opens a window to configure wifi"""
+        # self.close()
+        self.wifi_window = WiFiWindow(self.mainscreen)
+
+    def _check_internet_connection(self):
+        """Checks if there is a active internet connection"""
+        is_connected = has_connection()
+        DP_CONTROLLER.say_internet_connection_status(is_connected)
