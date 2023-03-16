@@ -15,6 +15,7 @@ from src.ui_elements.passworddialog import Ui_PasswordDialog
 from src.ui_elements.progressbarwindow import Ui_Progressbarwindow
 from src.ui_elements.rfidwriter import Ui_RFIDWriterWindow
 from src.ui_elements.teamselection import Ui_Teamselection
+from src.ui_elements.wifiwindow import Ui_WiFiWindow
 
 
 __all__ = [
@@ -35,4 +36,5 @@ __all__ = [
     "Ui_Progressbarwindow",
     "Ui_RFIDWriterWindow",
     "Ui_Teamselection",
+    "Ui_WiFiWindow",
 ]
