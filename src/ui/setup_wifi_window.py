@@ -109,13 +109,13 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         response_ok = "ok" in wpa_text.lower()
         if not response_ok:
             _logger.log_event("WARNING", "Could not reconfigure wlan0, maybe a restart will solve this.")
-        # Try up to x3 to check for connection
+        # Try up to x5 to check for connection
         tries = 0
         is_connected = False
         while tries < 5 and not is_connected:
             ssid_output = subprocess.run(["iwgetid"], stdout=subprocess.PIPE, check=False).stdout.decode("utf-8")
             is_connected = ssid in ssid_output
-            time.sleep(2)
+            time.sleep(3)
             tries += 1
         DP_CONTROLLER.say_wifi_entered(is_connected, ssid, password)
 
