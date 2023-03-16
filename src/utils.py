@@ -19,12 +19,13 @@ def has_connection() -> bool:
     conn = httplib.HTTPSConnection("8.8.8.8", timeout=3)
     try:
         conn.request("HEAD", "/")
-        return True
+        got_con = True
     # Will throw OSError on no connection
     except OSError:
-        return False
+        got_con = False
     finally:
         conn.close()
+    return got_con
 
 
 @dataclass
