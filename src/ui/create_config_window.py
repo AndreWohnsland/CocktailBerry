@@ -62,7 +62,7 @@ class ConfigWindow(QMainWindow):
         spacer_item = QSpacerItem(40, 30, QSizePolicy.Minimum, QSizePolicy.Fixed)  # type: ignore
         self.vbox.addItem(spacer_item)
         # adds the back button
-        self.button_back = QPushButton("Back")
+        self.button_back = QPushButton("< Back")
         self.button_back.clicked.connect(self.close)
         self.button_back.setMaximumSize(QSize(16777215, 200))
         self.button_back.setMinimumSize(QSize(0, 70))
