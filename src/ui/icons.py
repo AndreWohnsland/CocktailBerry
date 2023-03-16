@@ -1,6 +1,8 @@
 from pathlib import Path
+from typing import Literal
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtGui import QIcon
 import qtawesome as qta
 
 from src.config_manager import CONFIG as cfg
@@ -15,6 +17,8 @@ _MINUS_ICON = "fa5s.minus"
 _DELETE_ICON = "fa5s.trash-alt"
 _CLEAR_ICON = "fa5s.eraser"
 _COCKTAIL_ICON = "fa5s.cocktail"
+_SPINNER_ICON = "fa5s.spinner"
+_TIME_ICON = "fa5s.hourglass-start"
 _BUTTON_SIZE = QSize(36, 36)
 
 
@@ -68,6 +72,23 @@ class IconSetter:
         w.PBMplus.setIcon(qta.icon(_PLUS_ICON, color=self.primary_color))
         w.PBMplus.setIconSize(_BUTTON_SIZE)
         w.PBMplus.setText("")
+
+    def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary=False):
+        """Sets a spinner button to the icon"""
+        color = self.primary_color if primary else self.background
+        if icon == "spin":
+            used_icon = qta.icon(_SPINNER_ICON, color=color, animation=qta.Spin(button))
+        else:
+            used_icon = qta.icon(_TIME_ICON, color=color)
+        # add "padding" in front of button
+        button.setText(f" {button.text()}")
+        button.setIconSize(_BUTTON_SIZE)
+        button.setIcon(used_icon)  # type: ignore
+
+    def remove_icon(self, button: QPushButton):
+        """Removes the spinner from the button"""
+        button.setText(button.text().strip())
+        button.setIcon(QIcon())
 
 
 ICONS = IconSetter()
