@@ -5,7 +5,7 @@ import subprocess
 import time
 from pathlib import Path
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, qApp
 
 from src.utils import has_connection
 from src.logger_handler import LoggerHandler
@@ -13,6 +13,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_WiFiWindow
+from src.ui.icons import ICONS
 
 if TYPE_CHECKING:
     from src.ui_elements import Ui_MainWindow
@@ -39,7 +40,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         self.button_enter.setDisabled(True)
         # Connecting elements
         self.button_back.clicked.connect(self.close)
-        self.button_enter.clicked.connect(self._enter_wifi)
+        self.button_enter.clicked.connect(self._wifi_enter_process)
         self.input_ssid.clicked.connect(lambda: self._open_keyboard(self.input_ssid))
         self.input_ssid.textChanged.connect(self._check_valid_inputs)
         self.input_password.clicked.connect(lambda: self._open_keyboard(self.input_password))
@@ -60,6 +61,14 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
     def _open_keyboard(self, le_to_write, max_char_len=64):
         """ Opens up the keyboard connected to the lineedit """
         self.keyboard_window = KeyboardWidget(self.mainscreen, le_to_write=le_to_write, max_char_len=max_char_len)
+
+    def _wifi_enter_process(self):
+        """Starts to enter wifi, uses a spinner during progress"""
+        ICONS.set_wait_icon(self.button_enter)
+        qApp.processEvents()
+        self._enter_wifi()
+        ICONS.remove_icon(self.button_enter)
+        qApp.processEvents()
 
     def _enter_wifi(self):
         """Enters the wifi credentials into the wpa_supplicant.conf
