@@ -16,7 +16,8 @@ if TYPE_CHECKING:
     from src.ui_elements import (
         Ui_available, Ui_addingredient, Ui_Bottlewindow, Ui_MainWindow, Ui_CustomDialog,
         Ui_CustomPrompt, Ui_Datepicker, Ui_Handadds, Ui_LogWindow, Ui_Optionwindow,
-        Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection
+        Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
+        Ui_WiFiWindow,
     )
 
 DIRPATH = Path(__file__).parent.absolute()
@@ -91,6 +92,7 @@ class DialogHandler():
     ############################
     # Methods for creating msg #
     ############################
+
     def say_wrong_password(self):
         """Informs user that the password is wrong"""
         self.__output_language_dialog("wrong_password")
@@ -257,6 +259,29 @@ class DialogHandler():
             version=__version__,
             platform=get_platform_data()
         )
+
+    def say_wifi_entered(self, success: bool, ssid: str, password: str):
+        if success:
+            self.__output_language_dialog("wifi_success")
+            return
+        self.__output_language_dialog(
+            "wifi_failure",
+            ssid=ssid,
+            password=password,
+        )
+
+    def say_wifi_setup_failed(self):
+        self.__output_language_dialog("wifi_setup_failed")
+
+    def say_internet_connection_status(self, connected: bool):
+        if connected:
+            self.__output_language_dialog("internet_connection_ok")
+            return
+        self.__output_language_dialog("internet_connection_not_ok")
+
+    ############################
+    # Methods for prompting ####
+    ############################
 
     def ask_to_update(self, release_information):
         """Asks the user if he wants to get the latest update"""
@@ -498,6 +523,14 @@ class UiLanguage():
     def get_rfid_information_display(self, element: Literal['success', 'prompt', 'error']):
         """Returns the information element for rfid"""
         return self.__choose_language(element, "rfid_writer")
+
+    def adjust_wifi_window(self, w: Ui_WiFiWindow):
+        """Translates the elements on the RFID reader window"""
+        window = "wifi"
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_enter.setText(self.__choose_language("enter_button"))
+        w.label_ssid.setText(self.__choose_language("ssid", window))
+        w.label_password.setText(self.__choose_language("password", window))
 
 
 UI_LANGUAGE = UiLanguage()

@@ -154,7 +154,21 @@ dialog:
   welcome_dialog:
     en: "CocktailBerry Software Version {version} by Andre Wohnsland.\n{platform}.\n\nCheck https://cocktailberry.readthedocs.io for more information."
     de: "CocktailBerry Software Version {version} von Andre Wohnsland.\n{platform}.\n\nMehr Informationen unter https://cocktailberry.readthedocs.io."
-
+  wifi_setup_failed:
+    en: 'There was an error setting up WiFi. Please check the logs for further information.'
+    de: 'Es ist ein Fehler beim Einrichten des WiFi aufgetreten. Schaue in die Logs für mehr Informationen.'
+  wifi_success:
+    en: 'WiFi has been set up successfully.'
+    de: 'WiFi wurde erfolgreich eingerichtet.'
+  wifi_failure:
+    en: "There is still no internet connection.\nCheck your credentials, ssid: {ssid}, password: {password}\nIf they are correct, wait shortly then check internet again via the option feature or restart system and consult the logs."
+    de: "Es besteht noch keine Internetverbindung.\nPrüfe deine Eingabe: ssid: {ssid}, password: {password}\nWenn diese stimmen, warte kurz und prüfe dein Internet über die Optionen noch einmal oder starte das System neu und schau auch in die Logs."
+  internet_connection_ok:
+    en: 'There is a internet connection.'
+    de: 'Es besteht eine Internetverbindung.'
+  internet_connection_not_ok:
+    en: 'X There is no internet connection.'
+    de: 'X Es besteht keine Internetverbindung.'
 # Change of language in UI elements
 ui:
   # Some commonly used elements within multiple windows
@@ -376,6 +390,14 @@ ui:
     error:
       en: 'Text needs to be 3+ chars'
       de: 'Text muss min. 3 Zeichen sein'
+
+  wifi:
+    ssid:
+      en: 'SSID (network name)'
+      de: 'SSID (Netzwerkname)'
+    password:
+      en: 'Password'
+      de: 'Passwort'
 
   ##### SETTINGS WINDOW #####
   # all values for settings window
