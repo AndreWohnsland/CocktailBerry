@@ -113,7 +113,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         # Try up to x3 to check for connection
         tries = 0
         is_connected = False
-        while tries < 3 and not is_connected:
+        while tries < 5 and not is_connected:
             is_connected = has_connection()
             tries += 1
         DP_CONTROLLER.say_wifi_entered(is_connected, ssid, password)
