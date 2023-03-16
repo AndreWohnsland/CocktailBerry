@@ -101,7 +101,12 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         response_ok = "ok" in wpa_text.lower()
         if not response_ok:
             _logger.log_event("WARNING", "Could not reconfigure wlan0, maybe a restart will solve this.")
-        is_connected = has_connection()
+        # Try up to x3 to check for connection
+        tries = 0
+        is_connected = False
+        while tries < 3 and not is_connected:
+            is_connected = has_connection()
+            tries += 1
         DP_CONTROLLER.say_wifi_entered(is_connected, ssid, password)
 
     def _make_wpa_file(self):
