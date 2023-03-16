@@ -7,7 +7,6 @@ from pathlib import Path
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, qApp
 
-from src.utils import has_connection
 from src.logger_handler import LoggerHandler
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -114,7 +113,9 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         tries = 0
         is_connected = False
         while tries < 5 and not is_connected:
-            is_connected = has_connection()
+            ssid_output = subprocess.run(["iwgetid"], stdout=subprocess.PIPE, check=False).stdout.decode("utf-8")
+            is_connected = ssid in ssid_output
+            time.sleep(2)
             tries += 1
         DP_CONTROLLER.say_wifi_entered(is_connected, ssid, password)
 
