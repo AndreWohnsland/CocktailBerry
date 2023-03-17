@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
     QSizePolicy
 )
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont
 
 from src.config_manager import ChooseType, ConfigError, CONFIG as cfg
 from src.dialog_handler import UI_LANGUAGE
@@ -25,14 +25,10 @@ LARGE_FONT = 16
 class ConfigWindow(QMainWindow):
     def __init__(self, parent):
         super().__init__()
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
-        if parent is not None:
-            self.icon_path = parent.icon_path
-            self.setWindowIcon(QIcon(self.icon_path))
         self.config_objects = {}
         self._init_ui()
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 

@@ -1,7 +1,6 @@
 import re
 from pathlib import Path
 from collections import Counter
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -20,9 +19,7 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         """ Init. Connect all the buttons and set window policy. """
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         # Connect all the buttons, generates a list of the numbers an object names to do that
         self.button_back.clicked.connect(self.close)
 
@@ -35,7 +32,6 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         # activated does only trigger if changed by user, so we need to read in here
         self._read_logs()
 
-        self.move(0, 0)
         UI_LANGUAGE.adjust_log_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)

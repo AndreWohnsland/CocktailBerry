@@ -1,12 +1,12 @@
 from pathlib import Path
 from typing import Callable, List, Literal, Optional, Tuple, Union
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import (
     QWidget, QComboBox, QLabel,
     QLineEdit, QPushButton, QListWidget,
     QCheckBox, QMainWindow, QProgressBar,
-    QListWidgetItem
+    QListWidgetItem,
 )
 
 from src.config_manager import CONFIG as cfg
@@ -149,6 +149,17 @@ class DisplayController(DialogHandler):
         if resize:
             window_object.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
             window_object.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
+
+    def initialize_window_object(self, window_object: QWidget, x_pos: int = 0, y_pos: int = 0):
+        """Initialize the window, set according flags, sets icon and stylesheet"""
+        window_object.setWindowFlags(
+            Qt.Window | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint  # type: ignore
+        )
+        window_object.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
+        self.inject_stylesheet(window_object)
+        icon_path = str(Path(__file__).parent.absolute() / "ui_elements" / "Cocktail-icon.png")
+        window_object.setWindowIcon(QIcon(icon_path))
+        window_object.move(x_pos, y_pos)
 
     def inject_stylesheet(self, window_object: QWidget):
         """Adds the central stylesheet to the gui"""

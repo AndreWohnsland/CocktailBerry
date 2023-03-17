@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import Qt
 
 from src.ui_elements.bottlewindow import Ui_Bottlewindow
 
@@ -18,8 +17,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         """ Init. Connects all the buttons, gets the names from Mainwindow/DB. """
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         # connects all the buttons
         self.PBAbbrechen.clicked.connect(self._cancel_clicked)
         self.PBEintragen.clicked.connect(self._enter_clicked)

@@ -4,7 +4,6 @@ import os
 import subprocess
 import time
 from pathlib import Path
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, qApp
 
 from src.logger_handler import LoggerHandler
@@ -28,10 +27,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
     def __init__(self, mainscreen: Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
-        self.move(0, 0)
+        DP_CONTROLLER.initialize_window_object(self)
 
         # Init objects
         self.mainscreen = mainscreen

@@ -1,6 +1,5 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow
 
 from src.machine.rfid import RFIDReader
@@ -19,10 +18,7 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
     def __init__(self, mainscreen: Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
-        self.move(0, 0)
+        DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = mainscreen
 
         self.button_back.clicked.connect(self._close_window)

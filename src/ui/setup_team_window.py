@@ -1,5 +1,3 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
 from src.ui_elements.teamselection import Ui_Teamselection
@@ -15,17 +13,12 @@ class TeamScreen(QDialog, Ui_Teamselection):
     def __init__(self, parent=None):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         self.PBteamone.clicked.connect(lambda: self.set_team(cfg.TEAM_BUTTON_NAMES[0]))
         self.PBteamone.setText(cfg.TEAM_BUTTON_NAMES[0])
         self.PBteamtwo.clicked.connect(lambda: self.set_team(cfg.TEAM_BUTTON_NAMES[1]))
         self.PBteamtwo.setText(cfg.TEAM_BUTTON_NAMES[1])
-        if parent is not None:
-            self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
-        self.move(0, 0)
         UI_LANGUAGE.adjust_team_window(self)
         DP_CONTROLLER.set_display_settings(self)
         self.__set_icon_text_breaks()

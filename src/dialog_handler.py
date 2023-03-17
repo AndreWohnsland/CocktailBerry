@@ -54,7 +54,7 @@ class DialogHandler():
             title = self.__choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
-        messagebox = CustomDialog(fancy_message, title, self.icon_path, use_ok)
+        messagebox = CustomDialog(fancy_message, title, use_ok)
         event = Event()
         # If there is a close time, start auto close
         if close_time is not None:

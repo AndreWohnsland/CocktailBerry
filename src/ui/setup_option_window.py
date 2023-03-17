@@ -6,8 +6,6 @@ import shutil
 from typing import Optional, TYPE_CHECKING
 from pathlib import Path
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
 
 from src.ui.create_config_window import ConfigWindow
@@ -43,12 +41,8 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def __init__(self, parent: MainScreen):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
-        self.setWindowIcon(QIcon(parent.icon_path))
+        DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
-        self.move(0, 0)
 
         self.button_back.clicked.connect(self.close)
         self.button_clean.clicked.connect(self._init_clean_machine)
