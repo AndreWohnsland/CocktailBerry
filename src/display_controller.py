@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Callable, List, Literal, Optional, Tuple, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QIcon
@@ -9,6 +8,7 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
 )
 
+from src.filepath import STYLE_FOLDER, APP_ICON_FILE
 from src.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import DialogHandler, UI_LANGUAGE
@@ -17,9 +17,6 @@ from src.config_manager import shared
 from src import MAX_SUPPORTED_BOTTLES
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui_elements.bonusingredient import Ui_addingredient
-
-
-STYLE_FOLDER = Path(__file__).parents[0].absolute() / "ui" / "styles"
 
 
 class DisplayController(DialogHandler):
@@ -157,7 +154,7 @@ class DisplayController(DialogHandler):
         )
         window_object.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
         self.inject_stylesheet(window_object)
-        icon_path = str(Path(__file__).parent.absolute() / "ui_elements" / "Cocktail-icon.png")
+        icon_path = str(APP_ICON_FILE)
         window_object.setWindowIcon(QIcon(icon_path))
         window_object.move(x_pos, y_pos)
 

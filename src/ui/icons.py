@@ -1,14 +1,13 @@
-from pathlib import Path
 from typing import Literal
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtGui import QIcon
 import qtawesome as qta
 
+from src.filepath import STYLE_FOLDER
 from src.config_manager import CONFIG as cfg
 
-DIRPATH = Path(__file__).parent.absolute()
-UI_FILE = DIRPATH / "styles" / f"{cfg.MAKER_THEME}.scss"
+UI_FILE = STYLE_FOLDER / f"{cfg.MAKER_THEME}.scss"
 
 # DEFINING THE ICONS
 _SETTING_ICON = "fa5s.cog"

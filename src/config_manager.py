@@ -1,5 +1,4 @@
 import random
-from pathlib import Path
 from typing import Any, Callable, Dict, List, Tuple, Union, get_args
 import typer
 import yaml
@@ -8,6 +7,7 @@ from pyfiglet import Figlet
 from src.logger_handler import LoggerHandler
 from src.models import Ingredient
 from src.utils import get_platform_data
+from src.filepath import CUSTOM_CONFIG_FILE
 from src import (
     __version__,
     PROJECT_NAME,
@@ -19,7 +19,6 @@ from src import (
 )
 
 
-CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
 logger = LoggerHandler("config_manager")
 SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
 SUPPORTED_BOARDS = list(get_args(SupportedBoardType))
@@ -177,7 +176,7 @@ class ConfigManager:
         config = {}
         for attribute in self.config_type:
             config[attribute] = getattr(self, attribute)
-        with open(CONFIG_FILE, 'w', encoding="UTF-8") as stream:
+        with open(CUSTOM_CONFIG_FILE, 'w', encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
 
     def validate_and_set_config(self, configuration: Dict, lists_later=True):
@@ -194,7 +193,7 @@ class ConfigManager:
 
     def _read_config(self):
         """Reads all the config data from the file and validates it"""
-        with open(CONFIG_FILE, "r", encoding="UTF-8") as stream:
+        with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
             self.validate_and_set_config(configuration)
 

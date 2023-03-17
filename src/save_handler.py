@@ -1,14 +1,12 @@
 import datetime
 import csv
-from pathlib import Path
 from typing import List
 
+from src.filepath import SAVE_FOLDER
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 
-_DIRPATH = Path(__file__).parent.absolute()
-_SAVE_FOLDER = _DIRPATH.parent / "saves"
 _logger = LoggerHandler("save_handler")
 
 
@@ -19,7 +17,7 @@ class SaveHandler:
             return
         self._export_ingredients()
         self._export_recipes()
-        DP_CONTROLLER.say_all_data_exported(str(_SAVE_FOLDER))
+        DP_CONTROLLER.say_all_data_exported(str(SAVE_FOLDER))
 
     def _export_ingredients(self):
         """Export the ingredients to a csv file, resets consumption"""
@@ -42,7 +40,7 @@ class SaveHandler:
         # also build time suffix, in case user does double save
         suffix = dtime.strftime("%H%M%S")
         full_file_name = f"{prefix}_{filename}-{suffix}.csv"
-        save_path = _SAVE_FOLDER / full_file_name
+        save_path = SAVE_FOLDER / full_file_name
         with open(save_path, mode="a", newline="", encoding="utf-8") as writer_file:
             csv_writer = csv.writer(writer_file, delimiter=",")
             for row in data_rows:

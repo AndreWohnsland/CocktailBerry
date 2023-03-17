@@ -17,7 +17,7 @@ from src.logger_handler import LoggerHandler
 from src.updater import Updater
 from src.utils import has_connection
 
-from src.ui_elements.cocktailmanager import Ui_MainWindow
+from src.ui_elements import Ui_MainWindow
 from src.ui.setup_option_window import OptionWindow
 from src.ui.setup_progress_screen import ProgressScreen
 from src.ui.setup_numpad_widget import NumpadWidget

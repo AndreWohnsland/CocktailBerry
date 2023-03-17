@@ -8,6 +8,7 @@ from pathlib import Path
 
 from PyQt5.QtWidgets import QMainWindow
 
+from src.filepath import ROOT_PATH
 from src.ui.create_config_window import ConfigWindow
 from src.ui.setup_log_window import LogWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
@@ -27,7 +28,6 @@ from src.config_manager import CONFIG as cfg
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
-_ROOT_PATH = Path(__file__).parents[2].absolute()
 _DATABASE_NAME = "Cocktail_database.db"
 _CONFIG_NAME = "custom_config.yaml"
 _VERSION_NAME = ".version.ini"
@@ -116,7 +116,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             _logger.log_event("INFO", "Backup folder for today already exists, overwriting current data within")
 
         for _file in _NEEDED_FILES:
-            shutil.copy(_ROOT_PATH / _file, backup_folder)
+            shutil.copy(ROOT_PATH / _file, backup_folder)
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
     def _upload_backup(self):
@@ -132,7 +132,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
                 DP_CONTROLLER.say_backup_failed(_file)
                 return
         for _file in _NEEDED_FILES:
-            shutil.copy(location / _file, _ROOT_PATH)
+            shutil.copy(location / _file, ROOT_PATH)
         restart_program()
 
     def _get_user_folder_response(self):

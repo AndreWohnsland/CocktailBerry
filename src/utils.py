@@ -1,16 +1,15 @@
 import platform
 import os
 import sys
-from pathlib import Path
 from typing import Tuple, Literal
 from dataclasses import dataclass
 import http.client as httplib
 
+from src.filepath import ROOT_PATH
 from src.logger_handler import LoggerHandler
 
 
-FILE_PATH = Path(__file__).parents[0].absolute()
-EXECUTABLE = FILE_PATH.parents[0].absolute() / "runme.py"
+EXECUTABLE = ROOT_PATH / "runme.py"
 _logger = LoggerHandler("utils")
 
 

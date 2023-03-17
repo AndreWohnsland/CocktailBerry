@@ -2,7 +2,6 @@
 # pylint: disable=import-outside-toplevel
 
 from __future__ import annotations
-from pathlib import Path
 import time
 from typing import Dict, List, Optional, Literal, TYPE_CHECKING
 from threading import Thread, Event
@@ -10,6 +9,7 @@ import yaml
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from src.config_manager import CONFIG as cfg
 from src.utils import get_platform_data
+from src.filepath import LANGUAGE_FILE, APP_ICON_FILE
 from src import __version__
 
 if TYPE_CHECKING:
@@ -20,15 +20,12 @@ if TYPE_CHECKING:
         Ui_WiFiWindow,
     )
 
-DIRPATH = Path(__file__).parent.absolute()
-LANGUAGE_FILE = DIRPATH / "language.yaml"
-
 
 class DialogHandler():
     """Class to hold all the dialogues for the popups and language settings"""
 
     def __init__(self) -> None:
-        self.icon_path = str(DIRPATH / "ui_elements" / "Cocktail-icon.png")
+        self.icon_path = str(APP_ICON_FILE)
         with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
             self.dialogs: Dict[str, Dict[str, str]] = yaml.safe_load(stream)["dialog"]
 

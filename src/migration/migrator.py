@@ -8,9 +8,9 @@ import configparser
 import sys
 import subprocess
 import pkg_resources
-from pathlib import Path
 from typing import Optional, Tuple
 
+from src.filepath import VERSION_FILE
 from src import __version__, FUTURE_PYTHON_VERSION
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
@@ -21,8 +21,6 @@ from src.migration.update_data import (
     remove_is_alcoholic_column
 )
 
-_DIRPATH = Path(__file__).parent.absolute()
-_CONFIG_PATH = _DIRPATH.parents[1] / ".version.ini"
 _logger = LoggerHandler("migrator_module")
 _INSTALLED_PACKAGES = [pkg.key for pkg in list(pkg_resources.working_set)]
 
@@ -33,7 +31,7 @@ class Migrator:
     def __init__(self) -> None:
         self.program_version = _Version(__version__)
         self.config = configparser.ConfigParser()
-        self.config.read(_CONFIG_PATH)
+        self.config.read(VERSION_FILE)
         self.local_version = _Version(self._get_local_version())
 
     def _get_local_version(self):
@@ -51,7 +49,7 @@ class Migrator:
         """Writes the latest version to the local version"""
         _logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
         self.config['DEFAULT']['LOCALVERSION'] = str(self.program_version.version)
-        with open(_CONFIG_PATH, 'w', encoding="utf-8") as config_file:
+        with open(VERSION_FILE, 'w', encoding="utf-8") as config_file:
             self.config.write(config_file)
 
     def make_migrations(self):
