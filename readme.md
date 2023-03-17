@@ -44,6 +44,7 @@ CocktailBerry can do:
 - Select different themes to fit your liking
 - Switch between user interface languages
 - Support WS281x LEDs on your machine
+- Support for RFID/NFC reader
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
 
