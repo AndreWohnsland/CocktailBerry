@@ -117,7 +117,7 @@ class _PiicoDevReader(RFIDController):
         if self.rfid.tagPresent():
             text = self.rfid.readText()
             if text is not None:
-                text.strip()
+                text = text.strip()
         return text
 
     def write_card(self, text: str) -> bool:
@@ -139,8 +139,3 @@ class _BasicMFRC522(RFIDController):
     def write_card(self, text: str) -> bool:
         _id, _ = self.rfid.write_no_block(text)
         return _id is not None
-
-
-RFID = None
-if cfg.RFID_READER != "No":
-    RFID = RFIDReader()
