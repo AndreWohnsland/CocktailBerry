@@ -363,12 +363,15 @@ class UiLanguage():
         """Returns the add text"""
         return self.__choose_language("change_button")
 
-    def get_config_description(self, config_name: str) -> str:
+    def get_config_description(
+        self,
+        config_name: str,
+        window: Literal["settings_dialog", "color_window"] = "settings_dialog") -> str:
         """Returns the according description for the configuration.
         Returns empty string if there was nothing found
         """
         try:
-            return self.__choose_language(config_name, "settings_dialog")
+            return self.__choose_language(config_name, window)
         # if there is nothing for this settings, we will get an attribute error
         except (AttributeError, KeyError):
             return ""
