@@ -499,3 +499,34 @@ ui:
     EXP_MAKER_FACTOR:
       en: 'Multiplication factor for the displayed volumes in the maker tab'
       de: 'Multiplikationsfaktor für die angezeigten Volumen im Maker Tab'
+  ##### COLOR WINDOW #####
+  # all values for settings in color window
+  # Use same names as color names
+  color_window:
+    primary:
+      en: 'Primary color, for the font and buttons'
+      de: 'Primäre Farbe, für die Schrift und Buttons'
+    secondary:
+      en: 'Secondary color, for selected elements or other separation'
+      de: 'Sekundäre Farbe, für ausgewählte Elemente bzw. Unterscheidungen'
+    destructive:
+      en: 'Color for destructive elements, like delete'
+      de: 'Neutrale Farbe für destruktive Elemente, wie Löschen'
+    neutral:
+      en: 'Neutral color, for examples some Headers'
+      de: 'Neutrale Farbe, wie zum Beispiel einige Überschriften'
+    background:
+      en: 'Background color of the application'
+      de: 'Hintergrund Farbe der Anwendung'
+    border:
+      en: 'Border color of the Ui elements'
+      de: 'Rahmen Farbe der Ui Elemente'
+    progressbar:
+      en: 'Color of the progressbar'
+      de: 'Farbe des Fortschrittsbalken'
+    progressbg:
+      en: 'Background color of the progressbar'
+      de: 'Hintergrund Farbe des Fortschrittsbalken'
+    tabborder:
+      en: 'Border color of the top tabs'
+      de: 'Rahmen Farbe der oberen Tabs'
