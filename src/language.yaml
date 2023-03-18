@@ -200,6 +200,9 @@ ui:
     back:
       en: '< Back'
       de: '< Zurück'
+    apply:
+      en: 'Apply'
+      de: 'Anwenden'
   # dynamic values for maker tab
   maker:
     add_self:
@@ -452,8 +455,8 @@ ui:
       en: 'Type of microcomputer / board used'
       de: 'Typ des Microcomputers / Boards'
     MAKER_THEME:
-      en: 'Color theme of the application'
-      de: 'Farbeinstellung des Programms'
+      en: 'Color theme of the application, use custom to select your own color'
+      de: 'Farbeinstellung des Programms, wähle custom aus, um es selbst zu stylen'
     MAKER_CHECK_INTERNET:
       en: 'Checks if machine is connected to the internet at startup'
       de: 'Prüft ob beim Programmstart eine Internetverbindung besteht'
@@ -503,6 +506,9 @@ ui:
   # all values for settings in color window
   # Use same names as color names
   color_window:
+    use_template:
+      en: 'Use Template'
+      de: 'Template nehmen'
     primary:
       en: 'Primary color, for the font and buttons'
       de: 'Primäre Farbe, für die Schrift und Buttons'

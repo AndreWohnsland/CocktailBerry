@@ -17,7 +17,7 @@ if TYPE_CHECKING:
         Ui_available, Ui_addingredient, Ui_Bottlewindow, Ui_MainWindow, Ui_CustomDialog,
         Ui_CustomPrompt, Ui_Datepicker, Ui_Handadds, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
-        Ui_WiFiWindow,
+        Ui_WiFiWindow, Ui_ColorWindow,
     )
 
 
@@ -364,9 +364,9 @@ class UiLanguage():
         return self.__choose_language("change_button")
 
     def get_config_description(
-        self,
-        config_name: str,
-        window: Literal["settings_dialog", "color_window"] = "settings_dialog") -> str:
+            self,
+            config_name: str,
+            window: Literal["settings_dialog", "color_window"] = "settings_dialog") -> str:
         """Returns the according description for the configuration.
         Returns empty string if there was nothing found
         """
@@ -531,6 +531,13 @@ class UiLanguage():
         w.button_enter.setText(self.__choose_language("enter_button"))
         w.label_ssid.setText(self.__choose_language("ssid", window))
         w.label_password.setText(self.__choose_language("password", window))
+
+    def adjust_color_window(self, w: Ui_ColorWindow):
+        """Translates the elements of the custom color window"""
+        window = "color_window"
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_apply.setText(self.__choose_language("apply"))
+        w.button_use_template.setText(self.__choose_language("use_template", window))
 
 
 UI_LANGUAGE = UiLanguage()

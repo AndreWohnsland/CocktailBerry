@@ -16,6 +16,7 @@ from src.utils import restart_program
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
+from src.ui.setup_color_window import ColorWindow
 
 SMALL_FONT = 12
 MEDIUM_FONT = 14
@@ -28,6 +29,8 @@ class ConfigWindow(QMainWindow):
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
         self.config_objects = {}
+        self.color_window: Optional[ColorWindow] = None
+        self.button_custom_color: Optional[QPushButton] = None
         self._init_ui()
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -109,6 +112,20 @@ class ConfigWindow(QMainWindow):
         getter_fn = self._build_input_field(config_name, config_type, current_value)
         # assigning the getter function for the config into the dict
         self.config_objects[config_name] = getter_fn
+        if config_name == "MAKER_THEME":
+            self._build_custom_color_button()
+
+    def _build_custom_color_button(self):
+        """Builds a button to edit custom theme"""
+        self.button_custom_color = QPushButton("Define Custom Color")
+        self.button_custom_color.setMaximumSize(QSize(16777215, 200))
+        self.button_custom_color.setMinimumSize(QSize(0, 50))
+        self._adjust_font(self.button_custom_color, LARGE_FONT, True)
+        self.button_custom_color.clicked.connect(self._open_color_window)
+        self.vbox.addWidget(self.button_custom_color)
+
+    def _open_color_window(self):
+        self.color_window = ColorWindow(self.mainscreen)
 
     def _build_input_field(
         self, config_name: str,

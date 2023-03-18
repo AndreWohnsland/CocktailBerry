@@ -33,6 +33,9 @@ class ColorInformation:
     progressbg: str
     tabborder: str
 
+    def __getitem__(self, item):
+        return getattr(self, item)
+
 
 def parse_colors(theme: Optional[SupportedThemesType] = None) -> ColorInformation:
     """Gets the color out of the theme file"""
