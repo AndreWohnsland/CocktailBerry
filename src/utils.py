@@ -5,7 +5,7 @@ from typing import Tuple, Literal
 from dataclasses import dataclass
 import http.client as httplib
 
-from src.filepath import ROOT_PATH
+from src.filepath import ROOT_PATH, STYLE_FOLDER
 from src.logger_handler import LoggerHandler
 
 
@@ -68,3 +68,14 @@ def set_system_time(time_string: str):
 
 def restart_program():
     os.execl(sys.executable, "python", EXECUTABLE, *sys.argv[1:])
+
+
+def generate_custom_style_file():
+    """Generates the custom style file, if it does not exist"""
+    custom_style_file = STYLE_FOLDER / "custom.scss"
+    compiled_custom = STYLE_FOLDER / "custom.css"
+    default_style_file = STYLE_FOLDER / "default.scss"
+    compiled_default = STYLE_FOLDER / "default.css"
+    if not custom_style_file.exists():
+        custom_style_file.write_text(default_style_file.read_text())
+        compiled_custom.write_text(compiled_default.read_text())
