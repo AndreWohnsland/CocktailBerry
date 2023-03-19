@@ -1,10 +1,13 @@
 from typing import Optional, get_args
+import re
 from dataclasses import fields
 from PyQt5.QtWidgets import QMainWindow, QLabel, QColorDialog, QLineEdit
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QSize
+import qtsass
 
 from src import SupportedThemesType
+from src.filepath import STYLE_FOLDER
 from src.ui.icons import parse_colors
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -30,6 +33,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         # Connect all the buttons, generates a list of the numbers an object names to do that
         self.button_back.clicked.connect(self.close)
         self.button_use_template.clicked.connect(self._set_selected_template)
+        self.button_apply.clicked.connect(self._apply_settings)
 
         # Get log file names, fill widget, select default, if it exists
         DP_CONTROLLER.fill_single_combobox(self.selection_template, THEMES, first_empty=False)
@@ -95,3 +99,22 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
     def _generate_style(self, color: str):
         """Generates a style with same bg and font color"""
         return f"background-color: {color}; color: {color};"
+
+    def _apply_settings(self):
+        """Applies the settings to the custom.scss file
+        Builds the css file afterwards with the qtsass package
+        """
+        # read in the custom style file
+        custom_style_file = STYLE_FOLDER / "custom.scss"
+        style = custom_style_file.read_text()
+        # replace lines with new color
+        for color_name, color_line_edit in self.inputs_colors.items():
+            color_value: str = color_line_edit.text()
+            replace_regex = r"\$" + f"{color_name}:" + r"\s*(#[0-9a-f]{3,6});"
+            replacement = f"${color_name}: {color_value};"
+            style = re.sub(replace_regex, replacement, style)
+        custom_style_file.write_text(style)
+        # compile the file with qtsass
+        compiled_style_file = STYLE_FOLDER / "custom.css"
+        qtsass.compile_filename(custom_style_file, compiled_style_file)
+        self.close()
