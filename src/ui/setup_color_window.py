@@ -1,7 +1,8 @@
-from typing import get_args
+from typing import Optional, get_args
 from dataclasses import fields
-from PyQt5.QtWidgets import QMainWindow, QWidget, QLabel
-from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QMainWindow, QLabel, QColorDialog, QLineEdit
+from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QSize
 
 from src import SupportedThemesType
 from src.ui.icons import parse_colors
@@ -9,11 +10,9 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements import Ui_ColorWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
+from src.ui.creation_utils import SMALL_FONT, MEDIUM_FONT, LARGE_FONT, adjust_font, create_spacer
 
 THEMES = list(get_args(SupportedThemesType))
-SMALL_FONT = 12
-MEDIUM_FONT = 14
-LARGE_FONT = 16
 
 
 class ColorWindow(QMainWindow, Ui_ColorWindow):
@@ -25,6 +24,9 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
+        self.color_picker: Optional[QColorDialog] = None
+        self.inputs_colors: dict[str, ClickableLineEdit] = {}
+        self.custom_colors = parse_colors("custom")
         # Connect all the buttons, generates a list of the numbers an object names to do that
         self.button_back.clicked.connect(self.close)
         self.button_use_template.clicked.connect(self._set_selected_template)
@@ -41,37 +43,55 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         """Uses the selected template and fills the color into the fields"""
         template: SupportedThemesType = self.selection_template.currentText()  # type: ignore -> only these are set
         colors = parse_colors(template)
-        print(colors)
+        for color in fields(colors):
+            line_edit = self.inputs_colors[color.name]
+            color_value = colors[color.name]
+            line_edit.setText(color_value)
+            line_edit.setStyleSheet(self._generate_style(color_value))
 
     def _generate_color_fields(self):
         """Generates all the needed fields to change colors"""
-        self.custom_colors = parse_colors("custom")
-        self.inputs_colors: dict[str, ClickableLineEdit] = {}
+        # adds a spacer on top
+        self.color_container.addItem(create_spacer(20))
         for color in fields(self.custom_colors):
             self._generate_color_section(color.name)
+            self.color_container.addItem(create_spacer(12))
 
     def _generate_color_section(self, color_name: str):
+        """Generates a section for the color including color pad, and user input"""
         header = QLabel(f"{color_name}:")
-        self._adjust_font(header, LARGE_FONT, True)
+        adjust_font(header, LARGE_FONT, True)
         self.color_container.addWidget(header)
         description_text = UI_LANGUAGE.get_config_description(color_name, "color_window")
         if description_text:
             description = QLabel(description_text)
-            self._adjust_font(description, SMALL_FONT)
+            adjust_font(description, SMALL_FONT)
             self.color_container.addWidget(description)
         # Reads out the current config value
         current_value = self.custom_colors[color_name]
         color_input = ClickableLineEdit(str(current_value))
-        self._adjust_font(color_input, MEDIUM_FONT)
+        color_input.setMinimumSize(QSize(0, 50))
+        color_input.clicked.connect(lambda: self._connect_color_picker(color_input))
+        color_input.setStyleSheet(self._generate_style(current_value))
+        adjust_font(color_input, MEDIUM_FONT)
         color_input.setProperty("cssClass", "secondary")
-        color_input.clicked.connect(lambda: print("TODO"))  # type: ignore
         self.color_container.addWidget(color_input)
         self.inputs_colors[color_name] = color_input
 
-    def _adjust_font(self, element: QWidget, font_size: int, bold: bool = False):
-        font = QFont()
-        font.setPointSize(font_size)
-        font.setBold(bold)
-        weight = 75 if bold else 50
-        font.setWeight(weight)
-        element.setFont(font)
+    def _connect_color_picker(self, line_edit_to_write: QLineEdit):
+        """Opens a color picker for the user to select the color
+        Uses the current color as default.
+        Inserts the selected color into the line edit
+        """
+        self.color_picker = QColorDialog(self)
+        current_color = line_edit_to_write.text()
+        self.color_picker.setCurrentColor(QColor(current_color))
+
+        if self.color_picker.exec_():
+            selected_color = self.color_picker.currentColor().name()
+            line_edit_to_write.setText(selected_color)
+            line_edit_to_write.setStyleSheet(self._generate_style(selected_color))
+
+    def _generate_style(self, color: str):
+        """Generates a style with same bg and font color"""
+        return f"background-color: {color}; color: {color};"
