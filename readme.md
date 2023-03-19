@@ -60,6 +60,7 @@ Here are some simple steps to get CocktailBerry running. You need to have **Pyth
 Run:
 
 ```bash
+cd ~
 git clone https://github.com/AndreWohnsland/CocktailBerry.git
 cd CocktailBerry
 pip install -r requirements.txt
