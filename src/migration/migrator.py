@@ -79,9 +79,9 @@ class Migrator:
         if self.older_than_version("1.11.0"):
             _logger.log_event("INFO", "Making migrations for v1.11.0")
             self._install_pip_package("qtawesome", "1.11.0")
-        if self.older_than_version("1.17.0"):
-            _logger.log_event("INFO", "Making migrations for v1.17.0")
-            self._install_pip_package("qtsass", "1.17.0")
+        # if self.older_than_version("1.17.0"):
+        #     _logger.log_event("INFO", "Making migrations for v1.17.0")
+        #     self._install_pip_package("qtsass", "1.17.0")
         self._check_local_version_data()
 
     def _python_to_old_warning(self, least_python: Tuple[int, int]):
