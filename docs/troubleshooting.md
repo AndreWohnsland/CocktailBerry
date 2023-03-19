@@ -97,7 +97,7 @@ Also, install the rpi_ws281x python package with:
 
 ```
 sudo pip install rpi_ws281x
-sudo pip install PyQt5 requests pyyaml GitPython typer pyfiglet qtawesome, piicodev
+sudo pip install PyQt5 requests pyyaml GitPython typer pyfiglet qtawesome, piicodev, qtsass
 ```
 
 See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.

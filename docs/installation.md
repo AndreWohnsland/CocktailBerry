@@ -53,7 +53,7 @@ pip install -r requirements.txt
 to get all requirements.
 Optionally, you can install the single needed dependencies:
 
-- PyQt5, requests, pyyaml, GitPython, typer, pyfiglet, qtawesome, piicodev
+- PyQt5, requests, pyyaml, GitPython, typer, pyfiglet, qtawesome, piicodev, qtsass
 
 ## Install PyQt5 on RaspberryPi
 

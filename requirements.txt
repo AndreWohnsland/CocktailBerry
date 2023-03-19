@@ -6,3 +6,4 @@ typer
 pyfiglet
 qtawesome
 piicodev
+qtsass
