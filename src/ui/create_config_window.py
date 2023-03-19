@@ -3,11 +3,9 @@ from PyQt5.QtWidgets import (
     QScrollArea, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout, QLabel,
     QCheckBox, QPushButton, QBoxLayout,
-    QComboBox, QFrame, QSpacerItem,
-    QSizePolicy
+    QComboBox, QFrame,
 )
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QFont
 
 from src.config_manager import ChooseType, ConfigError, CONFIG as cfg
 from src.dialog_handler import UI_LANGUAGE
@@ -17,10 +15,7 @@ from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui.setup_color_window import ColorWindow
-
-SMALL_FONT = 12
-MEDIUM_FONT = 14
-LARGE_FONT = 16
+from src.ui.creation_utils import SMALL_FONT, MEDIUM_FONT, LARGE_FONT, adjust_font, create_spacer
 
 
 class ConfigWindow(QMainWindow):
@@ -56,23 +51,24 @@ class ConfigWindow(QMainWindow):
         for key, value in cfg.config_type.items():
             needed_type, _ = value
             self._choose_display_style(key, needed_type)
+            # Add small spacer after each section
+            self.vbox.addItem(create_spacer(12))
 
         # adds a spacer
-        spacer_item = QSpacerItem(40, 30, QSizePolicy.Minimum, QSizePolicy.Fixed)  # type: ignore
-        self.vbox.addItem(spacer_item)
+        self.vbox.addItem(create_spacer(20, 40))
         # adds the back button
         self.button_back = QPushButton("< Back")
         self.button_back.clicked.connect(self.close)
         self.button_back.setMaximumSize(QSize(16777215, 200))
         self.button_back.setMinimumSize(QSize(0, 70))
-        self._adjust_font(self.button_back, LARGE_FONT, True)
+        adjust_font(self.button_back, LARGE_FONT, True)
         # adds the save button
         self.button_save = QPushButton("Save")
         self.button_save.clicked.connect(self._save_config)
         self.button_save.setProperty("cssClass", "btn-inverted")
         self.button_save.setMaximumSize(QSize(16777215, 200))
         self.button_save.setMinimumSize(QSize(0, 70))
-        self._adjust_font(self.button_save, LARGE_FONT, True)
+        adjust_font(self.button_save, LARGE_FONT, True)
         # places them side by side in a container
         self.hbox = QHBoxLayout()
         self.hbox.addWidget(self.button_back)
@@ -100,12 +96,12 @@ class ConfigWindow(QMainWindow):
         """Creates the input face for the according config types"""
         # Add the elements header to the view
         header = QLabel(f"{config_name}:")
-        self._adjust_font(header, LARGE_FONT, True)
+        adjust_font(header, LARGE_FONT, True)
         self.vbox.addWidget(header)
         description_text = UI_LANGUAGE.get_config_description(config_name)
         if description_text:
             description = QLabel(description_text)
-            self._adjust_font(description, SMALL_FONT)
+            adjust_font(description, SMALL_FONT)
             self.vbox.addWidget(description)
         # Reads out the current config value
         current_value = getattr(cfg, config_name)
@@ -120,7 +116,7 @@ class ConfigWindow(QMainWindow):
         self.button_custom_color = QPushButton("Define Custom Color")
         self.button_custom_color.setMaximumSize(QSize(16777215, 200))
         self.button_custom_color.setMinimumSize(QSize(0, 50))
-        self._adjust_font(self.button_custom_color, LARGE_FONT, True)
+        adjust_font(self.button_custom_color, LARGE_FONT, True)
         self.button_custom_color.clicked.connect(self._open_color_window)
         self.vbox.addWidget(self.button_custom_color)
 
@@ -151,7 +147,7 @@ class ConfigWindow(QMainWindow):
     def _build_int_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], int]:
         """Builds a field for integer input with numpad"""
         config_input = ClickableLineEdit(str(current_value))
-        self._adjust_font(config_input, MEDIUM_FONT)
+        adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(lambda: NumpadWidget(self, config_input, 300, 50, config_name))  # type: ignore
         layout.addWidget(config_input)
@@ -160,7 +156,7 @@ class ConfigWindow(QMainWindow):
     def _build_float_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], float]:
         """Builds a field for integer input with numpad"""
         config_input = ClickableLineEdit(str(current_value))
-        self._adjust_font(config_input, MEDIUM_FONT)
+        adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(lambda: NumpadWidget(
             self, config_input, 300, 50, config_name, True))  # type: ignore
@@ -170,7 +166,7 @@ class ConfigWindow(QMainWindow):
     def _build_bool_field(self, layout: QBoxLayout, current_value: bool, displayed_text="on") -> Callable[[], bool]:
         """Builds a field for bool input with a checkbox"""
         config_input = QCheckBox(displayed_text)
-        self._adjust_font(config_input, MEDIUM_FONT)
+        adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.setChecked(current_value)
         layout.addWidget(config_input)
@@ -185,7 +181,7 @@ class ConfigWindow(QMainWindow):
             self._add_ui_element_to_list(initial_value, getter_fn_list, config_name, config_input)
         # adds a button for adding new list entries
         add_button = QPushButton("+ add")
-        self._adjust_font(add_button, MEDIUM_FONT, True)
+        adjust_font(add_button, MEDIUM_FONT, True)
         add_button.clicked.connect(lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input))
         # build container that new added elements are above add button separately
         v_container = QVBoxLayout()
@@ -208,7 +204,7 @@ class ConfigWindow(QMainWindow):
         h_container = QHBoxLayout()
         getter_fn = self._build_input_field(config_name, list_type, initial_value, h_container)
         remove_button = QPushButton("x")
-        self._adjust_font(remove_button, MEDIUM_FONT, True)
+        adjust_font(remove_button, MEDIUM_FONT, True)
         # the first argument in lambda is needed since the object reference within the loop
         remove_button.clicked.connect(
             lambda _, x=h_container: self._remove_ui_element_from_list(x, getter_fn, getter_fn_list))
@@ -227,7 +223,7 @@ class ConfigWindow(QMainWindow):
     def _build_fallback_field(self, layout: QBoxLayout, current_value) -> Callable[[], str]:
         """builds the default input field for string input"""
         config_input = ClickableLineEdit(str(current_value))
-        self._adjust_font(config_input, MEDIUM_FONT)
+        adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(lambda: KeyboardWidget(self, config_input, 200))  # type: ignore
         layout.addWidget(config_input)
@@ -240,7 +236,7 @@ class ConfigWindow(QMainWindow):
         """Builds a field for selection of values with a dropdown / combobox"""
         config_input = QComboBox()
         config_input.addItems(selection)
-        self._adjust_font(config_input, MEDIUM_FONT)
+        adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         index = config_input.findText(current_value, Qt.MatchFixedString)  # type: ignore
         config_input.setCurrentIndex(index)
@@ -249,11 +245,3 @@ class ConfigWindow(QMainWindow):
 
     def _retrieve_values(self):
         return {key: getter() for key, getter in self.config_objects.items()}
-
-    def _adjust_font(self, element: QWidget, font_size: int, bold: bool = False):
-        font = QFont()
-        font.setPointSize(font_size)
-        font.setBold(bold)
-        weight = 75 if bold else 50
-        font.setWeight(weight)
-        element.setFont(font)
