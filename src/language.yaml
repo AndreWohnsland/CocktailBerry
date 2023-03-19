@@ -510,7 +510,7 @@ ui:
       en: 'Use Template'
       de: 'Template nehmen'
     description:
-      en: 'Here, you can set your own custom colors for the application. If you want to start from a specific theme, select it over the drop down and click use theme. You need to select custom as a theme for this settings to be applied.'
+      en: 'Here, you can set your own custom colors for the application. If you want to start from a specific theme, select it over the drop down and click use template. You need to select custom as a theme for this settings to be applied.'
       de: 'Here kann der eigene Stil der Anwendung definiert werden. Wenn von einer existieren Theme gestartet werden soll, wähle diese im Dropdown aus und klicke Template nehmen. Die option custom muss als Theme gewählt werden, damit diese aktiv ist.'
     primary:
       en: 'Primary color, for the font and buttons'
