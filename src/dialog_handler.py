@@ -538,6 +538,7 @@ class UiLanguage():
         w.button_back.setText(self.__choose_language("back"))
         w.button_apply.setText(self.__choose_language("apply"))
         w.button_use_template.setText(self.__choose_language("use_template", window))
+        w.label_description.setText(self.__choose_language("description", window))
 
 
 UI_LANGUAGE = UiLanguage()
