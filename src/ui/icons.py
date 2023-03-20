@@ -1,9 +1,11 @@
 from typing import Literal, Optional
 from dataclasses import dataclass
+
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QPushButton, QWidget
+from PyQt5.QtGui import QIcon, QColor
 import qtawesome as qta
+from pyqtspinner import WaitingSpinner
 
 from src import SupportedThemesType
 from src.filepath import STYLE_FOLDER
@@ -66,6 +68,7 @@ def parse_colors(theme: Optional[SupportedThemesType] = None) -> ColorInformatio
 class IconSetter:
     def __init__(self):
         self.color = parse_colors()
+        self._spinner: Optional[WaitingSpinner] = None
 
     def set_mainwindow_icons(self, w):
         """Sets the icons of the main window according to style sheets props"""
@@ -91,14 +94,6 @@ class IconSetter:
         if no_text:
             ui_element.setText("")
 
-    def _set_plus_minus_mw_experimental(self, w):
-        w.PBMminus.setIcon(qta.icon(_MINUS_ICON, color=self.color.primary))
-        w.PBMminus.setIconSize(_BUTTON_SIZE)
-        w.PBMminus.setText("")
-        w.PBMplus.setIcon(qta.icon(_PLUS_ICON, color=self.color.primary))
-        w.PBMplus.setIconSize(_BUTTON_SIZE)
-        w.PBMplus.setText("")
-
     def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary=False):
         """Sets a spinner button to the icon"""
         color = self.color.primary if primary else self.color.background
@@ -116,6 +111,29 @@ class IconSetter:
         # Removes the previous set "padding"
         button.setText(button.text().strip())
         button.setIcon(QIcon())
+
+    def start_spinner(self, parent_widget: QWidget):
+        """Starts a spinner above the parent widget, locks parent"""
+        self._spinner = WaitingSpinner(
+            parent_widget,
+            disable_parent_when_spinning=True,
+            roundness=99.9,
+            # opacity=3.0,
+            fade=90.0,
+            radius=50,
+            lines=8,
+            line_length=80,
+            line_width=60,
+            speed=1.0,
+            color=QColor(self.color.primary),
+        )
+        self._spinner.start()
+
+    def stop_spinner(self):
+        """Stops the spinner"""
+        if self._spinner is None:
+            return
+        self._spinner.stop()
 
 
 ICONS = IconSetter()
