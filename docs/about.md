@@ -57,14 +57,14 @@ You can also change the current fill level of each bottle.
 Use the gear icon to get to the option window.
 Within this, you can export data, change settings, make and restore backups or reboot and shutdown the system.
 
-## The Machine
+## Example Machines
 
 The base machine consists out of a Raspberry Pi + touchscreen, 5V relays as well as membrane pumps and some cabling.
 MK1 is made with custom design housing out of bent, laser cut and welded stainless steel.
-Mk2 is printed on a 3D printer.
+Mk2 as well as Mk3 is printed on a 3D printer.
 But there may be some other custom builds out there, check out the [official dashboard](https://stats-cocktailberry.streamlit.app/#existing-machines) for more impressions.
 The electronics are hidden in a waterproof housing, the pumps are within the casing.
-See [Hardware](hardware.md) for a detailed list of components.
+See [Hardware](hardware.md) for a detailed example list of components.
 
 <figure markdown>
   ![Frontview](pictures/Frontview.jpg){width="700"}
