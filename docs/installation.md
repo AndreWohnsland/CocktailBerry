@@ -43,7 +43,7 @@ python3 runme.py # (1)!
     If you are on another system, have a look into the other instructions, [faq](faq.md) or [troubleshooting](troubleshooting.md).
 
 ## Installing Requirements
-The best way is to use the provided `requirements.txt` file.
+On none Pi systems, the best way is to use the provided `requirements.txt` file.
 If Python is installed, just run: 
 
 ```bash
@@ -53,7 +53,7 @@ pip install -r requirements.txt
 to get all requirements.
 Optionally, you can install the single needed dependencies:
 
-- PyQt5, requests, pyyaml, GitPython, typer, pyfiglet, qtawesome, piicodev, qtsass
+- PyQt5, requests, pyyaml, GitPython, typer, pyfiglet, qtawesome, piicodev, qtsass, pyqtspinner
 
 ## Install PyQt5 on RaspberryPi
 
