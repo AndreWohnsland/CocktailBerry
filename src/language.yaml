@@ -151,6 +151,9 @@ dialog:
   ask_export_data:
     en: 'Export cocktail and ingredient data, as well reset possible values?'
     de: 'Cocktail und Zutaten Daten exportieren und mögliche Werte zurücksetzen?'
+  ask_to_install_qtsass:
+    en: "The Python library qtsass is needed for this feature. Since it may take 30-60 minutes building on the RPi, it was not done by the migrator.\n\nInstall and restart now? Without it can not use custom themes."
+    de: "Die Python Bibliothek qtsass wird für dieses Feature benötigt. Das Bauen dieser kann 30-60 Minuten auf dem RPi benötigen, deshalb wurde dies nicht vom Migrator gemacht.\n\nSoll diese installiert und neu gestartet werden? Ohne die Bibliothek können keine Custom Themes erstellt werden."
   welcome_dialog:
     en: "CocktailBerry Software Version {version} by Andre Wohnsland.\n{platform}.\n\nCheck https://cocktailberry.readthedocs.io for more information."
     de: "CocktailBerry Software Version {version} von Andre Wohnsland.\n{platform}.\n\nMehr Informationen unter https://cocktailberry.readthedocs.io."
@@ -169,6 +172,9 @@ dialog:
   internet_connection_not_ok:
     en: 'X There is no internet connection.'
     de: 'X Es besteht keine Internetverbindung.'
+  qtsass_not_successful:
+    en: 'The package qtsass could not be installed. Try running "[sudo] pip install qtsass" (sudo only, if program is executed with sudo python) and wait until its done.'
+    de: 'Das qtsass Paket konnte nicht installiert werden. Versuche "[sudo] pip install qtsass" (sudo nur, wenn das program mit sudo python ausgeführt wird) auszuführen und warte, bis die installation abgeschlossen ist.'
 # Change of language in UI elements
 ui:
   # Some commonly used elements within multiple windows

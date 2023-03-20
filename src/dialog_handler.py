@@ -276,6 +276,9 @@ class DialogHandler():
             return
         self.__output_language_dialog("internet_connection_not_ok")
 
+    def say_qtsass_not_successful(self):
+        self.__output_language_dialog("qtsass_not_successful")
+
     ############################
     # Methods for prompting ####
     ############################
@@ -329,6 +332,13 @@ class DialogHandler():
     def ask_to_export_data(self):
         """Asks the user if he wants to export the data"""
         message = self.__choose_language("ask_export_data")
+        return self.user_okay(message)
+
+    def ask_to_install_qtsass(self):
+        """Asks the user if he wants to install qtsass
+        Since this may take 30-60 min on the RPi, it's not done in the migrator.
+        """
+        message = self.__choose_language("ask_to_install_qtsass")
         return self.user_okay(message)
 
 
