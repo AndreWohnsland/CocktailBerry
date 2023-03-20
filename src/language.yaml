@@ -368,6 +368,12 @@ ui:
     export:
       en: 'Data Export'
       de: 'Datenexport'
+    rfid:
+      en: 'Write RFID'
+      de: 'RFID Schreiben'
+    check_internet:
+      en: 'Internet Check'
+      de: 'Internet Check'
 
   ##### DATE PICKER WINDOW #####
   # all values for date picker window

@@ -486,11 +486,15 @@ class UiLanguage():
         for ui_element, text_name in [
             (w.button_clean, "cleaning"),
             (w.button_config, "config"),
-            (w.button_back, "back"),
             (w.button_calibration, "calibration"),
             (w.button_reboot, "reboot"),
             (w.button_shutdown, "shutdown"),
+            (w.button_back, "back"),
+            (w.button_backup, "backup"),
+            (w.button_restore, "restore"),
             (w.button_export, "export"),
+            (w.button_rfid, "rfid"),
+            (w.button_check_internet, "check_internet"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 
