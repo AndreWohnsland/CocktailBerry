@@ -10,7 +10,7 @@ How exactly you will build your CocktailBerry is completely up to you.
 The following components were used within the showcase for the Machine:
 
 - 1x [Raspberry Pi 3b+](http://www.amazon.de/dp/B00LPESRUK/) (or newer like [Model 4](https://www.amazon.de/gp/product/B07TD42S27))
-- 1x [5-inch Touch Screen](http://www.amazon.de/dp/B071XT9Z7H/) for the Raspberry Pi
+- 1x [5-inch Touch Screen](http://www.amazon.de/dp/B071XT9Z7H/) or [7-inch Touch Screen](https://www.amazon.de/dp/B07H79XMLT) for the Raspberry Pi
 - 1x Micro SD-Card (16 Gb is enough)
 - 1x 5V Power supply for the Raspberry Pi
 - 1x or 2x [Relay-Boards](https://www.amazon.de/gp/product/B07MJF9Z4K) depending on pump count (important to have 5V input control)
@@ -18,8 +18,10 @@ The following components were used within the showcase for the Machine:
 - 1x Power supply for the pumps (a 12V/5A Laptop charger in my case, needs to match pump voltage)
 - Food safe hose/tubes for the pumps
 - Female to Female jumper wires
-- Female to Male HDMI and USB extension cable
 - Some wires
+- Your custom build machine casing
+- *Optional*: Female to Male HDMI and USB extension cable
+- *Optional*: A good! [converter](https://www.amazon.de/dp/B086W6B9H1) (using usb ones may result in too high voltage loss) if you only want one power source
 
 ## Showcase Teams Dashboard
 
