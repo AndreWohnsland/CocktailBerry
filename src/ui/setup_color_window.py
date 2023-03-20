@@ -1,21 +1,42 @@
 from typing import Optional, get_args
 import re
 from dataclasses import fields
+import importlib.util
 from PyQt5.QtWidgets import QMainWindow, QLabel, QColorDialog, QLineEdit
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import QSize
-import qtsass
+from PyQt5.QtCore import QSize, Qt, QObject, pyqtSignal, QThread
 
 from src import SupportedThemesType
 from src.filepath import STYLE_FOLDER
-from src.ui.icons import parse_colors
+from src.utils import restart_program
+from src.migration.migrator import Migrator
+from src.ui.icons import parse_colors, ICONS
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements import Ui_ColorWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.ui.creation_utils import SMALL_FONT, MEDIUM_FONT, LARGE_FONT, adjust_font, create_spacer
 
+try:
+    import qtsass
+    _QTSASS_INSTALLED = True
+except ModuleNotFoundError:
+    _QTSASS_INSTALLED = False
+
 THEMES = list(get_args(SupportedThemesType))
+
+
+class _Worker(QObject):
+    """Worker to install qtsass on a thread"""
+    done = pyqtSignal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def run(self):
+        migrator = Migrator()
+        migrator._install_pip_package("qtsass", "1.17.0")  # pylint: disable=protected-access
+        self.done.emit()
 
 
 class ColorWindow(QMainWindow, Ui_ColorWindow):
@@ -42,6 +63,16 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         UI_LANGUAGE.adjust_color_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
+
+        # If the module is not installed, we cannot compile.
+        # The module will be only installed at a new installation but not an update
+        # This is because the wheels are not build for aarch64, so it takes a LOT of time
+        # Shows prompt with info, if user yes, install the package and restart
+        if _QTSASS_INSTALLED:
+            return
+        self.button_apply.setDisabled(True)
+        if DP_CONTROLLER.ask_to_install_qtsass():
+            self._run_installer_worker()
 
     def _set_selected_template(self):
         """Uses the selected template and fills the color into the fields"""
@@ -71,6 +102,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             description = QLabel(description_text)
             adjust_font(description, SMALL_FONT)
             self.color_container.addWidget(description)
+
         # Reads out the current config value
         current_value = self.custom_colors[color_name]
         color_input = ClickableLineEdit(str(current_value))
@@ -90,6 +122,10 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         self.color_picker = QColorDialog(self)
         current_color = line_edit_to_write.text()
         self.color_picker.setCurrentColor(QColor(current_color))
+        # self.color_picker.showFullScreen()
+        self.color_picker.setWindowFlags(
+            Qt.Dialog | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint  # type: ignore
+        )
 
         if self.color_picker.exec_():
             selected_color = self.color_picker.currentColor().name()
@@ -107,6 +143,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         # read in the custom style file
         custom_style_file = STYLE_FOLDER / "custom.scss"
         style = custom_style_file.read_text()
+
         # replace lines with new color
         for color_name, color_line_edit in self.inputs_colors.items():
             color_value: str = color_line_edit.text()
@@ -114,7 +151,35 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             replacement = f"${color_name}: {color_value};"
             style = re.sub(replace_regex, replacement, style)
         custom_style_file.write_text(style)
+
         # compile the file with qtsass
         compiled_style_file = STYLE_FOLDER / "custom.css"
         qtsass.compile_filename(custom_style_file, compiled_style_file)
         self.close()
+
+    def _run_installer_worker(self):
+        """Runs a _worker on another thread, so the spinner can still spin"""
+        ICONS.start_spinner(self)
+        # Create a worker + thread object. move worker to thread
+        self._thread = QThread()
+        self._worker = _Worker()
+        self._worker.moveToThread(self._thread)
+
+        # Connect signals and slots
+        self._thread.started.connect(self._worker.run)
+        self._worker.done.connect(self._thread.quit)
+        self._worker.done.connect(self._worker.deleteLater)
+        self._thread.finished.connect(self._thread.deleteLater)
+
+        # Start the thread, connect to the finish function
+        self._thread.start()
+        self._thread.finished.connect(self._finish_installer_worker)
+
+    def _finish_installer_worker(self):
+        """Ends the spinner, checks if installation was successful"""
+        ICONS.stop_spinner()
+        # Informs the user if it is still not found
+        if importlib.util.find_spec("qtsass") is None:
+            DP_CONTROLLER.say_qtsass_not_successful()
+            return
+        restart_program()
