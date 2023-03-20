@@ -354,7 +354,7 @@ files = [
 name = "libsass"
 version = "0.21.0"
 description = "Sass for Python: A straightforward binding of libsass for Python."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -734,6 +734,21 @@ files = [
 ]
 
 [[package]]
+name = "pyqtspinner"
+version = "2.0.0"
+description = "Waiting spinner for PyQt5"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pyqtspinner-2.0.0-py3-none-any.whl", hash = "sha256:04646fe09287d6bd99bdd78ac1633aa2ce6caab70b2bd5e7ee0fc51dd4113220"},
+    {file = "pyqtspinner-2.0.0.tar.gz", hash = "sha256:273d42cf95b11203375c06ee9e6c9e853c0017bb1ada844f494e21e97ca305e4"},
+]
+
+[package.dependencies]
+PyQt5 = ">5.8"
+
+[[package]]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
@@ -862,7 +877,7 @@ test = ["pytest (>=6,!=7.0.0,!=7.0.1)", "pytest-cov (>=3.0.0)", "pytest-qt"]
 name = "qtsass"
 version = "0.3.2"
 description = "Compile SCSS files to valid Qt stylesheets."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -1023,7 +1038,7 @@ files = [
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
@@ -1268,4 +1283,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "f5a16f625f23c61279d072bae81389dd4f1ebb65d2940bf018d729f6ad99265a"
+content-hash = "cd4ec6e3f33cf0c23b5bb8996802b652fcb2b73af947dfd9fe29b53861d7a6e2"

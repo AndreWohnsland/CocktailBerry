@@ -17,6 +17,7 @@ pyfiglet = "^0.8.post1"
 QtAwesome = "^1.2.2"
 piicodev = "^1.10.0"
 qtsass = "^0.3.2"
+pyqtspinner = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.15.9"

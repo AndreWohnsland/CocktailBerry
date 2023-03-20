@@ -7,3 +7,4 @@ pyfiglet
 qtawesome
 piicodev
 qtsass
+pyqtspinner
