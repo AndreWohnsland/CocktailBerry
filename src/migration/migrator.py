@@ -7,8 +7,8 @@ check_python_version()
 import configparser
 import sys
 import subprocess
-import pkg_resources
 from typing import Optional, Tuple
+import importlib.util
 
 from src.filepath import VERSION_FILE
 from src import __version__, FUTURE_PYTHON_VERSION
@@ -22,7 +22,6 @@ from src.migration.update_data import (
 )
 
 _logger = LoggerHandler("migrator_module")
-_INSTALLED_PACKAGES = [pkg.key for pkg in list(pkg_resources.working_set)]
 
 
 class Migrator:
@@ -79,9 +78,9 @@ class Migrator:
         if self.older_than_version("1.11.0"):
             _logger.log_event("INFO", "Making migrations for v1.11.0")
             self._install_pip_package("qtawesome", "1.11.0")
-        # if self.older_than_version("1.17.0"):
-        #     _logger.log_event("INFO", "Making migrations for v1.17.0")
-        #     self._install_pip_package("qtsass", "1.17.0")
+        if self.older_than_version("1.17.0"):
+            _logger.log_event("INFO", "Making migrations for v1.17.0")
+            self._install_pip_package("pyqtspinner", "1.17.0")
         self._check_local_version_data()
 
     def _python_to_old_warning(self, least_python: Tuple[int, int]):
@@ -118,8 +117,9 @@ class Migrator:
     def _install_pip_package(self, package_name: str, version_to_migrate: str):
         """Try to install a python package over pip"""
         _logger.log_event("INFO", f"Trying to install {package_name}, it is needed since v{version_to_migrate}")
-        if package_name in _INSTALLED_PACKAGES:
+        if importlib.util.find_spec(package_name) is not None:
             _logger.log_event("INFO", f"Package {package_name} is already installed, skipping installation.")
+            return
         try:
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', package_name])
             _logger.log_event("INFO", f"Successfully installed {package_name}")
