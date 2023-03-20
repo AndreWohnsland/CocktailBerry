@@ -103,6 +103,7 @@ Currently, there are following themes:
 - **bavaria**: The somewhat light mode of the app. Blue, Black and White as main colors.
 - **berry**: Pink mixed with dark blue and dark background.
 - **alien**: Different shades of green and dark background.
+- **custom**: Starts by the default theme, but you can set each color to your liking.
 
 ## Calibration of the Pumps
 
