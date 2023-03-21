@@ -1,6 +1,6 @@
 
 import time
-from typing import Callable, Optional, Union
+from typing import Callable, Optional
 from threading import Thread
 
 from src.logger_handler import LoggerHandler
@@ -49,7 +49,7 @@ class RFIDReader:
             _logger.log_event("ERROR", _ERROR)
         self.rfid = self._select_rfid()
 
-    def _select_rfid(self) -> Union[RFIDController, None]:
+    def _select_rfid(self) -> Optional[RFIDController]:
         """Selects the controller defined in config"""
         if _NO_MODULE or cfg.RFID_READER == "No":
             return None
@@ -112,7 +112,7 @@ class _PiicoDevReader(RFIDController):
     def __init__(self) -> None:
         self.rfid = PiicoDev_RFID()
 
-    def read_card(self) -> Union[str, None]:
+    def read_card(self) -> Optional[str]:
         text = None
         if self.rfid.tagPresent():
             text = self.rfid.readText()
@@ -130,7 +130,7 @@ class _BasicMFRC522(RFIDController):
     def __init__(self) -> None:
         self.rfid = SimpleMFRC522()
 
-    def read_card(self) -> Union[str, None]:
+    def read_card(self) -> Optional[str]:
         _, text = self.rfid.read_no_block()
         if text is not None:
             text = text.strip()

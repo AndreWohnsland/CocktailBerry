@@ -118,7 +118,6 @@ class IconSetter:
             parent_widget,
             disable_parent_when_spinning=True,
             roundness=99.9,
-            # opacity=3.0,
             fade=90.0,
             radius=50,
             lines=8,
