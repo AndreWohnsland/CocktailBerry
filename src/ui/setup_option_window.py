@@ -1,17 +1,19 @@
 
+from __future__ import annotations
 import os
 import datetime
 import shutil
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from pathlib import Path
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
 
+from src.filepath import ROOT_PATH
 from src.ui.create_config_window import ConfigWindow
 from src.ui.setup_log_window import LogWindow
-from src.ui_elements.optionwindow import Ui_Optionwindow
+from src.ui.setup_rfid_writer_window import RFIDWriterWindow
+from src.ui.setup_wifi_window import WiFiWindow
+from src.ui_elements import Ui_Optionwindow
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
@@ -19,10 +21,13 @@ from src.programs.calibration import run_calibration
 from src.machine.controller import MACHINE
 from src.logger_handler import LoggerHandler
 from src.save_handler import SAVE_HANDLER
-from src.utils import restart_program
+from src.utils import has_connection, restart_program
+from src.config_manager import CONFIG as cfg
 
 
-_ROOT_PATH = Path(__file__).parents[2].absolute()
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 _DATABASE_NAME = "Cocktail_database.db"
 _CONFIG_NAME = "custom_config.yaml"
 _VERSION_NAME = ".version.ini"
@@ -33,15 +38,11 @@ _logger = LoggerHandler("option_window")
 class OptionWindow(QMainWindow, Ui_Optionwindow):
     """ Class for the Option selection window. """
 
-    def __init__(self, parent):
+    def __init__(self, parent: MainScreen):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
-        self.setWindowIcon(QIcon(parent.icon_path))
+        DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
-        self.move(0, 0)
 
         self.button_back.clicked.connect(self.close)
         self.button_clean.clicked.connect(self._init_clean_machine)
@@ -54,16 +55,22 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_export.clicked.connect(SAVE_HANDLER.export_data)
         self.button_logs.clicked.connect(self._show_logs)
         self.button_rfid.clicked.connect(self._open_rfid_writer)
+        self.button_wifi.clicked.connect(self._open_wifi_window)
+        self.button_check_internet.clicked.connect(self._check_internet_connection)
+
+        self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 
         self.config_window: Optional[ConfigWindow] = None
         self.log_window: Optional[LogWindow] = None
+        self.rfid_writer_window: Optional[RFIDWriterWindow] = None
+        self.wifi_window: Optional[WiFiWindow] = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
     def _open_config(self):
         """Opens the config window."""
-        self.close()
+        # self.close()
         self.config_window = ConfigWindow(self.mainscreen)
 
     def _init_clean_machine(self):
@@ -109,7 +116,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             _logger.log_event("INFO", "Backup folder for today already exists, overwriting current data within")
 
         for _file in _NEEDED_FILES:
-            shutil.copy(_ROOT_PATH / _file, backup_folder)
+            shutil.copy(ROOT_PATH / _file, backup_folder)
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
     def _upload_backup(self):
@@ -125,7 +132,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
                 DP_CONTROLLER.say_backup_failed(_file)
                 return
         for _file in _NEEDED_FILES:
-            shutil.copy(location / _file, _ROOT_PATH)
+            shutil.copy(location / _file, ROOT_PATH)
         restart_program()
 
     def _get_user_folder_response(self):
@@ -138,9 +145,20 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def _show_logs(self):
         """Opens the logs window"""
-        self.close()
+        # self.close()
         self.log_window = LogWindow()
 
     def _open_rfid_writer(self):
         """Opens the rfid writer window"""
-        # TODO: Implement the rfid logic
+        self.close()
+        self.rfid_writer_window = RFIDWriterWindow(self.mainscreen)
+
+    def _open_wifi_window(self):
+        """Opens a window to configure wifi"""
+        # self.close()
+        self.wifi_window = WiFiWindow(self.mainscreen)
+
+    def _check_internet_connection(self):
+        """Checks if there is a active internet connection"""
+        is_connected = has_connection()
+        DP_CONTROLLER.say_internet_connection_status(is_connected)

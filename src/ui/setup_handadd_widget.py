@@ -1,28 +1,24 @@
 from collections import Counter
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
-from PyQt5.QtGui import QIcon, QIntValidator
+from PyQt5.QtGui import QIntValidator
 from src.models import Ingredient
 
-from src.ui_elements.handadds import Ui_handadds
+from src.ui_elements.handadds import Ui_Handadds
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.config_manager import shared
 
 
-class HandaddWidget(QDialog, Ui_handadds):
+class HandaddWidget(QDialog, Ui_Handadds):
     """ Creates a window where the user can define additional ingredients to add via hand after the machine. """
 
     def __init__(self, parent):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self, 20, 100)
         self.mainscreen = parent
-        self.setWindowIcon(QIcon(parent.icon_path))
         # generating a sorted by name list for all ingredients, all handadd first
         hand_ingredients = DB_COMMANDER.get_all_ingredients(get_machine=False)
         machine_ingredients = DB_COMMANDER.get_all_ingredients(get_hand=False)
@@ -42,7 +38,6 @@ class HandaddWidget(QDialog, Ui_handadds):
             lineedit.setValidator(QIntValidator(0, 300))
             lineedit.setMaxLength(3)
         self.fill_elements()
-        self.move(20, 100)
         UI_LANGUAGE.adjust_handadds_window(self)
         self.show()
         DP_CONTROLLER.set_display_settings(self, resize=False)
@@ -84,7 +79,11 @@ class HandaddWidget(QDialog, Ui_handadds):
         self.close()
 
     def missing_pairs(self, combobox, lineedit):
-        if ((combobox.currentText() != "") and lineedit.text() == "") or ((combobox.currentText() == "") and lineedit.text() != ""):
+        if (
+            ((combobox.currentText() != "") and lineedit.text() == "")
+            or
+            ((combobox.currentText() == "") and lineedit.text() != "")
+        ):
             return True
         return False
 

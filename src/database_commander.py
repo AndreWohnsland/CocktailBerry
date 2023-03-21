@@ -1,14 +1,13 @@
 import datetime
 import shutil
-from pathlib import Path
 import sqlite3
 from typing import List, Optional, Union
 
+from src.filepath import ROOT_PATH
 from src.models import Cocktail, Ingredient
 from src.logger_handler import LoggerHandler
 
 DATABASE_NAME = "Cocktail_database"
-DIRPATH = Path(__file__).parent.absolute()
 BACKUP_NAME = f"{DATABASE_NAME}_backup"
 
 _logger = LoggerHandler("database_module")
@@ -24,9 +23,9 @@ class DatabaseCommander:
         """Creates a backup locally in the same folder, used before migrations"""
         dtime = datetime.datetime.now()
         suffix = dtime.strftime("%Y-%m-%d-%H-%M-%S")
-        database_path = DIRPATH.parent / f"{DATABASE_NAME}.db"
+        database_path = ROOT_PATH / f"{DATABASE_NAME}.db"
         full_backup_name = f"{BACKUP_NAME}-{suffix}"
-        backup_path = DIRPATH.parent / f"{full_backup_name}.db"
+        backup_path = ROOT_PATH / f"{full_backup_name}.db"
         _logger.log_event("INFO", f"Creating backup with name: {full_backup_name}")
         _logger.log_event("INFO", f"Use this to overwrite: {DATABASE_NAME} in case of failure")
         shutil.copy(database_path, backup_path)
@@ -395,8 +394,8 @@ class DatabaseCommander:
 class DatabaseHandler:
     """Handler Class for Connecting and querying Databases"""
 
-    database_path = DIRPATH.parent / f"{DATABASE_NAME}.db"
-    database_path_default = DIRPATH.parent / f"{DATABASE_NAME}_default.db"
+    database_path = ROOT_PATH / f"{DATABASE_NAME}.db"
+    database_path_default = ROOT_PATH / f"{DATABASE_NAME}_default.db"
 
     def __init__(self, use_default=False):
         self.database_path = DatabaseHandler.database_path

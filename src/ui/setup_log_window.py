@@ -1,14 +1,12 @@
 import re
-from pathlib import Path
 from collections import Counter
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow
+
+from src.filepath import LOG_FOLDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.logwindow import Ui_LogWindow
 
-_DIRPATH = Path(__file__).parent.absolute()
-_LOG_FOLDER = _DIRPATH.parents[1] / "logs"
 _DEFAULT_SELECTED = "production_logs.log"
 _DEBUG_FILE = "debuglog.log"
 
@@ -20,9 +18,7 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         """ Init. Connect all the buttons and set window policy. """
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         # Connect all the buttons, generates a list of the numbers an object names to do that
         self.button_back.clicked.connect(self.close)
 
@@ -35,14 +31,13 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         # activated does only trigger if changed by user, so we need to read in here
         self._read_logs()
 
-        self.move(0, 0)
         UI_LANGUAGE.adjust_log_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
     def _get_log_files(self):
         """Checks the logs folder for all existing log files"""
-        return [file.name for file in _LOG_FOLDER.glob("*.log")]
+        return [file.name for file in LOG_FOLDER.glob("*.log")]
 
     def _read_logs(self):
         """Read the current selected log file"""
@@ -50,7 +45,7 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         # Return if empty selection
         if log_name == "":
             return
-        log_path = _LOG_FOLDER / log_name
+        log_path = LOG_FOLDER / log_name
         log_text = log_path.read_text()
         # Handle debug logs differently, since they save error traces,
         # just display the read in text from log in this case

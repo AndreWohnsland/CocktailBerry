@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from db_controller import DBController
-from models import Teaminfo, BoardConfig
+from models import TeamInfo, BoardConfig
 
 app = FastAPI()
 
@@ -12,10 +12,10 @@ def home():
 
 
 @app.post("/cocktail")
-async def enter_cocktail_for_team(team: Teaminfo):
+async def enter_cocktail_for_team(team: TeamInfo):
     controller = DBController()
     controller.enter_cocktail(team.team, team.volume, team.person)
-    return {"message": "Team entry was successfull", "team": team.team, "volume": team.volume, "person": team.person}
+    return {"message": "Team entry was successful", "team": team.team, "volume": team.volume, "person": team.person}
 
 
 @app.get("/leaderboard")

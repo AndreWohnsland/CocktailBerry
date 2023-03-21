@@ -81,9 +81,11 @@ class MachineController():
             w.open_progression_window(recipe)
         prep_data = _build_preparation_data(bottle_list, volume_list)
         _header_print(f"Starting {recipe}")
-        self._led_controller.preparation_start()
+        if is_cocktail:
+            self._led_controller.preparation_start()
         current_time, max_time = self._start_preparation(w, prep_data, verbose)
-        self._led_controller.preparation_end()
+        if is_cocktail:
+            self._led_controller.preparation_end()
         consumption = [round(x.consumption) for x in prep_data]
         print("Total calculated consumption:", consumption)
         _header_print(f"Finished {recipe}")

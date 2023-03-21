@@ -6,6 +6,7 @@ import typer
 
 from src.config_manager import CONFIG as cfg, version_callback, show_start_message
 from src.migration.update_data import add_new_recipes_from_default_db
+from src.utils import generate_custom_style_file
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.calibration import run_calibration
 from src.programs.data_import import importer
@@ -36,6 +37,7 @@ def main(
     if debug:
         os.environ.setdefault('DEBUG_MS', 'True')
         print("Using debug mode")
+    generate_custom_style_file()
     if calibration:
         run_calibration()
     run_cocktailberry()

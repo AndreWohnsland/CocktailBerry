@@ -1,26 +1,31 @@
 # otherwise circular import :(
 # pylint: disable=import-outside-toplevel
 
-from pathlib import Path
+from __future__ import annotations
 import time
-from typing import Dict, List, Optional, Literal
+from typing import Dict, List, Optional, Literal, TYPE_CHECKING
 from threading import Thread, Event
 import yaml
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from src.config_manager import CONFIG as cfg
 from src.utils import get_platform_data
+from src.filepath import LANGUAGE_FILE, APP_ICON_FILE
 from src import __version__
 
-
-DIRPATH = Path(__file__).parent.absolute()
-LANGUAGE_FILE = DIRPATH / "language.yaml"
+if TYPE_CHECKING:
+    from src.ui_elements import (
+        Ui_available, Ui_addingredient, Ui_Bottlewindow, Ui_MainWindow, Ui_CustomDialog,
+        Ui_CustomPrompt, Ui_Datepicker, Ui_Handadds, Ui_LogWindow, Ui_Optionwindow,
+        Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
+        Ui_WiFiWindow, Ui_ColorWindow,
+    )
 
 
 class DialogHandler():
     """Class to hold all the dialogues for the popups and language settings"""
 
     def __init__(self) -> None:
-        self.icon_path = str(DIRPATH / "ui_elements" / "Cocktail-icon.png")
+        self.icon_path = str(APP_ICON_FILE)
         with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
             self.dialogs: Dict[str, Dict[str, str]] = yaml.safe_load(stream)["dialog"]
 
@@ -46,7 +51,7 @@ class DialogHandler():
             title = self.__choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
-        messagebox = CustomDialog(fancy_message, title, self.icon_path, use_ok)
+        messagebox = CustomDialog(fancy_message, title, use_ok)
         event = Event()
         # If there is a close time, start auto close
         if close_time is not None:
@@ -84,6 +89,7 @@ class DialogHandler():
     ############################
     # Methods for creating msg #
     ############################
+
     def say_wrong_password(self):
         """Informs user that the password is wrong"""
         self.__output_language_dialog("wrong_password")
@@ -251,6 +257,32 @@ class DialogHandler():
             platform=get_platform_data()
         )
 
+    def say_wifi_entered(self, success: bool, ssid: str, password: str):
+        if success:
+            self.__output_language_dialog("wifi_success")
+            return
+        self.__output_language_dialog(
+            "wifi_failure",
+            ssid=ssid,
+            password=password,
+        )
+
+    def say_wifi_setup_failed(self):
+        self.__output_language_dialog("wifi_setup_failed")
+
+    def say_internet_connection_status(self, connected: bool):
+        if connected:
+            self.__output_language_dialog("internet_connection_ok")
+            return
+        self.__output_language_dialog("internet_connection_not_ok")
+
+    def say_qtsass_not_successful(self):
+        self.__output_language_dialog("qtsass_not_successful")
+
+    ############################
+    # Methods for prompting ####
+    ############################
+
     def ask_to_update(self, release_information):
         """Asks the user if he wants to get the latest update"""
         message = self.__choose_language("update_available")
@@ -302,6 +334,13 @@ class DialogHandler():
         message = self.__choose_language("ask_export_data")
         return self.user_okay(message)
 
+    def ask_to_install_qtsass(self):
+        """Asks the user if he wants to install qtsass
+        Since this may take 30-60 min on the RPi, it's not done in the migrator.
+        """
+        message = self.__choose_language("ask_to_install_qtsass")
+        return self.user_okay(message)
+
 
 class UiLanguage():
     """Class to set the UI language to the appropriate Language"""
@@ -334,17 +373,20 @@ class UiLanguage():
         """Returns the add text"""
         return self.__choose_language("change_button")
 
-    def get_config_description(self, config_name: str) -> str:
+    def get_config_description(
+            self,
+            config_name: str,
+            window: Literal["settings_dialog", "color_window"] = "settings_dialog") -> str:
         """Returns the according description for the configuration.
         Returns empty string if there was nothing found
         """
         try:
-            return self.__choose_language(config_name, "settings_dialog")
+            return self.__choose_language(config_name, window)
         # if there is nothing for this settings, we will get an attribute error
         except (AttributeError, KeyError):
             return ""
 
-    def adjust_mainwindow(self, w):
+    def adjust_mainwindow(self, w: Ui_MainWindow):
         """Translates all needed elements of the main window (cocktail maker)"""
         window = "main_window"
         # iterate over tabs and set the name
@@ -379,22 +421,22 @@ class UiLanguage():
         ]:
             ui_element.setText(self.__choose_language(text_name))
 
-    def adjust_available_windows(self, w):
+    def adjust_available_windows(self, w: Ui_available):
         """Translates all needed elements of the available window"""
         window = "available_window"
         w.PBAbbruch_2.setText(self.__choose_language("cancel_button"))
         w.LAvailable.setText(self.__choose_language("available_label", window))
         w.LPossible.setText(self.__choose_language("possible_label", window))
 
-    def adjust_handadds_window(self, w):
+    def adjust_handadds_window(self, w: Ui_Handadds):
         """Translates all needed elements of the handadds window"""
         window = "handadds_window"
         w.PBAbbrechen.setText(self.__choose_language("cancel_button"))
         w.PBEintragen.setText(self.__choose_language("enter_button"))
         w.LHeader.setText(self.__choose_language("title", window))
-        w.setWindowTitle(self.__choose_language("title", window))
+        # w.setWindowTitle(self.__choose_language("title", window))
 
-    def adjust_progress_screen(self, w, cocktail_type: str):
+    def adjust_progress_screen(self, w: Ui_Progressbarwindow, cocktail_type: str):
         """Translates all needed elements of the progress window"""
         window = "progress_screen"
         w.PBabbrechen.setText(self.__choose_language("cancel_button"))
@@ -407,22 +449,22 @@ class UiLanguage():
             cocktail_type = self.__choose_language("bottle_renew_label", window)
         w.LHeader.setText(cocktail_type)
 
-    def adjust_bonusingredient_screen(self, w):
+    def adjust_bonusingredient_screen(self, w: Ui_addingredient):
         """Translates all needed elements of the bonusingredient window"""
         window = "bonusingredient_screen"
         w.PBAbbrechen.setText(self.__choose_language("cancel_button"))
         w.PBAusgeben.setText(self.__choose_language("spend_button", window))
         w.LHeader.setText(self.__choose_language("title", window))
-        w.setWindowTitle(self.__choose_language("title", window))
+        # w.setWindowTitle(self.__choose_language("title", window))
 
-    def adjust_bottle_window(self, w):
+    def adjust_bottle_window(self, w: Ui_Bottlewindow):
         """Translates all needed elements of the bottle window"""
         window = "bottle_window"
         w.PBAbbrechen.setText(self.__choose_language("cancel_button"))
         w.PBEintragen.setText(self.__choose_language("enter_button"))
         w.LHeader.setText(self.__choose_language("header", window))
 
-    def adjust_team_window(self, w):
+    def adjust_team_window(self, w: Ui_Teamselection):
         """Translates all needed elements of the team window"""
         window = "team_window"
         w.LHeader.setText(self.__choose_language("header", window))
@@ -438,21 +480,25 @@ class UiLanguage():
             return self.__choose_language("alcohol", window)
         raise ValueError("Currently not possible")
 
-    def adjust_option_window(self, w):
+    def adjust_option_window(self, w: Ui_Optionwindow):
         """Translates all needed elements of the available window"""
         window = "option_window"
         for ui_element, text_name in [
             (w.button_clean, "cleaning"),
             (w.button_config, "config"),
-            (w.button_back, "back"),
             (w.button_calibration, "calibration"),
             (w.button_reboot, "reboot"),
             (w.button_shutdown, "shutdown"),
+            (w.button_back, "back"),
+            (w.button_backup, "backup"),
+            (w.button_restore, "restore"),
             (w.button_export, "export"),
+            (w.button_rfid, "rfid"),
+            (w.button_check_internet, "check_internet"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 
-    def adjust_custom_dialog(self, w, use_ok: bool):
+    def adjust_custom_dialog(self, w: Ui_CustomDialog, use_ok: bool):
         """Translate all the labels from the datepicker window"""
         if use_ok:
             label = self.__choose_language("ok_button")
@@ -460,26 +506,53 @@ class UiLanguage():
             label = self.__choose_language("close_button")
         w.closeButton.setText(label)
 
-    def adjust_datepicker_window(self, w):
+    def adjust_datepicker_window(self, w: Ui_Datepicker):
         """Translate all the labels from the datepicker window"""
         window = "datepicker"
         w.header.setText(self.__choose_language("header", window))
 
-    def adjust_password_window(self, w):
+    def adjust_password_window(self, w: Ui_PasswordDialog):
         """Translate all the labels from the password window"""
         window = "password_dialog"
         w.header.setText(self.__choose_language("header", window))
         w.cancel_button.setText(self.__choose_language("cancel_button"))
         w.enter_button.setText(self.__choose_language("ok_button"))
 
-    def adjust_custom_prompt(self, w):
+    def adjust_custom_prompt(self, w: Ui_CustomPrompt):
         """Translate all the labels from the password window"""
         w.yes_button.setText(self.__choose_language("yes_button"))
         w.no_button.setText(self.__choose_language("no_button"))
 
-    def adjust_log_window(self, w):
+    def adjust_log_window(self, w: Ui_LogWindow):
         """Translates the elements from the logs window"""
         w.button_back.setText(self.__choose_language("back"))
+
+    def adjust_rfid_reader_window(self, w: Ui_RFIDWriterWindow):
+        """Translates the elements on the RFID reader window"""
+        window = "rfid_writer"
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_write.setText(self.__choose_language("write", window))
+        w.label_information.setText(self.__choose_language("start_text", window))
+
+    def get_rfid_information_display(self, element: Literal['success', 'prompt', 'error']):
+        """Returns the information element for rfid"""
+        return self.__choose_language(element, "rfid_writer")
+
+    def adjust_wifi_window(self, w: Ui_WiFiWindow):
+        """Translates the elements on the RFID reader window"""
+        window = "wifi"
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_enter.setText(self.__choose_language("enter_button"))
+        w.label_ssid.setText(self.__choose_language("ssid", window))
+        w.label_password.setText(self.__choose_language("password", window))
+
+    def adjust_color_window(self, w: Ui_ColorWindow):
+        """Translates the elements of the custom color window"""
+        window = "color_window"
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_apply.setText(self.__choose_language("apply"))
+        w.button_use_template.setText(self.__choose_language("use_template", window))
+        w.label_description.setText(self.__choose_language("description", window))
 
 
 UI_LANGUAGE = UiLanguage()

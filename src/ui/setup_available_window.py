@@ -1,4 +1,3 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow
 
 
@@ -15,9 +14,8 @@ class AvailableWindow(QMainWindow, Ui_available):
     def __init__(self, parent):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         self.mainscreen = parent
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         # somehow the ui don't accept without _2 for those two buttons so they are _2
         self.PBAbbruch_2.clicked.connect(self._cancel_click)
         self.PBOk_2.clicked.connect(self._accepted_clicked)

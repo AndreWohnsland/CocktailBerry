@@ -1,6 +1,5 @@
 import random
-from pathlib import Path
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Tuple, Union, get_args
 import typer
 import yaml
 from pyfiglet import Figlet
@@ -8,18 +7,23 @@ from pyfiglet import Figlet
 from src.logger_handler import LoggerHandler
 from src.models import Ingredient
 from src.utils import get_platform_data
+from src.filepath import CUSTOM_CONFIG_FILE
 from src import (
     __version__,
     PROJECT_NAME,
     MAX_SUPPORTED_BOTTLES,
-    SUPPORTED_LANGUAGES,
-    SUPPORTED_BOARDS,
-    SUPPORTED_THEMES
+    SupportedLanguagesType,
+    SupportedBoardType,
+    SupportedThemesType,
+    SupportedRfidType,
 )
 
 
-CONFIG_FILE = Path(__file__).parents[1].absolute() / "custom_config.yaml"
 logger = LoggerHandler("config_manager")
+SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
+SUPPORTED_BOARDS = list(get_args(SupportedBoardType))
+SUPPORTED_THEMES = list(get_args(SupportedThemesType))
+SUPPORTED_RFID = list(get_args(SupportedRfidType))
 
 
 class ChooseType:
@@ -38,71 +42,77 @@ class ThemeChoose(ChooseType):
     allowed = SUPPORTED_THEMES
 
 
+class RFIDChoose(ChooseType):
+    allowed = SUPPORTED_RFID
+
+
 class ConfigManager:
     """Manager for all static configuration of the machine.
     The Settings defined here are the default settings and will be overwritten by the config file"""
 
     # Activating some dev features like mouse cursor
-    UI_DEVENVIRONMENT = True
+    UI_DEVENVIRONMENT: bool = True
     # Locks the recipe tab, making it impossible to access
-    UI_PARTYMODE = False
+    UI_PARTYMODE: bool = False
     # Password to lock clean, delete and other critical operators
-    UI_MASTERPASSWORD = "1234"
+    UI_MASTERPASSWORD: str = "1234"
     # Language to use, use two chars look up documentation, if not provided fallback to en
-    UI_LANGUAGE = "en"
+    UI_LANGUAGE: SupportedLanguagesType = "en"
     # Width and height of the touchscreen
     # Mainly used for dev and comparison for the desired touch dimensions
     # Used if UI_DEVENVIRONMENT is set to True
-    UI_WIDTH = 800
-    UI_HEIGHT = 480
+    UI_WIDTH: int = 800
+    UI_HEIGHT: int = 480
     # RPi pins where pumps (ascending) are connected
-    PUMP_PINS = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
+    PUMP_PINS: list[int] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
     # Volume flow for the according pumps
-    PUMP_VOLUMEFLOW = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
+    PUMP_VOLUMEFLOW: list[int] = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
     # Custom name of the Maker
-    MAKER_NAME = f"CocktailBerry (#{random.randint(0, 1000000):07})"
+    MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
-    MAKER_NUMBER_BOTTLES = 10
+    MAKER_NUMBER_BOTTLES: int = 10
     # Number of pumps parallel in production
-    MAKER_SIMULTANEOUSLY_PUMPS = 16
+    MAKER_SIMULTANEOUSLY_PUMPS: int = 16
     # Time in seconds to execute clean program
-    MAKER_CLEAN_TIME = 20
+    MAKER_CLEAN_TIME: int = 20
     # time between each check loop when making cocktail
-    MAKER_SLEEP_TIME = 0.05
+    MAKER_SLEEP_TIME: float = 0.05
     # If the maker should check automatically for updates
-    MAKER_SEARCH_UPDATES = False
+    MAKER_SEARCH_UPDATES: bool = False
     # Inverts the pin signal (on is low, off is high)
-    MAKER_PINS_INVERTED = True
+    MAKER_PINS_INVERTED: bool = True
     # Possibility to use different boards to control Pins
-    MAKER_BOARD = "RPI"
+    MAKER_BOARD: SupportedBoardType = "RPI"
     # Theme Setting to load according qss file
-    MAKER_THEME = "default"
+    MAKER_THEME: SupportedThemesType = "default"
     # Flag to check if internet is up at start
-    MAKER_CHECK_INTERNET = True
+    MAKER_CHECK_INTERNET: bool = True
     # Volume to pump up if a bottle gets changed
-    MAKER_TUBE_VOLUME = 0
+    MAKER_TUBE_VOLUME: int = 0
     # List of LED pins for control
-    LED_PINS = []
+    LED_PINS: list[int] = []
     # Value for LED brightness
-    LED_BRIGHTNESS = 255
+    LED_BRIGHTNESS: int = 255
     # Number of LEDs, only important for controllable
-    LED_COUNT = 24
+    LED_COUNT: int = 24
     # If there are multiple identical (ring) LEDs
-    LED_NUMBER_RINGS = 1
+    LED_NUMBER_RINGS: int = 1
     # If the led is as ws-x series (and controllable)
-    LED_IS_WS = True
+    LED_IS_WS: bool = True
+    # if a RFID reader exists
+    RFID_READER: SupportedRfidType = "No"
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
-    MICROSERVICE_ACTIVE = False
-    MICROSERVICE_BASE_URL = "http://127.0.0.1:5000"
+    MICROSERVICE_ACTIVE: bool = False
+    MICROSERVICE_BASE_URL: str = "http://127.0.0.1:5000"
     # if to use the teams function and according options.
     # URL should be 'device_ip:8080' where dashboard container is running and in the same network
     # Button names must be two strings in the list
-    TEAMS_ACTIVE = False
-    TEAM_BUTTON_NAMES = ["Team 1", "Team 2"]
-    TEAM_API_URL = "http://127.0.0.1:8080"
+    TEAMS_ACTIVE: bool = False
+    TEAM_BUTTON_NAMES: list[str] = ["Team 1", "Team 2"]
+    TEAM_API_URL: str = "http://127.0.0.1:8080"
     # Config to change the displayed values in the maker to another unit
-    EXP_MAKER_UNIT = "ml"
-    EXP_MAKER_FACTOR = 1.0
+    EXP_MAKER_UNIT: str = "ml"
+    EXP_MAKER_FACTOR: float = 1.0
 
     def __init__(self) -> None:
         """Try to read in the custom configs. If the file is not there, ignores the error.
@@ -138,6 +148,7 @@ class ConfigManager:
             "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
             "LED_NUMBER_RINGS": (int, [_build_number_limiter(1, 10)]),
             "LED_IS_WS": (bool, []),
+            "RFID_READER": (RFIDChoose, [_build_support_checker(SUPPORTED_RFID)]),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
@@ -165,7 +176,7 @@ class ConfigManager:
         config = {}
         for attribute in self.config_type:
             config[attribute] = getattr(self, attribute)
-        with open(CONFIG_FILE, 'w', encoding="UTF-8") as stream:
+        with open(CUSTOM_CONFIG_FILE, 'w', encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
 
     def validate_and_set_config(self, configuration: Dict, lists_later=True):
@@ -182,7 +193,7 @@ class ConfigManager:
 
     def _read_config(self):
         """Reads all the config data from the file and validates it"""
-        with open(CONFIG_FILE, "r", encoding="UTF-8") as stream:
+        with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
             self.validate_and_set_config(configuration)
 
@@ -280,7 +291,8 @@ class Shared:
         self.cocktail_started = False
         self.make_cocktail = True
         self.old_ingredient: List[str] = []
-        self.selected_team = "Nothing"
+        self.selected_team = "No Team"
+        self.team_member_name: Union[str, None] = None
         self.handaddlist: List[Ingredient] = []
         self.cocktail_volume: int = 200
         self.alcohol_factor: float = 1.0

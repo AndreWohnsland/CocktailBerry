@@ -1,4 +1,5 @@
 import datetime
+from typing import Optional
 import sqlite3
 from pathlib import Path
 
@@ -7,7 +8,7 @@ DIRPATH = Path(__file__).parent.absolute()
 
 
 class DBController:
-    """Controlls DB actions"""
+    """Controls DB actions"""
 
     def __init__(self) -> None:
         self.database_path = DIRPATH / "storage" / f"{DATABASE_NAME}.db"
@@ -22,7 +23,9 @@ class DBController:
     def __del__(self):
         self.conn.close()
 
-    def enter_cocktail(self, team: str, volume: int, person: str):
+    def enter_cocktail(self, team: str, volume: int, person: Optional[str]):
+        if person is None:
+            person = "Team"
         sql = "INSERT INTO TEAM(Date, Team, Volume, Person) VALUES(?,?,?,?)"
         entry_datetime = datetime.datetime.now().replace(microsecond=0)
         self.cursor.execute(sql, (entry_datetime, team, volume, person,))

@@ -1,9 +1,8 @@
 import logging
-from pathlib import Path
 from typing import Union, Literal
+from src.filepath import LOG_FOLDER
 
 
-_DIRPATH = Path(__file__).parent.absolute()
 _AcceptedLogLevels = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
@@ -16,7 +15,7 @@ class LogFiles():
 class LoggerHandler:
     """Handler class for generating logger and logging events"""
 
-    log_folder = _DIRPATH.parent / "logs"
+    log_folder = LOG_FOLDER
 
     def __init__(self, logger_name: str, filename: str = LogFiles.PRODUCTION):
         self.logger_name = logger_name

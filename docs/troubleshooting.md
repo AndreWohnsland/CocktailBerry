@@ -97,7 +97,7 @@ Also, install the rpi_ws281x python package with:
 
 ```
 sudo pip install rpi_ws281x
-sudo pip install PyQt5 requests pyyaml GitPython typer pyfiglet qtawesome
+sudo pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev mfrc522 qtsass pyqtspinner
 ```
 
 See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.
@@ -105,6 +105,34 @@ I had success using the 12 and 18 PWM0 pin, while also disabling (use a # for co
 Other described pins may also work, but are untested, so I recommend to stick to the both one that should work.
 If you use any other non controllable LED connected over the relay, you can use any pin you want, since it's only activating the relay.
 
+
+## Set Up RFID Reader
+
+Setting up a RFID reader and integrate it into the program is an intermediate task.
+So I would not recommend it for complete beginners, and it may include some tinkering.
+Currently you can use two different types of reader:
+
+- Basic MFRC522 ([like this](https://www.amazon.de/dp/B074S8MRQ7), SPI Protocol)
+- PiicoDev RFID ([only this](https://core-electronics.com.au/piicodev-rfid-module.html), I2C Protocol)
+
+!!! bug "Please Read"
+    Reading / Writing RFIDs while still having a interactive GUI may cause a lot of troubles.
+    Some reader frameworks lock themselves until the read or write is done and have no direct cancel methods.
+    So even using threads only fixes the responsiveness of the app.
+    Therefore, the best is if you trigger a write, finish the write. 
+    If you have experience with the reader + python feel free to contact me, so we can improve this feature.
+
+Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/) and [here for the PiicoDev](https://core-electronics.com.au/guides/piicodev-rfid-module-guide-for-raspberry-pi/).
+You only need the wiring and the installation of the libraries.
+The according code is integrated into CocktailBerry.
+After that, you select the according option in the settings dropdown for the reader.
+When using the teams function, you can then also use a rfid chip, which inserts the information (name of person) for the leaderboard.
+In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
+
+Take care that you don't use any of the connected pins of the RFID reader in the CocktailBerry config for a pump or a LED.
+If you do so, remove them or replace them with another pin.
+Otherwise, the RFID will not work.
+Best is to restart the Pi afterwards and then check if the RFID is working as intended.
 
 ## Ui Seems Wrong on none RaspOS System
 On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.

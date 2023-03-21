@@ -4,10 +4,8 @@ of the passed window. Also defines the Mode for controls.
 # pylint: disable=unnecessary-lambda
 import sys
 import platform
-from pathlib import Path
 from typing import Optional
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon, QIntValidator
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
 from src.config_manager import CONFIG as cfg
@@ -16,11 +14,11 @@ from src.tabs import maker, ingredients, recipes, bottles
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
-from src.ui.setup_option_window import OptionWindow
 from src.updater import Updater
 from src.utils import has_connection
 
-from src.ui_elements.cocktailmanager import Ui_MainWindow
+from src.ui_elements import Ui_MainWindow
+from src.ui.setup_option_window import OptionWindow
 from src.ui.setup_progress_screen import ProgressScreen
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui.setup_bottle_window import BottleWindow
@@ -47,10 +45,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.logger.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
-        self.icon_path = str(Path(__file__).parents[1].absolute() / "ui_elements" / "Cocktail-icon.png")
-        self.setWindowIcon(QIcon(self.icon_path))
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         # init the empty further screens
         self.numpad_window: Optional[NumpadWidget] = None
         self.keyboard_window: Optional[KeyboardWidget] = None

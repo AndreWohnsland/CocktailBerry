@@ -1,5 +1,3 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
 from src.ui_elements.bonusingredient import Ui_addingredient
@@ -23,10 +21,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         """ Init. Connects all the buttons and get values for the Combobox. """
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
-        # Set window properties
-        self.setWindowIcon(QIcon(parent.icon_path))
+        DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
         # Connect all the buttons
         self.PBplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LAmount, 10, 100, 10))

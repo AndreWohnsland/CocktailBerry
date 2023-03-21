@@ -25,3 +25,14 @@ class PinController(Protocol):  # type: ignore
     @abstractmethod
     def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
         pass
+
+
+class RFIDController(Protocol):
+    """Interface for the RFID reader"""
+    @abstractmethod
+    def read_card(self) -> Optional[str]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def write_card(self, text: str) -> bool:
+        raise NotImplementedError

@@ -6,6 +6,7 @@ You need to have [**Python 3.9**](https://www.python.org/downloads/) or newer an
 For a peak into the project run:
 
 ```bash
+cd ~
 git clone https://github.com/AndreWohnsland/CocktailBerry.git
 cd CocktailBerry
 pip install -r requirements.txt

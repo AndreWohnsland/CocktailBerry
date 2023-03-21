@@ -7,10 +7,10 @@ check_python_version()
 import configparser
 import sys
 import subprocess
-import pkg_resources
-from pathlib import Path
 from typing import Optional, Tuple
+import importlib.util
 
+from src.filepath import VERSION_FILE
 from src import __version__, FUTURE_PYTHON_VERSION
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
@@ -21,10 +21,7 @@ from src.migration.update_data import (
     remove_is_alcoholic_column
 )
 
-_DIRPATH = Path(__file__).parent.absolute()
-_CONFIG_PATH = _DIRPATH.parents[1] / ".version.ini"
 _logger = LoggerHandler("migrator_module")
-_INSTALLED_PACKAGES = [pkg.key for pkg in list(pkg_resources.working_set)]
 
 
 class Migrator:
@@ -33,7 +30,7 @@ class Migrator:
     def __init__(self) -> None:
         self.program_version = _Version(__version__)
         self.config = configparser.ConfigParser()
-        self.config.read(_CONFIG_PATH)
+        self.config.read(VERSION_FILE)
         self.local_version = _Version(self._get_local_version())
 
     def _get_local_version(self):
@@ -51,7 +48,7 @@ class Migrator:
         """Writes the latest version to the local version"""
         _logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
         self.config['DEFAULT']['LOCALVERSION'] = str(self.program_version.version)
-        with open(_CONFIG_PATH, 'w', encoding="utf-8") as config_file:
+        with open(VERSION_FILE, 'w', encoding="utf-8") as config_file:
             self.config.write(config_file)
 
     def make_migrations(self):
@@ -81,6 +78,9 @@ class Migrator:
         if self.older_than_version("1.11.0"):
             _logger.log_event("INFO", "Making migrations for v1.11.0")
             self._install_pip_package("qtawesome", "1.11.0")
+        if self.older_than_version("1.17.0"):
+            _logger.log_event("INFO", "Making migrations for v1.17.0")
+            self._install_pip_package("pyqtspinner", "1.17.0")
         self._check_local_version_data()
 
     def _python_to_old_warning(self, least_python: Tuple[int, int]):
@@ -117,8 +117,9 @@ class Migrator:
     def _install_pip_package(self, package_name: str, version_to_migrate: str):
         """Try to install a python package over pip"""
         _logger.log_event("INFO", f"Trying to install {package_name}, it is needed since v{version_to_migrate}")
-        if package_name in _INSTALLED_PACKAGES:
+        if importlib.util.find_spec(package_name) is not None:
             _logger.log_event("INFO", f"Package {package_name} is already installed, skipping installation.")
+            return
         try:
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', package_name])
             _logger.log_event("INFO", f"Successfully installed {package_name}")

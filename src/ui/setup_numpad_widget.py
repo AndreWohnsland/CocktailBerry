@@ -1,5 +1,3 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QLineEdit
 
 from src.display_controller import DP_CONTROLLER
@@ -9,14 +7,19 @@ from src.ui_elements.numpad import Ui_NumpadWindow
 class NumpadWidget(QDialog, Ui_NumpadWindow):
     """ Creates the Numpad screen. """
 
-    def __init__(self, parent, le_to_write: QLineEdit, x_pos: int = 0, y_pos: int = 0, header_text: str = "Password", use_float=False):
+    def __init__(
+        self,
+        parent,
+        le_to_write: QLineEdit,
+        x_pos: int = 0,
+        y_pos: int = 0,
+        header_text: str = "Password",
+        use_float=False
+    ):
         """ Init. Connect all the buttons and set window policy. """
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        self.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
-        self.setWindowIcon(QIcon(parent.icon_path))
+        DP_CONTROLLER.initialize_window_object(self, x_pos, y_pos)
         # Connect all the buttons, generates a list of the numbers an object names to do that
         self.PBenter.clicked.connect(self.enter_clicked)
         self.PBdel.clicked.connect(self.del_clicked)
@@ -29,7 +32,6 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         self.LHeader.setText(header_text)
         self.source_line_edit = le_to_write
         self._add_float(use_float)
-        self.move(x_pos, y_pos)
         self.show()
         DP_CONTROLLER.set_display_settings(self, resize=False)
 

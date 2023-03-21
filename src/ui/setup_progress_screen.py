@@ -1,5 +1,3 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
 
 from src.ui_elements.progressbarwindow import Ui_Progressbarwindow
@@ -15,10 +13,8 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
     def __init__(self, parent, cocktail_type="Cocktail"):
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         self.PBabbrechen.clicked.connect(interrupt_cocktail)
-        self.setWindowIcon(QIcon(parent.icon_path))
         self.mainscreen = parent
         UI_LANGUAGE.adjust_progress_screen(self, cocktail_type)
         self.showFullScreen()

@@ -14,6 +14,7 @@
 Welcome to the CocktailBerry documentation.
 Here you will find everything to get started!
 CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
+It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
 
 <div class="mid-flex">
   <a href="quickstart/" class="cta-btn primary-btn"> Quickstart </a>
@@ -63,6 +64,7 @@ CocktailBerry can do:
 - Select different themes to fit your liking
 - Switch between user interface languages
 - Support WS281x LEDs on your machine
+- Support for RFID/NFC reader
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
 

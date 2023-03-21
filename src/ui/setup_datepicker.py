@@ -1,22 +1,21 @@
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import Qt, QTime, QDate
+from PyQt5.QtCore import QTime, QDate
 
-from src.ui_elements.datepicker import Ui_datepicker
+from src.ui_elements.datepicker import Ui_Datepicker
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.utils import set_system_time
 
 
-class DatePicker(QMainWindow, Ui_datepicker):
+class DatePicker(QMainWindow, Ui_Datepicker):
     """ Creates the Window for the user to change date and time. """
 
     def __init__(self, parent=None):
         """ Set up the datepicker window """
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         # connects all the buttons
         self.pb_ok.clicked.connect(self._ok_clicked)
         self.mainscreen = parent

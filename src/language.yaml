@@ -151,10 +151,30 @@ dialog:
   ask_export_data:
     en: 'Export cocktail and ingredient data, as well reset possible values?'
     de: 'Cocktail und Zutaten Daten exportieren und mögliche Werte zurücksetzen?'
+  ask_to_install_qtsass:
+    en: "The Python library qtsass is needed for this feature. Since it may take 30-60 minutes building on the RPi, it was not done by the migrator.\n\nInstall and restart now? Without it can not use custom themes."
+    de: "Die Python Bibliothek qtsass wird für dieses Feature benötigt. Das Bauen dieser kann 30-60 Minuten auf dem RPi benötigen, deshalb wurde dies nicht vom Migrator gemacht.\n\nSoll diese installiert und neu gestartet werden? Ohne die Bibliothek können keine Custom Themes erstellt werden."
   welcome_dialog:
     en: "CocktailBerry Software Version {version} by Andre Wohnsland.\n{platform}.\n\nCheck https://cocktailberry.readthedocs.io for more information."
     de: "CocktailBerry Software Version {version} von Andre Wohnsland.\n{platform}.\n\nMehr Informationen unter https://cocktailberry.readthedocs.io."
-
+  wifi_setup_failed:
+    en: 'There was an error setting up WiFi. Please check the logs for further information.'
+    de: 'Es ist ein Fehler beim Einrichten des WiFi aufgetreten. Schaue in die Logs für mehr Informationen.'
+  wifi_success:
+    en: 'WiFi has been set up successfully.'
+    de: 'WiFi wurde erfolgreich eingerichtet.'
+  wifi_failure:
+    en: "There is still no internet connection.\nCheck your credentials, ssid: {ssid}, password: {password}\nIf they are correct, wait shortly then check internet again via the option feature or restart system and consult the logs."
+    de: "Es besteht noch keine Internetverbindung.\nPrüfe deine Eingabe: ssid: {ssid}, password: {password}\nWenn diese stimmen, warte kurz und prüfe dein Internet über die Optionen noch einmal oder starte das System neu und schau auch in die Logs."
+  internet_connection_ok:
+    en: 'There is a internet connection.'
+    de: 'Es besteht eine Internetverbindung.'
+  internet_connection_not_ok:
+    en: 'X There is no internet connection.'
+    de: 'X Es besteht keine Internetverbindung.'
+  qtsass_not_successful:
+    en: 'The package qtsass could not be installed. Try running "[sudo] pip install qtsass" (sudo only, if program is executed with sudo python) and wait until its done.'
+    de: 'Das qtsass Paket konnte nicht installiert werden. Versuche "[sudo] pip install qtsass" (sudo nur, wenn das program mit sudo python ausgeführt wird) auszuführen und warte, bis die installation abgeschlossen ist.'
 # Change of language in UI elements
 ui:
   # Some commonly used elements within multiple windows
@@ -186,6 +206,9 @@ ui:
     back:
       en: '< Back'
       de: '< Zurück'
+    apply:
+      en: 'Apply'
+      de: 'Anwenden'
   # dynamic values for maker tab
   maker:
     add_self:
@@ -345,6 +368,12 @@ ui:
     export:
       en: 'Data Export'
       de: 'Datenexport'
+    rfid:
+      en: 'Write RFID'
+      de: 'RFID Schreiben'
+    check_internet:
+      en: 'Internet Check'
+      de: 'Internet Check'
 
   ##### DATE PICKER WINDOW #####
   # all values for date picker window
@@ -359,6 +388,31 @@ ui:
     header:
       en: 'Enter Password'
       de: 'Passwort eingeben:'
+
+  rfid_writer:
+    write:
+      en: 'Write RFID'
+      de: 'RFID Schreiben'
+    start_text:
+      en: 'Please enter text and select write'
+      de: 'Bitte Text eingeben und schreiben auswählen'
+    success:
+      en: 'Write successful'
+      de: 'Erfolgreich geschrieben'
+    prompt:
+      en: 'Put RFID to terminal'
+      de: 'RFID an Terminal halten'
+    error:
+      en: 'Text needs to be 3+ chars'
+      de: 'Text muss min. 3 Zeichen sein'
+
+  wifi:
+    ssid:
+      en: 'SSID (network name)'
+      de: 'SSID (Netzwerkname)'
+    password:
+      en: 'Password'
+      de: 'Passwort'
 
   ##### SETTINGS WINDOW #####
   # all values for settings window
@@ -413,8 +467,8 @@ ui:
       en: 'Type of microcomputer / board used'
       de: 'Typ des Microcomputers / Boards'
     MAKER_THEME:
-      en: 'Color theme of the application'
-      de: 'Farbeinstellung des Programms'
+      en: 'Color theme of the application, use custom to select your own color'
+      de: 'Farbeinstellung des Programms, wähle custom aus, um es selbst zu stylen'
     MAKER_CHECK_INTERNET:
       en: 'Checks if machine is connected to the internet at startup'
       de: 'Prüft ob beim Programmstart eine Internetverbindung besteht'
@@ -436,6 +490,9 @@ ui:
     LED_IS_WS:
       en: 'Is the LED a controllable (WS281x) LED'
       de: 'Ist der LED ein ansteuerbarer (WS281x) LED'
+    RFID_READER:
+      en: 'Using a RFID Reader: PiicoDev (I2C) or basic MFRC522 (SPI)'
+      de: 'Wird ein RFID Reader verwendet: PiicoDev (I2C) oder standard MFRC522 (SPI)'
     MICROSERVICE_ACTIVE:
       en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'
@@ -457,3 +514,40 @@ ui:
     EXP_MAKER_FACTOR:
       en: 'Multiplication factor for the displayed volumes in the maker tab'
       de: 'Multiplikationsfaktor für die angezeigten Volumen im Maker Tab'
+  ##### COLOR WINDOW #####
+  # all values for settings in color window
+  # Use same names as color names
+  color_window:
+    use_template:
+      en: 'Use Template'
+      de: 'Template nehmen'
+    description:
+      en: 'Here, you can set your own custom colors for the application. If you want to start from a specific theme, select it over the drop down and click use template. You need to select custom as a theme for this settings to be applied.'
+      de: 'Here kann der eigene Stil der Anwendung definiert werden. Wenn von einer existieren Theme gestartet werden soll, wähle diese im Dropdown aus und klicke Template nehmen. Die option custom muss als Theme gewählt werden, damit diese aktiv ist.'
+    primary:
+      en: 'Primary color, for the font and buttons'
+      de: 'Primäre Farbe, für die Schrift und Buttons'
+    secondary:
+      en: 'Secondary color, for selected elements or other separation'
+      de: 'Sekundäre Farbe, für ausgewählte Elemente bzw. Unterscheidungen'
+    destructive:
+      en: 'Color for destructive elements, like delete'
+      de: 'Neutrale Farbe für destruktive Elemente, wie Löschen'
+    neutral:
+      en: 'Neutral color, for examples some Headers'
+      de: 'Neutrale Farbe, wie zum Beispiel einige Überschriften'
+    background:
+      en: 'Background color of the application'
+      de: 'Hintergrund Farbe der Anwendung'
+    border:
+      en: 'Border color of the Ui elements'
+      de: 'Rahmen Farbe der Ui Elemente'
+    progressbar:
+      en: 'Color of the progressbar'
+      de: 'Farbe des Fortschrittsbalken'
+    progressbg:
+      en: 'Background color of the progressbar'
+      de: 'Hintergrund Farbe des Fortschrittsbalken'
+    tabborder:
+      en: 'Border color of the top tabs'
+      de: 'Rahmen Farbe der oberen Tabs'

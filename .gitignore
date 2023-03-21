@@ -186,3 +186,4 @@ site/
 src/ui_elements/ui_*.py
 tmp.py
 tmp.*
+src/ui/styles/custom.*

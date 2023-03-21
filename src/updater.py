@@ -1,9 +1,9 @@
 import sys
-from pathlib import Path
 from git import Repo, GitCommandError  # type: ignore
 import requests
 from requests import Response
 
+from src.filepath import ROOT_PATH
 from src.migration.migrator import Migrator, _Version
 from src.logger_handler import LoggerHandler
 from src import FUTURE_PYTHON_VERSION
@@ -18,8 +18,7 @@ class Updater:
     """Class to get update from GitHub"""
 
     def __init__(self):
-        dirpath = Path(__file__).parent.absolute()
-        self.git_path = dirpath.parents[0]
+        self.git_path = ROOT_PATH
         self.repo = Repo(self.git_path)
 
     def update(self):

@@ -1,6 +1,5 @@
 import string
 from PyQt5.QtWidgets import QDialog, QLineEdit
-from PyQt5.QtCore import Qt
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.keyboard import Ui_Keyboard
@@ -15,8 +14,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.mainscreen = parent
         self.le_to_write = le_to_write
         self.LName.setText(self.le_to_write.text())
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
-        DP_CONTROLLER.inject_stylesheet(self)
+        DP_CONTROLLER.initialize_window_object(self)
         # populating all the buttons
         self.backButton.clicked.connect(self.back_button_clicked)
         self.clear.clicked.connect(self.clear_button_clicked)

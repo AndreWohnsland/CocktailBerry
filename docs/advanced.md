@@ -150,5 +150,5 @@ docker run hello-world
 ```
 
 !!! info "Less Typing"
-    Using the included script `sh scripts/install_docker.sh` will also do that for you.
+    Using the included script `sh scripts/install_docker.sh` and `sh scripts/install_compose.sh` will also do that for you.
     You may have executed it at the setup of you CocktailBerry and therefore already installed docker.

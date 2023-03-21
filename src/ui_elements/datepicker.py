@@ -11,13 +11,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_datepicker(object):
-    def setupUi(self, datepicker):
-        datepicker.setObjectName("datepicker")
-        datepicker.resize(800, 480)
-        datepicker.setMinimumSize(QtCore.QSize(800, 480))
-        datepicker.setMaximumSize(QtCore.QSize(800, 480))
-        self.centralwidget = QtWidgets.QWidget(datepicker)
+class Ui_Datepicker(object):
+    def setupUi(self, Datepicker):
+        Datepicker.setObjectName("Datepicker")
+        Datepicker.resize(800, 480)
+        Datepicker.setMinimumSize(QtCore.QSize(800, 480))
+        Datepicker.setMaximumSize(QtCore.QSize(800, 480))
+        self.centralwidget = QtWidgets.QWidget(Datepicker)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -64,27 +64,27 @@ class Ui_datepicker(object):
         self.pb_ok.setFont(font)
         self.pb_ok.setObjectName("pb_ok")
         self.verticalLayout_2.addWidget(self.pb_ok)
-        datepicker.setCentralWidget(self.centralwidget)
+        Datepicker.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(datepicker)
-        QtCore.QMetaObject.connectSlotsByName(datepicker)
+        self.retranslateUi(Datepicker)
+        QtCore.QMetaObject.connectSlotsByName(Datepicker)
 
-    def retranslateUi(self, datepicker):
+    def retranslateUi(self, Datepicker):
         _translate = QtCore.QCoreApplication.translate
-        datepicker.setWindowTitle(_translate("datepicker", "datepicker"))
-        self.header.setText(_translate("datepicker", "Select Date and Time"))
-        self.header.setProperty("cssClass", _translate("datepicker", "neutral bold"))
-        self.selected_date.setProperty("cssClass", _translate("datepicker", "bold"))
-        self.selected_time.setProperty("cssClass", _translate("datepicker", "bold"))
-        self.pb_ok.setText(_translate("datepicker", "Ok"))
-        self.pb_ok.setProperty("cssClass", _translate("datepicker", "btn-inverted"))
+        Datepicker.setWindowTitle(_translate("Datepicker", "datepicker"))
+        self.header.setText(_translate("Datepicker", "Select Date and Time"))
+        self.header.setProperty("cssClass", _translate("Datepicker", "neutral bold"))
+        self.selected_date.setProperty("cssClass", _translate("Datepicker", "bold"))
+        self.selected_time.setProperty("cssClass", _translate("Datepicker", "bold"))
+        self.pb_ok.setText(_translate("Datepicker", "Ok"))
+        self.pb_ok.setProperty("cssClass", _translate("Datepicker", "btn-inverted"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    datepicker = QtWidgets.QMainWindow()
-    ui = Ui_datepicker()
-    ui.setupUi(datepicker)
-    datepicker.show()
+    Datepicker = QtWidgets.QMainWindow()
+    ui = Ui_Datepicker()
+    ui.setupUi(Datepicker)
+    Datepicker.show()
     sys.exit(app.exec_())

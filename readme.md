@@ -11,7 +11,9 @@
 
 [![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
-CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi. Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://cocktailberry.readthedocs.io/).
+CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
+It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
+Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://cocktailberry.readthedocs.io/).
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
@@ -44,6 +46,7 @@ CocktailBerry can do:
 - Select different themes to fit your liking
 - Switch between user interface languages
 - Support WS281x LEDs on your machine
+- Support for RFID/NFC reader
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
 
@@ -59,6 +62,7 @@ Here are some simple steps to get CocktailBerry running. You need to have **Pyth
 Run:
 
 ```bash
+cd ~
 git clone https://github.com/AndreWohnsland/CocktailBerry.git
 cd CocktailBerry
 pip install -r requirements.txt

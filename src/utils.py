@@ -1,16 +1,15 @@
 import platform
 import os
 import sys
-from pathlib import Path
 from typing import Tuple, Literal
 from dataclasses import dataclass
 import http.client as httplib
 
+from src.filepath import ROOT_PATH, STYLE_FOLDER
 from src.logger_handler import LoggerHandler
 
 
-FILE_PATH = Path(__file__).parents[0].absolute()
-EXECUTABLE = FILE_PATH.parents[0].absolute() / "runme.py"
+EXECUTABLE = ROOT_PATH / "runme.py"
 _logger = LoggerHandler("utils")
 
 
@@ -19,12 +18,13 @@ def has_connection() -> bool:
     conn = httplib.HTTPSConnection("8.8.8.8", timeout=3)
     try:
         conn.request("HEAD", "/")
-        return True
+        got_con = True
     # Will throw OSError on no connection
     except OSError:
-        return False
+        got_con = False
     finally:
         conn.close()
+    return got_con
 
 
 @dataclass
@@ -68,3 +68,14 @@ def set_system_time(time_string: str):
 
 def restart_program():
     os.execl(sys.executable, "python", EXECUTABLE, *sys.argv[1:])
+
+
+def generate_custom_style_file():
+    """Generates the custom style file, if it does not exist"""
+    custom_style_file = STYLE_FOLDER / "custom.scss"
+    compiled_custom = STYLE_FOLDER / "custom.css"
+    default_style_file = STYLE_FOLDER / "default.scss"
+    compiled_default = STYLE_FOLDER / "default.css"
+    if not custom_style_file.exists():
+        custom_style_file.write_text(default_style_file.read_text())
+        compiled_custom.write_text(compiled_default.read_text())

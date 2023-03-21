@@ -11,12 +11,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(780, 480)
-        MainWindow.setStyleSheet("")
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+class Ui_CalibrationWindow(object):
+    def setupUi(self, CalibrationWindow):
+        CalibrationWindow.setObjectName("CalibrationWindow")
+        CalibrationWindow.resize(780, 480)
+        CalibrationWindow.setStyleSheet("")
+        self.centralwidget = QtWidgets.QWidget(CalibrationWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -136,42 +136,42 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.button_exit)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 3)
         self.verticalLayout.addLayout(self.gridLayout)
-        MainWindow.setCentralWidget(self.centralwidget)
+        CalibrationWindow.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(CalibrationWindow)
+        QtCore.QMetaObject.connectSlotsByName(CalibrationWindow)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, CalibrationWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Calibration"))
-        self.label_2.setText(_translate("MainWindow", "Amount"))
-        self.label_2.setProperty("cssClass", _translate("MainWindow", "bold"))
-        self.label.setText(_translate("MainWindow", "Channel"))
-        self.label.setProperty("cssClass", _translate("MainWindow", "bold"))
-        self.amount_plus.setText(_translate("MainWindow", "+"))
-        self.amount_plus.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
-        self.amount_minus.setText(_translate("MainWindow", "-"))
-        self.amount_minus.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
-        self.PB_start.setText(_translate("MainWindow", "Start"))
-        self.PB_start.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
-        self.channel_plus.setText(_translate("MainWindow", "+"))
-        self.channel_plus.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
-        self.channel_minus.setText(_translate("MainWindow", "-"))
-        self.channel_minus.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
-        self.amount.setText(_translate("MainWindow", "10"))
-        self.amount.setProperty("cssClass", _translate("MainWindow", "bold"))
-        self.channel.setText(_translate("MainWindow", "1"))
-        self.channel.setProperty("cssClass", _translate("MainWindow", "bold"))
-        self.label_4.setText(_translate("MainWindow", "Pump Calibration Program"))
-        self.button_exit.setText(_translate("MainWindow", "exit"))
-        self.button_exit.setProperty("cssClass", _translate("MainWindow", "btn-inverted"))
+        CalibrationWindow.setWindowTitle(_translate("CalibrationWindow", "Calibration"))
+        self.label_2.setText(_translate("CalibrationWindow", "Amount"))
+        self.label_2.setProperty("cssClass", _translate("CalibrationWindow", "bold"))
+        self.label.setText(_translate("CalibrationWindow", "Channel"))
+        self.label.setProperty("cssClass", _translate("CalibrationWindow", "bold"))
+        self.amount_plus.setText(_translate("CalibrationWindow", "+"))
+        self.amount_plus.setProperty("cssClass", _translate("CalibrationWindow", "btn-inverted"))
+        self.amount_minus.setText(_translate("CalibrationWindow", "-"))
+        self.amount_minus.setProperty("cssClass", _translate("CalibrationWindow", "btn-inverted"))
+        self.PB_start.setText(_translate("CalibrationWindow", "Start"))
+        self.PB_start.setProperty("cssClass", _translate("CalibrationWindow", "btn-inverted"))
+        self.channel_plus.setText(_translate("CalibrationWindow", "+"))
+        self.channel_plus.setProperty("cssClass", _translate("CalibrationWindow", "btn-inverted"))
+        self.channel_minus.setText(_translate("CalibrationWindow", "-"))
+        self.channel_minus.setProperty("cssClass", _translate("CalibrationWindow", "btn-inverted"))
+        self.amount.setText(_translate("CalibrationWindow", "10"))
+        self.amount.setProperty("cssClass", _translate("CalibrationWindow", "bold"))
+        self.channel.setText(_translate("CalibrationWindow", "1"))
+        self.channel.setProperty("cssClass", _translate("CalibrationWindow", "bold"))
+        self.label_4.setText(_translate("CalibrationWindow", "Pump Calibration Program"))
+        self.button_exit.setText(_translate("CalibrationWindow", "exit"))
+        self.button_exit.setProperty("cssClass", _translate("CalibrationWindow", "btn-inverted"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    CalibrationWindow = QtWidgets.QMainWindow()
+    ui = Ui_CalibrationWindow()
+    ui.setupUi(CalibrationWindow)
+    CalibrationWindow.show()
     sys.exit(app.exec_())

@@ -49,7 +49,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>150</height>
+       <height>110</height>
       </size>
      </property>
      <property name="font">
@@ -71,13 +71,43 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="person_label">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>28</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Scanned Name</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignHCenter|Qt::AlignTop</set>
+     </property>
+     <property name="cssClass" stdset="0">
+      <string>bold</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="PBteamone">
        <property name="minimumSize">
         <size>
          <width>300</width>
-         <height>350</height>
+         <height>300</height>
         </size>
        </property>
        <property name="maximumSize">
@@ -106,7 +136,7 @@
        <property name="minimumSize">
         <size>
          <width>300</width>
-         <height>350</height>
+         <height>300</height>
         </size>
        </property>
        <property name="maximumSize">
