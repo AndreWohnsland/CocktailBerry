@@ -11,7 +11,9 @@
 
 [![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
-CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi. Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://cocktailberry.readthedocs.io/).
+CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
+It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
+Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://cocktailberry.readthedocs.io/).
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
