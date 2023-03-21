@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "CocktailBerry"
-version = "1.16.1"
+version = "1.17.0"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
 authors = ["Andre Wohnsland <Andre_Wohnsland@web.de>"]
 readme = "readme.md"
@@ -20,11 +20,11 @@ qtsass = "^0.3.2"
 pyqtspinner = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.15.9"
+pylint = "^2.17.0"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.1"
-mkdocs-material = "^9.0.6"
+mkdocs-material = "^9.1.3"
 mkdocs = "^1.4.2"
 ruff = "^0.0.231"
 python-periphery = "^2.3.0"
