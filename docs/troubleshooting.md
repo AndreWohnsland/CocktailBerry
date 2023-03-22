@@ -188,14 +188,14 @@ Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh
 # launcher.sh for dashboard
 # no need for sudo if there were no Numpy import errors
 cd /home/pi/CocktailBerry/dashboard/qt-app/
-sudo python3 main.py
+sudo python main.py
 ```
 
 ```bash
 #!/bin/bash
 # launcher.sh for CocktailBerry
 cd /home/pi/CocktailBerry/
-python3 runme.py
+python runme.py
 ```
 
 If your setup is equal to mine (Raspberry Pi, CocktailBerry GitHub cloned to the home (`/home/pi/`) folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
@@ -218,7 +218,7 @@ sudo chmod 755 ~/launcher.sh
 
 ### The GUI on the RPi Looks Different from the Screenshots
 
-I've noticed when running as root (sudo python3) and running as the pi user (python3) by default the pi will use different GUI resources.
+I've noticed when running as root (sudo python) and running as the pi user (python) by default the pi will use different GUI resources.
 Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
 Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
 Using the users environment with `sudo -E python runme.py` should also do the trick.

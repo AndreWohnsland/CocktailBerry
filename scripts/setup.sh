@@ -40,7 +40,7 @@ if [ "$1" = "dashboard" ]; then
     cd frontend/
   else
     echo "cd ~/CocktailBerry/dashboard/qt-app/" >>~/launcher.sh
-    echo "python3 main.py" >>~/launcher.sh
+    echo "python main.py" >>~/launcher.sh
     cd qt-app/
   fi
   pip3 install -r requirements.txt
@@ -48,7 +48,7 @@ else
   echo "Setting up CocktailBerry"
   echo "export QT_SCALE_FACTOR=1" >>~/launcher.sh
   echo "cd ~/CocktailBerry/" >>~/launcher.sh
-  echo "python3 runme.py" >>~/launcher.sh
+  echo "python runme.py" >>~/launcher.sh
   echo "Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   echo "Installing needed Python libraries"

@@ -32,10 +32,10 @@ sh scripts/install_compose.sh
 cd ~/CocktailBerry
 sh scripts/setup.sh
 # now we are good to go
-python3 runme.py # (1)!
+python runme.py # (1)!
 ```
 
-1.  Newer systems may execute python instead of python3
+1.  If your system is still using python2 as python command, it is time for an upgrade
 
 !!! note "This Should be All"
     As long as you are on the recommended Raspberry Pi + OS, this should be all you need to execute for a complete setup.
