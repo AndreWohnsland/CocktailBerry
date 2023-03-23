@@ -127,11 +127,11 @@ class ConfigManager:
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_PARTYMODE": (bool, []),
             "UI_MASTERPASSWORD": (str, []),
-            "UI_LANGUAGE": (LanguageChoose, [_build_support_checker(SUPPORTED_LANGUAGES)]),
+            "UI_LANGUAGE": (LanguageChoose, []),
             "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),
-            "PUMP_PINS": (list, [self._validate_config_list_type]),
-            "PUMP_VOLUMEFLOW": (list, [self._validate_config_list_type]),
+            "PUMP_PINS": (list, []),
+            "PUMP_VOLUMEFLOW": (list, []),
             "MAKER_NAME": (str, [_validate_max_length]),
             "MAKER_NUMBER_BOTTLES": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
             "MAKER_SIMULTANEOUSLY_PUMPS": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
@@ -139,20 +139,20 @@ class ConfigManager:
             "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
             "MAKER_PINS_INVERTED": (bool, []),
-            "MAKER_BOARD": (BoardChoose, [_build_support_checker(SUPPORTED_BOARDS)]),
-            "MAKER_THEME": (ThemeChoose, [_build_support_checker(SUPPORTED_THEMES)]),
+            "MAKER_BOARD": (BoardChoose, []),
+            "MAKER_THEME": (ThemeChoose, []),
             "MAKER_CHECK_INTERNET": (bool, []),
             "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
-            "LED_PINS": (list, [self._validate_config_list_type]),
+            "LED_PINS": (list, []),
             "LED_BRIGHTNESS": (int, [_build_number_limiter(1, 255)]),
             "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
             "LED_NUMBER_RINGS": (int, [_build_number_limiter(1, 10)]),
             "LED_IS_WS": (bool, []),
-            "RFID_READER": (RFIDChoose, [_build_support_checker(SUPPORTED_RFID)]),
+            "RFID_READER": (RFIDChoose, []),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
-            "TEAM_BUTTON_NAMES": (list, [self._validate_config_list_type]),
+            "TEAM_BUTTON_NAMES": (list, []),
             "TEAM_API_URL": (str, []),
             "EXP_MAKER_UNIT": (str, []),
             "EXP_MAKER_FACTOR": (float, [_build_number_limiter(0.01, 100)]),
@@ -203,14 +203,22 @@ class ConfigManager:
         if config_setting is None:
             return
         datatype, check_functions = config_setting
-        # check first if type fits, if list, also check list elements.
+        # check first if type fits
+        # if it's a choose type ignore typing for now, the function later will check if the value is in the list.
+        if not isinstance(configvalue, datatype) and not issubclass(datatype, ChooseType):
+            raise ConfigError(f"The value {configvalue} for {configname} is not of type {datatype}")
+
+        # check if the right values for choose type is selected
+        if issubclass(datatype, ChooseType):
+            _build_support_checker(datatype.allowed)(configname, configvalue)
+
         # Additionally run all check functions provided
-        # if it's a choose type ignore typing for now, the function will check if the value is in the list.
-        if isinstance(configvalue, datatype) or issubclass(datatype, ChooseType):
-            for check_fun in check_functions:
-                check_fun(configname, configvalue)
-            return
-        raise ConfigError(f"The value {configvalue} for {configname} is not of type {datatype}")
+        for check_fun in check_functions:
+            check_fun(configname, configvalue)
+
+        # If it's a list, also run the list validation
+        if isinstance(configvalue, list):
+            self._validate_config_list_type(configname, configvalue)
 
     def _validate_config_list_type(self, configname: str, configlist: List[Any]):
         """Extra validation for list type in case len / types"""
