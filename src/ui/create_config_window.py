@@ -58,7 +58,7 @@ class ConfigWindow(QMainWindow):
         self.vbox.addItem(create_spacer(20, 40))
         # adds the back button
         self.button_back = QPushButton("< Back")
-        self.button_back.clicked.connect(self.close)
+        self.button_back.clicked.connect(self.close)  # type: ignore
         self.button_back.setMaximumSize(QSize(16777215, 200))
         self.button_back.setMinimumSize(QSize(0, 70))
         adjust_font(self.button_back, LARGE_FONT, True)
