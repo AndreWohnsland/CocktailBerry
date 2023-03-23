@@ -5,7 +5,7 @@ of the passed window. Also defines the Mode for controls.
 import sys
 import platform
 from typing import Optional
-from PyQt5.QtGui import QIntValidator
+from PyQt5.QtGui import QIntValidator, QCloseEvent
 from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
 from src.config_manager import CONFIG as cfg
@@ -16,6 +16,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
 from src.utils import has_connection
+from src.programs.addons import ADDONS
 
 from src.ui_elements import Ui_MainWindow
 from src.ui.setup_option_window import OptionWindow
@@ -68,6 +69,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.update_check()
         self._connection_check()
         self._deprecation_check()
+        ADDONS.init_addons()
 
     def update_check(self):
         """Checks if there is an update and asks to update, if exists"""
@@ -248,3 +250,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         # Set back to 1st tab if password not right
         self.tabWidget.setCurrentIndex(0)
+
+    def closeEvent(self, event: QCloseEvent):  # pylint: disable=invalid-name
+        ADDONS.cleanup_addons()
+        event.accept()
