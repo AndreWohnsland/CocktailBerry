@@ -20,11 +20,11 @@ class AddOnManager:
         """Clean up all the addons"""
         self._try_function_for_addons("cleanup")
 
-    def pre_cocktail(self):
+    def before_cocktail(self):
         """Execute addon part before cocktail"""
         self._try_function_for_addons("start")
 
-    def post_cocktail(self):
+    def after_cocktail(self):
         """Execute addon part after cocktail"""
         self._try_function_for_addons("end")
 

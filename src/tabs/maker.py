@@ -107,7 +107,7 @@ def prepare_cocktail(w):
 
     # Runs addons before hand, check if they throw an error
     try:
-        ADDONS.pre_cocktail()
+        ADDONS.before_cocktail()
     except RuntimeError as err:
         DP_CONTROLLER.standard_box(str(err))
         return
@@ -119,7 +119,7 @@ def prepare_cocktail(w):
     __generate_maker_log_entry(cocktail_volume, display_name, taken_time, max_time)
 
     # run Addons after cocktail preparation
-    ADDONS.post_cocktail()
+    ADDONS.after_cocktail()
 
     # only post if cocktail was made over 50%
     percentage_made = taken_time / max_time
