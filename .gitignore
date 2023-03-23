@@ -187,3 +187,7 @@ src/ui_elements/ui_*.py
 tmp.py
 tmp.*
 src/ui/styles/custom.*
+
+# ignore all but init in addons
+addons/*
+!addons/__init__.py

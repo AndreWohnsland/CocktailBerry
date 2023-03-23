@@ -6,6 +6,7 @@ CUSTOM_CONFIG_FILE = ROOT_PATH / "custom_config.yaml"
 VERSION_FILE = ROOT_PATH / ".version.ini"
 LOG_FOLDER = ROOT_PATH / "logs"
 SAVE_FOLDER = ROOT_PATH / "saves"
+ADDON_PATH = ROOT_PATH / "addons"
 
 # src path
 SRC_PATH = ROOT_PATH / "src"
