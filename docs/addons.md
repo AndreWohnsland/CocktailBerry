@@ -214,11 +214,8 @@ SUPPORTED_TO_CHOOSE = ["List", "of", "allowed", "values"]
 class AddOnChoose(ChooseType): # (2)!
     allowed = SUPPORTED_TO_CHOOSE
 
-### Using selection type ###
 if not hasattr(cfg, 'ADDON_CHOOSE_CONFIG'):
     cfg.ADDON_CHOOSE_CONFIG = "allowed"  # type: ignore
-# Using the provided _build_support_checker for selection type
-# provide your valid values
 cfg.config_type["ADDON_CHOOSE_CONFIG"] = (AddOnChoose, []) # (3)!
 ```
 
@@ -252,23 +249,20 @@ def init():
 
 Your addon may want to check some condition before cocktail preparation.
 This way, you can prevent the preparation of the cocktail.
-For example, you your scale does not recognize a glass, a cocktail should not be prepared.
+For example, if your scale does not recognize a glass, a cocktail should not be prepared.
 To break the preparation process, raise a RuntimeError. 
-Please do not use other Error types, because only this type will be caught and handled.
+Please do not use other error types, because only this type will be caught and handled.
 You can provide an error message in either english, or an according translation for the current language.
-You do not provide all languages if you do an translation, but you need at least the english one.
+You do not need to provide all languages if you do an translation, but you need at least the english one.
 The error message will be shown as a dialog to the user, so it should explain why the cocktail was not prepared.
 
 ```python
 def start():
     everything_ok = your_custom_check_logic() # (1)!
-    # You can either just use direkt message in english
-    # Or provide translations and use cfg.UI_LANGUAGE
     msg = {
         "en": "Englisch Error Message",
         "de": "Deutsche Fehlernachricht"
     } # (2)!
-    # If not everything is ok, raise a RuntimeError
     if not everything_ok:
         message = msg.get(cfg.UI_LANGUAGE, msg["en"]) # (3)!
         raise RuntimeError(msg[message]) # (4)!
@@ -276,7 +270,7 @@ def start():
 
 1. Insert your custom logic to check on condition or external devices if everything is as it should be.
 2. You can either directly provide the message, or again define a translation. In the latter, see handling below. If you do provide translation, please make sure english is at least present.
-3. When you do the language selection here, it is best to fall back to `en` on a not found key. This is useful when a new language is released, which your addon currently does not support. Otherwise a KeyError will crash the program.
+3. When you do the language selection here, it is best to fall back to `en` on a not found key. This is useful when a new language is released, which your addon currently does not support. Otherwise a KeyError will crash the program. The current language is in `cfg.UI_LANGUAGE`.
 4. Please raise a `RuntimeError`, other errors will not be caught and crash the program. The used message will be shown to the user.
 
 ### Provide Documentation
