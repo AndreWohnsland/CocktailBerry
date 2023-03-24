@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 import time
-from typing import Dict, List, Optional, Literal, TYPE_CHECKING
+from typing import Dict, List, Optional, Literal, TYPE_CHECKING, Union
 from threading import Thread, Event
 import yaml
 from PyQt5.QtWidgets import QFileDialog, QWidget
@@ -385,6 +385,22 @@ class UiLanguage():
         # if there is nothing for this settings, we will get an attribute error
         except (AttributeError, KeyError):
             return ""
+
+    def add_config_description(
+        self,
+        config_name: str,
+        config_description: Union[dict[str, str], str],
+    ):
+        """Adds the description to the configuration.
+        description is in a dictionary, or a string.
+        string: just the description in english 
+        dict: holding language as key, description as a value, used for translation.
+        At least english (en) key needs to be provided. 
+        """
+        # If the user only did provide a string, assign this string to english translation
+        if isinstance(config_description, str):
+            config_description = {"en": config_description}
+        self.dialogs["settings_dialog"][config_name] = config_description
 
     def adjust_mainwindow(self, w: Ui_MainWindow):
         """Translates all needed elements of the main window (cocktail maker)"""
