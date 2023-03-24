@@ -1,5 +1,5 @@
 import random
-from typing import Any, Callable, Dict, List, Tuple, Union, get_args
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, get_args
 import typer
 import yaml
 from pyfiglet import Figlet
@@ -259,6 +259,74 @@ class ConfigManager:
             allowed_pins = rpi_allowed
         if data not in allowed_pins:
             raise ConfigError(f"{configname} must be one of the values: {allowed_pins}")
+
+    def add_config(
+        self,
+        config_name: str,
+        default_value: Union[str, int, float, bool, list[str], list[int], list[float]],
+        validation_function: Optional[list[Callable[[str, Any], None]]] = None,
+        list_validation_function: Optional[list[Callable[[str, Any], None]]] = None,
+        list_type: Optional[type] = None,
+    ):
+        """Adds the configuration under the given name.
+        Adds the default value, if it is currently not set in the config file.
+        If validation functions for the value or the list values are given,
+        they are also registered with the type.
+        Currently supported types are str, int, float and bool.
+        List cannot be nested, list types are str, int and float.
+        List must contain the same type, no mixed types.
+        If the default list is empty, please provide the list type,
+        otherwise the fallback type will be string.
+        """
+        # Set validation to empty list if not given
+        if validation_function is None:
+            validation_function = []
+        if list_validation_function is None:
+            list_validation_function = []
+
+        # if not exist, give default value
+        if not hasattr(self, config_name):
+            setattr(self, config_name, default_value)
+
+        # get the type of the config, define type and validation
+        config_type = type(default_value)
+        self.config_type[config_name] = (config_type, validation_function)
+
+        # Do the same for list, get either type if not provided, fall back to string if list is empty
+        if isinstance(default_value, list):
+            if list_type is None and len(default_value) == 0:
+                list_type = str
+            elif list_type is None:
+                list_type = type(default_value[0])
+            self.config_type_list[config_name] = (list_type, list_validation_function)
+
+    def add_selection_config(
+        self,
+        config_name: str,
+        options: list[str],
+        default_value: Optional[str] = None,
+        validation_function: Optional[list[Callable[[str, Any], None]]] = None,
+    ):
+        """Adds a configuration value under the given name, which can only be from given options
+        This is used to create a dropdown selection for the user to prevent unintended values.
+        Options must be string and have at least one element. 
+        Default value is first list element, or if given, the given value
+        """
+        # Define a choose type for the add on
+        class AddOnChoose(ChooseType):
+            allowed = options
+
+        # If user did not provide the default value, use the first element of options as default
+        if default_value is None:
+            default_value = options[0]
+        if validation_function is None:
+            validation_function = []
+        # Define default value if its not set
+        if not hasattr(self, config_name):
+            setattr(self, config_name, default_value)
+
+        # Set type and validation function
+        self.config_type[config_name] = (AddOnChoose, validation_function)
 
 
 def _validate_list_length(configlist: List[Any], configname: str, min_len: int):
