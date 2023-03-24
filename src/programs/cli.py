@@ -34,7 +34,7 @@ def main(
     if ctx.invoked_subcommand is not None:
         return
     show_start_message()
-    ADDONS.init_addons()
+    ADDONS.setup_addons()
     cfg.sync_config_to_file()
     if debug:
         os.environ.setdefault('DEBUG_MS', 'True')
