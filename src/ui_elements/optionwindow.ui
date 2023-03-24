@@ -57,9 +57,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-66</y>
+         <y>0</y>
          <width>765</width>
-         <height>528</height>
+         <height>452</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -311,35 +311,6 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0" colspan="2">
-           <widget class="QPushButton" name="button_back">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>70</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>5000</width>
-              <height>300</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>28</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>&lt; Back</string>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string>btn-inverted</string>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="1">
            <widget class="QPushButton" name="button_rfid">
             <property name="enabled">
@@ -425,6 +396,35 @@
         </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QPushButton" name="button_back">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>70</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>5000</width>
+        <height>300</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>28</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>&lt; Back</string>
+      </property>
+      <property name="cssClass" stdset="0">
+       <string>btn-inverted</string>
+      </property>
      </widget>
     </item>
    </layout>
