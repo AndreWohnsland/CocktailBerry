@@ -11,6 +11,7 @@ from src.programs.cocktailberry import run_cocktailberry
 from src.programs.calibration import run_calibration
 from src.programs.data_import import importer
 from src.programs.clearing import clear_local_database
+from src.programs.addons import ADDONS
 
 
 cli = typer.Typer(add_completion=False)
@@ -33,6 +34,7 @@ def main(
     if ctx.invoked_subcommand is not None:
         return
     show_start_message()
+    ADDONS.init_addons()
     cfg.sync_config_to_file()
     if debug:
         os.environ.setdefault('DEBUG_MS', 'True')

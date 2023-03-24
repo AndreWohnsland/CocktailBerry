@@ -69,7 +69,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.update_check()
         self._connection_check()
         self._deprecation_check()
-        ADDONS.init_addons()
 
     def update_check(self):
         """Checks if there is an update and asks to update, if exists"""
