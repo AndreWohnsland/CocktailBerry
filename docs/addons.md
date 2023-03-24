@@ -98,7 +98,7 @@ To do so, the user needs to inject the config name, type and validation function
 There is also the option to provided a description, as well as according translations.
 You can find each direction in the subsections below.
 
-#### Add Config Value
+#### Add Config Values
 
 To add additional configuration you need to import the `CONFIG` object and add your config to it.
 Please take note that the config will hold all existing values in the file, so only assign the default value if it does not exist.
@@ -125,6 +125,20 @@ def init():
 1.  Needs to import the `CONFIG` object from CocktailBerry.
 2.  Basic config integration, used at init(), adds addon default configuration into the config object if it does not exists.
 3.  Also need to add the type to the config. The type needs to be defined, that the GUI will work. Currently supported are int, float, str, list, and ChooseType.
+
+#### Use Config Values
+
+Using existing, as well as your newly defined configuration values is quite easy.
+All configuration are stored within the `CONFIG` object and are accessible there.
+You can use the config name as its attribute to get the desired configuration.
+
+```python
+my_config = cfg.ADDON_CONFIG # (1)!
+program_language = cfg.UI_LANGUAGE # (2)!
+```
+
+1. You can access your previously defined attributes over the `CONFIG` object.
+2. The `CONFIG` object also holds all settings, which are in the base CocktailBerry app. You can access them as well!
 
 #### Add Validation
 
@@ -154,7 +168,6 @@ cfg.config_type["ADDON_CONFIG"] = (str, [_check_function]) # (5)!
 4. Failed validation should throw the `ConfigError`, other errors will crash the app.
 5. You can define any number of check function. Please take care that the function interface has two arguments.
 
-
 #### Validate List Settings
 
 An extra case is, if your setting is a list of values.
@@ -175,31 +188,7 @@ cfg.config_type_list["ADDON_LIST"] = (int, []) # (3)!
 2. Most lists have no validation, but you may want to set a minimum or maximum number of elements for the check function.
 3. Now you also need to provide the type and optional the validation for the list elements.
 
-
-#### Add GUI Description
-
-Optionally, you can add an additional description to your configuration.
-This helps users using the GUI understanding the value better.
-Use the `UI_LANGUAGE` object and it's according dialog dictionary.
-The translation for the setting is in the `settings_dialog` key.
-You then add your own config name as key into the setting and define the translations.
-At least english is needed, if you do not provided a full list of translations.
-If you don't want to provide GUI description, you can skip this step.
-But it is encouraged to do so to improve user experience.
-
-```python
-from src.dialog_handler import UI_LANGUAGE as uil # (1)!
-
-uil.dialogs["settings_dialog"]["ADDON_CONFIG"] = {
-    "en": "English description",
-    "de": "Deutsche Beschreibung",
-} # (2)!
-```
-
-1. You need to import the `UI_LANGUAGE` object to access the dialogues
-2. Optional, if you don't provide any value, no description is shown. You need to access the `settings_dialog` and then add your config name as a key. If you do so, the dictionary needs at least the english (`en`) key!
-
-#### Using Selection for Dropdown
+#### Using Selection for Dropdowns
 
 You may want to only offer a selection of values to the user.
 In this case, you must define a class inheriting from the `ChooseType`.
@@ -223,27 +212,28 @@ cfg.config_type["ADDON_CHOOSE_CONFIG"] = (AddOnChoose, []) # (3)!
 2. Inherit from the class and define your allowed list of elements. The elements will be of type string due to the QtComboBox element, so in case you need other types, you have to convert the value later in your code.
 3. The rest is similar to the other elements. Just make sure you set your defined class instead of the type.
 
-### Using the Logger
+#### Add GUI Description
 
-The best way to implement logging into your addon is to use the internal CocktailBerry logger.
-This way, your logs are saved and formatted the same way as the other logs.
-This makes it easy for the user to view them over the GUI.
-The logger takes two arguments: The log level ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL") and the log message.
+Optionally, you can add an additional description to your configuration.
+This helps users using the GUI understanding the value better.
+Use the `UI_LANGUAGE` object and it's according dialog dictionary.
+The translation for the setting is in the `settings_dialog` key.
+You then add your own config name as key into the setting and define the translations.
+At least english is needed, if you do not provided a full list of translations.
+If you don't want to provide GUI description, you can skip this step.
+But it is encouraged to do so to improve user experience.
 
 ```python
-from src.logger_handler import LoggerHandler # (1)!
-_logger = LoggerHandler("ADDON: Name") # (2)!
+from src.dialog_handler import UI_LANGUAGE as uil # (1)!
 
-def init():
-  _logger.log_event(
-    "INFO",
-    "ADDON NAME has been initialized successfully"
-  ) # (3)!
+uil.dialogs["settings_dialog"]["ADDON_CONFIG"] = {
+    "en": "English description",
+    "de": "Deutsche Beschreibung",
+} # (2)!
 ```
 
-1. Import the `LoggerHandler` from CocktailBerry to set up your logger.
-2. Give the logger a name, it will be shown in the logs to pinpoint the messages. As a suggestion: use *ADDON: YourName* as the logger name, so it's clear the message comes from an addon.
-3. The logger uses the base python logger in the background but delivers an abstraction. Levels are "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL".
+1. You need to import the `UI_LANGUAGE` object to access the dialogues
+2. Optional, if you don't provide any value, no description is shown. You need to access the `settings_dialog` and then add your config name as a key. If you do so, the dictionary needs at least the english (`en`) key!
 
 ### Prevent Cocktail Preparation
 
@@ -272,6 +262,61 @@ def start():
 2. You can either directly provide the message, or again define a translation. In the latter, see handling below. If you do provide translation, please make sure english is at least present.
 3. When you do the language selection here, it is best to fall back to `en` on a not found key. This is useful when a new language is released, which your addon currently does not support. Otherwise a KeyError will crash the program. The current language is in `cfg.UI_LANGUAGE`.
 4. Please raise a `RuntimeError`, other errors will not be caught and crash the program. The used message will be shown to the user.
+
+### Using the Logger
+
+The best way to implement logging into your addon is to use the internal CocktailBerry logger.
+This way, your logs are saved and formatted the same way as the other logs.
+This makes it easy for the user to view them over the GUI.
+The logger takes two arguments: The log level ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL") and the log message.
+
+```python
+from src.logger_handler import LoggerHandler # (1)!
+_logger = LoggerHandler("ADDON: Name") # (2)!
+
+def init():
+  _logger.log_event(
+    "INFO",
+    "ADDON NAME has been initialized successfully"
+  ) # (3)!
+```
+
+1. Import the `LoggerHandler` from CocktailBerry to set up your logger.
+2. Give the logger a name, it will be shown in the logs to pinpoint the messages. As a suggestion: use *ADDON: YourName* as the logger name, so it's clear the message comes from an addon.
+3. The logger uses the base python logger in the background but delivers an abstraction. Levels are "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL".
+
+### Accessing Default Database
+
+There are cases you want to persistently store your data.
+You can either define your own database location and use a framework to your liking, or use the default CocktailBerry database.
+If you want to use the default database, import the `DB_COMMANDER` object.
+The handler attribute have the `query_database` command as an abstraction to interact with the database.
+Here you can execute SQLite commands passed as a string.
+If you want to have dynamic arguments, you can pass them according to the SQLite syntax (`?`), with the corresponding values in the second argument as tuple.
+The results are automatically fetched and returned as a list of tuples.
+Changes are automatically committed by the handler.
+Please take note that you need to create your table if it does not exist.
+
+```python
+from src.database_commander import DB_COMMANDER as dbc # (1)!
+
+dbc.handler.query_database(
+    "CREATE TABLE IF NOT EXISTS YourTable(...)"
+) # (2)!
+result = dbc.handler.query_database(
+    "SELECT * FROM YourTable"
+) # (3)!
+result = dbc.handler.query_database(
+    "SELECT * FROM YourTable WHERE Column=?",
+    (filtervalue,)
+) # (4)!
+```
+
+
+1. Import the `DB_COMMANDER` from CocktailBerry to use the default database.
+2. Ensure that your table exists, so creating it at initialization is a good practice.
+3. The `handler` object can call the `query_database` command. This uses the SQLite syntax. Results are fetched and returned as list of tuples. Changes are committed after the execution, so no need for a `.commit()`.
+4. If you want to provide dynamic values, you can use the question mark `?` in the query and pass the value along with the second argument in a tuple.
 
 ### Provide Documentation
 
