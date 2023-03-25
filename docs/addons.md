@@ -66,7 +66,9 @@ Now you are ready to go.
 ### Addon Base Structure
 
 An addon can currently execute code at init, cleanup, start or end of a cocktail.
-A more detailed description can be found at the plus icons in the code here.
+In addition, you can provide logic to build up your own GUI, if it is necessary.
+The file needs the Addon class, please also inherit from the Interface, so you get information about all functions.
+A more detailed description can be found at the plus icons in the code below.
 Even if not all functions must be present within the file, it is best practice to define all.
 So it is explicitly clear, that some of the functions do not do anything by design.
 A basic structure could look like this:
@@ -147,13 +149,13 @@ You can use the config name as its attribute to get the desired configuration.
 
 ```python
 my_config = cfg.ADDON_CONFIG # (1)!
-program_language = cfg.UI_LANGUAGE # (2)!
-my_config = getattr(cfg, "ADDON_CONFIG") # (3)!
+my_config = getattr(cfg, "ADDON_CONFIG") # (2)!
+program_language = cfg.UI_LANGUAGE # (3)!
 ```
 
 1. You can access your previously defined attributes over the `CONFIG` object.
-2. The `CONFIG` object also holds all settings, which are in the base CocktailBerry app. You can access them as well!
-3. Using the `getattr()` will work as well, if you prefer this way.
+2. Using the `getattr()` will work as well, if you prefer this way.
+3. The `CONFIG` object also holds all settings, which are in the base CocktailBerry app. You can access them as well!
 
 #### Add Validation
 
@@ -171,8 +173,9 @@ from src.config_manager import ConfigError # (1)!
 def _check_function(configname: str, configvalue: str): # (2)!
     if configvalue == "forbidden": # (3)!
         raise ConfigError( # (4)!
-          f"The value {configvalue} for {configname} is not allowed."
-          )
+            f"The value {configvalue} for {configname} is not allowed."
+        )
+
 def setup(self):
     cfg.add_config(
         "ADDON_CONFIG",
@@ -197,15 +200,16 @@ If the default value is an empty list, you must provide the element type to the 
 Otherwise, the string type will used as fallback type.
 
 ```python
-def _less_than_10(configname: str, configvalue: str): # (1)!
-    if configvalue > 10: 
+def _less_than_10(configname: str, configvalue: int): # (1)!
+    if configvalue > 10:
         raise ConfigError(
-          f"The value for {configname} needs to be less than 10."
-          )
+            f"The value for {configname} needs to be less than 10."
+        )
+
 def setup(self):
     cfg.add_config( # (2)!
         "ADDON_LIST",
-        [1,2,3],
+        [1, 2, 3],
         [], # (3)!
         [_less_than_10] # (4)!
     ) 
@@ -257,6 +261,7 @@ def setup(self):
         "de": "Deutsche Beschreibung",
     } # (2)!
     uil.add_config_description("ADDON_CONFIG", desc)
+
     desc2 = "Just an english description" # (3)!
     uil.add_config_description("ADDON_CONFIG2", desc2)
 
@@ -284,6 +289,7 @@ def before_cocktail(self):
         "en": "No glass was detected!",
         "de": "Kein Glas wurde erkannt!",
     } # (2)!
+
     if not everything_ok:
         message = msg.get(cfg.UI_LANGUAGE, msg["en"]) # (3)!
         raise RuntimeError(message) # (4)!
@@ -339,6 +345,7 @@ def setup(self):
     result = dbc.handler.query_database(
         "SELECT * FROM YourTable"
     ) # (3)!
+    
     filter_value = 10
     result = dbc.handler.query_database(
         "SELECT * FROM YourTable WHERE Column=?",
@@ -406,6 +413,35 @@ ADDON_NAME = "Your Displayed Name" # (1)!
 ```
 
 1. Define the ADDON_NAME at root level (outside the other functions or classes) in your file.
+
+### Dialogues an Prompts
+
+There are times, you either want to inform the user with a dialog or want to have a confirmation of the user.
+In this cases, you can use the `DP_CONTROLLER` object.
+The method `standard_box` will create a window showing your text.
+The method `user_ok` will prompt the user with the text and return if the user pressed ok.
+Those methods will use the default used elements from CocktailBerry.
+
+```python
+from src.display_controller import DP_CONTROLLER as dpc # (1)!
+
+def after_cocktail(self):
+    if dpc.user_okay("Should I do it?"): # (2)!
+        dpc.standard_box("I will do it") # (3)!
+```
+
+1. Import the `DP_CONTROLLER` from CocktailBerry to use dialogues.
+2. The `user_okay` method will wait until the user accepts or decline and return the result as boolean.
+3. The `standard_box` will display your text as a full screen window, with a close / ok button.
+
+### And Many More
+
+In theory, you can use any element from CocktailBerry, but this would go beyond the scope and is not necessary in most cases.
+If you are a little familiar with the base code, this should no problem for you.
+Some examples may be:
+
+- `src.machine.rfid` RFID Controller
+- `src.machine.leds` LED Controller
 
 ### Provide Documentation
 
