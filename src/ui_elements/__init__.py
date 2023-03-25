@@ -17,6 +17,7 @@ from src.ui_elements.rfidwriter import Ui_RFIDWriterWindow
 from src.ui_elements.teamselection import Ui_Teamselection
 from src.ui_elements.wifiwindow import Ui_WiFiWindow
 from .customcolor import Ui_ColorWindow
+from .addonwindow import Ui_Addonwindow
 
 
 __all__ = [
@@ -39,4 +40,5 @@ __all__ = [
     "Ui_Teamselection",
     "Ui_WiFiWindow",
     "Ui_ColorWindow",
+    "Ui_Addonwindow",
 ]
