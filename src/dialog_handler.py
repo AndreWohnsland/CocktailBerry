@@ -569,10 +569,13 @@ class UiLanguage():
         w.button_apply.setText(self.__choose_language("apply"))
         w.button_use_template.setText(self.__choose_language("use_template", window))
         w.label_description.setText(self.__choose_language("description", window))
-        
+
     def adjust_addon_window(self, w: Ui_Addonwindow):
         """"Translates the elements of the addon window"""
         w.button_back.setText(self.__choose_language("back"))
+
+    def get_no_addon_gui_info(self):
+        return self.__choose_language("no_gui", "addon_window")
 
 
 UI_LANGUAGE = UiLanguage()

@@ -406,6 +406,8 @@ ui:
       en: 'Text needs to be 3+ chars'
       de: 'Text muss min. 3 Zeichen sein'
 
+  ##### WIFI WINDOW #####
+  # all values for wifi window
   wifi:
     ssid:
       en: 'SSID (network name)'
@@ -413,6 +415,13 @@ ui:
     password:
       en: 'Password'
       de: 'Passwort'
+
+  ##### ADDON WINDOW #####
+  # all values for addon window
+  addon_window:
+    no_gui:
+      en: 'This addon got no additional GUI you can interact with.'
+      de: 'Dieses Addon hat keine zusätzliche Benutzeroberfläche zur Interaktion.'
 
   ##### SETTINGS WINDOW #####
   # all values for settings window
