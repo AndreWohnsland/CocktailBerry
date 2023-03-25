@@ -56,6 +56,9 @@ class AddOnManager:
                 continue
             addon = getattr(module, "Addon")
             self.addons[name] = addon()
+        if self.addons:
+            addon_string = ", ".join(list(self.addons.keys()))
+            print(f"Used Addons: {addon_string}")
 
     def setup_addons(self):
         """Execute all the setup function of the addons"""
@@ -91,15 +94,14 @@ class AddOnManager:
         self,
         addon_name: str,
         container: QVBoxLayout,
-        button_generator: Callable[[str, Callable], None],
+        button_generator: Callable[[str, Callable[[], None]], None],
     ) -> bool:
         """Builds the gui for the selected addon
         If method is not provided, return false.
         """
         addon = self.addons[addon_name]
         if hasattr(addon, "build_gui"):
-            addon.build_gui(container, button_generator)
-            return True
+            return addon.build_gui(container, button_generator)
         return False
 
 
