@@ -115,3 +115,21 @@ If the recipe use another unit than ml, please provide the according conversion 
     Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
     The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the single cocktails.
     This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
+
+## Creating Addon Base File
+
+Use this command to get starting developing your own addon!
+
+```bash
+python runme.py create-addon [OPTIONS] ADDON_NAME
+
+# Arguments:
+#   ADDON_NAME  [required]
+
+# Options:
+#   --help                  Show help
+```
+
+Creates a file containing the base structure to get started with your addon.
+The file is placed in the `addons` folder. 
+File name will be the name converted to lower case, space are replaced with underscores and stripped of special characters.

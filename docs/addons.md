@@ -23,6 +23,14 @@ The extension for addons was made, so that there is not big feature creep within
 This would cause more and more optional settings, which most user are not interested in.
 With addons users will get the best base experience with CocktailBerry, but can easy extent it to their own taste.
 
+Some examples for an addon could be:
+
+- Implementation of a weight scale to detect if a glass is present
+- Add a checklist for invoices or cost splitting
+- Modify starting values (default output volume, eg.) to let them be changed over the GUI
+- Integrate external things like automatic ice crasher
+- And almost anything you can think of
+
 ## Installing Addons
 
 To install an addon, just put the Python file of the addon into the `addons` folder.
@@ -59,9 +67,20 @@ Here you will find the ressources to get started.
 
 First, you should clone the latest version of CocktailBerry in your development environment.
 Install all needed dependencies, either over pip or with poetry (recommended).
-Then you should create **one** Python file for your addon, placed it in the `addons` folder in the CocktailBerry project.
+Usually **one** Python file is used per addon, placed in the `addons` folder in the CocktailBerry project.
 Files within this folder will not be tracked by git.
-Now you are ready to go.
+
+!!! tip "Use the CLI"
+    It's super easy to create a skeleton addon file with the [CLI command](commands.md#creating-addon-base-file)!
+    Just run: 
+    
+    ```bash
+    python runme.py create-addon "Your Addon Name"
+    ```
+
+    This will create a file with the needed structure in the addons folder.
+
+And you are ready to go.
 
 ### Addon Base Structure
 
@@ -107,7 +126,7 @@ class Addon(AddonInterface): # (2)!
 6. Executed right after the cocktail preparation, before other services are connected or DB is updated.
 7. Will be used if the user navigates to the addon window and selects your addon. The container is a PyQt5 Layout widget you can (but not must) use to define custom GUI elements and connect them to functions. If you just want to have buttons executing functions, you can use the button generator function. Return False, if not implemented.
 
-Now, your addon got the skeleton you can fill with your program logic.
+Now that you know the skeleton, you can fill it with your program logic.
 
 ### Defining Addon Configurations
 
@@ -125,7 +144,7 @@ To add additional configuration you need to import the `CONFIG` object and add y
 Please take note that the config will hold all existing values in the file, so try not to use a name that already exists in the base CocktailBerry config.
 You can either run the config setting at module level, or within the init() function.
 The latter is recommended and usually more appropriate, but this may depend on your program logic.
-Currently supported types are int, float, str, list, bool and [ChooseType](#using-selection-for-dropdown).
+Currently supported types are int, float, str, list, bool and [ChooseType](#using-selection-for-dropdowns).
 The type is used to define the input dialog within the settings GUI.
 It is strongly recommended to give your config value the prefix `ADDON_` to distinguish it from the base program settings.
 Also use an appropriate, not too long name, as well as all capital letters and underscores as word separator (screaming snake case).
@@ -223,9 +242,11 @@ def setup(self):
 #### Using Selection for Dropdowns
 
 You may want to offer only a selection of values to the user.
-In this case, you provide a list of allowed values.
+In this case, you provide a list of allowed string values.
 The default value will be the first element of the options, but you can also define this value, if it should be another one.
 The GUI will then display a drop down, only showing the allowed values.
+Please take note, if you want types other than string, you need to convert them after you retrieve the value from the config.
+The dropdown element only support string values.
 
 
 ```python
@@ -384,7 +405,7 @@ def build_gui(
 
 1. We just define a very simple function, which prints some text to the console.
 2. Type hints make your life, as well as autocompletion of your IDE easier.
-3. We generate a button with the label "click me" and pass out function. The function will be executed on button click.
+3. We generate a button with the label "click me" and pass our function. The function will be executed on button click.
 4. Return True if you provide build up logic. Otherwise the GUI will inform the user, that the addon does not provide any GUI.
 
 A more sophisticated example here uses the container object to add some text and a line edit to the GUI.
