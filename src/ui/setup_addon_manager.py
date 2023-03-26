@@ -1,11 +1,18 @@
 from dataclasses import dataclass
+import json
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView
-# from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt
+import requests
 
 from src.ui_elements import Ui_AddonManager
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.programs.addons import ADDONS
+from src.filepath import ADDON_FOLDER
+from src.logger_handler import LoggerHandler
+
+_logger = LoggerHandler("AddonManager")
+_GITHUB_ADDON_SOURCE = "https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Addons/main/addon_data.json"
 
 
 @dataclass
@@ -13,6 +20,14 @@ class _AddonData:
     name: str = "Not Set"
     description: str = "Not Set"
     url: str = "Not Set"
+    file_name: str = ""
+    installed: bool = False
+    official: bool = True
+
+    def __post_init__(self):
+        if self.file_name:
+            return
+        self.file_name = self.url.rsplit('/', maxsplit=1)[-1]
 
 
 class AddonManager(QMainWindow, Ui_AddonManager):
@@ -27,8 +42,9 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         # connects all the buttons
         self.button_back.clicked.connect(self.close)
         self.button_apply.clicked.connect(self._apply_changes)
-        self._installed_addons = list(ADDONS.addons.keys())
-        self.available_addons = self._get_addons_available()
+        self._installed_addons = ADDONS.addons
+        self._addon_information = self._generate_addon_information()
+        self._gui_addons: dict[str, QTableWidgetItem] = {}
         self._fill_addon_list()
 
         UI_LANGUAGE.adjust_addon_manager(self)
@@ -36,38 +52,81 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         DP_CONTROLLER.set_display_settings(self)
 
     def _fill_addon_list(self):
-        self.table_addons.setRowCount(len(self.available_addons))
-        self.table_addons.setColumnCount(2)
-        for i, addon in enumerate(self.available_addons):
-            name_cell = QTableWidgetItem(addon.name)
-            self.table_addons.setItem(i, 0, name_cell)
-            description_cell = QTableWidgetItem(addon.description)
-            self.table_addons.setItem(i, 1, description_cell)
+        """Fill the addon list widget with all the addon data"""
+        self.table_addons.setRowCount(len(self._addon_information))
+        self.table_addons.setColumnCount(1)
+        for i, addon in enumerate(self._addon_information):
+            content = f"{addon.name} ({addon.file_name})\n{addon.description}"
+            description_cell = QTableWidgetItem(content)
+            # if its an official addon, add checkable box to the left
+            if addon.official:
+                description_cell.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)  # type: ignore
+                description_cell.setCheckState(Qt.Checked if addon.installed else Qt.Unchecked)  # type: ignore
+            self.table_addons.setItem(i, 0, description_cell)
+            # Add to control, that we can retrieve check state later
+            self._gui_addons[addon.name] = description_cell
 
-        headers = ["name", "description"]
-        self.table_addons.setHorizontalHeaderLabels(headers)
+        # Style settings that the table is full width and makes line wraps and no ellipsis
         self.table_addons.horizontalHeader().setStretchLastSection(True)
         self.table_addons.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)  # type: ignore
+        self.table_addons.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)  # type: ignore
+        self.table_addons.resizeColumnsToContents()
         self.table_addons.resizeRowsToContents()
 
-    def _get_addons_available(self):
-        return [
-            _AddonData(**{
-                "name": "Testaddon",
-                "description": "bla blaaaa blaaaaaa",
-                "url": "https.//github.com/addon.py",
-            }),
-            _AddonData(**{
-                "name": "Testaddon1",
-                "description": "bla blaaaa blaaaaaa adfdf",
-                "url": "https.//github.com/addon1.py",
-            }),
-            _AddonData(**{
-                "name": "Testaddon2",
-                "description": "bla blaaaa blaaaaaa stqwagdfgh sdfd fsdfsdf sdf sdf s sfdsdf fs fsdf sdfsdf sdfa  sudg 9s sufh9sd fh9sdfs9 hf9sfhsd9fhud9fhs9  h9dfis9r<Z=SDFGUS",
-                "url": "https.//github.com/addon2.py",
-            })
-        ]
+    def _generate_addon_information(self):
+        """Gets all the addon data from source and locally installed ones, build the data objects"""
+        # get the addon data from the source
+        # This should provide name, description and url
+        req = requests.get(_GITHUB_ADDON_SOURCE, allow_redirects=True, timeout=5)
+        if req.ok:
+            gh_data = json.loads(req.text)
+            official_addons = [
+                _AddonData(**data) for data in gh_data
+            ]
+        else:
+            official_addons: list[_AddonData] = []
+
+        # Check if the addon is installed
+        for addon in official_addons:
+            if addon.name.lower() in [x.lower() for x in self._installed_addons]:
+                addon.installed = True
+
+        possible_addons = official_addons
+        # also add local addons, which are not official ones to the list
+        for local_addon_name, addon_class in self._installed_addons.items():
+            if local_addon_name.lower() not in [a.name.lower() for a in possible_addons]:
+                file_name = f"{addon_class.__module__.split('.')[-1]}.py"
+                possible_addons.append(
+                    _AddonData(
+                        local_addon_name,
+                        "Installed addon is not in the list of official addons. Please manage over file system.",
+                        file_name,
+                        file_name,
+                        True,
+                        False
+                    ))
+        return possible_addons
 
     def _apply_changes(self):
-        pass
+        # First apply all the user checked settings
+        for addon in self._addon_information:
+            # ignore official addons here
+            if not addon.official:
+                continue
+            user_say_installed = self._gui_addons[addon.name].checkState() == Qt.Checked  # type: ignore
+            addon.installed = user_say_installed
+            addon_file = ADDON_FOLDER / addon.file_name
+            # Download from source if user did check
+            # Also overwrite current files, so new version of the addons will be fetched
+            if addon.installed:
+                req = requests.get(addon.url, allow_redirects=True, timeout=5)
+                if req.ok:
+                    addon_file.write_bytes(req.content)
+                else:
+                    _logger.log_event(
+                        "ERROR",
+                        f"Could not get {addon.name} from {addon.url}: {req.status_code} {req.reason}"
+                    )
+            # remove or ignore (if not exists) if its not checked
+            else:
+                addon_file.unlink(missing_ok=True)
