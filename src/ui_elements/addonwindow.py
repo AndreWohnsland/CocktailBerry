@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'addonwindow.ui'
+# Form implementation generated from reading ui file '.\addonwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -58,8 +58,19 @@ class Ui_Addonwindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.button_back.setFont(font)
+        self.button_back.setProperty("cssClass", "")
         self.button_back.setObjectName("button_back")
         self.horizontalLayout.addWidget(self.button_back)
+        self.button_manage = QtWidgets.QPushButton(self.centralwidget)
+        self.button_manage.setMinimumSize(QtCore.QSize(0, 70))
+        self.button_manage.setMaximumSize(QtCore.QSize(5000, 100))
+        font = QtGui.QFont()
+        font.setPointSize(28)
+        font.setBold(True)
+        font.setWeight(75)
+        self.button_manage.setFont(font)
+        self.button_manage.setObjectName("button_manage")
+        self.horizontalLayout.addWidget(self.button_manage)
         self.selection_addon = QtWidgets.QComboBox(self.centralwidget)
         self.selection_addon.setMinimumSize(QtCore.QSize(105, 38))
         self.selection_addon.setMaximumSize(QtCore.QSize(5000, 100))
@@ -81,7 +92,8 @@ class Ui_Addonwindow(object):
         _translate = QtCore.QCoreApplication.translate
         Addonwindow.setWindowTitle(_translate("Addonwindow", "Addons Options"))
         self.button_back.setText(_translate("Addonwindow", "< Back"))
-        self.button_back.setProperty("cssClass", _translate("Addonwindow", "btn-inverted"))
+        self.button_manage.setText(_translate("Addonwindow", "Manage"))
+        self.button_manage.setProperty("cssClass", _translate("Addonwindow", "btn-inverted"))
 
 
 if __name__ == "__main__":
