@@ -18,6 +18,7 @@ from src.ui_elements.teamselection import Ui_Teamselection
 from src.ui_elements.wifiwindow import Ui_WiFiWindow
 from .customcolor import Ui_ColorWindow
 from .addonwindow import Ui_Addonwindow
+from .addonmanager import Ui_AddonManager
 
 
 __all__ = [
@@ -41,4 +42,5 @@ __all__ = [
     "Ui_WiFiWindow",
     "Ui_ColorWindow",
     "Ui_Addonwindow",
+    "Ui_AddonManager",
 ]

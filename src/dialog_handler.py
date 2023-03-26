@@ -8,6 +8,7 @@ from threading import Thread, Event
 import yaml
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from src.config_manager import CONFIG as cfg
+from src.ui_elements.addonmanager import Ui_AddonManager
 from src.utils import get_platform_data
 from src.filepath import LANGUAGE_FILE, APP_ICON_FILE
 from src import __version__
@@ -576,6 +577,10 @@ class UiLanguage():
 
     def get_no_addon_gui_info(self):
         return self.__choose_language("no_gui", "addon_window")
+
+    def adjust_addon_manager(self, w: Ui_AddonManager):
+        """"Translates the elements of the addon window"""
+        w.button_back.setText(self.__choose_language("back"))
 
 
 UI_LANGUAGE = UiLanguage()
