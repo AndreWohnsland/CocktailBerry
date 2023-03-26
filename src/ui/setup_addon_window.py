@@ -30,6 +30,9 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
 
     def _set_up_addon_gui(self):
         addon_name = self.selection_addon.currentText()
+        # If there is no addon, there will be not text.
+        if not addon_name:
+            return
         # first need to clean old elements for layout
         layout = self.addon_container
         for i in reversed(range(layout.count())):
