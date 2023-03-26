@@ -1,6 +1,6 @@
 # Addons
 
-Addons are third party extensions which may add additional features to CocktailBerry.
+Addons are third party extensions which add additional features to CocktailBerry.
 Currently, addons can be triggered at:
 
 - At the start of the program
@@ -147,7 +147,7 @@ The latter is recommended and usually more appropriate, but this may depend on y
 Currently supported types are int, float, str, list, bool and [ChooseType](#using-selection-for-dropdowns).
 The type is used to define the input dialog within the settings GUI.
 It is strongly recommended to give your config value the prefix `ADDON_` to distinguish it from the base program settings.
-Also use an appropriate, not too long name, as well as all capital letters and underscores as word separator (screaming snake case).
+Also use an appropriate, not too long name, as well as all capital letters and underscores as word separator (*screaming snake case*).
 You can have a look at the other values as a reference.
 
 ```python

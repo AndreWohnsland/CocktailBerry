@@ -7,7 +7,7 @@ $files = @(
   "optionwindow", "numpad", "progressbarwindow",
   "teamselection", "passworddialog", "customprompt",
   "logwindow", "rfidwriter", "wifiwindow",
-  "customcolor", "addonwindow",
+  "customcolor", "addonwindow", "addonmanager"
 )
 
 foreach ($f in $files) {

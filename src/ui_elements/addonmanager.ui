@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Addonwindow</class>
- <widget class="QMainWindow" name="Addonwindow">
+ <class>AddonManager</class>
+ <widget class="QMainWindow" name="AddonManager">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -78,7 +78,26 @@
         <item>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
-           <layout class="QVBoxLayout" name="addon_container"/>
+           <layout class="QVBoxLayout" name="addon_container">
+            <item>
+             <widget class="QTableWidget" name="table_addons">
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="dragDropOverwriteMode">
+               <bool>true</bool>
+              </property>
+              <property name="sortingEnabled">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -118,7 +137,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="button_manage">
+       <widget class="QPushButton" name="button_apply">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -139,36 +158,10 @@
          </font>
         </property>
         <property name="text">
-         <string>Manage</string>
+         <string>Apply</string>
         </property>
         <property name="cssClass" stdset="0">
          <string>btn-inverted</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="selection_addon">
-        <property name="minimumSize">
-         <size>
-          <width>105</width>
-          <height>38</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>5000</width>
-          <height>100</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="maxVisibleItems">
-         <number>11</number>
         </property>
        </widget>
       </item>
