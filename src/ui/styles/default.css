@@ -40,16 +40,20 @@
 #informationLabel {
   padding: 5px 25px 5px 25px; }
 
-QCheckBox::indicator {
+QCheckBox::indicator,
+QTableView::indicator {
   width: 18px;
   height: 18px;
   border: 2px solid;
   border-radius: 3px; }
-  QCheckBox::indicator:unchecked {
+  QCheckBox::indicator:unchecked,
+  QTableView::indicator:unchecked {
     border-color: #616161; }
-  QCheckBox::indicator:disabled {
+  QCheckBox::indicator:disabled,
+  QTableView::indicator:disabled {
     border-color: #0d0d0d; }
-  QCheckBox::indicator:checked {
+  QCheckBox::indicator:checked,
+  QTableView::indicator:checked {
     image: url(./src/ui_elements/check.png);
     border-color: #00ae4b; }
 
@@ -335,3 +339,19 @@ QTimeEdit {
   QTimeEdit::up-arrow {
     border-top-left-radius: 30px;
     border-top-right-radius: 30px; }
+
+QHeaderView::section {
+  background-color: #0d0d0d; }
+
+QTableView QTableCornerButton::section {
+  background: #0d0d0d; }
+
+QTableView::item {
+  margin-left: 20px;
+  padding: 10px 0px 15px 0px;
+  border-bottom: 1px solid #007bff; }
+
+QTableView::indicator {
+  width: 35px;
+  height: 35px;
+  margin-right: 15px; }
