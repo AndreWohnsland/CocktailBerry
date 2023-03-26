@@ -257,10 +257,19 @@ def setup(self):
         options,
         options[1], # (2)!
     )
+
+    cfg.add_selection_config(
+        "ADDON_SELECTION_INT",
+        ["10", "25", "50"] # (3)!
+    )
+    none_string_value = int(cfg.ADDON_SELECTION_INT) # (4)!
+
 ```
 
 1. First, you need to define the list of allowed options.
 2. Here, you set the default value to the second option. The default value uses the first option.
+3. Provide the values as string, even if they are other (here int) types
+4. Convert the values after retrieving to your desired type
 
 #### Add GUI Description
 
