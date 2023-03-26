@@ -11,7 +11,7 @@ from src.programs.cocktailberry import run_cocktailberry
 from src.programs.calibration import run_calibration
 from src.programs.data_import import importer
 from src.programs.clearing import clear_local_database
-from src.programs.addons import ADDONS
+from src.programs.addons import ADDONS, generate_addon_skeleton
 
 
 cli = typer.Typer(add_completion=False)
@@ -90,3 +90,14 @@ def clear_database():
     See also: https://cocktailberry.readthedocs.io/commands/#clearing-local-database
     """
     clear_local_database()
+
+
+@cli.command()
+def create_addon(addon_name: str):
+    """
+    Creates the base file for an addon under the given name.
+    The file is saved under the addons folder.
+    File name will be the name converted to lower case, space are replaced with underscores
+    and stripped of special characters.
+    """
+    generate_addon_skeleton(addon_name)
