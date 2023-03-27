@@ -59,7 +59,6 @@ else
   echo -n "Also install microservice (y/n)? This needs docker installed - you can also install it later with docker-compose. "
   read answer
   if echo "$answer" | grep -iq "^y"; then
-    cd microservice/
     docker compose up --build -d || docker-compose up --build -d || echo "ERROR: Could not install microservice over docker-compose or docker compose, is docker installed?"
   fi
 fi
