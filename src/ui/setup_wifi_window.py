@@ -12,6 +12,7 @@ from src.display_controller import DP_CONTROLLER
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_WiFiWindow
 from src.ui.icons import ICONS
+from src.utils import get_platform_data
 
 if TYPE_CHECKING:
     from src.ui_elements import Ui_MainWindow
@@ -19,6 +20,7 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("WiFiSetup")
 _WPA_FILE_PATH = "/etc/wpa_supplicant/wpa_supplicant.conf"
+_platform_data = get_platform_data()
 
 
 class WiFiWindow(QMainWindow, Ui_WiFiWindow):
@@ -69,6 +71,9 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         """Enters the wifi credentials into the wpa_supplicant.conf
         Restarts wlan0 interface, checks for internet after that.
         """
+        if _platform_data.system == "Windows":
+            print("Cannot do that on windows")
+            return
         if not Path(_WPA_FILE_PATH).exists():
             self._make_wpa_file()
         os.popen(f"sudo chmod a+rw {_WPA_FILE_PATH}")
