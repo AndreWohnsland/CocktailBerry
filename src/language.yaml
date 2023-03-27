@@ -422,6 +422,9 @@ ui:
     no_gui:
       en: 'This addon got no additional GUI you can interact with.'
       de: 'Dieses Addon hat keine zusätzliche Benutzeroberfläche zur Interaktion.'
+    manage:
+      en: 'Manage'
+      de: 'Verwalten'
 
   ##### SETTINGS WINDOW #####
   # all values for settings window

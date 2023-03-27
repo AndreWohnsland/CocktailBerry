@@ -573,7 +573,9 @@ class UiLanguage():
 
     def adjust_addon_window(self, w: Ui_Addonwindow):
         """"Translates the elements of the addon window"""
+        window = "addon_window"
         w.button_back.setText(self.__choose_language("back"))
+        w.button_manage.setText(self.__choose_language("manage", window))
 
     def get_no_addon_gui_info(self):
         return self.__choose_language("no_gui", "addon_window")
@@ -581,6 +583,7 @@ class UiLanguage():
     def adjust_addon_manager(self, w: Ui_AddonManager):
         """"Translates the elements of the addon window"""
         w.button_back.setText(self.__choose_language("back"))
+        w.button_apply.setText(self.__choose_language("apply"))
 
 
 UI_LANGUAGE = UiLanguage()
