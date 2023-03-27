@@ -22,7 +22,7 @@ from src.tabs import bottles
 from src.programs.calibration import run_calibration
 from src.logger_handler import LoggerHandler
 from src.save_handler import SAVE_HANDLER
-from src.utils import has_connection, restart_program
+from src.utils import has_connection, restart_program, get_platform_data
 from src.config_manager import CONFIG as cfg
 
 
@@ -34,6 +34,7 @@ _CONFIG_NAME = "custom_config.yaml"
 _VERSION_NAME = ".version.ini"
 _NEEDED_FILES = [_DATABASE_NAME, _CONFIG_NAME, _VERSION_NAME]
 _logger = LoggerHandler("option_window")
+_platform_data = get_platform_data()
 
 
 class OptionWindow(QMainWindow, Ui_Optionwindow):
@@ -87,6 +88,9 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Reboots the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_reboot():
             return
+        if _platform_data.system == "Windows":
+            print("Cannot do that on windows")
+            return
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo reboot")
         self.close()
@@ -94,6 +98,9 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _shutdown_system(self):
         """Shutdown the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_shutdown():
+            return
+        if _platform_data.system == "Windows":
+            print("Cannot do that on windows")
             return
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo shutdown now")
