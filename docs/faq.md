@@ -75,7 +75,7 @@ If there is an update, CocktailBerry will inform you at startup.
 ### How to Change Settings
 
 Under the 4th tab (bottles), you will find a gear icon, click on it.
-Enter the password (default is 1234), enter, click on configuration.
+Enter the password (default is 1234 on older versions or none at latest), enter, click on configuration.
 There, you will be able to change all possible settings.
 See [Setup](setup.md#setting-up-the-machine-modifying-other-values) for a detailed explanation of the configuration options.
 The values will also be validated before a change is applies.
@@ -111,7 +111,7 @@ A little tip here: If a ingredient is defined as a hand-add ingredient, but is c
 
 ### What is the Password
 
-The default password is 1234.
+The default password is 1234 on older versions or none at latest.
 A password is at some steps used to prevent unwanted modification of the maker.
 Depending on your users, this might be more or less useful but a safety measure.
 You can change the password under the settings.

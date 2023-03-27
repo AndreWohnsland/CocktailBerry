@@ -17,7 +17,7 @@ All entered values are checked for reason and if something is wrong, an error me
 ## Setting up the Machine / Modifying other Values
 
 You can manage your config within CocktailBerry.
-Just go to the bottles tab, click the gear icon and enter the password (default: 1234).
+Just go to the bottles tab, click the gear icon and enter the password (default: 1234 on older versions or none at latest).
 You can then use the UI to change the configuration.
 These values are stored under the local `custom_config.yaml` file.
 This file will be created at the first machine run and inherit all default values. 
