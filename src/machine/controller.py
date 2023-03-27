@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 import time
+import atexit
 from typing import List, Union, TYPE_CHECKING
 from PyQt5.QtWidgets import qApp
 
@@ -31,6 +32,7 @@ class MachineController():
         super().__init__()
         self._pin_controller = self._chose_controller()
         self._led_controller = LedController(self._pin_controller)
+        atexit.register(self.cleanup)
 
     def _chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""

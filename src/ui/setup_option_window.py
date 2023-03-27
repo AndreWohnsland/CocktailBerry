@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import datetime
 import shutil
+import atexit
 from typing import Optional, TYPE_CHECKING
 from pathlib import Path
 
@@ -19,7 +20,6 @@ from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
 from src.programs.calibration import run_calibration
-from src.machine.controller import MACHINE
 from src.logger_handler import LoggerHandler
 from src.save_handler import SAVE_HANDLER
 from src.utils import has_connection, restart_program
@@ -87,7 +87,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Reboots the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_reboot():
             return
-        MACHINE.cleanup()
+        atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo reboot")
         self.close()
 
@@ -95,7 +95,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Shutdown the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_shutdown():
             return
-        MACHINE.cleanup()
+        atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo shutdown now")
         self.close()
 

@@ -1,5 +1,6 @@
 from importlib import import_module
 import re
+import atexit
 from typing import Callable, Literal, Protocol
 
 import typer
@@ -59,6 +60,7 @@ class AddOnManager:
                 continue
             addon = getattr(module, "Addon")
             self.addons[name] = addon()
+        atexit.register(self.cleanup_addons)
 
     def setup_addons(self):
         """Execute all the setup function of the addons"""
