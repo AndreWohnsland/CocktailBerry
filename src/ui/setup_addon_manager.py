@@ -10,6 +10,7 @@ from src.display_controller import DP_CONTROLLER
 from src.programs.addons import ADDONS
 from src.filepath import ADDON_FOLDER
 from src.logger_handler import LoggerHandler
+from src.utils import restart_program
 
 _logger = LoggerHandler("AddonManager")
 _GITHUB_ADDON_SOURCE = "https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Addons/main/addon_data.json"
@@ -130,3 +131,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
             # remove or ignore (if not exists) if its not checked
             else:
                 addon_file.unlink(missing_ok=True)
+
+        # Ask to restart
+        if DP_CONTROLLER.ask_to_restart_for_config():
+            restart_program()
