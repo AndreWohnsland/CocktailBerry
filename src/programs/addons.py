@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 
 from src.filepath import ADDON_FOLDER, ADDON_SKELTON
 from src.logger_handler import LoggerHandler
+from src import __version__
 
 _SupportedActions = Literal[
     "setup", "cleanup",
@@ -119,7 +120,11 @@ def generate_addon_skeleton(name: str):
         typer.echo(typer.style(f"{msg}, aborting...", fg=typer.colors.RED, bold=True))
         raise typer.Exit()
     addon_path.write_text(
-        ADDON_SKELTON.read_text(encoding="utf-8").replace("ADDON_NAME_HOLDER", name),
+        (
+            ADDON_SKELTON.read_text(encoding="utf-8")
+            .replace("ADDON_NAME_HOLDER", name)
+            .replace("VERSION_HOLDER", __version__)
+        ),
         encoding="utf-8",
     )
     msg = f"Addon file was create at {addon_path}"

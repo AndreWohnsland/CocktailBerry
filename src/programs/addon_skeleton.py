@@ -1,7 +1,7 @@
 from typing import Callable
 from PyQt5.QtWidgets import QVBoxLayout
 
-# Auto created by CocktailBerry CLI
+# Auto created by CocktailBerry CLI version VERSION_HOLDER
 # Imports are automatically generated for all the examples from the docs
 # You can delete the imports you don't need
 # For more information see: https://cocktailberry.readthedocs.io/addons/
