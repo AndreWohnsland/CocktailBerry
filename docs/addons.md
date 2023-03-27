@@ -33,7 +33,10 @@ Some examples for an addon could be:
 
 ## Installing Addons
 
-To install an addon, just put the Python file of the addon into the `addons` folder.
+There are two options to install an addon.
+If it's an [official addon](https://github.com/AndreWohnsland/CocktailBerry-Addons), you can manage it over CocktailBerry.
+Go to Setting > Addons > Manage, there you can check the addons you want to have installed.
+For any none official one, just put the Python file of the addon into the `addons` folder.
 It is usually located at `~/CocktailBerry/addons`.
 If the addon needs additional Python packages, make sure you also install the needed requirements by the addon.
 An addon should only contain **one** file per addon.
@@ -46,6 +49,7 @@ Here is a list of verified addons that you can use.
 They are either directly from CocktailBerry or from other third party providers.
 Verifies means that the addon is known by the CocktailBerry programmers and was at least once tested for its functionality.
 
+- [Start Glass Volume](https://github.com/AndreWohnsland/CocktailBerry-Addons#start-glass-volume): Change default glass volume at machine start
 - It's a new feature, so let's make some addons!
 
 !!! question "Not the Addon you're Looking for?"
@@ -53,6 +57,7 @@ Verifies means that the addon is known by the CocktailBerry programmers and was 
     This is either because not all people will show their addons, or they are currently not known.
     If you created a cool one, contact CocktailBerry!
     Also, it's quite easy to get started, so you might want to build your own perfect fit.
+    If you want to contribute, also have a look into the [Addons Repo](https://github.com/AndreWohnsland/CocktailBerry-Addons).
 
 ## Creating Addons
 
