@@ -488,3 +488,9 @@ This will reduce user confusion an will raise the popularity of your addon.
 If you created a cool addon, you can link me the project.
 It may be included here, after it's functionality has been verified.
 This way, more users may find the addon and can use it.
+
+### Make it Verified
+
+To publish your addon and make it visible to the users of CocktailBerry, you can checkout the [official repository](https://github.com/AndreWohnsland/CocktailBerry-Addons).
+CocktailBerry will use the information listed there, to get the addon data.
+Follow the development steps to make your addon a verified and accessible addon!
