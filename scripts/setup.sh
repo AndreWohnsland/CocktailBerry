@@ -60,6 +60,6 @@ else
   read answer
   if echo "$answer" | grep -iq "^y"; then
     cd microservice/
-    docker-compose up --build -d || echo "ERROR: Could not install microservice over docker-compose, is docker installed?"
+    docker compose up --build -d || docker-compose up --build -d || echo "ERROR: Could not install microservice over docker-compose or docker compose, is docker installed?"
   fi
 fi
