@@ -25,6 +25,7 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         # Get log file names, fill widget, select default, if it exists
         self.log_files = self._get_log_files()
         self.selection_logs.activated.connect(self._read_logs)
+        self.check_warning.stateChanged.connect(self._read_logs)
         DP_CONTROLLER.fill_single_combobox(self.selection_logs, self.log_files, first_empty=False)
         if _DEFAULT_SELECTED in self.log_files:
             DP_CONTROLLER.set_combobox_item(self.selection_logs, _DEFAULT_SELECTED)
@@ -47,15 +48,16 @@ class LogWindow(QMainWindow, Ui_LogWindow):
             return
         log_path = LOG_FOLDER / log_name
         log_text = log_path.read_text()
+        warning_and_higher = self.check_warning.isChecked()
         # Handle debug logs differently, since they save error traces,
         # just display the read in text from log in this case
         if log_name == _DEBUG_FILE:
             logs_to_render = self._parse_debug_logs(log_text)
         else:
-            logs_to_render = self._parse_log(log_text)
+            logs_to_render = self._parse_log(log_text, warning_and_higher)
         self.text_display.setText(logs_to_render)
 
-    def _parse_log(self, log_text: str):
+    def _parse_log(self, log_text: str, warning_and_higher: bool):
         """Parse all logs and return display object.
         Needs logs from new to old, if same message was already there, skip it.
         """
@@ -68,7 +70,13 @@ class LogWindow(QMainWindow, Ui_LogWindow):
                 counter[message] = 1
             else:
                 counter[message] += 1
-        log_list_data = [f"{key} ({counter[key]}x, latest: {value})" for key, value in data.items()]
+        log_list_data = [
+            f"{key} ({counter[key]}x, latest: {value})" for key, value in data.items()
+        ]
+        # Filter out DEBUG or INFO msgs
+        if warning_and_higher:
+            accepted = ["WARNING", "ERROR", "CRITICAL"]
+            log_list_data = [x for x in log_list_data if any(a in x for a in accepted)]
         return "\n".join(log_list_data)
 
     def _parse_log_line(self, line: str):
