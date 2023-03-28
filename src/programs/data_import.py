@@ -173,7 +173,7 @@ def _insert_recipes(recipes: List[_RecipeInformation]):
     print("Inserting recipe:", end=" ")
     for rec in recipes:
         print(rec.name, end=", ")
-        volume = int(sum([x.volume for x in rec.ingredients]))
+        volume = int(sum(x.volume for x in rec.ingredients))
         DB_COMMANDER.insert_new_recipe(rec.name, 0, volume, "", 1, 0)
         _insert_recipe_data(rec, ingredient_mapping)
     print("\nImport finished!")
