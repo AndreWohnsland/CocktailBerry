@@ -35,7 +35,6 @@ table( Recipes ) {
   column_req( Name ): TEXT 
   column_req( Alcohol ): INTEGER
   column_req( Amount ): INTEGER
-  column( Comment ): TEXT
   column( Counter_lifetime ): INTEGER
   column( Counter ): INTEGER
   column( Enabled ): INTEGER
