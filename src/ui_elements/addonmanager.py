@@ -60,6 +60,7 @@ class Ui_AddonManager(object):
         self.table_addons.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
         self.table_addons.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.table_addons.setTextElideMode(QtCore.Qt.ElideNone)
+        self.table_addons.setCornerButtonEnabled(False)
         self.table_addons.setRowCount(0)
         self.table_addons.setColumnCount(0)
         self.table_addons.setObjectName("table_addons")
@@ -102,7 +103,7 @@ class Ui_AddonManager(object):
     def retranslateUi(self, AddonManager):
         _translate = QtCore.QCoreApplication.translate
         AddonManager.setWindowTitle(_translate("AddonManager", "Addons Options"))
-        self.table_addons.setSortingEnabled(True)
+        self.table_addons.setSortingEnabled(False)
         self.button_back.setText(_translate("AddonManager", "< Back"))
         self.button_apply.setText(_translate("AddonManager", "Apply"))
         self.button_apply.setProperty("cssClass", _translate("AddonManager", "btn-inverted"))
