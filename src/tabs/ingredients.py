@@ -46,10 +46,11 @@ def _add_new_ingredient(w, ing: Ingredient):
         return False
 
     DB_COMMANDER.insert_new_ingredient(ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand))
+    # needs to fill the ingredient comboboxes, bottles tab only if it is not a handadd
+    to_fill = DP_CONTROLLER.get_comboboxes_recipes(w)
     if not ing.hand:
-        combobox_recipes = DP_CONTROLLER.get_comboboxes_recipes(w)
-        combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
-        DP_CONTROLLER.fill_multiple_combobox(combobox_recipes + combobox_bottles, [ing.name])
+        to_fill.extend(DP_CONTROLLER.get_comboboxes_bottles(w))
+    DP_CONTROLLER.fill_multiple_combobox(to_fill, [ing.name])
     return True
 
 
@@ -67,12 +68,6 @@ def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
     if ing.hand and bottle_used:
         DP_CONTROLLER.say_ingredient_still_at_bottle()
         return False
-    # also abort if the ingredient is set to hand and still used in recipes via machine
-    # This is necessary, because the recipe interface does not show hand only ingredients
-    ing_used_by_machine = DB_COMMANDER.get_recipes_using_ingredient_by_machine(old_ingredient.id)
-    if ing.hand and ing_used_by_machine:
-        DP_CONTROLLER.say_ingredient_still_as_machine_in_recipe(ing_used_by_machine)
-        return False
 
     # in case the volume was lowered below current level get the minimum of both
     volume_level = min(old_ingredient.fill_level, ing.bottle_volume)
@@ -88,16 +83,18 @@ def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
     DP_CONTROLLER.delete_list_widget_item(ingredient_list_widget, ing.selected)
     combobox_recipes = DP_CONTROLLER.get_comboboxes_recipes(w)
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
-    both_boxes = combobox_recipes + combobox_bottles
 
-    # Adjust the comboboxes, add if it was moved from hand to machine
-    # renames if it stays machine add, removes if it was moved to handadd
+    # Rename in recipes dropdown
+    DP_CONTROLLER.rename_multiple_combobox(combobox_recipes, ing.selected, ing.name)
+
+    # add / remove / rename (depending on hand add state change) from bottles dropdown
+    # need to do this (and rename), otherwise if changing selected ones, the deletion will change selection
     if old_ingredient.hand and not ing.hand:
-        DP_CONTROLLER.fill_multiple_combobox(both_boxes, [ing.name])
-    elif not ing.hand:
-        DP_CONTROLLER.rename_multiple_combobox(both_boxes, ing.selected, ing.name)
+        DP_CONTROLLER.fill_multiple_combobox(combobox_bottles, [ing.name])
+    elif not old_ingredient.hand and ing.hand:
+        DP_CONTROLLER.delete_item_in_multiple_combobox(combobox_bottles, ing.selected)
     else:
-        DP_CONTROLLER.delete_item_in_multiple_combobox(both_boxes, ing.selected)
+        DP_CONTROLLER.rename_multiple_combobox(combobox_bottles, ing.selected, ing.name)
 
     return True
 
