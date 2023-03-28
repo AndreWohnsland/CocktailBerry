@@ -5,12 +5,12 @@
 # launcher.sh for dashboard
 # This for qt-app (recommended way)
 # cd ~/CocktailBerry/dashboard/qt-app/
-# python3 main.py
+# python main.py
 # This for Dash (WebApp, advanced way)
 # cd ~/CocktailBerry/dashboard/frontend/
-# gunicorn --workers=5 --threads=1 -b :8050 index:server 
+# gunicorn --workers=5 --threads=1 -b :8050 index:server
 
 # launcher.sh for CocktailBerry
 export QT_SCALE_FACTOR=1
 cd ~/CocktailBerry/
-python3 runme.py
+python runme.py
