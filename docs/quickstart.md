@@ -24,7 +24,7 @@ sh scripts/setup.sh
 
 !!! tip "RPi: Try the new all in one Script"
     If you are on your Raspberry Pi, you can now also use the so called *All In One Script*!
-    This will check that git, Python and your OS are compatible for the project as well install CocktailBerry including Docker and compose on the Pi.
+    This will check that git, Python and your OS are compatible for the project and install CocktailBerry including Docker and compose on the Pi.
     
     Just use:
 
