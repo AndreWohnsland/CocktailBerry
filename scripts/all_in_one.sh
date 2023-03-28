@@ -39,14 +39,14 @@ cd ~/CocktailBerry
 
 # Do Docker related steps
 echo "Setting things up for Docker and Compose"
-sh scripts/install_docker.sh
+bash scripts/install_docker.sh
 cd ~/CocktailBerry
-sh scripts/install_compose.sh
+bash scripts/install_compose.sh
 
 # Now we can finally set the program up ^-^
 cd ~/CocktailBerry
 echo "Setting up and installing CocktailBerry"
-sh scripts/setup.sh
+bash scripts/setup.sh
 
 echo "Everything should be set now! Have fun with CocktailBerry :)"
 echo "Made by Andre Wohnsland and contributors with <3"
