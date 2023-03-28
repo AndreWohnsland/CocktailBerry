@@ -18,6 +18,18 @@ The RPi is needed to control the Pumps in a real machine, but the program will w
 After flashing the latest Raspberry Pi 64 bit OS, you can use the provided shell scripts to set everything automatically up on your Raspberry Pi.
 Or just install [the requirements](#installing-requirements), when you want to have a look into the program on your PC.
 You can always install the other things later, the docs provide information within each according section.
+
+!!! tip "RPi: Try the new all in one Script"
+    If you are on your Raspberry Pi, you can now also use the so called *All In One Script*!
+    This will check that git, Python and your OS are compatible for the project as well install CocktailBerry including Docker and compose on the Pi.
+    
+    Just use:
+
+    ```bash
+    wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash
+    ```
+    to get the script and run it on the Pi. To easy to be true, isn't it?
+
 To clone and setup this project run:
 
 ```bash
