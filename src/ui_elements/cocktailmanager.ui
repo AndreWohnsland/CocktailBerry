@@ -1546,6 +1546,52 @@
              <layout class="QVBoxLayout" name="verticalLayout_16">
               <item>
                <layout class="QGridLayout" name="gridLayout_3">
+                <item row="5" column="0">
+                 <widget class="QComboBox" name="CBR6">
+                  <property name="minimumSize">
+                   <size>
+                    <width>105</width>
+                    <height>28</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QComboBox" name="CBR7">
+                  <property name="minimumSize">
+                   <size>
+                    <width>105</width>
+                    <height>28</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
                 <item row="0" column="1">
                  <widget class="ClickableLineEdit" name="LER1">
                   <property name="minimumSize">
@@ -1615,8 +1661,8 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="2">
-                 <widget class="QLabel" name="label_5">
+                <item row="6" column="2">
+                 <widget class="QLabel" name="label_10">
                   <property name="maximumSize">
                    <size>
                     <width>40</width>
@@ -1658,28 +1704,8 @@
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="2">
-                 <widget class="QLabel" name="label_10">
-                  <property name="maximumSize">
-                   <size>
-                    <width>40</width>
-                    <height>100</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>18</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>ml</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QLabel" name="label_9">
+                <item row="1" column="2">
+                 <widget class="QLabel" name="label_5">
                   <property name="maximumSize">
                    <size>
                     <width>40</width>
@@ -1718,66 +1744,8 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="ClickableLineEdit" name="LER2">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>28</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>100</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>14</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="cssClass" stdset="0">
-                   <string>secondary bold</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="ClickableLineEdit" name="LER3">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>28</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>100</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>14</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="cssClass" stdset="0">
-                   <string>secondary bold</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="2">
-                 <widget class="QLabel" name="label_6">
+                <item row="2" column="2">
+                 <widget class="QLabel" name="label_9">
                   <property name="maximumSize">
                    <size>
                     <width>40</width>
@@ -1796,8 +1764,8 @@
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="1">
-                 <widget class="ClickableLineEdit" name="LER6">
+                <item row="1" column="1">
+                 <widget class="ClickableLineEdit" name="LER2">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
@@ -1854,8 +1822,57 @@
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="1">
-                 <widget class="ClickableLineEdit" name="LER7">
+                <item row="5" column="1">
+                 <widget class="ClickableLineEdit" name="LER6">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>28</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary bold</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="2">
+                 <widget class="QLabel" name="label_6">
+                  <property name="maximumSize">
+                   <size>
+                    <width>40</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>18</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>ml</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="ClickableLineEdit" name="LER3">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
@@ -1912,6 +1929,58 @@
                   </property>
                  </widget>
                 </item>
+                <item row="6" column="1">
+                 <widget class="ClickableLineEdit" name="LER7">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>28</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary bold</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QComboBox" name="CBR4">
+                  <property name="minimumSize">
+                   <size>
+                    <width>105</width>
+                    <height>28</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
                 <item row="1" column="0">
                  <widget class="QComboBox" name="CBR2">
                   <property name="minimumSize">
@@ -1958,29 +2027,6 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
-                 <widget class="QComboBox" name="CBR4">
-                  <property name="minimumSize">
-                   <size>
-                    <width>105</width>
-                    <height>28</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>100</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>14</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                 </widget>
-                </item>
                 <item row="4" column="0">
                  <widget class="QComboBox" name="CBR5">
                   <property name="minimumSize">
@@ -2004,8 +2050,8 @@
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="0">
-                 <widget class="QComboBox" name="CBR6">
+                <item row="7" column="0">
+                 <widget class="QComboBox" name="CBR8">
                   <property name="minimumSize">
                    <size>
                     <width>105</width>
@@ -2027,26 +2073,52 @@
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="0">
-                 <widget class="QComboBox" name="CBR7">
+                <item row="7" column="1">
+                 <widget class="ClickableLineEdit" name="LER8">
                   <property name="minimumSize">
                    <size>
-                    <width>105</width>
+                    <width>0</width>
                     <height>28</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>100</width>
                     <height>100</height>
                    </size>
                   </property>
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary bold</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="7" column="2">
+                 <widget class="QLabel" name="label_11">
+                  <property name="maximumSize">
+                   <size>
+                    <width>40</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>18</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
+                  </property>
+                  <property name="text">
+                   <string>ml</string>
                   </property>
                  </widget>
                 </item>

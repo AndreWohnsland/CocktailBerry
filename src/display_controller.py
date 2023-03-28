@@ -70,7 +70,7 @@ class DisplayController(DialogHandler):
         return cocktail_name, cocktail_volume, alcohol_factor
 
     def get_recipe_field_data(self, w: Ui_MainWindow) -> Tuple[str, str, List[str], List[str], int, int]:
-        """ Return [name, selected, [ingredients], [volumes], enabled, virgin, comment] """
+        """ Return [name, selected, [ingredients], [volumes], enabled, virgin] """
         recipe_name: str = w.LECocktail.text().strip()
         selected_recipe = self.get_list_widget_selection(w.LWRezepte)
         # this is also a str, because user may type non int char into box
@@ -430,7 +430,6 @@ class DisplayController(DialogHandler):
             w.LWRezepte.clearSelection()
         self.set_multiple_combobox_to_top_item(self.get_comboboxes_recipes(w))
         self.clean_multiple_lineedit(self.get_lineedits_recipe(w))
-        shared.handaddlist = []
 
     def remove_recipe_from_list_widgets(self, w: Ui_MainWindow, recipe_name: str):
         """Remove the recipe from the list widgets, suppress signals during process"""
@@ -479,11 +478,11 @@ class DisplayController(DialogHandler):
 
     def get_comboboxes_recipes(self, w: Ui_MainWindow) -> List[QComboBox]:
         """Returns all recipe combo box objects"""
-        return [getattr(w, f"CBR{x}") for x in range(1, 8)]
+        return [getattr(w, f"CBR{x}") for x in range(1, 9)]
 
     def get_lineedits_recipe(self, w: Ui_MainWindow) -> List[QLineEdit]:
         """Returns all recipe line edit objects"""
-        return [getattr(w, f"LER{x}") for x in range(1, 8)]
+        return [getattr(w, f"LER{x}") for x in range(1, 9)]
 
     def get_ingredient_fields(
         self, w: Ui_MainWindow
