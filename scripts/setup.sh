@@ -57,10 +57,5 @@ else
   cp microservice/.env.example microservice/.env
   echo "Install qtsass, this may take a while depending on your OS, so it is time for a coffe break :)"
   pip3 install qtsass
-  echo -n "Also install microservice (y/n)? This needs docker installed - you can also install it later with docker-compose. "
-  read answer
-  if echo "$answer" | grep -iq "^y"; then
-    docker compose up --build -d || docker-compose up --build -d || echo "ERROR: Could not install microservice over docker-compose or docker compose, is docker installed?"
-  fi
 fi
 echo "Done with the setup"
