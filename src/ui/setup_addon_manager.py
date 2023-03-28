@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 import json
+from pathlib import Path
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView
 from PyQt5.QtCore import Qt
 import requests
+from requests.exceptions import ConnectionError as ReqConnectionError, ConnectTimeout as ReqConnectTimeout
 
 from src.ui_elements import Ui_AddonManager
 from src.dialog_handler import UI_LANGUAGE
@@ -78,18 +80,21 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         """Gets all the addon data from source and locally installed ones, build the data objects"""
         # get the addon data from the source
         # This should provide name, description and url
-        req = requests.get(_GITHUB_ADDON_SOURCE, allow_redirects=True, timeout=5)
-        if req.ok:
-            gh_data = json.loads(req.text)
-            official_addons = [
-                _AddonData(**data) for data in gh_data
-            ]
-        else:
-            official_addons: list[_AddonData] = []
+        official_addons: list[_AddonData] = []
+        try:
+            req = requests.get(_GITHUB_ADDON_SOURCE, allow_redirects=True, timeout=5)
+            if req.ok:
+                gh_data = json.loads(req.text)
+                official_addons = [
+                    _AddonData(**data) for data in gh_data
+                ]
+        except (ReqConnectionError, ReqConnectTimeout):
+            _logger.log_event("WARNING", "Could not fetch addon data from source, is there an internet connection?")
 
         # Check if the addon is installed
+        low_case_installed_addons = [x.lower() for x in self._installed_addons]
         for addon in official_addons:
-            if addon.name.lower() in [x.lower() for x in self._installed_addons]:
+            if addon.name.lower() in low_case_installed_addons:
                 addon.installed = True
 
         possible_addons = official_addons
@@ -120,14 +125,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
             # Download from source if user did check
             # Also overwrite current files, so new version of the addons will be fetched
             if addon.installed:
-                req = requests.get(addon.url, allow_redirects=True, timeout=5)
-                if req.ok:
-                    addon_file.write_bytes(req.content)
-                else:
-                    _logger.log_event(
-                        "ERROR",
-                        f"Could not get {addon.name} from {addon.url}: {req.status_code} {req.reason}"
-                    )
+                self._install_addon(addon, addon_file)
             # remove or ignore (if not exists) if its not checked
             else:
                 addon_file.unlink(missing_ok=True)
@@ -135,3 +133,20 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         # Ask to restart
         if DP_CONTROLLER.ask_to_restart_for_config():
             restart_program()
+
+    def _install_addon(self, addon: _AddonData, addon_file: Path):
+        """Try to install addon, log if req is not ok or no connection"""
+        try:
+            req = requests.get(addon.url, allow_redirects=True, timeout=5)
+            if req.ok:
+                addon_file.write_bytes(req.content)
+            else:
+                _logger.log_event(
+                    "ERROR",
+                    f"Could not get {addon.name} from {addon.url}: {req.status_code} {req.reason}"
+                )
+        except (ReqConnectionError, ReqConnectTimeout):
+            _logger.log_event(
+                "ERROR",
+                f"Could not get {addon.name} from {addon.url}: No internet connection"
+            )
