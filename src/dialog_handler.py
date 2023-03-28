@@ -16,7 +16,7 @@ from src import __version__
 if TYPE_CHECKING:
     from src.ui_elements import (
         Ui_available, Ui_addingredient, Ui_Bottlewindow, Ui_MainWindow, Ui_CustomDialog,
-        Ui_CustomPrompt, Ui_Datepicker, Ui_Handadds, Ui_LogWindow, Ui_Optionwindow,
+        Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
         Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow
     )
@@ -429,7 +429,6 @@ class UiLanguage():
             (w.LIngredient, "ingredient_label"),
             (w.LAlcoholLevel, "alcohol_level_label"),
             (w.LBottleVolume, "bottle_volume_label"),
-            (w.LRHandAdd, "hand_add_label"),
             (w.PBFlanwenden, "renew_button"),
             (w.virgin_checkbox, "activate_virgin"),
             (w.offervirgin_checkbox, "virgin_possibility"),
@@ -449,14 +448,6 @@ class UiLanguage():
         w.PBAbbruch_2.setText(self.__choose_language("cancel_button"))
         w.LAvailable.setText(self.__choose_language("available_label", window))
         w.LPossible.setText(self.__choose_language("possible_label", window))
-
-    def adjust_handadds_window(self, w: Ui_Handadds):
-        """Translates all needed elements of the handadds window"""
-        window = "handadds_window"
-        w.PBAbbrechen.setText(self.__choose_language("cancel_button"))
-        w.PBEintragen.setText(self.__choose_language("enter_button"))
-        w.LHeader.setText(self.__choose_language("title", window))
-        # w.setWindowTitle(self.__choose_language("title", window))
 
     def adjust_progress_screen(self, w: Ui_Progressbarwindow, cocktail_type: str):
         """Translates all needed elements of the progress window"""
