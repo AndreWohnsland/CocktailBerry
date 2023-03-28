@@ -340,7 +340,8 @@ def before_cocktail(self):
 The best way to implement logging into your addon is to use the internal CocktailBerry logger.
 This way, your logs are saved and formatted the same way as the other logs.
 This makes it easy for the user to view them over the GUI.
-The logger takes two arguments: The log level ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL") and the log message.
+The `log_event` takes two arguments: The log level ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL") and the log message.
+Or you can just use the default way, the python logger is implemented with the according level function.
 
 ```python
 from src.logger_handler import LoggerHandler # (1)!
@@ -351,11 +352,13 @@ def setup(self):
     "INFO",
     "ADDON NAME has been initialized successfully"
   ) # (3)!
+  _logger.debug("This works as well") # (4)!
 ```
 
 1. Import the `LoggerHandler` from CocktailBerry to set up your logger.
 2. Give the logger a name, it will be shown in the logs to pinpoint the messages. As a suggestion: use *ADDON: YourName* as the logger name, so it's clear the message comes from an addon.
 3. The logger uses the base python logger in the background but delivers an abstraction. Levels are "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL".
+4. You can also use the known debug, info, warning, error and critical functions to log your message
 
 ### Accessing Default Database
 
