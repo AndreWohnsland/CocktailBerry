@@ -47,7 +47,7 @@ CocktailBerry can do:
 - Switch between user interface languages
 - Support WS281x LEDs on your machine
 - Support for RFID/NFC reader
-- Implement your own addon to extend the base functionality
+- Implement your own [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) to extend the base functionality
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
 
@@ -118,3 +118,4 @@ If you want to support this project, feel free to fork it and create your own pu
 To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md). Here is a general list of features or refactoring things, I may do in the future. With your help, these things come even faster! If your idea is not on the list, feel free to open a feature request, I may consider it!
 
 - `easy`: Translate all dialogs / UI to your native language
+- `easy-hard`: Implement a cool [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) and make it verified
