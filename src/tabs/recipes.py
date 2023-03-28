@@ -196,6 +196,8 @@ def delete_recipe(w):
     if not recipe_name:
         DP_CONTROLLER.say_no_recipe_selected()
         return
+    if not DP_CONTROLLER.ask_to_delete_x(recipe_name):
+        return
     if not DP_CONTROLLER.password_prompt():
         return
 

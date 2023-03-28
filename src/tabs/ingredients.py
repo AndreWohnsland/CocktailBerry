@@ -118,6 +118,8 @@ def delete_ingredient(w):
     if not selected_ingredient:
         DP_CONTROLLER.say_no_ingredient_selected()
         return
+    if not DP_CONTROLLER.ask_to_delete_x(selected_ingredient):
+        return
     if not DP_CONTROLLER.password_prompt():
         return
 

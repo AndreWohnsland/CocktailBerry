@@ -139,6 +139,9 @@ dialog:
   ask_enable_all_recipes:
     en: 'Do you want to enable all recipes? All possible ones will be then shown at the maker tab.'
     de: 'Alle Rezepte aktiv setzen? Machbare Rezepte werden dann im Maker Tab angezeigt.'
+  ask_to_delete_x:
+    en: 'Do you want to delete {x}? This cannot be reverted.'
+    de: 'Soll {x} gelöscht werden? Dies kann nicht rückgängig gemacht werden.'
   backup_created:
     en: 'Backup has been created at: {folder}.'
     de: 'Backup wurde unter {folder} gespeichert.'

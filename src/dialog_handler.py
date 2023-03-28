@@ -342,6 +342,11 @@ class DialogHandler():
         message = self.__choose_language("ask_to_install_qtsass")
         return self.user_okay(message)
 
+    def ask_to_delete_x(self, x: str):
+        """Ask the user if he wants to delete the given object name"""
+        message = self.__choose_language("ask_to_delete_x", x=x)
+        return self.user_okay(message)
+
 
 class UiLanguage():
     """Class to set the UI language to the appropriate Language"""
