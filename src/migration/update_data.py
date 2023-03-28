@@ -63,7 +63,7 @@ def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: List[Cock
             continue
         for ing in rec.ingredients:
             ing_data = ing_mapping[ing.name]
-            local_db.insert_recipe_data(new_cocktail.id, ing_data.id, ing.amount, bool(ing.hand))
+            local_db.insert_recipe_data(new_cocktail.id, ing_data.id, ing.amount)
 
 
 def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCommander, ingredient_to_add: List[str]):

@@ -18,7 +18,7 @@ from src.config_manager import shared
 def fill_recipe_box_with_ingredients(w):
     """ Assigns all ingredients to the Comboboxes in the recipe tab """
     comboboxes_recipe = DP_CONTROLLER.get_comboboxes_recipes(w)
-    ingredient_list = [x.name for x in DB_COMMANDER.get_all_ingredients(get_hand=False)]
+    ingredient_list = [x.name for x in DB_COMMANDER.get_all_ingredients()]
     DP_CONTROLLER.fill_multiple_combobox(comboboxes_recipe, ingredient_list, clear_first=True)
 
 
@@ -26,7 +26,7 @@ def fill_recipe_box_with_ingredients(w):
 def handle_enter_recipe(w):
     """ Enters or updates the recipe into the db"""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
-    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, virgin, comment = recipe_input
+    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, virgin = recipe_input
     new_recipe = not bool(selected_name)
 
     if not recipe_name:
@@ -43,7 +43,7 @@ def handle_enter_recipe(w):
     recipe_volume, ingredient_data, recipe_alcohol_level = _build_recipe_data(names, volumes)
 
     cocktail = _enter_or_update_recipe(
-        recipe_id, recipe_name, recipe_volume, recipe_alcohol_level, enabled, virgin, ingredient_data, comment
+        recipe_id, recipe_name, recipe_volume, recipe_alcohol_level, enabled, virgin, ingredient_data
     )
 
     # remove the old name only if update
@@ -123,7 +123,6 @@ def _build_recipe_data(names: list[str], volumes: list[int]):
     for ingredient_name, ingredient_volume in zip(names, volumes):
         ingredient: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore
         ingredient.amount = ingredient_volume
-        ingredient.recipe_hand = False
         recipe_volume_concentration += ingredient.alcohol * ingredient_volume
         ingredient_data.append(ingredient)
 
@@ -131,7 +130,6 @@ def _build_recipe_data(names: list[str], volumes: list[int]):
     for ing in shared.handaddlist:
         ingredient: Ingredient = DB_COMMANDER.get_ingredient(ing.id)  # type: ignore
         ingredient.amount = ing.amount
-        ingredient.recipe_hand = True
         recipe_volume += ing.amount
         recipe_volume_concentration += ingredient.alcohol * ing.amount
         ingredient_data.append(ingredient)
@@ -149,17 +147,16 @@ def _enter_or_update_recipe(
     enabled,
     virgin,
     ingredient_data: List[Ingredient],
-    comment
 ):
     """Logic to insert/update data into DB"""
     if recipe_id:
         DB_COMMANDER.delete_recipe_ingredient_data(recipe_id)
-        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, comment, enabled, virgin)
+        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, "", enabled, virgin)
     else:
-        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohol_level, recipe_volume, comment, enabled, virgin)
+        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohol_level, recipe_volume, "", enabled, virgin)
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore -> will always return cocktail
     for ingredient in ingredient_data:
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount, bool(ingredient.recipe_hand))
+        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount)
     # important to get the cocktail again, since the first time getting it, we only got it for its id
     # at this time the cocktail got no recipe data. Getting it again will fix this
     cocktail: Cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore -> will always return cocktail

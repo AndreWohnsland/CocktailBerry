@@ -38,7 +38,11 @@ class DatabaseCommander:
                 ON RD.Ingredient_ID = I.ID
                 LEFT JOIN Bottles as B ON B.ID = I.ID
                 WHERE RD.Recipe_ID = ?"""
-        return self.handler.query_database(query, (recipe_id,))
+        ingredient_data = self.handler.query_database(query, (recipe_id,))
+        ingredients = [Ingredient(
+            i[0], i[1], i[2], i[3], i[4], bool(i[5]), i[6], bool(i[7]), i[8]
+        ) for i in ingredient_data]
+        return ingredients
 
     def __get_all_recipes_properties(self):
         """Get all needed data for all recipes"""
@@ -52,12 +56,10 @@ class DatabaseCommander:
         enabled: bool, virgin: bool
     ):
         """Build one cocktail object with the given data"""
-        ingredient_data = self.__get_recipe_ingredients_by_id(recipe_id)
+        ingredients = self.__get_recipe_ingredients_by_id(recipe_id)
         return Cocktail(
             recipe_id, name, alcohol, amount, comment, bool(enabled), bool(virgin),
-            [Ingredient(
-                i[0], i[1], i[2], i[3], i[4], bool(i[5]), i[6], bool(i[7]), i[8]
-            ) for i in ingredient_data]
+            ingredients
         )
 
     def get_cocktail(self, search: Union[str, int]) -> Optional[Cocktail]:
@@ -317,10 +319,10 @@ class DatabaseCommander:
         search_tuple = (name, alcohol_level, volume, comment, enabled, virgin)
         self.handler.query_database(query, search_tuple)
 
-    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, hand_add: bool):
+    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int):
         """Insert given data into the recipe_data table"""
         query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount, Hand) VALUES (?, ?, ?, ?)"
-        search_tuple = (recipe_id, ingredient_id, ingredient_volume, int(hand_add))
+        search_tuple = (recipe_id, ingredient_id, ingredient_volume, int(False))
         self.handler.query_database(query, search_tuple)
 
     def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: List[str]):
