@@ -55,8 +55,9 @@ In case of any issues related to the GUI (like window positioning, overlap), ple
 
 ### Which Raspberry Pi OS to Use
 
-Please use the latest 64 bit Raspberry Pi Desktop OS, currently this is Raspberry Pi OS with desktop in 64 bit.
-These OS run Python 3.9, which is the current mandatory Version.
+Please use the latest Raspberry Pi Desktop OS, currently this is Raspberry Pi OS with desktop in 64 bit, also known as Debian 11 or Bullseye.
+These OS run Python 3.9, which is the current mandatory Version of Python to run CocktailBerry.
+The 32 bit version should also work fine, just ensure it's the latest Raspberry Pi OS (Debian 11 / Bullseye) as well.
 Older OS may work, but are not supported.
 
 ### Will Older Python Version Work
