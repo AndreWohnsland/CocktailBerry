@@ -116,7 +116,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
     def _apply_changes(self):
         # First apply all the user checked settings
         for addon in self._addon_information:
-            # ignore official addons here
+            # ignore unofficial addons here
             if not addon.official:
                 continue
             user_say_installed = self._gui_addons[addon.name].checkState() == Qt.Checked  # type: ignore
