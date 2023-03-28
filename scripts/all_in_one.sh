@@ -39,7 +39,7 @@ cd ~/CocktailBerry
 
 # Do Docker related steps
 echo "Setting things up for Docker and Compose"
-bash scripts/install_docker.sh
+bash scripts/install_docker.sh -n
 cd ~/CocktailBerry
 bash scripts/install_compose.sh
 
@@ -52,3 +52,5 @@ echo "Everything should be set now! Have fun with CocktailBerry :)"
 echo "Made by Andre Wohnsland and contributors with <3"
 echo "Documentation is found at: https://cocktailberry.readthedocs.io/"
 echo "Source code at: https://github.com/AndreWohnsland/CocktailBerry"
+echo "If you want to set up your microservice, check the docks for a complete guide. Docker and compose should already be installed."
+newgrp docker
