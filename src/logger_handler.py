@@ -48,3 +48,23 @@ class LoggerHandler:
     def log_exception(self, message: Union[str, object]):
         """Logs an exception with the given message"""
         self.logger.exception(message)
+
+    def debug(self, message: object, *args: object, **kwargs: object):
+        """Logs the message under the debug level"""
+        self.logger.debug(message, *args, **kwargs)
+
+    def info(self, message: object, *args: object, **kwargs: object):
+        """Logs the message under the info level"""
+        self.logger.info(message, *args, **kwargs)
+
+    def warning(self, message: object, *args: object, **kwargs: object):
+        """Logs the message under the warning level"""
+        self.logger.warning(message, *args, **kwargs)
+
+    def error(self, message: object, *args: object, **kwargs: object):
+        """Logs the message under the error level"""
+        self.logger.error(message, *args, **kwargs)
+
+    def critical(self, message: object, *args: object, **kwargs: object):
+        """Logs the message under the critical level"""
+        self.logger.critical(message, *args, **kwargs)
