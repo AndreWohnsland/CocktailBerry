@@ -5,7 +5,6 @@ import yaml
 from pyfiglet import Figlet
 
 from src.logger_handler import LoggerHandler
-from src.models import Ingredient
 from src.utils import get_platform_data
 from src.filepath import CUSTOM_CONFIG_FILE
 from src import (
@@ -70,7 +69,7 @@ class ConfigManager:
     # Custom name of the Maker
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
-    MAKER_NUMBER_BOTTLES: int = 10
+    MAKER_NUMBER_BOTTLES: int = 8
     # Number of pumps parallel in production
     MAKER_SIMULTANEOUSLY_PUMPS: int = 16
     # Time in seconds to execute clean program
@@ -78,7 +77,7 @@ class ConfigManager:
     # time between each check loop when making cocktail
     MAKER_SLEEP_TIME: float = 0.05
     # If the maker should check automatically for updates
-    MAKER_SEARCH_UPDATES: bool = False
+    MAKER_SEARCH_UPDATES: bool = True
     # Inverts the pin signal (on is low, off is high)
     MAKER_PINS_INVERTED: bool = True
     # Possibility to use different boards to control Pins
@@ -92,7 +91,7 @@ class ConfigManager:
     # List of LED pins for control
     LED_PINS: list[int] = []
     # Value for LED brightness
-    LED_BRIGHTNESS: int = 255
+    LED_BRIGHTNESS: int = 100
     # Number of LEDs, only important for controllable
     LED_COUNT: int = 24
     # If there are multiple identical (ring) LEDs
@@ -369,7 +368,6 @@ class Shared:
         self.old_ingredient: List[str] = []
         self.selected_team = "No Team"
         self.team_member_name: Union[str, None] = None
-        self.handaddlist: List[Ingredient] = []
         self.cocktail_volume: int = 200
         self.alcohol_factor: float = 1.0
 
