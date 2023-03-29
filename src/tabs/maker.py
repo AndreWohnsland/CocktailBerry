@@ -4,8 +4,8 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
 from typing import List, Optional, TypeVar
-from src.tabs import bottles
 
+from src.tabs import bottles
 from src.database_commander import DB_COMMANDER
 from src.error_handler import logerror
 from src.models import Cocktail

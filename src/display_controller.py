@@ -40,12 +40,16 @@ class DisplayController(DialogHandler):
 
     def get_list_widget_selection(self, list_widget: QListWidget) -> str:
         """Returns the current selected item of the list widget"""
-        if not list_widget.selectedItems():
+        selected = list_widget.selectedItems()
+        if not selected:
             return ""
-        user_data = list_widget.currentItem().data(Qt.UserRole)  # type: ignore
+        # use selected items because currentItem is sometimes still last and not the current one ...
+        # The widget got only single select, so there is always (if there is a selection) one item
+        first_selected = selected[0]
+        user_data = first_selected.data(Qt.UserRole)  # type: ignore
         if user_data:
             return user_data
-        return list_widget.currentItem().text()
+        return first_selected.text()
 
     def get_ingredient_data(self, w: Ui_MainWindow):
         """Returns an Ingredient Object from the ingredient data fields"""
