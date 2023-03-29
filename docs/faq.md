@@ -108,7 +108,9 @@ Available means, that this ingredient exists / stands besides the maker, but is 
 If a recipe got an ingredient, which should be added via hand / the user later, the machine knows it exists.
 So CocktailBerry can accurately offer only recipes where both, machine and hand ingredients are there.
 
-A little tip here: If a ingredient is defined as a hand-add ingredient, but is connected to the maker, CocktailBerry is smart enough to use it and not prompt the user to add it.
+A little tip here: Ingredients connected to the pump are automatically added by the maker.
+Ingredients not connected but available will be the ones prompted to be added by hand.
+So you can switch from machine to hand or the other way in your setup and CocktailBerry will recognize which is hand and which is machine.
 
 ### What is the Password
 

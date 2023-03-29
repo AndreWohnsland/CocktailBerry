@@ -73,10 +73,12 @@ The choice is up to you what you want to connect.
 See [here](#possible-ingredient-choice) for a possible ingredient setting.
 Select under **Bottles** your assigned ingredients for each pump over the dropdown boxes.
 In addition, you can define ingredients which are also there, but are not connected to the machine (under **Bottles** >  _available_).
-You can define ingredients in recipes (at _add self by hand_) which should be later added via hand, for example sticky ingredients.
-This can be ingredients, which would not be optimal for your pump, or are only very rarely used in cocktails.
+You can define ingredients (with _only add self by hand_) which should be later added via hand.
+This can be ingredients, which would not be optimal for your pump (sticky), or are only very rarely used in cocktails.
+These ingredients are not shown in the bottle dropdown but only at the available window.
+Choose this option for ingredients you won't connect to the machine, to reduce the amount of options displayed at the dropdown.
 
-The program will then evaluate which recipe meets all requirements to only show the recipes where even the ingredients added via hand later are available.
+The program will then evaluate which recipe meets all requirements to only show the recipes where all existing ingredients (machine + hand) exist.
 All possible recipes will be shown in the **Maker** Tab.
 See also [this FAQ](faq.md#what-is-the-available-button) for more information on this topic.
 
@@ -109,7 +111,8 @@ Currently, there are following themes:
 
 You can either use the CocktailBerry program to get to the calibration - it's located under your settings (option gear).
 This will start the calibration overlay.
-Or you can start the calibration program instead of CocktailBerry - you simply add the `--calibration` or `-c` flag to the python run command:
+Or you can start the calibration program instead of CocktailBerry.
+You simply add the `--calibration` or `-c` flag to the python run command:
 
 ```bash
 python runme.py --calibration 
@@ -123,6 +126,8 @@ In the end, you can adjust each pump volume flow by the factor:
 
 $$ \dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}} $$
 
+I usually do a mix of the different volumes, add them together and check if the scale shows the same amount at each pump.
+
 ## Cleaning the Machine
 
 CocktailBerry has a build in cleaning function for cleaning at the end of a party.
@@ -133,7 +138,7 @@ I usually use a big bowl of warm water to cycle the pumps through one time befor
 Then running twice times again the cleaning program to fully clean all pumps from remaining fluid.
 
 !!! question "When to Clean"
-    Depending on the build specification of your machine, it is a good practice to execute the cleaning of the machine before usage.
+    Depending on the build specification of your machine, it is a good practice to execute the cleaning of the machine before and after usage.
     This depends on the frequency you use CocktailBerry, where it's stored, how good it was cleaned and so on.
 
 
