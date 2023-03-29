@@ -13,13 +13,8 @@ class Ingredient():
     fill_level: int
     hand: Union[bool, int]
     amount: int = 0
-    recipe_hand: Union[bool, int, None] = None
     bottle: Optional[int] = None
     selected: Optional[str] = None
-
-    # TODO: Grace period until refactoring is done: recipe_hand will no longer exist in the future.
-    def __post_init__(self):
-        self.recipe_hand = self.bottle is None
 
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name"""

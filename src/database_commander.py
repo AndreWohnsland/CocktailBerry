@@ -33,14 +33,21 @@ class DatabaseCommander:
     def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
         query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level,
-                I.Hand, RD.Amount, RD.Hand, B.Bottle
+                I.Hand, RD.Amount, B.Bottle
                 FROM RecipeData as RD INNER JOIN Ingredients as I 
                 ON RD.Ingredient_ID = I.ID
                 LEFT JOIN Bottles as B ON B.ID = I.ID
                 WHERE RD.Recipe_ID = ?"""
         ingredient_data = self.handler.query_database(query, (recipe_id,))
         ingredients = [Ingredient(
-            i[0], i[1], i[2], i[3], i[4], bool(i[5]), i[6], bool(i[7]), i[8]
+            id=i[0],
+            name=i[1],
+            alcohol=i[2],
+            bottle_volume=i[3],
+            fill_level=i[4],
+            hand=bool(i[5]),
+            amount=i[6],
+            bottle=i[7],
         ) for i in ingredient_data]
         return ingredients
 
@@ -122,7 +129,15 @@ class DatabaseCommander:
         if not data:
             return None
         ing = data[0]
-        return Ingredient(ing[0], ing[1], ing[2], ing[3], ing[4], bool(ing[5]), bottle=ing[6])
+        return Ingredient(
+            id=ing[0],
+            name=ing[1],
+            alcohol=ing[2],
+            bottle_volume=ing[3],
+            fill_level=ing[4],
+            hand=bool(ing[5]),
+            bottle=ing[6]
+        )
 
     def get_all_ingredients(self, get_machine=True, get_hand=True) -> List[Ingredient]:
         """Builds a list of all ingredients, option to filter by add status"""
@@ -133,7 +148,16 @@ class DatabaseCommander:
         for ing in ingredient_data:
             hand = bool(ing[5])
             if (not hand and get_machine) or (hand and get_hand):
-                ingredients.append(Ingredient(ing[0], ing[1], ing[2], ing[3], ing[4], hand, bottle=ing[6]))
+                ingredients.append(
+                    Ingredient(
+                        id=ing[0],
+                        name=ing[1],
+                        alcohol=ing[2],
+                        bottle_volume=ing[3],
+                        fill_level=ing[4],
+                        hand=hand,
+                        bottle=ing[6]
+                    ))
         return ingredients
 
     def get_bottle_usage(self, ingredient_id: int):

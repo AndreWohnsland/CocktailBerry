@@ -54,8 +54,12 @@ class DisplayController(DialogHandler):
         hand_add = checkbox.isChecked()
         selected_ingredient = self.get_list_widget_selection(list_widget)
         return Ingredient(
-            -1, ingredient_name, int(alcohol_level),
-            int(volume), 0, hand_add,
+            id=-1,
+            name=ingredient_name,
+            alcohol=int(alcohol_level),
+            bottle_volume=int(volume),
+            fill_level=0,
+            hand=hand_add,
             selected=selected_ingredient
         )
 
