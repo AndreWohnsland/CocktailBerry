@@ -22,6 +22,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.15.0** | Control a LED during cocktail preparation                                                                            |
 | **v1.16.0** | Summarized logs over the GUI                                                                                         |
 | **v1.17.0** | Setting up your own custom theme <br> Possibility to set up WiFi over the GUI <br> Implementation of the RFID reader |
+| **v1.18.0** | Addons are now possible <br> Better recipe ingredient calculation                                                    |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.
