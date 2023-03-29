@@ -17,6 +17,7 @@ from src.config_manager import shared
 from src import MAX_SUPPORTED_BOTTLES
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui_elements.bonusingredient import Ui_addingredient
+from src.ui.icons import ICONS
 
 
 class DisplayController(DialogHandler):
@@ -53,8 +54,12 @@ class DisplayController(DialogHandler):
         hand_add = checkbox.isChecked()
         selected_ingredient = self.get_list_widget_selection(list_widget)
         return Ingredient(
-            -1, ingredient_name, int(alcohol_level),
-            int(volume), 0, hand_add,
+            id=-1,
+            name=ingredient_name,
+            alcohol=int(alcohol_level),
+            bottle_volume=int(volume),
+            fill_level=0,
+            hand=hand_add,
             selected=selected_ingredient
         )
 
@@ -68,8 +73,8 @@ class DisplayController(DialogHandler):
         cocktail_name = self.get_list_widget_selection(w.LWMaker)
         return cocktail_name, cocktail_volume, alcohol_factor
 
-    def get_recipe_field_data(self, w: Ui_MainWindow) -> Tuple[str, str, List[str], List[str], int, int, str]:
-        """ Return [name, selected, [ingredients], [volumes], enabled, virgin, comment] """
+    def get_recipe_field_data(self, w: Ui_MainWindow) -> Tuple[str, str, List[str], List[str], int, int]:
+        """ Return [name, selected, [ingredients], [volumes], enabled, virgin] """
         recipe_name: str = w.LECocktail.text().strip()
         selected_recipe = self.get_list_widget_selection(w.LWRezepte)
         # this is also a str, because user may type non int char into box
@@ -77,8 +82,7 @@ class DisplayController(DialogHandler):
         ingredient_names = self.get_current_combobox_items(self.get_comboboxes_recipes(w))
         enabled = int(w.CHBenabled.isChecked())
         virgin = int(w.offervirgin_checkbox.isChecked())
-        comment: str = w.LEKommentar.text()
-        return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, virgin, comment
+        return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, virgin
 
     def validate_ingredient_data(self, w: Ui_MainWindow) -> bool:
         """Validate the data from the ingredient window"""
@@ -377,9 +381,11 @@ class DisplayController(DialogHandler):
             if ing.id == -1:
                 ingredient_name = UI_LANGUAGE.get_add_self()
                 field_ingredient.setProperty("cssClass", "hand-separator")
+                field_ingredient.setStyleSheet(f"color: {ICONS.color.neutral};")
                 self._set_underline(field_ingredient, True)
             else:
                 field_ingredient.setProperty("cssClass", None)
+                field_ingredient.setStyleSheet("")
                 self._set_underline(field_ingredient, False)
                 display_amount = self._decide_rounding(ing.amount * cfg.EXP_MAKER_FACTOR)
                 field_volume.setText(f" {display_amount} {cfg.EXP_MAKER_UNIT}")
@@ -423,13 +429,11 @@ class DisplayController(DialogHandler):
     def clear_recipe_data_recipes(self, w: Ui_MainWindow, select_other_item: bool):
         """Clear the recipe data in recipe view, only clears selection if no other item was selected"""
         w.LECocktail.clear()
-        w.LEKommentar.clear()
         w.offervirgin_checkbox.setChecked(False)
         if not select_other_item:
             w.LWRezepte.clearSelection()
         self.set_multiple_combobox_to_top_item(self.get_comboboxes_recipes(w))
         self.clean_multiple_lineedit(self.get_lineedits_recipe(w))
-        shared.handaddlist = []
 
     def remove_recipe_from_list_widgets(self, w: Ui_MainWindow, recipe_name: str):
         """Remove the recipe from the list widgets, suppress signals during process"""
@@ -443,26 +447,16 @@ class DisplayController(DialogHandler):
         w.LWRezepte.blockSignals(False)
         w.LWMaker.blockSignals(False)
 
-    def __set_recipe_handadd_comment(self, w: Ui_MainWindow, handadd_data: List[Ingredient]):
-        """Build the comment for the view from the handadd data"""
-        comment = ""
-        for ing in handadd_data:
-            comment += f"{ing.amount} ml {ing.name}, "
-            shared.handaddlist.append(ing)
-        comment = comment[: -2]
-        w.LEKommentar.setText(comment)
-
     def set_recipe_data(self, w: Ui_MainWindow, cocktail: Cocktail):
         """Fills the recipe data in the recipe view with the cocktail object"""
         w.CHBenabled.setChecked(bool(cocktail.enabled))
         w.offervirgin_checkbox.setChecked(bool(cocktail.virgin_available))
-        machine_adds = cocktail.machineadds
-        names = [x.name for x in machine_adds]
-        volumes = [x.amount for x in machine_adds]
+        ingredients = cocktail.ingredients
+        names = [x.name for x in ingredients]
+        volumes = [x.amount for x in ingredients]
         self.set_multiple_combobox_items(self.get_comboboxes_recipes(w)[: len(names)], names)
         self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(volumes)], volumes)  # type: ignore
         w.LECocktail.setText(cocktail.name)
-        self.__set_recipe_handadd_comment(w, cocktail.handadds)
 
     # Some more "specific" function, not using generic but specified field sets
     def set_label_bottles(self, w: Ui_MainWindow, label_names: List[str]):
@@ -488,11 +482,11 @@ class DisplayController(DialogHandler):
 
     def get_comboboxes_recipes(self, w: Ui_MainWindow) -> List[QComboBox]:
         """Returns all recipe combo box objects"""
-        return [getattr(w, f"CBR{x}") for x in range(1, 8)]
+        return [getattr(w, f"CBR{x}") for x in range(1, 9)]
 
     def get_lineedits_recipe(self, w: Ui_MainWindow) -> List[QLineEdit]:
         """Returns all recipe line edit objects"""
-        return [getattr(w, f"LER{x}") for x in range(1, 8)]
+        return [getattr(w, f"LER{x}") for x in range(1, 9)]
 
     def get_ingredient_fields(
         self, w: Ui_MainWindow

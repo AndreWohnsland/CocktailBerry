@@ -58,7 +58,7 @@ class ConfigWindow(QMainWindow):
         self.vbox.addItem(create_spacer(20, 40))
         # adds the back button
         self.button_back = QPushButton("< Back")
-        self.button_back.clicked.connect(self.close)
+        self.button_back.clicked.connect(self.close)  # type: ignore
         self.button_back.setMaximumSize(QSize(16777215, 200))
         self.button_back.setMinimumSize(QSize(0, 70))
         adjust_font(self.button_back, LARGE_FONT, True)
@@ -151,7 +151,7 @@ class ConfigWindow(QMainWindow):
         config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(lambda: NumpadWidget(self, config_input, 300, 50, config_name))  # type: ignore
         layout.addWidget(config_input)
-        return lambda: int(config_input.text())
+        return lambda: int(config_input.text() or 0)
 
     def _build_float_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], float]:
         """Builds a field for integer input with numpad"""
@@ -161,7 +161,7 @@ class ConfigWindow(QMainWindow):
         config_input.clicked.connect(lambda: NumpadWidget(
             self, config_input, 300, 50, config_name, True))  # type: ignore
         layout.addWidget(config_input)
-        return lambda: float(config_input.text())
+        return lambda: float(config_input.text() or 0.0)
 
     def _build_bool_field(self, layout: QBoxLayout, current_value: bool, displayed_text="on") -> Callable[[], bool]:
         """Builds a field for bool input with a checkbox"""

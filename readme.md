@@ -47,6 +47,7 @@ CocktailBerry can do:
 - Switch between user interface languages
 - Support WS281x LEDs on your machine
 - Support for RFID/NFC reader
+- Implement your own [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) to extend the base functionality
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
 
@@ -59,7 +60,14 @@ In addition, there is the possibility to use and set up a second device as a das
 
 Here are some simple steps to get CocktailBerry running. You need to have **Python 3.9** or newer and **git** installed.
 
-Run:
+
+On the RPi, you can try the new [all in one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh). One command should install everything:
+
+```bash
+wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash
+```
+
+Otherwise, run:
 
 ```bash
 cd ~
@@ -75,6 +83,7 @@ This will start the CocktailBerry program. You may want to run the provided inst
 ```bash
 sh scripts/setup.sh
 ```
+
 
 Now you can [Set Up](https://cocktailberry.readthedocs.io/setup/#setting-up-the-machine-modifying-other-values) your CocktailBerry and tweak the settings to your liking.
 
@@ -109,3 +118,4 @@ If you want to support this project, feel free to fork it and create your own pu
 To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md). Here is a general list of features or refactoring things, I may do in the future. With your help, these things come even faster! If your idea is not on the list, feel free to open a feature request, I may consider it!
 
 - `easy`: Translate all dialogs / UI to your native language
+- `easy-hard`: Implement a cool [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) and make it verified

@@ -56,14 +56,14 @@ def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: List[Cock
     for rec in cocktails_to_add:
         local_db.insert_new_recipe(
             rec.name, rec.alcohol, rec.amount,
-            rec.comment, rec.enabled, rec.virgin_available
+            rec.enabled, rec.virgin_available
         )
         new_cocktail = local_db.get_cocktail(rec.name)
         if new_cocktail is None:
             continue
         for ing in rec.ingredients:
             ing_data = ing_mapping[ing.name]
-            local_db.insert_recipe_data(new_cocktail.id, ing_data.id, ing.amount, bool(ing.hand))
+            local_db.insert_recipe_data(new_cocktail.id, ing_data.id, ing.amount)
 
 
 def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCommander, ingredient_to_add: List[str]):
@@ -97,7 +97,6 @@ def _get_new_cocktails(new_names: List[str], default_db: DatabaseCommander, loca
 def rename_database_to_english():
     """Renames all German columns to English ones"""
     _logger.log_event("INFO", "Renaming German column names to English ones")
-    db_handler = DatabaseHandler()
     commands = [
         # Rename all bottle things
         "ALTER TABLE Belegung RENAME TO Bottles",
@@ -126,6 +125,21 @@ def rename_database_to_english():
         "ALTER TABLE Ingredients RENAME COLUMN Verbrauch TO Consumption",
         "ALTER TABLE Ingredients RENAME COLUMN Mengenlevel TO Fill_level",
     ]
+    _try_execute_db_commands(commands)
+
+
+def remove_old_recipe_columns():
+    _logger.log_event("INFO", "Remove Comment from Recipes and Hand from RecipeData table")
+    commands = [
+        "ALTER TABLE Recipes DROP COLUMN Comment",
+        "ALTER TABLE RecipeData DROP COLUMN Hand",
+    ]
+    _try_execute_db_commands(commands)
+
+
+def _try_execute_db_commands(commands: list[str]):
+    """Try to execute each command, pass if OperationalError"""
+    db_handler = DatabaseHandler()
     for command in commands:
         try:
             db_handler.query_database(command)

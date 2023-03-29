@@ -1,11 +1,10 @@
 import random
-from typing import Any, Callable, Dict, List, Tuple, Union, get_args
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, get_args
 import typer
 import yaml
 from pyfiglet import Figlet
 
 from src.logger_handler import LoggerHandler
-from src.models import Ingredient
 from src.utils import get_platform_data
 from src.filepath import CUSTOM_CONFIG_FILE
 from src import (
@@ -55,7 +54,7 @@ class ConfigManager:
     # Locks the recipe tab, making it impossible to access
     UI_PARTYMODE: bool = False
     # Password to lock clean, delete and other critical operators
-    UI_MASTERPASSWORD: str = "1234"
+    UI_MASTERPASSWORD: str = ""
     # Language to use, use two chars look up documentation, if not provided fallback to en
     UI_LANGUAGE: SupportedLanguagesType = "en"
     # Width and height of the touchscreen
@@ -70,7 +69,7 @@ class ConfigManager:
     # Custom name of the Maker
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
-    MAKER_NUMBER_BOTTLES: int = 10
+    MAKER_NUMBER_BOTTLES: int = 8
     # Number of pumps parallel in production
     MAKER_SIMULTANEOUSLY_PUMPS: int = 16
     # Time in seconds to execute clean program
@@ -78,7 +77,7 @@ class ConfigManager:
     # time between each check loop when making cocktail
     MAKER_SLEEP_TIME: float = 0.05
     # If the maker should check automatically for updates
-    MAKER_SEARCH_UPDATES: bool = False
+    MAKER_SEARCH_UPDATES: bool = True
     # Inverts the pin signal (on is low, off is high)
     MAKER_PINS_INVERTED: bool = True
     # Possibility to use different boards to control Pins
@@ -92,7 +91,7 @@ class ConfigManager:
     # List of LED pins for control
     LED_PINS: list[int] = []
     # Value for LED brightness
-    LED_BRIGHTNESS: int = 255
+    LED_BRIGHTNESS: int = 100
     # Number of LEDs, only important for controllable
     LED_COUNT: int = 24
     # If there are multiple identical (ring) LEDs
@@ -127,11 +126,11 @@ class ConfigManager:
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_PARTYMODE": (bool, []),
             "UI_MASTERPASSWORD": (str, []),
-            "UI_LANGUAGE": (LanguageChoose, [_build_support_checker(SUPPORTED_LANGUAGES)]),
+            "UI_LANGUAGE": (LanguageChoose, []),
             "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),
-            "PUMP_PINS": (list, [self._validate_config_list_type]),
-            "PUMP_VOLUMEFLOW": (list, [self._validate_config_list_type]),
+            "PUMP_PINS": (list, []),
+            "PUMP_VOLUMEFLOW": (list, []),
             "MAKER_NAME": (str, [_validate_max_length]),
             "MAKER_NUMBER_BOTTLES": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
             "MAKER_SIMULTANEOUSLY_PUMPS": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
@@ -139,20 +138,20 @@ class ConfigManager:
             "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
             "MAKER_PINS_INVERTED": (bool, []),
-            "MAKER_BOARD": (BoardChoose, [_build_support_checker(SUPPORTED_BOARDS)]),
-            "MAKER_THEME": (ThemeChoose, [_build_support_checker(SUPPORTED_THEMES)]),
+            "MAKER_BOARD": (BoardChoose, []),
+            "MAKER_THEME": (ThemeChoose, []),
             "MAKER_CHECK_INTERNET": (bool, []),
             "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
-            "LED_PINS": (list, [self._validate_config_list_type]),
+            "LED_PINS": (list, []),
             "LED_BRIGHTNESS": (int, [_build_number_limiter(1, 255)]),
             "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
             "LED_NUMBER_RINGS": (int, [_build_number_limiter(1, 10)]),
             "LED_IS_WS": (bool, []),
-            "RFID_READER": (RFIDChoose, [_build_support_checker(SUPPORTED_RFID)]),
+            "RFID_READER": (RFIDChoose, []),
             "MICROSERVICE_ACTIVE": (bool, []),
             "MICROSERVICE_BASE_URL": (str, []),
             "TEAMS_ACTIVE": (bool, []),
-            "TEAM_BUTTON_NAMES": (list, [self._validate_config_list_type]),
+            "TEAM_BUTTON_NAMES": (list, []),
             "TEAM_API_URL": (str, []),
             "EXP_MAKER_UNIT": (str, []),
             "EXP_MAKER_FACTOR": (float, [_build_number_limiter(0.01, 100)]),
@@ -203,14 +202,22 @@ class ConfigManager:
         if config_setting is None:
             return
         datatype, check_functions = config_setting
-        # check first if type fits, if list, also check list elements.
+        # check first if type fits
+        # if it's a choose type ignore typing for now, the function later will check if the value is in the list.
+        if not isinstance(configvalue, datatype) and not issubclass(datatype, ChooseType):
+            raise ConfigError(f"The value {configvalue} for {configname} is not of type {datatype}")
+
+        # check if the right values for choose type is selected
+        if issubclass(datatype, ChooseType):
+            _build_support_checker(datatype.allowed)(configname, configvalue)
+
         # Additionally run all check functions provided
-        # if it's a choose type ignore typing for now, the function will check if the value is in the list.
-        if isinstance(configvalue, datatype) or issubclass(datatype, ChooseType):
-            for check_fun in check_functions:
-                check_fun(configname, configvalue)
-            return
-        raise ConfigError(f"The value {configvalue} for {configname} is not of type {datatype}")
+        for check_fun in check_functions:
+            check_fun(configname, configvalue)
+
+        # If it's a list, also run the list validation
+        if isinstance(configvalue, list):
+            self._validate_config_list_type(configname, configvalue)
 
     def _validate_config_list_type(self, configname: str, configlist: List[Any]):
         """Extra validation for list type in case len / types"""
@@ -251,6 +258,74 @@ class ConfigManager:
             allowed_pins = rpi_allowed
         if data not in allowed_pins:
             raise ConfigError(f"{configname} must be one of the values: {allowed_pins}")
+
+    def add_config(
+        self,
+        config_name: str,
+        default_value: Union[str, int, float, bool, list[str], list[int], list[float]],
+        validation_function: Optional[list[Callable[[str, Any], None]]] = None,
+        list_validation_function: Optional[list[Callable[[str, Any], None]]] = None,
+        list_type: Optional[type] = None,
+    ):
+        """Adds the configuration under the given name.
+        Adds the default value, if it is currently not set in the config file.
+        If validation functions for the value or the list values are given,
+        they are also registered with the type.
+        Currently supported types are str, int, float and bool.
+        List cannot be nested, list types are str, int and float.
+        List must contain the same type, no mixed types.
+        If the default list is empty, please provide the list type,
+        otherwise the fallback type will be string.
+        """
+        # Set validation to empty list if not given
+        if validation_function is None:
+            validation_function = []
+        if list_validation_function is None:
+            list_validation_function = []
+
+        # if not exist, give default value
+        if not hasattr(self, config_name):
+            setattr(self, config_name, default_value)
+
+        # get the type of the config, define type and validation
+        config_type = type(default_value)
+        self.config_type[config_name] = (config_type, validation_function)
+
+        # Do the same for list, get either type if not provided, fall back to string if list is empty
+        if isinstance(default_value, list):
+            if list_type is None and len(default_value) == 0:
+                list_type = str
+            elif list_type is None:
+                list_type = type(default_value[0])
+            self.config_type_list[config_name] = (list_type, list_validation_function)
+
+    def add_selection_config(
+        self,
+        config_name: str,
+        options: list[str],
+        default_value: Optional[str] = None,
+        validation_function: Optional[list[Callable[[str, Any], None]]] = None,
+    ):
+        """Adds a configuration value under the given name, which can only be from given options
+        This is used to create a dropdown selection for the user to prevent unintended values.
+        Options must be string and have at least one element. 
+        Default value is first list element, or if given, the given value
+        """
+        # Define a choose type for the add on
+        class AddOnChoose(ChooseType):
+            allowed = options
+
+        # If user did not provide the default value, use the first element of options as default
+        if default_value is None:
+            default_value = options[0]
+        if validation_function is None:
+            validation_function = []
+        # Define default value if its not set
+        if not hasattr(self, config_name):
+            setattr(self, config_name, default_value)
+
+        # Set type and validation function
+        self.config_type[config_name] = (AddOnChoose, validation_function)
 
 
 def _validate_list_length(configlist: List[Any], configname: str, min_len: int):
@@ -293,7 +368,6 @@ class Shared:
         self.old_ingredient: List[str] = []
         self.selected_team = "No Team"
         self.team_member_name: Union[str, None] = None
-        self.handaddlist: List[Ingredient] = []
         self.cocktail_volume: int = 200
         self.alcohol_factor: float = 1.0
 

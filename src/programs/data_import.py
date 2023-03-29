@@ -173,8 +173,8 @@ def _insert_recipes(recipes: List[_RecipeInformation]):
     print("Inserting recipe:", end=" ")
     for rec in recipes:
         print(rec.name, end=", ")
-        volume = int(sum([x.volume for x in rec.ingredients]))
-        DB_COMMANDER.insert_new_recipe(rec.name, 0, volume, "", 1, 0)
+        volume = int(sum(x.volume for x in rec.ingredients))
+        DB_COMMANDER.insert_new_recipe(rec.name, 0, volume, 1, 0)
         _insert_recipe_data(rec, ingredient_mapping)
     print("\nImport finished!")
 
@@ -186,7 +186,7 @@ def _insert_recipe_data(recipe: _RecipeInformation, ingredient_mapping: Dict[str
         cocktail = DB_COMMANDER.get_cocktail(recipe.name)
         if cocktail is None:
             continue
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ing_data.id, int(ing.volume), bool(ing_data.hand))
+        DB_COMMANDER.insert_recipe_data(cocktail.id, ing_data.id, int(ing.volume))
 
 
 def _abort(msg: str):

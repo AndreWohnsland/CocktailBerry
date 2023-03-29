@@ -24,7 +24,6 @@ from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui.setup_bottle_window import BottleWindow
 from src.ui.setup_get_ingredients_window import GetIngredientWindow
 from src.ui.setup_keyboard_widget import KeyboardWidget
-from src.ui.setup_handadd_widget import HandaddWidget
 from src.ui.setup_available_window import AvailableWindow
 from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
@@ -52,7 +51,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.progress_window: Optional[ProgressScreen] = None
         self.bottle_window: Optional[BottleWindow] = None
         self.ingredient_window: Optional[GetIngredientWindow] = None
-        self.handadd_window: Optional[HandaddWidget] = None
         self.available_window: Optional[AvailableWindow] = None
         self.team_window: Optional[TeamScreen] = None
         self.option_window: Optional[OptionWindow] = None
@@ -146,10 +144,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """ Opens a window to spend one single ingredient. """
         self.ingredient_window = GetIngredientWindow(self)
 
-    def open_handadd_window(self):
-        """ Opens a window to enter additional ingredients added by hand. """
-        self.handadd_window = HandaddWidget(self)
-
     def open_available_window(self):
         self.available_window = AvailableWindow(self)
 
@@ -162,7 +156,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             lambda: self.open_numpad(self.LEGehaltRezept, 50, 50, alcohol)
         )
         self.LEZutatRezept.clicked.connect(lambda: self.open_keyboard(self.LEZutatRezept, max_char_len=20))
-        self.LEKommentar.clicked.connect(self.open_handadd_window)
         self.PBAvailable.clicked.connect(self.open_available_window)
         # connects all the Lineedits from the Recipe amount and gives them the validator
         amount = UI_LANGUAGE.generate_numpad_header("amount")

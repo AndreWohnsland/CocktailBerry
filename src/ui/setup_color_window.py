@@ -9,7 +9,7 @@ from PyQt5.QtCore import QSize, Qt, QObject, pyqtSignal, QThread
 from src import SupportedThemesType
 from src.filepath import STYLE_FOLDER
 from src.utils import restart_program
-from src.migration.migrator import Migrator
+from src.migration.migrator import Migrator, CouldNotMigrateException
 from src.ui.icons import parse_colors, ICONS
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -35,7 +35,10 @@ class _Worker(QObject):
 
     def run(self):
         migrator = Migrator()
-        migrator._install_pip_package("qtsass", "1.17.0")  # pylint: disable=protected-access
+        try:
+            migrator._install_pip_package("qtsass", "1.17.0")  # pylint: disable=protected-access
+        except CouldNotMigrateException:
+            pass
         self.done.emit()
 
 

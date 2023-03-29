@@ -3,11 +3,12 @@
 
 from __future__ import annotations
 import time
-from typing import Dict, List, Optional, Literal, TYPE_CHECKING
+from typing import Dict, List, Optional, Literal, TYPE_CHECKING, Union
 from threading import Thread, Event
 import yaml
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from src.config_manager import CONFIG as cfg
+from src.ui_elements.addonmanager import Ui_AddonManager
 from src.utils import get_platform_data
 from src.filepath import LANGUAGE_FILE, APP_ICON_FILE
 from src import __version__
@@ -15,9 +16,9 @@ from src import __version__
 if TYPE_CHECKING:
     from src.ui_elements import (
         Ui_available, Ui_addingredient, Ui_Bottlewindow, Ui_MainWindow, Ui_CustomDialog,
-        Ui_CustomPrompt, Ui_Datepicker, Ui_Handadds, Ui_LogWindow, Ui_Optionwindow,
+        Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
-        Ui_WiFiWindow, Ui_ColorWindow,
+        Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow
     )
 
 
@@ -341,6 +342,11 @@ class DialogHandler():
         message = self.__choose_language("ask_to_install_qtsass")
         return self.user_okay(message)
 
+    def ask_to_delete_x(self, x: str):
+        """Ask the user if he wants to delete the given object name"""
+        message = self.__choose_language("ask_to_delete_x", x=x)
+        return self.user_okay(message)
+
 
 class UiLanguage():
     """Class to set the UI language to the appropriate Language"""
@@ -386,6 +392,22 @@ class UiLanguage():
         except (AttributeError, KeyError):
             return ""
 
+    def add_config_description(
+        self,
+        config_name: str,
+        config_description: Union[dict[str, str], str],
+    ):
+        """Adds the description to the configuration.
+        description is in a dictionary, or a string.
+        string: just the description in english 
+        dict: holding language as key, description as a value, used for translation.
+        At least english (en) key needs to be provided. 
+        """
+        # If the user only did provide a string, assign this string to english translation
+        if isinstance(config_description, str):
+            config_description = {"en": config_description}
+        self.dialogs["settings_dialog"][config_name] = config_description
+
     def adjust_mainwindow(self, w: Ui_MainWindow):
         """Translates all needed elements of the main window (cocktail maker)"""
         window = "main_window"
@@ -407,7 +429,6 @@ class UiLanguage():
             (w.LIngredient, "ingredient_label"),
             (w.LAlcoholLevel, "alcohol_level_label"),
             (w.LBottleVolume, "bottle_volume_label"),
-            (w.LRHandAdd, "hand_add_label"),
             (w.PBFlanwenden, "renew_button"),
             (w.virgin_checkbox, "activate_virgin"),
             (w.offervirgin_checkbox, "virgin_possibility"),
@@ -427,14 +448,6 @@ class UiLanguage():
         w.PBAbbruch_2.setText(self.__choose_language("cancel_button"))
         w.LAvailable.setText(self.__choose_language("available_label", window))
         w.LPossible.setText(self.__choose_language("possible_label", window))
-
-    def adjust_handadds_window(self, w: Ui_Handadds):
-        """Translates all needed elements of the handadds window"""
-        window = "handadds_window"
-        w.PBAbbrechen.setText(self.__choose_language("cancel_button"))
-        w.PBEintragen.setText(self.__choose_language("enter_button"))
-        w.LHeader.setText(self.__choose_language("title", window))
-        # w.setWindowTitle(self.__choose_language("title", window))
 
     def adjust_progress_screen(self, w: Ui_Progressbarwindow, cocktail_type: str):
         """Translates all needed elements of the progress window"""
@@ -553,6 +566,20 @@ class UiLanguage():
         w.button_apply.setText(self.__choose_language("apply"))
         w.button_use_template.setText(self.__choose_language("use_template", window))
         w.label_description.setText(self.__choose_language("description", window))
+
+    def adjust_addon_window(self, w: Ui_Addonwindow):
+        """"Translates the elements of the addon window"""
+        window = "addon_window"
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_manage.setText(self.__choose_language("manage", window))
+
+    def get_no_addon_gui_info(self):
+        return self.__choose_language("no_gui", "addon_window")
+
+    def adjust_addon_manager(self, w: Ui_AddonManager):
+        """"Translates the elements of the addon window"""
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_apply.setText(self.__choose_language("apply"))
 
 
 UI_LANGUAGE = UiLanguage()

@@ -14,6 +14,7 @@ from src.display_controller import DP_CONTROLLER
 from src.service_handler import SERVICE_HANDLER
 from src.logger_handler import LoggerHandler
 from src.config_manager import CONFIG as cfg
+from src.programs.addons import ADDONS
 
 from src.config_manager import shared
 
@@ -103,10 +104,22 @@ def prepare_cocktail(w):
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
     ingredient_bottles = [x.bottle for x in cocktail.machineadds if x.amount > 0]
     ingredient_volumes = [x.amount for x in cocktail.machineadds if x.amount > 0]
+
+    # Runs addons before hand, check if they throw an error
+    try:
+        ADDONS.before_cocktail()
+    except RuntimeError as err:
+        DP_CONTROLLER.standard_box(str(err))
+        return
+
+    # Now make the cocktail
     consumption, taken_time, max_time = MACHINE.make_cocktail(
         w, ingredient_bottles, ingredient_volumes, display_name)  # type: ignore
     DB_COMMANDER.increment_recipe_counter(cocktail_name)
     __generate_maker_log_entry(cocktail_volume, display_name, taken_time, max_time)
+
+    # run Addons after cocktail preparation
+    ADDONS.after_cocktail()
 
     # only post if cocktail was made over 50%
     percentage_made = taken_time / max_time

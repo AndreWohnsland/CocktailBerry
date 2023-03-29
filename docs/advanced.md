@@ -114,6 +114,7 @@ python index.py
 
 This will build up the backend API, as well as a Dash frontend Web App.
 Dash is using pandas, depending on your Raspberry Pi OS this installation it may run into issues, especially if running within the Docker container.
+
 You can then access the frontend over your browser at the RPi address over your network or over http://127.0.0.1:8050 from the Pi. 
 If you are new to Python or programming, I strongly recommend using the first recommended option, since you will only lose the possibility to access the dashboard with multiple devices, like a smartphone.
 

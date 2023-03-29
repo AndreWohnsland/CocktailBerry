@@ -55,8 +55,9 @@ In case of any issues related to the GUI (like window positioning, overlap), ple
 
 ### Which Raspberry Pi OS to Use
 
-Please use the latest 64 bit Raspberry Pi Desktop OS, currently this is Raspberry Pi OS with desktop in 64 bit.
-These OS run Python 3.9, which is the current mandatory Version.
+Please use the latest Raspberry Pi Desktop OS, currently this is Raspberry Pi OS with desktop in 64 bit, also known as Debian 11 or Bullseye.
+These OS run Python 3.9, which is the current mandatory Version of Python to run CocktailBerry.
+The 32 bit version should also work fine, just ensure it's the latest Raspberry Pi OS (Debian 11 / Bullseye) as well.
 Older OS may work, but are not supported.
 
 ### Will Older Python Version Work
@@ -75,7 +76,7 @@ If there is an update, CocktailBerry will inform you at startup.
 ### How to Change Settings
 
 Under the 4th tab (bottles), you will find a gear icon, click on it.
-Enter the password (default is 1234), enter, click on configuration.
+Enter the password (default is 1234 on older versions or none at latest), enter, click on configuration.
 There, you will be able to change all possible settings.
 See [Setup](setup.md#setting-up-the-machine-modifying-other-values) for a detailed explanation of the configuration options.
 The values will also be validated before a change is applies.
@@ -107,11 +108,13 @@ Available means, that this ingredient exists / stands besides the maker, but is 
 If a recipe got an ingredient, which should be added via hand / the user later, the machine knows it exists.
 So CocktailBerry can accurately offer only recipes where both, machine and hand ingredients are there.
 
-A little tip here: If a ingredient is defined as a hand-add ingredient, but is connected to the maker, CocktailBerry is smart enough to use it and not prompt the user to add it.
+A little tip here: Ingredients connected to the pump are automatically added by the maker.
+Ingredients not connected but available will be the ones prompted to be added by hand.
+So you can switch from machine to hand or the other way in your setup and CocktailBerry will recognize which is hand and which is machine.
 
 ### What is the Password
 
-The default password is 1234.
+The default password is 1234 on older versions or none at latest.
 A password is at some steps used to prevent unwanted modification of the maker.
 Depending on your users, this might be more or less useful but a safety measure.
 You can change the password under the settings.

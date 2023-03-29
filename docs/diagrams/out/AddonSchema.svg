@@ -1,0 +1,1498 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="601px" preserveAspectRatio="none" style="width:1023px;height:601px;background:#FFFFFF;" version="1.1" viewBox="0 0 1023 601" width="1023px" zoomAndPan="magnify"><defs/><g><!--MD5=[84dda40acb3410cad7262261daba2aaf]
+cluster c1--><g id="cluster_c1"><rect fill="none" height="588.62" rx="2.5" ry="2.5" style="stroke:#444444;stroke-width:1.0;stroke-dasharray:7.0,7.0;" width="439" x="293" y="7"/><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="104" x="460.5" y="25.6094">CocktailBerry</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="51" x="487" y="41.582">[System]</text></g><!--MD5=[63775ba66aa1d27e073b8a399d0320fa]
+entity before_cocktail--><g id="elem_before_cocktail"><rect fill="#1168BD" height="75.3438" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="198" x="22" y="93.27"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="117" x="62.5" y="119.8794">before_cocktail</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="119" y="137.9282"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="178" x="32" y="155.5376">Executed before the cocktail</text></g><!--MD5=[b51f7e96b652177099f30c8cf0b5ea57]
+entity after_cocktail--><g id="elem_after_cocktail"><rect fill="#1168BD" height="75.3438" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="218" x="7" y="304.27"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="102" x="65" y="330.8794">after_cocktail</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="114" y="348.9282"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="198" x="17" y="366.5376">Executed right after the cocktail</text></g><!--MD5=[fe12c9350b36738caec70ad8fa8d3c1b]
+entity gui--><g id="elem_gui"><rect fill="#438DD5" height="90.4375" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="178" x="538" y="296.77"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="60" x="597" y="323.3794">Options</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="605.5" y="339.352">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="625" y="356.522"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="158" x="548" y="374.1313">User clicks on addon GUI</text></g><!--MD5=[53ccf4b3ee6cf4337a0ab93ac09644f3]
+entity main--><g id="elem_main"><rect fill="#438DD5" height="108.0469" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="198" x="480" y="76.77"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="106" x="526" y="103.3794">Program Start</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="557.5" y="119.352">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="577" y="136.522"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="174" x="490" y="154.1313">CocktailBerry starts and set</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86" x="536" y="171.7407">everything up</text></g><!--MD5=[032dbb45f37ac8260f0178d9e439f5f4]
+entity cocktail--><g id="elem_cocktail"><rect fill="#438DD5" height="108.0469" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="193" x="309.5" y="287.77"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="155" x="328.5" y="314.3794">Cocktail Preparation</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="384.5" y="330.352">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="404" y="347.522"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="169" x="319.5" y="365.1313">CocktailBerry prepares the</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="50" x="381" y="382.7407">Cocktail</text></g><!--MD5=[22efa60cf2b4332bf8574b0c93969d71]
+entity end--><g id="elem_end"><rect fill="#438DD5" height="90.4375" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="162" x="457" y="480.77"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="101" x="487.5" y="507.3794">Program End</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43" x="516.5" y="523.352">[python]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="536" y="540.522"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="142" x="467" y="558.1313">User exits the program</text></g><!--MD5=[6b09217310f8cc73862653e6f7eba8ab]
+entity setup--><g id="elem_setup"><rect fill="#1168BD" height="75.3438" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="183" x="786.5" y="93.27"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="43" x="856.5" y="119.8794">setup</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="876" y="137.9282"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="163" x="796.5" y="155.5376">Executed at program start</text></g><!--MD5=[932dbd11ad08a484237bf0143fb8dd9d]
+entity build_addon_gui--><g id="elem_build_addon_gui"><rect fill="#1168BD" height="92.9531" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="217" x="800.5" y="295.27"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="129" x="844.5" y="321.8794">build_addon_gui</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="907" y="339.9282"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="193" x="810.5" y="357.5376">When User want to do addition</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="38" x="890" y="375.147">things</text></g><!--MD5=[811e6947852d4e92fc8d3a478322974c]
+entity cleanup--><g id="elem_cleanup"><rect fill="#1168BD" height="75.3438" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="179" x="748.5" y="488.27"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="61" x="807.5" y="514.8794">cleanup</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="836" y="532.9282"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="159" x="758.5" y="550.5376">Executed at program end</text></g><!--MD5=[e0022aef6618674374d7b13cfbd04364]
+link main to cocktail--><g id="link_main_cocktail"><path d="M535.12,184.78 C510.82,214.13 480.54,250.71 455.41,281.07 " fill="none" id="main-to-cocktail" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="450.13,287.45,457.5435,283.2027,452.9228,279.3753,450.13,287.45" style="stroke:#666666;stroke-width:1.0;"/></g><!--MD5=[643735889378cd1508e773f0bfd88b95]
+link main to gui--><g id="link_main_gui"><path d="M591.17,184.78 C598.5,216.66 607.78,257.07 615.06,288.77 " fill="none" id="main-to-gui" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="616.86,296.64,617.9843,288.1703,612.138,289.5194,616.86,296.64" style="stroke:#666666;stroke-width:1.0;"/></g><!--MD5=[df00d72cb7b2b0cfe3fb52bf0c084bb3]
+link cocktail to end--><g id="link_cocktail_end"><path d="M444.53,395.9 C462.34,420.45 483.39,449.48 501.01,473.76 " fill="none" id="cocktail-to-end" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="505.88,480.48,503.6268,472.2385,498.7633,475.7522,505.88,480.48" style="stroke:#666666;stroke-width:1.0;"/></g><!--MD5=[513b5a0f9c9652efc047782e2cd69297]
+link before_cocktail to cocktail--><g id="link_before_cocktail_cocktail"><path d="M170.97,168.41 C214.05,200.01 277.02,246.18 326.94,282.79 " fill="none" id="before_cocktail-to-cocktail" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="333.58,287.66,328.898,280.513,325.3531,285.3538,333.58,287.66" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="70" x="273" y="240.727">Can interrup</text></g><!--MD5=[79237703e76f44437d9501e166850ae1]
+reverse link after_cocktail to cocktail--><g id="link_after_cocktail_cocktail"><path d="M233.36,341.77 C258.57,341.77 284.93,341.77 309.25,341.77 " fill="none" id="after_cocktail-backto-cocktail" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="225.22,341.77,233.22,344.77,233.22,338.77,225.22,341.77" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="48" x="243.25" y="335.227">Triggers</text></g><!--MD5=[6c395c72e1b6fc03562b4b582e8c4b98]
+reverse link main to setup--><g id="link_main_setup"><path d="M686.41,130.77 C719.16,130.77 754.85,130.77 786.45,130.77 " fill="none" id="main-backto-setup" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="678.15,130.77,686.15,133.77,686.15,127.77,678.15,130.77" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="72" x="696.25" y="124.227">Add Settings</text></g><!--MD5=[cdb01af440bd9f82a6d5deda40095428]
+link end to cleanup--><g id="link_end_cleanup"><path d="M619.18,525.77 C656.45,525.77 700.94,525.77 740.05,525.77 " fill="none" id="end-to-cleanup" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="748.3,525.77,740.3,522.77,740.3,528.77,748.3,525.77" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="48" x="659.75" y="519.227">Triggers</text></g><!--MD5=[d8ce8e706a177f21121ff0a9ddccdf4b]
+link gui to build_addon_gui--><g id="link_gui_build_addon_gui"><path d="M716.23,341.77 C740.32,341.77 766.76,341.77 792.13,341.77 " fill="none" id="gui-to-build_addon_gui" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="800.32,341.77,792.32,338.77,792.32,344.77,800.32,341.77" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="48" x="734.25" y="335.227">Triggers</text></g><!--MD5=[d46fea0654d616d5008d2d53dd1c53cc]
+link before_cocktail to after_cocktail--><g id="link_before_cocktail_after_cocktail"><path d="M120.12,168.65 C119.27,204.17 117.98,257.95 117.07,295.92 " fill="none" id="before_cocktail-to-after_cocktail" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="116.87,304.25,120.0552,296.3219,114.0568,296.1824,116.87,304.25" style="stroke:#666666;stroke-width:1.0;"/></g><!--MD5=[1fdcfa8a3a5d2a9420cf2f4c2da3a4e3]
+@startuml AddonSchema
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!define FONTAWESOMEOLD https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome
+
+!include DEVICONS/linux.puml
+!include DEVICONS/python.puml
+!include DEVICONS/sqllite.puml
+!include DEVICONS/aptana.puml
+!include DEVICONS/docker.puml
+!include DEVICONS/html5.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/user.puml
+!include FONTAWESOMEOLD/send_o.puml
+
+skinparam backgroundColor #fff
+!pragma ratio 0.6
+
+HIDE_STEREOTYPE()
+
+together {
+System(before_cocktail, "before_cocktail", "Executed before the cocktail")
+System(after_cocktail, "after_cocktail", "Executed right after the cocktail")
+}
+
+System_Boundary(c1, "CocktailBerry") {
+  Container(gui, "Options", "python", "User clicks on addon GUI")
+  ' together {
+  Container(main, "Program Start", "python", "CocktailBerry starts and set everything up")
+  Container(cocktail, "Cocktail Preparation", "python", "CocktailBerry prepares the Cocktail")
+  Container(end, "Program End", "python", "User exits the program")
+  ' }
+
+}
+System(setup, "setup", "Executed at program start")
+System(build_addon_gui, "build_addon_gui", "When User want to do addition things")
+System(cleanup, "cleanup", "Executed at program end")
+
+Rel_D(main, cocktail, "")
+Rel_D(main, gui, "")
+Rel_D(cocktail, end, "")
+
+Rel_D(before_cocktail, cocktail, "Can interrup")
+Rel_L(cocktail, after_cocktail, "Triggers")
+Rel_L(setup, main, "Add Settings")
+Rel_R(end, cleanup, "Triggers")
+Rel_R(gui, build_addon_gui, "Triggers")
+
+Rel(before_cocktail, after_cocktail, "")
+
+@enduml
+
+@startuml AddonSchema
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam defaultTextAlignment center
+
+skinparam wrapWidth 200
+skinparam maxMessageSize 150
+
+skinparam LegendBorderColor transparent
+skinparam LegendBackgroundColor transparent
+skinparam LegendFontColor #FFFFFF
+
+skinparam shadowing<<legendArea>> false
+skinparam rectangle<<legendArea>> {
+    backgroundcolor #00000000
+    bordercolor #00000000
+}
+
+skinparam rectangle {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam database {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam queue {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam arrow {
+    Color #666666
+    FontColor #666666
+    FontSize 12
+}
+
+skinparam person {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam actor {
+    StereotypeFontSize 12
+    shadowing false
+    style awesome
+}
+
+skinparam rectangle<<boundary>> {
+    Shadowing false
+    StereotypeFontSize 6
+    StereotypeFontColor transparent
+    BorderStyle dashed
+}
+
+skinparam package {
+    StereotypeFontSize 6
+    StereotypeFontColor transparent
+    FontStyle plain
+    BackgroundColor transparent
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam rectangle<<boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam database<<boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam queue<<boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam person<<boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam actor<<boundary>> {
+    FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam package<<boundary>>StereotypeFontColor transparent
+skinparam rectangle<<boundary>>StereotypeFontColor transparent
+
+skinparam rectangle<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam database<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam queue<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam person<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam actor<<enterprise_boundary>> {
+    FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam package<<enterprise_boundary>>StereotypeFontColor transparent
+skinparam rectangle<<enterprise_boundary>>StereotypeFontColor transparent
+
+
+skinparam rectangle<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam database<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam queue<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam person<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam actor<<system_boundary>> {
+    FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam package<<system_boundary>>StereotypeFontColor transparent
+skinparam rectangle<<system_boundary>>StereotypeFontColor transparent
+
+
+skinparam rectangle<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam database<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam queue<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam person<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam actor<<container_boundary>> {
+    FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam package<<container_boundary>>StereotypeFontColor transparent
+skinparam rectangle<<container_boundary>>StereotypeFontColor transparent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam rectangle<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam database<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam queue<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam person<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam actor<<person>> {
+    StereotypeFontColor #08427B
+    FontColor #08427B
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+
+skinparam rectangle<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam database<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam queue<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam person<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam actor<<external_person>> {
+    StereotypeFontColor #686868
+    FontColor #686868
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+
+skinparam rectangle<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+skinparam database<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+skinparam queue<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+skinparam person<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+skinparam actor<<system>> {
+    StereotypeFontColor #1168BD
+    FontColor #1168BD
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+
+skinparam rectangle<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+skinparam database<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+skinparam queue<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+skinparam person<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+skinparam actor<<external_system>> {
+    StereotypeFontColor #999999
+    FontColor #999999
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+
+
+skinparam rectangle<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam database<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam queue<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam person<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam actor<<enterprise_boundary>> {
+    FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam package<<enterprise_boundary>>StereotypeFontColor transparent
+skinparam rectangle<<enterprise_boundary>>StereotypeFontColor transparent
+
+
+skinparam rectangle<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam database<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam queue<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam person<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam actor<<system_boundary>> {
+    FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam package<<system_boundary>>StereotypeFontColor transparent
+skinparam rectangle<<system_boundary>>StereotypeFontColor transparent
+
+
+
+
+
+
+sprite $person [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+0000000000000000000049BCCA7200000000000000000000
+0000000000000000006EFFFFFFFFB3000000000000000000
+00000000000000001CFFFFFFFFFFFF700000000000000000
+0000000000000001EFFFFFFFFFFFFFF80000000000000000
+000000000000000CFFFFFFFFFFFFFFFF6000000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+00000000000001FFFFFFFFFFFFFFFFFFF900000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFF00000000000000
+0000000000000BFFFFFFFFFFFFFFFFFFFF40000000000000
+0000000000000EFFFFFFFFFFFFFFFFFFFF70000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000DFFFFFFFFFFFFFFFFFFFF60000000000000
+0000000000000AFFFFFFFFFFFFFFFFFFFF40000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFE00000000000000
+00000000000000EFFFFFFFFFFFFFFFFFF800000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+000000000000000BFFFFFFFFFFFFFFFF5000000000000000
+0000000000000001DFFFFFFFFFFFFFF70000000000000000
+00000000000000000BFFFFFFFFFFFF500000000000000000
+0000000000000000005DFFFFFFFFA1000000000000000000
+0000000000000000000037ABB96100000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000025788300000000005886410000000000000
+000000000007DFFFFFFD9643347BFFFFFFFB400000000000
+0000000004EFFFFFFFFFFFFFFFFFFFFFFFFFFB1000000000
+000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFD200000000
+00000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE10000000
+0000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB0000000
+000000BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5000000
+000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD000000
+000009FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF200000
+00000DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF600000
+00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF800000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA00000
+00000EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF700000
+000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE100000
+0000008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD3000000
+000000014555555555555555555555555555555300000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+sprite $person2 [48x48/16] {
+0000000000000000000049BCCA7200000000000000000000
+0000000000000000006EFFFFFFFFB3000000000000000000
+00000000000000001CFFFFFFFFFFFF700000000000000000
+0000000000000001EFFFFFFFFFFFFFF80000000000000000
+000000000000000CFFFFFFFFFFFFFFFF6000000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+00000000000001FFFFFFFFFFFFFFFFFFF900000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFF00000000000000
+0000000000000BFFFFFFFFFFFFFFFFFFFF40000000000000
+0000000000000EFFFFFFFFFFFFFFFFFFFF70000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000DFFFFFFFFFFFFFFFFFFFF60000000000000
+0000000000000AFFFFFFFFFFFFFFFFFFFF40000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFE00000000000000
+00000000000000EFFFFFFFFFFFFFFFFFF800000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+000000000000000BFFFFFFFFFFFFFFFF5000000000000000
+0000000000000001DFFFFFFFFFFFFFF70000000000000000
+00000000000000000BFFFFFFFFFFFF500000000000000000
+0000000000000000005DFFFFFFFFA1000000000000000000
+0000000000000000000037ABB96100000000000000000000
+000000000002578888300000000005888864100000000000
+0000000007DFFFFFFFFD9643347BFFFFFFFFFB4000000000
+00000004EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB10000000
+0000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD2000000
+000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE100000
+00003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+0000BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF50000
+0003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD0000
+0009FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2000
+000DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6000
+000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB000
+001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB000
+001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB000
+001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA000
+000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+000DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6000
+0009FFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFFF2000
+0003FFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFFD0000
+0000BFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFF50000
+00003FFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFB00000
+000006FFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFE100000
+0000007FFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFD2000000
+00000004EFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFB10000000
+0000000007DF8FFFFFFFFFFFFFFFFFFFFFF8FB4000000000
+000000000002578888888888888888888864100000000000
+}
+
+sprite $robot [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000005BFFFFFFFFFFFFFFFFFFFFFE9100000000000
+0000000000AFFFFFFFFFFFFFFFFFFFFFFFFFE30000000000
+0000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFE1000000000
+000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000000000
+000000004FFFFFFFFFFFFFFFFFFFFFFFFFFFFFC000000000
+000000005FFFFFFFFFFFFFFFFFFFFFFFFFFFFFD000000000
+000000005FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE000000000
+000000005FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE000000000
+000699405FFFFFFC427FFFFFFFFFC427FFFFFFE009982000
+008FFF705FFFFFE10006FFFFFFFE00007FFFFFE00FFFF100
+00CFFF705FFFFFA00001FFFFFFF900002FFFFFE00FFFF500
+00DFFF705FFFFFB00002FFFFFFFA00003FFFFFE00FFFF500
+00DFFF705FFFFFF4000AFFFFFFFF3000BFFFFFE00FFFF500
+00DFFF705FFFFFFFA8DFFFFFFFFFFA8DFFFFFFE00FFFF500
+00DFFF705FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE00FFFF500
+00DFFF705FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE00FFFF500
+00DFFF705FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE00FFFF500
+00DFFF705FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE00FFFF500
+00DFFF705FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE00FFFF500
+00CFFF705FFFFFF87777777777777777CFFFFFE00FFFF500
+008FFF705FFFFFF100000000000000009FFFFFE00FFFF100
+000699405FFFFFF76666666666666666CFFFFFE009982000
+000000005FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE000000000
+000000005FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE000000000
+000000004FFFFFFFFFFFFFFFFFFFFFFFFFFFFFC000000000
+000000000EFFFFFFFFFFFFFFFFFFFFFFFFFFFF7000000000
+0000000005FFFFFFFFFFFFFFFFFFFFFFFFFFFD0000000000
+00000000004CFFFFFFFFFFFFFFFFFFFFFFFF910000000000
+000000000000011111111111111111111110000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+sprite $robot2 [48x48/16] {
+000000000000000088888888888888880000000000000000
+000000000000000AFFFFFFFFFFFFFFFFA000000000000000
+00000000000000CFFFFFFFFFFFFFFFFFFC00000000000000
+00000000000004EFFFFFFFFFFFFFFFFFFE40000000000000
+0000000000000AFFFFFFFFFFFFFFFFFFFFA0000000000000
+00000000000008FFFFFFFFFFFFFFFFFFFF80000000000000
+00000000000008FFFFFFFFFFFFFFFFFFFF80000000000000
+00000000000008FFFFFFFFFFFFFFFFFFFF80000000000000
+00000000000888FFFFFFFFFFFFFFFFFFFF88800000000000
+00000000008FF8FFFFFFFFFFFFFFFFFFFF8FF80000000000
+00000000008FF8FFFFFFFFFFFFFFFFFFFF8FF80000000000
+00000000008FF8FFFFFFFFFFFFFFFFFFFF8FF80000000000
+00000000008FF8FFFFFFFFFFFFFFFFFFFF8FF80000000000
+00000000008FF8FFFFFFFFFFFFFFFFFFFF8FF80000000000
+00000000008FF8FFFFFFFFFFFFFFFFFFFF8FF80000000000
+00000000000888FFFFFFFFFFFFFFFFFFFF88800000000000
+00000000000008FFFFFFFFFFFFFFFFFFFF80000000000000
+00000000000008FFFFFFFFFFFFFFFFFFFF80000000000000
+00000000000008FFFFFFFFFFFFFFFFFFFF80000000000000
+00000000000008FFFFFFFFFFFFFFFFFFFF80000000000000
+00000000000008FFFFFFFFFFFFFFFFFFFF80000000000000
+00000000000004CFFFFFFFFFFFFFFFFFFC40000000000000
+000000488888848CFFFFFFFFFFFFFFFFC848888884000000
+00000CFFFFFFFFC888888888888888888CFFFFFFFFC00000
+00008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF80000
+0000CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC0000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8000
+0008FFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFFF8000
+0008FFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFFF8000
+0008FFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFFF8000
+0008FFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFFF8000
+0000CFFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFFC0000
+00008FFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFF80000
+00000CFFFFFF8FFFFFFFFFFFFFFFFFFFFFF8FFFFFFC00000
+000000488887578888888888888888888864688884000000
+000000000000000000000000000000000000000000000000
+}
+
+
+
+
+skinparam rectangle<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam database<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam queue<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam person<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam actor<<person>> {
+    StereotypeFontColor #08427B
+    FontColor #08427B
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+
+
+skinparam rectangle<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam database<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam queue<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam person<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam actor<<external_person>> {
+    StereotypeFontColor #686868
+    FontColor #686868
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam rectangle<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+skinparam database<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+skinparam queue<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+skinparam person<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+skinparam actor<<container>> {
+    StereotypeFontColor #438DD5
+    FontColor #438DD5
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+
+skinparam rectangle<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+skinparam database<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+skinparam queue<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+skinparam person<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+skinparam actor<<external_container>> {
+    StereotypeFontColor #B3B3B3
+    FontColor #B3B3B3
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+
+
+skinparam rectangle<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam database<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam queue<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam person<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam actor<<container_boundary>> {
+    FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam package<<container_boundary>>StereotypeFontColor transparent
+skinparam rectangle<<container_boundary>>StereotypeFontColor transparent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sprite $linux [48x48/16] {
+000000000000000000000000000000000000000000000000
+00000000000000000000169AA74000000000000000000000
+00000000000000000007FFFFFFFD30000000000000000000
+0000000000000000006FFFFFFFFFF4000000000000000000
+000000000000000000FFFFFFFFFFFE100000000000000000
+000000000000000005FFFFFFFFFFFF700000000000000000
+000000000000000008FFFFFFFFFFFFC00000000000000000
+00000000000000000AFFFFFFFFFFFFF00000000000000000
+00000000000000000AF9CFFF836FFFF20000000000000000
+000000000000000009A33EFD0739FFF40000000000000000
+0000000000000000087D8BFD6F87FFF60000000000000000
+0000000000000000078FFCCE9FF8FFF70000000000000000
+000000000000000006DA65314AAAFFF80000000000000000
+000000000000000005E200000008FFFB0000000000000000
+000000000000000004B000000631FFFD0000000000000000
+000000000000000003F61004622CFFFF2000000000000000
+000000000000000006FA34510863FFFFA000000000000000
+00000000000000000CF3A5378100DFFFF300000000000000
+00000000000000007FA0034100005FFFFD00000000000000
+0000000000000003FF20000000000CFFFF90000000000000
+000000000000002EFA000000000006FFFFF4000000000000
+00000000000000CFF4000000000004FFFFFE100000000000
+00000000000007FFF0000000000000DFFFFFC00000000000
+0000000000000EFFA00000000000004FC8FFF50000000000
+0000000000003F9D2000000000000009FE8FFD0000000000
+0000000000008F9A0000000000000002FF9EFF5000000000
+000000000000DAE20000000000000000DFEAFFC000000000
+000000000004F8C000000000000000009FF8FFF100000000
+00000000000CCB6000000000000000007FF8FFF400000000
+00000000005F9E2000000000000000006FF9FFF600000000
+0000000000CF7F0000000000000000006FBCFFF700000000
+0000000003FF9B0000000000000000006F7DFFF700000000
+0000000005FFF50000000000000000007A9B98E600000000
+000000000573AE4000000000000000178DFFFF9200000000
+0000000009000AF700000000000000808FFFFFC700000000
+00000297830000EFC1000000000000902FFFFC0700000000
+000008000000004FFE2000000000009006EFA00430000000
+000007000000000BFFE10000000000800000000080000000
+0000070000000001EFF80000000001900000000029300000
+00000800000000003FE3000000000CA00000000000750000
+0000060000000000081000000002CFA00000000000080000
+000006000000000000800000017FFF900000000002710000
+0000610000000000007EA88ACFFFFF600000000264000000
+0000720000000000002FFFFFFFFFFF500000006600000000
+0000057751000000000FFFFFFFFFFF200000072000000000
+0000000015873000003D743222356A300001810000000000
+000000000000366326800000000000840057000000000000
+000000000000000131000000000000036730000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV LINUX>> White
+sprite $python [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000025889987520000000000000000000
+000000000000000008EFFFFFFFFFFC200000000000000000
+00000000000000009FFEFFFFFFFFFFF20000000000000000
+0000000000000000FF407FFFFFFFFFFC0000000000000000
+0000000000000001FE002FFFFFFFFFFF0000000000000000
+0000000000000002FF619FFFFFFFFFFF1000000000000000
+0000000000000002FFFFFFFFFFFFFFFF1000000000000000
+0000000000000002FFFFFFFFFFFFFFFF1000000000000000
+000000000000000011111111FFFFFFFF1000000000000000
+00000000005BEEEEEEEEEEEEFFFFFFFF1DEEEA2000000000
+000000000BFFFFFFFFFFFFFFFFFFFFFF1EFFFFE100000000
+000000009FFFFFFFFFFFFFFFFFFFFFFF1EFFFFF900000000
+00000001FFFFFFFFFFFFFFFFFFFFFFFF1EFFFFFF00000000
+00000005FFFFFFFFFFFFFFFFFFFFFFFF0FFFFFFF40000000
+00000008FFFFFFFFFFFFFFFFFFFFFFFA4FFFFFFF70000000
+0000000BFFFFFFFFFFFFFFFFFFFFFFD1CFFFFFFFA0000000
+0000000CFFFFFFFFFFFDCCCCCCCCC81AFFFFFFFFC0000000
+0000000DFFFFFFFFF7112222222236DFFFFFFFFFD0000000
+0000000CFFFFFFFF34DFFFFFFFFFFFFFFFFFFFFFC0000000
+0000000AFFFFFFF74FFFFFFFFFFFFFFFFFFFFFFFB0000000
+00000007FFFFFFF1DFFFFFFFFFFFFFFFFFFFFFFF70000000
+00000004FFFFFFD1FFFFFFFFFFFFFFFFFFFFFFFF30000000
+00000000EFFFFFD2FFFFFFFFFFFFFFFFFFFFFFFD00000000
+000000007FFFFFD2FFFFFFFFFFFFFFFFFFFFFFF500000000
+000000000AFFFFD2FFFFFFFFFFFFFFFFFFFFFFA000000000
+0000000000489982FFFFFFFF999999999999850000000000
+0000000000000002FFFFFFFF666666660000000000000000
+0000000000000002FFFFFFFFFFFFFFFF1000000000000000
+0000000000000002FFFFFFFFFFFFBFFF1000000000000000
+0000000000000002FFFFFFFFFFF402FF1000000000000000
+0000000000000000FFFFFFFFFFF100FF0000000000000000
+00000000000000009FFFFFFFFFFB4AF90000000000000000
+00000000000000000AFFFFFFFFFFFFA00000000000000000
+0000000000000000004BFFFFFFFFB4000000000000000000
+000000000000000000000357653000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV PYTHON>> White
+sprite $sqllite [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000263000000000000000000
+00000000000000000000000001BFFFA00000000000000000
+0000000000000000000000002EFFFFF70000000000000000
+000000000000000000000001EFFFFFFE0000000000000000
+00000000000000000000000CFFFFCFFF2000000000000000
+00000000000000000000008FFFFAEFFF2000000000000000
+0000000000000000000003FFFFCAFFFF1000000000000000
+000000000000000000000CFFFF6FFFFF0000000000000000
+000000000000000000005FFFF5DFFFFB0000000000000000
+00000000000000000000DFFFA6FFFFF70000000000000000
+00000000000000000005FFFF2EFFFFF10000000000000000
+0000000000000000000CFFF87FFFFFB00000000000000000
+0000000000000000002FFFE1EFFFFF400000000000000000
+0000000000000000009FFF67FFFFFC000000000000000000
+000000000000000000EFFE1EFFFFF4000000000000000000
+000000000000000003FFF86FFFFFA0000000000000000000
+000000000000000007FFF1CFFFFF20000000000000000000
+00000000000000000BFFA3FFFFF800000000000000000000
+000000000000000018FF49FFFD7000000000000000000000
+00000000000000006BFE0EFD651000000000000000000000
+00000000000000007FFA4FEDF90000000000000000000000
+00000000000000007FF59FFFD00000000000000000000000
+0000000000000002EDF1EFFF300000000000000000000000
+0000000000000001FFD4FFF6000000000000000000000000
+0000000000000000BF98FF60000000000000000000000000
+00000000000000006F6BC100000000000000000000000000
+00000000000000003F3C1000000000000000000000000000
+00000000000000000F320000000000000000000000000000
+00000000000000000C000000000000000000000000000000
+000000000000000009000000000000000000000000000000
+000000000000000007000000000000000000000000000000
+000000000000000006000000000000000000000000000000
+000000000000000006000000000000000000000000000000
+000000000000000006000000000000000000000000000000
+000000000000000005000000000000000000000000000000
+000000000000000005000000000000000000000000000000
+000000000000000002200000000000000000000000000000
+000000000000000000100000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV SQLLITE>> White
+sprite $aptana [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+00000000000000000000017AA50000000000000000000000
+000000000000000000000CFFFF9000000000000000000000
+000000000000000000002FFFFFF000000000000000000000
+000000000000000000005FFFFFF000000000000000000000
+000000000000000000008FFFFFF200000000000000000000
+00000000006CB3000000CFFFFFF70000007DC40000000000
+0000000008FFFF400008FFFFFFFF500009FFFF6000000000
+000000003FFFFFFB78EFFFFFFFFFFD99DFFFFFF100000000
+000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF300000000
+000000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFE000000000
+0000000008FFFFFFFFFFFFFFFFFFFFFFFFFFFF4000000000
+0000000000BFFFFFFFFFFFEDDFFFFFFFFFFFF60000000000
+00000000004FFFFFFFFF82000039FFFFFFFFE00000000000
+00000000002FFFFFFFB1000000002CFFFFFFD00000000000
+00000000005FFFFFFA000000000000CFFFFFF10000000000
+0000000000BFFFFFC00000000000001EFFFFF90000000000
+0000000007FFFFFF3000000000000005FFFFFF7000000000
+0000069ADFFFFFFC0000000000000000EFFFFFFFDB700000
+0000AFFFFFFFFFF700000000000000009FFFFFFFFFFA0000
+0000FFFFFFFFFFF500000000000000007FFFFFFFFFFF0000
+0000FFFFFFFFFFF300000000000000006FFFFFFFFFFF0000
+0000FFFFFFFFFFF500000000000000007FFFFFFFFFFD0000
+0000AFFFFFFFFFF700000000000000009FFFFFFFFFF80000
+0000068BEFFFFFFC0000000000000000EFFFFFFA88400000
+0000000008FFFFFF3000000000000005FFFFFF3000000000
+0000000000AFFFFFC00000000000001EFFFFF70000000000
+00000000003FFFFFFA000000000000BFFFFFF10000000000
+00000000000FFFFFFFB1000000002CFFFFFFF00000000000
+00000000002FFFFFFFFF82000039FFFFFFFFF00000000000
+00000000009FFFFFFFFFFFEDDFFFFFFFFFFFF70000000000
+0000000005FFFFFFFFFFFFFFFFFFFFFFFFFFFF4000000000
+000000000EFFFFFFFFFFFFFFFFFFFFFFFFFFFFF200000000
+000000004FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF400000000
+000000002FFFFFFC89EFFFFFFFFFFC76BFFFFFF100000000
+0000000007FFFF800006FFFFFFFF700006FFFF4000000000
+00000000005CE70000008FFFFFF80000004CB30000000000
+000000000000000000002FFFFFF100000000000000000000
+000000000000000000001FFFFFF000000000000000000000
+000000000000000000000FFFFFF000000000000000000000
+0000000000000000000009FFFFA000000000000000000000
+000000000000000000000058850000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV APTANA>> White
+sprite $docker [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000015555100000000000000000000
+00000000000000000000005A889500000000000000000000
+000000000000000000000058887500000000000000000000
+000000000000000000000058887500000000000000000000
+0000000000000006666666A9778500000000010000000000
+000000000000001B766B66797785000000001C9000000000
+000000000000001B876B8878887500000000635700000000
+000000000000001B876B8878887500000000A00920000000
+000000000008889C888B889A889B88810000A00382420000
+00000000000B445A545A55685576669300009100B768B400
+00000000000A777A876B8879887798A30000470000008200
+00000000000A777A876B8879887798A300004D0000196000
+00000002888D888C888C889B88AA88BA99BA6009A9930000
+000000055211111111111111111111111000004800000000
+00001505400200000002500000060000000110A000600000
+0005CFDCA9CFD86568BFFC8668EFFB86569EFBC89EFA3000
+0000000391111111111111111111111111111B0000001000
+00000000B000000000000000000000000000930000000000
+000000008300000001560000000000000007600000000000
+000000001B00000012430000000000000077000000000000
+0000000006B8889982000000000000000960000000000000
+00000000007500000000000000000003B400000000000000
+000000000007800000000000000002A80000000000000000
+0000000000003A61000000000027B8100000000000000000
+0000000000000049A8655679AB8400000000000000000000
+000000000000000000345431000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV DOCKER>> White
+sprite $html5 [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+0000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD0000000
+0000000EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE0000000
+0000000CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC0000000
+0000000BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB0000000
+00000009FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF90000000
+00000008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF80000000
+00000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF60000000
+00000005FFFFF7333333333333333333338FFFFF50000000
+00000004FFFFF7000000000000000000007FFFFF40000000
+00000002FFFFF8000000000000000000008FFFFF20000000
+00000001FFFFF900000000000000000000AFFFFF10000000
+00000000FFFFFB00008888888888888888DFFFFF00000000
+00000000EFFFFC0000EFFFFFFFFFFFFFFFFFFFFE00000000
+00000000CFFFFE0000DFFFFFFFFFFFFFFFFFFFFC00000000
+00000000BFFFFF0000CFFFFFFFFFFFFFFFFFFFFB00000000
+00000000AFFFFF10009DDDDDDDDDDDDDDEFFFFFA00000000
+000000008FFFFF20000000000000000002FFFFF800000000
+000000007FFFFF30000000000000000004FFFFF700000000
+000000005FFFFF50000000000000000005FFFFF500000000
+000000004FFFFF60000000000000000007FFFFF400000000
+000000003FFFFFEDDDDDDDDDDDDDD20008FFFFF300000000
+000000001FFFFFFFFFFFFFFFFFFFF1000AFFFFF100000000
+000000000FFFFFC4444FFFFFFFFFF0000BFFFFF000000000
+000000000EFFFFC0000FFFFFFFFFE0000CFFFFE000000000
+000000000DFFFFD0000DFFFFFFFFD0000EFFFFD000000000
+000000000BFFFFF00009FFFFFFFF90000FFFFFB000000000
+000000000AFFFFF00000048CC84000001FFFFFA000000000
+0000000009FFFFF200000000000000002FFFFF8000000000
+0000000007FFFFF300000000000000004FFFFF7000000000
+0000000006FFFFFFB73000000000026AFFFFFF6000000000
+0000000004FFFFFFFFFEA5100049EFFFFFFFFF4000000000
+0000000003FFFFFFFFFFFFFCCFFFFFFFFFFFFF3000000000
+0000000001FFFFFFFFFFFFFFFFFFFFFFFFFFFF1000000000
+0000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000
+0000000000EFFFFFFFFFFFFFFFFFFFFFFFFFFE0000000000
+0000000000038CFFFFFFFFFFFFFFFFFFFFD9400000000000
+0000000000000015AEFFFFFFFFFFFFEA6100000000000000
+00000000000000000037BFFFFFFC84000000000000000000
+000000000000000000000159950000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<DEV HTML5>> White
+sprite $users [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000024310000000000000000000000
+000000000000000000018EFFFFC400000000000000000000
+0000000000000000003EFFFFFFFF90000000000000000000
+000000000000000002EFFFFFFFFFF9000000000000000000
+00000000000000000CFFFFFFFFFFFF400000000000000000
+0000006DFE8000004FFFFFFFFFFFFFC000004BFEA2000000
+000009FFFFFC00009FFFFFFFFFFFFFF10005FFFFFE200000
+00003FFFFFFF8000BFFFFFFFFFFFFFF3001FFFFFFFC00000
+00009FFFFFFFD000CFFFFFFFFFFFFFF4005FFFFFFFF10000
+0000AFFFFFFFE000AFFFFFFFFFFFFFF2006FFFFFFFF20000
+00007FFFFFFFC0006FFFFFFFFFFFFFE0004FFFFFFFF00000
+00001FFFFFFF50001FFFFFFFFFFFFF80000DFFFFFF900000
+000004FFFFF8000007FFFFFFFFFFFE100002DFFFFB000000
+000000179830000000AFFFFFFFFFF3000000069940000000
+00000000000000000007FFFFFFFC20000000000000000000
+0000012333310000000016ACB94000000000233332000000
+0001BFFFFFFFD3000000000000000000008FFFFFFFE60000
+000DFFFFFFFFE400000000000000000000AFFFFFFFFF6000
+007FFFFFFFFD1006BEFE8310025BFFD92006FFFFFFFFF000
+00CFFFFFFFE102DFFFFFFFFFFFFFFFFFF8007FFFFFFFF400
+00DFFFFFFF302FFFFFFFFFFFFFFFFFFFFFA00BFFFFFFF500
+00DFFFFFFB00EFFFFFFFFFFFFFFFFFFFFFF603FFFFFFF500
+00CFFFFFF407FFFFFFFFFFFFFFFFFFFFFFFE00CFFFFFF400
+006FFFFFF00DFFFFFFFFFFFFFFFFFFFFFFFF508FFFFFD000
+00037777601FFFFFFFFFFFFFFFFFFFFFFFFF902777761000
+00000000002FFFFFFFFFFFFFFFFFFFFFFFFFB00000000000
+00000000003FFFFFFFFFFFFFFFFFFFFFFFFFB00000000000
+00000000003FFFFFFFFFFFFFFFFFFFFFFFFFB00000000000
+00000000000FFFFFFFFFFFFFFFFFFFFFFFFF800000000000
+000000000009FFFFFFFFFFFFFFFFFFFFFFFF200000000000
+0000000000007DEEEEEEEEEEEEEEEEEEEEB2000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<FA5 USERS>> White
+sprite $user [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+0000000000000000000049BCCA7200000000000000000000
+0000000000000000006EFFFFFFFFB3000000000000000000
+00000000000000001CFFFFFFFFFFFF700000000000000000
+0000000000000001EFFFFFFFFFFFFFF80000000000000000
+000000000000000CFFFFFFFFFFFFFFFF6000000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+00000000000001FFFFFFFFFFFFFFFFFFF900000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFF00000000000000
+0000000000000BFFFFFFFFFFFFFFFFFFFF40000000000000
+0000000000000EFFFFFFFFFFFFFFFFFFFF70000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000FFFFFFFFFFFFFFFFFFFFF80000000000000
+0000000000000DFFFFFFFFFFFFFFFFFFFF60000000000000
+0000000000000AFFFFFFFFFFFFFFFFFFFF40000000000000
+00000000000006FFFFFFFFFFFFFFFFFFFE00000000000000
+00000000000000EFFFFFFFFFFFFFFFFFF800000000000000
+000000000000007FFFFFFFFFFFFFFFFFF100000000000000
+000000000000000BFFFFFFFFFFFFFFFF5000000000000000
+0000000000000001DFFFFFFFFFFFFFF70000000000000000
+00000000000000000BFFFFFFFFFFFF500000000000000000
+0000000000000000005DFFFFFFFFA1000000000000000000
+0000000000000000000037ABB96100000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000025788300000000005886410000000000000
+000000000007DFFFFFFD9643347BFFFFFFFB400000000000
+0000000004EFFFFFFFFFFFFFFFFFFFFFFFFFFB1000000000
+000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFD200000000
+00000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE10000000
+0000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB0000000
+000000BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5000000
+000003FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD000000
+000009FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF200000
+00000DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF600000
+00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF800000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB00000
+00001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA00000
+00000EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF700000
+000006FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE100000
+0000008FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD3000000
+000000014555555555555555555555555555555300000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<FA5 USER>> White
+sprite $send_o [48x48/16] {
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000004C9000
+00000000000000000000000000000000000000002BFFF400
+0000000000000000000000000000000000000018FFFFF300
+00000000000000000000000000000000000006EFFFFFF100
+000000000000000000000000000000000004DFFFFEFFE000
+0000000000000000000000000000000002AFFFFE66FFB000
+000000000000000000000000000000008FFFFF9108FF9000
+0000000000000000000000000000005EFFFFB2000BFF6000
+00000000000000000000000000003CFFFFD400000EFF3000
+000000000000000000000000001AFFFFF70000000FFF1000
+00000000000000000000000007FFFFFA100000003FFE0000
+000000000000000000000004EFFFFB20000000006FFB0000
+0000000000000000000003CFFFFD5000000100008FF90000
+000000000000000000019FFFFF80000000460000BFF60000
+0000000000000000006FFFFFA100000009E00000EFF30000
+00000000000000004DFFFFC300000002CF400000FFF10000
+000000000000002BFFFFE6000000005FFB000003FFE00000
+00000000000019FFFFF80000000009FFF2000006FFB00000
+000000000006EFFFFB2000000002DFFF80000008FF900000
+0000000004DFFFFC30000000005FFFFE0000000BFF600000
+00000002AFFFFE60000000000AFFFFF40000000EFF300000
+0000008FFFFF900000000003DFFFFFB00000000FFF100000
+00005EFFFFB200000000005FFFFFFF200000003FFE000000
+002CFFFFD400000000001AFFFFFFF8000000006FFB000000
+00CFFFFA000000000003EFFFFFFFD0000000008FF9000000
+00AFFFFFD7100000007FFFFFFFFF4000000000BFF6000000
+0006DFFFFFFA30001BFFFFFFFFFB0000000000EFF3000000
+000003AFFFFFFD64EFFFFFFFFFF20000000000FFF1000000
+000000016DFFFFFFFFFFFFFFFF800000000003FFE0000000
+00000000004AFFFFFFFFFFFFFE000000000006FFB0000000
+00000000000018EFFFFFFFFFF4000000000008FF90000000
+000000000000008FFFFFFFFFD000000000000BFF60000000
+000000000000008FFFFFFFFFFE81000000000EFF30000000
+000000000000008FFFFFFFFFFFFFB50000000FFF10000000
+000000000000008FFFFFFFFFFFFFFFD710003FFE00000000
+000000000000008FFFFFFFFD26DFFFFFFA406FFB00000000
+000000000000008FFFFFFFD10004AFFFFFFDCFF900000000
+000000000000008FFFFFFE200000017DFFFFFFF600000000
+000000000000008FFFFFF300000000004AFFFFF300000000
+000000000000008FFFFF4000000000000018EFE000000000
+000000000000008FFFF50000000000000000030000000000
+000000000000007FFF600000000000000000000000000000
+000000000000004FF8000000000000000000000000000000
+000000000000000330000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000
+}
+
+
+skinparam folderBackgroundColor<<FA SEND_O>> White
+
+skinparam backgroundColor #fff
+!pragma ratio 0.6
+
+hide stereotype
+
+together {
+rectangle "== before_cocktail\n\nExecuted before the cocktail" <<system>> as before_cocktail 
+rectangle "== after_cocktail\n\nExecuted right after the cocktail" <<system>> as after_cocktail 
+}
+
+  rectangle "== CocktailBerry\n<size:12>[System]</size>" <<system_boundary>><<boundary>> as c1  {
+  rectangle "== Options\n//<size:12>[python]</size>//\n\nUser clicks on addon GUI" <<container>> as gui 
+  rectangle "== Program Start\n//<size:12>[python]</size>//\n\nCocktailBerry starts and set everything up" <<container>> as main 
+  rectangle "== Cocktail Preparation\n//<size:12>[python]</size>//\n\nCocktailBerry prepares the Cocktail" <<container>> as cocktail 
+  rectangle "== Program End\n//<size:12>[python]</size>//\n\nUser exits the program" <<container>> as end 
+
+}
+rectangle "== setup\n\nExecuted at program start" <<system>> as setup 
+rectangle "== build_addon_gui\n\nWhen User want to do addition things" <<system>> as build_addon_gui 
+rectangle "== cleanup\n\nExecuted at program end" <<system>> as cleanup 
+
+main -DOWN->> cocktail : <size:0>.</size>
+main -DOWN->> gui : <size:0>.</size>
+cocktail -DOWN->> end : <size:0>.</size>
+
+before_cocktail -DOWN->> cocktail : **Can interrup**
+cocktail -LEFT->> after_cocktail : **Triggers**
+setup -LEFT->> main : **Add Settings**
+end -RIGHT->> cleanup : **Triggers**
+gui -RIGHT->> build_addon_gui : **Triggers**
+
+before_cocktail - ->> after_cocktail : <size:0>.</size>
+
+@enduml
+
+PlantUML version 1.2022.7(Mon Aug 22 19:01:30 CEST 2022)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: Cp1252
+Language: de
+Country: DE
+--></g></svg>

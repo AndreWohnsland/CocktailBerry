@@ -18,7 +18,8 @@ from src.migration.update_data import (
     add_more_bottles_to_db,
     add_team_buffer_to_database,
     add_virgin_flag_to_db,
-    remove_is_alcoholic_column
+    remove_is_alcoholic_column,
+    remove_old_recipe_columns
 )
 
 _logger = LoggerHandler("migrator_module")
@@ -56,34 +57,42 @@ class Migrator:
         _logger.log_event("INFO", f"Local version is: {self.local_version}, checking for necessary migrations")
         self._python_to_old_warning(FUTURE_PYTHON_VERSION)
         if self.older_than_version("1.5.0"):
-            _logger.log_event("INFO", "Making migrations for v1.5.0")
+            self._migration_log("1.5.0")
             rename_database_to_english()
             add_team_buffer_to_database()
             self._install_pip_package("GitPython", "1.5.0")
         if self.older_than_version("1.5.3"):
-            _logger.log_event("INFO", "Making migrations for v1.5.3")
+            self._migration_log("1.5.3")
             self._install_pip_package("typer", "1.5.3")
         if self.older_than_version("1.6.0"):
-            _logger.log_event("INFO", "Making migrations for v1.6.0")
+            self._migration_log("1.6.0")
             self._change_git_repo()
             self._install_pip_package("pyfiglet", "1.6.0")
         if self.older_than_version("1.6.1"):
-            _logger.log_event("INFO", "Making migrations for v1.6.1")
+            self._migration_log("1.6.1")
             add_more_bottles_to_db()
         if self.older_than_version("1.9.0"):
-            _logger.log_event("INFO", "Making migrations for v1.9.0")
+            self._migration_log("1.9.0")
             add_virgin_flag_to_db()
             remove_is_alcoholic_column()
             self._install_pip_package("typing_extensions", "1.9.0")
         if self.older_than_version("1.11.0"):
-            _logger.log_event("INFO", "Making migrations for v1.11.0")
+            self._migration_log("1.11.0")
             self._install_pip_package("qtawesome", "1.11.0")
         if self.older_than_version("1.17.0"):
-            _logger.log_event("INFO", "Making migrations for v1.17.0")
+            self._migration_log("1.17.0")
             self._install_pip_package("pyqtspinner", "1.17.0")
+        if self.older_than_version("1.18.0"):
+            self._migration_log("1.18.0")
+            remove_old_recipe_columns()
         self._check_local_version_data()
 
+    def _migration_log(self, version: str):
+        """Logs the migration message fro the version"""
+        _logger.log_event("INFO", f"Making migrations for v{version}")
+
     def _python_to_old_warning(self, least_python: Tuple[int, int]):
+        """Logs a warning that the future python is higher than system python"""
         sys_python = sys.version_info
         if sys_python < least_python:
             future_format = f"Python {least_python[0]}.{least_python[1]}"

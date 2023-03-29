@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import datetime
 import shutil
+import atexit
 from typing import Optional, TYPE_CHECKING
 from pathlib import Path
 
@@ -13,15 +14,15 @@ from src.ui.create_config_window import ConfigWindow
 from src.ui.setup_log_window import LogWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
+from src.ui.setup_addon_window import AddonWindow
 from src.ui_elements import Ui_Optionwindow
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
 from src.programs.calibration import run_calibration
-from src.machine.controller import MACHINE
 from src.logger_handler import LoggerHandler
 from src.save_handler import SAVE_HANDLER
-from src.utils import has_connection, restart_program
+from src.utils import has_connection, restart_program, get_platform_data
 from src.config_manager import CONFIG as cfg
 
 
@@ -33,6 +34,7 @@ _CONFIG_NAME = "custom_config.yaml"
 _VERSION_NAME = ".version.ini"
 _NEEDED_FILES = [_DATABASE_NAME, _CONFIG_NAME, _VERSION_NAME]
 _logger = LoggerHandler("option_window")
+_platform_data = get_platform_data()
 
 
 class OptionWindow(QMainWindow, Ui_Optionwindow):
@@ -56,6 +58,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_logs.clicked.connect(self._show_logs)
         self.button_rfid.clicked.connect(self._open_rfid_writer)
         self.button_wifi.clicked.connect(self._open_wifi_window)
+        self.button_addons.clicked.connect(self._open_addon_window)
         self.button_check_internet.clicked.connect(self._check_internet_connection)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
@@ -64,6 +67,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.log_window: Optional[LogWindow] = None
         self.rfid_writer_window: Optional[RFIDWriterWindow] = None
         self.wifi_window: Optional[WiFiWindow] = None
+        self.addon_window: Optional[AddonWindow] = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -84,7 +88,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Reboots the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_reboot():
             return
-        MACHINE.cleanup()
+        if _platform_data.system == "Windows":
+            print("Cannot do that on windows")
+            return
+        atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo reboot")
         self.close()
 
@@ -92,7 +99,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Shutdown the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_shutdown():
             return
-        MACHINE.cleanup()
+        if _platform_data.system == "Windows":
+            print("Cannot do that on windows")
+            return
+        atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo shutdown now")
         self.close()
 
@@ -157,6 +167,11 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Opens a window to configure wifi"""
         # self.close()
         self.wifi_window = WiFiWindow(self.mainscreen)
+
+    def _open_addon_window(self):
+        """Opens a window to configure wifi"""
+        # self.close()
+        self.addon_window = AddonWindow(self.mainscreen)
 
     def _check_internet_connection(self):
         """Checks if there is a active internet connection"""

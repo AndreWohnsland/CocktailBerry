@@ -59,8 +59,18 @@ $default-element-border: $element-border solid $border;
   padding: 5px 25px 5px 25px;
 }
 
+#virgin_checkbox {
+  &.QCheckBox::indicator {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    margin-left: 5px;
+  }
+}
+
 // Other Elements
-QCheckBox::indicator {
+QCheckBox::indicator,
+QTableView::indicator {
   width: 18px;
   height: 18px;
   border: 2px solid;
@@ -422,5 +432,27 @@ QTimeEdit {
   &::up-arrow {
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
+  }
+}
+
+QHeaderView {
+  &::section {
+    background-color: $background;
+  }
+}
+
+QTableView {
+  & QTableCornerButton::section {
+    background: $background;
+  }
+  &::item {
+    margin-left: 20px;
+    padding: 10px 0px 15px 0px;
+    border-bottom: 1px solid $primary;
+  }
+  &::indicator {
+    width: 35px;
+    height: 35px;
+    margin-right: 15px;
   }
 }

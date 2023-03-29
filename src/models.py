@@ -13,15 +13,15 @@ class Ingredient():
     fill_level: int
     hand: Union[bool, int]
     amount: int = 0
-    recipe_hand: Union[bool, int, None] = None
     bottle: Optional[int] = None
     selected: Optional[str] = None
 
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name"""
-        self_hand = self.recipe_hand if self.recipe_hand is not None else self.hand
-        other_hand = other.recipe_hand if other.recipe_hand is not None else other.hand
-        return (int(self_hand), -self.amount, -len(self.name)) < (int(other_hand), -other.amount, -len(other.name))
+        return (
+            (int(self.bottle is None), -self.amount, -len(self.name)) <
+            (int(other.bottle is None), -other.amount, -len(other.name))
+        )
 
 
 @dataclass
@@ -31,7 +31,6 @@ class Cocktail():
     name: str
     alcohol: int
     amount: int
-    comment: str
     enabled: bool
     virgin_available: bool
     ingredients: List[Ingredient]
@@ -51,12 +50,12 @@ class Cocktail():
     @property
     def handadds(self):
         """Returns a list of all handadd Ingredients"""
-        return [x for x in self.adjusted_ingredients if (x.recipe_hand and x.bottle is None)]
+        return [x for x in self.adjusted_ingredients if x.bottle is None]
 
     @property
     def machineadds(self):
         """Returns a list of all machine Ingredients"""
-        return [x for x in self.adjusted_ingredients if (not x.recipe_hand or x.bottle is not None)]
+        return [x for x in self.adjusted_ingredients if x.bottle is not None]
 
     @property
     def is_virgin(self):
@@ -66,6 +65,10 @@ class Cocktail():
     def is_possible(self, hand_available: List[int]):
         """Returns if the recipe is possible with given additional hand add ingredients"""
         machine = self.machineadds
+        # If machine got not at least 1 add (=all handadd) return false
+        # We don't want to let the user do all the work
+        if len(machine) < 1:
+            return False
         for ing in machine:
             if ing.bottle is None:
                 return False
@@ -75,7 +78,7 @@ class Cocktail():
             return False
         return True
 
-    def enough_fill_level(self) -> Union[None, tuple[str, int, int]]:
+    def enough_fill_level(self) -> Optional[tuple[str, int, int]]:
         """Checks if the needed volume is there
         Accepts if there is at least 80% of needed volume
         to be more efficient with the remainder volume in the bottle"""

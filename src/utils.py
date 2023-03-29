@@ -4,6 +4,7 @@ import sys
 from typing import Tuple, Literal
 from dataclasses import dataclass
 import http.client as httplib
+import atexit
 
 from src.filepath import ROOT_PATH, STYLE_FOLDER
 from src.logger_handler import LoggerHandler
@@ -67,7 +68,10 @@ def set_system_time(time_string: str):
 
 
 def restart_program():
-    os.execl(sys.executable, "python", EXECUTABLE, *sys.argv[1:])
+    # trigger manually, since exec function will not trigger exit fun.
+    atexit._run_exitfuncs()  # pylint: disable=protected-access
+    python = sys.executable
+    os.execl(python, python, EXECUTABLE, *sys.argv[1:])
 
 
 def generate_custom_style_file():

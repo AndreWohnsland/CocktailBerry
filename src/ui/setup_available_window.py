@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QListWidget
 
 
 from src.ui_elements.available import Ui_available
@@ -46,11 +46,13 @@ class AvailableWindow(QMainWindow, Ui_available):
         DP_CONTROLLER.clear_recipe_data_maker(self.mainscreen, False)
         self.close()
 
-    def _change_ingredient(self, lw_to_add, lw_removed):
+    def _change_ingredient(self, lw_to_add: QListWidget, lw_removed: QListWidget):
         if not lw_removed.selectedItems():
             return
 
-        ingredient_name = lw_removed.currentItem().text()
-        lw_to_add.addItem(ingredient_name)
-        DP_CONTROLLER.delete_list_widget_item(lw_removed, ingredient_name)
+        ingredient_names = [x.text() for x in lw_removed.selectedItems()]
+        lw_to_add.addItems(ingredient_names)
+
+        for ingredient in ingredient_names:
+            DP_CONTROLLER.delete_list_widget_item(lw_removed, ingredient)
         DP_CONTROLLER.unselect_list_widget_items(lw_removed)
