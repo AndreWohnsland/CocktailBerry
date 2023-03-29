@@ -3,7 +3,7 @@
 # If the -n flag is there, will not do reload
 # This is mainly used for the all in one script.
 RELOAD_GRP='true'
-while getopts ':x' 'OPTKEY'; do
+while getopts ':n' 'OPTKEY'; do
   case ${OPTKEY} in
   'n')
     RELOAD_GRP='false'
