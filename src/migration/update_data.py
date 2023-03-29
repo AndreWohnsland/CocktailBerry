@@ -129,7 +129,7 @@ def rename_database_to_english():
 
 
 def remove_old_recipe_columns():
-    _logger.log_event("INFO", "Remove Comment from Recipes table")
+    _logger.log_event("INFO", "Remove Comment from Recipes and Hand from RecipeData table")
     commands = [
         "ALTER TABLE Recipes DROP COLUMN Comment",
         "ALTER TABLE RecipeData DROP COLUMN Hand",
