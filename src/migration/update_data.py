@@ -97,7 +97,6 @@ def _get_new_cocktails(new_names: List[str], default_db: DatabaseCommander, loca
 def rename_database_to_english():
     """Renames all German columns to English ones"""
     _logger.log_event("INFO", "Renaming German column names to English ones")
-    db_handler = DatabaseHandler()
     commands = [
         # Rename all bottle things
         "ALTER TABLE Belegung RENAME TO Bottles",
@@ -126,6 +125,21 @@ def rename_database_to_english():
         "ALTER TABLE Ingredients RENAME COLUMN Verbrauch TO Consumption",
         "ALTER TABLE Ingredients RENAME COLUMN Mengenlevel TO Fill_level",
     ]
+    _try_execute_db_commands(commands)
+
+
+def remove_old_recipe_columns():
+    _logger.log_event("INFO", "Remove Comment from Recipes table")
+    commands = [
+        "ALTER TABLE Recipes DROP COLUMN Comment",
+        "ALTER TABLE RecipeData DROP COLUMN Hand",
+    ]
+    _try_execute_db_commands(commands)
+
+
+def _try_execute_db_commands(commands: list[str]):
+    """Try to execute each command, pass if OperationalError"""
+    db_handler = DatabaseHandler()
     for command in commands:
         try:
             db_handler.query_database(command)

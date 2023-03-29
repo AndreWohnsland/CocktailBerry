@@ -231,15 +231,6 @@ class DatabaseCommander:
             return data[0][0], data[0][1]
         return 0, 0
 
-    def get_recipes_using_ingredient_by_machine(self, ingredient_id: int) -> List[str]:
-        """Returns a list of recipes names still using the ingredient as machine add"""
-        query = """SELECT DISTINCT R.Name FROM
-                Recipes R INNER JOIN RecipeData RD 
-                ON R.ID = RD.Recipe_ID
-                WHERE RD.Ingredient_ID=?
-                AND RD.Hand=0"""
-        return [x[0] for x in self.handler.query_database(query, (ingredient_id,))]
-
     # set (update) commands
     def set_bottle_order(self, ingredient_names: List[str]):
         """Set bottles to the given list of bottles, need all bottles"""
@@ -329,7 +320,7 @@ class DatabaseCommander:
     def insert_new_ingredient(self, ingredient_name: str, alcohol_level: int, volume: int, only_hand: bool):
         """Insert a new ingredient into the database"""
         query = """INSERT OR IGNORE INTO
-                Ingredients(Name,Alcohol,Volume,Consumption_lifetime,Consumption,Fill_level,Hand) 
+                Ingredients(Name, Alcohol, Volume, Consumption_lifetime, Consumption, Fill_level, Hand) 
                 VALUES (?,?,?,0,0,0,?)"""
         search_tuple = (ingredient_name, alcohol_level, volume, int(only_hand))
         self.handler.query_database(query, search_tuple)
@@ -338,14 +329,14 @@ class DatabaseCommander:
         """Insert a new recipe into the database"""
         query = """INSERT OR IGNORE INTO
                 Recipes(Name, Alcohol, Amount, Counter_lifetime, Counter, Enabled, Virgin) 
-                VALUES (?,?,?,?,0,0,?,?)"""
+                VALUES (?,?,?,0,0,?,?)"""
         search_tuple = (name, alcohol_level, volume, enabled, virgin)
         self.handler.query_database(query, search_tuple)
 
     def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int):
         """Insert given data into the recipe_data table"""
-        query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount, Hand) VALUES (?, ?, ?, ?)"
-        search_tuple = (recipe_id, ingredient_id, ingredient_volume, int(False))
+        query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount) VALUES (?, ?, ?)"
+        search_tuple = (recipe_id, ingredient_id, ingredient_volume)
         self.handler.query_database(query, search_tuple)
 
     def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: List[str]):
@@ -489,8 +480,6 @@ class DatabaseHandler:
                 Recipe_ID INTEGER NOT NULL,
                 Ingredient_ID INTEGER NOT NULL,
                 Amount INTEGER NOT NULL,
-                Is_alcoholic INTEGER NOT NULL,
-                Hand INTEGER,
                 CONSTRAINT fk_data_ingredient
                     FOREIGN KEY (Ingredient_ID)
                     REFERENCES Ingredients (ID)
