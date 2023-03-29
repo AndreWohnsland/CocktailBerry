@@ -12,7 +12,6 @@ from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.error_handler import logerror
 from src.models import Cocktail, Ingredient
-from src.config_manager import shared
 
 
 def fill_recipe_box_with_ingredients(w):
@@ -126,14 +125,6 @@ def _build_recipe_data(names: list[str], volumes: list[int]):
         recipe_volume_concentration += ingredient.alcohol * ingredient_volume
         ingredient_data.append(ingredient)
 
-    # build also the handadd data into an ingredient
-    for ing in shared.handaddlist:
-        ingredient: Ingredient = DB_COMMANDER.get_ingredient(ing.id)  # type: ignore
-        ingredient.amount = ing.amount
-        recipe_volume += ing.amount
-        recipe_volume_concentration += ingredient.alcohol * ing.amount
-        ingredient_data.append(ingredient)
-
     recipe_alcohol_level = int(recipe_volume_concentration / recipe_volume)
 
     return recipe_volume, ingredient_data, recipe_alcohol_level
@@ -151,9 +142,9 @@ def _enter_or_update_recipe(
     """Logic to insert/update data into DB"""
     if recipe_id:
         DB_COMMANDER.delete_recipe_ingredient_data(recipe_id)
-        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, "", enabled, virgin)
+        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin)
     else:
-        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohol_level, recipe_volume, "", enabled, virgin)
+        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin)
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore -> will always return cocktail
     for ingredient in ingredient_data:
         DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount)

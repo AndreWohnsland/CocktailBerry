@@ -36,7 +36,6 @@ class Cocktail():
     name: str
     alcohol: int
     amount: int
-    comment: str
     enabled: bool
     virgin_available: bool
     ingredients: List[Ingredient]

@@ -46,20 +46,19 @@ class DatabaseCommander:
 
     def __get_all_recipes_properties(self):
         """Get all needed data for all recipes"""
-        query = "SELECT ID, Name, Alcohol, Amount, Comment, Enabled, Virgin FROM Recipes"
+        query = "SELECT ID, Name, Alcohol, Amount, Enabled, Virgin FROM Recipes"
         return self.handler.query_database(query)
 
     def __build_cocktail(
         self, recipe_id: int,
         name: str, alcohol: int,
-        amount: int, comment: str,
+        amount: int,
         enabled: bool, virgin: bool
     ):
         """Build one cocktail object with the given data"""
         ingredients = self.__get_recipe_ingredients_by_id(recipe_id)
         return Cocktail(
-            recipe_id, name, alcohol, amount, comment, bool(enabled), bool(virgin),
-            ingredients
+            recipe_id, name, alcohol, amount, bool(enabled), bool(virgin), ingredients
         )
 
     def get_cocktail(self, search: Union[str, int]) -> Optional[Cocktail]:
@@ -68,7 +67,7 @@ class DatabaseCommander:
             condition = "Name"
         else:
             condition = "ID"
-        query = f"SELECT ID, Name, Alcohol, Amount, Comment, Enabled, Virgin FROM Recipes WHERE {condition}=?"
+        query = f"SELECT ID, Name, Alcohol, Amount, Enabled, Virgin FROM Recipes WHERE {condition}=?"
         data = self.handler.query_database(query, (search,))
         # returns None if no data exists
         if not data:
@@ -81,7 +80,7 @@ class DatabaseCommander:
         cocktails = []
         recipe_data = self.__get_all_recipes_properties()
         for recipe in recipe_data:
-            enabled = bool(recipe[5])
+            enabled = bool(recipe[4])
             if (enabled and not get_enabled) or (not enabled and not get_disabled):
                 continue
             cocktails.append(self.__build_cocktail(*recipe))
@@ -287,14 +286,14 @@ class DatabaseCommander:
     def set_recipe(
         self, recipe_id: int,
         name: str, alcohol_level: int,
-        volume: int, comment: str,
+        volume: int,
         enabled: int, virgin: int
     ):
         """Updates the given recipe id to new properties"""
         query = """UPDATE OR IGNORE Recipes
-                SET Name = ?, Alcohol = ?, Amount = ?, Comment = ?, Enabled = ?, Virgin = ?
+                SET Name = ?, Alcohol = ?, Amount = ?, Enabled = ?, Virgin = ?
                 WHERE ID = ?"""
-        search_tuple = (name, alcohol_level, volume, comment, enabled, virgin, recipe_id)
+        search_tuple = (name, alcohol_level, volume, enabled, virgin, recipe_id)
         self.handler.query_database(query, search_tuple)
 
     def set_ingredient_level_to_value(self, ingredient_id: int, value: int):
@@ -311,12 +310,12 @@ class DatabaseCommander:
         search_tuple = (ingredient_name, alcohol_level, volume, int(only_hand))
         self.handler.query_database(query, search_tuple)
 
-    def insert_new_recipe(self, name: str, alcohol_level: int, volume: int, comment: str, enabled: int, virgin: int):
+    def insert_new_recipe(self, name: str, alcohol_level: int, volume: int, enabled: int, virgin: int):
         """Insert a new recipe into the database"""
         query = """INSERT OR IGNORE INTO
-                Recipes(Name, Alcohol, Amount, Comment, Counter_lifetime, Counter, Enabled, Virgin) 
+                Recipes(Name, Alcohol, Amount, Counter_lifetime, Counter, Enabled, Virgin) 
                 VALUES (?,?,?,?,0,0,?,?)"""
-        search_tuple = (name, alcohol_level, volume, comment, enabled, virgin)
+        search_tuple = (name, alcohol_level, volume, enabled, virgin)
         self.handler.query_database(query, search_tuple)
 
     def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int):
@@ -446,7 +445,6 @@ class DatabaseHandler:
                 Name TEXT NOT NULL,
                 Alcohol INTEGER NOT NULL,
                 Amount INTEGER NOT NULL,
-                Comment TEXT,
                 Counter_lifetime INTEGER,
                 Counter INTEGER,
                 Enabled INTEGER);"""

@@ -56,7 +56,7 @@ def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: List[Cock
     for rec in cocktails_to_add:
         local_db.insert_new_recipe(
             rec.name, rec.alcohol, rec.amount,
-            rec.comment, rec.enabled, rec.virgin_available
+            rec.enabled, rec.virgin_available
         )
         new_cocktail = local_db.get_cocktail(rec.name)
         if new_cocktail is None:
