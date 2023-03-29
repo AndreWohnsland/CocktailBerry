@@ -4,7 +4,7 @@ from pathlib import Path
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView
 from PyQt5.QtCore import Qt
 import requests
-from requests.exceptions import ConnectionError as ReqConnectionError, ConnectTimeout as ReqConnectTimeout
+from requests.exceptions import ConnectionError as ReqConnectionError
 
 from src.ui_elements import Ui_AddonManager
 from src.dialog_handler import UI_LANGUAGE
@@ -16,13 +16,14 @@ from src.utils import restart_program
 
 _logger = LoggerHandler("AddonManager")
 _GITHUB_ADDON_SOURCE = "https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Addons/main/addon_data.json"
+_NOT_SET = "Not Set"
 
 
 @dataclass
 class _AddonData:
-    name: str = "Not Set"
-    description: str = "Not Set"
-    url: str = "Not Set"
+    name: str = _NOT_SET
+    description: str = _NOT_SET
+    url: str = _NOT_SET
     file_name: str = ""
     installed: bool = False
     official: bool = True
@@ -88,7 +89,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
                 official_addons = [
                     _AddonData(**data) for data in gh_data
                 ]
-        except (ReqConnectionError, ReqConnectTimeout):
+        except ReqConnectionError:
             _logger.log_event("WARNING", "Could not fetch addon data from source, is there an internet connection?")
 
         # Check if the addon is installed
@@ -145,7 +146,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
                     "ERROR",
                     f"Could not get {addon.name} from {addon.url}: {req.status_code} {req.reason}"
                 )
-        except (ReqConnectionError, ReqConnectTimeout):
+        except ReqConnectionError:
             _logger.log_event(
                 "ERROR",
                 f"Could not get {addon.name} from {addon.url}: No internet connection"
