@@ -36,7 +36,7 @@ def post_cocktail_hook():
             # Needs to be specified to send, since multiple threads would cause double sending
             if send_query:
                 try_send_query_data(app)
-        except requests.exceptions.ConnectionError:
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             _logger.error("Could not connect to %s for the cocktail data!", url)
             db_handler = DatabaseHandler()
             db_handler.save_failed_post(payload, url, headers)
