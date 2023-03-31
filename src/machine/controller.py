@@ -32,7 +32,6 @@ class MachineController():
         super().__init__()
         self._pin_controller = self._chose_controller()
         self._led_controller = LedController(self._pin_controller)
-        atexit.register(self.cleanup)
 
     def _chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""
@@ -160,6 +159,7 @@ class MachineController():
         active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         print(f"Initializing Pins: {active_pins}")
         self._pin_controller.initialize_pin_list(active_pins)
+        atexit.register(self.cleanup)
 
     def _start_pumps(self, pin_list: List[int]):
         """Informs and opens all given pins"""
