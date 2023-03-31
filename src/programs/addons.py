@@ -1,7 +1,7 @@
 from importlib import import_module
 import re
 import atexit
-from typing import Callable, Literal, Protocol
+from typing import Any, Callable, Literal, Optional, Protocol
 
 import typer
 from PyQt5.QtWidgets import QVBoxLayout
@@ -24,10 +24,10 @@ class AddonInterface(Protocol):
     def cleanup(self):
         """Clean up the addon"""
 
-    def before_cocktail(self):
+    def before_cocktail(self, data: dict[str, Any]):
         """Logic to be executed before the cocktail"""
 
-    def after_cocktail(self):
+    def after_cocktail(self, data: dict[str, Any]):
         """Logic to be executed after the cocktail"""
 
     def build_gui(
@@ -73,17 +73,18 @@ class AddOnManager:
         """Clean up all the addons"""
         self._try_function_for_addons("cleanup")
 
-    def before_cocktail(self):
+    def before_cocktail(self, data: dict[str, Any]):
         """Execute addon part before cocktail"""
-        self._try_function_for_addons("before_cocktail")
+        self._try_function_for_addons("before_cocktail", data)
 
-    def after_cocktail(self):
+    def after_cocktail(self, data: dict[str, Any]):
         """Execute addon part after cocktail"""
-        self._try_function_for_addons("after_cocktail")
+        self._try_function_for_addons("after_cocktail", data)
 
     def _try_function_for_addons(
         self,
         function_name: _SupportedActions,
+        data: Optional[dict[str, Any]] = None,
     ):
         """Tries the according function for the list of addons
         Catches AttributeError (function was not defined)
@@ -91,7 +92,17 @@ class AddOnManager:
         for addon in self.addons.values():
             try:
                 func = getattr(addon, function_name)
-                func()
+                if data is None:
+                    func()
+                else:
+                    func(data)
+            # In case of an interface change in base app, this error will occur
+            except TypeError:
+                _logger.error(
+                    f"Could not execute {function_name} for {addon.__module__}. " +
+                    "This is probably due to a change in CocktailBerry that the addon currently did not adapt to."
+                )
+            # If the function is not found (should usually not happen), ignore it
             except AttributeError:
                 pass
 

@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Any, Callable
 from PyQt5.QtWidgets import QVBoxLayout
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
@@ -31,13 +31,13 @@ class Addon(AddonInterface):
     def cleanup(self):
         """Method for cleanup, executed a program end. """
 
-    def before_cocktail(self):
+    def before_cocktail(self, data: dict[str, Any]):
         """Executed right before the cocktail preparation.
         In case of a RuntimeError, the cocktail will not be prepared
         and the message will be shown to the user.
         """
 
-    def after_cocktail(self):
+    def after_cocktail(self, data: dict[str, Any]):
         """Executed right after the cocktail preparation"""
 
     def build_gui(

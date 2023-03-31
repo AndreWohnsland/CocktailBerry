@@ -3,7 +3,7 @@
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
-from typing import List, Optional, TypeVar
+from typing import Any, List, Optional, TypeVar
 
 from src.tabs import bottles
 from src.database_commander import DB_COMMANDER
@@ -106,8 +106,9 @@ def prepare_cocktail(w):
     ingredient_volumes = [x.amount for x in cocktail.machineadds if x.amount > 0]
 
     # Runs addons before hand, check if they throw an error
+    addon_data: dict[str, Any] = {"cocktail": cocktail}
     try:
-        ADDONS.before_cocktail()
+        ADDONS.before_cocktail(addon_data)
     except RuntimeError as err:
         DP_CONTROLLER.standard_box(str(err))
         return
@@ -119,7 +120,8 @@ def prepare_cocktail(w):
     __generate_maker_log_entry(cocktail_volume, display_name, taken_time, max_time)
 
     # run Addons after cocktail preparation
-    ADDONS.after_cocktail()
+    addon_data["consumption"] = consumption
+    ADDONS.after_cocktail(addon_data)
 
     # only post if cocktail was made over 50%
     percentage_made = taken_time / max_time
