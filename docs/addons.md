@@ -43,6 +43,13 @@ An addon should only contain **one** file per addon.
 If an addon is not working properly, this is mostly due to an error within the addon and not CocktailBerry.
 If you think it is related to CocktailBerry, you can open an according issue.
 
+## Updating Addons
+
+The update process is quite similar to the installation one.
+Either go to the CocktailBerry GUI for addons, manage and apply the addons.
+This will also update existing ones.
+If you use an external one, just replace the current file with the latest one, this let you run the latest version.
+
 ## Verified Addons
 
 Here is a list of verified addons that you can use.
@@ -109,10 +116,10 @@ class Addon(AddonInterface): # (2)!
     def cleanup(self): # (4)!
         pass
 
-    def before_cocktail(self): # (5)!
+    def before_cocktail(self, data: dict): # (5)!
         pass
 
-    def after_cocktail(self): # (6)!
+    def after_cocktail(self, data: dict): # (6)!
         pass
 
     def build_gui(
@@ -318,7 +325,7 @@ You do not need to provide all languages if you do an translation, but you need 
 The error message will be shown as a dialog to the user, so it should explain why the cocktail was not prepared.
 
 ```python
-def before_cocktail(self):
+def before_cocktail(self, data: dict):
     everything_ok = your_custom_check_logic() # (1)!
     msg = {
         "en": "No glass was detected!",
@@ -463,7 +470,7 @@ Those methods will use the default used elements from CocktailBerry.
 ```python
 from src.display_controller import DP_CONTROLLER as dpc # (1)!
 
-def after_cocktail(self):
+def after_cocktail(self, data: dict):
     if dpc.user_okay("Should I do it?"): # (2)!
         dpc.standard_box("I will do it") # (3)!
 ```
@@ -471,6 +478,29 @@ def after_cocktail(self):
 1. Import the `DP_CONTROLLER` from CocktailBerry to use dialogues.
 2. The `user_okay` method will wait until the user accepts or decline and return the result as boolean.
 3. The `standard_box` will display your text as a full screen window, with a close / ok button.
+
+
+### Data Before and After Cocktail
+
+In addition for the action before and after the cocktail preparation, there is additional data provided with the function.
+You can use the data for your custom logic.
+All data is contained within the dictionary as first argument.
+You can extract the needed properties from it.
+In the future, there may be more attributes you can use.
+The advantage of an dictionary is that this won't break your addon, if new properties are added.
+
+#### Before Cocktail
+
+Following attributes are available in the before_cocktail data:
+
+- cocktail: Cocktail object, containing name, adjusted_ingredients and many more attributes. Ingredient object got name and amount for example.
+
+#### After Cocktail
+
+Following attributes are available in the after_cocktail data:
+
+- cocktail: Cocktail object, containing name, adjusted_ingredients and many more attributes. Ingredient object got name and amount for example.
+- consumption: List of spend ingredients, which where added by machine (cocktail.machineadds).
 
 ### And Many More
 
