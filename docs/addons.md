@@ -493,13 +493,13 @@ The advantage of an dictionary is that this won't break your addon, if new prope
 
 Following attributes are available in the before_cocktail data:
 
-- cocktail: Cocktail object, containing name, adjusted_ingredients and many more attributes. Ingredient object got name and amount for example.
+- cocktail: [Cocktail object](https://github.com/AndreWohnsland/CocktailBerry/blob/master/src/models.py#L28), containing name, adjusted_ingredients and many more attributes. Ingredient object got name and amount for example.
 
 #### After Cocktail
 
 Following attributes are available in the after_cocktail data:
 
-- cocktail: Cocktail object, containing name, adjusted_ingredients and many more attributes. Ingredient object got name and amount for example.
+- cocktail: [Cocktail object](https://github.com/AndreWohnsland/CocktailBerry/blob/master/src/models.py#L28), containing name, adjusted_ingredients and many more attributes. Ingredient object got name and amount for example.
 - consumption: List of spend ingredients, which where added by machine (cocktail.machineadds).
 
 ### And Many More
