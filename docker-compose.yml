@@ -7,6 +7,8 @@ services:
     build: ./microservice/
     volumes:
       - ./microservice/:/usr/src/app/
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     ports:
       - 5000:5000
       - 587:587
