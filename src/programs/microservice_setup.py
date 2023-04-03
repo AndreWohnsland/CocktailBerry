@@ -22,6 +22,7 @@ def setup_service(
     api_key: Optional[str] = None,
     hook_endpoint: Optional[str] = None,
     hook_header: Optional[str] = None,
+    use_v1: bool = False,
 ):
     """Setup the microservice if any of args is given skip input,
     else prompt user for data.
@@ -57,7 +58,11 @@ def setup_service(
     # Write to the file the changes
     LOCAL_MICROSERVICE_FILE.write_text(compose_setup, encoding="utf-8")
 
-    cmd = ["docker", "compose", "-f", str(LOCAL_MICROSERVICE_FILE), "-p", "cocktailberry", "up", "--build", "-d"]
+    # check if user still use v1
+    cmd = ["docker", "compose"]
+    if use_v1:
+        cmd = ["docker-compose"]
+    cmd = cmd + ["-f", str(LOCAL_MICROSERVICE_FILE), "-p", "cocktailberry", "up", "--build", "-d"]
     msg = "Setting up the Docker Compose images ..."
     typer.echo(typer.style(msg, fg=typer.colors.GREEN, bold=True))
     subprocess.run(cmd, check=False)

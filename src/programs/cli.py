@@ -109,6 +109,7 @@ def setup_microservice(
     api_key: Optional[str] = typer.Option(None, "--api-key", "-a", help="API key for dashboard"),
     hook_endpoint: Optional[str] = typer.Option(None, "--hook-endpoint", "-e", help="Custom hook endpoint"),
     hook_header: Optional[str] = typer.Option(None, "--hook-header", "-h", help="Custom hook headers"),
+    use_v1: bool = typer.Option(False, "--old-compose", "-o", help="Use compose v1"),
 ):
     """
     Set up the microservice.
@@ -116,5 +117,6 @@ def setup_microservice(
     Within the prompts, you can reset the value to the default one, or also skip this value if it should not be changed.
     A compose file will be created in the home directory, if this command was not already run once.
     If this file already exists, the values will be replaced with the provided ones.
+    If you are using compose version 1, please specify the flag.
     """
-    setup_service(api_key, hook_endpoint, hook_header)
+    setup_service(api_key, hook_endpoint, hook_header, use_v1)
