@@ -148,6 +148,7 @@ python runme.py setup-microservice [OPTIONS]
 #   -a, --api-key TEXT        API key for dashboard
 #   -e, --hook-endpoint TEXT  Custom hook endpoint
 #   -h, --hook-header TEXT    Custom hook headers
+#   -o, --old-compose         Use compose v1
 #   --help                    Show this message and exit.
 ```
 
@@ -156,3 +157,9 @@ If the API key, hook endpoint or hook header is not provided as an option, promp
 Within the prompts, you can reset the value to the default one, or also skip this value if it should not be changed.
 A compose file will be created in the home directory, if this command was not already run once.
 If this file already exists, the values will be replaced with the provided ones.
+
+!!! danger "For Docker Compose V2"
+    Please take note that this command is programmed for docker compose v2.
+    It's currently the default compose and the CocktailBerry setup will also install it.
+    If you are still running v1 (docker-compose), consider upgrading.
+    In case you are using v1, add the `-o` or `--old-compose` flag.
