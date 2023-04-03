@@ -133,3 +133,26 @@ python runme.py create-addon [OPTIONS] ADDON_NAME
 Creates a file containing the base structure to get started with your addon.
 The file is placed in the `addons` folder. 
 File name will be the name converted to lower case, space are replaced with underscores and stripped of special characters.
+
+## Setup the Microservice
+
+You can also use CocktailBerry to set up the microservice and change the env variables.
+It uses the latest image from Dockerhub.
+With the microservice, also [watchtower](https://containrrr.dev/watchtower/) will be deployed.
+Watchtower will check periodically if there is a new microservice image and install it in the background.
+
+```bash
+python runme.py setup-microservice [OPTIONS]
+
+# Options:
+#   -a, --api-key TEXT        API key for dashboard
+#   -e, --hook-endpoint TEXT  Custom hook endpoint
+#   -h, --hook-header TEXT    Custom hook headers
+#   --help                    Show this message and exit.
+```
+
+Set up the microservice.
+If the API key, hook endpoint or hook header is not provided as an option, prompts the user for the values.
+Within the prompts, you can reset the value to the default one, or also skip this value if it should not be changed.
+A compose file will be created in the home directory, if this command was not already run once.
+If this file already exists, the values will be replaced with the provided ones.
