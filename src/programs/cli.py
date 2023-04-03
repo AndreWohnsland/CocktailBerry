@@ -6,6 +6,7 @@ import typer
 
 from src.config_manager import CONFIG as cfg, version_callback, show_start_message
 from src.migration.update_data import add_new_recipes_from_default_db
+from src.programs.microservice_setup import setup_service
 from src.utils import generate_custom_style_file
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.calibration import run_calibration
@@ -101,3 +102,19 @@ def create_addon(addon_name: str):
     and stripped of special characters.
     """
     generate_addon_skeleton(addon_name)
+
+
+@cli.command()
+def setup_microservice(
+    api_key: Optional[str] = typer.Option(None, "--api-key", "-a", help="API key for dashboard"),
+    hook_endpoint: Optional[str] = typer.Option(None, "--hook-endpoint", "-e", help="Custom hook endpoint"),
+    hook_header: Optional[str] = typer.Option(None, "--hook-header", "-h", help="Custom hook headers"),
+):
+    """
+    Set up the microservice.
+    If the API key, hook endpoint or hook header is not provided as an option, prompts the user for the values.
+    Within the prompts, you can reset the value to the default one, or also skip this value if it should not be changed.
+    A compose file will be created in the home directory, if this command was not already run once.
+    If this file already exists, the values will be replaced with the provided ones.
+    """
+    setup_service(api_key, hook_endpoint, hook_header)
