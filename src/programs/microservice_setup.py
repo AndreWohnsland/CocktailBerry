@@ -1,3 +1,4 @@
+import subprocess
 from typing import Optional
 import re
 
@@ -55,6 +56,11 @@ def setup_service(
 
     # Write to the file the changes
     LOCAL_MICROSERVICE_FILE.write_text(compose_setup, encoding="utf-8")
+
+    cmd = ["docker", "compose", "-f", str(LOCAL_MICROSERVICE_FILE), "-p", "cocktailberry", "up", "--build", "-d"]
+    msg = "Setting up the Docker Compose images ..."
+    typer.echo(typer.style(msg, fg=typer.colors.GREEN, bold=True))
+    subprocess.run(cmd, check=False)
 
 
 def _get_env_var(regex: str, compose_setup: str):
