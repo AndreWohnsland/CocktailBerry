@@ -12,7 +12,7 @@ _HOOK_HEADERS_REGEX = r"(HOOK_HEADERS=)(.+)"
 _API_KEY_REGEX = r"(API_KEY=)(.+)"
 
 _DEFAULT_HOOK_EP = "enpointforhook"
-_DEFAULT_HOOK_HEADERS = "header1:value1,header2:value2"
+_DEFAULT_HOOK_HEADERS = "content-type:application/json"
 _DEFAULT_API_KEY = "readdocshowtoget"
 
 _SKIP_DIALOG = "Keep empty to skip (just press enter), enter 'd' to set back to default"
