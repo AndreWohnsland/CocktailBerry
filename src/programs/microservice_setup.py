@@ -63,6 +63,8 @@ def setup_service(
     if use_v1:
         cmd = ["docker-compose"]
     cmd = cmd + ["-f", str(LOCAL_MICROSERVICE_FILE), "-p", "cocktailberry", "up", "--build", "-d"]
+    msg = f"Docker Compose file is located at: {LOCAL_MICROSERVICE_FILE}"
+    typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
     msg = "Setting up the Docker Compose images ..."
     typer.echo(typer.style(msg, fg=typer.colors.GREEN, bold=True))
     subprocess.run(cmd, check=False)
