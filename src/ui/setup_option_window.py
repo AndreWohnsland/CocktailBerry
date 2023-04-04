@@ -209,7 +209,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _finish_update_worker(self):
         """Ends the spinner, checks if installation was successful"""
         atexit._run_exitfuncs()  # pylint: disable=protected-access
-        os.system("sudo shutdown now")
+        os.system("sudo reboot")
 
     def _is_windows(self):
         """Linux things cannot be done on windows.
