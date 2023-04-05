@@ -30,10 +30,15 @@ def setup_service(
     """
     # copies the default file if there is no local one
     if not LOCAL_MICROSERVICE_FILE.exists():
+        msg = "No local compose file find found, will use default template"
+        typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
         LOCAL_MICROSERVICE_FILE.write_text(
             DEFAULT_MICROSERVICE_FILE.read_text(encoding="utf-8"),
             encoding="utf-8"
         )
+    else:
+        msg = "Found local compose file, will use contained values"
+        typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
     # Gets compose file content
     compose_setup = LOCAL_MICROSERVICE_FILE.read_text(encoding="utf-8")
 
