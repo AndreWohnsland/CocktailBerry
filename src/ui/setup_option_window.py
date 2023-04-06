@@ -47,7 +47,6 @@ class _Worker(QObject):
         super().__init__(parent)
 
     def run(self):
-        print("Simulating Update")
         os.system("sudo apt-get update && sudo apt-get -y upgrade")
         self.done.emit()
 
