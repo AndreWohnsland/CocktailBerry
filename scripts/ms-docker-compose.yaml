@@ -12,7 +12,7 @@ services:
       - 5000:5000
     environment:
       - HOOK_ENDPOINT=enpointforhook
-      - HOOK_HEADERS=content-type:application/json"
+      - HOOK_HEADERS=content-type:application/json
       - API_KEY=readdocshowtoget
     labels:
         - "com.centurylinklabs.watchtower.enable=true"
