@@ -31,6 +31,20 @@ img {
     margin-bottom: 1.5rem;
 }
 
+#announcement-content a{
+    color: inherit;
+    text-decoration: none;
+}
+
+#announcement-content {
+    text-align: center;
+    background-color: #39489e;
+}
+
+.md-banner {
+    background-color: #39489e;
+}
+
 /* .md-typeset .admonition,
 .md-typeset details {
   border-width: 0;

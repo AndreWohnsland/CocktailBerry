@@ -4,18 +4,18 @@ from dataclasses import fields
 import importlib.util
 from PyQt5.QtWidgets import QMainWindow, QLabel, QColorDialog, QLineEdit
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import QSize, Qt, QObject, pyqtSignal, QThread
+from PyQt5.QtCore import QSize, Qt, QObject, pyqtSignal
 
 from src import SupportedThemesType
 from src.filepath import STYLE_FOLDER
 from src.utils import restart_program
 from src.migration.migrator import Migrator, CouldNotMigrateException
-from src.ui.icons import parse_colors, ICONS
+from src.ui.icons import parse_colors
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements import Ui_ColorWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
-from src.ui.creation_utils import SMALL_FONT, MEDIUM_FONT, LARGE_FONT, adjust_font, create_spacer
+from src.ui.creation_utils import SMALL_FONT, MEDIUM_FONT, LARGE_FONT, adjust_font, create_spacer, setup_worker_thread
 
 try:
     import qtsass
@@ -75,7 +75,12 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             return
         self.button_apply.setDisabled(True)
         if DP_CONTROLLER.ask_to_install_qtsass():
-            self._run_installer_worker()
+            self._worker = _Worker()
+            self._thread = setup_worker_thread(  # pylint: disable=attribute-defined-outside-init
+                self._worker,
+                self,
+                self._finish_installer_worker
+            )
 
     def _set_selected_template(self):
         """Uses the selected template and fills the color into the fields"""
@@ -160,27 +165,8 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         qtsass.compile_filename(custom_style_file, compiled_style_file)
         self.close()
 
-    def _run_installer_worker(self):
-        """Runs a _worker on another thread, so the spinner can still spin"""
-        ICONS.start_spinner(self)
-        # Create a worker + thread object. move worker to thread
-        self._thread = QThread()
-        self._worker = _Worker()
-        self._worker.moveToThread(self._thread)
-
-        # Connect signals and slots
-        self._thread.started.connect(self._worker.run)
-        self._worker.done.connect(self._thread.quit)
-        self._worker.done.connect(self._worker.deleteLater)
-        self._thread.finished.connect(self._thread.deleteLater)
-
-        # Start the thread, connect to the finish function
-        self._thread.start()
-        self._thread.finished.connect(self._finish_installer_worker)
-
     def _finish_installer_worker(self):
         """Ends the spinner, checks if installation was successful"""
-        ICONS.stop_spinner()
         # Informs the user if it is still not found
         if importlib.util.find_spec("qtsass") is None:
             DP_CONTROLLER.say_qtsass_not_successful()

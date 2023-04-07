@@ -3,9 +3,18 @@
 Here you can find some advanced features of CocktailBerry, which you can optionally use.
 Take note that none of this section is required to run the base program.
 
+!!! example "Use the CLI"
+    The **latest and easiest** way to install the CocktailBerry microservice is over the [CLI](commands.md#setup-the-microservice).
+    Just run:
+    ```bash
+    python runme.py setup-microservice
+    ```
+    for the interactive mode to change the env variables and build the service including automated updates.
+    **This is also now the recommended way!**
+
 ## Usage of Services
 
-Simply have `docker-compose` installed and run the command in the main folder for the CocktailBerry microservice or in the dashboard folder (on another device) for the dashboard service:
+Simply have `docker compose` installed and run either the CLI command or the docker compose command in the main folder for the CocktailBerry microservice / in the dashboard folder (on another device) for the dashboard service:
 
 ```
 docker-compose up --build -d
@@ -134,7 +143,7 @@ For this, a very easy way is to use [RapsAp](https://raspap.com/).
 
 ## Installing Docker
 
-tl;dr: Just run these commands in sequence on the pi.
+Just run these commands in sequence on the pi.
 
 ```bash
 sudo apt-get update && sudo apt-get -y upgrade

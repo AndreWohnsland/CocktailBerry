@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  api-service:
+    container_name: cocktail-microservice
+    restart: always
+    image: andrewo92/cocktailberry-microservice
+    volumes:
+      - ms-data:/usr/src/app/
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    ports:
+      - 5000:5000
+    environment:
+      - HOOK_ENDPOINT=enpointforhook
+      - HOOK_HEADERS=content-type:application/json
+      - API_KEY=readdocshowtoget
+    labels:
+        - "com.centurylinklabs.watchtower.enable=true"
+  watchtower:
+    container_name: watchtower-updater
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    command: --interval 300
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+volumes:
+  ms-data:

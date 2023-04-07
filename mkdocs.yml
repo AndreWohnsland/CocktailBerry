@@ -20,6 +20,7 @@ nav:
   - FAQ: faq.md
   - Feature Timetable: features.md
   - Development: development.md
+  - How to Support: support.md
 markdown_extensions:
   - toc:
       permalink: '#'
@@ -42,7 +43,9 @@ theme:
     - navigation.footer
     - content.code.copy
     - content.code.annotate
+    - announce.dismiss
   name: material
+  custom_dir: docs/overrides
   logo: img/berry.svg
   palette:
     - media: '(prefers-color-scheme: light)'
