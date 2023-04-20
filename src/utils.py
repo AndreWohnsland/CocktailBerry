@@ -58,12 +58,12 @@ def set_system_time(time_string: str):
     supported_os = ["Linux"]
     _logger.log_event("INFO", f"Setting time to: {time_string}")
     if p_data.system == "Linux":
-        time_command = f"timedatectl set-time {time_string}"
+        time_command = f"timedatectl set-time '{time_string}'"
         os.system(time_command)
     else:
         _logger.log_event(
             "WARNING",
-            f"Could not set time, your OS is: {p_data.system} currently supported OS are: {supported_os}"
+            f"Could not set time, your OS is: {p_data.system}. Currently supported OS are: {supported_os}"
         )
 
 
