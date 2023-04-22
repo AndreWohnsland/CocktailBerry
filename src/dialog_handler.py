@@ -347,6 +347,11 @@ class DialogHandler():
         message = self.__choose_language("ask_to_delete_x", x=x)
         return self.user_okay(message)
 
+    def ask_to_update_system(self):
+        """Asks the user if he wants to update the system"""
+        message = self.__choose_language("ask_to_system_update")
+        return self.user_okay(message)
+
 
 class UiLanguage():
     """Class to set the UI language to the appropriate Language"""

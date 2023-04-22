@@ -46,13 +46,18 @@ def post_cocktail_hook():
 
     if not request.json or "cocktailname" not in request.json:
         abort(400)
+
+    make_date = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M")
+    if "makedate" in request.json:
+        make_date = request.json["make_date"]
+
     cocktail = {
         "cocktailname": request.json["cocktailname"],
         "volume": request.json["volume"],
         "machinename": request.json["machinename"],
         "countrycode": request.json["countrycode"],
         "ingredients": request.json["ingredients"],
-        "makedate": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
+        "makedate": make_date,
     }
     endpoint_data = generate_urls_and_headers()
     payload = json.dumps(cocktail)

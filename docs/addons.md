@@ -19,7 +19,7 @@ Like you could implement a scale into your machine below the position for the gl
     The installation of additional packages required for the addon must also be handled be the user or the provided addon.
     Usually, the addon provider should deliver an installation or setup guide for the addon.
 
-The extension for addons was made, so that there is not big feature creep within the main application.
+The extension for addons was made, so that there is no big feature creep within the main application.
 This would cause more and more optional settings, which most user are not interested in.
 With addons users will get the best base experience with CocktailBerry, but can easy extent it to their own taste.
 
@@ -54,7 +54,7 @@ If you use an external one, just replace the current file with the latest one, t
 
 Here is a list of verified addons that you can use.
 They are either directly from CocktailBerry or from other third party providers.
-Verifies means that the addon is known by the CocktailBerry programmers and was at least once tested for its functionality.
+Verified means that the addon is known by the CocktailBerry programmers and was at least once tested for its functionality.
 
 - [Start Glass Volume](https://github.com/AndreWohnsland/CocktailBerry-Addons#start-glass-volume): Change default glass volume at machine start
 - It's a new feature, so let's make some addons!
@@ -68,7 +68,7 @@ Verifies means that the addon is known by the CocktailBerry programmers and was 
 
 ## Creating Addons
 
-This section is for people, who want to write your own addons. 
+This section is for people, who want to write their own addon. 
 Here you will find the ressources to get started.
 
 !!! info "Developers Guide"

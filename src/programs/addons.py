@@ -60,7 +60,6 @@ class AddOnManager:
                 continue
             addon = getattr(module, "Addon")
             self.addons[name] = addon()
-        atexit.register(self.cleanup_addons)
 
     def setup_addons(self):
         """Execute all the setup function of the addons"""
@@ -68,6 +67,7 @@ class AddOnManager:
             addon_string = ", ".join(list(self.addons.keys()))
             print(f"Used Addons: {addon_string}")
         self._try_function_for_addons("setup")
+        atexit.register(self.cleanup_addons)
 
     def cleanup_addons(self):
         """Clean up all the addons"""

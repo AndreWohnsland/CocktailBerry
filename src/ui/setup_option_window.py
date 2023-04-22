@@ -8,6 +8,7 @@ from typing import Optional, TYPE_CHECKING
 from pathlib import Path
 
 from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import QObject, pyqtSignal
 
 from src.filepath import ROOT_PATH
 from src.ui.create_config_window import ConfigWindow
@@ -15,6 +16,7 @@ from src.ui.setup_log_window import LogWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui.setup_addon_window import AddonWindow
+from src.ui.creation_utils import setup_worker_thread
 from src.ui_elements import Ui_Optionwindow
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
@@ -35,6 +37,18 @@ _VERSION_NAME = ".version.ini"
 _NEEDED_FILES = [_DATABASE_NAME, _CONFIG_NAME, _VERSION_NAME]
 _logger = LoggerHandler("option_window")
 _platform_data = get_platform_data()
+
+
+class _Worker(QObject):
+    """Worker to install qtsass on a thread"""
+    done = pyqtSignal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def run(self):
+        os.system("sudo apt-get update && sudo apt-get -y upgrade")
+        self.done.emit()
 
 
 class OptionWindow(QMainWindow, Ui_Optionwindow):
@@ -60,6 +74,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_wifi.clicked.connect(self._open_wifi_window)
         self.button_addons.clicked.connect(self._open_addon_window)
         self.button_check_internet.clicked.connect(self._check_internet_connection)
+        self.button_update_system.clicked.connect(self._update_system)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 
@@ -88,8 +103,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Reboots the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_reboot():
             return
-        if _platform_data.system == "Windows":
-            print("Cannot do that on windows")
+        if self._is_windows():
             return
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo reboot")
@@ -99,8 +113,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Shutdown the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_shutdown():
             return
-        if _platform_data.system == "Windows":
-            print("Cannot do that on windows")
+        if self._is_windows():
             return
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo shutdown now")
@@ -177,3 +190,30 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Checks if there is a active internet connection"""
         is_connected = has_connection()
         DP_CONTROLLER.say_internet_connection_status(is_connected)
+
+    def _update_system(self):
+        """Makes a system update and upgrade"""
+        if not DP_CONTROLLER.ask_to_update_system():
+            return
+        if self._is_windows():
+            return
+
+        self._worker = _Worker()  # pylint: disable=attribute-defined-outside-init
+        self._thread = setup_worker_thread(  # pylint: disable=attribute-defined-outside-init
+            self._worker,
+            self,
+            self._finish_update_worker
+        )
+
+    def _finish_update_worker(self):
+        """Ends the spinner, checks if installation was successful"""
+        atexit._run_exitfuncs()  # pylint: disable=protected-access
+        os.system("sudo reboot")
+
+    def _is_windows(self):
+        """Linux things cannot be done on windows.
+        Print a msg and return true if win."""
+        is_win = _platform_data.system == "Windows"
+        if is_win:
+            print("Cannot do that on windows")
+        return is_win

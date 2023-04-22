@@ -154,6 +154,9 @@ dialog:
   ask_export_data:
     en: 'Export cocktail and ingredient data, as well reset possible values?'
     de: 'Cocktail und Zutaten Daten exportieren und mögliche Werte zurücksetzen?'
+  ask_to_system_update:
+    en: 'Should the System (OS) be updated? This may take some time and will restart the system after that.'
+    de: 'Soll das Betriebssystem (OS) updated werden? Das kann einige Zeit dauern und das System wird danach neu gestartet.'
   ask_to_install_qtsass:
     en: "The Python library qtsass is needed for this feature. Since it may take 30-60 minutes building on the RPi, it was not done by the migrator.\n\nInstall and restart now? Without it can not use custom themes."
     de: "Die Python Bibliothek qtsass wird für dieses Feature benötigt. Das Bauen dieser kann 30-60 Minuten auf dem RPi benötigen, deshalb wurde dies nicht vom Migrator gemacht.\n\nSoll diese installiert und neu gestartet werden? Ohne die Bibliothek können keine Custom Themes erstellt werden."

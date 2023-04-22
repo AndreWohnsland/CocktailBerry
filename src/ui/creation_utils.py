@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import Callable, Optional
 from PyQt5.QtWidgets import QWidget, QSpacerItem, QSizePolicy, QPushButton
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, QObject, QThread
+
+from src.ui.icons import ICONS
 
 SMALL_FONT = 14
 MEDIUM_FONT = 16
@@ -29,3 +31,26 @@ def create_button(label: str, parent: Optional[QWidget] = None):
     btn.setMinimumSize(QSize(0, 70))
     adjust_font(btn, LARGE_FONT, True)
     return btn
+
+
+def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable):
+    """Moves worker the thread and set necessary things (spinner, eg) up
+    Worker needs done = pyqtSignal() and emit that at the end of run function
+    """
+    ICONS.start_spinner(parent)
+    # Create a  thread object. move worker to thread
+    _thread = QThread()  # pylint: disable=attribute-defined-outside-init
+    worker.moveToThread(_thread)
+
+    # Connect signals and slots
+    _thread.started.connect(worker.run)  # type: ignore
+    worker.done.connect(_thread.quit)  # type: ignore
+    worker.done.connect(worker.deleteLater)  # type: ignore
+    _thread.finished.connect(_thread.deleteLater)
+
+    # Start the thread, connect to the finish function
+    _thread.start()
+    _thread.finished.connect(after_finish)
+    _thread.finished.connect(ICONS.stop_spinner)
+
+    return _thread

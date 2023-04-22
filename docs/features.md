@@ -18,11 +18,12 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.10.0** | Update local database with new available recipes <br> Importing recipes from a file over the CLI                     |
 | **v1.11.0** | Internet check and time adjustment feature                                                                           |
 | **v1.13.1** | Clearing the database over the CLI                                                                                   |
-| **v1.14.0** | Can invert pin, set simultaneous pump count, generic board                                                           |
+| **v1.14.0** | Can invert pins <br> set simultaneous pump count <br> support for generic board                                      |
 | **v1.15.0** | Control a LED during cocktail preparation                                                                            |
 | **v1.16.0** | Summarized logs over the GUI                                                                                         |
 | **v1.17.0** | Setting up your own custom theme <br> Possibility to set up WiFi over the GUI <br> Implementation of the RFID reader |
 | **v1.18.0** | Addons are now possible <br> Better recipe ingredient calculation                                                    |
+| **v1.19.0** | CLI command for easy microservice setup <br> Update OS over interface                                                |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.

@@ -323,28 +323,28 @@ QMessageBox {
 
 QDateEdit,
 QTimeEdit {
-  border: 2px solid #0b0e41; }
-  QDateEdit QSpinBox,
-  QTimeEdit QSpinBox {
-    width: 50px;
-    height: 50px; }
-  QDateEdit::down-arrow, QDateEdit::up-arrow,
-  QTimeEdit::down-arrow,
-  QTimeEdit::up-arrow {
+  border: 2px solid #0b0e41;
+  border-radius: 7px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px; }
+  QDateEdit::down-button, QDateEdit::up-button,
+  QTimeEdit::down-button,
+  QTimeEdit::up-button {
+    width: 100px;
     border: 3px solid #dad9d9;
     background-color: #007bff; }
-    QDateEdit::down-arrow:pressed, QDateEdit::up-arrow:pressed,
-    QTimeEdit::down-arrow:pressed,
-    QTimeEdit::up-arrow:pressed {
+    QDateEdit::down-button:pressed, QDateEdit::up-button:pressed,
+    QTimeEdit::down-button:pressed,
+    QTimeEdit::up-button:pressed {
       background-color: #01276a; }
-  QDateEdit::down-arrow,
-  QTimeEdit::down-arrow {
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px; }
-  QDateEdit::up-arrow,
-  QTimeEdit::up-arrow {
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px; }
+  QDateEdit::down-button,
+  QTimeEdit::down-button {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px; }
+  QDateEdit::up-button,
+  QTimeEdit::up-button {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px; }
 
 QHeaderView::section {
   background-color: #dad9d9; }
