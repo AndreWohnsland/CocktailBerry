@@ -55,13 +55,15 @@ def setup_service(
         current_hook_header = _get_env_var(_HOOK_HEADERS_REGEX, compose_setup)
         hook_header = _user_prompt(current_hook_header, _DEFAULT_HOOK_HEADERS, "hook header")
 
-    # replace the values in the file
-    compose_setup = _replace_env_var(_API_KEY_REGEX, compose_setup, api_key)
-    compose_setup = _replace_env_var(_HOOK_EP_REGEX, compose_setup, hook_endpoint)
-    compose_setup = _replace_env_var(_HOOK_HEADERS_REGEX, compose_setup, hook_header)
+    # replace the values in the file, uses default file as base
+    # This is to also reflect changes that may occur in the default file
+    compose_file_content = DEFAULT_MICROSERVICE_FILE.read_text(encoding="utf-8")
+    compose_file_content = _replace_env_var(_API_KEY_REGEX, compose_file_content, api_key)
+    compose_file_content = _replace_env_var(_HOOK_EP_REGEX, compose_file_content, hook_endpoint)
+    compose_file_content = _replace_env_var(_HOOK_HEADERS_REGEX, compose_file_content, hook_header)
 
     # Write to the file the changes
-    LOCAL_MICROSERVICE_FILE.write_text(compose_setup, encoding="utf-8")
+    LOCAL_MICROSERVICE_FILE.write_text(compose_file_content, encoding="utf-8")
 
     # check if user still use v1
     cmd = ["docker", "compose"]

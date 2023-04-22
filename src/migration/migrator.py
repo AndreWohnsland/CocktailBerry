@@ -10,7 +10,7 @@ import subprocess
 from typing import Optional, Tuple
 import importlib.util
 
-from src.filepath import VERSION_FILE
+from src.filepath import VERSION_FILE, STYLE_FOLDER
 from src import __version__, FUTURE_PYTHON_VERSION
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
@@ -105,9 +105,22 @@ class Migrator:
     def _check_local_version_data(self):
         """Checks to update the local version data"""
         if self.older_than_version(self.program_version.version):
+            self._update_custom_theme()
             self._write_local_version()
         else:
             _logger.log_event("INFO", "Nothing to migrate")
+
+    def _update_custom_theme(self):
+        """Checks and updates (compiles) the custom theme"""
+        custom_style_file = STYLE_FOLDER / "custom.scss"
+        compiled_style_file = STYLE_FOLDER / "custom.css"
+        # skip if library is not installed, or file does not exist
+        lib_not_installed = importlib.util.find_spec("qtsass") is None
+        no_file = not custom_style_file.exists()
+        if lib_not_installed or no_file:
+            return
+        import qtsass  # pylint:disable=import-outside-toplevel
+        qtsass.compile_filename(custom_style_file, compiled_style_file)
 
     def _change_git_repo(self):
         """Sets the git source to the new named repo"""
