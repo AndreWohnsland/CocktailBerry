@@ -19,23 +19,33 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.backButton.clicked.connect(self.back_button_clicked)
         self.clear.clicked.connect(self.clear_button_clicked)
         self.enterButton.clicked.connect(self.enter_button_clicked)
-        self.space.clicked.connect(lambda: self.input_button_clicked(" ", " "))
+        self.space.clicked.connect(lambda: self.input_button_clicked(" ", " ", " "))
         self.delButton.clicked.connect(self.delete_clicked)
-        self.shift.clicked.connect(self.shift_clicked)
+        self.shift.clicked.connect(self._shift_control_clicked)
+        self.button_control.clicked.connect(self._shift_control_clicked)
         # generating the lists to populate all remaining buttons via iteration
         self.number_list = list(range(10))
         # also gives the possibility to use some extra signs
-        self.sign_list = [".", ":", "/", "#", "'", '"', "-", "_", "(", ")"]
+        self.sign_list = ["!", '"', "§", "%", "&", "/", "(", ")", "=", "?"]
+        self.sign_list_chars = [
+            "^", "°", "{", "[", "]", "}", "\\", "`", "´", "#", "*", "+",
+            "~", "ä", "ö", "ü", "-", "_", ":", ".", ",", ";", "#", "@", "<", ">"
+        ]
         self.char_list_lower = list(string.ascii_lowercase)
         self.char_list_upper = list(string.ascii_uppercase)
         self.attribute_chars = [getattr(self, f"Button{x}") for x in self.char_list_lower]
         self.attribute_numbers = [getattr(self, f"Button{x}") for x in self.number_list]
-        for obj, char, char2 in zip(self.attribute_chars, self.char_list_lower, self.char_list_upper):
-            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.input_button_clicked(
-                input_value=iv, input_value_shift=iv_s))
-        for obj, char, char2 in zip(self.attribute_numbers, self.number_list, self.sign_list):
-            obj.clicked.connect(lambda _, iv=char, iv_s=char2: self.input_button_clicked(
-                input_value=iv, input_value_shift=iv_s))
+        self.input_button_list = self.attribute_chars + self.attribute_numbers
+        self.button_value_default_list = self.char_list_lower + self.number_list
+        self.button_value_shift_list = self.char_list_upper + self.number_list
+        self.button_value_control_list = self.sign_list_chars + self.sign_list
+        for obj, char, char2, char3 in zip(
+            self.input_button_list,
+            self.button_value_default_list,
+            self.button_value_shift_list,
+            self.button_value_control_list
+        ):
+            obj.clicked.connect(lambda _, iv=char, iv_s=char2, iv_c=char3: self.input_button_clicked(iv, iv_s, iv_c))
         # restricting the Lineedit to a set up Char length
         self.LName.setMaxLength(max_char_len)
         self.showFullScreen()
@@ -54,15 +64,16 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.le_to_write.setText(self.LName.text())
         self.close()
 
-    def input_button_clicked(self, input_value: str, input_value_shift: str):
+    def input_button_clicked(self, input_default: str, input_shift: str, input_control: str):
         """ Enters the input_value into the field, adds it to the string.
         Can either have the normal or the shift value, if there is no difference both input arguments are the same.
         """
         string_value = self.LName.text()
+        add_value = input_default
         if self.shift.isChecked():
-            add_value = input_value_shift
-        else:
-            add_value = input_value
+            add_value = input_shift
+        if self.button_control.isChecked():
+            add_value = input_control
         string_value += str(add_value)
         self.LName.setText(string_value)
 
@@ -70,14 +81,21 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         string_value = self.LName.text()
         self.LName.setText(string_value[:-1])
 
-    def shift_clicked(self):
+    def _shift_control_clicked(self):
+        """Selects the right character set for the buttons"""
+        character_set = self.button_value_default_list
+        # if shift is toggled, use the upper letters
         if self.shift.isChecked():
-            char_choose = self.char_list_upper
-            number_choose = self.sign_list
-        else:
-            char_choose = self.char_list_lower
-            number_choose = self.number_list
-        for obj, char in zip(self.attribute_chars, char_choose):
-            obj.setText(str(char))
-        for obj, char in zip(self.attribute_numbers, number_choose):
+            character_set = self.button_value_shift_list
+        # Control will overwrite the shift (upper / lower) setting
+        if self.button_control.isChecked():
+            character_set = self.button_value_control_list
+        self._change_displayed_characters(character_set)
+
+    def _change_displayed_characters(self, character_list: list):
+        """Changes the displayed values on the buttons"""
+        for obj, char in zip(self.input_button_list, character_list):
+            # fix for & sign, it needs to be a && in pyqt
+            if char == "&":
+                char = "&&"
             obj.setText(str(char))
