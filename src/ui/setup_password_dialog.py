@@ -30,7 +30,9 @@ class PasswordDialog(QDialog, Ui_PasswordDialog):
 
     def enter_clicked(self):
         """ Enters/Closes the Dialog. """
-        if cfg.UI_MASTERPASSWORD == self.password_field.text():
+        password_string = self.password_field.text()
+        password = 0 if len(password_string) == 0 else int(password_string)
+        if cfg.UI_MASTERPASSWORD == password:
             self.accept()
             return
         DP_CONTROLLER.say_wrong_password()
