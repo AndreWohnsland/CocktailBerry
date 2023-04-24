@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "CocktailBerry"
-version = "1.19.2"
+version = "1.19.3"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
 authors = ["Andre Wohnsland <Andre_Wohnsland@web.de>"]
 readme = "readme.md"
