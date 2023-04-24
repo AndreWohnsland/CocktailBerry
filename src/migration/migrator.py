@@ -1,5 +1,7 @@
 # pylint: disable=wrong-import-order,wrong-import-position,too-few-public-methods,ungrouped-imports
 import platform
+
+import yaml
 from src.python_vcheck import check_python_version
 # Version check takes place before anything, else other imports may throw an error
 check_python_version()
@@ -10,7 +12,7 @@ import subprocess
 from typing import Optional, Tuple
 import importlib.util
 
-from src.filepath import VERSION_FILE, STYLE_FOLDER
+from src.filepath import CUSTOM_CONFIG_FILE, VERSION_FILE, STYLE_FOLDER
 from src import __version__, FUTURE_PYTHON_VERSION
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
@@ -85,6 +87,9 @@ class Migrator:
         if self.older_than_version("1.18.0"):
             self._migration_log("1.18.0")
             remove_old_recipe_columns()
+        if self.older_than_version("1.19.3"):
+            self._migration_log("1.19.3")
+            _update_password_config_to_int()
         self._check_local_version_data()
 
     def _migration_log(self, version: str):
@@ -149,6 +154,25 @@ class Migrator:
             _logger.log_event("ERROR", f"Could not install {package_name} using pip. Please install it manually!")
             _logger.log_exception(err)
             raise CouldNotMigrateException(version_to_migrate) from err
+
+
+def _update_password_config_to_int():
+    """Updates the local config file, using int now instead of str for password"""
+    if not CUSTOM_CONFIG_FILE.exists():
+        return
+    _logger.info("Converting config value for password to integer")
+    configuration = {}
+    with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
+        configuration: dict = yaml.safe_load(stream)
+    # get the password from the config, if not exists fall back to 0
+    password_setting = configuration.get("UI_MASTERPASSWORD", "0")
+    # Try to convert, fall back to 0 if failure
+    try:
+        configuration["UI_MASTERPASSWORD"] = int(password_setting)
+    except ValueError:
+        configuration["UI_MASTERPASSWORD"] = 0
+    with open(CUSTOM_CONFIG_FILE, 'w', encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
 
 
 class _Version:

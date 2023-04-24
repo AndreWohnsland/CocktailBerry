@@ -125,7 +125,7 @@ class ConfigManager:
         self.config_type: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_PARTYMODE": (bool, []),
-            "UI_MASTERPASSWORD": (str, []),
+            "UI_MASTERPASSWORD": (int, []),
             "UI_LANGUAGE": (LanguageChoose, []),
             "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),

@@ -443,8 +443,8 @@ ui:
       en: 'Protects other tabs than maker with password'
       de: 'Schützt alle Tabs außer Maker Tab mit Passwort'
     UI_MASTERPASSWORD:
-      en: 'Password for some actions'
-      de: 'Passwort für manche Aktionen'
+      en: 'Password for some actions, use 0 for no password'
+      de: 'Passwort für manche Aktionen, verwende 0 um kein Passwort zu verwenden'
     UI_LANGUAGE:
       en: 'Displayed language of the program'
       de: 'Spracheinstellung vom Programm'
