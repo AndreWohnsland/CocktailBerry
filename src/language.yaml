@@ -371,15 +371,15 @@ ui:
     restore:
       en: 'Restore'
       de: 'Wiederherstellen'
-    export:
-      en: 'Data Export'
-      de: 'Datenexport'
     rfid:
       en: 'Write RFID'
       de: 'RFID Schreiben'
     check_internet:
       en: 'Internet Check'
       de: 'Internet Check'
+    data:
+      en: 'Data'
+      de: 'Daten'
 
   ##### DATE PICKER WINDOW #####
   # all values for date picker window
@@ -431,6 +431,13 @@ ui:
     manage:
       en: 'Manage'
       de: 'Verwalten'
+
+  ##### ADDON WINDOW #####
+  # all values for addon window
+  data_window:
+    export:
+      en: 'Data Export'
+      de: 'Datenexport'
 
   ##### SETTINGS WINDOW #####
   # all values for settings window

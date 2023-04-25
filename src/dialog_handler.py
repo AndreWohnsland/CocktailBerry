@@ -18,7 +18,7 @@ if TYPE_CHECKING:
         Ui_available, Ui_addingredient, Ui_Bottlewindow, Ui_MainWindow, Ui_CustomDialog,
         Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
-        Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow
+        Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow
     )
 
 
@@ -510,7 +510,7 @@ class UiLanguage():
             (w.button_back, "back"),
             (w.button_backup, "backup"),
             (w.button_restore, "restore"),
-            (w.button_export, "export"),
+            (w.button_export, "data"),
             (w.button_rfid, "rfid"),
             (w.button_check_internet, "check_internet"),
         ]:
@@ -585,6 +585,12 @@ class UiLanguage():
         """"Translates the elements of the addon window"""
         w.button_back.setText(self.__choose_language("back"))
         w.button_apply.setText(self.__choose_language("apply"))
+
+    def adjust_data_window(self, w: Ui_DataWindow):
+        """"Translates the elements of the addon window"""
+        window = "data_window"
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_reset.setText(self.__choose_language("export", window))
 
 
 UI_LANGUAGE = UiLanguage()
