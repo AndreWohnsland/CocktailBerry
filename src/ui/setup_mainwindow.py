@@ -167,7 +167,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEGehaltRezept.setValidator(QIntValidator(0, 99))
         self.LEGehaltRezept.setMaxLength(2)
         self.LEZutatRezept.setMaxLength(20)
-        self.LEFlaschenvolumen.setValidator(QIntValidator(100, 2000))
+        amount = UI_LANGUAGE.generate_numpad_header("amount")
+        self.LEFlaschenvolumen.clicked.connect(
+            lambda: self.open_numpad(self.LEFlaschenvolumen, 50, 50, amount)
+        )
+        self.LEFlaschenvolumen.setMaxLength(4)
         self.LECocktail.setMaxLength(30)
 
     def connect_objects(self):
@@ -183,8 +187,14 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
         self.prepare_button.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
-        self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, 50))
-        self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LEFlaschenvolumen, 500, 1500, -50))
+        min_ingredient = 300
+        max_ingredient = 1500
+        self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(
+            self.LEFlaschenvolumen, min_ingredient, max_ingredient, 50
+        ))
+        self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(
+            self.LEFlaschenvolumen, min_ingredient, max_ingredient, -50
+        ))
 
         self.increase_volume.clicked.connect(lambda: maker.adjust_volume(self, 25))
         self.decrease_volume.clicked.connect(lambda: maker.adjust_volume(self, -25))
