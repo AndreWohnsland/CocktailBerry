@@ -1133,7 +1133,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="LEFlaschenvolumen">
+             <widget class="ClickableLineEdit" name="LEFlaschenvolumen">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -2262,8 +2262,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-203</y>
-             <width>741</width>
+             <y>0</y>
+             <width>620</width>
              <height>756</height>
             </rect>
            </property>
