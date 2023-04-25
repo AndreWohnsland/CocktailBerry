@@ -91,7 +91,7 @@ In case the machine got a RTC build in and uses it, this option can usually be s
 
 Getting the WS281x to work may be a little bit tricky.
 You MUST run the program as sudo (`sudo python runme.py`), so you also need to change this in `~/launcher.sh`.
-If the GUI looks different than when you run it without sudo, try `sudo -E python runme.y` this should use your environment for Qt.
+If the GUI looks different than when you run it without sudo, try `sudo -E python runme.py` this should use your environment for Qt.
 If you ran the program as non root, you will need to install the required python packages for the main program with sudo pip install.
 Also, install the rpi_ws281x python package with:
 
