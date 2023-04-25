@@ -54,7 +54,7 @@ class ConfigManager:
     # Locks the recipe tab, making it impossible to access
     UI_PARTYMODE: bool = False
     # Password to lock clean, delete and other critical operators
-    UI_MASTERPASSWORD: str = ""
+    UI_MASTERPASSWORD: int = 0
     # Language to use, use two chars look up documentation, if not provided fallback to en
     UI_LANGUAGE: SupportedLanguagesType = "en"
     # Width and height of the touchscreen
