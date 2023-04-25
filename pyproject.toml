@@ -18,7 +18,6 @@ QtAwesome = "^1.2.3"
 piicodev = "^1.10.0"
 qtsass = "^0.3.2"
 pyqtspinner = "^2.0.0"
-matplotlib = "^3.7.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.17.1"
