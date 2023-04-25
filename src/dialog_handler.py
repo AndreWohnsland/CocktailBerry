@@ -8,6 +8,7 @@ from threading import Thread, Event
 import yaml
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from src.config_manager import CONFIG as cfg
+from src.logger_handler import LoggerHandler
 from src.ui_elements.addonmanager import Ui_AddonManager
 from src.utils import get_platform_data
 from src.filepath import LANGUAGE_FILE, APP_ICON_FILE
@@ -20,6 +21,8 @@ if TYPE_CHECKING:
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
         Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow
     )
+
+_logger = LoggerHandler("dialog_handler")
 
 
 class DialogHandler():
@@ -383,6 +386,14 @@ class UiLanguage():
     def get_change_text(self) -> str:
         """Returns the add text"""
         return self.__choose_language("change_button")
+
+    def get_translation(self, name: str, ui_element_name: str = "generics"):
+        """Gets the translation by given key and window"""
+        try:
+            return self.__choose_language(name, ui_element_name)
+        except (AttributeError, KeyError):
+            _logger.error(f"No translation for {name} in {ui_element_name} found")
+            return ""
 
     def get_config_description(
             self,

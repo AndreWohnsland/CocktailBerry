@@ -438,6 +438,15 @@ ui:
     export:
       en: 'Data Export'
       de: 'Datenexport'
+    cocktails_made:
+      en: 'Cocktails made: '
+      de: 'Cocktails zubereitet: '
+    since_reset:
+      en: 'Since reset'
+      de: 'Seit Zurücksetzen'
+    all_time:
+      en: 'All time'
+      de: 'Komplette Zeit'
 
   ##### SETTINGS WINDOW #####
   # all values for settings window
