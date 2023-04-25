@@ -18,6 +18,7 @@ from src.ui_elements.wifiwindow import Ui_WiFiWindow
 from .customcolor import Ui_ColorWindow
 from .addonwindow import Ui_Addonwindow
 from .addonmanager import Ui_AddonManager
+from .datawindow import Ui_DataWindow
 
 
 __all__ = [
@@ -41,4 +42,5 @@ __all__ = [
     "Ui_ColorWindow",
     "Ui_Addonwindow",
     "Ui_AddonManager",
+    "Ui_DataWindow",
 ]

@@ -12,6 +12,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 from src.filepath import ROOT_PATH
 from src.ui.create_config_window import ConfigWindow
+from src.ui.setup_data_window import DataWindow
 from src.ui.setup_log_window import LogWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
@@ -23,7 +24,6 @@ from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
 from src.programs.calibration import run_calibration
 from src.logger_handler import LoggerHandler
-from src.save_handler import SAVE_HANDLER
 from src.utils import has_connection, restart_program, get_platform_data
 from src.config_manager import CONFIG as cfg
 
@@ -68,7 +68,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_calibration.clicked.connect(self._open_calibration)
         self.button_backup.clicked.connect(self._create_backup)
         self.button_restore.clicked.connect(self._upload_backup)
-        self.button_export.clicked.connect(SAVE_HANDLER.export_data)
+        self.button_export.clicked.connect(self._data_insights)
         self.button_logs.clicked.connect(self._show_logs)
         self.button_rfid.clicked.connect(self._open_rfid_writer)
         self.button_wifi.clicked.connect(self._open_wifi_window)
@@ -83,6 +83,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.rfid_writer_window: Optional[RFIDWriterWindow] = None
         self.wifi_window: Optional[WiFiWindow] = None
         self.addon_window: Optional[AddonWindow] = None
+        self.data_window: Optional[DataWindow] = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -118,6 +119,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo shutdown now")
         self.close()
+
+    def _data_insights(self):
+        """Opens the data window"""
+        self.data_window = DataWindow()
 
     def _open_calibration(self):
         """Opens the calibration window."""
