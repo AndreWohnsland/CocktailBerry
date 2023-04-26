@@ -109,6 +109,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
             self.grid.addWidget(create_label(f" ({value}x) ", 20, True, True), i, 1, 1, 1)
             displayed_bar = QProgressBar(self)
             displayed_bar.setTextVisible(False)
+            displayed_bar.setProperty("cssClass", "no-bg")
             displayed_bar.setValue(int(100 * value / max(values)))
             self.grid.addWidget(displayed_bar, i, 3, 1, 1)
 
