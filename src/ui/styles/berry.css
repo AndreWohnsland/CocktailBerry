@@ -195,6 +195,8 @@ QProgressBar {
     border: 2px #9395ab;
     border-radius: 5px;
     background-color: #666ad1; }
+  QProgressBar[cssClass~='no-bg'] {
+    background-color: #0d0d0d; }
 
 QComboBox {
   color: #3a4cbf;

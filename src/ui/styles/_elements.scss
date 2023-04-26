@@ -254,6 +254,9 @@ QProgressBar {
     border-radius: 5px;
     background-color: $progressbar;
   }
+  &[cssClass~='no-bg'] {
+    background-color: $background;
+  }
 }
 
 QComboBox {
