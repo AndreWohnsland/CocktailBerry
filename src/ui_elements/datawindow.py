@@ -89,6 +89,7 @@ class Ui_DataWindow(object):
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.content_container = QtWidgets.QVBoxLayout()
+        self.content_container.setContentsMargins(-1, -1, 5, -1)
         self.content_container.setObjectName("content_container")
         self.verticalLayout_3.addLayout(self.content_container)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
