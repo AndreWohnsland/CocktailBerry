@@ -14,10 +14,11 @@ class SaveHandler:
     def export_data(self):
         """Export the ingredient and recipe data to two separate csvs, resets consumption."""
         if not DP_CONTROLLER.ask_to_export_data():
-            return
+            return False
         self._export_ingredients()
         self._export_recipes()
         DP_CONTROLLER.say_all_data_exported(str(SAVE_FOLDER))
+        return True
 
     def _export_ingredients(self):
         """Export the ingredients to a csv file, resets consumption"""
