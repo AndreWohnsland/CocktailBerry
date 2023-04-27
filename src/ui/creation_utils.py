@@ -33,12 +33,20 @@ def create_button(label: str, parent: Optional[QWidget] = None):
     return btn
 
 
-def create_label(text: str, font_size: int, bold: bool = False, centered: bool = False):
+def create_label(
+    text: str,
+    font_size: int,
+    bold: bool = False,
+    centered: bool = False,
+    css_class: Optional[str] = None
+):
     """Creates a label with given text and properties"""
     label = QLabel(text)
     adjust_font(label, font_size, bold)
     if centered:
         label.setAlignment(Qt.AlignCenter)  # type: ignore
+    if css_class is not None:
+        label.setProperty("cssClass", css_class)
     return label
 
 
