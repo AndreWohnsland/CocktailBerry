@@ -8,6 +8,7 @@ from threading import Thread, Event
 import yaml
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from src.config_manager import CONFIG as cfg
+from src.logger_handler import LoggerHandler
 from src.ui_elements.addonmanager import Ui_AddonManager
 from src.utils import get_platform_data
 from src.filepath import LANGUAGE_FILE, APP_ICON_FILE
@@ -18,8 +19,10 @@ if TYPE_CHECKING:
         Ui_available, Ui_addingredient, Ui_Bottlewindow, Ui_MainWindow, Ui_CustomDialog,
         Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
-        Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow
+        Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow
     )
+
+_logger = LoggerHandler("dialog_handler")
 
 
 class DialogHandler():
@@ -384,6 +387,14 @@ class UiLanguage():
         """Returns the add text"""
         return self.__choose_language("change_button")
 
+    def get_translation(self, name: str, ui_element_name: str = "generics"):
+        """Gets the translation by given key and window"""
+        try:
+            return self.__choose_language(name, ui_element_name)
+        except (AttributeError, KeyError):
+            _logger.error(f"No translation for {name} in {ui_element_name} found")
+            return ""
+
     def get_config_description(
             self,
             config_name: str,
@@ -510,7 +521,7 @@ class UiLanguage():
             (w.button_back, "back"),
             (w.button_backup, "backup"),
             (w.button_restore, "restore"),
-            (w.button_export, "export"),
+            (w.button_export, "data"),
             (w.button_rfid, "rfid"),
             (w.button_check_internet, "check_internet"),
         ]:
@@ -585,6 +596,12 @@ class UiLanguage():
         """"Translates the elements of the addon window"""
         w.button_back.setText(self.__choose_language("back"))
         w.button_apply.setText(self.__choose_language("apply"))
+
+    def adjust_data_window(self, w: Ui_DataWindow):
+        """"Translates the elements of the addon window"""
+        window = "data_window"
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_reset.setText(self.__choose_language("export", window))
 
 
 UI_LANGUAGE = UiLanguage()

@@ -1,7 +1,7 @@
 from typing import Callable, Optional
-from PyQt5.QtWidgets import QWidget, QSpacerItem, QSizePolicy, QPushButton
+from PyQt5.QtWidgets import QWidget, QSpacerItem, QSizePolicy, QPushButton, QLabel
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import QSize, QObject, QThread
+from PyQt5.QtCore import QSize, QObject, QThread, Qt
 
 from src.ui.icons import ICONS
 
@@ -31,6 +31,23 @@ def create_button(label: str, parent: Optional[QWidget] = None):
     btn.setMinimumSize(QSize(0, 70))
     adjust_font(btn, LARGE_FONT, True)
     return btn
+
+
+def create_label(
+    text: str,
+    font_size: int,
+    bold: bool = False,
+    centered: bool = False,
+    css_class: Optional[str] = None
+):
+    """Creates a label with given text and properties"""
+    label = QLabel(text)
+    adjust_font(label, font_size, bold)
+    if centered:
+        label.setAlignment(Qt.AlignCenter)  # type: ignore
+    if css_class is not None:
+        label.setProperty("cssClass", css_class)
+    return label
 
 
 def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable):

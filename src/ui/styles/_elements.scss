@@ -248,10 +248,14 @@ QProgressBar {
   border: 2px $progressbg;
   border-radius: 5px;
   text-align: center;
+  min-height: 38px;
   &::chunk {
     border: 2px $progressbg;
     border-radius: 5px;
     background-color: $progressbar;
+  }
+  &[cssClass~='no-bg'] {
+    background-color: $background;
   }
 }
 
