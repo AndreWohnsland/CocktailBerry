@@ -21,25 +21,37 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         DP_CONTROLLER.initialize_window_object(self)
         # Connect all the buttons, generates a list of the numbers an object names to do that
         self.button_back.clicked.connect(self.close)
-        self.button_reset.clicked.connect(SAVE_HANDLER.export_data)
+        self.button_reset.clicked.connect(self._export_and_recalculate)
+        self.selection_data.activated.connect(self._display_data)
 
         self.since_reset_str = UI_LANGUAGE.get_translation("since_reset", "data_window")
         self.all_time_str = UI_LANGUAGE.get_translation("all_time", "data_window")
         self.grid = None
 
-        self.data_files = self._get_saved_data_files()
-        self.selection_data.activated.connect(self._display_data)
-        self.local_data = self._get_local_data()
-
-        # generates the dropdown with options
-        drop_down_options = [self.since_reset_str, self.all_time_str] + self.data_files
-        DP_CONTROLLER.fill_single_combobox(self.selection_data, drop_down_options, first_empty=False)
-
+        self._populate_data()
         self._plot_data(self.local_data[self.since_reset_str])
 
         UI_LANGUAGE.adjust_data_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
+
+    def _populate_data(self):
+        """Gets data from files and db, assigns objects and fill dropdown"""
+        self.data_files = self._get_saved_data_files()
+        self.local_data = self._get_local_data()
+
+        # generates the dropdown with options
+        drop_down_options = [self.since_reset_str, self.all_time_str] + self.data_files
+        DP_CONTROLLER.fill_single_combobox(self.selection_data, drop_down_options, clear_first=True, first_empty=False)
+
+    def _export_and_recalculate(self):
+        """Exports the data and recalculates the dropdowns / plot"""
+        if not SAVE_HANDLER.export_data():
+            return
+        current_selection = self.selection_data.currentText()
+        self._populate_data()
+        DP_CONTROLLER.set_combobox_item(self.selection_data, current_selection)
+        self._plot_data(self.local_data[current_selection])
 
     def _get_saved_data_files(self):
         """Checks the logs folder for all existing log files"""
@@ -47,12 +59,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
 
     def _display_data(self):
         selection = self.selection_data.currentText()
-        if selection == self.all_time_str:
-            data = self.local_data[self.all_time_str]
-        elif selection == self.since_reset_str:
-            data = self.local_data[self.since_reset_str]
-        else:
-            data = self._read_csv_file(SAVE_FOLDER / selection)[self.since_reset_str]
+        data = self.local_data[selection]
         self._plot_data(data)
 
     def _read_csv_file(self, to_read: Path):
@@ -65,9 +72,12 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         return self._extract_data(data)
 
     def _get_local_data(self):
-        """Gets the data from the database"""
+        """Gets the data from the database and the files"""
         data = DB_COMMANDER.get_consumption_data_lists_recipes()
-        return self._extract_data(data)
+        data = self._extract_data(data)
+        for file in self.data_files:
+            data[file] = self._read_csv_file(SAVE_FOLDER / file)[self.since_reset_str]
+        return data
 
     def _extract_data(self, data: list[list]):
         """Extracts the needed data from the exported data"""
