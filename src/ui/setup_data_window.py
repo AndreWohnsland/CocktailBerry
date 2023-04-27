@@ -106,7 +106,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         # generates the elements in the grid
         for i, (name, value) in enumerate(zip(names, values)):
             self.grid.addWidget(create_label(f"{name} ", 20, False, True), i, 0, 1, 1)
-            self.grid.addWidget(create_label(f" ({value}x) ", 20, True, True), i, 1, 1, 1)
+            self.grid.addWidget(create_label(f" ({value}x) ", 20, True, True, "secondary"), i, 1, 1, 1)
             displayed_bar = QProgressBar(self)
             displayed_bar.setTextVisible(False)
             displayed_bar.setProperty("cssClass", "no-bg")
