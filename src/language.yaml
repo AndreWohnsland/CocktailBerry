@@ -441,6 +441,9 @@ ui:
     cocktails_made:
       en: 'Cocktails made: '
       de: 'Cocktails zubereitet: '
+    ingredient_volume:
+      en: 'Ingredients: '
+      de: 'Zutaten: '
     since_reset:
       en: 'Since reset'
       de: 'Seit Zurücksetzen'
