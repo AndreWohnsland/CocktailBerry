@@ -30,7 +30,7 @@ class TeamScreen(QDialog, Ui_Teamselection):
             self._rfid_reader = RFIDReader()
             self._rfid_reader.read_rfid(self._write_rfid_value)
 
-    def _write_rfid_value(self, text: str):
+    def _write_rfid_value(self, text: str, _id: str):
         shared.team_member_name = text
         self.person_label.setText(text)
 

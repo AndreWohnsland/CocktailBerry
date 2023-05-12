@@ -30,7 +30,7 @@ class PinController(Protocol):  # type: ignore
 class RFIDController(Protocol):
     """Interface for the RFID reader"""
     @abstractmethod
-    def read_card(self) -> Optional[str]:
+    def read_card(self) -> tuple[Optional[str], Optional[str]]:
         raise NotImplementedError
 
     @abstractmethod
