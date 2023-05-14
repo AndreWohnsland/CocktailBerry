@@ -199,6 +199,7 @@ class DisplayController(DialogHandler):
         shared.alcohol_factor = 1.0
 
     def reset_virgin_setting(self, w: Ui_MainWindow):
+        """Resets the virgin checkbox"""
         w.virgin_checkbox.setChecked(False)
 
     # LineEdit
@@ -327,6 +328,8 @@ class DisplayController(DialogHandler):
             list_widget.addItem(lw_item)
 
     def _generate_list_widget_item(self, item_data: Union[str, Cocktail]):
+        """Adds the element to the list widget item
+        If is is a cocktail object, build in the virgin possibility as indicator"""
         if isinstance(item_data, Cocktail):
             addition = " *" if item_data.virgin_available else ""
             lw_item = QListWidgetItem(f"{item_data.name}{addition}")
@@ -397,6 +400,7 @@ class DisplayController(DialogHandler):
             field_ingredient.setText(f"{ingredient_name} ")
 
     def _decide_rounding(self, val: float, threshold=8):
+        """Helper to get the right rounding for numbers displayed to the user"""
         if val >= threshold:
             return int(val)
         return round(val, 1)

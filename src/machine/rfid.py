@@ -64,21 +64,21 @@ class RFIDReader:
             cls._instance = object.__new__(cls)
         return cls._instance
 
-    def read_rfid(self, side_effect: Callable[[str], None]):
-        """Start the rfid reader, calls an side effect with the read value"""
+    def read_rfid(self, side_effect: Callable[[str, str], None]):
+        """Start the rfid reader, calls an side effect with the read value and id"""
         rfid_thread = Thread(target=self._read_thread, args=(side_effect,), daemon=True)
         rfid_thread.start()
 
-    def _read_thread(self, side_effect: Callable[[str], None]):
+    def _read_thread(self, side_effect: Callable[[str, str], None]):
         """Execute the reading until reads a value or got canceled"""
         if self.rfid is None or self.is_active:
             return
         text = None
         self.is_active = True
         while self.is_active:
-            text = self.rfid.read_card()
-            if text is not None:
-                side_effect(text)
+            text, _id = self.rfid.read_card()
+            if text is not None and _id is not None:
+                side_effect(text, _id)
             time.sleep(0.5)
         self.is_active = False
 
@@ -112,13 +112,15 @@ class _PiicoDevReader(RFIDController):
     def __init__(self) -> None:
         self.rfid = PiicoDev_RFID()
 
-    def read_card(self) -> Optional[str]:
+    def read_card(self) -> tuple[Optional[str], Optional[str]]:
         text = None
+        _id = None
         if self.rfid.tagPresent():
             text = self.rfid.readText()
+            _id: Optional[str] = self.rfid.readID()  # type: ignore
             if text is not None:
                 text = text.strip()
-        return text
+        return text, _id
 
     def write_card(self, text: str) -> bool:
         return self.rfid.writeText(text)
@@ -130,11 +132,11 @@ class _BasicMFRC522(RFIDController):
     def __init__(self) -> None:
         self.rfid = SimpleMFRC522()
 
-    def read_card(self) -> Optional[str]:
-        _, text = self.rfid.read_no_block()
+    def read_card(self) -> tuple[Optional[str], Optional[str]]:
+        _id, text = self.rfid.read_no_block()
         if text is not None:
             text = text.strip()
-        return text
+        return text, _id
 
     def write_card(self, text: str) -> bool:
         _id, _ = self.rfid.write_no_block(text)

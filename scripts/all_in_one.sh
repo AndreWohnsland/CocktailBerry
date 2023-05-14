@@ -48,12 +48,18 @@ cd ~/CocktailBerry
 echo "Setting up and installing CocktailBerry"
 bash scripts/setup.sh
 
+echo "Register successful installation: "
+OS_INFO=$(sed -nr 's/^PRETTY_NAME="(.+)"/\1/p' /etc/os-release)
+curl -X 'POST' 'https://cocktailberryapi-1-u0613408.deta.app/public/installation' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"os_version": "'"$OS_INFO"'"}'
+echo ""
+
 echo "Everything should be set now! Have fun with CocktailBerry :)"
 echo "Made by Andre Wohnsland and contributors with <3"
 echo "Documentation is found at: https://cocktailberry.readthedocs.io/"
 echo "Source code at: https://github.com/AndreWohnsland/CocktailBerry"
 echo "If you want to set up your microservice, check the docks for a complete guide. Docker and compose should already be installed."
 echo "You can use the CocktailBerry CLI for an interactive setup. Use 'python ~/CocktailBerry/runme.py setup-microservice' to start."
-echo "CocktailBerry will start at system start. To start it now, type 'sh launcher.sh'."
+echo "CocktailBerry will start at system start. To start it now, type 'sh ~/launcher.sh'."
 echo "If the desctop panel shifts / blocks the application, right click panel > panel settings > Advanced > uncheck Reserve space, and not covered by maximised windows."
+
 newgrp docker
