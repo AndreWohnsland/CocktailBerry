@@ -12,6 +12,14 @@ Take note that none of this section is required to run the base program.
     for the interactive mode to change the env variables and build the service including automated updates.
     **This is also now the recommended way!**
 
+    If you still use the old setup, you can check your secrets, remove the old container and use them with the new setup:
+    ```bash
+    docker stop cocktail-microservice
+    docker rm cocktail-microservice
+    cat ~/CocktailBerry/microservice/.env
+    ```
+    The old setup is deprecated and will be removed in the future, since the new one is more robust and easier.
+
 ## Usage of Services
 
 Simply have `docker compose` installed and run either the CLI command or the docker compose command in the main folder for the CocktailBerry microservice / in the dashboard folder (on another device) for the dashboard service:
@@ -139,7 +147,7 @@ echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxs
 
 You can also set the second device up as a Wi-Fi hot-spot.
 This will give you the possibility to always connect to the dashboard, even if no connection to another home network or internet is available.
-For this, a very easy way is to use [RapsAp](https://raspap.com/).
+For this, a very easy way is to use [RaspAp](https://raspap.com/).
 
 ## Installing Docker
 
