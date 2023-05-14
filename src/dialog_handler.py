@@ -66,6 +66,14 @@ class DialogHandler():
         event.set()
 
     def user_okay(self, text: str):
+        """Prompts the user for the given message and asks for confirmation
+
+        Args:
+            text (str): Text to be displayed
+
+        Returns:
+            bool: If the user accepted the prompted message
+        """
         from src.ui.setup_custom_prompt import CustomPrompt
         msg_box = CustomPrompt(text)
         if msg_box.exec_():
@@ -248,6 +256,8 @@ class DialogHandler():
         self.__output_language_dialog("backup_failed", file=file)
 
     def say_python_deprecated(self, sys_python: str, program_python: str):
+        """Informs that the given system python is older than the
+        recommended python for the program"""
         self.__output_language_dialog(
             "python_deprecated",
             sys_python=sys_python,
@@ -255,6 +265,7 @@ class DialogHandler():
         )
 
     def say_welcome_message(self):
+        """Displays the welcome dialog, show version and platform info"""
         self.__output_language_dialog(
             "welcome_dialog",
             version=__version__,
@@ -262,6 +273,7 @@ class DialogHandler():
         )
 
     def say_wifi_entered(self, success: bool, ssid: str, password: str):
+        """Informs the user about the wifi enter process"""
         if success:
             self.__output_language_dialog("wifi_success")
             return
@@ -272,15 +284,18 @@ class DialogHandler():
         )
 
     def say_wifi_setup_failed(self):
+        """Informs the user that the wifi setup failed"""
         self.__output_language_dialog("wifi_setup_failed")
 
     def say_internet_connection_status(self, connected: bool):
+        """Displays the internet status"""
         if connected:
             self.__output_language_dialog("internet_connection_ok")
             return
         self.__output_language_dialog("internet_connection_not_ok")
 
     def say_qtsass_not_successful(self):
+        """Informs that qtsass was not set up successfully"""
         self.__output_language_dialog("qtsass_not_successful")
 
     ############################
@@ -593,12 +608,12 @@ class UiLanguage():
         return self.__choose_language("no_gui", "addon_window")
 
     def adjust_addon_manager(self, w: Ui_AddonManager):
-        """"Translates the elements of the addon window"""
+        """"Translates the elements of the addon manager"""
         w.button_back.setText(self.__choose_language("back"))
         w.button_apply.setText(self.__choose_language("apply"))
 
     def adjust_data_window(self, w: Ui_DataWindow):
-        """"Translates the elements of the addon window"""
+        """"Translates the elements of the data window"""
         window = "data_window"
         w.button_back.setText(self.__choose_language("back"))
         w.button_reset.setText(self.__choose_language("export", window))

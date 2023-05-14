@@ -68,6 +68,7 @@ def set_system_time(time_string: str):
 
 
 def restart_program():
+    """Restart the CocktailBerry application"""
     # trigger manually, since exec function will not trigger exit fun.
     atexit._run_exitfuncs()  # pylint: disable=protected-access
     python = sys.executable

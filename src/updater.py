@@ -69,6 +69,7 @@ class Updater:
         return update_available, info
 
     def _get_latest_tag(self):
+        """Extracts the latest version number from the tags"""
         latest_tag = sorted(self.repo.tags, key=lambda t: _Version(t.name.replace("v", "")))[-1]
         return latest_tag
 
