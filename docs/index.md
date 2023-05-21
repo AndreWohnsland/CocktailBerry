@@ -12,35 +12,14 @@
 [![Support CocktailBerry](https://img.shields.io/badge/Support%20CocktailBerry-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
 Welcome to the CocktailBerry documentation.
-Here you will find everything to get started!
 CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
+Here you will find everything to get started!
 It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
 
 <div class="mid-flex">
   <a href="quickstart/" class="cta-btn primary-btn"> Quickstart </a>
   <a href="setup/" class="cta-btn secondary-btn"> Set Up </a>
 </div>
-
-<!-- <div class="grid cards" markdown>
-
--   :material-clock-fast:{ .lg .middle } __Quick and Easy__
-
-    ---
-
-    Run the provided setup script on your Pi
-
-    [:octicons-arrow-right-24: Quickstart](quickstart.md)
-
--   :fontawesome-brands-markdown:{ .lg .middle } __Customize to your needs__
-
-    ---
-
-    Change the settings depending on your custom build
-
-    [:fontawesome-solid-gear: Set Up](setup.md)
-
-</div> -->
-
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
