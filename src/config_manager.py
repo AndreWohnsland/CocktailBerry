@@ -26,6 +26,7 @@ SUPPORTED_RFID = list(get_args(SupportedRfidType))
 
 
 class ChooseType:
+    """Base Class for auto generated single select drop down"""
     allowed: List[str] = []
 
 
