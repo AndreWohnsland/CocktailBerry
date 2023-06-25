@@ -18,7 +18,7 @@ Detailed information, installation steps and SetUp can be found at the [Official
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
 <a href="https://cocktailberry.readthedocs.io/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
-<a href="https://stats-cocktailberry.streamlitapp.com/"><img src="docs/pictures/dashboardbutton.png" alt="dashboard" height="70"/></a>
+<a href="https://stats-cocktailberry.streamlit.app/"><img src="docs/pictures/dashboardbutton.png" alt="dashboard" height="70"/></a>
 
 This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients. Track and display cocktail data for different teams to even further increase the fun. Let's get started!
 
