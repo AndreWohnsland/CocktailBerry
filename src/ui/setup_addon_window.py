@@ -42,7 +42,11 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
             to_remove = layout.itemAt(i).widget()
             # remove it from the layout list and the gui
             layout.removeWidget(to_remove)
-            to_remove.setParent(None)  # type: ignore
+            try:
+                to_remove.setParent(None)  # type: ignore
+            # may result in NoneType object has no attribute setParent
+            except AttributeError:
+                pass
         # build the custom gui
         gui_provided = ADDONS.build_addon_gui(
             addon_name,
