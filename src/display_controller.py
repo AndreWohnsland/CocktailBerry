@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
     QWidget, QComboBox, QLabel,
     QLineEdit, QPushButton, QListWidget,
     QCheckBox, QMainWindow, QProgressBar,
-    QListWidgetItem,
+    QListWidgetItem, QLayout,
 )
 
 from src.filepath import STYLE_FOLDER, APP_ICON_FILE
@@ -363,6 +363,18 @@ class DisplayController(DialogHandler):
     def set_checkbox_value(self, checkbox: QCheckBox, value: Union[int, bool]):
         """Set the checked state of the checkbox to given value"""
         checkbox.setChecked(bool(value))
+
+    # Layouts
+    def delete_items_of_layout(self, layout: Optional[QLayout] = None):
+        """Recursively delete all items of the given layout"""
+        if layout is not None:
+            while layout.count():
+                item = layout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.setParent(None)  # type: ignore
+                else:
+                    self.delete_items_of_layout(item.layout())
 
     # others
     def fill_recipe_data_maker(self, w: Ui_MainWindow, cocktail: Cocktail, total_volume: int):
