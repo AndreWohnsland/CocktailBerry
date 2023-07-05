@@ -24,6 +24,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.17.0** | Setting up your own custom theme <br> Possibility to set up WiFi over the GUI <br> Implementation of the RFID reader |
 | **v1.18.0** | Addons are now possible <br> Better recipe ingredient calculation                                                    |
 | **v1.19.0** | CLI command for easy microservice setup <br> Update OS over interface                                                |
+| **v1.20.0** | Local visualization of cocktail data                                                                                 |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.

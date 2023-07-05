@@ -43,7 +43,7 @@ if [ "$1" = "dashboard" ]; then
     echo "python main.py" >>~/launcher.sh
     cd qt-app/
   fi
-  pip3 install -r requirements.txt
+  pip install -r requirements.txt
 else
   echo "Setting up CocktailBerry"
   echo "export QT_SCALE_FACTOR=1" >>~/launcher.sh
@@ -52,10 +52,10 @@ else
   echo "Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   echo "Installing needed Python libraries"
-  pip3 install requests pyyaml GitPython typer pyfiglet qtawesome piicodev mfrc522 pyqtspinner
+  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev mfrc522 pyqtspinner
   echo "Creating default microservice .env file at ~/CocktailBerry/microservice/.env If you want to use the service, you need to change default values!"
   cp microservice/.env.example microservice/.env
   echo "Install qtsass, this may take a while depending on your OS, so it is time for a coffe break :)"
-  pip3 install qtsass
+  pip install qtsass
 fi
 echo "Done with the setup"

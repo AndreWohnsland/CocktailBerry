@@ -1,8 +1,8 @@
 from typing import Literal
 
-__version__ = "1.20.2"
+__version__ = "1.20.3"
 PROJECT_NAME = "CocktailBerry"
-MAX_SUPPORTED_BOTTLES = 16
+MAX_SUPPORTED_BOTTLES = 24
 SupportedLanguagesType = Literal["en", "de"]
 SupportedBoardType = Literal["RPI", "Generic"]
 SupportedThemesType = Literal["default", "bavaria", "alien", "berry", "custom"]

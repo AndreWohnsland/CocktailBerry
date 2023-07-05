@@ -156,6 +156,28 @@ Unchecking this box usually fixes this problem.
 In case you want to reset the configuration, it is the best way to just delete the custom_config.yaml in the main folder.
 This file holds your configuration and will be created with the defaults if it does not exists.
 
+## Software does not Update
+
+It may happen that you don't get the latest version of the software promptet at start, even if you check for updates.
+This can be due to different reasons.
+First, check if you have a internet connection.
+If you have, check if you have the latest recommended version of python installed.
+CocktailBerry will not show the update if the future needed python version is higher than the current installed one.
+Another reason may be that your git file is corrupted.
+Check with for errors like object file x is empty:
+
+```sh
+cd ~/CocktailBerry
+git status
+git pull
+# if error occurs you can try to fix it with
+find .git/objects/ -type f -empty | xargs rm
+git fetch -p
+git fsck --full
+``` 
+
+This should not only remove the corrupted files, but also fetch the latest version of the software.
+
 ## Problems Installing Software on Raspberry Pi
 
 The Raspberry Pi can sometimes differ from other machines in terms of installation. Here are some issues that might occur.

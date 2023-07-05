@@ -13,15 +13,28 @@ GIT_IS_AVAILABLE=$?
 if [ $GIT_IS_AVAILABLE -ne 0 ]; then
   echo "Git was not found, installing it ..."
   sudo apt install git
+else
+  echo "Git is already installed!"
 fi
+
+# also link python to python3 if its still an old system
+echo "linking python to python3 if not already done"
+sudo apt install python-is-python3
 
 # steps for python >= 3.9
 echo "Check that Python version is at least 3.9"
 version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
 parsedVersion=$(echo "${version//./}")
+echo "Detected version: $version"
 if [[ "$parsedVersion" -lt "390" ]]; then
   echo "Python must be at least 3.9. Please upgrade your Python or the system to use CocktailBerry."
+  echo "You can check your local Python version with 'python -V'"
+  echo "If you have an older system, python3 -V may use the python 3, you should set up python that the python command uses python 3"
+  echo "For a tutorial, you can look at https://alluaravind1313.medium.com/make-python3-as-default-in-ubuntu-machine-572431b69094"
+  echo "'apt install python-is-python3' may also fix this, but should already be installed previous this step"
   exit 1
+else
+  echo "You got a valid Python version."
 fi
 
 # Warning if debian is not at least v11. Still go on because some users may use none debian

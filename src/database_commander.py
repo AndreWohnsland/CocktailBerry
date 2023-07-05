@@ -438,7 +438,7 @@ class DatabaseHandler:
         """Executes the given query, if select command, return the data"""
         self.cursor.execute(sql, search_tuple)
 
-        if sql[0:6].lower() == "select":
+        if sql.lower().strip()[0:6] == "select":
             result = self.cursor.fetchall()
         else:
             self.database.commit()

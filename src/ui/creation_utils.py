@@ -71,3 +71,8 @@ def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable
     _thread.finished.connect(ICONS.stop_spinner)
 
     return _thread
+
+
+def generate_bottle_management(row: int):
+    """Generates a row for bottle management"""
+    return row
