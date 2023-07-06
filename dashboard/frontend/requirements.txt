@@ -4,5 +4,5 @@ pyyaml
 plotly
 dash
 numpy==1.24.2
-scipy==1.8.1
+scipy==1.10.0
 gunicorn
