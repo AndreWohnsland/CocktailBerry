@@ -92,7 +92,10 @@ def prepare_cocktail(w):
     cocktail.scale_cocktail(cocktail_volume, alcohol_factor)
     virgin_ending = " (Virgin)" if cocktail.is_virgin else ""
     display_name = f"{cocktail_name}{virgin_ending}"
-    error = cocktail.enough_fill_level()
+    error = None
+    # only do check if this option is activated
+    if cfg.MAKER_CHECK_BOTTLE:
+        error = cocktail.enough_fill_level()
     if error is not None:
         DP_CONTROLLER.say_not_enough_ingredient_volume(*error)
         # Only switch tabs if they are not locked!
