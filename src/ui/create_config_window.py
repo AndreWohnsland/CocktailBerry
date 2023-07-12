@@ -101,6 +101,7 @@ class ConfigWindow(QMainWindow):
         description_text = UI_LANGUAGE.get_config_description(config_name)
         if description_text:
             description = QLabel(description_text)
+            description.setWordWrap(True)
             adjust_font(description, SMALL_FONT)
             self.vbox.addWidget(description)
         # Reads out the current config value
