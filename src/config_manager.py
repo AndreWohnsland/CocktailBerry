@@ -79,6 +79,8 @@ class ConfigManager:
     MAKER_SLEEP_TIME: float = 0.05
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES: bool = True
+    # If the maker should check if there is enough in the bottle before making a cocktail
+    MAKER_CHECK_BOTTLE: bool = True
     # Inverts the pin signal (on is low, off is high)
     MAKER_PINS_INVERTED: bool = True
     # Possibility to use different boards to control Pins
@@ -138,6 +140,7 @@ class ConfigManager:
             "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
             "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
+            "MAKER_CHECK_BOTTLE": (bool, []),
             "MAKER_PINS_INVERTED": (bool, []),
             "MAKER_BOARD": (BoardChoose, []),
             "MAKER_THEME": (ThemeChoose, []),

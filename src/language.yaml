@@ -497,6 +497,9 @@ ui:
     MAKER_SEARCH_UPDATES:
       en: 'Search for updates, if available internet connection'
       de: 'Sucht nach Updates, wenn Internetverbindung besteht'
+    MAKER_CHECK_BOTTLE:
+      en: 'Checks before each cocktail if there is enough volume in the needed bottles. Aborts with a warning if there is not. Disable to ignore fill level.'
+      de: 'Prüft vor dem Cocktail ob genug in den benötigten Flasche ist, bricht mit Warnung ab falls nicht. Ausschalten ignoriert Füllstand.'
     MAKER_PINS_INVERTED:
       en: 'Inverts the pin signal (on is low, off is high), needed for most relays'
       de: 'Vertauscht das Pin Signal (an ist low, aus ist high), benötigt von vielen Relays'
