@@ -273,6 +273,9 @@ ui:
     activate_virgin:
       en: 'Virgin (no alcohol)'
       de: 'Virgin (kein Alkohol)'
+    slow_ingredient_check_label:
+      en: 'Slow ingredient:'
+      de: 'Langsame Zutat:'
 
   ##### AVAILABLE WINDOW #####
   # all values for available window
@@ -479,6 +482,9 @@ ui:
     PUMP_VOLUMEFLOW:
       en: 'Volume flow in ml/s for according pump'
       de: 'Volumenstrom in ml/s der zugehörigen Pumpe'
+    PUMP_SLOW_FACTOR:
+      en: 'Factor to multiply the pump volume flow if using slow ingredients (e.g. sirup)'
+      de: 'Multiplikationsfaktor für Volumenstrom, wenn langsame Zutaten verwendet werden (z.B. Sirup)'
     MAKER_NAME:
       en: 'Name of your CocktailBerry machine'
       de: 'Name von deiner CocktailBerry Maschine'
