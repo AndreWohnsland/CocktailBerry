@@ -1,7 +1,9 @@
 from PyQt5.QtWidgets import QDialog
+from src.models import Ingredient
 
 from src.ui_elements.bonusingredient import Ui_addingredient
 
+from src.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
@@ -42,16 +44,19 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
     def _spend_clicked(self):
         """ Calls the progress bar window and spends the given amount of the ingredient. """
         ingredient_name, volume = DP_CONTROLLER.get_ingredient_window_data(self)
-        bottle, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
+        _, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
+        ingredient_data: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore (must be existing)
+        # need to set amount, otherwise it will be 0
+        ingredient_data.amount = volume
 
         self.close()
-        if volume > level:
+        if volume > level and cfg.MAKER_CHECK_BOTTLE:
             DP_CONTROLLER.say_not_enough_ingredient_volume(ingredient_name, level, volume)
             self.mainscreen.tabWidget.setCurrentIndex(3)
             return
 
         print(f"Spending {volume} ml {self.CBingredient.currentText()}")
-        made_volume, _, _ = MACHINE.make_cocktail(self.mainscreen, [bottle], [volume], ingredient_name, False)
+        made_volume, _, _ = MACHINE.make_cocktail(self.mainscreen, [ingredient_data], ingredient_name, False)
         DB_COMMANDER.increment_ingredient_consumption(ingredient_name, made_volume[0])
         set_fill_level_bars(self.mainscreen)
         volume_string = f"{volume} ml"

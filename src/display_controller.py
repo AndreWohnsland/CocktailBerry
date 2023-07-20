@@ -53,9 +53,10 @@ class DisplayController(DialogHandler):
 
     def get_ingredient_data(self, w: Ui_MainWindow):
         """Returns an Ingredient Object from the ingredient data fields"""
-        line_edits, checkbox, list_widget = self.get_ingredient_fields(w)
+        line_edits, checkbox_hand, checkbox_slow, list_widget = self.get_ingredient_fields(w)
         ingredient_name, alcohol_level, volume = self.get_lineedit_text(list(line_edits))
-        hand_add = checkbox.isChecked()
+        hand_add = checkbox_hand.isChecked()
+        is_slow = checkbox_slow.isChecked()
         selected_ingredient = self.get_list_widget_selection(list_widget)
         return Ingredient(
             id=-1,
@@ -64,6 +65,7 @@ class DisplayController(DialogHandler):
             bottle_volume=int(volume),
             fill_level=0,
             hand=hand_add,
+            slow=is_slow,
             selected=selected_ingredient
         )
 
@@ -90,7 +92,7 @@ class DisplayController(DialogHandler):
 
     def validate_ingredient_data(self, w: Ui_MainWindow) -> bool:
         """Validate the data from the ingredient window"""
-        line_edits, _, _ = self.get_ingredient_fields(w)
+        line_edits, *_ = self.get_ingredient_fields(w)
         lineedit_list = line_edits
         if self._lineedit_is_missing(list(lineedit_list)):
             self.say_some_value_missing()
@@ -392,7 +394,7 @@ class DisplayController(DialogHandler):
         self._set_strike_through(w.virgin_checkbox, not cocktail.virgin_available)
         # when there is handadd, also build some additional data
         if hand:
-            display_data.extend([Ingredient(-1, "", 0, 0, 0, False)] + hand)
+            display_data.extend([Ingredient(-1, "", 0, 0, 0, False, False)] + hand)
         fields_ingredient = self.get_labels_maker_ingredients(w)
         fields_volume = self.get_labels_maker_volume(w)
         for field_ingredient, field_volume, ing in zip(fields_ingredient, fields_volume, display_data):
@@ -510,9 +512,9 @@ class DisplayController(DialogHandler):
 
     def get_ingredient_fields(
         self, w: Ui_MainWindow
-    ) -> Tuple[Tuple[QLineEdit, QLineEdit, QLineEdit], QCheckBox, QListWidget]:
+    ) -> Tuple[Tuple[QLineEdit, QLineEdit, QLineEdit], QCheckBox, QCheckBox, QListWidget]:
         """Returns [Name, Alcohol, Volume], CheckedHand, ListWidget Elements for Ingredients"""
-        return (w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen), w.CHBHand, w.LWZutaten
+        return (w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen), w.CHBHand, w.check_slow_ingredient, w.LWZutaten
 
     def get_label_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
         """Returns all bottles label objects"""
