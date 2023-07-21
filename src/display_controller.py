@@ -108,7 +108,7 @@ class DisplayController(DialogHandler):
 
     def get_ingredient_window_data(self, w: Ui_addingredient) -> Tuple[str, int]:
         """Returns the needed data from the ingredient window"""
-        ingredient_name = w.CBingredient.currentText()
+        ingredient_name = self.get_list_widget_selection(w.ingredient_selection)
         volume = int(w.LAmount.text())
         return ingredient_name, volume
 
