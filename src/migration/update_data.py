@@ -171,7 +171,7 @@ def add_team_buffer_to_database():
 
 def add_virgin_flag_to_db():
     """Adds the virgin flag column to the DB"""
-    _logger.log_event("INFO", "Adding virgin flag column to DB")
+    _logger.log_event("INFO", "Adding virgin flag column to Recipes DB")
     db_handler = DatabaseHandler()
     try:
         db_handler.query_database("ALTER TABLE Recipes ADD COLUMN Virgin INTEGER DEFAULT 0;")
@@ -182,7 +182,7 @@ def add_virgin_flag_to_db():
 
 def add_slower_ingredient_flag_to_db():
     """Adds the slower ingredient flag column to the DB"""
-    _logger.log_event("INFO", "Adding slow_ingredient flag column to DB")
+    _logger.log_event("INFO", "Adding Slow flag column to Ingredients DB")
     db_handler = DatabaseHandler()
     try:
         db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Slow INTEGER DEFAULT 0;")
