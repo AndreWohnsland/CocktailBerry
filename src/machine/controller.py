@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import qApp
 
 
 from src.config_manager import shared, CONFIG as cfg
+from src.models import Ingredient
 from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.raspberry import RpiController
@@ -54,8 +55,7 @@ class MachineController():
     def make_cocktail(
         self,
         w: Union[MainScreen, None],
-        bottle_list: List[int],
-        volume_list: list[Union[float, int]],
+        ingredient_list: List[Ingredient],
         recipe="",
         is_cocktail=True,
         verbose=True,
@@ -80,7 +80,7 @@ class MachineController():
         shared.cocktail_started = True
         if w is not None:
             w.open_progression_window(recipe)
-        prep_data = _build_preparation_data(bottle_list, volume_list)
+        prep_data = _build_preparation_data(ingredient_list)
         _header_print(f"Starting {recipe}")
         if is_cocktail:
             self._led_controller.preparation_start()
@@ -183,18 +183,22 @@ class MachineController():
 
 
 def _build_preparation_data(
-    bottle_list: List[int],
-    volume_list: list[Union[float, int]]
+    ingredient_list: List[Ingredient],
 ) -> list[_PreparationData]:
     """Builds the data needed for machine preparation"""
-    indexes = [x - 1 for x in bottle_list]
-    pins = [cfg.PUMP_PINS[i] for i in indexes]
-    volume_flows = [cfg.PUMP_VOLUMEFLOW[i] for i in indexes]
-    pin_times = [round(volume / flow, 1) for volume, flow in zip(volume_list, volume_flows)]
+    # build prep data for each ingredient
     prep_data = []
-    for pin, flow, pin_time in zip(pins, volume_flows, pin_times):
+    for ing in ingredient_list:
+        if ing.bottle is None:  # bottle should never be None at this point
+            continue
+        slow_factor = cfg.PUMP_SLOW_FACTOR if ing.slow else 1
+        volume_flow = cfg.PUMP_VOLUMEFLOW[ing.bottle - 1] * slow_factor
         prep_data.append(
-            _PreparationData(pin, flow, pin_time)
+            _PreparationData(
+                cfg.PUMP_PINS[ing.bottle - 1],
+                volume_flow,
+                round(ing.amount / volume_flow, 1),
+            )
         )
     return prep_data
 

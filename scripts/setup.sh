@@ -56,6 +56,8 @@ else
   echo "Creating default microservice .env file at ~/CocktailBerry/microservice/.env If you want to use the service, you need to change default values!"
   cp microservice/.env.example microservice/.env
   echo "Install qtsass, this may take a while depending on your OS, so it is time for a coffe break :)"
+  echo "If this takes too long for you, you can cancel this step with 'ctrl + c' and install qtsass later manually with 'pip install qtsass'"
+  echo "qtsass is needed if you want to customize the CocktailBerry GUI and use your own colors"
   pip install qtsass
 fi
 echo "Done with the setup"

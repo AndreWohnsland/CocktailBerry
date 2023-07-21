@@ -73,7 +73,7 @@ def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCom
         ing = default_db.get_ingredient(ingredient)
         if ing is None:
             continue
-        local_db.insert_new_ingredient(ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand))
+        local_db.insert_new_ingredient(ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow))
 
 
 def _get_new_ingredients(local_db: DatabaseCommander, cocktails_to_add: List[Cocktail]) -> List[str]:
@@ -171,13 +171,24 @@ def add_team_buffer_to_database():
 
 def add_virgin_flag_to_db():
     """Adds the virgin flag column to the DB"""
-    _logger.log_event("INFO", "Adding virgin flag column to DB")
+    _logger.log_event("INFO", "Adding virgin flag column to Recipes DB")
     db_handler = DatabaseHandler()
     try:
         db_handler.query_database("ALTER TABLE Recipes ADD COLUMN Virgin INTEGER DEFAULT 0;")
         db_handler.query_database("Update Recipes SET Virgin = 0;")
     except OperationalError:
         _logger.log_event("ERROR", "Could not add virgin flag column to DB, this may because it already exists")
+
+
+def add_slower_ingredient_flag_to_db():
+    """Adds the slower ingredient flag column to the DB"""
+    _logger.log_event("INFO", "Adding Slow flag column to Ingredients DB")
+    db_handler = DatabaseHandler()
+    try:
+        db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Slow INTEGER DEFAULT 0;")
+        db_handler.query_database("Update Ingredients SET Slow = 0;")
+    except OperationalError:
+        _logger.log_event("ERROR", "Could not add Slow flag column to DB, this may because it already exists")
 
 
 def remove_is_alcoholic_column():

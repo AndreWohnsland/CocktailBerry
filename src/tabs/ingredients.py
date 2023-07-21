@@ -19,7 +19,7 @@ def handle_enter_ingredient(w):
     if not DP_CONTROLLER.validate_ingredient_data(w):
         return
     ingredient = DP_CONTROLLER.get_ingredient_data(w)
-    _, _, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+    _, _, _, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
 
     # it's a new ingredient if nothing from the lw is selected
     new_ingredient = not bool(ingredient.selected)
@@ -45,7 +45,7 @@ def _add_new_ingredient(w, ing: Ingredient):
         DP_CONTROLLER.say_name_already_exists()
         return False
 
-    DB_COMMANDER.insert_new_ingredient(ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand))
+    DB_COMMANDER.insert_new_ingredient(ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow))
     # needs to fill the ingredient comboboxes, bottles tab only if it is not a handadd
     to_fill = DP_CONTROLLER.get_comboboxes_recipes(w)
     if not ing.hand:
@@ -77,6 +77,7 @@ def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
         ing.bottle_volume,
         volume_level,
         bool(ing.hand),
+        bool(ing.slow),
         old_ingredient.id,
     )
 
@@ -103,14 +104,14 @@ def load_ingredients(w):
     """ Load all ingredient names into the ListWidget """
     DP_CONTROLLER.clear_list_widget_ingredients(w)
     ingredients = DB_COMMANDER.get_all_ingredients()
-    _, _, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+    _, _, _, ingredient_list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     DP_CONTROLLER.fill_list_widget(ingredient_list_widget, [x.name for x in ingredients])
 
 
 @logerror
 def delete_ingredient(w):
     """ Deletes an ingredient out of the DB if its not needed in any recipe."""
-    _, _, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+    _, _, _, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(list_widget)
     if not selected_ingredient:
         DP_CONTROLLER.say_no_ingredient_selected()
@@ -145,7 +146,7 @@ def delete_ingredient(w):
 @logerror
 def display_selected_ingredient(w):
     """ Search the DB entry for the ingredient and displays them """
-    lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+    lineedits, checkbox_hand, checkbox_slow, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(list_widget)
     DP_CONTROLLER.set_ingredient_add_label(w, selected_ingredient != "")
     if selected_ingredient:
@@ -155,14 +156,16 @@ def display_selected_ingredient(w):
         DP_CONTROLLER.fill_multiple_lineedit(
             list(lineedits), [ingredient.name, ingredient.alcohol, ingredient.bottle_volume]
         )
-        DP_CONTROLLER.set_checkbox_value(checkbox, ingredient.hand)
+        DP_CONTROLLER.set_checkbox_value(checkbox_hand, ingredient.hand)
+        DP_CONTROLLER.set_checkbox_value(checkbox_slow, ingredient.slow)
 
 
 @logerror
 def clear_ingredient_information(w):
     """ Clears all entries in the ingredient windows. """
-    lineedits, checkbox, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
+    lineedits, checkbox_hand, checkbox_slow, list_widget = DP_CONTROLLER.get_ingredient_fields(w)
     DP_CONTROLLER.clean_multiple_lineedit(list(lineedits))
     DP_CONTROLLER.unselect_list_widget_items(list_widget)
-    DP_CONTROLLER.set_checkbox_value(checkbox, False)
+    DP_CONTROLLER.set_checkbox_value(checkbox_hand, False)
+    DP_CONTROLLER.set_checkbox_value(checkbox_slow, False)
     DP_CONTROLLER.set_ingredient_add_label(w, False)

@@ -21,7 +21,8 @@ from src.migration.update_data import (
     add_team_buffer_to_database,
     add_virgin_flag_to_db,
     remove_is_alcoholic_column,
-    remove_old_recipe_columns
+    remove_old_recipe_columns,
+    add_slower_ingredient_flag_to_db,
 )
 
 _logger = LoggerHandler("migrator_module")
@@ -90,6 +91,9 @@ class Migrator:
         if self.older_than_version("1.19.3"):
             self._migration_log("1.19.3")
             _update_password_config_to_int()
+        if self.older_than_version("1.22.0"):
+            self._migration_log("1.22.0")
+            add_slower_ingredient_flag_to_db()
         self._check_local_version_data()
 
     def _migration_log(self, version: str):

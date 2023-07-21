@@ -177,6 +177,7 @@ git fsck --full
 ``` 
 
 This should not only remove the corrupted files, but also fetch the latest version of the software.
+If you get another error output, it is best to submit the error output with the issue.
 
 ## Problems Installing Software on Raspberry Pi
 

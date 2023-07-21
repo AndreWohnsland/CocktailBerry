@@ -105,8 +105,7 @@ def prepare_cocktail(w):
 
     print(f"Preparing {cocktail_volume} ml {display_name}")
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
-    ingredient_bottles = [x.bottle for x in cocktail.machineadds if x.amount > 0]
-    ingredient_volumes = [x.amount for x in cocktail.machineadds if x.amount > 0]
+    ingredient_bottles = [x for x in cocktail.machineadds if x.amount > 0]
 
     # Runs addons before hand, check if they throw an error
     addon_data: dict[str, Any] = {"cocktail": cocktail}
@@ -118,7 +117,7 @@ def prepare_cocktail(w):
 
     # Now make the cocktail
     consumption, taken_time, max_time = MACHINE.make_cocktail(
-        w, ingredient_bottles, ingredient_volumes, display_name)  # type: ignore
+        w, ingredient_bottles, display_name)  # type: ignore
     DB_COMMANDER.increment_recipe_counter(cocktail_name)
     __generate_maker_log_entry(cocktail_volume, display_name, taken_time, max_time)
 
