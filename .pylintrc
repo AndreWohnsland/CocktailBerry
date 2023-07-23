@@ -6,7 +6,7 @@ disable=missing-docstring,no-name-in-module,line-too-long
 
 [FORMAT]
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,x,y,ex,df,rc,ax,w,app,id
+good-names=i,j,k,l,x,y,ex,df,rc,ax,w,app,id
 max-line-length=120
 
 [DESIGN]
