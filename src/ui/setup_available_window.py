@@ -39,7 +39,9 @@ class AvailableWindow(QMainWindow, Ui_available):
         """ Writes the new availability into the DB. """
         DB_COMMANDER.delete_existing_handadd_ingredient()
         ingredient_names = [self.LWVorhanden.item(i).text() for i in range(self.LWVorhanden.count())]
-        DB_COMMANDER.insert_multiple_existing_handadd_ingredients_by_name(ingredient_names)
+        # only add ingredients if there are any
+        if ingredient_names:
+            DB_COMMANDER.insert_multiple_existing_handadd_ingredients_by_name(ingredient_names)
         # reloads the maker screen and updates the shown available recipes
         DP_CONTROLLER.clear_list_widget_maker(self.mainscreen)
         evaluate_recipe_maker_view(self.mainscreen)

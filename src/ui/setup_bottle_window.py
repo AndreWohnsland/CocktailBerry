@@ -24,7 +24,8 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         self.mainscreen = parent
         # Assigns the names to the labels
         # get all the DB values and assign the necessary to the level labels
-        # note: since there can be blank bottles (id=0 so no match) this needs to be caught as well (no selection from DB)
+        # note: since there can be blank bottles (id=0 so no match)
+        # # this needs to be caught as well (no selection from D
         self.id_list = []
         self.max_volume = []
         self.assign_bottle_data()
@@ -37,9 +38,9 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
 
         #  since zip only goes to the minimal of all, only one [:number] is needed
         for plus, minus, field, vol in zip(myplus, myminus, mylabel[:number], self.max_volume):
-            plus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.change_input_value(
+            plus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.change_input_value(  # noqa: E741
                 label=l, minimal=50, maximal=b, delta=25))
-            minus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.change_input_value(
+            minus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.change_input_value(  # noqa: E741
                 label=l, minimal=50, maximal=b, delta=-25))
 
         # remove the elements exceeding the bottle number
