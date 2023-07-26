@@ -153,6 +153,25 @@ You will then be on your desktop.
 Just set the password empty / delete all numbers.
 If the password setting ist empty, actions requiring a password will automatically succeed without prompting a password.
 
+### How to Minimize Start Terminal
+
+If you want to minimize the terminal window, you can use xdotool to do so:
+
+```bash
+sudo apt-get update
+sudo apt-get install xdotool
+```
+Then adjust the `launcher.sh` file to include the following line on top:
+
+```bash
+# you can edit it with 'sudo nano ~/launcher.sh'
+sleep 1 # sometimes you need to wait a bit longer so can increase to 2 if needed
+xdotool getactivewindow windowminimize
+# rest of the script stays same
+```
+
+With this setting, the window will be minimized before the rest of the program and output is started.
+
 ## Other
 
 ### What about Tube Volume
