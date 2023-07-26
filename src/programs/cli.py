@@ -4,6 +4,7 @@ from typing import Optional
 from pathlib import Path
 import typer
 
+from src import PROJECT_NAME
 from src.config_manager import CONFIG as cfg, version_callback, show_start_message
 from src.migration.update_data import add_new_recipes_from_default_db
 from src.programs.microservice_setup import setup_service
@@ -21,7 +22,9 @@ cli = typer.Typer(add_completion=False)
 @cli.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
+    displayed_name: str = typer.Option(PROJECT_NAME, "--name", "-n", help="Name to display at start."),
     calibration: bool = typer.Option(False, "--calibration", "-c", help="Run the calibration program."),
+    quiet: bool = typer.Option(False, "--quiet", "-q", help="Hide machine name, version and platform data."),
     debug: bool = typer.Option(False, "--debug", "-d", help="Using debug instead of normal Endpoints."),
     version: Optional[bool] = typer.Option(
         None, "--version", "-V", callback=version_callback, help="Show current version.")
@@ -34,7 +37,8 @@ def main(
     """
     if ctx.invoked_subcommand is not None:
         return
-    show_start_message()
+    if not quiet:
+        show_start_message(displayed_name)
     ADDONS.setup_addons()
     cfg.sync_config_to_file()
     if debug:
