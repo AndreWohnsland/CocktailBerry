@@ -333,7 +333,7 @@ class DatabaseCommander:
         """Insert a new ingredient into the database"""
         query = """INSERT OR IGNORE INTO
                 Ingredients(Name, Alcohol, Volume, Consumption_lifetime, Consumption, Fill_level, Hand, Slow) 
-                VALUES (?,?,?,0,0,0,?)"""
+                VALUES (?,?,?,0,0,0,?,?)"""
         search_tuple = (ingredient_name, alcohol_level, volume, int(only_hand), int(is_slow))
         self.handler.query_database(query, search_tuple)
 
