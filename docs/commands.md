@@ -5,6 +5,11 @@ Within the CocktailBerry folder, you can execute them with the schema `python ru
 There is also a `--help` flag to get information on the program, or it's sub-commands.
 You can use this to get information on the commands when running locally.
 
+!!! info "Used Auto Setup?"
+    If you installed over the setup script, the program will usually started over the `~/launcher.sh` file.
+    When you want to use other than the default options, change the `~/launcher.sh` file accordingly.
+    Just add the flags or their according values to the `python runme.py` command.
+
 ## The Main Program
 
 This is usually what you want to run.
@@ -15,9 +20,11 @@ You can run it with:
 python runme.py [OPTIONS]
 
 # Options:
+#   -n, --name TEXT    Name to display at start.  [default: CocktailBerry]
 #   -c, --calibration  Run the calibration program.
+#   -q, --quiet        Hide machine name, version and platform data.
 #   -d, --debug        Using debug instead of normal Endpoints.
-#   --version          Show current version.
+#   -V, --version      Show current version.
 #   --help             Show help
 ```
 
@@ -27,6 +34,11 @@ If you want to debug your microservice, you ca activate the debug `-d` flag.
 When debug is active, the data will be send to the **/debug** endpoint.
 This endpoint will only log the payload (request.json), but not send it anywhere.
 You can also show the program version, this is also shown at program start in the console.
+In addition, you may want to display another name than CocktailBerry, which is the default.
+Use the `-n` option, like `-n "YourName"`, to set a custom name.
+If you want omit the machine name, version and platform data, use the `-q` flag.
+
+In case you want to hide the terminal completely, see [this section](faq.md#how-to-minimize-start-terminal).
 
 ## Updating Local Database
 
@@ -127,7 +139,7 @@ python runme.py create-addon [OPTIONS] ADDON_NAME
 #   ADDON_NAME  [required]
 
 # Options:
-#   --help                  Show help
+#   --help  Show help
 ```
 
 Creates a file containing the base structure to get started with your addon.
@@ -149,7 +161,7 @@ python runme.py setup-microservice [OPTIONS]
 #   -e, --hook-endpoint TEXT  Custom hook endpoint
 #   -h, --hook-header TEXT    Custom hook headers
 #   -o, --old-compose         Use compose v1
-#   --help                    Show this message and exit.
+#   --help                    Show help
 ```
 
 Set up the microservice.
