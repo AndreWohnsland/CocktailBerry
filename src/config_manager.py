@@ -393,10 +393,10 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
-def show_start_message():
+def show_start_message(machine_name: str = PROJECT_NAME):
     """Shows the starting message in both Figlet and normal font"""
     figlet = Figlet()
-    start_message = f"{PROJECT_NAME} Version {__version__}"
+    start_message = f"{machine_name} Version {__version__}"
     print(figlet.renderText(start_message))
     print(start_message)
     print(get_platform_data())
