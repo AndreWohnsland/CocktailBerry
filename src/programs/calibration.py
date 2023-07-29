@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
+from src.models import Ingredient
 from src.config_manager import CONFIG as cfg
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
@@ -39,10 +40,10 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         channel_number = int(self.channel.text())
         amount = int(self.amount.text())
         display_name = f"{amount} ml volume, pump #{channel_number}"
+        ing = Ingredient(0, "Calibration", 0, 1000, 1000, False, False, amount, channel_number)
         MACHINE.make_cocktail(
             w=None,
-            bottle_list=[channel_number],
-            volume_list=[amount],
+            ingredient_list=[ing],
             recipe=display_name,
             is_cocktail=False,
             verbose=False,

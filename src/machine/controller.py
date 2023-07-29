@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 @dataclass
 class _PreparationData:
     pin: int
-    volume_flow: int
+    volume_flow: Union[int, float]
     flow_time: float
     consumption: float = 0.0
     closed: bool = False
