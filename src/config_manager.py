@@ -64,7 +64,7 @@ class ConfigManager:
     UI_WIDTH: int = 800
     UI_HEIGHT: int = 480
     # Slow factor for eg sticky ingredients
-    PUMP_SLOW_FACTOR = 1
+    PUMP_SLOW_FACTOR = 1.0
     # RPi pins where pumps (ascending) are connected
     PUMP_PINS: list[int] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
     # Volume flow for the according pumps
