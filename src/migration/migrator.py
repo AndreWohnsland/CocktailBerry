@@ -9,7 +9,7 @@ check_python_version()
 import configparser
 import sys
 import subprocess
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 import importlib.util
 
 from src.filepath import CUSTOM_CONFIG_FILE, VERSION_FILE, STYLE_FOLDER
@@ -94,6 +94,9 @@ class Migrator:
         if self.older_than_version("1.22.0"):
             self._migration_log("1.22.0")
             add_slower_ingredient_flag_to_db()
+        if self.older_than_version("1.23.1"):
+            self._migration_log("1.23.1")
+            _update_slow_factor_config_to_float()
         self._check_local_version_data()
 
     def _migration_log(self, version: str):
@@ -162,19 +165,29 @@ class Migrator:
 
 def _update_password_config_to_int():
     """Updates the local config file, using int now instead of str for password"""
+    _update_config_value_type("UI_MASTERPASSWORD", int, 0)
+
+
+def _update_slow_factor_config_to_float():
+    """Updates the local config file, using int now instead of str for password"""
+    _update_config_value_type("PUMP_SLOW_FACTOR", float, 1.0)
+
+
+def _update_config_value_type(config_name: str, new_type: type, default_value: Any):
+    """Updates the local config file, using int now instead of str for password"""
     if not CUSTOM_CONFIG_FILE.exists():
         return
-    _logger.info("Converting config value for password to integer")
+    _logger.info(f"Converting config value for {config_name} to {new_type}")
     configuration = {}
     with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
         configuration: dict = yaml.safe_load(stream)
-    # get the password from the config, if not exists fall back to 0
-    password_setting = configuration.get("UI_MASTERPASSWORD", "0")
-    # Try to convert, fall back to 0 if failure
+    # get the password from the config, if not exists fall back to default
+    local_config = configuration.get(config_name, default_value)
+    # Try to convert, fall back to default if failure
     try:
-        configuration["UI_MASTERPASSWORD"] = int(password_setting)
+        configuration[config_name] = new_type(local_config)
     except ValueError:
-        configuration["UI_MASTERPASSWORD"] = 0
+        configuration[config_name] = default_value
     with open(CUSTOM_CONFIG_FILE, 'w', encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
 
