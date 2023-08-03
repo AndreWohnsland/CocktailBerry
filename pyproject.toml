@@ -32,3 +32,9 @@ python-periphery = "^2.4.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+# don't check import order in the migration script
+per-file-ignores = { "migrator.py" = ["E402"] }
+line-length = 120
+exclude = ["ui_elements", "addon_skeleton.py"]
