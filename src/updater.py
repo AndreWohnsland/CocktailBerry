@@ -40,18 +40,26 @@ class Updater:
     def check_for_updates(self) -> tuple[bool, str]:
         """Check if there is a new version available"""
         # if not on master (e.g. dev) return false
+        update_problem = ""
         if self.repo.active_branch.name != "master":
-            return False, ""
+            update_problem = "Not on master branch, not checking for updates"
+            _logger.log_event("WARNING", update_problem)
+            return False, update_problem
         # Also do not make updates if current version does
         # not satisfy the future version requirement
         if sys.version_info < FUTURE_PYTHON_VERSION:
-            return False, ""
+            update_problem = f"Python version is too old, not checking for updates. You need at least {FUTURE_PYTHON_VERSION}"  # noqa
+            _logger.log_event("WARNING", update_problem)
+            return False, update_problem
         # First fetch the origin latest data
         try:
             self.repo.remotes.origin.fetch()
         # if no internet connection, or other error, return False
-        except GitCommandError:
-            return False, ""
+        except GitCommandError as err:
+            update_problem = "Something went wrong while fetching the repo data"
+            _logger.log_event("ERROR", update_problem)
+            _logger.log_exception(err)
+            return False, update_problem + f"\n{err}"
         # Get the latest tag an compare the diff with the current branch
         # Usually this should work since the default is master branch and "normal" users shouldn't be changing files
         # Not using diff but local and remote tags to compare, since some problems exists comparing by diff
