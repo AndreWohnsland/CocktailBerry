@@ -24,6 +24,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
 from src.programs.calibration import run_calibration
 from src.logger_handler import LoggerHandler
+from src.updater import Updater
 from src.utils import has_connection, restart_program, get_platform_data
 from src.config_manager import CONFIG as cfg
 
@@ -75,6 +76,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_addons.clicked.connect(self._open_addon_window)
         self.button_check_internet.clicked.connect(self._check_internet_connection)
         self.button_update_system.clicked.connect(self._update_system)
+        self.button_update_software.clicked.connect(self._update_software)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 
@@ -209,6 +211,23 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             self,
             self._finish_update_worker
         )
+
+    def _update_software(self):
+        """First asks and then updates the software"""
+        updater = Updater()
+        update_available, info = updater.check_for_updates()
+        # If there is no update available, but there is info, show it
+        # this is usually only if there is an error or something
+        if not update_available and not info:
+            DP_CONTROLLER.say_cocktailberry_up_to_date()
+            return
+        # else inform the user about that he is up to date
+        if not update_available and info:
+            DP_CONTROLLER.standard_box(info)
+            return
+        # if there is an update available, ask the user if he wants to update
+        if DP_CONTROLLER.ask_to_update(info):
+            updater.update()
 
     def _finish_update_worker(self):
         """Ends the spinner, checks if installation was successful"""
