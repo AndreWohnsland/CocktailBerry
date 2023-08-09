@@ -298,6 +298,10 @@ class DialogHandler():
         """Informs that qtsass was not set up successfully"""
         self.__output_language_dialog("qtsass_not_successful")
 
+    def say_cocktailberry_up_to_date(self):
+        """Informs that cocktailberry is up to date"""
+        self.__output_language_dialog("cocktailberry_up_to_date")
+
     ############################
     # Methods for prompting ####
     ############################

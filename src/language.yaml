@@ -181,6 +181,9 @@ dialog:
   qtsass_not_successful:
     en: 'The package qtsass could not be installed. Try running "[sudo] pip install qtsass" (sudo only, if program is executed with sudo python) and wait until its done.'
     de: 'Das qtsass Paket konnte nicht installiert werden. Versuche "[sudo] pip install qtsass" (sudo nur, wenn das program mit sudo python ausgeführt wird) auszuführen und warte, bis die installation abgeschlossen ist.'
+  cocktailberry_up_to_date:
+    en: 'You are running the latest version of CocktailBerry.'
+    de: 'Du hast die neuste Version von CocktailBerry.'
 # Change of language in UI elements
 ui:
   # Some commonly used elements within multiple windows
