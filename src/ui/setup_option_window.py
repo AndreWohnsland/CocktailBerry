@@ -10,7 +10,7 @@ from pathlib import Path
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from src.filepath import ROOT_PATH
+from src.filepath import ROOT_PATH, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.ui.create_config_window import ConfigWindow
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_log_window import LogWindow
@@ -24,6 +24,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.tabs import bottles
 from src.programs.calibration import run_calibration
 from src.logger_handler import LoggerHandler
+from src.updater import Updater
 from src.utils import has_connection, restart_program, get_platform_data
 from src.config_manager import CONFIG as cfg
 
@@ -35,6 +36,7 @@ _DATABASE_NAME = "Cocktail_database.db"
 _CONFIG_NAME = "custom_config.yaml"
 _VERSION_NAME = ".version.ini"
 _NEEDED_FILES = [_DATABASE_NAME, _CONFIG_NAME, _VERSION_NAME]
+_OPTIONAL_BACKUP_FILES = [CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS]
 _logger = LoggerHandler("option_window")
 _platform_data = get_platform_data()
 
@@ -75,6 +77,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_addons.clicked.connect(self._open_addon_window)
         self.button_check_internet.clicked.connect(self._check_internet_connection)
         self.button_update_system.clicked.connect(self._update_system)
+        self.button_update_software.clicked.connect(self._update_software)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 
@@ -143,8 +146,13 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         except FileExistsError:
             _logger.log_event("INFO", "Backup folder for today already exists, overwriting current data within")
 
+        # The distinguish between the files that are needed and the optional ones
+        # Optional ones where introduced with the 1.24.0 update
+        # So if the user has an older version, the optional would break the restore
         for _file in _NEEDED_FILES:
             shutil.copy(ROOT_PATH / _file, backup_folder)
+        for _file in _OPTIONAL_BACKUP_FILES:
+            shutil.copy(_file, backup_folder)
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
     def _upload_backup(self):
@@ -161,6 +169,12 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
                 return
         for _file in _NEEDED_FILES:
             shutil.copy(location / _file, ROOT_PATH)
+        # Optional files where introduced with the 1.24.0 update
+        # so if its not existed, skip it
+        for _file in _OPTIONAL_BACKUP_FILES:
+            backup_file = location / _file.name
+            if backup_file.exists():
+                shutil.copy(backup_file, _file)
         restart_program()
 
     def _get_user_folder_response(self):
@@ -209,6 +223,23 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             self,
             self._finish_update_worker
         )
+
+    def _update_software(self):
+        """First asks and then updates the software"""
+        updater = Updater()
+        update_available, info = updater.check_for_updates()
+        # If there is no update available, but there is info, show it
+        # this is usually only if there is an error or something
+        if not update_available and not info:
+            DP_CONTROLLER.say_cocktailberry_up_to_date()
+            return
+        # else inform the user about that he is up to date
+        if not update_available and info:
+            DP_CONTROLLER.standard_box(info)
+            return
+        # if there is an update available, ask the user if he wants to update
+        if DP_CONTROLLER.ask_to_update(info):
+            updater.update()
 
     def _finish_update_worker(self):
         """Ends the spinner, checks if installation was successful"""

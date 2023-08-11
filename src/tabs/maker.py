@@ -99,7 +99,8 @@ def prepare_cocktail(w):
     if error is not None:
         DP_CONTROLLER.say_not_enough_ingredient_volume(*error)
         # Only switch tabs if they are not locked!
-        if not cfg.UI_PARTYMODE:
+        # Locking is only possible if the password is activated (!=0)
+        if cfg.UI_MAKER_PASSWORD == 0:
             DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
         return
 

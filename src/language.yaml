@@ -181,6 +181,9 @@ dialog:
   qtsass_not_successful:
     en: 'The package qtsass could not be installed. Try running "[sudo] pip install qtsass" (sudo only, if program is executed with sudo python) and wait until its done.'
     de: 'Das qtsass Paket konnte nicht installiert werden. Versuche "[sudo] pip install qtsass" (sudo nur, wenn das program mit sudo python ausgeführt wird) auszuführen und warte, bis die installation abgeschlossen ist.'
+  cocktailberry_up_to_date:
+    en: 'You are running the latest version of CocktailBerry.'
+    de: 'Du hast die neuste Version von CocktailBerry.'
 # Change of language in UI elements
 ui:
   # Some commonly used elements within multiple windows
@@ -394,9 +397,13 @@ ui:
   ##### PASSWORD WINDOW #####
   # all values for password dialog window
   password_dialog:
-    header:
-      en: 'Enter Password'
+    # default is master password
+    header_master_password:
+      en: 'Enter master password:'
       de: 'Passwort eingeben:'
+    header_maker_password:
+      en: 'Enter maker password:'
+      de: 'Maker Passwort eingeben:'
 
   rfid_writer:
     write:
@@ -465,8 +472,11 @@ ui:
       en: 'Protects other tabs than maker with password'
       de: 'Schützt alle Tabs außer Maker Tab mit Passwort'
     UI_MASTERPASSWORD:
-      en: 'Password for some actions, use 0 for no password'
-      de: 'Passwort für manche Aktionen, verwende 0 um kein Passwort zu verwenden'
+      en: 'Password for critical actions and to get to settings, use 0 for no password'
+      de: 'Passwort für kritische Aktionen und um zu den Einstellungen zu kommen, verwende 0 um kein Passwort zu verwenden'
+    UI_MAKER_PASSWORD:
+      en: 'Password for tabs other than the maker one, use 0 for no password'
+      de: 'Passwort alle Tabs, außer den Maker Tab, verwende 0 um kein Passwort zu verwenden'
     UI_LANGUAGE:
       en: 'Displayed language of the program'
       de: 'Spracheinstellung vom Programm'

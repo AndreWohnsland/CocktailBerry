@@ -52,10 +52,10 @@ class ConfigManager:
 
     # Activating some dev features like mouse cursor
     UI_DEVENVIRONMENT: bool = True
-    # Locks the recipe tab, making it impossible to access
-    UI_PARTYMODE: bool = False
     # Password to lock clean, delete and other critical operators
     UI_MASTERPASSWORD: int = 0
+    # Password to lock other tabs than maker tab
+    UI_MAKER_PASSWORD: int = 0
     # Language to use, use two chars look up documentation, if not provided fallback to en
     UI_LANGUAGE: SupportedLanguagesType = "en"
     # Width and height of the touchscreen
@@ -129,8 +129,8 @@ class ConfigManager:
         # The check function needs to be a callable with interface fn(configname, configvalue)
         self.config_type: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
             "UI_DEVENVIRONMENT": (bool, []),
-            "UI_PARTYMODE": (bool, []),
             "UI_MASTERPASSWORD": (int, []),
+            "UI_MAKER_PASSWORD": (int, []),
             "UI_LANGUAGE": (LanguageChoose, []),
             "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),

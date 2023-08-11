@@ -57,9 +57,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-222</y>
          <width>765</width>
-         <height>598</height>
+         <height>684</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -77,8 +77,8 @@
         </property>
         <item>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="0">
-           <widget class="QPushButton" name="button_config">
+          <item row="2" column="0">
+           <widget class="QPushButton" name="button_backup">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -99,7 +99,33 @@
              </font>
             </property>
             <property name="text">
-             <string>Change Config</string>
+             <string>Backup</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QPushButton" name="button_check_internet">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Check Internet</string>
             </property>
            </widget>
           </item>
@@ -129,7 +155,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QPushButton" name="button_wifi">
             <property name="minimumSize">
              <size>
@@ -152,58 +178,6 @@
             </property>
             <property name="text">
              <string>WiFi</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="button_backup">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>80</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>5000</width>
-              <height>300</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>28</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Backup</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QPushButton" name="button_check_internet">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>80</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>5000</width>
-              <height>300</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>28</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Check Internet</string>
             </property>
            </widget>
           </item>
@@ -285,6 +259,32 @@
             </property>
            </widget>
           </item>
+          <item row="7" column="0">
+           <widget class="QPushButton" name="button_addons">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Addons</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="button_calibration">
             <property name="minimumSize">
@@ -308,32 +308,6 @@
             </property>
             <property name="text">
              <string>Calibration</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QPushButton" name="button_logs">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>80</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>5000</width>
-              <height>300</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>28</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Logs</string>
             </property>
            </widget>
           </item>
@@ -363,33 +337,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
-           <widget class="QPushButton" name="button_addons">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>80</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>5000</width>
-              <height>300</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>28</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Addons</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
+          <item row="7" column="1">
            <widget class="QPushButton" name="button_rfid">
             <property name="enabled">
              <bool>false</bool>
@@ -418,6 +366,32 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="button_logs">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Logs</string>
+            </property>
+           </widget>
+          </item>
           <item row="4" column="1">
            <widget class="QPushButton" name="button_update_system">
             <property name="minimumSize">
@@ -441,6 +415,58 @@
             </property>
             <property name="text">
              <string>Update System</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="button_config">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Change Config</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QPushButton" name="button_update_software">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Update CocktailBerry Software</string>
             </property>
            </widget>
           </item>

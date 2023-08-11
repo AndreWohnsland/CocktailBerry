@@ -12,7 +12,7 @@ import subprocess
 from typing import Any, Optional, Tuple
 import importlib.util
 
-from src.filepath import CUSTOM_CONFIG_FILE, VERSION_FILE, STYLE_FOLDER
+from src.filepath import CUSTOM_CONFIG_FILE, VERSION_FILE, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src import __version__, FUTURE_PYTHON_VERSION
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
@@ -48,6 +48,13 @@ class Migrator:
         """Checks if the current version is below the given version"""
         return _Version(version) > self.local_version
 
+    def older_than_version_with_logging(self, version: str) -> bool:
+        """Checks if the current version is below the given version"""
+        is_older = _Version(version) > self.local_version
+        if is_older:
+            self._migration_log(version)
+        return is_older
+
     def _write_local_version(self):
         """Writes the latest version to the local version"""
         _logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
@@ -59,43 +66,32 @@ class Migrator:
         """Make migration dependant on current local and program version"""
         _logger.log_event("INFO", f"Local version is: {self.local_version}, checking for necessary migrations")
         self._python_to_old_warning(FUTURE_PYTHON_VERSION)
-        if self.older_than_version("1.5.0"):
-            self._migration_log("1.5.0")
+        if self.older_than_version_with_logging("1.5.0"):
             rename_database_to_english()
             add_team_buffer_to_database()
             self._install_pip_package("GitPython", "1.5.0")
-        if self.older_than_version("1.5.3"):
-            self._migration_log("1.5.3")
+        if self.older_than_version_with_logging("1.5.3"):
             self._install_pip_package("typer", "1.5.3")
-        if self.older_than_version("1.6.0"):
-            self._migration_log("1.6.0")
+        if self.older_than_version_with_logging("1.6.0"):
             self._change_git_repo()
             self._install_pip_package("pyfiglet", "1.6.0")
-        if self.older_than_version("1.6.1"):
-            self._migration_log("1.6.1")
+        if self.older_than_version_with_logging("1.6.1"):
             add_more_bottles_to_db()
-        if self.older_than_version("1.9.0"):
-            self._migration_log("1.9.0")
+        if self.older_than_version_with_logging("1.9.0"):
             add_virgin_flag_to_db()
             remove_is_alcoholic_column()
             self._install_pip_package("typing_extensions", "1.9.0")
-        if self.older_than_version("1.11.0"):
-            self._migration_log("1.11.0")
+        if self.older_than_version_with_logging("1.11.0"):
             self._install_pip_package("qtawesome", "1.11.0")
-        if self.older_than_version("1.17.0"):
-            self._migration_log("1.17.0")
+        if self.older_than_version_with_logging("1.17.0"):
             self._install_pip_package("pyqtspinner", "1.17.0")
-        if self.older_than_version("1.18.0"):
-            self._migration_log("1.18.0")
+        if self.older_than_version_with_logging("1.18.0"):
             remove_old_recipe_columns()
-        if self.older_than_version("1.19.3"):
-            self._migration_log("1.19.3")
+        if self.older_than_version_with_logging("1.19.3"):
             _update_password_config_to_int()
-        if self.older_than_version("1.22.0"):
-            self._migration_log("1.22.0")
+        if self.older_than_version_with_logging("1.22.0"):
             add_slower_ingredient_flag_to_db()
-        if self.older_than_version("1.23.1"):
-            self._migration_log("1.23.1")
+        if self.older_than_version_with_logging("1.23.1"):
             _update_slow_factor_config_to_float()
         self._check_local_version_data()
 
@@ -124,15 +120,13 @@ class Migrator:
 
     def _update_custom_theme(self):
         """Checks and updates (compiles) the custom theme"""
-        custom_style_file = STYLE_FOLDER / "custom.scss"
-        compiled_style_file = STYLE_FOLDER / "custom.css"
         # skip if library is not installed, or file does not exist
         lib_not_installed = importlib.util.find_spec("qtsass") is None
-        no_file = not custom_style_file.exists()
+        no_file = not CUSTOM_STYLE_SCSS.exists()
         if lib_not_installed or no_file:
             return
         import qtsass  # pylint:disable=import-outside-toplevel
-        qtsass.compile_filename(custom_style_file, compiled_style_file)
+        qtsass.compile_filename(CUSTOM_STYLE_SCSS, CUSTOM_STYLE_FILE)
 
     def _change_git_repo(self):
         """Sets the git source to the new named repo"""

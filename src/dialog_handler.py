@@ -80,13 +80,21 @@ class DialogHandler():
             return True
         return False
 
-    def password_prompt(self):
-        """Opens a password prompt, return if successful entered password"""
+    def password_prompt(
+        self,
+        right_password: int = cfg.UI_MASTERPASSWORD,
+        header_type: Literal['master', 'maker'] = "master",
+    ):
+        """Opens a password prompt, return if successful entered password
+        Option to also use other than master password
+        This is useful for example for the UI_MAKER_PASSWORD, or if needed for more things in the future
+        """
         from src.ui.setup_password_dialog import PasswordDialog
         # if password is empty, return true
-        if cfg.UI_MASTERPASSWORD == 0:
+        # Empty means zero in this case, since the config is an int
+        if right_password == 0:
             return True
-        password_dialog = PasswordDialog()
+        password_dialog = PasswordDialog(right_password, header_type)
         if password_dialog.exec_():
             return True
         return False
@@ -297,6 +305,10 @@ class DialogHandler():
     def say_qtsass_not_successful(self):
         """Informs that qtsass was not set up successfully"""
         self.__output_language_dialog("qtsass_not_successful")
+
+    def say_cocktailberry_up_to_date(self):
+        """Informs that cocktailberry is up to date"""
+        self.__output_language_dialog("cocktailberry_up_to_date")
 
     ############################
     # Methods for prompting ####
@@ -556,10 +568,14 @@ class UiLanguage():
         window = "datepicker"
         w.header.setText(self.__choose_language("header", window))
 
-    def adjust_password_window(self, w: Ui_PasswordDialog):
+    def adjust_password_window(
+        self,
+        w: Ui_PasswordDialog,
+        header_type: Literal['master', 'maker'] = "master",
+    ):
         """Translate all the labels from the password window"""
         window = "password_dialog"
-        w.header.setText(self.__choose_language("header", window))
+        w.header.setText(self.__choose_language(f"header_{header_type}_password", window))
         w.cancel_button.setText(self.__choose_language("cancel_button"))
         w.enter_button.setText(self.__choose_language("ok_button"))
 
