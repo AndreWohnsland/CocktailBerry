@@ -210,9 +210,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Connects the virgin checkbox
         self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))
 
-        # Protect other tabs with password in party mode
-        if cfg.UI_PARTYMODE:
-            self.tabWidget.currentChanged.connect(self.handle_tab_bar_clicked)
+        # Protect other tabs with password
+        # since it's now a password, using 0 = no password will not trigger password window
+        # so we don't need to set this up conditionally
+        self.tabWidget.currentChanged.connect(self.handle_tab_bar_clicked)
 
         # Removes the elements not used depending on number of bottles in bottle tab
         # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
@@ -247,7 +248,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """Protects tabs other than maker tab with a password"""
         if index == 0:
             return
-        if DP_CONTROLLER.password_prompt():
+        if DP_CONTROLLER.password_prompt(right_password=cfg.UI_MAKER_PASSWORD, header_type="maker"):
             return
         # Set back to 1st tab if password not right
         self.tabWidget.setCurrentIndex(0)

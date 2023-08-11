@@ -1,3 +1,4 @@
+from typing import Literal
 from PyQt5.QtWidgets import QDialog
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -8,10 +9,15 @@ from src.ui_elements.passworddialog import Ui_PasswordDialog
 class PasswordDialog(QDialog, Ui_PasswordDialog):
     """ Creates the Password Widget. """
 
-    def __init__(self):
+    def __init__(
+        self,
+        right_password: int = cfg.UI_MASTERPASSWORD,
+        header_type: Literal['master', 'maker'] = "master"
+    ):
         """ Init. Connect all the buttons and set window policy. """
         super().__init__()
         self.setupUi(self)
+        self.right_password = right_password
         DP_CONTROLLER.initialize_window_object(self)
         # Connect all the buttons, generates a list of the numbers an object names to do that
         self.enter_button.clicked.connect(self.enter_clicked)
@@ -21,7 +27,7 @@ class PasswordDialog(QDialog, Ui_PasswordDialog):
         self.attribute_numbers = [getattr(self, "PB" + str(x)) for x in self.number_list]
         for obj, number in zip(self.attribute_numbers, self.number_list):
             obj.clicked.connect(lambda _, n=number: self.number_clicked(number=n))
-        UI_LANGUAGE.adjust_password_window(self)
+        UI_LANGUAGE.adjust_password_window(self, header_type)
         DP_CONTROLLER.set_display_settings(self)
 
     def number_clicked(self, number: int):
@@ -32,7 +38,7 @@ class PasswordDialog(QDialog, Ui_PasswordDialog):
         """ Enters/Closes the Dialog. """
         password_string = self.password_field.text()
         password = 0 if len(password_string) == 0 else int(password_string)
-        if cfg.UI_MASTERPASSWORD == password:
+        if self.right_password == password:
             self.accept()
             return
         DP_CONTROLLER.say_wrong_password()
