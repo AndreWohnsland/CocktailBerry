@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import http.client as httplib
 import atexit
 
-from src.filepath import ROOT_PATH, STYLE_FOLDER
+from src.filepath import ROOT_PATH, STYLE_FOLDER, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.logger_handler import LoggerHandler
 
 
@@ -77,10 +77,8 @@ def restart_program():
 
 def generate_custom_style_file():
     """Generates the custom style file, if it does not exist"""
-    custom_style_file = STYLE_FOLDER / "custom.scss"
-    compiled_custom = STYLE_FOLDER / "custom.css"
     default_style_file = STYLE_FOLDER / "default.scss"
     compiled_default = STYLE_FOLDER / "default.css"
-    if not custom_style_file.exists():
-        custom_style_file.write_text(default_style_file.read_text())
-        compiled_custom.write_text(compiled_default.read_text())
+    if not CUSTOM_STYLE_SCSS.exists():
+        CUSTOM_STYLE_SCSS.write_text(default_style_file.read_text())
+        CUSTOM_STYLE_FILE.write_text(compiled_default.read_text())

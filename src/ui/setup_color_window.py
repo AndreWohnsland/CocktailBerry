@@ -7,7 +7,7 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QSize, Qt, QObject, pyqtSignal
 
 from src import SupportedThemesType
-from src.filepath import STYLE_FOLDER
+from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.utils import restart_program
 from src.migration.migrator import Migrator, CouldNotMigrateException
 from src.ui.icons import parse_colors
@@ -149,8 +149,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         Builds the css file afterwards with the qtsass package
         """
         # read in the custom style file
-        custom_style_file = STYLE_FOLDER / "custom.scss"
-        style = custom_style_file.read_text()
+        style = CUSTOM_STYLE_SCSS.read_text()
 
         # replace lines with new color
         for color_name, color_line_edit in self.inputs_colors.items():
@@ -158,11 +157,10 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             replace_regex = r"\$" + f"{color_name}:" + r"\s*(#[0-9a-f]{3,6});"
             replacement = f"${color_name}: {color_value};"
             style = re.sub(replace_regex, replacement, style)
-        custom_style_file.write_text(style)
+        CUSTOM_STYLE_SCSS.write_text(style)
 
         # compile the file with qtsass
-        compiled_style_file = STYLE_FOLDER / "custom.css"
-        qtsass.compile_filename(custom_style_file, compiled_style_file)
+        qtsass.compile_filename(CUSTOM_STYLE_SCSS, CUSTOM_STYLE_FILE)
         self.close()
 
     def _finish_installer_worker(self):

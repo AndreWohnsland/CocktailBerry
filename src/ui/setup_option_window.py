@@ -10,7 +10,7 @@ from pathlib import Path
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from src.filepath import ROOT_PATH
+from src.filepath import ROOT_PATH, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.ui.create_config_window import ConfigWindow
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_log_window import LogWindow
@@ -36,6 +36,7 @@ _DATABASE_NAME = "Cocktail_database.db"
 _CONFIG_NAME = "custom_config.yaml"
 _VERSION_NAME = ".version.ini"
 _NEEDED_FILES = [_DATABASE_NAME, _CONFIG_NAME, _VERSION_NAME]
+_OPTIONAL_BACKUP_FILES = [CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS]
 _logger = LoggerHandler("option_window")
 _platform_data = get_platform_data()
 
@@ -145,8 +146,13 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         except FileExistsError:
             _logger.log_event("INFO", "Backup folder for today already exists, overwriting current data within")
 
+        # The distinguish between the files that are needed and the optional ones
+        # Optional ones where introduced with the 1.24.0 update
+        # So if the user has an older version, the optional would break the restore
         for _file in _NEEDED_FILES:
             shutil.copy(ROOT_PATH / _file, backup_folder)
+        for _file in _OPTIONAL_BACKUP_FILES:
+            shutil.copy(_file, backup_folder)
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
     def _upload_backup(self):
@@ -163,6 +169,12 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
                 return
         for _file in _NEEDED_FILES:
             shutil.copy(location / _file, ROOT_PATH)
+        # Optional files where introduced with the 1.24.0 update
+        # so if its not existed, skip it
+        for _file in _OPTIONAL_BACKUP_FILES:
+            backup_file = location / _file.name
+            if backup_file.exists():
+                shutil.copy(backup_file, _file)
         restart_program()
 
     def _get_user_folder_response(self):
