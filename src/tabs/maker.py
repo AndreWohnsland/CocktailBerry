@@ -47,6 +47,9 @@ def update_shown_recipe(w, clear_view: bool = True):
     cocktail = DB_COMMANDER.get_cocktail(cocktail_name)
     if cocktail is None:
         return
+    # Do not scale the recipe volume if use recipe amount is activated
+    if cfg.MAKER_USE_RECIPE_VOLUME:
+        amount = cocktail.amount
     cocktail.scale_cocktail(amount, factor)
     DP_CONTROLLER.fill_recipe_data_maker(w, cocktail, amount)
 
@@ -89,6 +92,9 @@ def prepare_cocktail(w):
     cocktail = DB_COMMANDER.get_cocktail(cocktail_name)
     if cocktail is None:
         return
+    # Do not scale the recipe volume if use recipe amount is activated
+    if cfg.MAKER_USE_RECIPE_VOLUME:
+        cocktail_volume = cocktail.amount
     cocktail.scale_cocktail(cocktail_volume, alcohol_factor)
     virgin_ending = " (Virgin)" if cocktail.is_virgin else ""
     display_name = f"{cocktail_name}{virgin_ending}"
@@ -160,6 +166,9 @@ def adjust_alcohol(w, amount: float):
 
 def adjust_volume(w, amount: int):
     """changes the volume amount"""
+    # Do not scale the recipe volume if the option is activated
+    if cfg.MAKER_USE_RECIPE_VOLUME:
+        return
     new_volume = shared.cocktail_volume + amount
     shared.cocktail_volume = _limit_number(new_volume, 100, 400)
     update_shown_recipe(w, False)
