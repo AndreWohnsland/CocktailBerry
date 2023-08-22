@@ -93,6 +93,8 @@ class ConfigManager:
     MAKER_CHECK_INTERNET: bool = True
     # Volume to pump up if a bottle gets changed
     MAKER_TUBE_VOLUME: int = 0
+    # Option to not scale the recipe volume but use always the defined one
+    MAKER_USE_RECIPE_VOLUME: bool = False
     # List of LED pins for control
     LED_PINS: list[int] = []
     # Value for LED brightness
@@ -149,6 +151,7 @@ class ConfigManager:
             "MAKER_THEME": (ThemeChoose, []),
             "MAKER_CHECK_INTERNET": (bool, []),
             "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
+            "MAKER_USE_RECIPE_VOLUME": (bool, []),
             "LED_PINS": (list, []),
             "LED_BRIGHTNESS": (int, [_build_number_limiter(1, 255)]),
             "LED_COUNT": (int, [_build_number_limiter(1, 500)]),

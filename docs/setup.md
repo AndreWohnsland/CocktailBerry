@@ -50,6 +50,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `MAKER_SLEEP_TIME`           | Interval between each time check while generating a cocktail                             |
 | `MAKER_CHECK_INTERNET`       | Do a connection check at start for time adjustment window                                |
 | `MAKER_TUBE_VOLUME`          | Volume in ml to pump up when bottle is set to new                                        |
+| `MAKER_USE_RECIPE_VOLUME`    | Do not scale but use defined amounts                                                     |
 | `LED_PINS`                   | List of pins connected to LEDs for preparation                                           |
 | `LED_BRIGHTNESS`             | Brightness for the WS281x LED (1-255)                                                    |
 | `LED_COUNT`                  | Number of LEDs on the WS281x                                                             |
