@@ -132,7 +132,8 @@ class MachineController():
                 section_time = round(section_time + cfg.MAKER_SLEEP_TIME, 2)
                 time.sleep(cfg.MAKER_SLEEP_TIME)
                 if w is not None:
-                    w.change_progression_window(current_time / max_time * 100)
+                    progress = int(current_time / max_time * 100)
+                    w.change_progression_window(progress)
                 qApp.processEvents()
             _print_time(current_time, max_time)
             self._stop_pumps(pins)
