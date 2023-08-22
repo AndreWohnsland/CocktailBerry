@@ -26,5 +26,12 @@
     "Sideview"
   ],
   "cSpell.language": "en,de",
-  "ruff.args": ["--line-length=120", "--ignore=E402"]
+  "ruff.args": [
+    "--line-length=120",
+    "--ignore=E402"
+  ],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8"
+  },
+  "python.formatting.provider": "none"
 }
