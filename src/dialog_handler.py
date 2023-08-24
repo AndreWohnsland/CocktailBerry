@@ -185,11 +185,13 @@ class DialogHandler():
 
     def say_cocktail_ready(self, comment: str):
         """Informs user that the cocktail is done with additional information what to add"""
-        full_comment = ""
-        if comment:
-            header_comment = self.__choose_language("cocktail_ready_add")
-            full_comment = f"\n\n{header_comment}{comment}"
-        self.__output_language_dialog("cocktail_ready", close_time=60, full_comment=full_comment)
+        # no more message if there is no additional information
+        if not comment:
+            return
+        close_time = 60
+        header_comment = self.__choose_language("cocktail_ready_add")
+        full_comment = f"\n\n{header_comment}{comment}"
+        self.__output_language_dialog("cocktail_ready", close_time=close_time, full_comment=full_comment)
 
     def say_enter_cocktail_name(self):
         """Informs user that no cocktail name was supplied"""

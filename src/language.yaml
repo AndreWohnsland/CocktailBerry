@@ -531,6 +531,9 @@ ui:
     MAKER_TUBE_VOLUME:
       en: 'Empty tube volume from bottle to pump'
       de: 'Leeres Schlauchvolumen von Flasche zu Pumpe'
+    MAKER_USE_RECIPE_VOLUME:
+      en: 'Use recipe volume instead of scaling to defined volume. This disables scaling of cocktail amount in the maker tab.'
+      de: 'Verwende Rezept Volumen anstatt Skalierung auf definiertes Volumen. Dies deaktiviert die Skalierung von Cocktail Menge im Maker Tab.'
     LED_PINS:
       en: 'List of pins controlling LEDs during preparation'
       de: 'Liste an Pins, die LEDs bei der Zubereitung kontrollieren'

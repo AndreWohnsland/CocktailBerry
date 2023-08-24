@@ -44,6 +44,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.logger.log_start_program()
         self.connect_objects()
         self.connect_other_windows()
+        self.hide_necessary_elements()
         DP_CONTROLLER.initialize_window_object(self)
         # init the empty further screens
         self.numpad_window: Optional[NumpadWidget] = None
@@ -113,7 +114,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """ Opens up the progression window to show the Cocktail status. """
         self.progress_window = ProgressScreen(self, cocktail_type)
 
-    def change_progression_window(self, pb_value):
+    def change_progression_window(self, pb_value: int):
         """ Changes the value of the progression bar of the ProBarWindow. """
         if self.progress_window is None:
             return
@@ -171,7 +172,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEFlaschenvolumen.clicked.connect(
             lambda: self.open_numpad(self.LEFlaschenvolumen, 50, 50, amount)
         )
-        self.LEFlaschenvolumen.setMaxLength(4)
+        self.LEFlaschenvolumen.setMaxLength(5)
         self.LECocktail.setMaxLength(30)
 
     def connect_objects(self):
@@ -243,6 +244,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
             combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
+
+    def hide_necessary_elements(self):
+        """Depending on the config, hide some of the unused elements"""
+        if cfg.MAKER_USE_RECIPE_VOLUME:
+            self.decrease_volume.hide()
+            self.increase_volume.hide()
 
     def handle_tab_bar_clicked(self, index):
         """Protects tabs other than maker tab with a password"""
