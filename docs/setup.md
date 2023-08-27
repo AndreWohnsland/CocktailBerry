@@ -93,7 +93,7 @@ The according controlling library for Python needs to be installed.
 If it's not shipped within the default OS of your board, this will be mentioned here.
 Currently supported options (boards) are:
 
-- **RPI (Raspberry Pi)**: Using GPIO according to [GPIO-Numbers](https://en.pinout.xyz/) for Pins.
+- **RPI (Raspberry Pi)**: Using GPIO according to [GPIO-Numbers](https://pinout.xyz/) for Pins.
 - **Generic**: Using GPIO with [python-periphery](https://github.com/vsergeev/python-periphery). Should work for many boards, check out your GPIO number from your provider.
 
 !!! info "Not your Board?"
