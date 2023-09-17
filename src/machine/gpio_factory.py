@@ -41,9 +41,8 @@ class GPIOFactory:
         # using xor here to created the right inverted status
         is_inverted = self.inverted ^ inverted
         if board == "RPI":
-            return RaspberryGPIO(1, 0, is_inverted, pin)
-        else:
-            return GenericGPIO(1, 0, is_inverted, pin)
+            return RaspberryGPIO(self.rpi_high, self.rpi_low, is_inverted, pin)
+        return GenericGPIO(self.generic_high, self.generic_low, is_inverted, pin)
 
 
 class GenericGPIO(GPIOController):
