@@ -32,11 +32,13 @@ class GPIOController:
         self,
         high: Any,
         low: Any,
-        inverted: bool
+        inverted: bool,
+        pin: int
     ):
         self.high = high
         self.low = low
         self.inverted = inverted
+        self.pin = pin
         if self.inverted:
             self.high, self.low = self.low, self.high
 
