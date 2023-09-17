@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Any
 
 # Grace period, will be switched once Python 3.8+ is mandatory
 try:
@@ -25,6 +25,36 @@ class PinController(Protocol):  # type: ignore
     @abstractmethod
     def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
         pass
+
+
+class GPIOController:
+    def __init__(
+        self,
+        high: Any,
+        low: Any,
+        inverted: bool
+    ):
+        self.high = high
+        self.low = low
+        self.inverted = inverted
+        if self.inverted:
+            self.high, self.low = self.low, self.high
+
+    @abstractmethod
+    def initialize(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def activate(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def close(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def cleanup(self):
+        raise NotImplementedError
 
 
 class RFIDController(Protocol):
