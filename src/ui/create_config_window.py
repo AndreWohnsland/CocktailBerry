@@ -169,7 +169,7 @@ class ConfigWindow(QMainWindow):
         config_input = QCheckBox(displayed_text)
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.setChecked(current_value)
+        config_input.setChecked(bool(current_value))
         layout.addWidget(config_input)
         return config_input.isChecked
 
@@ -183,7 +183,9 @@ class ConfigWindow(QMainWindow):
         # adds a button for adding new list entries
         add_button = QPushButton("+ add")
         adjust_font(add_button, MEDIUM_FONT, True)
-        add_button.clicked.connect(lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input))
+        add_button.clicked.connect(
+            lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input)
+        )
         # build container that new added elements are above add button separately
         v_container = QVBoxLayout()
         v_container.addLayout(config_input)
@@ -191,7 +193,13 @@ class ConfigWindow(QMainWindow):
         self.vbox.addLayout(v_container)
         return lambda: [x() for x in getter_fn_list]
 
-    def _add_ui_element_to_list(self, initial_value, getter_fn_list: List, config_name: str, container: QBoxLayout):
+    def _add_ui_element_to_list(
+        self,
+        initial_value,
+        getter_fn_list: List,
+        config_name: str,
+        container: QBoxLayout
+        ):
         """Adds an additional input element for list buildup"""
         # Gets the type of the list elements
         list_config = cfg.config_type_list.get(config_name)
@@ -203,8 +211,15 @@ class ConfigWindow(QMainWindow):
             )
         list_type, _ = list_config
         h_container = QHBoxLayout()
+        # need to get the current length of the layout, to get the indicator number
+        current_position = container.count() + 1
+        position_number = QLabel(str(current_position))
+        position_number.setMinimumWidth(15)
+        position_number.setMaximumWidth(15)
+        h_container.addWidget(position_number)
         getter_fn = self._build_input_field(config_name, list_type, initial_value, h_container)
         remove_button = QPushButton("x")
+        remove_button.setMaximumWidth(30)
         adjust_font(remove_button, MEDIUM_FONT, True)
         # the first argument in lambda is needed since the object reference within the loop
         remove_button.clicked.connect(
