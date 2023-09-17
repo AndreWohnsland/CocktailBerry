@@ -1,5 +1,5 @@
 from typing import List, Optional
-from src.machine.interface import PinController
+from src.machine.interface import PinController, GPIOController
 from src.logger_handler import LoggerHandler
 
 
@@ -55,3 +55,22 @@ class RpiController(PinController):
             GPIO.cleanup()
         else:
             GPIO.cleanup(pin_list)
+
+
+class RaspberryGPIO(GPIOController):
+    def __init__(self, inverted: bool, pin: int):
+        low = GPIO.LOW if not DEV else 0
+        high = GPIO.HIGH if not DEV else 1
+        super().__init__(high, low, inverted, pin)
+
+    def initialize(self):
+        GPIO.setup(self.pin, GPIO.OUT, initial=self.low)
+
+    def activate(self):
+        GPIO.output(self.pin, self.high)
+
+    def close(self):
+        GPIO.output(self.pin, self.low)
+
+    def cleanup(self):
+        GPIO.cleanup(self.pin)
