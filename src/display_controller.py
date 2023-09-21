@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QLineEdit, QPushButton, QListWidget,
     QCheckBox, QMainWindow, QProgressBar,
     QListWidgetItem, QLayout,
+    QStyledItemDelegate, QStyleOptionViewItem
 )
 
 from src.filepath import STYLE_FOLDER, APP_ICON_FILE
@@ -18,6 +19,12 @@ from src import MAX_SUPPORTED_BOTTLES
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui_elements.bonusingredient import Ui_addingredient
 from src.ui.icons import ICONS
+
+
+class ItemDelegate(QStyledItemDelegate):
+    def paint(self, painter, option, index):
+        option.decorationPosition = QStyleOptionViewItem.Right  # type: ignore
+        super(ItemDelegate, self).paint(painter, option, index)
 
 
 class DisplayController(DialogHandler):
