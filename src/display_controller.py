@@ -340,8 +340,15 @@ class DisplayController(DialogHandler):
         """Adds the element to the list widget item
         If is is a cocktail object, build in the virgin possibility as indicator"""
         if isinstance(item_data, Cocktail):
-            addition = " *" if item_data.virgin_available else ""
-            lw_item = QListWidgetItem(f"{item_data.name}{addition}")
+            cocktail_icon = QIcon()
+            if item_data.virgin_available:
+                cocktail_icon = ICONS.generate_icon(
+                    "mdi.glass-cocktail-off",
+                    ICONS.color.primary,
+                    ICONS.color.secondary
+                )
+            lw_item = QListWidgetItem(cocktail_icon, item_data.name)
+
             lw_item.setData(Qt.UserRole, item_data.name)  # type: ignore
         else:
             lw_item = QListWidgetItem(item_data)
