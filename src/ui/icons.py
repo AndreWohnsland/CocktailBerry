@@ -20,7 +20,7 @@ _CLEAR_ICON = "fa5s.eraser"
 _COCKTAIL_ICON = "fa5s.cocktail"
 _SPINNER_ICON = "fa5s.spinner"
 _TIME_ICON = "fa5s.hourglass-start"
-_BUTTON_SIZE = QSize(36, 36)
+BUTTON_SIZE = QSize(36, 36)
 
 
 @dataclass
@@ -90,9 +90,21 @@ class IconSetter:
 
     def _set_icon(self, ui_element: QPushButton, icon, no_text: bool):
         ui_element.setIcon(icon)
-        ui_element.setIconSize(_BUTTON_SIZE)
+        ui_element.setIconSize(BUTTON_SIZE)
         if no_text:
             ui_element.setText("")
+
+    def generate_icon(self, icon_name: str, color: str, color_active: Optional[str] = None) -> QIcon:
+        """Generates an icon with the given color and size
+
+        Args:
+            icon (str): icon name in qta, e.g. "fa5s.cog"
+            color (str): given color name, e.g. "#007bff"
+            size (int, optional): Size of the icon. Defaults to 16.
+        """
+        if color_active is None:
+            color_active = color
+        return qta.icon(icon_name, color=color, color_active=color_active)
 
     def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary=False):
         """Sets a spinner button to the icon"""
@@ -103,7 +115,7 @@ class IconSetter:
             used_icon = qta.icon(_TIME_ICON, color=color)
         # add "padding" in front of button
         button.setText(f" {button.text()}")
-        button.setIconSize(_BUTTON_SIZE)
+        button.setIconSize(BUTTON_SIZE)
         button.setIcon(used_icon)  # type: ignore
 
     def remove_icon(self, button: QPushButton):
