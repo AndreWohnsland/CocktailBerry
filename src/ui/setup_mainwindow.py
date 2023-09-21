@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import QMainWindow, QLineEdit
 from src.config_manager import CONFIG as cfg
 from src.machine.controller import MACHINE
 from src.tabs import maker, ingredients, recipes, bottles
-from src.display_controller import DP_CONTROLLER
+from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
@@ -27,7 +27,7 @@ from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_available_window import AvailableWindow
 from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
-from src.ui.icons import ICONS
+from src.ui.icons import ICONS, BUTTON_SIZE
 
 from src import FUTURE_PYTHON_VERSION
 
@@ -177,6 +177,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """
+        # add delegate (list items icons)
+        self.LWMaker.setItemDelegate(ItemDelegate(self))
+        # also increase the icon size here (setting icon bigger will not do it later, it will be cropped)
+        self.LWMaker.setIconSize(BUTTON_SIZE)
         # First, connect all the push buttons with the Functions
         self.PBZutathinzu.clicked.connect(lambda: ingredients.handle_enter_ingredient(self))
         self.PBRezepthinzu.clicked.connect(lambda: recipes.handle_enter_recipe(self))
