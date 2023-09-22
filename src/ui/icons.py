@@ -1,4 +1,5 @@
-from typing import Literal, Optional
+from __future__ import annotations
+from typing import Literal, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 
 from PyQt5.QtCore import QSize
@@ -11,6 +12,9 @@ from src import SupportedThemesType
 from src.filepath import STYLE_FOLDER
 from src.config_manager import CONFIG as cfg
 
+if TYPE_CHECKING:
+    from src.ui_elements import Ui_MainWindow
+
 # DEFINING THE ICONS
 _SETTING_ICON = "fa5s.cog"
 _PLUS_ICON = "fa5s.plus"
@@ -18,6 +22,7 @@ _MINUS_ICON = "fa5s.minus"
 _DELETE_ICON = "fa5s.trash-alt"
 _CLEAR_ICON = "fa5s.eraser"
 _COCKTAIL_ICON = "fa5s.cocktail"
+_VIRGIN_ICON = "mdi.glass-cocktail-off"
 _SPINNER_ICON = "fa5s.spinner"
 _TIME_ICON = "fa5s.hourglass-start"
 BUTTON_SIZE = QSize(36, 36)
@@ -84,7 +89,7 @@ class IconSetter:
         self.presets = PresetIcon()
         self._spinner: Optional[WaitingSpinner] = None
 
-    def set_mainwindow_icons(self, w):
+    def set_mainwindow_icons(self, w: Ui_MainWindow):
         """Sets the icons of the main window according to style sheets props"""
         # For solid buttons, they use bg color for icon
         for ui_element, icon, no_text in [
@@ -102,7 +107,8 @@ class IconSetter:
         ]:
             self._set_icon(ui_element, qta.icon(icon, color=color), no_text)
 
-    def _set_icon(self, ui_element: QPushButton, icon, no_text: bool):
+    def _set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool):
+        """Sets the icon of the given ui element"""
         ui_element.setIcon(icon)
         ui_element.setIconSize(BUTTON_SIZE)
         if no_text:
@@ -114,7 +120,7 @@ class IconSetter:
         Args:
             icon (str): icon name in qta, e.g. "fa5s.cog"
             color (str): given color name, e.g. "#007bff"
-            size (int, optional): Size of the icon. Defaults to 16.
+            color_active (str): given active color name, will use color if None, defaults to None
         """
         if color_active is None:
             color_active = color
