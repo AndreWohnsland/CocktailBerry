@@ -343,7 +343,7 @@ class DisplayController(DialogHandler):
             cocktail_icon = QIcon()
             if item_data.virgin_available:
                 cocktail_icon = ICONS.generate_icon(
-                    "mdi.glass-cocktail-off",
+                    ICONS.presets.virgin,
                     ICONS.color.primary,
                     ICONS.color.secondary
                 )
