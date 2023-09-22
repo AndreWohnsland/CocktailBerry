@@ -24,6 +24,19 @@ BUTTON_SIZE = QSize(36, 36)
 
 
 @dataclass
+class PresetIcon:
+    setting = _SETTING_ICON
+    plus = _PLUS_ICON
+    minus = _MINUS_ICON
+    delete = _DELETE_ICON
+    clear = _CLEAR_ICON
+    cocktail = _COCKTAIL_ICON
+    virgin = _VIRGIN_ICON
+    spinner = _SPINNER_ICON
+    time = _TIME_ICON
+
+
+@dataclass
 class ColorInformation:
     primary: str
     secondary: str
@@ -68,6 +81,7 @@ def parse_colors(theme: Optional[SupportedThemesType] = None) -> ColorInformatio
 class IconSetter:
     def __init__(self):
         self.color = parse_colors()
+        self.presets = PresetIcon()
         self._spinner: Optional[WaitingSpinner] = None
 
     def set_mainwindow_icons(self, w):
