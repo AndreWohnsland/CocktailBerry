@@ -25,6 +25,7 @@ _COCKTAIL_ICON = "fa5s.cocktail"
 _VIRGIN_ICON = "mdi.glass-cocktail-off"
 _SPINNER_ICON = "fa5s.spinner"
 _TIME_ICON = "fa5s.hourglass-start"
+_SEARCH_ICON = "fa.search"
 BUTTON_SIZE = QSize(36, 36)
 
 
@@ -39,6 +40,7 @@ class PresetIcon:
     virgin = _VIRGIN_ICON
     spinner = _SPINNER_ICON
     time = _TIME_ICON
+    search = _SEARCH_ICON
 
 
 @dataclass
@@ -99,6 +101,7 @@ class IconSetter:
             (w.PBZclear, _CLEAR_ICON, True),
             (w.PBclear, _CLEAR_ICON, True),
             (w.prepare_button, _COCKTAIL_ICON, False),
+            (w.button_search_cocktail, _SEARCH_ICON, True),
         ]:
             icon = qta.icon(icon, color=self.color.background)
             self._set_icon(ui_element, icon, no_text)
