@@ -4,7 +4,7 @@ import os
 import subprocess
 import time
 from pathlib import Path
-from PyQt5.QtWidgets import QMainWindow, qApp
+from PyQt5.QtWidgets import QMainWindow, qApp, QLineEdit
 
 from src.logger_handler import LoggerHandler
 from src.dialog_handler import UI_LANGUAGE
@@ -55,7 +55,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
             return
         self.button_enter.setDisabled(True)
 
-    def _open_keyboard(self, le_to_write, max_char_len=64):
+    def _open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 64):
         """ Opens up the keyboard connected to the lineedit """
         self.keyboard_window = KeyboardWidget(self.mainscreen, le_to_write=le_to_write, max_char_len=max_char_len)
 
