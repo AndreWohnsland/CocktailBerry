@@ -24,7 +24,7 @@ from src.ui.icons import ICONS
 class ItemDelegate(QStyledItemDelegate):
     def paint(self, painter, option, index):
         option.decorationPosition = QStyleOptionViewItem.Right  # type: ignore
-        super(ItemDelegate, self).paint(painter, option, index)
+        super().paint(painter, option, index)
 
 
 class DisplayController(DialogHandler):
