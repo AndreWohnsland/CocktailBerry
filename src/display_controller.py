@@ -60,6 +60,18 @@ class DisplayController(DialogHandler):
             return user_data.name if isinstance(user_data, Cocktail) else user_data
         return first_selected.text()
 
+    def get_list_widget_items(self, list_widget: QListWidget) -> Union[List[str], List[Cocktail]]:
+        """Returns the items of the list widget"""
+        list_widget_data = []
+        for i in range(list_widget.count()):
+            item = list_widget.item(i)
+            data = item.data(Qt.UserRole)  # type: ignore
+            if data:
+                list_widget_data.append(data)
+            else:
+                list_widget_data.append(item.text())
+        return list_widget_data
+
     def get_ingredient_data(self, w: Ui_MainWindow):
         """Returns an Ingredient Object from the ingredient data fields"""
         line_edits, checkbox_hand, checkbox_slow, list_widget = self.get_ingredient_fields(w)
@@ -325,6 +337,21 @@ class DisplayController(DialogHandler):
         for i in range(list_widget.count()):
             list_widget.item(i).setSelected(False)
 
+    def select_list_widget_item(self, list_widget: QListWidget, to_select: Union[str, Cocktail]):
+        """Select the first item in the list widget"""
+        if isinstance(to_select, Cocktail):
+            to_select = to_select.name
+        for i in range(list_widget.count()):
+            item = list_widget.item(i)
+            data = item.data(Qt.UserRole)  # type: ignore
+            if data:
+                current_name = data.name
+            else:
+                current_name = item.text()
+            if current_name == to_select:
+                list_widget.setCurrentItem(item)
+                break
+
     def delete_list_widget_item(self, list_widget: QListWidget, item: str):
         """Deletes an item in the list widget"""
         index_to_delete = list_widget.findItems(item, Qt.MatchExactly)  # type: ignore
@@ -355,6 +382,10 @@ class DisplayController(DialogHandler):
             lw_item = QListWidgetItem(item_data)
         lw_item.setData(Qt.UserRole, item_data)  # type: ignore
         return lw_item
+
+    def clear_list_widget(self, list_widget: QListWidget):
+        """Clears the given list widget"""
+        list_widget.clear()
 
     def clear_list_widget_maker(self, w: Ui_MainWindow):
         """Clears the maker list widget"""
