@@ -55,7 +55,9 @@ class DisplayController(DialogHandler):
         first_selected = selected[0]
         user_data = first_selected.data(Qt.UserRole)  # type: ignore
         if user_data:
-            return user_data
+            # If the user data is a cocktail object, return the name, else the user data
+            # Usually the data should be a cocktail object, but fallback if it may set differently
+            return user_data.name if isinstance(user_data, Cocktail) else user_data
         return first_selected.text()
 
     def get_ingredient_data(self, w: Ui_MainWindow):
@@ -349,10 +351,9 @@ class DisplayController(DialogHandler):
                 )
             lw_item = QListWidgetItem(cocktail_icon, item_data.name)
 
-            lw_item.setData(Qt.UserRole, item_data.name)  # type: ignore
         else:
             lw_item = QListWidgetItem(item_data)
-            lw_item.setData(Qt.UserRole, item_data)  # type: ignore
+        lw_item.setData(Qt.UserRole, item_data)  # type: ignore
         return lw_item
 
     def clear_list_widget_maker(self, w: Ui_MainWindow):
