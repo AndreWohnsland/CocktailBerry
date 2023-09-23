@@ -461,6 +461,13 @@ ui:
       en: 'All time'
       de: 'Komplette Zeit'
 
+  ##### SEARCH WINDOW #####
+  # all values for search window
+  search_window:
+    header:
+      en: 'Search available cocktails by name or ingredient'
+      de: 'Suche verfügbare Cocktails nach Namen oder Zutat'
+
   ##### SETTINGS WINDOW #####
   # all values for settings window
   # Use same names as config names
