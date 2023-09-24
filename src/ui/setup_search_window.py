@@ -29,7 +29,7 @@ class SearchWindow(QMainWindow, Ui_SearchWindow):
         DP_CONTROLLER.fill_list_widget(self.list_widget_cocktails, available_cocktails)
 
     def enter_search(self):
-        """Enters the search into the main window"""
+        """ Enters the search into the main window"""
         search = DP_CONTROLLER.get_list_widget_selection(self.list_widget_cocktails)
         if search:
             DP_CONTROLLER.select_list_widget_item(self.maker_list_widget, search)
@@ -38,10 +38,9 @@ class SearchWindow(QMainWindow, Ui_SearchWindow):
     def _open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 64):
         """ Opens up the keyboard connected to the lineedit """
         self.keyboard_window = KeyboardWidget(self.mainscreen, le_to_write=le_to_write, max_char_len=max_char_len)
-        print("DONE")
 
     def _apply_search_to_list(self):
-        """"""
+        """ Applies the search to the list widget"""
         search = self.input_cocktail.text()
         DP_CONTROLLER.clear_list_widget(self.list_widget_cocktails)
         # if the search is empty, just fill all possible cocktails
