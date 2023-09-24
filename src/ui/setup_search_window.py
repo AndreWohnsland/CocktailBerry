@@ -52,7 +52,7 @@ class SearchWindow(QMainWindow, Ui_SearchWindow):
         to_fill = []
         for cocktail in self.available_cocktails:
             # also search if any of the ingredient match search
-            ingredient_match = any([search in ing.name.lower() for ing in cocktail.ingredients])
+            ingredient_match = any(search in ing.name.lower() for ing in cocktail.ingredients)
             if search in cocktail.name.lower() or ingredient_match:
                 to_fill.append(cocktail)
         DP_CONTROLLER.fill_list_widget(self.list_widget_cocktails, to_fill)
