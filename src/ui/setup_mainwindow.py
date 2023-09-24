@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
 from src.config_manager import CONFIG as cfg
 from src.machine.controller import MACHINE
+from src.models import Cocktail
 from src.tabs import maker, ingredients, recipes, bottles
 from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.dialog_handler import UI_LANGUAGE
@@ -27,6 +28,7 @@ from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_available_window import AvailableWindow
 from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
+from src.ui.setup_search_window import SearchWindow
 from src.ui.icons import ICONS, BUTTON_SIZE
 
 from src import FUTURE_PYTHON_VERSION
@@ -56,6 +58,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.team_window: Optional[TeamScreen] = None
         self.option_window: Optional[OptionWindow] = None
         self.datepicker: Optional[DatePicker] = None
+        self.search_window: Optional[SearchWindow] = None
         UI_LANGUAGE.adjust_mainwindow(self)
         MACHINE.set_up_pumps()
         self.showFullScreen()
@@ -148,6 +151,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def open_available_window(self):
         self.available_window = AvailableWindow(self)
 
+    def open_search_window(self):
+        """Opens the search window"""
+        available_cocktails = DP_CONTROLLER.get_list_widget_items(self.LWMaker)
+        # fix for return data may be cocktail or str data
+        available_cocktails = [x for x in available_cocktails if isinstance(x, Cocktail)]
+        self.search_window = SearchWindow(self, available_cocktails, self.LWMaker)
+
     def connect_other_windows(self):
         """Links the buttons and lineedits to the other ui elements"""
         self.LECocktail.clicked.connect(lambda: self.open_keyboard(self.LECocktail))
@@ -174,6 +184,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         )
         self.LEFlaschenvolumen.setMaxLength(5)
         self.LECocktail.setMaxLength(30)
+        self.button_search_cocktail.clicked.connect(self.open_search_window)
 
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """
