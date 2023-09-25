@@ -1,5 +1,5 @@
 from typing import List, Optional
-from src.machine.interface import PinController
+from src.machine.interface import PinController, GPIOController
 from src.logger_handler import LoggerHandler
 
 
@@ -62,3 +62,34 @@ class GenericController(PinController):
         else:
             for pin in pin_list:
                 self.gpios[pin].close()
+
+
+class GenericGPIO(GPIOController):
+    def __init__(
+        self,
+        inverted: bool,
+        pin: int
+    ):
+        low = False
+        high = True
+        super().__init__(high, low, inverted, pin)
+        self.gpio = None
+
+    def initialize(self):
+        init_value = "high" if self.inverted else "out"
+        self.gpio = GPIO(self.pin, init_value)
+
+    def activate(self):
+        if self.gpio is None:
+            return
+        self.gpio.write(self.high)
+
+    def close(self):
+        if self.gpio is None:
+            return
+        self.gpio.write(self.low)
+
+    def cleanup(self):
+        if self.gpio is None:
+            return
+        self.gpio.close()

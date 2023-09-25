@@ -25,6 +25,11 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.18.0** | Addons are now possible <br> Better recipe ingredient calculation                                                    |
 | **v1.19.0** | CLI command for easy microservice setup <br> Update OS over interface                                                |
 | **v1.20.0** | Local visualization of cocktail data                                                                                 |
+| **v1.21.0** | Option to disable ingredient volume check                                                                            |
+| **v1.22.0** | Slow ingredient to use less volume flow                                                                              |
+| **v1.23.0** | CLI can change or hide displayed name                                                                                |
+| **v1.24.0** | Own password for maker                                                                                               |
+| **v1.25.0** | Option to not scale cocktail                                                                                         |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.

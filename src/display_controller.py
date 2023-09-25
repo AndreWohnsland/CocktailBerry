@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QLineEdit, QPushButton, QListWidget,
     QCheckBox, QMainWindow, QProgressBar,
     QListWidgetItem, QLayout,
+    QStyledItemDelegate, QStyleOptionViewItem
 )
 
 from src.filepath import STYLE_FOLDER, APP_ICON_FILE
@@ -18,6 +19,12 @@ from src import MAX_SUPPORTED_BOTTLES
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui_elements.bonusingredient import Ui_addingredient
 from src.ui.icons import ICONS
+
+
+class ItemDelegate(QStyledItemDelegate):
+    def paint(self, painter, option, index):
+        option.decorationPosition = QStyleOptionViewItem.Right  # type: ignore
+        super().paint(painter, option, index)
 
 
 class DisplayController(DialogHandler):
@@ -48,8 +55,22 @@ class DisplayController(DialogHandler):
         first_selected = selected[0]
         user_data = first_selected.data(Qt.UserRole)  # type: ignore
         if user_data:
-            return user_data
+            # If the user data is a cocktail object, return the name, else the user data
+            # Usually the data should be a cocktail object, but fallback if it may set differently
+            return user_data.name if isinstance(user_data, Cocktail) else user_data
         return first_selected.text()
+
+    def get_list_widget_items(self, list_widget: QListWidget) -> Union[List[str], List[Cocktail]]:
+        """Returns the items of the list widget"""
+        list_widget_data = []
+        for i in range(list_widget.count()):
+            item = list_widget.item(i)
+            data = item.data(Qt.UserRole)  # type: ignore
+            if data:
+                list_widget_data.append(data)
+            else:
+                list_widget_data.append(item.text())
+        return list_widget_data
 
     def get_ingredient_data(self, w: Ui_MainWindow):
         """Returns an Ingredient Object from the ingredient data fields"""
@@ -316,6 +337,21 @@ class DisplayController(DialogHandler):
         for i in range(list_widget.count()):
             list_widget.item(i).setSelected(False)
 
+    def select_list_widget_item(self, list_widget: QListWidget, to_select: Union[str, Cocktail]):
+        """Select the first item in the list widget"""
+        if isinstance(to_select, Cocktail):
+            to_select = to_select.name
+        for i in range(list_widget.count()):
+            item = list_widget.item(i)
+            data = item.data(Qt.UserRole)  # type: ignore
+            if data:
+                current_name = data.name
+            else:
+                current_name = item.text()
+            if current_name == to_select:
+                list_widget.setCurrentItem(item)
+                break
+
     def delete_list_widget_item(self, list_widget: QListWidget, item: str):
         """Deletes an item in the list widget"""
         index_to_delete = list_widget.findItems(item, Qt.MatchExactly)  # type: ignore
@@ -333,13 +369,23 @@ class DisplayController(DialogHandler):
         """Adds the element to the list widget item
         If is is a cocktail object, build in the virgin possibility as indicator"""
         if isinstance(item_data, Cocktail):
-            addition = " *" if item_data.virgin_available else ""
-            lw_item = QListWidgetItem(f"{item_data.name}{addition}")
-            lw_item.setData(Qt.UserRole, item_data.name)  # type: ignore
+            cocktail_icon = QIcon()
+            if item_data.virgin_available:
+                cocktail_icon = ICONS.generate_icon(
+                    ICONS.presets.virgin,
+                    ICONS.color.primary,
+                    ICONS.color.secondary
+                )
+            lw_item = QListWidgetItem(cocktail_icon, item_data.name)
+
         else:
             lw_item = QListWidgetItem(item_data)
-            lw_item.setData(Qt.UserRole, item_data)  # type: ignore
+        lw_item.setData(Qt.UserRole, item_data)  # type: ignore
         return lw_item
+
+    def clear_list_widget(self, list_widget: QListWidget):
+        """Clears the given list widget"""
+        list_widget.clear()
 
     def clear_list_widget_maker(self, w: Ui_MainWindow):
         """Clears the maker list widget"""

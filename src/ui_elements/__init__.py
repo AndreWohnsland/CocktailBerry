@@ -19,6 +19,7 @@ from .customcolor import Ui_ColorWindow
 from .addonwindow import Ui_Addonwindow
 from .addonmanager import Ui_AddonManager
 from .datawindow import Ui_DataWindow
+from .searchwindow import Ui_SearchWindow
 
 
 __all__ = [
@@ -43,4 +44,5 @@ __all__ = [
     "Ui_Addonwindow",
     "Ui_AddonManager",
     "Ui_DataWindow",
+    "Ui_SearchWindow",
 ]

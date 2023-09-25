@@ -1,4 +1,5 @@
-from typing import Literal, Optional
+from __future__ import annotations
+from typing import Literal, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 
 from PyQt5.QtCore import QSize
@@ -11,6 +12,9 @@ from src import SupportedThemesType
 from src.filepath import STYLE_FOLDER
 from src.config_manager import CONFIG as cfg
 
+if TYPE_CHECKING:
+    from src.ui_elements import Ui_MainWindow
+
 # DEFINING THE ICONS
 _SETTING_ICON = "fa5s.cog"
 _PLUS_ICON = "fa5s.plus"
@@ -18,9 +22,25 @@ _MINUS_ICON = "fa5s.minus"
 _DELETE_ICON = "fa5s.trash-alt"
 _CLEAR_ICON = "fa5s.eraser"
 _COCKTAIL_ICON = "fa5s.cocktail"
+_VIRGIN_ICON = "mdi.glass-cocktail-off"
 _SPINNER_ICON = "fa5s.spinner"
 _TIME_ICON = "fa5s.hourglass-start"
-_BUTTON_SIZE = QSize(36, 36)
+_SEARCH_ICON = "fa.search"
+BUTTON_SIZE = QSize(36, 36)
+
+
+@dataclass
+class PresetIcon:
+    setting = _SETTING_ICON
+    plus = _PLUS_ICON
+    minus = _MINUS_ICON
+    delete = _DELETE_ICON
+    clear = _CLEAR_ICON
+    cocktail = _COCKTAIL_ICON
+    virgin = _VIRGIN_ICON
+    spinner = _SPINNER_ICON
+    time = _TIME_ICON
+    search = _SEARCH_ICON
 
 
 @dataclass
@@ -68,9 +88,10 @@ def parse_colors(theme: Optional[SupportedThemesType] = None) -> ColorInformatio
 class IconSetter:
     def __init__(self):
         self.color = parse_colors()
+        self.presets = PresetIcon()
         self._spinner: Optional[WaitingSpinner] = None
 
-    def set_mainwindow_icons(self, w):
+    def set_mainwindow_icons(self, w: Ui_MainWindow):
         """Sets the icons of the main window according to style sheets props"""
         # For solid buttons, they use bg color for icon
         for ui_element, icon, no_text in [
@@ -80,6 +101,7 @@ class IconSetter:
             (w.PBZclear, _CLEAR_ICON, True),
             (w.PBclear, _CLEAR_ICON, True),
             (w.prepare_button, _COCKTAIL_ICON, False),
+            (w.button_search_cocktail, _SEARCH_ICON, True),
         ]:
             icon = qta.icon(icon, color=self.color.background)
             self._set_icon(ui_element, icon, no_text)
@@ -88,11 +110,24 @@ class IconSetter:
         ]:
             self._set_icon(ui_element, qta.icon(icon, color=color), no_text)
 
-    def _set_icon(self, ui_element: QPushButton, icon, no_text: bool):
+    def _set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool):
+        """Sets the icon of the given ui element"""
         ui_element.setIcon(icon)
-        ui_element.setIconSize(_BUTTON_SIZE)
+        ui_element.setIconSize(BUTTON_SIZE)
         if no_text:
             ui_element.setText("")
+
+    def generate_icon(self, icon_name: str, color: str, color_active: Optional[str] = None) -> QIcon:
+        """Generates an icon with the given color and size
+
+        Args:
+            icon (str): icon name in qta, e.g. "fa5s.cog"
+            color (str): given color name, e.g. "#007bff"
+            color_active (str): given active color name, will use color if None, defaults to None
+        """
+        if color_active is None:
+            color_active = color
+        return qta.icon(icon_name, color=color, color_active=color_active)
 
     def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary=False):
         """Sets a spinner button to the icon"""
@@ -103,7 +138,7 @@ class IconSetter:
             used_icon = qta.icon(_TIME_ICON, color=color)
         # add "padding" in front of button
         button.setText(f" {button.text()}")
-        button.setIconSize(_BUTTON_SIZE)
+        button.setIconSize(BUTTON_SIZE)
         button.setIcon(used_icon)  # type: ignore
 
     def remove_icon(self, button: QPushButton):
