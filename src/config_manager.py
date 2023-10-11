@@ -170,7 +170,7 @@ class ConfigManager:
         # only needed if the above config type was defined as list type, rest is identical to top schema
         self.config_type_list: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
             "PUMP_PINS": (int, [self._validate_pin_numbers]),
-            "PUMP_VOLUMEFLOW": (int, [_build_number_limiter(1, 1000)]),
+            "PUMP_VOLUMEFLOW": (float, [_build_number_limiter(0.1, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
             "LED_PINS": (int, [_build_number_limiter(0, 200)]),
         }
