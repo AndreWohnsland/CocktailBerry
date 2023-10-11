@@ -88,11 +88,13 @@ class Migrator:
         if self.older_than_version_with_logging("1.18.0"):
             remove_old_recipe_columns()
         if self.older_than_version_with_logging("1.19.3"):
-            _update_password_config_to_int()
+            _update_config_value_type("UI_MASTERPASSWORD", int, 0)
         if self.older_than_version_with_logging("1.22.0"):
             add_slower_ingredient_flag_to_db()
         if self.older_than_version_with_logging("1.23.1"):
-            _update_slow_factor_config_to_float()
+            _update_config_value_type("PUMP_SLOW_FACTOR", float, 1.0)
+        if self.older_than_version_with_logging("1.26.1"):
+            _update_config_value_type("PUMP_VOLUMEFLOW", float, 1.0)
         self._check_local_version_data()
 
     def _migration_log(self, version: str):
@@ -157,18 +159,11 @@ class Migrator:
             raise CouldNotMigrateException(version_to_migrate) from err
 
 
-def _update_password_config_to_int():
-    """Updates the local config file, using int now instead of str for password"""
-    _update_config_value_type("UI_MASTERPASSWORD", int, 0)
-
-
-def _update_slow_factor_config_to_float():
-    """Updates the local config file, using int now instead of str for password"""
-    _update_config_value_type("PUMP_SLOW_FACTOR", float, 1.0)
-
-
 def _update_config_value_type(config_name: str, new_type: type, default_value: Any):
-    """Updates the local config file, using int now instead of str for password"""
+    """Updates the local config file, use the new given type
+    Uses the default if fails to convert.
+    Also, if the given type is a list, it will try to convert the list elements
+    """
     if not CUSTOM_CONFIG_FILE.exists():
         return
     _logger.info(f"Converting config value for {config_name} to {new_type}")
@@ -178,12 +173,24 @@ def _update_config_value_type(config_name: str, new_type: type, default_value: A
     # get the password from the config, if not exists fall back to default
     local_config = configuration.get(config_name, default_value)
     # Try to convert, fall back to default if failure
-    try:
-        configuration[config_name] = new_type(local_config)
-    except ValueError:
-        configuration[config_name] = default_value
+    # also checks for a list, if so, convert each element
+    if isinstance(local_config, list):
+        new_values = []
+        for element in local_config:
+            new_values.append(_get_converted_value(new_type, default_value, element))
+        configuration[config_name] = new_values
+    else:
+        configuration[config_name] = _get_converted_value(new_type, default_value, local_config)
     with open(CUSTOM_CONFIG_FILE, 'w', encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
+
+
+def _get_converted_value(new_type: type, default_value: Any, local_config: Any):
+    try:
+        new_value = new_type(local_config)
+    except ValueError:
+        new_value = default_value
+    return new_value
 
 
 class _Version:
