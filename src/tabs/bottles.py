@@ -103,7 +103,13 @@ def renew_checked_bottles(w):
     set_fill_level_bars(w)
     # if a tube volume is defined, pump that amount up:
     if cfg.MAKER_TUBE_VOLUME > 0:
-        MACHINE.make_cocktail(w, bottle_numbers, [cfg.MAKER_TUBE_VOLUME for _ in bottle_numbers], "renew", False)
+        # get the ingredients, set the Tube volume
+        ingredients = []
+        for num in bottle_numbers:
+            ing = DB_COMMANDER.get_ingredient_at_bottle(num)
+            ing.amount = cfg.MAKER_TUBE_VOLUME
+            ingredients.append(ing)
+        MACHINE.make_cocktail(w, ingredients, "renew", False)
     DP_CONTROLLER.say_bottles_renewed()
 
 
