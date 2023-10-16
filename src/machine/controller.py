@@ -41,7 +41,7 @@ class MachineController():
         # In case none is found, fall back to generic using python-periphery
         return GenericController(cfg.MAKER_PINS_INVERTED)
 
-    def clean_pumps(self, w: MainScreen):
+    def clean_pumps(self, w: MainScreen, revert_pumps: bool = False):
         """Clean the pumps for the defined time in the config.
         Activates all pumps for the given time.
         """
