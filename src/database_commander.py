@@ -105,7 +105,7 @@ class DatabaseCommander:
 
     def get_ingredient_at_bottle(self, bottle: int) -> Ingredient:
         """Return ingredient name for all bottles"""
-        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle 
+        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle
                     FROM Bottles as B
                     LEFT JOIN Ingredients as I
                     ON I.ID=B.ID
