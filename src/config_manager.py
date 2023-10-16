@@ -77,6 +77,10 @@ class ConfigManager:
     MAKER_SIMULTANEOUSLY_PUMPS: int = 16
     # Time in seconds to execute clean program
     MAKER_CLEAN_TIME: int = 20
+    # Option to invert pump direction
+    MAKER_PUMP_REVERSION: bool = False
+    # Pin used for the pump direction
+    MAKER_REVERSION_PIN: int = 0
     # time between each check loop when making cocktail
     MAKER_SLEEP_TIME: float = 0.05
     # If the maker should check automatically for updates
@@ -143,6 +147,8 @@ class ConfigManager:
             "MAKER_NUMBER_BOTTLES": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
             "MAKER_SIMULTANEOUSLY_PUMPS": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
             "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
+            "MAKER_PUMP_REVERSION": (bool, []),
+            "MAKER_REVERSION_PIN": (int, [self._validate_pin_numbers]),
             "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
             "MAKER_CHECK_BOTTLE": (bool, []),
