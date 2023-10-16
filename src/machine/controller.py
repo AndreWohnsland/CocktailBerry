@@ -12,6 +12,7 @@ from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.raspberry import RpiController
 from src.machine.leds import LedController
+from src.machine.reverter import Reverter
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -33,6 +34,7 @@ class MachineController():
         super().__init__()
         self._pin_controller = self._chose_controller()
         self._led_controller = LedController(self._pin_controller)
+        self._reverter = Reverter(self._pin_controller)
 
     def _chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""
@@ -48,7 +50,11 @@ class MachineController():
         prep_data = _build_clean_data()
         w.open_progression_window("Cleaning")
         _header_print("Start Cleaning")
+        if revert_pumps:
+            self._reverter.revert_on()
         self._start_preparation(w, prep_data, False)
+        if revert_pumps:
+            self._reverter.revert_off()
         _header_print("Done Cleaning")
         w.close_progression_window()
 
