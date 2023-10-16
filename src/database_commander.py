@@ -103,6 +103,26 @@ class DatabaseCommander:
         result = self.handler.query_database(query)
         return [x[0] if x[0] is not None else "" for x in result]
 
+    def get_ingredient_at_bottle(self, bottle: int) -> Ingredient:
+        """Return ingredient name for all bottles"""
+        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle 
+                    FROM Bottles as B
+                    LEFT JOIN Ingredients as I
+                    ON I.ID=B.ID
+                    WHERE B.Bottle=?"""
+        result = self.handler.query_database(query, (bottle,))
+        ing = result[0]
+        return Ingredient(
+            id=ing[0],
+            name=ing[1],
+            alcohol=ing[2],
+            bottle_volume=ing[3],
+            fill_level=ing[4],
+            hand=bool(ing[5]),
+            slow=bool(ing[6]),
+            bottle=ing[7]
+        )
+
     def get_bottle_fill_levels(self) -> List[int]:
         """Returns percentage of fill level, limited to [0, 100]"""
         query = """SELECT Ingredients.Fill_level, Ingredients.Volume FROM Bottles
