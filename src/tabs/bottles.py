@@ -118,12 +118,3 @@ def set_fill_level_bars(w):
     progress_bars = DP_CONTROLLER.get_levelbar_bottles(w)
     fill_levels = DB_COMMANDER.get_bottle_fill_levels()
     DP_CONTROLLER.set_progress_bar_values(progress_bars, fill_levels)
-
-
-@logerror
-def clean_machine(w):
-    """ Activate all Pumps for 20 s to clean them. Needs the Password. Logs the Event. """
-    DP_CONTROLLER.say_supply_water()
-    _logger.log_header("INFO", "Cleaning the Pumps")
-    MACHINE.clean_pumps(w)
-    DP_CONTROLLER.say_done()
