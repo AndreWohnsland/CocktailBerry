@@ -47,6 +47,8 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `MAKER_PINS_INVERTED`        | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)              |
 | `MAKER_THEME`                | Choose which [theme](#themes) to use                                                     |
 | `MAKER_CLEAN_TIME`           | Time the machine will execute the cleaning program                                       |
+| `MAKER_PUMP_REVERSION`       | Enables reversion (direction) of pump                                                    |
+| `MAKER_REVERSION_PIN`        | [Pin](#configuring-the-pins-or-used-board) which triggers reversion                      |
 | `MAKER_SLEEP_TIME`           | Interval between each time check while generating a cocktail                             |
 | `MAKER_CHECK_INTERNET`       | Do a connection check at start for time adjustment window                                |
 | `MAKER_TUBE_VOLUME`          | Volume in ml to pump up when bottle is set to new                                        |
