@@ -21,7 +21,7 @@ from src.ui.creation_utils import setup_worker_thread
 from src.ui_elements import Ui_Optionwindow
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
-from src.tabs import bottles
+from src.machine.controller import MACHINE
 from src.programs.calibration import run_calibration
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
@@ -100,8 +100,13 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Starting clean process if user confirms the action."""
         if not DP_CONTROLLER.ask_to_start_cleaning():
             return
-        self.close()
-        bottles.clean_machine(self.mainscreen)
+        # bottles.clean_machine(self.mainscreen)
+        _logger.log_header("INFO", "Cleaning the Pumps")
+        revert_pumps = False
+        if cfg.MAKER_PUMP_REVERSION:
+            revert_pumps = DP_CONTROLLER.ask_to_use_reverted_pump()
+        MACHINE.clean_pumps(self.mainscreen, revert_pumps)
+        DP_CONTROLLER.say_done()
 
     def _reboot_system(self):
         """Reboots the system if the user confirms the action."""

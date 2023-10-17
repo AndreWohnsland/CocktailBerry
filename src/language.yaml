@@ -13,9 +13,6 @@ dialog:
   wrong_password:
     en: 'Wrong Password!'
     de: 'Falsches Passwort!'
-  supply_water:
-    en: 'Machine will be cleaned, please provide enough water. OK to continue.'
-    de: 'Maschine wird gereinigt, genug Wasser bereitstellen! OK zum Fortfahren.'
   done:
     en: 'Done!'
     de: 'Fertig!'
@@ -122,8 +119,8 @@ dialog:
     en: 'This seems to be no CocktailBerry backup folder. Please use the right folder. It needs to have all 3 files. Did not find {file}.'
     de: 'Ausgewählter Ordner ist kein CocktailBerry Backup. Bitte richtigen Ordner auswählen. Es müssen alle drei Dateien enthalten sein. Konnte {file} nicht finden.'
   ask_to_clean:
-    en: 'Starting Cleaning Progress?'
-    de: 'Reinigung Starten?'
+    en: 'Starting Cleaning Progress? Please provide enough water.'
+    de: 'Reinigung Starten? Bitte genug Wasser bereitstellen.'
   ask_to_shutdown:
     en: 'Shutdown the System?'
     de: 'Soll das System herunter gefahren werden?'
@@ -160,6 +157,9 @@ dialog:
   ask_to_install_qtsass:
     en: "The Python library qtsass is needed for this feature. Since it may take 30-60 minutes building on the RPi, it was not done by the migrator.\n\nInstall and restart now? Without it can not use custom themes."
     de: "Die Python Bibliothek qtsass wird für dieses Feature benötigt. Das Bauen dieser kann 30-60 Minuten auf dem RPi benötigen, deshalb wurde dies nicht vom Migrator gemacht.\n\nSoll diese installiert und neu gestartet werden? Ohne die Bibliothek können keine Custom Themes erstellt werden."
+  ask_to_use_reverted_pump:
+    en: 'Should the pump flow be reverted? This will activated the reversion pin and change the flow direction.'
+    de: 'Soll die Pumpenrichtung geändert werden? Dies wird den Umkehrpin aktivieren und die Pumpenrichtung ändern.'
   welcome_dialog:
     en: "CocktailBerry Software Version {version} by Andre Wohnsland.\n{platform}.\n\nCheck https://cocktailberry.readthedocs.io for more information."
     de: "CocktailBerry Software Version {version} von Andre Wohnsland.\n{platform}.\n\nMehr Informationen unter https://cocktailberry.readthedocs.io."
@@ -514,6 +514,12 @@ ui:
     MAKER_CLEAN_TIME:
       en: 'Time in seconds the cleaning program is executed'
       de: 'Zeit in Sekunden, die das Reinigungsprogramm ausgeführt wird'
+    MAKER_PUMP_REVERSION:
+      en: 'Enable the reversion of the pump direction, needs according hardware for reversion, usually a relay'
+      de: 'Ermöglicht die Pumpenrichtung zu ändern, benötigt entsprechende Hardware, meist ein Relais'
+    MAKER_REVERSION_PIN:
+      en: 'Pin number of the reversion hardware, will be activated when reverting the pump direction'
+      de: 'Pin Nummer der Pumpenrichtung Hardware, wird aktiviert, wenn die Pumpenrichtung geändert wird'
     MAKER_SLEEP_TIME:
       en: 'Refresh interval between each volume calculation'
       de: 'Abtastintervall zwischen den Volumenberechnungen'

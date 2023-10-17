@@ -110,7 +110,7 @@ class _PiicoDevReader(RFIDController):
     """Reader for the PiicoDev RFID Module"""
 
     def __init__(self) -> None:
-        self.rfid = PiicoDev_RFID()
+        self.rfid = PiicoDev_RFID()  # pylint: disable=E0601
 
     def read_card(self) -> tuple[Optional[str], Optional[str]]:
         text = None
@@ -130,7 +130,7 @@ class _BasicMFRC522(RFIDController):
     """Reader for common RC522 modules"""
 
     def __init__(self) -> None:
-        self.rfid = SimpleMFRC522()
+        self.rfid = SimpleMFRC522()  # pylint: disable=E0601
 
     def read_card(self) -> tuple[Optional[str], Optional[str]]:
         _id, text = self.rfid.read_no_block()

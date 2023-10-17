@@ -114,10 +114,6 @@ class DialogHandler():
         """Informs user that the password is wrong"""
         self.__output_language_dialog("wrong_password")
 
-    def say_supply_water(self):
-        """Informs user that enough water needs to be supplied for cleaning"""
-        self.__output_language_dialog("supply_water", True)
-
     def say_done(self):
         """Informs user that process is done"""
         self.__output_language_dialog("done")
@@ -382,6 +378,11 @@ class DialogHandler():
     def ask_to_update_system(self):
         """Asks the user if he wants to update the system"""
         message = self.__choose_language("ask_to_system_update")
+        return self.user_okay(message)
+
+    def ask_to_use_reverted_pump(self):
+        """Asks the user if he wants to use the reverted pump flow"""
+        message = self.__choose_language("ask_to_use_reverted_pump")
         return self.user_okay(message)
 
 

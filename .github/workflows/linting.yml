@@ -1,0 +1,26 @@
+name: Linting
+on: [pull_request]
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: chartboost/ruff-action@v1
+        with:
+          src: './src'
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+          pip install pylint
+          pip install -r requirements.txt
+      - name: Lint with Pylint
+        run: pylint src
