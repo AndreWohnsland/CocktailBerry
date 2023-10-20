@@ -103,12 +103,8 @@ class IconSetter:
             (w.prepare_button, _COCKTAIL_ICON, False),
             (w.button_search_cocktail, _SEARCH_ICON, True),
         ]:
-            icon = qta.icon(icon, color=self.color.background)
-            self._set_icon(ui_element, icon, no_text)
-        # For outline buttons, they use button color for icon
-        for ui_element, icon, color, no_text in [
-        ]:
-            self._set_icon(ui_element, qta.icon(icon, color=color), no_text)
+            fa_icon: QIcon = qta.icon(icon, color=self.color.background)
+            self._set_icon(ui_element, fa_icon, no_text)
 
     def _set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool):
         """Sets the icon of the given ui element"""

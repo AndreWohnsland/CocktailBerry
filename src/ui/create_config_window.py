@@ -159,8 +159,8 @@ class ConfigWindow(QMainWindow):
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: NumpadWidget(
-            self, config_input, 300, 20, config_name, True))  # type: ignore
+        config_input.clicked.connect(lambda: NumpadWidget(  # type: ignore
+            self, config_input, 300, 20, config_name, True))
         layout.addWidget(config_input)
         return lambda: float(config_input.text() or 0.0)
 
@@ -176,14 +176,14 @@ class ConfigWindow(QMainWindow):
     def _build_list_field(self, config_name: str, current_value: List) -> Callable[[], List[Any]]:
         """Builds a list of fields for a list input"""
         config_input = QVBoxLayout()
-        getter_fn_list = []
+        getter_fn_list: list[Callable] = []
         # iterate over each list value and build the according field
         for initial_value in current_value:
             self._add_ui_element_to_list(initial_value, getter_fn_list, config_name, config_input)
         # adds a button for adding new list entries
         add_button = QPushButton("+ add")
         adjust_font(add_button, MEDIUM_FONT, True)
-        add_button.clicked.connect(
+        add_button.clicked.connect(  # type: ignore[attr-defined]
             lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input)
         )
         # build container that new added elements are above add button separately
@@ -199,7 +199,7 @@ class ConfigWindow(QMainWindow):
         getter_fn_list: List,
         config_name: str,
         container: QBoxLayout
-        ):
+    ):
         """Adds an additional input element for list buildup"""
         # Gets the type of the list elements
         list_config = cfg.config_type_list.get(config_name)
@@ -222,7 +222,7 @@ class ConfigWindow(QMainWindow):
         remove_button.setMaximumWidth(30)
         adjust_font(remove_button, MEDIUM_FONT, True)
         # the first argument in lambda is needed since the object reference within the loop
-        remove_button.clicked.connect(
+        remove_button.clicked.connect(  # type: ignore[attr-defined]
             lambda _, x=h_container: self._remove_ui_element_from_list(x, getter_fn, getter_fn_list))
         h_container.addWidget(remove_button)
         container.addLayout(h_container)

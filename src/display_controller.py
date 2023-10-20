@@ -1,5 +1,5 @@
 from typing import Callable, List, Literal, Optional, Tuple, Union
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import (
     QWidget, QComboBox, QLabel,
@@ -588,7 +588,7 @@ class DisplayController(DialogHandler):
         DB_COMMANDER.set_bottle_order(all_bottles[: used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
         comboboxes_bottles = self.get_comboboxes_bottles(w, True)
         self.set_multiple_combobox_to_top_item(comboboxes_bottles[used_bottles::])
-        to_adjust = [
+        to_adjust: list[Union[list[QPushButton], list[QProgressBar], list[QLabel], list[QComboBox]]] = [
             self.get_pushbuttons_newbottle(w, True),
             self.get_levelbar_bottles(w, True),
             comboboxes_bottles,

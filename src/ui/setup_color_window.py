@@ -84,7 +84,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
 
     def _set_selected_template(self):
         """Uses the selected template and fills the color into the fields"""
-        template: SupportedThemesType = self.selection_template.currentText()  # type: ignore -> only these are set
+        template: SupportedThemesType = self.selection_template.currentText()  # type: ignore
         colors = parse_colors(template)
         for color in fields(colors):
             line_edit = self.inputs_colors[color.name]

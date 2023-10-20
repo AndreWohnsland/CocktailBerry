@@ -32,14 +32,14 @@ class LedController:
             return
         # If not controllable use normal LEDs
         if not cfg.LED_IS_WS:
-            self.led_list: list[_LED] = [
+            self.led_list = [
                 _normalLED(pin, self.pin_controller)
                 for pin in self.pins
             ]
             return
         # If controllable try to set up the WS281x LEDs
         try:
-            self.led_list: list[_LED] = [
+            self.led_list = [
                 _controllableLED(pin)
                 for pin in self.pins
             ]
@@ -98,7 +98,7 @@ class _normalLED(_LED):
         blinker.start()
 
     def _blink_for(self, duration: int = 5, interval: float = 0.2):
-        current_time = 0
+        current_time = 0.0
         step = interval / 2
         while current_time <= duration:
             self._turn_on()
@@ -179,11 +179,11 @@ class _controllableLED(_LED):
 
     def _end_thread(self, duration: int = 5):
         """Rainbow animation fades across all pixels at once"""
-        wait_ms = 10
-        current_time = 0
-        wheel_order = range(256)
+        wait_ms = 10.0
+        current_time = 0.0
+        wheel_order = list(range(256))
         start = randint(0, 255)
-        wheel_order = list(wheel_order[start::]) + list(wheel_order[0:start])
+        wheel_order = wheel_order[start::] + wheel_order[0:start]
         while current_time <= duration:
             for j in wheel_order:
                 for i in range(cfg.LED_COUNT):
@@ -192,7 +192,7 @@ class _controllableLED(_LED):
                         self.strip.setPixelColor(iter_pos, self._wheel((i + j) & 255))
                 self.strip.show()
                 time.sleep(wait_ms / 1000.0)
-                current_time += wait_ms / 1000
+                current_time += wait_ms / 1000.0
                 # break out of loop (its long) when we are finished
                 if current_time > duration:
                     break

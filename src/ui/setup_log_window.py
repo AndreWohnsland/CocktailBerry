@@ -62,7 +62,7 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         Needs logs from new to old, if same message was already there, skip it.
         """
         data: dict[str, str] = {}
-        counter = Counter()
+        counter: Counter[str] = Counter()
         for line in log_text.splitlines()[::-1]:
             date, message = self._parse_log_line(line)
             if message not in data:
