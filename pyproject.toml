@@ -28,6 +28,7 @@ mkdocs-material = "^9.1.21"
 mkdocs = "^1.5.1"
 ruff = "^0.0.280"
 python-periphery = "^2.4.1"
+mypy = "^1.6.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -38,3 +39,6 @@ build-backend = "poetry.core.masonry.api"
 per-file-ignores = { "migrator.py" = ["E402"] }
 line-length = 120
 exclude = ["ui_elements", "addon_skeleton.py"]
+
+[tool.mypy]
+disable_error_code = ["annotation-unchecked", "import-untyped"]
