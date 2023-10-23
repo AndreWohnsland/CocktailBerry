@@ -8,7 +8,7 @@ class Reverter:
         # only init if reversion is enabled, otherwise it may be an invalid pin
         self.revert_pin = cfg.MAKER_REVERSION_PIN
         if cfg.MAKER_PUMP_REVERSION:
-            self._pin_controller.activate_pin_list([self.revert_pin])
+            self._pin_controller.initialize_pin_list([self.revert_pin])
 
     def revert_on(self):
         """Reverts the pump to be inverted"""
