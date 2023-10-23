@@ -51,20 +51,20 @@ class LoggerHandler:
 
     def debug(self, message: object, *args: object, **kwargs: object):
         """Logs the message under the debug level"""
-        self.logger.debug(message, *args, **kwargs)
+        self.logger.debug(message, *args, **kwargs)  # type: ignore
 
     def info(self, message: object, *args: object, **kwargs: object):
         """Logs the message under the info level"""
-        self.logger.info(message, *args, **kwargs)
+        self.logger.info(message, *args, **kwargs)  # type: ignore
 
     def warning(self, message: object, *args: object, **kwargs: object):
         """Logs the message under the warning level"""
-        self.logger.warning(message, *args, **kwargs)
+        self.logger.warning(message, *args, **kwargs)  # type: ignore
 
     def error(self, message: object, *args: object, **kwargs: object):
         """Logs the message under the error level"""
-        self.logger.error(message, *args, **kwargs)
+        self.logger.error(message, *args, **kwargs)  # type: ignore
 
     def critical(self, message: object, *args: object, **kwargs: object):
         """Logs the message under the critical level"""
-        self.logger.critical(message, *args, **kwargs)
+        self.logger.critical(message, *args, **kwargs)  # type: ignore

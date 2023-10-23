@@ -60,8 +60,8 @@ class GenericController(PinController):
             for pin in self.gpios.values():
                 pin.close()
         else:
-            for pin in pin_list:
-                self.gpios[pin].close()
+            for pin_number in pin_list:
+                self.gpios[pin_number].close()
 
 
 class GenericGPIO(GPIOController):

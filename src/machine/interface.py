@@ -5,7 +5,7 @@ from typing import List, Optional, Any
 try:
     from typing import Protocol
 except ImportError:
-    from typing_extensions import Protocol
+    from typing_extensions import Protocol  # type: ignore[assignment]
 
 
 class PinController(Protocol):  # type: ignore

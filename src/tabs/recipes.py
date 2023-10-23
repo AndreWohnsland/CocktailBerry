@@ -145,12 +145,12 @@ def _enter_or_update_recipe(
         DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin)
     else:
         DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin)
-    cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore -> will always return cocktail
+    cocktail: Cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore
     for ingredient in ingredient_data:
         DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount)
     # important to get the cocktail again, since the first time getting it, we only got it for its id
     # at this time the cocktail got no recipe data. Getting it again will fix this
-    cocktail: Cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore -> will always return cocktail
+    cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore
     return cocktail
 
 

@@ -46,7 +46,7 @@ def get_platform_data() -> PlatformData:
         platform.platform(),
         platform.machine(),
         platform.architecture(),
-        platform.system(),  # type: ignore | this usually only gives the literals specified
+        platform.system(),  # type: ignore
         platform.release(),
     )
 

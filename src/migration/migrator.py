@@ -167,9 +167,9 @@ def _update_config_value_type(config_name: str, new_type: type, default_value: A
     if not CUSTOM_CONFIG_FILE.exists():
         return
     _logger.info(f"Converting config value for {config_name} to {new_type}")
-    configuration = {}
+    configuration: dict[str, Any] = {}
     with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
-        configuration: dict = yaml.safe_load(stream)
+        configuration = yaml.safe_load(stream)
     # get the password from the config, if not exists fall back to default
     local_config = configuration.get(config_name, default_value)
     # Try to convert, fall back to default if failure
@@ -205,16 +205,19 @@ class _Version:
             patch = 0
         # otherwise split version for later comparison
         else:
-            major, minor, *patch = version_number.split(".")
-        self.major = int(major)
-        self.minor = int(minor)
-        # Some version like 1.0 or 1.1 don't got a patch property
-        # List unpacking will return an empty list or a list of one
-        # Future version should contain patch (e.g. 1.1.0) as well
-        if patch:
-            self.patch = int(patch[0])
-        else:
-            self.patch = 0
+            major_str, minor_str, *patch_str = version_number.split(".")
+            major = int(major_str)
+            minor = int(minor_str)
+            # Some version like 1.0 or 1.1 don't got a patch property
+            # List unpacking will return an empty list or a list of one
+            # Future version should contain patch (e.g. 1.1.0) as well
+            if patch_str:
+                patch = int(patch_str[0])
+            else:
+                patch = 0
+        self.major = major
+        self.minor = minor
+        self.patch = patch
 
     def __gt__(self, __o: object) -> bool:
         return (self.major, self.minor, self.patch) > (__o.major, __o.minor, __o.patch)  # type: ignore

@@ -63,12 +63,12 @@ def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable
     _thread.started.connect(worker.run)  # type: ignore
     worker.done.connect(_thread.quit)  # type: ignore
     worker.done.connect(worker.deleteLater)  # type: ignore
-    _thread.finished.connect(_thread.deleteLater)
+    _thread.finished.connect(_thread.deleteLater)  # type: ignore[attr-defined]
 
     # Start the thread, connect to the finish function
     _thread.start()
-    _thread.finished.connect(after_finish)
-    _thread.finished.connect(ICONS.stop_spinner)
+    _thread.finished.connect(after_finish)  # type: ignore[attr-defined]
+    _thread.finished.connect(ICONS.stop_spinner)  # type: ignore[attr-defined]
 
     return _thread
 

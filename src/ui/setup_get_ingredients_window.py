@@ -49,7 +49,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         if ingredient_name == "":
             return
         _, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
-        ingredient_data: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore (must be existing)
+        ingredient_data: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore
         # need to set amount, otherwise it will be 0
         ingredient_data.amount = volume
 
