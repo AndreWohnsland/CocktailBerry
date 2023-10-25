@@ -22,6 +22,15 @@ sudo cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
 echo "Giving write permission to /etc/wpa_supplicant/wpa_supplicant.conf"
 sudo chmod a+w /etc/wpa_supplicant/wpa_supplicant.conf
 
+# Since bookworm, venv are not optional but recommended, to not overwrite sys python things
+# therefore remove existing and create env for cocktailberry, using system site packages
+# This way, pyqt is already there and no pain installing it somehow
+echo "(Re-)Creating virtual environment for CocktailBerry, located at ~/.venv-cocktailberry"
+rm -rf ~/.env-cocktailberry
+python -m venv --system-site-packages ~/.env-cocktailberry
+echo "Activating virtual environment, this is needed since Raspbery Pi OS Bookworm"
+source ~/.env-cocktailberry/bin/activate
+
 cd ~/CocktailBerry/
 # Making neccecary steps for the according program
 if [ "$1" = "dashboard" ]; then
@@ -46,6 +55,7 @@ if [ "$1" = "dashboard" ]; then
   pip install -r requirements.txt
 else
   echo "Setting up CocktailBerry"
+  echo "source ~/.env-cocktailberry/bin/activate" >>~/launcher.sh
   echo "export QT_SCALE_FACTOR=1" >>~/launcher.sh
   echo "cd ~/CocktailBerry/" >>~/launcher.sh
   echo "python runme.py" >>~/launcher.sh
