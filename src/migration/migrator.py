@@ -165,12 +165,13 @@ def _update_config_value_type(config_name: str, new_type: type, default_value: A
     Also, if the given type is a list, it will try to convert the list elements
     """
     if not CUSTOM_CONFIG_FILE.exists():
+        _logger.info(f"No local config detected for {config_name}, skipping conversion")
         return
     _logger.info(f"Converting config value for {config_name} to {new_type}")
     configuration: dict[str, Any] = {}
     with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
         configuration = yaml.safe_load(stream)
-    # get the password from the config, if not exists fall back to default
+    # get the value from the config, if not exists fall back to default
     local_config = configuration.get(config_name, default_value)
     # Try to convert, fall back to default if failure
     # also checks for a list, if so, convert each element

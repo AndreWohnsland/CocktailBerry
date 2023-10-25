@@ -68,7 +68,7 @@ class ConfigManager:
     # RPi pins where pumps (ascending) are connected
     PUMP_PINS: list[int] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
     # Volume flow for the according pumps
-    PUMP_VOLUMEFLOW: list[int] = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
+    PUMP_VOLUMEFLOW: list[float] = [30.0] * 12
     # Custom name of the Maker
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
