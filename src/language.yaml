@@ -118,6 +118,9 @@ dialog:
   backup_failed:
     en: 'This seems to be no CocktailBerry backup folder. Please use the right folder. It needs to have all 3 files. Did not find {file}.'
     de: 'Ausgewählter Ordner ist kein CocktailBerry Backup. Bitte richtigen Ordner auswählen. Es müssen alle drei Dateien enthalten sein. Konnte {file} nicht finden.'
+  update_failed:
+    en: 'Update failed. Please check the logs for further information.'
+    de: 'Update fehlgeschlagen. Bitte schaue in die Logs für mehr Informationen.'
   ask_to_clean:
     en: 'Starting Cleaning Progress? Please provide enough water.'
     de: 'Reinigung Starten? Bitte genug Wasser bereitstellen.'
