@@ -33,6 +33,13 @@ class LoggerHandler:
         self.logger = logging.getLogger(logger_name)
         self.template = "{:-^80}"
 
+        # build internal debug logger if its not the debug logger itself
+        # this is used to not log the exception in to the debug log
+        # the exception got another format and must be parsed differently
+        self._debug_logger = None
+        if filename != LogFiles.DEBUG:
+            self._debug_logger = LoggerHandler(f"{logger_name}_debug", LogFiles.DEBUG)
+
     def log_event(self, level: _AcceptedLogLevels, message: str):
         """Simply logs a message of given level"""
         self.logger.log(getattr(logging, level), message)
@@ -47,7 +54,10 @@ class LoggerHandler:
 
     def log_exception(self, message: Union[str, object]):
         """Logs an exception with the given message"""
-        self.logger.exception(message)
+        if self._debug_logger is None:
+            self.logger.exception(message)
+        else:
+            self._debug_logger.log_exception(message)
 
     def debug(self, message: object, *args: object, **kwargs: object):
         """Logs the message under the debug level"""

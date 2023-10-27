@@ -308,6 +308,10 @@ class DialogHandler():
         """Informs that cocktailberry is up to date"""
         self.__output_language_dialog("cocktailberry_up_to_date")
 
+    def say_update_failed(self):
+        """Informs that the update failed"""
+        self.__output_language_dialog("update_failed")
+
     ############################
     # Methods for prompting ####
     ############################

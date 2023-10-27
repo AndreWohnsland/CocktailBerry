@@ -139,8 +139,9 @@ class Migrator:
                 "https://github.com/AndreWohnsland/CocktailBerry.git"
             ])
         except subprocess.CalledProcessError as err:
-            _logger.log_event(
-                "ERROR", "Could not change origin. Check if you made any local file changes / use 'git restore .'!")
+            err_msg = "Could not change origin. Check if you made any local file changes / use 'git restore .'!"
+            err_msg += " See also debug logs for more information"
+            _logger.log_event("ERROR", err_msg)
             _logger.log_exception(err)
             raise CouldNotMigrateException("1.6.0") from err
 
@@ -154,7 +155,9 @@ class Migrator:
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', package_name])
             _logger.log_event("INFO", f"Successfully installed {package_name}")
         except subprocess.CalledProcessError as err:
-            _logger.log_event("ERROR", f"Could not install {package_name} using pip. Please install it manually!")
+            err_msg = f"Could not install {package_name} using pip. Please install it manually!"
+            err_msg += " See also debug logs for more information"
+            _logger.log_event("ERROR", err_msg)
             _logger.log_exception(err)
             raise CouldNotMigrateException(version_to_migrate) from err
 

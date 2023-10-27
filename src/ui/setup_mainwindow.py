@@ -79,8 +79,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         update_available, info = updater.check_for_updates()
         if not update_available:
             return
-        if DP_CONTROLLER.ask_to_update(info):
-            updater.update()
+        if not DP_CONTROLLER.ask_to_update(info):
+            return
+        success = updater.update()
+        if not success:
+            DP_CONTROLLER.say_update_failed()
 
     def _connection_check(self):
         """Checks if there is an internet connection
