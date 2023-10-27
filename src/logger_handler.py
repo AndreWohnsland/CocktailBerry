@@ -36,10 +36,9 @@ class LoggerHandler:
         # build internal debug logger if its not the debug logger itself
         # this is used to not log the exception in to the debug log
         # the exception got another format and must be parsed differently
+        self._debug_logger = None
         if filename != LogFiles.DEBUG:
             self._debug_logger = LoggerHandler(f"{logger_name}_debug", LogFiles.DEBUG)
-        else:
-            self._debug_logger = None
 
     def log_event(self, level: _AcceptedLogLevels, message: str):
         """Simply logs a message of given level"""
