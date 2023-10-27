@@ -21,7 +21,7 @@ class Updater:
         self.git_path = ROOT_PATH
         self.repo = Repo(self.git_path)
 
-    def update(self):
+    def update(self) -> bool:
         """Updates from the Git remote"""
         latest_tag = self._get_latest_tag()
         _logger.log_event("INFO", f"Updating to {latest_tag.name}")
@@ -29,13 +29,15 @@ class Updater:
         try:
             self.repo.remotes.origin.pull()
         except GitCommandError as err:
-            _logger.log_event("ERROR", "Something went wrong while pulling the update")
+            _logger.log_event("ERROR", "Something went wrong while pulling the update, see debug logs for more information")  # noqa
             _logger.log_exception(err)
-            return
+            return False
         # restart the program, this will not work if executed over IDE
         print("Restarting the application!")
         _logger.log_event("INFO", "Restarting program to reload updated code")
         restart_program()
+        # technically, this will not be reached, but makes mypy happy and is easier for the logic
+        return True
 
     def check_for_updates(self) -> tuple[bool, str]:
         """Check if there is a new version available"""
@@ -56,7 +58,7 @@ class Updater:
             self.repo.remotes.origin.fetch()
         # if no internet connection, or other error, return False
         except GitCommandError as err:
-            update_problem = "Something went wrong while fetching the repo data"
+            update_problem = "Something went wrong while fetching the repo data, see debug logs for more information"
             _logger.log_event("ERROR", update_problem)
             _logger.log_exception(err)
             return False, update_problem + f"\n{err}"
