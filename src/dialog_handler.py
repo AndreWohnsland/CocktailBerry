@@ -483,6 +483,7 @@ class UiLanguage():
             (w.virgin_checkbox, "activate_virgin"),
             (w.offervirgin_checkbox, "virgin_possibility"),
             (w.check_slow_ingredient, "slow_ingredient_check_label"),
+            (w.label_ingredient_cost, "label_ingredient_cost"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 

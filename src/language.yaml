@@ -254,7 +254,7 @@ ui:
       de: 'Zutat'
     alcohol_level_label:
       en: 'Alcohol (in %)'
-      de: 'Alkoholgehalt (in %)'
+      de: 'Alkohol (in %)'
     bottle_volume_label:
       en: 'Bottle volume (ml)'
       de: 'Flaschenvolumen (ml)'
@@ -282,6 +282,9 @@ ui:
     slow_ingredient_check_label:
       en: 'Slow ingredient:'
       de: 'Langsame Zutat:'
+    label_ingredient_cost:
+      en: 'Cost (Cent):'
+      de: 'Kosten (Cent):'
 
   ##### AVAILABLE WINDOW #####
   # all values for available window
