@@ -17,6 +17,7 @@ class SaveHandler:
             return False
         self._export_ingredients()
         self._export_recipes()
+        self._export_cost()
         DP_CONTROLLER.say_all_data_exported(str(SAVE_FOLDER))
         return True
 
@@ -33,6 +34,11 @@ class SaveHandler:
         self._write_rows_to_csv("Recipe_export", [*consumption_list, [" "]])
         DB_COMMANDER.delete_consumption_recipes()
         _logger.log_event("INFO", "Recipe data was exported")
+
+    def _export_cost(self):
+        """Export the cost to a csv file, this does not need resetting"""
+        cost_list = DB_COMMANDER.get_cost_data_lists_ingredients()
+        self._write_rows_to_csv("Cost_export", [*cost_list, [" "]])
 
     def _write_rows_to_csv(self, filename: str, data_rows: List):
         """Write the data to the csv file, activate service handler for mail"""

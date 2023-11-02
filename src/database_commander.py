@@ -221,20 +221,21 @@ class DatabaseCommander:
                 Consumption*Cost AS Cost, Consumption_lifetime*Cost AS Cost_lifetime
                 FROM Ingredients"""
         data = self.handler.query_database(query)
-        return self.__convert_consumption_data(data, True)
+        return self.__convert_consumption_data(data)
 
-    def __convert_consumption_data(self, data: List[List], includes_costs=False):
+    def get_cost_data_lists_ingredients(self):
+        """Return the ingredient cost data ready to export"""
+        query = """SELECT Name, Consumption*Cost/1000 AS Cost, Consumption_lifetime*Cost/1000 AS Cost_lifetime
+                FROM Ingredients"""
+        data = self.handler.query_database(query)
+        return self.__convert_consumption_data(data)
+
+    def __convert_consumption_data(self, data: List[List]):
         """Convert the data from the db cursor into needed csv format"""
         headers = [row[0] for row in data]
         resettable = [row[1] for row in data]
         lifetime = [row[2] for row in data]
         return_data = [["date", *headers], [datetime.date.today(), *resettable], ["lifetime", *lifetime]]
-        if not includes_costs:
-            return return_data
-        cost = [row[3] for row in data]
-        cost_lifetime = [row[4] for row in data]
-        return_data.append(["cost", *cost])
-        return_data.append(["cost_lifetime", *cost_lifetime])
         return return_data
 
     def get_available_ingredient_names(self) -> List[str]:
