@@ -460,6 +460,12 @@ ui:
     ingredient_volume:
       en: 'Ingredients: '
       de: 'Zutaten: '
+    cost_ingredients:
+      en: 'Cost of ingredients: '
+      de: 'Kosten der Zutaten: '
+    no_cost_data:
+      en: 'No cost data available'
+      de: 'Keine Kosten Daten verfügbar'
     since_reset:
       en: 'Since reset'
       de: 'Seit Zurücksetzen'
