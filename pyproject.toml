@@ -42,3 +42,12 @@ exclude = ["ui_elements", "addon_skeleton.py"]
 
 [tool.mypy]
 disable_error_code = ["annotation-unchecked", "import-untyped"]
+
+[tool.pylint]
+disable = ["C0301", "C0114", "C0115", "C0116"]
+max-line-length = 120
+extension-pkg-whitelist= ["PyQt5"]
+
+[tool.autopep8]
+max-line-length = 120
+ignore = ["E402"]
