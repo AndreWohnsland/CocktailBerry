@@ -181,11 +181,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEGehaltRezept.setValidator(QIntValidator(0, 99))
         self.LEGehaltRezept.setMaxLength(2)
         self.LEZutatRezept.setMaxLength(20)
-        amount = UI_LANGUAGE.generate_numpad_header("amount")
         self.LEFlaschenvolumen.clicked.connect(
             lambda: self.open_numpad(self.LEFlaschenvolumen, 50, 50, amount)
         )
         self.LEFlaschenvolumen.setMaxLength(5)
+        self.line_edit_ingredient_cost.clicked.connect(
+            lambda: self.open_numpad(self.line_edit_ingredient_cost, 50, 50, amount)
+        )
         self.LECocktail.setMaxLength(30)
         self.button_search_cocktail.clicked.connect(self.open_search_window)
 

@@ -73,7 +73,9 @@ def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCom
         ing = default_db.get_ingredient(ingredient)
         if ing is None:
             continue
-        local_db.insert_new_ingredient(ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow))
+        local_db.insert_new_ingredient(
+            ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow), ing.cost
+        )
 
 
 def _get_new_ingredients(local_db: DatabaseCommander, cocktails_to_add: List[Cocktail]) -> List[str]:
@@ -200,3 +202,13 @@ def remove_is_alcoholic_column():
     except OperationalError:
         _logger.log_event(
             "ERROR", "Could not remove is_alcoholic column from DB, this may because it does not exist")
+
+
+def add_cost_column_to_ingredients():
+    """Adds the cost column to the ingredients table"""
+    _logger.log_event("INFO", "Adding cost column to Ingredients DB")
+    db_handler = DatabaseHandler()
+    try:
+        db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Cost INTEGER DEFAULT 0;")
+    except OperationalError:
+        _logger.log_event("ERROR", "Could not add cost column to DB, this may because it already exists")
