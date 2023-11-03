@@ -214,8 +214,8 @@ class ConfigWindow(QMainWindow):
         # need to get the current length of the layout, to get the indicator number
         current_position = container.count() + 1
         position_number = QLabel(str(current_position))
-        position_number.setMinimumWidth(15)
-        position_number.setMaximumWidth(15)
+        position_number.setMinimumWidth(18)
+        position_number.setMaximumWidth(18)
         h_container.addWidget(position_number)
         getter_fn = self._build_input_field(config_name, list_type, initial_value, h_container)
         remove_button = QPushButton("x")
