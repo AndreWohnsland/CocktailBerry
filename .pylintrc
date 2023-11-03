@@ -5,7 +5,7 @@ ignore-paths=.*/ui_elements/,.*/addon_skeleton.py
 [MAIN]
 
 [MESSAGES CONTROL]
-disable=missing-docstring,no-name-in-module,line-too-long,R0902,R0903,R0801,R0401
+disable=missing-docstring,no-name-in-module,line-too-long,R0902,R0903,R0801,R0401,R0912
 
 [FORMAT]
 # Good variable names which should always be accepted, separated by a comma
