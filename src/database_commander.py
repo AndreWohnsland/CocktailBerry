@@ -217,7 +217,7 @@ class DatabaseCommander:
 
     def get_consumption_data_lists_ingredients(self):
         """Return the ingredient consumption data ready to export"""
-        query = """SELECT Name, Consumption, Consumption_lifetime, 
+        query = """SELECT Name, Consumption, Consumption_lifetime,
                 Consumption*Cost AS Cost, Consumption_lifetime*Cost AS Cost_lifetime
                 FROM Ingredients"""
         data = self.handler.query_database(query)
