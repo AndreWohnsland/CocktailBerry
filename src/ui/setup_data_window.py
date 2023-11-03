@@ -64,10 +64,12 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         if not SAVE_HANDLER.export_data():
             return
         current_selection = self.selection_data.currentText()
+        self._find_data_files()
         self._populate_data()
         DP_CONTROLLER.set_combobox_item(self.selection_data, current_selection)
         ingredient_data = self._get_ingredient_by_key(current_selection)
-        self._plot_data(self.data_recipes[current_selection], ingredient_data)
+        cost_data = self._get_cost_by_key(current_selection)
+        self._plot_data(self.data_recipes[current_selection], ingredient_data, cost_data)
 
     def _get_saved_data_files(self, pattern: str = "Recipe"):
         """Checks the logs folder for all existing log files"""
@@ -190,6 +192,13 @@ class DataWindow(QMainWindow, Ui_DataWindow):
             cost_label = UI_LANGUAGE.get_translation("cost_ingredients", "data_window")
             cost_label = f"{cost_label}{total_cost/100:.2f}"
         self._add_header(self.grid_current_row + 1, cost_label)
+        # we stop here if there is no cost data
+        if cost_data is None:
+            return
+        names, values = self._sort_extract_data(cost_data)
+        # need to convert values from cent or similar to euro
+        values = [x / 100 for x in values]
+        self._generate_bar_chart(names, values, self.grid_current_row, "")
 
     def _add_spacer(self, row: int):
         """Adds a spacer to the grid layout"""
@@ -221,7 +230,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
             return
         for i, (name, value) in enumerate(zip(names, values), start_row):
             self.grid.addWidget(create_label(f"{name} ", 20, False, True), i, 0, 1, 1)
-            self.grid.addWidget(create_label(f" ({value}{quantifier}) ", 20, True, True, "secondary"), i, 1, 1, 1)
+            self.grid.addWidget(create_label(f" {value}{quantifier} ", 20, True, True, "secondary"), i, 1, 1, 1)
             displayed_bar = QProgressBar(self)
             displayed_bar.setTextVisible(False)
             displayed_bar.setProperty("cssClass", "no-bg")
