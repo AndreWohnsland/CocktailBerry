@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "CocktailBerry"
-version = "1.28.1"
+version = "1.29.0"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
 authors = ["Andre Wohnsland <Andre_Wohnsland@web.de>"]
 readme = "readme.md"
@@ -42,3 +42,12 @@ exclude = ["ui_elements", "addon_skeleton.py"]
 
 [tool.mypy]
 disable_error_code = ["annotation-unchecked", "import-untyped"]
+
+[tool.pylint]
+disable = ["C0301", "C0114", "C0115", "C0116", "R0912"]
+max-line-length = 120
+extension-pkg-whitelist= ["PyQt5"]
+
+[tool.autopep8]
+max-line-length = 120
+ignore = ["E402"]

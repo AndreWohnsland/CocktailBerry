@@ -1,5 +1,6 @@
 import csv
 from pathlib import Path
+from typing import Literal, Optional, Union
 from PyQt5.QtWidgets import QMainWindow, QGridLayout, QProgressBar
 from PyQt5.QtCore import QSize
 
@@ -28,26 +29,34 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         self.since_reset_str = UI_LANGUAGE.get_translation("since_reset", "data_window")
         self.all_time_str = UI_LANGUAGE.get_translation("all_time", "data_window")
         self.grid = None
+        self.grid_current_row = 0
 
+        self._find_data_files()
         self._populate_data()
         self._plot_data(
-            self.local_data[self.since_reset_str],
-            self.local_data_ingredients[self.since_reset_str]
+            self.data_recipes[self.since_reset_str],
+            self.data_ingredients[self.since_reset_str],
+            self.data_cost.get(self.since_reset_str, None),
         )
 
         UI_LANGUAGE.adjust_data_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
+    def _find_data_files(self):
+        """Assigns all existing files to the class variables"""
+        self.recipe_files = self._get_saved_data_files()
+        self.ingredient_files = self._get_saved_data_files("Ingredient")
+        self.cost_files = self._get_saved_data_files("Cost")
+
     def _populate_data(self):
         """Gets data from files and db, assigns objects and fill dropdown"""
-        self.data_files = self._get_saved_data_files()
-        self.data_files_ingredients = self._get_saved_data_files("Ingredient")
-        self.local_data = self._get_recipe_data()
-        self.local_data_ingredients = self._get_ingredient_data()
+        self.data_recipes = self._get_recipe_data()
+        self.data_ingredients = self._get_ingredient_data()
+        self.data_cost = self._get_cost_data()
 
         # generates the dropdown with options
-        drop_down_options = [self.since_reset_str, self.all_time_str] + self.data_files
+        drop_down_options = [self.since_reset_str, self.all_time_str] + self.recipe_files
         DP_CONTROLLER.fill_single_combobox(self.selection_data, drop_down_options, clear_first=True, first_empty=False)
 
     def _export_and_recalculate(self):
@@ -55,10 +64,12 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         if not SAVE_HANDLER.export_data():
             return
         current_selection = self.selection_data.currentText()
+        self._find_data_files()
         self._populate_data()
         DP_CONTROLLER.set_combobox_item(self.selection_data, current_selection)
         ingredient_data = self._get_ingredient_by_key(current_selection)
-        self._plot_data(self.local_data[current_selection], ingredient_data)
+        cost_data = self._get_cost_by_key(current_selection)
+        self._plot_data(self.data_recipes[current_selection], ingredient_data, cost_data)
 
     def _get_saved_data_files(self, pattern: str = "Recipe"):
         """Checks the logs folder for all existing log files"""
@@ -66,16 +77,23 @@ class DataWindow(QMainWindow, Ui_DataWindow):
 
     def _display_data(self):
         selection = self.selection_data.currentText()
-        data = self.local_data[selection]
+        recipe_data = self.data_recipes[selection]
         ingredient_data = self._get_ingredient_by_key(selection)
-        self._plot_data(data, ingredient_data)
+        cost_data = self._get_cost_by_key(selection)
+        self._plot_data(recipe_data, ingredient_data, cost_data)
 
     def _get_ingredient_by_key(self, key: str):
         """Gets ingredient by the selection recipe data key.
         Schema is identical, need to replace Recipe with Ingredient"""
-        return self.local_data_ingredients[
+        return self.data_ingredients[
             key.replace("_Recipe_", "_Ingredient_")
         ]
+
+    def _get_cost_by_key(self, key: str):
+        """Gets cost by the selection recipe data key.
+        Schema is identical, need to replace Recipe with Cost"""
+        # old data does not have cost, so need to check
+        return self.data_cost.get(key.replace("_Recipe_", "_Cost_"), None)
 
     def _read_csv_file(self, to_read: Path):
         """Read and extracts the given csv file"""
@@ -86,21 +104,40 @@ class DataWindow(QMainWindow, Ui_DataWindow):
                 data.append(row)
         return self._extract_data(data)
 
-    def _get_recipe_data(self):
-        """Gets the data from the database and the files"""
-        data = DB_COMMANDER.get_consumption_data_lists_recipes()
+    def _get_data(
+        self,
+        data_type: Union[Literal["recipe"], Literal["ingredient"], Literal["cost"]]
+    ):
+        """Method to get the data from the database and the files"""
+        db_methods = {
+            "recipe": DB_COMMANDER.get_consumption_data_lists_recipes,
+            "ingredient": DB_COMMANDER.get_consumption_data_lists_ingredients,
+            "cost": DB_COMMANDER.get_cost_data_lists_ingredients,
+        }
+        parsing_files = {
+            "recipe": self.recipe_files,
+            "ingredient": self.ingredient_files,
+            "cost": self.cost_files,
+        }
+        data = db_methods[data_type]()
         data = self._extract_data(data)
-        for file in self.data_files:
-            data[file] = self._read_csv_file(SAVE_FOLDER / file)[self.since_reset_str]
+        for file in parsing_files[data_type]:
+            parsed_data = self._read_csv_file(SAVE_FOLDER / file)
+            # we only need the reset data from the file, life time is already in the db
+            data[file] = parsed_data[self.since_reset_str]
         return data
 
+    def _get_recipe_data(self):
+        """Gets the recipe data from the database and the files"""
+        return self._get_data("recipe")
+
     def _get_ingredient_data(self):
-        """Gets the data from the database and the files"""
-        data = DB_COMMANDER.get_consumption_data_lists_ingredients()
-        data = self._extract_data(data)
-        for file in self.data_files_ingredients:
-            data[file] = self._read_csv_file(SAVE_FOLDER / file)[self.since_reset_str]
-        return data
+        """Gets the ingredient data from the database and the files"""
+        return self._get_data("ingredient")
+
+    def _get_cost_data(self):
+        """Gets the cost data from the database and the files"""
+        return self._get_data("cost")
 
     def _extract_data(self, data: list[list]):
         """Extracts the needed data from the exported data"""
@@ -122,7 +159,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         extracted[self.since_reset_str] = {x: y for x, y in zip(names, since_reset) if y > 0}
         return extracted
 
-    def _plot_data(self, data: dict, ingredient_data: dict):
+    def _plot_data(self, data: dict, ingredient_data: dict, cost_data: Optional[dict] = None):
         """Plots the given data in a barplot"""
         # first need to sort, then extract list of names / values
         names, values = self._sort_extract_data(data)
@@ -137,22 +174,49 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         if not data:
             return
 
-        # first generate for recipe
+        # first generate chart for recipe
         self._generate_bar_chart(names, values)
-        # then generate for ingredients
-        # need to calculate starting row
-        start_row = len(values)
+        # generate data for ingredients
         names, values = self._sort_extract_data(ingredient_data)
         label = UI_LANGUAGE.get_translation("ingredient_volume", "data_window")
         ingredient_label = f"{label}{sum(values) / 1000:.2f} l"
         # add empty line to get some space
+        self._add_spacer(self.grid_current_row)
+        self._add_header(self.grid_current_row, ingredient_label)
+        self._generate_bar_chart(names, values, self.grid_current_row, " ml")
+        # generate cost at the end
+        self._add_spacer(self.grid_current_row)
+        cost_label = UI_LANGUAGE.get_translation("no_cost_data", "data_window")
+        if cost_data is not None:
+            total_cost = sum(cost_data.values())
+            cost_label = UI_LANGUAGE.get_translation("cost_ingredients", "data_window")
+            cost_label = f"{cost_label}{total_cost/100:.2f}"
+        self._add_header(self.grid_current_row + 1, cost_label)
+        # we stop here if there is no cost data
+        if cost_data is None:
+            return
+        names, values = self._sort_extract_data(cost_data)
+        # need to convert values from cent or similar to euro
+        values = [x / 100 for x in values]
+        self._generate_bar_chart(names, values, self.grid_current_row, "")
+
+    def _add_spacer(self, row: int):
+        """Adds a spacer to the grid layout"""
+        if self.grid is None:
+            return
         spacer_label = create_label("", 12)
         spacer_label.setMaximumSize(QSize(16777215, 30))
-        self.grid.addWidget(spacer_label, start_row, 0, 1, 1)
-        ingredient_header = create_label(ingredient_label, 20, True, True, "header-underline")
-        ingredient_header.setMaximumSize(QSize(16777215, 40))
-        self.grid.addWidget(ingredient_header, start_row + 1, 0, 1, 3)
-        self._generate_bar_chart(names, values, start_row + 2, " ml")
+        self.grid.addWidget(spacer_label, row, 0, 1, 1)
+        self.grid_current_row += 1
+
+    def _add_header(self, row: int, text: str):
+        """Adds a header to the grid layout"""
+        if self.grid is None:
+            return
+        header_label = create_label(text, 20, True, True, "header-underline")
+        header_label.setMaximumSize(QSize(16777215, 40))
+        self.grid.addWidget(header_label, row, 0, 1, 3)
+        self.grid_current_row += 2
 
     def _sort_extract_data(self, data: dict):
         sorted_data = dict(sorted(data.items(), key=lambda i: -i[1]))
@@ -166,15 +230,17 @@ class DataWindow(QMainWindow, Ui_DataWindow):
             return
         for i, (name, value) in enumerate(zip(names, values), start_row):
             self.grid.addWidget(create_label(f"{name} ", 20, False, True), i, 0, 1, 1)
-            self.grid.addWidget(create_label(f" ({value}{quantifier}) ", 20, True, True, "secondary"), i, 1, 1, 1)
+            self.grid.addWidget(create_label(f" {value}{quantifier} ", 20, True, True, "secondary"), i, 1, 1, 1)
             displayed_bar = QProgressBar(self)
             displayed_bar.setTextVisible(False)
             displayed_bar.setProperty("cssClass", "no-bg")
             displayed_bar.setValue(int(100 * value / max(values)))
             self.grid.addWidget(displayed_bar, i, 2, 1, 1)
+            self.grid_current_row += 1
 
     def _clear_data(self):
         """Removes data from the grid layout"""
+        self.grid_current_row = 0
         if self.grid is None:
             return
         for i in reversed(range(self.grid.count())):

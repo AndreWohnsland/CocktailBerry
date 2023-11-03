@@ -75,7 +75,7 @@ class DisplayController(DialogHandler):
     def get_ingredient_data(self, w: Ui_MainWindow):
         """Returns an Ingredient Object from the ingredient data fields"""
         line_edits, checkbox_hand, checkbox_slow, list_widget = self.get_ingredient_fields(w)
-        ingredient_name, alcohol_level, volume = self.get_lineedit_text(list(line_edits))
+        ingredient_name, alcohol_level, volume, ingredient_cost = self.get_lineedit_text(list(line_edits))
         hand_add = checkbox_hand.isChecked()
         is_slow = checkbox_slow.isChecked()
         selected_ingredient = self.get_list_widget_selection(list_widget)
@@ -87,7 +87,8 @@ class DisplayController(DialogHandler):
             fill_level=0,
             hand=hand_add,
             slow=is_slow,
-            selected=selected_ingredient
+            selected=selected_ingredient,
+            cost=int(ingredient_cost),
         )
 
     def get_cocktail_data(self, w: Ui_MainWindow) -> Tuple[str, int, float]:
@@ -118,8 +119,8 @@ class DisplayController(DialogHandler):
         if self._lineedit_is_missing(list(lineedit_list)):
             self.say_some_value_missing()
             return False
-        _, ingredient_percentage, ingredient_volume = lineedit_list
-        if self._lineedit_is_no_int([ingredient_percentage, ingredient_volume]):
+        _, ingredient_percentage, ingredient_volume, ingredient_cost = lineedit_list
+        if self._lineedit_is_no_int([ingredient_percentage, ingredient_volume, ingredient_cost]):
             self.say_needs_to_be_int()
             return False
         if int(ingredient_percentage.text()) > 100:
@@ -558,9 +559,14 @@ class DisplayController(DialogHandler):
 
     def get_ingredient_fields(
         self, w: Ui_MainWindow
-    ) -> Tuple[Tuple[QLineEdit, QLineEdit, QLineEdit], QCheckBox, QCheckBox, QListWidget]:
+    ) -> Tuple[Tuple[QLineEdit, QLineEdit, QLineEdit, QLineEdit], QCheckBox, QCheckBox, QListWidget]:
         """Returns [Name, Alcohol, Volume], CheckedHand, ListWidget Elements for Ingredients"""
-        return (w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen), w.CHBHand, w.check_slow_ingredient, w.LWZutaten
+        return (
+            (w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen, w.line_edit_ingredient_cost),
+            w.CHBHand,
+            w.check_slow_ingredient,
+            w.LWZutaten
+        )
 
     def get_label_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:
         """Returns all bottles label objects"""

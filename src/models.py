@@ -16,6 +16,7 @@ class Ingredient():
     amount: int = 0
     bottle: Optional[int] = None
     selected: Optional[str] = None
+    cost: int = 0
 
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name"""

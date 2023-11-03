@@ -30,6 +30,10 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.23.0** | CLI can change or hide displayed name                                                                                |
 | **v1.24.0** | Own password for maker                                                                                               |
 | **v1.25.0** | Option to not scale cocktail                                                                                         |
+| **v1.26.0** | Cocktail search                                                                                                      |
+| **v1.27.0** | Support for flow inversion                                                                                           |
+| **v1.28.0** | Bookworm OS Support                                                                                                  |
+| **v1.29.0** | Cost for ingredients + cocktails                                                                                     |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.

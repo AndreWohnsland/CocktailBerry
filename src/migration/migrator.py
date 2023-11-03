@@ -23,6 +23,7 @@ from src.migration.update_data import (
     remove_is_alcoholic_column,
     remove_old_recipe_columns,
     add_slower_ingredient_flag_to_db,
+    add_cost_column_to_ingredients,
 )
 
 _logger = LoggerHandler("migrator_module")
@@ -95,6 +96,8 @@ class Migrator:
             _update_config_value_type("PUMP_SLOW_FACTOR", float, 1.0)
         if self.older_than_version_with_logging("1.26.1"):
             _update_config_value_type("PUMP_VOLUMEFLOW", float, 1.0)
+        if self.older_than_version_with_logging("1.29.0"):
+            add_cost_column_to_ingredients()
         self._check_local_version_data()
 
     def _migration_log(self, version: str):

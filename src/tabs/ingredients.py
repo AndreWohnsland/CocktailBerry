@@ -45,7 +45,9 @@ def _add_new_ingredient(w, ing: Ingredient):
         DP_CONTROLLER.say_name_already_exists()
         return False
 
-    DB_COMMANDER.insert_new_ingredient(ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow))
+    DB_COMMANDER.insert_new_ingredient(
+        ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow), ing.cost
+    )
     # needs to fill the ingredient comboboxes, bottles tab only if it is not a handadd
     to_fill = DP_CONTROLLER.get_comboboxes_recipes(w)
     if not ing.hand:
@@ -79,6 +81,7 @@ def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
         bool(ing.hand),
         bool(ing.slow),
         old_ingredient.id,
+        ing.cost,
     )
 
     DP_CONTROLLER.delete_list_widget_item(ingredient_list_widget, ing.selected)
@@ -154,7 +157,7 @@ def display_selected_ingredient(w):
         if not ingredient:
             return
         DP_CONTROLLER.fill_multiple_lineedit(
-            list(lineedits), [ingredient.name, ingredient.alcohol, ingredient.bottle_volume]
+            list(lineedits), [ingredient.name, ingredient.alcohol, ingredient.bottle_volume, ingredient.cost]
         )
         DP_CONTROLLER.set_checkbox_value(checkbox_hand, ingredient.hand)
         DP_CONTROLLER.set_checkbox_value(checkbox_slow, ingredient.slow)
