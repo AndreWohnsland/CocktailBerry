@@ -1,6 +1,7 @@
-from typing import Callable, List, Literal, Optional, Tuple, Union
+from __future__ import annotations
+from typing import Callable, List, Literal, Optional, Tuple, Union, TYPE_CHECKING
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QWidget, QComboBox, QLabel,
     QLineEdit, QPushButton, QListWidget,
@@ -19,6 +20,9 @@ from src import MAX_SUPPORTED_BOTTLES
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui_elements.bonusingredient import Ui_addingredient
 from src.ui.icons import ICONS
+
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
 
 
 class ItemDelegate(QStyledItemDelegate):
@@ -90,16 +94,6 @@ class DisplayController(DialogHandler):
             selected=selected_ingredient,
             cost=int(ingredient_cost),
         )
-
-    def get_cocktail_data(self, w: Ui_MainWindow) -> Tuple[str, int, float]:
-        """Returns [name, volume, factor] from maker"""
-        cocktail_volume = shared.cocktail_volume
-        alcohol_factor = shared.alcohol_factor
-        # If virgin is selected, just set alcohol_factor to 0
-        if w.virgin_checkbox.isChecked():
-            alcohol_factor = 0.0
-        cocktail_name = self.get_list_widget_selection(w.LWMaker)
-        return cocktail_name, cocktail_volume, alcohol_factor
 
     def get_recipe_field_data(self, w: Ui_MainWindow) -> Tuple[str, str, List[str], List[str], int, int]:
         """ Return [name, selected, [ingredients], [volumes], enabled, virgin] """
@@ -384,10 +378,6 @@ class DisplayController(DialogHandler):
         """Clears the given list widget"""
         list_widget.clear()
 
-    def clear_list_widget_maker(self, w: Ui_MainWindow):
-        """Clears the maker list widget"""
-        w.LWMaker.clear()
-
     def clear_list_widget_recipes(self, w: Ui_MainWindow):
         """Clears the recipes list widget"""
         w.LWRezepte.clear()
@@ -395,10 +385,6 @@ class DisplayController(DialogHandler):
     def clear_list_widget_ingredients(self, w: Ui_MainWindow):
         """Clears the ingredients list widget"""
         w.LWZutaten.clear()
-
-    def fill_list_widget_maker(self, w: Ui_MainWindow, recipe_names: List[Cocktail]):
-        """Fill the maker list widget with given recipes"""
-        self.fill_list_widget(w.LWMaker, recipe_names)
 
     def fill_list_widget_recipes(self, w: Ui_MainWindow, recipe_names: List[str]):
         """Fill the recipe list widget with given recipes"""
@@ -421,41 +407,6 @@ class DisplayController(DialogHandler):
                 else:
                     self.delete_items_of_layout(item.layout())
 
-    # others
-    def fill_recipe_data_maker(self, w: Ui_MainWindow, cocktail: Cocktail, total_volume: int):
-        """Fill all the maker view data with the data from the given cocktail"""
-        w.LAlkoholname.setText(cocktail.name)
-        display_volume = self._decide_rounding(total_volume * cfg.EXP_MAKER_FACTOR, 20)
-        w.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")
-        w.LAlkoholgehalt.setText(f"{cocktail.adjusted_alcohol:.1f}%")
-        display_data = cocktail.machineadds
-        hand = cocktail.handadds
-        # Activates or deactivates the virgin checkbox, depending on the virgin flag
-        w.virgin_checkbox.setEnabled(cocktail.virgin_available)
-        # Styles does not work on strikeout, so we use internal qt things
-        # To be precise, they do work at start, but does not support dynamic changes
-        self._set_strike_through(w.virgin_checkbox, not cocktail.virgin_available)
-        # when there is handadd, also build some additional data
-        if hand:
-            display_data.extend([Ingredient(-1, "", 0, 0, 0, False, False)] + hand)
-        fields_ingredient = self.get_labels_maker_ingredients(w)
-        fields_volume = self.get_labels_maker_volume(w)
-        for field_ingredient, field_volume, ing in zip(fields_ingredient, fields_volume, display_data):
-            # -1 indicates no ingredient
-            if ing.id == -1:
-                ingredient_name = UI_LANGUAGE.get_add_self()
-                field_ingredient.setProperty("cssClass", "hand-separator")
-                field_ingredient.setStyleSheet(f"color: {ICONS.color.neutral};")
-                self._set_underline(field_ingredient, True)
-            else:
-                field_ingredient.setProperty("cssClass", None)
-                field_ingredient.setStyleSheet("")
-                self._set_underline(field_ingredient, False)
-                display_amount = self._decide_rounding(ing.amount * cfg.EXP_MAKER_FACTOR)
-                field_volume.setText(f" {display_amount} {cfg.EXP_MAKER_UNIT}")
-                ingredient_name = ing.name
-            field_ingredient.setText(f"{ingredient_name} ")
-
     def _decide_rounding(self, val: float, threshold=8):
         """Helper to get the right rounding for numbers displayed to the user"""
         if val >= threshold:
@@ -474,23 +425,6 @@ class DisplayController(DialogHandler):
         font.setUnderline(underline)
         element.setFont(font)
 
-    def clear_recipe_data_maker(self, w: Ui_MainWindow, select_other_item=True):
-        """Clear the cocktail data in the maker view, only clears selection if no other item was selected"""
-        w.LAlkoholgehalt.setText("")
-        w.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
-        w.LMenge.setText("")
-        w.virgin_checkbox.setChecked(False)
-        # Also resets the alcohol factor
-        self.reset_alcohol_factor()
-        if not select_other_item:
-            w.LWMaker.clearSelection()
-        for field_ingredient, field_volume in zip(
-            self.get_labels_maker_ingredients(w),
-            self.get_labels_maker_volume(w)
-        ):
-            field_ingredient.setText("")
-            field_volume.setText("")
-
     def clear_recipe_data_recipes(self, w: Ui_MainWindow, select_other_item: bool):
         """Clear the recipe data in recipe view, only clears selection if no other item was selected"""
         w.LECocktail.clear()
@@ -499,18 +433,6 @@ class DisplayController(DialogHandler):
             w.LWRezepte.clearSelection()
         self.set_multiple_combobox_to_top_item(self.get_comboboxes_recipes(w))
         self.clean_multiple_lineedit(self.get_lineedits_recipe(w))
-
-    def remove_recipe_from_list_widgets(self, w: Ui_MainWindow, recipe_name: str):
-        """Remove the recipe from the list widgets, suppress signals during process"""
-        # block that trigger that no refetching of data (and shared.handadd overwrite) occurs
-        w.LWRezepte.blockSignals(True)
-        w.LWMaker.blockSignals(True)
-        w.LWRezepte.clearSelection()
-        w.LWMaker.clearSelection()
-        self.delete_list_widget_item(w.LWRezepte, recipe_name)
-        self.delete_list_widget_item(w.LWMaker, recipe_name)
-        w.LWRezepte.blockSignals(False)
-        w.LWMaker.blockSignals(False)
 
     def set_recipe_data(self, w: Ui_MainWindow, cocktail: Cocktail):
         """Fills the recipe data in the recipe view with the cocktail object"""
@@ -522,6 +444,11 @@ class DisplayController(DialogHandler):
         self.set_multiple_combobox_items(self.get_comboboxes_recipes(w)[: len(names)], names)
         self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(volumes)], volumes)  # type: ignore
         w.LECocktail.setText(cocktail.name)
+
+    def update_maker_view(self, w: MainScreen):
+        """Refreshes the maker view, sets tab also to maker and not selection"""
+        w.cocktail_view.populate_cocktails()
+        w.container_maker.setCurrentWidget(w.cocktail_view)
 
     # Some more "specific" function, not using generic but specified field sets
     def set_label_bottles(self, w: Ui_MainWindow, label_names: List[str]):
@@ -600,36 +527,6 @@ class DisplayController(DialogHandler):
         for elements in to_adjust:
             for element in elements[used_bottles::]:
                 element.deleteLater()
-
-    def adjust_maker_label_size_cocktaildata(self, w: Ui_MainWindow):
-        """Adjusts the font size for larger screens"""
-        # iterate over all size types and adjust size relative to window height
-        # default height was 480 for provided UI
-        # so if its larger, the font should also be larger here
-        height = cfg.UI_HEIGHT
-        # no need to adjust if its near to the original height
-        default_height = 480
-        if height <= default_height + 20:
-            return
-        # creating list of all labels
-        big_labels = [w.LAlkoholname]
-        medium_labels = [w.LMenge, w.LAlkoholgehalt]
-        small_labels = self.get_labels_maker_volume(w)
-        small_labels_bold = self.get_labels_maker_ingredients(w)
-        all_labels = [big_labels, medium_labels, small_labels_bold, small_labels]
-
-        diff_from_default_height = height / default_height
-        # from large to small
-        default_sizes = [22, 16, 12, 12]
-        is_bold_list = [True, True, True, False]
-        for default_size, is_bold, labels in zip(default_sizes, is_bold_list, all_labels):
-            new_size = int(diff_from_default_height * default_size)
-            font = QFont()
-            font.setPointSize(new_size)
-            font.setBold(is_bold)
-            font.setWeight(50 + is_bold * 25)
-            for label in labels:
-                label.setFont(font)
 
     def set_ingredient_add_label(self, w: Ui_MainWindow, item_selected: bool):
         """Changes the label of the ingredient button"""
