@@ -1,15 +1,19 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QWidget, QGridLayout, QScrollArea, QFrame
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QGridLayout, QScrollArea, QFrame
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QSizePolicy
+from src.database_commander import DB_COMMANDER
+from src.display_controller import DP_CONTROLLER
 
 from src.models import Cocktail
 from src.ui_elements.clickable_label import ClickableLabel
 from src.image_utils import find_cocktail_image
 from src.config_manager import CONFIG as cfg
 from src.ui.creation_utils import create_button
+from src.ui.icons import ICONS, PresetIcon
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -22,7 +26,11 @@ SQUARE_SIZE = int(cfg.UI_WIDTH / (N_COLUMNS * 1.15))
 
 def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
     """Generates a image block for the given cocktail"""
-    button = create_button(cocktail.name, font_size=12, min_size=0, max_size=30, css_class="btn-half-top")
+    button = create_button(cocktail.name, font_size=14, min_h=0, max_h=35, max_w=SQUARE_SIZE, css_class="btn-half-top")
+    if cocktail.virgin_available:
+        icon = ICONS.generate_icon(PresetIcon.virgin, ICONS.color.primary)
+        button.setIcon(icon)
+        button.setIconSize(QSize(20, 20))
     label = ClickableLabel(cocktail.name)
     cocktail_image = find_cocktail_image(cocktail)
     pixmap = QPixmap(str(cocktail_image))
@@ -66,9 +74,11 @@ class CocktailView(QWidget):
 
         self.mainscreen = mainscreen
 
-    def populate_cocktails(self, cocktails: list[Cocktail]):
+    def populate_cocktails(self):
         """Adds the given cocktails to the grid"""
         # sort cocktails by name
+        DP_CONTROLLER.delete_items_of_layout(self.grid)
+        cocktails = DB_COMMANDER.get_possible_cocktails()
         cocktails.sort(key=lambda x: x.name)
         for i in range(0, len(cocktails), N_COLUMNS):
             for j in range(N_COLUMNS):
@@ -79,11 +89,3 @@ class CocktailView(QWidget):
                     self.mainscreen,
                 )
                 self.grid.addLayout(block, i // N_COLUMNS, j)
-
-    def clear_cocktails(self):
-        """Remove each cocktail from the grid"""
-        while self.grid.count():
-            child = self.grid.takeAt(0)
-            widget = child.widget()
-            if widget is not None:
-                widget.deleteLater()
