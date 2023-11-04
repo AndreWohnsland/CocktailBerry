@@ -3,7 +3,7 @@
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
-from typing import Any, List, Optional, TypeVar
+from typing import Any, Optional, TypeVar
 
 from src.tabs import bottles
 from src.database_commander import DB_COMMANDER
@@ -21,18 +21,6 @@ from src.config_manager import shared
 
 _LOGGER = LoggerHandler("maker_module")
 T = TypeVar('T', int, float)
-
-
-def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):
-    """ Goes through every recipe in the list or all recipes if none given
-    Checks if all ingredients are registered, if so, adds it to the list widget
-    """
-    if cocktails is None:
-        cocktails = DB_COMMANDER.get_all_cocktails(get_disabled=False)
-
-    handadds_ids = DB_COMMANDER.get_available_ids()
-    available_cocktail_names = [x for x in cocktails if x.is_possible(handadds_ids)]
-    DP_CONTROLLER.fill_list_widget_maker(w, available_cocktail_names)
 
 
 def get_possible_cocktails():

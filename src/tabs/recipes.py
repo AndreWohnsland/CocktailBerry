@@ -6,8 +6,6 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 from collections import Counter
 from typing import List, Tuple
 
-from src.tabs import maker
-
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.error_handler import logerror
@@ -45,14 +43,9 @@ def handle_enter_recipe(w):
         recipe_id, recipe_name, recipe_volume, recipe_alcohol_level, enabled, virgin, ingredient_data
     )
 
-    # remove the old name only if update
-    if not new_recipe:
-        DP_CONTROLLER.remove_recipe_from_list_widgets(w, selected_name)
     DP_CONTROLLER.fill_list_widget_recipes(w, [cocktail.name])
-    DP_CONTROLLER.clear_recipe_data_maker(w, select_other_item=False)
-    if enabled:
-        maker.evaluate_recipe_maker_view(w, [cocktail])
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
+    DP_CONTROLLER.update_maker_view(w)
 
     if new_recipe:
         DP_CONTROLLER.say_recipe_added(cocktail.name)
@@ -190,9 +183,8 @@ def delete_recipe(w):
         return
 
     DB_COMMANDER.delete_recipe(recipe_name)
-    DP_CONTROLLER.remove_recipe_from_list_widgets(w, recipe_name)
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
-    DP_CONTROLLER.clear_recipe_data_maker(w)
+    DP_CONTROLLER.update_maker_view(w)
     DP_CONTROLLER.say_recipe_deleted(recipe_name)
 
 
@@ -201,8 +193,7 @@ def enable_all_recipes(w):
     """Set all recipes to enabled """
     if not DP_CONTROLLER.ask_enable_all_recipes():
         return
-    disabled_cocktails = DB_COMMANDER.get_all_cocktails(get_enabled=False)
     DB_COMMANDER.set_all_recipes_enabled()
-    maker.evaluate_recipe_maker_view(w, disabled_cocktails)
+    DP_CONTROLLER.update_maker_view(w)
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
     DP_CONTROLLER.say_all_recipes_enabled()

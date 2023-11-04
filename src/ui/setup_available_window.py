@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import QMainWindow, QListWidget
 
 
 from src.ui_elements.available import Ui_available
-from src.tabs.maker import evaluate_recipe_maker_view
 from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
@@ -43,9 +42,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         if ingredient_names:
             DB_COMMANDER.insert_multiple_existing_handadd_ingredients_by_name(ingredient_names)
         # reloads the maker screen and updates the shown available recipes
-        DP_CONTROLLER.clear_list_widget_maker(self.mainscreen)
-        evaluate_recipe_maker_view(self.mainscreen)
-        DP_CONTROLLER.clear_recipe_data_maker(self.mainscreen, False)
+        DP_CONTROLLER.update_maker_view(self.mainscreen)
         self.close()
 
     def _change_ingredient(self, lw_to_add: QListWidget, lw_removed: QListWidget):

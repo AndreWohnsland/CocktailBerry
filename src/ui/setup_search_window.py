@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QMainWindow, QListWidget, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
 from src.ui_elements import Ui_SearchWindow
 
