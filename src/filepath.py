@@ -10,6 +10,7 @@ LOG_FOLDER = ROOT_PATH / "logs"
 SAVE_FOLDER = ROOT_PATH / "saves"
 ADDON_FOLDER = ROOT_PATH / "addons"
 SCRIPTS_FOLDER = ROOT_PATH / "scripts"
+USER_IMAGE_FOLDER = ROOT_PATH / "display_images_user"
 
 # src path
 SRC_PATH = ROOT_PATH / "src"
@@ -19,6 +20,7 @@ CUSTOM_STYLE_SCSS = STYLE_FOLDER / "custom.scss"
 LANGUAGE_FILE = SRC_PATH / "language.yaml"
 APP_ICON_FILE = SRC_PATH / "ui_elements" / "Cocktail-icon.png"
 ADDON_SKELTON = SRC_PATH / "programs" / "addon_skeleton.py"
+DEFAULT_IMAGE_FOLDER = SRC_PATH / "ui_elements" / "default_images"
 
 # other
 LOCAL_MICROSERVICE_FILE = Path.home().absolute() / "ms-docker-compose.yaml"
