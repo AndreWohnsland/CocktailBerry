@@ -35,23 +35,11 @@ def evaluate_recipe_maker_view(w, cocktails: Optional[List[Cocktail]] = None):
     DP_CONTROLLER.fill_list_widget_maker(w, available_cocktail_names)
 
 
-@logerror
-def update_shown_recipe(w, clear_view: bool = True):
-    """ Updates the maker display Data with the selected recipe"""
-    if clear_view:
-        DP_CONTROLLER.clear_recipe_data_maker(w)
-
-    cocktail_name, amount, factor = DP_CONTROLLER.get_cocktail_data(w)
-    if not cocktail_name:
-        return
-    cocktail = DB_COMMANDER.get_cocktail(cocktail_name)
-    if cocktail is None:
-        return
-    # Do not scale the recipe volume if use recipe amount is activated
-    if cfg.MAKER_USE_RECIPE_VOLUME:
-        amount = cocktail.amount
-    cocktail.scale_cocktail(amount, factor)
-    DP_CONTROLLER.fill_recipe_data_maker(w, cocktail, amount)
+def get_possible_cocktails():
+    all_cocktails = DB_COMMANDER.get_all_cocktails(get_disabled=False)
+    handadds_ids = DB_COMMANDER.get_available_ids()
+    possible_cocktails = [x for x in all_cocktails if x.is_possible(handadds_ids)]
+    return possible_cocktails
 
 
 def __build_comment_maker(cocktail: Cocktail):
@@ -79,25 +67,15 @@ def __generate_maker_log_entry(cocktail_volume: int, cocktail_name: str, taken_t
 
 
 @logerror
-def prepare_cocktail(w):
+def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
     if shared.cocktail_started:
         return
-    cocktail_name, cocktail_volume, alcohol_factor = DP_CONTROLLER.get_cocktail_data(w)
-    if not cocktail_name:
-        DP_CONTROLLER.say_no_recipe_selected()
-        return
-
     # Gets and scales cocktail, check if fill level is enough
-    cocktail = DB_COMMANDER.get_cocktail(cocktail_name)
     if cocktail is None:
         return
-    # Do not scale the recipe volume if use recipe amount is activated
-    if cfg.MAKER_USE_RECIPE_VOLUME:
-        cocktail_volume = cocktail.amount
-    cocktail.scale_cocktail(cocktail_volume, alcohol_factor)
     virgin_ending = " (Virgin)" if cocktail.is_virgin else ""
-    display_name = f"{cocktail_name}{virgin_ending}"
+    display_name = f"{cocktail.name}{virgin_ending}"
     error = None
     # only do check if this option is activated
     if cfg.MAKER_CHECK_BOTTLE:
@@ -110,7 +88,7 @@ def prepare_cocktail(w):
             DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
         return
 
-    print(f"Preparing {cocktail_volume} ml {display_name}")
+    print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
     ingredient_bottles = [x for x in cocktail.machineadds if x.amount > 0]
 
@@ -125,8 +103,8 @@ def prepare_cocktail(w):
     # Now make the cocktail
     consumption, taken_time, max_time = MACHINE.make_cocktail(
         w, ingredient_bottles, display_name)  # type: ignore
-    DB_COMMANDER.increment_recipe_counter(cocktail_name)
-    __generate_maker_log_entry(cocktail_volume, display_name, taken_time, max_time)
+    DB_COMMANDER.increment_recipe_counter(cocktail.name)
+    __generate_maker_log_entry(cocktail.adjusted_amount, display_name, taken_time, max_time)
 
     # run Addons after cocktail preparation
     addon_data["consumption"] = consumption
@@ -134,7 +112,7 @@ def prepare_cocktail(w):
 
     # only post if cocktail was made over 50%
     percentage_made = taken_time / max_time
-    real_volume = round(cocktail_volume * percentage_made)
+    real_volume = round(cocktail.adjusted_amount * percentage_made)
     if percentage_made >= 0.5:
         SERVICE_HANDLER.post_team_data(shared.selected_team, real_volume, shared.team_member_name)
         SERVICE_HANDLER.post_cocktail_to_hook(display_name, real_volume, cocktail)
@@ -154,31 +132,6 @@ def prepare_cocktail(w):
 
     bottles.set_fill_level_bars(w)
     DP_CONTROLLER.reset_alcohol_factor()
-    DP_CONTROLLER.reset_virgin_setting(w)
-
-
-def adjust_alcohol(w, amount: float):
-    """changes the alcohol factor"""
-    new_factor = shared.alcohol_factor + amount
-    shared.alcohol_factor = _limit_number(new_factor, 0.7, 1.3)
-    update_shown_recipe(w, False)
-
-
-def adjust_volume(w, amount: int):
-    """changes the volume amount"""
-    # Do not scale the recipe volume if the option is activated
-    if cfg.MAKER_USE_RECIPE_VOLUME:
-        return
-    new_volume = shared.cocktail_volume + amount
-    shared.cocktail_volume = _limit_number(new_volume, 100, 400)
-    update_shown_recipe(w, False)
-
-
-def _limit_number(val: T, min_val: T, max_val: T) -> T:
-    """Limits the number in the boundaries"""
-    limited = max(min_val, val)
-    limited = min(max_val, limited)
-    return limited
 
 
 def interrupt_cocktail():

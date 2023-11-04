@@ -1,20 +1,27 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from PyQt5.QtWidgets import QMainWindow, QListWidget, QLineEdit
 
 from src.ui_elements import Ui_SearchWindow
 
 from src.models import Cocktail
 from src.display_controller import DP_CONTROLLER, ItemDelegate
+from src.database_commander import DB_COMMANDER
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.dialog_handler import UI_LANGUAGE
+
+if TYPE_CHECKING:
+    from src.ui.setup_cocktail_selection import CocktailSelection
 
 
 class SearchWindow(QMainWindow, Ui_SearchWindow):
     """ Class for the Progress screen during Cocktail making. """
 
-    def __init__(self, parent, available_cocktails: list[Cocktail], maker_list_widget: QListWidget):
+    def __init__(self, parent, available_cocktails: list[Cocktail], cocktail_selection: CocktailSelection):
         super().__init__()
         self.setupUi(self)
-        self.maker_list_widget = maker_list_widget
+        self.cocktail_selection = cocktail_selection
         self.available_cocktails = available_cocktails
         self.list_widget_cocktails.setItemDelegate(ItemDelegate(self))
         DP_CONTROLLER.initialize_window_object(self)
@@ -32,7 +39,11 @@ class SearchWindow(QMainWindow, Ui_SearchWindow):
         """ Enters the search into the main window"""
         search = DP_CONTROLLER.get_list_widget_selection(self.list_widget_cocktails)
         if search:
-            DP_CONTROLLER.select_list_widget_item(self.maker_list_widget, search)
+            cocktail = DB_COMMANDER.get_cocktail(search)
+            if cocktail is None:
+                return
+            self.cocktail_selection.set_cocktail(cocktail)
+            self.cocktail_selection.update_cocktail_data()
         self.close()
 
     def _open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 64):

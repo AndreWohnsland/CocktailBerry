@@ -12,13 +12,14 @@ from src.config_manager import CONFIG as cfg
 from src.machine.controller import MACHINE
 from src.models import Cocktail
 from src.tabs import maker, ingredients, recipes, bottles
-from src.display_controller import DP_CONTROLLER, ItemDelegate
+from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
 from src.utils import has_connection
 
 from src.ui_elements import Ui_MainWindow
+from src.ui_elements.cocktail_view import CocktailView
 from src.ui.setup_option_window import OptionWindow
 from src.ui.setup_progress_screen import ProgressScreen
 from src.ui.setup_numpad_widget import NumpadWidget
@@ -29,7 +30,8 @@ from src.ui.setup_available_window import AvailableWindow
 from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
 from src.ui.setup_search_window import SearchWindow
-from src.ui.icons import ICONS, BUTTON_SIZE
+from src.ui.setup_cocktail_selection import CocktailSelection
+from src.ui.icons import ICONS
 
 from src import FUTURE_PYTHON_VERSION
 
@@ -41,13 +43,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """ Init the main window. Many of the button and List connects are in pass_setup. """
         super().__init__()
         self.setupUi(self)
+
         # Get the basic Logger
         self.logger = LoggerHandler("cocktail_application")
         self.logger.log_start_program()
-        self.connect_objects()
-        self.connect_other_windows()
-        self.hide_necessary_elements()
-        DP_CONTROLLER.initialize_window_object(self)
+
         # init the empty further screens
         self.numpad_window: Optional[NumpadWidget] = None
         self.keyboard_window: Optional[KeyboardWidget] = None
@@ -59,6 +59,20 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.option_window: Optional[OptionWindow] = None
         self.datepicker: Optional[DatePicker] = None
         self.search_window: Optional[SearchWindow] = None
+        self.cocktail_view = CocktailView(self)
+        # building the fist page as a stacked widget
+        # this is quite similar to the tab widget, but we don't need the tabs
+        possible_cocktails = maker.get_possible_cocktails()
+        self.cocktail_selection: Optional[CocktailSelection] = None
+        self.cocktail_view.populate_cocktails(possible_cocktails)
+        self.container_maker.addWidget(self.cocktail_view)
+
+        # internal initialization
+        self.connect_objects()
+        self.connect_other_windows()
+        self.hide_necessary_elements()
+        DP_CONTROLLER.initialize_window_object(self)
+
         UI_LANGUAGE.adjust_mainwindow(self)
         MACHINE.set_up_pumps()
         self.showFullScreen()
@@ -108,6 +122,19 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
             )
 
+    def open_cocktail_selection(self, cocktail: Cocktail):
+        """Opens the cocktail selection screen"""
+        if self.cocktail_selection is not None:
+            self.container_maker.removeWidget(self.cocktail_selection)
+        self.cocktail_selection = CocktailSelection(
+            self, cocktail,
+            lambda: self.container_maker.setCurrentWidget(self.cocktail_view)
+        )
+        self.container_maker.addWidget(self.cocktail_selection)
+        self.cocktail_selection.set_cocktail(cocktail)
+        self.cocktail_selection.update_cocktail_data()
+        self.container_maker.setCurrentWidget(self.cocktail_selection)
+
     def open_numpad(self, le_to_write: QLineEdit, x_pos=0, y_pos=0, header_text="Password"):
         """ Opens up the NumpadWidget connected to the lineedit offset from the left upper side """
         self.numpad_window = NumpadWidget(self, le_to_write, x_pos, y_pos, header_text)
@@ -156,10 +183,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def open_search_window(self):
         """Opens the search window"""
-        available_cocktails = DP_CONTROLLER.get_list_widget_items(self.LWMaker)
+        if self.cocktail_selection is None:
+            return
+        available_cocktails = maker.get_possible_cocktails()
         # fix for return data may be cocktail or str data
         available_cocktails = [x for x in available_cocktails if isinstance(x, Cocktail)]
-        self.search_window = SearchWindow(self, available_cocktails, self.LWMaker)
+        self.search_window = SearchWindow(self, available_cocktails, self.cocktail_selection)
 
     def connect_other_windows(self):
         """Links the buttons and lineedits to the other ui elements"""
@@ -191,14 +220,14 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             lambda: self.open_numpad(self.line_edit_ingredient_cost, 50, 50, amount)
         )
         self.LECocktail.setMaxLength(30)
-        self.button_search_cocktail.clicked.connect(self.open_search_window)
+        # self.button_search_cocktail.clicked.connect(self.open_search_window)
 
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """
         # add delegate (list items icons)
-        self.LWMaker.setItemDelegate(ItemDelegate(self))
+        # self.LWMaker.setItemDelegate(ItemDelegate(self))
         # also increase the icon size here (setting icon bigger will not do it later, it will be cropped)
-        self.LWMaker.setIconSize(BUTTON_SIZE)
+        # self.LWMaker.setIconSize(BUTTON_SIZE)
         # First, connect all the push buttons with the Functions
         self.PBZutathinzu.clicked.connect(lambda: ingredients.handle_enter_ingredient(self))
         self.PBRezepthinzu.clicked.connect(lambda: recipes.handle_enter_recipe(self))
@@ -208,22 +237,22 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBdelete.clicked.connect(lambda: recipes.delete_recipe(self))
         self.PBZdelete.clicked.connect(lambda: ingredients.delete_ingredient(self))
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
-        self.prepare_button.clicked.connect(lambda: maker.prepare_cocktail(self))
+        # self.prepare_button.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
 
-        self.increase_volume.clicked.connect(lambda: maker.adjust_volume(self, 25))
-        self.decrease_volume.clicked.connect(lambda: maker.adjust_volume(self, -25))
-        self.increase_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, 0.15))
-        self.decrease_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, -0.15))
+        # self.increase_volume.clicked.connect(lambda: maker.adjust_volume(self, 25))
+        # self.decrease_volume.clicked.connect(lambda: maker.adjust_volume(self, -25))
+        # self.increase_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, 0.15))
+        # self.decrease_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, -0.15))
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
         # Connect the Lists with the Functions
         self.LWZutaten.itemSelectionChanged.connect(lambda: ingredients.display_selected_ingredient(self))
-        self.LWMaker.itemSelectionChanged.connect(lambda: maker.update_shown_recipe(self))
+        # self.LWMaker.itemSelectionChanged.connect(lambda: maker.update_shown_recipe(self))
         self.LWRezepte.itemSelectionChanged.connect(lambda: recipes.load_selected_recipe_data(self))
 
         # Connects the virgin checkbox
-        self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))
+        # self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))
 
         # Protect other tabs with password
         # since it's now a password, using 0 = no password will not trigger password window
@@ -233,12 +262,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Removes the elements not used depending on number of bottles in bottle tab
         # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
         DP_CONTROLLER.adjust_bottle_number_displayed(self)
-        DP_CONTROLLER.adjust_maker_label_size_cocktaildata(self)
+        # DP_CONTROLLER.adjust_maker_label_size_cocktaildata(self)
 
         # gets the bottle ingredients into the global list
         bottles.get_bottle_ingredients()
         # Clear Help Marker
-        DP_CONTROLLER.clear_recipe_data_maker(self)
+        # DP_CONTROLLER.clear_recipe_data_maker(self)
         # Load ingredients
         ingredients.load_ingredients(self)
         # Load Bottles into the Labels
@@ -252,7 +281,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Load Existing Recipes from DB into Recipe List
         recipes.load_recipe_view_names(self)
         # Load Possible Recipes Into Maker List
-        maker.evaluate_recipe_maker_view(self)
+        # maker.evaluate_recipe_maker_view(self)
         # Load the Progressbar
         bottles.set_fill_level_bars(self)
 
@@ -262,8 +291,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def hide_necessary_elements(self):
         """Depending on the config, hide some of the unused elements"""
         if cfg.MAKER_USE_RECIPE_VOLUME:
-            self.decrease_volume.hide()
-            self.increase_volume.hide()
+            pass
+            # self.decrease_volume.hide()
+            # self.increase_volume.hide()
 
     def handle_tab_bar_clicked(self, index):
         """Protects tabs other than maker tab with a password"""

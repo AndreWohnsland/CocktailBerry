@@ -222,10 +222,6 @@ class DisplayController(DialogHandler):
         """Sets the alcohol slider to default (100%) value"""
         shared.alcohol_factor = 1.0
 
-    def reset_virgin_setting(self, w: Ui_MainWindow):
-        """Resets the virgin checkbox"""
-        w.virgin_checkbox.setChecked(False)
-
     # LineEdit
     def clean_multiple_lineedit(self, lineedit_list: List[QLineEdit]):
         """Clear a list of line edits"""

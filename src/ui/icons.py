@@ -100,8 +100,8 @@ class IconSetter:
             (w.PBdelete, _DELETE_ICON, True),
             (w.PBZclear, _CLEAR_ICON, True),
             (w.PBclear, _CLEAR_ICON, True),
-            (w.prepare_button, _COCKTAIL_ICON, False),
-            (w.button_search_cocktail, _SEARCH_ICON, True),
+            # (w.prepare_button, _COCKTAIL_ICON, False),
+            # (w.button_search_cocktail, _SEARCH_ICON, True),
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self._set_icon(ui_element, fa_icon, no_text)

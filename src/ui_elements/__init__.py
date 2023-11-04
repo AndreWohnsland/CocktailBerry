@@ -20,6 +20,7 @@ from .addonwindow import Ui_Addonwindow
 from .addonmanager import Ui_AddonManager
 from .datawindow import Ui_DataWindow
 from .searchwindow import Ui_SearchWindow
+from .cocktail_selection import Ui_CocktailSelection
 
 
 __all__ = [
@@ -45,4 +46,5 @@ __all__ = [
     "Ui_AddonManager",
     "Ui_DataWindow",
     "Ui_SearchWindow",
+    "Ui_CocktailSelection",
 ]

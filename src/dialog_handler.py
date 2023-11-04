@@ -472,7 +472,7 @@ class UiLanguage():
             text = self.__choose_language(tab_name, window)
             w.tabWidget.setTabText(i, text)
         for ui_element, text_name in [
-            (w.prepare_button, "prepare_button"),
+            # (w.prepare_button, "prepare_button"),
             (w.PBZeinzelnd, "single_ingredient_button"),
             (w.PBAvailable, "available_button"),
             (w.CHBHand, "handadd_check_label"),
@@ -480,7 +480,7 @@ class UiLanguage():
             (w.LAlcoholLevel, "alcohol_level_label"),
             (w.LBottleVolume, "bottle_volume_label"),
             (w.PBFlanwenden, "renew_button"),
-            (w.virgin_checkbox, "activate_virgin"),
+            # (w.virgin_checkbox, "activate_virgin"),
             (w.offervirgin_checkbox, "virgin_possibility"),
             (w.check_slow_ingredient, "slow_ingredient_check_label"),
             (w.label_ingredient_cost, "label_ingredient_cost"),
