@@ -35,14 +35,16 @@ def create_button(
     label: str,
     parent: Optional[QWidget] = None,
     font_size: int = LARGE_FONT,
-    min_size: int = 70,
-    max_size: int = 200,
+    max_w: int = 16777215,
+    max_h: int = 200,
+    min_w: int = 0,
+    min_h: int = 70,
     bold: bool = True,
     css_class: Optional[str] = None
 ):
     btn = QPushButton(label, parent)
-    btn.setMaximumSize(QSize(16777215, max_size))
-    btn.setMinimumSize(QSize(0, min_size))
+    btn.setMaximumSize(QSize(max_w, max_h))
+    btn.setMinimumSize(QSize(min_w, min_h))
     adjust_font(btn, font_size, bold)
     if css_class is not None:
         btn.setProperty("cssClass", css_class)
