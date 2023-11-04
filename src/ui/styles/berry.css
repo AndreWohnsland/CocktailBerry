@@ -183,6 +183,11 @@ QPushButton {
     background-color: #ec407a;
     border-color: #ec407a;
     color: #0d0d0d; }
+  QPushButton[cssClass~='btn-half-top'] {
+    border-radius: 0px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom: 0px solid #3a4cbf; }
 
 QProgressBar {
   background-color: #9395ab;
