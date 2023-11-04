@@ -1,15 +1,13 @@
 from __future__ import annotations
-from pathlib import Path
-from typing import Callable, Union, TYPE_CHECKING
-from PIL import Image, UnidentifiedImageError
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QWidget, QGridLayout, QScrollArea, QFrame
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QSizePolicy
 
-from src.filepath import DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
 from src.models import Cocktail
 from src.ui_elements.clickable_label import ClickableLabel
+from src.image_utils import find_cocktail_image
 from src.config_manager import CONFIG as cfg
 
 if TYPE_CHECKING:
@@ -25,20 +23,7 @@ def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
     """Generates a image block for the given cocktail"""
     button = QPushButton(cocktail.name)
     label = ClickableLabel(cocktail.name)
-    # setting default cocktail image
-    cocktail_image = DEFAULT_IMAGE_FOLDER / 'default.jpg'
-    # first try the user image folder, then the default image folder, then use the default image if nothing exists
-    # allow name or id to be used for cocktail, but prefer id
-    # also prefer user before system delivered ones
-    image_paths = [
-        USER_IMAGE_FOLDER / f'{cocktail.id}.jpg',
-        USER_IMAGE_FOLDER / f'{cocktail.name.lower()}.jpg',
-        DEFAULT_IMAGE_FOLDER / f'{cocktail.id}.jpg',
-    ]
-    for path in image_paths:
-        if path.exists():
-            cocktail_image = path
-            break
+    cocktail_image = find_cocktail_image(cocktail)
     pixmap = QPixmap(str(cocktail_image))
     label.setPixmap(pixmap)
     label.setScaledContents(True)
@@ -49,10 +34,13 @@ def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
     layout.setSpacing(0)
     layout.addWidget(button)
     layout.addWidget(label)
-    # TODO: add functionality to the buttons
     # take care of the button overload thingy, otherwise the first element will be a bool
-    button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_selection(c))
-    label.clicked.connect(lambda c=cocktail: mainscreen.open_cocktail_selection(c))
+    button.clicked.connect(
+        lambda _, c=cocktail: mainscreen.open_cocktail_selection(c)
+    )
+    label.clicked.connect(
+        lambda c=cocktail: mainscreen.open_cocktail_selection(c)
+    )
     return layout
 
 
@@ -98,33 +86,3 @@ class CocktailView(QWidget):
             widget = child.widget()
             if widget is not None:
                 widget.deleteLater()
-
-
-def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500, save_id: int = -1):
-    """Resize and crop (1x1) the given image to the desired size"""
-    if save_id == -1:
-        return False
-    # Open the image file
-    try:
-        img = Image.open(image_path)
-    # catch errors in file things
-    except (FileNotFoundError, UnidentifiedImageError):
-        return False
-    # Calculate dimensions for cropping
-    width, height = img.size
-    if width > height:
-        left = (width - height) / 2
-        top = 0
-        right = (width + height) / 2
-        bottom = height
-    else:
-        top = (height - width) / 2
-        left = 0
-        bottom = (height + width) / 2
-        right = width
-    # Crop the image
-    img = img.crop((left, top, right, bottom))  # type: ignore
-    # Resize the image
-    img = img.resize((resize_size, resize_size), Image.LANCZOS)
-    img.save(USER_IMAGE_FOLDER / f'{save_id}.jpg', "JPEG")
-    return True

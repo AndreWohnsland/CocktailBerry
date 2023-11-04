@@ -1,7 +1,9 @@
 from __future__ import annotations
+from pathlib import Path
 from typing import Callable, TypeVar, TYPE_CHECKING
-from PyQt5.QtWidgets import QDialog, QWidget, QLabel
-from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QDialog, QWidget, QLabel, QSizePolicy
+from PyQt5.QtGui import QFont, QPixmap
+from src.image_utils import find_cocktail_image
 
 from src.models import Cocktail, Ingredient
 from src.ui_elements import Ui_CocktailSelection
@@ -12,6 +14,8 @@ from src.config_manager import CONFIG as cfg, shared
 from src.ui.icons import ICONS
 
 T = TypeVar('T', int, float)
+PICTURE_SIZE = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.65))
+print(PICTURE_SIZE, cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.65)
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -20,13 +24,23 @@ if TYPE_CHECKING:
 class CocktailSelection(QDialog, Ui_CocktailSelection):
     """ Class for the Cocktail selection view. """
 
-    def __init__(self, mainscreen: MainScreen, cocktail: Cocktail, maker_screen_activate: Callable):
+    def __init__(
+        self,
+        mainscreen: MainScreen,
+        cocktail: Cocktail,
+        maker_screen_activate: Callable
+    ):
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.maker_screen_activate = maker_screen_activate
         self.cocktail = cocktail
         self.mainscreen = mainscreen
+        # build the image
+        self.image_container.setScaledContents(True)
+        self.image_container.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)  # type: ignore
+        self.image_container.setMinimumSize(PICTURE_SIZE, PICTURE_SIZE)
+        self.image_container.setMaximumSize(PICTURE_SIZE, PICTURE_SIZE)
 
         # TODO: Language
         # UI_LANGUAGE.adjust_custom_dialog(self, use_ok)
@@ -37,6 +51,12 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def _back(self):
         self.maker_screen_activate()
+
+    def _set_image(self):
+        """Sets the image of the cocktail"""
+        image_path = find_cocktail_image(self.cocktail)
+        pixmap = QPixmap(str(image_path))
+        self.image_container.setPixmap(pixmap)
 
     def _connect_elements(self):
         """Init all the needed buttons"""
@@ -51,6 +71,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def set_cocktail(self, cocktail: Cocktail):
         self.cocktail = cocktail
+        self._set_image()
 
     def _prepare_cocktail(self):
         self._scale_cocktail()

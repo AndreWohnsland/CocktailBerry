@@ -2,6 +2,7 @@
 of the passed window. Also defines the Mode for controls.
 """
 # pylint: disable=unnecessary-lambda
+from pathlib import Path
 import sys
 import platform
 from typing import Optional
