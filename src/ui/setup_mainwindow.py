@@ -2,7 +2,6 @@
 of the passed window. Also defines the Mode for controls.
 """
 # pylint: disable=unnecessary-lambda
-from pathlib import Path
 import sys
 import platform
 from typing import Optional
@@ -71,7 +70,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # internal initialization
         self.connect_objects()
         self.connect_other_windows()
-        self.hide_necessary_elements()
         DP_CONTROLLER.initialize_window_object(self)
 
         UI_LANGUAGE.adjust_mainwindow(self)
@@ -221,14 +219,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             lambda: self.open_numpad(self.line_edit_ingredient_cost, 50, 50, amount)
         )
         self.LECocktail.setMaxLength(30)
-        # self.button_search_cocktail.clicked.connect(self.open_search_window)
 
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """
-        # add delegate (list items icons)
-        # self.LWMaker.setItemDelegate(ItemDelegate(self))
-        # also increase the icon size here (setting icon bigger will not do it later, it will be cropped)
-        # self.LWMaker.setIconSize(BUTTON_SIZE)
         # First, connect all the push buttons with the Functions
         self.PBZutathinzu.clicked.connect(lambda: ingredients.handle_enter_ingredient(self))
         self.PBRezepthinzu.clicked.connect(lambda: recipes.handle_enter_recipe(self))
@@ -238,22 +231,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBdelete.clicked.connect(lambda: recipes.delete_recipe(self))
         self.PBZdelete.clicked.connect(lambda: ingredients.delete_ingredient(self))
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
-        # self.prepare_button.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
 
-        # self.increase_volume.clicked.connect(lambda: maker.adjust_volume(self, 25))
-        # self.decrease_volume.clicked.connect(lambda: maker.adjust_volume(self, -25))
-        # self.increase_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, 0.15))
-        # self.decrease_alcohol.clicked.connect(lambda: maker.adjust_alcohol(self, -0.15))
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
         # Connect the Lists with the Functions
         self.LWZutaten.itemSelectionChanged.connect(lambda: ingredients.display_selected_ingredient(self))
-        # self.LWMaker.itemSelectionChanged.connect(lambda: maker.update_shown_recipe(self))
         self.LWRezepte.itemSelectionChanged.connect(lambda: recipes.load_selected_recipe_data(self))
-
-        # Connects the virgin checkbox
-        # self.virgin_checkbox.stateChanged.connect(lambda: maker.update_shown_recipe(self, False))
 
         # Protect other tabs with password
         # since it's now a password, using 0 = no password will not trigger password window
@@ -263,12 +247,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Removes the elements not used depending on number of bottles in bottle tab
         # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
         DP_CONTROLLER.adjust_bottle_number_displayed(self)
-        # DP_CONTROLLER.adjust_maker_label_size_cocktaildata(self)
 
         # gets the bottle ingredients into the global list
         bottles.get_bottle_ingredients()
-        # Clear Help Marker
-        # DP_CONTROLLER.clear_recipe_data_maker(self)
         # Load ingredients
         ingredients.load_ingredients(self)
         # Load Bottles into the Labels
@@ -281,20 +262,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         bottles.read_in_bottles(self)
         # Load Existing Recipes from DB into Recipe List
         recipes.load_recipe_view_names(self)
-        # Load Possible Recipes Into Maker List
-        # maker.evaluate_recipe_maker_view(self)
         # Load the Progressbar
         bottles.set_fill_level_bars(self)
 
         for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
             combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
-
-    def hide_necessary_elements(self):
-        """Depending on the config, hide some of the unused elements"""
-        if cfg.MAKER_USE_RECIPE_VOLUME:
-            pass
-            # self.decrease_volume.hide()
-            # self.increase_volume.hide()
 
     def handle_tab_bar_clicked(self, index):
         """Protects tabs other than maker tab with a password"""

@@ -1,5 +1,4 @@
 from __future__ import annotations
-from pathlib import Path
 from typing import Callable, TypeVar, TYPE_CHECKING
 from PyQt5.QtWidgets import QDialog, QWidget, QLabel, QSizePolicy
 from PyQt5.QtGui import QFont, QPixmap
@@ -213,6 +212,13 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         new_volume = shared.cocktail_volume + amount
         shared.cocktail_volume = _limit_number(new_volume, 100, 400)
         self.update_cocktail_data()
+
+    def hide_necessary_elements(self):
+        """Depending on the config, hide some of the unused elements"""
+        if cfg.MAKER_USE_RECIPE_VOLUME:
+            pass
+            self.decrease_volume.hide()
+            self.increase_volume.hide()
 
 
 def _limit_number(val: T, min_val: T, max_val: T) -> T:
