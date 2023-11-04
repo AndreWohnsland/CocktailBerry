@@ -253,11 +253,11 @@ ui:
       en: 'Ingredient'
       de: 'Zutat'
     alcohol_level_label:
-      en: 'Alcohol (in %)'
-      de: 'Alkohol (in %)'
+      en: 'Alcohol'
+      de: 'Alkohol'
     bottle_volume_label:
-      en: 'Bottle volume (ml)'
-      de: 'Flaschenvolumen (ml)'
+      en: 'Bottle volume'
+      de: 'Flaschenvolumen'
     single_ingredient_button:
       en: 'Spend single ingredient'
       de: 'Einzelne Zutat ausgeben'
@@ -283,8 +283,8 @@ ui:
       en: 'Slow ingredient:'
       de: 'Langsame Zutat:'
     label_ingredient_cost:
-      en: 'Cost (Cent):'
-      de: 'Kosten (Cent):'
+      en: 'Cost'
+      de: 'Kosten'
 
   ##### AVAILABLE WINDOW #####
   # all values for available window

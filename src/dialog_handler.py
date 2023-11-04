@@ -476,7 +476,7 @@ class UiLanguage():
             (w.PBZeinzelnd, "single_ingredient_button"),
             (w.PBAvailable, "available_button"),
             (w.CHBHand, "handadd_check_label"),
-            (w.LIngredient, "ingredient_label"),
+            (w.label_ingredient_name, "ingredient_label"),
             (w.LAlcoholLevel, "alcohol_level_label"),
             (w.LBottleVolume, "bottle_volume_label"),
             (w.PBFlanwenden, "renew_button"),

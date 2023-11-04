@@ -970,8 +970,8 @@
          </widget>
         </item>
         <item>
-         <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0">
-          <item row="8" column="0" colspan="4">
+         <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,0,0,0,0,0,0,0,0,0">
+          <item row="6" column="0" colspan="4">
            <layout class="QHBoxLayout" name="horizontalLayout_24">
             <item>
              <spacer name="horizontalSpacer">
@@ -1036,33 +1036,7 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="0" colspan="4">
-           <widget class="QLabel" name="LIngredient">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Zutat</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="2" colspan="2">
+          <item row="9" column="2" colspan="2">
            <widget class="QPushButton" name="PBZutathinzu">
             <property name="minimumSize">
              <size>
@@ -1091,7 +1065,7 @@
             </property>
            </widget>
           </item>
-          <item row="11" column="0">
+          <item row="9" column="0">
            <widget class="QPushButton" name="PBZdelete">
             <property name="minimumSize">
              <size>
@@ -1120,37 +1094,31 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="4">
+          <item row="3" column="0" colspan="4">
            <layout class="QHBoxLayout" name="horizontalLayout_21">
             <item>
-             <widget class="QPushButton" name="PBZminus">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>30</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="LBottleVolume">
               <property name="maximumSize">
                <size>
-                <width>300</width>
-                <height>100</height>
+                <width>16777215</width>
+                <height>25</height>
                </size>
               </property>
               <property name="font">
                <font>
-                <pointsize>18</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
+                <pointsize>14</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
                </font>
               </property>
               <property name="text">
-               <string>–</string>
+               <string>Flaschenvolume (ml)</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string/>
               </property>
              </widget>
             </item>
@@ -1184,69 +1152,40 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="PBZplus">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+             <widget class="QLabel" name="label_ingredient_volume_unit">
               <property name="minimumSize">
                <size>
-                <width>80</width>
+                <width>0</width>
                 <height>30</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>300</width>
+                <width>16777215</width>
                 <height>100</height>
                </size>
               </property>
               <property name="font">
                <font>
-                <pointsize>18</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
+                <pointsize>14</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
                </font>
               </property>
               <property name="text">
-               <string>+</string>
+               <string>ml</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string/>
               </property>
              </widget>
             </item>
            </layout>
           </item>
-          <item row="1" column="0" colspan="4">
-           <widget class="ClickableLineEdit" name="LEZutatRezept">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>100</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string>secondary bold</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0" colspan="4">
+          <item row="8" column="0" colspan="4">
            <widget class="QPushButton" name="PBZeinzelnd">
             <property name="minimumSize">
              <size>
@@ -1275,33 +1214,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="4">
-           <widget class="QLabel" name="LBottleVolume">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Flaschenvolume (ml)</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="cssClass" stdset="0">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0" colspan="4">
+          <item row="5" column="0" colspan="4">
            <layout class="QHBoxLayout" name="horizontalLayout_26">
             <item>
              <spacer name="horizontalSpacer_5">
@@ -1366,7 +1279,7 @@
             </item>
            </layout>
           </item>
-          <item row="11" column="1">
+          <item row="9" column="1">
            <widget class="QPushButton" name="PBZclear">
             <property name="minimumSize">
              <size>
@@ -1398,7 +1311,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="4">
+          <item row="1" column="0" colspan="4">
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
              <widget class="QLabel" name="LAlcoholLevel">
@@ -1461,9 +1374,41 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="label_ingredient_alcohol_unit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>%</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string/>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
-          <item row="6" column="0" colspan="4">
+          <item row="4" column="0" colspan="4">
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
              <widget class="QLabel" name="label_ingredient_cost">
@@ -1526,9 +1471,41 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="label_ingredient_cost_unit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Cent</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string/>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
-          <item row="9" column="0" colspan="4">
+          <item row="7" column="0" colspan="4">
            <spacer name="verticalSpacer_17">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -1543,6 +1520,71 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="0" column="0" colspan="4">
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QLabel" name="label_ingredient_name">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Zutat</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="ClickableLineEdit" name="line_edit_ingredient_name">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>16</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssClass" stdset="0">
+               <string>secondary bold</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>

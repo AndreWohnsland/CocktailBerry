@@ -562,7 +562,7 @@ class DisplayController(DialogHandler):
     ) -> Tuple[Tuple[QLineEdit, QLineEdit, QLineEdit, QLineEdit], QCheckBox, QCheckBox, QListWidget]:
         """Returns [Name, Alcohol, Volume], CheckedHand, ListWidget Elements for Ingredients"""
         return (
-            (w.LEZutatRezept, w.LEGehaltRezept, w.LEFlaschenvolumen, w.line_edit_ingredient_cost),
+            (w.line_edit_ingredient_name, w.LEGehaltRezept, w.LEFlaschenvolumen, w.line_edit_ingredient_cost),
             w.CHBHand,
             w.check_slow_ingredient,
             w.LWZutaten

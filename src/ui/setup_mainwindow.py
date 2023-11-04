@@ -169,7 +169,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEGehaltRezept.clicked.connect(
             lambda: self.open_numpad(self.LEGehaltRezept, 50, 50, alcohol)
         )
-        self.LEZutatRezept.clicked.connect(lambda: self.open_keyboard(self.LEZutatRezept, max_char_len=20))
+        self.line_edit_ingredient_name.clicked.connect(
+            lambda: self.open_keyboard(self.line_edit_ingredient_name, max_char_len=20)
+        )
         self.PBAvailable.clicked.connect(self.open_available_window)
         # connects all the Lineedits from the Recipe amount and gives them the validator
         amount = UI_LANGUAGE.generate_numpad_header("amount")
@@ -180,7 +182,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Setting up Validators for all the the fields (length and/or Types):
         self.LEGehaltRezept.setValidator(QIntValidator(0, 99))
         self.LEGehaltRezept.setMaxLength(2)
-        self.LEZutatRezept.setMaxLength(20)
+        self.line_edit_ingredient_name.setMaxLength(20)
         self.LEFlaschenvolumen.clicked.connect(
             lambda: self.open_numpad(self.LEFlaschenvolumen, 50, 50, amount)
         )
@@ -208,14 +210,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
         self.prepare_button.clicked.connect(lambda: maker.prepare_cocktail(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
-        min_ingredient = 300
-        max_ingredient = 1500
-        self.PBZplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(
-            self.LEFlaschenvolumen, min_ingredient, max_ingredient, 50
-        ))
-        self.PBZminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(
-            self.LEFlaschenvolumen, min_ingredient, max_ingredient, -50
-        ))
 
         self.increase_volume.clicked.connect(lambda: maker.adjust_volume(self, 25))
         self.decrease_volume.clicked.connect(lambda: maker.adjust_volume(self, -25))
