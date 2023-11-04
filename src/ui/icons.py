@@ -14,6 +14,7 @@ from src.config_manager import CONFIG as cfg
 
 if TYPE_CHECKING:
     from src.ui_elements import Ui_MainWindow
+    from src.ui_elements import Ui_CocktailSelection
 
 # DEFINING THE ICONS
 _SETTING_ICON = "fa5s.cog"
@@ -102,6 +103,15 @@ class IconSetter:
             (w.PBclear, _CLEAR_ICON, True),
             # (w.prepare_button, _COCKTAIL_ICON, False),
             # (w.button_search_cocktail, _SEARCH_ICON, True),
+        ]:
+            fa_icon: QIcon = qta.icon(icon, color=self.color.background)
+            self._set_icon(ui_element, fa_icon, no_text)
+
+    def set_cocktail_selection_icons(self, w: Ui_CocktailSelection):
+        """Sets the icons of the cocktail selection window according to style sheets props"""
+        for ui_element, icon, no_text in [
+            (w.prepare_button, _COCKTAIL_ICON, False),
+            (w.button_search_cocktail, _SEARCH_ICON, True),
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self._set_icon(ui_element, fa_icon, no_text)
