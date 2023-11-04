@@ -95,6 +95,12 @@ class DatabaseCommander:
             cocktails.append(self.__build_cocktail(*recipe))
         return cocktails
 
+    def get_possible_cocktails(self):
+        all_cocktails = self.get_all_cocktails(get_disabled=False)
+        handadds_ids = self.get_available_ids()
+        possible_cocktails = [x for x in all_cocktails if x.is_possible(handadds_ids)]
+        return possible_cocktails
+
     def get_ingredients_at_bottles(self) -> List[str]:
         """Return ingredient name for all bottles"""
         query = """SELECT Ingredients.Name FROM Bottles
