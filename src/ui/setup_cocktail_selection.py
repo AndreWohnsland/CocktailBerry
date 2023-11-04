@@ -40,6 +40,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.image_container.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)  # type: ignore
         self.image_container.setMinimumSize(PICTURE_SIZE, PICTURE_SIZE)
         self.image_container.setMaximumSize(PICTURE_SIZE, PICTURE_SIZE)
+        ICONS.set_cocktail_selection_icons(self)
 
         # TODO: Language
         # UI_LANGUAGE.adjust_custom_dialog(self, use_ok)
@@ -64,9 +65,9 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.decrease_volume.clicked.connect(lambda: self.adjust_volume(-25))
         self.increase_alcohol.clicked.connect(lambda: self.adjust_alcohol(0.15))
         self.decrease_alcohol.clicked.connect(lambda: self.adjust_alcohol(-0.15))
-        self.virgin_checkbox.stateChanged.connect(lambda: self.update_cocktail_data())
+        self.virgin_checkbox.stateChanged.connect(self.update_cocktail_data)
         self.button_search_cocktail.clicked.connect(self.mainscreen.open_search_window)
-        # DP_CONTROLLER.adjust_maker_label_size_cocktaildata(self)
+        self.adjust_maker_label_size_cocktaildata()
 
     def set_cocktail(self, cocktail: Cocktail):
         self.cocktail = cocktail
@@ -216,7 +217,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     def hide_necessary_elements(self):
         """Depending on the config, hide some of the unused elements"""
         if cfg.MAKER_USE_RECIPE_VOLUME:
-            pass
             self.decrease_volume.hide()
             self.increase_volume.hide()
 
