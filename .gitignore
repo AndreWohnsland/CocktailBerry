@@ -188,6 +188,9 @@ src/ui_elements/ui_*.py
 tmp.py
 tmp.*
 src/ui/styles/custom.*
+display_images_user/*.jpg
+display_images_user/*.jpeg
+display_images_user/*.png
 
 # ignore all but init in addons
 addons/*
