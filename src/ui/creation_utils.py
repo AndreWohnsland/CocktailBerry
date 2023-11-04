@@ -10,6 +10,12 @@ MEDIUM_FONT = 16
 LARGE_FONT = 18
 
 
+class FontSize:
+    SMALL = SMALL_FONT
+    MEDIUM = MEDIUM_FONT
+    LARGE = LARGE_FONT
+
+
 def adjust_font(element: QWidget, font_size: int, bold: bool = False):
     """Adjust the font to given size and optional bold"""
     font = QFont()
@@ -25,11 +31,21 @@ def create_spacer(height: int, width: int = 20):
     return QSpacerItem(width, height, QSizePolicy.Minimum, QSizePolicy.Fixed)  # type: ignore
 
 
-def create_button(label: str, parent: Optional[QWidget] = None):
+def create_button(
+    label: str,
+    parent: Optional[QWidget] = None,
+    font_size: int = LARGE_FONT,
+    min_size: int = 70,
+    max_size: int = 200,
+    bold: bool = True,
+    css_class: Optional[str] = None
+):
     btn = QPushButton(label, parent)
-    btn.setMaximumSize(QSize(16777215, 200))
-    btn.setMinimumSize(QSize(0, 70))
-    adjust_font(btn, LARGE_FONT, True)
+    btn.setMaximumSize(QSize(16777215, max_size))
+    btn.setMinimumSize(QSize(0, min_size))
+    adjust_font(btn, font_size, bold)
+    if css_class is not None:
+        btn.setProperty("cssClass", css_class)
     return btn
 
 
