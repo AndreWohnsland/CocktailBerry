@@ -408,7 +408,7 @@ class Ui_CocktailSelection(object):
         self.prepare_button.setText(_translate("CocktailSelection", "Zubereiten"))
         self.prepare_button.setProperty("cssClass", _translate("CocktailSelection", "btn-inverted mr ml round"))
         self.button_back.setText(_translate("CocktailSelection", "Back"))
-        self.button_back.setProperty("cssClass", _translate("CocktailSelection", "btn-inverted mr ml round"))
+        self.button_back.setProperty("cssClass", _translate("CocktailSelection", "mr ml round"))
         self.button_search_cocktail.setText(_translate("CocktailSelection", "S"))
         self.button_search_cocktail.setProperty("cssClass", _translate("CocktailSelection", "neutral btn-inverted"))
         self.virgin_checkbox.setText(_translate("CocktailSelection", "Virgin (No Alkohol)"))

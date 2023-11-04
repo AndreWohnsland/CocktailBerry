@@ -813,7 +813,7 @@
         <string>Back</string>
        </property>
        <property name="cssClass" stdset="0">
-        <string>btn-inverted mr ml round</string>
+        <string>mr ml round</string>
        </property>
       </widget>
      </item>
