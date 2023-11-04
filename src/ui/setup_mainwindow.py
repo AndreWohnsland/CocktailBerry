@@ -9,9 +9,10 @@ from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
 from src.config_manager import CONFIG as cfg
+from src.database_commander import DB_COMMANDER
 from src.machine.controller import MACHINE
 from src.models import Cocktail
-from src.tabs import maker, ingredients, recipes, bottles
+from src.tabs import ingredients, recipes, bottles
 from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
@@ -62,9 +63,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.cocktail_view = CocktailView(self)
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
-        possible_cocktails = maker.get_possible_cocktails()
         self.cocktail_selection: Optional[CocktailSelection] = None
-        self.cocktail_view.populate_cocktails(possible_cocktails)
+        self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
 
         # internal initialization
@@ -184,7 +184,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """Opens the search window"""
         if self.cocktail_selection is None:
             return
-        available_cocktails = maker.get_possible_cocktails()
+        available_cocktails = DB_COMMANDER.get_possible_cocktails()
         # fix for return data may be cocktail or str data
         available_cocktails = [x for x in available_cocktails if isinstance(x, Cocktail)]
         self.search_window = SearchWindow(self, available_cocktails, self.cocktail_selection)
