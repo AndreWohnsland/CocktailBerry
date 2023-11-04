@@ -50,6 +50,6 @@ def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500, s
     # Crop the image
     img = img.crop((left, top, right, bottom))  # type: ignore
     # Resize the image
-    img = img.resize((resize_size, resize_size), Image.LANCZOS)
+    img = img.resize((resize_size, resize_size), Image.LANCZOS)  # pylint: disable=E1101
     img.save(USER_IMAGE_FOLDER / f'{save_id}.jpg', "JPEG")
     return True
