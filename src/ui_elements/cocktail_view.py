@@ -9,6 +9,7 @@ from src.models import Cocktail
 from src.ui_elements.clickable_label import ClickableLabel
 from src.image_utils import find_cocktail_image
 from src.config_manager import CONFIG as cfg
+from src.ui.creation_utils import create_button
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -21,7 +22,7 @@ SQUARE_SIZE = int(cfg.UI_WIDTH / (N_COLUMNS * 1.15))
 
 def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
     """Generates a image block for the given cocktail"""
-    button = QPushButton(cocktail.name)
+    button = create_button(cocktail.name, font_size=12, min_size=0, max_size=30, css_class="btn-half-top")
     label = ClickableLabel(cocktail.name)
     cocktail_image = find_cocktail_image(cocktail)
     pixmap = QPixmap(str(cocktail_image))
