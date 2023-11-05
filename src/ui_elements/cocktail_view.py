@@ -32,6 +32,7 @@ def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
         button.setIcon(icon)
         button.setIconSize(QSize(20, 20))
     label = ClickableLabel(cocktail.name)
+    label.setProperty("cssClass", "cocktail-picture")
     cocktail_image = find_cocktail_image(cocktail)
     pixmap = QPixmap(str(cocktail_image))
     label.setPixmap(pixmap)
@@ -76,10 +77,11 @@ class CocktailView(QWidget):
 
     def populate_cocktails(self):
         """Adds the given cocktails to the grid"""
-        # sort cocktails by name
         DP_CONTROLLER.delete_items_of_layout(self.grid)
         cocktails = DB_COMMANDER.get_possible_cocktails()
+        # sort cocktails by name
         cocktails.sort(key=lambda x: x.name)
+        # fill the grid with N_COLUMNS columns, then go to another row
         for i in range(0, len(cocktails), N_COLUMNS):
             for j in range(N_COLUMNS):
                 if i + j >= len(cocktails):
