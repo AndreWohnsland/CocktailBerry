@@ -15,6 +15,7 @@ from src.config_manager import CONFIG as cfg
 if TYPE_CHECKING:
     from src.ui_elements import Ui_MainWindow
     from src.ui_elements import Ui_CocktailSelection
+    from src.ui_elements import Ui_PictureWindow
 
 # DEFINING THE ICONS
 _SETTING_ICON = "fa5s.cog"
@@ -27,6 +28,7 @@ _VIRGIN_ICON = "mdi.glass-cocktail-off"
 _SPINNER_ICON = "fa5s.spinner"
 _TIME_ICON = "fa5s.hourglass-start"
 _SEARCH_ICON = "fa.search"
+_UPLOAD_ICON = "fa.upload"
 BUTTON_SIZE = QSize(36, 36)
 
 
@@ -42,6 +44,7 @@ class PresetIcon:
     spinner = _SPINNER_ICON
     time = _TIME_ICON
     search = _SEARCH_ICON
+    upload = _UPLOAD_ICON
 
 
 @dataclass
@@ -122,6 +125,14 @@ class IconSetter:
         ui_element.setIconSize(BUTTON_SIZE)
         if no_text:
             ui_element.setText("")
+
+    def set_picture_window_icons(self, w: Ui_PictureWindow):
+        for ui_element, icon, no_text in [
+            (w.button_upload, _UPLOAD_ICON, True),
+            (w.button_remove, _DELETE_ICON, True),
+        ]:
+            fa_icon: QIcon = qta.icon(icon, color=self.color.background)
+            self._set_icon(ui_element, fa_icon, no_text)
 
     def generate_icon(self, icon_name: str, color: str, color_active: Optional[str] = None) -> QIcon:
         """Generates an icon with the given color and size
