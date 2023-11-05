@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 
@@ -44,16 +44,14 @@ def find_user_cocktail_image(cocktail: Cocktail):
     return cocktail_image
 
 
-def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500, save_id: int = -1):
+def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500) -> Optional[Image.Image]:
     """Resize and crop (1x1) the given image to the desired size"""
-    if save_id == -1:
-        return False
     # Open the image file
     try:
         img = Image.open(image_path)
     # catch errors in file things
     except (FileNotFoundError, UnidentifiedImageError):
-        return False
+        return None
     # Calculate dimensions for cropping
     width, height = img.size
     if width > height:
@@ -70,5 +68,11 @@ def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500, s
     img = img.crop((left, top, right, bottom))  # type: ignore
     # Resize the image
     img = img.resize((resize_size, resize_size), Image.LANCZOS)  # pylint: disable=E1101
-    img.save(USER_IMAGE_FOLDER / f'{save_id}.jpg', "JPEG")
-    return True
+    # always convert to rgb
+    img = img.convert("RGB")
+    return img
+
+
+def save_image(image: Image.Image, save_id: int):
+    """Saves the given image to the user folder"""
+    image.save(USER_IMAGE_FOLDER / f'{save_id}.jpg', "JPEG")
