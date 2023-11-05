@@ -414,6 +414,7 @@ class Ui_CocktailSelection(object):
         self.virgin_checkbox.setText(_translate("CocktailSelection", "Virgin (No Alkohol)"))
         self.virgin_checkbox.setProperty("cssClass", _translate("CocktailSelection", "bold"))
         self.image_container.setText(_translate("CocktailSelection", "TextLabel"))
+        self.image_container.setProperty("cssClass", _translate("CocktailSelection", "cocktail-picture"))
 
 
 if __name__ == "__main__":
