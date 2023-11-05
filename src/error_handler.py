@@ -16,7 +16,7 @@ def logerror(func: Callable):
     def wrapper(*args, **kwargs):
         logger = LoggerHandler("error_logger", LogFiles.DEBUG)
         try:
-            func(*args, **kwargs)
+            result = func(*args, **kwargs)
         # pylint: disable=broad-except
         except Exception:
             trb = sys.exc_info()[-1]
@@ -29,4 +29,5 @@ def logerror(func: Callable):
             print(msg)
             MACHINE.close_all_pumps()
             raise
+        return result
     return wrapper
