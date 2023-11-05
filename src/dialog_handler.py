@@ -20,7 +20,7 @@ if TYPE_CHECKING:
         Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
         Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow, Ui_SearchWindow,
-        Ui_CocktailSelection
+        Ui_CocktailSelection, Ui_PictureWindow
     )
 
 _logger = LoggerHandler("dialog_handler")
@@ -653,6 +653,13 @@ class UiLanguage():
         """Translates the elements of the search window"""
         window = "search_window"
         w.label_titel.setText(self.__choose_language("header", window))
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_enter.setText(self.__choose_language("apply"))
+
+    def adjust_picture_window(self, w: Ui_PictureWindow, cocktail: str):
+        """Translates the elements of the search window"""
+        window = "picture_window"
+        w.label_titel.setText(self.__choose_language("header", window, cocktail=cocktail))
         w.button_back.setText(self.__choose_language("back"))
         w.button_enter.setText(self.__choose_language("apply"))
 

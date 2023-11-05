@@ -485,6 +485,13 @@ ui:
       en: 'Search available cocktails by name or ingredient'
       de: 'Suche verfügbare Cocktails nach Namen oder Zutat'
 
+  ##### PICTURE WINDOW #####
+  # all values for picture (upload) window
+  picture_window:
+    header:
+      en: 'Set picture for {cocktail}'
+      de: 'Bild einstellen für {cocktail}'
+
   ##### SETTINGS WINDOW #####
   # all values for settings window
   # Use same names as config names
