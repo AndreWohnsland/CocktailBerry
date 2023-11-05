@@ -15,7 +15,6 @@ from src.ui.icons import ICONS
 
 T = TypeVar('T', int, float)
 PICTURE_SIZE = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.65))
-print(PICTURE_SIZE, cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.65)
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
