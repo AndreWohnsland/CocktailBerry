@@ -7,6 +7,7 @@ from src.image_utils import find_cocktail_image
 from src.models import Cocktail, Ingredient
 from src.ui_elements import Ui_CocktailSelection
 from src.display_controller import DP_CONTROLLER
+from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.tabs import maker
 from src.config_manager import CONFIG as cfg, shared
@@ -41,11 +42,12 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.image_container.setMinimumSize(PICTURE_SIZE, PICTURE_SIZE)
         self.image_container.setMaximumSize(PICTURE_SIZE, PICTURE_SIZE)
         ICONS.set_cocktail_selection_icons(self)
+        self.hide_necessary_elements()
 
-        # TODO: Language
-        # UI_LANGUAGE.adjust_custom_dialog(self, use_ok)
+        UI_LANGUAGE.adjust_cocktail_selection_screen(self)
         self.clear_recipe_data_maker()
-        self.button_back.clicked.connect(self._back)
+        # Also resets the alcohol factor
+        self.reset_alcohol_factor()
         DP_CONTROLLER.set_display_settings(self, False)
         self._connect_elements()
 
@@ -60,6 +62,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def _connect_elements(self):
         """Init all the needed buttons"""
+        self.button_back.clicked.connect(self._back)
         self.prepare_button.clicked.connect(self._prepare_cocktail)
         self.increase_volume.clicked.connect(lambda: self.adjust_volume(25))
         self.decrease_volume.clicked.connect(lambda: self.adjust_volume(-25))
@@ -70,16 +73,33 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.adjust_maker_label_size_cocktaildata()
 
     def set_cocktail(self, cocktail: Cocktail):
+        """Gets the latest info from the db, gets the cocktails"""
+        self.clear_recipe_data_maker()
+        # need to refetch the cocktail from db, because the db might have changed
+        # this is because the gui elements have a reference to the cocktail object
+        # and when it changes, the gui elements will not update
+        db_cocktail = DB_COMMANDER.get_cocktail(cocktail.id)
+        if db_cocktail is not None:
+            cocktail = db_cocktail
         self.cocktail = cocktail
         self._set_image()
 
     def _prepare_cocktail(self):
+        """Prepares the cocktail and switches to the maker screen, if successful"""
+        # same applies here, need to refetch the cocktail from db
+        db_cocktail = DB_COMMANDER.get_cocktail(self.cocktail.id)
+        if db_cocktail is not None:
+            self.cocktail = db_cocktail
         self._scale_cocktail()
-        maker.prepare_cocktail(self.mainscreen, self.cocktail)
+        success = maker.prepare_cocktail(self.mainscreen, self.cocktail)
+        print(f"{success=}")
+        if not success:
+            return
         self.virgin_checkbox.setChecked(False)
         self.mainscreen.container_maker.setCurrentWidget(self.mainscreen.cocktail_view)
 
     def _scale_cocktail(self):
+        """Scale the cocktail to given conditions for volume and alcohol"""
         amount = shared.cocktail_volume
         factor = shared.alcohol_factor
         is_virgin = self.virgin_checkbox.isChecked()
@@ -90,6 +110,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.cocktail.scale_cocktail(amount, factor)
 
     def update_cocktail_data(self):
+        """Updates the cocktail data in the selection view"""
         self._scale_cocktail()
         amount = self.cocktail.adjusted_amount
         self.LAlkoholname.setText(self.cocktail.name)
@@ -148,8 +169,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         self.LMenge.setText("")
         self.virgin_checkbox.setChecked(False)
-        # Also resets the alcohol factor
-        self.reset_alcohol_factor()
         for field_ingredient, field_volume in zip(
             self.get_labels_maker_ingredients(),
             self.get_labels_maker_volume()
