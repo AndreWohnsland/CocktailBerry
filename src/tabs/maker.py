@@ -3,7 +3,7 @@
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
-from typing import Any, Optional, TypeVar
+from typing import Any, Optional
 
 from src.tabs import bottles
 from src.database_commander import DB_COMMANDER
@@ -20,14 +20,6 @@ from src.config_manager import shared
 
 
 _LOGGER = LoggerHandler("maker_module")
-T = TypeVar('T', int, float)
-
-
-def get_possible_cocktails():
-    all_cocktails = DB_COMMANDER.get_all_cocktails(get_disabled=False)
-    handadds_ids = DB_COMMANDER.get_available_ids()
-    possible_cocktails = [x for x in all_cocktails if x.is_possible(handadds_ids)]
-    return possible_cocktails
 
 
 def __build_comment_maker(cocktail: Cocktail):
@@ -58,10 +50,10 @@ def __generate_maker_log_entry(cocktail_volume: int, cocktail_name: str, taken_t
 def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
     """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
     if shared.cocktail_started:
-        return
+        return False
     # Gets and scales cocktail, check if fill level is enough
     if cocktail is None:
-        return
+        return False
     virgin_ending = " (Virgin)" if cocktail.is_virgin else ""
     display_name = f"{cocktail.name}{virgin_ending}"
     error = None
@@ -74,7 +66,7 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
         # Locking is only possible if the password is activated (!=0)
         if cfg.UI_MAKER_PASSWORD == 0:
             DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
-        return
+        return False
 
     print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
@@ -86,7 +78,7 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
         ADDONS.before_cocktail(addon_data)
     except RuntimeError as err:
         DP_CONTROLLER.standard_box(str(err))
-        return
+        return False
 
     # Now make the cocktail
     consumption, taken_time, max_time = MACHINE.make_cocktail(
@@ -120,6 +112,7 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
 
     bottles.set_fill_level_bars(w)
     DP_CONTROLLER.reset_alcohol_factor()
+    return True
 
 
 def interrupt_cocktail():
