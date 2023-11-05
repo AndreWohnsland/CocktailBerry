@@ -32,6 +32,7 @@ from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
 from src.ui.setup_search_window import SearchWindow
 from src.ui.setup_cocktail_selection import CocktailSelection
+from src.ui.setup_picture_window import PictureWindow
 from src.ui.icons import ICONS
 
 from src import FUTURE_PYTHON_VERSION
@@ -60,6 +61,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.option_window: Optional[OptionWindow] = None
         self.datepicker: Optional[DatePicker] = None
         self.search_window: Optional[SearchWindow] = None
+        self.picture_window: Optional[PictureWindow] = None
         self.cocktail_view = CocktailView(self)
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
@@ -180,6 +182,16 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def open_available_window(self):
         self.available_window = AvailableWindow(self)
 
+    def open_picture_window(self):
+        cocktail_name = DP_CONTROLLER.get_list_widget_selection(self.LWRezepte)
+        if not cocktail_name:
+            return DP_CONTROLLER.say_create_cocktail_first()
+        cocktail = DB_COMMANDER.get_cocktail(cocktail_name)
+        # usually we get a cocktail because the name was from the list
+        if not cocktail:
+            return
+        self.picture_window = PictureWindow(cocktail)
+
     def open_search_window(self):
         """Opens the search window"""
         if self.cocktail_selection is None:
@@ -230,6 +242,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBZdelete.clicked.connect(lambda: ingredients.delete_ingredient(self))
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
+        self.button_set_picture.clicked.connect(self.open_picture_window)
 
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
