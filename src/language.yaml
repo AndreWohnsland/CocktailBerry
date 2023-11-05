@@ -233,10 +233,6 @@ ui:
   ##### MAIN WINDOW #####
   # all values for main window
   main_window:
-    # best is to use some space before to get a padding for icon
-    prepare_button:
-      en: '  Prepare'
-      de: '  Zubereiten'
     tab_maker:
       en: 'Maker'
       de: 'Maker'
@@ -276,15 +272,24 @@ ui:
     virgin_possibility:
       en: 'Allow virgin'
       de: 'Virgin erlauben'
-    activate_virgin:
-      en: 'Virgin (no alcohol)'
-      de: 'Virgin (kein Alkohol)'
     slow_ingredient_check_label:
       en: 'Slow ingredient:'
       de: 'Langsame Zutat:'
     label_ingredient_cost:
       en: 'Cost'
       de: 'Kosten'
+    label_picture:
+      en: 'Picture'
+      de: 'Bild'
+
+  cocktail_selection:
+    # best is to use some space before to get a padding for icon
+    prepare_button:
+      en: '  Prepare'
+      de: '  Zubereiten'
+    activate_virgin:
+      en: 'Virgin (no alcohol)'
+      de: 'Virgin (kein Alkohol)'
 
   ##### AVAILABLE WINDOW #####
   # all values for available window

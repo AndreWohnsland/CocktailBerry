@@ -20,6 +20,7 @@ if TYPE_CHECKING:
         Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
         Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow, Ui_SearchWindow,
+        Ui_CocktailSelection
     )
 
 _logger = LoggerHandler("dialog_handler")
@@ -472,7 +473,6 @@ class UiLanguage():
             text = self.__choose_language(tab_name, window)
             w.tabWidget.setTabText(i, text)
         for ui_element, text_name in [
-            # (w.prepare_button, "prepare_button"),
             (w.PBZeinzelnd, "single_ingredient_button"),
             (w.PBAvailable, "available_button"),
             (w.CHBHand, "handadd_check_label"),
@@ -480,10 +480,10 @@ class UiLanguage():
             (w.LAlcoholLevel, "alcohol_level_label"),
             (w.LBottleVolume, "bottle_volume_label"),
             (w.PBFlanwenden, "renew_button"),
-            # (w.virgin_checkbox, "activate_virgin"),
             (w.offervirgin_checkbox, "virgin_possibility"),
             (w.check_slow_ingredient, "slow_ingredient_check_label"),
             (w.label_ingredient_cost, "label_ingredient_cost"),
+            (w.button_set_picture, "label_picture"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 
@@ -493,6 +493,12 @@ class UiLanguage():
             (w.PBBelegung, "change_button"),
         ]:
             ui_element.setText(self.__choose_language(text_name))
+
+    def adjust_cocktail_selection_screen(self, w: Ui_CocktailSelection):
+        window = "cocktail_selection"
+        w.prepare_button.setText(self.__choose_language("prepare_button", window))
+        w.virgin_checkbox.setText(self.__choose_language("activate_virgin", window))
+        w.button_back.setText(self.__choose_language("back"))
 
     def adjust_available_windows(self, w: Ui_available):
         """Translates all needed elements of the available window"""
