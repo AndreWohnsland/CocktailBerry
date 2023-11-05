@@ -2,14 +2,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QGridLayout, QScrollArea, QFrame
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QGridLayout, QFrame
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QSizePolicy
+
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
-
 from src.models import Cocktail
 from src.ui_elements.clickable_label import ClickableLabel
+from src.ui_elements.touch_scroll_area import TouchScrollArea
 from src.image_utils import find_cocktail_image
 from src.config_manager import CONFIG as cfg
 from src.ui.creation_utils import create_button
@@ -32,7 +33,7 @@ def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
         button.setIcon(icon)
         button.setIconSize(QSize(20, 20))
     label = ClickableLabel(cocktail.name)
-    label.setProperty("cssClass", "cocktail-picture")
+    label.setProperty("cssClass", "cocktail-picture-view")
     cocktail_image = find_cocktail_image(cocktail)
     pixmap = QPixmap(str(cocktail_image))
     label.setPixmap(pixmap)
@@ -57,7 +58,7 @@ def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
 class CocktailView(QWidget):
     def __init__(self, mainscreen: MainScreen):
         super().__init__()
-        self.scroll_area = QScrollArea()  # Create a QScrollArea
+        self.scroll_area = TouchScrollArea()  # Create a QScrollArea
         self.scroll_area.setWidgetResizable(True)  # Make it resizable
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
         self.scroll_area.setFrameShape(QFrame.NoFrame)  # type: ignore
