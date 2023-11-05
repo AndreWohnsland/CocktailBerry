@@ -111,7 +111,7 @@ class DialogHandler():
     def get_file_location(self, w: QWidget, message: str, filter_str: str):
         file_name, _ = QFileDialog.getOpenFileName(w, message, filter=filter_str)
         if file_name:
-            return Path(file_name)
+            return Path(file_name).absolute()
         else:
             return None
 

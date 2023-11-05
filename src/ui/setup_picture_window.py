@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Callable
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtGui import QPixmap, QImage
@@ -61,8 +60,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         selected_path = DP_CONTROLLER.ask_for_image_location(self)
         if selected_path is None:
             return
-        picture_path = Path(selected_path).absolute()
-        image = process_image(picture_path)
+        image = process_image(selected_path)
         if image is None:
             DP_CONTROLLER.say_image_processing_failed()
             return
