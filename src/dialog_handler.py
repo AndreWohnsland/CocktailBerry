@@ -2,6 +2,7 @@
 # pylint: disable=import-outside-toplevel
 
 from __future__ import annotations
+from pathlib import Path
 import time
 from typing import Dict, List, Optional, Literal, TYPE_CHECKING, Union
 from threading import Thread, Event
@@ -106,6 +107,13 @@ class DialogHandler():
 
     def _get_folder_location(self, w: QWidget, message: str):
         return QFileDialog.getExistingDirectory(w, message)
+
+    def get_file_location(self, w: QWidget, message: str, filter_str: str):
+        file_name, _ = QFileDialog.getOpenFileName(w, message, filter=filter_str)
+        if file_name:
+            return Path(file_name)
+        else:
+            return None
 
     ############################
     # Methods for creating msg #
@@ -317,6 +325,10 @@ class DialogHandler():
         """Informs that the cocktail needs first to be created"""
         self.__output_language_dialog("create_cocktail_first")
 
+    def say_image_processing_failed(self):
+        """Informs that the image processing failed"""
+        self.__output_language_dialog("image_processing_failed")
+
     ############################
     # Methods for prompting ####
     ############################
@@ -351,6 +363,11 @@ class DialogHandler():
         """Asks the user where to get or store the backup output"""
         message = self.__choose_language("ask_for_backup_location")
         return self._get_folder_location(w, message)
+
+    def ask_for_image_location(self, w: QWidget):
+        """Asks the user where to get or store the backup output"""
+        message = self.__choose_language("ask_for_image_location")
+        return self.get_file_location(w, message, "Images (*.jpg *.png)")
 
     def ask_backup_overwrite(self):
         """Asks the user if he wants to use backup"""
