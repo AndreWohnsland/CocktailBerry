@@ -9,14 +9,33 @@ from src.models import Cocktail
 def find_cocktail_image(cocktail: Cocktail):
     """Find the image for the given cocktail"""
     # setting default cocktail image
+    cocktail_image = find_default_cocktail_image(cocktail)
+    # Now try to get the user defined image, if it exists
+    user_cocktail_image = find_user_cocktail_image(cocktail)
+    if user_cocktail_image is not None:
+        cocktail_image = user_cocktail_image
+    return cocktail_image
+
+
+def find_default_cocktail_image(cocktail: Cocktail):
+    """Find the system defined image for the given cocktail"""
+    # setting default cocktail image
     cocktail_image = DEFAULT_IMAGE_FOLDER / 'default.jpg'
-    # first try the user image folder, then the default image folder, then use the default image if nothing exists
-    # allow name or id to be used for cocktail, but prefer id
-    # also prefer user before system delivered ones
+    # then try to get system cocktail image
+    # provided cocktails will have a default image, user added will not
+    specific_image_path = DEFAULT_IMAGE_FOLDER / f'{cocktail.id}.jpg'
+    if specific_image_path.exists():
+        cocktail_image = specific_image_path
+    return cocktail_image
+
+
+def find_user_cocktail_image(cocktail: Cocktail):
+    """Finds the user defined image for the given cocktail
+    Returns None if not set"""
+    cocktail_image = None
     image_paths = [
         USER_IMAGE_FOLDER / f'{cocktail.id}.jpg',
         USER_IMAGE_FOLDER / f'{cocktail.name.lower()}.jpg',
-        DEFAULT_IMAGE_FOLDER / f'{cocktail.id}.jpg',
     ]
     for path in image_paths:
         if path.exists():
