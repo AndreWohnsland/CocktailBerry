@@ -190,7 +190,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # usually we get a cocktail because the name was from the list
         if not cocktail:
             return
-        self.picture_window = PictureWindow(cocktail)
+        self.picture_window = PictureWindow(cocktail, self.cocktail_view.populate_cocktails)
 
     def open_search_window(self):
         """Opens the search window"""
