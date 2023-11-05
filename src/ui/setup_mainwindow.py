@@ -46,7 +46,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Get the basic Logger
-        self.logger = LoggerHandler("cocktail_application")
+        self.logger = LoggerHandler("CocktailBerry")
         self.logger.log_start_program()
 
         # init the empty further screens
@@ -185,8 +185,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self.cocktail_selection is None:
             return
         available_cocktails = DB_COMMANDER.get_possible_cocktails()
-        # fix for return data may be cocktail or str data
-        available_cocktails = [x for x in available_cocktails if isinstance(x, Cocktail)]
         self.search_window = SearchWindow(self, available_cocktails, self.cocktail_selection)
 
     def connect_other_windows(self):
