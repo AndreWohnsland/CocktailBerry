@@ -39,7 +39,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="3" column="0">
+    <item row="4" column="0">
      <widget class="QPushButton" name="button_back">
       <property name="minimumSize">
        <size>
@@ -65,7 +65,7 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
+    <item row="4" column="3">
      <widget class="QPushButton" name="button_enter">
       <property name="minimumSize">
        <size>
@@ -94,12 +94,12 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0" colspan="2">
+    <item row="0" column="0" colspan="4">
      <widget class="QLabel" name="label_titel">
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>60</height>
+        <height>40</height>
        </size>
       </property>
       <property name="font">
@@ -118,33 +118,7 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="button_remove">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>80</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>5000</width>
-        <height>80</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>28</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Remove</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
+    <item row="4" column="2">
      <widget class="QPushButton" name="button_upload">
       <property name="minimumSize">
        <size>
@@ -154,7 +128,7 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>5000</width>
+        <width>80</width>
         <height>80</height>
        </size>
       </property>
@@ -166,24 +140,115 @@
        </font>
       </property>
       <property name="text">
-       <string>Enter</string>
+       <string>+</string>
       </property>
       <property name="cssClass" stdset="0">
-       <string>btn-inverted</string>
+       <string>btn-inverted neutral</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="picture_user">
+    <item row="4" column="1">
+     <widget class="QPushButton" name="button_remove">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>80</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>80</width>
+        <height>80</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>28</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string>R</string>
+      </property>
+      <property name="cssClass" stdset="0">
+       <string>btn-inverted destructive</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
+    <item row="2" column="2" colspan="2">
      <widget class="QLabel" name="picture_system">
       <property name="text">
-       <string>TextLabel</string>
+       <string>System Image</string>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QLabel" name="picture_user">
+      <property name="font">
+       <font>
+        <pointsize>22</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Image&lt;/p&gt;&lt;p&gt;Available&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="cssClass" stdset="0">
+       <string>neutral</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QLabel" name="label_user">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>28</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>User</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2" colspan="2">
+     <widget class="QLabel" name="label_system">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>28</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>System</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
