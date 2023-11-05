@@ -53,6 +53,16 @@ $default-element-border: $element-border solid $border;
   margin-bottom: 5px;
 }
 
+*[cssClass~='cocktail-picture'] {
+  border-radius: 0px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom: 3px solid $primary;
+  border-top: 0px solid $primary;
+  border-left: 3px solid $primary;
+  border-right: 3px solid $primary;
+}
+
 // specific classes
 // Information dialog
 #informationLabel {
