@@ -313,6 +313,10 @@ class DialogHandler():
         """Informs that the update failed"""
         self.__output_language_dialog("update_failed")
 
+    def say_create_cocktail_first(self):
+        """Informs that the cocktail needs first to be created"""
+        self.__output_language_dialog("create_cocktail_first")
+
     ############################
     # Methods for prompting ####
     ############################
@@ -388,6 +392,11 @@ class DialogHandler():
     def ask_to_use_reverted_pump(self):
         """Asks the user if he wants to use the reverted pump flow"""
         message = self.__choose_language("ask_to_use_reverted_pump")
+        return self.user_okay(message)
+
+    def ask_to_remove_picture(self):
+        """Asks the user if he wants to remove the picture"""
+        message = self.__choose_language("ask_to_remove_picture")
         return self.user_okay(message)
 
 

@@ -142,6 +142,9 @@ dialog:
   ask_to_delete_x:
     en: 'Do you want to delete {x}? This cannot be reverted.'
     de: 'Soll {x} gelöscht werden? Dies kann nicht rückgängig gemacht werden.'
+  ask_to_remove_picture:
+    en: 'Do you want to remove the user picture? This cannot be reverted.'
+    de: 'Soll das User Bild entfernt werden? Dies kann nicht rückgängig gemacht werden.'
   backup_created:
     en: 'Backup has been created at: {folder}.'
     de: 'Backup wurde unter {folder} gespeichert.'
@@ -187,6 +190,10 @@ dialog:
   cocktailberry_up_to_date:
     en: 'You are running the latest version of CocktailBerry.'
     de: 'Du hast die neuste Version von CocktailBerry.'
+  create_cocktail_first:
+    en: 'No Cocktail selected, select the one you want to add a picture. Please create the cocktail first before adding a picture to it!'
+    de: 'Kein Cocktail ausgewählt, wähle einen Cocktail aus, um ein Bild hinzuzufügen. Bitte erst den Cocktail erstellen, bevor ein Bild hinzugefügt wird!'
+
 # Change of language in UI elements
 ui:
   # Some commonly used elements within multiple windows
