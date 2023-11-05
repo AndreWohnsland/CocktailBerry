@@ -37,7 +37,7 @@
 *[cssClass~='mb'] {
   margin-bottom: 5px; }
 
-*[cssClass~='cocktail-picture'] {
+*[cssClass~='cocktail-picture-view'] {
   border-radius: 0px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
@@ -45,6 +45,10 @@
   border-top: 0px solid #3a4cbf;
   border-left: 3px solid #3a4cbf;
   border-right: 3px solid #3a4cbf; }
+
+*[cssClass~='cocktail-picture'] {
+  border-radius: 3px;
+  border: 2px solid #5761a1; }
 
 #informationLabel {
   padding: 5px 25px 5px 25px; }
