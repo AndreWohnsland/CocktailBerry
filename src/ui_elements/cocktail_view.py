@@ -27,9 +27,12 @@ SQUARE_SIZE = int(cfg.UI_WIDTH / (N_COLUMNS * 1.15))
 
 def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
     """Generates a image block for the given cocktail"""
-    button = create_button(cocktail.name, font_size=14, min_h=0, max_h=35, max_w=SQUARE_SIZE, css_class="btn-half-top")
+    button = create_button(
+        cocktail.name, font_size=14, min_h=0, max_h=35,
+        max_w=SQUARE_SIZE, css_class="btn-inverted btn-half-top"
+    )
     if cocktail.virgin_available:
-        icon = ICONS.generate_icon(PresetIcon.virgin, ICONS.color.primary)
+        icon = ICONS.generate_icon(PresetIcon.virgin, ICONS.color.background)
         button.setIcon(icon)
         button.setIconSize(QSize(20, 20))
     label = ClickableLabel(cocktail.name)
