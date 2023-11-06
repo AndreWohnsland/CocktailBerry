@@ -576,8 +576,6 @@ class UiLanguage():
         window = "numpad_window"
         return self.__choose_language(header_type, window)
 
-        raise ValueError("Currently not possible")
-
     def adjust_option_window(self, w: Ui_Optionwindow):
         """Translates all needed elements of the available window"""
         window = "option_window"
