@@ -569,15 +569,13 @@ class UiLanguage():
         window = "team_window"
         w.LHeader.setText(self.__choose_language("header", window))
 
-    def generate_numpad_header(self, header_type: Literal['amount', 'alcohol'] = "amount") -> str:
+    def generate_numpad_header(self, header_type: Literal['amount', 'alcohol', 'number'] = "amount") -> str:
         """Selects the header of the password window.
         header_type: 'password', 'amount', 'alcohol'
         """
         window = "numpad_window"
-        if header_type == "amount":
-            return self.__choose_language("amount", window)
-        if header_type == "alcohol":
-            return self.__choose_language("alcohol", window)
+        return self.__choose_language(header_type, window)
+
         raise ValueError("Currently not possible")
 
     def adjust_option_window(self, w: Ui_Optionwindow):

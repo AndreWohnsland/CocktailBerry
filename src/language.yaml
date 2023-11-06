@@ -200,8 +200,8 @@ dialog:
     en: 'Image processing failed. Please ensure that you use a jpg or png file.'
     de: 'Bildverarbeitung fehlgeschlagen. Bitte stelle sicher, dass du eine jpg oder png Datei verwendest.'
   recipe_help:
-    en: 'Here you can add a Cocktail. You need the ingredient and according amount. You can assign a number from 1-9 to each ingredient. Ingredients with the same number will be spend at the same time by the machine in increasing order. Leave all at 1 if all should spend in parallel. You can also assign a picture to existing cocktails. Cocktails not enabled will not appear in the maker. If you enable virgin, a non alcoholic version of the cocktail will be offered.'
-    de: 'Hier kannst du einen Cocktail hinzufügen. Du benötigst die Zutat und die entsprechende Menge. Du kannst jeder Zutat eine Nummer von 1-9 zuweisen. Zutaten mit der gleichen Nummer werden der Größe aufsteigend gleichzeitig von der Maschine ausgegeben. Lass alle auf 1, wenn alle auf einmal ausgegeben werden sollen. Du kannst auch ein Bild zu existierenden Cocktails hinzufügen. Nicht aktivierte Cocktails werden nicht im Maker angezeigt. Wenn du Virgin aktivierst, wird eine alkoholfreie Version des Cocktails angeboten.'
+    en: 'Here you can add a Cocktail. You need the ingredient and according amount. You can assign a number from 1-9 to each ingredient. Ingredients with the same number will be spend at the same time by the machine in increasing order. Leave all at 1 if all should spend in parallel. You can also assign a picture to existing cocktails. Cocktails not enabled will not appear in the maker. If you enable virgin, a non alcoholic version of the cocktail will be possible.'
+    de: 'Hier kannst du einen Cocktail hinzufügen. Du benötigst die Zutat und die entsprechende Menge. Du kannst jeder Zutat eine Nummer von 1-9 zuweisen. Zutaten mit der gleichen Nummer werden der Größe aufsteigend gleichzeitig von der Maschine ausgegeben. Lass alle auf 1, wenn alle auf einmal ausgegeben werden sollen. Du kannst auch ein Bild zu existierenden Cocktails hinzufügen. Nicht aktivierte Cocktails werden nicht im Maker angezeigt. Wenn du Virgin aktivierst, wird eine alkoholfreie Version des Cocktails möglich sein.'
 
 # Change of language in UI elements
 ui:
@@ -376,6 +376,9 @@ ui:
     alcohol:
       en: 'Enter alcohol!'
       de: 'Alkoholgehalt eingeben!'
+    number:
+      en: 'Enter number!'
+      de: 'Nummer eingeben!'
 
   ##### OPTION WINDOW #####
   # all values for option window
