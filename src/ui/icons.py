@@ -29,6 +29,7 @@ _SPINNER_ICON = "fa5s.spinner"
 _TIME_ICON = "fa5s.hourglass-start"
 _SEARCH_ICON = "fa.search"
 _UPLOAD_ICON = "fa.upload"
+_QUESTION_ICON = "fa5.question-circle"
 BUTTON_SIZE = QSize(36, 36)
 
 
@@ -45,6 +46,7 @@ class PresetIcon:
     time = _TIME_ICON
     search = _SEARCH_ICON
     upload = _UPLOAD_ICON
+    question = _QUESTION_ICON
 
 
 @dataclass
