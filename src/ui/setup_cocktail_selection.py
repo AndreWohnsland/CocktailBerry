@@ -91,7 +91,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             self.cocktail = db_cocktail
         self._scale_cocktail()
         success = maker.prepare_cocktail(self.mainscreen, self.cocktail)
-        print(f"{success=}")
         if not success:
             return
         self.virgin_checkbox.setChecked(False)
