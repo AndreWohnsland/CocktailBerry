@@ -34,7 +34,7 @@ class DatabaseCommander:
     def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
         query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level,
-                I.Hand, I.Slow, RD.Amount, B.Bottle, I.Cost
+                I.Hand, I.Slow, RD.Amount, B.Bottle, I.Cost, RD.Recipe_Order
                 FROM RecipeData as RD INNER JOIN Ingredients as I 
                 ON RD.Ingredient_ID = I.ID
                 LEFT JOIN Bottles as B ON B.ID = I.ID
@@ -51,6 +51,7 @@ class DatabaseCommander:
             amount=i[7],
             bottle=i[8],
             cost=i[9],
+            recipe_order=i[10],
         ) for i in ingredient_data]
         return ingredients
 
@@ -392,10 +393,11 @@ class DatabaseCommander:
         search_tuple = (name, alcohol_level, volume, enabled, virgin)
         self.handler.query_database(query, search_tuple)
 
-    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int):
+    # TODO: Check all recipe data and recipe if we need order now there!!!!
+    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, order_number: int):
         """Insert given data into the recipe_data table"""
-        query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount) VALUES (?, ?, ?)"
-        search_tuple = (recipe_id, ingredient_id, ingredient_volume)
+        query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount, Recipe_Order) VALUES (?, ?, ?, ?)"
+        search_tuple = (recipe_id, ingredient_id, ingredient_volume, order_number)
         self.handler.query_database(query, search_tuple)
 
     def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: List[str]):

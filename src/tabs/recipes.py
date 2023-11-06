@@ -37,7 +37,11 @@ def handle_enter_recipe(w):
     if not recipe_name:
         DP_CONTROLLER.say_enter_cocktail_name()
         return
-    names, volumes, valid = _validate_extract_ingredients(ingredient_names, ingredient_volumes)
+    names, volumes, order, valid = _validate_extract_ingredients(
+        ingredient_names,
+        ingredient_volumes,
+        ingredient_order
+    )
     if not valid:
         return
 
@@ -45,7 +49,7 @@ def handle_enter_recipe(w):
     if error_message:
         return
 
-    recipe_volume, ingredient_data, recipe_alcohol_level = _build_recipe_data(names, volumes)
+    recipe_volume, ingredient_data, recipe_alcohol_level = _build_recipe_data(names, volumes, order)
 
     cocktail = _enter_or_update_recipe(
         recipe_id, recipe_name, recipe_volume, recipe_alcohol_level, enabled, virgin, ingredient_data
@@ -64,34 +68,39 @@ def handle_enter_recipe(w):
 
 def _validate_extract_ingredients(
     ingredient_names: List[str],
-    ingredient_volumes: List[str]
-) -> Tuple[List[str], List[int], bool]:
+    ingredient_volumes: List[str],
+    ingredient_order: List[str],
+) -> Tuple[List[str], List[int], List[int], bool]:
     """Gives a list for names and volume of ingredients.
     If some according value is missing, informs the user.
-    Returns [names], [volumes], is_valid"""
+    Returns [names], [volumes], [orders] is_valid"""
     names: list[str] = []
     volumes: list[str] = []
-    for name, volume in zip(ingredient_names, ingredient_volumes):
-        if (name == "" and volume != "") or (name != "" and volume == ""):
+    orders: list[str] = []
+    for name, volume, order in zip(ingredient_names, ingredient_volumes, ingredient_order):
+        # if one is missing, break
+        if any([name, volume]) and not all([name, volume, order]):
             DP_CONTROLLER.say_some_value_missing()
-            return [], [], False
+            return [], [], [], False
         if name != "":
             names.append(name)
             volumes.append(volume)
+            orders.append(order)
     if len(names) == 0:
         DP_CONTROLLER.say_recipe_at_least_one_ingredient()
-        return [], [], False
+        return [], [], [], False
     counter_names = Counter(names)
     double_names = [x[0] for x in counter_names.items() if x[1] > 1]
     if len(double_names) != 0:
         DP_CONTROLLER.say_ingredient_double_usage(double_names[0])
-        return [], [], False
+        return [], [], [], False
     try:
         int_volumes = [int(x) for x in volumes]
+        int_orders = [int(x) for x in orders]
     except ValueError:
         DP_CONTROLLER.say_needs_to_be_int()
-        return [], [], False
-    return names, int_volumes, True
+        return [], [], [], False
+    return names, int_volumes, int_orders, True
 
 
 def _check_enter_constraints(current_recipe_name: str, new_recipe_name: str, new_recipe: bool) -> Tuple[int, bool]:
@@ -114,16 +123,17 @@ def _check_enter_constraints(current_recipe_name: str, new_recipe_name: str, new
     return cocktail_current.id, False
 
 
-def _build_recipe_data(names: list[str], volumes: list[int]):
+def _build_recipe_data(names: list[str], volumes: list[int], orders: list[int]):
     """Gets volume, ingredient objects and concentration of cocktails"""
     recipe_volume = sum(volumes)
     ingredient_data: list[Ingredient] = []
     recipe_volume_concentration = 0
 
     # first build the ingredient objects for machine add
-    for ingredient_name, ingredient_volume in zip(names, volumes):
+    for ingredient_name, ingredient_volume, order_number in zip(names, volumes, orders):
         ingredient: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore
         ingredient.amount = ingredient_volume
+        ingredient.recipe_order = order_number
         recipe_volume_concentration += ingredient.alcohol * ingredient_volume
         ingredient_data.append(ingredient)
 
@@ -133,12 +143,12 @@ def _build_recipe_data(names: list[str], volumes: list[int]):
 
 
 def _enter_or_update_recipe(
-    recipe_id,
-    recipe_name,
-    recipe_volume,
-    recipe_alcohol_level,
-    enabled,
-    virgin,
+    recipe_id: int,
+    recipe_name: str,
+    recipe_volume: int,
+    recipe_alcohol_level: int,
+    enabled: int,
+    virgin: int,
     ingredient_data: List[Ingredient],
 ):
     """Logic to insert/update data into DB"""
@@ -149,7 +159,7 @@ def _enter_or_update_recipe(
         DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin)
     cocktail: Cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore
     for ingredient in ingredient_data:
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount)
+        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount, ingredient.recipe_order)
     # important to get the cocktail again, since the first time getting it, we only got it for its id
     # at this time the cocktail got no recipe data. Getting it again will fix this
     cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore
