@@ -112,8 +112,7 @@ class DialogHandler():
         file_name, _ = QFileDialog.getOpenFileName(w, message, filter=filter_str)
         if file_name:
             return Path(file_name).absolute()
-        else:
-            return None
+        return None
 
     ############################
     # Methods for creating msg #
