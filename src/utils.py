@@ -5,6 +5,7 @@ from typing import Tuple, Literal
 from dataclasses import dataclass
 import http.client as httplib
 import atexit
+import datetime
 
 from src.filepath import ROOT_PATH, STYLE_FOLDER, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.logger_handler import LoggerHandler
@@ -82,3 +83,9 @@ def generate_custom_style_file():
     if not CUSTOM_STYLE_SCSS.exists():
         CUSTOM_STYLE_SCSS.write_text(default_style_file.read_text())
         CUSTOM_STYLE_FILE.write_text(compiled_default.read_text())
+
+
+def time_print(msg: str):
+    """Prints the given string with a timestamp in the 'HH:MM:SS: ' prefix"""
+    now = datetime.datetime.now()
+    print(f"{now.strftime('%H:%M:%S')}: {msg}")
