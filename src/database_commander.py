@@ -393,7 +393,6 @@ class DatabaseCommander:
         search_tuple = (name, alcohol_level, volume, enabled, virgin)
         self.handler.query_database(query, search_tuple)
 
-    # TODO: Check all recipe data and recipe if we need order now there!!!!
     def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, order_number: int):
         """Insert given data into the recipe_data table"""
         query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount, Recipe_Order) VALUES (?, ?, ?, ?)"
