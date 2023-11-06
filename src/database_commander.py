@@ -6,6 +6,7 @@ from typing import List, Optional, Union
 from src.filepath import ROOT_PATH
 from src.models import Cocktail, Ingredient
 from src.logger_handler import LoggerHandler
+from src.utils import time_print
 
 DATABASE_NAME = "Cocktail_database"
 BACKUP_NAME = f"{DATABASE_NAME}_backup"
@@ -474,10 +475,10 @@ class DatabaseHandler:
     def __init__(self, use_default=False):
         self.database_path = DatabaseHandler.database_path
         if not self.database_path_default.exists():
-            print("Creating Database")
+            time_print("Creating Database")
             self.create_tables()
         if not self.database_path.exists():
-            print("Copying default database for maker usage")
+            time_print("Copying default database for maker usage")
             self.copy_default_database()
         if use_default:
             self.connect_database(str(self.database_path_default.absolute()))

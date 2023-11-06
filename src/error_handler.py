@@ -7,6 +7,7 @@ from typing import Callable
 
 from src.logger_handler import LoggerHandler, LogFiles
 from src.machine.controller import MACHINE
+from src.utils import time_print
 
 
 def logerror(func: Callable):
@@ -26,7 +27,7 @@ def logerror(func: Callable):
             module = re.split(r"[\\/]", stack[-1][0])[-1]
             msg = f"The function {func.__name__} did run into an error at module: {module} function {fname} in row: {row}!"  # noqa
             logger.log_exception(msg)
-            print(msg)
+            time_print(msg)
             MACHINE.close_all_pumps()
             raise
         return result

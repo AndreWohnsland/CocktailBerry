@@ -10,6 +10,7 @@ from src.database_commander import DB_COMMANDER
 from src.machine.controller import MACHINE
 from src.tabs.bottles import set_fill_level_bars
 from src.dialog_handler import UI_LANGUAGE
+from src.utils import time_print
 
 _logger = LoggerHandler("additional_ingredient")
 
@@ -59,7 +60,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
             self.mainscreen.tabWidget.setCurrentIndex(3)
             return
 
-        print(f"Spending {volume} ml {ingredient_name}")
+        time_print(f"Spending {volume} ml {ingredient_name}")
         made_volume, _, _ = MACHINE.make_cocktail(self.mainscreen, [ingredient_data], ingredient_name, False)
         DB_COMMANDER.increment_ingredient_consumption(ingredient_name, made_volume[0])
         set_fill_level_bars(self.mainscreen)

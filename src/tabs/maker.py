@@ -17,6 +17,7 @@ from src.config_manager import CONFIG as cfg
 from src.programs.addons import ADDONS
 
 from src.config_manager import shared
+from src.utils import time_print
 
 
 _LOGGER = LoggerHandler("maker_module")
@@ -68,7 +69,7 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
             DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
         return False
 
-    print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
+    time_print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
     ingredient_bottles = [x for x in cocktail.machineadds if x.amount > 0]
 
@@ -118,4 +119,4 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
 def interrupt_cocktail():
     """ Interrupts the cocktail preparation. """
     shared.make_cocktail = False
-    print("Canceling!")
+    time_print("Canceling the cocktail!")
