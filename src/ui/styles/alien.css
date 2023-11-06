@@ -41,10 +41,10 @@
   border-radius: 0px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  border-bottom: 3px solid #00dd4a;
-  border-top: 0px solid #00dd4a;
-  border-left: 3px solid #00dd4a;
-  border-right: 3px solid #00dd4a; }
+  border-bottom: 2px solid #489869;
+  border-top: 0px;
+  border-left: 2px solid #489869;
+  border-right: 2px solid #489869; }
 
 *[cssClass~='cocktail-picture'] {
   border-radius: 3px;
@@ -163,6 +163,18 @@ QPushButton {
       QPushButton[cssClass~='btn-inverted'][cssClass~='neutral']:pressed {
         background-color: #489869;
         border-color: #489869; }
+    QPushButton[cssClass~='btn-inverted'][cssClass~='btn-half-top'] {
+      background-color: #489869;
+      color: #111111;
+      border: 2px solid #489869;
+      border-radius: 0px;
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
+      border-bottom: 0px; }
+      QPushButton[cssClass~='btn-inverted'][cssClass~='btn-half-top']:pressed {
+        color: #111111;
+        background-color: #00e4d1;
+        border-color: #00e4d1; }
   QPushButton[cssClass~='no-border'] {
     border-width: 0;
     padding: 1px;
@@ -197,10 +209,15 @@ QPushButton {
     border-color: #00e4d1;
     color: #111111; }
   QPushButton[cssClass~='btn-half-top'] {
+    border: 2px solid #489869;
+    color: #489869;
     border-radius: 0px;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-    border-bottom: 0px solid #00dd4a; }
+    border-bottom: 0px; }
+    QPushButton[cssClass~='btn-half-top']:pressed {
+      color: #00e4d1;
+      border-color: #00e4d1; }
 
 QProgressBar {
   background-color: #a0ab8c;

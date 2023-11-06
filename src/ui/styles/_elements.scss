@@ -1,6 +1,10 @@
 $selected-color: rgb(0, 174, 75);
 $scrollbar-border-radius: 15px;
 $default-element-border: $element-border solid $border;
+// variables for the picture view in the maker
+$picture-view-border-color: $neutral;
+$picture-view-border-size: $element-border;
+$picture-view-active-color: $primary;
 
 // For generic classes
 *[cssClass~='header-underline'] {
@@ -57,10 +61,10 @@ $default-element-border: $element-border solid $border;
   border-radius: 0px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  border-bottom: 3px solid $primary;
-  border-top: 0px solid $primary;
-  border-left: 3px solid $primary;
-  border-right: 3px solid $primary;
+  border-bottom: $picture_view_border_size solid $picture-view-border-color;
+  border-top: 0px;
+  border-left: $picture_view_border_size solid $picture-view-border-color;
+  border-right: $picture_view_border_size solid $picture-view-border-color;
 }
 
 *[cssClass~='cocktail-picture'] {
@@ -210,6 +214,20 @@ QPushButton {
         border-color: $neutral;
       }
     }
+    &[cssClass~='btn-half-top'] {
+      background-color: $picture-view-border-color;
+      color: $background;
+      border: $picture_view_border_size solid $picture-view-border-color;
+      border-radius: 0px;
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
+      border-bottom: 0px;
+      &:pressed {
+        color: $background;
+        background-color: $picture-view-active-color;
+        border-color: $picture-view-active-color;
+      }
+    }
   }
   &[cssClass~='no-border'] {
     border-width: 0;
@@ -256,10 +274,16 @@ QPushButton {
     color: $background;
   }
   &[cssClass~='btn-half-top'] {
+    border: $picture_view_border_size solid $picture-view-border-color;
+    color: $picture-view-border-color;
     border-radius: 0px;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-    border-bottom: 0px solid $primary;
+    border-bottom: 0px;
+    &:pressed {
+      color: $picture-view-active-color;
+      border-color: $picture-view-active-color;
+    }
   }
 }
 
