@@ -14,7 +14,8 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         x_pos: int = 0,
         y_pos: int = 0,
         header_text: str = "Password",
-        use_float=False
+        use_float=False,
+        overwrite_number: bool = False,
     ):
         """ Init. Connect all the buttons and set window policy. """
         super().__init__()
@@ -24,6 +25,7 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         self.PBenter.clicked.connect(self.enter_clicked)
         self.PBdel.clicked.connect(self.del_clicked)
         self.number_list = list(range(10))
+        self.overwrite_number = overwrite_number
         self.attribute_numbers = [getattr(self, "PB" + str(x)) for x in self.number_list]
         for obj, number in zip(self.attribute_numbers, self.number_list):
             obj.clicked.connect(lambda _, n=number: self.number_clicked(number=n))
@@ -37,6 +39,9 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
 
     def number_clicked(self, number: int):
         """  Adds the clicked number to the lineedit. """
+        if self.overwrite_number:
+            self.source_line_edit.setText(f"{number}")
+            return
         self.source_line_edit.setText(f"{self.source_line_edit.text()}{number}")
 
     def enter_clicked(self):
