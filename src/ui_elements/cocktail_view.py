@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 
 # roughly take 240 px for image dimensions
 N_COLUMNS = int(cfg.UI_WIDTH / 240)
-# keep a 15% margin
-SQUARE_SIZE = int(cfg.UI_WIDTH / (N_COLUMNS * 1.15))
+# keep a 17% margin
+SQUARE_SIZE = int(cfg.UI_WIDTH / (N_COLUMNS * 1.17))
 
 
 def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
