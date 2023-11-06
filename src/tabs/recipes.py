@@ -43,6 +43,7 @@ def handle_enter_recipe(w):
         recipe_id, recipe_name, recipe_volume, recipe_alcohol_level, enabled, virgin, ingredient_data
     )
 
+    DP_CONTROLLER.remove_recipe_from_list_widget(w, selected_name)
     DP_CONTROLLER.fill_list_widget_recipes(w, [cocktail.name])
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
     DP_CONTROLLER.update_maker_view(w)
@@ -183,6 +184,7 @@ def delete_recipe(w):
         return
 
     DB_COMMANDER.delete_recipe(recipe_name)
+    DP_CONTROLLER.remove_recipe_from_list_widget(w, recipe_name)
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
     DP_CONTROLLER.update_maker_view(w)
     DP_CONTROLLER.say_recipe_deleted(recipe_name)

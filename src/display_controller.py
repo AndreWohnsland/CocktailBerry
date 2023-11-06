@@ -106,6 +106,10 @@ class DisplayController(DialogHandler):
         virgin = int(w.offervirgin_checkbox.isChecked())
         return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, virgin
 
+    def remove_recipe_from_list_widget(self, w: Ui_MainWindow, recipe_name: str):
+        """Removes a recipe from the list widget"""
+        self.delete_list_widget_item(w.LWRezepte, recipe_name)
+
     def validate_ingredient_data(self, w: Ui_MainWindow) -> bool:
         """Validate the data from the ingredient window"""
         line_edits, *_ = self.get_ingredient_fields(w)
