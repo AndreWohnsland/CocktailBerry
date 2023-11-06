@@ -41,10 +41,10 @@
   border-radius: 0px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  border-bottom: 2px solid #96adba;
+  border-bottom: 2px solid #007bff;
   border-top: 0px;
-  border-left: 2px solid #96adba;
-  border-right: 2px solid #96adba; }
+  border-left: 2px solid #007bff;
+  border-right: 2px solid #007bff; }
 
 *[cssClass~='cocktail-picture'] {
   border-radius: 3px;
@@ -164,9 +164,9 @@ QPushButton {
         background-color: #96adba;
         border-color: #96adba; }
     QPushButton[cssClass~='btn-inverted'][cssClass~='btn-half-top'] {
-      background-color: #96adba;
+      background-color: #007bff;
       color: #0d0d0d;
-      border: 2px solid #96adba;
+      border: 2px solid #007bff;
       border-radius: 0px;
       border-top-left-radius: 7px;
       border-top-right-radius: 7px;
@@ -209,8 +209,8 @@ QPushButton {
     border-color: #ef9700;
     color: #0d0d0d; }
   QPushButton[cssClass~='btn-half-top'] {
-    border: 2px solid #96adba;
-    color: #96adba;
+    border: 2px solid #007bff;
+    color: #007bff;
     border-radius: 0px;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;

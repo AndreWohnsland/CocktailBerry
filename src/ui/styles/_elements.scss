@@ -2,9 +2,9 @@ $selected-color: rgb(0, 174, 75);
 $scrollbar-border-radius: 15px;
 $default-element-border: $element-border solid $border;
 // variables for the picture view in the maker
-$picture-view-border-color: $neutral;
+$picture-view-border-color: $primary;
 $picture-view-border-size: $element-border;
-$picture-view-active-color: $primary;
+$picture-view-active-color: $secondary;
 
 // For generic classes
 *[cssClass~='header-underline'] {
