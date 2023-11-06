@@ -88,4 +88,4 @@ def generate_custom_style_file():
 def time_print(msg: str, **kwargs):
     """Prints the given string with a timestamp in the 'HH:MM:SS: ' prefix"""
     now = datetime.datetime.now()
-    print(f"{now.strftime('%H:%M:%S')}: {msg}", **kwargs)
+    print(f"{now.strftime('%H:%M:%S')}:  {msg}", **kwargs)
