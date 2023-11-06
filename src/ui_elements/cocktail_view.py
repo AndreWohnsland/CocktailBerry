@@ -84,7 +84,7 @@ class CocktailView(QWidget):
         DP_CONTROLLER.delete_items_of_layout(self.grid)
         cocktails = DB_COMMANDER.get_possible_cocktails()
         # sort cocktails by name
-        cocktails.sort(key=lambda x: x.name)
+        cocktails.sort(key=lambda x: x.name.lower())
         # fill the grid with N_COLUMNS columns, then go to another row
         for i in range(0, len(cocktails), N_COLUMNS):
             for j in range(N_COLUMNS):
