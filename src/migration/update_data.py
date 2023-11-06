@@ -63,7 +63,7 @@ def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: List[Cock
             continue
         for ing in rec.ingredients:
             ing_data = ing_mapping[ing.name]
-            local_db.insert_recipe_data(new_cocktail.id, ing_data.id, ing.amount)
+            local_db.insert_recipe_data(new_cocktail.id, ing_data.id, ing.amount, 1)
 
 
 def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCommander, ingredient_to_add: List[str]):
@@ -212,3 +212,13 @@ def add_cost_column_to_ingredients():
         db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Cost INTEGER DEFAULT 0;")
     except OperationalError:
         _logger.log_event("ERROR", "Could not add cost column to DB, this may because it already exists")
+
+
+def add_order_column_to_ingredient_data():
+    """Adds the order column to the RecipeData table"""
+    _logger.log_event("INFO", "Adding Recipe_Order column to RecipeData DB")
+    db_handler = DatabaseHandler()
+    try:
+        db_handler.query_database("ALTER TABLE RecipeData ADD COLUMN Recipe_Order INTEGER DEFAULT 1;")
+    except OperationalError:
+        _logger.log_event("ERROR", "Could not add order column to DB, this may because it already exists")
