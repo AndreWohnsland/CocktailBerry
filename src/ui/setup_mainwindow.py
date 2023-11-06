@@ -185,7 +185,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def open_picture_window(self):
         cocktail_name = DP_CONTROLLER.get_list_widget_selection(self.LWRezepte)
         if not cocktail_name:
-            return DP_CONTROLLER.say_create_cocktail_first()
+            DP_CONTROLLER.say_create_cocktail_first()
+            return
         cocktail = DB_COMMANDER.get_cocktail(cocktail_name)
         # usually we get a cocktail because the name was from the list
         if not cocktail:
