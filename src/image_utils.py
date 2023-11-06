@@ -33,9 +33,10 @@ def find_user_cocktail_image(cocktail: Cocktail):
     """Finds the user defined image for the given cocktail
     Returns None if not set"""
     cocktail_image = None
+    # also allow cocktail name with underscores as image name
     image_paths = [
         USER_IMAGE_FOLDER / f'{cocktail.id}.jpg',
-        USER_IMAGE_FOLDER / f'{cocktail.name.lower()}.jpg',
+        USER_IMAGE_FOLDER / f'{cocktail.name.lower().replace(" ", "_")}.jpg',
     ]
     for path in image_paths:
         if path.exists():
