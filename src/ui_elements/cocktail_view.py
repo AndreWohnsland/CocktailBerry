@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QGridLayout, QFrame
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QSizePolicy
@@ -66,6 +66,8 @@ class CocktailView(QWidget):
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
         self.scroll_area.setFrameShape(QFrame.NoFrame)  # type: ignore
         self.scroll_area.setFrameShadow(QFrame.Plain)  # type: ignore
+        # no horizontal scroll bar
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # type: ignore
 
         self.grid = QGridLayout()
         self.grid.setVerticalSpacing(15)
