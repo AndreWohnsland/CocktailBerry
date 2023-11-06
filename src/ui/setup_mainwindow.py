@@ -244,6 +244,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBZclear.clicked.connect(lambda: ingredients.clear_ingredient_information(self))
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.button_set_picture.clicked.connect(self.open_picture_window)
+        self.button_info_recipes.clicked.connect(DP_CONTROLLER.show_recipe_help)
 
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 

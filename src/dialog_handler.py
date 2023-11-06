@@ -328,6 +328,10 @@ class DialogHandler():
         """Informs that the image processing failed"""
         self.__output_language_dialog("image_processing_failed")
 
+    def show_recipe_help(self):
+        """Shows the recipe help"""
+        self.__output_language_dialog("recipe_help")
+
     ############################
     # Methods for prompting ####
     ############################

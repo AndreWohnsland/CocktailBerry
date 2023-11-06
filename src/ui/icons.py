@@ -31,6 +31,7 @@ _SEARCH_ICON = "fa.search"
 _UPLOAD_ICON = "fa.upload"
 _QUESTION_ICON = "fa5.question-circle"
 BUTTON_SIZE = QSize(36, 36)
+SMALL_BUTTON_SIZE = QSize(24, 24)
 
 
 @dataclass
@@ -111,6 +112,12 @@ class IconSetter:
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self._set_icon(ui_element, fa_icon, no_text)
+        self._set_icon(
+            w.button_info_recipes,
+            qta.icon(_QUESTION_ICON, color=self.color.background),
+            True,
+            SMALL_BUTTON_SIZE,
+        )
 
     def set_cocktail_selection_icons(self, w: Ui_CocktailSelection):
         """Sets the icons of the cocktail selection window according to style sheets props"""
@@ -121,10 +128,10 @@ class IconSetter:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self._set_icon(ui_element, fa_icon, no_text)
 
-    def _set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool):
+    def _set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool, size: QSize = BUTTON_SIZE):
         """Sets the icon of the given ui element"""
         ui_element.setIcon(icon)
-        ui_element.setIconSize(BUTTON_SIZE)
+        ui_element.setIconSize(size)
         if no_text:
             ui_element.setText("")
 
