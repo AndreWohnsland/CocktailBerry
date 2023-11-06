@@ -24,6 +24,7 @@ from src.migration.update_data import (
     remove_old_recipe_columns,
     add_slower_ingredient_flag_to_db,
     add_cost_column_to_ingredients,
+    add_order_column_to_ingredient_data,
 )
 
 _logger = LoggerHandler("migrator_module")
@@ -67,37 +68,41 @@ class Migrator:
         """Make migration dependant on current local and program version"""
         _logger.log_event("INFO", f"Local version is: {self.local_version}, checking for necessary migrations")
         self._python_to_old_warning(FUTURE_PYTHON_VERSION)
-        if self.older_than_version_with_logging("1.5.0"):
-            rename_database_to_english()
-            add_team_buffer_to_database()
-            self._install_pip_package("GitPython", "1.5.0")
-        if self.older_than_version_with_logging("1.5.3"):
-            self._install_pip_package("typer", "1.5.3")
-        if self.older_than_version_with_logging("1.6.0"):
-            self._change_git_repo()
-            self._install_pip_package("pyfiglet", "1.6.0")
-        if self.older_than_version_with_logging("1.6.1"):
-            add_more_bottles_to_db()
-        if self.older_than_version_with_logging("1.9.0"):
-            add_virgin_flag_to_db()
-            remove_is_alcoholic_column()
-            self._install_pip_package("typing_extensions", "1.9.0")
-        if self.older_than_version_with_logging("1.11.0"):
-            self._install_pip_package("qtawesome", "1.11.0")
-        if self.older_than_version_with_logging("1.17.0"):
-            self._install_pip_package("pyqtspinner", "1.17.0")
-        if self.older_than_version_with_logging("1.18.0"):
-            remove_old_recipe_columns()
-        if self.older_than_version_with_logging("1.19.3"):
-            _update_config_value_type("UI_MASTERPASSWORD", int, 0)
-        if self.older_than_version_with_logging("1.22.0"):
-            add_slower_ingredient_flag_to_db()
-        if self.older_than_version_with_logging("1.23.1"):
-            _update_config_value_type("PUMP_SLOW_FACTOR", float, 1.0)
-        if self.older_than_version_with_logging("1.26.1"):
-            _update_config_value_type("PUMP_VOLUMEFLOW", float, 1.0)
-        if self.older_than_version_with_logging("1.29.0"):
-            add_cost_column_to_ingredients()
+
+        # define a version and the according list of actions to take
+        version_actions = {
+            "1.5.0": [
+                rename_database_to_english,
+                add_team_buffer_to_database,
+                lambda: self._install_pip_package("GitPython", "1.5.0")
+            ],
+            "1.5.3": [lambda: self._install_pip_package("typer", "1.5.3")],
+            "1.6.0": [
+                self._change_git_repo,
+                lambda: self._install_pip_package("pyfiglet", "1.6.0")
+            ],
+            "1.6.1": [add_more_bottles_to_db],
+            "1.9.0": [
+                add_virgin_flag_to_db,
+                remove_is_alcoholic_column,
+                lambda: self._install_pip_package("typing_extensions", "1.9.0")
+            ],
+            "1.11.0": [lambda: self._install_pip_package("qtawesome", "1.11.0")],
+            "1.17.0": [lambda: self._install_pip_package("pyqtspinner", "1.17.0")],
+            "1.18.0": [remove_old_recipe_columns],
+            "1.19.3": [lambda: _update_config_value_type("UI_MASTERPASSWORD", int, 0)],
+            "1.22.0": [add_slower_ingredient_flag_to_db],
+            "1.23.1": [lambda: _update_config_value_type("PUMP_SLOW_FACTOR", float, 1.0)],
+            "1.26.1": [lambda: _update_config_value_type("PUMP_VOLUMEFLOW", float, 1.0)],
+            "1.29.0": [add_cost_column_to_ingredients],
+            "1.30.0": [add_order_column_to_ingredient_data],
+        }
+
+        for version, actions in version_actions.items():
+            if self.older_than_version_with_logging(version):
+                for action in actions:
+                    action()
+
         self._check_local_version_data()
 
     def _migration_log(self, version: str):
