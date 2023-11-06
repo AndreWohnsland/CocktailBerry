@@ -136,9 +136,19 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.cocktail_selection.update_cocktail_data()
         self.container_maker.setCurrentWidget(self.cocktail_selection)
 
-    def open_numpad(self, le_to_write: QLineEdit, x_pos=0, y_pos=0, header_text="Password"):
+    def open_numpad(
+        self,
+        le_to_write: QLineEdit,
+        x_pos=0,
+        y_pos=0,
+        header_text="Password",
+        overwrite_number: bool = False,
+    ):
         """ Opens up the NumpadWidget connected to the lineedit offset from the left upper side """
-        self.numpad_window = NumpadWidget(self, le_to_write, x_pos, y_pos, header_text)
+        self.numpad_window = NumpadWidget(
+            self, le_to_write, x_pos, y_pos,
+            header_text, overwrite_number=overwrite_number
+        )
 
     def open_keyboard(self, le_to_write, max_char_len=30):
         """ Opens up the keyboard connected to the lineedit """
@@ -221,7 +231,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         number = UI_LANGUAGE.generate_numpad_header("number")
         # connect the lineedit for the recipe order
         for obj in DP_CONTROLLER.get_lineedits_recipe_order(self):
-            obj.clicked.connect(lambda o=obj: self.open_numpad(o, 50, 50, number))  # type: ignore
+            obj.clicked.connect(  # type: ignore
+                lambda o=obj: self.open_numpad(o, 50, 50, number, True)
+            )
             obj.setValidator(QIntValidator(1, 9))
             obj.setMaxLength(1)
         # Setting up Validators for all the the fields (length and/or Types):
