@@ -23,7 +23,15 @@ def fill_recipe_box_with_ingredients(w):
 def handle_enter_recipe(w):
     """ Enters or updates the recipe into the db"""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
-    recipe_name, selected_name, ingredient_names, ingredient_volumes, enabled, virgin = recipe_input
+    # destructure each element from recipe input to the variables
+    recipe_name = recipe_input.recipe_name
+    selected_name = recipe_input.selected_recipe
+    ingredient_names = recipe_input.ingredient_names
+    ingredient_volumes = recipe_input.ingredient_volumes
+    ingredient_order = recipe_input.ingredient_order
+    enabled = recipe_input.enabled
+    virgin = recipe_input.virgin
+
     new_recipe = not bool(selected_name)
 
     if not recipe_name:
@@ -159,7 +167,8 @@ def load_recipe_view_names(w):
 @logerror
 def load_selected_recipe_data(w):
     """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
-    _, recipe_name, *_ = DP_CONTROLLER.get_recipe_field_data(w)
+    recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
+    recipe_name = recipe_input.selected_recipe
     DP_CONTROLLER.set_recipe_add_label(w, bool(recipe_name))
     if not recipe_name:
         return
@@ -174,7 +183,8 @@ def load_selected_recipe_data(w):
 @logerror
 def delete_recipe(w):
     """ Deletes the selected recipe, requires the Password """
-    _, recipe_name, *_ = DP_CONTROLLER.get_recipe_field_data(w)
+    recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
+    recipe_name = recipe_input.selected_recipe
     if not recipe_name:
         DP_CONTROLLER.say_no_recipe_selected()
         return

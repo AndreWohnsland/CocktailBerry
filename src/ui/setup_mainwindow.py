@@ -218,6 +218,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             obj.clicked.connect(lambda o=obj: self.open_numpad(o, 50, 50, amount))  # type: ignore
             obj.setValidator(QIntValidator(0, 300))
             obj.setMaxLength(3)
+        number = UI_LANGUAGE.generate_numpad_header("number")
+        # connect the lineedit for the recipe order
+        for obj in DP_CONTROLLER.get_lineedits_recipe_order(self):
+            obj.clicked.connect(lambda o=obj: self.open_numpad(o, 50, 50, number))  # type: ignore
+            obj.setValidator(QIntValidator(1, 9))
+            obj.setMaxLength(1)
         # Setting up Validators for all the the fields (length and/or Types):
         self.LEGehaltRezept.setValidator(QIntValidator(0, 99))
         self.LEGehaltRezept.setMaxLength(2)

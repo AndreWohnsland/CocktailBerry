@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Callable, List, Literal, Optional, Tuple, Union, TYPE_CHECKING
+from dataclasses import dataclass
+from typing import Callable, List, Literal, Optional, Sequence, Tuple, Union, TYPE_CHECKING
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
@@ -29,6 +30,17 @@ class ItemDelegate(QStyledItemDelegate):
     def paint(self, painter, option, index):
         option.decorationPosition = QStyleOptionViewItem.Right  # type: ignore
         super().paint(painter, option, index)
+
+
+@dataclass
+class RecipeInput:
+    recipe_name: str
+    selected_recipe: str
+    ingredient_names: List[str]
+    ingredient_volumes: List[str]
+    ingredient_order: List[str]
+    enabled: int
+    virgin: int
 
 
 class DisplayController(DialogHandler):
@@ -95,16 +107,25 @@ class DisplayController(DialogHandler):
             cost=int(ingredient_cost),
         )
 
-    def get_recipe_field_data(self, w: Ui_MainWindow) -> Tuple[str, str, List[str], List[str], int, int]:
+    def get_recipe_field_data(self, w: Ui_MainWindow) -> RecipeInput:
         """ Return [name, selected, [ingredients], [volumes], enabled, virgin] """
         recipe_name: str = w.LECocktail.text().strip()
         selected_recipe = self.get_list_widget_selection(w.LWRezepte)
         # this is also a str, because user may type non int char into box
         ingredient_volumes = self.get_lineedit_text(self.get_lineedits_recipe(w))
         ingredient_names = self.get_current_combobox_items(self.get_comboboxes_recipes(w))
+        ingredient_order = self.get_lineedit_text(self.get_lineedits_recipe_order(w))
         enabled = int(w.CHBenabled.isChecked())
         virgin = int(w.offervirgin_checkbox.isChecked())
-        return recipe_name, selected_recipe, ingredient_names, ingredient_volumes, enabled, virgin
+        return RecipeInput(
+            recipe_name,
+            selected_recipe,
+            ingredient_names,
+            ingredient_volumes,
+            ingredient_order,
+            enabled,
+            virgin
+        )
 
     def remove_recipe_from_list_widget(self, w: Ui_MainWindow, recipe_name: str):
         """Removes a recipe from the list widget"""
@@ -226,7 +247,7 @@ class DisplayController(DialogHandler):
         for lineedit in lineedit_list:
             lineedit.clear()
 
-    def fill_multiple_lineedit(self, lineedit_list: List[QLineEdit], text_list: List[Union[str, int]]):
+    def fill_multiple_lineedit(self, lineedit_list: List[QLineEdit], text_list: Sequence[Union[str, int]]):
         """Fill a list of line edits"""
         for lineedit, text in zip(lineedit_list, text_list):
             lineedit.setText(str(text))
@@ -437,6 +458,8 @@ class DisplayController(DialogHandler):
             w.LWRezepte.clearSelection()
         self.set_multiple_combobox_to_top_item(self.get_comboboxes_recipes(w))
         self.clean_multiple_lineedit(self.get_lineedits_recipe(w))
+        line_edit_order = self.get_lineedits_recipe_order(w)
+        self.fill_multiple_lineedit(line_edit_order, [1] * len(line_edit_order))
 
     def set_recipe_data(self, w: Ui_MainWindow, cocktail: Cocktail):
         """Fills the recipe data in the recipe view with the cocktail object"""
@@ -445,8 +468,10 @@ class DisplayController(DialogHandler):
         ingredients = cocktail.ingredients
         names = [x.name for x in ingredients]
         volumes = [x.amount for x in ingredients]
+        order = [x.recipe_order for x in ingredients]
         self.set_multiple_combobox_items(self.get_comboboxes_recipes(w)[: len(names)], names)
-        self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(volumes)], volumes)  # type: ignore
+        self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(volumes)], volumes)
+        self.fill_multiple_lineedit(self.get_lineedits_recipe_order(w)[: len(order)], order)
         w.LECocktail.setText(cocktail.name)
 
     def update_maker_view(self, w: MainScreen):
@@ -483,6 +508,10 @@ class DisplayController(DialogHandler):
     def get_lineedits_recipe(self, w: Ui_MainWindow) -> List[QLineEdit]:
         """Returns all recipe line edit objects"""
         return [getattr(w, f"LER{x}") for x in range(1, 9)]
+
+    def get_lineedits_recipe_order(self, w: Ui_MainWindow) -> List[QLineEdit]:
+        """Returns all recipe line edit objects"""
+        return [getattr(w, f"line_edit_recipe_order_{x}") for x in range(1, 9)]
 
     def get_ingredient_fields(
         self, w: Ui_MainWindow
