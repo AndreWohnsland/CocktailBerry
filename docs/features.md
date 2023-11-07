@@ -34,6 +34,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.27.0** | Support for flow inversion                                                                                           |
 | **v1.28.0** | Bookworm OS Support                                                                                                  |
 | **v1.29.0** | Cost for ingredients + cocktails                                                                                     |
+| **v1.30.0** | Cocktail pictures in selection <br> Ingredient preparation order                                                     |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.
