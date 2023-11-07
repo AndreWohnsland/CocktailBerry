@@ -310,6 +310,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # switching to it needs to get the current available cocktails
         if index == 0:
             self.available_cocktails = DB_COMMANDER.get_possible_cocktails()
+            self._apply_search_to_list()
         if index in unprotected_tabs:
             self.previous_tab_index = index
             return
