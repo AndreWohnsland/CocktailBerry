@@ -98,6 +98,7 @@ class DatabaseCommander:
         return cocktails
 
     def get_possible_cocktails(self):
+        """Returns a list of currently possible cocktails with the current bottles"""
         all_cocktails = self.get_all_cocktails(get_disabled=False)
         handadds_ids = self.get_available_ids()
         possible_cocktails = [x for x in all_cocktails if x.is_possible(handadds_ids)]
