@@ -27,8 +27,11 @@ SQUARE_SIZE = int(cfg.UI_WIDTH / (N_COLUMNS * 1.17))
 
 def generate_image_block(cocktail: Cocktail, mainscreen: MainScreen):
     """Generates a image block for the given cocktail"""
+    # those factors are taken from calculations based on the old static values
+    header_font_size = round(SQUARE_SIZE / 15.8)
+    header_height = round(SQUARE_SIZE / 6.3)
     button = create_button(
-        cocktail.name, font_size=14, min_h=0, max_h=35,
+        cocktail.name, font_size=header_font_size, min_h=0, max_h=header_height,
         max_w=SQUARE_SIZE, css_class="btn-inverted btn-half-top"
     )
     if cocktail.virgin_available:
