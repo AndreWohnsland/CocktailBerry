@@ -324,7 +324,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         search = self.input_search_cocktail.text()
         DP_CONTROLLER.clear_list_widget(self.list_widget_found_cocktails)
         # if the search is empty, just fill all possible cocktails
-        print(f"{search=}")
         if not search:
             DP_CONTROLLER.fill_list_widget(self.list_widget_found_cocktails, self.available_cocktails)
             return
