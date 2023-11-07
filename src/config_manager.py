@@ -383,7 +383,7 @@ class Shared:
         self.make_cocktail = True
         self.old_ingredient: List[str] = []
         self.selected_team = "No Team"
-        self.team_member_name: Union[str, None] = None
+        self.team_member_name: Optional[str] = None
         self.cocktail_volume: int = 200
         self.alcohol_factor: float = 1.0
 
