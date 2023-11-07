@@ -16,7 +16,7 @@ class TouchScrollArea(QScrollArea):
     def mousePressEvent(self, event: QMouseEvent):
         self.mousePressPos = event.pos()
         self.pressed_scroll_bar_value = int(self.verticalScrollBar().value())
-        super(TouchScrollArea, self).mousePressEvent(event)
+        super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent):
         if self.mousePressPos is None:
@@ -24,7 +24,7 @@ class TouchScrollArea(QScrollArea):
         curPos = event.pos()
         moved = curPos - self.mousePressPos  # type: ignore
         self.verticalScrollBar().setValue(int(self.pressed_scroll_bar_value - moved.y() * SCROLL_SPEED))
-        super(TouchScrollArea, self).mouseMoveEvent(event)
+        super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         if self.mousePressPos is None:
@@ -34,4 +34,4 @@ class TouchScrollArea(QScrollArea):
         if moved.manhattanLength() > MAX_SCROLL_DISTANCE:
             event.accept()
             return
-        super(TouchScrollArea, self).mouseReleaseEvent(event)
+        super().mouseReleaseEvent(event)
