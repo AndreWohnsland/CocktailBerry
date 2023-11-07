@@ -13,7 +13,7 @@ from src.database_commander import DB_COMMANDER
 from src.machine.controller import MACHINE
 from src.models import Cocktail
 from src.tabs import ingredients, recipes, bottles
-from src.display_controller import DP_CONTROLLER
+from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
@@ -30,7 +30,6 @@ from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_available_window import AvailableWindow
 from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
-from src.ui.setup_search_window import SearchWindow
 from src.ui.setup_cocktail_selection import CocktailSelection
 from src.ui.setup_picture_window import PictureWindow
 from src.ui.icons import ICONS
@@ -60,7 +59,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.team_window: Optional[TeamScreen] = None
         self.option_window: Optional[OptionWindow] = None
         self.datepicker: Optional[DatePicker] = None
-        self.search_window: Optional[SearchWindow] = None
         self.picture_window: Optional[PictureWindow] = None
         self.cocktail_view = CocktailView(self)
         # building the fist page as a stacked widget
@@ -68,6 +66,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.cocktail_selection: Optional[CocktailSelection] = None
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
+
+        # keep track of previous index for index changed signal,
+        # we need this because the signal does not emit the previous index
+        self.previous_tab_index = self.tabWidget.currentIndex()
+        # also keep a list of available cocktails for search in cocktails
+        self.available_cocktails = DB_COMMANDER.get_possible_cocktails()
 
         # internal initialization
         self.connect_objects()
@@ -203,13 +207,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         self.picture_window = PictureWindow(cocktail, self.cocktail_view.populate_cocktails)
 
-    def open_search_window(self):
-        """Opens the search window"""
-        if self.cocktail_selection is None:
-            return
-        available_cocktails = DB_COMMANDER.get_possible_cocktails()
-        self.search_window = SearchWindow(self, available_cocktails, self.cocktail_selection)
-
     def connect_other_windows(self):
         """Links the buttons and lineedits to the other ui elements"""
         self.LECocktail.clicked.connect(lambda: self.open_keyboard(self.LECocktail))
@@ -248,6 +245,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             lambda: self.open_numpad(self.line_edit_ingredient_cost, 50, 50, amount)
         )
         self.LECocktail.setMaxLength(30)
+        self.input_search_cocktail.clicked.connect(lambda: self.open_keyboard(self.input_search_cocktail))
 
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """
@@ -263,6 +261,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBFlanwenden.clicked.connect(lambda: bottles.renew_checked_bottles(self))
         self.button_set_picture.clicked.connect(self.open_picture_window)
         self.button_info_recipes.clicked.connect(DP_CONTROLLER.show_recipe_help)
+        self.button_enter_to_maker.clicked.connect(self._enter_search_to_maker)
+        self.input_search_cocktail.textChanged.connect(self._apply_search_to_list)
 
         self.PBenable.clicked.connect(lambda: recipes.enable_all_recipes(self))
 
@@ -274,6 +274,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # since it's now a password, using 0 = no password will not trigger password window
         # so we don't need to set this up conditionally
         self.tabWidget.currentChanged.connect(self.handle_tab_bar_clicked)
+
+        # add custom icon delegate to search list
+        self.list_widget_found_cocktails.setItemDelegate(ItemDelegate(self))
 
         # Removes the elements not used depending on number of bottles in bottle tab
         # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
@@ -301,9 +304,47 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def handle_tab_bar_clicked(self, index):
         """Protects tabs other than maker tab with a password"""
+        old_index = self.previous_tab_index
+        unprotected_tabs = [0, 1]
+        # since the search window lives in the main window now,
+        # switching to it needs to get the current available cocktails
         if index == 0:
+            self.available_cocktails = DB_COMMANDER.get_possible_cocktails()
+        if index in unprotected_tabs:
+            self.previous_tab_index = index
             return
         if DP_CONTROLLER.password_prompt(right_password=cfg.UI_MAKER_PASSWORD, header_type="maker"):
+            self.previous_tab_index = index
             return
-        # Set back to 1st tab if password not right
-        self.tabWidget.setCurrentIndex(0)
+        # Set back to the prev tab if password not right
+        self.tabWidget.setCurrentIndex(old_index)
+
+    def _apply_search_to_list(self):
+        """ Applies the search to the list widget"""
+        search = self.input_search_cocktail.text()
+        DP_CONTROLLER.clear_list_widget(self.list_widget_found_cocktails)
+        # if the search is empty, just fill all possible cocktails
+        print(f"{search=}")
+        if not search:
+            DP_CONTROLLER.fill_list_widget(self.list_widget_found_cocktails, self.available_cocktails)
+            return
+        # else, search for the cocktails
+        search = search.lower()
+        to_fill = []
+        for cocktail in self.available_cocktails:
+            # also search if any of the ingredient match search
+            ingredient_match = any(search in ing.name.lower() for ing in cocktail.ingredients)
+            if search in cocktail.name.lower() or ingredient_match:
+                to_fill.append(cocktail)
+        DP_CONTROLLER.fill_list_widget(self.list_widget_found_cocktails, to_fill)
+
+    def _enter_search_to_maker(self):
+        """Switches to the cocktail selection of the given search"""
+        search = DP_CONTROLLER.get_list_widget_selection(self.list_widget_found_cocktails)
+        if not search:
+            return
+        cocktail = DB_COMMANDER.get_cocktail(search)
+        if cocktail is None:
+            return
+        self.open_cocktail_selection(cocktail)
+        DP_CONTROLLER.set_tabwidget_tab(self, "maker")

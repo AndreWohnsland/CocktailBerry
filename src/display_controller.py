@@ -6,7 +6,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QWidget, QComboBox, QLabel,
     QLineEdit, QPushButton, QListWidget,
-    QCheckBox, QMainWindow, QProgressBar,
+    QCheckBox, QProgressBar,
     QListWidgetItem, QLayout,
     QStyledItemDelegate, QStyleOptionViewItem
 )
@@ -215,27 +215,38 @@ class DisplayController(DialogHandler):
         with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as file_handler:
             window_object.setStyleSheet(file_handler.read())
 
-    def set_tab_width(self, mainscreen: QMainWindow):
+    def set_tab_width(self, mainscreen: MainScreen):
         """Hack to set tabs to full screen width, inheritance, change the with to approximately match full width"""
         total_width = mainscreen.frameGeometry().width()
-        width = round(total_width / 4, 0) - 10
+        first_tab_width = 40
+        # especially on the rpi, we need a little bit more space than mathematically calculated
+        width_buffer = 15
+        width = round((total_width - first_tab_width) / 4, 0) - width_buffer
         mainscreen.tabWidget.setStyleSheet(  # type: ignore
             "QTabBar::tab {" +
-            f"width: {width}px;" + "}"
+            f"width: {width}px;" + "}" +
+            "QTabBar::tab:first {" +
+            f"width: {first_tab_width}px;" +
+            "padding: 5px 0px 5px 15px;}"
         )
 
     # TabWidget
-    def set_tabwidget_tab(self, w: Ui_MainWindow, tab: Literal["maker", 'ingredients', 'recipes', 'bottles']):
+    def set_tabwidget_tab(
+        self,
+        w: Ui_MainWindow,
+        tab: Literal["search", "maker", 'ingredients', 'recipes', 'bottles']
+    ):
         """Sets the tabwidget to the given tab.
         tab: ['maker', 'ingredients', 'recipes', 'bottles']
         """
         tabs = {
-            "maker": 0,
-            "ingredients": 1,
-            "recipes": 2,
-            "bottles": 3
+            "search": 0,
+            "maker": 1,
+            "ingredients": 2,
+            "recipes": 3,
+            "bottles": 4
         }
-        w.tabWidget.setCurrentIndex(tabs.get(tab, 0))
+        w.tabWidget.setCurrentIndex(tabs.get(tab, 1))
 
     def reset_alcohol_factor(self):
         """Sets the alcohol slider to default (100%) value"""

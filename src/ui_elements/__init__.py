@@ -19,7 +19,6 @@ from .customcolor import Ui_ColorWindow
 from .addonwindow import Ui_Addonwindow
 from .addonmanager import Ui_AddonManager
 from .datawindow import Ui_DataWindow
-from .searchwindow import Ui_SearchWindow
 from .cocktail_selection import Ui_CocktailSelection
 from .picture_window import Ui_PictureWindow
 
@@ -46,7 +45,6 @@ __all__ = [
     "Ui_Addonwindow",
     "Ui_AddonManager",
     "Ui_DataWindow",
-    "Ui_SearchWindow",
     "Ui_CocktailSelection",
     "Ui_PictureWindow",
 ]

@@ -8,7 +8,7 @@ $files = @(
   "teamselection", "passworddialog", "customprompt",
   "logwindow", "rfidwriter", "wifiwindow",
   "customcolor", "addonwindow", "addonmanager",
-  "datawindow", "searchwindow", "cocktail_selection",
+  "datawindow", "cocktail_selection",
   "picture_window"
 )
 

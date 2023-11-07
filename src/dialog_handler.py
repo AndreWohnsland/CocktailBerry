@@ -20,7 +20,7 @@ if TYPE_CHECKING:
         Ui_available, Ui_addingredient, Ui_Bottlewindow, Ui_MainWindow, Ui_CustomDialog,
         Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
-        Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow, Ui_SearchWindow,
+        Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow,
         Ui_CocktailSelection, Ui_PictureWindow
     )
 
@@ -498,7 +498,8 @@ class UiLanguage():
             "tab_recipes",
             "tab_bottles",
         ]
-        for i, tab_name in enumerate(tab_names):
+        # need to start at second tab, since first is the search icon
+        for i, tab_name in enumerate(tab_names, 1):
             text = self.__choose_language(tab_name, window)
             w.tabWidget.setTabText(i, text)
         for ui_element, text_name in [
@@ -513,6 +514,8 @@ class UiLanguage():
             (w.check_slow_ingredient, "slow_ingredient_check_label"),
             (w.label_ingredient_cost, "label_ingredient_cost"),
             (w.button_set_picture, "label_picture"),
+            (w.label_search_title, "header_search"),
+            (w.button_enter_to_maker, "enter_to_maker"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 
@@ -673,13 +676,6 @@ class UiLanguage():
         window = "data_window"
         w.button_back.setText(self.__choose_language("back"))
         w.button_reset.setText(self.__choose_language("export", window))
-
-    def adjust_search_window(self, w: Ui_SearchWindow):
-        """Translates the elements of the search window"""
-        window = "search_window"
-        w.label_titel.setText(self.__choose_language("header", window))
-        w.button_back.setText(self.__choose_language("back"))
-        w.button_enter.setText(self.__choose_language("apply"))
 
     def adjust_picture_window(self, w: Ui_PictureWindow, cocktail: str):
         """Translates the elements of the search window"""

@@ -297,6 +297,12 @@ ui:
     label_picture:
       en: 'Picture'
       de: 'Bild'
+    header_search:
+      en: 'Search available cocktails by name or ingredient'
+      de: 'Suche verfügbare Cocktails nach Namen oder Zutat'
+    enter_to_maker:
+      en: 'Show in Maker'
+      de: 'Im Maker anzeigen'
 
   cocktail_selection:
     # best is to use some space before to get a padding for icon
@@ -497,13 +503,6 @@ ui:
       en: 'All time'
       de: 'Komplette Zeit'
 
-  ##### SEARCH WINDOW #####
-  # all values for search window
-  search_window:
-    header:
-      en: 'Search available cocktails by name or ingredient'
-      de: 'Suche verfügbare Cocktails nach Namen oder Zutat'
-
   ##### PICTURE WINDOW #####
   # all values for picture (upload) window
   picture_window:
@@ -629,6 +628,7 @@ ui:
     EXP_MAKER_FACTOR:
       en: 'Multiplication factor for the displayed volumes in the maker tab'
       de: 'Multiplikationsfaktor für die angezeigten Volumen im Maker Tab'
+
   ##### COLOR WINDOW #####
   # all values for settings in color window
   # Use same names as color names

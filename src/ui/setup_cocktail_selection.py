@@ -68,7 +68,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.increase_alcohol.clicked.connect(lambda: self.adjust_alcohol(0.15))
         self.decrease_alcohol.clicked.connect(lambda: self.adjust_alcohol(-0.15))
         self.virgin_checkbox.stateChanged.connect(self.update_cocktail_data)
-        self.button_search_cocktail.clicked.connect(self.mainscreen.open_search_window)
         self.adjust_maker_label_size_cocktaildata()
 
     def set_cocktail(self, cocktail: Cocktail):

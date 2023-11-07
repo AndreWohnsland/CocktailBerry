@@ -49,7 +49,7 @@
        <bool>true</bool>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideMiddle</enum>
@@ -63,6 +63,119 @@
       <property name="cssClass" stdset="0">
        <string>bold</string>
       </property>
+      <widget class="QWidget" name="tab_search">
+       <attribute name="title">
+        <string>S</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="4" column="0">
+         <widget class="QPushButton" name="button_enter_to_maker">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>5000</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>28</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Enter</string>
+          </property>
+          <property name="cssClass" stdset="0">
+           <string>btn-inverted</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QListWidget" name="list_widget_found_cocktails">
+          <property name="maximumSize">
+           <size>
+            <width>5000</width>
+            <height>5000</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>20</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="textElideMode">
+           <enum>Qt::ElideRight</enum>
+          </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_search_title">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>18</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Search available cocktails by name or ingredient</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="cssClass" stdset="0">
+           <string>secondary bold</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="ClickableLineEdit" name="input_search_cocktail">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>28</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="cssClass" stdset="0">
+           <string>bold</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_maker">
        <attribute name="title">
         <string>Maker</string>

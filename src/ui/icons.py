@@ -112,18 +112,22 @@ class IconSetter:
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self._set_icon(ui_element, fa_icon, no_text)
+        # using smaller button size here
         self._set_icon(
             w.button_info_recipes,
             qta.icon(_QUESTION_ICON, color=self.color.background),
             True,
             SMALL_BUTTON_SIZE,
         )
+        # also set tab
+        w.tabWidget.setTabIcon(0, qta.icon(_SEARCH_ICON, color=self.color.background))
+        w.tabWidget.setIconSize(SMALL_BUTTON_SIZE)
+        w.tabWidget.setTabText(0, "")
 
     def set_cocktail_selection_icons(self, w: Ui_CocktailSelection):
         """Sets the icons of the cocktail selection window according to style sheets props"""
         for ui_element, icon, no_text in [
             (w.prepare_button, _COCKTAIL_ICON, False),
-            (w.button_search_cocktail, _SEARCH_ICON, True),
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self._set_icon(ui_element, fa_icon, no_text)
