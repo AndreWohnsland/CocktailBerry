@@ -71,13 +71,13 @@ class CocktailView(QWidget):
 
         self.grid = QGridLayout()
         self.grid.setVerticalSpacing(15)
-        self.gridWidget = QWidget()  # Create a QWidget
-        self.gridWidget.setLayout(self.grid)  # Set its layout to grid
-        self.scroll_area.setWidget(self.gridWidget)  # Set the scroll area's widget to the QWidget with the grid layout
+        self.grid_widget = QWidget()  # Create a QWidget
+        self.grid_widget.setLayout(self.grid)  # Set its layout to grid
+        self.scroll_area.setWidget(self.grid_widget)  # Set the scroll area's widget to the QWidget with the grid layout
 
-        self.vLayout = QVBoxLayout()
-        self.vLayout.addWidget(self.scroll_area)
-        self.setLayout(self.vLayout)
+        self.vertical_layout = QVBoxLayout()
+        self.vertical_layout.addWidget(self.scroll_area)
+        self.setLayout(self.vertical_layout)
 
         self.mainscreen = mainscreen
 
