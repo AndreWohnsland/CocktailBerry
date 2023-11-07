@@ -8,3 +8,4 @@ qtawesome
 piicodev
 qtsass
 pyqtspinner
+pillow

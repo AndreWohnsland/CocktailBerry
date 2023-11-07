@@ -74,18 +74,18 @@ class Migrator:
             "1.5.0": [
                 rename_database_to_english,
                 add_team_buffer_to_database,
-                lambda: self._install_pip_package("GitPython", "1.5.0")
+                lambda: self._install_pip_package("GitPython", "1.5.0"),
             ],
             "1.5.3": [lambda: self._install_pip_package("typer", "1.5.3")],
             "1.6.0": [
                 self._change_git_repo,
-                lambda: self._install_pip_package("pyfiglet", "1.6.0")
+                lambda: self._install_pip_package("pyfiglet", "1.6.0"),
             ],
             "1.6.1": [add_more_bottles_to_db],
             "1.9.0": [
                 add_virgin_flag_to_db,
                 remove_is_alcoholic_column,
-                lambda: self._install_pip_package("typing_extensions", "1.9.0")
+                lambda: self._install_pip_package("typing_extensions", "1.9.0"),
             ],
             "1.11.0": [lambda: self._install_pip_package("qtawesome", "1.11.0")],
             "1.17.0": [lambda: self._install_pip_package("pyqtspinner", "1.17.0")],
@@ -95,7 +95,10 @@ class Migrator:
             "1.23.1": [lambda: _update_config_value_type("PUMP_SLOW_FACTOR", float, 1.0)],
             "1.26.1": [lambda: _update_config_value_type("PUMP_VOLUMEFLOW", float, 1.0)],
             "1.29.0": [add_cost_column_to_ingredients],
-            "1.30.0": [add_order_column_to_ingredient_data],
+            "1.30.0": [
+                add_order_column_to_ingredient_data,
+                lambda: self._install_pip_package("pillow", "1.30.0"),
+            ],
         }
 
         for version, actions in version_actions.items():
