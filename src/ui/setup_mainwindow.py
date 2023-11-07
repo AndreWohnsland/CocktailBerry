@@ -32,7 +32,7 @@ from src.ui.setup_team_window import TeamScreen
 from src.ui.setup_datepicker import DatePicker
 from src.ui.setup_cocktail_selection import CocktailSelection
 from src.ui.setup_picture_window import PictureWindow
-from src.ui.icons import ICONS
+from src.ui.icons import ICONS, BUTTON_SIZE
 
 from src import FUTURE_PYTHON_VERSION
 
@@ -277,6 +277,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         # add custom icon delegate to search list
         self.list_widget_found_cocktails.setItemDelegate(ItemDelegate(self))
+        self.list_widget_found_cocktails.setIconSize(BUTTON_SIZE)
 
         # Removes the elements not used depending on number of bottles in bottle tab
         # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
