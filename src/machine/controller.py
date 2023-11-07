@@ -26,6 +26,7 @@ class _PreparationData:
     flow_time: float
     consumption: float = 0.0
     closed: bool = False
+    recipe_order: int = 1
 
 
 class MachineController():
@@ -113,9 +114,20 @@ class MachineController():
         current_time = 0.0
         # need to cut data into chunks
         chunk = cfg.MAKER_SIMULTANEOUSLY_PUMPS
-        chunked_preparation = [
-            prep_data[i:i + chunk] for i in range(0, len(prep_data), chunk)
-        ]
+        # also take the recipe order in consideration
+        # first separate the preparation data into a list of lists,
+        # where each list contains the data for one recipe order
+        unique_orders = list({x.recipe_order for x in prep_data})
+        # sort to ensure lowest order is first
+        unique_orders.sort()
+        chunked_preparation: list[list[_PreparationData]] = []
+        for number in unique_orders:
+            # get all the same order number
+            order_chunk = [x for x in prep_data if x.recipe_order == number]
+            # split the chunk again, if the size exceeds the chunk size
+            chunked_preparation.extend(
+                [order_chunk[i:i + chunk] for i in range(0, len(order_chunk), chunk)]
+            )
         chunk_max = [max(x.flow_time for x in y) for y in chunked_preparation]
         max_time = round(sum(chunk_max), 2)
         # Iterate over each chunk
@@ -206,6 +218,7 @@ def _build_preparation_data(
                 cfg.PUMP_PINS[ing.bottle - 1],
                 volume_flow,
                 round(ing.amount / volume_flow, 1),
+                recipe_order=ing.recipe_order,
             )
         )
     return prep_data
