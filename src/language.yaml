@@ -535,6 +535,9 @@ ui:
     UI_HEIGHT:
       en: 'Height of the application'
       de: 'Höhe des Programms'
+    UI_PICTURE_SIZE:
+      en: 'Approximate size of the picture in the maker tab, will try to scale to this size. Will use nearest size to fit a full number of pictures per row.'
+      de: 'Ungefähre Größe des Bildes im Maker Tab, wird versucht auf diese Größe zu skalieren. Wird die nächste Größe verwenden, um eine ganze Anzahl an Bildern pro Reihe zu haben.'
     PUMP_PINS:
       en: 'Pin number of each connected pump'
       de: 'Pin Nummer für jede verbunden Pumpe'

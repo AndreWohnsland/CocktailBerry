@@ -63,6 +63,7 @@ class ConfigManager:
     # Used if UI_DEVENVIRONMENT is set to True
     UI_WIDTH: int = 800
     UI_HEIGHT: int = 480
+    UI_PICTURE_SIZE: int = 240
     # Slow factor for eg sticky ingredients
     PUMP_SLOW_FACTOR = 1.0
     # RPi pins where pumps (ascending) are connected
@@ -140,6 +141,7 @@ class ConfigManager:
             "UI_LANGUAGE": (LanguageChoose, []),
             "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),
+            "UI_PICTURE_SIZE": (int, [_build_number_limiter(100, 1000)]),
             "PUMP_PINS": (list, []),
             "PUMP_SLOW_FACTOR": (float, [_build_number_limiter(0.01, 10)]),
             "PUMP_VOLUMEFLOW": (list, []),

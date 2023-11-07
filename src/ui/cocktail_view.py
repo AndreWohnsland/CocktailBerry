@@ -19,8 +19,8 @@ from src.ui.icons import ICONS, PresetIcon
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
-# roughly take 240 px for image dimensions
-N_COLUMNS = int(cfg.UI_WIDTH / 240)
+# default: roughly take 240 px for image dimensions
+N_COLUMNS = int(cfg.UI_WIDTH / cfg.UI_PICTURE_SIZE)
 # keep a 17% margin
 SQUARE_SIZE = int(cfg.UI_WIDTH / (N_COLUMNS * 1.17))
 
