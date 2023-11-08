@@ -95,6 +95,8 @@ The Maker GUI:
 
 <img src="docs/pictures/Main_ui.png" alt="Maker" width="600"/>
 
+<img src="docs/pictures/Selection_ui.png" alt="Maker" width="600"/>
+
 The Ingredient GUI:
 
 <img src="docs/pictures/Ingredients_ui.png" alt="Ingredient" width="600"/>

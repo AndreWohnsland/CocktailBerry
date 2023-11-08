@@ -10,6 +10,8 @@ LOG_FOLDER = ROOT_PATH / "logs"
 SAVE_FOLDER = ROOT_PATH / "saves"
 ADDON_FOLDER = ROOT_PATH / "addons"
 SCRIPTS_FOLDER = ROOT_PATH / "scripts"
+USER_IMAGE_FOLDER = ROOT_PATH / "display_images_user"
+DEFAULT_IMAGE_FOLDER = ROOT_PATH / "default_cocktail_images"
 
 # src path
 SRC_PATH = ROOT_PATH / "src"

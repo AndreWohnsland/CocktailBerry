@@ -25,7 +25,7 @@ from src.machine.controller import MACHINE
 from src.programs.calibration import run_calibration
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
-from src.utils import has_connection, restart_program, get_platform_data
+from src.utils import has_connection, restart_program, get_platform_data, time_print
 from src.config_manager import CONFIG as cfg
 
 
@@ -256,5 +256,5 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         Print a msg and return true if win."""
         is_win = _platform_data.system == "Windows"
         if is_win:
-            print("Cannot do that on windows")
+            time_print("Cannot do that on windows")
         return is_win

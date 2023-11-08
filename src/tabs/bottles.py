@@ -61,19 +61,13 @@ def calculate_combobox_bottles(w):
 
 def __register_bottles(w):
     """ Insert the selected bottle order into the DB. """
-    # this import is necessary on function level, otherwise there would be a circular import
-    # pylint: disable=import-outside-toplevel
-    from src.tabs import maker
-
     # Checks where are entries and appends them to a list
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     ingredient_names = DP_CONTROLLER.get_current_combobox_items(combobox_bottles)
     DB_COMMANDER.set_bottle_order(ingredient_names)
 
     refresh_bottle_information(w)
-    DP_CONTROLLER.clear_list_widget_maker(w)
-    DP_CONTROLLER.clear_recipe_data_maker(w, False)
-    maker.evaluate_recipe_maker_view(w)
+    DP_CONTROLLER.update_maker_view(w)
     set_fill_level_bars(w)
 
 

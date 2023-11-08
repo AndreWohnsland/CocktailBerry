@@ -186,7 +186,7 @@ def _insert_recipe_data(recipe: _RecipeInformation, ingredient_mapping: Dict[str
         cocktail = DB_COMMANDER.get_cocktail(recipe.name)
         if cocktail is None:
             continue
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ing_data.id, int(ing.volume))
+        DB_COMMANDER.insert_recipe_data(cocktail.id, ing_data.id, int(ing.volume), 1)
 
 
 def _abort(msg: str):

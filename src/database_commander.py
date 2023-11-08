@@ -6,6 +6,7 @@ from typing import List, Optional, Union
 from src.filepath import ROOT_PATH
 from src.models import Cocktail, Ingredient
 from src.logger_handler import LoggerHandler
+from src.utils import time_print
 
 DATABASE_NAME = "Cocktail_database"
 BACKUP_NAME = f"{DATABASE_NAME}_backup"
@@ -33,7 +34,7 @@ class DatabaseCommander:
     def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
         query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level,
-                I.Hand, I.Slow, RD.Amount, B.Bottle, I.Cost
+                I.Hand, I.Slow, RD.Amount, B.Bottle, I.Cost, RD.Recipe_Order
                 FROM RecipeData as RD INNER JOIN Ingredients as I 
                 ON RD.Ingredient_ID = I.ID
                 LEFT JOIN Bottles as B ON B.ID = I.ID
@@ -50,6 +51,7 @@ class DatabaseCommander:
             amount=i[7],
             bottle=i[8],
             cost=i[9],
+            recipe_order=i[10],
         ) for i in ingredient_data]
         return ingredients
 
@@ -94,6 +96,13 @@ class DatabaseCommander:
                 continue
             cocktails.append(self.__build_cocktail(*recipe))
         return cocktails
+
+    def get_possible_cocktails(self):
+        """Returns a list of currently possible cocktails with the current bottles"""
+        all_cocktails = self.get_all_cocktails(get_disabled=False)
+        handadds_ids = self.get_available_ids()
+        possible_cocktails = [x for x in all_cocktails if x.is_possible(handadds_ids)]
+        return possible_cocktails
 
     def get_ingredients_at_bottles(self) -> List[str]:
         """Return ingredient name for all bottles"""
@@ -385,10 +394,10 @@ class DatabaseCommander:
         search_tuple = (name, alcohol_level, volume, enabled, virgin)
         self.handler.query_database(query, search_tuple)
 
-    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int):
+    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, order_number: int):
         """Insert given data into the recipe_data table"""
-        query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount) VALUES (?, ?, ?)"
-        search_tuple = (recipe_id, ingredient_id, ingredient_volume)
+        query = "INSERT OR IGNORE INTO RecipeData(Recipe_ID, Ingredient_ID, Amount, Recipe_Order) VALUES (?, ?, ?, ?)"
+        search_tuple = (recipe_id, ingredient_id, ingredient_volume, order_number)
         self.handler.query_database(query, search_tuple)
 
     def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: List[str]):
@@ -468,10 +477,10 @@ class DatabaseHandler:
     def __init__(self, use_default=False):
         self.database_path = DatabaseHandler.database_path
         if not self.database_path_default.exists():
-            print("Creating Database")
+            time_print("Creating Database")
             self.create_tables()
         if not self.database_path.exists():
-            print("Copying default database for maker usage")
+            time_print("Copying default database for maker usage")
             self.copy_default_database()
         if use_default:
             self.connect_database(str(self.database_path_default.absolute()))

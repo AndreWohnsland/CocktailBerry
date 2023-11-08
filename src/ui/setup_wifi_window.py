@@ -12,7 +12,7 @@ from src.display_controller import DP_CONTROLLER
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_WiFiWindow
 from src.ui.icons import ICONS
-from src.utils import get_platform_data
+from src.utils import get_platform_data, time_print
 
 if TYPE_CHECKING:
     from src.ui_elements import Ui_MainWindow
@@ -72,7 +72,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         Restarts wlan0 interface, checks for internet after that.
         """
         if _platform_data.system == "Windows":
-            print("Cannot do that on windows")
+            time_print("Cannot do that on windows")
             return
         if not Path(_WPA_FILE_PATH).exists():
             self._make_wpa_file()

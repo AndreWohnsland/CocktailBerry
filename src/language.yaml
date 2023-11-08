@@ -133,6 +133,9 @@ dialog:
   ask_for_backup_location:
     en: 'Please select backup location.'
     de: 'Bitte Backup Ort auswählen.'
+  ask_for_image_location:
+    en: 'Please select image location.'
+    de: 'Bitte Bild Ort auswählen.'
   ask_backup_overwrite:
     en: 'Load selected backup in? This will overwrite local DB and configuration. The program will restart afterwards.'
     de: 'Ausgewähltes Backup verwenden? Lokale Daten werden überschrieben. Ein Neustart wird danach ausgeführt.'
@@ -142,6 +145,9 @@ dialog:
   ask_to_delete_x:
     en: 'Do you want to delete {x}? This cannot be reverted.'
     de: 'Soll {x} gelöscht werden? Dies kann nicht rückgängig gemacht werden.'
+  ask_to_remove_picture:
+    en: 'Do you want to remove the user picture? This cannot be reverted.'
+    de: 'Soll das User Bild entfernt werden? Dies kann nicht rückgängig gemacht werden.'
   backup_created:
     en: 'Backup has been created at: {folder}.'
     de: 'Backup wurde unter {folder} gespeichert.'
@@ -187,6 +193,16 @@ dialog:
   cocktailberry_up_to_date:
     en: 'You are running the latest version of CocktailBerry.'
     de: 'Du hast die neuste Version von CocktailBerry.'
+  create_cocktail_first:
+    en: 'No Cocktail selected, select the one you want to add a picture. Please create the cocktail first before adding a picture to it!'
+    de: 'Kein Cocktail ausgewählt, wähle einen Cocktail aus, um ein Bild hinzuzufügen. Bitte erst den Cocktail erstellen, bevor ein Bild hinzugefügt wird!'
+  image_processing_failed:
+    en: 'Image processing failed. Please ensure that you use a jpg or png file.'
+    de: 'Bildverarbeitung fehlgeschlagen. Bitte stelle sicher, dass du eine jpg oder png Datei verwendest.'
+  recipe_help:
+    en: 'Here you can add a Cocktail. You need the ingredient and according amount. You can assign a number from 1-9 to each ingredient. Ingredients with the same number will be spend at the same time by the machine in increasing order. Leave all at 1 if all should spend in parallel. You can also assign a picture to existing cocktails. Cocktails not enabled will not appear in the maker. If you enable virgin, a non alcoholic version of the cocktail will be possible.'
+    de: 'Hier kannst du einen Cocktail hinzufügen. Du benötigst die Zutat und die entsprechende Menge. Du kannst jeder Zutat eine Nummer von 1-9 zuweisen. Zutaten mit der gleichen Nummer werden der Größe aufsteigend gleichzeitig von der Maschine ausgegeben. Lass alle auf 1, wenn alle auf einmal ausgegeben werden sollen. Du kannst auch ein Bild zu existierenden Cocktails hinzufügen. Nicht aktivierte Cocktails werden nicht im Maker angezeigt. Wenn du Virgin aktivierst, wird eine alkoholfreie Version des Cocktails möglich sein.'
+
 # Change of language in UI elements
 ui:
   # Some commonly used elements within multiple windows
@@ -233,10 +249,6 @@ ui:
   ##### MAIN WINDOW #####
   # all values for main window
   main_window:
-    # best is to use some space before to get a padding for icon
-    prepare_button:
-      en: '  Prepare'
-      de: '  Zubereiten'
     tab_maker:
       en: 'Maker'
       de: 'Maker'
@@ -253,11 +265,11 @@ ui:
       en: 'Ingredient'
       de: 'Zutat'
     alcohol_level_label:
-      en: 'Alcohol (in %)'
-      de: 'Alkohol (in %)'
+      en: 'Alcohol'
+      de: 'Alkohol'
     bottle_volume_label:
-      en: 'Bottle volume (ml)'
-      de: 'Flaschenvolumen (ml)'
+      en: 'Bottle volume'
+      de: 'Flaschenvolumen'
     single_ingredient_button:
       en: 'Spend single ingredient'
       de: 'Einzelne Zutat ausgeben'
@@ -276,15 +288,30 @@ ui:
     virgin_possibility:
       en: 'Allow virgin'
       de: 'Virgin erlauben'
-    activate_virgin:
-      en: 'Virgin (no alcohol)'
-      de: 'Virgin (kein Alkohol)'
     slow_ingredient_check_label:
       en: 'Slow ingredient:'
       de: 'Langsame Zutat:'
     label_ingredient_cost:
-      en: 'Cost (Cent):'
-      de: 'Kosten (Cent):'
+      en: 'Cost'
+      de: 'Kosten'
+    label_picture:
+      en: 'Picture'
+      de: 'Bild'
+    header_search:
+      en: 'Search available cocktails by name or ingredient'
+      de: 'Suche verfügbare Cocktails nach Namen oder Zutat'
+    enter_to_maker:
+      en: 'Show in Maker'
+      de: 'Im Maker anzeigen'
+
+  cocktail_selection:
+    # best is to use some space before to get a padding for icon
+    prepare_button:
+      en: '  Prepare'
+      de: '  Zubereiten'
+    activate_virgin:
+      en: 'Virgin (no alcohol)'
+      de: 'Virgin (kein Alkohol)'
 
   ##### AVAILABLE WINDOW #####
   # all values for available window
@@ -355,6 +382,9 @@ ui:
     alcohol:
       en: 'Enter alcohol!'
       de: 'Alkoholgehalt eingeben!'
+    number:
+      en: 'Enter number!'
+      de: 'Nummer eingeben!'
 
   ##### OPTION WINDOW #####
   # all values for option window
@@ -473,12 +503,12 @@ ui:
       en: 'All time'
       de: 'Komplette Zeit'
 
-  ##### SEARCH WINDOW #####
-  # all values for search window
-  search_window:
+  ##### PICTURE WINDOW #####
+  # all values for picture (upload) window
+  picture_window:
     header:
-      en: 'Search available cocktails by name or ingredient'
-      de: 'Suche verfügbare Cocktails nach Namen oder Zutat'
+      en: 'Set picture for {cocktail}'
+      de: 'Bild einstellen für {cocktail}'
 
   ##### SETTINGS WINDOW #####
   # all values for settings window
@@ -505,6 +535,9 @@ ui:
     UI_HEIGHT:
       en: 'Height of the application'
       de: 'Höhe des Programms'
+    UI_PICTURE_SIZE:
+      en: 'Approximate size of the picture in the maker tab, will try to scale to this size. Will use nearest size to fit a full number of pictures per row.'
+      de: 'Ungefähre Größe des Bildes im Maker Tab, wird versucht auf diese Größe zu skalieren. Wird die nächste Größe verwenden, um eine ganze Anzahl an Bildern pro Reihe zu haben.'
     PUMP_PINS:
       en: 'Pin number of each connected pump'
       de: 'Pin Nummer für jede verbunden Pumpe'
@@ -598,6 +631,7 @@ ui:
     EXP_MAKER_FACTOR:
       en: 'Multiplication factor for the displayed volumes in the maker tab'
       de: 'Multiplikationsfaktor für die angezeigten Volumen im Maker Tab'
+
   ##### COLOR WINDOW #####
   # all values for settings in color window
   # Use same names as color names

@@ -7,7 +7,7 @@ from src.filepath import ROOT_PATH
 from src.migration.migrator import Migrator, _Version
 from src.logger_handler import LoggerHandler
 from src import FUTURE_PYTHON_VERSION
-from src.utils import restart_program
+from src.utils import restart_program, time_print
 
 
 _logger = LoggerHandler("updater_module")
@@ -33,7 +33,7 @@ class Updater:
             _logger.log_exception(err)
             return False
         # restart the program, this will not work if executed over IDE
-        print("Restarting the application!")
+        time_print("Restarting the application!")
         _logger.log_event("INFO", "Restarting program to reload updated code")
         restart_program()
         # technically, this will not be reached, but makes mypy happy and is easier for the logic

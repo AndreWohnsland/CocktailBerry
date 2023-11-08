@@ -179,6 +179,89 @@ git fsck --full
 This should not only remove the corrupted files, but also fetch the latest version of the software.
 If you get another error output, it is best to submit the error output with the issue.
 
+## Problems with Cocktail Pictures
+
+With the v1.30.0 release, the maker view was completely rewritten.
+This includes the way cocktails are shown as a list and single view.
+There is a picture now for every cocktail, the default provided cocktails all got an according picture.
+There is also a default picture for cocktails without a picture, like newly user added ones.
+You can upload your own pictures over the according button the recipe tab.
+Your picture will then replace the default provided picture.
+
+The user pictures are stored in the `CocktailBerry/display_images_user` folder.
+The picture will be saved with the cocktail id as name and jpg format. 
+You can also provide the cocktail name in lowercase and underscore instead spaces as picture name in jpg format (e.g. `cuba_libre.jpg` for "Cuba Libre"), if you prefer to upload the pictures via hand in that folder instead of the GUI.
+
+If your database is quite old, newer cocktails you added may either have the default picture, or may have another picture from new cocktails contained now in the database.
+This is due to the database using incrementing integers as primary key for the cocktails.
+This is historically and can't be changed easily in running installations.
+If thats the case, please use the GUI option to replace wrong pictures with your desired ones.
+If you feel that the default pictures are switched, you can also use the default ones as replacement.
+They are located at `CocktailBerry/default_cocktail_images`.
+
+Here is an extensive list of all default cocktails and their according image.
+If you think your cocktail have the wrong picture, you can use the according picture name from the list below to replace it.
+
+??? info "List of Default Pictures"
+
+    | Cocktail Name         | Picture Name |
+    | --------------------- | ------------ |
+    | Cuba Libre            | 1.jpg        |
+    | Rum Cola              | 2.jpg        |
+    | Long Island           | 3.jpg        |
+    | Swimming Pool         | 5.jpg        |
+    | Pina Colada           | 6.jpg        |
+    | Tequila Sunrise       | 7.jpg        |
+    | Touch Down            | 8.jpg        |
+    | Mai Tai               | 9.jpg        |
+    | Strawberry Colada     | 10.jpg       |
+    | Blue Lagoon           | 11.jpg       |
+    | Zombie                | 13.jpg       |
+    | Planters Punch        | 14.jpg       |
+    | Acapulco Gold         | 15.jpg       |
+    | Bahama Mama           | 17.jpg       |
+    | Bahia ll              | 18.jpg       |
+    | Käptn Chaos           | 19.jpg       |
+    | Vodka Mara            | 20.jpg       |
+    | Screwdriver (Vodka o) | 21.jpg       |
+    | Mix Alabama           | 23.jpg       |
+    | Blue Mara             | 24.jpg       |
+    | Rum Sunrise           | 25.jpg       |
+    | Hemingway             | 31.jpg       |
+    | Amazon Cocktail       | 32.jpg       |
+    | Black Sun             | 33.jpg       |
+    | Bombay Punch          | 34.jpg       |
+    | Sweet Kiss            | 39.jpg       |
+    | Sex on the Beach      | 52.jpg       |
+    | Malibu Beach          | 53.jpg       |
+    | Indigo Birdman        | 54.jpg       |
+    | Hurricane             | 55.jpg       |
+    | Adios Motherfucker    | 56.jpg       |
+    | Coco Loco             | 57.jpg       |
+    | Gin Tonic             | 58.jpg       |
+    | Beachbum              | 81.jpg       |
+    | Bay Breeze            | 82.jpg       |
+    | Belladonna            | 83.jpg       |
+    | Black-Eyed Susan      | 84.jpg       |
+    | Blue Hawaii           | 85.jpg       |
+    | Blue Ricardo          | 86.jpg       |
+    | Flamingo              | 87.jpg       |
+    | Orange Crush          | 88.jpg       |
+    | Bocce Ball            | 89.jpg       |
+    | Fuzzy Navel           | 90.jpg       |
+    | Madras                | 91.jpg       |
+    | Woo Woo               | 92.jpg       |
+    | Vodka Tonic           | 93.jpg       |
+    | Sidewinder’s Fang     | 94.jpg       |
+    | 212                   | 95.jpg       |
+    | Cantarito             | 96.jpg       |
+    | Paloma                | 97.jpg       |
+
+Another way is to reinstall CocktailBerry and not use the backup function, to have the latest version of the database.
+You can still use the backup function to save your settings and other files, but replace them via hand and not over the backup function.
+This way you can skip the database restoration and use the new one.
+Keep in mind your changes to the database are lost this way, so this may not be the best option for you.
+
 ## Problems Installing Software on Raspberry Pi
 
 The Raspberry Pi can sometimes differ from other machines in terms of installation. Here are some issues that might occur.

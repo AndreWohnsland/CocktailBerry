@@ -3,6 +3,8 @@ from typing import Optional
 import sqlite3
 from pathlib import Path
 
+from src.utils import time_print
+
 DATABASE_NAME = "team"
 DIRPATH = Path(__file__).parent.absolute()
 
@@ -16,7 +18,7 @@ class DBController:
         self.conn = sqlite3.connect(self.database_path)
         self.cursor = self.conn.cursor()
         if not db_exists:
-            print("creating Database")
+            time_print("creating Database")
             self.__create_tables()
         self.__add_person_to_db()
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from PyQt5.QtWidgets import QDialog
 from src.models import Ingredient
 
@@ -10,6 +12,10 @@ from src.database_commander import DB_COMMANDER
 from src.machine.controller import MACHINE
 from src.tabs.bottles import set_fill_level_bars
 from src.dialog_handler import UI_LANGUAGE
+from src.utils import time_print
+
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
 
 _logger = LoggerHandler("additional_ingredient")
 
@@ -19,7 +25,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
     to spend this ingredient.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent: MainScreen):
         """ Init. Connects all the buttons and get values for the Combobox. """
         super().__init__()
         self.setupUi(self)
@@ -56,10 +62,11 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.close()
         if volume > level and cfg.MAKER_CHECK_BOTTLE:
             DP_CONTROLLER.say_not_enough_ingredient_volume(ingredient_name, level, volume)
-            self.mainscreen.tabWidget.setCurrentIndex(3)
+            if cfg.UI_MAKER_PASSWORD == 0:
+                DP_CONTROLLER.set_tabwidget_tab(self.mainscreen, "bottles")
             return
 
-        print(f"Spending {volume} ml {ingredient_name}")
+        time_print(f"Spending {volume} ml {ingredient_name}")
         made_volume, _, _ = MACHINE.make_cocktail(self.mainscreen, [ingredient_data], ingredient_name, False)
         DB_COMMANDER.increment_ingredient_consumption(ingredient_name, made_volume[0])
         set_fill_level_bars(self.mainscreen)

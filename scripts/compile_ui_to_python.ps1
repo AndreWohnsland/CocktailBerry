@@ -8,7 +8,8 @@ $files = @(
   "teamselection", "passworddialog", "customprompt",
   "logwindow", "rfidwriter", "wifiwindow",
   "customcolor", "addonwindow", "addonmanager",
-  "datawindow", "searchwindow"
+  "datawindow", "cocktail_selection",
+  "picture_window"
 )
 
 foreach ($f in $files) {

@@ -2,6 +2,7 @@
 # pylint: disable=import-outside-toplevel
 
 from __future__ import annotations
+from pathlib import Path
 import time
 from typing import Dict, List, Optional, Literal, TYPE_CHECKING, Union
 from threading import Thread, Event
@@ -19,7 +20,8 @@ if TYPE_CHECKING:
         Ui_available, Ui_addingredient, Ui_Bottlewindow, Ui_MainWindow, Ui_CustomDialog,
         Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
-        Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow, Ui_SearchWindow,
+        Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow,
+        Ui_CocktailSelection, Ui_PictureWindow
     )
 
 _logger = LoggerHandler("dialog_handler")
@@ -105,6 +107,12 @@ class DialogHandler():
 
     def _get_folder_location(self, w: QWidget, message: str):
         return QFileDialog.getExistingDirectory(w, message)
+
+    def get_file_location(self, w: QWidget, message: str, filter_str: str):
+        file_name, _ = QFileDialog.getOpenFileName(w, message, filter=filter_str)
+        if file_name:
+            return Path(file_name).absolute()
+        return None
 
     ############################
     # Methods for creating msg #
@@ -312,6 +320,18 @@ class DialogHandler():
         """Informs that the update failed"""
         self.__output_language_dialog("update_failed")
 
+    def say_create_cocktail_first(self):
+        """Informs that the cocktail needs first to be created"""
+        self.__output_language_dialog("create_cocktail_first")
+
+    def say_image_processing_failed(self):
+        """Informs that the image processing failed"""
+        self.__output_language_dialog("image_processing_failed")
+
+    def show_recipe_help(self):
+        """Shows the recipe help"""
+        self.__output_language_dialog("recipe_help")
+
     ############################
     # Methods for prompting ####
     ############################
@@ -346,6 +366,11 @@ class DialogHandler():
         """Asks the user where to get or store the backup output"""
         message = self.__choose_language("ask_for_backup_location")
         return self._get_folder_location(w, message)
+
+    def ask_for_image_location(self, w: QWidget):
+        """Asks the user where to get or store the backup output"""
+        message = self.__choose_language("ask_for_image_location")
+        return self.get_file_location(w, message, "Images (*.jpg *.png)")
 
     def ask_backup_overwrite(self):
         """Asks the user if he wants to use backup"""
@@ -387,6 +412,11 @@ class DialogHandler():
     def ask_to_use_reverted_pump(self):
         """Asks the user if he wants to use the reverted pump flow"""
         message = self.__choose_language("ask_to_use_reverted_pump")
+        return self.user_okay(message)
+
+    def ask_to_remove_picture(self):
+        """Asks the user if he wants to remove the picture"""
+        message = self.__choose_language("ask_to_remove_picture")
         return self.user_okay(message)
 
 
@@ -468,22 +498,24 @@ class UiLanguage():
             "tab_recipes",
             "tab_bottles",
         ]
-        for i, tab_name in enumerate(tab_names):
+        # need to start at second tab, since first is the search icon
+        for i, tab_name in enumerate(tab_names, 1):
             text = self.__choose_language(tab_name, window)
             w.tabWidget.setTabText(i, text)
         for ui_element, text_name in [
-            (w.prepare_button, "prepare_button"),
             (w.PBZeinzelnd, "single_ingredient_button"),
             (w.PBAvailable, "available_button"),
             (w.CHBHand, "handadd_check_label"),
-            (w.LIngredient, "ingredient_label"),
+            (w.label_ingredient_name, "ingredient_label"),
             (w.LAlcoholLevel, "alcohol_level_label"),
             (w.LBottleVolume, "bottle_volume_label"),
             (w.PBFlanwenden, "renew_button"),
-            (w.virgin_checkbox, "activate_virgin"),
             (w.offervirgin_checkbox, "virgin_possibility"),
             (w.check_slow_ingredient, "slow_ingredient_check_label"),
             (w.label_ingredient_cost, "label_ingredient_cost"),
+            (w.button_set_picture, "label_picture"),
+            (w.label_search_title, "header_search"),
+            (w.button_enter_to_maker, "enter_to_maker"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 
@@ -493,6 +525,12 @@ class UiLanguage():
             (w.PBBelegung, "change_button"),
         ]:
             ui_element.setText(self.__choose_language(text_name))
+
+    def adjust_cocktail_selection_screen(self, w: Ui_CocktailSelection):
+        window = "cocktail_selection"
+        w.prepare_button.setText(self.__choose_language("prepare_button", window))
+        w.virgin_checkbox.setText(self.__choose_language("activate_virgin", window))
+        w.button_back.setText(self.__choose_language("back"))
 
     def adjust_available_windows(self, w: Ui_available):
         """Translates all needed elements of the available window"""
@@ -534,16 +572,12 @@ class UiLanguage():
         window = "team_window"
         w.LHeader.setText(self.__choose_language("header", window))
 
-    def generate_numpad_header(self, header_type: Literal['amount', 'alcohol'] = "amount") -> str:
+    def generate_numpad_header(self, header_type: Literal['amount', 'alcohol', 'number'] = "amount") -> str:
         """Selects the header of the password window.
         header_type: 'password', 'amount', 'alcohol'
         """
         window = "numpad_window"
-        if header_type == "amount":
-            return self.__choose_language("amount", window)
-        if header_type == "alcohol":
-            return self.__choose_language("alcohol", window)
-        raise ValueError("Currently not possible")
+        return self.__choose_language(header_type, window)
 
     def adjust_option_window(self, w: Ui_Optionwindow):
         """Translates all needed elements of the available window"""
@@ -643,10 +677,10 @@ class UiLanguage():
         w.button_back.setText(self.__choose_language("back"))
         w.button_reset.setText(self.__choose_language("export", window))
 
-    def adjust_search_window(self, w: Ui_SearchWindow):
+    def adjust_picture_window(self, w: Ui_PictureWindow, cocktail: str):
         """Translates the elements of the search window"""
-        window = "search_window"
-        w.label_titel.setText(self.__choose_language("header", window))
+        window = "picture_window"
+        w.label_titel.setText(self.__choose_language("header", window, cocktail=cocktail))
         w.button_back.setText(self.__choose_language("back"))
         w.button_enter.setText(self.__choose_language("apply"))
 

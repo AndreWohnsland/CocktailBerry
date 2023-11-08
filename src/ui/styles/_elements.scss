@@ -1,6 +1,10 @@
 $selected-color: rgb(0, 174, 75);
 $scrollbar-border-radius: 15px;
 $default-element-border: $element-border solid $border;
+// variables for the picture view in the maker
+$picture-view-border-color: $primary;
+$picture-view-border-size: $element-border;
+$picture-view-active-color: $secondary;
 
 // For generic classes
 *[cssClass~='header-underline'] {
@@ -51,6 +55,21 @@ $default-element-border: $element-border solid $border;
 
 *[cssClass~='mb'] {
   margin-bottom: 5px;
+}
+
+*[cssClass~='cocktail-picture-view'] {
+  border-radius: 0px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom: $picture_view_border_size solid $picture-view-border-color;
+  border-top: 0px;
+  border-left: $picture_view_border_size solid $picture-view-border-color;
+  border-right: $picture_view_border_size solid $picture-view-border-color;
+}
+
+*[cssClass~='cocktail-picture'] {
+  border-radius: 3px;
+  border: 2px solid $neutral;
 }
 
 // specific classes
@@ -195,6 +214,20 @@ QPushButton {
         border-color: $neutral;
       }
     }
+    &[cssClass~='btn-half-top'] {
+      background-color: $picture-view-border-color;
+      color: $background;
+      border: $picture_view_border_size solid $picture-view-border-color;
+      border-radius: 0px;
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
+      border-bottom: 0px;
+      &:pressed {
+        color: $background;
+        background-color: $picture-view-active-color;
+        border-color: $picture-view-active-color;
+      }
+    }
   }
   &[cssClass~='no-border'] {
     border-width: 0;
@@ -239,6 +272,18 @@ QPushButton {
     background-color: $teamtwo;
     border-color: $teamtwo;
     color: $background;
+  }
+  &[cssClass~='btn-half-top'] {
+    border: $picture_view_border_size solid $picture-view-border-color;
+    color: $picture-view-border-color;
+    border-radius: 0px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom: 0px;
+    &:pressed {
+      color: $picture-view-active-color;
+      border-color: $picture-view-active-color;
+    }
   }
 }
 

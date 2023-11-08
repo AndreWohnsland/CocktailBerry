@@ -35,6 +35,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `UI_LANGUAGE`                | 2 char code for the language, see [supported languages](languages.md)                    |
 | `UI_WIDTH`                   | Desired interface width, default is 800                                                  |
 | `UI_HEIGHT`                  | Desired interface height, default is 480                                                 |
+| `UI_PICTURE_SIZE`            | Approximate displayed picture size                                                       |
 | `PUMP_PINS`                  | List of the [Pins](#configuring-the-pins-or-used-board) where each Pump is connected     |
 | `PUMP_SLOW_FACTOR`           | Factor to multiply the volume flow if using slow ingredients                             |
 | `PUMP_VOLUMEFLOW`            | List of the according volume flow for each pump in ml/s                                  |

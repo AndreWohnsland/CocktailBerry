@@ -22,6 +22,11 @@ The interface was programmed with PyQt5 for the users to easily interact with Co
   <figcaption>The Maker GUI</figcaption>
 </figure>
 
+<figure markdown>
+  ![Selection](pictures/Selection_ui.png)
+  <figcaption>The Selection GUI</figcaption>
+</figure>
+
 This is the main window of the application and the window your guest will interact with.
 They can choose a cocktail of their choice, a crossed glass at the end indicates that there is also a virgin option of this cocktail.
 The cocktail data is displayed after selection.
