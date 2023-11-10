@@ -246,6 +246,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         )
         self.LECocktail.setMaxLength(30)
         self.input_search_cocktail.clicked.connect(lambda: self.open_keyboard(self.input_search_cocktail))
+        self.line_edit_ingredient_unit.clicked.connect(
+            lambda: self.open_keyboard(self.line_edit_ingredient_unit, max_char_len=20)
+        )
 
     def connect_objects(self):
         """ Connect all the functions with the Buttons. """

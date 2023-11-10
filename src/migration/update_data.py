@@ -74,7 +74,7 @@ def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCom
         if ing is None:
             continue
         local_db.insert_new_ingredient(
-            ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow), ing.cost
+            ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow), ing.cost, ing.unit
         )
 
 
@@ -222,3 +222,13 @@ def add_order_column_to_ingredient_data():
         db_handler.query_database("ALTER TABLE RecipeData ADD COLUMN Recipe_Order INTEGER DEFAULT 1;")
     except OperationalError:
         _logger.log_event("ERROR", "Could not add order column to DB, this may because it already exists")
+
+
+def add_unit_column_to_ingredients():
+    """Adds the unit column to the Ingredients table"""
+    _logger.log_event("INFO", "Adding unit column to Ingredients DB")
+    db_handler = DatabaseHandler()
+    try:
+        db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Unit TEXT DEFAULT 'ml';")
+    except OperationalError:
+        _logger.log_event("ERROR", "Could not add unit column to DB, this may because it already exists")
