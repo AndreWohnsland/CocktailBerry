@@ -332,6 +332,10 @@ class DialogHandler():
         """Shows the recipe help"""
         self.__output_language_dialog("recipe_help")
 
+    def say_ingredient_must_be_handadd(self):
+        """Informs that the ingredient must be handadd if unit is not ml"""
+        self.__output_language_dialog("ingredient_must_be_handadd")
+
     ############################
     # Methods for prompting ####
     ############################
@@ -516,6 +520,7 @@ class UiLanguage():
             (w.button_set_picture, "label_picture"),
             (w.label_search_title, "header_search"),
             (w.button_enter_to_maker, "enter_to_maker"),
+            (w.label_ingredient_unit, "label_ingredient_unit"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 
