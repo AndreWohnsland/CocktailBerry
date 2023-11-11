@@ -116,8 +116,8 @@ dialog:
     en: "At least one value is wrong in the config:\n{error}"
     de: "Mindestens ein Wert ist Fehlerhaft:\n{error}"
   backup_failed:
-    en: 'This seems to be no CocktailBerry backup folder. Please use the right folder. It needs to have all 3 files. Did not find {file}.'
-    de: 'Ausgewählter Ordner ist kein CocktailBerry Backup. Bitte richtigen Ordner auswählen. Es müssen alle drei Dateien enthalten sein. Konnte {file} nicht finden.'
+    en: 'This seems to be no CocktailBerry backup folder. Please use the right folder. It needs to have some specific files. Did not find {file}.'
+    de: 'Ausgewählter Ordner ist kein CocktailBerry Backup. Bitte richtigen Ordner auswählen. Es müssen einige spezifische Dateien enthalten sein. Konnte {file} nicht finden.'
   update_failed:
     en: 'Update failed. Please check the logs for further information.'
     de: 'Update fehlgeschlagen. Bitte schaue in die Logs für mehr Informationen.'
@@ -137,8 +137,8 @@ dialog:
     en: 'Please select image location.'
     de: 'Bitte Bild Ort auswählen.'
   ask_backup_overwrite:
-    en: 'Load selected backup in? This will overwrite local DB and configuration. The program will restart afterwards.'
-    de: 'Ausgewähltes Backup verwenden? Lokale Daten werden überschrieben. Ein Neustart wird danach ausgeführt.'
+    en: 'Load selected backup files for: "{backup_files}" in? This will overwrite local data. The program will restart afterwards.'
+    de: 'Ausgewählte Backup Dateien für "{backup_files}" verwenden? Lokale Daten werden überschrieben. Ein Neustart wird danach ausgeführt.'
   ask_enable_all_recipes:
     en: 'Do you want to enable all recipes? All possible ones will be then shown at the maker tab.'
     de: 'Alle Rezepte aktiv setzen? Machbare Rezepte werden dann im Maker Tab angezeigt.'
@@ -675,3 +675,22 @@ ui:
     tabborder:
       en: 'Border color of the top tabs'
       de: 'Rahmen Farbe der oberen Tabs'
+
+  ##### BACKUP WINDOW #####
+  # all values for settings in backup window
+  backup_window:
+    header:
+      en: 'Restore Backup'
+      de: 'Backup Wiederherstellen'
+    style:
+      en: 'Custom Style'
+      de: 'Custom Style'
+    config:
+      en: 'Configuration'
+      de: 'Einstellungen'
+    images:
+      en: 'Custom Images'
+      de: 'Custom Bilder'
+    database:
+      en: 'Database (Own Cocktails)'
+      de: 'Datenbank (Eigene Cocktails)'
