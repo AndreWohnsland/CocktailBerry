@@ -137,15 +137,22 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 field_ingredient.setProperty("cssClass", None)
                 field_ingredient.setStyleSheet("")
                 self._set_underline(field_ingredient, False)
-                display_amount = self._decide_rounding(ing.amount * cfg.EXP_MAKER_FACTOR)
-                field_volume.setText(f" {display_amount} {cfg.EXP_MAKER_UNIT}")
+                amount = ing.amount
+                if ing.unit == "ml":
+                    amount = ing.amount * cfg.EXP_MAKER_FACTOR
+                # do always cut decimal if there is another unit than ml
+                rounding_threshold = 8 if ing.unit == "ml" else 0
+                display_amount = self._decide_rounding(amount, rounding_threshold)
+                unit = cfg.EXP_MAKER_UNIT if ing.unit == "ml" else ing.unit
+                field_volume.setText(f" {display_amount} {unit}")
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
 
     def _decide_rounding(self, val: float, threshold=8):
         """Helper to get the right rounding for numbers displayed to the user"""
         if val >= threshold:
-            return int(val)
+            # needs to be int, otherwise we would need to format .0 or .1 which is difficult
+            return int(round(val, 0))
         return round(val, 1)
 
     def _set_underline(self, element: QWidget, underline: bool):
