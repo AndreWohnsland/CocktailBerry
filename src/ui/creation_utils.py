@@ -8,6 +8,7 @@ from src.ui.icons import ICONS
 SMALL_FONT = 14
 MEDIUM_FONT = 16
 LARGE_FONT = 18
+HEADER_FONT = 22
 
 
 class FontSize:
@@ -26,9 +27,10 @@ def adjust_font(element: QWidget, font_size: int, bold: bool = False):
     element.setFont(font)
 
 
-def create_spacer(height: int, width: int = 20):
+def create_spacer(height: int, width: int = 20, expand: bool = False):
     """Creates a spacer of given height and optional width"""
-    return QSpacerItem(width, height, QSizePolicy.Minimum, QSizePolicy.Fixed)  # type: ignore
+    policy = QSizePolicy.Expanding if expand else QSizePolicy.Fixed  # type: ignore
+    return QSpacerItem(width, height, QSizePolicy.Minimum, policy)  # type: ignore
 
 
 def create_button(
