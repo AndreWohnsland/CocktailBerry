@@ -3,13 +3,10 @@ import shutil
 import sqlite3
 from typing import List, Optional, Union
 
-from src.filepath import ROOT_PATH
+from src.filepath import ROOT_PATH, DATABASE_PATH, DEFAULT_DATABASE_PATH
 from src.models import Cocktail, Ingredient
 from src.logger_handler import LoggerHandler
 from src.utils import time_print
-
-DATABASE_NAME = "Cocktail_database"
-BACKUP_NAME = f"{DATABASE_NAME}_backup"
 
 _logger = LoggerHandler("database_module")
 
@@ -24,12 +21,11 @@ class DatabaseCommander:
         """Creates a backup locally in the same folder, used before migrations"""
         dtime = datetime.datetime.now()
         suffix = dtime.strftime("%Y-%m-%d-%H-%M-%S")
-        database_path = ROOT_PATH / f"{DATABASE_NAME}.db"
-        full_backup_name = f"{BACKUP_NAME}-{suffix}"
-        backup_path = ROOT_PATH / f"{full_backup_name}.db"
+        full_backup_name = f"{DATABASE_PATH.stem}_backup-{suffix}.db"
+        backup_path = ROOT_PATH / full_backup_name
         _logger.log_event("INFO", f"Creating backup with name: {full_backup_name}")
-        _logger.log_event("INFO", f"Use this to overwrite: {DATABASE_NAME} in case of failure")
-        shutil.copy(database_path, backup_path)
+        _logger.log_event("INFO", f"Use this to overwrite: {DATABASE_PATH.name} in case of failure")
+        shutil.copy(DATABASE_PATH, backup_path)
 
     def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
@@ -481,8 +477,8 @@ class DatabaseCommander:
 class DatabaseHandler:
     """Handler Class for Connecting and querying Databases"""
 
-    database_path = ROOT_PATH / f"{DATABASE_NAME}.db"
-    database_path_default = ROOT_PATH / f"{DATABASE_NAME}_default.db"
+    database_path = DATABASE_PATH
+    database_path_default = DEFAULT_DATABASE_PATH
 
     def __init__(self, use_default=False):
         self.database_path = DatabaseHandler.database_path

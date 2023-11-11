@@ -12,6 +12,8 @@ ADDON_FOLDER = ROOT_PATH / "addons"
 SCRIPTS_FOLDER = ROOT_PATH / "scripts"
 USER_IMAGE_FOLDER = ROOT_PATH / "display_images_user"
 DEFAULT_IMAGE_FOLDER = ROOT_PATH / "default_cocktail_images"
+DATABASE_PATH = ROOT_PATH / "Cocktail_database.db"
+DEFAULT_DATABASE_PATH = ROOT_PATH / "Cocktail_database_default.db"
 
 # src path
 SRC_PATH = ROOT_PATH / "src"
