@@ -5,13 +5,12 @@ import datetime
 import shutil
 import atexit
 from typing import Optional, TYPE_CHECKING
-from pathlib import Path
 
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from src.filepath import ROOT_PATH, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.ui.create_config_window import ConfigWindow
+from src.ui.create_backup_restore_window import BackupRestoreWindow, BACKUP_FILES, NEEDED_BACKUP_FILES
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_log_window import LogWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
@@ -25,18 +24,13 @@ from src.machine.controller import MACHINE
 from src.programs.calibration import run_calibration
 from src.logger_handler import LoggerHandler
 from src.updater import Updater
-from src.utils import has_connection, restart_program, get_platform_data, time_print
+from src.utils import has_connection, get_platform_data, time_print
 from src.config_manager import CONFIG as cfg
 
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
-_DATABASE_NAME = "Cocktail_database.db"
-_CONFIG_NAME = "custom_config.yaml"
-_VERSION_NAME = ".version.ini"
-_NEEDED_FILES = [_DATABASE_NAME, _CONFIG_NAME, _VERSION_NAME]
-_OPTIONAL_BACKUP_FILES = [CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS]
 _logger = LoggerHandler("option_window")
 _platform_data = get_platform_data()
 
@@ -87,6 +81,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.wifi_window: Optional[WiFiWindow] = None
         self.addon_window: Optional[AddonWindow] = None
         self.data_window: Optional[DataWindow] = None
+        self.backup_restore_window: Optional[BackupRestoreWindow] = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -140,7 +135,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _create_backup(self):
         """Prompts the user for a folder path to save the backup to.
         Saves the config, custom database and version to the location."""
-        location = self._get_user_folder_response()
+        location = DP_CONTROLLER.ask_for_backup_location(self)
         if not location:
             return
         backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
@@ -151,44 +146,27 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         except FileExistsError:
             _logger.log_event("INFO", "Backup folder for today already exists, overwriting current data within")
 
-        # The distinguish between the files that are needed and the optional ones
-        # Optional ones where introduced with the 1.24.0 update
-        # So if the user has an older version, the optional would break the restore
-        for _file in _NEEDED_FILES:
-            shutil.copy(ROOT_PATH / _file, backup_folder)
-        for _file in _OPTIONAL_BACKUP_FILES:
-            shutil.copy(_file, backup_folder)
+        # copy all files to the backup folder
+        for _file in BACKUP_FILES:
+            # needs to differentiate between files and folders
+            if _file.is_file():
+                shutil.copy(_file, backup_folder)
+            if _file.is_dir():
+                shutil.copytree(_file, backup_folder / _file.name)
+
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
     def _upload_backup(self):
-        """Prompts the user for a folder path to load the backup from.
-        Loads the config, custom database and version from the location."""
-        location = self._get_user_folder_response()
+        """Opens the backup restore window."""
+        location = DP_CONTROLLER.ask_for_backup_location(self)
         if not location:
             return
-        if not DP_CONTROLLER.ask_backup_overwrite():
-            return
-        for _file in _NEEDED_FILES:
-            if not (location / _file).exists():
-                DP_CONTROLLER.say_backup_failed(_file)
+        for _file in NEEDED_BACKUP_FILES:
+            file_name = _file.name
+            if not (location / file_name).exists():
+                DP_CONTROLLER.say_backup_failed(file_name)
                 return
-        for _file in _NEEDED_FILES:
-            shutil.copy(location / _file, ROOT_PATH)
-        # Optional files where introduced with the 1.24.0 update
-        # so if its not existed, skip it
-        for _file in _OPTIONAL_BACKUP_FILES:
-            backup_file = location / _file.name
-            if backup_file.exists():
-                shutil.copy(backup_file, _file)
-        restart_program()
-
-    def _get_user_folder_response(self):
-        """Returns the user selected folder path."""
-        # Qt will return empty string if user cancels the dialog
-        selected_path = DP_CONTROLLER.ask_for_backup_location(self)
-        if not selected_path:
-            return None
-        return Path(selected_path).absolute()
+        self.backup_restore_window = BackupRestoreWindow(self.mainscreen, location)
 
     def _show_logs(self):
         """Opens the logs window"""
