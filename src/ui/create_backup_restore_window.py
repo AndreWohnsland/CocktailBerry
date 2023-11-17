@@ -115,7 +115,6 @@ class BackupRestoreWindow(QMainWindow):
             # this will also not throw an error if the file does not exist
             if _file.is_file():
                 shutil.copy(self.backup_path / _file.name, _file)
-            # TODO: Check for dir existence and how to handle
             if _file.is_dir():
                 shutil.copytree(self.backup_path / _file.name, _file, dirs_exist_ok=True)
         restart_program()
