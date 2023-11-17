@@ -257,9 +257,8 @@ If you think your cocktail have the wrong picture, you can use the according pic
     | Cantarito             | 96.jpg       |
     | Paloma                | 97.jpg       |
 
-Another way is to reinstall CocktailBerry and not use the backup function, to have the latest version of the database.
-You can still use the backup function to save your settings and other files, but replace them via hand and not over the backup function.
-This way you can skip the database restoration and use the new one.
+Another way is to reinstall CocktailBerry and use the backup function, to have the latest version of the database.
+When using the backup function, you should skip the database restoration, so you can use the new one.
 Keep in mind your changes to the database are lost this way, so this may not be the best option for you.
 
 ## Problems Installing Software on Raspberry Pi
