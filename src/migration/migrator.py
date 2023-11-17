@@ -25,6 +25,7 @@ from src.migration.update_data import (
     add_slower_ingredient_flag_to_db,
     add_cost_column_to_ingredients,
     add_order_column_to_ingredient_data,
+    add_unit_column_to_ingredients,
 )
 
 _logger = LoggerHandler("migrator_module")
@@ -99,6 +100,7 @@ class Migrator:
                 add_order_column_to_ingredient_data,
                 lambda: self._install_pip_package("pillow", "1.30.0"),
             ],
+            "1.30.1": [add_unit_column_to_ingredients]
         }
 
         for version, actions in version_actions.items():

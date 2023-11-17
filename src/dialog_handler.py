@@ -106,9 +106,15 @@ class DialogHandler():
         self.standard_box(msg, use_ok=use_ok, close_time=close_time)
 
     def _get_folder_location(self, w: QWidget, message: str):
-        return QFileDialog.getExistingDirectory(w, message)
+        """Returns the selected folder"""
+        # Qt will return empty string if user cancels the dialog
+        dir_name = QFileDialog.getExistingDirectory(w, message)
+        if not dir_name:
+            return None
+        return Path(dir_name).absolute()
 
     def get_file_location(self, w: QWidget, message: str, filter_str: str):
+        """Returns the selected file"""
         file_name, _ = QFileDialog.getOpenFileName(w, message, filter=filter_str)
         if file_name:
             return Path(file_name).absolute()
@@ -332,6 +338,10 @@ class DialogHandler():
         """Shows the recipe help"""
         self.__output_language_dialog("recipe_help")
 
+    def say_ingredient_must_be_handadd(self):
+        """Informs that the ingredient must be handadd if unit is not ml"""
+        self.__output_language_dialog("ingredient_must_be_handadd")
+
     ############################
     # Methods for prompting ####
     ############################
@@ -372,9 +382,9 @@ class DialogHandler():
         message = self.__choose_language("ask_for_image_location")
         return self.get_file_location(w, message, "Images (*.jpg *.png)")
 
-    def ask_backup_overwrite(self):
+    def ask_backup_overwrite(self, backup_files: str):
         """Asks the user if he wants to use backup"""
-        message = self.__choose_language("ask_backup_overwrite")
+        message = self.__choose_language("ask_backup_overwrite", backup_files=backup_files)
         return self.user_okay(message)
 
     def ask_enable_all_recipes(self):
@@ -516,6 +526,7 @@ class UiLanguage():
             (w.button_set_picture, "label_picture"),
             (w.label_search_title, "header_search"),
             (w.button_enter_to_maker, "enter_to_maker"),
+            (w.label_ingredient_unit, "label_ingredient_unit"),
         ]:
             ui_element.setText(self.__choose_language(text_name, window))
 

@@ -18,6 +18,7 @@ class Ingredient():
     selected: Optional[str] = None
     cost: int = 0
     recipe_order: int = 2
+    unit: str = "ml"
 
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name"""

@@ -43,6 +43,18 @@ class RecipeInput:
     virgin: int
 
 
+@dataclass
+class IngredientInputFields:
+    ingredient_name: QLineEdit
+    selected_ingredient: QListWidget
+    alcohol_level: QLineEdit
+    volume: QLineEdit
+    ingredient_cost: QLineEdit
+    hand_add: QCheckBox
+    is_slow: QCheckBox
+    unit: QLineEdit
+
+
 class DisplayController(DialogHandler):
     """ Controller Class to get Values from the UI"""
 
@@ -90,11 +102,17 @@ class DisplayController(DialogHandler):
 
     def get_ingredient_data(self, w: Ui_MainWindow):
         """Returns an Ingredient Object from the ingredient data fields"""
-        line_edits, checkbox_hand, checkbox_slow, list_widget = self.get_ingredient_fields(w)
-        ingredient_name, alcohol_level, volume, ingredient_cost = self.get_lineedit_text(list(line_edits))
-        hand_add = checkbox_hand.isChecked()
-        is_slow = checkbox_slow.isChecked()
-        selected_ingredient = self.get_list_widget_selection(list_widget)
+        ingredient_input = self.get_ingredient_fields(w)
+        ingredient_name, alcohol_level, volume, ingredient_cost, unit = self.get_lineedit_text([
+            ingredient_input.ingredient_name,
+            ingredient_input.alcohol_level,
+            ingredient_input.volume,
+            ingredient_input.ingredient_cost,
+            ingredient_input.unit
+        ])
+        hand_add = ingredient_input.hand_add.isChecked()
+        is_slow = ingredient_input.is_slow.isChecked()
+        selected_ingredient = self.get_list_widget_selection(ingredient_input.selected_ingredient)
         return Ingredient(
             id=-1,
             name=ingredient_name,
@@ -105,6 +123,7 @@ class DisplayController(DialogHandler):
             slow=is_slow,
             selected=selected_ingredient,
             cost=int(ingredient_cost),
+            unit=unit,
         )
 
     def get_recipe_field_data(self, w: Ui_MainWindow) -> RecipeInput:
@@ -124,7 +143,7 @@ class DisplayController(DialogHandler):
             ingredient_volumes,
             ingredient_order,
             enabled,
-            virgin
+            virgin,
         )
 
     def remove_recipe_from_list_widget(self, w: Ui_MainWindow, recipe_name: str):
@@ -133,17 +152,28 @@ class DisplayController(DialogHandler):
 
     def validate_ingredient_data(self, w: Ui_MainWindow) -> bool:
         """Validate the data from the ingredient window"""
-        line_edits, *_ = self.get_ingredient_fields(w)
-        lineedit_list = line_edits
-        if self._lineedit_is_missing(list(lineedit_list)):
+        ing_input = self.get_ingredient_fields(w)
+        if self._lineedit_is_missing([
+            ing_input.ingredient_name,
+            ing_input.alcohol_level,
+            ing_input.volume,
+            ing_input.ingredient_cost
+        ]):
             self.say_some_value_missing()
             return False
-        _, ingredient_percentage, ingredient_volume, ingredient_cost = lineedit_list
-        if self._lineedit_is_no_int([ingredient_percentage, ingredient_volume, ingredient_cost]):
+        if self._lineedit_is_no_int([
+            ing_input.alcohol_level,
+            ing_input.volume,
+            ing_input.ingredient_cost
+        ]):
             self.say_needs_to_be_int()
             return False
-        if int(ingredient_percentage.text()) > 100:
+        if int(ing_input.alcohol_level.text()) > 100:
             self.say_alcohol_level_max_limit()
+            return False
+        # if the unit is other than ml, the ingredient need to be handadd
+        if ing_input.unit.text().strip() != "ml" and not ing_input.hand_add.isChecked():
+            self.say_ingredient_must_be_handadd()
             return False
         return True
 
@@ -524,15 +554,17 @@ class DisplayController(DialogHandler):
         """Returns all recipe line edit objects"""
         return [getattr(w, f"line_edit_recipe_order_{x}") for x in range(1, 9)]
 
-    def get_ingredient_fields(
-        self, w: Ui_MainWindow
-    ) -> Tuple[Tuple[QLineEdit, QLineEdit, QLineEdit, QLineEdit], QCheckBox, QCheckBox, QListWidget]:
-        """Returns [Name, Alcohol, Volume], CheckedHand, ListWidget Elements for Ingredients"""
-        return (
-            (w.line_edit_ingredient_name, w.LEGehaltRezept, w.LEFlaschenvolumen, w.line_edit_ingredient_cost),
+    def get_ingredient_fields(self, w: Ui_MainWindow):
+        """Returns all needed Elements for Ingredients"""
+        return IngredientInputFields(
+            w.line_edit_ingredient_name,
+            w.LWZutaten,
+            w.LEGehaltRezept,
+            w.LEFlaschenvolumen,
+            w.line_edit_ingredient_cost,
             w.CHBHand,
             w.check_slow_ingredient,
-            w.LWZutaten
+            w.line_edit_ingredient_unit
         )
 
     def get_label_bottles(self, w: Ui_MainWindow, get_all=False) -> List[QLabel]:

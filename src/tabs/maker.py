@@ -27,13 +27,20 @@ def __build_comment_maker(cocktail: Cocktail):
     """Build the additional comment for the completion message (if there are handadds)"""
     comment = ""
     hand_add = cocktail.handadds
-    length_desc = sorted(hand_add, key=lambda x: len(x.name), reverse=True)
+    # sort by descending length of the name and unit combined
+    length_desc = sorted(hand_add, key=lambda x: len(x.name) + len(x.unit), reverse=True)
     for ing in length_desc:
-        amount = ing.amount * cfg.EXP_MAKER_FACTOR
-        amount = int(amount) if amount >= 8 else round(amount, 1)
+        amount = ing.amount
+        if ing.unit != "ml":
+            amount = ing.amount * cfg.EXP_MAKER_FACTOR
+        # usually show decimal places, up to 8, but if not ml is used clip decimal place
+        threshold = 8 if ing.unit == "ml" else 0
+        amount = int(round(amount, 1)) if amount >= threshold else round(amount, 1)
         if amount <= 0:
             continue
-        comment += f"\n~{amount} {cfg.EXP_MAKER_UNIT} {ing.name}"
+        unit = cfg.EXP_MAKER_UNIT if ing.unit == "ml" else ing.unit
+        comment += f"\n~{amount} {unit} {ing.name}"
+
     return comment
 
 

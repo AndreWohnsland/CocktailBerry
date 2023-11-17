@@ -3,13 +3,10 @@ import shutil
 import sqlite3
 from typing import List, Optional, Union
 
-from src.filepath import ROOT_PATH
+from src.filepath import ROOT_PATH, DATABASE_PATH, DEFAULT_DATABASE_PATH
 from src.models import Cocktail, Ingredient
 from src.logger_handler import LoggerHandler
 from src.utils import time_print
-
-DATABASE_NAME = "Cocktail_database"
-BACKUP_NAME = f"{DATABASE_NAME}_backup"
 
 _logger = LoggerHandler("database_module")
 
@@ -24,17 +21,17 @@ class DatabaseCommander:
         """Creates a backup locally in the same folder, used before migrations"""
         dtime = datetime.datetime.now()
         suffix = dtime.strftime("%Y-%m-%d-%H-%M-%S")
-        database_path = ROOT_PATH / f"{DATABASE_NAME}.db"
-        full_backup_name = f"{BACKUP_NAME}-{suffix}"
-        backup_path = ROOT_PATH / f"{full_backup_name}.db"
+        full_backup_name = f"{DATABASE_PATH.stem}_backup-{suffix}.db"
+        backup_path = ROOT_PATH / full_backup_name
         _logger.log_event("INFO", f"Creating backup with name: {full_backup_name}")
-        _logger.log_event("INFO", f"Use this to overwrite: {DATABASE_NAME} in case of failure")
-        shutil.copy(database_path, backup_path)
+        _logger.log_event("INFO", f"Use this to overwrite: {DATABASE_PATH.name} in case of failure")
+        shutil.copy(DATABASE_PATH, backup_path)
 
     def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
         query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level,
-                I.Hand, I.Slow, RD.Amount, B.Bottle, I.Cost, RD.Recipe_Order
+                I.Hand, I.Slow, RD.Amount, B.Bottle, I.Cost, RD.Recipe_Order,
+                I.Unit
                 FROM RecipeData as RD INNER JOIN Ingredients as I 
                 ON RD.Ingredient_ID = I.ID
                 LEFT JOIN Bottles as B ON B.ID = I.ID
@@ -52,6 +49,7 @@ class DatabaseCommander:
             bottle=i[8],
             cost=i[9],
             recipe_order=i[10],
+            unit=i[11],
         ) for i in ingredient_data]
         return ingredients
 
@@ -115,7 +113,7 @@ class DatabaseCommander:
 
     def get_ingredient_at_bottle(self, bottle: int) -> Ingredient:
         """Return ingredient name for all bottles"""
-        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle, I.Cost
+        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle, I.Cost, I.Unit
                     FROM Bottles as B
                     LEFT JOIN Ingredients as I
                     ON I.ID=B.ID
@@ -132,6 +130,7 @@ class DatabaseCommander:
             slow=bool(ing[6]),
             bottle=ing[7],
             cost=ing[8],
+            unit=ing[9],
         )
 
     def get_bottle_fill_levels(self) -> List[int]:
@@ -154,7 +153,7 @@ class DatabaseCommander:
             condition = "I.Name"
         else:
             condition = "I.ID"
-        query = f"""SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle, I.Cost
+        query = f"""SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle, I.Cost, I.Unit
                 FROM Ingredients as I LEFT JOIN Bottles as B on B.ID = I.ID WHERE {condition}=?"""
         data = self.handler.query_database(query, (search,))
         # returns None if no data exists
@@ -171,12 +170,13 @@ class DatabaseCommander:
             slow=bool(ing[6]),
             bottle=ing[7],
             cost=ing[8],
+            unit=ing[9],
         )
 
     def get_all_ingredients(self, get_machine=True, get_hand=True) -> List[Ingredient]:
         """Builds a list of all ingredients, option to filter by add status"""
         ingredients = []
-        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle, I.Cost
+        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle, I.Cost, I.Unit
                     FROM Ingredients as I LEFT JOIN Bottles as B on B.ID = I.ID"""
         ingredient_data = self.handler.query_database(query)
         for ing in ingredient_data:
@@ -193,6 +193,7 @@ class DatabaseCommander:
                         slow=ing[6],
                         bottle=ing[7],
                         cost=ing[8],
+                        unit=ing[9],
                     ))
         return ingredients
 
@@ -303,6 +304,7 @@ class DatabaseCommander:
         is_slow: bool,
         ingredient_id: int,
         cost: int,
+        unit: str,
     ):
         """Updates the given ingredient id to new properties"""
         query = """UPDATE OR IGNORE Ingredients
@@ -311,11 +313,12 @@ class DatabaseCommander:
                 Fill_level = ?,
                 Hand = ?, 
                 Slow = ?,
-                Cost = ?
+                Cost = ?,
+                Unit = ?
                 WHERE ID = ?"""
         search_tuple = (
             ingredient_name, alcohol_level, volume, new_level,
-            int(only_hand), int(is_slow), cost, ingredient_id
+            int(only_hand), int(is_slow), cost, unit, ingredient_id
         )
         self.handler.query_database(query, search_tuple)
 
@@ -378,12 +381,15 @@ class DatabaseCommander:
         only_hand: bool,
         is_slow: bool,
         cost: int,
+        unit: str,
     ):
         """Insert a new ingredient into the database"""
         query = """INSERT OR IGNORE INTO
-                Ingredients(Name, Alcohol, Volume, Consumption_lifetime, Consumption, Fill_level, Hand, Slow, Cost) 
-                VALUES (?,?,?,0,0,0,?,?,?)"""
-        search_tuple = (ingredient_name, alcohol_level, volume, int(only_hand), int(is_slow), cost)
+                Ingredients(
+                    Name, Alcohol, Volume, Consumption_lifetime, Consumption, Fill_level, Hand, Slow, Cost, Unit
+                ) 
+                VALUES (?,?,?,0,0,0,?,?,?,?)"""
+        search_tuple = (ingredient_name, alcohol_level, volume, int(only_hand), int(is_slow), cost, unit)
         self.handler.query_database(query, search_tuple)
 
     def insert_new_recipe(self, name: str, alcohol_level: int, volume: int, enabled: int, virgin: int):
@@ -471,8 +477,8 @@ class DatabaseCommander:
 class DatabaseHandler:
     """Handler Class for Connecting and querying Databases"""
 
-    database_path = ROOT_PATH / f"{DATABASE_NAME}.db"
-    database_path_default = ROOT_PATH / f"{DATABASE_NAME}_default.db"
+    database_path = DATABASE_PATH
+    database_path_default = DEFAULT_DATABASE_PATH
 
     def __init__(self, use_default=False):
         self.database_path = DatabaseHandler.database_path
