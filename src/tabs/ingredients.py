@@ -35,6 +35,7 @@ def handle_enter_ingredient(w):
     DP_CONTROLLER.fill_list_widget(ingredient_input.selected_ingredient, [ingredient.name])
     bottles.set_fill_level_bars(w)
     bottles.refresh_bottle_information(w)
+    DP_CONTROLLER.update_maker_view(w)
     DP_CONTROLLER.say_ingredient_added_or_changed(ingredient.name, new_ingredient, ingredient.selected)
 
 
