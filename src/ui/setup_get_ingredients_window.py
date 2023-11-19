@@ -36,7 +36,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.PBminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LAmount, 10, 100, -10))
         self.PBAusgeben.clicked.connect(self._spend_clicked)
         self.PBAbbrechen.clicked.connect(self._cancel_clicked)
-        all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
+        all_bottles = DB_COMMANDER.get_ingredient_names_at_bottles()
         bottles = [x for x in all_bottles if x != ""]
         DP_CONTROLLER.fill_list_widget(self.ingredient_selection, bottles)
         self.ingredient_selection.setCurrentRow(0)

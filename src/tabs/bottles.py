@@ -18,7 +18,7 @@ _logger = LoggerHandler("bottles_module")
 
 def get_bottle_ingredients():
     """ At the start of the program, get all the ingredients from the DB. """
-    bottles = DB_COMMANDER.get_ingredients_at_bottles()
+    bottles = DB_COMMANDER.get_ingredient_names_at_bottles()
     # replace Nones with empty string, command will return none for empty bottles
     shared.old_ingredient = [x if x is not None else "" for x in bottles]
 
@@ -74,13 +74,13 @@ def __register_bottles(w):
 def read_in_bottles(w):
     """ Reads the bottle_order into the BottleTab. """
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
-    ingredient_names = DB_COMMANDER.get_ingredients_at_bottles()
+    ingredient_names = DB_COMMANDER.get_ingredient_names_at_bottles()
     DP_CONTROLLER.set_multiple_combobox_items(combobox_bottles, ingredient_names)
 
 
 def refresh_bottle_information(w):
     """ Loads or updates the Labels of the Bottles (volume level). """
-    label_names = DB_COMMANDER.get_ingredients_at_bottles()
+    label_names = DB_COMMANDER.get_ingredient_names_at_bottles()
     label_names = [f"  {x}:" if x else "  -  " for x in label_names]
     DP_CONTROLLER.set_label_bottles(w, label_names)
 

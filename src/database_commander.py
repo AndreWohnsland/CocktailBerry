@@ -102,7 +102,7 @@ class DatabaseCommander:
         possible_cocktails = [x for x in all_cocktails if x.is_possible(handadds_ids)]
         return possible_cocktails
 
-    def get_ingredients_at_bottles(self) -> List[str]:
+    def get_ingredient_names_at_bottles(self) -> List[str]:
         """Return ingredient name for all bottles"""
         query = """SELECT Ingredients.Name FROM Bottles
                     LEFT JOIN Ingredients ON
