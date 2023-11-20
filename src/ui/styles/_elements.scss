@@ -288,6 +288,21 @@ QPushButton {
   }
 }
 
+QFileDialog {
+  QPushButton {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  & QHeaderView {
+    &::section {
+      background-color: $background;
+    }
+  }
+  & QTableCornerButton::section {
+    background: $background;
+  }
+}
+
 QProgressBar {
   background-color: $progressbg;
   color: $background;

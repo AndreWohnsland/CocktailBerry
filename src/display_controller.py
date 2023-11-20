@@ -589,7 +589,7 @@ class DisplayController(DialogHandler):
         """Removes the UI elements if not all ten bottles are used per config"""
         used_bottles = cfg.choose_bottle_number()
         # This needs to be done to get rid of registered bottles in the then removed bottles
-        all_bottles = DB_COMMANDER.get_ingredients_at_bottles()
+        all_bottles = DB_COMMANDER.get_ingredient_names_at_bottles()
         DB_COMMANDER.set_bottle_order(all_bottles[: used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
         comboboxes_bottles = self.get_comboboxes_bottles(w, True)
         self.set_multiple_combobox_to_top_item(comboboxes_bottles[used_bottles::])
