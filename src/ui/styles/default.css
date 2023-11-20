@@ -220,6 +220,10 @@ QPushButton {
       color: #ef9700;
       border-color: #ef9700; }
 
+QFileDialog QPushButton {
+  font-size: 24px;
+  font-weight: bold; }
+
 QProgressBar {
   background-color: #a6a6a6;
   color: #0d0d0d;
