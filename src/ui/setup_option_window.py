@@ -140,11 +140,13 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
         backup_folder = location / backup_folder_name
+
         # Logs if the backup folder already exists
-        try:
-            backup_folder.mkdir()
-        except FileExistsError:
+        # also deletes the folder if it already exists
+        if backup_folder.exists():
             _logger.log_event("INFO", "Backup folder for today already exists, overwriting current data within")
+            shutil.rmtree(backup_folder)
+        backup_folder.mkdir()
 
         # copy all files to the backup folder
         for _file in BACKUP_FILES:
