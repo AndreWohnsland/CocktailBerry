@@ -7,7 +7,8 @@ import time
 from typing import Dict, List, Optional, Literal, TYPE_CHECKING, Union
 from threading import Thread, Event
 import yaml
-from PyQt5.QtWidgets import QFileDialog, QWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QFileDialog, QWidget, QDialog
 from src.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.ui_elements.addonmanager import Ui_AddonManager
@@ -105,20 +106,43 @@ class DialogHandler():
         msg = self.__choose_language(dialog_name, **kwargs)
         self.standard_box(msg, use_ok=use_ok, close_time=close_time)
 
+    def _generate_file_dialog(self, w: QWidget, message: str = ""):
+        """Creates the base file dialog and shows it with the full screen settings"""
+        file_dialog = QFileDialog(w)
+        file_dialog.setWindowTitle(message)
+        file_dialog.setWindowFlags(
+            Qt.Window | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint  # type: ignore
+        )
+        if not cfg.UI_DEVENVIRONMENT:
+            file_dialog.setCursor(Qt.BlankCursor)  # type: ignore
+        file_dialog.showMaximized()
+        file_dialog.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
+        file_dialog.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
+        file_dialog.move(0, 0)
+        return file_dialog
+
+    def _parse_file_dialog(self, file_dialog: QFileDialog):
+        """Extracts the selected file/folder from the file dialog"""
+        if file_dialog.exec_() == QDialog.Accepted:  # type: ignore
+            file_name = file_dialog.selectedFiles()[0]  # get the selected file
+            # Qt will return empty string if user cancels the dialog
+            if file_name:
+                return Path(file_name).absolute()
+        return None
+
     def _get_folder_location(self, w: QWidget, message: str):
         """Returns the selected folder"""
-        # Qt will return empty string if user cancels the dialog
-        dir_name = QFileDialog.getExistingDirectory(w, message)
-        if not dir_name:
-            return None
-        return Path(dir_name).absolute()
+        file_dialog = self._generate_file_dialog(w, message)
+        file_dialog.setFileMode(QFileDialog.Directory)  # type: ignore
+        file_dialog.setOption(QFileDialog.ShowDirsOnly, True)  # type: ignore
+        return self._parse_file_dialog(file_dialog)
 
     def get_file_location(self, w: QWidget, message: str, filter_str: str):
         """Returns the selected file"""
-        file_name, _ = QFileDialog.getOpenFileName(w, message, filter=filter_str)
-        if file_name:
-            return Path(file_name).absolute()
-        return None
+        file_dialog = self._generate_file_dialog(w, message)
+        file_dialog.setFileMode(QFileDialog.ExistingFile)  # type: ignore
+        file_dialog.setNameFilter(filter_str)
+        return self._parse_file_dialog(file_dialog)
 
     ############################
     # Methods for creating msg #
