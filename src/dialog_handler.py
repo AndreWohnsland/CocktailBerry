@@ -115,6 +115,7 @@ class DialogHandler():
         )
         if not cfg.UI_DEVENVIRONMENT:
             file_dialog.setCursor(Qt.BlankCursor)  # type: ignore
+        file_dialog.setViewMode(QFileDialog.List)  # type: ignore
         file_dialog.showMaximized()
         file_dialog.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
         file_dialog.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
