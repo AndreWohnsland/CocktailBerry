@@ -224,6 +224,9 @@ QFileDialog QPushButton {
   font-size: 24px;
   font-weight: bold; }
 
+QFileDialog QHeaderView::section {
+  background-color: #dad9d9; }
+
 QProgressBar {
   background-color: #a6a6a6;
   color: #dad9d9;
