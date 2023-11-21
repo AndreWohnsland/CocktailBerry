@@ -28,13 +28,14 @@ class RpiController(PinController):
             self.low, self.high = self.high, self.low
         self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: List[int]):
+    def initialize_pin_list(self, pin_list: List[int], input: bool = False):
         """Set up the given pin list"""
         if not self.dev_displayed:
             print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
         if not self.devenvironment:
-            GPIO.setup(pin_list, GPIO.OUT, initial=self.low)
+            gpio_type = GPIO.IN if input else GPIO.OUT
+            GPIO.setup(pin_list, gpio_type, initial=self.low)
         else:
             logger.log_event("WARNING", f"Could not import RPi.GPIO. Will not be able to control pins: {pin_list}")
 
@@ -49,12 +50,19 @@ class RpiController(PinController):
             GPIO.output(pin_list, self.low)
 
     def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
+        """Clean up the given pin list, or all pins if none is given"""
         if self.devenvironment:
             return
         if pin_list is None:
             GPIO.cleanup()
         else:
             GPIO.cleanup(pin_list)
+
+    def read_pin(self, pin: int) -> bool:
+        """Returns the state of the given pin"""
+        if not self.devenvironment:
+            return GPIO.input(pin) == GPIO.HIGH
+        return False
 
 
 class RaspberryGPIO(GPIOController):
