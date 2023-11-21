@@ -28,13 +28,13 @@ class RpiController(PinController):
             self.low, self.high = self.high, self.low
         self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: List[int], input: bool = False):
+    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False):
         """Set up the given pin list"""
         if not self.dev_displayed:
             print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
         if not self.devenvironment:
-            gpio_type = GPIO.IN if input else GPIO.OUT
+            gpio_type = GPIO.IN if is_input else GPIO.OUT
             GPIO.setup(pin_list, gpio_type, initial=self.low)
         else:
             logger.log_event("WARNING", f"Could not import RPi.GPIO. Will not be able to control pins: {pin_list}")
