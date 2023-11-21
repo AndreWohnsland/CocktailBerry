@@ -230,6 +230,10 @@ QFileDialog QHeaderView::section {
 QFileDialog QTableCornerButton::section {
   background: #111111; }
 
+QFileDialog QListView,
+QFileDialog QTreeView {
+  font-size: 20px; }
+
 QProgressBar {
   background-color: #a0ab8c;
   color: #111111;
