@@ -34,9 +34,9 @@ class MachineController():
 
     def __init__(self):
         super().__init__()
-        self._pin_controller = self._chose_controller()
-        self._led_controller = LedController(self._pin_controller)
-        self._reverter = Reverter(self._pin_controller)
+        self.pin_controller = self._chose_controller()
+        self._led_controller = LedController(self.pin_controller)
+        self._reverter = Reverter(self.pin_controller)
 
     def _chose_controller(self) -> PinController:
         """Selects the controller class for the Pin"""
@@ -178,13 +178,14 @@ class MachineController():
         """Gets all used pins, prints pins and uses controller class to set up"""
         active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
         time_print(f"Initializing Pins: {active_pins}")
-        self._pin_controller.initialize_pin_list(active_pins)
+        self.pin_controller.initialize_pin_list(active_pins)
+        self._reverter.initialize_pin()
         atexit.register(self.cleanup)
 
     def _start_pumps(self, pin_list: List[int], print_prefix: str = ""):
         """Informs and opens all given pins"""
         time_print(f"{print_prefix}Opening Pins: {pin_list}")
-        self._pin_controller.activate_pin_list(pin_list)
+        self.pin_controller.activate_pin_list(pin_list)
 
     def close_all_pumps(self):
         """Close all pins connected to the pumps"""
@@ -194,12 +195,12 @@ class MachineController():
     def cleanup(self):
         """Cleanup for shutdown the machine"""
         self.close_all_pumps()
-        self._pin_controller.cleanup_pin_list()
+        self.pin_controller.cleanup_pin_list()
 
     def _stop_pumps(self, pin_list: List[int], print_prefix: str = ""):
         """Informs and closes all given pins"""
         time_print(f"{print_prefix}Closing Pins: {pin_list}")
-        self._pin_controller.close_pin_list(pin_list)
+        self.pin_controller.close_pin_list(pin_list)
 
 
 def _build_preparation_data(

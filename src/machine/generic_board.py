@@ -27,13 +27,17 @@ class GenericController(PinController):
         self.gpios: dict[int, GPIO] = {}
         self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: List[int]):
+    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False):
         """Set up the given pin list"""
         if not self.dev_displayed:
             print(f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
 
+        # high is also output, but other default value
         init_value = "high" if self.inverted else "out"
+        # need to change to in if input is true
+        if is_input:
+            init_value = "in"
         if not self.devenvironment:
             for pin in pin_list:
                 self.gpios[pin] = GPIO(pin, init_value)
@@ -54,6 +58,7 @@ class GenericController(PinController):
                 self.gpios[pin].write(self.low)
 
     def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
+        """Clean up the given pin list, or all pins if none is given"""
         if self.devenvironment:
             return
         if pin_list is None:
@@ -62,6 +67,12 @@ class GenericController(PinController):
         else:
             for pin_number in pin_list:
                 self.gpios[pin_number].close()
+
+    def read_pin(self, pin: int) -> bool:
+        """Returns the state of the given pin"""
+        if not self.devenvironment:
+            return self.gpios[pin].read()
+        return False
 
 
 class GenericGPIO(GPIOController):

@@ -301,6 +301,10 @@ QFileDialog {
   & QTableCornerButton::section {
     background: $background;
   }
+  & QListView,
+  QTreeView {
+    font-size: 20px;
+  }
 }
 
 QProgressBar {
