@@ -9,7 +9,6 @@ try:
     # pylint: disable=import-error
     from RPi import GPIO  # type: ignore
     GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
     DEV = False
 except ModuleNotFoundError:
     DEV = True
