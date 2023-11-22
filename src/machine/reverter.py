@@ -1,5 +1,6 @@
 from src.config_manager import CONFIG as cfg
 from src.machine.interface import PinController
+from src.utils import time_print
 
 
 class Reverter:
@@ -10,6 +11,7 @@ class Reverter:
 
     def initialize_pin(self):
         if cfg.MAKER_PUMP_REVERSION:
+            time_print(f"Initializing Reversion Pin: {self.revert_pin}")
             self._pin_controller.initialize_pin_list([self.revert_pin])
 
     def revert_on(self):
