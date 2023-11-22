@@ -11,7 +11,7 @@ except ImportError:
 class PinController(Protocol):  # type: ignore
     """Interface to control the pins"""
     @abstractmethod
-    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False):
+    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False, pull_down: bool = True):
         raise NotImplementedError
 
     @abstractmethod

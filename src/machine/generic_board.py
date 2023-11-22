@@ -27,7 +27,7 @@ class GenericController(PinController):
         self.gpios: dict[int, GPIO] = {}
         self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False):
+    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False, pull_down: bool = True):
         """Set up the given pin list"""
         if not self.dev_displayed:
             print(f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}")
@@ -36,11 +36,14 @@ class GenericController(PinController):
         # high is also output, but other default value
         init_value = "high" if self.inverted else "out"
         # need to change to in if input is true
+        # also add the bias (pull down or up)
+        add_args = {}
         if is_input:
             init_value = "in"
+            add_args["bias"] = "pull_down" if pull_down else "pull_up"
         if not self.devenvironment:
             for pin in pin_list:
-                self.gpios[pin] = GPIO(pin, init_value)
+                self.gpios[pin] = GPIO(pin, init_value, **add_args)
         else:
             logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
             logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
