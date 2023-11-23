@@ -76,7 +76,6 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
             DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
         return False
 
-    time_print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
     ingredient_bottles = [x for x in cocktail.machineadds if x.amount > 0]
 
@@ -89,6 +88,7 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
         return False
 
     # Now make the cocktail
+    time_print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
     consumption, taken_time, max_time = MACHINE.make_cocktail(
         w, ingredient_bottles, display_name)  # type: ignore
     DB_COMMANDER.increment_recipe_counter(cocktail.name)

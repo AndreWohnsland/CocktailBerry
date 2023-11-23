@@ -9,7 +9,6 @@ try:
     # pylint: disable=import-error
     from RPi import GPIO  # type: ignore
     GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
     DEV = False
 except ModuleNotFoundError:
     DEV = True
@@ -28,14 +27,20 @@ class RpiController(PinController):
             self.low, self.high = self.high, self.low
         self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False):
+    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False, pull_down: bool = True):
         """Set up the given pin list"""
         if not self.dev_displayed:
             print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
         if not self.devenvironment:
-            gpio_type = GPIO.IN if is_input else GPIO.OUT
-            GPIO.setup(pin_list, gpio_type, initial=self.low)
+            # if it is an input, we need to set the pull up down to down or up
+            # depending on how the input sensor works
+            # otherwise the jitter may emit false signals
+            if is_input:
+                pull_up_down = GPIO.PUD_DOWN if pull_down else GPIO.PUD_UP
+                GPIO.setup(pin_list, GPIO.IN, pull_up_down=pull_up_down)
+            else:
+                GPIO.setup(pin_list, GPIO.OUT, initial=self.low)
         else:
             logger.log_event("WARNING", f"Could not import RPi.GPIO. Will not be able to control pins: {pin_list}")
 
