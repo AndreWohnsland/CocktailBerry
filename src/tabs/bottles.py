@@ -92,6 +92,9 @@ def renew_checked_bottles(w):
     renew_bottle = DP_CONTROLLER.get_toggle_status(pushbutton_new_list)
     # build the number of bottles to renew
     bottle_numbers = [x for x, y in enumerate(renew_bottle, 1) if y]
+    # if no bottle is selected, skip the process
+    if len(bottle_numbers) == 0:
+        return
     DB_COMMANDER.set_bottle_volumelevel_to_max(bottle_numbers)
     DP_CONTROLLER.untoggle_buttons(pushbutton_new_list)
     set_fill_level_bars(w)
