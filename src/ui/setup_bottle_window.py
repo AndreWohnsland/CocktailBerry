@@ -35,16 +35,38 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         myminus = [getattr(self, f"PBMminus{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
         mylabel = [getattr(self, f"LAmount{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
         myname = [getattr(self, f"LName{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        max_buttons = [getattr(self, f"button_max_{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        min_buttons = [getattr(self, f"button_min_{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        max_labels = [getattr(self, f"label_max_volume_{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
+        volume_separators = [getattr(self, f"label_volume_separator_{x}") for x in range(1, MAX_SUPPORTED_BOTTLES + 1)]
 
         #  since zip only goes to the minimal of all, only one [:number] is needed
-        for plus, minus, field, vol in zip(myplus, myminus, mylabel[:number], self.max_volume):
-            plus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.change_input_value(  # noqa: E741
-                label=l, minimal=50, maximal=b, delta=25))
-            minus.clicked.connect(lambda _, l=field, b=vol: DP_CONTROLLER.change_input_value(  # noqa: E741
-                label=l, minimal=50, maximal=b, delta=-25))
+        zipped_data = zip(
+            myplus,
+            myminus,
+            mylabel[:number],
+            self.max_volume,
+            max_buttons,
+            min_buttons,
+            max_labels,
+        )
+        for plus, minus, field, max_vol, max_button, min_button, max_label in zipped_data:
+            min_allowed = 50
+            change_value = 25
+            plus.clicked.connect(
+                lambda _, l=field, b=max_vol: DP_CONTROLLER.change_input_value(  # noqa: E741
+                    label=l, minimal=min_allowed, maximal=b, delta=change_value
+                ))
+            minus.clicked.connect(
+                lambda _, l=field, b=max_vol: DP_CONTROLLER.change_input_value(  # noqa: E741
+                    label=l, minimal=min_allowed, maximal=b, delta=-change_value
+                ))
+            max_label.setText(str(max_vol))
+            max_button.clicked.connect(lambda _, m=max_vol, f=field: f.setText(str(m)))  # noqa: E741
+            min_button.clicked.connect(lambda _, f=field: f.setText(str(min_allowed)))  # noqa: E741
 
         # remove the elements exceeding the bottle number
-        for elements in [myplus, myminus, mylabel, myname]:
+        for elements in [myplus, myminus, mylabel, myname, max_buttons, min_buttons, max_labels, volume_separators]:
             for element in elements[number::]:
                 element.deleteLater()
 
