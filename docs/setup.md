@@ -32,6 +32,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `UI_PARTYMODE`               | Protects other tabs than maker tab with a password, deprecated                           |
 | `UI_MASTERPASSWORD`          | Number Password for System/Program Level                                                 |
 | `UI_MAKER_PASSWORD`          | Number Password for party operation                                                      |
+| `UI_LOCKED_TABS`             | Specify, which tab to lock with maker password                                           |
 | `UI_LANGUAGE`                | 2 char code for the language, see [supported languages](languages.md)                    |
 | `UI_WIDTH`                   | Desired interface width, default is 800                                                  |
 | `UI_HEIGHT`                  | Desired interface height, default is 480                                                 |
