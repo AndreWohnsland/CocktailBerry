@@ -203,8 +203,8 @@ dialog:
     en: 'Here you can add a Cocktail. You need the ingredient and according amount. You can assign a number from 1-9 to each ingredient. Ingredients with the same number will be spend at the same time by the machine in increasing order. Leave all at 1 if all should spend in parallel. You can also assign a picture to existing cocktails. Cocktails not enabled will not appear in the maker. If you enable virgin, a non alcoholic version of the cocktail will be possible.'
     de: 'Hier kannst du einen Cocktail hinzufügen. Du benötigst die Zutat und die entsprechende Menge. Du kannst jeder Zutat eine Nummer von 1-9 zuweisen. Zutaten mit der gleichen Nummer werden der Größe aufsteigend gleichzeitig von der Maschine ausgegeben. Lass alle auf 1, wenn alle auf einmal ausgegeben werden sollen. Du kannst auch ein Bild zu existierenden Cocktails hinzufügen. Nicht aktivierte Cocktails werden nicht im Maker angezeigt. Wenn du Virgin aktivierst, wird eine alkoholfreie Version des Cocktails möglich sein.'
   ingredient_must_be_handadd:
-    en: 'Ingredient must be hand add when using other units than ml. This is because the machine only supports ml as output unit.'
-    de: 'Zutat muss Hand hinzugefügt werden, wenn andere Einheiten als ml verwendet werden. Dies liegt daran, dass die Maschine nur ml als Ausgabeeinheit unterstützt.'
+    en: 'Ingredient must be configured as hand add (set checkbox) when using other units than ml. This is because the machine only supports ml as output unit.'
+    de: 'Zutat muss als per Hand hinzufügen konfiguriert sein (Checkbox setzen), wenn andere Einheiten als ml verwendet werden. Dies liegt daran, dass die Maschine nur ml als Ausgabeeinheit unterstützt.'
 
 # Change of language in UI elements
 ui:
