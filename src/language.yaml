@@ -532,6 +532,9 @@ ui:
     UI_MAKER_PASSWORD:
       en: 'Password for tabs other than the maker one, use 0 for no password'
       de: 'Passwort alle Tabs, außer den Maker Tab, verwende 0 um kein Passwort zu verwenden'
+    UI_LOCKED_TABS:
+      en: 'Tabs, which should only be accessible with password, 1: Ingredients, 2: Recipes, 3: Bottles'
+      de: 'Tabs, die nur mit Passwort zugänglich sein sollen, 1: Zutaten, 2: Rezepte, 3: Flaschen'
     UI_LANGUAGE:
       en: 'Displayed language of the program'
       de: 'Spracheinstellung vom Programm'
