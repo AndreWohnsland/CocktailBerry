@@ -309,7 +309,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def handle_tab_bar_clicked(self, index):
         """Protects tabs other than maker tab with a password"""
         old_index = self.previous_tab_index
-        unprotected_tabs = [0, 1]
+        unprotected_tabs = [0, 1] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 2) if not x]
         # since the search window lives in the main window now,
         # switching to it needs to get the current available cocktails
         if index == 0:
