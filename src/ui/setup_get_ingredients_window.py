@@ -68,7 +68,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.close()
         if volume > level and cfg.MAKER_CHECK_BOTTLE:
             DP_CONTROLLER.say_not_enough_ingredient_volume(ingredient_name, level, volume)
-            if cfg.UI_MAKER_PASSWORD == 0:
+            if cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[2]:
                 DP_CONTROLLER.set_tabwidget_tab(self.mainscreen, "bottles")
             return
 
