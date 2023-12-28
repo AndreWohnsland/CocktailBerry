@@ -1,6 +1,6 @@
 from typing import Literal
 
-__version__ = "1.30.4"
+__version__ = "1.31.0"
 PROJECT_NAME = "CocktailBerry"
 MAX_SUPPORTED_BOTTLES = 24
 SupportedLanguagesType = Literal["en", "de"]
