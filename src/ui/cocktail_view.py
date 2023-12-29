@@ -21,6 +21,8 @@ if TYPE_CHECKING:
 
 # default: roughly take 240 px for image dimensions
 N_COLUMNS = int(cfg.UI_WIDTH / cfg.UI_PICTURE_SIZE)
+# in some cases this value can be zero, so we need to make sure it's at least 1
+N_COLUMNS = max(N_COLUMNS, 1)
 # keep a 17% margin
 SQUARE_SIZE = int(cfg.UI_WIDTH / (N_COLUMNS * 1.17))
 
