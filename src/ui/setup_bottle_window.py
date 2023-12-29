@@ -52,14 +52,13 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         )
         for plus, minus, field, max_vol, max_button, min_button, max_label in zipped_data:
             min_allowed = 50
-            change_value = 25
             plus.clicked.connect(
                 lambda _, l=field, b=max_vol: DP_CONTROLLER.change_input_value(  # noqa: E741
-                    label=l, minimal=min_allowed, maximal=b, delta=change_value
+                    label=l, minimal=50, maximal=b, delta=25
                 ))
             minus.clicked.connect(
                 lambda _, l=field, b=max_vol: DP_CONTROLLER.change_input_value(  # noqa: E741
-                    label=l, minimal=min_allowed, maximal=b, delta=-change_value
+                    label=l, minimal=50, maximal=b, delta=-25
                 ))
             max_label.setText(str(max_vol))
             max_button.clicked.connect(lambda _, m=max_vol, f=field: f.setText(str(m)))  # noqa: E741
