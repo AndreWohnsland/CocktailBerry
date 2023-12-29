@@ -109,6 +109,7 @@ class DialogHandler():
     def _generate_file_dialog(self, w: QWidget, message: str = ""):
         """Creates the base file dialog and shows it with the full screen settings"""
         file_dialog = QFileDialog(w)
+        file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # type: ignore
         file_dialog.setWindowTitle(message)
         file_dialog.setWindowFlags(
             Qt.Window | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint  # type: ignore
