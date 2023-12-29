@@ -95,7 +95,7 @@ If the GUI looks different than when you run it without sudo, try `sudo -E pytho
 If you ran the program as non root, you will need to install the required python packages for the main program with sudo pip install.
 Also, install the rpi_ws281x python package with:
 
-```
+```bash
 sudo pip install rpi_ws281x
 sudo pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev mfrc522 qtsass pyqtspinner
 ```
@@ -104,7 +104,6 @@ See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list 
 I had success using the 12 and 18 PWM0 pin, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.
 Other described pins may also work, but are untested, so I recommend to stick to the both one that should work.
 If you use any other non controllable LED connected over the relay, you can use any pin you want, since it's only activating the relay.
-
 
 ## Set Up RFID Reader
 
@@ -135,6 +134,7 @@ Otherwise, the RFID will not work.
 Best is to restart the Pi afterwards and then check if the RFID is working as intended.
 
 ## Ui Seems Wrong on none RaspOS System
+
 On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
 This can be dependant on the flavour of Linux, as well as the desktop variant you are using.
 I had best experience when using a LXDE/XFCE variant, for example of a Debian Linux, on a none Raspberry Pi single board computer.
@@ -156,9 +156,22 @@ Unchecking this box usually fixes this problem.
 In case you want to reset the configuration, it is the best way to just delete the custom_config.yaml in the main folder.
 This file holds your configuration and will be created with the defaults if it does not exists.
 
+If some setting is not working and prevents a program start, you can also edit the config file manually.
+The config file is located at `~/CocktailBerry/custom_config.yaml`.
+You can open it with any text editor.
+Or just use the terminal:
+
+```bash
+cd ~/CocktailBerry
+sudo nano custom_config.yaml
+# use the arrow keys to navigate
+# ctrl + o to save
+# ctrl + x to exit
+```
+
 ## Software does not Update
 
-It may happen that you don't get the latest version of the software promptet at start, even if you check for updates.
+It may happen that you don't get the latest version of the software prompted at start, even if you check for updates.
 This can be due to different reasons.
 First, check if you have a internet connection.
 If you have, check if you have the latest recommended version of python installed.

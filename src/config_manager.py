@@ -56,6 +56,8 @@ class ConfigManager:
     UI_MASTERPASSWORD: int = 0
     # Password to lock other tabs than maker tab
     UI_MAKER_PASSWORD: int = 0
+    # specify which of the tabs will be locked
+    UI_LOCKED_TABS: List[bool] = [True, True, True]
     # Language to use, use two chars look up documentation, if not provided fallback to en
     UI_LANGUAGE: SupportedLanguagesType = "en"
     # Width and height of the touchscreen
@@ -138,6 +140,7 @@ class ConfigManager:
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_MASTERPASSWORD": (int, []),
             "UI_MAKER_PASSWORD": (int, []),
+            "UI_LOCKED_TABS": (list, []),
             "UI_LANGUAGE": (LanguageChoose, []),
             "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),
@@ -181,6 +184,7 @@ class ConfigManager:
             "PUMP_VOLUMEFLOW": (float, [_build_number_limiter(0.1, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
             "LED_PINS": (int, [_build_number_limiter(0, 200)]),
+            "UI_LOCKED_TABS": (bool, []),
         }
         try:
             self._read_config()
@@ -254,6 +258,7 @@ class ConfigManager:
             "PUMP_PINS": min_bottles,
             "PUMP_VOLUMEFLOW": min_bottles,
             "TEAM_BUTTON_NAMES": 2,
+            "UI_LOCKED_TABS": 3,
         }
         min_len = min_len_config.get(configname)
         if min_len is None:

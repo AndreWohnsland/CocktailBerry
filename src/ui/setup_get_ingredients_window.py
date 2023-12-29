@@ -32,8 +32,14 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
         # Connect all the buttons
-        self.PBplus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LAmount, 10, 100, 10))
-        self.PBminus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.LAmount, 10, 100, -10))
+        volume_step = 10
+        max_volume = 300
+        self.PBplus.clicked.connect(
+            lambda: DP_CONTROLLER.change_input_value(self.LAmount, volume_step, max_volume, volume_step)
+        )
+        self.PBminus.clicked.connect(
+            lambda: DP_CONTROLLER.change_input_value(self.LAmount, volume_step, max_volume, -volume_step)
+        )
         self.PBAusgeben.clicked.connect(self._spend_clicked)
         self.PBAbbrechen.clicked.connect(self._cancel_clicked)
         all_bottles = DB_COMMANDER.get_ingredient_names_at_bottles()
@@ -62,7 +68,7 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         self.close()
         if volume > level and cfg.MAKER_CHECK_BOTTLE:
             DP_CONTROLLER.say_not_enough_ingredient_volume(ingredient_name, level, volume)
-            if cfg.UI_MAKER_PASSWORD == 0:
+            if cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[2]:
                 DP_CONTROLLER.set_tabwidget_tab(self.mainscreen, "bottles")
             return
 
