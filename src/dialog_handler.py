@@ -8,12 +8,13 @@ from typing import Dict, List, Optional, Literal, TYPE_CHECKING, Union
 from threading import Thread, Event
 import yaml
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog, QWidget, QDialog
 from src.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.ui_elements.addonmanager import Ui_AddonManager
 from src.utils import get_platform_data
-from src.filepath import LANGUAGE_FILE, APP_ICON_FILE
+from src.filepath import LANGUAGE_FILE, APP_ICON_FILE, STYLE_FOLDER
 from src import __version__
 
 if TYPE_CHECKING:
@@ -108,7 +109,11 @@ class DialogHandler():
 
     def _generate_file_dialog(self, w: QWidget, message: str = ""):
         """Creates the base file dialog and shows it with the full screen settings"""
-        file_dialog = QFileDialog(w)
+        file_dialog = QFileDialog()
+        style_file = f"{cfg.MAKER_THEME}.css"
+        with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as file_handler:
+            file_dialog.setStyleSheet(file_handler.read())
+        file_dialog.setWindowIcon(QIcon(self.icon_path))
         file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # type: ignore
         file_dialog.setWindowTitle(message)
         file_dialog.setWindowFlags(
