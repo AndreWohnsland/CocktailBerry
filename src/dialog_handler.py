@@ -112,7 +112,8 @@ class DialogHandler():
         file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # type: ignore
         file_dialog.setWindowTitle(message)
         file_dialog.setWindowFlags(
-            Qt.Window | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint  # type: ignore
+            Qt.Dialog | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | # type: ignore
+            Qt.WindowStaysOnTopHint | Qt.X11BypassWindowManagerHint  # type: ignore
         )
         if not cfg.UI_DEVENVIRONMENT:
             file_dialog.setCursor(Qt.BlankCursor)  # type: ignore
