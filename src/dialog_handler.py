@@ -122,6 +122,7 @@ class DialogHandler():
         file_dialog.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
         file_dialog.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
         file_dialog.move(0, 0)
+        file_dialog.raise_()
         return file_dialog
 
     def _parse_file_dialog(self, file_dialog: QFileDialog):
