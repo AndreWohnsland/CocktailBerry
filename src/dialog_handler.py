@@ -112,13 +112,13 @@ class DialogHandler():
         file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # type: ignore
         file_dialog.setWindowTitle(message)
         file_dialog.setWindowFlags(
-            Qt.Dialog | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | # type: ignore
+            Qt.Dialog | Qt.FramelessWindowHint | Qt.CustomizeWindowHint |  # type: ignore
             Qt.WindowStaysOnTopHint | Qt.X11BypassWindowManagerHint  # type: ignore
         )
         if not cfg.UI_DEVENVIRONMENT:
             file_dialog.setCursor(Qt.BlankCursor)  # type: ignore
         file_dialog.setViewMode(QFileDialog.List)  # type: ignore
-        file_dialog.showMaximized()
+        file_dialog.showFullScreen()
         file_dialog.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
         file_dialog.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
         file_dialog.move(0, 0)
