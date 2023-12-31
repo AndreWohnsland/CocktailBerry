@@ -107,7 +107,7 @@ class DialogHandler():
         msg = self.__choose_language(dialog_name, **kwargs)
         self.standard_box(msg, use_ok=use_ok, close_time=close_time)
 
-    def _generate_file_dialog(self, w: QWidget, message: str = ""):
+    def _generate_file_dialog(self, message: str = ""):
         """Creates the base file dialog and shows it with the full screen settings"""
         file_dialog = QFileDialog()
         style_file = f"{cfg.MAKER_THEME}.css"
@@ -139,16 +139,16 @@ class DialogHandler():
                 return Path(file_name).absolute()
         return None
 
-    def _get_folder_location(self, w: QWidget, message: str):
+    def _get_folder_location(self, message: str):
         """Returns the selected folder"""
-        file_dialog = self._generate_file_dialog(w, message)
+        file_dialog = self._generate_file_dialog(message)
         file_dialog.setFileMode(QFileDialog.Directory)  # type: ignore
         file_dialog.setOption(QFileDialog.ShowDirsOnly, True)  # type: ignore
         return self._parse_file_dialog(file_dialog)
 
-    def get_file_location(self, w: QWidget, message: str, filter_str: str):
+    def get_file_location(self, message: str, filter_str: str):
         """Returns the selected file"""
-        file_dialog = self._generate_file_dialog(w, message)
+        file_dialog = self._generate_file_dialog(message)
         file_dialog.setFileMode(QFileDialog.ExistingFile)  # type: ignore
         file_dialog.setNameFilter(filter_str)
         return self._parse_file_dialog(file_dialog)
@@ -408,12 +408,12 @@ class DialogHandler():
     def ask_for_backup_location(self, w: QWidget):
         """Asks the user where to get or store the backup output"""
         message = self.__choose_language("ask_for_backup_location")
-        return self._get_folder_location(w, message)
+        return self._get_folder_location(message)
 
-    def ask_for_image_location(self, w: QWidget):
+    def ask_for_image_location(self):
         """Asks the user where to get or store the backup output"""
         message = self.__choose_language("ask_for_image_location")
-        return self.get_file_location(w, message, "Images (*.jpg *.png)")
+        return self.get_file_location(message, "Images (*.jpg *.png)")
 
     def ask_backup_overwrite(self, backup_files: str):
         """Asks the user if he wants to use backup"""

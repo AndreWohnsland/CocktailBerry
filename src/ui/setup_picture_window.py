@@ -57,7 +57,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
 
     def _prepare_picture(self):
         """Crops and show the picture"""
-        selected_path = DP_CONTROLLER.ask_for_image_location(self)
+        selected_path = DP_CONTROLLER.ask_for_image_location()
         if selected_path is None:
             return
         image = process_image(selected_path)
