@@ -9,7 +9,7 @@ from threading import Thread, Event
 import yaml
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QFileDialog, QWidget, QDialog
+from PyQt5.QtWidgets import QFileDialog, QDialog
 from src.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.ui_elements.addonmanager import Ui_AddonManager
