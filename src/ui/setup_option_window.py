@@ -43,7 +43,7 @@ class _Worker(QObject):
         super().__init__(parent)
 
     def run(self):
-        os.system("sudo apt-get update && sudo apt-get -y upgrade")
+        os.system("sudo apt-get update && sudo apt-get -y full-upgrade")
         self.done.emit()
 
 
