@@ -405,7 +405,7 @@ class DialogHandler():
         message = self.__choose_language("ask_to_shutdown")
         return self.user_okay(message)
 
-    def ask_for_backup_location(self, w: QWidget):
+    def ask_for_backup_location(self):
         """Asks the user where to get or store the backup output"""
         message = self.__choose_language("ask_for_backup_location")
         return self._get_folder_location(message)
