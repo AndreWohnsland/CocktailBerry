@@ -43,7 +43,7 @@ class _Worker(QObject):
         super().__init__(parent)
 
     def run(self):
-        os.system("sudo apt-get update && sudo apt-get -y upgrade")
+        os.system("sudo apt-get update && sudo apt-get -y full-upgrade")
         self.done.emit()
 
 
@@ -135,7 +135,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _create_backup(self):
         """Prompts the user for a folder path to save the backup to.
         Saves the config, custom database and version to the location."""
-        location = DP_CONTROLLER.ask_for_backup_location(self)
+        location = DP_CONTROLLER.ask_for_backup_location()
         if not location:
             return
         backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
@@ -160,7 +160,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def _upload_backup(self):
         """Opens the backup restore window."""
-        location = DP_CONTROLLER.ask_for_backup_location(self)
+        location = DP_CONTROLLER.ask_for_backup_location()
         if not location:
             return
         for _file in NEEDED_BACKUP_FILES:

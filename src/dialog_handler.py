@@ -8,12 +8,13 @@ from typing import Dict, List, Optional, Literal, TYPE_CHECKING, Union
 from threading import Thread, Event
 import yaml
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFileDialog, QWidget, QDialog
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QFileDialog, QDialog
 from src.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.ui_elements.addonmanager import Ui_AddonManager
 from src.utils import get_platform_data
-from src.filepath import LANGUAGE_FILE, APP_ICON_FILE
+from src.filepath import LANGUAGE_FILE, APP_ICON_FILE, STYLE_FOLDER
 from src import __version__
 
 if TYPE_CHECKING:
@@ -106,21 +107,27 @@ class DialogHandler():
         msg = self.__choose_language(dialog_name, **kwargs)
         self.standard_box(msg, use_ok=use_ok, close_time=close_time)
 
-    def _generate_file_dialog(self, w: QWidget, message: str = ""):
+    def _generate_file_dialog(self, message: str = ""):
         """Creates the base file dialog and shows it with the full screen settings"""
-        file_dialog = QFileDialog(w)
+        file_dialog = QFileDialog()
+        style_file = f"{cfg.MAKER_THEME}.css"
+        with open(STYLE_FOLDER / style_file, "r", encoding="utf-8") as file_handler:
+            file_dialog.setStyleSheet(file_handler.read())
+        file_dialog.setWindowIcon(QIcon(self.icon_path))
         file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # type: ignore
         file_dialog.setWindowTitle(message)
         file_dialog.setWindowFlags(
-            Qt.Window | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint  # type: ignore
+            Qt.Dialog | Qt.FramelessWindowHint | Qt.CustomizeWindowHint |  # type: ignore
+            Qt.WindowStaysOnTopHint | Qt.X11BypassWindowManagerHint  # type: ignore
         )
         if not cfg.UI_DEVENVIRONMENT:
             file_dialog.setCursor(Qt.BlankCursor)  # type: ignore
         file_dialog.setViewMode(QFileDialog.List)  # type: ignore
-        file_dialog.showMaximized()
+        file_dialog.showFullScreen()
         file_dialog.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
         file_dialog.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
         file_dialog.move(0, 0)
+        file_dialog.raise_()
         return file_dialog
 
     def _parse_file_dialog(self, file_dialog: QFileDialog):
@@ -132,16 +139,16 @@ class DialogHandler():
                 return Path(file_name).absolute()
         return None
 
-    def _get_folder_location(self, w: QWidget, message: str):
+    def _get_folder_location(self, message: str):
         """Returns the selected folder"""
-        file_dialog = self._generate_file_dialog(w, message)
+        file_dialog = self._generate_file_dialog(message)
         file_dialog.setFileMode(QFileDialog.Directory)  # type: ignore
         file_dialog.setOption(QFileDialog.ShowDirsOnly, True)  # type: ignore
         return self._parse_file_dialog(file_dialog)
 
-    def get_file_location(self, w: QWidget, message: str, filter_str: str):
+    def get_file_location(self, message: str, filter_str: str):
         """Returns the selected file"""
-        file_dialog = self._generate_file_dialog(w, message)
+        file_dialog = self._generate_file_dialog(message)
         file_dialog.setFileMode(QFileDialog.ExistingFile)  # type: ignore
         file_dialog.setNameFilter(filter_str)
         return self._parse_file_dialog(file_dialog)
@@ -398,15 +405,15 @@ class DialogHandler():
         message = self.__choose_language("ask_to_shutdown")
         return self.user_okay(message)
 
-    def ask_for_backup_location(self, w: QWidget):
+    def ask_for_backup_location(self):
         """Asks the user where to get or store the backup output"""
         message = self.__choose_language("ask_for_backup_location")
-        return self._get_folder_location(w, message)
+        return self._get_folder_location(message)
 
-    def ask_for_image_location(self, w: QWidget):
+    def ask_for_image_location(self):
         """Asks the user where to get or store the backup output"""
         message = self.__choose_language("ask_for_image_location")
-        return self.get_file_location(w, message, "Images (*.jpg *.png)")
+        return self.get_file_location(message, "Images (*.jpg *.png)")
 
     def ask_backup_overwrite(self, backup_files: str):
         """Asks the user if he wants to use backup"""

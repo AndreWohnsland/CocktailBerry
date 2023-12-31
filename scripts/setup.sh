@@ -5,7 +5,7 @@
 # dashboard: set up dashboard, otherwise will set up CocktailBerry
 
 echo "Installing updates, this may take a while..."
-sudo apt-get update && sudo apt-get -y upgrade
+sudo apt update && sudo sudo apt -y full-upgrade
 
 # Generating launcher script
 echo "(Re-)Generating launcher script at: ~/launcher.sh"
