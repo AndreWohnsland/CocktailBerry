@@ -240,6 +240,9 @@ ui:
     apply:
       en: 'Apply'
       de: 'Anwenden'
+    done:
+      en: 'Done!'
+      de: 'Fertig!'
   # dynamic values for maker tab
   maker:
     add_self:
@@ -697,3 +700,16 @@ ui:
     database:
       en: 'Database (Own Cocktails)'
       de: 'Datenbank (Eigene Cocktails)'
+
+  ##### REFILL WINDOW #####
+  # all values for settings in refill window
+  refill_prompt:
+    information:
+      en: 'The {ingredient_name} ingredient is low, {needed_volume} ml is needed. Please refill it ({ingredient_volume} ml is the bottle volume).'
+      de: 'Die {ingredient_name} Zutat ist niedrig, {needed_volume} ml werden benötigt. Bitte fülle sie auf ({ingredient_volume} ml ist das Flaschenvolumen).'
+    later:
+      en: '< Later'
+      de: '< Später'
+    to_bottles:
+      en: 'Go to Bottles'
+      de: 'Zu den Flaschen'
