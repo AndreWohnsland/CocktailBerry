@@ -21,6 +21,7 @@ from .addonmanager import Ui_AddonManager
 from .datawindow import Ui_DataWindow
 from .cocktail_selection import Ui_CocktailSelection
 from .picture_window import Ui_PictureWindow
+from .refill_prompt import Ui_RefillPrompt
 
 
 __all__ = [
@@ -47,4 +48,5 @@ __all__ = [
     "Ui_DataWindow",
     "Ui_CocktailSelection",
     "Ui_PictureWindow",
+    "Ui_RefillPrompt",
 ]
