@@ -23,7 +23,7 @@ if TYPE_CHECKING:
         Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
         Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow,
-        Ui_CocktailSelection, Ui_PictureWindow
+        Ui_CocktailSelection, Ui_PictureWindow, Ui_RefillPrompt
     )
 
 _logger = LoggerHandler("dialog_handler")
@@ -727,6 +727,28 @@ class UiLanguage():
         w.label_titel.setText(self.__choose_language("header", window, cocktail=cocktail))
         w.button_back.setText(self.__choose_language("back"))
         w.button_enter.setText(self.__choose_language("apply"))
+
+    def adjust_refill_prompt(
+        self,
+        w: Ui_RefillPrompt,
+        ingredient_name: str,
+        ingredient_volume: int,
+        needed_volume: int,
+    ):
+        """Translates the elements of the refill prompt"""
+        window = "refill_prompt"
+        w.button_later.setText(self.__choose_language("later", window))
+        w.button_to_bottles.setText(self.__choose_language("to_bottles", window))
+        w.button_apply.setText(self.__choose_language("apply"))
+        w.checkbox_done.setText(self.__choose_language("done"))
+        w.label_message.setText(
+            self.__choose_language(
+                "information", window,
+                ingredient_name=ingredient_name,
+                ingredient_volume=ingredient_volume,
+                needed_volume=needed_volume,
+            )
+        )
 
 
 UI_LANGUAGE = UiLanguage()
