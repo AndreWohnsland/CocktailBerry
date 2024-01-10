@@ -15,7 +15,7 @@ from src.service_handler import SERVICE_HANDLER
 from src.logger_handler import LoggerHandler
 from src.config_manager import CONFIG as cfg
 from src.programs.addons import ADDONS
-
+from src.ui.setup_refill_dialog import RefillDialog
 from src.config_manager import shared
 from src.utils import time_print
 
@@ -64,17 +64,21 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
         return False
     virgin_ending = " (Virgin)" if cocktail.is_virgin else ""
     display_name = f"{cocktail.name}{virgin_ending}"
-    error = None
+    empty_ingredient = None
     # only do check if this option is activated
     if cfg.MAKER_CHECK_BOTTLE:
-        error = cocktail.enough_fill_level()
-    if error is not None:
-        DP_CONTROLLER.say_not_enough_ingredient_volume(*error)
-        # Only switch tabs if they are not locked!
-        # Locking is only possible if the password is activated (!=0)
-        # and if user specified to lock the tab (3rd value in the list)
+        empty_ingredient = cocktail.enough_fill_level()
+    if empty_ingredient is not None:
+        # either show only the message (if bottles window is locked) or show also the refill prompt
         if cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[2]:
-            DP_CONTROLLER.set_tabwidget_tab(w, "bottles")
+            refill_window = RefillDialog(w, empty_ingredient)
+            refill_window.exec_()
+        else:
+            DP_CONTROLLER.say_not_enough_ingredient_volume(
+                empty_ingredient.name,
+                empty_ingredient.fill_level,
+                empty_ingredient.amount
+            )
         return False
 
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
