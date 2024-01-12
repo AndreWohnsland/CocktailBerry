@@ -15,6 +15,8 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
     environment:
       - EXECUTOR=docker
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
   backend:
     container_name: cocktail-dashboard-backend
     restart: always
@@ -25,6 +27,23 @@ services:
       - db-data:/app/storage
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
+    labels:
+        - "com.centurylinklabs.watchtower.enable=true"
+  watchtower:
+    container_name: watchtower-updater
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    command: --interval 300
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
 volumes:
   db-data:
