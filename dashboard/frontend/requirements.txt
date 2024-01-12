@@ -1,7 +1,7 @@
 requests
 python-dotenv
 pyyaml
-plotly
+plotly==5.18.0
 dash
 numpy==1.26.3
 scipy==1.11.4
