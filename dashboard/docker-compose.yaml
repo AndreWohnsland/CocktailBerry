@@ -2,11 +2,15 @@ version: '3'
 
 services:
   backend:
-    image: cocktail-dashboard-backend
+    image: andrewo92/cocktailberry-dashboard-be
     container_name: cocktail-dashboard-backend
     restart: always
-    build: backend
     ports:
       - 8080:8080
     volumes:
-      - ./storage:/app/storage
+      - db-data:/app/storage
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
+volumes:
+  db-data:

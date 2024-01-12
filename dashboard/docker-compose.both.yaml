@@ -4,13 +4,13 @@ services:
   frontend:
     container_name: cocktail-dashboard-frontend
     restart: always
-    build: frontend
+    image: andrewo92/cocktailberry-dashboard-fe
     ports:
       - 8050:80
     depends_on:
       - backend
     volumes:
-      - ./storage:/app/storage
+      - db-data:/app/storage
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     environment:
@@ -18,10 +18,13 @@ services:
   backend:
     container_name: cocktail-dashboard-backend
     restart: always
-    build: backend
+    image: andrewo92/cocktailberry-dashboard-be
     ports:
       - 8080:8080
     volumes:
-      - ./storage:/app/storage
+      - db-data:/app/storage
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
+
+volumes:
+  db-data:
