@@ -7,7 +7,7 @@ import pandas as pd
 from language import language
 from store import store
 
-# something from plotly triggers pandas warnign
+# something from plotly triggers pandas warning
 warnings.filterwarnings("ignore")
 
 
@@ -15,28 +15,28 @@ DF_START = pd.DataFrame(
     [(language.DEFAULT_MESSAGE, language.CALL_TO_ACTION, 1), ],
     columns=["Team", "Person", "Amount"]
 )
-pxcolors = px.colors.qualitative.Plotly
+px_colors = px.colors.qualitative.Plotly
 
 
 def __give_team_number(df: pd.DataFrame):
     """Adds the number to the team names"""
     stats = df.groupby("Team")["Amount"].sum()
-    for team, amount in stats.iteritems():
+    for team, amount in stats.items():
         df.Team.replace("^" + team + "$", f"{team} ({amount})", inplace=True, regex=True)
 
 
 def __decide_data(datatype: int):
     index = datatype - 1
     count = [True, False, True, False][index]
-    hourrange = [24, 24, None, None][index]
+    hour_range = [24, 24, None, None][index]
     limit = 5
-    return (count, hourrange, limit)
+    return (count, hour_range, limit)
 
 
 def get_plot_data(datatype: int):
-    count, hourrange, limit = __decide_data(datatype)
+    count, hour_range, limit = __decide_data(datatype)
     headers = {"content-type": "application/json"}
-    payload = {"limit": limit, "count": count, "hourrange": hourrange}
+    payload = {"limit": limit, "count": count, "hour_range": hour_range}
     payload = json.dumps(payload)
     url = "http://127.0.0.1:8080/teamdata"
     if os.getenv("EXECUTOR") is not None:
@@ -51,12 +51,12 @@ def get_plot_data(datatype: int):
 
 def generate_treemap(df: pd.DataFrame):
     """Generates a treemap out of the df"""
-    # if its 1st or 2nd graphtype (today data) add color mapping that team keeps
+    # if its 1st or 2nd graph type (today data) add color mapping that team keeps
     # same color, even if the value changes
     additional_config = {}
     if store.current_graph_type in [1, 2]:
-        teamnames = sorted(df.Team.unique())
-        color_discrete_map = dict(zip(teamnames, pxcolors))
+        team_names = sorted(df.Team.unique())
+        color_discrete_map = dict(zip(team_names, px_colors))
         color_discrete_map["(?)"] = "darkgrey"
         additional_config = dict(color="Team", color_discrete_map=color_discrete_map)
     fig = px.treemap(df, path=[px.Constant("Teams"), 'Team', 'Person'], values='Amount', **additional_config)
