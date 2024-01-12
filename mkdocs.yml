@@ -1,7 +1,7 @@
 site_name: 'CocktailBerry: Cocktails with Raspberry Pi'
 site_description: 'Official CocktailBerry Documentation: Serve Cocktails with the Raspberry Pi and Python'
 site_author: Andre Wohnsland
-copyright: © Copyright 2023, Andre Wohnsland & contributors
+copyright: © Copyright 2024, Andre Wohnsland & contributors
 # site_url: https://github.com/AndreWohnsland/CocktailBerry
 repo_url: https://github.com/AndreWohnsland/CocktailBerry
 repo_name: 'GitHub Cocktailberry'
