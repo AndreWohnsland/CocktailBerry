@@ -36,23 +36,26 @@ cd ~/CocktailBerry/
 if [ "$1" = "dashboard" ]; then
   echo "Setting up Dashboard"
   cd dashboard/
-  cp frontend/.env.example frontend/.env
-  cp qt-app/.env.example qt-app/.env
-  docker-compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?"
   # Letting user choose the frontend type (WebApp or Qt)
-  echo -n "Using new dashboard (Dash WebApp), otherwise will use Qt-App (y/n)? "
+  echo -n "Use new dashboard? This is strongly recommended! Oterwise will use old Qt App, but this will only work on a standalone device and has no remote access option (y/n) "
   read answer
+  echo -n "Enter your display language (en, de): "
+  read language
+  # new dashboard
   if echo "$answer" | grep -iq "^y"; then
-    echo "cd ~/CocktailBerry/dashboard/frontend/" >>~/launcher.sh
-    echo "gunicorn --workers=5 --threads=1 -b :8050 index:server" >>~/launcher.sh
+    export UI_LANGUAGE=$language
+    docker compose -f docker-compose.both.yaml up --build -d || echo "ERROR: Could not install dashboard over docker-compose, is docker installed?"
     echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
-    cd frontend/
+  # qt app
   else
+    docker compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?"
+    echo "export UI_LANGUAGE=$language" >>~/launcher.sh
+    echo "source ~/.env-cocktailberry/bin/activate" >>~/launcher.sh
     echo "cd ~/CocktailBerry/dashboard/qt-app/" >>~/launcher.sh
     echo "python main.py" >>~/launcher.sh
     cd qt-app/
+    pip install -r requirements.txt
   fi
-  pip install -r requirements.txt
 else
   echo "Setting up CocktailBerry"
   echo "source ~/.env-cocktailberry/bin/activate" >>~/launcher.sh
