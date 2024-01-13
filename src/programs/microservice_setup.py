@@ -1,10 +1,14 @@
+from enum import Enum
 import subprocess
+import os
 from typing import Optional
 import re
+import socket
+from pathlib import Path
 
 import typer
 
-from src.filepath import LOCAL_MICROSERVICE_FILE, DEFAULT_MICROSERVICE_FILE
+from src.filepath import LOCAL_MICROSERVICE_FILE, DEFAULT_MICROSERVICE_FILE, TEAMS_DOCKER_FILE
 
 # defining pattern in file, where env is stored in 2nd grp
 _HOOK_EP_REGEX = r"(HOOK_ENDPOINT=)(.+)"
@@ -105,3 +109,60 @@ def _user_prompt(current_value: str, default_value: str, display_name: str) -> s
     if user_input == "d":
         user_input = default_value
     return user_input
+
+
+class LanguageChoice(str, Enum):
+    """Enum for the language choice"""
+    ENGLISH = "en"
+    GERMAN = "de"
+
+
+def _get_ip():
+    """Get the IP of the machine, because gethostbyname does not work on all systems
+    """
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    try:
+        s.connect(('10.254.254.254', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
+
+def setup_teams(language: LanguageChoice):
+    """Setup the Teams frontend + backend from compose file, using the given language"""
+    msg = f"Setting up the Teams Docker Compose images, using {language.name} language ..."
+    typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
+    # since we need to alter the env var, need a tmp file
+    # this is because we cant set env vars in docker compose over the up command as string but file
+    tmp_env_file = Path.home().absolute() / ".tmp_docker.env"
+    with open(tmp_env_file, "w") as f:
+        f.write(f"UI_LANGUAGE={language.value}")
+    # first need to pull latest image, otherwise it will use the old one, if it exists
+    subprocess.run([
+        "docker", "compose",
+        "-f", str(TEAMS_DOCKER_FILE),
+        "--env-file", str(tmp_env_file.resolve()),
+        "pull"
+    ], check=False
+    )
+    cmd = [
+        "docker", "compose",
+        "-f", str(TEAMS_DOCKER_FILE),
+        "--env-file", str(tmp_env_file.resolve()),
+        "up",
+        "--build",
+        "-d"
+    ]
+    subprocess.run(cmd, check=False)
+    typer.echo(typer.style("Done!", fg=typer.colors.GREEN, bold=True))
+    os.remove(tmp_env_file)
+    host_name = socket.gethostname()
+    ip = _get_ip()
+    msg = f"Teams frontend URL: http://{ip}:8050, service url: http://{ip}:8080 machine name is {host_name}"
+    typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
+    msg = "You can use http://127.0.0.1:8080 in CocktailBerry if you are running it on the same machine"
+    typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
