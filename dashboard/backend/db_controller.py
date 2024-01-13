@@ -31,7 +31,7 @@ class DBController:
         self.cursor.execute(sql, (entry_datetime, team, volume, person,))
         self.conn.commit()
 
-    def generate_leaderboard(self, hourrange: int, use_count: bool, limit: int):
+    def generate_leaderboard(self, hourrange: Optional[int], use_count: bool, limit: int):
         addition = ""
         if hourrange is not None:
             addition = f" WHERE Date >= datetime('now','-{hourrange} hours')"
@@ -40,7 +40,7 @@ class DBController:
         self.cursor.execute(sql, (limit,))
         return dict(self.cursor.fetchall())
 
-    def generate_teamdata(self, hourrange: int, use_count: bool, limit: int):
+    def generate_teamdata(self, hourrange: Optional[int], use_count: bool, limit: int):
         addition1 = ""
         addition2 = ""
         if hourrange is not None:
