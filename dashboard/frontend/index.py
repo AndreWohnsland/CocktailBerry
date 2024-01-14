@@ -38,4 +38,4 @@ app.layout = html.Div([
 if __name__ == '__main__':
     # app.run_server(debug=True)
     print("access the server on http://127.0.0.1:8050/ http://127.0.0.1 or your defined address")
-    app.run_server(host="0.0.0.0", debug=False, port=8050)
+    app.run_server(host="0.0.0.0", debug=False, port="8050")

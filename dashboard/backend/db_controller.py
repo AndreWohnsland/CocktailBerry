@@ -31,21 +31,21 @@ class DBController:
         self.cursor.execute(sql, (entry_datetime, team, volume, person,))
         self.conn.commit()
 
-    def generate_leaderboard(self, hourrange: int, use_count: bool, limit: int):
+    def generate_leaderboard(self, hour_range: Optional[int], use_count: bool, limit: int):
         addition = ""
-        if hourrange is not None:
-            addition = f" WHERE Date >= datetime('now','-{hourrange} hours')"
+        if hour_range is not None:
+            addition = f" WHERE Date >= datetime('now','-{hour_range} hours')"
         agg = self.__count_or_sum(use_count)
         sql = f"SELECT Team, {agg} as amount FROM Team{addition} GROUP BY Team ORDER BY {agg} DESC LIMIT ?"
         self.cursor.execute(sql, (limit,))
         return dict(self.cursor.fetchall())
 
-    def generate_teamdata(self, hourrange: int, use_count: bool, limit: int):
+    def generate_teamdata(self, hour_range: Optional[int], use_count: bool, limit: int):
         addition1 = ""
         addition2 = ""
-        if hourrange is not None:
-            addition1 = f" WHERE Date >= datetime('now','-{hourrange} hours')"
-            addition2 = f" AND Date >= datetime('now','-{hourrange} hours')"
+        if hour_range is not None:
+            addition1 = f" WHERE Date >= datetime('now','-{hour_range} hours')"
+            addition2 = f" AND Date >= datetime('now','-{hour_range} hours')"
         agg = self.__count_or_sum(use_count)
         sql = f"""SELECT Team, Person, {agg} as amount FROM Team
                 WHERE Team in (SELECT Team FROM Team {addition1} GROUP BY Team ORDER BY {agg} DESC LIMIT ?){addition2}

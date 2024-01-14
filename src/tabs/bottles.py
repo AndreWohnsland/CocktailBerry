@@ -95,14 +95,19 @@ def renew_checked_bottles(w):
     # if no bottle is selected, skip the process
     if len(bottle_numbers) == 0:
         return
-    DB_COMMANDER.set_bottle_volumelevel_to_max(bottle_numbers)
     DP_CONTROLLER.untoggle_buttons(pushbutton_new_list)
+    renew_bottles(w, bottle_numbers)
+
+
+def renew_bottles(w, bottles: list[int]):
+    """ Renews the bottles at given slot, flush the tubes if needed. """
+    DB_COMMANDER.set_bottle_volumelevel_to_max(bottles)
     set_fill_level_bars(w)
     # if a tube volume is defined, pump that amount up:
     if cfg.MAKER_TUBE_VOLUME > 0:
         # get the ingredients, set the Tube volume
         ingredients = []
-        for num in bottle_numbers:
+        for num in bottles:
             ing = DB_COMMANDER.get_ingredient_at_bottle(num)
             ing.amount = cfg.MAKER_TUBE_VOLUME
             ingredients.append(ing)

@@ -97,7 +97,7 @@ python runme.py data-import [OPTIONS] PATH
 As usual, you can use the `--help` flag to get help on this functionality.
 The data should be in the format:
 
-```
+```txt
 Recipe Name1
 Amount [unit] Ingredient1 Name
 Amount [unit] Ingredient2 Name
@@ -123,7 +123,7 @@ If the recipe use another unit than ml, please provide the according conversion 
 
 !!! note "As a Side Note"
     You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
-    In cases of many ingredients, it's quite exhausting to select the right one. 
+    In cases of many ingredients, it's quite exhausting to select the right one.
     Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
     The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the single cocktails.
     This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
@@ -143,12 +143,12 @@ python runme.py create-addon [OPTIONS] ADDON_NAME
 ```
 
 Creates a file containing the base structure to get started with your addon.
-The file is placed in the `addons` folder. 
+The file is placed in the `addons` folder.
 File name will be the name converted to lower case, space are replaced with underscores and stripped of special characters.
 
 ## Setup the Microservice
 
-You can also use CocktailBerry to set up the microservice and change the env variables.
+You can also use CocktailBerry to set up the [microservice](advanced.md#cocktailberry-microservice) and change the env variables.
 It uses the latest image from Dockerhub.
 With the microservice, also [watchtower](https://containrrr.dev/watchtower/) will be deployed.
 Watchtower will check periodically if there is a new microservice image and install it in the background.
@@ -175,3 +175,21 @@ If this file already exists, the values will be replaced with the provided ones.
     It's currently the default compose and the CocktailBerry setup will also install it.
     If you are still running v1 (docker-compose), consider upgrading.
     In case you are using v1, add the `-o` or `--old-compose` flag.
+
+## Setup the Teams Dashboard
+
+You can also use CocktailBerry to set up the [Teams Dashboard](advanced.md#dashboard-with-teams).
+It uses the latest image from Dockerhub.
+With the dashboard, also [watchtower](https://containrrr.dev/watchtower/) will be deployed.
+Watchtower will check periodically if there is a new dashboard image and install it in the background.
+
+```bash
+python runme.py setup-teams-service [OPTIONS]
+
+# Options:
+#   -l, --language [en|de]  language for the teams service  [default: en]
+#   --help                  Show help
+```
+
+Set up the teams microservice. You can use english (en) or german (de) as language.
+Will run the frontend at `localhost:8050` (http://127.0.0.1:8050), backend at `localhost:8080` (http://127.0.0.1:8080).

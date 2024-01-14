@@ -7,7 +7,7 @@ import typer
 from src import PROJECT_NAME
 from src.config_manager import CONFIG as cfg, version_callback, show_start_message
 from src.migration.update_data import add_new_recipes_from_default_db
-from src.programs.microservice_setup import setup_service
+from src.programs.microservice_setup import setup_service, setup_teams, LanguageChoice
 from src.utils import generate_custom_style_file
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.calibration import run_calibration
@@ -124,3 +124,16 @@ def setup_microservice(
     If you are using compose version 1, please specify the flag.
     """
     setup_service(api_key, hook_endpoint, hook_header, use_v1)
+
+
+@cli.command()
+def setup_teams_service(
+    language: LanguageChoice = typer.Option(LanguageChoice.ENGLISH, "--language",
+                                            "-l", help="language for the teams service"),
+):
+    """
+    Set up the teams microservice.
+    You can use english [en] or german [de] as language.
+    Will run the frontend at localhost:8050 (http://localhost:8050), backend at localhost:8080 (http://localhost:8080).
+    """
+    setup_teams(language)

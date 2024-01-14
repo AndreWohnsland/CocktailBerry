@@ -14,7 +14,7 @@ services:
     labels:
         - "com.centurylinklabs.watchtower.enable=true"
   watchtower:
-    container_name: watchtower-updater
+    container_name: watchtower-updater-teams
     image: containrrr/watchtower
     restart: always
     volumes:

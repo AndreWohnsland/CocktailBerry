@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "CocktailBerry"
-version = "1.31.4"
+version = "1.32.0"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
 authors = ["Andre Wohnsland <Andre_Wohnsland@web.de>"]
 readme = "readme.md"
@@ -38,7 +38,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 # don't check import order in the migration script
-per-file-ignores = { "migrator.py" = ["E402"] }
+per-file-ignores = { "migrator.py" = ["E402"], "runme.py" = ["E402"] }
 line-length = 120
 exclude = ["ui_elements", "addon_skeleton.py"]
 
