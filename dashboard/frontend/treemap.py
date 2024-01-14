@@ -22,7 +22,7 @@ def __give_team_number(df: pd.DataFrame):
     """Adds the number to the team names"""
     stats = df.groupby("Team")["Amount"].sum()
     for team, amount in stats.items():
-        df.Team.replace("^" + team + "$", f"{team} ({amount})", inplace=True, regex=True)
+        df.Team.replace("^" + str(team) + "$", f"{team} ({amount})", inplace=True, regex=True)
 
 
 def __decide_data(datatype: int):
@@ -37,11 +37,10 @@ def get_plot_data(datatype: int):
     count, hour_range, limit = __decide_data(datatype)
     headers = {"content-type": "application/json"}
     payload = {"limit": limit, "count": count, "hour_range": hour_range}
-    payload = json.dumps(payload)
     url = "http://127.0.0.1:8080/teamdata"
     if os.getenv("EXECUTOR") is not None:
         url = "http://backend:8080/teamdata"
-    res = requests.get(url, data=payload, headers=headers)
+    res = requests.get(url, params=payload, headers=headers)
     data = pd.DataFrame(json.loads(res.text), columns=["Team", "Person", "Amount"])
     if data.empty:
         return DF_START

@@ -1,7 +1,10 @@
+from typing import Optional
+
 import uvicorn
 from fastapi import FastAPI
+
 from db_controller import DBController
-from models import TeamInfo, BoardConfig
+from models import TeamInfo
 
 app = FastAPI()
 
@@ -19,15 +22,15 @@ async def enter_cocktail_for_team(team: TeamInfo):
 
 
 @app.get("/leaderboard")
-def leaderboard(conf: BoardConfig):
+def leaderboard(hour_range: Optional[int] = None, limit: int = 5, count: bool = True):
     controller = DBController()
-    return controller.generate_leaderboard(conf.hourrange, conf.count, conf.limit)
+    return controller.generate_leaderboard(hour_range, count, limit)
 
 
 @app.get("/teamdata")
-def teamdata(conf: BoardConfig):
+def teamdata(hour_range: Optional[int] = None, limit: int = 5, count: bool = True):
     controller = DBController()
-    return controller.generate_teamdata(conf.hourrange, conf.count, conf.limit)
+    return controller.generate_teamdata(hour_range, count, limit)
 
 
 if __name__ == "__main__":
