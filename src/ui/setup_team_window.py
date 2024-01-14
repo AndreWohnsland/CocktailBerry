@@ -1,5 +1,7 @@
 from itertools import cycle
+from typing import Callable
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtCore import QObject, pyqtSignal, QThread
 
 from src.ui_elements.teamselection import Ui_Teamselection
 from src.config_manager import CONFIG as cfg, shared
@@ -7,6 +9,7 @@ from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
 from src.machine.rfid import RFIDReader
 from src.ui.creation_utils import create_button
+from src.service_handler import SERVICE_HANDLER
 
 
 class TeamScreen(QDialog, Ui_Teamselection):
@@ -31,6 +34,17 @@ class TeamScreen(QDialog, Ui_Teamselection):
         # reset the team name, since this needs to be read over rfid
         shared.team_member_name = None
         self.person_label.setText("")
+        # spin up worker to get data and not block action
+        self._worker = self._Worker(self._get_leaderboard_data)
+        self._thread = QThread()
+        self._worker.moveToThread(self._thread)
+        # Connect signals and slots
+        self._thread.started.connect(self._worker.run)
+        self._worker.done.connect(self._thread.quit)
+        self._worker.done.connect(self._worker.deleteLater)
+        self._thread.finished.connect(self._thread.deleteLater)
+        self._thread.start()
+
         if cfg.RFID_READER != "No":
             self._rfid_reader = RFIDReader()
             self._rfid_reader.read_rfid(self._write_rfid_value)
@@ -47,8 +61,32 @@ class TeamScreen(QDialog, Ui_Teamselection):
         shared.selected_team = team
         if self._rfid_reader is not None:
             self._rfid_reader.cancel_reading()
-        # self.close()
+        self.close()
 
     def __del__(self):
         if self._rfid_reader is not None:
             self._rfid_reader.cancel_reading()
+
+    def _get_leaderboard_data(self):
+        """Get leaderboard data.
+        Change the button afterwards with the number as prefix in brackets
+        """
+        data = SERVICE_HANDLER.get_team_data()
+        for name, number in data.items():
+            try:
+                button = getattr(self, f"button_{name}")
+                button.setText(f"{name} ({number}x)")
+            except AttributeError:
+                pass
+
+    class _Worker(QObject):
+        """Worker to install qtsass on a thread"""
+        done = pyqtSignal()
+
+        def __init__(self, func: Callable, parent=None):
+            super().__init__(parent)
+            self.func = func
+
+        def run(self):
+            self.func()
+            self.done.emit()
