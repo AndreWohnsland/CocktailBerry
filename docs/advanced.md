@@ -25,7 +25,7 @@
 
 !!! tip "Try the Pre-build Image"
     There is now also the option to install directly from Docker Hub, a GitHub action should build a new tag every release.
-    This is more fore advanced users, since you need to set the files/settings yourself.
+    This is for more advanced users, since you need to set the files/settings yourself.
 
     Just visit [Docker Hub](https://hub.docker.com/search?q=andrewo92) and pull the according images over docker or compose and follow the instruction on Docker Hub.
     Best is to create the according `docker-compose.yaml` file on your desktop, or anywhere outside the project, since you enter your personal credentials there.
