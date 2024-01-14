@@ -63,6 +63,20 @@ class ServiceHandler():
         endpoint = self._decide_debug_endpoint(f"{cfg.TEAM_API_URL}/cocktail")
         return self._try_to_send(endpoint, PostType.TEAMDATA, payload=payload)
 
+    def get_team_data(self) -> dict[str, int]:
+        """Get the current team data from the team api if activated"""
+        if not cfg.TEAMS_ACTIVE:
+            return {}
+        endpoint = self._decide_debug_endpoint(f"{cfg.TEAM_API_URL}/leaderboard")
+        headers = {"content-type": "application/json"}
+        payload = {"limit": 100, "hour_range": 24}
+        try:
+            req = requests.get(endpoint, params=payload, headers=headers, timeout=5)
+            return json.loads(req.text)
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            self._log_connection_error(endpoint, PostType.TEAMDATA)
+            return {}
+
     def _decide_debug_endpoint(self, endpoint: str):
         """Checks if to use the given or the debug ep"""
         debug = os.getenv("DEBUG_MS", "False") == "True"
