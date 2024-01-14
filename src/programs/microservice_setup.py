@@ -120,16 +120,16 @@ class LanguageChoice(str, Enum):
 def _get_ip():
     """Get the IP of the machine, because gethostbyname does not work on all systems
     """
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.settimeout(0)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.settimeout(0)
     try:
-        s.connect(('10.254.254.254', 1))
-        IP = s.getsockname()[0]
-    except Exception:
-        IP = '127.0.0.1'
+        sock.connect(('10.254.254.254', 1))
+        sock_ip = sock.getsockname()[0]
+    except Exception:  # pylint: disable=broad-except
+        sock_ip = '127.0.0.1'
     finally:
-        s.close()
-    return IP
+        sock.close()
+    return sock_ip
 
 
 def setup_teams(language: LanguageChoice):
@@ -139,8 +139,8 @@ def setup_teams(language: LanguageChoice):
     # since we need to alter the env var, need a tmp file
     # this is because we cant set env vars in docker compose over the up command as string but file
     tmp_env_file = Path.home().absolute() / ".tmp_docker.env"
-    with open(tmp_env_file, "w") as f:
-        f.write(f"UI_LANGUAGE={language.value}")
+    with open(tmp_env_file, "w", encoding="utf_8") as tmp_file:
+        tmp_file.write(f"UI_LANGUAGE={language.value}")
     # first need to pull latest image, otherwise it will use the old one, if it exists
     subprocess.run([
         "docker", "compose",
@@ -161,8 +161,8 @@ def setup_teams(language: LanguageChoice):
     typer.echo(typer.style("Done!", fg=typer.colors.GREEN, bold=True))
     os.remove(tmp_env_file)
     host_name = socket.gethostname()
-    ip = _get_ip()
-    msg = f"Teams frontend URL: http://{ip}:8050, service url: http://{ip}:8080 machine name is {host_name}"
+    host_ip = _get_ip()
+    msg = f"Teams frontend URL: http://{host_ip}:8050, service url: http://{host_ip}:8080 machine name is {host_name}"
     typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
     msg = "You can use http://127.0.0.1:8080 in CocktailBerry if you are running it on the same machine"
     typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
