@@ -8,14 +8,10 @@ authors = ["Andre <Andre_Wohnsland@web.de>"]
 python = ">=3.9,<4.0"
 fastapi = "0.109.0"
 uvicorn = "0.25.0"
-streamlit = "^1.0.0"
-pip-chill = "^1.0.1"
 matplotlib = "^3.4.3"
 pywaffle = "^0.6.3"
-streamlit-autorefresh = "^0.0.1"
 pandas = "2.1.4"
 requests = "^2.26.0"
-PyQt5 = "^5.15.4"
 python-dotenv = "^0.19.2"
 PyYAML = "^6.0"
 dash = "^2.2.0"
@@ -24,6 +20,7 @@ scipy = "1.11.4"
 plotly = "5.18.0"
 
 [tool.poetry.dev-dependencies]
+pip-chill = "^1.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
