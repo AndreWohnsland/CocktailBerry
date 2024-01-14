@@ -127,7 +127,7 @@ sh scripts/setup.sh dashboard
 ```
 
 !!! danger "Important"
-    **Please do not the script on the same Device as CocktailBerry!** It will else overwrite the CocktailBerry autostart.
+    **Please do not use the script on the same Device as CocktailBerry!** It will else overwrite the CocktailBerry autostart.
 
 ### Teams on Same Device
 
