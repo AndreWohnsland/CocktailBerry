@@ -1,5 +1,6 @@
 import platform
 import os
+import subprocess
 import sys
 from typing import Tuple, Literal
 from dataclasses import dataclass
@@ -58,9 +59,21 @@ def set_system_time(time_string: str):
     # checking system, currently only setting on Linux (RPi), bc. its only one supported
     supported_os = ["Linux"]
     _logger.log_event("INFO", f"Setting time to: {time_string}")
-    if p_data.system == "Linux":
-        time_command = f"timedatectl set-time '{time_string}'"
-        os.system(time_command)
+    if p_data.system in supported_os:
+        time_command = f"sudo timedatectl set-time '{time_string}'"
+        try:
+            # Use subprocess.run to capture the command's output and error
+            subprocess.run(
+                time_command, shell=True, check=True,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                text=True
+            )
+            _logger.log_event("INFO", "Time set successfully")
+
+        except subprocess.CalledProcessError as e:
+            # Log any exceptions that occurred during command execution
+            _logger.log_event("ERROR", f"Could not set time, error: {e.stderr}")
+            _logger.log_exception(e)
     else:
         _logger.log_event(
             "WARNING",
