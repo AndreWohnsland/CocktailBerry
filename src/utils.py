@@ -72,7 +72,8 @@ def set_system_time(time_string: str):
 
         except subprocess.CalledProcessError as e:
             # Log any exceptions that occurred during command execution
-            _logger.log_event("ERROR", f"Could not set time, error: {e.stderr}")
+            err_msg = e.stderr.replace("\n", " ")
+            _logger.log_event("ERROR", f"Could not set time, error: {err_msg}")
             _logger.log_exception(e)
     else:
         _logger.log_event(
