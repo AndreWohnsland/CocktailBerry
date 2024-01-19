@@ -95,7 +95,7 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
     # Now make the cocktail
     time_print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
     consumption, taken_time, max_time = MACHINE.make_cocktail(
-        w, ingredient_bottles, display_name)  # type: ignore
+        w, ingredient_bottles, display_name)
     DB_COMMANDER.increment_recipe_counter(cocktail.name)
     __generate_maker_log_entry(cocktail.adjusted_amount, display_name, taken_time, max_time)
 
