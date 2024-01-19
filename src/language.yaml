@@ -280,8 +280,8 @@ ui:
       en: 'Spend single ingredient'
       de: 'Einzelne Zutat ausgeben'
     handadd_check_label:
-      en: 'Only add self by hand:'
-      de: 'Nur selbst hinzufügen:'
+      en: 'Only add self by hand'
+      de: 'Nur selbst hinzufügen'
     available_button:
       en: 'available'
       de: 'verfügbar'
@@ -294,9 +294,9 @@ ui:
     virgin_possibility:
       en: 'Allow virgin'
       de: 'Virgin erlauben'
-    slow_ingredient_check_label:
-      en: 'Slow ingredient:'
-      de: 'Langsame Zutat:'
+    label_pump_speed:
+      en: 'Pump speed'
+      de: 'Pumpengeschwindigkeit'
     label_ingredient_cost:
       en: 'Cost'
       de: 'Kosten'
