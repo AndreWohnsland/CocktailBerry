@@ -554,7 +554,7 @@ class UiLanguage():
             (w.LBottleVolume, "bottle_volume_label"),
             (w.PBFlanwenden, "renew_button"),
             (w.offervirgin_checkbox, "virgin_possibility"),
-            (w.check_slow_ingredient, "slow_ingredient_check_label"),
+            (w.label_pump_speed, "label_pump_speed"),
             (w.label_ingredient_cost, "label_ingredient_cost"),
             (w.button_set_picture, "label_picture"),
             (w.label_search_title, "header_search"),
