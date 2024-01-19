@@ -177,6 +177,7 @@ With this as your base set up, even if not using the optional ingredients, your 
 !!! tip "Data Insights"
     You can export the CocktailBerry data to a CSV file over the interface.
     With this information you may identify popular drinks and ingredients.
+    You can also use the CocktailBerry UI in the options page to get a neat local overview of the data.
 
 ## Updates
 

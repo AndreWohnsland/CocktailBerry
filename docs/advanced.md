@@ -143,7 +143,7 @@ Since you will have only one screen, use a secondary device to access the dashbo
 
 ### Accessing the Dashboard
 
-You can then access the frontend on a web browser, either over:
+You can access the frontend on a web browser, either over:
 
 - **http://127.0.0.1:8050** Your browser directly at the RPi
 - **http://YOUR_PI_IP:8050** The IP address of the Pi from another device, if devices are in the same network
@@ -165,10 +165,10 @@ For this, a very easy way is to use [RaspAp](https://raspap.com/).
 
 !!! info "Less Typing"
     Using the included script `sh scripts/install_docker.sh` and `sh scripts/install_compose.sh` will also do that for you.
-    You may have executed it at the setup of your CocktailBerry and therefore already installed docker.
+    You may have executed it at the setup of your CocktailBerry, if you used the all in one script, and therefore already installed docker.
     Using them have the benefit that they may be more up to date than the commands below.
 
-Just run these commands in sequence on the pi:
+Just run these commands in sequence on the Pi:
 
 ```bash
 sudo apt-get update && sudo apt-get -y upgrade
