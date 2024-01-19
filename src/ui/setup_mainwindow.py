@@ -241,8 +241,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             lambda: self.open_numpad(self.LEFlaschenvolumen, 50, 50, amount)
         )
         self.LEFlaschenvolumen.setMaxLength(5)
+        self.line_edit_pump_speed.clicked.connect(
+            lambda: self.open_numpad(self.line_edit_pump_speed, 50, 50, number)
+        )
+        self.line_edit_pump_speed.setMaxLength(3)
         self.line_edit_ingredient_cost.clicked.connect(
-            lambda: self.open_numpad(self.line_edit_ingredient_cost, 50, 50, amount)
+            lambda: self.open_numpad(self.line_edit_ingredient_cost, 50, 50, number)
         )
         self.LECocktail.setMaxLength(30)
         self.input_search_cocktail.clicked.connect(lambda: self.open_keyboard(self.input_search_cocktail))
