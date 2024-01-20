@@ -30,7 +30,7 @@ class DatabaseCommander:
     def __get_recipe_ingredients_by_id(self, recipe_id: int):
         """Return ingredient data for recipe from recipe ID"""
         query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level,
-                I.Hand, I.Slow, RD.Amount, B.Bottle, I.Cost, RD.Recipe_Order,
+                I.Hand, I.Pump_speed, RD.Amount, B.Bottle, I.Cost, RD.Recipe_Order,
                 I.Unit
                 FROM RecipeData as RD INNER JOIN Ingredients as I 
                 ON RD.Ingredient_ID = I.ID
@@ -44,7 +44,7 @@ class DatabaseCommander:
             bottle_volume=i[3],
             fill_level=i[4],
             hand=bool(i[5]),
-            slow=bool(i[6]),
+            pump_speed=i[6],
             amount=i[7],
             bottle=i[8],
             cost=i[9],
@@ -105,19 +105,20 @@ class DatabaseCommander:
     def get_ingredient_names_at_bottles(self) -> List[str]:
         """Return ingredient name for all bottles"""
         query = """SELECT Ingredients.Name FROM Bottles
-                    LEFT JOIN Ingredients ON
-                    Ingredients.ID=Bottles.ID
-                    ORDER BY Bottles.Bottle"""
+                LEFT JOIN Ingredients ON
+                Ingredients.ID=Bottles.ID
+                ORDER BY Bottles.Bottle"""
         result = self.handler.query_database(query)
         return [x[0] if x[0] is not None else "" for x in result]
 
     def get_ingredient_at_bottle(self, bottle: int) -> Ingredient:
         """Return ingredient name for all bottles"""
-        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle, I.Cost, I.Unit
-                    FROM Bottles as B
-                    LEFT JOIN Ingredients as I
-                    ON I.ID=B.ID
-                    WHERE B.Bottle=?"""
+        query = """SELECT
+                I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Pump_speed, B.Bottle, I.Cost, I.Unit
+                FROM Bottles as B
+                LEFT JOIN Ingredients as I
+                ON I.ID=B.ID
+                WHERE B.Bottle=?"""
         result = self.handler.query_database(query, (bottle,))
         ing = result[0]
         return Ingredient(
@@ -127,7 +128,7 @@ class DatabaseCommander:
             bottle_volume=ing[3],
             fill_level=ing[4],
             hand=bool(ing[5]),
-            slow=bool(ing[6]),
+            pump_speed=ing[6],
             bottle=ing[7],
             cost=ing[8],
             unit=ing[9],
@@ -153,7 +154,8 @@ class DatabaseCommander:
             condition = "I.Name"
         else:
             condition = "I.ID"
-        query = f"""SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle, I.Cost, I.Unit
+        query = f"""SELECT
+                I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Pump_speed, B.Bottle, I.Cost, I.Unit
                 FROM Ingredients as I LEFT JOIN Bottles as B on B.ID = I.ID WHERE {condition}=?"""
         data = self.handler.query_database(query, (search,))
         # returns None if no data exists
@@ -167,7 +169,7 @@ class DatabaseCommander:
             bottle_volume=ing[3],
             fill_level=ing[4],
             hand=bool(ing[5]),
-            slow=bool(ing[6]),
+            pump_speed=ing[6],
             bottle=ing[7],
             cost=ing[8],
             unit=ing[9],
@@ -176,8 +178,9 @@ class DatabaseCommander:
     def get_all_ingredients(self, get_machine=True, get_hand=True) -> List[Ingredient]:
         """Builds a list of all ingredients, option to filter by add status"""
         ingredients = []
-        query = """SELECT I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Slow, B.Bottle, I.Cost, I.Unit
-                    FROM Ingredients as I LEFT JOIN Bottles as B on B.ID = I.ID"""
+        query = """SELECT
+                I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Pump_speed, B.Bottle, I.Cost, I.Unit
+                FROM Ingredients as I LEFT JOIN Bottles as B on B.ID = I.ID"""
         ingredient_data = self.handler.query_database(query)
         for ing in ingredient_data:
             hand = bool(ing[5])
@@ -190,7 +193,7 @@ class DatabaseCommander:
                         bottle_volume=ing[3],
                         fill_level=ing[4],
                         hand=hand,
-                        slow=ing[6],
+                        pump_speed=ing[6],
                         bottle=ing[7],
                         cost=ing[8],
                         unit=ing[9],
@@ -301,7 +304,7 @@ class DatabaseCommander:
         self, ingredient_name: str,
         alcohol_level: int, volume: int,
         new_level: int, only_hand: bool,
-        is_slow: bool,
+        pump_speed: int,
         ingredient_id: int,
         cost: int,
         unit: str,
@@ -312,13 +315,13 @@ class DatabaseCommander:
                 Volume = ?,
                 Fill_level = ?,
                 Hand = ?, 
-                Slow = ?,
+                Pump_speed = ?,
                 Cost = ?,
                 Unit = ?
                 WHERE ID = ?"""
         search_tuple = (
             ingredient_name, alcohol_level, volume, new_level,
-            int(only_hand), int(is_slow), cost, unit, ingredient_id
+            int(only_hand), pump_speed, cost, unit, ingredient_id
         )
         self.handler.query_database(query, search_tuple)
 
@@ -379,17 +382,17 @@ class DatabaseCommander:
         alcohol_level: int,
         volume: int,
         only_hand: bool,
-        is_slow: bool,
+        pump_speed: int,
         cost: int,
         unit: str,
     ):
         """Insert a new ingredient into the database"""
         query = """INSERT OR IGNORE INTO
                 Ingredients(
-                    Name, Alcohol, Volume, Consumption_lifetime, Consumption, Fill_level, Hand, Slow, Cost, Unit
+                    Name, Alcohol, Volume, Consumption_lifetime, Consumption, Fill_level, Hand, Pump_speed, Cost, Unit
                 ) 
                 VALUES (?,?,?,0,0,0,?,?,?,?)"""
-        search_tuple = (ingredient_name, alcohol_level, volume, int(only_hand), int(is_slow), cost, unit)
+        search_tuple = (ingredient_name, alcohol_level, volume, int(only_hand), pump_speed, cost, unit)
         self.handler.query_database(query, search_tuple)
 
     def insert_new_recipe(self, name: str, alcohol_level: int, volume: int, enabled: int, virgin: int):
