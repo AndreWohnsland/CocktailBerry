@@ -156,7 +156,7 @@ def _insert_not_existing_ingredients(ingredients: List[str]):
     print("Inserting ingredients:", end=" ")
     for ingredient in not_existing_names:
         print(ingredient, end=", ")
-        DB_COMMANDER.insert_new_ingredient(ingredient, 0, 1000, False, False, 0, "ml")
+        DB_COMMANDER.insert_new_ingredient(ingredient, 0, 1000, False, 100, 0, "ml")
     print("")
 
 

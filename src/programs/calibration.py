@@ -40,7 +40,17 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         channel_number = int(self.channel.text())
         amount = int(self.amount.text())
         display_name = f"{amount} ml volume, pump #{channel_number}"
-        ing = Ingredient(0, "Calibration", 0, 1000, 1000, False, False, amount, channel_number)
+        ing = Ingredient(
+            id=0,
+            name="Calibration",
+            alcohol=0,
+            bottle_volume=1000,
+            fill_level=1000,
+            hand=False,
+            pump_speed=100,
+            amount=amount,
+            bottle=channel_number
+        )
         MACHINE.make_cocktail(
             w=None,
             ingredient_list=[ing],

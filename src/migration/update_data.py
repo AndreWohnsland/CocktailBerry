@@ -74,7 +74,7 @@ def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCom
         if ing is None:
             continue
         local_db.insert_new_ingredient(
-            ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow), ing.cost, ing.unit
+            ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), ing.pump_speed, ing.cost, ing.unit
         )
 
 
@@ -232,3 +232,21 @@ def add_unit_column_to_ingredients():
         db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Unit TEXT DEFAULT 'ml';")
     except OperationalError:
         _logger.log_event("ERROR", "Could not add unit column to DB, this may because it already exists")
+
+
+def change_slower_flag_to_pump_speed(slow_factor: float):
+    """Adds the pump speed column to the Ingredients table.
+    Removes the slow flag column from the Ingredients table.
+    """
+    pump_speed = int(100 * slow_factor)
+    _logger.log_event("INFO", f"Converting Slow flag to Pump Speed column in Ingredients DB, using slow factor {slow_factor}")  # noqa
+    db_handler = DatabaseHandler()
+    try:
+        db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Pump_speed INTEGER DEFAULT 100;")
+        db_handler.query_database("UPDATE Ingredients SET Pump_speed = ? WHERE Slow = 1;", (pump_speed,))
+        db_handler.query_database("ALTER TABLE Ingredients DROP COLUMN Slow;")
+    except OperationalError:
+        _logger.log_event(
+            "ERROR",
+            "Could not convert slow flag to pump speed column in DB, this may because it was already done"
+        )
