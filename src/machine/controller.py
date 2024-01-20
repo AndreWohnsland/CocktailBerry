@@ -212,8 +212,7 @@ def _build_preparation_data(
     for ing in ingredient_list:
         if ing.bottle is None:  # bottle should never be None at this point
             continue
-        slow_factor = cfg.PUMP_SLOW_FACTOR if ing.slow else 1
-        volume_flow = cfg.PUMP_VOLUMEFLOW[ing.bottle - 1] * slow_factor
+        volume_flow = cfg.PUMP_VOLUMEFLOW[ing.bottle - 1] * ing.pump_speed / 100
         prep_data.append(
             _PreparationData(
                 cfg.PUMP_PINS[ing.bottle - 1],
