@@ -12,7 +12,7 @@ class Ingredient():
     bottle_volume: int
     fill_level: int
     hand: Union[bool, int]
-    slow: Union[bool, int]
+    pump_speed: int
     amount: int = 0
     bottle: Optional[int] = None
     selected: Optional[str] = None
