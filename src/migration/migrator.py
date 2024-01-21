@@ -26,6 +26,7 @@ from src.migration.update_data import (
     add_cost_column_to_ingredients,
     add_order_column_to_ingredient_data,
     add_unit_column_to_ingredients,
+    change_slower_flag_to_pump_speed,
 )
 
 _logger = LoggerHandler("migrator_module")
@@ -100,7 +101,8 @@ class Migrator:
                 add_order_column_to_ingredient_data,
                 lambda: self._install_pip_package("pillow", "1.30.0"),
             ],
-            "1.30.1": [add_unit_column_to_ingredients]
+            "1.30.1": [add_unit_column_to_ingredients],
+            "1.33.0": [_move_slow_factor_to_db],
         }
 
         for version, actions in version_actions.items():
@@ -200,6 +202,21 @@ def _update_config_value_type(config_name: str, new_type: type, default_value: A
         configuration[config_name] = _get_converted_value(new_type, default_value, local_config)
     with open(CUSTOM_CONFIG_FILE, 'w', encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
+
+
+def _move_slow_factor_to_db():
+    """Converts the slow factor from the config to the database,
+    will use the slow flag and the config value to calculate the pump speed,
+    others will be 100%
+    """
+    if not CUSTOM_CONFIG_FILE.exists():
+        slow_factor = 1.0
+    else:
+        configuration: dict[str, Any] = {}
+        with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
+            configuration = yaml.safe_load(stream)
+        slow_factor = configuration.get("PUMP_SLOW_FACTOR", 1.0)
+    change_slower_flag_to_pump_speed(slow_factor)
 
 
 def _get_converted_value(new_type: type, default_value: Any, local_config: Any):
