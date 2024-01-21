@@ -37,6 +37,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.30.0** | Cocktail pictures in selection <br> Ingredient preparation order                                                     |
 | **v1.31.0** | Protect specific tabs only                                                                                           |
 | **v1.32.0** | Refill over Maker Screen <br> Improved Teams feature                                                                 |
+| **v1.33.0** | Adjust pump speed individually                                                                                       |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.
