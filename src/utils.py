@@ -60,14 +60,20 @@ def set_system_time(time_string: str):
     supported_os = ["Linux"]
     _logger.log_event("INFO", f"Setting time to: {time_string}")
     if p_data.system in supported_os:
-        time_command = f"sudo timedatectl set-time '{time_string}'"
+        # need first disable timesyncd, otherwise you cannot set time
+        time_commands = [
+            "sudo systemctl stop systemd-timesyncd",
+            f"sudo timedatectl set-time '{time_string}'",
+            "sudo systemctl start systemd-timesyncd",
+        ]
         try:
             # Use subprocess.run to capture the command's output and error
-            subprocess.run(
-                time_command, shell=True, check=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                text=True
-            )
+            for time_command in time_commands:
+                subprocess.run(
+                    time_command, shell=True, check=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    text=True
+                )
             _logger.log_event("INFO", "Time set successfully")
 
         except subprocess.CalledProcessError as err:
