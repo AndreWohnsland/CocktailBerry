@@ -202,6 +202,10 @@ class MachineController():
         time_print(f"{print_prefix}Closing Pins: {pin_list}")
         self.pin_controller.close_pin_list(pin_list)
 
+    def default_led(self):
+        """Turns the LED on"""
+        self._led_controller.default_led()
+
 
 def _build_preparation_data(
     ingredient_list: List[Ingredient],
