@@ -58,6 +58,11 @@ class LedController:
         for led in self.led_list:
             led.preparation_end(duration)
 
+    def default_led(self):
+        if cfg.LED_DEFAULT_ON:
+            for led in self.led_list:
+                led.turn_on()
+
 
 class _LED(Protocol):
     @abstractmethod
@@ -66,6 +71,14 @@ class _LED(Protocol):
 
     @abstractmethod
     def preparation_end(self, duration: int) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def turn_on(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def turn_off(self) -> None:
         raise NotImplementedError
 
 
@@ -78,21 +91,21 @@ class _normalLED(_LED):
     def __del__(self):
         self.pin_controller.cleanup_pin_list([self.pin])
 
-    def _turn_on(self):
+    def turn_on(self):
         """Turns the LEDs on"""
         self.pin_controller.activate_pin_list([self.pin])
 
-    def _turn_off(self):
+    def turn_off(self):
         """Turns the LEDs off"""
         self.pin_controller.close_pin_list([self.pin])
 
     def preparation_start(self):
         """Turn the LED on during preparation"""
-        self._turn_on()
+        self.turn_on()
 
     def preparation_end(self, duration: int = 5):
         """Blink for some time after preparation"""
-        self._turn_off()
+        self.turn_off()
         blinker = Thread(target=self._blink_for, kwargs={"duration": duration})
         blinker.daemon = True
         blinker.start()
@@ -101,12 +114,14 @@ class _normalLED(_LED):
         current_time = 0.0
         step = interval / 2
         while current_time <= duration:
-            self._turn_on()
+            self.turn_on()
             time.sleep(step)
             current_time += step
-            self._turn_off()
+            self.turn_off()
             time.sleep(step)
             current_time += step
+        if cfg.LED_DEFAULT_ON:
+            self.turn_on()
 
 
 class _controllableLED(_LED):
@@ -159,8 +174,10 @@ class _controllableLED(_LED):
                 self.strip.setPixelColor(iter_pos, Color(0, 0, 0))
         self.strip.show()
 
-    def turn_on(self, color):
+    def turn_on(self, color=None):
         """Turns all leds on to given color"""
+        if color is None:
+            color = Color(255, 255, 255)
         for k in range(0, cfg.LED_NUMBER_RINGS):
             for i in range(0, cfg.LED_COUNT):
                 iter_pos = k * cfg.LED_COUNT + i
@@ -196,7 +213,10 @@ class _controllableLED(_LED):
                 # break out of loop (its long) when we are finished
                 if current_time > duration:
                     break
-        self.turn_off()
+        if cfg.LED_DEFAULT_ON:
+            self.turn_on()
+        else:
+            self.turn_off()
 
     def preparation_start(self):
         """Effect during preparation"""
