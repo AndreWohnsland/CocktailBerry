@@ -108,6 +108,8 @@ class ConfigManager:
     LED_COUNT: int = 24
     # If there are multiple identical (ring) LEDs
     LED_NUMBER_RINGS: int = 1
+    # Turns the led always on to a white when not doing anything else
+    LED_DEFAULT_ON: bool = False
     # If the led is as ws-x series (and controllable)
     LED_IS_WS: bool = True
     # if a RFID reader exists
@@ -164,6 +166,7 @@ class ConfigManager:
             "LED_BRIGHTNESS": (int, [_build_number_limiter(1, 255)]),
             "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
             "LED_NUMBER_RINGS": (int, [_build_number_limiter(1, 10)]),
+            "LED_DEFAULT_ON": (bool, []),
             "LED_IS_WS": (bool, []),
             "RFID_READER": (RFIDChoose, []),
             "MICROSERVICE_ACTIVE": (bool, []),

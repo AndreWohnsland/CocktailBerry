@@ -613,6 +613,9 @@ ui:
     LED_NUMBER_RINGS:
       en: 'Number of IDENTICAL daisy chained ring LEDs. Use 1 if different LED count per ring.'
       de: 'Anzahl der IDENTISCHEN in Serie verbundene Ring LEDs. Verwende 1, wenn verschiedene LED Anzahl pro Ring.'
+    LED_DEFAULT_ON:
+      en: 'LED is on by default, use white LED color. Still use colors during preparation.'
+      de: 'LED ist standardmäßig an, verwendet weiße LED Farbe. Verwendet immer noch Farben-Zyklus während der Zubereitung.'
     LED_IS_WS:
       en: 'Is the LED a controllable (WS281x) LED'
       de: 'Ist der LED ein ansteuerbarer (WS281x) LED'

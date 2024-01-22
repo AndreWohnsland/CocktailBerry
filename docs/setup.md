@@ -58,6 +58,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `LED_BRIGHTNESS`             | Brightness for the WS281x LED (1-255)                                                    |
 | `LED_COUNT`                  | Number of LEDs on the WS281x                                                             |
 | `LED_NUMBER_RINGS`           | Number of IDENTICAL daisy chained WS281x LED rings                                       |
+| `LED_DEFAULT_ON`             | Always turn on to a white LED by default                                                 |
 | `LED_IS_WS`                  | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
 | `RFID_READER`                | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
 | `MICROSERVICE_ACTIVE`        | Post to microservice set up by docker                                                    |
