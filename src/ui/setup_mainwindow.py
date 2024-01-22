@@ -80,6 +80,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         UI_LANGUAGE.adjust_mainwindow(self)
         MACHINE.set_up_pumps()
+        MACHINE.default_led()
         self.showFullScreen()
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)
