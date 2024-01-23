@@ -80,6 +80,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         UI_LANGUAGE.adjust_mainwindow(self)
         MACHINE.set_up_pumps()
+        MACHINE.default_led()
         self.showFullScreen()
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)
@@ -241,8 +242,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             lambda: self.open_numpad(self.LEFlaschenvolumen, 50, 50, amount)
         )
         self.LEFlaschenvolumen.setMaxLength(5)
+        self.line_edit_pump_speed.clicked.connect(
+            lambda: self.open_numpad(self.line_edit_pump_speed, 50, 50, number)
+        )
+        self.line_edit_pump_speed.setMaxLength(3)
         self.line_edit_ingredient_cost.clicked.connect(
-            lambda: self.open_numpad(self.line_edit_ingredient_cost, 50, 50, amount)
+            lambda: self.open_numpad(self.line_edit_ingredient_cost, 50, 50, number)
         )
         self.LECocktail.setMaxLength(30)
         self.input_search_cocktail.clicked.connect(lambda: self.open_keyboard(self.input_search_cocktail))

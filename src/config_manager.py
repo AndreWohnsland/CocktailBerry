@@ -66,8 +66,6 @@ class ConfigManager:
     UI_WIDTH: int = 800
     UI_HEIGHT: int = 480
     UI_PICTURE_SIZE: int = 240
-    # Slow factor for eg sticky ingredients
-    PUMP_SLOW_FACTOR = 1.0
     # RPi pins where pumps (ascending) are connected
     PUMP_PINS: list[int] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
     # Volume flow for the according pumps
@@ -110,6 +108,8 @@ class ConfigManager:
     LED_COUNT: int = 24
     # If there are multiple identical (ring) LEDs
     LED_NUMBER_RINGS: int = 1
+    # Turns the led always on to a white when not doing anything else
+    LED_DEFAULT_ON: bool = False
     # If the led is as ws-x series (and controllable)
     LED_IS_WS: bool = True
     # if a RFID reader exists
@@ -146,7 +146,6 @@ class ConfigManager:
             "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": (int, [_build_number_limiter(100, 1000)]),
             "PUMP_PINS": (list, []),
-            "PUMP_SLOW_FACTOR": (float, [_build_number_limiter(0.01, 10)]),
             "PUMP_VOLUMEFLOW": (list, []),
             "MAKER_NAME": (str, [_validate_max_length]),
             "MAKER_NUMBER_BOTTLES": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
@@ -167,6 +166,7 @@ class ConfigManager:
             "LED_BRIGHTNESS": (int, [_build_number_limiter(1, 255)]),
             "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
             "LED_NUMBER_RINGS": (int, [_build_number_limiter(1, 10)]),
+            "LED_DEFAULT_ON": (bool, []),
             "LED_IS_WS": (bool, []),
             "RFID_READER": (RFIDChoose, []),
             "MICROSERVICE_ACTIVE": (bool, []),

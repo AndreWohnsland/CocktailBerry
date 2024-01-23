@@ -20,7 +20,7 @@ You can manage your config within CocktailBerry.
 Just go to the bottles tab, click the gear icon and enter the password (default: 1234 on older versions or none at latest).
 You can then use the UI to change the configuration.
 These values are stored under the local `custom_config.yaml` file.
-This file will be created at the first machine run and inherit all default values. 
+This file will be created at the first machine run and inherit all default values.
 Depending on your pumps and connection to the Pi, these can differ from mine and can be changed.
 If any of the values got a wrong data type, a ConfigError will be thrown with the message which one is wrong.
 Names starting with `EXP` are experimental and may be changed in the future.
@@ -38,7 +38,6 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `UI_HEIGHT`                  | Desired interface height, default is 480                                                 |
 | `UI_PICTURE_SIZE`            | Approximate displayed picture size                                                       |
 | `PUMP_PINS`                  | List of the [Pins](#configuring-the-pins-or-used-board) where each Pump is connected     |
-| `PUMP_SLOW_FACTOR`           | Factor to multiply the volume flow if using slow ingredients                             |
 | `PUMP_VOLUMEFLOW`            | List of the according volume flow for each pump in ml/s                                  |
 | `MAKER_BOARD`                | Used [board](#configuring-the-pins-or-used-board) for Hardware                           |
 | `MAKER_NAME`                 | Give your CocktailBerry an own name, max 30 chars                                        |
@@ -59,6 +58,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 | `LED_BRIGHTNESS`             | Brightness for the WS281x LED (1-255)                                                    |
 | `LED_COUNT`                  | Number of LEDs on the WS281x                                                             |
 | `LED_NUMBER_RINGS`           | Number of IDENTICAL daisy chained WS281x LED rings                                       |
+| `LED_DEFAULT_ON`             | Always turn on to a white LED by default                                                 |
 | `LED_IS_WS`                  | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
 | `RFID_READER`                | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
 | `MICROSERVICE_ACTIVE`        | Post to microservice set up by docker                                                    |
@@ -149,7 +149,6 @@ Then running twice times again the cleaning program to fully clean all pumps fro
     Depending on the build specification of your machine, it is a good practice to execute the cleaning of the machine before and after usage.
     This depends on the frequency you use CocktailBerry, where it's stored, how good it was cleaned and so on.
 
-
 ## Possible Ingredient Choice
 
 If you are unsure, which ingredients you may need or want to connect to CocktailBerry, here is a quick suggestion.
@@ -161,10 +160,10 @@ You don't need to use all ten slots, but the more you use, the more recipes will
 - Orange Juice
 - Passion Fruit Juice
 - Pineapple Juice
-- *optional* Gin
-- *optional* Malibu
-- *optional* Tequila
-- *optional* Grapefruit Juice
+- _optional_ Gin
+- _optional_ Malibu
+- _optional_ Tequila
+- _optional_ Grapefruit Juice
 
 In addition, there are some ingredients I would recommend not adding via CocktailBerry but by hand, the most important additional ingredients will be:
 
@@ -172,13 +171,14 @@ In addition, there are some ingredients I would recommend not adding via Cocktai
 - Grenadine syrup
 - Blue Curaçao
 - Lemon juice (just a little, you can also use fresh lemons)
-- *optional* Cointreau (you may just not add it if not desired)
+- _optional_ Cointreau (you may just not add it if not desired)
 
 With this as your base set up, even if not using the optional ingredients, your CocktailBerry will be able to do plenty of different cocktails.
 
 !!! tip "Data Insights"
     You can export the CocktailBerry data to a CSV file over the interface.
     With this information you may identify popular drinks and ingredients.
+    You can also use the CocktailBerry UI in the options page to get a neat local overview of the data.
 
 ## Updates
 

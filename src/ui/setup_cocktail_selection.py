@@ -123,7 +123,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self._set_strike_through(self.virgin_checkbox, not self.cocktail.virgin_available)
         # when there is handadd, also build some additional data
         if hand:
-            display_data.extend([Ingredient(-1, "", 0, 0, 0, False, False)] + hand)
+            display_data.extend([Ingredient(-1, "", 0, 0, 0, False, 100, 100)] + hand)
         fields_ingredient = self.get_labels_maker_ingredients()
         fields_volume = self.get_labels_maker_volume()
         for field_ingredient, field_volume, ing in zip(fields_ingredient, fields_volume, display_data):

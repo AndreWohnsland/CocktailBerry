@@ -51,7 +51,7 @@ class IngredientInputFields:
     volume: QLineEdit
     ingredient_cost: QLineEdit
     hand_add: QCheckBox
-    is_slow: QCheckBox
+    pump_speed: QLineEdit
     unit: QLineEdit
 
 
@@ -103,15 +103,15 @@ class DisplayController(DialogHandler):
     def get_ingredient_data(self, w: Ui_MainWindow):
         """Returns an Ingredient Object from the ingredient data fields"""
         ingredient_input = self.get_ingredient_fields(w)
-        ingredient_name, alcohol_level, volume, ingredient_cost, unit = self.get_lineedit_text([
+        ingredient_name, alcohol_level, volume, ingredient_cost, unit, speed = self.get_lineedit_text([
             ingredient_input.ingredient_name,
             ingredient_input.alcohol_level,
             ingredient_input.volume,
             ingredient_input.ingredient_cost,
-            ingredient_input.unit
+            ingredient_input.unit,
+            ingredient_input.pump_speed
         ])
         hand_add = ingredient_input.hand_add.isChecked()
-        is_slow = ingredient_input.is_slow.isChecked()
         selected_ingredient = self.get_list_widget_selection(ingredient_input.selected_ingredient)
         return Ingredient(
             id=-1,
@@ -120,7 +120,7 @@ class DisplayController(DialogHandler):
             bottle_volume=int(volume),
             fill_level=0,
             hand=hand_add,
-            slow=is_slow,
+            pump_speed=int(speed),
             selected=selected_ingredient,
             cost=int(ingredient_cost),
             unit=unit,
@@ -157,14 +157,16 @@ class DisplayController(DialogHandler):
             ing_input.ingredient_name,
             ing_input.alcohol_level,
             ing_input.volume,
-            ing_input.ingredient_cost
+            ing_input.ingredient_cost,
+            ing_input.pump_speed,
         ]):
             self.say_some_value_missing()
             return False
         if self._lineedit_is_no_int([
             ing_input.alcohol_level,
             ing_input.volume,
-            ing_input.ingredient_cost
+            ing_input.ingredient_cost,
+            ing_input.pump_speed,
         ]):
             self.say_needs_to_be_int()
             return False
@@ -563,7 +565,7 @@ class DisplayController(DialogHandler):
             w.LEFlaschenvolumen,
             w.line_edit_ingredient_cost,
             w.CHBHand,
-            w.check_slow_ingredient,
+            w.line_edit_pump_speed,
             w.line_edit_ingredient_unit
         )
 

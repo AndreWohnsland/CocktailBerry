@@ -280,8 +280,8 @@ ui:
       en: 'Spend single ingredient'
       de: 'Einzelne Zutat ausgeben'
     handadd_check_label:
-      en: 'Only add self by hand:'
-      de: 'Nur selbst hinzufügen:'
+      en: 'Only add self by hand'
+      de: 'Nur selbst hinzufügen'
     available_button:
       en: 'available'
       de: 'verfügbar'
@@ -294,9 +294,9 @@ ui:
     virgin_possibility:
       en: 'Allow virgin'
       de: 'Virgin erlauben'
-    slow_ingredient_check_label:
-      en: 'Slow ingredient:'
-      de: 'Langsame Zutat:'
+    label_pump_speed:
+      en: 'Pump speed'
+      de: 'Pumpengeschwindigkeit'
     label_ingredient_cost:
       en: 'Cost'
       de: 'Kosten'
@@ -556,9 +556,6 @@ ui:
     PUMP_VOLUMEFLOW:
       en: 'Volume flow in ml/s for according pump'
       de: 'Volumenstrom in ml/s der zugehörigen Pumpe'
-    PUMP_SLOW_FACTOR:
-      en: 'Factor to multiply the pump volume flow if using slow ingredients (e.g. sirup)'
-      de: 'Multiplikationsfaktor für Volumenstrom, wenn langsame Zutaten verwendet werden (z.B. Sirup)'
     MAKER_NAME:
       en: 'Name of your CocktailBerry machine'
       de: 'Name von deiner CocktailBerry Maschine'
@@ -616,6 +613,9 @@ ui:
     LED_NUMBER_RINGS:
       en: 'Number of IDENTICAL daisy chained ring LEDs. Use 1 if different LED count per ring.'
       de: 'Anzahl der IDENTISCHEN in Serie verbundene Ring LEDs. Verwende 1, wenn verschiedene LED Anzahl pro Ring.'
+    LED_DEFAULT_ON:
+      en: 'LED is on by default, use white LED color. Still use colors during preparation.'
+      de: 'LED ist standardmäßig an, verwendet weiße LED Farbe. Verwendet immer noch Farben-Zyklus während der Zubereitung.'
     LED_IS_WS:
       en: 'Is the LED a controllable (WS281x) LED'
       de: 'Ist der LED ein ansteuerbarer (WS281x) LED'

@@ -47,7 +47,7 @@ def _add_new_ingredient(w, ing: Ingredient):
         return False
 
     DB_COMMANDER.insert_new_ingredient(
-        ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), bool(ing.slow), ing.cost, ing.unit
+        ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), ing.pump_speed, ing.cost, ing.unit
     )
     # needs to fill the ingredient comboboxes, bottles tab only if it is not a handadd
     to_fill = DP_CONTROLLER.get_comboboxes_recipes(w)
@@ -80,7 +80,7 @@ def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
         ing.bottle_volume,
         volume_level,
         bool(ing.hand),
-        bool(ing.slow),
+        ing.pump_speed,
         old_ingredient.id,
         ing.cost,
         ing.unit,
@@ -154,28 +154,30 @@ def display_selected_ingredient(w):
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_input.selected_ingredient)
     DP_CONTROLLER.set_ingredient_add_label(w, selected_ingredient != "")
-    if selected_ingredient:
-        ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
-        if not ingredient:
-            return
-        DP_CONTROLLER.fill_multiple_lineedit(
-            [
-                ingredient_input.ingredient_name,
-                ingredient_input.alcohol_level,
-                ingredient_input.volume,
-                ingredient_input.ingredient_cost,
-                ingredient_input.unit,
-            ],
-            [
-                ingredient.name,
-                ingredient.alcohol,
-                ingredient.bottle_volume,
-                ingredient.cost,
-                ingredient.unit,
-            ]
-        )
-        DP_CONTROLLER.set_checkbox_value(ingredient_input.hand_add, ingredient.hand)
-        DP_CONTROLLER.set_checkbox_value(ingredient_input.is_slow, ingredient.slow)
+    if not selected_ingredient:
+        return
+    ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
+    if not ingredient:
+        return
+    DP_CONTROLLER.fill_multiple_lineedit(
+        [
+            ingredient_input.ingredient_name,
+            ingredient_input.alcohol_level,
+            ingredient_input.volume,
+            ingredient_input.ingredient_cost,
+            ingredient_input.unit,
+            ingredient_input.pump_speed,
+        ],
+        [
+            ingredient.name,
+            ingredient.alcohol,
+            ingredient.bottle_volume,
+            ingredient.cost,
+            ingredient.unit,
+            ingredient.pump_speed,
+        ]
+    )
+    DP_CONTROLLER.set_checkbox_value(ingredient_input.hand_add, ingredient.hand)
 
 
 @logerror
@@ -188,8 +190,10 @@ def clear_ingredient_information(w):
         ingredient_input.volume,
         ingredient_input.ingredient_cost
     ])
-    DP_CONTROLLER.fill_multiple_lineedit([ingredient_input.unit], ["ml"])
+    DP_CONTROLLER.fill_multiple_lineedit(
+        [ingredient_input.unit, ingredient_input.pump_speed],
+        ["ml", "100"]
+    )
     DP_CONTROLLER.unselect_list_widget_items(ingredient_input.selected_ingredient)
     DP_CONTROLLER.set_checkbox_value(ingredient_input.hand_add, False)
-    DP_CONTROLLER.set_checkbox_value(ingredient_input.is_slow, False)
     DP_CONTROLLER.set_ingredient_add_label(w, False)
