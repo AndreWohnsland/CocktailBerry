@@ -5,7 +5,6 @@ Please make sure to check here first, before asking similar questions.
 You may find your solution under the [troubleshooting](troubleshooting.md) section, if it's not here.
 Also, there is plenty information at the [setup section](setup.md).
 
-
 ## Hardware
 
 ### What are Good Pumps
@@ -37,7 +36,6 @@ It depends on how you build your machine, but you will most likely want some sor
 Even an 5-inch 800x480 will work, but in my opinion a 7-inch 1024x600 is quite good.
 Higher resolution screen can be used, for high-res screens I recommend [this setting](troubleshooting.md#using-a-high-resolution-screen) for the best user experience.
 
-
 ### Can I use another Board / SBC
 
 You probably can use a wide variety of Single Board Computers (SBCs) beside the Raspberry Pi.
@@ -45,7 +43,7 @@ The software should work on any system, but there are still some considerations.
 Especially if you are unexperienced with programming and Linux, I strongly suggest to stick to the recommended Pi setup.
 If you are experienced with Linux, you can probably get almost any SBC to work properly.
 I recommend using a LXDE/XFCE based desktop variant, for example a Debian Linux for the OS.
-The autorun / installation may differ a bit from the Pi. 
+The autorun / installation may differ a bit from the Pi.
 You also probably need to run the python package installation and program as sudo.
 You can switch the board config variable to Generic, this will use the [python-periphery](https://github.com/vsergeev/python-periphery) library.
 This library supports a broad variety of SBCs, but the Python process usually needs root permission to access the GPIOs.
@@ -93,7 +91,7 @@ The commands do: Loading the project from GitHub, updating the system, installin
 CocktailBerry is a software and therefore will work on any machine, even without any parts of a cocktail machine.
 If you want to have a look into the software, you can also install / run it on your PC or Pi.
 
-### Do I Have to Manually Start 
+### Do I Have to Manually Start
 
 There are different ways to auto start an application on the Raspberry Pi.
 The installer script automatically sets up a way, that the program starts after the system is booted.
@@ -161,6 +159,7 @@ If you want to minimize the terminal window, you can use xdotool to do so:
 sudo apt-get update
 sudo apt-get install xdotool
 ```
+
 Then adjust the `launcher.sh` file to include the following line on top:
 
 ```bash
@@ -196,5 +195,5 @@ It's better to directly connect them to the main source current and turn them on
 You can either go to the logs folder to have the raw logs.
 Or you can go to the option window and select the logs option.
 Then you will get a summarized view of the logs.
-The latest logs are shown on top. 
+The latest logs are shown on top.
 Identical logs are only shown once, with their latest occurrence time, as well as count.

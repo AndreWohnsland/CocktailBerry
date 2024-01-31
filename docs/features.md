@@ -5,7 +5,6 @@ If you don't find a feature listed in the docs on your CocktailBerry, chances ma
 Cross check your version with the feature list and their according introduction time.
 Usually, updating to the lastest version is always a good idea.
 
-
 | Version     | Feature Description                                                                                                  |
 | :---------- | :------------------------------------------------------------------------------------------------------------------- |
 | **v1.1.0**  | Docker microservice for additional things                                                                            |
