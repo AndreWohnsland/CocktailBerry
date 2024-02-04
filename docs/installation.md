@@ -1,6 +1,6 @@
 # Installation
 
-Here you can find all the requirements and installation steps. 
+Here you can find all the requirements and installation steps.
 
 ## Prerequisites
 
@@ -47,7 +47,7 @@ sh scripts/setup.sh
 python runme.py # (1)!
 ```
 
-1.  If your system is still using python2 as python command, it is time for an upgrade
+1. If your system is still using python2 as python command, it is time for an upgrade
 
 !!! note "This Should be All"
     As long as you are on the recommended Raspberry Pi + OS, this should be all you need to execute for a complete setup.
@@ -55,13 +55,14 @@ python runme.py # (1)!
     If you are on another system, have a look into the other instructions, [faq](faq.md) or [troubleshooting](troubleshooting.md).
 
 ## Installing Requirements
+
 On none Pi systems, the best way is to use the provided `requirements.txt` file.
 You just need to clone the project and navigate into the folder.
 If Python is installed, just run: 
 
 ```bash
 pip install -r requirements.txt
-``` 
+```
 
 to get all requirements.
 Optionally, you can install the single needed dependencies:
@@ -72,7 +73,7 @@ Optionally, you can install the single needed dependencies:
 
 The PyQt5 installation of pip will probably fail on your RaspberryPi. To install PyQt5 on your Pi run:
 
-```
+```bash
 sudo apt-get update
 sudo apt-get install qt5-default pyqt5-dev pyqt5-dev-tools
 ```
