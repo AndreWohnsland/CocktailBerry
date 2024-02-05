@@ -6,7 +6,7 @@ authors = ["Andre <Andre_Wohnsland@web.de>"]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
-fastapi = "0.109.0"
+fastapi = "0.109.1"
 uvicorn = "0.25.0"
 matplotlib = "^3.4.3"
 pywaffle = "^0.6.3"
