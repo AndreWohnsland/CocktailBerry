@@ -6,17 +6,17 @@ authors = ["Andre <Andre_Wohnsland@web.de>"]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
-fastapi = "0.109.0"
-uvicorn = "0.25.0"
+fastapi = "^0.109.2"
+uvicorn = "^0.27.0.post1"
 matplotlib = "^3.4.3"
 pywaffle = "^0.6.3"
-pandas = "2.1.4"
+pandas = "^2.2.0"
 requests = "^2.26.0"
 python-dotenv = "^0.19.2"
 PyYAML = "^6.0"
 dash = "^2.2.0"
-numpy = "1.26.3"
-scipy = "1.11.4"
+numpy = "^1.26.4"
+scipy = "^1.12.0"
 plotly = "5.18.0"
 
 [tool.poetry.dev-dependencies]
