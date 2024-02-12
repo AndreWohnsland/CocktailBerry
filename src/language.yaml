@@ -312,6 +312,9 @@ ui:
     label_ingredient_unit:
       en: 'Unit'
       de: 'Einheit'
+    label_single_ingredient:
+      en: 'Single Ingredient'
+      de: 'Einzelne Zutat'
 
   cocktail_selection:
     # best is to use some space before to get a padding for icon
@@ -562,6 +565,9 @@ ui:
     MAKER_NUMBER_BOTTLES:
       en: 'Number of bottles of the machine'
       de: 'Flaschenanzahl der Maschine'
+    MAKER_PREPARE_VOLUME:
+      en: 'List of Volume of the cocktail to prepare for the user to choose from. Using one value will result in a fixed volume.'
+      de: 'Liste der Volumen des Cocktails, die der Benutzer auswählen kann. Wenn nur ein Wert gegeben ist, wird ein festes Volumen verwendet.'
     MAKER_SIMULTANEOUSLY_PUMPS:
       en: 'Maximum number of pumps simultaneously on'
       de: 'Maximale Pumpenanzahl, die gleichzeitig an ist'
@@ -601,6 +607,9 @@ ui:
     MAKER_USE_RECIPE_VOLUME:
       en: 'Use recipe volume instead of scaling to defined volume. This disables scaling of cocktail amount in the maker tab.'
       de: 'Verwende Rezept Volumen anstatt Skalierung auf definiertes Volumen. Dies deaktiviert die Skalierung von Cocktail Menge im Maker Tab.'
+    MAKER_ADD_SINGLE_INGREDIENT:
+      en: 'Adds the option to also spend a single ingredient to the cocktails in the maker tab'
+      de: 'Fügt eine Option zu den Cocktails in dem Maker Tab hinzu, auch einzelne Zutaten ausgeben zu können'
     LED_PINS:
       en: 'List of pins controlling LEDs during preparation'
       de: 'Liste an Pins, die LEDs bei der Zubereitung kontrollieren'
