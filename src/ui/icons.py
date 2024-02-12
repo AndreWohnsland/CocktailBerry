@@ -24,6 +24,13 @@ _MINUS_ICON = "fa5s.minus"
 _DELETE_ICON = "fa5s.trash-alt"
 _CLEAR_ICON = "fa5s.eraser"
 _COCKTAIL_ICON = "fa5s.cocktail"
+_HUGE_GLASS = "mdi.glass-mug"
+_BIG_GLASS = "fa5s.glass-whiskey"
+_MEDIUM_GLASS = "mdi.glass-cocktail"
+_SMALL_GLASS = "mdi.glass-tulip"
+_TINY_GLASS = "mdi.glass-flute"
+_SKULL = "fa5s.skull-crossbones"
+_EASY = "mdi.emoticon-excited"
 _VIRGIN_ICON = "mdi.glass-cocktail-off"
 _SPINNER_ICON = "fa5s.spinner"
 _TIME_ICON = "fa5s.hourglass-start"
@@ -48,6 +55,13 @@ class PresetIcon:
     search = _SEARCH_ICON
     upload = _UPLOAD_ICON
     question = _QUESTION_ICON
+    tiny_glass = _TINY_GLASS
+    small_glass = _SMALL_GLASS
+    medium_glass = _MEDIUM_GLASS
+    big_glass = _BIG_GLASS
+    huge_glass = _HUGE_GLASS
+    skull = _SKULL
+    easy = _EASY
 
 
 @dataclass
@@ -109,9 +123,9 @@ class IconSetter:
             (w.PBclear, _CLEAR_ICON, True),
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
-            self._set_icon(ui_element, fa_icon, no_text)
+            self.set_icon(ui_element, fa_icon, no_text)
         # using smaller button size here
-        self._set_icon(
+        self.set_icon(
             w.button_info_recipes,
             qta.icon(_QUESTION_ICON, color=self.color.background),
             True,
@@ -128,9 +142,9 @@ class IconSetter:
             (w.prepare_button, _COCKTAIL_ICON, False),
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
-            self._set_icon(ui_element, fa_icon, no_text)
+            self.set_icon(ui_element, fa_icon, no_text)
 
-    def _set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool, size: QSize = BUTTON_SIZE):
+    def set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool, size: QSize = BUTTON_SIZE):
         """Sets the icon of the given ui element"""
         ui_element.setIcon(icon)
         ui_element.setIconSize(size)
@@ -143,14 +157,14 @@ class IconSetter:
             (w.button_remove, _DELETE_ICON, True),
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
-            self._set_icon(ui_element, fa_icon, no_text)
+            self.set_icon(ui_element, fa_icon, no_text)
 
     def generate_icon(self, icon_name: str, color: str, color_active: Optional[str] = None) -> QIcon:
         """Generates an icon with the given color and size
 
         Args:
             icon (str): icon name in qta, e.g. "fa5s.cog"
-            color (str): given color name, e.g. "#007bff"
+            color (str): given color name in hex, e.g. "#007bff"
             color_active (str): given active color name, will use color if None, defaults to None
         """
         if color_active is None:
