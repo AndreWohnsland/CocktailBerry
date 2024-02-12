@@ -239,6 +239,9 @@ QPushButton {
   &[cssClass~='round'] {
     border-radius: 20px;
   }
+  &[cssClass~='round-sm'] {
+    border-radius: 12px;
+  }
   &[cssClass~='secondary'] {
     color: $secondary;
     border-color: $secondary;

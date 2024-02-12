@@ -183,6 +183,8 @@ QPushButton {
     padding-right: 1px; }
   QPushButton[cssClass~='round'] {
     border-radius: 20px; }
+  QPushButton[cssClass~='round-sm'] {
+    border-radius: 12px; }
   QPushButton[cssClass~='secondary'] {
     color: #01276a;
     border-color: #01276a; }
