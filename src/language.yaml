@@ -319,8 +319,8 @@ ui:
   cocktail_selection:
     # best is to use some space before to get a padding for icon
     prepare_button:
-      en: '  Prepare'
-      de: '  Zubereiten'
+      en: '  Prepare {amount} {unit}'
+      de: '  {amount} {unit} Zubereiten'
     activate_virgin:
       en: 'Virgin (no alcohol)'
       de: 'Virgin (kein Alkohol)'
@@ -490,8 +490,8 @@ ui:
       en: 'Manage'
       de: 'Verwalten'
 
-  ##### ADDON WINDOW #####
-  # all values for addon window
+  ##### DATA WINDOW #####
+  # all values for data window
   data_window:
     export:
       en: 'Data Export'
