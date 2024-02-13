@@ -149,6 +149,9 @@ Then running twice times again the cleaning program to fully clean all pumps fro
     Depending on the build specification of your machine, it is a good practice to execute the cleaning of the machine before and after usage.
     This depends on the frequency you use CocktailBerry, where it's stored, how good it was cleaned and so on.
 
+If you have activated the the option of inverted current with `MAKER_PINS_INVERTED`, you will be prompted before the cleaning if you want to invert the current for the cleaning process.
+This way, you can clean the tubes from both sides and get rid of all fluid in the end.
+
 ## Possible Ingredient Choice
 
 If you are unsure, which ingredients you may need or want to connect to CocktailBerry, here is a quick suggestion.
