@@ -25,7 +25,7 @@ _DELETE_ICON = "fa5s.trash-alt"
 _CLEAR_ICON = "fa5s.eraser"
 _COCKTAIL_ICON = "fa5s.cocktail"
 _HUGE_GLASS = "mdi.glass-mug"
-_BIG_GLASS = "fa5s.glass-whiskey"
+_BIG_GLASS = "mdi.glass-pint-outline"
 _MEDIUM_GLASS = "mdi.glass-cocktail"
 _SMALL_GLASS = "mdi.glass-tulip"
 _TINY_GLASS = "mdi.glass-flute"
@@ -140,6 +140,8 @@ class IconSetter:
         """Sets the icons of the cocktail selection window according to style sheets props"""
         for ui_element, icon, no_text in [
             (w.prepare_button, _COCKTAIL_ICON, False),
+            (w.increase_alcohol, _SKULL, True),
+            (w.decrease_alcohol, _EASY, True),
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self.set_icon(ui_element, fa_icon, no_text)
