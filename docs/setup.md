@@ -19,6 +19,8 @@ All entered values are checked for reason and if something is wrong, an error me
 You can manage your config within CocktailBerry.
 Just go to the bottles tab, click the gear icon and enter the password (default: 1234 on older versions or none at latest).
 You can then use the UI to change the configuration.
+The configuration is also divided into own tabs, containing similar categories in one tab.
+
 These values are stored under the local `custom_config.yaml` file.
 This file will be created at the first machine run and inherit all default values.
 Depending on your pumps and connection to the Pi, these can differ from mine and can be changed.
@@ -26,54 +28,85 @@ If any of the values got a wrong data type, a ConfigError will be thrown with th
 Names starting with `EXP` are experimental and may be changed in the future.
 They can be used at own risk of CocktailBerry not working 100% properly.
 
-| Value Name                   | Description                                                                              |
-| :--------------------------- | :--------------------------------------------------------------------------------------- |
-| `UI_DEVENVIRONMENT`          | Enables some development features, like a cursor                                         |
-| `UI_PARTYMODE`               | Protects other tabs than maker tab with a password, deprecated                           |
-| `UI_MASTERPASSWORD`          | Number Password for System/Program Level                                                 |
-| `UI_MAKER_PASSWORD`          | Number Password for party operation                                                      |
-| `UI_LOCKED_TABS`             | Specify, which tab to lock with maker password                                           |
-| `UI_LANGUAGE`                | 2 char code for the language, see [supported languages](languages.md)                    |
-| `UI_WIDTH`                   | Desired interface width, default is 800                                                  |
-| `UI_HEIGHT`                  | Desired interface height, default is 480                                                 |
-| `UI_PICTURE_SIZE`            | Approximate displayed picture size                                                       |
-| `PUMP_PINS`                  | List of the [Pins](#configuring-the-pins-or-used-board) where each Pump is connected     |
-| `PUMP_VOLUMEFLOW`            | List of the according volume flow for each pump in ml/s                                  |
-| `MAKER_BOARD`                | Used [board](#configuring-the-pins-or-used-board) for Hardware                           |
-| `MAKER_NAME`                 | Give your CocktailBerry an own name, max 30 chars                                        |
-| `MAKER_NUMBER_BOTTLES`       | Number of displayed bottles, can use up to 16 bottles                                    |
-| `MAKER_SIMULTANEOUSLY_PUMPS` | Number of pumps which can be simultaneously active                                       |
-| `MAKER_SEARCH_UPDATES`       | Search for updates at program start                                                      |
-| `MAKER_CHECK_BOTTLE`         | Check if there is enough of each ingredient left                                         |
-| `MAKER_PINS_INVERTED`        | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)              |
-| `MAKER_THEME`                | Choose which [theme](#themes) to use                                                     |
-| `MAKER_CLEAN_TIME`           | Time the machine will execute the cleaning program                                       |
-| `MAKER_PUMP_REVERSION`       | Enables reversion (direction) of pump                                                    |
-| `MAKER_REVERSION_PIN`        | [Pin](#configuring-the-pins-or-used-board) which triggers reversion                      |
-| `MAKER_SLEEP_TIME`           | Interval between each time check while generating a cocktail                             |
-| `MAKER_CHECK_INTERNET`       | Do a connection check at start for time adjustment window                                |
-| `MAKER_TUBE_VOLUME`          | Volume in ml to pump up when bottle is set to new                                        |
-| `MAKER_USE_RECIPE_VOLUME`    | Do not scale but use defined amounts                                                     |
-| `LED_PINS`                   | List of pins connected to LEDs for preparation                                           |
-| `LED_BRIGHTNESS`             | Brightness for the WS281x LED (1-255)                                                    |
-| `LED_COUNT`                  | Number of LEDs on the WS281x                                                             |
-| `LED_NUMBER_RINGS`           | Number of IDENTICAL daisy chained WS281x LED rings                                       |
-| `LED_DEFAULT_ON`             | Always turn on to a white LED by default                                                 |
-| `LED_IS_WS`                  | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
-| `RFID_READER`                | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
-| `MICROSERVICE_ACTIVE`        | Post to microservice set up by docker                                                    |
-| `MICROSERVICE_BASE_URL`      | Base URL for microservice (default: http://127.0.0.1:5000)                               |
-| `TEAMS_ACTIVE`               | Use teams feature                                                                        |
-| `TEAM_BUTTON_NAMES`          | List of format ["Team1", "Team2"]                                                        |
-| `TEAM_API_URL`               | Endpoint of teams API, default used port by API is 8080                                  |
-| `EXP_MAKER_UNIT`             | Change the displayed unit in the maker tab (visual only\*)                               |
-| `EXP_MAKER_FACTOR`           | Multiply the displayed unit in the maker tab (visual only\*)                             |
+??? info "List UI Config Values"
+    UI Config Values are used to change the look and feel of the program.
 
-\* You still need to provide the units in ml for the DB (recipes / ingredients).
-This is purely visual in the maker tab, at least for now.
-If you want to display oz in the maker tab, use 'oz' and 0.033814 for unit and factor.
+    | Value Name          | Description                                                           |
+    | :------------------ | :-------------------------------------------------------------------- |
+    | `UI_DEVENVIRONMENT` | Enables some development features, like a cursor                      |
+    | `UI_PARTYMODE`      | Protects other tabs than maker tab with a password, deprecated        |
+    | `UI_MASTERPASSWORD` | Number Password for System/Program Level                              |
+    | `UI_MAKER_PASSWORD` | Number Password for party operation                                   |
+    | `UI_LOCKED_TABS`    | Specify, which tab to lock with maker password                        |
+    | `UI_LANGUAGE`       | 2 char code for the language, see [supported languages](languages.md) |
+    | `UI_WIDTH`          | Desired interface width, default is 800                               |
+    | `UI_HEIGHT`         | Desired interface height, default is 480                              |
+    | `UI_PICTURE_SIZE`   | Approximate displayed picture size                                    |
+
+??? info "List Maker Config Values"
+    Maker config values are used to change the behavior of CocktailBerry.
+
+    | Value Name                    | Description                                                                 |
+    | :---------------------------- | :-------------------------------------------------------------------------- |
+    | `MAKER_BOARD`                 | Used [board](#configuring-the-pins-or-used-board) for Hardware              |
+    | `MAKER_NAME`                  | Give your CocktailBerry an own name, max 30 chars                           |
+    | `MAKER_NUMBER_BOTTLES`        | Number of displayed bottles, can use up to 16 bottles                       |
+    | `MAKER_PREPARE_VOLUME`        | List of possible spend volumes of machine                                   |
+    | `MAKER_SIMULTANEOUSLY_PUMPS`  | Number of pumps which can be simultaneously active                          |
+    | `MAKER_SEARCH_UPDATES`        | Search for updates at program start                                         |
+    | `MAKER_CHECK_BOTTLE`          | Check if there is enough of each ingredient left                            |
+    | `MAKER_PINS_INVERTED`         | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high) |
+    | `MAKER_THEME`                 | Choose which [theme](#themes) to use                                        |
+    | `MAKER_CLEAN_TIME`            | Time the machine will execute the cleaning program                          |
+    | `MAKER_PUMP_REVERSION`        | Enables reversion (direction) of pump                                       |
+    | `MAKER_REVERSION_PIN`         | [Pin](#configuring-the-pins-or-used-board) which triggers reversion         |
+    | `MAKER_SLEEP_TIME`            | Interval between each time check while generating a cocktail                |
+    | `MAKER_CHECK_INTERNET`        | Do a connection check at start for time adjustment window                   |
+    | `MAKER_TUBE_VOLUME`           | Volume in ml to pump up when bottle is set to new                           |
+    | `MAKER_USE_RECIPE_VOLUME`     | Do not scale but use defined amounts                                        |
+    | `MAKER_ADD_SINGLE_INGREDIENT` | Allows spending single ingredient in maker view                             |
+
+??? info "List Hardware Config Values"
+    Hardware config values are used to configure and enable the connected hardware.
+
+    | Value Name         | Description                                                                              |
+    | :----------------- | :--------------------------------------------------------------------------------------- |
+    | `PUMP_PINS`        | List of the [Pins](#configuring-the-pins-or-used-board) where each Pump is connected     |
+    | `PUMP_VOLUMEFLOW`  | List of the according volume flow for each pump in ml/s                                  |
+    | `LED_PINS`         | List of pins connected to LEDs for preparation                                           |
+    | `LED_BRIGHTNESS`   | Brightness for the WS281x LED (1-255)                                                    |
+    | `LED_COUNT`        | Number of LEDs on the WS281x                                                             |
+    | `LED_NUMBER_RINGS` | Number of IDENTICAL daisy chained WS281x LED rings                                       |
+    | `LED_DEFAULT_ON`   | Always turn on to a white LED by default                                                 |
+    | `LED_IS_WS`        | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
+    | `RFID_READER`      | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
+
+??? info "List Software Config Values"
+    Software config values are used to configure additional connected software and its behavior.
+
+    | Value Name              | Description                                                |
+    | :---------------------- | :--------------------------------------------------------- |
+    | `MICROSERVICE_ACTIVE`   | Post to microservice set up by docker                      |
+    | `MICROSERVICE_BASE_URL` | Base URL for microservice (default: http://127.0.0.1:5000) |
+    | `TEAMS_ACTIVE`          | Use teams feature                                          |
+    | `TEAM_BUTTON_NAMES`     | List of format ["Team1", "Team2"]                          |
+    | `TEAM_API_URL`          | Endpoint of teams API, default used port by API is 8080    |
+
+??? info "List Other Config Values"
+    Here are some other config values, which are not fitting in the other categories.
+    Addon data will be added here as well.
+
+    | Value Name         | Description                                                  |
+    | :----------------- | :----------------------------------------------------------- |
+    | `EXP_MAKER_UNIT`   | Change the displayed unit in the maker tab (visual only\*)   |
+    | `EXP_MAKER_FACTOR` | Multiply the displayed unit in the maker tab (visual only\*) |
+
+    \* You still need to provide the units in ml for the DB (recipes / ingredients).
+    This is purely visual in the maker tab, at least for now.
+    If you want to display oz in the maker tab, use 'oz' and 0.033814 for unit and factor.
 
 Depending on your preferred use, these values can differ.
+Customizing and using your own setting will make your CocktailBerry unique.
 
 ## Setting your Ingredients
 
