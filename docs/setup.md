@@ -42,44 +42,44 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | `UI_WIDTH`          | Desired interface width, default is 800                               |
     | `UI_HEIGHT`         | Desired interface height, default is 480                              |
     | `UI_PICTURE_SIZE`   | Approximate displayed picture size                                    |
+    | `MAKER_THEME`       | Choose which [theme](#themes) to use                                  |
 
 ??? info "List Maker Config Values"
     Maker config values are used to change the behavior of CocktailBerry.
 
-    | Value Name                    | Description                                                                 |
-    | :---------------------------- | :-------------------------------------------------------------------------- |
-    | `MAKER_BOARD`                 | Used [board](#configuring-the-pins-or-used-board) for Hardware              |
-    | `MAKER_NAME`                  | Give your CocktailBerry an own name, max 30 chars                           |
-    | `MAKER_NUMBER_BOTTLES`        | Number of displayed bottles, can use up to 16 bottles                       |
-    | `MAKER_PREPARE_VOLUME`        | List of possible spend volumes of machine                                   |
-    | `MAKER_SIMULTANEOUSLY_PUMPS`  | Number of pumps which can be simultaneously active                          |
-    | `MAKER_SEARCH_UPDATES`        | Search for updates at program start                                         |
-    | `MAKER_CHECK_BOTTLE`          | Check if there is enough of each ingredient left                            |
-    | `MAKER_PINS_INVERTED`         | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high) |
-    | `MAKER_THEME`                 | Choose which [theme](#themes) to use                                        |
-    | `MAKER_CLEAN_TIME`            | Time the machine will execute the cleaning program                          |
-    | `MAKER_PUMP_REVERSION`        | Enables reversion (direction) of pump                                       |
-    | `MAKER_REVERSION_PIN`         | [Pin](#configuring-the-pins-or-used-board) which triggers reversion         |
-    | `MAKER_SLEEP_TIME`            | Interval between each time check while generating a cocktail                |
-    | `MAKER_CHECK_INTERNET`        | Do a connection check at start for time adjustment window                   |
-    | `MAKER_TUBE_VOLUME`           | Volume in ml to pump up when bottle is set to new                           |
-    | `MAKER_USE_RECIPE_VOLUME`     | Do not scale but use defined amounts                                        |
-    | `MAKER_ADD_SINGLE_INGREDIENT` | Allows spending single ingredient in maker view                             |
+    | Value Name                    | Description                                                  |
+    | :---------------------------- | :----------------------------------------------------------- |
+    | `MAKER_NAME`                  | Give your CocktailBerry an own name, max 30 chars            |
+    | `MAKER_NUMBER_BOTTLES`        | Number of displayed bottles, can use up to 16 bottles        |
+    | `MAKER_PREPARE_VOLUME`        | List of possible spend volumes of machine                    |
+    | `MAKER_SIMULTANEOUSLY_PUMPS`  | Number of pumps which can be simultaneously active           |
+    | `MAKER_SEARCH_UPDATES`        | Search for updates at program start                          |
+    | `MAKER_CHECK_BOTTLE`          | Check if there is enough of each ingredient left             |
+    | `MAKER_CLEAN_TIME`            | Time the machine will execute the cleaning program           |
+    | `MAKER_SLEEP_TIME`            | Interval between each time check while generating a cocktail |
+    | `MAKER_CHECK_INTERNET`        | Do a connection check at start for time adjustment window    |
+    | `MAKER_TUBE_VOLUME`           | Volume in ml to pump up when bottle is set to new            |
+    | `MAKER_USE_RECIPE_VOLUME`     | Do not scale but use defined amounts                         |
+    | `MAKER_ADD_SINGLE_INGREDIENT` | Allows spending single ingredient in maker view              |
 
 ??? info "List Hardware Config Values"
     Hardware config values are used to configure and enable the connected hardware.
 
-    | Value Name         | Description                                                                              |
-    | :----------------- | :--------------------------------------------------------------------------------------- |
-    | `PUMP_PINS`        | List of the [Pins](#configuring-the-pins-or-used-board) where each Pump is connected     |
-    | `PUMP_VOLUMEFLOW`  | List of the according volume flow for each pump in ml/s                                  |
-    | `LED_PINS`         | List of pins connected to LEDs for preparation                                           |
-    | `LED_BRIGHTNESS`   | Brightness for the WS281x LED (1-255)                                                    |
-    | `LED_COUNT`        | Number of LEDs on the WS281x                                                             |
-    | `LED_NUMBER_RINGS` | Number of IDENTICAL daisy chained WS281x LED rings                                       |
-    | `LED_DEFAULT_ON`   | Always turn on to a white LED by default                                                 |
-    | `LED_IS_WS`        | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
-    | `RFID_READER`      | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
+    | Value Name             | Description                                                                              |
+    | :--------------------- | :--------------------------------------------------------------------------------------- |
+    | `PUMP_PINS`            | List of the [Pins](#configuring-the-pins-or-used-board) where each Pump is connected     |
+    | `PUMP_VOLUMEFLOW`      | List of the according volume flow for each pump in ml/s                                  |
+    | `LED_PINS`             | List of pins connected to LEDs for preparation                                           |
+    | `LED_BRIGHTNESS`       | Brightness for the WS281x LED (1-255)                                                    |
+    | `LED_COUNT`            | Number of LEDs on the WS281x                                                             |
+    | `LED_NUMBER_RINGS`     | Number of IDENTICAL daisy chained WS281x LED rings                                       |
+    | `LED_DEFAULT_ON`       | Always turn on to a white LED by default                                                 |
+    | `LED_IS_WS`            | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
+    | `RFID_READER`          | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
+    | `MAKER_BOARD`          | Used [board](#configuring-the-pins-or-used-board) for Hardware                           |
+    | `MAKER_PINS_INVERTED`  | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)              |
+    | `MAKER_PUMP_REVERSION` | Enables reversion (direction) of pump                                                    |
+    | `MAKER_REVERSION_PIN`  | [Pin](#configuring-the-pins-or-used-board) which triggers reversion                      |
 
 ??? info "List Software Config Values"
     Software config values are used to configure additional connected software and its behavior.
