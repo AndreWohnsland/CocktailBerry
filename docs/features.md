@@ -5,7 +5,6 @@ If you don't find a feature listed in the docs on your CocktailBerry, chances ma
 Cross check your version with the feature list and their according introduction time.
 Usually, updating to the lastest version is always a good idea.
 
-
 | Version     | Feature Description                                                                                                  |
 | :---------- | :------------------------------------------------------------------------------------------------------------------- |
 | **v1.1.0**  | Docker microservice for additional things                                                                            |
@@ -38,6 +37,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.31.0** | Protect specific tabs only                                                                                           |
 | **v1.32.0** | Refill over Maker Screen <br> Improved Teams feature                                                                 |
 | **v1.33.0** | Adjust pump speed individually                                                                                       |
+| **v1.34.0** | New buttons in selection screen                                                                                      |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.

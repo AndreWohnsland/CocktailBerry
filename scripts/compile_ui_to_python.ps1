@@ -9,7 +9,8 @@ $files = @(
   "logwindow", "rfidwriter", "wifiwindow",
   "customcolor", "addonwindow", "addonmanager",
   "datawindow", "cocktail_selection",
-  "picture_window", "refill_prompt"
+  "picture_window", "refill_prompt",
+  "config_window"
 )
 
 foreach ($f in $files) {

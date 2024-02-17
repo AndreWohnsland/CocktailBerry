@@ -1,6 +1,6 @@
 from __future__ import annotations
-from typing import Callable, TypeVar, TYPE_CHECKING
-from PyQt5.QtWidgets import QDialog, QWidget, QLabel, QSizePolicy
+from typing import Callable, Optional, TypeVar, TYPE_CHECKING
+from PyQt5.QtWidgets import QDialog, QLabel, QSizePolicy
 from PyQt5.QtGui import QFont, QPixmap
 from src.image_utils import find_cocktail_image
 
@@ -11,10 +11,11 @@ from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.tabs import maker
 from src.config_manager import CONFIG as cfg, shared
+from src.ui.creation_utils import set_strike_through, set_underline, create_button, create_label, LARGE_FONT
 from src.ui.icons import ICONS
 
 T = TypeVar('T', int, float)
-PICTURE_SIZE = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.65))
+PICTURE_SIZE = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.60))
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -41,7 +42,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.image_container.setMinimumSize(PICTURE_SIZE, PICTURE_SIZE)
         self.image_container.setMaximumSize(PICTURE_SIZE, PICTURE_SIZE)
         ICONS.set_cocktail_selection_icons(self)
-        self.hide_necessary_elements()
+        self._adjust_preparation_buttons()
 
         UI_LANGUAGE.adjust_cocktail_selection_screen(self)
         self.clear_recipe_data_maker()
@@ -62,11 +63,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     def _connect_elements(self):
         """Init all the needed buttons"""
         self.button_back.clicked.connect(self._back)
-        self.prepare_button.clicked.connect(self._prepare_cocktail)
-        self.increase_volume.clicked.connect(lambda: self.adjust_volume(25))
-        self.decrease_volume.clicked.connect(lambda: self.adjust_volume(-25))
-        self.increase_alcohol.clicked.connect(lambda: self.adjust_alcohol(0.15))
-        self.decrease_alcohol.clicked.connect(lambda: self.adjust_alcohol(-0.15))
+        self.increase_alcohol.clicked.connect(self._higher_alcohol)
+        self.decrease_alcohol.clicked.connect(self._lower_alcohol)
         self.virgin_checkbox.stateChanged.connect(self.update_cocktail_data)
         self.adjust_maker_label_size_cocktaildata()
 
@@ -82,22 +80,25 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.cocktail = cocktail
         self._set_image()
 
-    def _prepare_cocktail(self):
+    def _prepare_cocktail(self, amount: int):
         """Prepares the cocktail and switches to the maker screen, if successful"""
         # same applies here, need to refetch the cocktail from db
         db_cocktail = DB_COMMANDER.get_cocktail(self.cocktail.id)
         if db_cocktail is not None:
             self.cocktail = db_cocktail
-        self._scale_cocktail()
+        self._scale_cocktail(amount)
         success = maker.prepare_cocktail(self.mainscreen, self.cocktail)
         if not success:
             return
         self.virgin_checkbox.setChecked(False)
         self.mainscreen.container_maker.setCurrentWidget(self.mainscreen.cocktail_view)
 
-    def _scale_cocktail(self):
+    def _scale_cocktail(self, amount: Optional[int] = None):
         """Scale the cocktail to given conditions for volume and alcohol"""
-        amount = shared.cocktail_volume
+        if amount is None and len(cfg.MAKER_PREPARE_VOLUME) == 1:
+            amount = cfg.MAKER_PREPARE_VOLUME[0]
+        elif amount is None:
+            amount = shared.cocktail_volume
         factor = shared.alcohol_factor
         is_virgin = self.virgin_checkbox.isChecked()
         if is_virgin:
@@ -110,6 +111,13 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Updates the cocktail data in the selection view"""
         self._scale_cocktail()
         amount = self.cocktail.adjusted_amount
+        # Need to set the button text here, since we need cocktail
+        self.prepare_button.setText(
+            UI_LANGUAGE.get_translation(
+                "prepare_button", "cocktail_selection",
+                amount=amount, unit=cfg.EXP_MAKER_UNIT
+            )
+        )
         self.LAlkoholname.setText(self.cocktail.name)
         display_volume = self._decide_rounding(amount * cfg.EXP_MAKER_FACTOR, 20)
         self.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")
@@ -120,7 +128,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.virgin_checkbox.setEnabled(self.cocktail.virgin_available)
         # Styles does not work on strikeout, so we use internal qt things
         # To be precise, they do work at start, but does not support dynamic changes
-        self._set_strike_through(self.virgin_checkbox, not self.cocktail.virgin_available)
+        set_strike_through(self.virgin_checkbox, not self.cocktail.virgin_available)
         # when there is handadd, also build some additional data
         if hand:
             display_data.extend([Ingredient(-1, "", 0, 0, 0, False, 100, 100)] + hand)
@@ -132,11 +140,11 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 ingredient_name = UI_LANGUAGE.get_add_self()
                 field_ingredient.setProperty("cssClass", "hand-separator")
                 field_ingredient.setStyleSheet(f"color: {ICONS.color.neutral};")
-                self._set_underline(field_ingredient, True)
+                set_underline(field_ingredient, True)
             else:
                 field_ingredient.setProperty("cssClass", None)
                 field_ingredient.setStyleSheet("")
-                self._set_underline(field_ingredient, False)
+                set_underline(field_ingredient, False)
                 amount = ing.amount
                 if ing.unit == "ml":
                     amount = ing.amount * cfg.EXP_MAKER_FACTOR
@@ -154,18 +162,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             # needs to be int, otherwise we would need to format .0 or .1 which is difficult
             return int(round(val, 0))
         return round(val, 1)
-
-    def _set_underline(self, element: QWidget, underline: bool):
-        """Set the strike through property of the font"""
-        font = element.font()
-        font.setUnderline(underline)
-        element.setFont(font)
-
-    def _set_strike_through(self, element: QWidget, strike_through: bool):
-        """Set the strike through property of the font"""
-        font = element.font()
-        font.setStrikeOut(strike_through)
-        element.setFont(font)
 
     def clear_recipe_data_maker(self):
         """Clear the cocktail data in the maker view, only clears selection if no other item was selected"""
@@ -222,10 +218,25 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Returns all maker label objects for ingredient name"""
         return [getattr(self, f"LZutat{x}") for x in range(1, 10)]
 
+    def _higher_alcohol(self, checked: bool):
+        """Increases the alcohol factor"""
+        self.decrease_alcohol.setChecked(False)
+        if checked:
+            self.adjust_alcohol(1.3)
+        else:
+            self.adjust_alcohol(1.0)
+
+    def _lower_alcohol(self, checked: bool):
+        """Decreases the alcohol factor"""
+        self.increase_alcohol.setChecked(False)
+        if checked:
+            self.adjust_alcohol(0.7)
+        else:
+            self.adjust_alcohol(1.0)
+
     def adjust_alcohol(self, amount: float):
-        """changes the alcohol factor"""
-        new_factor = shared.alcohol_factor + amount
-        shared.alcohol_factor = _limit_number(new_factor, 0.7, 1.3)
+        """changes the alcohol factor to the given value"""
+        shared.alcohol_factor = amount
         self.update_cocktail_data()
 
     def adjust_volume(self, amount: int):
@@ -237,11 +248,45 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         shared.cocktail_volume = _limit_number(new_volume, 100, 400)
         self.update_cocktail_data()
 
-    def hide_necessary_elements(self):
-        """Depending on the config, hide some of the unused elements"""
-        if cfg.MAKER_USE_RECIPE_VOLUME:
-            self.decrease_volume.hide()
-            self.increase_volume.hide()
+    def _adjust_preparation_buttons(self):
+        """Decides if to use a single or multiple buttons and adjusts the text accordingly
+        Also connects the functions to the buttons
+        """
+        # if there is a fixed volume, use a single button
+        # this is either due to the user has only one volume
+        # or using the default cocktail recipe volume
+        if cfg.MAKER_USE_RECIPE_VOLUME or len(cfg.MAKER_PREPARE_VOLUME) == 1:
+            volume = cfg.MAKER_PREPARE_VOLUME[0]
+            self.prepare_button.clicked.connect(lambda: self._prepare_cocktail(volume))
+            return
+        # if there are multiple volumes, use one button for each volume
+        # in addition, we need to clean the button container of the button first
+        DP_CONTROLLER.delete_items_of_layout(self.container_prepare_button)
+        volume_list = sorted(int(x) for x in cfg.MAKER_PREPARE_VOLUME)
+        icon_list = _generate_needed_cocktail_icons(len(volume_list))
+
+        # First add the label, we don't need it in every button
+        volume_label = create_label(
+            f"{cfg.EXP_MAKER_UNIT}:", LARGE_FONT,
+            centered=True, bold=True,
+            max_w=50, css_class="secondary"
+        )
+        self.container_prepare_button.addWidget(volume_label)
+
+        # Then create a button for each volume
+        for volume, icon_name in zip(volume_list, icon_list):
+            volume_converted = self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)
+            button = create_button(
+                f"{volume_converted}",  # \n  {cfg.EXP_MAKER_UNIT}
+                self,
+                css_class="btn-inverted ml round",
+                min_h=60,
+                max_h=80
+            )
+            button.clicked.connect(lambda _, v=volume: self._prepare_cocktail(v))
+            icon = ICONS.generate_icon(icon_name, ICONS.color.background)
+            ICONS.set_icon(button, icon, False)
+            self.container_prepare_button.addWidget(button)
 
 
 def _limit_number(val: T, min_val: T, max_val: T) -> T:
@@ -249,3 +294,25 @@ def _limit_number(val: T, min_val: T, max_val: T) -> T:
     limited = max(min_val, val)
     limited = min(max_val, limited)
     return limited
+
+
+def _generate_needed_cocktail_icons(amount: int):
+    icon_list = [
+        ICONS.presets.tiny_glass,
+        ICONS.presets.small_glass,
+        ICONS.presets.medium_glass,
+        ICONS.presets.big_glass,
+        ICONS.presets.huge_glass,
+    ]
+    length = len(icon_list)
+    if amount <= length:
+        start = (length - amount) // 2
+        return icon_list[start:start + amount]
+    result = icon_list[:]
+    remaining = amount - length
+    for i in range(remaining):
+        if i % 2 == 0:
+            result.insert(0, icon_list[0])
+        else:
+            result.append(icon_list[-1])
+    return result

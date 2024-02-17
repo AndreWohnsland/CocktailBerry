@@ -23,7 +23,7 @@ if TYPE_CHECKING:
         Ui_CustomPrompt, Ui_Datepicker, Ui_LogWindow, Ui_Optionwindow,
         Ui_PasswordDialog, Ui_Progressbarwindow, Ui_RFIDWriterWindow, Ui_Teamselection,
         Ui_WiFiWindow, Ui_ColorWindow, Ui_Addonwindow, Ui_DataWindow,
-        Ui_CocktailSelection, Ui_PictureWindow, Ui_RefillPrompt
+        Ui_CocktailSelection, Ui_PictureWindow, Ui_RefillPrompt, Ui_ConfigWindow
     )
 
 _logger = LoggerHandler("dialog_handler")
@@ -494,10 +494,10 @@ class UiLanguage():
         """Returns the add text"""
         return self.__choose_language("change_button")
 
-    def get_translation(self, name: str, ui_element_name: str = "generics"):
+    def get_translation(self, name: str, ui_element_name: str = "generics", **kwargs):
         """Gets the translation by given key and window"""
         try:
-            return self.__choose_language(name, ui_element_name)
+            return self.__choose_language(name, ui_element_name, **kwargs)
         except (AttributeError, KeyError):
             _logger.error(f"No translation for {name} in {ui_element_name} found")
             return ""
@@ -572,7 +572,6 @@ class UiLanguage():
 
     def adjust_cocktail_selection_screen(self, w: Ui_CocktailSelection):
         window = "cocktail_selection"
-        w.prepare_button.setText(self.__choose_language("prepare_button", window))
         w.virgin_checkbox.setText(self.__choose_language("activate_virgin", window))
         w.button_back.setText(self.__choose_language("back"))
 
@@ -727,6 +726,11 @@ class UiLanguage():
         w.label_titel.setText(self.__choose_language("header", window, cocktail=cocktail))
         w.button_back.setText(self.__choose_language("back"))
         w.button_enter.setText(self.__choose_language("apply"))
+
+    def adjust_config_window(self, w: Ui_ConfigWindow):
+        """"Translates the elements of the addon manager"""
+        w.button_back.setText(self.__choose_language("back"))
+        w.button_save.setText(self.__choose_language("apply"))
 
     def adjust_refill_prompt(
         self,

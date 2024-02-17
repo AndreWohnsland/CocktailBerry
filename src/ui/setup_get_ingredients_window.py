@@ -74,7 +74,8 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
 
         time_print(f"Spending {volume} ml {ingredient_name}")
         made_volume, _, _ = MACHINE.make_cocktail(self.mainscreen, [ingredient_data], ingredient_name, False)
-        DB_COMMANDER.increment_ingredient_consumption(ingredient_name, made_volume[0])
+        consumed_volume = made_volume[0]
+        DB_COMMANDER.increment_ingredient_consumption(ingredient_name, consumed_volume)
         set_fill_level_bars(self.mainscreen)
-        volume_string = f"{volume} ml"
+        volume_string = f"{consumed_volume} ml"
         _logger.log_event("INFO", f"{volume_string:6} | {ingredient_name}")

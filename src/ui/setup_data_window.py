@@ -213,7 +213,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         """Adds a header to the grid layout"""
         if self.grid is None:
             return
-        header_label = create_label(text, 20, True, True, "header-underline")
+        header_label = create_label(text, 20, True, True, css_class="header-underline")
         header_label.setMaximumSize(QSize(16777215, 40))
         self.grid.addWidget(header_label, row, 0, 1, 3)
         self.grid_current_row += 2
@@ -230,7 +230,11 @@ class DataWindow(QMainWindow, Ui_DataWindow):
             return
         for i, (name, value) in enumerate(zip(names, values), start_row):
             self.grid.addWidget(create_label(f"{name} ", 20, False, True), i, 0, 1, 1)
-            self.grid.addWidget(create_label(f" {value}{quantifier} ", 20, True, True, "secondary"), i, 1, 1, 1)
+            self.grid.addWidget(
+                create_label(
+                    f" {value}{quantifier} ", 20,
+                    True, True, css_class="secondary"
+                ), i, 1, 1, 1)
             displayed_bar = QProgressBar(self)
             displayed_bar.setTextVisible(False)
             displayed_bar.setProperty("cssClass", "no-bg")

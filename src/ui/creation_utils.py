@@ -27,6 +27,20 @@ def adjust_font(element: QWidget, font_size: int, bold: bool = False):
     element.setFont(font)
 
 
+def set_underline(element: QWidget, underline: bool):
+    """Set the strike through property of the font"""
+    font = element.font()
+    font.setUnderline(underline)
+    element.setFont(font)
+
+
+def set_strike_through(element: QWidget, strike_through: bool):
+    """Set the strike through property of the font"""
+    font = element.font()
+    font.setStrikeOut(strike_through)
+    element.setFont(font)
+
+
 def create_spacer(height: int, width: int = 20, expand: bool = False):
     """Creates a spacer of given height and optional width"""
     policy = QSizePolicy.Expanding if expand else QSizePolicy.Fixed  # type: ignore
@@ -58,10 +72,16 @@ def create_label(
     font_size: int,
     bold: bool = False,
     centered: bool = False,
+    max_w: int = 16777215,
+    max_h: int = 200,
+    min_w: int = 0,
+    min_h: int = 20,
     css_class: Optional[str] = None
 ):
     """Creates a label with given text and properties"""
     label = QLabel(text)
+    label.setMaximumSize(QSize(max_w, max_h))
+    label.setMinimumSize(QSize(min_w, min_h))
     adjust_font(label, font_size, bold)
     if centered:
         label.setAlignment(Qt.AlignCenter)  # type: ignore

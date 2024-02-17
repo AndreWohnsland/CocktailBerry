@@ -74,6 +74,8 @@ class ConfigManager:
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
     MAKER_NUMBER_BOTTLES: int = 8
+    # Volume options to choose from when preparing a cocktail
+    MAKER_PREPARE_VOLUME = [150, 250, 350]
     # Number of pumps parallel in production
     MAKER_SIMULTANEOUSLY_PUMPS: int = 16
     # Time in seconds to execute clean program
@@ -100,6 +102,8 @@ class ConfigManager:
     MAKER_TUBE_VOLUME: int = 0
     # Option to not scale the recipe volume but use always the defined one
     MAKER_USE_RECIPE_VOLUME: bool = False
+    # Option to add the single ingredient option to the maker pane
+    MAKER_ADD_SINGLE_INGREDIENT: bool = False
     # List of LED pins for control
     LED_PINS: list[int] = []
     # Value for LED brightness
@@ -149,6 +153,7 @@ class ConfigManager:
             "PUMP_VOLUMEFLOW": (list, []),
             "MAKER_NAME": (str, [_validate_max_length]),
             "MAKER_NUMBER_BOTTLES": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_PREPARE_VOLUME": (list, []),
             "MAKER_SIMULTANEOUSLY_PUMPS": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
             "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
             "MAKER_PUMP_REVERSION": (bool, []),
@@ -162,6 +167,7 @@ class ConfigManager:
             "MAKER_CHECK_INTERNET": (bool, []),
             "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
             "MAKER_USE_RECIPE_VOLUME": (bool, []),
+            "MAKER_ADD_SINGLE_INGREDIENT": (bool, []),
             "LED_PINS": (list, []),
             "LED_BRIGHTNESS": (int, [_build_number_limiter(1, 255)]),
             "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
@@ -182,6 +188,7 @@ class ConfigManager:
         self.config_type_list: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
             "PUMP_PINS": (int, [self._validate_pin_numbers]),
             "PUMP_VOLUMEFLOW": (float, [_build_number_limiter(0.1, 1000)]),
+            "MAKER_PREPARE_VOLUME": (int, [_build_number_limiter(25, 1000)]),
             "TEAM_BUTTON_NAMES": (str, []),
             "LED_PINS": (int, [_build_number_limiter(0, 200)]),
             "UI_LOCKED_TABS": (bool, []),
@@ -259,6 +266,7 @@ class ConfigManager:
             "PUMP_VOLUMEFLOW": min_bottles,
             "TEAM_BUTTON_NAMES": 2,
             "UI_LOCKED_TABS": 3,
+            "MAKER_PREPARE_VOLUME": 1,
         }
         min_len = min_len_config.get(configname)
         if min_len is None:

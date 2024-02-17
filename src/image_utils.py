@@ -2,7 +2,7 @@ from typing import Optional, Union
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 
-from src.filepath import DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
+from src.filepath import DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER, DEFAULT_COCKTAIL_IMAGE
 from src.models import Cocktail
 
 
@@ -20,7 +20,7 @@ def find_cocktail_image(cocktail: Cocktail):
 def find_default_cocktail_image(cocktail: Cocktail):
     """Find the system defined image for the given cocktail"""
     # setting default cocktail image
-    cocktail_image = DEFAULT_IMAGE_FOLDER / 'default.jpg'
+    cocktail_image = DEFAULT_COCKTAIL_IMAGE
     # then try to get system cocktail image
     # provided cocktails will have a default image, user added will not
     specific_image_path = DEFAULT_IMAGE_FOLDER / f'{cocktail.id}.jpg'

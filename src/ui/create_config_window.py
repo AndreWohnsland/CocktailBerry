@@ -1,9 +1,7 @@
 from typing import Any, Callable, List, Optional
 from PyQt5.QtWidgets import (
-    QScrollArea, QMainWindow, QWidget,
-    QVBoxLayout, QHBoxLayout, QLabel,
-    QCheckBox, QPushButton, QBoxLayout,
-    QComboBox, QFrame,
+    QMainWindow, QVBoxLayout, QHBoxLayout, QLabel,
+    QCheckBox, QPushButton, QBoxLayout, QComboBox,
 )
 from PyQt5.QtCore import Qt, QSize
 
@@ -16,69 +14,34 @@ from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui.setup_color_window import ColorWindow
 from src.ui.creation_utils import SMALL_FONT, MEDIUM_FONT, LARGE_FONT, adjust_font, create_spacer
+from src.ui_elements import Ui_ConfigWindow
 
 
-class ConfigWindow(QMainWindow):
+class ConfigWindow(QMainWindow, Ui_ConfigWindow):
     def __init__(self, parent):
         super().__init__()
+        self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
         self.config_objects = {}
         self.color_window: Optional[ColorWindow] = None
         self.button_custom_color: Optional[QPushButton] = None
+        UI_LANGUAGE.adjust_config_window(self)
         self._init_ui()
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
     def _init_ui(self):
-        # This is not shown (full screen) and only for dev reasons. need no translation
-        self.setWindowTitle("Change Configuration")
-        # init the central widget with its container layout
-        self.central_widget = QWidget(self)
-        self.layout_container = QVBoxLayout(self.central_widget)
-        # adds a scroll area with props, and its contents
-        self.scroll_area = QScrollArea(self.central_widget)
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)  # type: ignore
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # type: ignore
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setFrameShape(QFrame.NoFrame)  # type: ignore
-        self.scroll_area.setFrameShadow(QFrame.Plain)  # type: ignore
-        self.scroll_area_widget_contents = QWidget()
-        # this is the layout inside the scroll area
-        self.vbox = QVBoxLayout(self.scroll_area_widget_contents)
-
         # adds all the configs to the window
         for key, value in cfg.config_type.items():
             needed_type, _ = value
             self._choose_display_style(key, needed_type)
-            # Add small spacer after each section
-            self.vbox.addItem(create_spacer(12))
 
-        # adds a spacer
-        self.vbox.addItem(create_spacer(20, 40))
-        # adds the back button
-        self.button_back = QPushButton("< Back")
-        self.button_back.clicked.connect(self.close)  # type: ignore
-        self.button_back.setMaximumSize(QSize(16777215, 200))
-        self.button_back.setMinimumSize(QSize(0, 70))
-        adjust_font(self.button_back, LARGE_FONT, True)
-        # adds the save button
-        self.button_save = QPushButton("Save")
         self.button_save.clicked.connect(self._save_config)
-        self.button_save.setProperty("cssClass", "btn-inverted")
-        self.button_save.setMaximumSize(QSize(16777215, 200))
-        self.button_save.setMinimumSize(QSize(0, 70))
-        adjust_font(self.button_save, LARGE_FONT, True)
-        # places them side by side in a container
-        self.hbox = QHBoxLayout()
-        self.hbox.addWidget(self.button_back)
-        self.hbox.addWidget(self.button_save)
-        self.vbox.addLayout(self.hbox)
-
-        # Sets widget of scroll area, adds to container, sets main widget
-        self.scroll_area.setWidget(self.scroll_area_widget_contents)
-        self.layout_container.addWidget(self.scroll_area)
-        self.setCentralWidget(self.central_widget)
+        self.button_back.clicked.connect(self.close)
+        # other window may have little elements and spacing is bad,
+        # so add a spacer to the end
+        self.vbox_other.addItem(create_spacer(1, expand=True))
 
     def _save_config(self):
         try:
@@ -97,29 +60,32 @@ class ConfigWindow(QMainWindow):
         # Add the elements header to the view
         header = QLabel(f"{config_name}:")
         adjust_font(header, LARGE_FONT, True)
-        self.vbox.addWidget(header)
+        vbox = self._choose_tab_container(config_name)
+        vbox.addWidget(header)
         description_text = UI_LANGUAGE.get_config_description(config_name)
         if description_text:
             description = QLabel(description_text)
             description.setWordWrap(True)
             adjust_font(description, SMALL_FONT)
-            self.vbox.addWidget(description)
+            vbox.addWidget(description)
         # Reads out the current config value
         current_value = getattr(cfg, config_name)
         getter_fn = self._build_input_field(config_name, config_type, current_value)
         # assigning the getter function for the config into the dict
         self.config_objects[config_name] = getter_fn
         if config_name == "MAKER_THEME":
-            self._build_custom_color_button()
+            self._build_custom_color_button(vbox)
+        # Add small spacer after each section
+        vbox.addItem(create_spacer(12))
 
-    def _build_custom_color_button(self):
+    def _build_custom_color_button(self, vbox: QVBoxLayout):
         """Builds a button to edit custom theme"""
         self.button_custom_color = QPushButton("Define Custom Color")
         self.button_custom_color.setMaximumSize(QSize(16777215, 200))
         self.button_custom_color.setMinimumSize(QSize(0, 50))
         adjust_font(self.button_custom_color, LARGE_FONT, True)
-        self.button_custom_color.clicked.connect(self._open_color_window)
-        self.vbox.addWidget(self.button_custom_color)
+        self.button_custom_color.clicked.connect(self._open_color_window)  # type: ignore
+        vbox.addWidget(self.button_custom_color)
 
     def _open_color_window(self):
         self.color_window = ColorWindow(self.mainscreen)
@@ -131,7 +97,7 @@ class ConfigWindow(QMainWindow):
     ):
         """Builds the input field and returns its getter function"""
         if layout is None:
-            layout = self.vbox
+            layout = self._choose_tab_container(config_name)
         if config_type == int:
             return self._build_int_field(layout, config_name, current_value)
         if config_type == float:
@@ -139,7 +105,7 @@ class ConfigWindow(QMainWindow):
         if config_type == bool:
             return self._build_bool_field(layout, current_value)
         if config_type == list:
-            return self._build_list_field(config_name, current_value)
+            return self._build_list_field(layout, config_name, current_value)
         if issubclass(config_type, ChooseType):
             selection = config_type.allowed
             return self._build_selection_filed(layout, current_value, selection)
@@ -173,7 +139,7 @@ class ConfigWindow(QMainWindow):
         layout.addWidget(config_input)
         return config_input.isChecked
 
-    def _build_list_field(self, config_name: str, current_value: List) -> Callable[[], List[Any]]:
+    def _build_list_field(self, layout: QBoxLayout, config_name: str, current_value: List) -> Callable[[], List[Any]]:
         """Builds a list of fields for a list input"""
         config_input = QVBoxLayout()
         getter_fn_list: list[Callable] = []
@@ -190,7 +156,7 @@ class ConfigWindow(QMainWindow):
         v_container = QVBoxLayout()
         v_container.addLayout(config_input)
         v_container.addWidget(add_button)
-        self.vbox.addLayout(v_container)
+        layout.addLayout(v_container)
         return lambda: [x() for x in getter_fn_list]
 
     def _add_ui_element_to_list(
@@ -261,3 +227,34 @@ class ConfigWindow(QMainWindow):
 
     def _retrieve_values(self):
         return {key: getter() for key, getter in self.config_objects.items()}
+
+    def _choose_tab_container(self, config_name: str):
+        """Gets the object name of the tab container, that the config belongs to"""
+        # specific sorting for some values where prefix may not match the category good enough
+        exact_sorting = {
+            self.vbox_ui: ("MAKER_THEME",),
+            self.vbox_hardware: (
+                "MAKER_PUMP_REVERSION",
+                "MAKER_REVERSION_PIN",
+                "MAKER_PINS_INVERTED",
+                "MAKER_BOARD",
+            ),
+        }
+        for key, value in exact_sorting.items():
+            if config_name in value:
+                return key
+
+        # generic sorting dependent on the config prefix
+        tab_config = {
+            self.vbox_ui: ("UI",),
+            self.vbox_maker: ("MAKER",),
+            self.vbox_hardware: ("PUMP", "LED", "RFID",),
+            self.vbox_software: ("MICROSERVICE", "TEAM",),
+        }
+        # go over each key, if one of the values in the list is part of the config name
+        # return the key
+        for key, value in tab_config.items():
+            if any(config_name.lower().startswith(x.lower()) for x in value):
+                return key
+        # if nothing matches, put it in the other tab
+        return self.vbox_other

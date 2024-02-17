@@ -84,7 +84,7 @@ Files within this folder will not be tracked by git.
 
 !!! tip "Use the CLI"
     It's super easy to create a skeleton addon file with the [CLI command](commands.md#creating-addon-base-file)!
-    Just run: 
+    Just run:
     
     ```bash
     python runme.py create-addon "Your Addon Name"
@@ -169,8 +169,8 @@ def setup(self):
     cfg.add_config("ADDON_CONFIG", "DefaultValue") # (2)!
 ```
 
-1.  Needs to import the `CONFIG` object from CocktailBerry.
-2.  Adds the configuration under given name and default value. Currently supported are int, float, str, bool and list. Different types have different input mask in the config GUI.
+1. Needs to import the `CONFIG` object from CocktailBerry.
+2. Adds the configuration under given name and default value. Currently supported are int, float, str, bool and list. Different types have different input mask in the config GUI.
 
 #### Use Config Values
 
@@ -478,7 +478,6 @@ def after_cocktail(self, data: dict):
 1. Import the `DP_CONTROLLER` from CocktailBerry to use dialogues.
 2. The `user_okay` method will wait until the user accepts or decline and return the result as boolean.
 3. The `standard_box` will display your text as a full screen window, with a close / ok button.
-
 
 ### Data Before and After Cocktail
 

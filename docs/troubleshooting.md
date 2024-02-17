@@ -51,7 +51,6 @@ This will use the lower dimensions for the application but scale it up by the fa
 Decimal numbers for x do also work, just try not to get decimals for width / height.
 If you use your own startup script or similar, just add the export line with an according value to it, or set the environment variable in any other desired way.
 
-
 ## Touchscreen Calibration
 
 Sometimes you need to calibrate your touchscreen, otherwise the touched points and cursor are out of sync.
@@ -118,7 +117,7 @@ Currently you can use two different types of reader:
     Reading / Writing RFIDs while still having a interactive GUI may cause a lot of troubles.
     Some reader frameworks lock themselves until the read or write is done and have no direct cancel methods.
     So even using threads only fixes the responsiveness of the app.
-    Therefore, the best is if you trigger a write, finish the write. 
+    Therefore, the best is if you trigger a write, finish the write.
     If you have experience with the reader + python feel free to contact me, so we can improve this feature.
 
 Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/) and [here for the PiicoDev](https://core-electronics.com.au/guides/piicodev-rfid-module-guide-for-raspberry-pi/).
@@ -187,7 +186,7 @@ git pull
 find .git/objects/ -type f -empty | xargs rm
 git fetch -p
 git fsck --full
-``` 
+```
 
 This should not only remove the corrupted files, but also fetch the latest version of the software.
 If you get another error output, it is best to submit the error output with the issue.
@@ -202,7 +201,7 @@ You can upload your own pictures over the according button the recipe tab.
 Your picture will then replace the default provided picture.
 
 The user pictures are stored in the `CocktailBerry/display_images_user` folder.
-The picture will be saved with the cocktail id as name and jpg format. 
+The picture will be saved with the cocktail id as name and jpg format.
 You can also provide the cocktail name in lowercase and underscore instead spaces as picture name in jpg format (e.g. `cuba_libre.jpg` for "Cuba Libre"), if you prefer to upload the pictures via hand in that folder instead of the GUI.
 
 If your database is quite old, newer cocktails you added may either have the default picture, or may have another picture from new cocktails contained now in the database.
@@ -280,7 +279,7 @@ The Raspberry Pi can sometimes differ from other machines in terms of installati
 
 ### PyQt can't be Installed
 
-You probably need to run `sudo apt install python3-pyqt5` instead of `pip install pyqt5` on the Pi. 
+You probably need to run `sudo apt install python3-pyqt5` instead of `pip install pyqt5` on the Pi.
 
 ### Numpy Import Error at Matplotlib Import
 
@@ -293,7 +292,7 @@ If really nothing else works, try `sudo pip3 install -U numpy`, then you will pr
 I found the easiest thing is to use RPis Autostart.
 Create a .desktop file with `sudo nano /etc/xdg/autostart/cocktail.desktop` and the `launcher.sh` in your `/home/pi` folder:
 
-```
+```text
 [Desktop Entry]
 Type=Application
 Name=CocktailScreen

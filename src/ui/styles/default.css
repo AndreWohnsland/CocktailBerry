@@ -108,7 +108,7 @@ QTabBar::tab {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 5px 0px 5px 0px;
-  width: 193px; }
+  width: 150px; }
   QTabBar::tab:selected {
     color: #ffffff;
     background-color: #007bff; }
@@ -183,6 +183,8 @@ QPushButton {
     padding-right: 1px; }
   QPushButton[cssClass~='round'] {
     border-radius: 20px; }
+  QPushButton[cssClass~='round-sm'] {
+    border-radius: 12px; }
   QPushButton[cssClass~='secondary'] {
     color: #ef9700;
     border-color: #ef9700; }
