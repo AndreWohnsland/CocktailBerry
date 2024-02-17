@@ -84,7 +84,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.button_custom_color.setMaximumSize(QSize(16777215, 200))
         self.button_custom_color.setMinimumSize(QSize(0, 50))
         adjust_font(self.button_custom_color, LARGE_FONT, True)
-        self.button_custom_color.clicked.connect(self._open_color_window)
+        self.button_custom_color.clicked.connect(self._open_color_window)  # type: ignore
         vbox.addWidget(self.button_custom_color)
 
     def _open_color_window(self):
