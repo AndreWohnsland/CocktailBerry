@@ -296,7 +296,7 @@ def _limit_number(val: T, min_val: T, max_val: T) -> T:
     return limited
 
 
-def _generate_needed_cocktail_icons(n):
+def _generate_needed_cocktail_icons(amount: int):
     icon_list = [
         ICONS.presets.tiny_glass,
         ICONS.presets.small_glass,
@@ -305,15 +305,14 @@ def _generate_needed_cocktail_icons(n):
         ICONS.presets.huge_glass,
     ]
     length = len(icon_list)
-    if n <= length:
-        start = (length - n) // 2
-        return icon_list[start:start + n]
-    else:
-        result = icon_list[:]
-        remaining = n - length
-        for i in range(remaining):
-            if i % 2 == 0:
-                result.insert(0, icon_list[0])
-            else:
-                result.append(icon_list[-1])
-        return result
+    if amount <= length:
+        start = (length - amount) // 2
+        return icon_list[start:start + amount]
+    result = icon_list[:]
+    remaining = amount - length
+    for i in range(remaining):
+        if i % 2 == 0:
+            result.insert(0, icon_list[0])
+        else:
+            result.append(icon_list[-1])
+    return result
