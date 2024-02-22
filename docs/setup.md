@@ -165,7 +165,7 @@ You can use water and a weight scale for the process.
 Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps.
 In the end, you can adjust each pump volume flow by the factor:
 
-$$ \dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{expectation}}{V_{output}} $$
+$$ \dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{output}}{V_{expectation}} $$
 
 I usually do a mix of the different volumes, add them together and check if the scale shows the same amount at each pump.
 
