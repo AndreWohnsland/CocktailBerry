@@ -13,7 +13,7 @@
     },
     {
       "name": "Python: Current file",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
@@ -21,7 +21,7 @@
     },
     {
       "name": "Python: Calibration program",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
@@ -30,7 +30,7 @@
     },
     {
       "name": "Python: Main program in debug mode",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
