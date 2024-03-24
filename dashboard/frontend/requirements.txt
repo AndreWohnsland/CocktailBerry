@@ -1,9 +1,9 @@
 requests
 python-dotenv
 pyyaml
-plotly==5.18.0
+plotly==5.20.0
 dash
 numpy==1.26.4
 scipy==1.12.0
-pandas==2.2.0
+pandas==2.2.1
 gunicorn
