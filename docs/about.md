@@ -8,6 +8,12 @@ Let's get started!
 
 ## tl;dr
 
+The too long; didn't read is, that you can easily install the software by just flashing the Raspberry Pi OS on a SD card, insert it, start the device and install the software with just one command.
+Then, get some coffee and let the script do the work.
+When you come back, you can set up the machine over the graphical user interface and start mixing cocktails.
+This way, you don't have to know much about software an can go full focus on the hardware.
+If you want to do your own software part, you can still add this over [addons](addons.md).
+
 <figure markdown>
   ![Cocktail in the making](pictures/Cocktailmaker_action.gif){ width="600" }
   <figcaption>User selects recipe > clicks button > cocktail is prepared > profit</figcaption>
