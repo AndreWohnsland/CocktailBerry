@@ -2,8 +2,7 @@ FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 
-RUN apt-get update
-RUN apt-get install -y build-essential curl
+RUN apt update && apt install -y build-essential curl && apt clean
 # Get Rust
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
