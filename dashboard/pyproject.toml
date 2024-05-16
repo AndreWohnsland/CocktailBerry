@@ -6,22 +6,22 @@ authors = ["Andre <Andre_Wohnsland@web.de>"]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
-fastapi = "^0.110.0"
-uvicorn = "^0.28.0"
+fastapi = "^0.111.0"
+uvicorn = "^0.29.0"
 matplotlib = "^3.4.3"
 pywaffle = "^0.6.3"
 pandas = "^2.2.1"
-requests = "^2.26.0"
-python-dotenv = "^0.19.2"
-PyYAML = "^6.0"
-dash = "^2.2.0"
+requests = "^2.31.0"
+python-dotenv = "^1.0.1"
+PyYAML = "^6.0.1"
+dash = "^2.17.0"
 numpy = "^1.26.4"
-scipy = "^1.12.0"
-plotly = "^5.20.0"
-gunicorn = "^21.2.0"
+scipy = "^1.13.0"
+plotly = "^5.22.0"
+gunicorn = "^22.0.0"
 
 [tool.poetry.dev-dependencies]
-pip-chill = "^1.0.1"
+pip-chill = "^1.0.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

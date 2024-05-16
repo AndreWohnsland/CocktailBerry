@@ -19,7 +19,7 @@
   "cSpell.language": "en,de",
   "ruff.lint.args": ["--line-length=120"],
   "[python]": {
-    "editor.defaultFormatter": "ms-python.autopep8"
+    "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "python.analysis.autoImportCompletions": true
 }
