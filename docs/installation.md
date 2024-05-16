@@ -19,6 +19,8 @@ After flashing the latest Raspberry Pi 64 bit OS, you can use the provided shell
 Or just install [the requirements](#installing-requirements), when you want to have a look into the program on your PC.
 You can always install the other things later, the docs provide information within each according section.
 
+### Automatic Installation
+
 !!! tip "RPi: Try the new all in one Script"
     If you are on your Raspberry Pi, you can now also use the so called *All In One Script*!
     This will check that git, Python and your OS are compatible for the project and install CocktailBerry including Docker and compose on the Pi.
@@ -29,6 +31,8 @@ You can always install the other things later, the docs provide information with
     wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash
     ```
     to get the script and run it on the Pi. To easy to be true, isn't it?
+
+### Manual Installation
 
 To clone and setup this project run:
 

@@ -37,7 +37,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.31.0** | Protect specific tabs only                                                                                           |
 | **v1.32.0** | Refill over Maker Screen <br> Improved Teams feature                                                                 |
 | **v1.33.0** | Adjust pump speed individually                                                                                       |
-| **v1.34.0** | New buttons in selection screen                                                                                      |
+| **v1.34.0** | New buttons in selection screen <br> Well-ordered config window                                                      |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.

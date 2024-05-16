@@ -8,6 +8,12 @@ Let's get started!
 
 ## tl;dr
 
+The too long; didn't read is, that you can easily install the software by just flashing the Raspberry Pi OS on a SD card, insert it, start the device and install the software with just one command.
+Then, get some coffee and let the script do the work.
+When you come back, you can set up the machine over the graphical user interface and start mixing cocktails.
+This way, you don't have to know much about software an can go full focus on the hardware.
+If you want to do your own software part, you can still add this over [addons](addons.md).
+
 <figure markdown>
   ![Cocktail in the making](pictures/Cocktailmaker_action.gif){ width="600" }
   <figcaption>User selects recipe > clicks button > cocktail is prepared > profit</figcaption>
@@ -28,9 +34,9 @@ The interface was programmed with PyQt5 for the users to easily interact with Co
 </figure>
 
 This is the main window of the application and the window your guest will interact with.
-They can choose a cocktail of their choice, a crossed glass at the end indicates that there is also a virgin option of this cocktail.
+They can choose a cocktail of their choice, a crossed glass at the start indicates that there is also a virgin option of this cocktail.
 The cocktail data is displayed after selection.
-The user can increase or decrease the volume, as well as the alcohol level of the cocktail.
+The user can choose from your defined list of volume, as well as the alcohol level of the cocktail.
 
 <figure markdown>
   ![Ingredient](pictures/Ingredients_ui.png)
@@ -39,7 +45,8 @@ The user can increase or decrease the volume, as well as the alcohol level of th
 
 Here you can manage all your ingredients.
 Define the name, volume and alcohol level of each ingredient here.
-Also, you can set ingredients for hand add and let CocktailBerry spend a single ingredient.
+Also, you can set ingredients for hand add and define a custom unit for the handadd.
+This is extremely handy, if you want to prompt the user to add a slice of something at the end.
 
 <figure markdown>
   ![Recipe](pictures/Recipes_ui.png)
@@ -49,7 +56,7 @@ Also, you can set ingredients for hand add and let CocktailBerry spend a single 
 Here you can manage all your recipes.
 Define the name and ingredients with corresponding volume.
 You can disable recipes, you currently don't want to serve, or activates the virgin option for a cocktail.
-Also, additional ingredients added later by the user can be defined for a recipe.
+The number after the ingredient defines the order of the ingredients in the cocktail, same numbers are added in parallel.
 
 <figure markdown>
   ![Bottle](pictures/Bottles_ui.png)
