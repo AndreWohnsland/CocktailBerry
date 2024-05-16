@@ -1,5 +1,6 @@
 # pylint: disable=wrong-import-order,wrong-import-position,ungrouped-imports
 from src.migration.migrator import Migrator
+
 # Migrations need to be made before imports, otherwise new needed packages will break the program
 migrator = Migrator()
 migrator.make_migrations()
