@@ -1,6 +1,6 @@
 FROM python:3.11-slim-bookworm
 
-WORKDIR /apps
+WORKDIR /app
 
 COPY ./requirements.txt /app
 RUN pip config --user set global.extra-index-url https://www.piwheels.org/simple
