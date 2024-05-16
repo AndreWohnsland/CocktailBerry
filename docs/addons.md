@@ -21,7 +21,7 @@ Like you could implement a scale into your machine below the position for the gl
 
 The extension for addons was made, so that there is no big feature creep within the main application.
 This would cause more and more optional settings, which most user are not interested in.
-With addons users will get the best base experience with CocktailBerry, but can easy extent it to their own taste.
+With addons, users will get the best base experience of CocktailBerry, but can easily extent it to their own taste.
 
 Some examples for an addon could be:
 
@@ -57,7 +57,8 @@ They are either directly from CocktailBerry or from other third party providers.
 Verified means that the addon is known by the CocktailBerry programmers and was at least once tested for its functionality.
 
 - [Start Glass Volume](https://github.com/AndreWohnsland/CocktailBerry-Addons#start-glass-volume): Change default glass volume at machine start
-- It's a new feature, so let's make some addons!
+- [Recipe Presets](https://github.com/AndreWohnsland/CocktailBerry-Addons?tab=readme-ov-file#-recipe-presets): Manage and use recipe presets
+- [Glass Detection](https://github.com/AndreWohnsland/CocktailBerry-Addons?tab=readme-ov-file#-glass-detection): Only make a cocktail if a glass is detected
 
 !!! question "Not the Addon you're Looking for?"
     Not all addons may be listed here.
