@@ -23,7 +23,7 @@ def find_default_cocktail_image(cocktail: Cocktail):
     cocktail_image = DEFAULT_COCKTAIL_IMAGE
     # then try to get system cocktail image
     # provided cocktails will have a default image, user added will not
-    specific_image_path = DEFAULT_IMAGE_FOLDER / f'{cocktail.id}.jpg'
+    specific_image_path = DEFAULT_IMAGE_FOLDER / f"{cocktail.id}.jpg"
     if specific_image_path.exists():
         cocktail_image = specific_image_path
     return cocktail_image
@@ -35,7 +35,7 @@ def find_user_cocktail_image(cocktail: Cocktail):
     cocktail_image = None
     # also allow cocktail name with underscores as image name
     image_paths = [
-        USER_IMAGE_FOLDER / f'{cocktail.id}.jpg',
+        USER_IMAGE_FOLDER / f"{cocktail.id}.jpg",
         USER_IMAGE_FOLDER / f'{cocktail.name.lower().replace(" ", "_")}.jpg',
     ]
     for path in image_paths:
@@ -58,19 +58,19 @@ def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500) -
     # Calculate dimensions for cropping
     width, height = img.size
     if width > height:
-        left = (width - height) / 2
+        left = int((width - height) / 2)
         top = 0
-        right = (width + height) / 2
+        right = int((width + height) / 2)
         bottom = height
     else:
-        top = (height - width) / 2
+        top = int((height - width) / 2)
         left = 0
-        bottom = (height + width) / 2
+        bottom = int((height + width) / 2)
         right = width
     # Crop the image
-    img = img.crop((left, top, right, bottom))  # type: ignore
+    img = img.crop((left, top, right, bottom))
     # Resize the image
-    img = img.resize((resize_size, resize_size), Image.LANCZOS)  # pylint: disable=E1101
+    img = img.resize((resize_size, resize_size), Image.Resampling.LANCZOS)
     # always convert to rgb
     img = img.convert("RGB")
     return img
@@ -101,4 +101,4 @@ def check_picture_orientation(img: Image.Image) -> Image.Image:
 
 def save_image(image: Image.Image, save_id: int):
     """Saves the given image to the user folder"""
-    image.save(USER_IMAGE_FOLDER / f'{save_id}.jpg', "JPEG")
+    image.save(USER_IMAGE_FOLDER / f"{save_id}.jpg", "JPEG")
