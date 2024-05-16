@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bullseye
+FROM python:3.11-slim-bookworm
 
 RUN mkdir /usr/src/app/
 WORKDIR /usr/src/app/
