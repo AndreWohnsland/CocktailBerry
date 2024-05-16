@@ -8,7 +8,7 @@ on:
         required: true
         default: 'latest'
       service:
-        description: 'Service to build (microservice, dashboard-be, dashboard-fe)'
+        description: 'Service to build'
         required: true
         type: choice
         options:
