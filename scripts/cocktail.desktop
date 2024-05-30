@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=CocktailScreen
+Name=CocktailBerry
 NoDisplay=false
 Exec=/usr/bin/lxterminal -e "~/launcher.sh; read -p 'Press Enter to Close'"
+Icon=cocktailberry.png
