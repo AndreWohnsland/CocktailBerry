@@ -17,6 +17,11 @@ sudo chmod +x ~/launcher.sh
 echo "Copying desktop file to: /etc/xdg/autostart/cocktail.desktop"
 sudo cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
 
+# also adding the desktop file to the desktop, addidng picture to /usr/share/pixmaps
+echo "Copying desktop file to: ~/Desktop/cocktail.desktop"
+sudo cp ~/CocktailBerry/scripts/cocktail.desktop ~/Desktop/
+sudo cp ~/CocktailBerry/src/ui_elements/cocktailberry.png ./cocktailberry.png
+
 # Making write permission for all to wpa
 # We need this if we want to change wifi settings within CocktailBerry
 echo "Giving write permission to /etc/wpa_supplicant/wpa_supplicant.conf"
