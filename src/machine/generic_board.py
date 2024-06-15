@@ -1,20 +1,21 @@
-from typing import List, Optional
-from src.machine.interface import PinController, GPIOController
-from src.logger_handler import LoggerHandler
+from typing import Optional
 
+from src.logger_handler import LoggerHandler
+from src.machine.interface import GPIOController, PinController
 
 logger = LoggerHandler("GenericController")
 
 try:
     # pylint: disable=import-error
     from periphery import GPIO  # type: ignore
+
     DEV = False
 except ModuleNotFoundError:
     DEV = True
 
 
 class GenericController(PinController):
-    """Controller class to control pins on a generic board"""
+    """Controller class to control pins on a generic board."""
 
     def __init__(self, inverted: bool) -> None:
         super().__init__()
@@ -27,8 +28,8 @@ class GenericController(PinController):
         self.gpios: dict[int, GPIO] = {}
         self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False, pull_down: bool = True):
-        """Set up the given pin list"""
+    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True):
+        """Set up the given pin list."""
         if not self.dev_displayed:
             print(f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
@@ -48,20 +49,20 @@ class GenericController(PinController):
             logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
             logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
 
-    def activate_pin_list(self, pin_list: List[int]):
-        """Activates the given pin list"""
+    def activate_pin_list(self, pin_list: list[int]):
+        """Activates the given pin list."""
         if not self.devenvironment:
             for pin in pin_list:
                 self.gpios[pin].write(self.high)
 
-    def close_pin_list(self, pin_list: List[int]):
-        """Closes the given pin_list"""
+    def close_pin_list(self, pin_list: list[int]):
+        """Close the given pin_list."""
         if not self.devenvironment:
             for pin in pin_list:
                 self.gpios[pin].write(self.low)
 
-    def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
-        """Clean up the given pin list, or all pins if none is given"""
+    def cleanup_pin_list(self, pin_list: Optional[list[int]] = None):
+        """Clean up the given pin list, or all pins if none is given."""
         if self.devenvironment:
             return
         if pin_list is None:
@@ -72,18 +73,14 @@ class GenericController(PinController):
                 self.gpios[pin_number].close()
 
     def read_pin(self, pin: int) -> bool:
-        """Returns the state of the given pin"""
+        """Return the state of the given pin."""
         if not self.devenvironment:
             return self.gpios[pin].read()
         return False
 
 
 class GenericGPIO(GPIOController):
-    def __init__(
-        self,
-        inverted: bool,
-        pin: int
-    ):
+    def __init__(self, inverted: bool, pin: int):
         low = False
         high = True
         super().__init__(high, low, inverted, pin)

@@ -1,5 +1,6 @@
-import sys
 import platform
+import sys
+
 from src import NEEDED_PYTHON_VERSION
 
 _needed_python_version_str = f"{NEEDED_PYTHON_VERSION[0]}.{NEEDED_PYTHON_VERSION[1]}"

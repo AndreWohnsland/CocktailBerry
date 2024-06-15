@@ -1,22 +1,25 @@
+from __future__ import annotations
+
+import contextlib
 import random
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union, get_args
+from typing import Any, Callable, ClassVar, get_args
+
 import typer
 import yaml
 from pyfiglet import Figlet
 
+from src import (
+    MAX_SUPPORTED_BOTTLES,
+    PROJECT_NAME,
+    SupportedBoardType,
+    SupportedLanguagesType,
+    SupportedRfidType,
+    SupportedThemesType,
+    __version__,
+)
+from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data
-from src.filepath import CUSTOM_CONFIG_FILE
-from src import (
-    __version__,
-    PROJECT_NAME,
-    MAX_SUPPORTED_BOTTLES,
-    SupportedLanguagesType,
-    SupportedBoardType,
-    SupportedThemesType,
-    SupportedRfidType,
-)
-
 
 logger = LoggerHandler("config_manager")
 SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
@@ -26,8 +29,9 @@ SUPPORTED_RFID = list(get_args(SupportedRfidType))
 
 
 class ChooseType:
-    """Base Class for auto generated single select drop down"""
-    allowed: List[str] = []
+    """Base Class for auto generated single select drop down."""
+
+    allowed: ClassVar[list[str]] = []
 
 
 class LanguageChoose(ChooseType):
@@ -48,7 +52,9 @@ class RFIDChoose(ChooseType):
 
 class ConfigManager:
     """Manager for all static configuration of the machine.
-    The Settings defined here are the default settings and will be overwritten by the config file"""
+
+    The Settings defined here are the default settings and will be overwritten by the config file.
+    """
 
     # Activating some dev features like mouse cursor
     UI_DEVENVIRONMENT: bool = True
@@ -57,7 +63,7 @@ class ConfigManager:
     # Password to lock other tabs than maker tab
     UI_MAKER_PASSWORD: int = 0
     # specify which of the tabs will be locked
-    UI_LOCKED_TABS: List[bool] = [True, True, True]
+    UI_LOCKED_TABS: ClassVar[list[bool]] = [True, True, True]
     # Language to use, use two chars look up documentation, if not provided fallback to en
     UI_LANGUAGE: SupportedLanguagesType = "en"
     # Width and height of the touchscreen
@@ -67,7 +73,7 @@ class ConfigManager:
     UI_HEIGHT: int = 480
     UI_PICTURE_SIZE: int = 240
     # RPi pins where pumps (ascending) are connected
-    PUMP_PINS: list[int] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
+    PUMP_PINS: ClassVar[list[int]] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
     # Volume flow for the according pumps
     PUMP_VOLUMEFLOW: list[float] = [30.0] * 12
     # Custom name of the Maker
@@ -75,7 +81,7 @@ class ConfigManager:
     # Number of bottles possible at the machine
     MAKER_NUMBER_BOTTLES: int = 8
     # Volume options to choose from when preparing a cocktail
-    MAKER_PREPARE_VOLUME = [150, 250, 350]
+    MAKER_PREPARE_VOLUME: ClassVar[list[int]] = [150, 250, 350]
     # Number of pumps parallel in production
     MAKER_SIMULTANEOUSLY_PUMPS: int = 16
     # Time in seconds to execute clean program
@@ -105,7 +111,7 @@ class ConfigManager:
     # Option to add the single ingredient option to the maker pane
     MAKER_ADD_SINGLE_INGREDIENT: bool = False
     # List of LED pins for control
-    LED_PINS: list[int] = []
+    LED_PINS: ClassVar[list[int]] = []
     # Value for LED brightness
     LED_BRIGHTNESS: int = 100
     # Number of LEDs, only important for controllable
@@ -125,7 +131,7 @@ class ConfigManager:
     # URL should be 'device_ip:8080' where dashboard container is running and in the same network
     # Button names must be two strings in the list
     TEAMS_ACTIVE: bool = False
-    TEAM_BUTTON_NAMES: list[str] = ["Team 1", "Team 2"]
+    TEAM_BUTTON_NAMES: ClassVar[list[str]] = ["Team 1", "Team 2"]
     TEAM_API_URL: str = "http://127.0.0.1:8080"
     # Config to change the displayed values in the maker to another unit
     EXP_MAKER_UNIT: str = "ml"
@@ -133,6 +139,7 @@ class ConfigManager:
 
     def __init__(self) -> None:
         """Try to read in the custom configs. If the file is not there, ignores the error.
+
         At the initialization of the program the config is synced to the file, therefore creating it at the first start.
         The sync is not within the __init__ because the initialization of the inheriting classes would also add their
         attributes within the config, which is not a desired behavior. The sync will include all latest features within
@@ -140,7 +147,7 @@ class ConfigManager:
         """
         # Dict of Format "configname": (type, List[CheckCallbacks])
         # The check function needs to be a callable with interface fn(configname, configvalue)
-        self.config_type: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
+        self.config_type: dict[str, tuple[type, list[Callable[[str, Any], None]]]] = {
             "UI_DEVENVIRONMENT": (bool, []),
             "UI_MASTERPASSWORD": (int, []),
             "UI_MAKER_PASSWORD": (int, []),
@@ -185,7 +192,7 @@ class ConfigManager:
         }
         # Dict of Format "configname": (type, List[CheckCallbacks]) for the single list elements
         # only needed if the above config type was defined as list type, rest is identical to top schema
-        self.config_type_list: Dict[str, Tuple[type, List[Callable[[str, Any], None]]]] = {
+        self.config_type_list: dict[str, tuple[type, list[Callable[[str, Any], None]]]] = {
             "PUMP_PINS": (int, [self._validate_pin_numbers]),
             "PUMP_VOLUMEFLOW": (float, [_build_number_limiter(0.1, 1000)]),
             "MAKER_PREPARE_VOLUME": (int, [_build_number_limiter(25, 1000)]),
@@ -193,22 +200,22 @@ class ConfigManager:
             "LED_PINS": (int, [_build_number_limiter(0, 200)]),
             "UI_LOCKED_TABS": (bool, []),
         }
-        try:
+        with contextlib.suppress(FileNotFoundError):
             self._read_config()
-        except FileNotFoundError:
-            pass
 
     def sync_config_to_file(self):
-        """Writes the config attributes to the config file.
-        Is used to sync new properties into the file"""
+        """Write the config attributes to the config file.
+
+        Is used to sync new properties into the file.
+        """
         config = {}
         for attribute in self.config_type:
             config[attribute] = getattr(self, attribute)
-        with open(CUSTOM_CONFIG_FILE, 'w', encoding="UTF-8") as stream:
+        with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
 
-    def validate_and_set_config(self, configuration: Dict, lists_later=True):
-        """Validates the config and set new values"""
+    def validate_and_set_config(self, configuration: dict, lists_later=True):
+        """Validate the config and set new values."""
         # Some lists may depend on other config variables like number of bottles
         # Therefore, by default, split list types from the rest and check them afterwards
         if lists_later:
@@ -220,13 +227,13 @@ class ConfigManager:
             setattr(self, k, value)
 
     def _read_config(self):
-        """Reads all the config data from the file and validates it"""
-        with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
+        """Read all the config data from the file and validates it."""
+        with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
             self.validate_and_set_config(configuration)
 
     def _validate_config_type(self, configname: str, configvalue: Any):
-        """validates the configvalue if its fit the type / conditions"""
+        """Validate the configvalue if its fit the type / conditions."""
         config_setting = self.config_type.get(configname)
         if config_setting is None:
             return
@@ -248,8 +255,8 @@ class ConfigManager:
         if isinstance(configvalue, list):
             self._validate_config_list_type(configname, configvalue)
 
-    def _validate_config_list_type(self, configname: str, configlist: List[Any]):
-        """Extra validation for list type in case len / types"""
+    def _validate_config_list_type(self, configname: str, configlist: list[Any]):
+        """Extra validation for list type in case len / types."""
         config_setting = self.config_type_list.get(configname)
         if config_setting is None:
             return
@@ -274,13 +281,13 @@ class ConfigManager:
         _validate_list_length(configlist, configname, min_len)
 
     def choose_bottle_number(self, get_all=False):
-        """Selects the number of Bottles, limits by max supported count"""
+        """Select the number of Bottles, limits by max supported count."""
         if get_all:
             return MAX_SUPPORTED_BOTTLES
         return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
 
     def _validate_pin_numbers(self, configname: str, data: int):
-        """Validates that the given pin numbers exists on the board"""
+        """Validate that the given pin numbers exists on the board."""
         # RPI
         rpi_allowed = list(range(0, 28))
         # Generic Pins, 200 should probably be enough, RockPi got numbers up to 160
@@ -293,12 +300,13 @@ class ConfigManager:
     def add_config(
         self,
         config_name: str,
-        default_value: Union[str, int, float, bool, list[str], list[int], list[float]],
-        validation_function: Optional[list[Callable[[str, Any], None]]] = None,
-        list_validation_function: Optional[list[Callable[[str, Any], None]]] = None,
-        list_type: Optional[type] = None,
+        default_value: str | int | float | bool | list[str] | list[int] | list[float],
+        validation_function: list[Callable[[str, Any], None]] | None = None,
+        list_validation_function: list[Callable[[str, Any], None]] | None = None,
+        list_type: type | None = None,
     ):
-        """Adds the configuration under the given name.
+        """Add the configuration under the given name.
+
         Adds the default value, if it is currently not set in the config file.
         If validation functions for the value or the list values are given,
         they are also registered with the type.
@@ -334,14 +342,16 @@ class ConfigManager:
         self,
         config_name: str,
         options: list[str],
-        default_value: Optional[str] = None,
-        validation_function: Optional[list[Callable[[str, Any], None]]] = None,
+        default_value: str | None = None,
+        validation_function: list[Callable[[str, Any], None]] | None = None,
     ):
-        """Adds a configuration value under the given name, which can only be from given options
+        """Add a configuration value under the given name, which can only be from given options.
+
         This is used to create a dropdown selection for the user to prevent unintended values.
-        Options must be string and have at least one element. 
-        Default value is first list element, or if given, the given value
+        Options must be string and have at least one element.
+        Default value is first list element, or if given, the given value.
         """
+
         # Define a choose type for the add on
         class AddOnChoose(ChooseType):
             allowed = options
@@ -359,56 +369,60 @@ class ConfigManager:
         self.config_type[config_name] = (AddOnChoose, validation_function)
 
 
-def _validate_list_length(configlist: List[Any], configname: str, min_len: int):
-    """Checks if the list is at least a given size"""
+def _validate_list_length(configlist: list[Any], configname: str, min_len: int):
+    """Check if the list is at least a given size."""
     actual_len = len(configlist)
     if actual_len < min_len:
         raise ConfigError(f"{configname} got only {actual_len} elements, but you need at least {min_len} elements")
 
 
-def _build_support_checker(supported: List[Any]):
-    """Builds the function: Check if the configvalue is within the supported List"""
+def _build_support_checker(supported: list[Any]):
+    """Build the function: Check if the configvalue is within the supported List."""
+
     def check_if_supported(configname: str, configvalue: Any):
         if configvalue in supported:
             return
         raise ConfigError(f"Value '{configvalue}' for {configname} is not supported, please use any of {supported}")
+
     return check_if_supported
 
 
 def _validate_max_length(configname: str, data: str, max_len=30):
-    """Validates if data exceeds maximum length"""
+    """Validate if data exceeds maximum length."""
     if len(data) <= max_len:
         return
     raise ConfigError(f"{configname} is longer than {max_len}, please reduce length")
 
 
-def _build_number_limiter(min_val: Union[int, float] = 1, max_val: Union[int, float] = 100):
-    """Builds the function: Check if the number is within the given limits"""
-    def limit_number(configname: str, data: Union[int, float]):
+def _build_number_limiter(min_val: int | float = 1, max_val: int | float = 100):
+    """Build the function: Check if the number is within the given limits."""
+
+    def limit_number(configname: str, data: int | float):
         if data < min_val or data > max_val:
             raise ConfigError(f"{configname} must be between {min_val} and {max_val}.")
+
     return limit_number
 
 
 class Shared:
-    """Shared global variables which may dynamically change and are needed on different spaces"""
+    """Shared global variables which may dynamically change and are needed on different spaces."""
 
     def __init__(self):
         self.cocktail_started = False
         self.make_cocktail = True
-        self.old_ingredient: List[str] = []
+        self.old_ingredient: list[str] = []
         self.selected_team = "No Team"
-        self.team_member_name: Optional[str] = None
+        self.team_member_name: str | None = None
         self.cocktail_volume: int = 200
         self.alcohol_factor: float = 1.0
 
 
 class ConfigError(Exception):
-    """Raised when there was an error with the configuration data"""
+    """Raised when there was an error with the configuration data."""
 
 
 def version_callback(value: bool):
-    """Returns the version of the program"""
+    """Return the version of the program."""
     if value:
         typer.echo(f"{PROJECT_NAME} Version {__version__}. Created by Andre Wohnsland.")
         typer.echo(get_platform_data())
@@ -418,7 +432,7 @@ def version_callback(value: bool):
 
 
 def show_start_message(machine_name: str = PROJECT_NAME):
-    """Shows the starting message in both Figlet and normal font"""
+    """Show the starting message in both Figlet and normal font."""
     figlet = Figlet()
     start_message = f"{machine_name} Version {__version__}"
     print(figlet.renderText(start_message))

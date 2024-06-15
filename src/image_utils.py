@@ -1,13 +1,14 @@
-from typing import Optional, Union
 from pathlib import Path
+from typing import Optional, Union
+
 from PIL import Image, UnidentifiedImageError
 
-from src.filepath import DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER, DEFAULT_COCKTAIL_IMAGE
+from src.filepath import DEFAULT_COCKTAIL_IMAGE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
 from src.models import Cocktail
 
 
 def find_cocktail_image(cocktail: Cocktail):
-    """Find the image for the given cocktail"""
+    """Find the image for the given cocktail."""
     # setting default cocktail image
     cocktail_image = find_default_cocktail_image(cocktail)
     # Now try to get the user defined image, if it exists
@@ -18,7 +19,7 @@ def find_cocktail_image(cocktail: Cocktail):
 
 
 def find_default_cocktail_image(cocktail: Cocktail):
-    """Find the system defined image for the given cocktail"""
+    """Find the system defined image for the given cocktail."""
     # setting default cocktail image
     cocktail_image = DEFAULT_COCKTAIL_IMAGE
     # then try to get system cocktail image
@@ -30,8 +31,10 @@ def find_default_cocktail_image(cocktail: Cocktail):
 
 
 def find_user_cocktail_image(cocktail: Cocktail):
-    """Finds the user defined image for the given cocktail
-    Returns None if not set"""
+    """Find the user defined image for the given cocktail.
+
+    Returns None if not set.
+    """
     cocktail_image = None
     # also allow cocktail name with underscores as image name
     image_paths = [
@@ -46,7 +49,7 @@ def find_user_cocktail_image(cocktail: Cocktail):
 
 
 def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500) -> Optional[Image.Image]:
-    """Resize and crop (1x1) the given image to the desired size"""
+    """Resize and crop (1x1) the given image to the desired size."""
     # Open the image file
     try:
         img = Image.open(image_path)
@@ -72,8 +75,7 @@ def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500) -
     # Resize the image
     img = img.resize((resize_size, resize_size), Image.Resampling.LANCZOS)
     # always convert to rgb
-    img = img.convert("RGB")
-    return img
+    return img.convert("RGB")
 
 
 def check_picture_orientation(img: Image.Image) -> Image.Image:
@@ -100,5 +102,5 @@ def check_picture_orientation(img: Image.Image) -> Image.Image:
 
 
 def save_image(image: Image.Image, save_id: int):
-    """Saves the given image to the user folder"""
+    """Save the given image to the user folder."""
     image.save(USER_IMAGE_FOLDER / f"{save_id}.jpg", "JPEG")

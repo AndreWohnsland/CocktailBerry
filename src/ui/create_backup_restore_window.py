@@ -1,24 +1,30 @@
-from pathlib import Path
 import shutil
-from PyQt5.QtWidgets import (
-    QScrollArea, QMainWindow, QWidget, QSpacerItem,
-    QVBoxLayout, QHBoxLayout, QCheckBox, QFrame,
-    QSizePolicy
-)
-from PyQt5.QtCore import Qt
+from pathlib import Path
 
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QCheckBox,
+    QFrame,
+    QHBoxLayout,
+    QMainWindow,
+    QScrollArea,
+    QSizePolicy,
+    QSpacerItem,
+    QVBoxLayout,
+    QWidget,
+)
+
+from src.dialog_handler import UI_LANGUAGE
+from src.display_controller import DP_CONTROLLER
 from src.filepath import (
+    CUSTOM_CONFIG_FILE,
     CUSTOM_STYLE_FILE,
     CUSTOM_STYLE_SCSS,
-    CUSTOM_CONFIG_FILE,
-    VERSION_FILE,
-    USER_IMAGE_FOLDER,
     DATABASE_PATH,
+    USER_IMAGE_FOLDER,
+    VERSION_FILE,
 )
-
-from src.display_controller import DP_CONTROLLER
-from src.dialog_handler import UI_LANGUAGE
-from src.ui.creation_utils import create_spacer, create_button, create_label, HEADER_FONT, LARGE_FONT, adjust_font
+from src.ui.creation_utils import HEADER_FONT, LARGE_FONT, adjust_font, create_button, create_label, create_spacer
 from src.utils import restart_program
 
 # the version.ini file is always required, as it pins the user version and possible needed migration on backup restore
@@ -75,8 +81,10 @@ class BackupRestoreWindow(QMainWindow):
         # header with the expander
         self.header = create_label(
             UI_LANGUAGE.get_translation("header", "backup_window"),
-            font_size=HEADER_FONT, centered=True, css_class="secondary",
-            bold=True
+            font_size=HEADER_FONT,
+            centered=True,
+            css_class="secondary",
+            bold=True,
         )
         self.vbox.addWidget(self.header)
         self.vbox.addItem(create_spacer(20, 100, True))
@@ -104,8 +112,10 @@ class BackupRestoreWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
     def _upload_backup(self):
-        """Prompts the user for a folder path to load the backup from.
-        Loads the config, custom database and version from the location."""
+        """Prompt the user for a folder path to load the backup from.
+
+        Loads the config, custom database and version from the location.
+        """
         to_backup, description = self._get_needed_backup_paths_and_description()
         description_string = ", ".join(description)
         if not DP_CONTROLLER.ask_backup_overwrite(description_string):
@@ -120,7 +130,7 @@ class BackupRestoreWindow(QMainWindow):
         restart_program()
 
     def _generate_checkboxes(self):
-        """Generates the checkboxes for the backup files"""
+        """Generate the checkboxes for the backup files."""
         for backup_type, file_paths in _FILE_SELECTION_MAPPER.items():
             # if not all needed files exist in the backup, skip
             # This should not happen, but if the user tempers with the backup, it might
@@ -146,7 +156,7 @@ class BackupRestoreWindow(QMainWindow):
             self.vbox.addLayout(container)
 
     def _get_needed_backup_paths_and_description(self) -> tuple[list[Path], list[str]]:
-        """Returns the file paths based on user selection"""
+        """Return the file paths based on user selection."""
         selected_files: list[Path] = []
         description: list[str] = []
         for backup_type, checkbox in self.config_objects.items():

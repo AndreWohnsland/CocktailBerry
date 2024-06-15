@@ -1,21 +1,21 @@
 from typing import Callable
+
+from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtGui import QPixmap, QImage
 
-from src.ui_elements import Ui_PictureWindow
-
-from src.models import Cocktail
-from src.display_controller import DP_CONTROLLER
-from src.dialog_handler import UI_LANGUAGE
-from src.ui.icons import ICONS
 from src.config_manager import CONFIG as cfg
-from src.image_utils import find_user_cocktail_image, find_default_cocktail_image, process_image, save_image
+from src.dialog_handler import UI_LANGUAGE
+from src.display_controller import DP_CONTROLLER
+from src.image_utils import find_default_cocktail_image, find_user_cocktail_image, process_image, save_image
+from src.models import Cocktail
+from src.ui.icons import ICONS
+from src.ui_elements import Ui_PictureWindow
 
 PICTURE_SIZE = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.65))
 
 
 class PictureWindow(QMainWindow, Ui_PictureWindow):
-    """ Class for the Progress screen during Cocktail making. """
+    """Class for the Progress screen during Cocktail making."""
 
     def __init__(self, cocktail: Cocktail, refresh_cocktail_view: Callable):
         super().__init__()
@@ -35,7 +35,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _set_picture(self):
-        """Uploads the picture to the user folder"""
+        """Upload the picture to the user folder."""
         if self.new_picture is not None:
             save_image(self.new_picture, self.cocktail.id)
             # call the on close method (refresh the cocktail view)
@@ -43,7 +43,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         self.close()
 
     def _remove_picture(self):
-        """Removes the picture from the user folder"""
+        """Remove the picture from the user folder."""
         if not DP_CONTROLLER.ask_to_remove_picture():
             return
         if self.user_image_path is None:
@@ -56,7 +56,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         self.refresh_cocktail_view()
 
     def _prepare_picture(self):
-        """Crops and show the picture"""
+        """Crops and show the picture."""
         selected_path = DP_CONTROLLER.ask_for_image_location()
         if selected_path is None:
             return
@@ -69,13 +69,13 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
             image.tobytes("raw", "RGB"),
             image.width,
             image.height,
-            QImage.Format_RGB888  # type: ignore
+            QImage.Format_RGB888,  # type: ignore
         )
         pixmap = QPixmap.fromImage(q_image)
         self.picture_user.setPixmap(pixmap)
 
     def _get_pictures(self):
-        """Populates the pictures for system and user"""
+        """Populate the pictures for system and user."""
         self.system_image_path = find_default_cocktail_image(self.cocktail)
         default_pixmap = QPixmap(str(self.system_image_path))
         self.picture_system.setPixmap(default_pixmap)

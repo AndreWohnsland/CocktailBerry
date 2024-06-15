@@ -1,20 +1,20 @@
-# -*- coding: utf-8 -*-
-""" Module with all necessary functions for the ingredients Tab.
+"""Module with all necessary functions for the ingredients Tab.
+
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
-from src.tabs import bottles
-
-from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
+from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.models import Ingredient
+from src.tabs import bottles
 
 
 @logerror
 def handle_enter_ingredient(w):
-    """ Insert or update the ingredient into the DB,
-    if all values are given and its name is not already in the DB.
+    """Insert or update the ingredient into the DB.
+
+    If all values are given and its name is not already in the DB.
     """
     if not DP_CONTROLLER.validate_ingredient_data(w):
         return
@@ -40,7 +40,7 @@ def handle_enter_ingredient(w):
 
 
 def _add_new_ingredient(w, ing: Ingredient):
-    """Adds the ingredient into the database """
+    """Add the ingredient into the database."""
     existing_ingredient = DB_COMMANDER.get_ingredient(ing.name)
     if existing_ingredient:
         DP_CONTROLLER.say_name_already_exists()
@@ -58,7 +58,7 @@ def _add_new_ingredient(w, ing: Ingredient):
 
 
 def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
-    """Changes the existing ingredient """
+    """Change the existing ingredient."""
     if not ing.selected:
         DP_CONTROLLER.say_no_ingredient_selected()
         return False
@@ -106,7 +106,7 @@ def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
 
 
 def load_ingredients(w):
-    """ Load all ingredient names into the ListWidget """
+    """Load all ingredient names into the ListWidget."""
     DP_CONTROLLER.clear_list_widget_ingredients(w)
     ingredients = DB_COMMANDER.get_all_ingredients()
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
@@ -115,7 +115,7 @@ def load_ingredients(w):
 
 @logerror
 def delete_ingredient(w):
-    """ Deletes an ingredient out of the DB if its not needed in any recipe."""
+    """Delete an ingredient out of the DB if its not needed in any recipe."""
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_input.selected_ingredient)
     if not selected_ingredient:
@@ -150,7 +150,7 @@ def delete_ingredient(w):
 
 @logerror
 def display_selected_ingredient(w):
-    """ Search the DB entry for the ingredient and displays them """
+    """Search the DB entry for the ingredient and displays them."""
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_input.selected_ingredient)
     DP_CONTROLLER.set_ingredient_add_label(w, selected_ingredient != "")
@@ -175,25 +175,24 @@ def display_selected_ingredient(w):
             ingredient.cost,
             ingredient.unit,
             ingredient.pump_speed,
-        ]
+        ],
     )
     DP_CONTROLLER.set_checkbox_value(ingredient_input.hand_add, ingredient.hand)
 
 
 @logerror
 def clear_ingredient_information(w):
-    """ Clears all entries in the ingredient windows. """
+    """Clear all entries in the ingredient windows."""
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
-    DP_CONTROLLER.clean_multiple_lineedit([
-        ingredient_input.ingredient_name,
-        ingredient_input.alcohol_level,
-        ingredient_input.volume,
-        ingredient_input.ingredient_cost
-    ])
-    DP_CONTROLLER.fill_multiple_lineedit(
-        [ingredient_input.unit, ingredient_input.pump_speed],
-        ["ml", "100"]
+    DP_CONTROLLER.clean_multiple_lineedit(
+        [
+            ingredient_input.ingredient_name,
+            ingredient_input.alcohol_level,
+            ingredient_input.volume,
+            ingredient_input.ingredient_cost,
+        ]
     )
+    DP_CONTROLLER.fill_multiple_lineedit([ingredient_input.unit, ingredient_input.pump_speed], ["ml", "100"])
     DP_CONTROLLER.unselect_list_widget_items(ingredient_input.selected_ingredient)
     DP_CONTROLLER.set_checkbox_value(ingredient_input.hand_add, False)
     DP_CONTROLLER.set_ingredient_add_label(w, False)

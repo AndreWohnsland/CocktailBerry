@@ -1,24 +1,27 @@
-from typing import Optional, get_args
+import contextlib
+import importlib.util
 import re
 from dataclasses import fields
-import importlib.util
-from PyQt5.QtWidgets import QMainWindow, QLabel, QColorDialog, QLineEdit
+from typing import Optional, get_args
+
+from PyQt5.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import QSize, Qt, QObject, pyqtSignal
+from PyQt5.QtWidgets import QColorDialog, QLabel, QLineEdit, QMainWindow
 
 from src import SupportedThemesType
-from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
-from src.utils import restart_program
-from src.migration.migrator import Migrator, CouldNotMigrateException
-from src.ui.icons import parse_colors
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
+from src.migration.migrator import CouldNotMigrateException, Migrator
+from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_font, create_spacer, setup_worker_thread
+from src.ui.icons import parse_colors
 from src.ui_elements import Ui_ColorWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
-from src.ui.creation_utils import SMALL_FONT, MEDIUM_FONT, LARGE_FONT, adjust_font, create_spacer, setup_worker_thread
+from src.utils import restart_program
 
 try:
     import qtsass
+
     _QTSASS_INSTALLED = True
 except ModuleNotFoundError:
     _QTSASS_INSTALLED = False
@@ -27,7 +30,8 @@ THEMES = list(get_args(SupportedThemesType))
 
 
 class _Worker(QObject):
-    """Worker to install qtsass on a thread"""
+    """Worker to install qtsass on a thread."""
+
     done = pyqtSignal()
 
     def __init__(self, parent=None):
@@ -35,18 +39,16 @@ class _Worker(QObject):
 
     def run(self):
         migrator = Migrator()
-        try:
-            migrator._install_pip_package("qtsass", "1.17.0")  # pylint: disable=protected-access
-        except CouldNotMigrateException:
-            pass
+        with contextlib.suppress(CouldNotMigrateException):
+            migrator._install_pip_package("qtsass", "1.17.0")
         self.done.emit()
 
 
 class ColorWindow(QMainWindow, Ui_ColorWindow):
-    """ Creates the log window Widget. """
+    """Creates the log window Widget."""
 
     def __init__(self, parent):
-        """ Init. Connect all the buttons and set window policy. """
+        """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -77,13 +79,11 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         if DP_CONTROLLER.ask_to_install_qtsass():
             self._worker = _Worker()
             self._thread = setup_worker_thread(  # pylint: disable=attribute-defined-outside-init
-                self._worker,
-                self,
-                self._finish_installer_worker
+                self._worker, self, self._finish_installer_worker
             )
 
     def _set_selected_template(self):
-        """Uses the selected template and fills the color into the fields"""
+        """Use the selected template and fills the color into the fields."""
         template: SupportedThemesType = self.selection_template.currentText()  # type: ignore
         colors = parse_colors(template)
         for color in fields(colors):
@@ -93,7 +93,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             line_edit.setStyleSheet(self._generate_style(color_value))
 
     def _generate_color_fields(self):
-        """Generates all the needed fields to change colors"""
+        """Generate all the needed fields to change colors."""
         # adds a spacer on top
         self.color_container.addItem(create_spacer(20))
         for color in fields(self.custom_colors):
@@ -101,7 +101,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             self.color_container.addItem(create_spacer(12))
 
     def _generate_color_section(self, color_name: str):
-        """Generates a section for the color including color pad, and user input"""
+        """Generate a section for the color including color pad, and user input."""
         header = QLabel(f"{color_name}:")
         adjust_font(header, LARGE_FONT, True)
         self.color_container.addWidget(header)
@@ -123,9 +123,10 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         self.inputs_colors[color_name] = color_input
 
     def _connect_color_picker(self, line_edit_to_write: QLineEdit):
-        """Opens a color picker for the user to select the color
+        """Open a color picker for the user to select the color.
+
         Uses the current color as default.
-        Inserts the selected color into the line edit
+        Inserts the selected color into the line edit.
         """
         self.color_picker = QColorDialog(self)
         current_color = line_edit_to_write.text()
@@ -141,12 +142,13 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             line_edit_to_write.setStyleSheet(self._generate_style(selected_color))
 
     def _generate_style(self, color: str):
-        """Generates a style with same bg and font color"""
+        """Generate a style with same bg and font color."""
         return f"background-color: {color}; color: {color};"
 
     def _apply_settings(self):
-        """Applies the settings to the custom.scss file
-        Builds the css file afterwards with the qtsass package
+        """Apply the settings to the custom.scss file.
+
+        Builds the css file afterwards with the qtsass package.
         """
         # read in the custom style file
         style = CUSTOM_STYLE_SCSS.read_text()
@@ -164,7 +166,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         self.close()
 
     def _finish_installer_worker(self):
-        """Ends the spinner, checks if installation was successful"""
+        """End the spinner, checks if installation was successful."""
         # Informs the user if it is still not found
         if importlib.util.find_spec("qtsass") is None:
             DP_CONTROLLER.say_qtsass_not_successful()

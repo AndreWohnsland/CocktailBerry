@@ -1,20 +1,18 @@
 from typing import Literal
+
 from PyQt5.QtWidgets import QDialog
+
+from src.config_manager import CONFIG as cfg
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.config_manager import CONFIG as cfg
 from src.ui_elements.passworddialog import Ui_PasswordDialog
 
 
 class PasswordDialog(QDialog, Ui_PasswordDialog):
-    """ Creates the Password Widget. """
+    """Creates the Password Widget."""
 
-    def __init__(
-        self,
-        right_password: int = cfg.UI_MASTERPASSWORD,
-        header_type: Literal['master', 'maker'] = "master"
-    ):
-        """ Init. Connect all the buttons and set window policy. """
+    def __init__(self, right_password: int = cfg.UI_MASTERPASSWORD, header_type: Literal["master", "maker"] = "master"):
+        """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
         self.right_password = right_password
@@ -31,11 +29,11 @@ class PasswordDialog(QDialog, Ui_PasswordDialog):
         DP_CONTROLLER.set_display_settings(self)
 
     def number_clicked(self, number: int):
-        """  Adds the clicked number to the lineedit. """
+        """Add the clicked number to the lineedit."""
         self.password_field.setText(f"{self.password_field.text()}{number}")
 
     def enter_clicked(self):
-        """ Enters/Closes the Dialog. """
+        """Enters/Closes the Dialog."""
         password_string = self.password_field.text()
         password = 0 if len(password_string) == 0 else int(password_string)
         if self.right_password == password:
@@ -45,10 +43,10 @@ class PasswordDialog(QDialog, Ui_PasswordDialog):
         self.password_field.clear()
 
     def _cancel_clicked(self):
-        """Cancel the password confirmation an aborts process"""
+        """Cancel the password confirmation an aborts process."""
         self.reject()
 
     def del_clicked(self):
-        """ Deletes the last digit in the lineedit. """
+        """Delete the last digit in the lineedit."""
         current_string = self.password_field.text()
         self.password_field.setText(current_string[:-1])

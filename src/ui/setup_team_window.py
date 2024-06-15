@@ -1,21 +1,24 @@
 from itertools import cycle
 from typing import Callable
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import QObject, pyqtSignal, QThread
 
-from src.ui_elements.teamselection import Ui_Teamselection
-from src.config_manager import CONFIG as cfg, shared
-from src.display_controller import DP_CONTROLLER
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from PyQt5.QtWidgets import QDialog
+
+from src.config_manager import CONFIG as cfg
+from src.config_manager import shared
 from src.dialog_handler import UI_LANGUAGE
+from src.display_controller import DP_CONTROLLER
 from src.machine.rfid import RFIDReader
-from src.ui.creation_utils import create_button
 from src.service_handler import SERVICE_HANDLER
+from src.ui.creation_utils import create_button
+from src.ui_elements.teamselection import Ui_Teamselection
 
 
 class TeamScreen(QDialog, Ui_Teamselection):
-    """ Class for the Team selection Screen. """
+    """Class for the Team selection Screen."""
 
     def __init__(self, parent=None):
+        """Initialize the Team selection Screen."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -69,7 +72,8 @@ class TeamScreen(QDialog, Ui_Teamselection):
 
     def _get_leaderboard_data(self):
         """Get leaderboard data.
-        Change the button afterwards with the number as prefix in brackets
+
+        Change the button afterwards with the number as prefix in brackets.
         """
         data = SERVICE_HANDLER.get_team_data()
         for name, number in data.items():
@@ -80,7 +84,8 @@ class TeamScreen(QDialog, Ui_Teamselection):
                 pass
 
     class _Worker(QObject):
-        """Worker to install qtsass on a thread"""
+        """Worker to install qtsass on a thread."""
+
         done = pyqtSignal()
 
         def __init__(self, func: Callable, parent=None):

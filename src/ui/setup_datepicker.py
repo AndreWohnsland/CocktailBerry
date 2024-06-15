@@ -1,18 +1,17 @@
+from PyQt5.QtCore import QDate, QTime
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import QTime, QDate
-
-from src.ui_elements.datepicker import Ui_Datepicker
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.ui_elements.datepicker import Ui_Datepicker
 from src.utils import set_system_time
 
 
 class DatePicker(QMainWindow, Ui_Datepicker):
-    """ Creates the Window for the user to change date and time. """
+    """Creates the Window for the user to change date and time."""
 
     def __init__(self, parent=None):
-        """ Set up the datepicker window """
+        """Set up the datepicker window."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -25,7 +24,7 @@ class DatePicker(QMainWindow, Ui_Datepicker):
         DP_CONTROLLER.set_display_settings(self)
 
     def _ok_clicked(self):
-        """Submits the selected Time in the interface to the OS"""
+        """Submit the selected Time in the interface to the OS."""
         d: QDate = self.selected_date.date()  # pylint: disable=invalid-name
         t: QTime = self.selected_time.time()  # pylint: disable=invalid-name
         # Need the format = timedatectl set-time YYYY-MM-DD HH:MM:SS

@@ -1,4 +1,4 @@
-"""Holds all the path location of the project"""
+"""Holds all the path location of the project."""
 
 from pathlib import Path
 
@@ -22,7 +22,7 @@ STYLE_FOLDER = SRC_PATH / "ui" / "styles"
 CUSTOM_STYLE_FILE = STYLE_FOLDER / "custom.css"
 CUSTOM_STYLE_SCSS = STYLE_FOLDER / "custom.scss"
 LANGUAGE_FILE = SRC_PATH / "language.yaml"
-APP_ICON_FILE = SRC_PATH / "ui_elements" / "Cocktail-icon.png"
+APP_ICON_FILE = SRC_PATH / "ui_elements" / "cocktailberry.png"
 ADDON_SKELTON = SRC_PATH / "programs" / "addon_skeleton.py"
 
 # other

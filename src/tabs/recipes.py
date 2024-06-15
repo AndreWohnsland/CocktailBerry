@@ -1,19 +1,18 @@
-# -*- coding: utf-8 -*-
-""" Module with all necessary functions for the recipes Tab.
+"""Module with all necessary functions for the recipes Tab.
+
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
 from collections import Counter
-from typing import List, Tuple
 
-from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
+from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.models import Cocktail, Ingredient
 
 
 def fill_recipe_box_with_ingredients(w):
-    """ Assigns all ingredients to the Comboboxes in the recipe tab """
+    """Assign all ingredients to the Comboboxes in the recipe tab."""
     comboboxes_recipe = DP_CONTROLLER.get_comboboxes_recipes(w)
     ingredient_list = [x.name for x in DB_COMMANDER.get_all_ingredients()]
     DP_CONTROLLER.fill_multiple_combobox(comboboxes_recipe, ingredient_list, clear_first=True)
@@ -21,7 +20,7 @@ def fill_recipe_box_with_ingredients(w):
 
 @logerror
 def handle_enter_recipe(w):
-    """ Enters or updates the recipe into the db"""
+    """Enters or updates the recipe into the db."""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     # destructure each element from recipe input to the variables
     recipe_name = recipe_input.recipe_name
@@ -37,11 +36,7 @@ def handle_enter_recipe(w):
     if not recipe_name:
         DP_CONTROLLER.say_enter_cocktail_name()
         return
-    names, volumes, order, valid = _validate_extract_ingredients(
-        ingredient_names,
-        ingredient_volumes,
-        ingredient_order
-    )
+    names, volumes, order, valid = _validate_extract_ingredients(ingredient_names, ingredient_volumes, ingredient_order)
     if not valid:
         return
 
@@ -67,13 +62,15 @@ def handle_enter_recipe(w):
 
 
 def _validate_extract_ingredients(
-    ingredient_names: List[str],
-    ingredient_volumes: List[str],
-    ingredient_order: List[str],
-) -> Tuple[List[str], List[int], List[int], bool]:
-    """Gives a list for names and volume of ingredients.
+    ingredient_names: list[str],
+    ingredient_volumes: list[str],
+    ingredient_order: list[str],
+) -> tuple[list[str], list[int], list[int], bool]:
+    """Give a list for names and volume of ingredients.
+
     If some according value is missing, informs the user.
-    Returns [names], [volumes], [orders] is_valid"""
+    Returns [names], [volumes], [orders] is_valid.
+    """
     names: list[str] = []
     volumes: list[str] = []
     orders: list[str] = []
@@ -103,9 +100,11 @@ def _validate_extract_ingredients(
     return names, int_volumes, int_orders, True
 
 
-def _check_enter_constraints(current_recipe_name: str, new_recipe_name: str, new_recipe: bool) -> Tuple[int, bool]:
-    """Checks if either the recipe already exists (new recipe) or if one is selected (update)
-    Returns cocktail, got_error"""
+def _check_enter_constraints(current_recipe_name: str, new_recipe_name: str, new_recipe: bool) -> tuple[int, bool]:
+    """Check if either the recipe already exists (new recipe) or if one is selected (update).
+
+    Returns cocktail, got_error.
+    """
     # First checks if the new cocktail already exists
     cocktail_new = DB_COMMANDER.get_cocktail(new_recipe_name)
     if cocktail_new is not None and new_recipe:
@@ -124,7 +123,7 @@ def _check_enter_constraints(current_recipe_name: str, new_recipe_name: str, new
 
 
 def _build_recipe_data(names: list[str], volumes: list[int], orders: list[int]):
-    """Gets volume, ingredient objects and concentration of cocktails"""
+    """Get volume, ingredient objects and concentration of cocktails."""
     recipe_volume = sum(volumes)
     ingredient_data: list[Ingredient] = []
     recipe_volume_concentration = 0
@@ -149,9 +148,9 @@ def _enter_or_update_recipe(
     recipe_alcohol_level: int,
     enabled: int,
     virgin: int,
-    ingredient_data: List[Ingredient],
-):
-    """Logic to insert/update data into DB"""
+    ingredient_data: list[Ingredient],
+) -> Cocktail:
+    """Logic to insert/update data into DB."""
     if recipe_id:
         DB_COMMANDER.delete_recipe_ingredient_data(recipe_id)
         DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin)
@@ -162,12 +161,11 @@ def _enter_or_update_recipe(
         DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount, ingredient.recipe_order)
     # important to get the cocktail again, since the first time getting it, we only got it for its id
     # at this time the cocktail got no recipe data. Getting it again will fix this
-    cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore
-    return cocktail
+    return DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore
 
 
 def load_recipe_view_names(w):
-    """ Updates the ListWidget in the recipe Tab. """
+    """Update the ListWidget in the recipe Tab."""
     cocktails = DB_COMMANDER.get_all_cocktails()
     recipe_list = [x.name for x in cocktails]
     DP_CONTROLLER.clear_list_widget_recipes(w)
@@ -176,7 +174,7 @@ def load_recipe_view_names(w):
 
 @logerror
 def load_selected_recipe_data(w):
-    """ Loads all Data from the recipe DB into the according Fields in the recipe tab. """
+    """Load all Data from the recipe DB into the according Fields in the recipe tab."""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name = recipe_input.selected_recipe
     DP_CONTROLLER.set_recipe_add_label(w, bool(recipe_name))
@@ -192,7 +190,7 @@ def load_selected_recipe_data(w):
 
 @logerror
 def delete_recipe(w):
-    """ Deletes the selected recipe, requires the Password """
+    """Delete the selected recipe, requires the Password."""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name = recipe_input.selected_recipe
     if not recipe_name:
@@ -212,7 +210,7 @@ def delete_recipe(w):
 
 @logerror
 def enable_all_recipes(w):
-    """Set all recipes to enabled """
+    """Set all recipes to enabled."""
     if not DP_CONTROLLER.ask_enable_all_recipes():
         return
     DB_COMMANDER.set_all_recipes_enabled()

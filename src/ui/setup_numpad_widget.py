@@ -5,7 +5,7 @@ from src.ui_elements.numpad import Ui_NumpadWindow
 
 
 class NumpadWidget(QDialog, Ui_NumpadWindow):
-    """ Creates the Numpad screen. """
+    """Creates the Numpad screen."""
 
     def __init__(
         self,
@@ -17,7 +17,7 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         use_float=False,
         overwrite_number: bool = False,
     ):
-        """ Init. Connect all the buttons and set window policy. """
+        """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self, x_pos, y_pos)
@@ -38,18 +38,18 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         DP_CONTROLLER.set_display_settings(self, resize=False)
 
     def number_clicked(self, number: int):
-        """  Adds the clicked number to the lineedit. """
+        """Add the clicked number to the lineedit."""
         if self.overwrite_number:
             self.source_line_edit.setText(f"{number}")
             return
         self.source_line_edit.setText(f"{self.source_line_edit.text()}{number}")
 
     def enter_clicked(self):
-        """ Enters/Closes the Dialog. """
+        """Enters/Closes the Dialog."""
         self.close()
 
     def del_clicked(self):
-        """ Deletes the last digit in the lineedit. """
+        """Delete the last digit in the lineedit."""
         current_string = self.source_line_edit.text()
         self.source_line_edit.setText(current_string[:-1])
 
@@ -60,7 +60,7 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         self.PBdot.clicked.connect(self._dot_clicked)
 
     def _dot_clicked(self):
-        """Adds a dot if its not the first letter or a dot already exists"""
+        """Add a dot if its not the first letter or a dot already exists."""
         current_string = self.source_line_edit.text()
         if "." in current_string or len(current_string) == 0:
             return

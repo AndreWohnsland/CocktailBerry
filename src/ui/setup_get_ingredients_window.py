@@ -1,17 +1,18 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-from PyQt5.QtWidgets import QDialog
-from src.models import Ingredient
 
-from src.ui_elements.bonusingredient import Ui_addingredient
+from typing import TYPE_CHECKING
+
+from PyQt5.QtWidgets import QDialog
 
 from src.config_manager import CONFIG as cfg
-from src.logger_handler import LoggerHandler
-from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
-from src.machine.controller import MACHINE
-from src.tabs.bottles import set_fill_level_bars
 from src.dialog_handler import UI_LANGUAGE
+from src.display_controller import DP_CONTROLLER
+from src.logger_handler import LoggerHandler
+from src.machine.controller import MACHINE
+from src.models import Ingredient
+from src.tabs.bottles import set_fill_level_bars
+from src.ui_elements.bonusingredient import Ui_addingredient
 from src.utils import time_print
 
 if TYPE_CHECKING:
@@ -21,12 +22,10 @@ _logger = LoggerHandler("additional_ingredient")
 
 
 class GetIngredientWindow(QDialog, Ui_addingredient):
-    """ Creates a Dialog to chose an additional ingredient and the amount
-    to spend this ingredient.
-    """
+    """Create a Dialog to chose an additional ingredient and the amount to spend this ingredient."""
 
     def __init__(self, parent: MainScreen):
-        """ Init. Connects all the buttons and get values for the Combobox. """
+        """Init. Connects all the buttons and get values for the Combobox."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -51,11 +50,11 @@ class GetIngredientWindow(QDialog, Ui_addingredient):
         DP_CONTROLLER.set_display_settings(self)
 
     def _cancel_clicked(self):
-        """ Closes the Window without a change. """
+        """Close the Window without a change."""
         self.close()
 
     def _spend_clicked(self):
-        """ Calls the progress bar window and spends the given amount of the ingredient. """
+        """Call the progress bar window and spends the given amount of the ingredient."""
         ingredient_name, volume = DP_CONTROLLER.get_ingredient_window_data(self)
         # if there is nothing selected, just do nothing
         if ingredient_name == "":

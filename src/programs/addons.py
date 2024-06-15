@@ -1,34 +1,33 @@
-from importlib import import_module
-import re
+from __future__ import annotations
+
 import atexit
-from typing import Any, Callable, Literal, Optional, Protocol
+import re
+from importlib import import_module
+from typing import Any, Callable, Literal, Protocol
 
 import typer
 from PyQt5.QtWidgets import QVBoxLayout
 
+from src import __version__
 from src.filepath import ADDON_FOLDER, ADDON_SKELTON
 from src.logger_handler import LoggerHandler
-from src import __version__
 
-_SupportedActions = Literal[
-    "setup", "cleanup",
-    "before_cocktail", "after_cocktail"
-]
+_SupportedActions = Literal["setup", "cleanup", "before_cocktail", "after_cocktail"]
 _logger = LoggerHandler("AddonManager")
 
 
 class AddonInterface(Protocol):
     def setup(self):
-        """Init the addon"""
+        """Init the addon."""
 
     def cleanup(self):
-        """Clean up the addon"""
+        """Clean up the addon."""
 
     def before_cocktail(self, data: dict[str, Any]):
-        """Logic to be executed before the cocktail"""
+        """Logic to be executed before the cocktail."""
 
     def after_cocktail(self, data: dict[str, Any]):
-        """Logic to be executed after the cocktail"""
+        """Logic to be executed after the cocktail."""
 
     def build_gui(
         self,
@@ -40,7 +39,7 @@ class AddonInterface(Protocol):
 
 
 class AddOnManager:
-    """Class to handle the execution of all the addons"""
+    """Class to handle the execution of all the addons."""
 
     def __init__(self) -> None:
         addon_files = ADDON_FOLDER.glob("*.py")
@@ -54,15 +53,14 @@ class AddOnManager:
             # Check if the module implemented the addon class, otherwise log error and skip module
             if not hasattr(module, "Addon"):
                 _logger.log_event(
-                    "ERROR",
-                    f"Could not get Addon class from {name}, please check addon or contact provider."
+                    "ERROR", f"Could not get Addon class from {name}, please check addon or contact provider."
                 )
                 continue
             addon = getattr(module, "Addon")
             self.addons[name] = addon()
 
     def setup_addons(self):
-        """Execute all the setup function of the addons"""
+        """Execute all the setup function of the addons."""
         if self.addons:
             addon_string = ", ".join(list(self.addons.keys()))
             print(f"Used Addons: {addon_string}")
@@ -70,24 +68,25 @@ class AddOnManager:
         atexit.register(self.cleanup_addons)
 
     def cleanup_addons(self):
-        """Clean up all the addons"""
+        """Clean up all the addons."""
         self._try_function_for_addons("cleanup")
 
     def before_cocktail(self, data: dict[str, Any]):
-        """Execute addon part before cocktail"""
+        """Execute addon part before cocktail."""
         self._try_function_for_addons("before_cocktail", data)
 
     def after_cocktail(self, data: dict[str, Any]):
-        """Execute addon part after cocktail"""
+        """Execute addon part after cocktail."""
         self._try_function_for_addons("after_cocktail", data)
 
     def _try_function_for_addons(
         self,
         function_name: _SupportedActions,
-        data: Optional[dict[str, Any]] = None,
+        data: dict[str, Any] | None = None,
     ):
-        """Tries the according function for the list of addons
-        Catches AttributeError (function was not defined)
+        """Try the according function for the list of addons.
+
+        Catches AttributeError (function was not defined).
         """
         for addon in self.addons.values():
             try:
@@ -99,8 +98,8 @@ class AddOnManager:
             # In case of an interface change in base app, this error will occur
             except TypeError:
                 _logger.error(
-                    f"Could not execute {function_name} for {addon.__module__}. " +
-                    "This is probably due to a change in CocktailBerry that the addon currently did not adapt to."
+                    f"Could not execute {function_name} for {addon.__module__}. "
+                    + "This is probably due to a change in CocktailBerry that the addon currently did not adapt to."
                 )
             # If the function is not found (should usually not happen), ignore it
             except AttributeError:
@@ -112,7 +111,8 @@ class AddOnManager:
         container: QVBoxLayout,
         button_generator: Callable[[str, Callable[[], None]], None],
     ) -> bool:
-        """Builds the gui for the selected addon
+        """Build the gui for the selected addon.
+
         If method is not provided, return false.
         """
         addon = self.addons[addon_name]
@@ -122,7 +122,7 @@ class AddOnManager:
 
 
 def generate_addon_skeleton(name: str):
-    """Creates an base addon file unter the given name"""
+    """Create an base addon file unter the given name."""
     # Converts space into underscores
     file_name = name.replace(" ", "_")
     # strips all other unwanted things

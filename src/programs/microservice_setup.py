@@ -1,14 +1,14 @@
-from enum import Enum
-import subprocess
 import os
-from typing import Optional
 import re
 import socket
+import subprocess
+from enum import Enum
 from pathlib import Path
+from typing import Optional
 
 import typer
 
-from src.filepath import LOCAL_MICROSERVICE_FILE, DEFAULT_MICROSERVICE_FILE, TEAMS_DOCKER_FILE
+from src.filepath import DEFAULT_MICROSERVICE_FILE, LOCAL_MICROSERVICE_FILE, TEAMS_DOCKER_FILE
 
 # defining pattern in file, where env is stored in 2nd grp
 _HOOK_EP_REGEX = r"(HOOK_ENDPOINT=)(.+)"
@@ -28,18 +28,16 @@ def setup_service(
     hook_header: Optional[str] = None,
     use_v1: bool = False,
 ):
-    """Setup the microservice if any of args is given skip input,
-    else prompt user for data.
+    """Set up the microservice if any of args is given skip input.
+
+    Else prompt user for data.
     If user let prompt empty, keep current value.
     """
     # copies the default file if there is no local one
     if not LOCAL_MICROSERVICE_FILE.exists():
         msg = "No local compose file find found, will use default template"
         typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
-        LOCAL_MICROSERVICE_FILE.write_text(
-            DEFAULT_MICROSERVICE_FILE.read_text(encoding="utf-8"),
-            encoding="utf-8"
-        )
+        LOCAL_MICROSERVICE_FILE.write_text(DEFAULT_MICROSERVICE_FILE.read_text(encoding="utf-8"), encoding="utf-8")
     else:
         msg = "Found local compose file, will use contained values"
         typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
@@ -73,7 +71,7 @@ def setup_service(
     cmd = ["docker", "compose"]
     if use_v1:
         cmd = ["docker-compose"]
-    cmd = cmd + ["-f", str(LOCAL_MICROSERVICE_FILE), "-p", "cocktailberry", "up", "--build", "-d"]
+    cmd = [*cmd, "-f", str(LOCAL_MICROSERVICE_FILE), "-p", "cocktailberry", "up", "--build", "-d"]
     msg = f"Docker Compose file is located at: {LOCAL_MICROSERVICE_FILE}"
     typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
     msg = "Setting up the Docker Compose images ..."
@@ -82,20 +80,18 @@ def setup_service(
 
 
 def _get_env_var(regex: str, compose_setup: str):
-    """The the according matched value from the file"""
+    """Get the the according matched value from the file."""
     match = re.search(regex, compose_setup)
-    key = "" if match is None else match[2]
-    return key
+    return "" if match is None else match[2]
 
 
 def _replace_env_var(regex: str, compose_setup: str, value: str):
-    """Replace the value in the file"""
-    compose_setup = re.sub(regex, r"\1" + value, compose_setup)
-    return compose_setup
+    """Replace the value in the file."""
+    return re.sub(regex, r"\1" + value, compose_setup)
 
 
 def _user_prompt(current_value: str, default_value: str, display_name: str) -> str:
-    """Prompt the user for the new value, returns new value"""
+    """Prompt the user for the new value, returns new value."""
     current_part = f"the current value is: {current_value}"
     if current_value == default_value:
         current_part = "not set currently, it's the default"
@@ -112,28 +108,28 @@ def _user_prompt(current_value: str, default_value: str, display_name: str) -> s
 
 
 class LanguageChoice(str, Enum):
-    """Enum for the language choice"""
+    """Enum for the language choice."""
+
     ENGLISH = "en"
     GERMAN = "de"
 
 
 def _get_ip():
-    """Get the IP of the machine, because gethostbyname does not work on all systems
-    """
+    """Get the IP of the machine, because gethostbyname does not work on all systems."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(0)
     try:
-        sock.connect(('10.254.254.254', 1))
+        sock.connect(("10.254.254.254", 1))
         sock_ip = sock.getsockname()[0]
     except Exception:  # pylint: disable=broad-except
-        sock_ip = '127.0.0.1'
+        sock_ip = "127.0.0.1"
     finally:
         sock.close()
     return sock_ip
 
 
 def setup_teams(language: LanguageChoice):
-    """Setup the Teams frontend + backend from compose file, using the given language"""
+    """Set up the Teams frontend + backend from compose file, using the given language."""
     msg = f"Setting up the Teams Docker Compose images, using {language.name} language ..."
     typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))
     # since we need to alter the env var, need a tmp file
@@ -142,20 +138,20 @@ def setup_teams(language: LanguageChoice):
     with open(tmp_env_file, "w", encoding="utf_8") as tmp_file:
         tmp_file.write(f"UI_LANGUAGE={language.value}")
     # first need to pull latest image, otherwise it will use the old one, if it exists
-    subprocess.run([
-        "docker", "compose",
-        "-f", str(TEAMS_DOCKER_FILE),
-        "--env-file", str(tmp_env_file.resolve()),
-        "pull"
-    ], check=False
+    subprocess.run(
+        ["docker", "compose", "-f", str(TEAMS_DOCKER_FILE), "--env-file", str(tmp_env_file.resolve()), "pull"],
+        check=False,
     )
     cmd = [
-        "docker", "compose",
-        "-f", str(TEAMS_DOCKER_FILE),
-        "--env-file", str(tmp_env_file.resolve()),
+        "docker",
+        "compose",
+        "-f",
+        str(TEAMS_DOCKER_FILE),
+        "--env-file",
+        str(tmp_env_file.resolve()),
         "up",
         "--build",
-        "-d"
+        "-d",
     ]
     subprocess.run(cmd, check=False)
     typer.echo(typer.style("Done!", fg=typer.colors.GREEN, bold=True))

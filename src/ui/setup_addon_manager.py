@@ -1,17 +1,18 @@
-from dataclasses import dataclass
 import json
+from dataclasses import dataclass
 from pathlib import Path
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView
-from PyQt5.QtCore import Qt
+
 import requests
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QHeaderView, QMainWindow, QTableWidgetItem
 from requests.exceptions import ConnectionError as ReqConnectionError
 
-from src.ui_elements import Ui_AddonManager
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.programs.addons import ADDONS
 from src.filepath import ADDON_FOLDER
 from src.logger_handler import LoggerHandler
+from src.programs.addons import ADDONS
+from src.ui_elements import Ui_AddonManager
 from src.utils import restart_program
 
 _logger = LoggerHandler("AddonManager")
@@ -31,14 +32,14 @@ class _AddonData:
     def __post_init__(self):
         if self.file_name:
             return
-        self.file_name = self.url.rsplit('/', maxsplit=1)[-1]
+        self.file_name = self.url.rsplit("/", maxsplit=1)[-1]
 
 
 class AddonManager(QMainWindow, Ui_AddonManager):
-    """ Creates A window to display addon GUI for the user"""
+    """Creates A window to display addon GUI for the user."""
 
     def __init__(self, parent=None):
-        """ Initializes the object """
+        """Initialize the object."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -56,7 +57,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         DP_CONTROLLER.set_display_settings(self)
 
     def _fill_addon_list(self):
-        """Fill the addon list widget with all the addon data"""
+        """Fill the addon list widget with all the addon data."""
         self.table_addons.setRowCount(len(self._addon_information))
         self.table_addons.setColumnCount(1)
         for i, addon in enumerate(self._addon_information):
@@ -78,7 +79,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         self.table_addons.resizeRowsToContents()
 
     def _generate_addon_information(self):
-        """Gets all the addon data from source and locally installed ones, build the data objects"""
+        """Get all the addon data from source and locally installed ones, build the data objects."""
         # get the addon data from the source
         # This should provide name, description and url
         official_addons: list[_AddonData] = []
@@ -86,9 +87,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
             req = requests.get(_GITHUB_ADDON_SOURCE, allow_redirects=True, timeout=5)
             if req.ok:
                 gh_data = json.loads(req.text)
-                official_addons = [
-                    _AddonData(**data) for data in gh_data
-                ]
+                official_addons = [_AddonData(**data) for data in gh_data]
         except ReqConnectionError:
             _logger.log_event("WARNING", "Could not fetch addon data from source, is there an internet connection?")
 
@@ -110,8 +109,9 @@ class AddonManager(QMainWindow, Ui_AddonManager):
                         file_name,
                         file_name,
                         True,
-                        False
-                    ))
+                        False,
+                    )
+                )
         return possible_addons
 
     def _apply_changes(self):
@@ -136,18 +136,14 @@ class AddonManager(QMainWindow, Ui_AddonManager):
             restart_program()
 
     def _install_addon(self, addon: _AddonData, addon_file: Path):
-        """Try to install addon, log if req is not ok or no connection"""
+        """Try to install addon, log if req is not ok or no connection."""
         try:
             req = requests.get(addon.url, allow_redirects=True, timeout=5)
             if req.ok:
                 addon_file.write_bytes(req.content)
             else:
                 _logger.log_event(
-                    "ERROR",
-                    f"Could not get {addon.name} from {addon.url}: {req.status_code} {req.reason}"
+                    "ERROR", f"Could not get {addon.name} from {addon.url}: {req.status_code} {req.reason}"
                 )
         except ReqConnectionError:
-            _logger.log_event(
-                "ERROR",
-                f"Could not get {addon.name} from {addon.url}: No internet connection"
-            )
+            _logger.log_event("ERROR", f"Could not get {addon.name} from {addon.url}: No internet connection")

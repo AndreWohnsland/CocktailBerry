@@ -1,30 +1,31 @@
-# -*- coding: utf-8 -*-
-""" Module with all necessary functions for the maker Tab.
+"""Module with all necessary functions for the maker Tab.
+
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
-from typing import Any, Optional
+from __future__ import annotations
 
-from src.tabs import bottles
-from src.database_commander import DB_COMMANDER
-from src.error_handler import logerror
-from src.models import Cocktail
-from src.machine.controller import MACHINE
-from src.display_controller import DP_CONTROLLER
-from src.service_handler import SERVICE_HANDLER
-from src.logger_handler import LoggerHandler
+from typing import Any
+
 from src.config_manager import CONFIG as cfg
-from src.programs.addons import ADDONS
-from src.ui.setup_refill_dialog import RefillDialog
 from src.config_manager import shared
+from src.database_commander import DB_COMMANDER
+from src.display_controller import DP_CONTROLLER
+from src.error_handler import logerror
+from src.logger_handler import LoggerHandler
+from src.machine.controller import MACHINE
+from src.models import Cocktail
+from src.programs.addons import ADDONS
+from src.service_handler import SERVICE_HANDLER
+from src.tabs import bottles
+from src.ui.setup_refill_dialog import RefillDialog
 from src.utils import time_print
-
 
 _LOGGER = LoggerHandler("maker_module")
 
 
 def __build_comment_maker(cocktail: Cocktail):
-    """Build the additional comment for the completion message (if there are handadds)"""
+    """Build the additional comment for the completion message (if there are handadds)."""
     comment = ""
     hand_add = cocktail.handadds
     # sort by descending length of the name and unit combined
@@ -45,7 +46,7 @@ def __build_comment_maker(cocktail: Cocktail):
 
 
 def __generate_maker_log_entry(cocktail_volume: int, cocktail_name: str, taken_time: float, max_time: float):
-    """Enters a log entry for the made cocktail"""
+    """Enter a log entry for the made cocktail."""
     volume_string = f"{cocktail_volume} ml"
     cancel_log_addition = ""
     if not shared.make_cocktail:
@@ -55,8 +56,8 @@ def __generate_maker_log_entry(cocktail_volume: int, cocktail_name: str, taken_t
 
 
 @logerror
-def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
-    """ Prepares a Cocktail, if not already another one is in production and enough ingredients are available"""
+def prepare_cocktail(w, cocktail: Cocktail | None = None):
+    """Prepare a Cocktail, if not already another one is in production and enough ingredients are available."""
     if shared.cocktail_started:
         return False
     # Gets and scales cocktail, check if fill level is enough
@@ -75,9 +76,7 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
             refill_window.exec_()
         else:
             DP_CONTROLLER.say_not_enough_ingredient_volume(
-                empty_ingredient.name,
-                empty_ingredient.fill_level,
-                empty_ingredient.amount
+                empty_ingredient.name, empty_ingredient.fill_level, empty_ingredient.amount
             )
         return False
 
@@ -94,8 +93,7 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
 
     # Now make the cocktail
     time_print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
-    consumption, taken_time, max_time = MACHINE.make_cocktail(
-        w, ingredient_bottles, display_name)
+    consumption, taken_time, max_time = MACHINE.make_cocktail(w, ingredient_bottles, display_name)
     DB_COMMANDER.increment_recipe_counter(cocktail.name)
     __generate_maker_log_entry(cocktail.adjusted_amount, display_name, taken_time, max_time)
 
@@ -129,6 +127,6 @@ def prepare_cocktail(w, cocktail: Optional[Cocktail] = None):
 
 
 def interrupt_cocktail():
-    """ Interrupts the cocktail preparation. """
+    """Interrupts the cocktail preparation."""
     shared.make_cocktail = False
     time_print("Canceling the cocktail!")

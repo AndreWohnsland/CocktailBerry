@@ -15,13 +15,13 @@ class Reverter:
             self._pin_controller.initialize_pin_list([self.revert_pin])
 
     def revert_on(self):
-        """Reverts the pump to be inverted"""
+        """Reverts the pump to be inverted."""
         if not cfg.MAKER_PUMP_REVERSION:
             return
         self._pin_controller.activate_pin_list([self.revert_pin])
 
     def revert_off(self):
-        """Disables the reversion pin"""
+        """Disables the reversion pin."""
         if not cfg.MAKER_PUMP_REVERSION:
             return
         self._pin_controller.close_pin_list([self.revert_pin])

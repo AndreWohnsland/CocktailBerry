@@ -1,20 +1,19 @@
 from PyQt5.QtWidgets import QMainWindow
 
-from src.ui_elements.bottlewindow import Ui_Bottlewindow
-
+from src import MAX_SUPPORTED_BOTTLES
 from src.config_manager import CONFIG as cfg
-from src.tabs.bottles import set_fill_level_bars
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src import MAX_SUPPORTED_BOTTLES
+from src.tabs.bottles import set_fill_level_bars
+from src.ui_elements.bottlewindow import Ui_Bottlewindow
 
 
 class BottleWindow(QMainWindow, Ui_Bottlewindow):
-    """ Creates the Window to change to levels of the bottles. """
+    """Creates the Window to change to levels of the bottles."""
 
     def __init__(self, parent=None):
-        """ Init. Connects all the buttons, gets the names from Mainwindow/DB. """
+        """Init. Connects all the buttons, gets the names from Mainwindow/DB."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -56,14 +55,16 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
             plus.clicked.connect(
                 lambda _, l=field, b=max_vol: DP_CONTROLLER.change_input_value(  # noqa: E741
                     label=l, minimal=min_allowed, maximal=b, delta=change_value
-                ))
+                )
+            )
             minus.clicked.connect(
                 lambda _, l=field, b=max_vol: DP_CONTROLLER.change_input_value(  # noqa: E741
                     label=l, minimal=min_allowed, maximal=b, delta=-change_value
-                ))
+                )
+            )
             max_label.setText(str(max_vol))
-            max_button.clicked.connect(lambda _, m=max_vol, f=field: f.setText(str(m)))  # noqa: E741
-            min_button.clicked.connect(lambda _, f=field: f.setText(str(min_allowed)))  # noqa: E741
+            max_button.clicked.connect(lambda _, m=max_vol, f=field: f.setText(str(m)))
+            min_button.clicked.connect(lambda _, f=field: f.setText(str(min_allowed)))
 
         # remove the elements exceeding the bottle number
         for elements in [myplus, myminus, mylabel, myname, max_buttons, min_buttons, max_labels, volume_separators]:
@@ -75,11 +76,11 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _cancel_clicked(self):
-        """ Closes the Window without a change. """
+        """Close the Window without a change."""
         self.close()
 
     def _enter_clicked(self):
-        """ Enters the Data and closes the window. """
+        """Enters the Data and closes the window."""
         number = cfg.choose_bottle_number()
         label_name = [getattr(self, f"LAmount{i}") for i in range(1, number + 1)]
         for label, ingredient_id, max_volume in zip(label_name, self.id_list, self.max_volume):

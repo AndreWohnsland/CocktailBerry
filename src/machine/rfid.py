@@ -1,11 +1,10 @@
-
 import time
-from typing import Callable, Optional
 from threading import Thread
+from typing import Callable, Optional
 
+from src.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.machine.interface import RFIDController
-from src.config_manager import CONFIG as cfg
 
 _logger = LoggerHandler("RFIDReader")
 
@@ -44,13 +43,14 @@ class RFIDReader:
     _instance = None
 
     def __init__(self) -> None:
+        """Initialize the RFID reader."""
         self.is_active = False
         if _ERROR is not None:
             _logger.log_event("ERROR", _ERROR)
         self.rfid = self._select_rfid()
 
     def _select_rfid(self) -> Optional[RFIDController]:
-        """Selects the controller defined in config"""
+        """Select the controller defined in config."""
         if _NO_MODULE or cfg.RFID_READER == "No":
             return None
         if cfg.RFID_READER == "PiicoDev":
@@ -65,12 +65,12 @@ class RFIDReader:
         return cls._instance
 
     def read_rfid(self, side_effect: Callable[[str, str], None]):
-        """Start the rfid reader, calls an side effect with the read value and id"""
+        """Start the rfid reader, calls an side effect with the read value and id."""
         rfid_thread = Thread(target=self._read_thread, args=(side_effect,), daemon=True)
         rfid_thread.start()
 
     def _read_thread(self, side_effect: Callable[[str, str], None]):
-        """Execute the reading until reads a value or got canceled"""
+        """Execute the reading until reads a value or got canceled."""
         if self.rfid is None or self.is_active:
             return
         text = None
@@ -83,12 +83,19 @@ class RFIDReader:
         self.is_active = False
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
-        """Writes the value to the RFID"""
-        rfid_thread = Thread(target=self._write_thread, args=(value, side_effect,), daemon=True)
+        """Write the value to the RFID."""
+        rfid_thread = Thread(
+            target=self._write_thread,
+            args=(
+                value,
+                side_effect,
+            ),
+            daemon=True,
+        )
         rfid_thread.start()
 
     def _write_thread(self, text: str, side_effect: Optional[Callable[[str], None]] = None):
-        """Executes the writing until successful or canceled"""
+        """Execute the writing until successful or canceled."""
         if self.rfid is None or self.is_active:
             return
         self.is_active = True
@@ -102,12 +109,12 @@ class RFIDReader:
         self.is_active = False
 
     def cancel_reading(self):
-        """Cancels the reading loop"""
+        """Cancel the reading loop."""
         self.is_active = False
 
 
 class _PiicoDevReader(RFIDController):
-    """Reader for the PiicoDev RFID Module"""
+    """Reader for the PiicoDev RFID Module."""
 
     def __init__(self) -> None:
         self.rfid = PiicoDev_RFID()  # pylint: disable=E0601
@@ -127,7 +134,7 @@ class _PiicoDevReader(RFIDController):
 
 
 class _BasicMFRC522(RFIDController):
-    """Reader for common RC522 modules"""
+    """Reader for common RC522 modules."""
 
     def __init__(self) -> None:
         self.rfid = SimpleMFRC522()  # pylint: disable=E0601

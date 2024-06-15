@@ -1,17 +1,19 @@
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
+
 import os
 import subprocess
 import time
 from pathlib import Path
-from PyQt5.QtWidgets import QMainWindow, qApp, QLineEdit
+from typing import TYPE_CHECKING
 
-from src.logger_handler import LoggerHandler
+from PyQt5.QtWidgets import QLineEdit, QMainWindow, qApp
+
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.logger_handler import LoggerHandler
+from src.ui.icons import ICONS
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_WiFiWindow
-from src.ui.icons import ICONS
 from src.utils import get_platform_data, time_print
 
 if TYPE_CHECKING:
@@ -24,16 +26,17 @@ _platform_data = get_platform_data()
 
 
 class WiFiWindow(QMainWindow, Ui_WiFiWindow):
-    """ Class for the enter wifi window. """
+    """Class for the enter wifi window."""
 
     def __init__(self, mainscreen: Ui_MainWindow):
+        """Init the window and connect the elements."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
 
         # Init objects
         self.mainscreen = mainscreen
-        self.keyboard_window: Optional[KeyboardWidget] = None
+        self.keyboard_window: KeyboardWidget | None = None
         self.button_enter.setDisabled(True)
         # Connecting elements
         self.button_back.clicked.connect(self.close)
@@ -48,7 +51,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _check_valid_inputs(self):
-        """Check if both, name and password are at least one character, otherwise enter is disabled"""
+        """Check if both, name and password are at least one character, otherwise enter is disabled."""
         is_valid = len(self.input_password.text()) > 0 and len(self.input_ssid.text()) > 0
         if is_valid:
             self.button_enter.setDisabled(False)
@@ -56,11 +59,11 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         self.button_enter.setDisabled(True)
 
     def _open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 64):
-        """ Opens up the keyboard connected to the lineedit """
+        """Open up the keyboard connected to the lineedit."""
         self.keyboard_window = KeyboardWidget(self.mainscreen, le_to_write=le_to_write, max_char_len=max_char_len)
 
     def _wifi_enter_process(self):
-        """Starts to enter wifi, uses a spinner during progress"""
+        """Start to enter wifi, uses a spinner during progress."""
         ICONS.set_wait_icon(self.button_enter)
         qApp.processEvents()
         self._enter_wifi()
@@ -68,7 +71,8 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         qApp.processEvents()
 
     def _enter_wifi(self):
-        """Enters the wifi credentials into the wpa_supplicant.conf
+        """Enter the wifi credentials into the wpa_supplicant.conf.
+
         Restarts wlan0 interface, checks for internet after that.
         """
         if _platform_data.system == "Windows":
@@ -89,8 +93,8 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         except PermissionError:
             _logger.log_event(
                 "ERROR",
-                "Could not write to wpa_supplicant.conf, check if the file got write access for all users. " +
-                "You can change it with: 'sudo chmod a+rw {_WPA_FILE_PATH}'"
+                "Could not write to wpa_supplicant.conf, check if the file got write access for all users. "
+                + "You can change it with: 'sudo chmod a+rw {_WPA_FILE_PATH}'",
             )
             DP_CONTROLLER.say_wifi_setup_failed()
             return
@@ -98,8 +102,8 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         except FileNotFoundError:
             _logger.log_event(
                 "ERROR",
-                "Got a FileNotFoundError, this is most likely because the wpa_passphrase command is not recognized. " +
-                "Run 'sudo apt-get install wpasupplicant' to install it."
+                "Got a FileNotFoundError, this is most likely because the wpa_passphrase command is not recognized. "
+                + "Run 'sudo apt-get install wpasupplicant' to install it.",
             )
             DP_CONTROLLER.say_wifi_setup_failed()
             return
@@ -121,7 +125,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         DP_CONTROLLER.say_wifi_entered(is_connected, ssid, password)
 
     def _make_wpa_file(self):
-        """Creates the bare bone wpa file"""
+        """Create the bare bone wpa file."""
         file_path = Path(_WPA_FILE_PATH)
         file_path.parent.mkdir(parents=True, exist_ok=True)
 
