@@ -1,8 +1,8 @@
-from collections import Counter
-from pathlib import Path
-from dataclasses import dataclass, field
-from typing import Dict, List, Set
 import re
+from collections import Counter
+from dataclasses import dataclass, field
+from pathlib import Path
+
 import typer
 
 from src.database_commander import DB_COMMANDER
@@ -21,14 +21,14 @@ class _IngredientInformation:
 @dataclass
 class _RecipeInformation:
     name: str
-    ingredients: List[_IngredientInformation] = field(default_factory=list, init=False)
+    ingredients: list[_IngredientInformation] = field(default_factory=list, init=False)
 
     def __repr__(self) -> str:
         return f"{self.name}: {self.ingredients}"
 
 
 def importer(file_path: Path, factor: float = 1.0, no_unit=False, sep="\n"):
-    """Imports the recipe data from the file into the database"""
+    """Import the recipe data from the file into the database."""
     _check_file(file_path)
     print(f"Loading data from: {file_path.absolute()}\nUsing factor: {factor}, data got no unit: {no_unit}\n")
     recipe_text = file_path.read_text()
@@ -39,7 +39,7 @@ def importer(file_path: Path, factor: float = 1.0, no_unit=False, sep="\n"):
 
 
 def _check_file(file_path: Path):
-    """Check if path exists and path is a file"""
+    """Check if path exists and path is a file."""
     if not file_path.exists():
         _abort("ERROR: This file does not exists!")
     if not file_path.is_file():
@@ -47,7 +47,7 @@ def _check_file(file_path: Path):
 
 
 def _parse_recipe_text(recipe_text: str, factor: float, no_unit=False, sep="\n"):
-    """Extracts the recipe information out of the given text"""
+    """Extract the recipe information out of the given text."""
     # split by newline, remove empty lines
     line_list = [x.strip() for x in recipe_text.split(sep) if x.strip()]
     # Define regex for recipes and ingredients
@@ -60,7 +60,7 @@ def _parse_recipe_text(recipe_text: str, factor: float, no_unit=False, sep="\n")
     # structure is g1: (volume unit) g2: (volume) g3: (name)
     ingredient_regex = volume_part + name_part
     # build list of recipes, iterate over data
-    recipe_data: List[_RecipeInformation] = []
+    recipe_data: list[_RecipeInformation] = []
     recipe = None
     for line in line_list:
         # if no match for an ingredient is found this is the name. build a new object then.
@@ -77,15 +77,16 @@ def _parse_recipe_text(recipe_text: str, factor: float, no_unit=False, sep="\n")
     return recipe_data
 
 
-def _data_inspection(recipes: List[_RecipeInformation]):
-    """Print some information of the data
+def _data_inspection(recipes: list[_RecipeInformation]):
+    """Print some information of the data.
+
     Checks if there are duplicates in the provided, abort if this is the case.
     Also checks if some of the data is already present in the DB.
     If this is the case, asks the user if to insert only the rest.
     """
     _check_data_length(recipes)
     # build ingredient names, list distinct ones
-    all_ingredient_names: List[str] = []
+    all_ingredient_names: list[str] = []
     for recipe in recipes:
         all_ingredient_names.extend([x.name for x in recipe.ingredients])
     unique_ingredients = set(all_ingredient_names)
@@ -105,8 +106,8 @@ def _data_inspection(recipes: List[_RecipeInformation]):
     return list(unique_ingredients)
 
 
-def _check_data_length(recipes: List[_RecipeInformation]):
-    """print first and last element, abort if no data"""
+def _check_data_length(recipes: list[_RecipeInformation]):
+    """Print first and last element, abort if no data."""
     if len(recipes):
         print(f"{'First parsed recipe':-^30}")
         print(recipes[0])
@@ -117,8 +118,9 @@ def _check_data_length(recipes: List[_RecipeInformation]):
         _abort("No recipes found in file")
 
 
-def _check_intersection(recipes: List[_RecipeInformation], unique_recipes: Set[str]):
-    """Check if there is an intersection with existing data in the database
+def _check_intersection(recipes: list[_RecipeInformation], unique_recipes: set[str]):
+    """Check if there is an intersection with existing data in the database.
+
     If an intersection exists, ask the user to continue.
     If all recipes already exist, abort.
     """
@@ -143,8 +145,8 @@ def _check_intersection(recipes: List[_RecipeInformation], unique_recipes: Set[s
         print([r.name for r in recipes], "\n")
 
 
-def _insert_not_existing_ingredients(ingredients: List[str]):
-    """Checks the given ingredients with the DB and insert missing ones"""
+def _insert_not_existing_ingredients(ingredients: list[str]):
+    """Check the given ingredients with the DB and insert missing ones."""
     existing_ingredients = DB_COMMANDER.get_all_ingredients()
     existing_names = [x.name for x in existing_ingredients]
     not_existing_names = list(set(ingredients).difference(set(existing_names)))
@@ -160,14 +162,15 @@ def _insert_not_existing_ingredients(ingredients: List[str]):
     print("")
 
 
-def _insert_recipes(recipes: List[_RecipeInformation]):
-    """Uses the given recipe information to insert the data into the DB
+def _insert_recipes(recipes: list[_RecipeInformation]):
+    """Use the given recipe information to insert the data into the DB.
+
     Gets missing ingredient data from the database.
     Only using handadd at recipe data if ingredient is handadd only.
     """
     # first get all ingredient data and map them for later fast access to a dict
     ingredients = DB_COMMANDER.get_all_ingredients()
-    ingredient_mapping: Dict[str, Ingredient] = {}
+    ingredient_mapping: dict[str, Ingredient] = {}
     for ingredient in ingredients:
         ingredient_mapping[ingredient.name] = ingredient
     print("Inserting recipe:", end=" ")
@@ -179,8 +182,8 @@ def _insert_recipes(recipes: List[_RecipeInformation]):
     print("\nImport finished!")
 
 
-def _insert_recipe_data(recipe: _RecipeInformation, ingredient_mapping: Dict[str, Ingredient]):
-    """Uses the given information to create the columns in the data table"""
+def _insert_recipe_data(recipe: _RecipeInformation, ingredient_mapping: dict[str, Ingredient]):
+    """Use the given information to create the columns in the data table."""
     for ing in recipe.ingredients:
         ing_data = ingredient_mapping[ing.name]
         cocktail = DB_COMMANDER.get_cocktail(recipe.name)
@@ -190,6 +193,6 @@ def _insert_recipe_data(recipe: _RecipeInformation, ingredient_mapping: Dict[str
 
 
 def _abort(msg: str):
-    """Raising typer exit, with given message before"""
+    """Raise typer exit, with given message before."""
     typer.echo(typer.style(f"{msg}, aborting...", fg=typer.colors.RED, bold=True))
     raise typer.Exit()

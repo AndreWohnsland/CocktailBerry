@@ -1,8 +1,9 @@
-from threading import Thread
 import time
-from typing import Protocol
 from abc import abstractmethod
 from random import randint
+from threading import Thread
+from typing import Protocol
+
 from src.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.machine.interface import PinController
@@ -12,6 +13,7 @@ _logger = LoggerHandler("LedController")
 try:
     # pylint: disable=import-error
     from rpi_ws281x import Adafruit_NeoPixel, Color  # type: ignore
+
     MODULE_AVAILABLE = True
 except ModuleNotFoundError:
     MODULE_AVAILABLE = False
@@ -27,28 +29,19 @@ class LedController:
         if enabled and cfg.LED_IS_WS and not MODULE_AVAILABLE:
             _logger.log_event(
                 "ERROR",
-                "Could not import rpi_ws281x. Will not be able to control the WS281x, please install the library."
+                "Could not import rpi_ws281x. Will not be able to control the WS281x, please install the library.",
             )
             return
         # If not controllable use normal LEDs
         if not cfg.LED_IS_WS:
-            self.led_list = [
-                _normalLED(pin, self.pin_controller)
-                for pin in self.pins
-            ]
+            self.led_list = [_normalLED(pin, self.pin_controller) for pin in self.pins]
             return
         # If controllable try to set up the WS281x LEDs
         try:
-            self.led_list = [
-                _controllableLED(pin)
-                for pin in self.pins
-            ]
+            self.led_list = [_controllableLED(pin) for pin in self.pins]
         # Will be thrown if ws281x module init (.begin()) as none root
         except RuntimeError:
-            _logger.log_event(
-                "ERROR",
-                "Could not set up the WS281x, is the program running as root?"
-            )
+            _logger.log_event("ERROR", "Could not set up the WS281x, is the program running as root?")
 
     def preparation_start(self):
         for led in self.led_list:
@@ -92,19 +85,19 @@ class _normalLED(_LED):
         self.pin_controller.cleanup_pin_list([self.pin])
 
     def turn_on(self):
-        """Turns the LEDs on"""
+        """Turn the LEDs on."""
         self.pin_controller.activate_pin_list([self.pin])
 
     def turn_off(self):
-        """Turns the LEDs off"""
+        """Turn the LEDs off."""
         self.pin_controller.close_pin_list([self.pin])
 
     def preparation_start(self):
-        """Turn the LED on during preparation"""
+        """Turn the LED on during preparation."""
         self.turn_on()
 
     def preparation_end(self, duration: int = 5):
-        """Blink for some time after preparation"""
+        """Blink for some time after preparation."""
         self.turn_off()
         blinker = Thread(target=self._blink_for, kwargs={"duration": duration})
         blinker.daemon = True
@@ -129,19 +122,19 @@ class _controllableLED(_LED):
         self.pin = pin
         self.strip = Adafruit_NeoPixel(
             cfg.LED_COUNT * cfg.LED_NUMBER_RINGS,
-            pin,                    # best to use 12 or 18
-            800000,                 # freq
-            10,                     # DMA 5 / 10
-            False,                  # invert
-            cfg.LED_BRIGHTNESS,     # brightness
-            0                       # channel 0 or 1
+            pin,  # best to use 12 or 18
+            800000,  # freq
+            10,  # DMA 5 / 10
+            False,  # invert
+            cfg.LED_BRIGHTNESS,  # brightness
+            0,  # channel 0 or 1
         )
         # will throw a RuntimeError as none root user here
         self.strip.begin()
         self.is_preparing = False
 
     def _preparation_thread(self):
-        """Fills one by one with same random color, then repeats / overwrites old ones"""
+        """Fill one by one with same random color, then repeats / overwrites old ones."""
         # Make the circle / dot approximate 2 rounds per second
         wait_ms = 500 / cfg.LED_COUNT
         # not faster than 10ms
@@ -167,7 +160,7 @@ class _controllableLED(_LED):
                 time.sleep(wait_ms / 1000)
 
     def turn_off(self):
-        """Turns all leds off"""
+        """Turn all leds off."""
         for k in range(0, cfg.LED_NUMBER_RINGS):
             for i in range(0, cfg.LED_COUNT):
                 iter_pos = k * cfg.LED_COUNT + i
@@ -175,7 +168,7 @@ class _controllableLED(_LED):
         self.strip.show()
 
     def turn_on(self, color=None):
-        """Turns all leds on to given color"""
+        """Turn all leds on to given color."""
         if color is None:
             color = Color(255, 255, 255)
         for k in range(0, cfg.LED_NUMBER_RINGS):
@@ -195,7 +188,7 @@ class _controllableLED(_LED):
         return Color(0, pos * 3, 255 - pos * 3)
 
     def _end_thread(self, duration: int = 5):
-        """Rainbow animation fades across all pixels at once"""
+        """Rainbow animation fades across all pixels at once."""
         wait_ms = 10.0
         current_time = 0.0
         wheel_order = list(range(256))
@@ -219,14 +212,14 @@ class _controllableLED(_LED):
             self.turn_off()
 
     def preparation_start(self):
-        """Effect during preparation"""
+        """Effect during preparation."""
         self.is_preparing = True
         cycler = Thread(target=self._preparation_thread)
         cycler.daemon = True
         cycler.start()
 
     def preparation_end(self, duration: int = 5):
-        """Plays an effect after the preparation for x seconds"""
+        """Plays an effect after the preparation for x seconds."""
         self.is_preparing = False
         rainbow = Thread(target=self._end_thread, kwargs={"duration": duration})
         rainbow.daemon = True

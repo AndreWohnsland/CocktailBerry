@@ -1,32 +1,31 @@
-
 from __future__ import annotations
-import os
-import datetime
-import shutil
+
 import atexit
-from typing import Optional, TYPE_CHECKING
+import datetime
+import os
+import shutil
+from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtWidgets import QMainWindow
 
+from src.config_manager import CONFIG as cfg
+from src.dialog_handler import UI_LANGUAGE
+from src.display_controller import DP_CONTROLLER
+from src.logger_handler import LoggerHandler
+from src.machine.controller import MACHINE
+from src.programs.calibration import run_calibration
+from src.ui.create_backup_restore_window import BACKUP_FILES, NEEDED_BACKUP_FILES, BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
-from src.ui.create_backup_restore_window import BackupRestoreWindow, BACKUP_FILES, NEEDED_BACKUP_FILES
+from src.ui.creation_utils import setup_worker_thread
+from src.ui.setup_addon_window import AddonWindow
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_log_window import LogWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
-from src.ui.setup_addon_window import AddonWindow
-from src.ui.creation_utils import setup_worker_thread
 from src.ui_elements import Ui_Optionwindow
-from src.display_controller import DP_CONTROLLER
-from src.dialog_handler import UI_LANGUAGE
-from src.machine.controller import MACHINE
-from src.programs.calibration import run_calibration
-from src.logger_handler import LoggerHandler
 from src.updater import Updater
-from src.utils import has_connection, get_platform_data, time_print
-from src.config_manager import CONFIG as cfg
-
+from src.utils import get_platform_data, has_connection, time_print
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -36,7 +35,8 @@ _platform_data = get_platform_data()
 
 
 class _Worker(QObject):
-    """Worker to install qtsass on a thread"""
+    """Worker to install qtsass on a thread."""
+
     done = pyqtSignal()
 
     def __init__(self, parent=None):
@@ -48,7 +48,7 @@ class _Worker(QObject):
 
 
 class OptionWindow(QMainWindow, Ui_Optionwindow):
-    """ Class for the Option selection window. """
+    """Class for the Option selection window."""
 
     def __init__(self, parent: MainScreen):
         super().__init__()
@@ -75,24 +75,24 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 
-        self.config_window: Optional[ConfigWindow] = None
-        self.log_window: Optional[LogWindow] = None
-        self.rfid_writer_window: Optional[RFIDWriterWindow] = None
-        self.wifi_window: Optional[WiFiWindow] = None
-        self.addon_window: Optional[AddonWindow] = None
-        self.data_window: Optional[DataWindow] = None
-        self.backup_restore_window: Optional[BackupRestoreWindow] = None
+        self.config_window: ConfigWindow | None = None
+        self.log_window: LogWindow | None = None
+        self.rfid_writer_window: RFIDWriterWindow | None = None
+        self.wifi_window: WiFiWindow | None = None
+        self.addon_window: AddonWindow | None = None
+        self.data_window: DataWindow | None = None
+        self.backup_restore_window: BackupRestoreWindow | None = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
     def _open_config(self):
-        """Opens the config window."""
+        """Open the config window."""
         # self.close()
         self.config_window = ConfigWindow(self.mainscreen)
 
     def _init_clean_machine(self):
-        """Starting clean process if user confirms the action."""
+        """Start clean process if user confirms the action."""
         if not DP_CONTROLLER.ask_to_start_cleaning():
             return
         # bottles.clean_machine(self.mainscreen)
@@ -124,17 +124,19 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.close()
 
     def _data_insights(self):
-        """Opens the data window"""
+        """Open the data window."""
         self.data_window = DataWindow()
 
     def _open_calibration(self):
-        """Opens the calibration window."""
+        """Open the calibration window."""
         self.close()
         run_calibration(standalone=False)
 
     def _create_backup(self):
-        """Prompts the user for a folder path to save the backup to.
-        Saves the config, custom database and version to the location."""
+        """Prompt the user for a folder path to save the backup to.
+
+        Saves the config, custom database and version to the location.
+        """
         location = DP_CONTROLLER.ask_for_backup_location()
         if not location:
             return
@@ -159,7 +161,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
     def _upload_backup(self):
-        """Opens the backup restore window."""
+        """Open the backup restore window."""
         location = DP_CONTROLLER.ask_for_backup_location()
         if not location:
             return
@@ -171,32 +173,32 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.backup_restore_window = BackupRestoreWindow(self.mainscreen, location)
 
     def _show_logs(self):
-        """Opens the logs window"""
+        """Open the logs window."""
         # self.close()
         self.log_window = LogWindow()
 
     def _open_rfid_writer(self):
-        """Opens the rfid writer window"""
+        """Open the rfid writer window."""
         self.close()
         self.rfid_writer_window = RFIDWriterWindow(self.mainscreen)
 
     def _open_wifi_window(self):
-        """Opens a window to configure wifi"""
+        """Open a window to configure wifi."""
         # self.close()
         self.wifi_window = WiFiWindow(self.mainscreen)
 
     def _open_addon_window(self):
-        """Opens a window to configure wifi"""
+        """Open a window to configure wifi."""
         # self.close()
         self.addon_window = AddonWindow(self.mainscreen)
 
     def _check_internet_connection(self):
-        """Checks if there is a active internet connection"""
+        """Check if there is a active internet connection."""
         is_connected = has_connection()
         DP_CONTROLLER.say_internet_connection_status(is_connected)
 
     def _update_system(self):
-        """Makes a system update and upgrade"""
+        """Make a system update and upgrade."""
         if not DP_CONTROLLER.ask_to_update_system():
             return
         if self._is_windows():
@@ -204,13 +206,11 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
         self._worker = _Worker()  # pylint: disable=attribute-defined-outside-init
         self._thread = setup_worker_thread(  # pylint: disable=attribute-defined-outside-init
-            self._worker,
-            self,
-            self._finish_update_worker
+            self._worker, self, self._finish_update_worker
         )
 
     def _update_software(self):
-        """First asks and then updates the software"""
+        """First asks and then updates the software."""
         updater = Updater()
         update_available, info = updater.check_for_updates()
         # If there is no update available, but there is info, show it
@@ -227,13 +227,15 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             updater.update()
 
     def _finish_update_worker(self):
-        """Ends the spinner, checks if installation was successful"""
+        """End the spinner, checks if installation was successful."""
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo reboot")
 
     def _is_windows(self):
         """Linux things cannot be done on windows.
-        Print a msg and return true if win."""
+
+        Print a msg and return true if win.
+        """
         is_win = _platform_data.system == "Windows"
         if is_win:
             time_print("Cannot do that on windows")

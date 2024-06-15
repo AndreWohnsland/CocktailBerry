@@ -1,20 +1,21 @@
 from typing import Callable, Optional
-from PyQt5.QtWidgets import QMainWindow, QLabel
-from PyQt5.QtCore import Qt
 
-from src.ui_elements import Ui_Addonwindow
-from src.ui.setup_addon_manager import AddonManager
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QLabel, QMainWindow
+
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.programs.addons import ADDONS
-from src.ui.creation_utils import create_button, adjust_font, MEDIUM_FONT
+from src.ui.creation_utils import MEDIUM_FONT, adjust_font, create_button
+from src.ui.setup_addon_manager import AddonManager
+from src.ui_elements import Ui_Addonwindow
 
 
 class AddonWindow(QMainWindow, Ui_Addonwindow):
-    """ Creates A window to display addon GUI for the user"""
+    """Creates A window to display addon GUI for the user."""
 
     def __init__(self, parent=None):
-        """ Initializes the object """
+        """Initialize the object."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)

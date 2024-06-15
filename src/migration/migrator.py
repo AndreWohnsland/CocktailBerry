@@ -2,38 +2,40 @@
 import platform
 
 import yaml
+
 from src.python_vcheck import check_python_version
+
 # Version check takes place before anything, else other imports may throw an error
 check_python_version()
 
 import configparser
-import sys
-import subprocess
-from typing import Any, Optional, Tuple
 import importlib.util
+import subprocess
+import sys
+from typing import Any, Optional
 
-from src.filepath import CUSTOM_CONFIG_FILE, VERSION_FILE, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
-from src import __version__, FUTURE_PYTHON_VERSION
+from src import FUTURE_PYTHON_VERSION, __version__
+from src.filepath import CUSTOM_CONFIG_FILE, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, VERSION_FILE
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
-    rename_database_to_english,
+    add_cost_column_to_ingredients,
     add_more_bottles_to_db,
+    add_order_column_to_ingredient_data,
+    add_slower_ingredient_flag_to_db,
     add_team_buffer_to_database,
+    add_unit_column_to_ingredients,
     add_virgin_flag_to_db,
+    change_slower_flag_to_pump_speed,
     remove_is_alcoholic_column,
     remove_old_recipe_columns,
-    add_slower_ingredient_flag_to_db,
-    add_cost_column_to_ingredients,
-    add_order_column_to_ingredient_data,
-    add_unit_column_to_ingredients,
-    change_slower_flag_to_pump_speed,
+    rename_database_to_english,
 )
 
 _logger = LoggerHandler("migrator_module")
 
 
 class Migrator:
-    """Class to do all necessary migration locally for new versions"""
+    """Class to do all necessary migration locally for new versions."""
 
     def __init__(self) -> None:
         self.program_version = _Version(__version__)
@@ -43,31 +45,31 @@ class Migrator:
 
     def _get_local_version(self):
         try:
-            local_version = self.config['DEFAULT']['LOCALVERSION']
+            local_version = self.config["DEFAULT"]["LOCALVERSION"]
         except KeyError:
             local_version = None
         return local_version
 
     def older_than_version(self, version: Optional[str]) -> bool:
-        """Checks if the current version is below the given version"""
+        """Check if the current version is below the given version."""
         return _Version(version) > self.local_version
 
     def older_than_version_with_logging(self, version: str) -> bool:
-        """Checks if the current version is below the given version"""
+        """Check if the current version is below the given version."""
         is_older = _Version(version) > self.local_version
         if is_older:
             self._migration_log(version)
         return is_older
 
     def _write_local_version(self):
-        """Writes the latest version to the local version"""
+        """Write the latest version to the local version."""
         _logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
-        self.config['DEFAULT']['LOCALVERSION'] = str(self.program_version.version)
-        with open(VERSION_FILE, 'w', encoding="utf-8") as config_file:
+        self.config["DEFAULT"]["LOCALVERSION"] = str(self.program_version.version)
+        with open(VERSION_FILE, "w", encoding="utf-8") as config_file:
             self.config.write(config_file)
 
     def make_migrations(self):
-        """Make migration dependant on current local and program version"""
+        """Make migration dependant on current local and program version."""
         _logger.log_event("INFO", f"Local version is: {self.local_version}, checking for necessary migrations")
         self._python_to_old_warning(FUTURE_PYTHON_VERSION)
 
@@ -113,22 +115,21 @@ class Migrator:
         self._check_local_version_data()
 
     def _migration_log(self, version: str):
-        """Logs the migration message fro the version"""
+        """Log the migration message fro the version."""
         _logger.log_event("INFO", f"Making migrations for v{version}")
 
-    def _python_to_old_warning(self, least_python: Tuple[int, int]):
-        """Logs a warning that the future python is higher than system python"""
+    def _python_to_old_warning(self, least_python: tuple[int, int]):
+        """Log a warning that the future python is higher than system python."""
         sys_python = sys.version_info
         if sys_python < least_python:
             future_format = f"Python {least_python[0]}.{least_python[1]}"
             sys_format = f"{platform.python_version()}"
             _logger.log_event(
-                "WARNING",
-                f"Your used Python ({sys_format}) is deprecated, please upgrade to {future_format} or higher"
+                "WARNING", f"Your used Python ({sys_format}) is deprecated, please upgrade to {future_format} or higher"
             )
 
     def _check_local_version_data(self):
-        """Checks to update the local version data"""
+        """Check to update the local version data."""
         if self.older_than_version(self.program_version.version):
             self._update_custom_theme()
             self._write_local_version()
@@ -136,23 +137,23 @@ class Migrator:
             _logger.log_event("INFO", "Nothing to migrate")
 
     def _update_custom_theme(self):
-        """Checks and updates (compiles) the custom theme"""
+        """Check and updates (compiles) the custom theme."""
         # skip if library is not installed, or file does not exist
         lib_not_installed = importlib.util.find_spec("qtsass") is None
         no_file = not CUSTOM_STYLE_SCSS.exists()
         if lib_not_installed or no_file:
             return
         import qtsass  # pylint:disable=import-outside-toplevel
+
         qtsass.compile_filename(CUSTOM_STYLE_SCSS, CUSTOM_STYLE_FILE)
 
     def _change_git_repo(self):
-        """Sets the git source to the new named repo"""
+        """Set the git source to the new named repo."""
         _logger.log_event("INFO", "Changing git origin to new repo name")
         try:
-            subprocess.check_call([
-                "git", "remote", "set-url", "origin",
-                "https://github.com/AndreWohnsland/CocktailBerry.git"
-            ])
+            subprocess.check_call(
+                ["git", "remote", "set-url", "origin", "https://github.com/AndreWohnsland/CocktailBerry.git"]
+            )
         except subprocess.CalledProcessError as err:
             err_msg = "Could not change origin. Check if you made any local file changes / use 'git restore .'!"
             err_msg += " See also debug logs for more information"
@@ -161,13 +162,13 @@ class Migrator:
             raise CouldNotMigrateException("1.6.0") from err
 
     def _install_pip_package(self, package_name: str, version_to_migrate: str):
-        """Try to install a python package over pip"""
+        """Try to install a python package over pip."""
         _logger.log_event("INFO", f"Trying to install {package_name}, it is needed since v{version_to_migrate}")
         if importlib.util.find_spec(package_name) is not None:
             _logger.log_event("INFO", f"Package {package_name} is already installed, skipping installation.")
             return
         try:
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', package_name])
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
             _logger.log_event("INFO", f"Successfully installed {package_name}")
         except subprocess.CalledProcessError as err:
             err_msg = f"Could not install {package_name} using pip. Please install it manually!"
@@ -178,16 +179,17 @@ class Migrator:
 
 
 def _update_config_value_type(config_name: str, new_type: type, default_value: Any):
-    """Updates the local config file, use the new given type
+    """Update the local config file, use the new given type.
+
     Uses the default if fails to convert.
-    Also, if the given type is a list, it will try to convert the list elements
+    Also, if the given type is a list, it will try to convert the list elements.
     """
     if not CUSTOM_CONFIG_FILE.exists():
         _logger.info(f"No local config detected for {config_name}, skipping conversion")
         return
     _logger.info(f"Converting config value for {config_name} to {new_type}")
     configuration: dict[str, Any] = {}
-    with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
+    with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
         configuration = yaml.safe_load(stream)
     # get the value from the config, if not exists fall back to default
     local_config = configuration.get(config_name, default_value)
@@ -200,20 +202,21 @@ def _update_config_value_type(config_name: str, new_type: type, default_value: A
         configuration[config_name] = new_values
     else:
         configuration[config_name] = _get_converted_value(new_type, default_value, local_config)
-    with open(CUSTOM_CONFIG_FILE, 'w', encoding="UTF-8") as stream:
+    with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
 
 
 def _move_slow_factor_to_db():
-    """Converts the slow factor from the config to the database,
-    will use the slow flag and the config value to calculate the pump speed,
-    others will be 100%
+    """Convert the slow factor from the config to the database.
+
+    Will use the slow flag and the config value to calculate the pump speed,
+    others will be 100%.
     """
     if not CUSTOM_CONFIG_FILE.exists():
         slow_factor = 1.0
     else:
         configuration: dict[str, Any] = {}
-        with open(CUSTOM_CONFIG_FILE, "r", encoding="UTF-8") as stream:
+        with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
         slow_factor = configuration.get("PUMP_SLOW_FACTOR", 1.0)
     change_slower_flag_to_pump_speed(slow_factor)
@@ -228,7 +231,7 @@ def _get_converted_value(new_type: type, default_value: Any, local_config: Any):
 
 
 class _Version:
-    """Class to compare semantic version numbers"""
+    """Class to compare semantic version numbers."""
 
     def __init__(self, version_number: Optional[str]) -> None:
         self.version = version_number
@@ -245,10 +248,7 @@ class _Version:
             # Some version like 1.0 or 1.1 don't got a patch property
             # List unpacking will return an empty list or a list of one
             # Future version should contain patch (e.g. 1.1.0) as well
-            if patch_str:
-                patch = int(patch_str[0])
-            else:
-                patch = 0
+            patch = int(patch_str[0]) if patch_str else 0
         self.major = major
         self.minor = minor
         self.patch = patch
@@ -271,7 +271,7 @@ class _Version:
 
 
 class CouldNotMigrateException(Exception):
-    """Raised when there was an error with the migration"""
+    """Raised when there was an error with the migration."""
 
     def __init__(self, version):
         self.message = f"Error while migration to version: {version}"

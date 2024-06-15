@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import string
+
 from PyQt5.QtWidgets import QDialog, QLineEdit
 
 from src.display_controller import DP_CONTROLLER
@@ -6,7 +9,7 @@ from src.ui_elements.keyboard import Ui_Keyboard
 
 
 class KeyboardWidget(QDialog, Ui_Keyboard):
-    """ Creates a keyboard where the user can enter names or similar strings to Lineedits. """
+    """Creates a keyboard where the user can enter names or similar strings to Lineedits."""
 
     def __init__(self, parent, le_to_write: QLineEdit, max_char_len: int = 30):
         super().__init__()
@@ -28,8 +31,32 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         # also gives the possibility to use some extra signs
         self.sign_list = ["!", '"', "§", "%", "&", "/", "(", ")", "=", "?"]
         self.sign_list_chars = [
-            "^", "°", "{", "[", "]", "}", "\\", "`", "´", "#", "*", "+",
-            "~", "ä", "ö", "ü", "-", "_", ":", ".", ",", ";", "#", "@", "<", ">"
+            "^",
+            "°",
+            "{",
+            "[",
+            "]",
+            "}",
+            "\\",
+            "`",
+            "´",  # noqa: RUF001
+            "#",
+            "*",
+            "+",
+            "~",
+            "ä",
+            "ö",
+            "ü",
+            "-",
+            "_",
+            ":",
+            ".",
+            ",",
+            ";",
+            "#",
+            "@",
+            "<",
+            ">",
         ]
         self.char_list_lower = list(string.ascii_lowercase)
         self.char_list_upper = list(string.ascii_uppercase)
@@ -43,7 +70,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
             self.input_button_list,
             self.button_value_default_list,
             self.button_value_shift_list,
-            self.button_value_control_list
+            self.button_value_control_list,
         ):
             obj.clicked.connect(lambda _, iv=char, iv_s=char2, iv_c=char3: self.input_button_clicked(iv, iv_s, iv_c))
         # restricting the Lineedit to a set up Char length
@@ -52,20 +79,21 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         DP_CONTROLLER.set_display_settings(self)
 
     def back_button_clicked(self):
-        """ Closes the Window without any further action. """
+        """Close the Window without any further action."""
         self.close()
 
     def clear_button_clicked(self):
-        """ Clears the input. """
+        """Clear the input."""
         self.LName.setText("")
 
     def enter_button_clicked(self):
-        """ Closes and enters the String value back to the Lineedit. """
+        """Close and enter the String value back to the Lineedit."""
         self.le_to_write.setText(self.LName.text())
         self.close()
 
-    def input_button_clicked(self, input_default: str, input_shift: str, input_control: str):
-        """ Enters the input_value into the field, adds it to the string.
+    def input_button_clicked(self, input_default: str | int, input_shift: str | int, input_control: str | int):
+        """Enter the input_value into the field, adds it to the string.
+
         Can either have the normal or the shift value, if there is no difference both input arguments are the same.
         """
         string_value = self.LName.text()
@@ -82,7 +110,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self.LName.setText(string_value[:-1])
 
     def _shift_control_clicked(self):
-        """Selects the right character set for the buttons"""
+        """Select the right character set for the buttons."""
         character_set = self.button_value_default_list
         # if shift is toggled, use the upper letters
         if self.shift.isChecked():
@@ -93,7 +121,7 @@ class KeyboardWidget(QDialog, Ui_Keyboard):
         self._change_displayed_characters(character_set)
 
     def _change_displayed_characters(self, character_list: list):
-        """Changes the displayed values on the buttons"""
+        """Change the displayed values on the buttons."""
         for obj, char in zip(self.input_button_list, character_list):
             # fix for & sign, it needs to be a && in pyqt
             if char == "&":

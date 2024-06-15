@@ -1,10 +1,11 @@
 import re
 from collections import Counter
+
 from PyQt5.QtWidgets import QMainWindow
 
-from src.filepath import LOG_FOLDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.filepath import LOG_FOLDER
 from src.ui_elements.logwindow import Ui_LogWindow
 
 _DEFAULT_SELECTED = "production_logs.log"
@@ -12,10 +13,10 @@ _DEBUG_FILE = "debuglog.log"
 
 
 class LogWindow(QMainWindow, Ui_LogWindow):
-    """ Creates the log window Widget. """
+    """Creates the log window Widget."""
 
     def __init__(self):
-        """ Init. Connect all the buttons and set window policy. """
+        """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -37,11 +38,11 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _get_log_files(self):
-        """Checks the logs folder for all existing log files"""
+        """Check the logs folder for all existing log files."""
         return [file.name for file in LOG_FOLDER.glob("*.log")]
 
     def _read_logs(self):
-        """Read the current selected log file"""
+        """Read the current selected log file."""
         log_name = self.selection_logs.currentText()
         # Return if empty selection
         if log_name == "":
@@ -59,6 +60,7 @@ class LogWindow(QMainWindow, Ui_LogWindow):
 
     def _parse_log(self, log_text: str, warning_and_higher: bool):
         """Parse all logs and return display object.
+
         Needs logs from new to old, if same message was already there, skip it.
         """
         data: dict[str, str] = {}
@@ -70,9 +72,7 @@ class LogWindow(QMainWindow, Ui_LogWindow):
                 counter[message] = 1
             else:
                 counter[message] += 1
-        log_list_data = [
-            f"{key} ({counter[key]}x, latest: {value})" for key, value in data.items()
-        ]
+        log_list_data = [f"{key} ({counter[key]}x, latest: {value})" for key, value in data.items()]
         # Filter out DEBUG or INFO msgs
         if warning_and_higher:
             accepted = ["WARNING", "ERROR", "CRITICAL"]
@@ -80,7 +80,7 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         return "\n".join(log_list_data)
 
     def _parse_log_line(self, line: str):
-        """Parse the log message and return the timestamp + msg"""
+        """Parse the log message and return the timestamp + msg."""
         parts = line.split(" | ", maxsplit=1)
         parsed_date = parts[0]
         # usually, we only get 2 parts, due to the maxsplit
@@ -88,11 +88,11 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         return parsed_date, parsed_message
 
     def _parse_debug_logs(self, log):
-        """Parses and inverts the debug logs"""
+        """Parse and invert the debug logs."""
         # having into group returns also the matched date
         # This needs to be joined before inverting.
         # Also, the first value is an empty string
         date_regex = r"(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2})"
         information_list = [x for x in re.split(date_regex, log) if x != ""]
-        pairs = [" ".join(information_list[i:i + 2]) for i in range(0, len(information_list), 2)]
+        pairs = [" ".join(information_list[i : i + 2]) for i in range(0, len(information_list), 2)]
         return "\n".join(pairs[::-1])

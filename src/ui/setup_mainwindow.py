@@ -1,47 +1,48 @@
-"""Connects all the functions to the Buttons as well the Lists
-of the passed window. Also defines the Mode for controls.
-"""
-# pylint: disable=unnecessary-lambda
-import sys
-import platform
-from typing import Optional
-from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QMainWindow, QLineEdit
+"""Connect all the functions to the Buttons as well the Lists of the passed window.
 
+Also defines the Mode for controls.
+"""
+
+# pylint: disable=unnecessary-lambda
+import platform
+import sys
+from typing import Optional
+
+from PyQt5.QtGui import QIntValidator
+from PyQt5.QtWidgets import QLineEdit, QMainWindow
+
+from src import FUTURE_PYTHON_VERSION
 from src.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
+from src.dialog_handler import UI_LANGUAGE
+from src.display_controller import DP_CONTROLLER, ItemDelegate
+from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.models import Cocktail
-from src.tabs import ingredients, recipes, bottles
-from src.display_controller import DP_CONTROLLER, ItemDelegate
-from src.dialog_handler import UI_LANGUAGE
-from src.logger_handler import LoggerHandler
+from src.tabs import bottles, ingredients, recipes
+from src.ui.cocktail_view import CocktailView
+from src.ui.icons import BUTTON_SIZE, ICONS
+from src.ui.setup_available_window import AvailableWindow
+from src.ui.setup_bottle_window import BottleWindow
+from src.ui.setup_cocktail_selection import CocktailSelection
+from src.ui.setup_datepicker import DatePicker
+from src.ui.setup_get_ingredients_window import GetIngredientWindow
+from src.ui.setup_keyboard_widget import KeyboardWidget
+from src.ui.setup_numpad_widget import NumpadWidget
+from src.ui.setup_option_window import OptionWindow
+from src.ui.setup_picture_window import PictureWindow
+from src.ui.setup_progress_screen import ProgressScreen
+from src.ui.setup_team_window import TeamScreen
+from src.ui_elements import Ui_MainWindow
 from src.updater import Updater
 from src.utils import has_connection
 
-from src.ui_elements import Ui_MainWindow
-from src.ui.cocktail_view import CocktailView
-from src.ui.setup_option_window import OptionWindow
-from src.ui.setup_progress_screen import ProgressScreen
-from src.ui.setup_numpad_widget import NumpadWidget
-from src.ui.setup_bottle_window import BottleWindow
-from src.ui.setup_get_ingredients_window import GetIngredientWindow
-from src.ui.setup_keyboard_widget import KeyboardWidget
-from src.ui.setup_available_window import AvailableWindow
-from src.ui.setup_team_window import TeamScreen
-from src.ui.setup_datepicker import DatePicker
-from src.ui.setup_cocktail_selection import CocktailSelection
-from src.ui.setup_picture_window import PictureWindow
-from src.ui.icons import ICONS, BUTTON_SIZE
-
-from src import FUTURE_PYTHON_VERSION
-
 
 class MainScreen(QMainWindow, Ui_MainWindow):
-    """ Creates the Mainscreen. """
+    """Creates the Mainscreen."""
 
     def __init__(self):
-        """ Init the main window. Many of the button and List connects are in pass_setup. """
+        """Init the main window. Many of the button and List connects are in pass_setup."""
         super().__init__()
         self.setupUi(self)
 
@@ -92,7 +93,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self._deprecation_check()
 
     def update_check(self):
-        """Checks if there is an update and asks to update, if exists"""
+        """Check if there is an update and asks to update, if exists."""
         if not cfg.MAKER_SEARCH_UPDATES:
             return
         updater = Updater()
@@ -106,8 +107,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             DP_CONTROLLER.say_update_failed()
 
     def _connection_check(self):
-        """Checks if there is an internet connection
-        Asks user to adjust time, if there is no no connection
+        """Check if there is an internet connection.
+
+        Asks user to adjust time, if there is no no connection.
         """
         # only needed if microservice is also active
         if not cfg.MAKER_CHECK_INTERNET or not cfg.MICROSERVICE_ACTIVE:
@@ -120,21 +122,19 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             self.datepicker = DatePicker()
 
     def _deprecation_check(self):
-        """Checks if to display the deprecation warning for newer python version install"""
+        """Check if to display the deprecation warning for newer python version install."""
         sys_python = sys.version_info
-        if FUTURE_PYTHON_VERSION > sys_python:
+        if sys_python < FUTURE_PYTHON_VERSION:
             DP_CONTROLLER.say_python_deprecated(
-                platform.python_version(),
-                f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
+                platform.python_version(), f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
             )
 
     def open_cocktail_selection(self, cocktail: Cocktail):
-        """Opens the cocktail selection screen"""
+        """Open the cocktail selection screen."""
         if self.cocktail_selection is not None:
             self.container_maker.removeWidget(self.cocktail_selection)
         self.cocktail_selection = CocktailSelection(
-            self, cocktail,
-            lambda: self.container_maker.setCurrentWidget(self.cocktail_view)
+            self, cocktail, lambda: self.container_maker.setCurrentWidget(self.cocktail_view)
         )
         self.container_maker.addWidget(self.cocktail_selection)
         self.cocktail_selection.set_cocktail(cocktail)
@@ -149,28 +149,27 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         header_text="Password",
         overwrite_number: bool = False,
     ):
-        """ Opens up the NumpadWidget connected to the lineedit offset from the left upper side """
+        """Open up the NumpadWidget connected to the lineedit offset from the left upper side."""
         self.numpad_window = NumpadWidget(
-            self, le_to_write, x_pos, y_pos,
-            header_text, overwrite_number=overwrite_number
+            self, le_to_write, x_pos, y_pos, header_text, overwrite_number=overwrite_number
         )
 
     def open_keyboard(self, le_to_write, max_char_len=30):
-        """ Opens up the keyboard connected to the lineedit """
+        """Open up the keyboard connected to the lineedit."""
         self.keyboard_window = KeyboardWidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
 
     def open_progression_window(self, cocktail_type: str = "Cocktail"):
-        """ Opens up the progression window to show the Cocktail status. """
+        """Open up the progression window to show the Cocktail status."""
         self.progress_window = ProgressScreen(self, cocktail_type)
 
     def change_progression_window(self, pb_value: int):
-        """ Changes the value of the progression bar of the ProBarWindow. """
+        """Change the value of the progression bar of the ProBarWindow."""
         if self.progress_window is None:
             return
         self.progress_window.progressBar.setValue(pb_value)
 
     def close_progression_window(self):
-        """ Closes the progression window at the end of the cycle. """
+        """Close the progression window at the end of the cycle."""
         if self.progress_window is None:
             return
         self.progress_window.close()
@@ -181,17 +180,17 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.team_window.exec_()
 
     def open_option_window(self):
-        """Opens up the options"""
+        """Open up the options."""
         if not DP_CONTROLLER.password_prompt():
             return
         self.option_window = OptionWindow(self)
 
     def open_bottle_window(self):
-        """ Opens the bottle window to change the volume levels. """
+        """Open the bottle window to change the volume levels."""
         self.bottle_window = BottleWindow(self)
 
     def open_ingredient_window(self):
-        """ Opens a window to spend one single ingredient. """
+        """Open a window to spend one single ingredient."""
         self.ingredient_window = GetIngredientWindow(self)
 
     def open_available_window(self):
@@ -209,13 +208,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.picture_window = PictureWindow(cocktail, self.cocktail_view.populate_cocktails)
 
     def connect_other_windows(self):
-        """Links the buttons and lineedits to the other ui elements"""
+        """Links the buttons and lineedits to the other ui elements."""
         self.LECocktail.clicked.connect(lambda: self.open_keyboard(self.LECocktail))
         self.option_button.clicked.connect(self.open_option_window)
         alcohol = UI_LANGUAGE.generate_numpad_header("alcohol")
-        self.LEGehaltRezept.clicked.connect(
-            lambda: self.open_numpad(self.LEGehaltRezept, 50, 50, alcohol)
-        )
+        self.LEGehaltRezept.clicked.connect(lambda: self.open_numpad(self.LEGehaltRezept, 50, 50, alcohol))
         self.line_edit_ingredient_name.clicked.connect(
             lambda: self.open_keyboard(self.line_edit_ingredient_name, max_char_len=20)
         )
@@ -238,13 +235,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEGehaltRezept.setValidator(QIntValidator(0, 99))
         self.LEGehaltRezept.setMaxLength(2)
         self.line_edit_ingredient_name.setMaxLength(20)
-        self.LEFlaschenvolumen.clicked.connect(
-            lambda: self.open_numpad(self.LEFlaschenvolumen, 50, 50, amount)
-        )
+        self.LEFlaschenvolumen.clicked.connect(lambda: self.open_numpad(self.LEFlaschenvolumen, 50, 50, amount))
         self.LEFlaschenvolumen.setMaxLength(5)
-        self.line_edit_pump_speed.clicked.connect(
-            lambda: self.open_numpad(self.line_edit_pump_speed, 50, 50, number)
-        )
+        self.line_edit_pump_speed.clicked.connect(lambda: self.open_numpad(self.line_edit_pump_speed, 50, 50, number))
         self.line_edit_pump_speed.setMaxLength(3)
         self.line_edit_ingredient_cost.clicked.connect(
             lambda: self.open_numpad(self.line_edit_ingredient_cost, 50, 50, number)
@@ -256,7 +249,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         )
 
     def connect_objects(self):
-        """ Connect all the functions with the Buttons. """
+        """Connect all the functions with the Buttons."""
         # First, connect all the push buttons with the Functions
         self.PBZutathinzu.clicked.connect(lambda: ingredients.handle_enter_ingredient(self))
         self.PBRezepthinzu.clicked.connect(lambda: recipes.handle_enter_recipe(self))
@@ -312,7 +305,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
 
     def handle_tab_bar_clicked(self, index):
-        """Protects tabs other than maker tab with a password"""
+        """Protects tabs other than maker tab with a password."""
         old_index = self.previous_tab_index
         unprotected_tabs = [0, 1] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 2) if not x]
         # since the search window lives in the main window now,
@@ -330,7 +323,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.tabWidget.setCurrentIndex(old_index)
 
     def _apply_search_to_list(self):
-        """ Applies the search to the list widget"""
+        """Apply the search to the list widget."""
         search = self.input_search_cocktail.text()
         DP_CONTROLLER.clear_list_widget(self.list_widget_found_cocktails)
         # if the search is empty, just fill all possible cocktails
@@ -348,7 +341,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         DP_CONTROLLER.fill_list_widget(self.list_widget_found_cocktails, to_fill)
 
     def _enter_search_to_maker(self):
-        """Switches to the cocktail selection of the given search"""
+        """Switches to the cocktail selection of the given search."""
         search = DP_CONTROLLER.get_list_widget_selection(self.list_widget_found_cocktails)
         if not search:
             return

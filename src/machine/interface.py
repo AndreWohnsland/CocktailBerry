@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import List, Optional, Any
+from typing import Any, Optional
 
 # Grace period, will be switched once Python 3.8+ is mandatory
 try:
@@ -9,21 +9,22 @@ except ImportError:
 
 
 class PinController(Protocol):  # type: ignore
-    """Interface to control the pins"""
+    """Interface to control the pins."""
+
     @abstractmethod
-    def initialize_pin_list(self, pin_list: List[int], is_input: bool = False, pull_down: bool = True):
+    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True):
         raise NotImplementedError
 
     @abstractmethod
-    def activate_pin_list(self, pin_list: List[int]):
+    def activate_pin_list(self, pin_list: list[int]):
         raise NotImplementedError
 
     @abstractmethod
-    def close_pin_list(self, pin_list: List[int]):
+    def close_pin_list(self, pin_list: list[int]):
         raise NotImplementedError
 
     @abstractmethod
-    def cleanup_pin_list(self, pin_list: Optional[List[int]] = None):
+    def cleanup_pin_list(self, pin_list: Optional[list[int]] = None):
         pass
 
     @abstractmethod
@@ -64,7 +65,8 @@ class GPIOController:
 
 
 class RFIDController(Protocol):
-    """Interface for the RFID reader"""
+    """Interface for the RFID reader."""
+
     @abstractmethod
     def read_card(self) -> tuple[Optional[str], Optional[str]]:
         raise NotImplementedError

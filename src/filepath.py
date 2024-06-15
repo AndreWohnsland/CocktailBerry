@@ -1,4 +1,4 @@
-"""Holds all the path location of the project"""
+"""Holds all the path location of the project."""
 
 from pathlib import Path
 

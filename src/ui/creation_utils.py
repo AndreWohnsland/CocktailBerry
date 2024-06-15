@@ -1,7 +1,8 @@
 from typing import Callable, Optional
-from PyQt5.QtWidgets import QWidget, QSpacerItem, QSizePolicy, QPushButton, QLabel
+
+from PyQt5.QtCore import QObject, QSize, Qt, QThread
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import QSize, QObject, QThread, Qt
+from PyQt5.QtWidgets import QLabel, QPushButton, QSizePolicy, QSpacerItem, QWidget
 
 from src.ui.icons import ICONS
 
@@ -18,7 +19,7 @@ class FontSize:
 
 
 def adjust_font(element: QWidget, font_size: int, bold: bool = False):
-    """Adjust the font to given size and optional bold"""
+    """Adjust the font to given size and optional bold."""
     font = QFont()
     font.setPointSize(font_size)
     font.setBold(bold)
@@ -28,21 +29,21 @@ def adjust_font(element: QWidget, font_size: int, bold: bool = False):
 
 
 def set_underline(element: QWidget, underline: bool):
-    """Set the strike through property of the font"""
+    """Set the strike through property of the font."""
     font = element.font()
     font.setUnderline(underline)
     element.setFont(font)
 
 
 def set_strike_through(element: QWidget, strike_through: bool):
-    """Set the strike through property of the font"""
+    """Set the strike through property of the font."""
     font = element.font()
     font.setStrikeOut(strike_through)
     element.setFont(font)
 
 
 def create_spacer(height: int, width: int = 20, expand: bool = False):
-    """Creates a spacer of given height and optional width"""
+    """Create a spacer of given height and optional width."""
     policy = QSizePolicy.Expanding if expand else QSizePolicy.Fixed  # type: ignore
     return QSpacerItem(width, height, QSizePolicy.Minimum, policy)  # type: ignore
 
@@ -56,7 +57,7 @@ def create_button(
     min_w: int = 0,
     min_h: int = 70,
     bold: bool = True,
-    css_class: Optional[str] = None
+    css_class: Optional[str] = None,
 ):
     btn = QPushButton(label, parent)
     btn.setMaximumSize(QSize(max_w, max_h))
@@ -76,9 +77,9 @@ def create_label(
     max_h: int = 200,
     min_w: int = 0,
     min_h: int = 20,
-    css_class: Optional[str] = None
+    css_class: Optional[str] = None,
 ):
-    """Creates a label with given text and properties"""
+    """Create a label with given text and properties."""
     label = QLabel(text)
     label.setMaximumSize(QSize(max_w, max_h))
     label.setMinimumSize(QSize(min_w, min_h))
@@ -91,8 +92,9 @@ def create_label(
 
 
 def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable):
-    """Moves worker the thread and set necessary things (spinner, eg) up
-    Worker needs done = pyqtSignal() and emit that at the end of run function
+    """Move worker the thread and set necessary things (spinner, eg) up.
+
+    Worker needs done = pyqtSignal() and emit that at the end of run function.
     """
     ICONS.start_spinner(parent)
     # Create a  thread object. move worker to thread
@@ -114,5 +116,5 @@ def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable
 
 
 def generate_bottle_management(row: int):
-    """Generates a row for bottle management"""
+    """Generate a row for bottle management."""
     return row

@@ -1,14 +1,13 @@
-from PyQt5.QtWidgets import QMainWindow, QListWidget
+from PyQt5.QtWidgets import QListWidget, QMainWindow
 
-
-from src.ui_elements.available import Ui_available
-from src.display_controller import DP_CONTROLLER
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
+from src.display_controller import DP_CONTROLLER
+from src.ui_elements.available import Ui_available
 
 
 class AvailableWindow(QMainWindow, Ui_available):
-    """ Opens a window where the user can select all available ingredients. """
+    """Opens a window where the user can select all available ingredients."""
 
     def __init__(self, parent):
         super().__init__()
@@ -31,11 +30,11 @@ class AvailableWindow(QMainWindow, Ui_available):
         DP_CONTROLLER.set_display_settings(self)
 
     def _cancel_click(self):
-        """ Closes the window without any further action. """
+        """Close the window without any further action."""
         self.close()
 
     def _accepted_clicked(self):
-        """ Writes the new availability into the DB. """
+        """Write the new availability into the DB."""
         DB_COMMANDER.delete_existing_handadd_ingredient()
         ingredient_names = [self.LWVorhanden.item(i).text() for i in range(self.LWVorhanden.count())]
         # only add ingredients if there are any

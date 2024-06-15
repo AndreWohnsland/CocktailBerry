@@ -1,21 +1,20 @@
 from __future__ import annotations
-from typing import Literal, Optional, TYPE_CHECKING
-from dataclasses import dataclass
 
-from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QPushButton, QWidget
-from PyQt5.QtGui import QIcon, QColor
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Literal
+
 import qtawesome as qta
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QColor, QIcon
+from PyQt5.QtWidgets import QPushButton, QWidget
 from pyqtspinner import WaitingSpinner
 
 from src import SupportedThemesType
-from src.filepath import STYLE_FOLDER
 from src.config_manager import CONFIG as cfg
+from src.filepath import STYLE_FOLDER
 
 if TYPE_CHECKING:
-    from src.ui_elements import Ui_MainWindow
-    from src.ui_elements import Ui_CocktailSelection
-    from src.ui_elements import Ui_PictureWindow
+    from src.ui_elements import Ui_CocktailSelection, Ui_MainWindow, Ui_PictureWindow
 
 # DEFINING THE ICONS
 _SETTING_ICON = "fa5s.cog"
@@ -80,8 +79,8 @@ class ColorInformation:
         return getattr(self, item)
 
 
-def parse_colors(theme: Optional[SupportedThemesType] = None) -> ColorInformation:
-    """Gets the color out of the theme file"""
+def parse_colors(theme: SupportedThemesType | None = None) -> ColorInformation:
+    """Get the color out of the theme file."""
     # extract all the fields as list from the dataclass
     needed_fields = list(ColorInformation.__dict__["__dataclass_fields__"].keys())
     extracted = {}
@@ -110,10 +109,10 @@ class IconSetter:
     def __init__(self):
         self.color = parse_colors()
         self.presets = PresetIcon()
-        self._spinner: Optional[WaitingSpinner] = None
+        self._spinner: WaitingSpinner | None = None
 
     def set_mainwindow_icons(self, w: Ui_MainWindow):
-        """Sets the icons of the main window according to style sheets props"""
+        """Set the icons of the main window according to style sheets props."""
         # For solid buttons, they use bg color for icon
         for ui_element, icon, no_text in [
             (w.option_button, _SETTING_ICON, True),
@@ -137,7 +136,7 @@ class IconSetter:
         w.tabWidget.setTabText(0, "")
 
     def set_cocktail_selection_icons(self, w: Ui_CocktailSelection):
-        """Sets the icons of the cocktail selection window according to style sheets props"""
+        """Set the icons of the cocktail selection window according to style sheets props."""
         for ui_element, icon, no_text in [
             (w.prepare_button, _COCKTAIL_ICON, False),
             (w.increase_alcohol, _SKULL, True),
@@ -147,7 +146,7 @@ class IconSetter:
             self.set_icon(ui_element, fa_icon, no_text)
 
     def set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool, size: QSize = BUTTON_SIZE):
-        """Sets the icon of the given ui element"""
+        """Set the icon of the given ui element."""
         ui_element.setIcon(icon)
         ui_element.setIconSize(size)
         if no_text:
@@ -161,20 +160,22 @@ class IconSetter:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self.set_icon(ui_element, fa_icon, no_text)
 
-    def generate_icon(self, icon_name: str, color: str, color_active: Optional[str] = None) -> QIcon:
-        """Generates an icon with the given color and size
+    def generate_icon(self, icon_name: str, color: str, color_active: str | None = None) -> QIcon:
+        """Generate an icon with the given color and size.
 
         Args:
-            icon (str): icon name in qta, e.g. "fa5s.cog"
+        ----
+            icon_name (str): icon name in qta, e.g. "fa5s.cog"
             color (str): given color name in hex, e.g. "#007bff"
             color_active (str): given active color name, will use color if None, defaults to None
+
         """
         if color_active is None:
             color_active = color
         return qta.icon(icon_name, color=color, color_active=color_active)
 
     def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary=False):
-        """Sets a spinner button to the icon"""
+        """Set a spinner button to the icon."""
         color = self.color.primary if primary else self.color.background
         if icon == "spin":
             used_icon = qta.icon(_SPINNER_ICON, color=color, animation=qta.Spin(button))
@@ -186,13 +187,13 @@ class IconSetter:
         button.setIcon(used_icon)  # type: ignore
 
     def remove_icon(self, button: QPushButton):
-        """Removes the spinner from the button"""
+        """Remove the spinner from the button."""
         # Removes the previous set "padding"
         button.setText(button.text().strip())
         button.setIcon(QIcon())
 
     def start_spinner(self, parent_widget: QWidget):
-        """Starts a spinner above the parent widget, locks parent"""
+        """Start a spinner above the parent widget, locks parent."""
         self._spinner = WaitingSpinner(
             parent_widget,
             disable_parent_when_spinning=True,
@@ -208,7 +209,7 @@ class IconSetter:
         self._spinner.start()
 
     def stop_spinner(self):
-        """Stops the spinner"""
+        """Stop the spinner."""
         if self._spinner is None:
             return
         self._spinner.stop()

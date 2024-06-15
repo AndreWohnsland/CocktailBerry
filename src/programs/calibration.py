@@ -1,22 +1,22 @@
 import sys
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
-from src.models import Ingredient
 from src.config_manager import CONFIG as cfg
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
+from src.models import Ingredient
 from src.ui_elements.calibration import Ui_CalibrationWindow
-
 
 logger = LoggerHandler("calibration_module")
 
 
 class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
     def __init__(self, standalone: bool):
-        """ Init the calibration Screen. """
+        """Init the calibration Screen."""
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
@@ -36,7 +36,7 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         logger.log_start_program("calibration")
 
     def output_volume(self):
-        """Outputs the set number of volume according to defined volume flow"""
+        """Output the set number of volume according to defined volume flow."""
         channel_number = int(self.channel.text())
         amount = int(self.amount.text())
         display_name = f"{amount} ml volume, pump #{channel_number}"
@@ -49,7 +49,7 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
             hand=False,
             pump_speed=100,
             amount=amount,
-            bottle=channel_number
+            bottle=channel_number,
         )
         MACHINE.make_cocktail(
             w=None,
@@ -62,7 +62,7 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
 
 @logerror
 def run_calibration(standalone=True):
-    """Executes the calibration screen"""
+    """Execute the calibration screen."""
     if standalone:
         app = QApplication(sys.argv)
     # this assignment is needed, otherwise the window will close in an instant

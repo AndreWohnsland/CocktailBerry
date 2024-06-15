@@ -1,12 +1,12 @@
 from PyQt5.QtWidgets import QDialog
 
-from src.ui_elements.customdialog import Ui_CustomDialog
-from src.display_controller import DP_CONTROLLER
 from src.dialog_handler import UI_LANGUAGE
+from src.display_controller import DP_CONTROLLER
+from src.ui_elements.customdialog import Ui_CustomDialog
 
 
 class CustomDialog(QDialog, Ui_CustomDialog):
-    """ Class for the Team selection Screen. """
+    """Class for the Team selection Screen."""
 
     def __init__(self, message: str, title: str = "Information", use_ok=False):
         super().__init__()

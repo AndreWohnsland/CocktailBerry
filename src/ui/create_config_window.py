@@ -1,20 +1,28 @@
-from typing import Any, Callable, List, Optional
-from PyQt5.QtWidgets import (
-    QMainWindow, QVBoxLayout, QHBoxLayout, QLabel,
-    QCheckBox, QPushButton, QBoxLayout, QComboBox,
-)
-from PyQt5.QtCore import Qt, QSize
+from typing import Any, Callable, Optional
 
-from src.config_manager import ChooseType, ConfigError, CONFIG as cfg
+from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtWidgets import (
+    QBoxLayout,
+    QCheckBox,
+    QComboBox,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QPushButton,
+    QVBoxLayout,
+)
+
+from src.config_manager import CONFIG as cfg
+from src.config_manager import ChooseType, ConfigError
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.utils import restart_program
-from src.ui_elements.clickablelineedit import ClickableLineEdit
+from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_font, create_spacer
+from src.ui.setup_color_window import ColorWindow
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
-from src.ui.setup_color_window import ColorWindow
-from src.ui.creation_utils import SMALL_FONT, MEDIUM_FONT, LARGE_FONT, adjust_font, create_spacer
 from src.ui_elements import Ui_ConfigWindow
+from src.ui_elements.clickablelineedit import ClickableLineEdit
+from src.utils import restart_program
 
 
 class ConfigWindow(QMainWindow, Ui_ConfigWindow):
@@ -56,7 +64,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.close()
 
     def _choose_display_style(self, config_name: str, config_type: type):
-        """Creates the input face for the according config types"""
+        """Create the input face for the according config types."""
         # Add the elements header to the view
         header = QLabel(f"{config_name}:")
         adjust_font(header, LARGE_FONT, True)
@@ -79,7 +87,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         vbox.addItem(create_spacer(12))
 
     def _build_custom_color_button(self, vbox: QVBoxLayout):
-        """Builds a button to edit custom theme"""
+        """Build a button to edit custom theme."""
         self.button_custom_color = QPushButton("Define Custom Color")
         self.button_custom_color.setMaximumSize(QSize(16777215, 200))
         self.button_custom_color.setMinimumSize(QSize(0, 50))
@@ -91,11 +99,9 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.color_window = ColorWindow(self.mainscreen)
 
     def _build_input_field(
-        self, config_name: str,
-        config_type: type, current_value: Any,
-        layout: Optional[QBoxLayout] = None
+        self, config_name: str, config_type: type, current_value: Any, layout: Optional[QBoxLayout] = None
     ):
-        """Builds the input field and returns its getter function"""
+        """Build the input field and returns its getter function."""
         if layout is None:
             layout = self._choose_tab_container(config_name)
         if config_type == int:
@@ -112,7 +118,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         return self._build_fallback_field(layout, current_value)
 
     def _build_int_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], int]:
-        """Builds a field for integer input with numpad"""
+        """Build a field for integer input with numpad."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
@@ -121,17 +127,20 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         return lambda: int(config_input.text() or 0)
 
     def _build_float_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], float]:
-        """Builds a field for integer input with numpad"""
+        """Build a field for integer input with numpad."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: NumpadWidget(  # type: ignore
-            self, config_input, 300, 20, config_name, True))
+        config_input.clicked.connect(
+            lambda: NumpadWidget(  # type: ignore
+                self, config_input, 300, 20, config_name, True
+            )
+        )
         layout.addWidget(config_input)
         return lambda: float(config_input.text() or 0.0)
 
     def _build_bool_field(self, layout: QBoxLayout, current_value: bool, displayed_text="on") -> Callable[[], bool]:
-        """Builds a field for bool input with a checkbox"""
+        """Build a field for bool input with a checkbox."""
         config_input = QCheckBox(displayed_text)
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
@@ -139,8 +148,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addWidget(config_input)
         return config_input.isChecked
 
-    def _build_list_field(self, layout: QBoxLayout, config_name: str, current_value: List) -> Callable[[], List[Any]]:
-        """Builds a list of fields for a list input"""
+    def _build_list_field(self, layout: QBoxLayout, config_name: str, current_value: list) -> Callable[[], list[Any]]:
+        """Build a list of fields for a list input."""
         config_input = QVBoxLayout()
         getter_fn_list: list[Callable] = []
         # iterate over each list value and build the according field
@@ -159,21 +168,15 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addLayout(v_container)
         return lambda: [x() for x in getter_fn_list]
 
-    def _add_ui_element_to_list(
-        self,
-        initial_value,
-        getter_fn_list: List,
-        config_name: str,
-        container: QBoxLayout
-    ):
-        """Adds an additional input element for list buildup"""
+    def _add_ui_element_to_list(self, initial_value, getter_fn_list: list, config_name: str, container: QBoxLayout):
+        """Add an additional input element for list buildup."""
         # Gets the type of the list elements
         list_config = cfg.config_type_list.get(config_name)
         # if new added list elements get forgotten, this may happen in this occasion. Catch it here
         if list_config is None:
             raise RuntimeError(
-                f"Tried to access list config [{config_name}] that is not defined. " +
-                "That should not happen. Please report the error."
+                f"Tried to access list config [{config_name}] that is not defined. "
+                + "That should not happen. Please report the error."
             )
         list_type, _ = list_config
         h_container = QHBoxLayout()
@@ -189,13 +192,14 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         adjust_font(remove_button, MEDIUM_FONT, True)
         # the first argument in lambda is needed since the object reference within the loop
         remove_button.clicked.connect(  # type: ignore[attr-defined]
-            lambda _, x=h_container: self._remove_ui_element_from_list(x, getter_fn, getter_fn_list))
+            lambda _, x=h_container: self._remove_ui_element_from_list(x, getter_fn, getter_fn_list)
+        )
         h_container.addWidget(remove_button)
         container.addLayout(h_container)
         getter_fn_list.append(getter_fn)
 
-    def _remove_ui_element_from_list(self, element, getter_fn, getter_fn_list: List[Callable]):
-        """Removed the referenced element from the ui"""
+    def _remove_ui_element_from_list(self, element, getter_fn, getter_fn_list: list[Callable]):
+        """Remove the referenced element from the ui."""
         for i in reversed(range(element.count())):
             found_widget = element.itemAt(i).widget()
             found_widget.setParent(None)
@@ -203,7 +207,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         element.deleteLater()
 
     def _build_fallback_field(self, layout: QBoxLayout, current_value) -> Callable[[], str]:
-        """builds the default input field for string input"""
+        """Build the default input field for string input."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
@@ -212,10 +216,9 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         return config_input.text
 
     def _build_selection_filed(
-        self, layout: QBoxLayout,
-        current_value: bool, selection: List[str]
+        self, layout: QBoxLayout, current_value: bool, selection: list[str]
     ) -> Callable[[], str]:
-        """Builds a field for selection of values with a dropdown / combobox"""
+        """Build a field for selection of values with a dropdown / combobox."""
         config_input = QComboBox()
         config_input.addItems(selection)
         adjust_font(config_input, MEDIUM_FONT)
@@ -229,7 +232,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         return {key: getter() for key, getter in self.config_objects.items()}
 
     def _choose_tab_container(self, config_name: str):
-        """Gets the object name of the tab container, that the config belongs to"""
+        """Get the object name of the tab container, that the config belongs to."""
         # specific sorting for some values where prefix may not match the category good enough
         exact_sorting = {
             self.vbox_ui: ("MAKER_THEME",),
@@ -248,8 +251,15 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         tab_config = {
             self.vbox_ui: ("UI",),
             self.vbox_maker: ("MAKER",),
-            self.vbox_hardware: ("PUMP", "LED", "RFID",),
-            self.vbox_software: ("MICROSERVICE", "TEAM",),
+            self.vbox_hardware: (
+                "PUMP",
+                "LED",
+                "RFID",
+            ),
+            self.vbox_software: (
+                "MICROSERVICE",
+                "TEAM",
+            ),
         }
         # go over each key, if one of the values in the list is part of the config name
         # return the key

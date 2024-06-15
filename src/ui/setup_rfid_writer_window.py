@@ -1,10 +1,12 @@
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
+
+from typing import TYPE_CHECKING
+
 from PyQt5.QtWidgets import QMainWindow
 
-from src.machine.rfid import RFIDReader
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.machine.rfid import RFIDReader
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements.rfidwriter import Ui_RFIDWriterWindow
 
@@ -13,9 +15,10 @@ if TYPE_CHECKING:
 
 
 class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
-    """ Class for the Option selection window. """
+    """Class for the Option selection window."""
 
     def __init__(self, mainscreen: Ui_MainWindow):
+        """Initialize the Option selection window."""
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -25,7 +28,7 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
         self.button_write.clicked.connect(self._write_rfid)
         self.input_text.clicked.connect(lambda: self._open_keyboard(self.input_text))
 
-        self.keyboard_window: Optional[KeyboardWidget] = None
+        self.keyboard_window: KeyboardWidget | None = None
         self.rfid = RFIDReader()
 
         UI_LANGUAGE.adjust_rfid_reader_window(self)
@@ -33,7 +36,7 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _write_rfid(self):
-        """Try to write the label to the RFID"""
+        """Try to write the label to the RFID."""
         text = self.input_text.text()
         if len(text) < 3:
             self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("error"))
@@ -54,5 +57,5 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
         self.button_write.setDisabled(False)
 
     def _open_keyboard(self, le_to_write, max_char_len=30):
-        """ Opens up the keyboard connected to the lineedit """
+        """Open up the keyboard connected to the lineedit."""
         self.keyboard_window = KeyboardWidget(self.mainscreen, le_to_write=le_to_write, max_char_len=max_char_len)

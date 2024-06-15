@@ -11,7 +11,7 @@ python = "^3.9"
 GitPython = "^3.1.43"
 PyQt5 = "5.15.7"
 pyqt5-qt5 = "5.15.2"
-requests = "^2.31.0"
+requests = "^2.32.3"
 PyYAML = "^6.0.1"
 typer = "^0.12.3"
 pyfiglet = "^1.0.2"
@@ -21,17 +21,13 @@ qtsass = "^0.4.0"
 pyqtspinner = "^2.0.0"
 pillow = "^10.3.0"
 
-[tool.poetry.dev-dependencies]
-pylint = "^2.17.1"
-
 [tool.poetry.group.dev.dependencies]
-autopep8 = "^2.1.0"
-mkdocs-material = "^9.5.23"
+mkdocs-material = "^9.5.26"
 mkdocs = "^1.6.0"
-ruff = "^0.1.15"
+ruff = "^0.4.8"
 python-periphery = "^2.4.1"
 mypy = "^1.10.0"
-ipykernel = "^6.29.0"
+ipykernel = "^6.29.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -39,9 +35,42 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 # don't check import order in the migration script
-per-file-ignores = { "migrator.py" = ["E402"], "runme.py" = ["E402"] }
 line-length = 120
 exclude = ["ui_elements", "addon_skeleton.py"]
+target-version = "py39"
+
+[tool.ruff.lint]
+extend-safe-fixes = [
+  "UP", # pyupgrade
+  "D107", # Missing docstring in __init__
+  "D205", # 1 blank line required between summary line and description
+  "W291", # Trailing whitespace
+  ]
+per-file-ignores = { "runme.py" = ["E402"], "migrator.py" = ["E402"] }
+select = [
+  "C", # Convention
+  "D", # pydocstyle 
+  "E", # pycodestyle
+  "F", # Pyflakes
+  "I", # isort 
+  "ICN001", # {name} should be imported as {asname},
+  "R", # Refactor
+  "RUF", # Ruff
+  "SIM", # flake8-simplify
+  "UP", # pyupgrade
+  "W", # Pylint (Warning)
+]
+ignore = [
+  "D100", # Missing docstring in public module
+  "D101", # Missing docstring in public class
+  "D102", # Missing docstring in public method
+  "D103",  # Missing docstring in public function
+  "D104", # Missing docstring in public package
+  "D105", # Missing docstring in magic method
+  "D107", # Missing docstring in __init__
+  "D203", # 1 blank line required before class docstring
+  "D213", # Multi-line docstring summary should start at the second line
+]
 
 [tool.mypy]
 disable_error_code = ["annotation-unchecked", "import-untyped"]

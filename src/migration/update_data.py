@@ -1,15 +1,15 @@
-from typing import Dict, List
+import contextlib
 from sqlite3 import OperationalError
 
+from src.database_commander import DatabaseCommander, DatabaseHandler
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, Ingredient
-from src.database_commander import DatabaseCommander, DatabaseHandler
 
 _logger = LoggerHandler("update_data_module")
 
 
 def add_new_recipes_from_default_db():
-    """Adds the new recipes since the initial creation of the db"""
+    """Add the new recipes since the initial creation of the db."""
     new_names = [
         "Beachbum",
         "Bay Breeze",
@@ -24,7 +24,7 @@ def add_new_recipes_from_default_db():
         "Madras",
         "Woo Woo",
         "Vodka Tonic",
-        "Sidewinder’s Fang",
+        "Sidewinder’s Fang",  # noqa: RUF001
         "212",
         "Cantarito",
         "Paloma",
@@ -33,8 +33,8 @@ def add_new_recipes_from_default_db():
     _add_new_recipes_from_list(new_names)
 
 
-def _add_new_recipes_from_list(new_names: List[str]):
-    """Adds the new recipes from the given list"""
+def _add_new_recipes_from_list(new_names: list[str]):
+    """Add the new recipes from the given list."""
     # build connection to provided and local db
     # gets the new recipe data, check whats missing and insert it
     default_db = DatabaseCommander(use_default=True)
@@ -46,18 +46,15 @@ def _add_new_recipes_from_list(new_names: List[str]):
     _insert_new_recipes(local_db, cocktails_to_add)
 
 
-def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: List[Cocktail]):
-    """Inserts the data for the new recipes into the db"""
+def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: list[Cocktail]):
+    """Insert the data for the new recipes into the db."""
     all_ingredients = local_db.get_all_ingredients()
-    ing_mapping: Dict[str, Ingredient] = {}
+    ing_mapping: dict[str, Ingredient] = {}
     for ing in all_ingredients:
         ing_mapping[ing.name] = ing
     _logger.log_event("INFO", f"Adding recipes: {[c.name for c in cocktails_to_add]}")
     for rec in cocktails_to_add:
-        local_db.insert_new_recipe(
-            rec.name, rec.alcohol, rec.amount,
-            rec.enabled, rec.virgin_available
-        )
+        local_db.insert_new_recipe(rec.name, rec.alcohol, rec.amount, rec.enabled, rec.virgin_available)
         new_cocktail = local_db.get_cocktail(rec.name)
         if new_cocktail is None:
             continue
@@ -66,8 +63,8 @@ def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: List[Cock
             local_db.insert_recipe_data(new_cocktail.id, ing_data.id, ing.amount, 1)
 
 
-def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCommander, ingredient_to_add: List[str]):
-    """Gets and inserts the given ingredients into the local db"""
+def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCommander, ingredient_to_add: list[str]):
+    """Get and inserts the given ingredients into the local db."""
     _logger.log_event("INFO", f"Adding ingredients: {ingredient_to_add}")
     for ingredient in ingredient_to_add:
         ing = default_db.get_ingredient(ingredient)
@@ -78,26 +75,24 @@ def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCom
         )
 
 
-def _get_new_ingredients(local_db: DatabaseCommander, cocktails_to_add: List[Cocktail]) -> List[str]:
-    """Returns the names of the missing ingredients for the given cocktails"""
+def _get_new_ingredients(local_db: DatabaseCommander, cocktails_to_add: list[Cocktail]) -> list[str]:
+    """Return the names of the missing ingredients for the given cocktails."""
     ingredients_in_new = []
     for cocktail in cocktails_to_add:
         ingredients_in_new.extend([i.name for i in cocktail.ingredients])
     existing_ingredients = [i.name for i in local_db.get_all_ingredients()]
-    ingredient_to_add = list(set(ingredients_in_new).difference(set(existing_ingredients)))
-    return ingredient_to_add
+    return list(set(ingredients_in_new).difference(set(existing_ingredients)))
 
 
-def _get_new_cocktails(new_names: List[str], default_db: DatabaseCommander, local_db: DatabaseCommander):
-    """Returns the cocktails that are not already in the local db by the given names"""
+def _get_new_cocktails(new_names: list[str], default_db: DatabaseCommander, local_db: DatabaseCommander):
+    """Return the cocktails that are not already in the local db by the given names."""
     already_existing_names = [x.name for x in local_db.get_all_cocktails() if x.name in new_names]
     cocktail_difference = list(set(new_names).difference(set(already_existing_names)))
-    cocktails_to_add = [x for x in default_db.get_all_cocktails() if x.name in cocktail_difference]
-    return cocktails_to_add
+    return [x for x in default_db.get_all_cocktails() if x.name in cocktail_difference]
 
 
 def rename_database_to_english():
-    """Renames all German columns to English ones"""
+    """Rename all German columns to English ones."""
     _logger.log_event("INFO", "Renaming German column names to English ones")
     commands = [
         # Rename all bottle things
@@ -140,18 +135,16 @@ def remove_old_recipe_columns():
 
 
 def _try_execute_db_commands(commands: list[str]):
-    """Try to execute each command, pass if OperationalError"""
+    """Try to execute each command, pass if OperationalError."""
     db_handler = DatabaseHandler()
     for command in commands:
-        try:
-            db_handler.query_database(command)
         # this may occur if renaming already took place
-        except OperationalError:
-            pass
+        with contextlib.suppress(OperationalError):
+            db_handler.query_database(command)
 
 
 def add_more_bottles_to_db():
-    """Updates the bottles to support up to 16 bottles"""
+    """Update the bottles to support up to 16 bottles."""
     _logger.log_event("INFO", "Adding bottle numbers 11 to 16 to DB")
     db_handler = DatabaseHandler()
     # Adding constraint if still missing
@@ -161,7 +154,7 @@ def add_more_bottles_to_db():
 
 
 def add_team_buffer_to_database():
-    """Adds an additional table for buffering not send team data"""
+    """Add an additional table for buffering not send team data."""
     _logger.log_event("INFO", "Adding team buffer table to database")
     db_handler = DatabaseHandler()
     db_handler.query_database(
@@ -172,7 +165,7 @@ def add_team_buffer_to_database():
 
 
 def add_virgin_flag_to_db():
-    """Adds the virgin flag column to the DB"""
+    """Add the virgin flag column to the DB."""
     _logger.log_event("INFO", "Adding virgin flag column to Recipes DB")
     db_handler = DatabaseHandler()
     try:
@@ -183,7 +176,7 @@ def add_virgin_flag_to_db():
 
 
 def add_slower_ingredient_flag_to_db():
-    """Adds the slower ingredient flag column to the DB"""
+    """Add the slower ingredient flag column to the DB."""
     _logger.log_event("INFO", "Adding Slow flag column to Ingredients DB")
     db_handler = DatabaseHandler()
     try:
@@ -194,18 +187,17 @@ def add_slower_ingredient_flag_to_db():
 
 
 def remove_is_alcoholic_column():
-    """Removes the is_alcoholic column from the DB"""
+    """Remove the is_alcoholic column from the DB."""
     _logger.log_event("INFO", "Removing is_alcoholic column from DB")
     db_handler = DatabaseHandler()
     try:
         db_handler.query_database("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
     except OperationalError:
-        _logger.log_event(
-            "ERROR", "Could not remove is_alcoholic column from DB, this may because it does not exist")
+        _logger.log_event("ERROR", "Could not remove is_alcoholic column from DB, this may because it does not exist")
 
 
 def add_cost_column_to_ingredients():
-    """Adds the cost column to the ingredients table"""
+    """Add the cost column to the ingredients table."""
     _logger.log_event("INFO", "Adding cost column to Ingredients DB")
     db_handler = DatabaseHandler()
     try:
@@ -215,7 +207,7 @@ def add_cost_column_to_ingredients():
 
 
 def add_order_column_to_ingredient_data():
-    """Adds the order column to the RecipeData table"""
+    """Add the order column to the RecipeData table."""
     _logger.log_event("INFO", "Adding Recipe_Order column to RecipeData DB")
     db_handler = DatabaseHandler()
     try:
@@ -225,7 +217,7 @@ def add_order_column_to_ingredient_data():
 
 
 def add_unit_column_to_ingredients():
-    """Adds the unit column to the Ingredients table"""
+    """Add the unit column to the Ingredients table."""
     _logger.log_event("INFO", "Adding unit column to Ingredients DB")
     db_handler = DatabaseHandler()
     try:
@@ -235,11 +227,14 @@ def add_unit_column_to_ingredients():
 
 
 def change_slower_flag_to_pump_speed(slow_factor: float):
-    """Adds the pump speed column to the Ingredients table.
+    """Add the pump speed column to the Ingredients table.
+
     Removes the slow flag column from the Ingredients table.
     """
     pump_speed = int(100 * slow_factor)
-    _logger.log_event("INFO", f"Converting Slow flag to Pump Speed column in Ingredients DB, using slow factor {slow_factor}")  # noqa
+    _logger.log_event(
+        "INFO", f"Converting Slow flag to Pump Speed column in Ingredients DB, using slow factor {slow_factor}"
+    )
     db_handler = DatabaseHandler()
     try:
         db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Pump_speed INTEGER DEFAULT 100;")
@@ -247,6 +242,5 @@ def change_slower_flag_to_pump_speed(slow_factor: float):
         db_handler.query_database("ALTER TABLE Ingredients DROP COLUMN Slow;")
     except OperationalError:
         _logger.log_event(
-            "ERROR",
-            "Could not convert slow flag to pump speed column in DB, this may because it was already done"
+            "ERROR", "Could not convert slow flag to pump speed column in DB, this may because it was already done"
         )
