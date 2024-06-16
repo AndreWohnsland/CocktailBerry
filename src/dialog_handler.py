@@ -656,7 +656,7 @@ class UiLanguage:
 
     def adjust_custom_dialog(self, w: Ui_CustomDialog, use_ok: bool):
         """Translate all the labels from the datepicker window."""
-        button = "ok_button" if use_ok else "cancel_button"
+        button = "ok_button" if use_ok else "close_button"
         label = self.__choose_language(button)
         w.closeButton.setText(label)
 
