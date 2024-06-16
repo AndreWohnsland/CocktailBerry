@@ -7,10 +7,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHeaderView, QMainWindow, QTableWidgetItem
 from requests.exceptions import ConnectionError as ReqConnectionError
 
+from src import __version__
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.filepath import ADDON_FOLDER
 from src.logger_handler import LoggerHandler
+from src.migration.migrator import _Version
 from src.programs.addons import ADDONS
 from src.ui_elements import Ui_AddonManager
 from src.utils import restart_program
@@ -25,6 +27,8 @@ class _AddonData:
     name: str = _NOT_SET
     description: str = _NOT_SET
     url: str = _NOT_SET
+    disabled_since: str = ""
+    is_installable: bool = True
     file_name: str = ""
     installed: bool = False
     official: bool = True
@@ -33,6 +37,9 @@ class _AddonData:
         if self.file_name:
             return
         self.file_name = self.url.rsplit("/", maxsplit=1)[-1]
+        if self.disabled_since != "":
+            local_version = _Version(__version__)
+            self.is_installable = local_version < _Version(self.disabled_since.replace("v", ""))
 
 
 class AddonManager(QMainWindow, Ui_AddonManager):
@@ -64,7 +71,9 @@ class AddonManager(QMainWindow, Ui_AddonManager):
             content = f"{addon.name} ({addon.file_name})\n{addon.description}"
             description_cell = QTableWidgetItem(content)
             # if its an official addon, add checkable box to the left
-            if addon.official:
+            # if it's not installable, only show the box, if it's installed
+            can_remove = addon.official and addon.installed and not addon.is_installable
+            if addon.official and addon.is_installable or can_remove:
                 description_cell.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)  # type: ignore
                 description_cell.setCheckState(Qt.Checked if addon.installed else Qt.Unchecked)  # type: ignore
             self.table_addons.setItem(i, 0, description_cell)
@@ -104,12 +113,14 @@ class AddonManager(QMainWindow, Ui_AddonManager):
                 file_name = f"{addon_class.__module__.split('.')[-1]}.py"
                 possible_addons.append(
                     _AddonData(
-                        local_addon_name,
-                        "Installed addon is not in the list of official addons. Please manage over file system.",
-                        file_name,
-                        file_name,
-                        True,
-                        False,
+                        name=local_addon_name,
+                        description="Installed addon is not an official one. Please manage over file system.",
+                        url=file_name,
+                        disabled_since="",
+                        is_installable=False,
+                        file_name=file_name,
+                        installed=True,
+                        official=False,
                     )
                 )
         return possible_addons
