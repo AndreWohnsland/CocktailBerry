@@ -39,6 +39,8 @@ class MachineController:
         self.pin_controller = self._chose_controller()
         self._led_controller = LedController(self.pin_controller)
         self._reverter = Reverter(self.pin_controller)
+        # Time for print intervals, need to remember the last print time
+        self._print_time = 0.0
 
     def _chose_controller(self) -> PinController:
         """Select the controller class for the Pin."""
@@ -112,6 +114,7 @@ class MachineController:
 
     def _start_preparation(self, w: MainScreen | None, prep_data: list[_PreparationData], verbose: bool = True):
         """Prepare the volumes of the given data."""
+        self._print_time = 0.0
         shared.make_cocktail = True
         current_time = 0.0
         # need to cut data into chunks
@@ -130,6 +133,7 @@ class MachineController:
             chunked_preparation.extend([order_chunk[i : i + chunk] for i in range(0, len(order_chunk), chunk)])
         chunk_max = [max(x.flow_time for x in y) for y in chunked_preparation]
         max_time = round(sum(chunk_max), 2)
+        cocktail_start_time = time.perf_counter()
         # Iterate over each chunk
         for section in chunked_preparation:
             # interrupt loop if user interrupt cocktail
@@ -140,27 +144,24 @@ class MachineController:
             section_max = max(x.flow_time for x in section)
             pins = [x.pin for x in section]
             progress = _generate_progress(current_time, max_time)
-            test_time = time.time()
+            section_start_time = time.perf_counter()
             self._start_pumps(pins, progress)
             # iterate over each prep data
             while section_time < section_max and shared.make_cocktail:
                 self._process_preparation_section(current_time, max_time, section, section_time)
                 # Adjust needed data
                 if verbose:
-                    _consumption_print([x.consumption for x in prep_data], current_time, max_time)
-                current_time = round(current_time + cfg.MAKER_SLEEP_TIME, 2)
-                section_time = round(section_time + cfg.MAKER_SLEEP_TIME, 2)
-                time.sleep(cfg.MAKER_SLEEP_TIME)
+                    self._consumption_print([x.consumption for x in prep_data], current_time, max_time)
+                time_now = time.perf_counter()
+                current_time = round(time_now - cocktail_start_time, 2)
+                section_time = round(time_now - section_start_time, 2)
                 if w is not None:
                     progress = int(current_time / max_time * 100)
                     w.change_progression_window(progress)
                 qApp.processEvents()
+
             progress = _generate_progress(current_time, max_time)
             self._stop_pumps(pins, progress)
-            end_time = time.time()
-            time_print(
-                f"Real needed for total calculation: {end_time - test_time:.2f}s, Calculated: {current_time:.2f}s"
-            )
         return current_time, max_time
 
     def _process_preparation_section(
@@ -172,8 +173,8 @@ class MachineController:
     ):
         """Iterate over the data in each section and control pumps accordingly."""
         for data in section:
-            if data.flow_time > section_time:
-                data.consumption += data.volume_flow * cfg.MAKER_SLEEP_TIME
+            if data.flow_time > section_time and not data.closed:
+                data.consumption = data.volume_flow * section_time
             elif not data.closed:
                 progress = _generate_progress(current_time, max_time)
                 self._stop_pumps([data.pin], progress)
@@ -189,7 +190,7 @@ class MachineController:
 
     def _start_pumps(self, pin_list: list[int], print_prefix: str = ""):
         """Informs and opens all given pins."""
-        time_print(f"{print_prefix}Opening Pins: {pin_list}")
+        time_print(f"{print_prefix}<o> Opening Pins: {pin_list}")
         self.pin_controller.activate_pin_list(pin_list)
 
     def close_all_pumps(self):
@@ -204,12 +205,24 @@ class MachineController:
 
     def _stop_pumps(self, pin_list: list[int], print_prefix: str = ""):
         """Informs and closes all given pins."""
-        time_print(f"{print_prefix}Closing Pins: {pin_list}")
+        time_print(f"{print_prefix}<x> Closing Pins: {pin_list}")
         self.pin_controller.close_pin_list(pin_list)
 
     def default_led(self):
         """Turn the LED on."""
         self._led_controller.default_led()
+
+    def _consumption_print(self, consumption: list[float], current_time: float, max_time: float, interval=1):
+        """Display each interval seconds information for cocktail preparation."""
+        # we do not want to print at the beginning
+        if self._print_time == 0.0:
+            self._print_time += interval
+        # if there was no print in the interval, print, usually we print every second at default settings
+        if current_time >= self._print_time:
+            self._print_time += interval
+            pretty_consumption = [round(x) for x in consumption]
+            progress = _generate_progress(current_time, max_time)
+            time_print(f"{progress}Volumes: {pretty_consumption}")
 
 
 def _build_preparation_data(
@@ -246,14 +259,6 @@ def _build_clean_data() -> list[_PreparationData]:
 def _generate_progress(current_time: float, total_time: float):
     """Print the current passed time in relation to total time."""
     return f"{current_time: <4.1f} | {total_time: >4.1f} s: "
-
-
-def _consumption_print(consumption: list[float], current_time: float, max_time: float, interval=1):
-    """Display each interval seconds information for cocktail preparation."""
-    if current_time % interval == 0 and current_time != 0:
-        pretty_consumption = [round(x) for x in consumption]
-        progress = _generate_progress(current_time, max_time)
-        time_print(f"{progress}Volumes: {pretty_consumption}")
 
 
 def _header_print(msg: str):
