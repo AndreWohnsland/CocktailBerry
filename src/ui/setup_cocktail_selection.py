@@ -93,16 +93,17 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def _scale_cocktail(self, amount: int | None = None):
         """Scale the cocktail to given conditions for volume and alcohol."""
-        if amount is None and len(cfg.MAKER_PREPARE_VOLUME) == 1:
-            amount = cfg.MAKER_PREPARE_VOLUME[0]
-        elif amount is None:
-            amount = shared.cocktail_volume
+        # if no amount is given, take the middle of the volume list
+        # this will give the first element if there is only one element
+        if amount is None:
+            amount = cfg.MAKER_PREPARE_VOLUME[len(cfg.MAKER_PREPARE_VOLUME) // 2]
+        # overwrite the amount if the cocktail has a fixed volume
+        if cfg.MAKER_USE_RECIPE_VOLUME:
+            amount = self.cocktail.amount
         factor = shared.alcohol_factor
         is_virgin = self.virgin_checkbox.isChecked()
         if is_virgin:
             factor = 0
-        if cfg.MAKER_USE_RECIPE_VOLUME:
-            amount = self.cocktail.amount
         self.cocktail.scale_cocktail(amount, factor)
 
     def update_cocktail_data(self):
@@ -231,15 +232,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         shared.alcohol_factor = amount
         self.update_cocktail_data()
 
-    def adjust_volume(self, amount: int):
-        """Change the volume amount."""
-        # Do not scale the recipe volume if the option is activated
-        if cfg.MAKER_USE_RECIPE_VOLUME:
-            return
-        new_volume = shared.cocktail_volume + amount
-        shared.cocktail_volume = _limit_number(new_volume, 100, 400)
-        self.update_cocktail_data()
-
     def _adjust_preparation_buttons(self):
         """Decide if to use a single or multiple buttons and adjusts the text accordingly.
 
@@ -249,7 +241,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # this is either due to the user has only one volume
         # or using the default cocktail recipe volume
         if cfg.MAKER_USE_RECIPE_VOLUME or len(cfg.MAKER_PREPARE_VOLUME) == 1:
-            volume = cfg.MAKER_PREPARE_VOLUME[0]
+            volume = self.cocktail.amount if cfg.MAKER_USE_RECIPE_VOLUME else cfg.MAKER_PREPARE_VOLUME[0]
             self.prepare_button.clicked.connect(lambda: self._prepare_cocktail(volume))
             return
         # if there are multiple volumes, use one button for each volume
