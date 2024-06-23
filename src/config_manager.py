@@ -90,8 +90,6 @@ class ConfigManager:
     MAKER_PUMP_REVERSION: bool = False
     # Pin used for the pump direction
     MAKER_REVERSION_PIN: int = 0
-    # time between each check loop when making cocktail
-    MAKER_SLEEP_TIME: float = 0.05
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES: bool = True
     # If the maker should check if there is enough in the bottle before making a cocktail
@@ -165,7 +163,6 @@ class ConfigManager:
             "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
             "MAKER_PUMP_REVERSION": (bool, []),
             "MAKER_REVERSION_PIN": (int, [self._validate_pin_numbers]),
-            "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
             "MAKER_CHECK_BOTTLE": (bool, []),
             "MAKER_PINS_INVERTED": (bool, []),
@@ -413,7 +410,6 @@ class Shared:
         self.old_ingredient: list[str] = []
         self.selected_team = "No Team"
         self.team_member_name: str | None = None
-        self.cocktail_volume: int = 200
         self.alcohol_factor: float = 1.0
 
 

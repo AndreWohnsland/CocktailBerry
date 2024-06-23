@@ -580,9 +580,6 @@ ui:
     MAKER_REVERSION_PIN:
       en: 'Pin number of the reversion hardware, will be activated when reverting the pump direction'
       de: 'Pin Nummer der Pumpenrichtung Hardware, wird aktiviert, wenn die Pumpenrichtung geändert wird'
-    MAKER_SLEEP_TIME:
-      en: 'Refresh interval between each volume calculation'
-      de: 'Abtastintervall zwischen den Volumenberechnungen'
     MAKER_SEARCH_UPDATES:
       en: 'Search for updates, if available internet connection'
       de: 'Sucht nach Updates, wenn Internetverbindung besteht'
