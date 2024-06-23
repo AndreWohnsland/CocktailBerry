@@ -47,20 +47,19 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 ??? info "List Maker Config Values"
     Maker config values are used to change the behavior of CocktailBerry.
 
-    | Value Name                    | Description                                                  |
-    | :---------------------------- | :----------------------------------------------------------- |
-    | `MAKER_NAME`                  | Give your CocktailBerry an own name, max 30 chars            |
-    | `MAKER_NUMBER_BOTTLES`        | Number of displayed bottles, can use up to 16 bottles        |
-    | `MAKER_PREPARE_VOLUME`        | List of possible spend volumes of machine                    |
-    | `MAKER_SIMULTANEOUSLY_PUMPS`  | Number of pumps which can be simultaneously active           |
-    | `MAKER_SEARCH_UPDATES`        | Search for updates at program start                          |
-    | `MAKER_CHECK_BOTTLE`          | Check if there is enough of each ingredient left             |
-    | `MAKER_CLEAN_TIME`            | Time the machine will execute the cleaning program           |
-    | `MAKER_SLEEP_TIME`            | Interval between each time check while generating a cocktail |
-    | `MAKER_CHECK_INTERNET`        | Do a connection check at start for time adjustment window    |
-    | `MAKER_TUBE_VOLUME`           | Volume in ml to pump up when bottle is set to new            |
-    | `MAKER_USE_RECIPE_VOLUME`     | Do not scale but use defined amounts                         |
-    | `MAKER_ADD_SINGLE_INGREDIENT` | Allows spending single ingredient in maker view              |
+    | Value Name                    | Description                                               |
+    | :---------------------------- | :-------------------------------------------------------- |
+    | `MAKER_NAME`                  | Give your CocktailBerry an own name, max 30 chars         |
+    | `MAKER_NUMBER_BOTTLES`        | Number of displayed bottles, can use up to 16 bottles     |
+    | `MAKER_PREPARE_VOLUME`        | List of possible spend volumes of machine                 |
+    | `MAKER_SIMULTANEOUSLY_PUMPS`  | Number of pumps which can be simultaneously active        |
+    | `MAKER_SEARCH_UPDATES`        | Search for updates at program start                       |
+    | `MAKER_CHECK_BOTTLE`          | Check if there is enough of each ingredient left          |
+    | `MAKER_CLEAN_TIME`            | Time the machine will execute the cleaning program        |
+    | `MAKER_CHECK_INTERNET`        | Do a connection check at start for time adjustment window |
+    | `MAKER_TUBE_VOLUME`           | Volume in ml to pump up when bottle is set to new         |
+    | `MAKER_USE_RECIPE_VOLUME`     | Do not scale but use defined amounts                      |
+    | `MAKER_ADD_SINGLE_INGREDIENT` | Allows spending single ingredient in maker view           |
 
 ??? info "List Hardware Config Values"
     Hardware config values are used to configure and enable the connected hardware.
