@@ -183,7 +183,7 @@ class MachineController:
     def set_up_pumps(self):
         """Get all used pins, prints pins and uses controller class to set up."""
         active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
-        time_print(f"Initializing Pins: {active_pins}")
+        time_print(f"<i> Initializing Pins: {active_pins}")
         self.pin_controller.initialize_pin_list(active_pins)
         self._reverter.initialize_pin()
         atexit.register(self.cleanup)
