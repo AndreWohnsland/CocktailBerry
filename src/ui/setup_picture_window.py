@@ -69,7 +69,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
             image.tobytes("raw", "RGB"),
             image.width,
             image.height,
-            QImage.Format_RGB888,  # type: ignore
+            QImage.Format.Format_RGB888,
         )
         pixmap = QPixmap.fromImage(q_image)
         self.picture_user.setPixmap(pixmap)
@@ -77,10 +77,13 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
     def _get_pictures(self):
         """Populate the pictures for system and user."""
         self.system_image_path = find_default_cocktail_image(self.cocktail)
-        default_pixmap = QPixmap(str(self.system_image_path))
-        self.picture_system.setPixmap(default_pixmap)
+        # it should always exist, but just in case the user deleted it or some other weird thing happened
+        if self.system_image_path.exists():
+            default_pixmap = QPixmap(str(self.system_image_path))
+            self.picture_system.setPixmap(default_pixmap)
         self.user_image_path = find_user_cocktail_image(self.cocktail)
-        if self.user_image_path is None:
+        # no image provided by the user, or the image was deleted, return
+        if self.user_image_path is None or not self.user_image_path.exists():
             return
         user_pixmap = QPixmap(str(self.user_image_path))
         self.picture_user.setPixmap(user_pixmap)
