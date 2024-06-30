@@ -100,6 +100,8 @@ class ConfigManager:
     MAKER_BOARD: SupportedBoardType = "RPI"
     # Theme Setting to load according qss file
     MAKER_THEME: SupportedThemesType = "default"
+    # How many ingredients are allowed to be added by hand to be available cocktail
+    MAKER_MAX_HAND_INGREDIENTS: int = 3
     # Flag to check if internet is up at start
     MAKER_CHECK_INTERNET: bool = True
     # Volume to pump up if a bottle gets changed
@@ -168,6 +170,7 @@ class ConfigManager:
             "MAKER_PINS_INVERTED": (bool, []),
             "MAKER_BOARD": (BoardChoose, []),
             "MAKER_THEME": (ThemeChoose, []),
+            "MAKER_MAX_HAND_INGREDIENTS": (int, [_build_number_limiter(0, 10)]),
             "MAKER_CHECK_INTERNET": (bool, []),
             "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
             "MAKER_USE_RECIPE_VOLUME": (bool, []),

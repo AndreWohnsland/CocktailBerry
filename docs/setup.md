@@ -56,6 +56,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | `MAKER_SEARCH_UPDATES`        | Search for updates at program start                       |
     | `MAKER_CHECK_BOTTLE`          | Check if there is enough of each ingredient left          |
     | `MAKER_CLEAN_TIME`            | Time the machine will execute the cleaning program        |
+    | `MAKER_MAX_HAND_INGREDIENTS`  | Max x ingredients are allowed to add by hand              |
     | `MAKER_CHECK_INTERNET`        | Do a connection check at start for time adjustment window |
     | `MAKER_TUBE_VOLUME`           | Volume in ml to pump up when bottle is set to new         |
     | `MAKER_USE_RECIPE_VOLUME`     | Do not scale but use defined amounts                      |
