@@ -595,6 +595,9 @@ ui:
     MAKER_THEME:
       en: 'Color theme of the application, use custom to select your own color'
       de: 'Farbeinstellung des Programms, wähle custom aus, um es selbst zu stylen'
+    MAKER_MAX_HAND_INGREDIENTS:
+      en: 'Maximum number of ingredients the user has to add by hand to consider a cocktail as possible/available'
+      de: 'Maximale Anzahl an Zutaten, die der Nutzer per Hand hinzufügen muss, damit ein Cocktail als machbar/verfügbar gilt'
     MAKER_CHECK_INTERNET:
       en: 'Checks if machine is connected to the internet at startup'
       de: 'Prüft ob beim Programmstart eine Internetverbindung besteht'
