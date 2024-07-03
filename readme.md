@@ -121,3 +121,17 @@ To get started, have a quick look into the [Guidelines for contributing](./CONTR
 
 - `easy`: Translate all dialogs / UI to your native language
 - `easy-hard`: Implement a cool [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) and make it verified
+
+# Development
+
+This project uses [Rye](https://rye.astral.sh/guide/) to manage all its dependencies. To get started, you need to install Rye and then install the dependencies.
+
+```bash
+rye sync --no-lock
+```
+
+This will install all dependencies and you can start developing. Then just run
+
+```bash
+rye run python runme.py
+```
