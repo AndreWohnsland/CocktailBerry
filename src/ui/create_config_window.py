@@ -104,13 +104,13 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         """Build the input field and returns its getter function."""
         if layout is None:
             layout = self._choose_tab_container(config_name)
-        if config_type == int:
+        if config_type is int:
             return self._build_int_field(layout, config_name, current_value)
-        if config_type == float:
+        if config_type is float:
             return self._build_float_field(layout, config_name, current_value)
-        if config_type == bool:
+        if config_type is bool:
             return self._build_bool_field(layout, current_value)
-        if config_type == list:
+        if config_type is list:
             return self._build_list_field(layout, config_name, current_value)
         if issubclass(config_type, ChooseType):
             selection = config_type.allowed

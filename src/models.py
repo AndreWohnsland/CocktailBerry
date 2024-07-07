@@ -84,9 +84,7 @@ class Cocktail:
             if ing.bottle is None:
                 return False
         hand_id = {x.id for x in hand}
-        if hand_id - set(hand_available):
-            return False
-        return True
+        return not hand_id - set(hand_available)
 
     def enough_fill_level(self) -> Optional[Ingredient]:
         """Check if the needed volume is there.

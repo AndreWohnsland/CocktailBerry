@@ -215,7 +215,7 @@ class MachineController:
     def _consumption_print(self, consumption: list[float], current_time: float, max_time: float, interval=1):
         """Display each interval seconds information for cocktail preparation."""
         # we do not want to print at the beginning
-        if self._print_time == 0.0:
+        if round(self._print_time, 1) == 0:
             self._print_time += interval
         # if there was no print in the interval, print, usually we print every second at default settings
         if current_time >= self._print_time:

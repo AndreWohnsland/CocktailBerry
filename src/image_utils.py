@@ -52,7 +52,7 @@ def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500) -
     """Resize and crop (1x1) the given image to the desired size."""
     # Open the image file
     try:
-        img = Image.open(image_path)
+        img: Image.Image = Image.open(image_path)
     # catch errors in file things
     except (FileNotFoundError, UnidentifiedImageError):
         return None
