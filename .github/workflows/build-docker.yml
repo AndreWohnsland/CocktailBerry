@@ -24,22 +24,22 @@ jobs:
       packages: write
 
     steps:
-      - name: Checkout repository
+      - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
 
-      - name: Set up QEMU
+      - name: 🐳 Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
+      - name: 🐳 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to the Container registry
+      - name: 🐳 Log in to the Container registry
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: ⛏️ Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -50,7 +50,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Cache pip packages
+      - name: 📂 Cache pip packages
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -58,7 +58,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Build and push Docker image CocktailBerry
+      - name: 🍸 Build and push Docker image CocktailBerry
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
