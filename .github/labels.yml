@@ -57,13 +57,6 @@
   color: 0e8a16
   description: 'We need some extra helping hands or expertise in order to resolve this.'
 
-- name: 'hacktoberfest'
-  description: 'Issues/PRs are participating in the Hacktoberfest.'
-  color: fbca04
-- name: 'hacktoberfest-accepted'
-  description: 'Issues/PRs are participating in the Hacktoberfest.'
-  color: fbca04
-
 - name: 'priority-critical'
   color: ee0701
   description: 'This should be dealt with ASAP. Not fixing this issue would be a serious error.'
