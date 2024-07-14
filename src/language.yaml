@@ -580,9 +580,6 @@ ui:
     MAKER_REVERSION_PIN:
       en: 'Pin number of the reversion hardware, will be activated when reverting the pump direction'
       de: 'Pin Nummer der Pumpenrichtung Hardware, wird aktiviert, wenn die Pumpenrichtung geändert wird'
-    MAKER_SLEEP_TIME:
-      en: 'Refresh interval between each volume calculation'
-      de: 'Abtastintervall zwischen den Volumenberechnungen'
     MAKER_SEARCH_UPDATES:
       en: 'Search for updates, if available internet connection'
       de: 'Sucht nach Updates, wenn Internetverbindung besteht'
@@ -598,6 +595,9 @@ ui:
     MAKER_THEME:
       en: 'Color theme of the application, use custom to select your own color'
       de: 'Farbeinstellung des Programms, wähle custom aus, um es selbst zu stylen'
+    MAKER_MAX_HAND_INGREDIENTS:
+      en: 'Maximum number of ingredients the user has to add by hand to consider a cocktail as possible/available'
+      de: 'Maximale Anzahl an Zutaten, die der Nutzer per Hand hinzufügen muss, damit ein Cocktail als machbar/verfügbar gilt'
     MAKER_CHECK_INTERNET:
       en: 'Checks if machine is connected to the internet at startup'
       de: 'Prüft ob beim Programmstart eine Internetverbindung besteht'

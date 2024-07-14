@@ -103,9 +103,7 @@ class DialogHandler:
         from src.ui.setup_custom_prompt import CustomPrompt
 
         msg_box = CustomPrompt(text)
-        if msg_box.exec_():
-            return True
-        return False
+        return bool(msg_box.exec_())
 
     def password_prompt(
         self,
@@ -124,9 +122,7 @@ class DialogHandler:
         if right_password == 0:
             return True
         password_dialog = PasswordDialog(right_password, header_type)
-        if password_dialog.exec_():
-            return True
-        return False
+        return bool(password_dialog.exec_())
 
     def __output_language_dialog(self, dialog_name: str, use_ok=False, close_time: int | None = None, **kwargs):
         msg = self.__choose_language(dialog_name, **kwargs)
@@ -656,7 +652,7 @@ class UiLanguage:
 
     def adjust_custom_dialog(self, w: Ui_CustomDialog, use_ok: bool):
         """Translate all the labels from the datepicker window."""
-        button = "ok_button" if use_ok else "cancel_button"
+        button = "ok_button" if use_ok else "close_button"
         label = self.__choose_language(button)
         w.closeButton.setText(label)
 

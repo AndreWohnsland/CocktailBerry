@@ -10,6 +10,7 @@ class LogFiles:
     PRODUCTION = "production_logs"
     SERVICE = "service_logs"
     DEBUG = "debuglog"
+    RESOURCES = "resource_usage"
 
 
 class LoggerHandler:

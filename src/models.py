@@ -2,6 +2,8 @@ import copy
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
+from src.config_manager import CONFIG as cfg
+
 
 @dataclass
 class Ingredient:
@@ -74,14 +76,15 @@ class Cocktail:
         # We don't want to let the user do all the work
         if len(machine) < 1:
             return False
+        hand = self.handadds
+        # if the number of hand adds is higher than the allowed hand adds, return false
+        if len(hand) > cfg.MAKER_MAX_HAND_INGREDIENTS:
+            return False
         for ing in machine:
             if ing.bottle is None:
                 return False
-        hand = self.handadds
         hand_id = {x.id for x in hand}
-        if hand_id - set(hand_available):
-            return False
-        return True
+        return not hand_id - set(hand_available)
 
     def enough_fill_level(self) -> Optional[Ingredient]:
         """Check if the needed volume is there.

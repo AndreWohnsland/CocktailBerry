@@ -90,8 +90,6 @@ class ConfigManager:
     MAKER_PUMP_REVERSION: bool = False
     # Pin used for the pump direction
     MAKER_REVERSION_PIN: int = 0
-    # time between each check loop when making cocktail
-    MAKER_SLEEP_TIME: float = 0.05
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES: bool = True
     # If the maker should check if there is enough in the bottle before making a cocktail
@@ -102,6 +100,8 @@ class ConfigManager:
     MAKER_BOARD: SupportedBoardType = "RPI"
     # Theme Setting to load according qss file
     MAKER_THEME: SupportedThemesType = "default"
+    # How many ingredients are allowed to be added by hand to be available cocktail
+    MAKER_MAX_HAND_INGREDIENTS: int = 3
     # Flag to check if internet is up at start
     MAKER_CHECK_INTERNET: bool = True
     # Volume to pump up if a bottle gets changed
@@ -165,12 +165,12 @@ class ConfigManager:
             "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
             "MAKER_PUMP_REVERSION": (bool, []),
             "MAKER_REVERSION_PIN": (int, [self._validate_pin_numbers]),
-            "MAKER_SLEEP_TIME": (float, [_build_number_limiter(0.01, 0.2)]),
             "MAKER_SEARCH_UPDATES": (bool, []),
             "MAKER_CHECK_BOTTLE": (bool, []),
             "MAKER_PINS_INVERTED": (bool, []),
             "MAKER_BOARD": (BoardChoose, []),
             "MAKER_THEME": (ThemeChoose, []),
+            "MAKER_MAX_HAND_INGREDIENTS": (int, [_build_number_limiter(0, 10)]),
             "MAKER_CHECK_INTERNET": (bool, []),
             "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
             "MAKER_USE_RECIPE_VOLUME": (bool, []),
@@ -413,7 +413,6 @@ class Shared:
         self.old_ingredient: list[str] = []
         self.selected_team = "No Team"
         self.team_member_name: str | None = None
-        self.cocktail_volume: int = 200
         self.alcohol_factor: float = 1.0
 
 

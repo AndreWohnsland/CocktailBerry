@@ -15,7 +15,7 @@ from src.programs.clearing import clear_local_database
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
-from src.utils import generate_custom_style_file
+from src.utils import generate_custom_style_file, start_resource_tracker
 
 cli = typer.Typer(add_completion=False)
 
@@ -40,6 +40,7 @@ def main(
         return
     if not quiet:
         show_start_message(displayed_name)
+    start_resource_tracker()
     ADDONS.setup_addons()
     cfg.sync_config_to_file()
     if debug:

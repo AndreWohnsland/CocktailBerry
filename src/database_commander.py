@@ -192,9 +192,7 @@ class DatabaseCommander:
     def get_bottle_usage(self, ingredient_id: int):
         """Return if the ingredient id is currently used at a bottle."""
         query = "SELECT COUNT(*) FROM Bottles WHERE ID = ?"
-        if self.handler.query_database(query, (ingredient_id,))[0][0]:
-            return True
-        return False
+        return bool(self.handler.query_database(query, (ingredient_id,))[0][0])
 
     def get_recipe_usage_list(self, ingredient_id: int) -> list[str]:
         """Get all the recipe names the ingredient is used in."""

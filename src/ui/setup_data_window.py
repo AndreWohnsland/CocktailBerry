@@ -213,8 +213,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         """Add a header to the grid layout."""
         if self.grid is None:
             return
-        header_label = create_label(text, 20, True, True, css_class="header-underline")
-        header_label.setMaximumSize(QSize(16777215, 40))
+        header_label = create_label(text, 20, True, True, css_class="header-underline", min_h=40, max_h=50)
         self.grid.addWidget(header_label, row, 0, 1, 3)
         self.grid_current_row += 2
 
