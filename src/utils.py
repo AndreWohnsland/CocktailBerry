@@ -119,7 +119,7 @@ def _resource_logger_thread(log_interval: int):
         cpu_usage = psutil.cpu_percent(interval=sense_interval)
         ram_usage = psutil.virtual_memory().percent
         log_entry = f"{cpu_usage}%, {ram_usage}%"
-        log_level = "INFO"
+        log_level: Literal["INFO", "WARNING", "CRITICAL"] = "INFO"
         if ram_usage > 80:
             log_level = "WARNING"
         elif ram_usage > 90:
