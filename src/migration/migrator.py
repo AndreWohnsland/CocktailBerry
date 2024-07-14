@@ -105,6 +105,7 @@ class Migrator:
             ],
             "1.30.1": [add_unit_column_to_ingredients],
             "1.33.0": [_move_slow_factor_to_db],
+            "1.35.0": [lambda: self._install_pip_package("psutil", "1.35.0")],
         }
 
         for version, actions in version_actions.items():

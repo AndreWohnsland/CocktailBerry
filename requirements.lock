@@ -35,6 +35,8 @@ piicodev==1.10.0
     # via cocktailberry
 pillow==10.4.0
     # via cocktailberry
+psutil==6.0.0
+    # via cocktailberry
 pyfiglet==1.0.2
     # via cocktailberry
 pygments==2.18.0

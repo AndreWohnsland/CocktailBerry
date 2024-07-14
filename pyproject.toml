@@ -18,6 +18,7 @@ dependencies = [
     "pillow>=10.4.0",
     "pyqt5==5.15.7",
     "pyqt5-qt5==5.15.2",
+    "psutil>=6.0.0",
 ]
 requires-python = ">= 3.9"
 
