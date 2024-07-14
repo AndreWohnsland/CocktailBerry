@@ -5,11 +5,15 @@ import os
 import platform
 import subprocess
 import sys
+import threading
+import time
 from dataclasses import dataclass
 from typing import Literal
 
+import psutil
+
 from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, ROOT_PATH, STYLE_FOLDER
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LogFiles, LoggerHandler
 
 EXECUTABLE = ROOT_PATH / "runme.py"
 _logger = LoggerHandler("utils")
@@ -103,3 +107,28 @@ def time_print(msg: str, **kwargs):
     """Print the given string with a timestamp in the 'HH:MM:SS: ' prefix."""
     now = datetime.datetime.now()
     print(f"{now.strftime('%H:%M:%S')}:  {msg}", **kwargs)
+
+
+def _resource_logger_thread(log_interval: int):
+    # create an own logger + file for the resource tracker
+    resource_logger = LoggerHandler("resource_tracker", LogFiles.RESOURCES)
+    resource_logger.log_header("INFO", "Starting resource tracker")
+    resource_logger.log_event("INFO", "CPU usage, RAM usage")
+    sense_interval = 5
+    while True:
+        cpu_usage = psutil.cpu_percent(interval=sense_interval)
+        ram_usage = psutil.virtual_memory().percent
+        log_entry = f"{cpu_usage}%, {ram_usage}%"
+        log_level = "INFO"
+        if ram_usage > 80:
+            log_level = "WARNING"
+        elif ram_usage > 90:
+            log_level = "CRITICAL"
+        resource_logger.log_event(log_level, log_entry)
+        time.sleep(log_interval - sense_interval)
+
+
+def start_resource_tracker():
+    """Start a thread that tracks the system resources."""
+    log_thread = threading.Thread(target=_resource_logger_thread, args=(15,), daemon=True)
+    log_thread.start()
