@@ -9,3 +9,4 @@ piicodev
 qtsass
 pyqtspinner
 pillow
+psutil
