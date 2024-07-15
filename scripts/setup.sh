@@ -70,7 +70,9 @@ else
   echo "Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   echo "Installing needed Python libraries"
-  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev mfrc522 pyqtspinner pillow
+  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil
+  # try to install mfrc522, this will probably fail on non raspberry pi devices
+  pip install mfrc522 || echo "ERROR: Could not install mfrc522, are you on a Raspberry Pi?"
   # still cp the file, but do not inform the user anymore, since this is not the default anymore
   cp microservice/.env.example microservice/.env
   echo "Install qtsass, this may take a while depending on your OS, so it is time for a coffe break :)"

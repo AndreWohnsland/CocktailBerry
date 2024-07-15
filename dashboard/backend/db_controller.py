@@ -1,14 +1,14 @@
 import datetime
-from typing import Optional
 import sqlite3
 from pathlib import Path
+from typing import Optional
 
 DATABASE_NAME = "team"
 DIRPATH = Path(__file__).parent.absolute()
 
 
 class DBController:
-    """Controls DB actions"""
+    """Controls DB actions."""
 
     def __init__(self) -> None:
         self.database_path = DIRPATH / "storage" / f"{DATABASE_NAME}.db"
@@ -28,7 +28,15 @@ class DBController:
             person = "Team"
         sql = "INSERT INTO TEAM(Date, Team, Volume, Person) VALUES(?,?,?,?)"
         entry_datetime = datetime.datetime.now().replace(microsecond=0)
-        self.cursor.execute(sql, (entry_datetime, team, volume, person,))
+        self.cursor.execute(
+            sql,
+            (
+                entry_datetime,
+                team,
+                volume,
+                person,
+            ),
+        )
         self.conn.commit()
 
     def generate_leaderboard(self, hour_range: Optional[int], use_count: bool, limit: int):
@@ -68,7 +76,7 @@ class DBController:
         self.conn.commit()
 
     def __add_person_to_db(self):
-        """Adds the new column to the db"""
+        """Add the new column to the db."""
         try:
             self.cursor.execute("ALTER TABLE Team ADD Person Text;")
             self.cursor.execute("UPDATE Team SET Person='Team' WHERE Person is Null")
