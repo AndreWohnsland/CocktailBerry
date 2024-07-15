@@ -73,9 +73,9 @@ class ConfigManager:
     UI_HEIGHT: int = 480
     UI_PICTURE_SIZE: int = 240
     # RPi pins where pumps (ascending) are connected
-    PUMP_PINS: ClassVar[list[int]] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27, 22, 10]
+    PUMP_PINS: ClassVar[list[int]] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
     # Volume flow for the according pumps
-    PUMP_VOLUMEFLOW: list[float] = [30.0] * 12
+    PUMP_VOLUMEFLOW: list[float] = [30.0] * 10
     # Custom name of the Maker
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
