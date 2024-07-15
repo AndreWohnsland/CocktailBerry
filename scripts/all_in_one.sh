@@ -37,6 +37,28 @@ else
   echo "You got a valid Python version."
 fi
 
+# might also need to install python-venv
+echo "~ Check if python3-venv is installed ~"
+python3 -m venv --help 2>&1 >/dev/null
+VENV_IS_AVAILABLE=$?
+if [ $VENV_IS_AVAILABLE -ne 0 ]; then
+  echo "Python3 venv was not found, installing it ..."
+  sudo apt install python3-venv
+else
+  echo "Python3 venv is already installed!"
+fi
+
+# also install pip if not already done
+echo "~ Check if pip is installed ~"
+pip --version 2>&1 >/dev/null
+PIP_IS_AVAILABLE=$?
+if [ $PIP_IS_AVAILABLE -ne 0 ]; then
+  echo "Pip was not found, installing it ..."
+  sudo apt install python3-pip
+else
+  echo "Pip is already installed!"
+fi
+
 # Warning if debian is not at least v11. Still go on because some users may use none debian
 DEBIAN_VERSION=$(sed 's/\..*//' /etc/debian_version)
 if [[ "$DEBIAN_VERSION" -lt "11" ]]; then
