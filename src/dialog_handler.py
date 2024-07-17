@@ -55,7 +55,7 @@ class DialogHandler:
         self.icon_path = str(APP_ICON_FILE)
         self.password_outcome = False
         self.prompt_outcome = False
-        self.message_box = None
+        self.message_box: None | Ui_CustomDialog = None
         with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, str]] = yaml.safe_load(stream)["dialog"]
 
