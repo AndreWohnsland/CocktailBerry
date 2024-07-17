@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   frontend:
     container_name: cocktail-dashboard-frontend

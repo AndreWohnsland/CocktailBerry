@@ -89,15 +89,24 @@ In case the machine got a RTC build in and uses it, this option can usually be s
 ## Get the LED Working
 
 Getting the WS281x to work may be a little bit tricky.
-You MUST run the program as sudo (`sudo python runme.py`), so you also need to change this in `~/launcher.sh`.
-If the GUI looks different than when you run it without sudo, try `sudo -E python runme.py` this should use your environment for Qt.
-If you ran the program as non root, you will need to install the required python packages for the main program with sudo pip install.
-Also, install the rpi_ws281x python package with:
+You MUST run the program as root/sudo (`sudo python runme.py`), so you also need to change this in `~/launcher.sh`.
+If you are using the latest installer, there will be a virtual environment created, so you should use this as root.
+This also does not require to reinstall the python packages for the main program.
 
 ```bash
-sudo pip install rpi_ws281x
-sudo pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev mfrc522 qtsass pyqtspinner
+sudo ~/.env-cocktailberry/bin/python -E runme.py
 ```
+
+If the GUI looks different than when you run it without sudo, try the `-E` flag, this should use your environment for Qt.
+
+!!! danger "Only older installations"
+    If you ran the program as non root, you will need to install the required python packages for the main program with sudo pip install.
+    Also, install the rpi_ws281x python package with:
+
+    ```bash
+    sudo pip install rpi_ws281x
+    sudo pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev mfrc522 qtsass pyqtspinner
+    ```
 
 See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.
 I had success using the 12 and 18 PWM0 pin, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.

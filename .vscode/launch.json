@@ -8,7 +8,7 @@
       "name": "Ruff Linting",
       "type": "PowerShell",
       "request": "launch",
-      "script": "poetry run ruff check src",
+      "script": "rye run ruff check src",
       "cwd": "${cwd}"
     },
     {

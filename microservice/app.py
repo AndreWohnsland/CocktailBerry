@@ -1,18 +1,18 @@
 #!flask/bin/python
-import os
 import datetime
-import logging
 import json
+import logging
+import os
 from threading import Thread
 from typing import Dict
-import requests
-from dotenv import load_dotenv
-from flask import Flask, request, abort, jsonify
-from flask.logging import create_logger
 
-from query_sender import try_send_query_data
+import requests
 from database import DatabaseHandler
+from dotenv import load_dotenv
+from flask import Flask, abort, jsonify, request
+from flask.logging import create_logger
 from helper import generate_urls_and_headers
+from query_sender import try_send_query_data
 
 load_dotenv()
 
@@ -66,7 +66,15 @@ def post_cocktail_hook():
 
     for pos, (url, headers) in enumerate(endpoint_data):
         send_query = pos == 0
-        thread = Thread(target=post_to_hook, args=(url, payload, headers, send_query,))
+        thread = Thread(
+            target=post_to_hook,
+            args=(
+                url,
+                payload,
+                headers,
+                send_query,
+            ),
+        )
         thread.start()
     return jsonify({"text": "Post to cocktail webhook started"}), 201
 
@@ -80,7 +88,7 @@ def post_file_with_mail():
     return jsonify({"text": text}), 200
 
 
-@app.route("/debug", methods=["POST"])
+@app.route("/debug", methods=["POST", "GET", "PUT"])
 def debug_ep():
     _logger.info(request.json)
     return jsonify({"text": "debug"}), 200

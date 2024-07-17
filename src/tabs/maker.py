@@ -5,7 +5,7 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from src.config_manager import CONFIG as cfg
 from src.config_manager import shared
@@ -18,8 +18,10 @@ from src.models import Cocktail
 from src.programs.addons import ADDONS
 from src.service_handler import SERVICE_HANDLER
 from src.tabs import bottles
-from src.ui.setup_refill_dialog import RefillDialog
 from src.utils import time_print
+
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
 
 _LOGGER = LoggerHandler("maker_module")
 
@@ -56,7 +58,7 @@ def __generate_maker_log_entry(cocktail_volume: int, cocktail_name: str, taken_t
 
 
 @logerror
-def prepare_cocktail(w, cocktail: Cocktail | None = None):
+def prepare_cocktail(w: MainScreen, cocktail: Cocktail | None = None):
     """Prepare a Cocktail, if not already another one is in production and enough ingredients are available."""
     if shared.cocktail_started:
         return False
@@ -72,8 +74,7 @@ def prepare_cocktail(w, cocktail: Cocktail | None = None):
     if empty_ingredient is not None:
         # either show only the message (if bottles window is locked) or show also the refill prompt
         if cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[2]:
-            refill_window = RefillDialog(w, empty_ingredient)
-            refill_window.exec_()
+            w.open_refill_dialog(empty_ingredient)
         else:
             DP_CONTROLLER.say_not_enough_ingredient_volume(
                 empty_ingredient.name, empty_ingredient.fill_level, empty_ingredient.amount

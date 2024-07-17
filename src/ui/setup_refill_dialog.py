@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 
-class RefillDialog(QDialog, Ui_RefillPrompt):
+class RefillDialog(QMainWindow, Ui_RefillPrompt):
     """Class for the Team selection Screen."""
 
     def __init__(self, parent: MainScreen, ingredient: Ingredient):
@@ -30,6 +30,7 @@ class RefillDialog(QDialog, Ui_RefillPrompt):
         self.checkbox_done.stateChanged.connect(self.checkbox_done_changed)
 
         UI_LANGUAGE.adjust_refill_prompt(self, ingredient.name, ingredient.bottle_volume, ingredient.amount)
+        self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
     def apply_refill(self):

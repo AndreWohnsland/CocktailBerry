@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QMainWindow
 
 from src.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 _logger = LoggerHandler("additional_ingredient")
 
 
-class GetIngredientWindow(QDialog, Ui_addingredient):
+class GetIngredientWindow(QMainWindow, Ui_addingredient):
     """Create a Dialog to chose an additional ingredient and the amount to spend this ingredient."""
 
     def __init__(self, parent: MainScreen):

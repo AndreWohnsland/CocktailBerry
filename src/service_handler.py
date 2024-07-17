@@ -17,13 +17,15 @@ class PostType(Enum):
     FILE = "file"
 
 
+logger = LoggerHandler("microservice", LogFiles.SERVICE)
+
+
 class ServiceHandler:
     """Class to handle all calls to the microservice within the docker."""
 
     def __init__(self):
         super().__init__()
         self.base_url = cfg.MICROSERVICE_BASE_URL
-        self.logger = LoggerHandler("microservice", LogFiles.SERVICE)
         self.headers = {"content-type": "application/json"}
 
     def post_cocktail_to_hook(self, cocktail_name: str, cocktail_volume: int, cocktail_object: Cocktail) -> dict:
@@ -78,8 +80,12 @@ class ServiceHandler:
         headers = {"content-type": "application/json"}
         payload = {"limit": 100, "hour_range": 24}
         try:
-            req = requests.get(endpoint, params=payload, headers=headers, timeout=5)
-            return json.loads(req.text)
+            req = requests.get(endpoint, params=payload, headers=headers, timeout=2)
+            try:
+                return json.loads(req.text)
+            except json.JSONDecodeError:
+                logger.log_event("ERROR", f"Could not decode JSON from: '{endpoint}' for value {req.text}")
+                return {}
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             self._log_connection_error(endpoint, PostType.TEAMDATA)
             return {}
@@ -126,7 +132,7 @@ class ServiceHandler:
             else:
                 raise ValueError("Neither payload nor files given!")
             message = str(req.text).replace("\n", "")
-            self.logger.log_event("INFO", f"Posted {post_type.value} to {endpoint} | {req.status_code}: {message}")
+            logger.log_event("INFO", f"Posted {post_type.value} to {endpoint} | {req.status_code}: {message}")
             return {
                 "status": req.status_code,
                 "message": message,
@@ -139,7 +145,7 @@ class ServiceHandler:
             return {}
 
     def _log_connection_error(self, endpoint: str, post_type: PostType):
-        self.logger.log_event("ERROR", f"Could not connect to: '{endpoint}' for {post_type.value}")
+        logger.log_event("ERROR", f"Could not connect to: '{endpoint}' for {post_type.value}")
 
     def _check_failed_data(self):
         """Get one failed teamdata and sends it."""

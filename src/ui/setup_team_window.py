@@ -2,7 +2,7 @@ from itertools import cycle
 from typing import Callable
 
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QMainWindow
 
 from src.config_manager import CONFIG as cfg
 from src.config_manager import shared
@@ -12,10 +12,13 @@ from src.machine.rfid import RFIDReader
 from src.service_handler import SERVICE_HANDLER
 from src.ui.creation_utils import create_button
 from src.ui_elements.teamselection import Ui_Teamselection
+from src.utils import time_print
 
 
-class TeamScreen(QDialog, Ui_Teamselection):
+class TeamScreen(QMainWindow, Ui_Teamselection):
     """Class for the Team selection Screen."""
+
+    selection_done = pyqtSignal(str)
 
     def __init__(self, parent=None):
         """Initialize the Team selection Screen."""
@@ -31,6 +34,7 @@ class TeamScreen(QDialog, Ui_Teamselection):
             setattr(self, f"button_{team_name}", team_button)
         self.mainscreen = parent
         UI_LANGUAGE.adjust_team_window(self)
+        self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
         # self.__set_icon_text_breaks()
         self._rfid_reader = None
@@ -60,10 +64,11 @@ class TeamScreen(QDialog, Ui_Teamselection):
         self.person_label.setText(text)
 
     def set_team(self, team: str):
-        print(f"Team {team} selected")
+        time_print(f"Team {team} selected")
         shared.selected_team = team
         if self._rfid_reader is not None:
             self._rfid_reader.cancel_reading()
+        self.selection_done.emit(team)
         self.close()
 
     def __del__(self):

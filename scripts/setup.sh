@@ -73,6 +73,8 @@ else
   pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil
   # try to install mfrc522, this will probably fail on non raspberry pi devices
   pip install mfrc522 || echo "ERROR: Could not install mfrc522, are you on a Raspberry Pi?"
+  # try to install python-periphery, so other devices may also use the gpio
+  pip install python-periphery || echo "ERROR: Could not install python-periphery, if you are on a RPi, this is not needed"
   # still cp the file, but do not inform the user anymore, since this is not the default anymore
   cp microservice/.env.example microservice/.env
   echo "Install qtsass, this may take a while depending on your OS, so it is time for a coffe break :)"
