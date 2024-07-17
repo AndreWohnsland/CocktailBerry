@@ -9,7 +9,7 @@ from threading import Event, Thread
 from typing import TYPE_CHECKING, Literal
 
 import yaml
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QEventLoop, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QFileDialog
 
@@ -53,6 +53,9 @@ class DialogHandler:
 
     def __init__(self) -> None:
         self.icon_path = str(APP_ICON_FILE)
+        self.password_outcome = False
+        self.prompt_outcome = False
+        self.message_box = None
         with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, str]] = yaml.safe_load(stream)["dialog"]
 
@@ -78,13 +81,12 @@ class DialogHandler:
             title = self.__choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
-        messagebox = CustomDialog(fancy_message, title, use_ok)
+        self.message_box = CustomDialog(fancy_message, title, use_ok)
         event = Event()
         # If there is a close time, start auto close
         if close_time is not None:
-            auto_closer = Thread(target=close_thread, args=(event, messagebox, close_time), daemon=True)
+            auto_closer = Thread(target=close_thread, args=(event, self.message_box, close_time), daemon=True)
             auto_closer.start()
-        messagebox.exec_()
         # Need to set event, in case thread is still waiting
         event.set()
 
@@ -102,8 +104,19 @@ class DialogHandler:
         """
         from src.ui.setup_custom_prompt import CustomPrompt
 
+        self.prompt_outcome = False
+        loop = QEventLoop()
+
+        def handle_dialog_outcome(result: bool):
+            self.prompt_outcome = result
+            loop.quit()
+
         msg_box = CustomPrompt(text)
-        return bool(msg_box.exec_())
+        msg_box.user_okay.connect(handle_dialog_outcome)
+
+        loop.exec_()
+
+        return self.prompt_outcome
 
     def password_prompt(
         self,
@@ -121,8 +134,19 @@ class DialogHandler:
         # Empty means zero in this case, since the config is an int
         if right_password == 0:
             return True
-        password_dialog = PasswordDialog(right_password, header_type)
-        return bool(password_dialog.exec_())
+        self.password_outcome = False
+        loop = QEventLoop()
+
+        def handle_dialog_outcome(result: bool):
+            self.password_outcome = result
+            loop.quit()
+
+        password_window = PasswordDialog(right_password, header_type)
+        password_window.password_success.connect(handle_dialog_outcome)
+
+        loop.exec_()
+
+        return self.password_outcome
 
     def __output_language_dialog(self, dialog_name: str, use_ok=False, close_time: int | None = None, **kwargs):
         msg = self.__choose_language(dialog_name, **kwargs)

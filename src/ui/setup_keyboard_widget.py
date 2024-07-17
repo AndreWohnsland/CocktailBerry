@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import string
 
-from PyQt5.QtWidgets import QDialog, QLineEdit
+from PyQt5.QtWidgets import QLineEdit, QMainWindow
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.keyboard import Ui_Keyboard
 
 
-class KeyboardWidget(QDialog, Ui_Keyboard):
+class KeyboardWidget(QMainWindow, Ui_Keyboard):
     """Creates a keyboard where the user can enter names or similar strings to Lineedits."""
 
     def __init__(self, parent, le_to_write: QLineEdit, max_char_len: int = 30):

@@ -1,12 +1,15 @@
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.customprompt import Ui_CustomPrompt
 
 
-class CustomPrompt(QDialog, Ui_CustomPrompt):
+class CustomPrompt(QMainWindow, Ui_CustomPrompt):
     """Creates the Password Widget."""
+
+    user_okay = pyqtSignal(bool)
 
     def __init__(self, information):
         """Init. Connect all the buttons and set window policy."""
@@ -18,12 +21,13 @@ class CustomPrompt(QDialog, Ui_CustomPrompt):
         self.no_button.clicked.connect(self._no_clicked)
         self.information.setText(information)
         UI_LANGUAGE.adjust_custom_prompt(self)
+        self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
     def _yes_clicked(self):
         """Accept the message."""
-        self.accept()
+        self.user_okay.emit(True)
 
     def _no_clicked(self):
         """Rejects the message."""
-        self.reject()
+        self.user_okay.emit(False)

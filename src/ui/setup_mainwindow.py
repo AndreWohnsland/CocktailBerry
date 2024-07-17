@@ -8,8 +8,10 @@ import platform
 import sys
 from typing import Optional
 
+from PyQt5.QtCore import QEventLoop
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QLineEdit, QMainWindow
+from ui.setup_refill_dialog import RefillDialog
 
 from src import FUTURE_PYTHON_VERSION
 from src.config_manager import CONFIG as cfg
@@ -18,7 +20,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
-from src.models import Cocktail
+from src.models import Cocktail, Ingredient
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
 from src.ui.icons import BUTTON_SIZE, ICONS
@@ -61,6 +63,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.option_window: Optional[OptionWindow] = None
         self.datepicker: Optional[DatePicker] = None
         self.picture_window: Optional[PictureWindow] = None
+        self.refill_dialog: Optional[RefillDialog] = None
         self.cocktail_view = CocktailView(self)
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
@@ -176,8 +179,16 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def open_team_window(self):
         self.team_window = TeamScreen(self)
-        # don't abstract .exec_() into class otherwise you will get NameError in class!
-        self.team_window.exec_()
+        loop = QEventLoop()
+
+        def wait_for_selection(_):
+            """Just wait for the selection to be done."""
+            loop.quit()
+
+        # this is needed to block the further execution until the selection is done
+        # otherwise, the cocktail will be done before the team is selected
+        self.team_window.selection_done.connect(wait_for_selection)
+        loop.exec_()
 
     def open_option_window(self):
         """Open up the options."""
@@ -206,6 +217,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if not cocktail:
             return
         self.picture_window = PictureWindow(cocktail, self.cocktail_view.populate_cocktails)
+
+    def open_refill_dialog(self, ingredient: Ingredient):
+        """Open the refill dialog for the given ingredient."""
+        self.refill_dialog = RefillDialog(self, ingredient)
 
     def connect_other_windows(self):
         """Links the buttons and lineedits to the other ui elements."""
