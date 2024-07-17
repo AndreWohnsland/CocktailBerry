@@ -3,7 +3,6 @@ from typing import Callable
 
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
-from utils import time_print
 
 from src.config_manager import CONFIG as cfg
 from src.config_manager import shared
@@ -13,6 +12,7 @@ from src.machine.rfid import RFIDReader
 from src.service_handler import SERVICE_HANDLER
 from src.ui.creation_utils import create_button
 from src.ui_elements.teamselection import Ui_Teamselection
+from src.utils import time_print
 
 
 class TeamScreen(QMainWindow, Ui_Teamselection):

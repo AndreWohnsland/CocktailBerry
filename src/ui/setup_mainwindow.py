@@ -11,7 +11,6 @@ from typing import Optional
 from PyQt5.QtCore import QEventLoop
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QLineEdit, QMainWindow
-from ui.setup_refill_dialog import RefillDialog
 
 from src import FUTURE_PYTHON_VERSION
 from src.config_manager import CONFIG as cfg
@@ -34,6 +33,7 @@ from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui.setup_option_window import OptionWindow
 from src.ui.setup_picture_window import PictureWindow
 from src.ui.setup_progress_screen import ProgressScreen
+from src.ui.setup_refill_dialog import RefillDialog
 from src.ui.setup_team_window import TeamScreen
 from src.ui_elements import Ui_MainWindow
 from src.updater import Updater
