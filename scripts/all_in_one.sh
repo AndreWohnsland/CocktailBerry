@@ -38,14 +38,18 @@ else
 fi
 
 # might also need to install python-venv
-echo "~ Check if python3-venv is installed ~"
+echo "~ Check if python3-venv and ensurepip are available ~"
 python3 -m venv --help 2>&1 >/dev/null
 VENV_IS_AVAILABLE=$?
-if [ $VENV_IS_AVAILABLE -ne 0 ]; then
-  echo "Python3 venv was not found, installing it ..."
-  sudo apt install python3-venv
+python3 -c "import ensurepip" 2>&1 >/dev/null
+ENSUREPIP_IS_AVAILABLE=$?
+
+if [ $VENV_IS_AVAILABLE -ne 0 ] || [ $ENSUREPIP_IS_AVAILABLE -ne 0 ]; then
+  echo "Python3 venv or ensurepip was not found, installing python3-venv ..."
+  PYTHON_VERSION=$(python3 -V | cut -d' ' -f2 | cut -d'.' -f1,2) # Extracts version in format X.Y
+  sudo apt install python${PYTHON_VERSION}-venv
 else
-  echo "Python3 venv is already installed!"
+  echo "Python3 venv and ensurepip are already installed!"
 fi
 
 # also install pip if not already done
@@ -63,8 +67,8 @@ fi
 # Check if /etc/debian_version exists
 if [ -f /etc/debian_version ]; then
   # Extract the major version number of Debian
-DEBIAN_VERSION=$(sed 's/\..*//' /etc/debian_version)
-if [[ "$DEBIAN_VERSION" -lt "11" ]]; then
+  DEBIAN_VERSION=$(sed 's/\..*//' /etc/debian_version)
+  if [[ "$DEBIAN_VERSION" -lt "11" ]]; then
     echo "WARNING: Your Debian seems not to be at least version 11. It is recommended to update to the latest Raspberry Pi OS!"
   fi
 else
