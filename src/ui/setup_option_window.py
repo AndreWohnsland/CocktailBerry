@@ -25,7 +25,7 @@ from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.updater import Updater
-from src.utils import get_platform_data, has_connection, time_print
+from src.utils import get_platform_data, has_connection, time_print, update_os
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -35,7 +35,7 @@ _platform_data = get_platform_data()
 
 
 class _Worker(QObject):
-    """Worker to install qtsass on a thread."""
+    """Worker to get full system update on a thread."""
 
     done = pyqtSignal()
 
@@ -43,7 +43,7 @@ class _Worker(QObject):
         super().__init__(parent)
 
     def run(self):
-        os.system("sudo apt-get update && sudo apt-get -y full-upgrade")
+        update_os()
         self.done.emit()
 
 
