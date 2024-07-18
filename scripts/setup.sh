@@ -4,6 +4,14 @@
 # Options:
 # dashboard: set up dashboard, otherwise will set up CocktailBerry
 
+is_raspberry_pi() {
+  if grep -q "Raspberry Pi" /proc/device-tree/model 2>/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 echo "Installing updates, this may take a while..."
 sudo apt update && sudo sudo apt -y full-upgrade
 
@@ -72,7 +80,9 @@ else
   echo "Installing needed Python libraries"
   pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil
   # try to install mfrc522, this will probably fail on non raspberry pi devices
-  pip install mfrc522 || echo "ERROR: Could not install mfrc522, are you on a Raspberry Pi?"
+  if is_raspberry_pi; then
+    pip install mfrc522 || echo "ERROR: Could not install mfrc522, are you on a Raspberry Pi?"
+  fi
   # try to install python-periphery, so other devices may also use the gpio
   pip install python-periphery || echo "ERROR: Could not install python-periphery, if you are on a RPi, this is not needed"
   # still cp the file, but do not inform the user anymore, since this is not the default anymore
@@ -81,5 +91,19 @@ else
   echo "If this takes too long for you, you can cancel this step with 'ctrl + c' and install qtsass later manually with 'pip install qtsass'"
   echo "qtsass is needed if you want to customize the CocktailBerry GUI and use your own colors"
   pip install qtsass
+  # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
+  if ! is_raspberry_pi; then
+    echo "$(whoami) ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/99_$(whoami)_nopasswd
+    sudo chmod 0440 /etc/sudoers.d/99_$(whoami)_nopasswd
+    if ! getent group gpio >/dev/null; then
+      echo "Creating gpio group"
+      sudo groupadd gpio
+    fi
+    echo "Setting up GPIOs for non Raspberry Pi devices"
+    sudo usermod -aG gpio $USER
+    sudo chown -R root:gpio /sys/class/gpio
+    sudo chmod -R ug+rw /sys/class/gpio
+    echo "Please reboot your device now, to apply the changes"
+  fi
 fi
 echo "Done with the setup"
