@@ -60,9 +60,15 @@ else
 fi
 
 # Warning if debian is not at least v11. Still go on because some users may use none debian
+# Check if /etc/debian_version exists
+if [ -f /etc/debian_version ]; then
+  # Extract the major version number of Debian
 DEBIAN_VERSION=$(sed 's/\..*//' /etc/debian_version)
 if [[ "$DEBIAN_VERSION" -lt "11" ]]; then
-  echo "WARNING: Your Debian seem not to be at least version 11. It is recommended to update to the latest Raspberry Pi OS!"
+    echo "WARNING: Your Debian seems not to be at least version 11. It is recommended to update to the latest Raspberry Pi OS!"
+  fi
+else
+  echo "WARNING: /etc/debian_version not found. This script might not work properly on none debian systems."
 fi
 
 # Now gets CocktailBerry source
