@@ -78,7 +78,7 @@ else
   echo "Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   echo "Installing needed Python libraries"
-  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil
+  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil distro
   # try to install mfrc522, this will probably fail on non raspberry pi devices
   if is_raspberry_pi; then
     pip install mfrc522 || echo "ERROR: Could not install mfrc522, are you on a Raspberry Pi?"

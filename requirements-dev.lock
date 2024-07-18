@@ -31,6 +31,8 @@ debugpy==1.8.2
     # via ipykernel
 decorator==5.1.1
     # via ipython
+distro==1.9.0
+    # via cocktailberry
 exceptiongroup==1.2.1
     # via ipython
 executing==2.0.1

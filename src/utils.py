@@ -10,13 +10,14 @@ import time
 from dataclasses import dataclass
 from typing import Literal
 
+import distro
 import psutil
 
 from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, ROOT_PATH, STYLE_FOLDER
 from src.logger_handler import LogFiles, LoggerHandler
 
 EXECUTABLE = ROOT_PATH / "runme.py"
-_logger = LoggerHandler("utils")
+logger = LoggerHandler("utils")
 
 
 def has_connection() -> bool:
@@ -61,7 +62,7 @@ def set_system_time(time_string: str):
     p_data = get_platform_data()
     # checking system, currently only setting on Linux (RPi), bc. its only one supported
     supported_os = ["Linux"]
-    _logger.log_event("INFO", f"Setting time to: {time_string}")
+    logger.log_event("INFO", f"Setting time to: {time_string}")
     if p_data.system in supported_os:
         # need first disable timesyncd, otherwise you cannot set time
         time_commands = [
@@ -73,15 +74,15 @@ def set_system_time(time_string: str):
             # Use subprocess.run to capture the command's output and error
             for time_command in time_commands:
                 subprocess.run(time_command, shell=True, check=True, capture_output=True, text=True)
-            _logger.log_event("INFO", "Time set successfully")
+            logger.log_event("INFO", "Time set successfully")
 
         except subprocess.CalledProcessError as err:
             # Log any exceptions that occurred during command execution
             err_msg = err.stderr.replace("\n", " ")
-            _logger.log_event("ERROR", f"Could not set time, error: {err_msg}")
-            _logger.log_exception(err)
+            logger.log_event("ERROR", f"Could not set time, error: {err_msg}")
+            logger.log_exception(err)
     else:
-        _logger.log_event(
+        logger.log_event(
             "WARNING", f"Could not set time, your OS is: {p_data.system}. Currently supported OS are: {supported_os}"
         )
 
@@ -132,3 +133,34 @@ def start_resource_tracker():
     """Start a thread that tracks the system resources."""
     log_thread = threading.Thread(target=_resource_logger_thread, args=(15,), daemon=True)
     log_thread.start()
+
+
+def update_os():
+    distribution = distro.id().lower()
+
+    if distribution in ["raspbian", "debian", "ubuntu"]:
+        command = (
+            "sudo DEBIAN_FRONTEND=noninteractive apt-get update && "
+            "sudo DEBIAN_FRONTEND=noninteractive apt-get -y "
+            '-o Dpkg::Options::="--force-confdef" '
+            '-o Dpkg::Options::="--force-confold" full-upgrade'
+        )
+    elif distribution in ["fedora", "centos", "rhel"]:
+        if subprocess.call(["command", "-v", "dnf"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) == 0:
+            command = "sudo dnf -y update"
+        else:
+            command = "sudo yum -y update"
+    elif distribution in ["opensuse"]:
+        command = "sudo zypper -n update"
+    elif distribution in ["arch"]:
+        command = "sudo pacman -Syu --noconfirm"
+    else:
+        logger.error(f"Unsupported Linux distribution: {distribution}")
+        return
+
+    try:
+        subprocess.run(command, shell=True, check=True)
+        logger.info("System updated successfully.")
+    except subprocess.CalledProcessError as e:
+        logger.error("Could not update system, see debug log for more information.")
+        logger.log_exception(e)

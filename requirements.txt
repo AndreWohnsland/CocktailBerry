@@ -10,3 +10,4 @@ qtsass
 pyqtspinner
 pillow
 psutil
+distro
