@@ -1,0 +1,9 @@
+[Unit]
+Description=Setup GPIO Permissions
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/setup_gpio_permissions.sh
+
+[Install]
+WantedBy=multi-user.target
