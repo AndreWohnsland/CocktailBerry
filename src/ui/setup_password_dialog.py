@@ -42,6 +42,7 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
         password = 0 if len(password_string) == 0 else int(password_string)
         if self.right_password == password:
             self.password_success.emit(True)
+            self.close()
             return
         DP_CONTROLLER.say_wrong_password()
         self.password_field.clear()
@@ -49,6 +50,7 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
     def _cancel_clicked(self):
         """Cancel the password confirmation an aborts process."""
         self.password_success.emit(False)
+        self.close()
 
     def del_clicked(self):
         """Delete the last digit in the lineedit."""
