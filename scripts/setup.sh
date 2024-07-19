@@ -92,18 +92,6 @@ else
   echo "qtsass is needed if you want to customize the CocktailBerry GUI and use your own colors"
   pip install qtsass
   # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
-  if ! is_raspberry_pi; then
-    echo "$(whoami) ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/99_$(whoami)_nopasswd
-    sudo chmod 0440 /etc/sudoers.d/99_$(whoami)_nopasswd
-    if ! getent group gpio >/dev/null; then
-      echo "Creating gpio group"
-      sudo groupadd gpio
-    fi
-    echo "Setting up GPIOs for non Raspberry Pi devices"
-    sudo usermod -aG gpio $USER
-    sudo chown -R root:gpio /sys/class/gpio
-    sudo chmod -R ug+rw /sys/class/gpio
-    echo "Please reboot your device now, to apply the changes"
-  fi
+  ./setup_non_rpi.sh
 fi
 echo "Done with the setup"

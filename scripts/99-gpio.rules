@@ -1,0 +1,5 @@
+SUBSYSTEM=="gpio", KERNEL=="gpiochip*", ACTION=="add", PROGRAM="/bin/sh -c 'chown -R root:gpio /sys/class/gpio && chmod -R 777 /sys/class/gpio'"
+SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add", PROGRAM="/bin/sh -c 'chown -R root:gpio /sys$devpath && chmod -R 777 /sys$devpath'"
+KERNEL=="gpiomem", OWNER="root", GROUP="gpio", MODE="0777"
+SUBSYSTEM=="gpio", KERNEL=="gpiochip*", MODE="0777"
+SUBSYSTEM=="gpio", KERNEL=="gpio*", MODE="777"
