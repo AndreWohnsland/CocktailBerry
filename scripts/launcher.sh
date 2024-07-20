@@ -12,5 +12,5 @@
 
 # launcher.sh for CocktailBerry
 export QT_SCALE_FACTOR=1
-cd ~/CocktailBerry/
+cd ~/CocktailBerry/ || echo "Did not find ~/CocktailBerry/" && exit
 python runme.py

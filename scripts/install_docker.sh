@@ -28,7 +28,7 @@ sudo apt-get update && sudo apt-get -y upgrade
 sudo apt install docker.io -y
 docker --version || echo "Docker installation failed :("
 echo "Adds current user to docker permissions"
-sudo usermod -aG docker $USER
+sudo usermod -aG docker "$USER"
 
 if ${RELOAD_GRP}; then
   newgrp docker

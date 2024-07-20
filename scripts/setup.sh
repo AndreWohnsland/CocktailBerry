@@ -47,18 +47,19 @@ echo "(Re-)Creating virtual environment for CocktailBerry, located at ~/.venv-co
 rm -rf ~/.env-cocktailberry
 python -m venv --system-site-packages ~/.env-cocktailberry
 echo "Activating virtual environment, this is needed since Raspbery Pi OS Bookworm"
+# shellcheck disable=SC1090
 source ~/.env-cocktailberry/bin/activate
 
-cd ~/CocktailBerry/
+cd ~/CocktailBerry/ || exit
 # Making neccecary steps for the according program
 if [ "$1" = "dashboard" ]; then
   echo "Setting up Dashboard"
-  cd dashboard/
+  cd dashboard/ || exit
   # Letting user choose the frontend type (WebApp or Qt)
   echo -n "Use new dashboard? This is strongly recommended! Oterwise will use old Qt App, but this will only work on a standalone device and has no remote access option (y/n) "
-  read answer
+  read -r answer
   echo -n "Enter your display language (en, de): "
-  read language
+  read -r language
   # new dashboard
   if echo "$answer" | grep -iq "^y"; then
     export UI_LANGUAGE=$language
@@ -67,19 +68,23 @@ if [ "$1" = "dashboard" ]; then
   # qt app
   else
     docker compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?"
-    echo "export UI_LANGUAGE=$language" >>~/launcher.sh
-    echo "source ~/.env-cocktailberry/bin/activate" >>~/launcher.sh
-    echo "cd ~/CocktailBerry/dashboard/qt-app/" >>~/launcher.sh
-    echo "python main.py" >>~/launcher.sh
-    cd qt-app/
+    {
+      echo "export UI_LANGUAGE=$language"
+      echo "source ~/.env-cocktailberry/bin/activate"
+      echo "cd ~/CocktailBerry/dashboard/qt-app/"
+      echo "python main.py"
+    } >>~/launcher.sh
+    cd qt-app/ || exit
     pip install -r requirements.txt
   fi
 else
   echo "Setting up CocktailBerry"
-  echo "source ~/.env-cocktailberry/bin/activate" >>~/launcher.sh
-  echo "export QT_SCALE_FACTOR=1" >>~/launcher.sh
-  echo "cd ~/CocktailBerry/" >>~/launcher.sh
-  echo "python runme.py" >>~/launcher.sh
+  {
+    echo "source ~/.env-cocktailberry/bin/activate"
+    echo "export QT_SCALE_FACTOR=1"
+    echo "cd ~/CocktailBerry/"
+    echo "python runme.py"
+  } >>~/launcher.sh
   echo "Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   echo "Installing needed Python libraries"
