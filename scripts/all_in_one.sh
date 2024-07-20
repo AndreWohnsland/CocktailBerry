@@ -8,7 +8,7 @@ sudo apt-get update && sudo apt-get -y upgrade
 
 # Steps for git
 echo "~ Check if git is installed ~"
-git --version 2>&1 >/dev/null
+git --version >/dev/null 2>&1
 GIT_IS_AVAILABLE=$?
 if [ $GIT_IS_AVAILABLE -ne 0 ]; then
   echo "Git was not found, installing it ..."
@@ -24,7 +24,7 @@ sudo apt install python-is-python3
 # steps for python >= 3.9
 echo "~ Check that Python version is at least 3.9 ~"
 version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
-parsedVersion=$(echo "${version//./}")
+parsedVersion="${version//./}"
 echo "Detected version: $version"
 if [[ "$parsedVersion" -lt "390" ]]; then
   echo "Python must be at least 3.9. Please upgrade your Python or the system to use CocktailBerry."
@@ -39,22 +39,22 @@ fi
 
 # might also need to install python-venv
 echo "~ Check if python3-venv and ensurepip are available ~"
-python3 -m venv --help 2>&1 >/dev/null
+python3 -m venv --help >/dev/null 2>&1
 VENV_IS_AVAILABLE=$?
-python3 -c "import ensurepip" 2>&1 >/dev/null
+python3 -c "import ensurepip" >/dev/null 2>&1
 ENSUREPIP_IS_AVAILABLE=$?
 
 if [ $VENV_IS_AVAILABLE -ne 0 ] || [ $ENSUREPIP_IS_AVAILABLE -ne 0 ]; then
   echo "Python3 venv or ensurepip was not found, installing python3-venv ..."
   PYTHON_VERSION=$(python3 -V | cut -d' ' -f2 | cut -d'.' -f1,2) # Extracts version in format X.Y
-  sudo apt install python${PYTHON_VERSION}-venv
+  sudo apt install python"${PYTHON_VERSION}"-venv
 else
   echo "Python3 venv and ensurepip are already installed!"
 fi
 
 # also install pip if not already done
 echo "~ Check if pip is installed ~"
-pip --version 2>&1 >/dev/null
+pip --version >/dev/null 2>&1
 PIP_IS_AVAILABLE=$?
 if [ $PIP_IS_AVAILABLE -ne 0 ]; then
   echo "Pip was not found, installing it ..."
@@ -77,7 +77,7 @@ fi
 
 # ensure lxterminal is installed
 echo "~ Check if lxterminal is installed ~"
-lxterminal --version 2>&1 >/dev/null
+lxterminal --version >/dev/null 2>&1
 LXTERMINAL_IS_AVAILABLE=$?
 if [ $LXTERMINAL_IS_AVAILABLE -ne 0 ]; then
   echo "Lxterminal was not found, installing it ..."
@@ -89,17 +89,21 @@ fi
 # Now gets CocktailBerry source
 echo "~ Getting the CocktailBerry project from GitHub ... ~"
 echo "It will be located at ~/CocktailBerry"
+# shellcheck disable=SC2164
 cd ~
 git clone https://github.com/AndreWohnsland/CocktailBerry.git
+# shellcheck disable=SC2164
 cd ~/CocktailBerry
 
 # Do Docker related steps
 echo "~ Setting things up for Docker and Compose ~"
 bash scripts/install_docker.sh -n
+# shellcheck disable=SC2164
 cd ~/CocktailBerry
 bash scripts/install_compose.sh
 
 # Now we can finally set the program up ^-^
+# shellcheck disable=SC2164
 cd ~/CocktailBerry
 echo "~ Setting up and installing CocktailBerry ~"
 bash scripts/setup.sh
