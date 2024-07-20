@@ -75,6 +75,17 @@ else
   echo "WARNING: /etc/debian_version not found. This script might not work properly on none debian systems."
 fi
 
+# ensure lxterminal is installed
+echo "~ Check if lxterminal is installed ~"
+lxterminal --version 2>&1 >/dev/null
+LXTERMINAL_IS_AVAILABLE=$?
+if [ $LXTERMINAL_IS_AVAILABLE -ne 0 ]; then
+  echo "Lxterminal was not found, installing it ..."
+  sudo apt install lxterminal
+else
+  echo "Lxterminal is already installed!"
+fi
+
 # Now gets CocktailBerry source
 echo "~ Getting the CocktailBerry project from GitHub ... ~"
 echo "It will be located at ~/CocktailBerry"

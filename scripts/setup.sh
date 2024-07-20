@@ -28,7 +28,12 @@ sudo cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
 # also adding the desktop file to the desktop, addidng picture to /usr/share/pixmaps
 echo "Copying desktop file to: ~/Desktop/cocktail.desktop"
 sudo cp ~/CocktailBerry/scripts/cocktail.desktop ~/Desktop/
+sudo chmod +x ~/Desktop/cocktail.desktop
 sudo cp ~/CocktailBerry/src/ui_elements/cocktailberry.png /usr/share/pixmaps/cocktailberry.png
+
+# also create an application entry for the start menu
+sudo cp ~/CocktailBerry/scripts/cocktail.desktop /usr/share/applications/
+sudo chmod +x /usr/share/applications/cocktail.desktop
 
 # Making write permission for all to wpa
 # We need this if we want to change wifi settings within CocktailBerry
