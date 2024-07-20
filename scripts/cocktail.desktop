@@ -4,3 +4,4 @@ Name=CocktailBerry
 NoDisplay=false
 Exec=/usr/bin/lxterminal -e "~/launcher.sh; read -p 'Press Enter to Close'"
 Icon=/usr/share/pixmaps/cocktailberry.png
+X-GNOME-Autostart-enabled=true
