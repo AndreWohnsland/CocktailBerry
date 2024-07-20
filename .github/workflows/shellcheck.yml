@@ -1,4 +1,4 @@
-name: Linting
+name: ShellCheck
 on: [pull_request]
 jobs:
   shellcheck:
