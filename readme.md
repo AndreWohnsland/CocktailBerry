@@ -55,11 +55,9 @@ In addition, there is the possibility to use and set up a second device as a das
 - Display different modes of data for a by team comparison
 - _Optional_: Use the dashboard as WiFi hot-spot
 
-
 # Quickstart
 
 Here are some simple steps to get CocktailBerry running. You need to have **Python 3.9** or newer and **git** installed.
-
 
 On the RPi, you can try the new [all in one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh). One command should install everything:
 
@@ -83,7 +81,6 @@ This will start the CocktailBerry program. You may want to run the provided inst
 ```bash
 sh scripts/setup.sh
 ```
-
 
 Now you can [Set Up](https://cocktailberry.readthedocs.io/setup/#setting-up-the-machine-modifying-other-values) your CocktailBerry and tweak the settings to your liking.
 
