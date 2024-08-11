@@ -4,14 +4,6 @@
 # Options:
 # dashboard: set up dashboard, otherwise will set up CocktailBerry
 
-is_raspberry_pi() {
-  if grep -q "Raspberry Pi" /proc/device-tree/model 2>/dev/null; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 echo "Installing updates, this may take a while..."
 sudo apt update && sudo sudo apt -y full-upgrade
 

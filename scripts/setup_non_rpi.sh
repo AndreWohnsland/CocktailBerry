@@ -1,5 +1,13 @@
 #!/bin/bash
 
+is_raspberry_pi() {
+  if grep -q "Raspberry Pi" /proc/device-tree/model 2>/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 # Check if the script is running on a non-Raspberry Pi device
 if ! is_raspberry_pi; then
   echo "$(whoami) ALL=(ALL) NOPASSWD: ALL" | sudo tee "/etc/sudoers.d/99_$(whoami)_nopasswd" >/dev/null
@@ -12,8 +20,8 @@ if ! is_raspberry_pi; then
   sudo usermod -aG gpio "$USER"
 
   # Create the setup_gpio_permissions.sh script
-  sudo cp .scripts/setup_gpio_permissions.sh /usr/local/bin/setup_gpio_permissions.sh
-  sudo cp .scripts/setup_gpio_permissions.service /etc/systemd/system/setup_gpio_permissions.service
+  sudo cp ./scripts/setup_gpio_permissions.sh /usr/local/bin/setup_gpio_permissions.sh
+  sudo cp ./scripts/setup_gpio_permissions.service /etc/systemd/system/setup_gpio_permissions.service
 
   # Make the script executable
   sudo chmod +x /usr/local/bin/setup_gpio_permissions.sh
@@ -26,7 +34,7 @@ if ! is_raspberry_pi; then
   # set the rules to enable gpio
   # only both in combination seem to work
   sudo apt install python3-pip libgpiod2
-  sudo cp .scripts/99-gpio.rules /etc/udev/rules.d/99-gpio.rules
+  sudo cp ./scripts/99-gpio.rules /etc/udev/rules.d/99-gpio.rules
   sudo udevadm control --reload-rules
   sudo udevadm trigger
 
