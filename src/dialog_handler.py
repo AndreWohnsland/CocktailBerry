@@ -81,14 +81,21 @@ class DialogHandler:
             title = self.__choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
-        self.message_box = CustomDialog(fancy_message, title, use_ok)
         event = Event()
+        self.message_box = CustomDialog(fancy_message, title, use_ok, event.set)
         # If there is a close time, start auto close
         if close_time is not None:
-            auto_closer = Thread(target=close_thread, args=(event, self.message_box, close_time), daemon=True)
+            auto_closer = Thread(
+                target=close_thread,
+                args=(
+                    event,
+                    self.message_box,
+                    close_time,
+                ),
+                daemon=True,
+            )
             auto_closer.start()
         # Need to set event, in case thread is still waiting
-        event.set()
 
     def user_okay(self, text: str):
         """Prompts the user for the given message and asks for confirmation.
