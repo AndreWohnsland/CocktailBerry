@@ -120,6 +120,12 @@ class ListType(ConfigType):
             config_text = f"{configname} at position {i}"
             self.list_type.validate(config_text, item)
 
+    def from_config(self, value: Any) -> Any:
+        return [self.list_type.from_config(item) for item in value]
+
+    def to_config(self, value: Any) -> Any:
+        return [self.list_type.to_config(item) for item in value]
+
 
 class ConfigClass:
     def __init__(self, **kwargs) -> None:
