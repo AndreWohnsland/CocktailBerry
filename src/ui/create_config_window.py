@@ -1,4 +1,6 @@
-from typing import Any, Callable, Optional
+from __future__ import annotations
+
+from typing import Any, Callable, Literal, Optional
 
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import (
@@ -223,12 +225,21 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         element.deleteLater()
 
     def _build_dict_field(
-        self, layout: QBoxLayout, config_name: str, current_value: ConfigClass, config_setting: DictType
+        self,
+        layout: QBoxLayout,
+        config_name: str,
+        current_value: ConfigClass | Literal[""],
+        config_setting: DictType,
     ) -> Callable[[], dict]:
         """Build a dict of fields for a dict input."""
         h_container = QHBoxLayout()
         getter_fn_dict: dict[str, Callable] = {}
-        dict_values = current_value.to_config()
+        # if used with the list constructor, we will get a empty string, if a new value is added to the list.
+        # in this case extract the dict keys from the config setting and use empty strings as values
+        if current_value == "":
+            dict_values = {key: "" for key in config_setting.dict_types}
+        else:
+            dict_values = current_value.to_config()
         for key, value in dict_values.items():
             value_setting = config_setting.dict_types.get(key)
             if value_setting is None:
