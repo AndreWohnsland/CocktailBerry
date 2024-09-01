@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Literal, Optional
+from typing import Any, Callable, Literal
 
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import (
@@ -36,8 +36,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
         self.config_objects = {}
-        self.color_window: Optional[ColorWindow] = None
-        self.button_custom_color: Optional[QPushButton] = None
+        self.color_window: ColorWindow | None = None
+        self.button_custom_color: QPushButton | None = None
         UI_LANGUAGE.adjust_config_window(self)
         self._init_ui()
         self.showFullScreen()
@@ -102,7 +102,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.color_window = ColorWindow(self.mainscreen)
 
     def _build_input_field(
-        self, config_name: str, config_setting: ConfigInterface, current_value: Any, layout: Optional[QBoxLayout] = None
+        self, config_name: str, config_setting: ConfigInterface, current_value: Any, layout: QBoxLayout | None = None
     ):
         """Build the input field and returns its getter function."""
         if layout is None:
