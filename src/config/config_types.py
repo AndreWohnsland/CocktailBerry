@@ -4,8 +4,11 @@ They are used to wrap the validation of different types and composition within t
 Simply separating by build in types is not enough for dict or list types.
 """
 
+from __future__ import annotations
+
+from abc import abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Callable, ClassVar, get_args
+from typing import Any, Callable, Generic, Protocol, TypeVar, get_args
 
 from src import (
     SupportedBoardType,
@@ -21,40 +24,69 @@ SUPPORTED_THEMES = list(get_args(SupportedThemesType))
 SUPPORTED_RFID = list(get_args(SupportedRfidType))
 
 
-class ChooseType:
-    """Base Class for auto generated single select drop down."""
+class ConfigInterface(Protocol):
+    """Interface for config values."""
 
-    allowed: ClassVar[list[str]] = []
+    @abstractmethod
+    def validate(self, configname: str, value: Any):
+        """Validate the given value."""
+        raise NotImplementedError
 
+    @property
+    @abstractmethod
+    def ui_type(self) -> type:
+        """Return the type for the UI."""
+        raise NotImplementedError
 
-class LanguageChoose(ChooseType):
-    allowed = SUPPORTED_LANGUAGES
+    def from_config(self, value: Any) -> Any:
+        """Serialize the given value."""
+        return value
 
-
-class BoardChoose(ChooseType):
-    allowed = SUPPORTED_BOARDS
-
-
-class ThemeChoose(ChooseType):
-    allowed = SUPPORTED_THEMES
-
-
-class RFIDChoose(ChooseType):
-    allowed = SUPPORTED_RFID
+    def to_config(self, value: Any) -> Any:
+        """Deserialize the given value."""
+        return value
 
 
 @dataclass
-class ConfigType:
+class ChooseType(ConfigInterface):
+    """Base Class for auto generated single select drop down."""
+
+    allowed: list[str] = field(default_factory=list)
+    validator_functions: list[Callable[[str, Any], None]] = field(default_factory=list)
+
+    def validate(self, configname: str, value: Any):
+        if value not in self.allowed:
+            raise ConfigError(f"Value <{value}> for '{configname}' is not supported, please use any of {self.allowed}")
+        for validator in self.validator_functions:
+            validator(configname, value)
+
+    @property
+    def ui_type(self):
+        return type(self)
+
+
+class ChooseOptions:
+    board = ChooseType(allowed=SUPPORTED_BOARDS)
+    language = ChooseType(allowed=SUPPORTED_LANGUAGES)
+    rfid = ChooseType(allowed=SUPPORTED_RFID)
+    theme = ChooseType(allowed=SUPPORTED_THEMES)
+
+
+@dataclass
+class ConfigType(ConfigInterface):
     """Base class for configuration types."""
 
-    config_type: type
+    config_type: type[str] | type[int] | type[float] | type[bool]
     validator_functions: list[Callable[[str, Any], None]] = field(default_factory=list)
 
     def validate(self, configname: str, value: Any):
         """Validate the given value."""
-        if value is not self.config_type:
+        if not isinstance(value, self.config_type):
             raise ConfigError(f"The value <{value}> for '{configname}' is not of type {self.config_type}")
+        for validator in self.validator_functions:
+            validator(configname, value)
 
+    @property
     def ui_type(self):
         """Return the type for the UI."""
         return self.config_type
@@ -63,30 +95,72 @@ class ConfigType:
 class ListType(ConfigType):
     """List configuration type."""
 
-    def __init__(self, validator_functions: list[Callable[[str, Any], None]], list_type: ConfigType):
-        self.config_type = list
+    def __init__(
+        self,
+        list_type: ConfigType,
+        min_length: int | Callable[[], int],
+        validator_functions: list[Callable[[str, Any], None]] = [],
+    ):
+        # ignore type here, since parent class should only expose other types not child types
+        self.config_type = list  # type: ignore
         self.list_type = list_type
         self.validator_functions = validator_functions
+        # might be a callable to allow dynamic min length, if dependent on other config values
+        self.min_length = min_length
 
     def validate(self, configname: str, value: Any):
         """Validate the given value."""
         super().validate(configname, value)
+        # check for min length
+        min_len = self.min_length if isinstance(self.min_length, int) else self.min_length()
+        actual_len = len(value)
+        if actual_len < min_len:
+            raise ConfigError(f"{configname} got only {actual_len} elements, but you need at least {min_len} elements")
         for i, item in enumerate(value, 1):
             config_text = f"{configname} at position {i}"
             self.list_type.validate(config_text, item)
 
-    def ui_type(self):
-        """Return the type for the UI."""
-        return type(self)
+
+class ConfigClass:
+    def __init__(self, **kwargs) -> None:
+        pass
+
+    def to_config(self) -> dict[str, Any]:
+        """Serialize the given value."""
+        return {}
+
+    @classmethod
+    def from_config(cls, config: dict) -> ConfigClass:
+        """Deserialize the given value."""
+        return cls(**config)
 
 
-class DictType(ConfigType):
+class PumpConfig(ConfigClass):
+    def __init__(self, pin: int, volume_flow: float):
+        self.pin = pin
+        self.volume_flow = volume_flow
+
+    def to_config(self):
+        return {"pin": self.pin, "volume_flow": self.volume_flow}
+
+
+T = TypeVar("T", bound="ConfigClass")
+
+
+class DictType(ConfigType, Generic[T]):
     """Dict configuration type."""
 
-    def __init__(self, validator_functions: list[Callable[[str, Any], None]], dict_types: dict[str, ConfigType]):
-        self.config_type = dict
+    def __init__(
+        self,
+        dict_types: dict[str, ConfigType],
+        config_class: type[T],
+        validator_functions: list[Callable[[str, Any], None]] = [],
+    ):
+        # ignore type here, since parent class should only expose other types not child types
+        self.config_type = dict  # type: ignore
         self.validator_functions = validator_functions
         self.dict_types = dict_types
+        self.config_class = config_class
 
     def validate(self, configname: str, config_dict: dict[str, Any]):
         """Validate the given value."""
@@ -98,6 +172,10 @@ class DictType(ConfigType):
             key_text = f"{configname} key {key_name}"
             key_type.validate(key_text, key_value)
 
-    def ui_type(self):
-        """Return the type for the UI."""
-        return type(self)
+    def from_config(self, config_dict: dict[str, Any]) -> T:
+        """Deserialize the given value."""
+        return self.config_class.from_config(config_dict)
+
+    def to_config(self, config_class: T) -> dict[str, Any]:
+        """Serialize the given value."""
+        return config_class.to_config()

@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
 )
 
+from src.config.config_types import ConfigClass, ConfigInterface, DictType, ListType
 from src.config.errors import ConfigError
 from src.config_manager import CONFIG as cfg
 from src.config_manager import ChooseType
@@ -42,9 +43,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
 
     def _init_ui(self):
         # adds all the configs to the window
-        for key, value in cfg.config_type.items():
-            needed_type, _ = value
-            self._choose_display_style(key, needed_type)
+        for key, config_setting in cfg.config_type.items():
+            self._choose_display_style(key, config_setting)
 
         self.button_save.clicked.connect(self._save_config)
         self.button_back.clicked.connect(self.close)
@@ -64,7 +64,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             restart_program()
         self.close()
 
-    def _choose_display_style(self, config_name: str, config_type: type):
+    def _choose_display_style(self, config_name: str, config_setting: ConfigInterface):
         """Create the input face for the according config types."""
         # Add the elements header to the view
         header = QLabel(f"{config_name}:")
@@ -79,7 +79,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             vbox.addWidget(description)
         # Reads out the current config value
         current_value = getattr(cfg, config_name)
-        getter_fn = self._build_input_field(config_name, config_type, current_value)
+        getter_fn = self._build_input_field(config_name, config_setting, current_value)
         # assigning the getter function for the config into the dict
         self.config_objects[config_name] = getter_fn
         if config_name == "MAKER_THEME":
@@ -100,11 +100,12 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.color_window = ColorWindow(self.mainscreen)
 
     def _build_input_field(
-        self, config_name: str, config_type: type, current_value: Any, layout: Optional[QBoxLayout] = None
+        self, config_name: str, config_setting: ConfigInterface, current_value: Any, layout: Optional[QBoxLayout] = None
     ):
         """Build the input field and returns its getter function."""
         if layout is None:
             layout = self._choose_tab_container(config_name)
+        config_type = config_setting.ui_type
         if config_type is int:
             return self._build_int_field(layout, config_name, current_value)
         if config_type is float:
@@ -113,9 +114,11 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             return self._build_bool_field(layout, current_value)
         if config_type is list:
             return self._build_list_field(layout, config_name, current_value)
-        if issubclass(config_type, ChooseType):
-            selection = config_type.allowed
+        if isinstance(config_setting, ChooseType):
+            selection = config_setting.allowed
             return self._build_selection_filed(layout, current_value, selection)
+        if isinstance(config_setting, DictType):
+            return self._build_dict_field(layout, config_name, current_value)
         return self._build_fallback_field(layout, current_value)
 
     def _build_int_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], int]:
@@ -172,14 +175,13 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
     def _add_ui_element_to_list(self, initial_value, getter_fn_list: list, config_name: str, container: QBoxLayout):
         """Add an additional input element for list buildup."""
         # Gets the type of the list elements
-        list_config = cfg.config_type_list.get(config_name)
-        # if new added list elements get forgotten, this may happen in this occasion. Catch it here
-        if list_config is None:
+        config_setting = cfg.config_type.get(config_name)
+        # shouldn't happen, but typing is not happy else
+        if config_setting is None or not isinstance(config_setting, ListType):
             raise RuntimeError(
-                f"Tried to access list config [{config_name}] that is not defined. "
-                + "That should not happen. Please report the error."
+                f"Config '{config_name}' is not a list type. That should not happen. Please report the error."
             )
-        list_type, _ = list_config
+        list_setting = config_setting.list_type
         h_container = QHBoxLayout()
         # need to get the current length of the layout, to get the indicator number
         current_position = container.count() + 1
@@ -187,7 +189,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         position_number.setMinimumWidth(18)
         position_number.setMaximumWidth(18)
         h_container.addWidget(position_number)
-        getter_fn = self._build_input_field(config_name, list_type, initial_value, h_container)
+        getter_fn = self._build_input_field(config_name, list_setting, initial_value, h_container)
         remove_button = QPushButton("x")
         remove_button.setMaximumWidth(30)
         adjust_font(remove_button, MEDIUM_FONT, True)
@@ -206,6 +208,27 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             found_widget.setParent(None)
         getter_fn_list.remove(getter_fn)
         element.deleteLater()
+
+    def _build_dict_field(self, layout: QBoxLayout, config_name: str, current_value: ConfigClass) -> Callable[[], dict]:
+        """Build a dict of fields for a dict input."""
+        h_container = QHBoxLayout()
+        getter_fn_dict: dict[str, Callable] = {}
+
+        config_setting = cfg.config_type.get(config_name)
+        # shouldn't happen, but typing is not happy else
+        if config_setting is None or not isinstance(config_setting, DictType):
+            raise RuntimeError(
+                f"Config '{config_name}' is not a dict type. That should not happen. Please report the error."
+            )
+        dict_values = current_value.to_config()
+        for key, value in dict_values.items():
+            value_setting = config_setting.dict_types.get(key)
+            if value_setting is None:
+                raise RuntimeError(f"Config '{config_name}' has a key '{key}' that is not defined in the dict types.")
+            getter_fn = self._build_input_field(config_name, value_setting, value, h_container)
+            getter_fn_dict[key] = getter_fn
+        layout.addLayout(h_container)
+        return lambda: {key: getter() for key, getter in getter_fn_dict.items()}
 
     def _build_fallback_field(self, layout: QBoxLayout, current_value) -> Callable[[], str]:
         """Build the default input field for string input."""

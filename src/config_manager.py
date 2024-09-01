@@ -17,7 +17,15 @@ from src import (
     SupportedThemesType,
     __version__,
 )
-from src.config.config_types import BoardChoose, ChooseType, LanguageChoose, RFIDChoose, ThemeChoose
+from src.config.config_types import (
+    ChooseOptions,
+    ChooseType,
+    ConfigInterface,
+    ConfigType,
+    DictType,
+    ListType,
+    PumpConfig,
+)
 from src.config.errors import ConfigError
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
@@ -112,6 +120,7 @@ class ConfigManager:
     # Config to change the displayed values in the maker to another unit
     EXP_MAKER_UNIT: str = "ml"
     EXP_MAKER_FACTOR: float = 1.0
+    TEST_PUMPING_THING: PumpConfig = PumpConfig(1, 1.1)
 
     def __init__(self) -> None:
         """Try to read in the custom configs. If the file is not there, ignores the error.
@@ -123,58 +132,51 @@ class ConfigManager:
         """
         # Dict of Format "configname": (type, List[CheckCallbacks])
         # The check function needs to be a callable with interface fn(configname, configvalue)
-        self.config_type: dict[str, tuple[type, list[Callable[[str, Any], None]]]] = {
-            "UI_DEVENVIRONMENT": (bool, []),
-            "UI_MASTERPASSWORD": (int, []),
-            "UI_MAKER_PASSWORD": (int, []),
-            "UI_LOCKED_TABS": (list, []),
-            "UI_LANGUAGE": (LanguageChoose, []),
-            "UI_WIDTH": (int, [_build_number_limiter(1, 10000)]),
-            "UI_HEIGHT": (int, [_build_number_limiter(1, 3000)]),
-            "UI_PICTURE_SIZE": (int, [_build_number_limiter(100, 1000)]),
-            "PUMP_PINS": (list, []),
-            "PUMP_VOLUMEFLOW": (list, []),
-            "MAKER_NAME": (str, [_validate_max_length]),
-            "MAKER_NUMBER_BOTTLES": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
-            "MAKER_PREPARE_VOLUME": (list, []),
-            "MAKER_SIMULTANEOUSLY_PUMPS": (int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
-            "MAKER_CLEAN_TIME": (int, [_build_number_limiter()]),
-            "MAKER_PUMP_REVERSION": (bool, []),
-            "MAKER_REVERSION_PIN": (int, [self._validate_pin_numbers]),
-            "MAKER_SEARCH_UPDATES": (bool, []),
-            "MAKER_CHECK_BOTTLE": (bool, []),
-            "MAKER_PINS_INVERTED": (bool, []),
-            "MAKER_BOARD": (BoardChoose, []),
-            "MAKER_THEME": (ThemeChoose, []),
-            "MAKER_MAX_HAND_INGREDIENTS": (int, [_build_number_limiter(0, 10)]),
-            "MAKER_CHECK_INTERNET": (bool, []),
-            "MAKER_TUBE_VOLUME": (int, [_build_number_limiter(0, 50)]),
-            "MAKER_USE_RECIPE_VOLUME": (bool, []),
-            "MAKER_ADD_SINGLE_INGREDIENT": (bool, []),
-            "LED_PINS": (list, []),
-            "LED_BRIGHTNESS": (int, [_build_number_limiter(1, 255)]),
-            "LED_COUNT": (int, [_build_number_limiter(1, 500)]),
-            "LED_NUMBER_RINGS": (int, [_build_number_limiter(1, 10)]),
-            "LED_DEFAULT_ON": (bool, []),
-            "LED_IS_WS": (bool, []),
-            "RFID_READER": (RFIDChoose, []),
-            "MICROSERVICE_ACTIVE": (bool, []),
-            "MICROSERVICE_BASE_URL": (str, []),
-            "TEAMS_ACTIVE": (bool, []),
-            "TEAM_BUTTON_NAMES": (list, []),
-            "TEAM_API_URL": (str, []),
-            "EXP_MAKER_UNIT": (str, []),
-            "EXP_MAKER_FACTOR": (float, [_build_number_limiter(0.01, 100)]),
-        }
-        # Dict of Format "configname": (type, List[CheckCallbacks]) for the single list elements
-        # only needed if the above config type was defined as list type, rest is identical to top schema
-        self.config_type_list: dict[str, tuple[type, list[Callable[[str, Any], None]]]] = {
-            "PUMP_PINS": (int, [self._validate_pin_numbers]),
-            "PUMP_VOLUMEFLOW": (float, [_build_number_limiter(0.1, 1000)]),
-            "MAKER_PREPARE_VOLUME": (int, [_build_number_limiter(25, 1000)]),
-            "TEAM_BUTTON_NAMES": (str, []),
-            "LED_PINS": (int, [_build_number_limiter(0, 200)]),
-            "UI_LOCKED_TABS": (bool, []),
+        self.config_type: dict[str, ConfigInterface] = {
+            "UI_DEVENVIRONMENT": ConfigType(bool),
+            "UI_MASTERPASSWORD": ConfigType(int),
+            "UI_MAKER_PASSWORD": ConfigType(int),
+            "UI_LOCKED_TABS": ListType(ConfigType(bool), 3),
+            "UI_LANGUAGE": ChooseOptions.language,
+            "UI_WIDTH": ConfigType(int, [_build_number_limiter(1, 10000)]),
+            "UI_HEIGHT": ConfigType(int, [_build_number_limiter(1, 3000)]),
+            "UI_PICTURE_SIZE": ConfigType(int, [_build_number_limiter(100, 1000)]),
+            "PUMP_PINS": ListType(ConfigType(int, [self._validate_pin_numbers]), self.choose_bottle_number()),
+            "PUMP_VOLUMEFLOW": ListType(
+                ConfigType(float, [_build_number_limiter(0.1, 1000)]), self.choose_bottle_number()
+            ),
+            "MAKER_NAME": ConfigType(str, [_validate_max_length]),
+            "MAKER_NUMBER_BOTTLES": ConfigType(int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_PREPARE_VOLUME": ListType(ConfigType(int, [_build_number_limiter(25, 1000)]), 1),
+            "MAKER_SIMULTANEOUSLY_PUMPS": ConfigType(int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_CLEAN_TIME": ConfigType(int, [_build_number_limiter()]),
+            "MAKER_PUMP_REVERSION": ConfigType(bool),
+            "MAKER_REVERSION_PIN": ConfigType(int, [self._validate_pin_numbers]),
+            "MAKER_SEARCH_UPDATES": ConfigType(bool),
+            "MAKER_CHECK_BOTTLE": ConfigType(bool),
+            "MAKER_PINS_INVERTED": ConfigType(bool),
+            "MAKER_BOARD": ChooseOptions.board,
+            "MAKER_THEME": ChooseOptions.theme,
+            "MAKER_MAX_HAND_INGREDIENTS": ConfigType(int, [_build_number_limiter(0, 10)]),
+            "MAKER_CHECK_INTERNET": ConfigType(bool),
+            "MAKER_TUBE_VOLUME": ConfigType(int, [_build_number_limiter(0, 50)]),
+            "MAKER_USE_RECIPE_VOLUME": ConfigType(bool),
+            "MAKER_ADD_SINGLE_INGREDIENT": ConfigType(bool),
+            "LED_PINS": ListType(ConfigType(int, [_build_number_limiter(0, 200)]), 0),
+            "LED_BRIGHTNESS": ConfigType(int, [_build_number_limiter(1, 255)]),
+            "LED_COUNT": ConfigType(int, [_build_number_limiter(1, 500)]),
+            "LED_NUMBER_RINGS": ConfigType(int, [_build_number_limiter(1, 10)]),
+            "LED_DEFAULT_ON": ConfigType(bool),
+            "LED_IS_WS": ConfigType(bool),
+            "RFID_READER": ChooseOptions.rfid,
+            "MICROSERVICE_ACTIVE": ConfigType(bool),
+            "MICROSERVICE_BASE_URL": ConfigType(str),
+            "TEAMS_ACTIVE": ConfigType(bool, []),
+            "TEAM_BUTTON_NAMES": ListType(ConfigType(str), 2),
+            "TEAM_API_URL": ConfigType(str),
+            "EXP_MAKER_UNIT": ConfigType(str),
+            "EXP_MAKER_FACTOR": ConfigType(float, [_build_number_limiter(0.01, 100)]),
+            "TEST_PUMPING_THING": DictType({"pin": ConfigType(int), "volume_flow": ConfigType(float)}, PumpConfig),
         }
         with contextlib.suppress(FileNotFoundError):
             self._read_config()
@@ -185,22 +187,28 @@ class ConfigManager:
         Is used to sync new properties into the file.
         """
         config = {}
-        for attribute in self.config_type:
-            config[attribute] = getattr(self, attribute)
+        for name, setting in self.config_type.items():
+            config[name] = setting.to_config(getattr(self, name))
         with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
 
-    def validate_and_set_config(self, configuration: dict, lists_later=True):
+    def validate_and_set_config(self, configuration: dict):
         """Validate the config and set new values."""
         # Some lists may depend on other config variables like number of bottles
         # Therefore, by default, split list types from the rest and check them afterwards
-        if lists_later:
-            non_list_config = {k: value for k, value in configuration.items() if not isinstance(value, list)}
-            self.validate_and_set_config(non_list_config, False)
-            configuration = {k: value for k, value in configuration.items() if isinstance(value, list)}
-        for k, value in configuration.items():
-            self._validate_config_type(k, value)
-            setattr(self, k, value)
+        no_list_or_dict = {k: value for k, value in configuration.items() if not isinstance(value, (list, dict))}
+        self._validate_and_set_config(no_list_or_dict)
+        list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, (list, dict))}
+        self._validate_and_set_config(list_or_dict)
+
+    def _validate_and_set_config(self, configuration: dict):
+        for config_name, config_value in configuration.items():
+            config_setting = self.config_type.get(config_name)
+            # old or user added configs will not be validated
+            if config_setting is None:
+                continue
+            config_setting.validate(config_name, config_value)
+            setattr(self, config_name, config_setting.from_config(config_value))
 
     def _read_config(self):
         """Read all the config data from the file and validates it."""
@@ -211,50 +219,10 @@ class ConfigManager:
     def _validate_config_type(self, configname: str, configvalue: Any):
         """Validate the configvalue if its fit the type / conditions."""
         config_setting = self.config_type.get(configname)
+        # old or user added configs will not be validated
         if config_setting is None:
             return
-        datatype, check_functions = config_setting
-        # check first if type fits
-        # if it's a choose type ignore typing for now, the function later will check if the value is in the list.
-        if not isinstance(configvalue, datatype) and not issubclass(datatype, ChooseType):
-            raise ConfigError(f"The value {configvalue} for {configname} is not of type {datatype}")
-
-        # check if the right values for choose type is selected
-        if issubclass(datatype, ChooseType):
-            _build_support_checker(datatype.allowed)(configname, configvalue)
-
-        # Additionally run all check functions provided
-        for check_fun in check_functions:
-            check_fun(configname, configvalue)
-
-        # If it's a list, also run the list validation
-        if isinstance(configvalue, list):
-            self._validate_config_list_type(configname, configvalue)
-
-    def _validate_config_list_type(self, configname: str, configlist: list[Any]):
-        """Extra validation for list type in case len / types."""
-        config_setting = self.config_type_list.get(configname)
-        if config_setting is None:
-            return
-        datatype, check_functions = config_setting
-        for i, config in enumerate(configlist, 1):
-            if not isinstance(config, datatype):
-                raise ConfigError(f"The value {config} at position {i} for {configname} is not of type {datatype}")
-            for check_fun in check_functions:
-                check_fun(configname, config)
-        # additional len check of the list data,
-        min_bottles = self.choose_bottle_number()
-        min_len_config = {
-            "PUMP_PINS": min_bottles,
-            "PUMP_VOLUMEFLOW": min_bottles,
-            "TEAM_BUTTON_NAMES": 2,
-            "UI_LOCKED_TABS": 3,
-            "MAKER_PREPARE_VOLUME": 1,
-        }
-        min_len = min_len_config.get(configname)
-        if min_len is None:
-            return
-        _validate_list_length(configlist, configname, min_len)
+        config_setting.validate(configname, configvalue)
 
     def choose_bottle_number(self, get_all=False):
         """Select the number of Bottles, limits by max supported count."""
@@ -280,6 +248,7 @@ class ConfigManager:
         validation_function: list[Callable[[str, Any], None]] | None = None,
         list_validation_function: list[Callable[[str, Any], None]] | None = None,
         list_type: type | None = None,
+        min_length: int | Callable[[], int] = 0,
     ):
         """Add the configuration under the given name.
 
@@ -303,16 +272,16 @@ class ConfigManager:
             setattr(self, config_name, default_value)
 
         # get the type of the config, define type and validation
-        config_type = type(default_value)
-        self.config_type[config_name] = (config_type, validation_function)
-
-        # Do the same for list, get either type if not provided, fall back to string if list is empty
         if isinstance(default_value, list):
             if list_type is None and len(default_value) == 0:
                 list_type = str
             elif list_type is None:
                 list_type = type(default_value[0])
-            self.config_type_list[config_name] = (list_type, list_validation_function)
+            config_setting = ListType(ConfigType(list_type, list_validation_function), min_length)
+        else:
+            config_type = type(default_value)
+            config_setting = ConfigType(config_type, validation_function)
+        self.config_type[config_name] = config_setting
 
     def add_selection_config(
         self,
@@ -327,11 +296,6 @@ class ConfigManager:
         Options must be string and have at least one element.
         Default value is first list element, or if given, the given value.
         """
-
-        # Define a choose type for the add on
-        class AddOnChoose(ChooseType):
-            allowed = options
-
         # If user did not provide the default value, use the first element of options as default
         if default_value is None:
             default_value = options[0]
@@ -340,16 +304,9 @@ class ConfigManager:
         # Define default value if its not set
         if not hasattr(self, config_name):
             setattr(self, config_name, default_value)
-
-        # Set type and validation function
-        self.config_type[config_name] = (AddOnChoose, validation_function)
-
-
-def _validate_list_length(configlist: list[Any], configname: str, min_len: int):
-    """Check if the list is at least a given size."""
-    actual_len = len(configlist)
-    if actual_len < min_len:
-        raise ConfigError(f"{configname} got only {actual_len} elements, but you need at least {min_len} elements")
+        # Define a choose type for the add on
+        addon_choose = ChooseType(options, validation_function)
+        self.config_type[config_name] = addon_choose
 
 
 def _build_support_checker(supported: list[Any]):
