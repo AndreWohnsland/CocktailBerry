@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import contextlib
 import random
-from typing import Any, Callable, ClassVar, get_args
+from typing import Any, Callable, ClassVar
 
 import typer
 import yaml
@@ -17,38 +17,13 @@ from src import (
     SupportedThemesType,
     __version__,
 )
+from src.config.config_types import BoardChoose, ChooseType, LanguageChoose, RFIDChoose, ThemeChoose
 from src.config.errors import ConfigError
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data
 
 logger = LoggerHandler("config_manager")
-SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
-SUPPORTED_BOARDS = list(get_args(SupportedBoardType))
-SUPPORTED_THEMES = list(get_args(SupportedThemesType))
-SUPPORTED_RFID = list(get_args(SupportedRfidType))
-
-
-class ChooseType:
-    """Base Class for auto generated single select drop down."""
-
-    allowed: ClassVar[list[str]] = []
-
-
-class LanguageChoose(ChooseType):
-    allowed = SUPPORTED_LANGUAGES
-
-
-class BoardChoose(ChooseType):
-    allowed = SUPPORTED_BOARDS
-
-
-class ThemeChoose(ChooseType):
-    allowed = SUPPORTED_THEMES
-
-
-class RFIDChoose(ChooseType):
-    allowed = SUPPORTED_RFID
 
 
 class ConfigManager:
