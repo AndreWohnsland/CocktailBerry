@@ -204,11 +204,21 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         container.addLayout(h_container)
         getter_fn_list.append(getter_fn)
 
-    def _remove_ui_element_from_list(self, element, getter_fn, getter_fn_list: list[Callable]):
+    def _remove_ui_element_from_list(self, element: QHBoxLayout, getter_fn, getter_fn_list: list[Callable]):
         """Remove the referenced element from the ui."""
-        for i in reversed(range(element.count())):
-            found_widget = element.itemAt(i).widget()
-            found_widget.setParent(None)
+
+        def recursive_delete(widget: QBoxLayout):
+            """Recursively delete all children of the given widget."""
+            for i in reversed(range(widget.count())):
+                found_element = widget.itemAt(i)
+                found_widget = found_element.widget()
+                if found_widget is not None:
+                    found_widget.setParent(None)  # type: ignore
+                    found_widget.deleteLater()
+                if isinstance(found_element, QBoxLayout):
+                    recursive_delete(found_element)
+
+        recursive_delete(element)
         getter_fn_list.remove(getter_fn)
         element.deleteLater()
 
