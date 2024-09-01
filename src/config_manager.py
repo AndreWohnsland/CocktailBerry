@@ -148,9 +148,9 @@ class ConfigManager:
             "UI_WIDTH": ConfigType(int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": ConfigType(int, [_build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": ConfigType(int, [_build_number_limiter(100, 1000)]),
-            "PUMP_PINS": ListType(ConfigType(int, [self._validate_pin_numbers]), self.choose_bottle_number()),
+            "PUMP_PINS": ListType(ConfigType(int, [self._validate_pin_numbers]), self.choose_bottle_number),
             "PUMP_VOLUMEFLOW": ListType(
-                ConfigType(float, [_build_number_limiter(0.1, 1000)]), self.choose_bottle_number()
+                ConfigType(float, [_build_number_limiter(0.1, 1000)]), self.choose_bottle_number
             ),
             "PUMP_CONFIG": ListType(
                 DictType(
@@ -160,7 +160,7 @@ class ConfigManager:
                     },
                     PumpConfig,
                 ),
-                self.choose_bottle_number(),
+                self.choose_bottle_number,
             ),
             "MAKER_NAME": ConfigType(str, [_validate_max_length]),
             "MAKER_NUMBER_BOTTLES": ConfigType(int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
