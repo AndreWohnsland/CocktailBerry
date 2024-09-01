@@ -112,13 +112,13 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             return self._build_float_field(layout, config_name, current_value)
         if config_type is bool:
             return self._build_bool_field(layout, current_value)
-        if config_type is list:
-            return self._build_list_field(layout, config_name, current_value)
+        if isinstance(config_setting, ListType):
+            return self._build_list_field(layout, config_name, current_value, config_setting)
         if isinstance(config_setting, ChooseType):
             selection = config_setting.allowed
             return self._build_selection_filed(layout, current_value, selection)
         if isinstance(config_setting, DictType):
-            return self._build_dict_field(layout, config_name, current_value)
+            return self._build_dict_field(layout, config_name, current_value, config_setting)
         return self._build_fallback_field(layout, current_value)
 
     def _build_int_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], int]:
@@ -152,18 +152,20 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addWidget(config_input)
         return config_input.isChecked
 
-    def _build_list_field(self, layout: QBoxLayout, config_name: str, current_value: list) -> Callable[[], list[Any]]:
+    def _build_list_field(
+        self, layout: QBoxLayout, config_name: str, current_value: list, config_setting: ListType
+    ) -> Callable[[], list[Any]]:
         """Build a list of fields for a list input."""
         config_input = QVBoxLayout()
         getter_fn_list: list[Callable] = []
         # iterate over each list value and build the according field
         for initial_value in current_value:
-            self._add_ui_element_to_list(initial_value, getter_fn_list, config_name, config_input)
+            self._add_ui_element_to_list(initial_value, getter_fn_list, config_name, config_input, config_setting)
         # adds a button for adding new list entries
         add_button = QPushButton("+ add")
         adjust_font(add_button, MEDIUM_FONT, True)
         add_button.clicked.connect(  # type: ignore[attr-defined]
-            lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input)
+            lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input, config_setting)
         )
         # build container that new added elements are above add button separately
         v_container = QVBoxLayout()
@@ -172,15 +174,16 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addLayout(v_container)
         return lambda: [x() for x in getter_fn_list]
 
-    def _add_ui_element_to_list(self, initial_value, getter_fn_list: list, config_name: str, container: QBoxLayout):
+    def _add_ui_element_to_list(
+        self,
+        initial_value,
+        getter_fn_list: list,
+        config_name: str,
+        container: QBoxLayout,
+        config_setting: ListType,
+    ):
         """Add an additional input element for list buildup."""
         # Gets the type of the list elements
-        config_setting = cfg.config_type.get(config_name)
-        # shouldn't happen, but typing is not happy else
-        if config_setting is None or not isinstance(config_setting, ListType):
-            raise RuntimeError(
-                f"Config '{config_name}' is not a list type. That should not happen. Please report the error."
-            )
         list_setting = config_setting.list_type
         h_container = QHBoxLayout()
         # need to get the current length of the layout, to get the indicator number
@@ -209,17 +212,12 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         getter_fn_list.remove(getter_fn)
         element.deleteLater()
 
-    def _build_dict_field(self, layout: QBoxLayout, config_name: str, current_value: ConfigClass) -> Callable[[], dict]:
+    def _build_dict_field(
+        self, layout: QBoxLayout, config_name: str, current_value: ConfigClass, config_setting: DictType
+    ) -> Callable[[], dict]:
         """Build a dict of fields for a dict input."""
         h_container = QHBoxLayout()
         getter_fn_dict: dict[str, Callable] = {}
-
-        config_setting = cfg.config_type.get(config_name)
-        # shouldn't happen, but typing is not happy else
-        if config_setting is None or not isinstance(config_setting, DictType):
-            raise RuntimeError(
-                f"Config '{config_name}' is not a dict type. That should not happen. Please report the error."
-            )
         dict_values = current_value.to_config()
         for key, value in dict_values.items():
             value_setting = config_setting.dict_types.get(key)
