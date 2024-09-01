@@ -34,6 +34,10 @@ from src.utils import get_platform_data
 logger = LoggerHandler("config_manager")
 
 
+_default_pins = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
+_default_volume_flow = [30.0] * 10
+
+
 class ConfigManager:
     """Manager for all static configuration of the machine.
 
@@ -60,6 +64,9 @@ class ConfigManager:
     PUMP_PINS: ClassVar[list[int]] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
     # Volume flow for the according pumps
     PUMP_VOLUMEFLOW: list[float] = [30.0] * 10
+    PUMP_CONFIG: ClassVar[list[PumpConfig]] = [
+        PumpConfig(pin, flow) for pin, flow in zip(_default_pins, _default_volume_flow)
+    ]
     # Custom name of the Maker
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
@@ -145,6 +152,16 @@ class ConfigManager:
             "PUMP_VOLUMEFLOW": ListType(
                 ConfigType(float, [_build_number_limiter(0.1, 1000)]), self.choose_bottle_number()
             ),
+            "PUMP_CONFIG": ListType(
+                DictType(
+                    {
+                        "pin": ConfigType(int, [self._validate_pin_numbers]),
+                        "volume_flow": ConfigType(float, [_build_number_limiter(0.1, 1000)]),
+                    },
+                    PumpConfig,
+                ),
+                self.choose_bottle_number(),
+            ),
             "MAKER_NAME": ConfigType(str, [_validate_max_length]),
             "MAKER_NUMBER_BOTTLES": ConfigType(int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
             "MAKER_PREPARE_VOLUME": ListType(ConfigType(int, [_build_number_limiter(25, 1000)]), 1),
@@ -176,7 +193,6 @@ class ConfigManager:
             "TEAM_API_URL": ConfigType(str),
             "EXP_MAKER_UNIT": ConfigType(str),
             "EXP_MAKER_FACTOR": ConfigType(float, [_build_number_limiter(0.01, 100)]),
-            "TEST_PUMPING_THING": DictType({"pin": ConfigType(int), "volume_flow": ConfigType(float)}, PumpConfig),
         }
         with contextlib.suppress(FileNotFoundError):
             self._read_config()
