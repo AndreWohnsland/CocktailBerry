@@ -17,6 +17,7 @@ from src import (
     SupportedThemesType,
     __version__,
 )
+from src.config.errors import ConfigError
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data
@@ -414,10 +415,6 @@ class Shared:
         self.selected_team = "No Team"
         self.team_member_name: str | None = None
         self.alcohol_factor: float = 1.0
-
-
-class ConfigError(Exception):
-    """Raised when there was an error with the configuration data."""
 
 
 def version_callback(value: bool):

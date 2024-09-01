@@ -12,8 +12,9 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
 )
 
+from src.config.errors import ConfigError
 from src.config_manager import CONFIG as cfg
-from src.config_manager import ChooseType, ConfigError
+from src.config_manager import ChooseType
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_font, create_spacer

@@ -200,7 +200,7 @@ The description of the error should inform the user, why it is not valid.
 Cases may be limiting length of characters, only specific number ranges or similar.
 
 ```python
-from src.config_manager import ConfigError # (1)!
+from src.config.errors import ConfigError # (1)!
 
 def _check_function(configname: str, configvalue: str): # (2)!
     if configvalue == "forbidden": # (3)!

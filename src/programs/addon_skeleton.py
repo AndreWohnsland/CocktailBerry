@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 # For more information see: https://cocktailberry.readthedocs.io/addons/
 # Use the cfg to add your config / validation
 from src.config_manager import CONFIG as cfg
-from src.config_manager import ConfigError
+from src.config.errors import ConfigError
 
 # You can access the default database with help of the dbc
 from src.database_commander import DB_COMMANDER as dbc
