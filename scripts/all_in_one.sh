@@ -110,7 +110,7 @@ bash scripts/setup.sh
 
 echo ~ "Register successful installation: ~"
 OS_INFO=$(sed -nr 's/^PRETTY_NAME="(.+)"/\1/p' /etc/os-release)
-curl -X 'POST' 'http://130.162.32.10:8000/api/v1/public/installation' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"os_version": "'"$OS_INFO"'"}'
+curl -X 'POST' 'https://api.cocktailberry.org/api/v1/public/installation' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"os_version": "'"$OS_INFO"'"}'
 echo ""
 
 echo "~ Everything should be set now! Have fun with CocktailBerry :) ~"
