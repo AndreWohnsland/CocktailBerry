@@ -176,7 +176,7 @@ With this setting, the window will be minimized before the rest of the program a
 ### What about Tube Volume
 
 If your pumps got a long tube to the bottle, the first cocktail may have too little volume.
-You can set the `MAKER_TUBE_VOLUME` to an approximate value which corresponds to the average of the tube volume.
+You can set the tube volume of each pump in `PUMP_CONFIG`.
 When applying a new bottle, CocktailBerry will also pump that much volume up.
 
 ### Implementing LEDs

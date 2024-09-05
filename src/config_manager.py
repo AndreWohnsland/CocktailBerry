@@ -60,12 +60,8 @@ class ConfigManager:
     UI_WIDTH: int = 800
     UI_HEIGHT: int = 480
     UI_PICTURE_SIZE: int = 240
-    # RPi pins where pumps (ascending) are connected
-    PUMP_PINS: ClassVar[list[int]] = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
-    # Volume flow for the according pumps
-    PUMP_VOLUMEFLOW: list[float] = [30.0] * 10
     PUMP_CONFIG: ClassVar[list[PumpConfig]] = [
-        PumpConfig(pin, flow) for pin, flow in zip(_default_pins, _default_volume_flow)
+        PumpConfig(pin, flow, 0) for pin, flow in zip(_default_pins, _default_volume_flow)
     ]
     # Custom name of the Maker
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
@@ -95,8 +91,6 @@ class ConfigManager:
     MAKER_MAX_HAND_INGREDIENTS: int = 3
     # Flag to check if internet is up at start
     MAKER_CHECK_INTERNET: bool = True
-    # Volume to pump up if a bottle gets changed
-    MAKER_TUBE_VOLUME: int = 0
     # Option to not scale the recipe volume but use always the defined one
     MAKER_USE_RECIPE_VOLUME: bool = False
     # Option to add the single ingredient option to the maker pane
@@ -127,7 +121,6 @@ class ConfigManager:
     # Config to change the displayed values in the maker to another unit
     EXP_MAKER_UNIT: str = "ml"
     EXP_MAKER_FACTOR: float = 1.0
-    TEST_PUMPING_THING: PumpConfig = PumpConfig(1, 1.1)
 
     def __init__(self) -> None:
         """Try to read in the custom configs. If the file is not there, ignores the error.
@@ -148,15 +141,12 @@ class ConfigManager:
             "UI_WIDTH": ConfigType(int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": ConfigType(int, [_build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": ConfigType(int, [_build_number_limiter(100, 1000)]),
-            "PUMP_PINS": ListType(ConfigType(int, [self._validate_pin_numbers]), self.choose_bottle_number),
-            "PUMP_VOLUMEFLOW": ListType(
-                ConfigType(float, [_build_number_limiter(0.1, 1000)]), self.choose_bottle_number
-            ),
             "PUMP_CONFIG": ListType(
                 DictType(
                     {
                         "pin": ConfigType(int, [self._validate_pin_numbers]),
                         "volume_flow": ConfigType(float, [_build_number_limiter(0.1, 1000)]),
+                        "tube_volume": ConfigType(int, [_build_number_limiter(0, 100)]),
                     },
                     PumpConfig,
                 ),
@@ -176,7 +166,6 @@ class ConfigManager:
             "MAKER_THEME": ChooseOptions.theme,
             "MAKER_MAX_HAND_INGREDIENTS": ConfigType(int, [_build_number_limiter(0, 10)]),
             "MAKER_CHECK_INTERNET": ConfigType(bool),
-            "MAKER_TUBE_VOLUME": ConfigType(int, [_build_number_limiter(0, 50)]),
             "MAKER_USE_RECIPE_VOLUME": ConfigType(bool),
             "MAKER_ADD_SINGLE_INGREDIENT": ConfigType(bool),
             "LED_PINS": ListType(ConfigType(int, [_build_number_limiter(0, 200)]), 0),

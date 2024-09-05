@@ -1,20 +1,23 @@
+from __future__ import annotations
+
 # pylint: disable=wrong-import-order,wrong-import-position,too-few-public-methods,ungrouped-imports
-import platform
-
-import yaml
-
 from src.python_vcheck import check_python_version
 
 # Version check takes place before anything, else other imports may throw an error
 check_python_version()
 
+
 import configparser
 import importlib.util
+import platform
 import subprocess
 import sys
-from typing import Any, Optional
+from typing import Any
+
+import yaml
 
 from src import FUTURE_PYTHON_VERSION, __version__
+from src.config.config_types import PumpConfig
 from src.filepath import CUSTOM_CONFIG_FILE, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, VERSION_FILE
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
@@ -50,7 +53,7 @@ class Migrator:
             local_version = None
         return local_version
 
-    def older_than_version(self, version: Optional[str]) -> bool:
+    def older_than_version(self, version: str | None) -> bool:
         """Check if the current version is below the given version."""
         return _Version(version) > self.local_version
 
@@ -106,7 +109,10 @@ class Migrator:
             "1.30.1": [add_unit_column_to_ingredients],
             "1.33.0": [_move_slow_factor_to_db],
             "1.35.0": [lambda: self._install_pip_package("psutil", "1.35.0")],
-            "1.36.0": [lambda: self._install_pip_package("distro", "1.36.0")],
+            "1.36.0": [
+                _combine_pump_setting_into_one_config,
+                lambda: self._install_pip_package("distro", "1.36.0"),
+            ],
         }
 
         for version, actions in version_actions.items():
@@ -186,13 +192,10 @@ def _update_config_value_type(config_name: str, new_type: type, default_value: A
     Uses the default if fails to convert.
     Also, if the given type is a list, it will try to convert the list elements.
     """
-    if not CUSTOM_CONFIG_FILE.exists():
-        _logger.info(f"No local config detected for {config_name}, skipping conversion")
+    configuration = _get_local_config(config_name)
+    if configuration is None:
         return
     _logger.info(f"Converting config value for {config_name} to {new_type}")
-    configuration: dict[str, Any] = {}
-    with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
-        configuration = yaml.safe_load(stream)
     # get the value from the config, if not exists fall back to default
     local_config = configuration.get(config_name, default_value)
     # Try to convert, fall back to default if failure
@@ -204,6 +207,34 @@ def _update_config_value_type(config_name: str, new_type: type, default_value: A
         configuration[config_name] = new_values
     else:
         configuration[config_name] = _get_converted_value(new_type, default_value, local_config)
+    with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+
+
+def _get_local_config(config_name) -> dict[str, Any] | None:
+    if not CUSTOM_CONFIG_FILE.exists():
+        _logger.info(f"No local config detected for {config_name}, skipping conversion")
+        return None
+    with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
+        return yaml.safe_load(stream)
+
+
+def _combine_pump_setting_into_one_config():
+    """Combine the pump settings into one config.
+
+    The pump settings were split into two different configs, now they will be combined.
+    """
+    configuration = _get_local_config("convert pum settings")
+    if configuration is None:
+        return
+    # get the value from the config, if not exists fall back to default
+    pump_pins = configuration.get("PUMP_PINS", [14, 15, 18, 23, 24, 25, 8, 7, 17, 27])
+    pump_volume_flow = configuration.get("PUMP_VOLUMEFLOW", [30.0] * 10)
+    tube_volume = configuration.get("MAKER_TUBE_VOLUME", 0)
+    pump_config = []
+    for pin, volume_flow in zip(pump_pins, pump_volume_flow):
+        pump_config.append(PumpConfig(pin, volume_flow, tube_volume))
+    configuration["PUMP_CONFIG"] = pump_config
     with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
 
@@ -235,7 +266,7 @@ def _get_converted_value(new_type: type, default_value: Any, local_config: Any):
 class _Version:
     """Class to compare semantic version numbers."""
 
-    def __init__(self, version_number: Optional[str]) -> None:
+    def __init__(self, version_number: str | None) -> None:
         self.version = version_number
         # no version was found, just assume the worst, so using first version
         if version_number is None:

@@ -142,12 +142,13 @@ class ConfigClass:
 
 
 class PumpConfig(ConfigClass):
-    def __init__(self, pin: int, volume_flow: float):
+    def __init__(self, pin: int, volume_flow: float, tube_volume: int) -> None:
         self.pin = pin
         self.volume_flow = volume_flow
+        self.tube_volume = tube_volume
 
     def to_config(self):
-        return {"pin": self.pin, "volume_flow": self.volume_flow}
+        return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
 
 
 T = TypeVar("T", bound="ConfigClass")

@@ -58,7 +58,6 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | `MAKER_CLEAN_TIME`            | Time the machine will execute the cleaning program        |
     | `MAKER_MAX_HAND_INGREDIENTS`  | Max x ingredients are allowed to add by hand              |
     | `MAKER_CHECK_INTERNET`        | Do a connection check at start for time adjustment window |
-    | `MAKER_TUBE_VOLUME`           | Volume in ml to pump up when bottle is set to new         |
     | `MAKER_USE_RECIPE_VOLUME`     | Do not scale but use defined amounts                      |
     | `MAKER_ADD_SINGLE_INGREDIENT` | Allows spending single ingredient in maker view           |
 
@@ -67,8 +66,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 
     | Value Name             | Description                                                                              |
     | :--------------------- | :--------------------------------------------------------------------------------------- |
-    | `PUMP_PINS`            | List of the [Pins](#configuring-the-pins-or-used-board) where each Pump is connected     |
-    | `PUMP_VOLUMEFLOW`      | List of the according volume flow for each pump in ml/s                                  |
+    | `PUMP_CONFIG`          | List with config for each pump: pin, volume flow, tube volume to pump up                 |
     | `LED_PINS`             | List of pins connected to LEDs for preparation                                           |
     | `LED_BRIGHTNESS`       | Brightness for the WS281x LED (1-255)                                                    |
     | `LED_COUNT`            | Number of LEDs on the WS281x                                                             |
