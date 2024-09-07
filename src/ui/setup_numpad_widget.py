@@ -16,6 +16,7 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         header_text: str = "Password",
         use_float=False,
         overwrite_number: bool = False,
+        header_is_entered_number: bool = False,
     ):
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
@@ -31,7 +32,11 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
             obj.clicked.connect(lambda _, n=number: self.number_clicked(number=n))
         self.mainscreen = parent
         self.setWindowTitle(header_text)
-        self.LHeader.setText(header_text)
+        self.header_is_entered_number = header_is_entered_number
+        if header_is_entered_number:
+            self.LHeader.setText(le_to_write.text())
+        else:
+            self.LHeader.setText(header_text)
         self.source_line_edit = le_to_write
         self._add_float(use_float)
         self.show()
@@ -39,10 +44,10 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
 
     def number_clicked(self, number: int):
         """Add the clicked number to the lineedit."""
-        if self.overwrite_number:
-            self.source_line_edit.setText(f"{number}")
-            return
-        self.source_line_edit.setText(f"{self.source_line_edit.text()}{number}")
+        text = str(number) if self.overwrite_number else f"{self.source_line_edit.text()}{number}"
+        self.source_line_edit.setText(text)
+        if self.header_is_entered_number:
+            self.LHeader.setText(text)
 
     def enter_clicked(self):
         """Enters/Closes the Dialog."""
@@ -50,8 +55,10 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
 
     def del_clicked(self):
         """Delete the last digit in the lineedit."""
-        current_string = self.source_line_edit.text()
-        self.source_line_edit.setText(current_string[:-1])
+        current_string = self.source_line_edit.text()[:-1]
+        self.source_line_edit.setText(current_string)
+        if self.header_is_entered_number:
+            self.LHeader.setText(current_string)
 
     def _add_float(self, use_float: bool):
         if not use_float:

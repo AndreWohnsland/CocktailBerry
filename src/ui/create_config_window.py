@@ -149,7 +149,11 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: NumpadWidget(self, config_input, 300, 20, config_name))  # type: ignore
+        config_input.clicked.connect(
+            lambda: NumpadWidget(  # type: ignore
+                self, config_input, 300, 20, config_name, header_is_entered_number=True
+            )
+        )
         layout.addWidget(config_input)
         return lambda: int(config_input.text() or 0)
 
@@ -160,7 +164,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(
             lambda: NumpadWidget(  # type: ignore
-                self, config_input, 300, 20, config_name, True
+                self, config_input, 300, 20, config_name, True, header_is_entered_number=True
             )
         )
         layout.addWidget(config_input)
