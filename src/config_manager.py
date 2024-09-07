@@ -144,9 +144,9 @@ class ConfigManager:
             "PUMP_CONFIG": ListType(
                 DictType(
                     {
-                        "pin": ConfigType(int, [self._validate_pin_numbers]),
-                        "volume_flow": ConfigType(float, [_build_number_limiter(0.1, 1000)]),
-                        "tube_volume": ConfigType(int, [_build_number_limiter(0, 100)]),
+                        "pin": ConfigType(int, [self._validate_pin_numbers], prefix="Pin:"),
+                        "volume_flow": ConfigType(float, [_build_number_limiter(0.1, 1000)], suffix="ml/s"),
+                        "tube_volume": ConfigType(int, [_build_number_limiter(0, 100)], suffix="ml"),
                     },
                     PumpConfig,
                 ),
@@ -154,9 +154,9 @@ class ConfigManager:
             ),
             "MAKER_NAME": ConfigType(str, [_validate_max_length]),
             "MAKER_NUMBER_BOTTLES": ConfigType(int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
-            "MAKER_PREPARE_VOLUME": ListType(ConfigType(int, [_build_number_limiter(25, 1000)]), 1),
+            "MAKER_PREPARE_VOLUME": ListType(ConfigType(int, [_build_number_limiter(25, 1000)], suffix="ml"), 1),
             "MAKER_SIMULTANEOUSLY_PUMPS": ConfigType(int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
-            "MAKER_CLEAN_TIME": ConfigType(int, [_build_number_limiter()]),
+            "MAKER_CLEAN_TIME": ConfigType(int, [_build_number_limiter()], suffix="s"),
             "MAKER_PUMP_REVERSION": ConfigType(bool),
             "MAKER_REVERSION_PIN": ConfigType(int, [self._validate_pin_numbers]),
             "MAKER_SEARCH_UPDATES": ConfigType(bool),

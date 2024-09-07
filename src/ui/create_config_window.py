@@ -20,7 +20,15 @@ from src.config_manager import CONFIG as cfg
 from src.config_manager import ChooseType
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_font, create_spacer
+from src.ui.creation_utils import (
+    LARGE_FONT,
+    MEDIUM_FONT,
+    SMALL_FONT,
+    adjust_font,
+    create_button,
+    create_label,
+    create_spacer,
+)
 from src.ui.setup_color_window import ColorWindow
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
@@ -107,21 +115,32 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         """Build the input field and returns its getter function."""
         if layout is None:
             layout = self._choose_tab_container(config_name)
+
+        if config_setting.prefix is not None:
+            prefix_text = create_label(f" {config_setting.prefix}", MEDIUM_FONT)
+            layout.addWidget(prefix_text)
+
         config_type = config_setting.ui_type
         if config_type is int:
-            return self._build_int_field(layout, config_name, current_value)
-        if config_type is float:
-            return self._build_float_field(layout, config_name, current_value)
-        if config_type is bool:
-            return self._build_bool_field(layout, current_value)
-        if isinstance(config_setting, ListType):
-            return self._build_list_field(layout, config_name, current_value, config_setting)
-        if isinstance(config_setting, ChooseType):
+            field = self._build_int_field(layout, config_name, current_value)
+        elif config_type is float:
+            field = self._build_float_field(layout, config_name, current_value)
+        elif config_type is bool:
+            field = self._build_bool_field(layout, current_value)
+        elif isinstance(config_setting, ListType):
+            field = self._build_list_field(layout, config_name, current_value, config_setting)
+        elif isinstance(config_setting, ChooseType):
             selection = config_setting.allowed
-            return self._build_selection_filed(layout, current_value, selection)
-        if isinstance(config_setting, DictType):
-            return self._build_dict_field(layout, config_name, current_value, config_setting)
-        return self._build_fallback_field(layout, current_value)
+            field = self._build_selection_filed(layout, current_value, selection)
+        elif isinstance(config_setting, DictType):
+            field = self._build_dict_field(layout, config_name, current_value, config_setting)
+        else:
+            field = self._build_fallback_field(layout, current_value)
+
+        if config_setting.suffix is not None:
+            suffix_text = create_label(f"{config_setting.suffix} ", MEDIUM_FONT)
+            layout.addWidget(suffix_text)
+        return field
 
     def _build_int_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], int]:
         """Build a field for integer input with numpad."""

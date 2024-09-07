@@ -27,6 +27,9 @@ SUPPORTED_RFID = list(get_args(SupportedRfidType))
 class ConfigInterface(Protocol):
     """Interface for config values."""
 
+    prefix: str | None = None
+    suffix: str | None = None
+
     @abstractmethod
     def validate(self, configname: str, value: Any):
         """Validate the given value."""
@@ -78,6 +81,8 @@ class ConfigType(ConfigInterface):
 
     config_type: type[str] | type[int] | type[float] | type[bool]
     validator_functions: list[Callable[[str, Any], None]] = field(default_factory=list)
+    prefix: str | None = None
+    suffix: str | None = None
 
     def validate(self, configname: str, value: Any):
         """Validate the given value."""
@@ -100,11 +105,12 @@ class ListType(ConfigType):
         list_type: ConfigType,
         min_length: int | Callable[[], int],
         validator_functions: list[Callable[[str, Any], None]] = [],
+        prefix: str | None = None,
+        suffix: str | None = None,
     ):
         # ignore type here, since parent class should only expose other types not child types
-        self.config_type = list  # type: ignore
+        super().__init__(list, validator_functions, prefix, suffix)  # type: ignore
         self.list_type = list_type
-        self.validator_functions = validator_functions
         # might be a callable to allow dynamic min length, if dependent on other config values
         self.min_length = min_length
 
@@ -162,10 +168,11 @@ class DictType(ConfigType, Generic[T]):
         dict_types: dict[str, ConfigType],
         config_class: type[T],
         validator_functions: list[Callable[[str, Any], None]] = [],
+        prefix: str | None = None,
+        suffix: str | None = None,
     ):
         # ignore type here, since parent class should only expose other types not child types
-        self.config_type = dict  # type: ignore
-        self.validator_functions = validator_functions
+        super().__init__(dict, validator_functions, prefix, suffix)  # type: ignore
         self.dict_types = dict_types
         self.config_class = config_class
 
