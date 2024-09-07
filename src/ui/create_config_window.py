@@ -14,8 +14,16 @@ from PyQt5.QtWidgets import (
 )
 
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import ChooseType
-from src.config.config_types import BoolType, ConfigClass, ConfigInterface, DictType, FloatType, IntType, ListType
+from src.config.config_types import (
+    BoolType,
+    ChooseType,
+    ConfigClass,
+    ConfigInterface,
+    DictType,
+    FloatType,
+    IntType,
+    ListType,
+)
 from src.config.errors import ConfigError
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
