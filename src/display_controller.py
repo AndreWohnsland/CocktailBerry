@@ -22,8 +22,8 @@ from PyQt5.QtWidgets import (
 )
 
 from src import MAX_SUPPORTED_BOTTLES
-from src.config_manager import CONFIG as cfg
-from src.config_manager import shared
+from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE, DialogHandler
 from src.filepath import APP_ICON_FILE, STYLE_FOLDER

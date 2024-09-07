@@ -295,11 +295,11 @@ class ConfigManager:
             elif list_type is None:
                 list_type = type(default_value[0])
             config_class = config_type_mapping[list_type]
-            config_setting = ListType(config_class(list_type, list_validation_function), min_length)
+            config_setting = ListType(config_class(list_validation_function), min_length)
         else:
             config_type = type(default_value)
             config_class = config_type_mapping[config_type]
-            config_setting = config_class(config_type, validation_function)
+            config_setting = config_class(validation_function)
         self.config_type[config_name] = config_setting
 
     def add_selection_config(

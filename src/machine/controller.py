@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import qApp
 
-from src.config_manager import CONFIG as cfg
-from src.config_manager import shared
+from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import shared
 from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.leds import LedController

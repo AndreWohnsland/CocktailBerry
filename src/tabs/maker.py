@@ -7,8 +7,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from src.config_manager import CONFIG as cfg
-from src.config_manager import shared
+from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror

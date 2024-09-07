@@ -4,7 +4,7 @@ from random import randint
 from threading import Thread
 from typing import Protocol
 
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.machine.interface import PinController
 

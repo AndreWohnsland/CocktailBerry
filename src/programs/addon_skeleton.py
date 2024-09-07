@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 # You can delete the imports you don't need
 # For more information see: https://cocktailberry.readthedocs.io/addons/
 # Use the cfg to add your config / validation
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.config.errors import ConfigError
 
 # You can access the default database with help of the dbc

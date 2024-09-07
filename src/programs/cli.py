@@ -6,8 +6,8 @@ from typing import Optional
 import typer
 
 from src import PROJECT_NAME
-from src.config_manager import CONFIG as cfg
-from src.config_manager import show_start_message, version_callback
+from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import show_start_message, version_callback
 from src.migration.update_data import add_new_recipes_from_default_db
 from src.programs.addons import ADDONS, generate_addon_skeleton
 from src.programs.calibration import run_calibration

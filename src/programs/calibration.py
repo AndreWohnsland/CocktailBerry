@@ -3,7 +3,7 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.logger_handler import LoggerHandler

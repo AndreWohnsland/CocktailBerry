@@ -1,4 +1,4 @@
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.machine.interface import PinController
 from src.utils import time_print
 
