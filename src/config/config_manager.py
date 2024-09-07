@@ -137,10 +137,10 @@ class ConfigManager:
         # Dict of Format "configname": (type, List[CheckCallbacks])
         # The check function needs to be a callable with interface fn(configname, configvalue)
         self.config_type: dict[str, ConfigInterface] = {
-            "UI_DEVENVIRONMENT": BoolType(),
+            "UI_DEVENVIRONMENT": BoolType(check_name="Dev active"),
             "UI_MASTERPASSWORD": IntType(),
             "UI_MAKER_PASSWORD": IntType(),
-            "UI_LOCKED_TABS": ListType(BoolType(), 3, immutable=True),
+            "UI_LOCKED_TABS": ListType(BoolType(check_name="locked"), 3, immutable=True),
             "UI_LANGUAGE": ChooseOptions.language,
             "UI_WIDTH": IntType([build_number_limiter(1, 10000)]),
             "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),
