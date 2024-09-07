@@ -209,14 +209,12 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         h_container = QHBoxLayout()
         # need to get the current length of the layout, to get the indicator number
         current_position = container.count() + 1
-        position_number = QLabel(str(current_position))
-        position_number.setMinimumWidth(18)
-        position_number.setMaximumWidth(18)
+        position_number = create_label(str(current_position), font_size=10, min_w=18, max_w=18)
         h_container.addWidget(position_number)
         getter_fn = self._build_input_field(config_name, list_setting, initial_value, h_container)
-        remove_button = QPushButton("x")
-        remove_button.setMaximumWidth(30)
-        adjust_font(remove_button, MEDIUM_FONT, True)
+        remove_button = create_button(
+            " x ", font_size=MEDIUM_FONT, max_w=40, min_h=0, bold=True, css_class="destructive"
+        )
         # the first argument in lambda is needed since the object reference within the loop
         remove_button.clicked.connect(  # type: ignore[attr-defined]
             lambda _, x=h_container: self._remove_ui_element_from_list(x, getter_fn, getter_fn_list)
