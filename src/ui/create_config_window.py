@@ -2,19 +2,18 @@ from __future__ import annotations
 
 from typing import Any, Callable, Literal
 
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QBoxLayout,
     QCheckBox,
     QComboBox,
     QHBoxLayout,
-    QLabel,
     QMainWindow,
     QPushButton,
     QVBoxLayout,
 )
 
-from src.config.config_types import ConfigClass, ConfigInterface, DictType, ListType
+from src.config.config_types import BoolType, ConfigClass, ConfigInterface, DictType, FloatType, IntType, ListType
 from src.config.errors import ConfigError
 from src.config_manager import CONFIG as cfg
 from src.config_manager import ChooseType
@@ -117,18 +116,16 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             prefix_text = create_label(f" {config_setting.prefix}", MEDIUM_FONT)
             layout.addWidget(prefix_text)
 
-        config_type = config_setting.ui_type
-        if config_type is int:
+        if isinstance(config_setting, IntType):
             field = self._build_int_field(layout, config_name, current_value)
-        elif config_type is float:
+        elif isinstance(config_setting, FloatType):
             field = self._build_float_field(layout, config_name, current_value)
-        elif config_type is bool:
-            field = self._build_bool_field(layout, current_value)
+        elif isinstance(config_setting, BoolType):
+            field = self._build_bool_field(layout, current_value, config_setting.check_name)
         elif isinstance(config_setting, ListType):
             field = self._build_list_field(layout, config_name, current_value, config_setting)
         elif isinstance(config_setting, ChooseType):
-            selection = config_setting.allowed
-            field = self._build_selection_filed(layout, current_value, selection)
+            field = self._build_selection_filed(layout, current_value, config_setting.allowed)
         elif isinstance(config_setting, DictType):
             field = self._build_dict_field(layout, config_name, current_value, config_setting)
         else:

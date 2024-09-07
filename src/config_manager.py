@@ -18,15 +18,19 @@ from src import (
     __version__,
 )
 from src.config.config_types import (
+    BoolType,
     ChooseOptions,
     ChooseType,
     ConfigInterface,
-    ConfigType,
     DictType,
+    FloatType,
+    IntType,
     ListType,
     PumpConfig,
+    StringType,
 )
 from src.config.errors import ConfigError
+from src.config.validators import build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data
@@ -133,55 +137,55 @@ class ConfigManager:
         # Dict of Format "configname": (type, List[CheckCallbacks])
         # The check function needs to be a callable with interface fn(configname, configvalue)
         self.config_type: dict[str, ConfigInterface] = {
-            "UI_DEVENVIRONMENT": ConfigType(bool),
-            "UI_MASTERPASSWORD": ConfigType(int),
-            "UI_MAKER_PASSWORD": ConfigType(int),
-            "UI_LOCKED_TABS": ListType(ConfigType(bool), 3, immutable=True),
+            "UI_DEVENVIRONMENT": BoolType(),
+            "UI_MASTERPASSWORD": IntType(),
+            "UI_MAKER_PASSWORD": IntType(),
+            "UI_LOCKED_TABS": ListType(BoolType(), 3, immutable=True),
             "UI_LANGUAGE": ChooseOptions.language,
-            "UI_WIDTH": ConfigType(int, [_build_number_limiter(1, 10000)]),
-            "UI_HEIGHT": ConfigType(int, [_build_number_limiter(1, 3000)]),
-            "UI_PICTURE_SIZE": ConfigType(int, [_build_number_limiter(100, 1000)]),
+            "UI_WIDTH": IntType([build_number_limiter(1, 10000)]),
+            "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),
+            "UI_PICTURE_SIZE": IntType([build_number_limiter(100, 1000)]),
             "PUMP_CONFIG": ListType(
                 DictType(
                     {
-                        "pin": ConfigType(int, [self._validate_pin_numbers], prefix="Pin:"),
-                        "volume_flow": ConfigType(float, [_build_number_limiter(0.1, 1000)], suffix="ml/s"),
-                        "tube_volume": ConfigType(int, [_build_number_limiter(0, 100)], suffix="ml"),
+                        "pin": IntType([self._validate_pin_numbers], prefix="Pin:"),
+                        "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
+                        "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
                     },
                     PumpConfig,
                 ),
                 self.choose_bottle_number,
             ),
-            "MAKER_NAME": ConfigType(str, [_validate_max_length]),
-            "MAKER_NUMBER_BOTTLES": ConfigType(int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
-            "MAKER_PREPARE_VOLUME": ListType(ConfigType(int, [_build_number_limiter(25, 1000)], suffix="ml"), 1),
-            "MAKER_SIMULTANEOUSLY_PUMPS": ConfigType(int, [_build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
-            "MAKER_CLEAN_TIME": ConfigType(int, [_build_number_limiter()], suffix="s"),
-            "MAKER_PUMP_REVERSION": ConfigType(bool),
-            "MAKER_REVERSION_PIN": ConfigType(int, [self._validate_pin_numbers]),
-            "MAKER_SEARCH_UPDATES": ConfigType(bool),
-            "MAKER_CHECK_BOTTLE": ConfigType(bool),
-            "MAKER_PINS_INVERTED": ConfigType(bool),
+            "MAKER_NAME": StringType([validate_max_length]),
+            "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_PREPARE_VOLUME": ListType(IntType([build_number_limiter(25, 1000)], suffix="ml"), 1),
+            "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
+            "MAKER_PUMP_REVERSION": BoolType(),
+            "MAKER_REVERSION_PIN": IntType([self._validate_pin_numbers]),
+            "MAKER_SEARCH_UPDATES": BoolType(),
+            "MAKER_CHECK_BOTTLE": BoolType(),
+            "MAKER_PINS_INVERTED": BoolType(),
             "MAKER_BOARD": ChooseOptions.board,
             "MAKER_THEME": ChooseOptions.theme,
-            "MAKER_MAX_HAND_INGREDIENTS": ConfigType(int, [_build_number_limiter(0, 10)]),
-            "MAKER_CHECK_INTERNET": ConfigType(bool),
-            "MAKER_USE_RECIPE_VOLUME": ConfigType(bool),
-            "MAKER_ADD_SINGLE_INGREDIENT": ConfigType(bool),
-            "LED_PINS": ListType(ConfigType(int, [_build_number_limiter(0, 200)]), 0),
-            "LED_BRIGHTNESS": ConfigType(int, [_build_number_limiter(1, 255)]),
-            "LED_COUNT": ConfigType(int, [_build_number_limiter(1, 500)]),
-            "LED_NUMBER_RINGS": ConfigType(int, [_build_number_limiter(1, 10)]),
-            "LED_DEFAULT_ON": ConfigType(bool),
-            "LED_IS_WS": ConfigType(bool),
+            "MAKER_MAX_HAND_INGREDIENTS": IntType([build_number_limiter(0, 10)]),
+            "MAKER_CHECK_INTERNET": BoolType(),
+            "MAKER_USE_RECIPE_VOLUME": BoolType(),
+            "MAKER_ADD_SINGLE_INGREDIENT": BoolType(),
+            "LED_PINS": ListType(IntType([build_number_limiter(0, 200)]), 0),
+            "LED_BRIGHTNESS": IntType([build_number_limiter(1, 255)]),
+            "LED_COUNT": IntType([build_number_limiter(1, 500)]),
+            "LED_NUMBER_RINGS": IntType([build_number_limiter(1, 10)]),
+            "LED_DEFAULT_ON": BoolType(),
+            "LED_IS_WS": BoolType(),
             "RFID_READER": ChooseOptions.rfid,
-            "MICROSERVICE_ACTIVE": ConfigType(bool),
-            "MICROSERVICE_BASE_URL": ConfigType(str),
-            "TEAMS_ACTIVE": ConfigType(bool, []),
-            "TEAM_BUTTON_NAMES": ListType(ConfigType(str), 2),
-            "TEAM_API_URL": ConfigType(str),
-            "EXP_MAKER_UNIT": ConfigType(str),
-            "EXP_MAKER_FACTOR": ConfigType(float, [_build_number_limiter(0.01, 100)]),
+            "MICROSERVICE_ACTIVE": BoolType(),
+            "MICROSERVICE_BASE_URL": StringType(),
+            "TEAMS_ACTIVE": BoolType(),
+            "TEAM_BUTTON_NAMES": ListType(StringType(), 2),
+            "TEAM_API_URL": StringType(),
+            "EXP_MAKER_UNIT": StringType(),
+            "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
         }
         with contextlib.suppress(FileNotFoundError):
             self._read_config()
@@ -276,16 +280,26 @@ class ConfigManager:
         if not hasattr(self, config_name):
             setattr(self, config_name, default_value)
 
+        # Use internal type mapping for the config
+        config_type_mapping = {
+            str: StringType,
+            int: IntType,
+            float: FloatType,
+            bool: BoolType,
+        }
+
         # get the type of the config, define type and validation
         if isinstance(default_value, list):
             if list_type is None and len(default_value) == 0:
                 list_type = str
             elif list_type is None:
                 list_type = type(default_value[0])
-            config_setting = ListType(ConfigType(list_type, list_validation_function), min_length)
+            config_class = config_type_mapping[list_type]
+            config_setting = ListType(config_class(list_type, list_validation_function), min_length)
         else:
             config_type = type(default_value)
-            config_setting = ConfigType(config_type, validation_function)
+            config_class = config_type_mapping[config_type]
+            config_setting = config_class(config_type, validation_function)
         self.config_type[config_name] = config_setting
 
     def add_selection_config(
@@ -312,34 +326,6 @@ class ConfigManager:
         # Define a choose type for the add on
         addon_choose = ChooseType(options, validation_function)
         self.config_type[config_name] = addon_choose
-
-
-def _build_support_checker(supported: list[Any]):
-    """Build the function: Check if the configvalue is within the supported List."""
-
-    def check_if_supported(configname: str, configvalue: Any):
-        if configvalue in supported:
-            return
-        raise ConfigError(f"Value '{configvalue}' for {configname} is not supported, please use any of {supported}")
-
-    return check_if_supported
-
-
-def _validate_max_length(configname: str, data: str, max_len=30):
-    """Validate if data exceeds maximum length."""
-    if len(data) <= max_len:
-        return
-    raise ConfigError(f"{configname} is longer than {max_len}, please reduce length")
-
-
-def _build_number_limiter(min_val: int | float = 1, max_val: int | float = 100):
-    """Build the function: Check if the number is within the given limits."""
-
-    def limit_number(configname: str, data: int | float):
-        if data < min_val or data > max_val:
-            raise ConfigError(f"{configname} must be between {min_val} and {max_val}.")
-
-    return limit_number
 
 
 class Shared:

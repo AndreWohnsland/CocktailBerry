@@ -97,6 +97,56 @@ class ConfigType(ConfigInterface):
         return self.config_type
 
 
+class StringType(ConfigType):
+    """String configuration type."""
+
+    def __init__(
+        self,
+        validator_functions: list[Callable[[str, Any], None]] = [],
+        prefix: str | None = None,
+        suffix: str | None = None,
+    ):
+        super().__init__(str, validator_functions, prefix, suffix)
+
+
+class IntType(ConfigType):
+    """Integer configuration type."""
+
+    def __init__(
+        self,
+        validator_functions: list[Callable[[str, Any], None]] = [],
+        prefix: str | None = None,
+        suffix: str | None = None,
+    ):
+        super().__init__(int, validator_functions, prefix, suffix)
+
+
+class FloatType(ConfigType):
+    """Float configuration type."""
+
+    def __init__(
+        self,
+        validator_functions: list[Callable[[str, Any], None]] = [],
+        prefix: str | None = None,
+        suffix: str | None = None,
+    ):
+        super().__init__(float, validator_functions, prefix, suffix)
+
+
+class BoolType(ConfigType):
+    """Boolean configuration type."""
+
+    def __init__(
+        self,
+        validator_functions: list[Callable[[str, Any], None]] = [],
+        prefix: str | None = None,
+        suffix: str | None = None,
+        check_name: str = "on",
+    ):
+        super().__init__(bool, validator_functions, prefix, suffix)
+        self.check_name = check_name
+
+
 class ListType(ConfigType):
     """List configuration type."""
 
