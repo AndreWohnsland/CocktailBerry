@@ -98,14 +98,16 @@ def renew_bottles(w, bottles: list[int]):
     """Renews the bottles at given slot, flush the tubes if needed."""
     DB_COMMANDER.set_bottle_volumelevel_to_max(bottles)
     set_fill_level_bars(w)
-    # if a tube volume is defined, pump that amount up:
-    if cfg.MAKER_TUBE_VOLUME > 0:
-        # get the ingredients, set the Tube volume
-        ingredients = []
-        for num in bottles:
-            ing = DB_COMMANDER.get_ingredient_at_bottle(num)
-            ing.amount = cfg.MAKER_TUBE_VOLUME
+    ingredients = []
+    # check if any of those slots have a tube volume defined
+    for num in bottles:
+        ing = DB_COMMANDER.get_ingredient_at_bottle(num)
+        pump_config = cfg.PUMP_CONFIG[num - 1]
+        if pump_config.tube_volume > 0:
+            ing.amount = pump_config.tube_volume
             ingredients.append(ing)
+    # if there is at least one tube volume defined, flush the tubes
+    if ingredients:
         MACHINE.make_cocktail(w, ingredients, "renew", False)
     DP_CONTROLLER.say_bottles_renewed()
 
