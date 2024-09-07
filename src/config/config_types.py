@@ -107,12 +107,14 @@ class ListType(ConfigType):
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
+        immutable: bool = False,
     ):
         # ignore type here, since parent class should only expose other types not child types
         super().__init__(list, validator_functions, prefix, suffix)  # type: ignore
         self.list_type = list_type
         # might be a callable to allow dynamic min length, if dependent on other config values
         self.min_length = min_length
+        self.immutable = immutable
 
     def validate(self, configname: str, value: Any):
         """Validate the given value."""

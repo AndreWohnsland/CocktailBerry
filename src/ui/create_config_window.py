@@ -77,15 +77,13 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
     def _choose_display_style(self, config_name: str, config_setting: ConfigInterface):
         """Create the input face for the according config types."""
         # Add the elements header to the view
-        header = QLabel(f"{config_name}:")
-        adjust_font(header, LARGE_FONT, True)
+        header = create_label(f"{config_name}:", font_size=LARGE_FONT, bold=True)
         vbox = self._choose_tab_container(config_name)
         vbox.addWidget(header)
         description_text = UI_LANGUAGE.get_config_description(config_name)
         if description_text:
-            description = QLabel(description_text)
+            description = create_label(description_text, font_size=SMALL_FONT)
             description.setWordWrap(True)
-            adjust_font(description, SMALL_FONT)
             vbox.addWidget(description)
         # Reads out the current config value
         current_value = getattr(cfg, config_name)
@@ -99,10 +97,9 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
 
     def _build_custom_color_button(self, vbox: QVBoxLayout):
         """Build a button to edit custom theme."""
-        self.button_custom_color = QPushButton("Define Custom Color")
-        self.button_custom_color.setMaximumSize(QSize(16777215, 200))
-        self.button_custom_color.setMinimumSize(QSize(0, 50))
-        adjust_font(self.button_custom_color, LARGE_FONT, True)
+        self.button_custom_color = create_button(
+            "Define Custom Color", min_w=0, max_w=16777215, max_h=200, min_h=50, font_size=LARGE_FONT, bold=True
+        )
         self.button_custom_color.clicked.connect(self._open_color_window)  # type: ignore
         vbox.addWidget(self.button_custom_color)
 
@@ -179,19 +176,29 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         """Build a list of fields for a list input."""
         config_input = QVBoxLayout()
         getter_fn_list: list[Callable] = []
+        # in case there was an alteration of the config file, immutable lists may have less elements
+        # than they should have, so we need to add empty strings to the list
+        if config_setting.immutable:
+            min_length = (
+                config_setting.min_length if isinstance(config_setting.min_length, int) else config_setting.min_length()
+            )
+            current_value += [""] * max(0, (min_length - len(current_value)))
+            # also cut off the list in case there are too many elements
+            current_value = current_value[:min_length]
         # iterate over each list value and build the according field
         for initial_value in current_value:
             self._add_ui_element_to_list(initial_value, getter_fn_list, config_name, config_input, config_setting)
-        # adds a button for adding new list entries
-        add_button = QPushButton("+ add")
-        adjust_font(add_button, MEDIUM_FONT, True)
-        add_button.clicked.connect(  # type: ignore[attr-defined]
-            lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input, config_setting)
-        )
         # build container that new added elements are above add button separately
         v_container = QVBoxLayout()
         v_container.addLayout(config_input)
-        v_container.addWidget(add_button)
+        # adds a button for adding new list entries if it is not immutable
+        if not config_setting.immutable:
+            add_button = create_button("+ add", font_size=MEDIUM_FONT, min_h=0, bold=True, css_class="neutral")
+            add_button.clicked.connect(  # type: ignore[attr-defined]
+                lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input, config_setting)
+            )
+
+            v_container.addWidget(add_button)
         layout.addLayout(v_container)
         return lambda: [x() for x in getter_fn_list]
 
@@ -212,14 +219,15 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         position_number = create_label(str(current_position), font_size=10, min_w=18, max_w=18)
         h_container.addWidget(position_number)
         getter_fn = self._build_input_field(config_name, list_setting, initial_value, h_container)
-        remove_button = create_button(
-            " x ", font_size=MEDIUM_FONT, max_w=40, min_h=0, bold=True, css_class="destructive"
-        )
-        # the first argument in lambda is needed since the object reference within the loop
-        remove_button.clicked.connect(  # type: ignore[attr-defined]
-            lambda _, x=h_container: self._remove_ui_element_from_list(x, getter_fn, getter_fn_list)
-        )
-        h_container.addWidget(remove_button)
+        if not config_setting.immutable:
+            remove_button = create_button(
+                " x ", font_size=MEDIUM_FONT, max_w=40, min_h=0, bold=True, css_class="destructive"
+            )
+            # the first argument in lambda is needed since the object reference within the loop
+            remove_button.clicked.connect(  # type: ignore[attr-defined]
+                lambda _, x=h_container: self._remove_ui_element_from_list(x, getter_fn, getter_fn_list)
+            )
+            h_container.addWidget(remove_button)
         container.addLayout(h_container)
         getter_fn_list.append(getter_fn)
 

@@ -136,7 +136,7 @@ class ConfigManager:
             "UI_DEVENVIRONMENT": ConfigType(bool),
             "UI_MASTERPASSWORD": ConfigType(int),
             "UI_MAKER_PASSWORD": ConfigType(int),
-            "UI_LOCKED_TABS": ListType(ConfigType(bool), 3),
+            "UI_LOCKED_TABS": ListType(ConfigType(bool), 3, immutable=True),
             "UI_LANGUAGE": ChooseOptions.language,
             "UI_WIDTH": ConfigType(int, [_build_number_limiter(1, 10000)]),
             "UI_HEIGHT": ConfigType(int, [_build_number_limiter(1, 3000)]),
