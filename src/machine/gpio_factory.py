@@ -1,6 +1,6 @@
 """Module to create the according GPIO controller for the appropriate Board."""
 
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.machine.generic_board import GenericGPIO
 from src.machine.interface import GPIOController
 from src.machine.raspberry import RaspberryGPIO

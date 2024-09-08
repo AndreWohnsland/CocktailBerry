@@ -5,7 +5,7 @@ from typing import Optional
 
 import requests
 
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.logger_handler import LogFiles, LoggerHandler
 from src.models import Cocktail

@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QPushButton, QWidget
 from pyqtspinner import WaitingSpinner
 
 from src import SupportedThemesType
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.filepath import STYLE_FOLDER
 
 if TYPE_CHECKING:

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QMainWindow
 
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER

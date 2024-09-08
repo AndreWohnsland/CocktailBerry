@@ -14,7 +14,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QFileDialog
 
 from src import __version__
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.filepath import APP_ICON_FILE, LANGUAGE_FILE, STYLE_FOLDER
 from src.logger_handler import LoggerHandler
 from src.ui_elements.addonmanager import Ui_AddonManager

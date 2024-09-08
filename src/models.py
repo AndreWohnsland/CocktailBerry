@@ -2,7 +2,7 @@ import copy
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 
 
 @dataclass

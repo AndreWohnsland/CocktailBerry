@@ -2,7 +2,7 @@ import time
 from threading import Thread
 from typing import Callable, Optional
 
-from src.config_manager import CONFIG as cfg
+from src.config.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.machine.interface import RFIDController
 

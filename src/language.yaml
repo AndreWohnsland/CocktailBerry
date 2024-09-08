@@ -539,8 +539,8 @@ ui:
       en: 'Password for tabs other than the maker one, use 0 for no password'
       de: 'Passwort alle Tabs, außer den Maker Tab, verwende 0 um kein Passwort zu verwenden'
     UI_LOCKED_TABS:
-      en: 'Tabs, which should only be accessible with password, 1: Ingredients, 2: Recipes, 3: Bottles'
-      de: 'Tabs, die nur mit Passwort zugänglich sein sollen, 1: Zutaten, 2: Rezepte, 3: Flaschen'
+      en: 'Tabs, which should only be accessible with the maker password, 1: Ingredients, 2: Recipes, 3: Bottles'
+      de: 'Tabs, die nur mit dem Maker Passwort zugänglich sein sollen, 1: Zutaten, 2: Rezepte, 3: Flaschen'
     UI_LANGUAGE:
       en: 'Displayed language of the program'
       de: 'Spracheinstellung vom Programm'
@@ -553,12 +553,9 @@ ui:
     UI_PICTURE_SIZE:
       en: 'Approximate size of the picture in the maker tab, will try to scale to this size. Will use nearest size to fit a full number of pictures per row.'
       de: 'Ungefähre Größe des Bildes im Maker Tab, wird versucht auf diese Größe zu skalieren. Wird die nächste Größe verwenden, um eine ganze Anzahl an Bildern pro Reihe zu haben.'
-    PUMP_PINS:
-      en: 'Pin number of each connected pump'
-      de: 'Pin Nummer für jede verbunden Pumpe'
-    PUMP_VOLUMEFLOW:
-      en: 'Volume flow in ml/s for according pump'
-      de: 'Volumenstrom in ml/s der zugehörigen Pumpe'
+    PUMP_CONFIG:
+      en: 'Setting for each pump: Pin connected to the pump, volume flow in ml/s, tube volume to the pump in ml (used to pump given volume after a bottle change)'
+      de: 'Einstellung für jede Pumpe: Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen zur Pumpe in ml (wird verwendet, um das gegebene Volumen nach einem Flaschenwechsel zu pumpen)'
     MAKER_NAME:
       en: 'Name of your CocktailBerry machine'
       de: 'Name von deiner CocktailBerry Maschine'
@@ -601,9 +598,6 @@ ui:
     MAKER_CHECK_INTERNET:
       en: 'Checks if machine is connected to the internet at startup'
       de: 'Prüft ob beim Programmstart eine Internetverbindung besteht'
-    MAKER_TUBE_VOLUME:
-      en: 'Empty tube volume from bottle to pump'
-      de: 'Leeres Schlauchvolumen von Flasche zu Pumpe'
     MAKER_USE_RECIPE_VOLUME:
       en: 'Use recipe volume instead of scaling to defined volume. This disables scaling of cocktail amount in the maker tab.'
       de: 'Verwende Rezept Volumen anstatt Skalierung auf definiertes Volumen. Dies deaktiviert die Skalierung von Cocktail Menge im Maker Tab.'

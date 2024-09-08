@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import qApp
 
-from src.config_manager import CONFIG as cfg
-from src.config_manager import shared
+from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import shared
 from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.leds import LedController
@@ -182,7 +182,8 @@ class MachineController:
 
     def set_up_pumps(self):
         """Get all used pins, prints pins and uses controller class to set up."""
-        active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
+        used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
+        active_pins = [x.pin for x in used_config]
         time_print(f"<i> Initializing Pins: {active_pins}")
         self.pin_controller.initialize_pin_list(active_pins)
         self._reverter.initialize_pin()
@@ -195,7 +196,8 @@ class MachineController:
 
     def close_all_pumps(self):
         """Close all pins connected to the pumps."""
-        active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
+        used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
+        active_pins = [x.pin for x in used_config]
         self._stop_pumps(active_pins)
 
     def cleanup(self):
@@ -234,10 +236,10 @@ def _build_preparation_data(
     for ing in ingredient_list:
         if ing.bottle is None:  # bottle should never be None at this point
             continue
-        volume_flow = cfg.PUMP_VOLUMEFLOW[ing.bottle - 1] * ing.pump_speed / 100
+        volume_flow = cfg.PUMP_CONFIG[ing.bottle - 1].volume_flow * ing.pump_speed / 100
         prep_data.append(
             _PreparationData(
-                cfg.PUMP_PINS[ing.bottle - 1],
+                cfg.PUMP_CONFIG[ing.bottle - 1].pin,
                 volume_flow,
                 round(ing.amount / volume_flow, 1),
                 recipe_order=ing.recipe_order,
@@ -248,8 +250,9 @@ def _build_preparation_data(
 
 def _build_clean_data() -> list[_PreparationData]:
     """Build a list of needed cleaning data objects."""
-    active_pins = cfg.PUMP_PINS[: cfg.MAKER_NUMBER_BOTTLES]
-    volume_flow = cfg.PUMP_VOLUMEFLOW[: cfg.MAKER_NUMBER_BOTTLES]
+    used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
+    active_pins = [x.pin for x in used_config]
+    volume_flow = [x.volume_flow for x in used_config]
     prep_data = []
     for pin, flow in zip(active_pins, volume_flow):
         prep_data.append(_PreparationData(pin, flow, cfg.MAKER_CLEAN_TIME))
