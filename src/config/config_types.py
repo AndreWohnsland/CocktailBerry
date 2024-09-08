@@ -186,6 +186,7 @@ class ListType(ConfigType):
 
 
 class ConfigClass:
+    # keep method to show that child implementation have at least one attribute for initialization
     def __init__(self, **kwargs) -> None:
         pass
 
