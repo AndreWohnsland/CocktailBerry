@@ -598,9 +598,6 @@ ui:
     MAKER_CHECK_INTERNET:
       en: 'Checks if machine is connected to the internet at startup'
       de: 'Prüft ob beim Programmstart eine Internetverbindung besteht'
-    MAKER_TUBE_VOLUME:
-      en: 'Empty tube volume from bottle to pump'
-      de: 'Leeres Schlauchvolumen von Flasche zu Pumpe'
     MAKER_USE_RECIPE_VOLUME:
       en: 'Use recipe volume instead of scaling to defined volume. This disables scaling of cocktail amount in the maker tab.'
       de: 'Verwende Rezept Volumen anstatt Skalierung auf definiertes Volumen. Dies deaktiviert die Skalierung von Cocktail Menge im Maker Tab.'
