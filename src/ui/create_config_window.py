@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Literal
+from typing import Any, Callable, Literal, Union
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -42,6 +42,8 @@ from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui_elements import Ui_ConfigWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.utils import restart_program
+
+CONFIG_TYPES_POSSIBLE = Union[str, int, float, bool, list[Any], dict[str, Any]]
 
 
 class ConfigWindow(QMainWindow, Ui_ConfigWindow):
@@ -108,14 +110,14 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             "Define Custom Color", min_w=0, max_w=16777215, max_h=200, min_h=50, font_size=LARGE_FONT, bold=True
         )
         self.button_custom_color.clicked.connect(self._open_color_window)  # type: ignore
-        vbox.addWidget(self.button_custom_color)
+        vbox.addWidget(self.button_custom_color)  # type: ignore[arg-type]
 
     def _open_color_window(self):
         self.color_window = ColorWindow(self.mainscreen)
 
     def _build_input_field(
         self, config_name: str, config_setting: ConfigInterface, current_value: Any, layout: QBoxLayout | None = None
-    ):
+    ) -> Callable[[], CONFIG_TYPES_POSSIBLE]:
         """Build the input field and returns its getter function."""
         if layout is None:
             layout = self._choose_tab_container(config_name)
@@ -125,7 +127,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             layout.addWidget(prefix_text)
 
         if isinstance(config_setting, IntType):
-            field = self._build_int_field(layout, config_name, current_value)
+            field: Callable[[], CONFIG_TYPES_POSSIBLE] = self._build_int_field(layout, config_name, current_value)
         elif isinstance(config_setting, FloatType):
             field = self._build_float_field(layout, config_name, current_value)
         elif isinstance(config_setting, BoolType):

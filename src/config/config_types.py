@@ -238,7 +238,7 @@ class DictType(ConfigType, Generic[T]):
             key_text = f"{configname} key {key_name}"
             key_type.validate(key_text, key_value)
 
-    def from_config(self, config_dict: dict[str, Any]) -> T:
+    def from_config(self, config_dict: dict[str, Any]) -> ConfigClass:
         """Deserialize the given value."""
         return self.config_class.from_config(config_dict)
 
