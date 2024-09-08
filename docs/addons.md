@@ -164,7 +164,7 @@ Also use an appropriate, not too long name, as well as all capital letters and u
 You can have a look at the other values as a reference.
 
 ```python
-from src.config_manager import CONFIG as cfg # (1)!
+from src.config.config_manager import CONFIG as cfg # (1)!
 
 def setup(self):
     cfg.add_config("ADDON_CONFIG", "DefaultValue") # (2)!
