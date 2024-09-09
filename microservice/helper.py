@@ -3,7 +3,8 @@ from typing import Dict, List, Tuple
 
 DEFAULT_HOOK_EP = "enpointforhook"
 DEFAULT_API_KEY = "readdocshowtoget"
-API_ENDPOINT = "https://cocktailberryapi-1-u0613408.deta.app/cocktail"
+OLD_API_ENDPOINT = "https://cocktailberryapi-1-u0613408.deta.app/cocktail"
+API_ENDPOINT = "https://api.cocktailberry.org/api/v1/cocktail"
 
 
 def generate_urls_and_headers() -> List[Tuple[str, Dict[str, str]]]:
@@ -13,9 +14,7 @@ def generate_urls_and_headers() -> List[Tuple[str, Dict[str, str]]]:
     hook_headers_config = os.getenv("HOOK_HEADERS", None)
     if hook_headers_config is None:
         # If no headers are set, use common content type
-        hook_headers = {
-            "content-type": "application/json"
-        }
+        hook_headers = {"content-type": "application/json"}
     else:
         # Split the header config into a list
         # the config is header:value,header2:value2
@@ -29,8 +28,18 @@ def generate_urls_and_headers() -> List[Tuple[str, Dict[str, str]]]:
     use_api = (api_key != DEFAULT_API_KEY) and (api_key is not None)
     endpoint_data = []
     if use_hook:
-        endpoint_data.append((hook_url, hook_headers,))
+        endpoint_data.append(
+            (
+                hook_url,
+                hook_headers,
+            )
+        )
     if use_api:
-        endpoint_data.append((API_ENDPOINT, api_headers,))
+        endpoint_data.append(
+            (
+                API_ENDPOINT,
+                api_headers,
+            )
+        )
 
     return endpoint_data
