@@ -3,6 +3,8 @@ import requests
 from flask import Flask
 from database import DatabaseHandler
 
+from helper import API_ENDPOINT, OLD_API_ENDPOINT
+
 
 def try_send_query_data(app: Flask):
     db_handler = DatabaseHandler()
@@ -13,6 +15,9 @@ def try_send_query_data(app: Flask):
     # Else try to send all remaining data
     app.logger.info("Found some not sended data, trying to send ...")
     for send_id, data, url, headers in failed_data:
+        # overwrite old endpoint
+        if url == OLD_API_ENDPOINT:
+            url = API_ENDPOINT
         try:
             res = requests.post(url, data=data, headers=json.loads(headers), timeout=10)
             app.logger.info(f"Code: {res.status_code}, to: {url}, Payload: {data}")
