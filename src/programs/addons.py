@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 from src import __version__
 from src.filepath import ADDON_FOLDER, ADDON_SKELTON
 from src.logger_handler import LoggerHandler
+from src.utils import time_print
 
 _SupportedActions = Literal["setup", "cleanup", "before_cocktail", "after_cocktail"]
 _logger = LoggerHandler("AddonManager")
@@ -63,7 +64,7 @@ class AddOnManager:
         """Execute all the setup function of the addons."""
         if self.addons:
             addon_string = ", ".join(list(self.addons.keys()))
-            print(f"Used Addons: {addon_string}")
+            time_print(f"Used Addons: {addon_string}")
         self._try_function_for_addons("setup")
         atexit.register(self.cleanup_addons)
 

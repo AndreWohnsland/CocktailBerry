@@ -33,7 +33,7 @@ from src.config.errors import ConfigError
 from src.config.validators import build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
-from src.utils import get_platform_data
+from src.utils import get_platform_data, time_print
 
 logger = LoggerHandler("config_manager")
 
@@ -355,8 +355,8 @@ def show_start_message(machine_name: str = PROJECT_NAME):
     figlet = Figlet()
     start_message = f"{machine_name} Version {__version__}"
     print(figlet.renderText(start_message))
-    print(start_message)
-    print(get_platform_data())
+    time_print(start_message)
+    time_print(str(get_platform_data()))
 
 
 shared = Shared()

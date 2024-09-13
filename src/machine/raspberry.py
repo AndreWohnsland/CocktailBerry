@@ -31,7 +31,7 @@ class RpiController(PinController):
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True):
         """Set up the given pin list."""
         if not self.dev_displayed:
-            print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
+            time_print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
         if not self.devenvironment:
             # if it is an input, we need to set the pull up down to down or up
