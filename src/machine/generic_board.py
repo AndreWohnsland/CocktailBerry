@@ -2,6 +2,7 @@ from typing import Optional
 
 from src.logger_handler import LoggerHandler
 from src.machine.interface import GPIOController, PinController
+from src.utils import time_print
 
 logger = LoggerHandler("GenericController")
 
@@ -31,7 +32,7 @@ class GenericController(PinController):
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True):
         """Set up the given pin list."""
         if not self.dev_displayed:
-            print(f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}")
+            time_print(f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
 
         # high is also output, but other default value

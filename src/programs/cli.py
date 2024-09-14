@@ -15,7 +15,7 @@ from src.programs.clearing import clear_local_database
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
-from src.utils import generate_custom_style_file, start_resource_tracker
+from src.utils import generate_custom_style_file, start_resource_tracker, time_print
 
 cli = typer.Typer(add_completion=False)
 
@@ -45,7 +45,7 @@ def main(
     cfg.sync_config_to_file()
     if debug:
         os.environ.setdefault("DEBUG_MS", "True")
-        print("Using debug mode")
+        time_print("Using debug mode")
     generate_custom_style_file()
     if calibration:
         run_calibration()

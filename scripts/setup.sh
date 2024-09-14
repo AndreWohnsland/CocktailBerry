@@ -12,6 +12,15 @@ is_raspberry_pi() {
   fi
 }
 
+# check if the model is a Raspberry Pi5
+is_raspberry_pi5() {
+  if grep -q "Raspberry Pi 5" /proc/device-tree/model 2>/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 echo "Installing updates, this may take a while..."
 sudo apt update && sudo sudo apt -y full-upgrade
 
@@ -92,6 +101,12 @@ else
   # try to install mfrc522, this will probably fail on non raspberry pi devices
   if is_raspberry_pi; then
     pip install mfrc522 rpi_ws281x || echo "ERROR: Could not install mfrc522, are you on a Raspberry Pi?"
+    # the rpi5 is a tricky thing, so we need a new gpi controller and add also the user to this group
+  fi
+  if is_raspberry_pi5; then
+    pip install gpiozero || echo "ERROR: Could not install gpiozero, are you on a Raspberry Pi5?"
+    sudo usermod -aG gpio "$(whoami)"
+    newgrp gpio
   fi
   # try to install python-periphery, so other devices may also use the gpio
   pip install python-periphery || echo "ERROR: Could not install python-periphery, if you are on a RPi, this is not needed"
