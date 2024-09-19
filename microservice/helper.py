@@ -22,7 +22,7 @@ def generate_urls_and_headers() -> List[Tuple[str, Dict[str, str]]]:
         hook_headers = dict([x.split(":") for x in headers])
     api_headers = {
         "content-type": "application/json",
-        "X-Space-App-Key": api_key,
+        "x-api-key": api_key,
     }
     use_hook = (hook_url != DEFAULT_HOOK_EP) and (hook_url is not None)
     use_api = (api_key != DEFAULT_API_KEY) and (api_key is not None)
