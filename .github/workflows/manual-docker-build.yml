@@ -26,9 +26,6 @@ jobs:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
 
-      - name: "Sanity check: cat content from microservice/helper.py"
-        run: cat ./microservice/helper.py
-
       - name: 🐳 Set up QEMU
         uses: docker/setup-qemu-action@v3
 
