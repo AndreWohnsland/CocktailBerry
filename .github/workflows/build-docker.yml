@@ -1,24 +1,58 @@
-name: Build & publish CocktailBerry images
+name: Update version, build & publish CocktailBerry images
+run-name: "Version: ${{ github.event.release.tag_name }}, build and publish images"
 on:
   release:
     types: [published]
 
 jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}  # This refers to the branch/tag associated with the release
+          fetch-depth: 0  # Fetch full history to allow branch operations
+
+      - name: Extract version from release tag
+        id: get_version
+        run: |
+          # Extract the version from the tag and remove the "v"
+          VERSION="${{ github.event.release.tag_name }}"
+          VERSION=${VERSION#v}
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Update version in src/__init__.py
+        run: |
+          sed -i "s/__version__ = \".*\"/__version__ = \"${{ steps.get_version.outputs.version }}\"/" src/__init__.py
+
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i "s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" pyproject.toml
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "Update version to ${{ github.event.release.tag_name }}"
+          git push origin HEAD:${{ github.ref_name }}
+
   build-and-push-image:
     runs-on: ubuntu-latest
+    needs: update-version
     strategy:
       fail-fast: false
       matrix:
         include:
           - dockerfile: ./microservice/Dockerfile
             image: andrewo92/cocktailberry-microservice
-            context: ./microservice/
+            context: ./microservice
           - dockerfile: ./dashboard/backend/Dockerfile
             image: andrewo92/cocktailberry-dashboard-be
-            context: ./dashboard/backend/
+            context: ./dashboard/backend
           - dockerfile: ./dashboard/frontend/Dockerfile
             image: andrewo92/cocktailberry-dashboard-fe
-            context: ./dashboard/frontend/
+            context: ./dashboard/frontend
     permissions:
       contents: read
       packages: write
@@ -50,14 +84,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: 📂 Cache pip packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
       - name: 🍸 Build and push Docker image CocktailBerry
         uses: docker/build-push-action@v5
         with:
@@ -67,3 +93,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          no-cache: true
