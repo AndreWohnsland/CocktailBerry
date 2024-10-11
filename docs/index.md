@@ -17,6 +17,7 @@ Here you will find everything to get started!
 It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
 
 <div class="mid-flex">
+  <a href="https://cocktailberry.org/" class="cta-btn secondary-btn"> Homepage </a>
   <a href="quickstart/" class="cta-btn primary-btn"> Quickstart </a>
   <a href="setup/" class="cta-btn secondary-btn"> Set Up </a>
 </div>
