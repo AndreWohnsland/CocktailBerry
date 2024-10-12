@@ -118,6 +118,7 @@ If you want to support this project, feel free to fork it and create your own pu
 To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md). Here is a general list of features or refactoring things, I may do in the future. With your help, these things come even faster! If your idea is not on the list, feel free to open a feature request, I may consider it!
 
 - `easy`: Translate all dialogs / UI to your native language
+- `medium`: Help to move to v2 with API based control and a separate UI
 - `easy-hard`: Implement a cool [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) and make it verified
 
 # Development
