@@ -131,7 +131,7 @@ class Rpi5Controller(PinController):
                     self.gpios[pin] = InputDevice(pin, pull_up=pull_up)
                 else:
                     # Initialize OutputDevice with active_high based on the inverted flag
-                    self.gpios[pin] = OutputDevice(pin, initial_value=self.low, active_high=self.active_high)
+                    self.gpios[pin] = OutputDevice(pin, initial_value=False, active_high=self.active_high)
             except Exception as e:
                 # Catch any error and continue, printing the pin and error message
                 logger.log_event("WARNING", f"Error: Could not initialize GPIO pin {pin}. Reason: {e!s}")
