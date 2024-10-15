@@ -229,12 +229,14 @@ def _combine_pump_setting_into_one_config():
         return
     # get the value from the config, if not exists fall back to default
     pump_pins = configuration.get("PUMP_PINS", [14, 15, 18, 23, 24, 25, 8, 7, 17, 27])
-    pump_volume_flow = configuration.get("PUMP_VOLUMEFLOW", [30.0] * 10)
+    pump_volume_flow = configuration.get("PUMP_VOLUMEFLOW", [30.0] * 24)
     tube_volume = configuration.get("MAKER_TUBE_VOLUME", 0)
-    pump_config = []
+    pump_config: list[PumpConfig] = []
     for pin, volume_flow in zip(pump_pins, pump_volume_flow):
         pump_config.append(PumpConfig(pin, volume_flow, tube_volume))
     configuration["PUMP_CONFIG"] = pump_config
+    # also "fix" pump count, since it did happen that number of pump config was lower than this value
+    configuration["MAKER_NUMBER_BOTTLES"] = len(pump_config)
     with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
 
