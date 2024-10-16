@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 import random
+import sys
 from typing import Any, Callable, ClassVar
 
 import typer
@@ -187,6 +188,14 @@ class ConfigManager:
             "EXP_MAKER_UNIT": StringType(),
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
         }
+        self.read_local_config()
+
+    def read_local_config(self):
+        """Read the local config file and set the values if they are valid.
+
+        Might throw a ConfigError if the config is not valid.
+        Ignore the error if the file is not found, as it is created at the first start of the program.
+        """
         with contextlib.suppress(FileNotFoundError):
             self._read_config()
 
@@ -360,4 +369,13 @@ def show_start_message(machine_name: str = PROJECT_NAME):
 
 
 shared = Shared()
-CONFIG = ConfigManager()
+# try to load the config, in case of error, print it and exit
+# this is less confusing than a stacktrace
+try:
+    CONFIG = ConfigManager()
+except ConfigError as e:
+    logger.error(f"Config Error: {e}")
+    logger.log_exception(e)
+    time_print(f"Config Error: {e}, please check the config file.")
+    time_print(f"You can edit the file at: {CUSTOM_CONFIG_FILE}")
+    sys.exit(1)
