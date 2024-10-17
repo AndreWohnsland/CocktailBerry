@@ -127,7 +127,7 @@ class DialogHandler:
 
     def password_prompt(
         self,
-        right_password: int = cfg.UI_MASTERPASSWORD,
+        right_password: int,
         header_type: Literal["master", "maker"] = "master",
     ):
         """Open a password prompt, return if successful entered password.
