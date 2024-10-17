@@ -21,7 +21,7 @@ except ModuleNotFoundError:
 
 class LedController:
     def __init__(self, pin_controller: PinController) -> None:
-        self.pin_controller = pin_controller
+        self._pin_controller = pin_controller
         self.pins = cfg.LED_PINS
         enabled = len(cfg.LED_PINS) > 0
         self.controllable = cfg.LED_IS_WS and MODULE_AVAILABLE
@@ -34,7 +34,7 @@ class LedController:
             return
         # If not controllable use normal LEDs
         if not cfg.LED_IS_WS:
-            self.led_list = [_normalLED(pin, self.pin_controller) for pin in self.pins]
+            self.led_list = [_normalLED(pin, self._pin_controller) for pin in self.pins]
             return
         # If controllable try to set up the WS281x LEDs
         try:
@@ -76,21 +76,21 @@ class _LED(Protocol):
 
 
 class _normalLED(_LED):
-    def __init__(self, pin: int, pin_controller: PinController) -> None:
+    def __init__(self, pin: int, _pin_controller: PinController) -> None:
         self.pin = pin
-        self.pin_controller = pin_controller
-        self.pin_controller.initialize_pin_list([self.pin])
+        self._pin_controller = _pin_controller
+        self._pin_controller.initialize_pin_list([self.pin])
 
     def __del__(self):
-        self.pin_controller.cleanup_pin_list([self.pin])
+        self._pin_controller.cleanup_pin_list([self.pin])
 
     def turn_on(self):
         """Turn the LEDs on."""
-        self.pin_controller.activate_pin_list([self.pin])
+        self._pin_controller.activate_pin_list([self.pin])
 
     def turn_off(self):
         """Turn the LEDs off."""
-        self.pin_controller.close_pin_list([self.pin])
+        self._pin_controller.close_pin_list([self.pin])
 
     def preparation_start(self):
         """Turn the LED on during preparation."""

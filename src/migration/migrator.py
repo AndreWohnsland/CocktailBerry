@@ -17,7 +17,6 @@ from typing import Any
 import yaml
 
 from src import FUTURE_PYTHON_VERSION, __version__
-from src.config.config_types import PumpConfig
 from src.filepath import CUSTOM_CONFIG_FILE, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, VERSION_FILE
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
@@ -228,15 +227,21 @@ def _combine_pump_setting_into_one_config():
     if configuration is None:
         return
     # get the value from the config, if not exists fall back to default
-    pump_pins = configuration.get("PUMP_PINS", [14, 15, 18, 23, 24, 25, 8, 7, 17, 27])
-    pump_volume_flow = configuration.get("PUMP_VOLUMEFLOW", [30.0] * 24)
+    pump_pins = configuration.get("PUMP_PINS")
+    if pump_pins is None:
+        pump_pins = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
+        _logger.info("No pump pins found in config, using fallback pins")
+    pump_volume_flow = configuration.get("PUMP_VOLUMEFLOW")
+    if pump_volume_flow is None:
+        pump_volume_flow = [30.0] * len(pump_pins)
+        _logger.info("No pump volume flow found in config, using fallback volume flow")
     tube_volume = configuration.get("MAKER_TUBE_VOLUME", 0)
-    pump_config: list[PumpConfig] = []
+    _logger.info(f"Using for migration: {tube_volume=}, {pump_pins=}, {pump_volume_flow=}")
+    pump_config: list[dict] = []
+    # we just read in the plain dict but not the classes in the migrator, so keep this in mind.
     for pin, volume_flow in zip(pump_pins, pump_volume_flow):
-        pump_config.append(PumpConfig(pin, volume_flow, tube_volume))
+        pump_config.append({"pin": pin, "volume_flow": volume_flow, "tube_volume": tube_volume})
     configuration["PUMP_CONFIG"] = pump_config
-    # also "fix" pump count, since it did happen that number of pump config was lower than this value
-    configuration["MAKER_NUMBER_BOTTLES"] = len(pump_config)
     with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
 

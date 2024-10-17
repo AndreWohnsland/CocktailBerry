@@ -35,12 +35,14 @@ class MachineController:
     """Controller Class for all Machine related Pin routines."""
 
     def __init__(self):
-        super().__init__()
-        self.pin_controller = self._chose_controller()
-        self._led_controller = LedController(self.pin_controller)
-        self._reverter = Reverter(self.pin_controller)
         # Time for print intervals, need to remember the last print time
         self._print_time = 0.0
+
+    def init_machine(self):
+        self._pin_controller = self._chose_controller()
+        self._led_controller = LedController(self._pin_controller)
+        self._reverter = Reverter(self._pin_controller, cfg.MAKER_PUMP_REVERSION, cfg.MAKER_REVERSION_PIN)
+        self.set_up_pumps()
 
     def _chose_controller(self) -> PinController:
         """Select the controller class for the Pin."""
@@ -185,14 +187,14 @@ class MachineController:
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
         active_pins = [x.pin for x in used_config]
         time_print(f"<i> Initializing Pins: {active_pins}")
-        self.pin_controller.initialize_pin_list(active_pins)
+        self._pin_controller.initialize_pin_list(active_pins)
         self._reverter.initialize_pin()
         atexit.register(self.cleanup)
 
     def _start_pumps(self, pin_list: list[int], print_prefix: str = ""):
         """Informs and opens all given pins."""
         time_print(f"{print_prefix}<o> Opening Pins: {pin_list}")
-        self.pin_controller.activate_pin_list(pin_list)
+        self._pin_controller.activate_pin_list(pin_list)
 
     def close_all_pumps(self):
         """Close all pins connected to the pumps."""
@@ -203,12 +205,12 @@ class MachineController:
     def cleanup(self):
         """Cleanup for shutdown the machine."""
         self.close_all_pumps()
-        self.pin_controller.cleanup_pin_list()
+        self._pin_controller.cleanup_pin_list()
 
     def _stop_pumps(self, pin_list: list[int], print_prefix: str = ""):
         """Informs and closes all given pins."""
         time_print(f"{print_prefix}<x> Closing Pins: {pin_list}")
-        self.pin_controller.close_pin_list(pin_list)
+        self._pin_controller.close_pin_list(pin_list)
 
     def default_led(self):
         """Turn the LED on."""
