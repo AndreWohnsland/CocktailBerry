@@ -77,6 +77,8 @@ class ConfigManager:
     MAKER_SIMULTANEOUSLY_PUMPS: int = 16
     # Time in seconds to execute clean program
     MAKER_CLEAN_TIME: int = 20
+    # Base multiplier for alcohol in the recipe
+    MAKER_ALCOHOL_FACTOR: int = 100
     # Option to invert pump direction
     MAKER_PUMP_REVERSION: bool = False
     # Pin used for the pump direction
@@ -161,6 +163,7 @@ class ConfigManager:
             "MAKER_PREPARE_VOLUME": ListType(IntType([build_number_limiter(25, 1000)], suffix="ml"), 1),
             "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
             "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
+            "MAKER_ALCOHOL_FACTOR": IntType([build_number_limiter(10, 200)], suffix="%"),
             "MAKER_PUMP_REVERSION": BoolType(),
             "MAKER_REVERSION_PIN": IntType([self._validate_pin_numbers]),
             "MAKER_SEARCH_UPDATES": BoolType(),

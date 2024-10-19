@@ -571,6 +571,9 @@ ui:
     MAKER_CLEAN_TIME:
       en: 'Time in seconds the cleaning program is executed'
       de: 'Zeit in Sekunden, die das Reinigungsprogramm ausgeführt wird'
+    MAKER_ALCOHOL_FACTOR:
+      en: 'Value to scale alcoholic ingredients in each recipe. Use this to decrease/increase the alcohol level of all cocktails. Default is 100%'
+      de: 'Skalierungsfaktor für alkoholische Zutaten in jedem Rezept. Verwende diesen, um den Alkoholgehalt aller Cocktails zu verringern/erhöhen. Standard ist 100%'
     MAKER_PUMP_REVERSION:
       en: 'Enable the reversion of the pump direction, needs according hardware for reversion, usually a relay'
       de: 'Ermöglicht die Pumpenrichtung zu ändern, benötigt entsprechende Hardware, meist ein Relais'

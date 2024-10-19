@@ -100,7 +100,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # overwrite the amount if the cocktail has a fixed volume
         if cfg.MAKER_USE_RECIPE_VOLUME:
             amount = self.cocktail.amount
-        factor = shared.alcohol_factor
+        factor = shared.alcohol_factor * (cfg.MAKER_ALCOHOL_FACTOR / 100)  # remember this is percent
         is_virgin = self.virgin_checkbox.isChecked()
         if is_virgin:
             factor = 0
