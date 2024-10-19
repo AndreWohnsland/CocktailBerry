@@ -21,19 +21,30 @@ from src.ui_elements.touch_scroll_area import TouchScrollArea
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
-# default: roughly take 240 px for image dimensions
-N_COLUMNS = int(cfg.UI_WIDTH / cfg.UI_PICTURE_SIZE)
-# in some cases this value can be zero, so we need to make sure it's at least 1
-N_COLUMNS = max(N_COLUMNS, 1)
-# keep a 17% margin
-SQUARE_SIZE = int(cfg.UI_WIDTH / (N_COLUMNS * 1.17))
+
+def _n_columns() -> int:
+    """Return calculated number of columns for the cocktail view."""
+    # Need method, since config will be loaded in at runtime
+    # default: roughly take 240 px for image dimensions
+    n_columns = int(cfg.UI_WIDTH / cfg.UI_PICTURE_SIZE)
+    # in some cases this value can be zero, so we need to make sure it's at least 1
+    return max(n_columns, 1)
+
+
+def _square_size() -> int:
+    """Return calculated square size for the cocktail view."""
+    # Need method, since config will be loaded in at runtime
+    n_columns = _n_columns()
+    # keep a 17% margin
+    return int(cfg.UI_WIDTH / (n_columns * 1.17))
 
 
 def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen):
     """Generate a image block for the given cocktail."""
     # those factors are taken from calculations based on the old static values
-    header_font_size = round(SQUARE_SIZE / 15.8)
-    header_height = round(SQUARE_SIZE / 6.3)
+    square_size = _square_size()
+    header_font_size = round(square_size / 15.8)
+    header_height = round(square_size / 6.3)
     single_ingredient_label = UI_LANGUAGE.get_translation("label_single_ingredient", "main_window")
     name_label = cocktail.name if cocktail is not None else single_ingredient_label
     button = create_button(
@@ -41,7 +52,7 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen):
         font_size=header_font_size,
         min_h=0,
         max_h=header_height,
-        max_w=SQUARE_SIZE,
+        max_w=square_size,
         css_class="btn-inverted btn-half-top",
     )
     if cocktail is not None and cocktail.virgin_available:
@@ -55,8 +66,8 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen):
     label.setPixmap(pixmap)
     label.setScaledContents(True)
     label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)  # type: ignore
-    label.setMinimumSize(SQUARE_SIZE, SQUARE_SIZE)
-    label.setMaximumSize(SQUARE_SIZE, SQUARE_SIZE)
+    label.setMinimumSize(square_size, square_size)
+    label.setMaximumSize(square_size, square_size)
     layout = QVBoxLayout()
     layout.setSpacing(0)
     layout.addWidget(button)
@@ -96,6 +107,7 @@ class CocktailView(QWidget):
 
     def populate_cocktails(self):
         """Add the given cocktails to the grid."""
+        n_columns = _n_columns()
         DP_CONTROLLER.delete_items_of_layout(self.grid)
         cocktails = DB_COMMANDER.get_possible_cocktails()
         # sort cocktails by name
@@ -103,13 +115,13 @@ class CocktailView(QWidget):
         # add last "filler" element, this is for the single ingredient element
         if cfg.MAKER_ADD_SINGLE_INGREDIENT:
             cocktails = [*cocktails, None]
-        # fill the grid with N_COLUMNS columns, then go to another row
-        for i in range(0, len(cocktails), N_COLUMNS):
-            for j in range(N_COLUMNS):
+        # fill the grid with n_columns columns, then go to another row
+        for i in range(0, len(cocktails), n_columns):
+            for j in range(n_columns):
                 if i + j >= len(cocktails):
                     break
                 block = generate_image_block(
                     cocktails[i + j],
                     self.mainscreen,
                 )
-                self.grid.addLayout(block, i // N_COLUMNS, j)
+                self.grid.addLayout(block, i // n_columns, j)

@@ -3,7 +3,6 @@ from typing import Literal
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
 
-from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.passworddialog import Ui_PasswordDialog
@@ -14,7 +13,7 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
 
     password_success = pyqtSignal(bool)  # Signal to communicate data
 
-    def __init__(self, right_password: int = cfg.UI_MASTERPASSWORD, header_type: Literal["master", "maker"] = "master"):
+    def __init__(self, right_password: int, header_type: Literal["master", "maker"] = "master"):
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)

@@ -83,7 +83,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         DP_CONTROLLER.initialize_window_object(self)
 
         UI_LANGUAGE.adjust_mainwindow(self)
-        MACHINE.set_up_pumps()
+        MACHINE.init_machine()
         MACHINE.default_led()
         self.showFullScreen()
         # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
@@ -192,7 +192,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def open_option_window(self):
         """Open up the options."""
-        if not DP_CONTROLLER.password_prompt():
+        if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD):
             return
         self.option_window = OptionWindow(self)
 
@@ -331,7 +331,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if index in unprotected_tabs:
             self.previous_tab_index = index
             return
-        if DP_CONTROLLER.password_prompt(right_password=cfg.UI_MAKER_PASSWORD, header_type="maker"):
+        if DP_CONTROLLER.password_prompt(cfg.UI_MAKER_PASSWORD, header_type="maker"):
             self.previous_tab_index = index
             return
         # Set back to the prev tab if password not right

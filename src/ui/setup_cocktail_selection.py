@@ -18,7 +18,6 @@ from src.ui.icons import ICONS
 from src.ui_elements import Ui_CocktailSelection
 
 T = TypeVar("T", int, float)
-PICTURE_SIZE = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.60))
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -37,8 +36,9 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # build the image
         self.image_container.setScaledContents(True)
         self.image_container.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)  # type: ignore
-        self.image_container.setMinimumSize(PICTURE_SIZE, PICTURE_SIZE)
-        self.image_container.setMaximumSize(PICTURE_SIZE, PICTURE_SIZE)
+        picture_size = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.60))
+        self.image_container.setMinimumSize(picture_size, picture_size)
+        self.image_container.setMaximumSize(picture_size, picture_size)
         ICONS.set_cocktail_selection_icons(self)
         self._adjust_preparation_buttons()
 

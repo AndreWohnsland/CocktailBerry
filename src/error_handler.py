@@ -33,7 +33,10 @@ def logerror(func: Callable):
             msg = f"The function {func.__name__} did run into an error at module: {module} function {fname} in row: {row}!"  # noqa
             _logger.log_exception(msg)
             time_print(msg)
-            MACHINE.close_all_pumps()
+            try:
+                MACHINE.close_all_pumps()
+            except Exception as e:
+                _logger.log_exception(f"Error while closing the pumps: {e}")
             raise
         return result
 

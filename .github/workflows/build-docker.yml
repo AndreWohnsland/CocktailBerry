@@ -28,7 +28,7 @@ jobs:
 
       - name: Update version in pyproject.toml
         run: |
-          sed -i "s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" pyproject.toml
+          sed -i "/^version = \".*\"$/s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" pyproject.toml
 
       - name: Commit changes
         run: |

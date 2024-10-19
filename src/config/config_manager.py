@@ -187,8 +187,17 @@ class ConfigManager:
             "EXP_MAKER_UNIT": StringType(),
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
         }
+
+    def read_local_config(self, update_config: bool = False):
+        """Read the local config file and set the values if they are valid.
+
+        Might throw a ConfigError if the config is not valid.
+        Ignore the error if the file is not found, as it is created at the first start of the program.
+        """
         with contextlib.suppress(FileNotFoundError):
             self._read_config()
+        if update_config:
+            self.sync_config_to_file()
 
     def sync_config_to_file(self):
         """Write the config attributes to the config file.

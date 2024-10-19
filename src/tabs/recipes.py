@@ -5,6 +5,7 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 
 from collections import Counter
 
+from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
@@ -198,7 +199,7 @@ def delete_recipe(w):
         return
     if not DP_CONTROLLER.ask_to_delete_x(recipe_name):
         return
-    if not DP_CONTROLLER.password_prompt():
+    if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD):
         return
 
     DB_COMMANDER.delete_recipe(recipe_name)

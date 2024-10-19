@@ -20,6 +20,9 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        if standalone:
+            cfg.read_local_config()
+            MACHINE.init_machine()
         # Connect the Button
         bottles = cfg.MAKER_NUMBER_BOTTLES
         self.PB_start.clicked.connect(self.output_volume)
@@ -31,8 +34,6 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         self.showFullScreen()
         DP_CONTROLLER.inject_stylesheet(self)
         DP_CONTROLLER.set_display_settings(self)
-        if standalone:
-            MACHINE.set_up_pumps()
         logger.log_start_program("calibration")
 
     def output_volume(self):

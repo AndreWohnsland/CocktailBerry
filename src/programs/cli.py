@@ -1,5 +1,6 @@
 # pylint: disable=unused-argument
 import os
+import sys
 from pathlib import Path
 from typing import Optional
 
@@ -8,6 +9,9 @@ import typer
 from src import PROJECT_NAME
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import show_start_message, version_callback
+from src.config.errors import ConfigError
+from src.filepath import CUSTOM_CONFIG_FILE
+from src.logger_handler import LoggerHandler
 from src.migration.update_data import add_new_recipes_from_default_db
 from src.programs.addons import ADDONS, generate_addon_skeleton
 from src.programs.calibration import run_calibration
@@ -17,6 +21,7 @@ from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
 from src.utils import generate_custom_style_file, start_resource_tracker, time_print
 
+_logger = LoggerHandler("cocktailberry")
 cli = typer.Typer(add_completion=False)
 
 
@@ -42,7 +47,15 @@ def main(
         show_start_message(displayed_name)
     start_resource_tracker()
     ADDONS.setup_addons()
-    cfg.sync_config_to_file()
+    # Load the config file and check for errors, update the config (sync new values if not present)
+    try:
+        cfg.read_local_config(update_config=True)
+    except ConfigError as e:
+        _logger.error(f"Config Error: {e}")
+        _logger.log_exception(e)
+        time_print(f"Config Error: {e}, please check the config file.")
+        time_print(f"You can edit the file at: {CUSTOM_CONFIG_FILE}")
+        sys.exit(1)
     if debug:
         os.environ.setdefault("DEBUG_MS", "True")
         time_print("Using debug mode")
