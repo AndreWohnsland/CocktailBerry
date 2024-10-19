@@ -120,7 +120,11 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
     ) -> Callable[[], CONFIG_TYPES_POSSIBLE]:
         """Build the input field and returns its getter function."""
         if layout is None:
-            layout = self._choose_tab_container(config_name)
+            # get the tab container and build a horizontal layout for the config
+            # this is needed in case we want to add pre- or suffixes, which are otherwise not in the same line
+            container = self._choose_tab_container(config_name)
+            layout = QHBoxLayout()
+            container.addLayout(layout)
 
         if config_setting.prefix is not None:
             prefix_text = create_label(f" {config_setting.prefix}", MEDIUM_FONT)
