@@ -9,22 +9,32 @@
 #   generate-hashes: false
 
 -e file:.
+annotated-types==0.7.0
+    # via pydantic
+anyio==4.6.2.post1
+    # via httpx
+    # via starlette
+    # via watchfiles
 asttokens==2.4.1
     # via stack-data
 babel==2.15.0
     # via mkdocs-material
 certifi==2024.6.2
+    # via httpcore
+    # via httpx
     # via requests
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via mkdocs
     # via typer
+    # via uvicorn
 colorama==0.4.6
     # via click
     # via ipython
     # via mkdocs
     # via mkdocs-material
+    # via uvicorn
 comm==0.2.2
     # via ipykernel
 debugpy==1.8.2
@@ -33,17 +43,38 @@ decorator==5.1.1
     # via ipython
 distro==1.9.0
     # via cocktailberry
+dnspython==2.7.0
+    # via email-validator
+email-validator==2.2.0
+    # via fastapi
 exceptiongroup==1.2.1
+    # via anyio
     # via ipython
 executing==2.0.1
     # via stack-data
+fastapi==0.115.2
+    # via cocktailberry
+fastapi-cli==0.0.5
+    # via fastapi
 ghp-import==2.1.0
     # via mkdocs
 gitdb==4.0.11
     # via gitpython
 gitpython==3.1.43
     # via cocktailberry
+h11==0.14.0
+    # via httpcore
+    # via uvicorn
+httpcore==1.0.6
+    # via httpx
+httptools==0.6.4
+    # via uvicorn
+httpx==0.27.2
+    # via fastapi
 idna==3.7
+    # via anyio
+    # via email-validator
+    # via httpx
     # via requests
 importlib-metadata==8.0.0
     # via jupyter-client
@@ -56,6 +87,7 @@ ipython==8.18.1
 jedi==0.19.1
     # via ipython
 jinja2==3.1.4
+    # via fastapi
     # via mkdocs
     # via mkdocs-material
 jupyter-client==8.6.2
@@ -118,6 +150,10 @@ psutil==6.0.0
     # via ipykernel
 pure-eval==0.2.2
     # via stack-data
+pydantic==2.9.2
+    # via fastapi
+pydantic-core==2.23.4
+    # via pydantic
 pyfiglet==1.0.2
     # via cocktailberry
 pygments==2.18.0
@@ -139,6 +175,10 @@ pyqtspinner==2.0.0
 python-dateutil==2.9.0.post0
     # via ghp-import
     # via jupyter-client
+python-dotenv==1.0.1
+    # via uvicorn
+python-multipart==0.0.12
+    # via fastapi
 python-periphery==2.4.1
 pywin32==306
     # via jupyter-core
@@ -148,6 +188,7 @@ pyyaml==6.0.1
     # via mkdocs-get-deps
     # via pymdown-extensions
     # via pyyaml-env-tag
+    # via uvicorn
 pyyaml-env-tag==0.1
     # via mkdocs
 pyzmq==26.0.3
@@ -176,8 +217,13 @@ smbus2==0.4.3
     # via piicodev
 smmap==5.0.1
     # via gitdb
+sniffio==1.3.1
+    # via anyio
+    # via httpx
 stack-data==0.6.3
     # via ipython
+starlette==0.40.0
+    # via fastapi
 tomli==2.0.1
     # via mypy
 tornado==6.4.1
@@ -192,15 +238,30 @@ traitlets==5.14.3
     # via matplotlib-inline
 typer==0.12.3
     # via cocktailberry
+    # via fastapi-cli
 typing-extensions==4.12.2
+    # via anyio
+    # via fastapi
     # via ipython
     # via mypy
+    # via pydantic
+    # via pydantic-core
+    # via starlette
     # via typer
+    # via uvicorn
 urllib3==2.2.2
     # via requests
+uvicorn==0.32.0
+    # via cocktailberry
+    # via fastapi
+    # via fastapi-cli
 watchdog==4.0.1
     # via mkdocs
+watchfiles==0.24.0
+    # via uvicorn
 wcwidth==0.2.13
     # via prompt-toolkit
+websockets==13.1
+    # via uvicorn
 zipp==3.19.2
     # via importlib-metadata

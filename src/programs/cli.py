@@ -7,6 +7,7 @@ from typing import Optional
 import typer
 
 from src import PROJECT_NAME
+from src.api.api import run_api
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import show_start_message, version_callback
 from src.config.errors import ConfigError
@@ -152,3 +153,13 @@ def setup_teams_service(
     Will run the frontend at localhost:8050 (http://localhost:8050), backend at localhost:8080 (http://localhost:8080).
     """
     setup_teams(language)
+
+
+@cli.command()
+def api(port: int = typer.Option(8888, "--port", "-p", help="Port for the FastAPI server")):
+    """Run the FastAPI server.
+
+    Can be used as an alternative way to control the machine, for example over an external program or a web ui.
+    The FastAPI server will be started at the given port.
+    """
+    run_api(port)
