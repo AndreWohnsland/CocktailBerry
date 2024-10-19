@@ -563,7 +563,7 @@ ui:
       en: 'Number of bottles of the machine'
       de: 'Flaschenanzahl der Maschine'
     MAKER_PREPARE_VOLUME:
-      en: 'List of Volume of the cocktail to prepare for the user to choose from. Using one value will result in a fixed volume.'
+      en: 'List of volume of the cocktail to prepare for the user to choose from. Using one value will result in a fixed volume.'
       de: 'Liste der Volumen des Cocktails, die der Benutzer auswählen kann. Wenn nur ein Wert gegeben ist, wird ein festes Volumen verwendet.'
     MAKER_SIMULTANEOUSLY_PUMPS:
       en: 'Maximum number of pumps simultaneously on'
