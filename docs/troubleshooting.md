@@ -165,6 +165,7 @@ In case you want to reset the configuration, it is the best way to just delete t
 This file holds your configuration and will be created with the defaults if it does not exists.
 
 If some setting is not working and prevents a program start, you can also edit the config file manually.
+There are also backups of the config file before migration, located at `~/cb_backup/` with the version number before this specific migration.
 The config file is located at `~/CocktailBerry/custom_config.yaml`.
 You can open it with any text editor.
 Or just use the terminal:
@@ -175,6 +176,9 @@ sudo nano custom_config.yaml
 # use the arrow keys to navigate
 # ctrl + o to save
 # ctrl + x to exit
+
+# or see what was your old config values in case something went wrong
+cat ~/cb_backup/custom_config_pre_{version_number}.yaml
 ```
 
 ## Software does not Update

@@ -34,7 +34,7 @@ from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data, time_print
 
-logger = LoggerHandler("config_manager")
+_logger = LoggerHandler("config_manager")
 
 
 _default_pins = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
@@ -233,7 +233,7 @@ class ConfigManager:
                 config_setting.validate(config_name, config_value)
                 setattr(self, config_name, config_setting.from_config(config_value))
             except ConfigError as e:
-                logger.error(f"Config Error: {e}")
+                _logger.error(f"Config Error: {e}")
                 if validate:
                     raise e
 
