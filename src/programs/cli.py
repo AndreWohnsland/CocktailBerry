@@ -40,7 +40,7 @@ def main(
     """Start the cocktail program. Optional, can start the calibration program.
 
     If you want to debug your microservice, you can use the --debug flag.
-    For more information visit https://cocktailberry.readthedocs.io/ or https://github.com/AndreWohnsland/CocktailBerry.
+    For more information visit https://docs.cocktailberry.org/ or https://github.com/AndreWohnsland/CocktailBerry.
     """
     if ctx.invoked_subcommand is not None:
         return
