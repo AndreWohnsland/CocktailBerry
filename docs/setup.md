@@ -75,7 +75,6 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | `LED_DEFAULT_ON`       | Always turn on to a white LED by default                                                 |
     | `LED_IS_WS`            | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
     | `RFID_READER`          | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
-    | `MAKER_BOARD`          | Used [board](#configuring-the-pins-or-used-board) for Hardware                           |
     | `MAKER_PINS_INVERTED`  | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)              |
     | `MAKER_PUMP_REVERSION` | Enables reversion (direction) of pump                                                    |
     | `MAKER_REVERSION_PIN`  | [Pin](#configuring-the-pins-or-used-board) which triggers reversion                      |
@@ -124,9 +123,7 @@ See also [this FAQ](faq.md#what-is-the-available-button) for more information on
 
 ## Configuring the Pins or used Board
 
-To set up your Board, you can choose between different platforms.
-The according controlling library for Python needs to be installed.
-If it's not shipped within the default OS of your board, this will be mentioned here.
+Most boards should work with cocktailberry, the according controller will be automatically selected.
 Currently supported options (boards) are:
 
 - **RPI (Raspberry Pi)**: Using GPIO according to [GPIO-Numbers](https://pinout.xyz/) for Pins.
@@ -135,7 +132,6 @@ Currently supported options (boards) are:
 !!! info "Not your Board?"
     Even if your board is not listed here, it may work.
     This value is used to determinate the control method for the pins of the board.
-    If it's controlled identical to a listed board here, you can try to use this existing value for your board.
 
 ## Themes
 

@@ -11,7 +11,6 @@ from pyfiglet import Figlet
 from src import (
     MAX_SUPPORTED_BOTTLES,
     PROJECT_NAME,
-    SupportedBoardType,
     SupportedLanguagesType,
     SupportedRfidType,
     SupportedThemesType,
@@ -29,7 +28,6 @@ from src.config.config_types import (
     PumpConfig,
     StringType,
 )
-from src.config.errors import ConfigError
 from src.config.validators import build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
@@ -89,8 +87,6 @@ class ConfigManager:
     MAKER_CHECK_BOTTLE: bool = True
     # Inverts the pin signal (on is low, off is high)
     MAKER_PINS_INVERTED: bool = True
-    # Possibility to use different boards to control Pins
-    MAKER_BOARD: SupportedBoardType = "RPI"
     # Theme Setting to load according qss file
     MAKER_THEME: SupportedThemesType = "default"
     # How many ingredients are allowed to be added by hand to be available cocktail
@@ -150,7 +146,7 @@ class ConfigManager:
             "PUMP_CONFIG": ListType(
                 DictType(
                     {
-                        "pin": IntType([self._validate_pin_numbers], prefix="Pin:"),
+                        "pin": IntType([build_number_limiter(0, 1000)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
                         "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
                     },
@@ -165,11 +161,10 @@ class ConfigManager:
             "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
             "MAKER_ALCOHOL_FACTOR": IntType([build_number_limiter(10, 200)], suffix="%"),
             "MAKER_PUMP_REVERSION": BoolType(check_name="Pump can be Reversed"),
-            "MAKER_REVERSION_PIN": IntType([self._validate_pin_numbers]),
+            "MAKER_REVERSION_PIN": IntType([build_number_limiter(0, 1000)]),
             "MAKER_SEARCH_UPDATES": BoolType(check_name="Search for Updates"),
             "MAKER_CHECK_BOTTLE": BoolType(check_name="Check Bottle Volume"),
             "MAKER_PINS_INVERTED": BoolType(check_name="Inverted"),
-            "MAKER_BOARD": ChooseOptions.board,
             "MAKER_THEME": ChooseOptions.theme,
             "MAKER_MAX_HAND_INGREDIENTS": IntType([build_number_limiter(0, 10)]),
             "MAKER_CHECK_INTERNET": BoolType(check_name="Check Internet"),
@@ -250,17 +245,6 @@ class ConfigManager:
         if get_all:
             return MAX_SUPPORTED_BOTTLES
         return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
-
-    def _validate_pin_numbers(self, configname: str, data: int):
-        """Validate that the given pin numbers exists on the board."""
-        # RPI
-        rpi_allowed = list(range(0, 28))
-        # Generic Pins, 200 should probably be enough, RockPi got numbers up to 160
-        allowed_pins = list(range(0, 201))
-        if self.MAKER_BOARD == "RPI":
-            allowed_pins = rpi_allowed
-        if data not in allowed_pins:
-            raise ConfigError(f"{configname} must be one of the values: {allowed_pins}")
 
     def add_config(
         self,
