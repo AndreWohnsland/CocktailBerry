@@ -323,7 +323,6 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 "MAKER_PUMP_REVERSION",
                 "MAKER_REVERSION_PIN",
                 "MAKER_PINS_INVERTED",
-                "MAKER_BOARD",
             ),
         }
         for key, value in exact_sorting.items():

@@ -75,7 +75,6 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | `LED_DEFAULT_ON`       | Always turn on to a white LED by default                                                 |
     | `LED_IS_WS`            | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
     | `RFID_READER`          | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
-    | `MAKER_BOARD`          | Used [board](#configuring-the-pins-or-used-board) for Hardware                           |
     | `MAKER_PINS_INVERTED`  | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)              |
     | `MAKER_PUMP_REVERSION` | Enables reversion (direction) of pump                                                    |
     | `MAKER_REVERSION_PIN`  | [Pin](#configuring-the-pins-or-used-board) which triggers reversion                      |
