@@ -28,6 +28,7 @@ from src.config.config_types import (
     PumpConfig,
     StringType,
 )
+from src.config.errors import ConfigError
 from src.config.validators import build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
@@ -186,14 +187,17 @@ class ConfigManager:
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
         }
 
-    def read_local_config(self, update_config: bool = False):
+    def read_local_config(self, update_config: bool = False, validate: bool = True):
         """Read the local config file and set the values if they are valid.
 
-        Might throw a ConfigError if the config is not valid.
+        Might throw a ConfigError if the config is not valid and should be validated.
         Ignore the error if the file is not found, as it is created at the first start of the program.
         """
-        with contextlib.suppress(FileNotFoundError):
-            self._read_config()
+        configuration: dict = {}
+        with contextlib.suppress(FileNotFoundError), open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
+            configuration = yaml.safe_load(stream)
+        if configuration:
+            self.set_config(configuration, validate)
         if update_config:
             self.sync_config_to_file()
 
@@ -208,29 +212,30 @@ class ConfigManager:
         with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
 
-    def validate_and_set_config(self, configuration: dict):
+    def set_config(self, configuration: dict, validate: bool):
         """Validate the config and set new values."""
         # Some lists may depend on other config variables like number of bottles
         # Therefore, by default, split list types from the rest and check them afterwards
         no_list_or_dict = {k: value for k, value in configuration.items() if not isinstance(value, (list, dict))}
-        self._validate_and_set_config(no_list_or_dict)
+        self._set_config(no_list_or_dict, validate)
         list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, (list, dict))}
-        self._validate_and_set_config(list_or_dict)
+        self._set_config(list_or_dict, validate)
 
-    def _validate_and_set_config(self, configuration: dict):
+    def _set_config(self, configuration: dict, validate: bool):
         for config_name, config_value in configuration.items():
             config_setting = self.config_type.get(config_name)
             # old or user added configs will not be validated
             if config_setting is None:
                 continue
-            config_setting.validate(config_name, config_value)
-            setattr(self, config_name, config_setting.from_config(config_value))
-
-    def _read_config(self):
-        """Read all the config data from the file and validates it."""
-        with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
-            configuration = yaml.safe_load(stream)
-            self.validate_and_set_config(configuration)
+            # Validate and set the value, if not possible to validate, do not set (use default)
+            # If validate is False, the error will be ignored, otherwise raised
+            try:
+                config_setting.validate(config_name, config_value)
+                setattr(self, config_name, config_setting.from_config(config_value))
+            except ConfigError as e:
+                logger.error(f"Config Error: {e}")
+                if validate:
+                    raise e
 
     def _validate_config_type(self, configname: str, configvalue: Any):
         """Validate the configvalue if its fit the type / conditions."""
