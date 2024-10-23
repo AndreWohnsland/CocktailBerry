@@ -109,7 +109,7 @@ class CocktailView(QWidget):
         """Add the given cocktails to the grid."""
         n_columns = _n_columns()
         DP_CONTROLLER.delete_items_of_layout(self.grid)
-        cocktails = DB_COMMANDER.get_possible_cocktails()
+        cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
         # sort cocktails by name
         cocktails.sort(key=lambda x: x.name.lower())
         # add last "filler" element, this is for the single ingredient element
