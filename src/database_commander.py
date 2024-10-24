@@ -87,11 +87,11 @@ class DatabaseCommander:
             cocktails.append(self.__build_cocktail(*recipe))
         return cocktails
 
-    def get_possible_cocktails(self):
+    def get_possible_cocktails(self, max_hand_ingredients: int) -> list[Cocktail]:
         """Return a list of currently possible cocktails with the current bottles."""
         all_cocktails = self.get_all_cocktails(get_disabled=False)
         handadds_ids = self.get_available_ids()
-        return [x for x in all_cocktails if x.is_possible(handadds_ids)]
+        return [x for x in all_cocktails if x.is_possible(handadds_ids, max_hand_ingredients)]
 
     def get_ingredient_names_at_bottles(self) -> list[str]:
         """Return ingredient name for all bottles."""

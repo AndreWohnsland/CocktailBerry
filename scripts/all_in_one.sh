@@ -91,6 +91,14 @@ echo "~ Getting the CocktailBerry project from GitHub ... ~"
 echo "It will be located at ~/CocktailBerry"
 # shellcheck disable=SC2164
 cd ~
+# if folder exist, backup the "custom_config.yaml" within it to ~/custom_config.yaml.bck
+if [ -d ~/CocktailBerry ]; then
+  echo "CocktailBerry folder already exists. Backup existing custom_config.yaml to ~/old_custom_config.yaml"
+  cp ~/CocktailBerry/custom_config.yaml ~/old_custom_config.yaml
+  echo "Removing old CocktailBerry folder if it exists ..."
+  sudo rm -rf ~/CocktailBerry
+fi
+# first remove the folder if it already exists
 git clone https://github.com/AndreWohnsland/CocktailBerry.git
 # shellcheck disable=SC2164
 cd ~/CocktailBerry

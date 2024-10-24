@@ -12,7 +12,7 @@ from src.config.config_manager import shared
 from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.leds import LedController
-from src.machine.raspberry import choose_pi_controller
+from src.machine.raspberry import choose_pi_controller, is_rpi
 from src.machine.reverter import Reverter
 from src.models import Ingredient
 from src.utils import time_print
@@ -46,7 +46,7 @@ class MachineController:
 
     def _chose_controller(self) -> PinController:
         """Select the controller class for the Pin."""
-        if cfg.MAKER_BOARD == "RPI":
+        if is_rpi():
             return choose_pi_controller(cfg.MAKER_PINS_INVERTED)
         # In case none is found, fall back to generic using python-periphery
         return GenericController(cfg.MAKER_PINS_INVERTED)

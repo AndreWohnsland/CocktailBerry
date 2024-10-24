@@ -11,7 +11,6 @@ from pyfiglet import Figlet
 from src import (
     MAX_SUPPORTED_BOTTLES,
     PROJECT_NAME,
-    SupportedBoardType,
     SupportedLanguagesType,
     SupportedRfidType,
     SupportedThemesType,
@@ -35,7 +34,7 @@ from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data, time_print
 
-logger = LoggerHandler("config_manager")
+_logger = LoggerHandler("config_manager")
 
 
 _default_pins = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
@@ -89,8 +88,6 @@ class ConfigManager:
     MAKER_CHECK_BOTTLE: bool = True
     # Inverts the pin signal (on is low, off is high)
     MAKER_PINS_INVERTED: bool = True
-    # Possibility to use different boards to control Pins
-    MAKER_BOARD: SupportedBoardType = "RPI"
     # Theme Setting to load according qss file
     MAKER_THEME: SupportedThemesType = "default"
     # How many ingredients are allowed to be added by hand to be available cocktail
@@ -150,7 +147,7 @@ class ConfigManager:
             "PUMP_CONFIG": ListType(
                 DictType(
                     {
-                        "pin": IntType([self._validate_pin_numbers], prefix="Pin:"),
+                        "pin": IntType([build_number_limiter(0, 1000)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
                         "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
                     },
@@ -165,11 +162,10 @@ class ConfigManager:
             "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
             "MAKER_ALCOHOL_FACTOR": IntType([build_number_limiter(10, 200)], suffix="%"),
             "MAKER_PUMP_REVERSION": BoolType(check_name="Pump can be Reversed"),
-            "MAKER_REVERSION_PIN": IntType([self._validate_pin_numbers]),
+            "MAKER_REVERSION_PIN": IntType([build_number_limiter(0, 1000)]),
             "MAKER_SEARCH_UPDATES": BoolType(check_name="Search for Updates"),
             "MAKER_CHECK_BOTTLE": BoolType(check_name="Check Bottle Volume"),
             "MAKER_PINS_INVERTED": BoolType(check_name="Inverted"),
-            "MAKER_BOARD": ChooseOptions.board,
             "MAKER_THEME": ChooseOptions.theme,
             "MAKER_MAX_HAND_INGREDIENTS": IntType([build_number_limiter(0, 10)]),
             "MAKER_CHECK_INTERNET": BoolType(check_name="Check Internet"),
@@ -191,14 +187,17 @@ class ConfigManager:
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
         }
 
-    def read_local_config(self, update_config: bool = False):
+    def read_local_config(self, update_config: bool = False, validate: bool = True):
         """Read the local config file and set the values if they are valid.
 
-        Might throw a ConfigError if the config is not valid.
+        Might throw a ConfigError if the config is not valid and should be validated.
         Ignore the error if the file is not found, as it is created at the first start of the program.
         """
-        with contextlib.suppress(FileNotFoundError):
-            self._read_config()
+        configuration: dict = {}
+        with contextlib.suppress(FileNotFoundError), open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
+            configuration = yaml.safe_load(stream)
+        if configuration:
+            self.set_config(configuration, validate)
         if update_config:
             self.sync_config_to_file()
 
@@ -213,29 +212,30 @@ class ConfigManager:
         with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
 
-    def validate_and_set_config(self, configuration: dict):
+    def set_config(self, configuration: dict, validate: bool):
         """Validate the config and set new values."""
         # Some lists may depend on other config variables like number of bottles
         # Therefore, by default, split list types from the rest and check them afterwards
         no_list_or_dict = {k: value for k, value in configuration.items() if not isinstance(value, (list, dict))}
-        self._validate_and_set_config(no_list_or_dict)
+        self._set_config(no_list_or_dict, validate)
         list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, (list, dict))}
-        self._validate_and_set_config(list_or_dict)
+        self._set_config(list_or_dict, validate)
 
-    def _validate_and_set_config(self, configuration: dict):
+    def _set_config(self, configuration: dict, validate: bool):
         for config_name, config_value in configuration.items():
             config_setting = self.config_type.get(config_name)
             # old or user added configs will not be validated
             if config_setting is None:
                 continue
-            config_setting.validate(config_name, config_value)
-            setattr(self, config_name, config_setting.from_config(config_value))
-
-    def _read_config(self):
-        """Read all the config data from the file and validates it."""
-        with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
-            configuration = yaml.safe_load(stream)
-            self.validate_and_set_config(configuration)
+            # Validate and set the value, if not possible to validate, do not set (use default)
+            # If validate is False, the error will be ignored, otherwise raised
+            try:
+                config_setting.validate(config_name, config_value)
+                setattr(self, config_name, config_setting.from_config(config_value))
+            except ConfigError as e:
+                _logger.error(f"Config Error: {e}")
+                if validate:
+                    raise e
 
     def _validate_config_type(self, configname: str, configvalue: Any):
         """Validate the configvalue if its fit the type / conditions."""
@@ -250,17 +250,6 @@ class ConfigManager:
         if get_all:
             return MAX_SUPPORTED_BOTTLES
         return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
-
-    def _validate_pin_numbers(self, configname: str, data: int):
-        """Validate that the given pin numbers exists on the board."""
-        # RPI
-        rpi_allowed = list(range(0, 28))
-        # Generic Pins, 200 should probably be enough, RockPi got numbers up to 160
-        allowed_pins = list(range(0, 201))
-        if self.MAKER_BOARD == "RPI":
-            allowed_pins = rpi_allowed
-        if data not in allowed_pins:
-            raise ConfigError(f"{configname} must be one of the values: {allowed_pins}")
 
     def add_config(
         self,

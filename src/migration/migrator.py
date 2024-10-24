@@ -10,8 +10,10 @@ check_python_version()
 import configparser
 import importlib.util
 import platform
+import shutil
 import subprocess
 import sys
+from pathlib import Path
 from typing import Any
 
 import yaml
@@ -116,10 +118,19 @@ class Migrator:
 
         for version, actions in version_actions.items():
             if self.older_than_version_with_logging(version):
+                self._backup_config_file(version)
                 for action in actions:
                     action()
 
         self._check_local_version_data()
+
+    def _backup_config_file(self, suffix):
+        """Save the config file at ~/cb_backup/custom_config_pre_{suffix}.yaml."""
+        save_path = Path.home() / "cb_backup" / f"custom_config_pre_{suffix}.yaml"
+        _logger.log_event("INFO", f"Backing up config file to {save_path}")
+        # Ensure the backup directory exists
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(CUSTOM_CONFIG_FILE, save_path)
 
     def _migration_log(self, version: str):
         """Log the migration message fro the version."""

@@ -75,7 +75,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # we need this because the signal does not emit the previous index
         self.previous_tab_index = self.tabWidget.currentIndex()
         # also keep a list of available cocktails for search in cocktails
-        self.available_cocktails = DB_COMMANDER.get_possible_cocktails()
+        self.available_cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
 
         # internal initialization
         self.connect_objects()
@@ -326,7 +326,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # since the search window lives in the main window now,
         # switching to it needs to get the current available cocktails
         if index == 0:
-            self.available_cocktails = DB_COMMANDER.get_possible_cocktails()
+            self.available_cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
             self._apply_search_to_list()
         if index in unprotected_tabs:
             self.previous_tab_index = index

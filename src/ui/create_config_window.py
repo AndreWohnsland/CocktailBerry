@@ -73,7 +73,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
 
     def _save_config(self):
         try:
-            cfg.validate_and_set_config(self._retrieve_values())
+            cfg.set_config(self._retrieve_values(), True)
             cfg.sync_config_to_file()
         except ConfigError as err:
             DP_CONTROLLER.say_wrong_config(str(err))
@@ -323,7 +323,6 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 "MAKER_PUMP_REVERSION",
                 "MAKER_REVERSION_PIN",
                 "MAKER_PINS_INVERTED",
-                "MAKER_BOARD",
             ),
         }
         for key, value in exact_sorting.items():

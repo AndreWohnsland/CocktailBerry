@@ -110,15 +110,15 @@ else
   fi
   # try to install python-periphery, so other devices may also use the gpio
   pip install python-periphery || echo "ERROR: Could not install python-periphery, if you are on a RPi, this is not needed"
+  # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
+  if ! is_raspberry_pi; then
+    ./setup_non_rpi.sh
+  fi
   # still cp the file, but do not inform the user anymore, since this is not the default anymore
   cp microservice/.env.example microservice/.env
   echo "Install qtsass, this may take a while depending on your OS, so it is time for a coffe break :)"
   echo "If this takes too long for you, you can cancel this step with 'ctrl + c' and install qtsass later manually with 'pip install qtsass'"
   echo "qtsass is needed if you want to customize the CocktailBerry GUI and use your own colors"
   pip install qtsass
-  # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
-  if ! is_raspberry_pi; then
-    ./setup_non_rpi.sh
-  fi
 fi
 echo "Done with the setup"

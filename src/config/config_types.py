@@ -11,7 +11,6 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, Protocol, TypeVar, get_args
 
 from src import (
-    SupportedBoardType,
     SupportedLanguagesType,
     SupportedRfidType,
     SupportedThemesType,
@@ -19,7 +18,6 @@ from src import (
 from src.config.errors import ConfigError
 
 SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
-SUPPORTED_BOARDS = list(get_args(SupportedBoardType))
 SUPPORTED_THEMES = list(get_args(SupportedThemesType))
 SUPPORTED_RFID = list(get_args(SupportedRfidType))
 
@@ -69,7 +67,6 @@ class ChooseType(ConfigInterface):
 
 
 class ChooseOptions:
-    board = ChooseType(allowed=SUPPORTED_BOARDS)
     language = ChooseType(allowed=SUPPORTED_LANGUAGES)
     rfid = ChooseType(allowed=SUPPORTED_RFID)
     theme = ChooseType(allowed=SUPPORTED_THEMES)

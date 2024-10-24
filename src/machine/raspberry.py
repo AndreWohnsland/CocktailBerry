@@ -31,7 +31,15 @@ def is_rpi5() -> bool:
     model = "No Model"
     with contextlib.suppress(FileNotFoundError), open("/proc/device-tree/model", encoding="utf-8") as f:
         model = f.read()
-    return "Raspberry Pi 5" in model
+    return "raspberry pi 5" in model.lower()
+
+
+def is_rpi() -> bool:
+    """Check if the current machine is a Raspberry Pi."""
+    model = "No Model"
+    with contextlib.suppress(FileNotFoundError), open("/proc/device-tree/model", encoding="utf-8") as f:
+        model = f.read()
+    return "raspberry pi" in model.lower()
 
 
 def choose_pi_controller(inverted: bool) -> PinController:
