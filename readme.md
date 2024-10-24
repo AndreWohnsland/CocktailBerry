@@ -138,5 +138,5 @@ uv run python runme.py
 If you want to develop the api, you can also run it with
 
 ```bash
-rye run fastapi dev .\src\api\api.py
+uv run fastapi dev .\src\api\api.py
 ```
