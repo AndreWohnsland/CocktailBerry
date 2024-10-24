@@ -1,6 +1,5 @@
 # pylint: disable=unused-argument
 import os
-import sys
 from pathlib import Path
 from typing import Optional
 
@@ -18,6 +17,7 @@ from src.programs.addons import ADDONS, generate_addon_skeleton
 from src.programs.calibration import run_calibration
 from src.programs.clearing import clear_local_database
 from src.programs.cocktailberry import run_cocktailberry
+from src.programs.config_window import run_config_window
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
 from src.utils import generate_custom_style_file, start_resource_tracker, time_print
@@ -54,9 +54,11 @@ def main(
     except ConfigError as e:
         _logger.error(f"Config Error: {e}")
         _logger.log_exception(e)
-        time_print(f"Config Error: {e}, please check the config file.")
-        time_print(f"You can edit the file at: {CUSTOM_CONFIG_FILE}")
-        sys.exit(1)
+        time_print(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
+        time_print("Opening the config window to correct the error.")
+        # just read in the config without validation
+        cfg.read_local_config(validate=False)
+        run_config_window(message=f"Config Error: {e}, please adjust this config!")
     if debug:
         os.environ.setdefault("DEBUG_MS", "True")
         time_print("Using debug mode")
