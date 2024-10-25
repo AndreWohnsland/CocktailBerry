@@ -3,12 +3,35 @@ import shutil
 import sqlite3
 from typing import Optional, Union
 
+from src.dialog_handler import DialogHandler
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, Ingredient
 from src.utils import time_print
 
 _logger = LoggerHandler("database_module")
+
+_dialog_handler = DialogHandler()
+
+
+class DatabaseTransactionError(Exception):
+    """Raises an error if something will not work in the database with the given command.
+
+    The reason will be contained in the message with the corresponding translation key.
+    """
+
+    def __init__(self, translation_key: str, language_args: Optional[dict] = None):
+        self.language_args = language_args if language_args is not None else {}
+        messsage = _dialog_handler.get_translation(translation_key, **self.language_args)
+        super().__init__(messsage)
+        self.translation_key = translation_key
+
+
+class ElementNotFoundError(DatabaseTransactionError):
+    """Informs that the element was not found in the database."""
+
+    def __init__(self, element_name: str):
+        super().__init__("element_not_found", {"element_name": element_name})
 
 
 class DatabaseCommander:
@@ -410,6 +433,14 @@ class DatabaseCommander:
     # delete
     def delete_ingredient(self, ingredient_id: int):
         """Delete an ingredient by id."""
+        if self.get_ingredient(ingredient_id) is None:
+            raise ElementNotFoundError(f"ingredient of id {ingredient_id}")
+        if self.get_bottle_usage(ingredient_id):
+            raise DatabaseTransactionError("ingredient_still_at_bottle")
+        recipe_list = self.get_recipe_usage_list(ingredient_id)
+        if recipe_list:
+            recipe_string = ", ".join(recipe_list)
+            raise DatabaseTransactionError("ingredient_still_at_recipe", {"recipe_string": recipe_string})
         query = "DELETE FROM Ingredients WHERE ID = ?"
         self.handler.query_database(query, (ingredient_id,))
 

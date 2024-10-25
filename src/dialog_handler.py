@@ -59,6 +59,13 @@ class DialogHandler:
         with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, str]] = yaml.safe_load(stream)["dialog"]
 
+    def get_translation(self, dialog_key: str, **kwargs) -> str:
+        try:
+            return self.__choose_language(dialog_key, **kwargs)
+        except KeyError:
+            _logger.error(f"No translation for {dialog_key} found")
+            return "ERROR: NO TRANSLATION FOUND"
+
     def __choose_language(self, element_name: str, **kwargs) -> str:
         """Choose either the given language if exists, or english if not piping additional info into template."""
         language = cfg.UI_LANGUAGE
