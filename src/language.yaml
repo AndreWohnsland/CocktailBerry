@@ -205,6 +205,9 @@ dialog:
   ingredient_must_be_handadd:
     en: 'Ingredient must be configured as hand add (set checkbox) when using other units than ml. This is because the machine only supports ml as output unit.'
     de: 'Zutat muss als per Hand hinzufügen konfiguriert sein (Checkbox setzen), wenn andere Einheiten als ml verwendet werden. Dies liegt daran, dass die Maschine nur ml als Ausgabeeinheit unterstützt.'
+  element_not_found:
+    en: 'Element {element_name} not found!'
+    de: 'Element {element_name} nicht gefunden!'
 
 # Change of language in UI elements
 ui:
