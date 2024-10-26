@@ -152,17 +152,14 @@ def _enter_or_update_recipe(
     ingredient_data: list[Ingredient],
 ) -> Cocktail:
     """Logic to insert/update data into DB."""
+    ingredient_list_data = [(x.id, x.amount, x.recipe_order) for x in ingredient_data]
     if recipe_id:
-        DB_COMMANDER.delete_recipe_ingredient_data(recipe_id)
-        DB_COMMANDER.set_recipe(recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin)
-    else:
-        DB_COMMANDER.insert_new_recipe(recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin)
-    cocktail: Cocktail = DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore
-    for ingredient in ingredient_data:
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ingredient.id, ingredient.amount, ingredient.recipe_order)
-    # important to get the cocktail again, since the first time getting it, we only got it for its id
-    # at this time the cocktail got no recipe data. Getting it again will fix this
-    return DB_COMMANDER.get_cocktail(recipe_name)  # type: ignore
+        return DB_COMMANDER.set_recipe(
+            recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin, ingredient_list_data
+        )
+    return DB_COMMANDER.insert_new_recipe(
+        recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin, ingredient_list_data
+    )
 
 
 def load_recipe_view_names(w):
