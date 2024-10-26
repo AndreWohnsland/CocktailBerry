@@ -177,19 +177,9 @@ def _insert_recipes(recipes: list[_RecipeInformation]):
     for rec in recipes:
         print(rec.name, end=", ")
         volume = int(sum(x.volume for x in rec.ingredients))
-        DB_COMMANDER.insert_new_recipe(rec.name, 0, volume, 1, 0)
-        _insert_recipe_data(rec, ingredient_mapping)
+        ingredient_data = [(ingredient_mapping[i.name].id, i.volume, 1) for i in rec.ingredients]
+        DB_COMMANDER.insert_new_recipe(rec.name, 0, volume, 1, 0, ingredient_data)
     print("\nImport finished!")
-
-
-def _insert_recipe_data(recipe: _RecipeInformation, ingredient_mapping: dict[str, Ingredient]):
-    """Use the given information to create the columns in the data table."""
-    for ing in recipe.ingredients:
-        ing_data = ingredient_mapping[ing.name]
-        cocktail = DB_COMMANDER.get_cocktail(recipe.name)
-        if cocktail is None:
-            continue
-        DB_COMMANDER.insert_recipe_data(cocktail.id, ing_data.id, int(ing.volume), 1)
 
 
 def _abort(msg: str):
