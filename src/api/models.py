@@ -1,5 +1,6 @@
-from typing import Optional
+from typing import Annotated, Optional
 
+from annotated_types import Len
 from pydantic import BaseModel
 
 from src.models import Cocktail as DBCocktail
@@ -31,6 +32,30 @@ class Ingredient(CocktailIngredient):
     fill_level: int
     pump_speed: int
     cost: int = 0
+
+
+class IngredientInput(BaseModel):
+    name: str
+    alcohol: int
+    bottle_volume: int
+    fill_level: int
+    cost: int
+    pump_speed: int
+    hand: bool
+    unit: str
+
+
+class CocktailIngredientInput(BaseModel):
+    id: int
+    amount: int
+    recipe_order: int
+
+
+class CocktailInput(BaseModel):
+    name: str
+    enabled: bool
+    virgin_available: bool
+    ingredients: Annotated[list[CocktailIngredientInput], Len(min_length=1)]
 
 
 def map_cocktail(cocktail: Optional[DBCocktail]) -> Optional[Cocktail]:
