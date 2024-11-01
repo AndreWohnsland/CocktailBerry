@@ -4,15 +4,18 @@ from typing import Optional
 from fastapi import APIRouter
 from sse_starlette.sse import EventSourceResponse
 
-from src.api.models import Cocktail, map_cocktail
+from src.api.internal.utils import calculate_cocktail_volume_and_concentration
+from src.api.models import Cocktail, CocktailInput, map_cocktail
+from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER as DBC
+from src.models import Cocktail as DbCocktail
 
 router = APIRouter(tags=["cocktails"], prefix="/cocktails")
 
 
 @router.get("")
-async def get_cocktails(only_possible: bool = True):
-    cocktails = DBC.get_possible_cocktails() if only_possible else DBC.get_all_cocktails()
+async def get_cocktails(only_possible: bool = True, max_hand_add: int = 3):
+    cocktails = DBC.get_possible_cocktails(max_hand_add) if only_possible else DBC.get_all_cocktails()
     return [map_cocktail(c) for c in cocktails]
 
 
@@ -40,19 +43,39 @@ async def prepare_cocktail(cocktail_id: int, volume: int, alcohol_factor: float,
     return EventSourceResponse(event_generator(), ping=100)
 
 
-# TODO: Cocktail CRUD management
+@router.post("/prepare/stop")
+async def stop_cocktail():
+    shared.make_cocktail = False
+    return {"message": "Cocktail preparation stopped!"}
 
 
 @router.post("")
-async def create_cocktail():
-    return {"message": "Cocktail created successfully!"}
+async def create_cocktail(cocktail: CocktailInput) -> Optional[Cocktail]:
+    recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
+    ingredient_data = [(i.id, i.amount, i.recipe_order) for i in cocktail.ingredients]
+    db_cocktail = DBC.insert_new_recipe(
+        cocktail.name, recipe_alcohol_level, recipe_volume, cocktail.enabled, cocktail.virgin_available, ingredient_data
+    )
+    return map_cocktail(db_cocktail)
 
 
 @router.put("/{cocktail_id}")
-async def update_cocktail(cocktail_id: int):
-    return {"message": f"Cocktail {cocktail_id} updated successfully!"}
+async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> Optional[Cocktail]:
+    recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
+    ingredient_data = [(i.id, i.amount, i.recipe_order) for i in cocktail.ingredients]
+    db_cocktail: DbCocktail = DBC.set_recipe(
+        cocktail_id,
+        cocktail.name,
+        recipe_alcohol_level,
+        recipe_volume,
+        cocktail.enabled,
+        cocktail.virgin_available,
+        ingredient_data,
+    )
+    return map_cocktail(db_cocktail)
 
 
 @router.delete("/{cocktail_id}")
 async def delete_cocktail(cocktail_id: int):
+    DBC.delete_recipe(cocktail_id)
     return {"message": f"Cocktail {cocktail_id} deleted successfully!"}
