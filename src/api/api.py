@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from src.api.routers import bottles, cocktails
+from src.api.routers import bottles, cocktails, ingredients, options
 
 _DESC = """
 An endpoint for [CocktailBerry](https://github.com/AndreWohnsland/CocktailBerry) to control the machine over an API.
@@ -69,6 +69,8 @@ app = FastAPI(
 
 app.include_router(cocktails.router)
 app.include_router(bottles.router)
+app.include_router(options.router)
+app.include_router(ingredients.router)
 
 
 @app.get("/", tags=["testing"])
