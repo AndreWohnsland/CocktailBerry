@@ -283,15 +283,21 @@ class DialogHandler:
         """Informs user that the cocktail was canceled."""
         self.__output_language_dialog("cocktail_canceled", close_time=10)
 
+    def cocktail_ready(self, comment: str) -> str:
+        """Cocktail is done with additional information what to add."""
+        # no more message if there is no additional information
+        header_comment = self.__choose_language("cocktail_ready_add")
+        full_comment = f"\n\n{header_comment}{comment}"
+        return self.__choose_language("cocktail_ready", full_comment=full_comment)
+
     def say_cocktail_ready(self, comment: str):
         """Informs user that the cocktail is done with additional information what to add."""
         # no more message if there is no additional information
         if not comment:
             return
         close_time = 60
-        header_comment = self.__choose_language("cocktail_ready_add")
-        full_comment = f"\n\n{header_comment}{comment}"
-        self.__output_language_dialog("cocktail_ready", close_time=close_time, full_comment=full_comment)
+        msg = self.cocktail_ready(comment)
+        self.standard_box(msg, close_time=close_time)
 
     def say_enter_cocktail_name(self):
         """Informs user that no cocktail name was supplied."""
@@ -321,12 +327,21 @@ class DialogHandler:
         """Informs user that all data have been exported."""
         self.__output_language_dialog("all_data_exported", file_path=file_path)
 
+    def not_enough_ingredient_volume(self, ingredient_name: str, level: int, volume: int):
+        """Informs user that the ingredient got not enough volume for cocktail."""
+        level = max(0, level)
+        return self.__choose_language(
+            "not_enough_ingredient_volume", ingredient_name=ingredient_name, volume=volume, level=level
+        )
+
     def say_not_enough_ingredient_volume(self, ingredient_name: str, level: int, volume: int):
         """Informs user that the ingredient got not enough volume for cocktail."""
         level = max(0, level)
-        self.__output_language_dialog(
-            "not_enough_ingredient_volume", ingredient_name=ingredient_name, volume=volume, level=level
-        )
+        msg = self.not_enough_ingredient_volume(ingredient_name, level, volume)
+        self.standard_box(msg)
+
+    def cocktail_in_progress(self):
+        return self.__choose_language("cocktail_in_progress")
 
     def say_name_already_exists(self):
         """Informs user that there is already an entry in the DB with that name."""
@@ -803,3 +818,4 @@ class UiLanguage:
 
 
 UI_LANGUAGE = UiLanguage()
+DIALOG_HANDLER = DialogHandler()
