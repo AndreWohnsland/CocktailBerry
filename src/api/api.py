@@ -1,7 +1,16 @@
+from contextlib import asynccontextmanager
+
 import uvicorn
 from fastapi import FastAPI
+from fastapi.logger import logger
 
 from src.api.routers import bottles, cocktails, ingredients, options
+from src.config.config_manager import CONFIG as cfg
+from src.config.errors import ConfigError
+from src.filepath import CUSTOM_CONFIG_FILE
+from src.machine.controller import MACHINE
+from src.programs.addons import ADDONS
+from src.utils import start_resource_tracker, time_print
 
 _DESC = """
 An endpoint for [CocktailBerry](https://github.com/AndreWohnsland/CocktailBerry) to control the machine over an API.
@@ -59,11 +68,27 @@ _TAGS_METADATA = [
     },
 ]
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    start_resource_tracker()
+    ADDONS.setup_addons()
+    try:
+        cfg.read_local_config(update_config=True)
+    except ConfigError as e:
+        logger.error(f"Config Error: {e}")
+        logger.exception(e)
+        time_print(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
+        time_print("Opening the config window to correct the error.")
+        raise
+    MACHINE.init_machine()
+    MACHINE.default_led()
+    yield
+    MACHINE.cleanup()
+
+
 app = FastAPI(
-    title="CocktailBerry API",
-    version="1.0",
-    description=_DESC,
-    openapi_tags=_TAGS_METADATA,
+    title="CocktailBerry API", version="1.0", description=_DESC, openapi_tags=_TAGS_METADATA, lifespan=lifespan
 )
 
 
