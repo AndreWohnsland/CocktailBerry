@@ -4,7 +4,7 @@ import datetime
 import shutil
 import sqlite3
 
-from src.dialog_handler import DialogHandler
+from src.dialog_handler import DialogHandler, allowed_keys
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, Ingredient
@@ -21,7 +21,7 @@ class DatabaseTransactionError(Exception):
     The reason will be contained in the message with the corresponding translation key.
     """
 
-    def __init__(self, translation_key: str, language_args: dict | None = None):
+    def __init__(self, translation_key: allowed_keys, language_args: dict | None = None):
         self.language_args = language_args if language_args is not None else {}
         messsage = _dialog_handler.get_translation(translation_key, **self.language_args)
         super().__init__(messsage)

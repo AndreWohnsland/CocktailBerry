@@ -47,6 +47,77 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("dialog_handler")
 
+allowed_keys = Literal[
+    "alcohol_level_max_limit",
+    "all_data_exported",
+    "all_recipes_enabled",
+    "ask_adjust_time",
+    "ask_backup_overwrite",
+    "ask_enable_all_recipes",
+    "ask_export_data",
+    "ask_for_backup_location",
+    "ask_for_image_location",
+    "ask_to_clean",
+    "ask_to_delete_x",
+    "ask_to_install_qtsass",
+    "ask_to_reboot",
+    "ask_to_remove_picture",
+    "ask_to_shutdown",
+    "ask_to_system_update",
+    "ask_to_use_reverted_pump",
+    "backup_created",
+    "backup_failed",
+    "bottles_renewed",
+    "box_title",
+    "cocktail_canceled",
+    "cocktail_in_progress",
+    "cocktail_ready_add",
+    "cocktail_ready",
+    "cocktailberry_up_to_date",
+    "confirmation_required",
+    "create_cocktail_first",
+    "done",
+    "element_not_found",
+    "enter_cocktail_name",
+    "image_processing_failed",
+    "ingredient_added",
+    "ingredient_changed",
+    "ingredient_deleted",
+    "ingredient_double_usage",
+    "ingredient_must_be_handadd",
+    "ingredient_still_as_machine_add",
+    "ingredient_still_at_bottle",
+    "ingredient_still_at_recipe",
+    "internet_connection_not_ok",
+    "internet_connection_ok",
+    "name_already_exists",
+    "needs_to_be_int_specific",
+    "needs_to_be_int",
+    "no_button",
+    "no_ingredient_selected",
+    "no_recipe_selected",
+    "not_enough_ingredient_volume",
+    "python_deprecated",
+    "qtsass_not_successful",
+    "recipe_added",
+    "recipe_at_least_one_ingredient",
+    "recipe_deleted",
+    "recipe_help",
+    "recipe_updated",
+    "restart_config",
+    "some_value_missing_specific",
+    "some_value_missing",
+    "update_available",
+    "update_failed",
+    "welcome_dialog",
+    "wifi_failure",
+    "wifi_setup_failed",
+    "wifi_success",
+    "wrong_config",
+    "wrong_password",
+    "yes_button",
+]
+
 
 class DialogHandler:
     """Class to hold all the dialogues for the popups and language settings."""
@@ -59,7 +130,7 @@ class DialogHandler:
         with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, str]] = yaml.safe_load(stream)["dialog"]
 
-    def get_translation(self, dialog_key: str, **kwargs) -> str:
+    def get_translation(self, dialog_key: allowed_keys, **kwargs) -> str:
         try:
             return self.__choose_language(dialog_key, **kwargs)
         except KeyError:
