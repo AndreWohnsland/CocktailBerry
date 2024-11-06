@@ -19,7 +19,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
-from src.models import Cocktail, Ingredient
+from src.models import Cocktail
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
 from src.ui.icons import BUTTON_SIZE, ICONS
@@ -218,9 +218,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         self.picture_window = PictureWindow(cocktail, self.cocktail_view.populate_cocktails)
 
-    def open_refill_dialog(self, ingredient: Ingredient):
+    def open_refill_dialog(self, cocktail: Cocktail):
         """Open the refill dialog for the given ingredient."""
-        self.refill_dialog = RefillDialog(self, ingredient)
+        empty_ingredient = cocktail.enough_fill_level()
+        if empty_ingredient is None:
+            return
+        self.refill_dialog = RefillDialog(self, empty_ingredient)
 
     def connect_other_windows(self):
         """Links the buttons and lineedits to the other ui elements."""
