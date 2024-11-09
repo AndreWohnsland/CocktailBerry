@@ -1,14 +1,15 @@
-import asyncio
+# import asyncio
 from typing import Optional
 
 from fastapi import APIRouter
-from sse_starlette.sse import EventSourceResponse
 
+# from sse_starlette.sse import EventSourceResponse
 from src.api.internal.utils import calculate_cocktail_volume_and_concentration
 from src.api.models import Cocktail, CocktailInput, map_cocktail
 from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER as DBC
 from src.models import Cocktail as DbCocktail
+from src.tabs import maker
 
 router = APIRouter(tags=["cocktails"], prefix="/cocktails")
 
@@ -29,18 +30,23 @@ async def get_cocktail(cocktail_id: int) -> Optional[Cocktail]:
 async def prepare_cocktail(cocktail_id: int, volume: int, alcohol_factor: float, is_virgin: bool = False):
     factor = alcohol_factor if not is_virgin else 0
     cocktail = DBC.get_cocktail(cocktail_id)
+    if cocktail is None:
+        return {"message": f"Cocktail {cocktail_id} not found!"}
+    cocktail.scale_cocktail(volume, factor)
+    result, msg = maker.prepare_cocktail(cocktail, None)
+    return {"message": msg, "result": result.name}
 
-    # TODO: implement cocktail preparation with sockets
-    # return {"message": f"Cocktail {cocktail} of volume {volume} ({factor}%) prepared successfully!"}
-    async def event_generator():
-        i = 0
-        while i < 10:
-            i += 1
-            yield f"Cocktail {cocktail} of volume {volume} ({factor}%) {i}/10"
-            await asyncio.sleep(0.3)
-        yield "done"
+    # # TODO: implement cocktail preparation with sockets
+    # # return {"message": f"Cocktail {cocktail} of volume {volume} ({factor}%) prepared successfully!"}
+    # async def event_generator():
+    #     i = 0
+    #     while i < 10:
+    #         i += 1
+    #         yield f"Cocktail {cocktail} of volume {volume} ({factor}%) {i}/10"
+    #         await asyncio.sleep(0.3)
+    #     yield "done"
 
-    return EventSourceResponse(event_generator(), ping=100)
+    # return EventSourceResponse(event_generator(), ping=100)
 
 
 @router.post("/prepare/stop")
