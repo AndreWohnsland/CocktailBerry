@@ -29,4 +29,4 @@ sudo cp ./scripts/99-gpio.rules /etc/udev/rules.d/99-gpio.rules
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
-echo "Please reboot your device now, to apply the changes"
+echo "> Please reboot your device now, to apply the changes"
