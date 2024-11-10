@@ -14,7 +14,7 @@ from src.machine.interface import PinController
 from src.machine.leds import LedController
 from src.machine.raspberry import choose_pi_controller, is_rpi
 from src.machine.reverter import Reverter
-from src.models import Ingredient
+from src.models import CocktailStatus, Ingredient, PrepareResult
 from src.utils import time_print
 
 if TYPE_CHECKING:
@@ -93,10 +93,10 @@ class MachineController:
             tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
 
         """
+        shared.cocktail_status = CocktailStatus(0, result_code=PrepareResult.IN_PROGRESS)
         # Only show team dialog if it is enabled
         if cfg.TEAMS_ACTIVE and is_cocktail and w is not None:
             w.open_team_window()
-        shared.cocktail_started = True
         if w is not None:
             w.open_progression_window(recipe)
         prep_data = _build_preparation_data(ingredient_list)
@@ -111,13 +111,13 @@ class MachineController:
         _header_print(f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
-        shared.cocktail_started = False
+        if shared.cocktail_status.result_code != PrepareResult.CANCELED:
+            shared.cocktail_status.result_code = PrepareResult.FINISHED
         return consumption, current_time, max_time
 
     def _start_preparation(self, w: MainScreen | None, prep_data: list[_PreparationData], verbose: bool = True):
         """Prepare the volumes of the given data."""
         self._print_time = 0.0
-        shared.make_cocktail = True
         current_time = 0.0
         # need to cut data into chunks
         chunk = cfg.MAKER_SIMULTANEOUSLY_PUMPS
@@ -139,7 +139,7 @@ class MachineController:
         # Iterate over each chunk
         for section in chunked_preparation:
             # interrupt loop if user interrupt cocktail
-            if not shared.make_cocktail:
+            if shared.cocktail_status.result_code == PrepareResult.CANCELED:
                 break
             # Getting values for the section
             section_time = 0.0
@@ -149,7 +149,7 @@ class MachineController:
             section_start_time = time.perf_counter()
             self._start_pumps(pins, progress)
             # iterate over each prep data
-            while section_time < section_max and shared.make_cocktail:
+            while section_time < section_max and shared.cocktail_status.result_code != PrepareResult.CANCELED:
                 self._process_preparation_section(current_time, max_time, section, section_time)
                 # Adjust needed data
                 if verbose:
@@ -157,10 +157,11 @@ class MachineController:
                 time_now = time.perf_counter()
                 current_time = round(time_now - cocktail_start_time, 2)
                 section_time = round(time_now - section_start_time, 2)
+                progress = int(current_time / max_time * 100)
+                shared.cocktail_status.progress = progress
                 if w is not None:
-                    progress = int(current_time / max_time * 100)
                     w.change_progression_window(progress)
-                qApp.processEvents()
+                    qApp.processEvents()
 
             progress = _generate_progress(current_time, max_time)
             self._stop_pumps(pins, progress)

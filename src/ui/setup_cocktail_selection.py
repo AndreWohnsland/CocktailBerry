@@ -86,7 +86,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         if db_cocktail is not None:
             self.cocktail = db_cocktail
         self._scale_cocktail(amount)
-        result, message = maker.prepare_cocktail(self.cocktail, self.mainscreen)
+        result, message = maker.validate_cocktail(self.cocktail)
 
         # Go to refill dialog, if this window is not locked
         if (result == PrepareResult.NOT_ENOUGH_INGREDIENTS) and (
@@ -96,10 +96,11 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             return
 
         # No special case: just show the message
-        if result != PrepareResult.SUCCESS and result != PrepareResult.CANCELED:
+        if result != PrepareResult.VALIDATION_OK:
             DP_CONTROLLER.standard_box(message, close_time=60)
             return
 
+        result, message = maker.prepare_cocktail(self.cocktail, self.mainscreen)
         # show dialog in case of cancel or if there are handadds
         if result == PrepareResult.CANCELED:
             DP_CONTROLLER.say_cocktail_canceled()

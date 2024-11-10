@@ -32,6 +32,7 @@ from src.config.errors import ConfigError
 from src.config.validators import build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
+from src.models import CocktailStatus
 from src.utils import get_platform_data, time_print
 
 _logger = LoggerHandler("config_manager")
@@ -333,12 +334,11 @@ class Shared:
     """Shared global variables which may dynamically change and are needed on different spaces."""
 
     def __init__(self):
-        self.cocktail_started = False
-        self.make_cocktail = True
         self.old_ingredient: list[str] = []
         self.selected_team = "No Team"
         self.team_member_name: str | None = None
         self.alcohol_factor: float = 1.0
+        self.cocktail_status = CocktailStatus()
 
 
 def version_callback(value: bool):

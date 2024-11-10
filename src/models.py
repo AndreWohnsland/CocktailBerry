@@ -1,6 +1,27 @@
 import copy
 from dataclasses import dataclass, field
+from enum import Enum, auto
 from typing import Optional, Union
+
+
+class PrepareResult(Enum):
+    """Result of the prepare_cocktail function."""
+
+    VALIDATION_OK = auto()
+    IN_PROGRESS = auto()
+    FINISHED = auto()
+    CANCELED = auto()
+    NOT_ENOUGH_INGREDIENTS = auto()
+    COCKTAIL_NOT_FOUND = auto()
+    ADDON_ERROR = auto()
+
+
+@dataclass
+class CocktailStatus:
+    progress: int = 0
+    completed: bool = False
+    error: Optional[str] = None
+    result_code: Optional[PrepareResult] = None
 
 
 @dataclass
