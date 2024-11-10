@@ -5,16 +5,15 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 
 from __future__ import annotations
 
-from enum import Enum, auto
 from typing import TYPE_CHECKING, Any
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
-from src.models import Cocktail
+from src.models import Cocktail, PrepareResult
 from src.programs.addons import ADDONS
 from src.service_handler import SERVICE_HANDLER
 from src.utils import time_print
@@ -50,18 +49,15 @@ def _log_cocktail(cocktail_volume: int, real_volume: int, cocktail_name: str, ta
     """Enter a log entry for the made cocktail."""
     volume_string = f"{cocktail_volume} ml"
     cancel_log_addition = ""
-    if not shared.make_cocktail:
+    if shared.cocktail_status.result_code == PrepareResult.CANCELED:
         cancel_log_addition = f" - Recipe canceled at {round(taken_time, 1)} s - {real_volume} ml"
     _LOGGER.log_event("INFO", f"{volume_string:6} - {cocktail_name}{cancel_log_addition}")
 
 
-def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None) -> tuple[PrepareResult, str]:
+def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[PrepareResult, str]:
     """Prepare a Cocktail, if not already another one is in production and enough ingredients are available."""
+    shared.cocktail_status.result_code = PrepareResult.IN_PROGRESS
     addon_data: dict[str, Any] = {"cocktail": cocktail}
-    result, message = _validate_cocktail(cocktail, addon_data)
-
-    if result != PrepareResult.SUCCESS:
-        return result, message
 
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
     ingredient_bottles = [x for x in cocktail.machineadds if x.amount > 0]
@@ -70,7 +66,8 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None) -> tuple[PrepareR
     display_name = f"{cocktail.name} (Virgin)" if cocktail.is_virgin else cocktail.name
     time_print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
     consumption, taken_time, max_time = MACHINE.make_cocktail(w, ingredient_bottles, display_name)
-    DB_COMMANDER.increment_recipe_counter(cocktail.name)
+    DBC = DatabaseCommander()
+    DBC.increment_recipe_counter(cocktail.name)
 
     percentage_made = taken_time / max_time
     real_volume = round(cocktail.adjusted_amount * percentage_made)
@@ -86,43 +83,34 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None) -> tuple[PrepareR
         SERVICE_HANDLER.post_cocktail_to_hook(display_name, real_volume, cocktail)
 
     # the cocktail was canceled!
-    if not shared.make_cocktail:
+    if shared.cocktail_status.result_code == PrepareResult.CANCELED:
         consumption_names = [x.name for x in cocktail.machineadds]
         consumption_amount = consumption
-        DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
+        DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
         return PrepareResult.CANCELED, DH.get_translation("cocktail_canceled")
 
     consumption_names = [x.name for x in cocktail.adjusted_ingredients]
     consumption_amount = [x.amount for x in cocktail.adjusted_ingredients]
-    DB_COMMANDER.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
+    DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
     comment = _build_comment_maker(cocktail)
 
-    return result, DH.cocktail_ready(comment)
+    return PrepareResult.FINISHED, DH.cocktail_ready(comment)
 
 
 def interrupt_cocktail():
     """Interrupts the cocktail preparation."""
-    shared.make_cocktail = False
+    shared.cocktail_status.result_code = PrepareResult.CANCELED
     time_print("Canceling the cocktail!")
 
 
-class PrepareResult(Enum):
-    """Result of the prepare_cocktail function."""
-
-    SUCCESS = auto()
-    CANCELED = auto()
-    NOT_ENOUGH_INGREDIENTS = auto()
-    COCKTAIL_IN_PROGRESS = auto()
-    ADDON_ERROR = auto()
-
-
-def _validate_cocktail(cocktail: Cocktail, addon_data: dict[str, Any]) -> tuple[PrepareResult, str]:
+def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str]:
     """Validate the cocktail.
 
     Returns the validator code | Error message (in case of addon).
     """
-    if shared.cocktail_started:
-        return PrepareResult.COCKTAIL_IN_PROGRESS, DH.cocktail_in_progress()
+    addon_data: dict[str, Any] = {"cocktail": cocktail}
+    if shared.cocktail_status.result_code == PrepareResult.IN_PROGRESS:
+        return PrepareResult.IN_PROGRESS, DH.cocktail_in_progress()
     empty_ingredient = None
     if cfg.MAKER_CHECK_BOTTLE:
         empty_ingredient = cocktail.enough_fill_level()
@@ -138,4 +126,4 @@ def _validate_cocktail(cocktail: Cocktail, addon_data: dict[str, Any]) -> tuple[
     except RuntimeError as err:
         return PrepareResult.ADDON_ERROR, str(err)
 
-    return PrepareResult.SUCCESS, ""
+    return PrepareResult.VALIDATION_OK, ""
