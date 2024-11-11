@@ -1,14 +1,14 @@
-import math
 import json
+import math
 import os
 from pathlib import Path
 from typing import Dict, List, Union
-import yaml
-import requests
+
 import matplotlib
 import matplotlib.pyplot as plt
+import requests
+import yaml
 from dotenv import load_dotenv
-
 from pywaffle import Waffle
 
 DIRPATH = Path(__file__).parent.absolute()
@@ -16,15 +16,15 @@ load_dotenv(DIRPATH / ".env")
 
 # Getting the language file as dict
 LANGUAGE_FILE = DIRPATH / "language.yaml"
-with open(LANGUAGE_FILE, "r", encoding="UTF-8") as stream:
+with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
     LANGUAGE_DATA: Dict = yaml.safe_load(stream)
 
 # Setting some plotting props
-matplotlib.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
+matplotlib.rcParams.update({"text.color": "white", "axes.labelcolor": "white"})
 
 
-def __choose_language(element: dict, **kwargs) -> Union[str, List[str]]:
-    """Choose either the given language if exists, or english if not piping additional info into template"""
+def _choose_language(element: dict, **kwargs) -> Union[str, List[str]]:
+    """Choose either the given language if exists, or english if not piping additional info into template."""
     language = os.getenv("UI_LANGUAGE")
     tmpl = element.get(language, element["en"])
     # Return the list and not apply template!
@@ -33,8 +33,8 @@ def __choose_language(element: dict, **kwargs) -> Union[str, List[str]]:
     return tmpl.format(**kwargs)
 
 
-HEADER = __choose_language(LANGUAGE_DATA["header_label"])
-DEFAULT_MESSAGE = __choose_language(LANGUAGE_DATA["default_message"])
+HEADER = _choose_language(LANGUAGE_DATA["header_label"])
+DEFAULT_MESSAGE = _choose_language(LANGUAGE_DATA["default_message"])
 
 
 def sort_dict_items(to_sort: dict):
@@ -96,12 +96,13 @@ def decide_data(datatype: int):
 
 
 def generate_figure(datatype: int):
-    """Generates the Waffle plot.
+    """Generate the Waffle plot.
+
     Type is int from 1-4:
     1: Amount Today
     2: Volume Today
     3: Amount All Time
-    4: Volume All Time
+    4: Volume All Time.
     """
     count, sort, hourrange, limit = decide_data(datatype)
     data = get_data(count, hourrange, limit)
@@ -109,19 +110,13 @@ def generate_figure(datatype: int):
     dims = generate_dimensions(sum(data.values()), count)
     # close current (old) figure, to avoid memory leak
     # this is needed because old figures will keep open until explicitly closed
-    plt.close('all')
+    plt.close("all")
     fig = plt.figure(
         FigureClass=Waffle,
         **dims,
         values=waffle_data,
-        title={
-            'label': HEADER[datatype - 1],
-            'fontdict': {
-                'fontsize': 30
-            }
-        },
+        title={"label": HEADER[datatype - 1], "fontdict": {"fontsize": 30}},
         facecolor=(0.054, 0.066, 0.090, 1),
-        legend={'loc': 'upper center', 'bbox_to_anchor': (0.5, 0.0),
-                'ncol': 2, 'framealpha': 0, 'fontsize': 18}
+        legend={"loc": "upper center", "bbox_to_anchor": (0.5, 0.0), "ncol": 2, "framealpha": 0, "fontsize": 18},
     )
     return fig
