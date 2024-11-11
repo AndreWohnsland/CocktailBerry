@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import shutil
 import sqlite3
+from pathlib import Path
 
 from src.dialog_handler import DialogHandler, allowed_keys
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, ROOT_PATH
@@ -149,6 +150,32 @@ class DatabaseCommander:
             unit=ing[9],
         )
 
+    def get_ingredients_at_bottles(self) -> list[Ingredient]:
+        """Return ingredient name for all bottles."""
+        query = """SELECT
+                I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Pump_speed, B.Bottle, I.Cost, I.Unit
+                FROM Bottles as B
+                LEFT JOIN Ingredients as I
+                ON I.ID=B.ID
+                ORDER BY B.Bottle"""
+        result = self.handler.query_database(query)
+        return [
+            Ingredient(
+                id=ing[0],
+                name=ing[1],
+                alcohol=ing[2],
+                bottle_volume=ing[3],
+                fill_level=ing[4],
+                hand=bool(ing[5]),
+                pump_speed=ing[6],
+                bottle=ing[7],
+                cost=ing[8],
+                unit=ing[9],
+            )
+            for ing in result
+            if ing[0] is not None
+        ]
+
     def get_bottle_fill_levels(self) -> list[int]:
         """Return percentage of fill level, limited to [0, 100]."""
         query = """SELECT Ingredients.Fill_level, Ingredients.Volume FROM Bottles
@@ -294,15 +321,19 @@ class DatabaseCommander:
         return 0, 0
 
     # set (update) commands
-    def set_bottle_order(self, ingredient_names: list[str]):
+    def set_bottle_order(self, ingredient_names: list[str] | list[int]):
         """Set bottles to the given list of bottles, need all bottles."""
-        for i, ingredient in enumerate(ingredient_names):
-            bottle = i + 1
-            query = """UPDATE OR IGNORE Bottles
-                    SET ID = (SELECT ID FROM Ingredients WHERE Name = ?)
-                    WHERE Bottle = ?"""
-            search_tuple = (ingredient, bottle)
-            self.handler.query_database(query, search_tuple)
+        for bottle, ingredient in enumerate(ingredient_names, start=1):
+            self.set_bottle_at_slot(ingredient, bottle)
+
+    def set_bottle_at_slot(self, ingredient: str | int, bottle_number: int):
+        """Set the bottle at the given slot."""
+        id_str = "?" if isinstance(ingredient, int) else "(SELECT ID FROM Ingredients WHERE Name = ?)"
+        query = f"""UPDATE OR IGNORE Bottles
+                SET ID = {id_str}
+                WHERE Bottle = ?"""
+        search_tuple = (ingredient, bottle_number)
+        self.handler.query_database(query, search_tuple)
 
     def set_bottle_volumelevel_to_max(self, bottle_number_list: list[int]):
         """Set the each i-th bottle to max level if arg is true."""
@@ -533,26 +564,32 @@ class DatabaseHandler:
     database_path = DATABASE_PATH
     database_path_default = DEFAULT_DATABASE_PATH
 
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close_connection()
+
     def __init__(self, use_default=False):
-        self.database_path = DatabaseHandler.database_path
         if not self.database_path_default.exists():
             time_print("Creating Database")
             self.create_tables()
         if not self.database_path.exists():
             time_print("Copying default database for maker usage")
             self.copy_default_database()
+        self.connector_path = self.database_path
         if use_default:
-            self.connect_database(str(self.database_path_default.absolute()))
-        else:
-            self.connect_database()
+            self.connector_path = self.database_path_default
+        self.connect_database(self.connector_path)
 
-    def connect_database(self, path: str | None = None):
+    def connect_database(self, path: str | Path | None = None):
         """Connect to the given path or local database, creates cursor."""
         if path:
             self.database = sqlite3.connect(path)
         else:
             self.database = sqlite3.connect(self.database_path)
         self.cursor = self.database.cursor()
+
+    def close_connection(self):
+        self.cursor.close()
+        self.database.close()
 
     def query_database(self, sql: str, search_tuple=()):
         """Execute the given query, if select command, return the data."""
