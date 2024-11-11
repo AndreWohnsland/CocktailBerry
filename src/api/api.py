@@ -1,12 +1,14 @@
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.logger import logger
+from fastapi.responses import JSONResponse
 
 from src.api.routers import bottles, cocktails, ingredients, options
 from src.config.config_manager import CONFIG as cfg
 from src.config.errors import ConfigError
+from src.database_commander import DatabaseTransactionError
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.machine.controller import MACHINE
 from src.programs.addons import ADDONS
@@ -55,6 +57,10 @@ _TAGS_METADATA = [
         "description": "Operations with cocktails/recipes.",
     },
     {
+        "name": "preparation",
+        "description": "Operation for cocktail preparation.",
+    },
+    {
         "name": "ingredients",
         "description": "Operations with ingredients.",
     },
@@ -90,6 +96,14 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="CocktailBerry API", version="1.0", description=_DESC, openapi_tags=_TAGS_METADATA, lifespan=lifespan
 )
+
+
+@app.exception_handler(DatabaseTransactionError)
+async def database_transaction_error_handler(request: Request, exc: DatabaseTransactionError):
+    return JSONResponse(
+        status_code=406,
+        content={"detail": str(exc)},
+    )
 
 
 app.include_router(cocktails.router)
