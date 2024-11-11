@@ -5,6 +5,19 @@ from pydantic import BaseModel
 
 from src.models import Cocktail as DBCocktail
 from src.models import Ingredient as DBIngredient
+from src.models import PrepareResult
+
+
+class ErrorDetail(BaseModel):
+    result_code: PrepareResult
+    detail: str
+
+
+class CocktailStatus(BaseModel):
+    progress: int = 0
+    completed: bool = False
+    error: Optional[str] = None
+    result_code: Optional[PrepareResult] = None
 
 
 class CocktailIngredient(BaseModel):
@@ -56,6 +69,11 @@ class CocktailInput(BaseModel):
     enabled: bool
     virgin_available: bool
     ingredients: Annotated[list[CocktailIngredientInput], Len(min_length=1)]
+
+
+class Bottle(BaseModel):
+    number: int
+    ingredient: Optional[Ingredient]
 
 
 def map_cocktail(cocktail: Optional[DBCocktail]) -> Optional[Cocktail]:
