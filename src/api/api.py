@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.logger import logger
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from src.api.routers import bottles, cocktails, ingredients, options
@@ -95,6 +96,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="CocktailBerry API", version="1.0", description=_DESC, openapi_tags=_TAGS_METADATA, lifespan=lifespan
+)
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
