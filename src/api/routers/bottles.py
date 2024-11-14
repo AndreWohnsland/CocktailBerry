@@ -2,7 +2,8 @@ from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
-from src.api.models import Bottle, map_ingredient
+from src.api.internal.utils import map_ingredient
+from src.api.models import Bottle
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
@@ -28,7 +29,7 @@ async def get_bottles() -> list[Bottle]:
 async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         raise HTTPException(
-            status_code=400, detail={"result_code": PrepareResult.IN_PROGRESS, "message": DH.cocktail_in_progress()}
+            status_code=400, detail={"status": PrepareResult.IN_PROGRESS, "message": DH.cocktail_in_progress()}
         )
     DBC = DatabaseCommander()
     DBC.set_bottle_volumelevel_to_max(bottle_numbers)

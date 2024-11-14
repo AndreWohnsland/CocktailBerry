@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
-from src.api.models import IngredientInput, map_ingredient
+from src.api.internal.utils import map_ingredient
+from src.api.models import IngredientInput
 from src.database_commander import DatabaseCommander
 
 router = APIRouter(tags=["ingredients"], prefix="/ingredients")
