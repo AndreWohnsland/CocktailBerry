@@ -5,12 +5,13 @@ from fastapi import FastAPI, Request
 from fastapi.logger import logger
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from src.api.routers import bottles, cocktails, ingredients, options
 from src.config.config_manager import CONFIG as cfg
 from src.config.errors import ConfigError
 from src.database_commander import DatabaseTransactionError
-from src.filepath import CUSTOM_CONFIG_FILE
+from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
 from src.machine.controller import MACHINE
 from src.programs.addons import ADDONS
 from src.utils import start_resource_tracker, time_print
@@ -106,6 +107,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/static/default", StaticFiles(directory=DEFAULT_IMAGE_FOLDER), name="default_images")
+app.mount("/static/user", StaticFiles(directory=USER_IMAGE_FOLDER), name="user_images")
 
 
 @app.exception_handler(DatabaseTransactionError)
