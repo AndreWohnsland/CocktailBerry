@@ -26,7 +26,7 @@ async def get_bottles() -> list[Bottle]:
 
 @router.post("/refill")
 async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundTasks):
-    if shared.cocktail_status.result_code == PrepareResult.IN_PROGRESS:
+    if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         raise HTTPException(
             status_code=400, detail={"result_code": PrepareResult.IN_PROGRESS, "message": DH.cocktail_in_progress()}
         )
