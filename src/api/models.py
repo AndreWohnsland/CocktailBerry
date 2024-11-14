@@ -9,7 +9,7 @@ from src.models import PrepareResult
 
 
 class ErrorDetail(BaseModel):
-    result_code: PrepareResult
+    status: PrepareResult
     detail: str
 
 
@@ -17,7 +17,7 @@ class CocktailStatus(BaseModel):
     progress: int = 0
     completed: bool = False
     error: Optional[str] = None
-    result_code: Optional[PrepareResult] = None
+    status: Optional[PrepareResult] = None
 
 
 class CocktailIngredient(BaseModel):

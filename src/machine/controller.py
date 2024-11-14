@@ -93,7 +93,7 @@ class MachineController:
             tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
 
         """
-        shared.cocktail_status = CocktailStatus(0, result_code=PrepareResult.IN_PROGRESS)
+        shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
         # Only show team dialog if it is enabled
         if cfg.TEAMS_ACTIVE and is_cocktail and w is not None:
             w.open_team_window()
@@ -111,8 +111,8 @@ class MachineController:
         _header_print(f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
-        if shared.cocktail_status.result_code != PrepareResult.CANCELED:
-            shared.cocktail_status.result_code = PrepareResult.FINISHED
+        if shared.cocktail_status.status != PrepareResult.CANCELED:
+            shared.cocktail_status.status = PrepareResult.FINISHED
         return consumption, current_time, max_time
 
     def _start_preparation(self, w: MainScreen | None, prep_data: list[_PreparationData], verbose: bool = True):
@@ -139,7 +139,7 @@ class MachineController:
         # Iterate over each chunk
         for section in chunked_preparation:
             # interrupt loop if user interrupt cocktail
-            if shared.cocktail_status.result_code == PrepareResult.CANCELED:
+            if shared.cocktail_status.status == PrepareResult.CANCELED:
                 break
             # Getting values for the section
             section_time = 0.0
@@ -149,7 +149,7 @@ class MachineController:
             section_start_time = time.perf_counter()
             self._start_pumps(pins, progress)
             # iterate over each prep data
-            while section_time < section_max and shared.cocktail_status.result_code != PrepareResult.CANCELED:
+            while section_time < section_max and shared.cocktail_status.status != PrepareResult.CANCELED:
                 self._process_preparation_section(current_time, max_time, section, section_time)
                 # Adjust needed data
                 if verbose:

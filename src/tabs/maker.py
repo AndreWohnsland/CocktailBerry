@@ -49,14 +49,14 @@ def _log_cocktail(cocktail_volume: int, real_volume: int, cocktail_name: str, ta
     """Enter a log entry for the made cocktail."""
     volume_string = f"{cocktail_volume} ml"
     cancel_log_addition = ""
-    if shared.cocktail_status.result_code == PrepareResult.CANCELED:
+    if shared.cocktail_status.status == PrepareResult.CANCELED:
         cancel_log_addition = f" - Recipe canceled at {round(taken_time, 1)} s - {real_volume} ml"
     _LOGGER.log_event("INFO", f"{volume_string:6} - {cocktail_name}{cancel_log_addition}")
 
 
 def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[PrepareResult, str]:
     """Prepare a Cocktail, if not already another one is in production and enough ingredients are available."""
-    shared.cocktail_status.result_code = PrepareResult.IN_PROGRESS
+    shared.cocktail_status.status = PrepareResult.IN_PROGRESS
     addon_data: dict[str, Any] = {"cocktail": cocktail}
 
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
@@ -83,7 +83,7 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[P
         SERVICE_HANDLER.post_cocktail_to_hook(display_name, real_volume, cocktail)
 
     # the cocktail was canceled!
-    if shared.cocktail_status.result_code == PrepareResult.CANCELED:
+    if shared.cocktail_status.status == PrepareResult.CANCELED:
         consumption_names = [x.name for x in cocktail.machineadds]
         consumption_amount = consumption
         DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
@@ -99,7 +99,7 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[P
 
 def interrupt_cocktail():
     """Interrupts the cocktail preparation."""
-    shared.cocktail_status.result_code = PrepareResult.CANCELED
+    shared.cocktail_status.status = PrepareResult.CANCELED
     time_print("Canceling the cocktail!")
 
 
@@ -109,7 +109,7 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str]:
     Returns the validator code | Error message (in case of addon).
     """
     addon_data: dict[str, Any] = {"cocktail": cocktail}
-    if shared.cocktail_status.result_code == PrepareResult.IN_PROGRESS:
+    if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         return PrepareResult.IN_PROGRESS, DH.cocktail_in_progress()
     empty_ingredient = None
     if cfg.MAKER_CHECK_BOTTLE:

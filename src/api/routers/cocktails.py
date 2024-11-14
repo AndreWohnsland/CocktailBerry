@@ -55,22 +55,22 @@ async def prepare_cocktail(
     cocktail.scale_cocktail(volume, factor)
     result, msg = maker.validate_cocktail(cocktail)
     if result != maker.PrepareResult.VALIDATION_OK:
-        raise HTTPException(status_code=400, detail={"result_code": result, "detail": msg})
+        raise HTTPException(status_code=400, detail={"status": result, "detail": msg})
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
-    return CocktailStatus(result_code=PrepareResult.IN_PROGRESS)
+    return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
 
 @router.get("/prepare/status", tags=["preparation"])
 async def get_cocktail_status() -> CocktailStatus:
     status = shared.cocktail_status
     return CocktailStatus(
-        progress=status.progress, completed=status.completed, error=status.error, result_code=status.result_code
+        progress=status.progress, completed=status.completed, error=status.error, status=status.status
     )
 
 
 @router.post("/prepare/stop", tags=["preparation"])
 async def stop_cocktail():
-    shared.cocktail_status.result_code = PrepareResult.CANCELED
+    shared.cocktail_status.status = PrepareResult.CANCELED
     time_print("Canceling the cocktail!")
     return {"message": "Cocktail preparation stopped!"}
 
