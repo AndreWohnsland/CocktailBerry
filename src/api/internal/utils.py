@@ -1,6 +1,7 @@
 from typing import Optional
 
 from src.api.models import Cocktail, CocktailIngredient, CocktailInput, Ingredient
+from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER as DBC
 from src.filepath import DEFAULT_IMAGE_FOLDER
 from src.image_utils import find_cocktail_image
@@ -11,6 +12,9 @@ from src.models import Ingredient as DBIngredient
 def map_cocktail(cocktail: Optional[DBCocktail]) -> Optional[Cocktail]:
     if cocktail is None:
         return None
+    # scale by the middle of the cocktail amount data, apply user specified alcohol factor
+    default_amount = cfg.MAKER_PREPARE_VOLUME[len(cfg.MAKER_PREPARE_VOLUME) // 2]
+    cocktail.scale_cocktail(default_amount, cfg.MAKER_ALCOHOL_FACTOR)
     return Cocktail(
         id=cocktail.id,
         name=cocktail.name,
