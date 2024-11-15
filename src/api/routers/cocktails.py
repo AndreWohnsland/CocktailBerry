@@ -55,7 +55,7 @@ async def prepare_cocktail(
     cocktail.scale_cocktail(volume, factor)
     result, msg = maker.validate_cocktail(cocktail)
     if result != maker.PrepareResult.VALIDATION_OK:
-        raise HTTPException(status_code=400, detail={"status": result, "detail": msg})
+        raise HTTPException(status_code=400, detail={"status": result.value, "detail": msg})
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
