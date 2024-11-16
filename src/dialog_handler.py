@@ -401,6 +401,7 @@ class DialogHandler:
     def not_enough_ingredient_volume(self, ingredient_name: str, level: int, volume: int):
         """Informs user that the ingredient got not enough volume for cocktail."""
         level = max(0, level)
+        volume = max(0, volume)
         return self._choose_language(
             "not_enough_ingredient_volume", ingredient_name=ingredient_name, volume=volume, level=level
         )
@@ -408,6 +409,7 @@ class DialogHandler:
     def say_not_enough_ingredient_volume(self, ingredient_name: str, level: int, volume: int):
         """Informs user that the ingredient got not enough volume for cocktail."""
         level = max(0, level)
+        volume = max(0, volume)
         msg = self.not_enough_ingredient_volume(ingredient_name, level, volume)
         self.standard_box(msg)
 
