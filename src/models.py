@@ -20,7 +20,7 @@ class PrepareResult(Enum):
 class CocktailStatus:
     progress: int = 0
     completed: bool = False
-    error: Optional[str] = None
+    message: Optional[str] = None
     status: PrepareResult = PrepareResult.FINISHED
 
 

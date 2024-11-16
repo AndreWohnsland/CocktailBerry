@@ -13,7 +13,7 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
-from src.models import Cocktail, PrepareResult
+from src.models import Cocktail, CocktailStatus, PrepareResult
 from src.programs.addons import ADDONS
 from src.service_handler import SERVICE_HANDLER
 from src.utils import time_print
@@ -56,7 +56,7 @@ def _log_cocktail(cocktail_volume: int, real_volume: int, cocktail_name: str, ta
 
 def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[PrepareResult, str]:
     """Prepare a Cocktail, if not already another one is in production and enough ingredients are available."""
-    shared.cocktail_status.status = PrepareResult.IN_PROGRESS
+    shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     addon_data: dict[str, Any] = {"cocktail": cocktail}
 
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
@@ -65,7 +65,11 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[P
     # Now make the cocktail
     display_name = f"{cocktail.name} (Virgin)" if cocktail.is_virgin else cocktail.name
     time_print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
-    consumption, taken_time, max_time = MACHINE.make_cocktail(w, ingredient_bottles, display_name)
+    add_message = DH.cocktail_ready(_build_comment_maker(cocktail))
+    canceled_message = DH.get_translation("cocktail_canceled")
+    consumption, taken_time, max_time = MACHINE.make_cocktail(
+        w, ingredient_bottles, display_name, finish_message=add_message
+    )
     DBC = DatabaseCommander()
     DBC.increment_recipe_counter(cocktail.name)
 
@@ -87,14 +91,14 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[P
         consumption_names = [x.name for x in cocktail.machineadds]
         consumption_amount = consumption
         DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
-        return PrepareResult.CANCELED, DH.get_translation("cocktail_canceled")
+        return PrepareResult.CANCELED, canceled_message
 
+    shared.cocktail_status.status = PrepareResult.FINISHED
     consumption_names = [x.name for x in cocktail.adjusted_ingredients]
     consumption_amount = [x.amount for x in cocktail.adjusted_ingredients]
     DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
-    comment = _build_comment_maker(cocktail)
 
-    return PrepareResult.FINISHED, DH.cocktail_ready(comment)
+    return PrepareResult.FINISHED, add_message
 
 
 def interrupt_cocktail():

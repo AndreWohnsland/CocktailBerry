@@ -74,6 +74,7 @@ class MachineController:
         recipe="",
         is_cocktail=True,
         verbose=True,
+        finish_message: str = "",
     ):
         """RPI Logic to prepare the cocktail.
 
@@ -87,6 +88,7 @@ class MachineController:
             recipe (str, optional): Option to change the display text of Progress Screen. Defaults to "".
             is_cocktail (bool, optional): If the preparation is a cocktail. Default to True.
             verbose (bool, optional): If the preparation should be verbose. Defaults to True.
+            finish_message (str, optional): Message to display after preparation. Defaults to "".
 
         Returns:
         -------
@@ -113,6 +115,7 @@ class MachineController:
             w.close_progression_window()
         if shared.cocktail_status.status != PrepareResult.CANCELED:
             shared.cocktail_status.status = PrepareResult.FINISHED
+            shared.cocktail_status.message = finish_message
         return consumption, current_time, max_time
 
     def _start_preparation(self, w: MainScreen | None, prep_data: list[_PreparationData], verbose: bool = True):
