@@ -66,7 +66,7 @@ async def prepare_cocktail(
 async def get_cocktail_status() -> CocktailStatus:
     status = shared.cocktail_status
     return CocktailStatus(
-        progress=status.progress, completed=status.completed, error=status.error, status=status.status
+        progress=status.progress, completed=status.completed, message=status.message, status=status.status
     )
 
 

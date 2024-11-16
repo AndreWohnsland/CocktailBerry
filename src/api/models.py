@@ -14,7 +14,7 @@ class ErrorDetail(BaseModel):
 class CocktailStatus(BaseModel):
     progress: int = 0
     completed: bool = False
-    error: Optional[str] = None
+    message: Optional[str] = None
     status: PrepareResult = PrepareResult.FINISHED
 
 
