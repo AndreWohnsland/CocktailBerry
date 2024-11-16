@@ -3,6 +3,14 @@
 @import 'tailwindcss/utilities';
 @import './themes.css';
 @import 'themes.css';
+@import 'react-toastify/dist/ReactToastify.css';
+
+:root {
+  --toastify-color-light: var(--background-color);
+  --toastify-text-color-light: var(--primary-color);
+  --toastify-color-info: var(--primary-color);
+  --toastify-color-progress-light: var(--primary-color);
+}
 
 body {
   margin: 0;
