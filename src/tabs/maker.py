@@ -117,8 +117,8 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str]:
     if empty_ingredient is not None:
         msg = DH.not_enough_ingredient_volume(
             empty_ingredient.name,
-            empty_ingredient.amount,
             empty_ingredient.fill_level,
+            empty_ingredient.amount,
         )
         return PrepareResult.NOT_ENOUGH_INGREDIENTS, msg
     try:
