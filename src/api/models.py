@@ -1,7 +1,7 @@
 from typing import Annotated, Optional
 
 from annotated_types import Len
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from src.models import PrepareResult
 
@@ -15,7 +15,7 @@ class CocktailStatus(BaseModel):
     progress: int = 0
     completed: bool = False
     error: Optional[str] = None
-    status: Optional[PrepareResult] = None
+    status: PrepareResult = PrepareResult.FINISHED
 
 
 class CocktailIngredient(BaseModel):
@@ -73,3 +73,9 @@ class CocktailInput(BaseModel):
 class Bottle(BaseModel):
     number: int
     ingredient: Optional[Ingredient]
+
+
+class PrepareCocktailRequest(BaseModel):
+    volume: int = Field(..., gt=0)
+    alcohol_factor: float
+    is_virgin: bool = False
