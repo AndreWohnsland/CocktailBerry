@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
 from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail
-from src.api.models import Cocktail, CocktailInput, CocktailStatus, ErrorDetail
+from src.api.models import Cocktail, CocktailInput, CocktailStatus, ErrorDetail, PrepareCocktailRequest
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DialogHandler
@@ -44,15 +44,17 @@ async def get_cocktail(cocktail_id: int) -> Optional[Cocktail]:
     },
 )
 async def prepare_cocktail(
-    cocktail_id: int, volume: int, alcohol_factor: float, background_tasks: BackgroundTasks, is_virgin: bool = False
+    cocktail_id: int,
+    request: PrepareCocktailRequest,
+    background_tasks: BackgroundTasks,
 ) -> CocktailStatus:
     DBC = DatabaseCommander()
-    factor = alcohol_factor if not is_virgin else 0
+    factor = request.alcohol_factor if not request.is_virgin else 0
     cocktail = DBC.get_cocktail(cocktail_id)
     if cocktail is None:
         message = _dialog_handler.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
         raise HTTPException(status_code=404, detail=message)
-    cocktail.scale_cocktail(volume, factor)
+    cocktail.scale_cocktail(request.volume, factor)
     result, msg = maker.validate_cocktail(cocktail)
     if result != maker.PrepareResult.VALIDATION_OK:
         raise HTTPException(status_code=400, detail={"status": result.value, "detail": msg})
