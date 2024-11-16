@@ -14,12 +14,12 @@ def map_cocktail(cocktail: Optional[DBCocktail]) -> Optional[Cocktail]:
         return None
     # scale by the middle of the cocktail amount data, apply user specified alcohol factor
     default_amount = cfg.MAKER_PREPARE_VOLUME[len(cfg.MAKER_PREPARE_VOLUME) // 2]
-    cocktail.scale_cocktail(default_amount, cfg.MAKER_ALCOHOL_FACTOR)
+    cocktail.scale_cocktail(default_amount, cfg.MAKER_ALCOHOL_FACTOR / 100)
     return Cocktail(
         id=cocktail.id,
         name=cocktail.name,
-        alcohol=cocktail.alcohol,
-        amount=cocktail.amount,
+        alcohol=int(cocktail.adjusted_alcohol),
+        amount=cocktail.adjusted_amount,
         enabled=cocktail.enabled,
         virgin_available=cocktail.virgin_available,
         ingredients=[
@@ -32,7 +32,7 @@ def map_cocktail(cocktail: Optional[DBCocktail]) -> Optional[Cocktail]:
                 recipe_order=i.recipe_order,
                 unit=i.unit,
             )
-            for i in cocktail.ingredients
+            for i in cocktail.adjusted_ingredients
         ],
         image=create_image_url(cocktail),
     )
