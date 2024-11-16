@@ -21,7 +21,7 @@ class CocktailStatus:
     progress: int = 0
     completed: bool = False
     error: Optional[str] = None
-    status: Optional[PrepareResult] = None
+    status: PrepareResult = PrepareResult.FINISHED
 
 
 @dataclass
