@@ -1,7 +1,8 @@
 # import asyncio
+import asyncio
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, WebSocket
 
 from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail
 from src.api.models import Cocktail, CocktailInput, CocktailStatus, ErrorDetail, PrepareCocktailRequest
@@ -68,6 +69,23 @@ async def get_cocktail_status() -> CocktailStatus:
     return CocktailStatus(
         progress=status.progress, completed=status.completed, message=status.message, status=status.status
     )
+
+
+@router.websocket("/ws/prepare/status")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while shared.cocktail_status == "IN_PREPARATION":
+        status = shared.cocktail_status
+        await websocket.send_json(
+            {
+                "progress": status.progress,
+                "completed": status.completed,
+                "message": status.message,
+                "status": status.status,
+            }
+        )
+        await asyncio.sleep(0.2)
+    await websocket.close()
 
 
 @router.post("/prepare/stop", tags=["preparation"])
