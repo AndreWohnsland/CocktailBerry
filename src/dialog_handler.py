@@ -357,6 +357,8 @@ class DialogHandler:
     def cocktail_ready(self, comment: str) -> str:
         """Cocktail is done with additional information what to add."""
         # no more message if there is no additional information
+        if len(comment) == 0:
+            return ""
         header_comment = self._choose_language("cocktail_ready_add")
         full_comment = f"\n\n{header_comment}{comment}"
         return self._choose_language("cocktail_ready", full_comment=full_comment)
