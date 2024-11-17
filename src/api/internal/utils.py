@@ -22,12 +22,13 @@ def map_cocktail(cocktail: Optional[DBCocktail]) -> Optional[Cocktail]:
         amount=cocktail.adjusted_amount,
         enabled=cocktail.enabled,
         virgin_available=cocktail.virgin_available,
+        # ingredient hand is if it is currently not on a bottle
         ingredients=[
             CocktailIngredient(
                 id=i.id,
                 name=i.name,
                 alcohol=i.alcohol,
-                hand=bool(i.hand),
+                hand=i.bottle is None,
                 amount=i.amount,
                 recipe_order=i.recipe_order,
                 unit=i.unit,
