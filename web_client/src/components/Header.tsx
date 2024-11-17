@@ -6,32 +6,26 @@ const Header: React.FC = () => {
   const { onThemeChange } = useTheme();
   const themes = ['default', 'berry', 'bavaria', 'alien', 'custom'];
 
+  const getNavLinkClass = (isActive: boolean) => {
+    const baseClass = 'nav-link px-2 flex items-center';
+    const activeClass = 'text-secondary border-secondary border-2 rounded-full font-bold';
+    return isActive ? `${baseClass} ${activeClass}` : baseClass;
+  };
+
   return (
-    <header className='sticky top-0 bg-background shadow-sm shadow-neutral z-50 overflow-x-auto'>
-      <div className='flex justify-between items-center p-4'>
-        <nav className='flex space-x-4'>
-          <NavLink
-            to='/cocktails'
-            className={({ isActive }) => (isActive ? 'nav-link text-secondary border-secondary' : 'nav-link')}
-          >
+    <header className='fixed top-0 left-0 right-0 bg-background shadow-sm shadow-neutral z-10'>
+      <div className='flex justify-between items-center py-1 px-4'>
+        <nav className='flex space-x-1'>
+          <NavLink to='/cocktails' className={({ isActive }) => getNavLinkClass(isActive)}>
             Cocktails
           </NavLink>
-          <NavLink
-            to='/ingredients'
-            className={({ isActive }) => (isActive ? 'nav-link text-secondary border-secondary' : 'nav-link')}
-          >
+          <NavLink to='/ingredients' className={({ isActive }) => getNavLinkClass(isActive)}>
             Ingredients
           </NavLink>
-          <NavLink
-            to='/recipes'
-            className={({ isActive }) => (isActive ? 'nav-link text-secondary border-secondary' : 'nav-link')}
-          >
+          <NavLink to='/recipes' className={({ isActive }) => getNavLinkClass(isActive)}>
             Recipes
           </NavLink>
-          <NavLink
-            to='/bottles'
-            className={({ isActive }) => (isActive ? 'nav-link text-secondary border-secondary' : 'nav-link')}
-          >
+          <NavLink to='/bottles' className={({ isActive }) => getNavLinkClass(isActive)}>
             Bottles
           </NavLink>
         </nav>
