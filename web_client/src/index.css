@@ -39,7 +39,6 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
 }
 
 .button-container {
@@ -86,20 +85,6 @@ body {
   border-radius: 5px;
 }
 
-.card {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  width: 300px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.card h2 {
-  margin: 0 0 10px 0;
-}
-
 .modal {
   position: absolute;
   top: 50%;
@@ -112,8 +97,10 @@ body {
   padding: 20px;
   border-radius: 8px;
   outline: none;
-  width: 90%;
-  max-width: 600px;
+  width: 95%;
+  height: 95%;
+  max-height: 600px;
+  max-width: 1000px;
 }
 
 .overlay {
