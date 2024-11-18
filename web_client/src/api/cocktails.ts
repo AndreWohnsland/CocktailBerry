@@ -1,12 +1,13 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from 'axios';
 import { Cocktail, CocktailStatus } from '../types/models';
+import { API_URL } from './common';
 
-const api_url = `${import.meta.env.VITE_APP_API_URL}/cocktails`; // Replace with your actual API URL
+const cocktail_url = `${API_URL}/cocktails`;
 
 export const fetchCocktails = async (): Promise<Cocktail[]> => {
   return axios
-    .get<Cocktail[]>(api_url, {
+    .get<Cocktail[]>(cocktail_url, {
       headers: {
         Accept: 'application/json',
       },
@@ -30,7 +31,7 @@ export const prepareCocktail = async (
 ): Promise<CocktailStatus> => {
   return axios
     .post<CocktailStatus>(
-      `${api_url}/prepare/${cocktail.id}`,
+      `${cocktail_url}/prepare/${cocktail.id}`,
       {
         volume,
         alcohol_factor,
@@ -48,7 +49,7 @@ export const prepareCocktail = async (
 
 export const getCocktailStatus = async (): Promise<CocktailStatus> => {
   return axios
-    .get<CocktailStatus>(`${api_url}/prepare/status`, {
+    .get<CocktailStatus>(`${cocktail_url}/prepare/status`, {
       headers: {
         Accept: 'application/json',
       },
@@ -68,7 +69,7 @@ export const getCocktailStatus = async (): Promise<CocktailStatus> => {
 export const stopCocktail = async (): Promise<void> => {
   return axios
     .post<void>(
-      `${api_url}/prepare/stop`,
+      `${cocktail_url}/prepare/stop`,
       {},
       {
         headers: {
