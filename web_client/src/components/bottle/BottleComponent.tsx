@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { Bottle } from '../../types/models';
+import { Bottle, Ingredient } from '../../types/models';
 
 interface BottleProps {
   bottle: Bottle;
+  freeIngredients: Ingredient[];
+  setFreeIngredients: (value: Ingredient[]) => void;
 }
 
-const BottleComponent: React.FC<BottleProps> = ({ bottle }) => {
+const BottleComponent: React.FC<BottleProps> = ({ bottle, freeIngredients, setFreeIngredients }) => {
   const [isNew, setIsNew] = useState(false);
+  const [selectedIngredientId, setSelectedIngredientId] = useState(bottle.ingredient?.id);
+  const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | undefined>(bottle.ingredient);
 
   const getClass = () => {
     const color = isNew ? 'secondary' : 'primary';
@@ -17,12 +21,29 @@ const BottleComponent: React.FC<BottleProps> = ({ bottle }) => {
     ((bottle.ingredient?.fill_level || 0) / (bottle.ingredient?.bottle_volume || 1)) * 100,
   );
 
+  const handleSelectionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newIngredientId = parseInt(event.target.value, 10);
+    let possibleIngredients = freeIngredients;
+    if (selectedIngredient !== undefined) {
+      possibleIngredients = [...freeIngredients, selectedIngredient];
+    }
+    const newIngredient = freeIngredients.find((ingredient) => ingredient.id === newIngredientId);
+    setSelectedIngredient(newIngredient);
+    if (newIngredient) {
+      possibleIngredients = possibleIngredients.filter((ingredient) => ingredient.id !== newIngredientId);
+    }
+    setFreeIngredients(possibleIngredients);
+    setSelectedIngredientId(newIngredientId);
+  };
+
   return (
     <>
       <button onClick={() => setIsNew(!isNew)} className={getClass()}>
         New
       </button>
-      <span className='text-right text-secondary pr-1'>{bottle.ingredient?.name || 'No Name'}:</span>
+      <div className='flex items-center justify-end'>
+        <span className='text-right text-secondary pr-1'>{bottle.ingredient?.name || 'No Name'}:</span>
+      </div>
       <div
         className='border-2 border-neutral bg-neutral text-background font-bold rounded-full text-center overflow-hidden flex items-center justify-center'
         style={{ position: 'relative' }}
@@ -33,7 +54,18 @@ const BottleComponent: React.FC<BottleProps> = ({ bottle }) => {
         ></div>
         <span style={{ position: 'relative', zIndex: 1 }}>{fillPercent}%</span>
       </div>
-      <select>{bottle.ingredient?.name}</select>
+      <select
+        className='bg-background border border-neutral text-primary text-sm rounded-lg focus:border-primary block w-full p-2'
+        value={selectedIngredientId}
+        onChange={handleSelectionChange}
+      >
+        {selectedIngredient && <option value={selectedIngredient.id}>{selectedIngredient.name}</option>}
+        {freeIngredients.map((ingredient) => (
+          <option key={ingredient.id} value={ingredient.id}>
+            {ingredient.name}
+          </option>
+        ))}
+      </select>
       <div className='place-content-center text-center text-secondary font-bold max-w-12'>{bottle.number}</div>
     </>
   );
