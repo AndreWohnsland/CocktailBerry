@@ -7,9 +7,9 @@ const Header: React.FC = () => {
   const themes = ['default', 'berry', 'bavaria', 'alien', 'custom'];
 
   const getNavLinkClass = (isActive: boolean) => {
-    const baseClass = 'nav-link px-2 flex items-center';
-    const activeClass = 'text-secondary border-secondary border-2 rounded-full font-bold';
-    return isActive ? `${baseClass} ${activeClass}` : baseClass;
+    const baseClass = 'nav-link px-2 flex items-center border-2 font-semibold';
+    const activeClass = 'text-background bg-secondary border-secondary rounded-full';
+    return isActive ? `${baseClass} ${activeClass}` : `${baseClass} border-transparent`;
   };
 
   return (
@@ -30,8 +30,10 @@ const Header: React.FC = () => {
           </NavLink>
         </nav>
         <div className='dropdown-container'>
-          <label htmlFor='theme-dropdown'>Theme: </label>
-          <select className='theme-dropdown' onChange={(e) => onThemeChange(e.target.value)}>
+          <select
+            className='theme-dropdown bg-background border border-neutral text-primary rounded-lg focus:border-primary w-full font-bold px-2'
+            onChange={(e) => onThemeChange(e.target.value)}
+          >
             {themes.map((theme) => (
               <option key={theme} value={theme}>
                 {theme.charAt(0).toUpperCase() + theme.slice(1)}
