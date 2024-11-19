@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Bottle, Ingredient } from '../../types/models';
+import { updateBottle } from '../../api/bottles';
+import { toast } from 'react-toastify';
 
 interface BottleProps {
   bottle: Bottle;
@@ -14,15 +16,25 @@ const BottleComponent: React.FC<BottleProps> = ({ bottle, freeIngredients, setFr
 
   const getClass = () => {
     const color = isNew ? 'secondary' : 'primary';
-    return `max-w-20 border-2 rounded-md border-${color} text-${color}`;
+    return `max-w-20 border-2 font-bold rounded-md border-${color} text-${color}`;
   };
 
   const fillPercent = Math.round(
     ((bottle.ingredient?.fill_level || 0) / (bottle.ingredient?.bottle_volume || 1)) * 100,
   );
 
-  const handleSelectionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectionChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newIngredientId = parseInt(event.target.value, 10);
+    try {
+      await updateBottle(bottle.number, newIngredientId);
+    } catch (error) {
+      console.error('Error updating bottle:', error);
+      toast(`Error updating bottle: ${error}`, {
+        toastId: 'bottle--update-error',
+        pauseOnHover: false,
+      });
+      return;
+    }
     let possibleIngredients = freeIngredients;
     if (selectedIngredient !== undefined) {
       possibleIngredients = [...freeIngredients, selectedIngredient];
@@ -66,7 +78,7 @@ const BottleComponent: React.FC<BottleProps> = ({ bottle, freeIngredients, setFr
           </option>
         ))}
       </select>
-      <div className='place-content-center text-center text-secondary font-bold max-w-12'>{bottle.number}</div>
+      <div className='place-content-center text-center text-secondary font-bold max-w-12 text-2xl'>{bottle.number}</div>
     </>
   );
 };
