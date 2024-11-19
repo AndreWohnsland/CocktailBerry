@@ -7,10 +7,8 @@ import { API_URL } from './common';
 const ingredient_url = `${API_URL}/ingredients`;
 
 export const fetchIngredients = async (hand: boolean = true, machine: boolean = true): Promise<Ingredient[]> => {
-  const params = new URLSearchParams({ hand: hand.toString(), machine: machine.toString() });
-
   return axios
-    .get<Ingredient[]>(`${ingredient_url}?${params.toString()}`, {
+    .get<Ingredient[]>(ingredient_url, {
       params: {
         hand,
         machine,
