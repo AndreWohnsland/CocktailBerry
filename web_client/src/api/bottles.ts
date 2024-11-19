@@ -18,5 +18,7 @@ export const refillBottle = async (bottleNumbers: number[]) => {
 };
 
 export const updateBottle = async (bottleId: number, ingredientId: number, amount?: number) => {
-  return axios.put(`${bottle_url}/${bottleId}`, { ingredientId, amount }).then((response) => response.data);
+  return axios
+    .put(`${bottle_url}/${bottleId}`, null, { params: { ingredient_id: ingredientId, amount } })
+    .then((response) => response.data);
 };
