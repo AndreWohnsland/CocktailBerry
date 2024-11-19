@@ -5,6 +5,10 @@
 @import 'themes.css';
 @import 'react-toastify/dist/ReactToastify.css';
 
+.button-base {
+  @apply border-2 rounded-md font-bold;
+}
+
 :root {
   --toastify-color-light: var(--background-color);
   --toastify-text-color-light: var(--primary-color);
@@ -27,6 +31,46 @@ body {
   color: var(--text-color);
 }
 
+.button-primary {
+  @apply button-base border-primary text-primary;
+}
+
+.button-primary:hover {
+  @apply button-base text-secondary border-secondary;
+}
+
+.button-primary-filled {
+  @apply button-base border-primary bg-primary text-background;
+}
+
+.button-primary-filled:hover {
+  @apply button-base border-secondary bg-secondary;
+}
+
+.button-secondary {
+  @apply button-base border-secondary text-secondary;
+}
+
+.button-secondary {
+  @apply button-base border-secondary bg-secondary;
+}
+
+.button-neutral {
+  @apply button-base border-neutral bg-neutral;
+}
+
+.button-neutral-filled {
+  @apply button-base border-neutral bg-background;
+}
+
+.button-danger {
+  @apply button-base border-danger bg-danger;
+}
+
+.button-danger-filled {
+  @apply button-base border-danger bg-background;
+}
+
 .app-container {
   background-color: var(--background-color);
   color: var(--text-color);
@@ -34,21 +78,6 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.theme-button {
-  margin: 5px;
-  padding: 10px;
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.theme-button:hover {
-  background-color: var(--secondary-color);
 }
 
 .content {
