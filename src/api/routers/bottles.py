@@ -52,5 +52,5 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
     DBC = DatabaseCommander()
     if amount is not None:
         DBC.set_ingredient_level_to_value(ingredient_id, amount)
-    DBC.set_bottle_at_slot(bottle_id, ingredient_id)
+    DBC.set_bottle_at_slot(ingredient_id, bottle_id)
     return {"message": f"Bottle {bottle_id} updated successfully to {amount} of ingredient {ingredient_id}!"}
