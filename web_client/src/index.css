@@ -32,7 +32,7 @@ body {
 }
 
 .button-primary {
-  @apply button-base border-primary text-primary;
+  @apply button-base border-primary text-primary bg-background;
 }
 
 .button-primary:hover {
@@ -48,7 +48,7 @@ body {
 }
 
 .button-secondary {
-  @apply button-base border-secondary text-secondary;
+  @apply button-base border-secondary text-secondary bg-background;
 }
 
 .button-secondary {
@@ -56,19 +56,33 @@ body {
 }
 
 .button-neutral {
-  @apply button-base border-neutral bg-neutral;
-}
-
-.button-neutral-filled {
   @apply button-base border-neutral bg-background;
 }
 
+.button-neutral-filled {
+  @apply button-base border-neutral bg-neutral text-background;
+}
+
 .button-danger {
-  @apply button-base border-danger bg-danger;
+  @apply button-base border-danger bg-background;
 }
 
 .button-danger-filled {
-  @apply button-base border-danger bg-background;
+  @apply button-base border-danger bg-danger text-background;
+}
+
+.select-base {
+  @apply bg-background border border-neutral text-primary font-bold rounded-lg;
+}
+
+.select-base:focus {
+  outline: none;
+}
+
+.sticky-button {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .app-container {
