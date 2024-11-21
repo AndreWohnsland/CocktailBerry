@@ -25,5 +25,5 @@ export const fetchIngredients = async (hand: boolean = true, machine: boolean = 
 };
 
 export const useIngredients = (hand: boolean = true, machine: boolean = true): UseQueryResult<Ingredient[], Error> => {
-  return useQuery<Ingredient[], Error>(['cocktails', hand, machine], () => fetchIngredients(hand, machine));
+  return useQuery<Ingredient[], Error>(['ingredients', hand, machine], () => fetchIngredients(hand, machine));
 };
