@@ -2,25 +2,37 @@ import React, { useState } from 'react';
 import { Bottle, Ingredient } from '../../types/models';
 import { updateBottle } from '../../api/bottles';
 import { toast } from 'react-toastify';
+import ProgressBar from '../common/ProgressBar';
 
 interface BottleProps {
   bottle: Bottle;
+  isToggled: boolean;
+  onToggle: () => void;
   freeIngredients: Ingredient[];
   setFreeIngredients: (value: Ingredient[]) => void;
 }
 
-const BottleComponent: React.FC<BottleProps> = ({ bottle, freeIngredients, setFreeIngredients }) => {
-  const [isNew, setIsNew] = useState(false);
+const BottleComponent: React.FC<BottleProps> = ({
+  bottle,
+  isToggled,
+  onToggle,
+  freeIngredients,
+  setFreeIngredients,
+}) => {
   const [selectedIngredientId, setSelectedIngredientId] = useState(bottle.ingredient?.id);
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | undefined>(bottle.ingredient);
 
   const getClass = () => {
-    const color = isNew ? 'secondary' : 'primary';
-    return `max-w-20 border-2 font-bold rounded-md border-${color} text-${color}`;
+    let color = 'border-primary text-primary';
+    if (isToggled) {
+      color = 'border-secondary bg-secondary text-background';
+    }
+    return `max-w-20 border-2 font-bold rounded-md ${color}`;
   };
 
-  const fillPercent = Math.round(
-    ((bottle.ingredient?.fill_level || 0) / (bottle.ingredient?.bottle_volume || 1)) * 100,
+  const fillPercent = Math.max(
+    Math.round(((selectedIngredient?.fill_level || 0) / (selectedIngredient?.bottle_volume || 1)) * 100),
+    0,
   );
 
   const handleSelectionChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -50,27 +62,14 @@ const BottleComponent: React.FC<BottleProps> = ({ bottle, freeIngredients, setFr
 
   return (
     <>
-      <button onClick={() => setIsNew(!isNew)} className={getClass()}>
+      <button onClick={onToggle} className={getClass()}>
         New
       </button>
       <div className='flex items-center justify-end'>
-        <span className='text-right text-secondary pr-1'>{bottle.ingredient?.name || 'No Name'}:</span>
+        <span className='text-right text-secondary pr-1'>{selectedIngredient?.name || 'No Name'}:</span>
       </div>
-      <div
-        className='border-2 border-neutral bg-neutral text-background font-bold rounded-full text-center overflow-hidden flex items-center justify-center'
-        style={{ position: 'relative' }}
-      >
-        <div
-          className='bg-primary rounded-full'
-          style={{ width: `${fillPercent}%`, height: '100%', position: 'absolute', left: 0, top: 0 }}
-        ></div>
-        <span style={{ position: 'relative', zIndex: 1 }}>{fillPercent}%</span>
-      </div>
-      <select
-        className='bg-background border border-neutral text-primary text-sm rounded-lg focus:border-primary block w-full p-2'
-        value={selectedIngredientId}
-        onChange={handleSelectionChange}
-      >
+      <ProgressBar fillPercent={fillPercent} />
+      <select className='select-base block w-full p-1.5' value={selectedIngredientId} onChange={handleSelectionChange}>
         {selectedIngredient && <option value={selectedIngredient.id}>{selectedIngredient.name}</option>}
         {freeIngredients.map((ingredient) => (
           <option key={ingredient.id} value={ingredient.id}>
