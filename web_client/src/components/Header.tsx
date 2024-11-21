@@ -30,10 +30,7 @@ const Header: React.FC = () => {
           </NavLink>
         </nav>
         <div className='dropdown-container'>
-          <select
-            className='theme-dropdown bg-background border border-neutral text-primary rounded-lg focus:border-primary w-full font-bold px-2'
-            onChange={(e) => onThemeChange(e.target.value)}
-          >
+          <select className='theme-dropdown select-base w-full px-2' onChange={(e) => onThemeChange(e.target.value)}>
             {themes.map((theme) => (
               <option key={theme} value={theme}>
                 {theme.charAt(0).toUpperCase() + theme.slice(1)}
