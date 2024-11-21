@@ -74,21 +74,21 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       shouldCloseOnOverlayClick={false}
     >
       <div className='progress-modal h-full flex flex-col justify-between'>
-        <h2 className='text-xl font-bold mb-8 text-center text-secondary'>{cocktailName}</h2>
+        <h2 className='text-4xl font-bold mb-8 text-center text-secondary'>{cocktailName}</h2>
         {message ? (
           <div className='text-neutral text-center' dangerouslySetInnerHTML={{ __html: message }} />
         ) : (
-          <div className='w-full border-2 border-neutral rounded-lg overflow-hidden'>
-            <div className='bg-primary min-h-[2rem]' style={{ width: `${currentProgress}%` }}></div>
+          <div className='w-full border-2 border-neutral overflow-hidden rounded-full'>
+            <div className='bg-primary min-h-[4rem]' style={{ width: `${currentProgress}%` }}></div>
           </div>
         )}
         <div className='text-center mt-8'>
           {currentStatus === 'IN_PROGRESS' ? (
-            <button className='mt-4 px-4 py-2 rounded border-2 border-primary w-1/2' onClick={stopCocktail}>
+            <button className='mt-4 px-4 py-2 button-primary w-1/2' onClick={stopCocktail}>
               Cancel
             </button>
           ) : (
-            <button className='mt-4 px-4 py-2 rounded border-2 border-primary w-1/2' onClick={closeWindow}>
+            <button className='mt-4 px-4 py-2 button-primary w-1/2' onClick={closeWindow}>
               Close
             </button>
           )}
