@@ -14,7 +14,7 @@ export const useBottles = (): UseQueryResult<Bottle[], Error> => {
 };
 
 export const refillBottle = async (bottleNumbers: number[]) => {
-  return axios.post(`${bottle_url}/refill`, { bottleNumbers }).then((response) => response.data);
+  return axios.post(`${bottle_url}/refill`, bottleNumbers).then((response) => response.data);
 };
 
 export const updateBottle = async (bottleId: number, ingredientId: number, amount?: number) => {
