@@ -299,7 +299,7 @@ class DatabaseCommander:
         """Return a list of the IDs of all available defined ingredients."""
         query = "SELECT ID FROM Available"
         result = self.handler.query_database(query)
-        return [x[0] for x in result]
+        return [int(x[0]) for x in result]
 
     def get_bottle_data_bottle_window(self):
         """Get all needed data for bottles, ordered by bottle number.
