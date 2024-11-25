@@ -480,9 +480,12 @@ class DatabaseCommander:
         search_tuple = (recipe_id, ingredient_id, ingredient_volume, order_number)
         self.handler.query_database(query, search_tuple)
 
-    def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: list[str]):
+    def insert_multiple_existing_handadd_ingredients(self, ingredient_list: list[str] | list[int]):
         """Insert the IDS of the given ingredient list into the available table."""
-        ingredient_id = self.__get_multiple_ingredient_ids_from_names(ingredient_names)
+        if isinstance(ingredient_list[0], str):
+            ingredient_id = self.__get_multiple_ingredient_ids_from_names(ingredient_list)  # type: ignore
+        else:
+            ingredient_id = ingredient_list
         question_marks = ",".join(["(?)"] * len(ingredient_id))
         query = f"INSERT INTO Available(ID) VALUES {question_marks}"
         self.handler.query_database(query, ingredient_id)

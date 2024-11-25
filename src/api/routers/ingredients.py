@@ -65,3 +65,11 @@ async def delete_ingredients(ingredient_id: int):
 async def get_available_ingredients() -> list[int]:
     DBC = DatabaseCommander()
     return DBC.get_available_ids()
+
+
+@router.post("/available")
+async def post_available_ingredients(available: list[int]):
+    DBC = DatabaseCommander()
+    DBC.delete_existing_handadd_ingredient()
+    DBC.insert_multiple_existing_handadd_ingredients(available)
+    return {"message": "Ingredients were updated!"}
