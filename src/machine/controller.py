@@ -51,13 +51,14 @@ class MachineController:
         # In case none is found, fall back to generic using python-periphery
         return GenericController(cfg.MAKER_PINS_INVERTED)
 
-    def clean_pumps(self, w: MainScreen, revert_pumps: bool = False):
+    def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False):
         """Clean the pumps for the defined time in the config.
 
         Activates all pumps for the given time.
         """
         prep_data = _build_clean_data()
-        w.open_progression_window("Cleaning")
+        if w is not None:
+            w.open_progression_window("Cleaning")
         _header_print("Start Cleaning")
         if revert_pumps:
             self._reverter.revert_on()
@@ -65,7 +66,8 @@ class MachineController:
         if revert_pumps:
             self._reverter.revert_off()
         _header_print("Done Cleaning")
-        w.close_progression_window()
+        if w is not None:
+            w.close_progression_window()
 
     def make_cocktail(
         self,
