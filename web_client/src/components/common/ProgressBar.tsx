@@ -2,12 +2,16 @@ import React from 'react';
 
 interface ProgressBarProps {
   fillPercent: number;
+  className?: string;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ fillPercent }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ fillPercent, className }) => {
   return (
     <div
-      className='border-2 border-neutral bg-neutral text-background font-bold rounded-full text-center overflow-hidden flex items-center justify-center'
+      className={
+        'border-2 border-neutral bg-neutral text-background font-bold rounded-full text-center overflow-hidden flex items-center justify-center' +
+        (className ? ` ${className}` : '')
+      }
       style={{ position: 'relative', zIndex: 1 }}
     >
       <div

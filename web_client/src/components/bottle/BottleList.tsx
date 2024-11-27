@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { refillBottle, useBottles } from '../../api/bottles';
 import { useIngredients } from '../../api/ingredients';
 import BottleComponent from './BottleComponent';
-import { FaGear } from 'react-icons/fa6';
 import { Ingredient } from '../../types/models';
 import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const BottleList: React.FC = () => {
   const {
@@ -17,6 +17,7 @@ const BottleList: React.FC = () => {
   const { data: ingredients, error: ingredientsError, isLoading: ingredientsLoading } = useIngredients(false);
   const [freeIngredients, setFreeIngredients] = useState<Ingredient[]>([]);
   const [toggledBottles, setToggledBottles] = useState<{ [key: number]: boolean }>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (bottles && ingredients) {
@@ -62,28 +63,27 @@ const BottleList: React.FC = () => {
   return (
     <>
       <ToastContainer position='top-center' />
-      <div
-        className='grid grid-cols-5 gap-2 pt-4 px-1 max-w-7xl w-full'
-        style={{ gridTemplateColumns: '2fr 3fr 6fr 4fr 1fr' }}
-      >
-        {bottles?.map((bottle) => (
-          <BottleComponent
-            key={bottle.number}
-            bottle={bottle}
-            isToggled={toggledBottles[bottle.number] || false}
-            onToggle={() => handleToggle(bottle.number)}
-            freeIngredients={freeIngredients}
-            setFreeIngredients={setFreeIngredients}
-          />
-        ))}
-        <button className='sticky-button button-primary-filled col-span-2 p-2' onClick={handleApply}>
-          Apply
-        </button>
-        <button className='sticky-button button-primary p-2'>Change</button>
-        <button className='sticky-button button-primary-filled p-2'>Available</button>
-        <button className='sticky-button button-primary-filled flex justify-center items-center max-w-12'>
-          <FaGear size={30} />
-        </button>
+      <div className='px-1 max-w-7xl w-full h-full'>
+        <div className='grid grid-cols-2 place-items-stretch gap-2 w-full h-full'>
+          {bottles?.map((bottle) => (
+            <BottleComponent
+              key={bottle.number}
+              bottle={bottle}
+              isToggled={toggledBottles[bottle.number] || false}
+              onToggle={() => handleToggle(bottle.number)}
+              freeIngredients={freeIngredients}
+              setFreeIngredients={setFreeIngredients}
+            />
+          ))}
+        </div>
+        <div className='sticky-bottom w-full grid grid-cols-2 gap-2 py-1 mt-2 bg-background'>
+          <button className='button-primary-filled p-2' onClick={handleApply}>
+            Apply New
+          </button>
+          <button className='button-primary p-2 ' onClick={() => navigate('/bottles/available')}>
+            Available
+          </button>
+        </div>
       </div>
     </>
   );
