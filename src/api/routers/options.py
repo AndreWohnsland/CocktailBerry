@@ -119,7 +119,10 @@ async def addon_data():
 @router.get("/connection")
 async def check_internet_connection():
     is_connected = has_connection()
-    return {"is_connected": is_connected}
+    return {
+        "is_connected": is_connected,
+        "message": "Internet connection is available" if is_connected else "No internet connection",
+    }
 
 
 @router.post("/update/system")
