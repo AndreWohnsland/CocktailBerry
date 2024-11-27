@@ -43,3 +43,14 @@ export const useAvailableIngredients = (): UseQueryResult<number[], Error> => {
       }),
   );
 };
+
+export const postAvailableIngredients = async (available: number[]): Promise<{ message: string }> => {
+  return axios
+    .post<{ message: string }>(`${ingredient_url}/available`, available, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data);
+};
