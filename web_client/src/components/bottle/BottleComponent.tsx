@@ -27,7 +27,7 @@ const BottleComponent: React.FC<BottleProps> = ({
     if (isToggled) {
       color = 'border-secondary bg-secondary text-background';
     }
-    return `max-w-20 border-2 font-bold rounded-md ${color}`;
+    return `max-w-40 px-4 ml-2 border-2 font-bold rounded-md ${color}`;
   };
 
   const fillPercent = Math.max(
@@ -62,22 +62,25 @@ const BottleComponent: React.FC<BottleProps> = ({
 
   return (
     <>
-      <button onClick={onToggle} className={getClass()}>
-        New
-      </button>
-      <div className='flex items-center justify-end'>
-        <span className='text-right text-secondary pr-1'>{selectedIngredient?.name || 'No Name'}:</span>
+      <div className='flex flex-row col-span-2 sm:col-span-1 mx-3 sm:mx-0'>
+        <div className='place-content-center text-right text-secondary font-bold text-2xl mx-4'>{bottle.number}</div>
+        <select
+          className='select-base block w-full p-1.5'
+          value={selectedIngredientId}
+          onChange={handleSelectionChange}
+        >
+          {selectedIngredient && <option value={selectedIngredient.id}>{selectedIngredient.name}</option>}
+          {freeIngredients.map((ingredient) => (
+            <option key={ingredient.id} value={ingredient.id}>
+              {ingredient.name}
+            </option>
+          ))}
+        </select>
+        <button onClick={onToggle} className={getClass()}>
+          New
+        </button>
       </div>
-      <ProgressBar fillPercent={fillPercent} />
-      <select className='select-base block w-full p-1.5' value={selectedIngredientId} onChange={handleSelectionChange}>
-        {selectedIngredient && <option value={selectedIngredient.id}>{selectedIngredient.name}</option>}
-        {freeIngredients.map((ingredient) => (
-          <option key={ingredient.id} value={ingredient.id}>
-            {ingredient.name}
-          </option>
-        ))}
-      </select>
-      <div className='place-content-center text-center text-secondary font-bold max-w-12 text-2xl'>{bottle.number}</div>
+      <ProgressBar fillPercent={fillPercent} className='col-span-2 sm:col-span-1 mb-3 sm:mb-0 mx-3 sm:mx-0' />
     </>
   );
 };
