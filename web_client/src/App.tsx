@@ -7,6 +7,7 @@ import RecipeList from './components/recipe/RecipeList.tsx';
 import BottleList from './components/bottle/BottleList.tsx';
 import AvailableBottles from './components/bottle/AvailableBottles.tsx';
 import OptionWindow from './components/options/OptionWindow.tsx';
+import CalibrationWindow from './components/options/CalibrationWindow.tsx';
 
 function App() {
   const { theme } = useTheme();
@@ -23,6 +24,7 @@ function App() {
             <Route path='bottles' element={<BottleList />} />
             <Route path='bottles/available' element={<AvailableBottles />} />
             <Route path='options' element={<OptionWindow />} />
+            <Route path='calibration' element={<CalibrationWindow />} />
             <Route path='/' element={<Navigate to='/cocktails' />} />
           </Routes>
         </div>
