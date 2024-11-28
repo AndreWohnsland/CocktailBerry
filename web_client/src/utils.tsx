@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import { Cocktail } from './types/models';
 
 export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
@@ -27,4 +28,32 @@ export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
   const newAlcoholPercent = (totalAlcoholVolume / targetVolume) * 100;
 
   return { ...cocktail, alcohol: Math.round(newAlcoholPercent), ingredients };
+};
+
+export const confirmAndExecute = async (message: string, executable: () => Promise<void | any>) => {
+  const confirmation = window.confirm(`Do you want to ${message}?`);
+  if (confirmation) {
+    await executable().catch((error) => {
+      const errorMessage = error?.response?.data?.detail || error.message || error;
+      toast(`Error doing ${message}: ${errorMessage}`, {
+        toastId: `${message}-error`,
+        pauseOnHover: false,
+      });
+    });
+  }
+};
+
+export const executeAndShow = async (executable: () => Promise<any>) => {
+  let info = '';
+  await executable()
+    .then((result) => {
+      info = result?.message || result;
+    })
+    .catch((error) => {
+      info = error?.response?.data?.detail || error.message || error;
+    });
+  toast(info, {
+    toastId: 'show-info',
+    pauseOnHover: false,
+  });
 };
