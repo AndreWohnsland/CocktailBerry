@@ -28,7 +28,7 @@ const CocktailList: React.FC = () => {
   };
 
   return (
-    <div className='px-2 centered'>
+    <div className='px-2 centered max-w-7xl'>
       <div className='flex flex-wrap gap-3 justify-center items-center w-full'>
         {cocktails?.map((cocktail) => (
           <div
