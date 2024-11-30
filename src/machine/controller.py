@@ -56,6 +56,7 @@ class MachineController:
 
         Activates all pumps for the given time.
         """
+        shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
         prep_data = _build_clean_data()
         if w is not None:
             w.open_progression_window("Cleaning")
@@ -68,6 +69,8 @@ class MachineController:
         _header_print("Done Cleaning")
         if w is not None:
             w.close_progression_window()
+        shared.cocktail_status.completed = True
+        shared.cocktail_status.status = PrepareResult.FINISHED
 
     def make_cocktail(
         self,
