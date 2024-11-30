@@ -51,8 +51,8 @@ body {
   @apply button-base border-secondary text-secondary bg-background;
 }
 
-.button-secondary {
-  @apply button-base border-secondary bg-secondary;
+.button-secondary-filled {
+  @apply button-base border-secondary bg-secondary text-background;
 }
 
 .button-neutral {
