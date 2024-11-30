@@ -7,8 +7,10 @@ from pathlib import Path
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
 from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
+from src.models import PrepareResult
 from src.ui.create_backup_restore_window import BACKUP_FILES, NEEDED_BACKUP_FILES
 from src.updater import Updater
 from src.utils import get_platform_data, has_connection, update_os
@@ -30,10 +32,12 @@ async def update_options(options: dict):
 
 
 @router.post("/clean")
-async def clean_machine():
+async def clean_machine(background_tasks: BackgroundTasks):
+    if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
+        raise HTTPException(status_code=400, detail="Preparation already in progress")
     _logger.log_header("INFO", "Cleaning the Pumps")
     revert_pumps = cfg.MAKER_PUMP_REVERSION
-    MACHINE.clean_pumps(None, revert_pumps)
+    background_tasks.add_task(MACHINE.clean_pumps, None, revert_pumps)
     return {"message": "Cleaning process started"}
 
 
