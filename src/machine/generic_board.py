@@ -9,6 +9,7 @@ logger = LoggerHandler("GenericController")
 try:
     # pylint: disable=import-error
     from periphery import GPIO  # type: ignore
+    from periphery.gpio import GPIOError  # type: ignore
 
     DEV = False
 except ModuleNotFoundError:
@@ -32,7 +33,9 @@ class GenericController(PinController):
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True):
         """Set up the given pin list."""
         if not self.dev_displayed:
-            time_print(f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}")
+            time_print(
+                f"<i> Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}"
+            )
             self.dev_displayed = True
 
         # high is also output, but other default value
@@ -43,12 +46,18 @@ class GenericController(PinController):
         if is_input:
             init_value = "in"
             add_args["bias"] = "pull_down" if pull_down else "pull_up"
-        if not self.devenvironment:
-            for pin in pin_list:
-                self.gpios[pin] = GPIO(pin, init_value, **add_args)
-        else:
-            logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
-            logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
+        try:
+            if not self.devenvironment:
+                for pin in pin_list:
+                    self.gpios[pin] = GPIO(pin, init_value, **add_args)
+            else:
+                logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
+                logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
+        except GPIOError as e:
+            self.devenvironment = True
+            time_print("<i> Could not set up GPIOs, cannot control Pumps! Will set devenvironment on.")
+            logger.log_exception(e)
+            logger.log_event("ERROR", "Could not set up GPIOs, please have a look into the error logs")
 
     def activate_pin_list(self, pin_list: list[int]):
         """Activates the given pin list."""
