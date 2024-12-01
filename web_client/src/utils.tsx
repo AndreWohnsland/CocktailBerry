@@ -47,6 +47,8 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<Bo
   let info = '';
   let toastId = 'execute-show-info';
   let success = false;
+  // add some random six digit number at it
+  const randomNumber = Math.floor(100000 + Math.random() * 900000);
   await executable()
     .then((result) => {
       info = result?.message || result;
@@ -57,7 +59,7 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<Bo
       toastId = 'execute-show-error';
     });
   toast(info, {
-    toastId: toastId,
+    toastId: `${toastId}-${randomNumber}`,
     pauseOnHover: false,
   });
   return success;
