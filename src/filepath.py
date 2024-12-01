@@ -29,3 +29,6 @@ ADDON_SKELTON = SRC_PATH / "programs" / "addon_skeleton.py"
 LOCAL_MICROSERVICE_FILE = Path.home().absolute() / "ms-docker-compose.yaml"
 DEFAULT_MICROSERVICE_FILE = SCRIPTS_FOLDER / "ms-docker-compose.yaml"
 TEAMS_DOCKER_FILE = ROOT_PATH / "dashboard" / "docker-compose.both.yaml"
+
+# API
+STATIC_API_FOLDER = SRC_PATH / "api" / "static"
