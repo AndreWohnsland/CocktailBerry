@@ -3,21 +3,24 @@ import datetime
 import http.client as httplib
 import os
 import platform
+import re
 import subprocess
 import sys
 import threading
 import time
+from collections import Counter
 from dataclasses import dataclass
 from typing import Literal
 
 import distro
 import psutil
 
-from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, ROOT_PATH, STYLE_FOLDER
+from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, LOG_FOLDER, ROOT_PATH, STYLE_FOLDER
 from src.logger_handler import LogFiles, LoggerHandler
 
 EXECUTABLE = ROOT_PATH / "runme.py"
 logger = LoggerHandler("utils")
+_DEBUG_FILE = "debuglog.log"
 
 
 def has_connection() -> bool:
@@ -164,3 +167,61 @@ def update_os():
     except subprocess.CalledProcessError as e:
         logger.error("Could not update system, see debug log for more information.")
         logger.log_exception(e)
+
+
+def get_log_files() -> list[str]:
+    """Check the logs folder for all existing log files."""
+    return [file.name for file in LOG_FOLDER.glob("*.log")]
+
+
+def read_log_file(log_name: str, warning_and_higher: bool) -> list[str]:
+    """Read the current selected log file."""
+    log_path = LOG_FOLDER / log_name
+    log_text = log_path.read_text()
+    # Handle debug logs differently, since they save error traces,
+    # just display the read in text from log in this case
+    if log_name == _DEBUG_FILE:
+        return _parse_debug_logs(log_text)
+    return _parse_log(log_text, warning_and_higher)
+
+
+def _parse_log(log_text: str, warning_and_higher: bool) -> list[str]:
+    """Parse all logs and return display object.
+
+    Needs logs from new to old, if same message was already there, skip it.
+    """
+    data: dict[str, str] = {}
+    counter: Counter[str] = Counter()
+    for line in log_text.splitlines()[::-1]:
+        date, message = _parse_log_line(line)
+        if message not in data:
+            data[message] = date
+            counter[message] = 1
+        else:
+            counter[message] += 1
+    log_list_data = [f"{key} ({counter[key]}x, latest: {value})" for key, value in data.items()]
+    # Filter out DEBUG or INFO msgs
+    if warning_and_higher:
+        accepted = ["WARNING", "ERROR", "CRITICAL"]
+        log_list_data = [x for x in log_list_data if any(a in x for a in accepted)]
+    return log_list_data
+
+
+def _parse_log_line(line: str) -> tuple[str, str]:
+    """Parse the log message and return the timestamp + msg."""
+    parts = line.split(" | ", maxsplit=1)
+    parsed_date = parts[0]
+    # usually, we only get 2 parts, due to the maxsplit
+    parsed_message = " | ".join(parts[1::])
+    return parsed_date, parsed_message
+
+
+def _parse_debug_logs(log: str) -> list[str]:
+    """Parse and invert the debug logs."""
+    # having into group returns also the matched date
+    # This needs to be joined before inverting.
+    # Also, the first value is an empty string
+    date_regex = r"(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2})"
+    information_list = [x for x in re.split(date_regex, log) if x != ""]
+    pairs = [" ".join(information_list[i : i + 2]) for i in range(0, len(information_list), 2)]
+    return pairs[::-1]
