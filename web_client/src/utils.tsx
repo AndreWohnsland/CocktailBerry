@@ -43,17 +43,22 @@ export const confirmAndExecute = async (message: string, executable: () => Promi
   }
 };
 
-export const executeAndShow = async (executable: () => Promise<any>) => {
+export const executeAndShow = async (executable: () => Promise<any>): Promise<Boolean> => {
   let info = '';
+  let toastId = 'execute-show-info';
+  let success = false;
   await executable()
     .then((result) => {
       info = result?.message || result;
+      success = true;
     })
     .catch((error) => {
       info = error?.response?.data?.detail || error.message || error;
+      toastId = 'execute-show-error';
     });
   toast(info, {
-    toastId: 'show-info',
+    toastId: toastId,
     pauseOnHover: false,
   });
+  return success;
 };
