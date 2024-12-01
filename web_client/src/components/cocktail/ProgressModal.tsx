@@ -6,7 +6,7 @@ interface ProgressModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   progress: number;
-  cocktailName: string;
+  displayName: string;
   triggerOnClose?: () => void;
 }
 
@@ -14,7 +14,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
   isOpen,
   onRequestClose,
   progress,
-  cocktailName,
+  displayName,
   triggerOnClose,
 }) => {
   const [currentProgress, setCurrentProgress] = useState(progress);
@@ -74,7 +74,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       shouldCloseOnOverlayClick={false}
     >
       <div className='progress-modal h-full flex flex-col justify-between'>
-        <h2 className='text-4xl font-bold mb-8 text-center text-secondary'>{cocktailName}</h2>
+        <h2 className='text-4xl font-bold mb-8 text-center text-secondary'>{displayName}</h2>
         {message ? (
           <div className='text-neutral text-center' dangerouslySetInnerHTML={{ __html: message }} />
         ) : (
