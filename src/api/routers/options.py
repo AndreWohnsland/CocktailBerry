@@ -2,16 +2,21 @@ import atexit
 import datetime
 import os
 import shutil
+import tempfile
+import zipfile
+from collections.abc import Sequence
 from pathlib import Path
+from typing import Literal
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.models import PrepareResult
-from src.ui.create_backup_restore_window import BACKUP_FILES, NEEDED_BACKUP_FILES
+from src.ui.create_backup_restore_window import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.updater import Updater
 from src.utils import get_platform_data, has_connection, update_os
 
@@ -65,35 +70,87 @@ async def data_insights():
     return {"message": "Data insights"}
 
 
-# TODO: Create Backup needs to return the zip file now
 @router.get("/backup")
-async def create_backup(location: str):
+async def create_backup():
     backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
-    backup_folder = Path(location) / backup_folder_name
+    zip_file_name = f"{backup_folder_name}.zip"
+    zip_file_path = Path(tempfile.gettempdir()) / zip_file_name  # Store in the system's temp folder
 
-    if backup_folder.exists():
-        _logger.log_event("INFO", "Backup folder for today already exists, overwriting current data within")
-        shutil.rmtree(backup_folder)
-    backup_folder.mkdir()
+    with tempfile.TemporaryDirectory() as tmp_dirname:
+        backup_folder = Path(tmp_dirname) / backup_folder_name
+        backup_folder.mkdir()
 
-    for _file in BACKUP_FILES:
-        if _file.is_file():
-            shutil.copy(_file, backup_folder)
-        if _file.is_dir():
-            shutil.copytree(_file, backup_folder / _file.name)
+        for _file in BACKUP_FILES:
+            if _file.is_file():
+                shutil.copy(_file, backup_folder)
+            if _file.is_dir():
+                shutil.copytree(_file, backup_folder / _file.name)
 
-    return {"message": f"Backup created at {backup_folder}"}
+        # Create the ZIP file in the temp directory
+        with zipfile.ZipFile(zip_file_path, "w") as zipf:
+            for root, dirs, files in os.walk(backup_folder):
+                for file in files:
+                    file_path = Path(root) / file
+                    zipf.write(file_path, file_path.relative_to(backup_folder.parent))
+
+    # Return the file from the temp directory
+    return FileResponse(zip_file_path, filename=zip_file_path.name)
 
 
-# TODO: Upload Backup needs to use the zip file now
+def parse_restored_file(
+    restored_file: str = Query("style,config,images,database"),
+) -> Sequence[Literal["style", "config", "images", "database"]]:
+    allowed = ["style", "config", "images", "database"]
+    try:
+        data = restored_file.split(",")
+    except Exception as e:
+        raise HTTPException(422, detail=f"Invalid input for restored_file: {e}")
+    if not all(x in allowed for x in data):
+        raise HTTPException(422, f"Only {allowed} are allowed")
+    return data  # type: ignore
+
+
 @router.post("/backup")
-async def upload_backup(location: str):
-    for _file in NEEDED_BACKUP_FILES:
-        file_name = _file.name
-        if not (Path(location) / file_name).exists():
-            raise HTTPException(status_code=400, detail=f"Backup file {file_name} not found")
-    # Assuming BackupRestoreWindow does some processing
-    return {"message": "Backup restored"}
+async def upload_backup(
+    file: UploadFile = File(...),
+    restored_file: list[Literal["style", "config", "images", "database"]] = Depends(parse_restored_file),
+):
+    file_name = file.filename
+    if not file_name:
+        raise HTTPException(400, detail="Could not get filename from file")
+
+    with tempfile.TemporaryDirectory() as tmp_dirname:
+        tmpdir = Path(tmp_dirname)
+        zip_file_path = tmpdir / file_name
+
+        # Save the uploaded file
+        with open(zip_file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        # Extract the ZIP file
+        with zipfile.ZipFile(zip_file_path, "r") as zipf:
+            zipf.extractall(tmpdir)
+
+        extracted_root = tmpdir / zip_file_path.stem
+
+        # Check for required files inside the extracted folder
+        backup_files = NEEDED_BACKUP_FILES
+        for name in restored_file:
+            backup_files.extend(FILE_SELECTION_MAPPER[name])
+        for needed_file in backup_files:
+            if not (extracted_root / needed_file.name).exists():
+                raise HTTPException(status_code=400, detail=f"Backup file {needed_file.name} not found in the ZIP")
+
+        for _file in backup_files:
+            source_path = extracted_root / _file.name
+            target_path = _file
+            # Differentiate between files and folders
+            if source_path.is_file():
+                shutil.copy(source_path, target_path)
+            elif source_path.is_dir():
+                shutil.copytree(source_path, target_path, dirs_exist_ok=True)
+
+    return {"message": "Backup restored successfully"}
 
 
 @router.get("/logs")
@@ -145,5 +202,7 @@ async def update_software():
         return {"message": "CocktailBerry is up to date"}
     if not update_available and info:
         return {"message": info}
-    updater.update()
-    return {"message": "Software update started"}
+    success = updater.update()
+    if not success:
+        raise HTTPException(400, detail="Could not update, see in logs for more information.")
+    return {"message": "Software update "}
