@@ -54,8 +54,8 @@ const AvailableBottles: React.FC = () => {
 
   return (
     <div className='max-w-7xl w-full px-1'>
-      <div className='flex justify-start items-start w-full h-full'>
-        <div className='w-1/2 h-full'>
+      <div className='flex flex-col sm:flex-row justify-start items-start w-full h-full sm:h-[70vh]'>
+        <div className='w-full sm:w-1/2 h-[50vh] sm:h-full'>
           <h2 className='font-bold mb-2 text-center text-xl text-secondary'>Available</h2>
           <ListView
             ingredientList={availableIngredients}
@@ -63,24 +63,24 @@ const AvailableBottles: React.FC = () => {
             selected={selectedAvailable}
           />
         </div>
-        <div className='flex flex-col justify-center items-center mx-2 mt-9 h-full'>
+        <div className='flex flex-row sm:flex-col justify-center items-center mx-0 sm:mx-2 mt-9 w-full h-full sm:w-16'>
           <button
-            className='button-primary p-2 mb-2 h-1/2'
+            className='button-primary-filled p-2 my-2 mr-2 sm:mb-2 sm:mx-2 sm:my-0 h-1/2 w-1/2 sm:w-full items-center justify-center flex'
+            onClick={() => moveSelected(setFreeIngredients, setAvailableIngredients, selectedFree, setSelectedFree)}
+          >
+            <FaRegArrowAltCircleLeft size={40} />
+          </button>
+          <button
+            className='button-primary p-2 my-2 sm:mx-2 sm:my-0 h-1/2 w-1/2 sm:w-full items-center justify-center flex'
             onClick={() =>
               moveSelected(setAvailableIngredients, setFreeIngredients, selectedAvailable, setSelectedAvailable)
             }
           >
             <FaRegArrowAltCircleRight size={40} />
           </button>
-          <button
-            className='button-primary p-2 h-1/2'
-            onClick={() => moveSelected(setFreeIngredients, setAvailableIngredients, selectedFree, setSelectedFree)}
-          >
-            <FaRegArrowAltCircleLeft size={40} />
-          </button>
         </div>
-        <div className='w-1/2 h-full'>
-          <h2 className='font-bold mb-2 text-center text-xl text-secondary'>Possible</h2>
+        <div className='w-full sm:w-1/2 h-[50vh] sm:h-full'>
+          <h2 className='font-bold mb-2 text-center text-xl text-secondary'>Possible to Add</h2>
 
           <ListView ingredientList={freeIngredients} setSelected={setSelectedFree} selected={selectedFree} />
         </div>
