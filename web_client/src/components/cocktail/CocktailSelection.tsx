@@ -163,7 +163,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
         isOpen={isProgressModalOpen}
         onRequestClose={() => setProgressModalOpen(false)}
         progress={0}
-        cocktailName={displayCocktail.name}
+        displayName={displayCocktail.name}
         triggerOnClose={handleCloseModal}
       />
     </>
