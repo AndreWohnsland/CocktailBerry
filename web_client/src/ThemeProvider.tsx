@@ -10,14 +10,24 @@ type Props = {
 };
 
 const ThemeContext = createContext({} as ITheme);
-// const STORE_CONSTANT: string = 'THEME';
+const STORE_CONSTANT: string = 'THEME';
 
 export const ThemeProvider = ({ children }: Props) => {
   const [theme, setTheme] = useState<string>('');
 
   useEffect(() => {
-    document.documentElement.className = theme;
-    document.body.className = theme;
+    const storedTheme = localStorage.getItem(STORE_CONSTANT);
+    if (storedTheme) {
+      setTheme(storedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (theme) {
+      document.documentElement.className = theme;
+      document.body.className = theme;
+      localStorage.setItem(STORE_CONSTANT, theme);
+    }
   }, [theme]);
 
   const handleChange = (newTheme: string) => {
