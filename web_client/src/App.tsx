@@ -8,6 +8,9 @@ import BottleList from './components/bottle/BottleList.tsx';
 import AvailableBottles from './components/bottle/AvailableBottles.tsx';
 import OptionWindow from './components/options/OptionWindow.tsx';
 import CalibrationWindow from './components/options/CalibrationWindow.tsx';
+import ConfigWindow from './components/options/ConfigWindow.tsx';
+import DataWindow from './components/options/DataWindow.tsx';
+import LogWindow from './components/options/LogWindow.tsx';
 
 function App() {
   const { theme } = useTheme();
@@ -24,6 +27,9 @@ function App() {
             <Route path='bottles' element={<BottleList />} />
             <Route path='bottles/available' element={<AvailableBottles />} />
             <Route path='options' element={<OptionWindow />} />
+            <Route path='options/configuration' element={<ConfigWindow />} />
+            <Route path='data' element={<DataWindow />} />
+            <Route path='logs' element={<LogWindow />} />
             <Route path='calibration' element={<CalibrationWindow />} />
             <Route path='/' element={<Navigate to='/cocktails' />} />
           </Routes>
