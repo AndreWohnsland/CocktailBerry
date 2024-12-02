@@ -167,22 +167,22 @@ async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, l
     return DataResponse(data=log_data)
 
 
-@router.get("/rfid")
+@router.post("/rfid/scan")
 async def rfid_writer():
     # Return RFID writer data
-    return {"message": "RFID writer data"}
+    return {"message": "NOT IMPLEMENTED"}
 
 
 @router.post("/wifi")
 async def update_wifi_data():
     # Return WiFi window data
-    return {"message": "WiFi window data"}
+    return {"message": "NOT IMPLEMENTED"}
 
 
 @router.get("/addon")
 async def addon_data():
     # Return addon window data
-    return {"message": "Addon window data"}
+    return {"message": "NOT IMPLEMENTED"}
 
 
 @router.get("/connection")
