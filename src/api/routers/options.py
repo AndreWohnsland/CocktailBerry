@@ -37,7 +37,7 @@ async def get_options():
 async def update_options(options: dict):
     cfg.set_config(options, True)
     cfg.sync_config_to_file()
-    return {"message": f"Options {options} updated successfully!"}
+    return {"message": "Options updated successfully!"}
 
 
 @router.post("/clean")
