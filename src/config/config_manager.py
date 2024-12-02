@@ -207,11 +207,16 @@ class ConfigManager:
 
         Is used to sync new properties into the file.
         """
+        config = self.get_config()
+        with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
+            yaml.dump(config, stream, default_flow_style=False)
+
+    def get_config(self):
+        """Get a dict of all config values."""
         config = {}
         for name, setting in self.config_type.items():
             config[name] = setting.to_config(getattr(self, name))
-        with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
-            yaml.dump(config, stream, default_flow_style=False)
+        return config
 
     def set_config(self, configuration: dict, validate: bool):
         """Validate the config and set new values."""
