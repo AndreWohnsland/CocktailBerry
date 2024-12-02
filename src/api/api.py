@@ -96,7 +96,11 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="CocktailBerry API", version="1.0", description=_DESC, openapi_tags=_TAGS_METADATA, lifespan=lifespan
+    title="CocktailBerry API",
+    version="1.0",
+    description=_DESC,
+    openapi_tags=_TAGS_METADATA,
+    lifespan=lifespan,
 )
 
 # Configure CORS
@@ -114,6 +118,14 @@ app.mount("/static/user", StaticFiles(directory=USER_IMAGE_FOLDER), name="user_i
 
 @app.exception_handler(DatabaseTransactionError)
 async def database_transaction_error_handler(request: Request, exc: DatabaseTransactionError):
+    return JSONResponse(
+        status_code=406,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(ConfigError)
+async def config_error_handler(request: Request, exc: ConfigError):
     return JSONResponse(
         status_code=406,
         content={"detail": str(exc)},
