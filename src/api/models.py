@@ -1,9 +1,11 @@
-from typing import Annotated, Optional
+from typing import Annotated, Generic, Optional, TypeVar
 
 from annotated_types import Len
 from pydantic import BaseModel, Field
 
 from src.models import PrepareResult
+
+T = TypeVar("T")
 
 
 class ErrorDetail(BaseModel):
@@ -79,3 +81,7 @@ class PrepareCocktailRequest(BaseModel):
     volume: int = Field(..., gt=0)
     alcohol_factor: float
     is_virgin: bool = False
+
+
+class DataResponse(BaseModel, Generic[T]):
+    data: T
