@@ -40,25 +40,34 @@ export const shutdownSystem = async (): Promise<{ message: string }> => {
   return axios.post<{ message: string }>(`${options_url}/shutdown`).then((res) => res.data);
 };
 
-export const createBackup = async (location: string): Promise<{ message: string }> => {
-  return axios
-    .get<{ message: string }>(`${options_url}/backup`, {
-      params: { location },
-    })
-    .then((res) => res.data);
+export const createBackup = async (): Promise<{ data: Blob; fileName: string }> => {
+  const response = await axios.get(`${options_url}/backup`, {
+    responseType: 'blob',
+  });
+
+  const contentDisposition = response.headers['content-disposition'];
+  let fileName = 'backup.zip'; // fallback filename
+
+  if (contentDisposition) {
+    const match = contentDisposition.match(/filename="(.+?)"/);
+    if (match && match[1]) {
+      fileName = match[1];
+    }
+  }
+
+  return { data: response.data, fileName };
 };
 
-export const uploadBackup = async (location: string): Promise<{ message: string }> => {
+export const uploadBackup = async (file: File): Promise<{ message: string }> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
   return axios
-    .post<{ message: string }>(
-      `${options_url}/backup`,
-      { location },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    .post<{ message: string }>(`${options_url}/backup`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
       },
-    )
+    })
     .then((res) => res.data);
 };
 
