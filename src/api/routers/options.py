@@ -11,14 +11,16 @@ from typing import Literal
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 
+from src.api.models import DataResponse
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
+from src.data_utils import ConsumeData, generate_consume_data
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.models import PrepareResult
 from src.ui.create_backup_restore_window import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.updater import Updater
-from src.utils import get_platform_data, has_connection, update_os
+from src.utils import get_log_files, get_platform_data, has_connection, read_log_file, update_os
 
 _logger = LoggerHandler("options_router")
 _platform_data = get_platform_data()
@@ -28,11 +30,13 @@ router = APIRouter(tags=["options"], prefix="/options")
 
 @router.get("")
 async def get_options():
-    return []
+    return cfg.get_config()
 
 
 @router.post("")
 async def update_options(options: dict):
+    cfg.set_config(options, True)
+    cfg.sync_config_to_file()
     return {"message": f"Options {options} updated successfully!"}
 
 
@@ -65,9 +69,8 @@ async def shutdown_system():
 
 
 @router.get("/data")
-async def data_insights():
-    # Return data insights
-    return {"message": "Data insights"}
+async def data_insights() -> DataResponse[dict[str, ConsumeData]]:
+    return DataResponse(data=generate_consume_data())
 
 
 @router.get("/backup")
@@ -94,7 +97,8 @@ async def create_backup():
                     zipf.write(file_path, file_path.relative_to(backup_folder.parent))
 
     # Return the file from the temp directory
-    return FileResponse(zip_file_path, filename=zip_file_path.name)
+    headers = {"Access-Control-Expose-Headers": "Content-Disposition"}
+    return FileResponse(zip_file_path, filename=zip_file_path.name, headers=headers)
 
 
 def parse_restored_file(
@@ -118,6 +122,8 @@ async def upload_backup(
     file_name = file.filename
     if not file_name:
         raise HTTPException(400, detail="Could not get filename from file")
+    if not file_name.endswith(".zip"):
+        raise HTTPException(400, detail="Uploaded file is not a ZIP file")
 
     with tempfile.TemporaryDirectory() as tmp_dirname:
         tmpdir = Path(tmp_dirname)
@@ -154,9 +160,11 @@ async def upload_backup(
 
 
 @router.get("/logs")
-async def get_logs():
-    # Return logs data
-    return {"message": "Logs data"}
+async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, list[str]]]:
+    log_data: dict[str, list[str]] = {}
+    for _file in get_log_files():
+        log_data[_file] = read_log_file(_file, warning_and_higher)
+    return DataResponse(data=log_data)
 
 
 @router.get("/rfid")
