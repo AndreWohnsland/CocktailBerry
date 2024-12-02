@@ -9,6 +9,8 @@ import {
   checkInternetConnection,
   getAddonData,
   getRfidWriter,
+  createBackup,
+  uploadBackup,
 } from '../../api/options';
 import { ToastContainer } from 'react-toastify';
 import { confirmAndExecute, executeAndShow } from '../../utils';
@@ -26,6 +28,38 @@ const OptionWindow = () => {
     const started = await executeAndShow(cleanMachine);
     if (!started) return;
     setIsProgressModalOpen(true);
+  };
+
+  const getBackupClick = async () => {
+    try {
+      const { data, fileName } = await createBackup();
+      const options = {
+        suggestedName: fileName,
+        types: [
+          {
+            description: 'Backup Files',
+            accept: { 'application/octet-stream': ['.zip'] },
+          },
+        ],
+      };
+      const fileHandle = await window.showSaveFilePicker(options);
+      const writable = await fileHandle.createWritable();
+      await writable.write(new Blob([data], { type: 'application/octet-stream' }));
+      await writable.close();
+    } catch (error) {
+      console.error('Error saving backup:', error);
+    }
+  };
+
+  const uploadBackupClick = async () => {
+    let file = undefined;
+    try {
+      const [fileHandle] = await window.showOpenFilePicker();
+      file = await fileHandle.getFile();
+    } catch {
+      return;
+    }
+    return uploadBackup(file);
   };
 
   return (
@@ -65,10 +99,10 @@ const OptionWindow = () => {
           <button className='button-primary p-4' onClick={() => navigate('/data')}>
             Data
           </button>
-          <button className='button-primary p-4' onClick={async () => Promise.resolve(console.log('Backup action'))}>
+          <button className='button-primary p-4' onClick={() => executeAndShow(getBackupClick)}>
             Backup
           </button>
-          <button className='button-primary p-4' onClick={async () => Promise.resolve(console.log('Restore action'))}>
+          <button className='button-primary p-4' onClick={() => executeAndShow(uploadBackupClick)}>
             Restore
           </button>
           <button className='button-primary p-4' onClick={() => confirmAndExecute('reboot', rebootSystem)}>
