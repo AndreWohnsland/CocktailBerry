@@ -56,7 +56,7 @@ body {
 }
 
 .button-neutral {
-  @apply button-base border-neutral bg-background;
+  @apply button-base border-neutral bg-background text-neutral;
 }
 
 .button-neutral-filled {
