@@ -76,3 +76,7 @@ export interface ApiError {
   detail: string;
   status?: PrepareResult;
 }
+
+export interface LogData {
+  data: { [key: string]: string[] };
+}

@@ -1,6 +1,7 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from 'axios';
 import { API_URL } from './common';
+import { LogData } from '../types/models';
 
 const options_url = `${API_URL}/options`;
 
@@ -71,12 +72,12 @@ export const uploadBackup = async (file: File): Promise<{ message: string }> => 
     .then((res) => res.data);
 };
 
-export const getLogs = async (): Promise<{ message: string }> => {
-  return axios.get<{ message: string }>(`${options_url}/logs`).then((res) => res.data);
+export const getLogs = async (): Promise<LogData> => {
+  return axios.get<LogData>(`${options_url}/logs`).then((res) => res.data);
 };
 
-export const useLogs = (): UseQueryResult<{ message: string }, Error> => {
-  return useQuery<{ message: string }, Error>('logs', getLogs);
+export const useLogs = (): UseQueryResult<LogData, Error> => {
+  return useQuery<LogData, Error>('logs', getLogs);
 };
 
 export const getRfidWriter = async (): Promise<{ message: string }> => {
