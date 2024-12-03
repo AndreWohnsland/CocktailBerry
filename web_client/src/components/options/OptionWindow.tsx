@@ -105,16 +105,19 @@ const OptionWindow = () => {
           <button className='button-primary p-4' onClick={() => executeAndShow(uploadBackupClick)}>
             Restore
           </button>
-          <button className='button-primary p-4' onClick={() => confirmAndExecute('reboot', rebootSystem)}>
+          <button className='button-primary p-4' onClick={() => confirmAndExecute('Reboot', rebootSystem)}>
             Reboot
           </button>
-          <button className='button-primary p-4' onClick={() => confirmAndExecute('shutdown', shutdownSystem)}>
+          <button className='button-primary p-4' onClick={() => confirmAndExecute('Shutdown', shutdownSystem)}>
             Shutdown
           </button>
           <button className='button-primary p-4' onClick={() => navigate('/logs')}>
             Logs
           </button>
-          <button className='button-primary-filled p-4' onClick={updateSystem}>
+          <button
+            className='button-primary-filled p-4'
+            onClick={() => confirmAndExecute('Update system', updateSystem)}
+          >
             Update System
           </button>
           <button
