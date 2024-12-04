@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from 'axios';
 import { API_URL } from './common';
-import { LogData } from '../types/models';
+import { ConsumeData, LogData } from '../types/models';
 
 const options_url = `${API_URL}/options`;
 
@@ -102,4 +102,12 @@ export const updateSystem = async (): Promise<{ message: string }> => {
 
 export const updateSoftware = async (): Promise<{ message: string }> => {
   return axios.post<{ message: string }>(`${options_url}/update/software`).then((res) => res.data);
+};
+
+export const getConsumeData = async (): Promise<ConsumeData> => {
+  return axios.get<ConsumeData>(`${options_url}/data`).then((res) => res.data);
+};
+
+export const useConsumeData = (): UseQueryResult<ConsumeData, Error> => {
+  return useQuery<ConsumeData, Error>('consumeData', getConsumeData);
 };
