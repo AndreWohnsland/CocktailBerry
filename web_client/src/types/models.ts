@@ -80,3 +80,17 @@ export interface ApiError {
 export interface LogData {
   data: { [key: string]: string[] };
 }
+
+export interface ConsumeData {
+  data: {
+    'AT RESET': SingleConsumeData;
+    ALL: SingleConsumeData;
+    [key: string]: SingleConsumeData;
+  };
+}
+
+interface SingleConsumeData {
+  recipes: { [key: string]: number };
+  ingredients: { [key: string]: number };
+  cost?: { [key: string]: number };
+}
