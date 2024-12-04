@@ -3,8 +3,9 @@ import { refillBottle, useBottles } from '../../api/bottles';
 import { useIngredients } from '../../api/ingredients';
 import BottleComponent from './BottleComponent';
 import { Ingredient } from '../../types/models';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { executeAndShow } from '../../utils';
 
 const BottleList: React.FC = () => {
   const {
@@ -46,18 +47,11 @@ const BottleList: React.FC = () => {
     const toggledNumbers = Object.keys(toggledBottles)
       .filter((key) => toggledBottles[Number(key)])
       .map(Number);
-    try {
-      await refillBottle(toggledNumbers);
+    const success = await executeAndShow(() => refillBottle(toggledNumbers));
+    if (success) {
       await bottleRefetch();
-    } catch (error) {
-      console.error('Error refilling bottle:', error);
-      toast(`Error refilling bottle: ${error}`, {
-        toastId: 'bottle-refill-error',
-        pauseOnHover: false,
-      });
-      return;
+      setToggledBottles({});
     }
-    setToggledBottles({});
   };
 
   return (
