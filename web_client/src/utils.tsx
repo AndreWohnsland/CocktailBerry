@@ -64,3 +64,39 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<Bo
   });
   return success;
 };
+
+export const OPTIONTABS = ['UI', 'MAKER', 'HARDWARE', 'SOFTWARE', 'OTHER'];
+
+const exactSorting: { [key: string]: string[] } = {
+  UI: ['MAKER_THEME'],
+  HARDWARE: ['MAKER_PUMP_REVERSION', 'MAKER_REVERSION_PIN', 'MAKER_PINS_INVERTED'],
+};
+
+const tabConfig: { [key: string]: string[] } = {
+  UI: ['UI'],
+  MAKER: ['MAKER'],
+  HARDWARE: ['PUMP', 'LED', 'RFID'],
+  SOFTWARE: ['MICROSERVICE', 'TEAM'],
+};
+
+export const isInCurrentTab = (configName: string, tab: string): boolean => {
+  if (exactSorting[tab]?.includes(configName)) {
+    return true;
+  }
+
+  if (tabConfig[tab]?.some((prefix) => configName.toLowerCase().startsWith(prefix.toLowerCase()))) {
+    return true;
+  }
+
+  if (tab === 'OTHER') {
+    // Check if configName is not in any other tab
+    const isInOtherTabs =
+      Object.keys(exactSorting).some((key) => exactSorting[key].includes(configName)) ||
+      Object.keys(tabConfig).some((key) =>
+        tabConfig[key].some((prefix) => configName.toLowerCase().startsWith(prefix.toLowerCase())),
+      );
+    return !isInOtherTabs;
+  }
+
+  return false;
+};
