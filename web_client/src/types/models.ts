@@ -81,6 +81,28 @@ export interface LogData {
   data: { [key: string]: string[] };
 }
 
+export interface ConfigData {
+  [key: string]: PossibleConfigValue;
+}
+
+export interface ConfigDataWithUiInfo {
+  [key: string]: PossibleUiInformation & {
+    [additionalKey: string]: PossibleUiInformation | undefined;
+  };
+}
+
+type PossibleUiInformation = {
+  value: PossibleConfigValue;
+  prefix?: string;
+  suffix?: string;
+  immutable?: boolean;
+  allowed?: string[];
+  check_name?: string;
+};
+
+export type PossibleConfigValueTypes = boolean | number | string | boolean[] | number[] | string[];
+export type PossibleConfigValue = PossibleConfigValueTypes | { [key: string]: PossibleConfigValueTypes };
+
 export interface ConsumeData {
   data: {
     'AT RESET': SingleConsumeData;
