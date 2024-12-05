@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLogs } from '../../api/options';
-import { FaArrowUp } from 'react-icons/fa';
+import { JumpToTopButton } from '../common/JumpToTopButton';
 
 const LogWindow: React.FC = () => {
   const { data, isLoading, isError } = useLogs();
@@ -27,10 +27,6 @@ const LogWindow: React.FC = () => {
       style = style + ' text-background bg-danger rounded-sm my-1';
     }
     return style;
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (isLoading) {
@@ -66,14 +62,7 @@ const LogWindow: React.FC = () => {
             </div>
           ))}
       </div>
-      <div className='sticky-bottom '>
-        <button
-          onClick={scrollToTop}
-          className='button-primary max-w-20 flex items-center justify-center p-3 m-1 ml-auto'
-        >
-          <FaArrowUp size={30} />
-        </button>
-      </div>
+      <JumpToTopButton />
     </div>
   );
 };
