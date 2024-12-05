@@ -33,6 +33,11 @@ async def get_options():
     return cfg.get_config()
 
 
+@router.get("/ui")
+async def get_options_with_ui_properties():
+    return cfg.get_config_with_ui_information()
+
+
 @router.post("")
 async def update_options(options: dict):
     cfg.set_config(options, True)

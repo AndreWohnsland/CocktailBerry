@@ -146,7 +146,7 @@ class ConfigManager:
             "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": IntType([build_number_limiter(100, 1000)]),
             "PUMP_CONFIG": ListType(
-                DictType(
+                DictType[PumpConfig](
                     {
                         "pin": IntType([build_number_limiter(0, 1000)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
@@ -217,6 +217,32 @@ class ConfigManager:
         for name, setting in self.config_type.items():
             config[name] = setting.to_config(getattr(self, name))
         return config
+
+    def get_config_with_ui_information(self):
+        """Get a dict of all config values with additional information for the UI."""
+        config: dict[str, dict[str, Any]] = {}
+        for name, setting in self.config_type.items():
+            setting_data = {"value": setting.to_config(getattr(self, name))}
+            self._enhance_config_specific_information(setting_data, setting)
+            config[name] = setting_data
+        return config
+
+    def _enhance_config_specific_information(self, config: dict[str, Any], setting: ConfigInterface):
+        config["prefix"] = setting.prefix
+        config["suffix"] = setting.suffix
+        if isinstance(setting, ChooseType):
+            config["allowed"] = setting.allowed
+        if isinstance(setting, BoolType):
+            config["check_name"] = setting.check_name
+        if isinstance(setting, ListType):
+            config["immutable"] = setting.immutable
+            list_type = setting.list_type
+            # in case of list we need to go into the object, all list object types are the same
+            self._enhance_config_specific_information(config, list_type)
+        if isinstance(setting, DictType):
+            for key, value in setting.dict_types.items():
+                config[key] = {}
+                self._enhance_config_specific_information(config[key], value)
 
     def set_config(self, configuration: dict, validate: bool):
         """Validate the config and set new values."""
