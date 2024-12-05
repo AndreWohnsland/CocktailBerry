@@ -64,7 +64,7 @@ body {
 }
 
 .button-danger {
-  @apply button-base border-danger bg-background;
+  @apply button-base border-danger text-danger;
 }
 
 .button-danger-filled {
@@ -77,6 +77,22 @@ body {
 
 .select-base:focus {
   outline: none;
+}
+
+.input-base {
+  @apply text-primary border-primary rounded-lg bg-background border text-center p-1 w-full;
+}
+
+.input-base[type='number'] {
+  @apply pr-0; /* Add padding to the left */
+}
+
+.input-base:focus {
+  @apply border-primary;
+}
+
+.checkbox-large {
+  @apply w-6 h-6;
 }
 
 .sticky-bottom {
