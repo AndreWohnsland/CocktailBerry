@@ -1,25 +1,19 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from 'axios';
 import { API_URL } from './common';
-import { ConsumeData, LogData } from '../types/models';
+import { ConsumeData, LogData, ConfigData, ConfigDataWithUiInfo } from '../types/models';
 
 const options_url = `${API_URL}/options`;
 
-export const getOptions = async (): Promise<any[]> => {
-  return axios
-    .get<any[]>(options_url)
-    .then((res) => res.data)
-    .catch((error) => {
-      console.error('Error fetching options:', error);
-      return [];
-    });
+export const getConfig = async (): Promise<ConfigDataWithUiInfo> => {
+  return axios.get<ConfigDataWithUiInfo>(`${options_url}/ui`).then((res) => res.data);
 };
 
-export const useOptions = (): UseQueryResult<any[], Error> => {
-  return useQuery<any[], Error>('options', getOptions);
+export const useConfig = (): UseQueryResult<ConfigDataWithUiInfo, Error> => {
+  return useQuery<ConfigDataWithUiInfo, Error>('options', getConfig);
 };
 
-export const updateOptions = async (options: Record<string, any>): Promise<{ message: string }> => {
+export const updateOptions = async (options: ConfigData): Promise<{ message: string }> => {
   return axios
     .post<{ message: string }>(options_url, options, {
       headers: {
