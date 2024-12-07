@@ -11,8 +11,13 @@ const LogWindow: React.FC = () => {
   };
 
   useEffect(() => {
-    if (data) {
-      setSelectedLogType(Object.keys(data.data)[0]);
+    if (data && data.data) {
+      const logTypes = Object.keys(data.data);
+      if (logTypes.includes('production_logs.log')) {
+        setSelectedLogType('production_logs.log');
+      } else {
+        setSelectedLogType(logTypes[0]);
+      }
     }
   }, [data]);
 
