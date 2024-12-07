@@ -138,7 +138,7 @@ const ConfigWindow: React.FC = () => {
   const renderObjectField = (key: string, value: { [key: string]: PossibleConfigValueTypes }) => (
     <div className='flex flex-row w-full'>
       {Object.keys(value).map((subKey) => (
-        <div key={subKey} className='flex items-center'>
+        <div key={subKey} className='flex items-center w-full'>
           {renderInputField(`${key}.${subKey}`, value[subKey])}
         </div>
       ))}
@@ -249,7 +249,7 @@ const ConfigWindow: React.FC = () => {
   return (
     <>
       <TabSelector selectedTab={selectedTab} onSelectTab={setSelectedTab} />
-      <div className='flex flex-col w-full max-w-3xl items-center justify-center'>
+      <div className='flex flex-col w-full max-w-3xl items-center justify-center mt-8'>
         <div className='flex-grow p-1 w-full'>
           {Object.keys(configData).map(
             (key) =>
