@@ -11,6 +11,7 @@ import {
   getRfidWriter,
   createBackup,
   uploadBackup,
+  updateOptions,
 } from '../../api/options';
 import { ToastContainer } from 'react-toastify';
 import { confirmAndExecute, executeAndShow } from '../../utils';
@@ -62,6 +63,11 @@ const OptionWindow = () => {
     return uploadBackup(file);
   };
 
+  const themeSelect = async (theme: string) => {
+    const success = await executeAndShow(() => updateOptions({ MAKER_THEME: theme }));
+    if (success) onThemeChange(theme);
+  };
+
   return (
     <>
       <ToastContainer position='top-center' />
@@ -77,7 +83,7 @@ const OptionWindow = () => {
           <select
             className='theme-dropdown select-base w-full p-2'
             value={theme}
-            onChange={(e) => onThemeChange(e.target.value)}
+            onChange={(e) => themeSelect(e.target.value)}
           >
             {themes.map((t) => (
               <option key={t} value={t}>
@@ -93,7 +99,7 @@ const OptionWindow = () => {
           <button className='button-primary p-4' onClick={() => navigate('/calibration')}>
             Calibration
           </button>
-          <button className='button-primary-filled p-4' onClick={() => navigate('/options/configuration')}>
+          <button className='button-primary-filled p-4' onClick={() => navigate('/configuration')}>
             Configuration
           </button>
           <button className='button-primary p-4' onClick={() => navigate('/data')}>
