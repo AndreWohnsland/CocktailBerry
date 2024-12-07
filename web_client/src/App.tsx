@@ -27,7 +27,7 @@ function App() {
             <Route path='bottles' element={<BottleList />} />
             <Route path='bottles/available' element={<AvailableBottles />} />
             <Route path='options' element={<OptionWindow />} />
-            <Route path='options/configuration' element={<ConfigWindow />} />
+            <Route path='configuration' element={<ConfigWindow />} />
             <Route path='data' element={<DataWindow />} />
             <Route path='logs' element={<LogWindow />} />
             <Route path='calibration' element={<CalibrationWindow />} />
