@@ -60,7 +60,6 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
 
     return () => {
       cancelInterval();
-      console.log('cleanup');
     };
   }, [isOpen]);
 
