@@ -3,7 +3,7 @@ import { postAvailableIngredients, useAvailableIngredients, useIngredients } fro
 import { Ingredient } from '../../types/models';
 import ListView from './ListView';
 import { useNavigate } from 'react-router-dom';
-import { FaRegArrowAltCircleLeft, FaRegArrowAltCircleRight } from 'react-icons/fa';
+import { FaPlusCircle, FaMinusCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const AvailableBottles: React.FC = () => {
@@ -68,7 +68,7 @@ const AvailableBottles: React.FC = () => {
             className='button-primary-filled p-2 my-2 mr-2 sm:mb-2 sm:mx-2 sm:my-0 h-1/2 w-1/2 sm:w-full items-center justify-center flex'
             onClick={() => moveSelected(setFreeIngredients, setAvailableIngredients, selectedFree, setSelectedFree)}
           >
-            <FaRegArrowAltCircleLeft size={40} />
+            <FaPlusCircle size={40} />
           </button>
           <button
             className='button-primary p-2 my-2 sm:mx-2 sm:my-0 h-1/2 w-1/2 sm:w-full items-center justify-center flex'
@@ -76,7 +76,7 @@ const AvailableBottles: React.FC = () => {
               moveSelected(setAvailableIngredients, setFreeIngredients, selectedAvailable, setSelectedAvailable)
             }
           >
-            <FaRegArrowAltCircleRight size={40} />
+            <FaMinusCircle size={40} />
           </button>
         </div>
         <div className='w-full sm:w-1/2 h-[50vh] sm:h-full'>
