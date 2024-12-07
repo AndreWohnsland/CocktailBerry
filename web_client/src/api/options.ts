@@ -9,6 +9,10 @@ export const getConfig = async (): Promise<ConfigDataWithUiInfo> => {
   return axios.get<ConfigDataWithUiInfo>(`${options_url}/ui`).then((res) => res.data);
 };
 
+export const getConfigValues = async (): Promise<ConfigData> => {
+  return axios.get<ConfigData>(options_url).then((res) => res.data);
+};
+
 export const useConfig = (): UseQueryResult<ConfigDataWithUiInfo, Error> => {
   return useQuery<ConfigDataWithUiInfo, Error>('options', getConfig);
 };
