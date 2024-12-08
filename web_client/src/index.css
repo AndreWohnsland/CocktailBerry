@@ -72,7 +72,7 @@ body {
 }
 
 .select-base {
-  @apply bg-background border border-neutral text-primary font-bold rounded-lg;
+  @apply bg-background border border-primary text-primary font-bold rounded-lg text-center p-1 w-full;
 }
 
 .select-base:focus {
@@ -149,15 +149,16 @@ input[type='checkbox']:checked::before {
   transform: translate(-50%, -50%);
   color: var(--text-color);
   background: var(--background-color);
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   outline: none;
-  width: 95%;
-  max-width: 95%;
-  height: 95%;
-  max-height: 95%;
+  width: 99%;
+  max-width: 99%;
+  height: 99%;
+  max-height: 99%;
   max-height: 600px;
   max-width: 1000px;
+  overflow-x: auto;
 }
 
 .overlay {
