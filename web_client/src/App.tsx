@@ -11,6 +11,7 @@ import CalibrationWindow from './components/options/CalibrationWindow.tsx';
 import ConfigWindow from './components/options/ConfigWindow.tsx';
 import DataWindow from './components/options/DataWindow.tsx';
 import LogWindow from './components/options/LogWindow.tsx';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const { theme } = useTheme();
@@ -20,6 +21,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <div className='app-container pt-12'>
+          <ToastContainer position='top-center' />
           <Routes>
             <Route path='cocktails' element={<CocktailList />} />
             <Route path='ingredients' element={<IngredientList />} />
