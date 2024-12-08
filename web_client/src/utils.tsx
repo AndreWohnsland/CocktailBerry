@@ -34,13 +34,18 @@ export const confirmAndExecute = async (message: string, executable: () => Promi
   const confirmation = window.confirm(`Do you want to ${message}?`);
   if (confirmation) {
     await executable().catch((error) => {
-      const errorMessage = error?.response?.data?.detail || error.message || error;
-      toast(`Error doing ${message}: ${errorMessage}`, {
-        toastId: `${message}-error`,
-        pauseOnHover: false,
-      });
+      errorToast(error, message);
     });
   }
+};
+
+export const errorToast = (error: any, message: string) => {
+  const errorMessage = error?.response?.data?.detail || error.message || error;
+  const randomNumber = Math.floor(100000 + Math.random() * 900000);
+  toast(`${message}: ${errorMessage}`, {
+    toastId: `${message}-error-${randomNumber}`,
+    pauseOnHover: false,
+  });
 };
 
 export const executeAndShow = async (executable: () => Promise<any>): Promise<Boolean> => {
@@ -58,6 +63,9 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<Bo
       info = error?.response?.data?.detail || error.message || error;
       toastId = 'execute-show-error';
     });
+  if (typeof info === 'object') {
+    info = JSON.stringify(info);
+  }
   toast(info, {
     toastId: `${toastId}-${randomNumber}`,
     pauseOnHover: false,
