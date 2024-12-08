@@ -13,7 +13,6 @@ import {
   uploadBackup,
   updateOptions,
 } from '../../api/options';
-import { ToastContainer } from 'react-toastify';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import { useNavigate } from 'react-router-dom';
 import ProgressModal from '../cocktail/ProgressModal';
@@ -70,7 +69,6 @@ const OptionWindow = () => {
 
   return (
     <>
-      <ToastContainer position='top-center' />
       <ProgressModal
         isOpen={isProgressModalOpen}
         onRequestClose={() => setIsProgressModalOpen(false)}

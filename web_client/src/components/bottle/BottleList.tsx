@@ -3,7 +3,6 @@ import { refillBottle, useBottles } from '../../api/bottles';
 import { useIngredients } from '../../api/ingredients';
 import BottleComponent from './BottleComponent';
 import { Ingredient } from '../../types/models';
-import { ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { executeAndShow } from '../../utils';
 
@@ -56,7 +55,6 @@ const BottleList: React.FC = () => {
 
   return (
     <>
-      <ToastContainer position='top-center' />
       <div className='px-1 max-w-7xl w-full h-full'>
         <div className='grid grid-cols-2 place-items-stretch gap-2 w-full h-full'>
           {bottles?.map((bottle) => (
