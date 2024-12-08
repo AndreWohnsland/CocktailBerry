@@ -36,6 +36,13 @@ class ElementNotFoundError(DatabaseTransactionError):
         super().__init__("element_not_found", {"element_name": element_name})
 
 
+class ElementAlreadyExistsError(DatabaseTransactionError):
+    """Informs that the element already is in the db."""
+
+    def __init__(self, element_name: str):
+        super().__init__("element_already_exists", {"element_name": element_name})
+
+
 class DatabaseCommander:
     """Commander Class to execute queries and return the results as lists."""
 
@@ -446,13 +453,16 @@ class DatabaseCommander:
         unit: str,
     ):
         """Insert a new ingredient into the database."""
-        query = """INSERT OR IGNORE INTO
+        query = """INSERT INTO
                 Ingredients(
                     Name, Alcohol, Volume, Consumption_lifetime, Consumption, Fill_level, Hand, Pump_speed, Cost, Unit
                 )
                 VALUES (?,?,?,0,0,0,?,?,?,?)"""
         search_tuple = (ingredient_name, alcohol_level, volume, int(only_hand), pump_speed, cost, unit)
-        self.handler.query_database(query, search_tuple)
+        try:
+            self.handler.query_database(query, search_tuple)
+        except sqlite3.IntegrityError:
+            raise ElementAlreadyExistsError(ingredient_name)
 
     def insert_new_recipe(
         self,

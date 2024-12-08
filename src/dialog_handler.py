@@ -78,6 +78,7 @@ allowed_keys = Literal[
     "create_cocktail_first",
     "done",
     "element_not_found",
+    "element_already_exists",
     "enter_cocktail_name",
     "image_processing_failed",
     "ingredient_added",

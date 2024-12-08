@@ -208,6 +208,9 @@ dialog:
   element_not_found:
     en: 'Element {element_name} not found!'
     de: 'Element {element_name} nicht gefunden!'
+  element_already_exists:
+    en: 'Element {element_name} already exists!'
+    de: 'Element {element_name} gibt es schon!'
   cocktail_in_progress:
     en: 'A cocktail is currently in progress. Please wait until it is finished.'
     de: 'Ein Cocktail wird gerade zubereitet. Bitte warte, bis er fertig ist.'
