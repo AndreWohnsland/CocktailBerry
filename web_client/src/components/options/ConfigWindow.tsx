@@ -94,7 +94,7 @@ const ConfigWindow: React.FC = () => {
   };
 
   const renderSelectionField = (key: string, value: string | number, allowedValues: (string | number)[]) => (
-    <select value={value} onChange={(e) => handleInputChange(key, e.target.value)} className='input-base'>
+    <select value={value} onChange={(e) => handleInputChange(key, e.target.value)} className='select-base'>
       {allowedValues.map((allowedValue) => (
         <option key={allowedValue} value={allowedValue}>
           {allowedValue}
