@@ -27,6 +27,7 @@ export interface Ingredient extends CocktailIngredient {
 }
 
 export interface IngredientInput {
+  id?: number;
   name: string;
   alcohol: number;
   bottle_volume: number;
@@ -44,6 +45,7 @@ export interface CocktailIngredientInput {
 }
 
 export interface CocktailInput {
+  id?: number;
   name: string;
   enabled: boolean;
   virgin_available: boolean;
