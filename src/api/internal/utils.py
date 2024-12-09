@@ -3,18 +3,20 @@ from typing import Optional
 from src.api.models import Cocktail, CocktailIngredient, CocktailInput, Ingredient
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER as DBC
+from src.database_commander import ElementNotFoundError
 from src.filepath import DEFAULT_IMAGE_FOLDER
 from src.image_utils import find_cocktail_image
 from src.models import Cocktail as DBCocktail
 from src.models import Ingredient as DBIngredient
 
 
-def map_cocktail(cocktail: Optional[DBCocktail]) -> Optional[Cocktail]:
+def map_cocktail(cocktail: Optional[DBCocktail], scale: bool = True) -> Optional[Cocktail]:
     if cocktail is None:
         return None
     # scale by the middle of the cocktail amount data, apply user specified alcohol factor
     default_amount = cfg.MAKER_PREPARE_VOLUME[len(cfg.MAKER_PREPARE_VOLUME) // 2]
-    cocktail.scale_cocktail(default_amount, cfg.MAKER_ALCOHOL_FACTOR / 100)
+    if scale:
+        cocktail.scale_cocktail(default_amount, cfg.MAKER_ALCOHOL_FACTOR / 100)
     return Cocktail(
         id=cocktail.id,
         name=cocktail.name,
@@ -61,7 +63,9 @@ def calculate_cocktail_volume_and_concentration(cocktail: CocktailInput):
     recipe_volume_concentration = 0
     recipe_volume = 0
     for ing in cocktail.ingredients:
-        db_ingredient: DBIngredient = DBC.get_ingredient(ing.name)  # type: ignore
+        db_ingredient = DBC.get_ingredient(ing.id)
+        if db_ingredient is None:
+            raise ElementNotFoundError(f"Ingredient Id {ing.id}")
         recipe_volume_concentration += db_ingredient.alcohol * ing.amount
         recipe_volume += ing.amount
 
