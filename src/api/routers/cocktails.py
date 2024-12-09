@@ -19,10 +19,11 @@ router = APIRouter(tags=["cocktails"], prefix="/cocktails")
 
 
 @router.get("")
-async def get_cocktails(only_possible: bool = True, max_hand_add: int = 3):
+async def get_cocktails(only_possible: bool = True, max_hand_add: int = 3, scale: bool = True) -> list[Cocktail]:
     DBC = DatabaseCommander()
     cocktails = DBC.get_possible_cocktails(max_hand_add) if only_possible else DBC.get_all_cocktails()
-    return [map_cocktail(c) for c in cocktails]
+    mapped_cocktails = [map_cocktail(c, scale) for c in cocktails]
+    return [c for c in mapped_cocktails if c is not None]
 
 
 @router.get("/{cocktail_id}")
@@ -103,7 +104,7 @@ async def create_cocktail(cocktail: CocktailInput) -> Optional[Cocktail]:
     db_cocktail = DBC.insert_new_recipe(
         cocktail.name, recipe_alcohol_level, recipe_volume, cocktail.enabled, cocktail.virgin_available, ingredient_data
     )
-    return map_cocktail(db_cocktail)
+    return map_cocktail(db_cocktail, False)
 
 
 @router.put("/{cocktail_id}")
@@ -120,7 +121,7 @@ async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> Optional
         cocktail.virgin_available,
         ingredient_data,
     )
-    return map_cocktail(db_cocktail)
+    return map_cocktail(db_cocktail, False)
 
 
 @router.delete("/{cocktail_id}")
