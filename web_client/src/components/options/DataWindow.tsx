@@ -68,13 +68,9 @@ const ConsumeWindow: React.FC = () => {
   return (
     <div className='flex flex-col w-full max-w-5xl'>
       <div className='flex flex-col items-center justify-center flex-shrink-0'>
-        <div className='flex flex-row items-center'>
-          <h2 className='text-2xl font-bold text-secondary mr-4'>Consumption Data:</h2>
-          <select
-            value={selectedDataType}
-            onChange={handleDataTypeChange}
-            className='mt-2 p-2 select-base border border-gray-400 rounded'
-          >
+        <div className='flex flex-row items-center w-full px-2'>
+          <h2 className='text-2xl font-bold text-secondary mr-4 text-center'>Data:</h2>
+          <select value={selectedDataType} onChange={handleDataTypeChange} className='select-base'>
             {consumeData &&
               Object.keys(consumeData).map((dataType) => (
                 <option key={dataType} value={dataType}>
@@ -85,7 +81,7 @@ const ConsumeWindow: React.FC = () => {
         </div>
       </div>
 
-      <div className='flex-grow p-4'>
+      <div className='flex-grow p-2'>
         {consumeData && (
           <>
             <ConsumeBarChart title='Recipes' data={selectedData.recipes} unit='x' />
