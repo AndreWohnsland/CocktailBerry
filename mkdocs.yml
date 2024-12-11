@@ -12,6 +12,7 @@ nav:
   - Installation: installation.md
   - Hardware: hardware.md
   - Setup / Usage: setup.md
+  - CocktailBerry Web: web.md
   - Supported Languages: languages.md
   - CLI commands: commands.md
   - Advanced Topics: advanced.md
