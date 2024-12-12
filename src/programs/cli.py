@@ -20,6 +20,7 @@ from src.programs.cocktailberry import run_cocktailberry
 from src.programs.config_window import run_config_window
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
+from src.programs.web_migrator import create_web_entry, replace_backend_entry, roll_back_to_qt_setup
 from src.utils import generate_custom_style_file, start_resource_tracker, time_print
 
 _logger = LoggerHandler("cocktailberry")
@@ -158,10 +159,36 @@ def setup_teams_service(
 
 
 @cli.command()
-def api(port: int = typer.Option(8888, "--port", "-p", help="Port for the FastAPI server")):
+def api(port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAPI server")):
     """Run the FastAPI server.
 
     Can be used as an alternative way to control the machine, for example over an external program or a web ui.
     The FastAPI server will be started at the given port.
     """
     run_api(port)
+
+
+@cli.command()
+def setup_web():
+    """Set up the web interface.
+
+    This will set up the web interface for CocktailBerry.
+    This is an alternative setup and overwrites the current app.
+    The web interface will be available at http://localhost:5173.
+    The api will be available at http://localhost:8000.
+    """
+    replace_backend_entry()
+    create_web_entry()
+    typer.echo("Switched to web setup successfully.")
+
+
+@cli.command()
+def switch_back():
+    """Switch back to the Qt setup.
+
+    This will switch back to the Qt setup for CocktailBerry.
+    This is an alternative setup and overwrites the current app.
+    The web interface will be removed.
+    """
+    roll_back_to_qt_setup()
+    typer.echo("Switched to Qt setup successfully.")
