@@ -25,6 +25,7 @@ def replace_backend_entry():
     else:
         print(f"Script {script_entry_path} not found. Creating a new one.")
         script_entry_path.write_text(new_backend_script_content)
+    script_entry_path.chmod(0o755)
 
 
 def create_web_entry():
