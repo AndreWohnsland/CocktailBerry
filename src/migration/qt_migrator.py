@@ -20,13 +20,13 @@ def _remove_web_entry():
         print("Web entry not found. Nothing to remove.")
 
 
-def roll_back_to_qt_setup():
+def roll_back_to_qt_script():
     """Roll back to the Qt setup."""
-    _remove_web_entry()
     # use the backup file if it exists
     script_entry_path.write_text(old_backend_script_content)
 
 
+# This section need to be run as root in a subprocess
 if __name__ == "__main__":
-    roll_back_to_qt_setup()
+    _remove_web_entry()
     print("Switched to Qt setup successfully.")

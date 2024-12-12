@@ -16,7 +16,7 @@ script_entry_path = Path.home() / "launcher.sh"
 web_entry_path = Path("/etc/xdg/autostart/cocktail_web.desktop")
 
 
-def replace_backend_entry():
+def replace_backend_script():
     """Replace the content for the shell script to start the backend."""
     if script_entry_path.exists():
         backup_path = script_entry_path.with_suffix(".bak")
@@ -28,12 +28,12 @@ def replace_backend_entry():
     script_entry_path.chmod(0o755)
 
 
-def create_web_entry():
+def _create_web_entry():
     """Create the web entry for the autostart."""
     web_entry_path.write_text(new_web_entry)
 
 
+# This section need to be run as root in a subprocess
 if __name__ == "__main__":
-    replace_backend_entry()
-    create_web_entry()
+    _create_web_entry()
     print("Switched to web setup successfully.")

@@ -13,7 +13,9 @@ from src.config.config_manager import show_start_message, version_callback
 from src.config.errors import ConfigError
 from src.filepath import CUSTOM_CONFIG_FILE, QT_MIGRATION_SCRIPT, WEB_MIGRATION_SCRIPT
 from src.logger_handler import LoggerHandler
+from src.migration.qt_migrator import roll_back_to_qt_script
 from src.migration.update_data import add_new_recipes_from_default_db
+from src.migration.web_migrator import replace_backend_script
 from src.programs.addons import ADDONS, generate_addon_skeleton
 from src.programs.calibration import run_calibration
 from src.programs.clearing import clear_local_database
@@ -181,6 +183,7 @@ def setup_web():
     if _platform_data.system == "Windows":
         print("Web setup is not supported on Windows")
         return
+    replace_backend_script()
     subprocess.run(["sudo", "python", str(WEB_MIGRATION_SCRIPT.absolute())], check=True)
 
 
@@ -195,4 +198,5 @@ def switch_back():
     if _platform_data.system == "Windows":
         print("Web setup is not supported on Windows")
         return
+    roll_back_to_qt_script()
     subprocess.run(["sudo", "python", str(QT_MIGRATION_SCRIPT.absolute())], check=True)
