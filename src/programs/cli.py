@@ -1,5 +1,6 @@
 # pylint: disable=unused-argument
 import os
+import subprocess
 from pathlib import Path
 from typing import Optional
 
@@ -10,7 +11,7 @@ from src.api.api import run_api
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import show_start_message, version_callback
 from src.config.errors import ConfigError
-from src.filepath import CUSTOM_CONFIG_FILE
+from src.filepath import CUSTOM_CONFIG_FILE, QT_MIGRATION_SCRIPT, WEB_MIGRATION_SCRIPT
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import add_new_recipes_from_default_db
 from src.programs.addons import ADDONS, generate_addon_skeleton
@@ -20,11 +21,11 @@ from src.programs.cocktailberry import run_cocktailberry
 from src.programs.config_window import run_config_window
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
-from src.programs.web_migrator import create_web_entry, replace_backend_entry, roll_back_to_qt_setup
-from src.utils import generate_custom_style_file, start_resource_tracker, time_print
+from src.utils import generate_custom_style_file, get_platform_data, start_resource_tracker, time_print
 
 _logger = LoggerHandler("cocktailberry")
 cli = typer.Typer(add_completion=False)
+_platform_data = get_platform_data()
 
 
 @cli.callback(invoke_without_command=True)
@@ -177,9 +178,10 @@ def setup_web():
     The web interface will be available at http://localhost:5173.
     The api will be available at http://localhost:8000.
     """
-    replace_backend_entry()
-    create_web_entry()
-    typer.echo("Switched to web setup successfully.")
+    if _platform_data.system == "Windows":
+        print("Web setup is not supported on Windows")
+        return
+    subprocess.run(["sudo", "python", str(WEB_MIGRATION_SCRIPT.absolute())], check=True)
 
 
 @cli.command()
@@ -190,5 +192,7 @@ def switch_back():
     This is an alternative setup and overwrites the current app.
     The web interface will be removed.
     """
-    roll_back_to_qt_setup()
-    typer.echo("Switched to Qt setup successfully.")
+    if _platform_data.system == "Windows":
+        print("Web setup is not supported on Windows")
+        return
+    subprocess.run(["sudo", "python", str(QT_MIGRATION_SCRIPT.absolute())], check=True)
