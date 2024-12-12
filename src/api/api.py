@@ -27,6 +27,10 @@ Everything related to cocktails.
 - Prepare a cocktail.
 - Stop a cocktail preparation.
 
+## Preparation
+
+Operations for the preparation of cocktails.
+
 ## Bottles
 
 Options to change or refill bottles.
