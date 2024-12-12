@@ -19,13 +19,10 @@ web_entry_path = Path("/etc/xdg/autostart/cocktail_web.desktop")
 
 def replace_backend_script():
     """Replace the content for the shell script to start the backend."""
-    if script_entry_path.exists():
-        backup_path = script_entry_path.with_suffix(".bak")
+    backup_path = script_entry_path.with_suffix(".bak")
+    if script_entry_path.exists() and not backup_path.exists():
         script_entry_path.rename(backup_path)
-        script_entry_path.write_text(new_backend_script_content)
-    else:
-        print(f"Script {script_entry_path} not found. Creating a new one.")
-        script_entry_path.write_text(new_backend_script_content)
+    script_entry_path.write_text(new_backend_script_content)
     script_entry_path.chmod(0o755)
 
 
