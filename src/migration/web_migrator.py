@@ -1,17 +1,8 @@
 from pathlib import Path
 
-import typer
-
 new_backend_script_content = """
 source ~/.env-cocktailberry/bin/activate
 python runme.py api
-"""
-
-old_backend_script_content = """
-source ~/.env-cocktailberry/bin/activate
-export QT_SCALE_FACTOR=1
-cd ~/CocktailBerry/
-python runme.py
 """
 
 new_web_entry = """
@@ -32,7 +23,7 @@ def replace_backend_entry():
         script_entry_path.rename(backup_path)
         script_entry_path.write_text(new_backend_script_content)
     else:
-        typer.echo(f"Script {script_entry_path} not found. Creating a new one.")
+        print(f"Script {script_entry_path} not found. Creating a new one.")
         script_entry_path.write_text(new_backend_script_content)
 
 
@@ -41,17 +32,7 @@ def create_web_entry():
     web_entry_path.write_text(new_web_entry)
 
 
-def _remove_web_entry():
-    """Remove the web entry for the autostart."""
-    if web_entry_path.exists():
-        web_entry_path.unlink()
-        typer.echo("Removed web entry.")
-    else:
-        typer.echo("Web entry not found. Nothing to remove.")
-
-
-def roll_back_to_qt_setup():
-    """Roll back to the Qt setup."""
-    _remove_web_entry()
-    # use the backup file if it exists
-    script_entry_path.write_text(old_backend_script_content)
+if __name__ == "__main__":
+    replace_backend_entry()
+    create_web_entry()
+    print("Switched to web setup successfully.")

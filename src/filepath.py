@@ -24,6 +24,8 @@ CUSTOM_STYLE_SCSS = STYLE_FOLDER / "custom.scss"
 LANGUAGE_FILE = SRC_PATH / "language.yaml"
 APP_ICON_FILE = SRC_PATH / "ui_elements" / "cocktailberry.png"
 ADDON_SKELTON = SRC_PATH / "programs" / "addon_skeleton.py"
+QT_MIGRATION_SCRIPT = SRC_PATH / "migration" / "qt_migrator.py"
+WEB_MIGRATION_SCRIPT = SRC_PATH / "migration" / "web_migrator.py"
 
 # other
 LOCAL_MICROSERVICE_FILE = Path.home().absolute() / "ms-docker-compose.yaml"
