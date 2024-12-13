@@ -1,0 +1,49 @@
+name: Build React App and Add to Release
+run-name: |
+  Build React App${{ github.event_name == 'release' && ' and add to Release'}}
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Dependencies
+      working-directory: ./web_client
+      run: npm install
+
+    - name: Build React App
+      working-directory: ./web_client
+      run: npm run build
+
+    - name: Archive Build Folder
+      run: |
+        tar -czf cocktailberry_web_client.tar.gz -C web_client/build .
+        echo "Created tar.gz archive of the build folder."
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: cocktailberry_web_client.tar.gz
+        path: ./cocktailberry_web_client.tar.gz
+
+    - name: Upload binaries to release
+      if: github.event_name == 'release'
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ./cocktailberry_web_client.tar.gz
+        asset_name: cocktailberry_web_client.tar.gz
+        tag: ${{ github.event.release.tag_name }}
