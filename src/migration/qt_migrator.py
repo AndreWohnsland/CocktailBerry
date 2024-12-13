@@ -1,7 +1,6 @@
 from pathlib import Path
 
-old_backend_script_content = """
-source ~/.env-cocktailberry/bin/activate
+old_backend_script_content = """source ~/.env-cocktailberry/bin/activate
 export QT_SCALE_FACTOR=1
 cd ~/CocktailBerry/
 python runme.py

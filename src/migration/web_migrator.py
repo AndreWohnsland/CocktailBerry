@@ -1,13 +1,11 @@
 from pathlib import Path
 
-new_backend_script_content = """
-source ~/.env-cocktailberry/bin/activate
+new_backend_script_content = """source ~/.env-cocktailberry/bin/activate
 cd ~/CocktailBerry/
 python runme.py api
 """
 
-new_web_entry = """
-[Desktop Entry]
+new_web_entry = """[Desktop Entry]
 Type=Application
 Name=CocktailBerry Web
 Exec=chromium-browser --kiosk http://localhost:5173
