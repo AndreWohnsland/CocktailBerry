@@ -40,6 +40,10 @@ def setup_nginx():
         web_root.mkdir(parents=True, exist_ok=True)
         config_path.write_text(NGINX_CONFIG_FILE)
 
+        # Remove existing symbolic link if it exists
+        if config_path_enabled.exists():
+            config_path_enabled.unlink()
+
         # Enable the site
         subprocess.run(["sudo", "ln", "-s", str(config_path), str(config_path_enabled)], check=True)
 
