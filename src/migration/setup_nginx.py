@@ -41,7 +41,9 @@ def setup_nginx(
         config_path.write_text(nginx_config)
 
         # Enable the site
-        subprocess.run(["sudo", "ln", "-s", str(config_path), "/etc/nginx/sites-enabled/react_app"], check=True)
+        subprocess.run(
+            ["sudo", "ln", "-s", str(config_path), "/etc/nginx/sites-enabled/cocktailberry_web_client"], check=True
+        )
 
         # Remove default Nginx site if exists
         default_path = Path("/etc/nginx/sites-enabled/default")
@@ -54,3 +56,7 @@ def setup_nginx(
         print("Nginx has been successfully installed and configured.")
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
+if __name__ == "__main__":
+    setup_nginx()
