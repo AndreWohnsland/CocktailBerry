@@ -1,6 +1,6 @@
 name: Build React App and Add to Release
 run-name: |
-  Build React App${{ github.event_name == 'release' && ' and add to Release'}}
+  Build React App${{ github.event_name == 'release' && ' and add to Release' || '' }}
 
 on:
   release:
@@ -30,7 +30,7 @@ jobs:
 
     - name: Archive Build Folder
       run: |
-        tar -czf cocktailberry_web_client.tar.gz -C web_client/build .
+        tar -czf cocktailberry_web_client.tar.gz -C web_client/dist .
         echo "Created tar.gz archive of the build folder."
 
     - name: Upload artifact
