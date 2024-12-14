@@ -1,7 +1,29 @@
 import subprocess
 from pathlib import Path
 
-from src.filepath import NGINX_CONFIG_FILE
+NGINX_CONFIG_FILE = """server {
+    listen 80;
+    server_name localhost;
+
+    # Serve the React app
+    root /var/www/cocktailberry_web_client;
+    index index.html;
+
+    # Handle React app routes
+    location / {
+        try_files $uri /index.html;
+    }
+
+    # Proxy API requests to FastAPI
+    location /api/ {
+      rewrite ^/api/(.*)$ /$1 break;
+      proxy_pass http://127.0.0.1:8000;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+"""
 
 
 def setup_nginx():
@@ -16,7 +38,7 @@ def setup_nginx():
 
         # Create the web root directory if it doesn't exist
         web_root.mkdir(parents=True, exist_ok=True)
-        config_path.write_text(NGINX_CONFIG_FILE.read_text())
+        config_path.write_text(NGINX_CONFIG_FILE)
 
         # Enable the site
         subprocess.run(["sudo", "ln", "-s", str(config_path), str(config_path_enabled)], check=True)
