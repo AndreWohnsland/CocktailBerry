@@ -11,7 +11,7 @@ from src.api.api import run_api
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import show_start_message, version_callback
 from src.config.errors import ConfigError
-from src.filepath import CUSTOM_CONFIG_FILE, QT_MIGRATION_SCRIPT, WEB_MIGRATION_SCRIPT
+from src.filepath import CUSTOM_CONFIG_FILE, NGINX_SCRIPT, QT_MIGRATION_SCRIPT, WEB_MIGRATION_SCRIPT
 from src.logger_handler import LoggerHandler
 from src.migration.qt_migrator import roll_back_to_qt_script
 from src.migration.update_data import add_new_recipes_from_default_db
@@ -177,7 +177,7 @@ def setup_web():
 
     This will set up the web interface for CocktailBerry.
     This is an alternative setup and overwrites the current app.
-    The web interface will be available at http://localhost:5173.
+    The web interface will be available at http://localhost:5173 or proxy it with Nginx to just localhost/the ip.
     The api will be available at http://localhost:8000.
     """
     if _platform_data.system == "Windows":
@@ -185,6 +185,7 @@ def setup_web():
         return
     replace_backend_script()
     subprocess.run(["sudo", "python", str(WEB_MIGRATION_SCRIPT.absolute())], check=True)
+    subprocess.run(["sudo", "python", str(NGINX_SCRIPT.absolute())], check=True)
 
 
 @cli.command()
