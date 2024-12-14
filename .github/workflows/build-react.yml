@@ -28,22 +28,17 @@ jobs:
       working-directory: ./web_client
       run: npm run build
 
-    - name: Archive Build Folder
-      run: |
-        tar -czf cocktailberry_web_client.tar.gz -C web_client/dist .
-        echo "Created tar.gz archive of the build folder."
-
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: cocktailberry_web_client.tar.gz
-        path: ./cocktailberry_web_client.tar.gz
+        name: cocktailberry_web_client
+        path: ./web_client/dist
 
     - name: Upload binaries to release
       if: github.event_name == 'release'
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ./cocktailberry_web_client.tar.gz
-        asset_name: cocktailberry_web_client.tar.gz
+        file: ./web_client/dist
+        asset_name: cocktailberry_web_client
         tag: ${{ github.event.release.tag_name }}
