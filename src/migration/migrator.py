@@ -114,6 +114,10 @@ class Migrator:
                 _combine_pump_setting_into_one_config,
                 lambda: self._install_pip_package("distro", "1.36.0"),
             ],
+            "2.0.0": [
+                lambda: self._install_pip_package("fastapi[standard]", "2.0.0"),
+                lambda: self._install_pip_package("uvicorn", "2.0.0"),
+            ],
         }
 
         for version, actions in version_actions.items():
