@@ -4,6 +4,7 @@ import { useCocktails } from '../../api/cocktails';
 import { Cocktail } from '../../types/models';
 import CocktailSelection from './CocktailSelection';
 import { MdNoDrinks } from 'react-icons/md';
+import { API_URL } from '../../api/common';
 
 Modal.setAppElement('#root');
 
@@ -42,7 +43,7 @@ const CocktailList: React.FC = () => {
             </h2>
             <div className='relative w-full' style={{ paddingTop: '100%' }}>
               <img
-                src={`${import.meta.env.VITE_APP_API_URL}${cocktail.image}`}
+                src={`${API_URL}${cocktail.image}`}
                 alt={cocktail.name}
                 className='absolute top-0 left-0 w-full h-full object-cover'
               />
