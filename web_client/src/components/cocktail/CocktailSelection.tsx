@@ -11,6 +11,7 @@ import { scaleCocktail } from '../../utils';
 import { prepareCocktail } from '../../api/cocktails';
 import ProgressModal from './ProgressModal';
 import { toast } from 'react-toastify';
+import { API_URL } from '../../api/common';
 
 interface CocktailModalProps {
   selectedCocktail: Cocktail;
@@ -77,7 +78,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
       <div className='flex flex-col md:flex-row items-center md:items-start justify-center w-full h-full'>
         <div className='w-full flex items-center justify-center border-2 border-neutral rounded-lg box-border overflow-hidden h-full md:mr-4 flex-1'>
           <img
-            src={`${import.meta.env.VITE_APP_API_URL}${selectedCocktail.image}`}
+            src={`${API_URL}${selectedCocktail.image}`}
             alt={selectedCocktail.name}
             className='w-full h-full object-cover'
           />
