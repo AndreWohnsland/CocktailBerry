@@ -12,6 +12,7 @@ import { prepareCocktail } from '../../api/cocktails';
 import ProgressModal from './ProgressModal';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../api/common';
+import { useConfig } from '../../ConfigProvider';
 
 interface CocktailModalProps {
   selectedCocktail: Cocktail;
@@ -34,6 +35,10 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   const [alcohol, setAlcohol] = useState<alcoholState>('normal');
   const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(selectedCocktail);
   const [isProgressModalOpen, setProgressModalOpen] = useState(false);
+  const { config } = useConfig();
+  const possibleServingSizes = (config.MAKER_PREPARE_VOLUME as number[]) || mlAmounts;
+  if (config.MAKER_USE_RECIPE_VOLUME) {
+  }
 
   const handleAlcoholState = (state: alcoholState) => {
     if (state === alcohol) {
@@ -142,19 +147,29 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
             </div>
           </div>
           <div className='flex justify-center items-end w-full mt-auto'>
-            {mlAmounts.map((amount, index) => {
-              const Icon = icons[getIconIndex(index, mlAmounts.length)];
-              return (
-                <button
-                  key={amount}
-                  className='button-primary-filled m-1 w-full max-w-xs py-2 rounded-lg flex items-center justify-center text-xl'
-                  onClick={() => prepareCocktailClick(amount)}
-                >
-                  <Icon className='mr-2 text-2xl' />
-                  {amount}
-                </button>
-              );
-            })}
+            {config.MAKER_USE_RECIPE_VOLUME ? (
+              <button
+                className='button-primary-filled m-1 w-full max-w-xs py-2 rounded-lg flex items-center justify-center text-xl'
+                onClick={() => prepareCocktailClick(displayCocktail.amount)}
+              >
+                <FaGlassMartiniAlt className='mr-2 text-2xl' />
+                {displayCocktail.amount}
+              </button>
+            ) : (
+              possibleServingSizes.map((amount, index) => {
+                const Icon = icons[getIconIndex(index, possibleServingSizes.length)];
+                return (
+                  <button
+                    key={amount}
+                    className='button-primary-filled m-1 w-full max-w-xs py-2 rounded-lg flex items-center justify-center text-xl'
+                    onClick={() => prepareCocktailClick(amount)}
+                  >
+                    <Icon className='mr-2 text-2xl' />
+                    {amount}
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
       </div>
