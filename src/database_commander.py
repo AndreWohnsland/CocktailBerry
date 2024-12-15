@@ -180,7 +180,6 @@ class DatabaseCommander:
                 unit=ing[9],
             )
             for ing in result
-            if ing[0] is not None
         ]
 
     def get_bottle_fill_levels(self) -> list[int]:
