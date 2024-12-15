@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.api.models import Cocktail, CocktailIngredient, CocktailInput, Ingredient
+from src.api.models import Bottle, Cocktail, CocktailIngredient, CocktailInput, Ingredient
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER as DBC
 from src.database_commander import ElementNotFoundError
@@ -15,6 +15,8 @@ def map_cocktail(cocktail: Optional[DBCocktail], scale: bool = True) -> Optional
         return None
     # scale by the middle of the cocktail amount data, apply user specified alcohol factor
     default_amount = cfg.MAKER_PREPARE_VOLUME[len(cfg.MAKER_PREPARE_VOLUME) // 2]
+    if cfg.MAKER_USE_RECIPE_VOLUME:
+        default_amount = cocktail.amount
     if scale:
         cocktail.scale_cocktail(default_amount, cfg.MAKER_ALCOHOL_FACTOR / 100)
     return Cocktail(
@@ -57,6 +59,10 @@ def map_ingredient(ingredient: Optional[DBIngredient]) -> Optional[Ingredient]:
         pump_speed=ingredient.pump_speed,
         cost=ingredient.cost,
     )
+
+
+def map_bottles(ing: DBIngredient) -> Bottle:
+    return Bottle(number=ing.bottle or 0, ingredient=map_ingredient(ing) if ing.id else None)
 
 
 def calculate_cocktail_volume_and_concentration(cocktail: CocktailInput):

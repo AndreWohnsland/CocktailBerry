@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
-from src.api.internal.utils import map_ingredient
+from src.api.internal.utils import map_bottles
 from src.api.models import Bottle
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
@@ -17,12 +17,8 @@ router = APIRouter(tags=["bottles"], prefix="/bottles")
 @router.get("")
 async def get_bottles() -> list[Bottle]:
     DBC = DatabaseCommander()
-    ingredients = DBC.get_ingredients_at_bottles()
-    return [
-        Bottle(number=i.bottle, ingredient=map_ingredient(i) if i.id else None)
-        for i in ingredients
-        if i.bottle is not None
-    ]
+    ingredients = DBC.get_ingredients_at_bottles()[: cfg.MAKER_NUMBER_BOTTLES]
+    return [map_bottles(i) for i in ingredients]
 
 
 @router.post("/refill")
