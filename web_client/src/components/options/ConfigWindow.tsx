@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useConfig } from '../../api/options';
+import { updateOptions, useConfig } from '../../api/options';
 import { RxCrossCircled } from 'react-icons/rx';
 import { FaPlus } from 'react-icons/fa';
 import { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
-import { isInCurrentTab } from '../../utils';
+import { executeAndShow, isInCurrentTab } from '../../utils';
 import TabSelector from './TabSelector';
+import { useTheme } from '../../ThemeProvider';
+import { useConfig as useConfigProvider } from '../../ConfigProvider';
 
 const ConfigWindow: React.FC = () => {
   const { data, isLoading, isError } = useConfig();
   const [configData, setConfigData] = useState<ConfigData>({});
   const [selectedTab, setSelectedTab] = useState('UI');
+  const { onThemeChange } = useTheme();
+  const { refetchConfig } = useConfigProvider();
 
   useEffect(() => {
     if (data) {
@@ -238,6 +242,15 @@ const ConfigWindow: React.FC = () => {
     });
   };
 
+  const postConfig = () => {
+    executeAndShow(() => updateOptions(configData)).then((success) => {
+      if (success) {
+        onThemeChange(configData.MAKER_THEME as string);
+        refetchConfig();
+      }
+    });
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -262,7 +275,7 @@ const ConfigWindow: React.FC = () => {
           )}
         </div>
         <div className='flex flex-col items-center justify-center w-full px-1'>
-          <button onClick={() => console.log(configData)} className='button-primary-filled p-2 w-full mb-2'>
+          <button onClick={postConfig} className='button-primary-filled p-2 w-full mb-2'>
             Save
           </button>
         </div>
