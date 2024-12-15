@@ -30,6 +30,7 @@ from src.migration.update_data import (
     add_unit_column_to_ingredients,
     add_virgin_flag_to_db,
     change_slower_flag_to_pump_speed,
+    fix_amount_in_recipe,
     remove_is_alcoholic_column,
     remove_old_recipe_columns,
     rename_database_to_english,
@@ -117,6 +118,7 @@ class Migrator:
             "2.0.0": [
                 lambda: self._install_pip_package("fastapi[standard]", "2.0.0"),
                 lambda: self._install_pip_package("uvicorn", "2.0.0"),
+                fix_amount_in_recipe,
             ],
         }
 

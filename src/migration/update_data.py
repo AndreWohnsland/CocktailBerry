@@ -241,3 +241,18 @@ def change_slower_flag_to_pump_speed(slow_factor: float):
         _logger.log_event(
             "ERROR", "Could not convert slow flag to pump speed column in DB, this may because it was already done"
         )
+
+
+def fix_amount_in_recipe():
+    """Recalculate the amount in the Recipe table."""
+    _logger.log_event("INFO", "Adding team buffer table to database")
+    db_handler = DatabaseHandler()
+    db_handler.query_database(
+        """UPDATE Recipes
+            SET Amount = (
+                SELECT SUM(Amount)
+                FROM RecipeData
+                WHERE RecipeData.Recipe_ID = Recipes.ID
+                GROUP BY RecipeData.Recipe_ID
+            );"""
+    )
