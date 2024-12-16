@@ -220,9 +220,12 @@ class ConfigManager:
 
     def get_config_with_ui_information(self):
         """Get a dict of all config values with additional information for the UI."""
+        from src.dialog_handler import UI_LANGUAGE
+
         config: dict[str, dict[str, Any]] = {}
         for name, setting in self.config_type.items():
             setting_data = {"value": setting.to_config(getattr(self, name))}
+            setting_data["description"] = UI_LANGUAGE.get_config_description(name)
             self._enhance_config_specific_information(setting_data, setting)
             config[name] = setting_data
         return config
