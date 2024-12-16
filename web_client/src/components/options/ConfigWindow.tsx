@@ -114,8 +114,11 @@ const ConfigWindow: React.FC = () => {
         {baseConfig.prefix && <span className='text-neutral mx-1'>{baseConfig.prefix}</span>}
         <input
           type='number'
-          value={value}
-          onChange={(e) => handleInputChange(key, Number(e.target.value))}
+          value={value.toString()}
+          onChange={(e) => {
+            const numericValue = parseFloat(e.target.value);
+            handleInputChange(key, isNaN(numericValue) ? 0 : numericValue);
+          }}
           className='input-base'
         />
         {baseConfig.suffix && <span className='text-neutral mx-1'>{baseConfig.suffix}</span>}
@@ -269,6 +272,7 @@ const ConfigWindow: React.FC = () => {
               isInCurrentTab(key, selectedTab) && (
                 <div key={key} className='mb-4 flex flex-col items-center'>
                   <h3 className='text-secondary text-lg font-bold mb-1'>{key}</h3>
+                  {data && <p className='text-neutral mb-2 text-center'>{data[key].description}</p>}
                   {renderInputField(key, configData[key])}
                 </div>
               ),

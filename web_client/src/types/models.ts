@@ -95,6 +95,7 @@ export interface ConfigDataWithUiInfo {
 
 type PossibleUiInformation = {
   value: PossibleConfigValue;
+  description: string;
   prefix?: string;
   suffix?: string;
   immutable?: boolean;
