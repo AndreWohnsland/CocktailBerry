@@ -93,13 +93,20 @@ body {
 
 input[type='checkbox'] {
   @apply w-6 h-6 border-primary border rounded-sm bg-background text-primary appearance-none checked:border-secondary;
+  position: relative;
 }
 
-input[type='checkbox']:checked::before {
-  content: '✔';
-  color: var(--secondary-color);
+input[type='checkbox']:checked::after {
+  content: '';
   display: block;
-  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.5em;
+  height: 1em;
+  border: solid var(--secondary-color);
+  border-width: 0 0.2em 0.2em 0;
+  transform: translate(-50%, -60%) rotate(45deg);
 }
 
 .sticky-bottom {
