@@ -17,6 +17,7 @@ export interface Cocktail {
   virgin_available: boolean;
   ingredients: CocktailIngredient[];
   image: string;
+  default_image: string;
 }
 
 export interface Ingredient extends CocktailIngredient {
@@ -50,6 +51,8 @@ export interface CocktailInput {
   enabled: boolean;
   virgin_available: boolean;
   ingredients: CocktailIngredientInput[];
+  image: string;
+  default_image: string;
 }
 
 export interface Bottle {
