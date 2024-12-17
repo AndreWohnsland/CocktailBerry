@@ -109,6 +109,18 @@ input[type='checkbox']:checked::after {
   transform: translate(-50%, -60%) rotate(45deg);
 }
 
+input[type='file']::file-selector-button {
+  @apply button-primary px-2 mr-2 border;
+}
+
+input[type='file']::-webkit-file-upload-button {
+  @apply button-primary px-2 mr-2 border;
+}
+
+input[type='file']::-ms-browse {
+  @apply button-primary px-2 mr-2 border;
+}
+
 .sticky-bottom {
   position: sticky;
   bottom: 0;
