@@ -39,6 +39,7 @@ class Cocktail(BaseModel):
     virgin_available: bool
     ingredients: list[CocktailIngredient]
     image: str
+    default_image: str
 
 
 class Ingredient(CocktailIngredient):
