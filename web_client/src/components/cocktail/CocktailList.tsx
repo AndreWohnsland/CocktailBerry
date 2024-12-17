@@ -31,25 +31,27 @@ const CocktailList: React.FC = () => {
   return (
     <div className='px-2 centered max-w-7xl'>
       <div className='flex flex-wrap gap-3 justify-center items-center w-full'>
-        {cocktails?.map((cocktail) => (
-          <div
-            key={cocktail.id}
-            className='border-2 border-primary hover:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary hover:bg-secondary text-background'
-            onClick={() => handleCocktailClick(cocktail)}
-          >
-            <h2 className='text-center py-1 flex items-center justify-center'>
-              {cocktail.virgin_available && <MdNoDrinks className='mr-2' />}
-              {cocktail.name}
-            </h2>
-            <div className='relative w-full' style={{ paddingTop: '100%' }}>
-              <img
-                src={`${API_URL}${cocktail.image}`}
-                alt={cocktail.name}
-                className='absolute top-0 left-0 w-full h-full object-cover'
-              />
+        {cocktails
+          ?.sort((a, b) => a.name.localeCompare(b.name))
+          .map((cocktail) => (
+            <div
+              key={cocktail.id}
+              className='border-2 border-primary hover:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary hover:bg-secondary text-background'
+              onClick={() => handleCocktailClick(cocktail)}
+            >
+              <h2 className='text-center py-1 flex items-center justify-center'>
+                {cocktail.virgin_available && <MdNoDrinks className='mr-2' />}
+                {cocktail.name}
+              </h2>
+              <div className='relative w-full' style={{ paddingTop: '100%' }}>
+                <img
+                  src={`${API_URL}${cocktail.image}`}
+                  alt={cocktail.name}
+                  className='absolute top-0 left-0 w-full h-full object-cover'
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       {selectedCocktail && (
