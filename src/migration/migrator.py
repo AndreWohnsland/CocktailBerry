@@ -191,8 +191,19 @@ class Migrator:
         if importlib.util.find_spec(package_name) is not None:
             _logger.log_event("INFO", f"Package {package_name} is already installed, skipping installation.")
             return
+        # Check if uv is available
+        uv_executable = shutil.which("uv")  # Find the uv executable in PATH
+        pip_command = [sys.executable, "-m", "pip", "install", package_name]
+
+        # Use uv install if uv is available
+        if uv_executable:
+            _logger.log_event("INFO", "Detected 'uv' command. Using 'uv pip install' for package installation.")
+            pip_command = [uv_executable, "pip", "install", package_name]
+        else:
+            _logger.log_event("INFO", "'uv' not detected. Falling back to 'pip' for package installation.")
+
         try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
+            subprocess.check_call(pip_command)
             _logger.log_event("INFO", f"Successfully installed {package_name}")
         except subprocess.CalledProcessError as err:
             err_msg = f"Could not install {package_name} using pip. Please install it manually!"
