@@ -5,7 +5,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER as DBC
 from src.database_commander import ElementNotFoundError
 from src.filepath import DEFAULT_IMAGE_FOLDER
-from src.image_utils import find_cocktail_image
+from src.image_utils import find_cocktail_image, find_default_cocktail_image
 from src.models import Cocktail as DBCocktail
 from src.models import Ingredient as DBIngredient
 
@@ -40,6 +40,7 @@ def map_cocktail(cocktail: Optional[DBCocktail], scale: bool = True) -> Optional
             for i in cocktail.adjusted_ingredients
         ],
         image=create_image_url(cocktail),
+        default_image=create_image_url(cocktail, default=True),
     )
 
 
@@ -79,10 +80,10 @@ def calculate_cocktail_volume_and_concentration(cocktail: CocktailInput):
     return recipe_volume, recipe_alcohol_level
 
 
-def create_image_url(cocktail: DBCocktail):
+def create_image_url(cocktail: DBCocktail, default: bool = False) -> str:
     # get the folder name of the path
     default_folder_name = DEFAULT_IMAGE_FOLDER.name
-    image_path = find_cocktail_image(cocktail)
+    image_path = find_default_cocktail_image(cocktail) if default else find_cocktail_image(cocktail)
     # check if the image is in the default folder
     if default_folder_name in image_path.parts:
         return f"/static/default/{image_path.name}"
