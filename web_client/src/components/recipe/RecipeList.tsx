@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Modal from 'react-modal';
-import { FaPlus, FaTrashAlt, FaPen } from 'react-icons/fa';
+import { FaPlus, FaTrashAlt, FaPen, FaUpload } from 'react-icons/fa';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { MdNoDrinks } from 'react-icons/md';
-import { deleteCocktail, postCocktail, updateCocktail, useCocktails } from '../../api/cocktails';
+import {
+  deleteCocktail,
+  deleteCocktailImage,
+  enableAllRecipes,
+  postCocktail,
+  updateCocktail,
+  uploadCocktailImage,
+  useCocktails,
+} from '../../api/cocktails';
 import { Cocktail, CocktailInput } from '../../types/models';
 import { useIngredients } from '../../api/ingredients';
-import { confirmAndExecute, executeAndShow } from '../../utils';
+import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
 
 const RecipeList: React.FC = () => {
   const { data: cocktails, isLoading, error, refetch } = useCocktails(false, 10, false);
   const [selectedCocktail, setSelectedCocktail] = useState<CocktailInput | null>(null);
   const { data: ingredients, isLoading: ingredientsLoading, error: ingredientsError } = useIngredients();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (isLoading || ingredientsLoading) return <div>Loading...</div>;
   if (error || ingredientsError) return <div>Error loading cocktails</div>;
@@ -24,6 +33,8 @@ const RecipeList: React.FC = () => {
       name: cocktail.name,
       enabled: cocktail.enabled,
       virgin_available: cocktail.virgin_available,
+      image: cocktail.image,
+      default_image: cocktail.default_image,
       ingredients: cocktail.ingredients.map((ingredient) => ({
         id: ingredient.id,
         amount: ingredient.amount,
@@ -38,6 +49,8 @@ const RecipeList: React.FC = () => {
       name: '',
       enabled: true,
       virgin_available: false,
+      image: '',
+      default_image: '',
       ingredients: [],
     });
   };
@@ -59,6 +72,36 @@ const RecipeList: React.FC = () => {
       }
       return { ...prev, ingredients };
     });
+  };
+
+  const handleEnableAllRecipes = async () => {
+    const success = await confirmAndExecute('Enable all Recipes', enableAllRecipes);
+    if (success) {
+      refetch();
+    }
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedCocktail?.id) return;
+    const file = fileInputRef.current?.files?.[0];
+    if (!file) {
+      errorToast('Please select a file before uploading.', 'No File');
+      return;
+    }
+    const success = await executeAndShow(() => uploadCocktailImage(selectedCocktail.id!, file));
+    if (success) {
+      refetch();
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    if (!selectedCocktail?.id) return;
+    const success = await confirmAndExecute('Delete existing user image', () =>
+      deleteCocktailImage(selectedCocktail.id!),
+    );
+    if (success) {
+      refetch();
+    }
   };
 
   const addIngredient = () => {
@@ -118,13 +161,19 @@ const RecipeList: React.FC = () => {
   return (
     <div className='p-2 w-full max-w-3xl'>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
-        <div className='col-span-2 md:col-span-3 w-full'>
+        <div className='col-span-2 md:col-span-3 w-full flex flex-row gap-4'>
           <button
             onClick={handleNewCocktailClick}
-            className='flex justify-center items-center py-4 p-2 button-neutral-filled w-full'
+            className='flex justify-center items-center py-3 p-2 button-secondary-filled w-full'
           >
             <FaPlus size={25} />
-            <span className='ml-4 text-xl'>New Recipe</span>
+            <span className='ml-4 text-xl'>New</span>
+          </button>
+          <button
+            onClick={handleEnableAllRecipes}
+            className='flex justify-center items-center py-3 p-2 button-neutral-filled w-full'
+          >
+            <span className='ml-4 text-xl'>Enable All</span>
           </button>
         </div>
         {sortedCocktails?.map((cocktail) => (
@@ -233,6 +282,26 @@ const RecipeList: React.FC = () => {
                 <FaPlus className='mr-2' />
                 Add Ingredient
               </button>
+              <div className='flex items-center pt-1'>
+                <button type='button' onClick={handleUploadImage} className='button-secondary p-2 mr-1'>
+                  <FaUpload />
+                </button>
+                <input type='file' accept='image/*' ref={fileInputRef} className='input-base p-1 mr-1' />
+                <button
+                  type='button'
+                  onClick={handleDeleteImage}
+                  className={
+                    selectedCocktail.image === selectedCocktail.default_image
+                      ? 'button-neutral p-2'
+                      : 'button-danger p-2'
+                  }
+                  disabled={
+                    selectedCocktail.image === selectedCocktail.default_image || selectedCocktail.id === undefined
+                  }
+                >
+                  <FaTrashAlt />
+                </button>
+              </div>
             </form>
             <div className='flex-grow'></div>
             <div className='flex justify-between mt-2'>
