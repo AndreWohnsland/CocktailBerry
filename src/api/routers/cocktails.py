@@ -1,14 +1,14 @@
-# import asyncio
 import asyncio
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, WebSocket
+from fastapi import APIRouter, BackgroundTasks, File, HTTPException, UploadFile, WebSocket
 
 from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail
 from src.api.models import Cocktail, CocktailInput, CocktailStatus, ErrorDetail, PrepareCocktailRequest
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DialogHandler
+from src.image_utils import find_user_cocktail_image, process_image, save_image
 from src.models import Cocktail as DbCocktail
 from src.models import PrepareResult
 from src.tabs import maker
@@ -129,3 +129,45 @@ async def delete_cocktail(cocktail_id: int):
     DBC = DatabaseCommander()
     DBC.delete_recipe(cocktail_id)
     return {"message": f"Cocktail {cocktail_id} deleted successfully!"}
+
+
+@router.post("/{cocktail_id}/image")
+async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)):
+    DBC = DatabaseCommander()
+    cocktail = DBC.get_cocktail(cocktail_id)
+    if cocktail is None:
+        message = _dialog_handler.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
+        raise HTTPException(status_code=404, detail=message)
+    try:
+        contents = await file.read()
+        image = process_image(contents)
+        if image is None:
+            raise HTTPException(status_code=400, detail="Image processing failed.")
+        save_image(image, cocktail_id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to upload image: {e!s}")
+    return {"message": "Image uploaded successfully"}
+
+
+@router.delete("/{cocktail_id}/image")
+async def delete_cocktail_image(cocktail_id: int):
+    DBC = DatabaseCommander()
+    cocktail = DBC.get_cocktail(cocktail_id)
+    if cocktail is None:
+        message = _dialog_handler.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
+        raise HTTPException(status_code=404, detail=message)
+    user_image_path = find_user_cocktail_image(cocktail)
+    if user_image_path is None or not user_image_path.exists():
+        raise HTTPException(status_code=404, detail="User image not found.")
+    try:
+        user_image_path.unlink()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to delete image: {e!s}")
+    return {"message": "Image deleted successfully"}
+
+
+@router.post("/enable")
+async def enable_all_recipes():
+    DBC = DatabaseCommander()
+    DBC.set_all_recipes_enabled()
+    return {"message": "All recipes enabled"}
