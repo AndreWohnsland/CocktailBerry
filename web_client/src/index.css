@@ -180,6 +180,11 @@ input[type='file']::-ms-browse {
   overflow-x: auto;
 }
 
+.modal.slim {
+  max-height: 300px;
+  max-width: 600px;
+}
+
 .overlay {
   position: fixed;
   top: 0;
