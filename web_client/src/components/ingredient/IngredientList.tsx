@@ -98,10 +98,10 @@ const IngredientList: React.FC = () => {
         <div className='col-span-2 md:col-span-3 w-full'>
           <button
             onClick={handleNewIngredientClick}
-            className='flex justify-center items-center py-4 p-2 button-neutral-filled w-full'
+            className='flex justify-center items-center py-3 p-2 button-secondary-filled w-full'
           >
             <FaPlus size={25} />
-            <span className='ml-4 text-xl'>New Ingredient</span>
+            <span className='ml-4 text-xl'>New</span>
           </button>
         </div>
         {sortedIngredients?.map((ingredient) => (
