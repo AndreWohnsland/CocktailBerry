@@ -130,3 +130,36 @@ export const updateCocktail = async (cocktail: CocktailInput): Promise<Cocktail>
     })
     .then((res) => res.data);
 };
+
+export const uploadCocktailImage = async (id: number, file: File): Promise<{ message: string }> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return axios
+    .post<{ message: string }>(`${cocktail_url}/${id}/image`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((res) => res.data);
+};
+
+export const deleteCocktailImage = async (id: number): Promise<{ message: string }> => {
+  return axios
+    .delete<{ message: string }>(`${cocktail_url}/${id}/image`, {
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+    .then((res) => res.data);
+};
+
+export const enableAllRecipes = async (): Promise<{ message: string }> => {
+  return axios
+    .post<{ message: string }>(`${cocktail_url}/enable`, null, {
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+    .then((res) => res.data);
+};
