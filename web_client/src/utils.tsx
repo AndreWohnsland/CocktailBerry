@@ -30,12 +30,12 @@ export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
   return { ...cocktail, alcohol: Math.round(newAlcoholPercent), ingredients };
 };
 
-export const confirmAndExecute = async (message: string, executable: () => Promise<void | any>) => {
+export const confirmAndExecute = async (message: string, executable: () => Promise<void | any>): Promise<boolean> => {
   const confirmation = window.confirm(`Do you want to ${message}?`);
   if (confirmation) {
-    await executable().catch((error) => {
-      errorToast(error, message);
-    });
+    return executeAndShow(executable);
+  } else {
+    return Promise.resolve(false);
   }
 };
 
@@ -48,7 +48,7 @@ export const errorToast = (error: any, message: string) => {
   });
 };
 
-export const executeAndShow = async (executable: () => Promise<any>): Promise<Boolean> => {
+export const executeAndShow = async (executable: () => Promise<any>): Promise<boolean> => {
   let info = '';
   let toastId = 'execute-show-info';
   let success = false;
