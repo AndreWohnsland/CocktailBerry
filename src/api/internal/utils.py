@@ -1,8 +1,7 @@
 from typing import Optional
 
-from src.api.models import AddonData, Bottle, Cocktail, CocktailIngredient, CocktailInput, Ingredient
+from src.api.models import Bottle, Cocktail, CocktailIngredient, CocktailInput, Ingredient
 from src.config.config_manager import CONFIG as cfg
-from src.data_utils import get_addon_data
 from src.database_commander import DB_COMMANDER as DBC
 from src.database_commander import ElementNotFoundError
 from src.filepath import DEFAULT_IMAGE_FOLDER
@@ -89,19 +88,3 @@ def create_image_url(cocktail: DBCocktail, default: bool = False) -> str:
     if default_folder_name in image_path.parts:
         return f"/static/default/{image_path.name}"
     return f"/static/user/{image_path.name}"
-
-
-def map_addon() -> list[AddonData]:
-    return [
-        AddonData(
-            name=data.name,
-            description=data.description,
-            url=data.url,
-            disabled_since=data.disabled_since,
-            is_installable=data.is_installable,
-            file_name=data.file_name,
-            installed=data.installed,
-            official=data.official,
-        )
-        for data in get_addon_data()
-    ]
