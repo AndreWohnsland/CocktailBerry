@@ -1,10 +1,10 @@
 import csv
 import json
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Union
 
 import requests
+from pydantic.dataclasses import dataclass
 from requests.exceptions import ConnectionError as ReqConnectionError
 
 from src import __version__

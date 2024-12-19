@@ -11,11 +11,10 @@ from typing import Literal
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 
-from src.api.internal.utils import map_addon
-from src.api.models import AddonData, DataResponse
+from src.api.models import DataResponse
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.data_utils import ConsumeData, generate_consume_data
+from src.data_utils import AddonData, ConsumeData, generate_consume_data, get_addon_data
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
@@ -189,7 +188,7 @@ async def update_wifi_data():
 
 @router.get("/addon")
 async def addon_data() -> list[AddonData]:
-    return map_addon()
+    return get_addon_data()
 
 
 @router.get("/connection")
