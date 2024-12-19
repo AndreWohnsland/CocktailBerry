@@ -3,9 +3,10 @@ import React from 'react';
 interface ProgressBarProps {
   fillPercent: number;
   className?: string;
+  onClick?: () => void;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ fillPercent, className }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ fillPercent, className, onClick }) => {
   return (
     <div
       className={
@@ -13,6 +14,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ fillPercent, className }) => 
         (className ? ` ${className}` : '')
       }
       style={{ position: 'relative', zIndex: 1 }}
+      onClick={onClick}
     >
       <div
         className='bg-primary rounded-full'
