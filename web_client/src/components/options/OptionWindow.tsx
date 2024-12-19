@@ -1,4 +1,4 @@
-import { useTheme } from '../../ThemeProvider';
+import { useConfig } from '../../ConfigProvider';
 import {
   cleanMachine,
   rebootSystem,
@@ -19,7 +19,7 @@ import ProgressModal from '../cocktail/ProgressModal';
 import { useState } from 'react';
 
 const OptionWindow = () => {
-  const { theme, onThemeChange } = useTheme();
+  const { theme, changeTheme } = useConfig();
   const navigate = useNavigate();
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const themes = ['default', 'berry', 'bavaria', 'alien', 'custom'];
@@ -64,7 +64,7 @@ const OptionWindow = () => {
 
   const themeSelect = async (theme: string) => {
     const success = await executeAndShow(() => updateOptions({ MAKER_THEME: theme }));
-    if (success) onThemeChange(theme);
+    if (success) changeTheme(theme);
   };
 
   return (

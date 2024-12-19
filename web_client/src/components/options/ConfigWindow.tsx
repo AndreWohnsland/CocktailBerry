@@ -5,15 +5,13 @@ import { FaPlus } from 'react-icons/fa';
 import { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
 import { executeAndShow, isInCurrentTab } from '../../utils';
 import TabSelector from './TabSelector';
-import { useTheme } from '../../ThemeProvider';
 import { useConfig as useConfigProvider } from '../../ConfigProvider';
 
 const ConfigWindow: React.FC = () => {
   const { data, isLoading, isError } = useConfig();
   const [configData, setConfigData] = useState<ConfigData>({});
   const [selectedTab, setSelectedTab] = useState('UI');
-  const { onThemeChange } = useTheme();
-  const { refetchConfig } = useConfigProvider();
+  const { refetchConfig, changeTheme } = useConfigProvider();
 
   useEffect(() => {
     if (data) {
@@ -248,7 +246,7 @@ const ConfigWindow: React.FC = () => {
   const postConfig = () => {
     executeAndShow(() => updateOptions(configData)).then((success) => {
       if (success) {
-        onThemeChange(configData.MAKER_THEME as string);
+        changeTheme(configData.MAKER_THEME as string);
         refetchConfig();
       }
     });
