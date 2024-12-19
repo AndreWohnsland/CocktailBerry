@@ -80,20 +80,15 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
 
   return (
     <>
-      <div className='flex flex-col md:flex-row items-center md:items-start justify-center w-full h-full'>
-        <div className='w-full flex items-center justify-center border-2 border-neutral rounded-lg box-border overflow-hidden h-full md:mr-4 flex-1'>
-          <img
-            src={`${API_URL}${selectedCocktail.image}`}
-            alt={selectedCocktail.name}
-            className='w-full h-full object-cover'
-          />
-        </div>
+      <div className='flex flex-col sm:flex-row items-center md:items-start justify-center w-full h-full'>
+        <img
+          src={`${API_URL}${selectedCocktail.image}`}
+          alt={selectedCocktail.name}
+          className='w-full h-full object-cover border-2 border-neutral rounded-lg overflow-hidden sm:mr-2 mb-2 flex-1'
+        />
         <div className='flex flex-col justify-between items-center w-full flex-1 self-stretch'>
           <div className='flex items-center justify-between mb-2 shrink w-full'>
-            {/* Left-Aligned Section */}
             <span className='ml-4 text-secondary font-bold w-6 text-xl'>{displayCocktail.alcohol}%</span>
-
-            {/* Center Section */}
             <div className='flex space-x-2'>
               <button
                 onClick={() => handleAlcoholState('high')}
@@ -116,8 +111,6 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
                 </button>
               )}
             </div>
-
-            {/* Right-Aligned Section */}
             <button onClick={handleCloseModal} aria-label='close'>
               <AiOutlineCloseCircle className='text-danger' size={34} />
             </button>

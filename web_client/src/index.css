@@ -180,6 +180,12 @@ input[type='file']::-ms-browse {
   overflow-x: auto;
 }
 
+@media (max-width: 640px) {
+  .modal {
+    max-height: 800px;
+  }
+}
+
 .modal.slim {
   max-height: 300px;
   max-width: 600px;
