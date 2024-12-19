@@ -3,6 +3,10 @@ import { Bottle, Ingredient } from '../../types/models';
 import { updateBottle } from '../../api/bottles';
 import { toast } from 'react-toastify';
 import ProgressBar from '../common/ProgressBar';
+import Modal from 'react-modal';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { executeAndShow } from '../../utils';
+import { FaMinus, FaPlus } from 'react-icons/fa6';
 
 interface BottleProps {
   bottle: Bottle;
@@ -21,6 +25,8 @@ const BottleComponent: React.FC<BottleProps> = ({
 }) => {
   const [selectedIngredientId, setSelectedIngredientId] = useState(bottle.ingredient?.id || 0);
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | undefined>(bottle.ingredient);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempFillLevel, setTempFillLevel] = useState(selectedIngredient?.fill_level || 0);
 
   const getClass = () => {
     let color = 'border-primary text-primary';
@@ -28,6 +34,35 @@ const BottleComponent: React.FC<BottleProps> = ({
       color = 'border-secondary bg-secondary text-background';
     }
     return `max-w-40 px-4 ml-2 border-2 font-bold rounded-md ${color}`;
+  };
+
+  const openModal = () => {
+    setTempFillLevel(selectedIngredient?.fill_level || 0);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const adjustFillLevel = (delta: number) => {
+    setTempFillLevel((prev) => {
+      const newValue = Math.max(0, prev + delta);
+      return Math.round(newValue / delta) * delta;
+    });
+  };
+
+  const setFillLevel = (level: number) => {
+    setTempFillLevel(level);
+  };
+
+  const handleAdjustment = async () => {
+    if (!selectedIngredient) return;
+    executeAndShow(() => updateBottle(bottle.number, selectedIngredient.id, tempFillLevel)).then((success) => {
+      if (!success) return;
+      setSelectedIngredient({ ...selectedIngredient, fill_level: tempFillLevel });
+      setIsModalOpen(false);
+    });
   };
 
   const fillPercent = Math.max(
@@ -74,6 +109,7 @@ const BottleComponent: React.FC<BottleProps> = ({
         </div>
         <select
           className='select-base block w-full p-1.5'
+          name={`ingredient-bottle-${bottle.number}`}
           value={selectedIngredientId}
           onChange={handleSelectionChange}
         >
@@ -93,7 +129,48 @@ const BottleComponent: React.FC<BottleProps> = ({
           New
         </button>
       </div>
-      <ProgressBar fillPercent={fillPercent} className='col-span-2 sm:col-span-1 mb-3 sm:mb-0 mx-3 sm:mx-0' />
+      <ProgressBar
+        fillPercent={fillPercent}
+        onClick={openModal}
+        className='col-span-2 sm:col-span-1 mb-3 sm:mb-0 mx-3 sm:mx-0'
+      />
+      <Modal isOpen={isModalOpen} onRequestClose={closeModal} className='modal slim' overlayClassName='overlay z-20'>
+        <div className='px-4 rounded w-full h-full flex flex-col'>
+          <div className='flex justify-between items-center mb-2'>
+            <h2 className='text-xl font-bold text-secondary'>{selectedIngredient?.name || 'Ingredient'}</h2>
+            <button onClick={closeModal} aria-label='close'>
+              <AiOutlineCloseCircle className='text-danger' size={34} />
+            </button>
+          </div>
+          <p className='text-neutral text-center mt-4'>{`Adjust the fill level of the bottle, maximum is ${selectedIngredient?.bottle_volume}`}</p>
+          <div className='flex-grow'></div>
+          <div className='flex justify-center items-center mb-4'>
+            <button className='button-primary p-2 h-full' onClick={() => setFillLevel(0)}>
+              Min
+            </button>
+            <button onClick={() => adjustFillLevel(-50)} className='button-primary p-2 mx-2'>
+              <FaMinus size={25} />
+            </button>
+            <input type='number' value={tempFillLevel} readOnly className='input-base h-full' />
+            <button onClick={() => adjustFillLevel(50)} className='button-primary p-2 mx-2'>
+              <FaPlus size={25} />
+            </button>
+            <button
+              className='button-primary p-2 h-full'
+              onClick={() => setFillLevel(selectedIngredient?.bottle_volume || 0)}
+            >
+              Max
+            </button>
+          </div>
+          <div className='flex-grow'></div>
+          <div className='flex justify-between'></div>
+          <div className='mt-4 w-full'>
+            <button onClick={handleAdjustment} className='button-primary-filled w-full p-2 mb-2'>
+              Save
+            </button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };
