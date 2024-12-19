@@ -1,7 +1,7 @@
 import CocktailList from './components/cocktail/CocktailList.tsx';
 import { Route, Routes, Navigate, BrowserRouter } from 'react-router-dom';
 import Header from './components/Header.tsx';
-import { useTheme } from './ThemeProvider.tsx';
+import { useConfig } from './ConfigProvider.tsx';
 import IngredientList from './components/ingredient/IngredientList.tsx';
 import RecipeList from './components/recipe/RecipeList.tsx';
 import BottleList from './components/bottle/BottleList.tsx';
@@ -14,7 +14,7 @@ import LogWindow from './components/options/LogWindow.tsx';
 import { ToastContainer } from 'react-toastify';
 
 function App() {
-  const { theme } = useTheme();
+  const { theme } = useConfig();
 
   return (
     <div className={`${theme} min-h-screen`}>
