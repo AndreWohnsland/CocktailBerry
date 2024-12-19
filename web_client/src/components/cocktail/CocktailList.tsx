@@ -61,11 +61,6 @@ const CocktailList: React.FC = () => {
           contentLabel='Cocktail Details'
           className='modal'
           overlayClassName='overlay z-20'
-          style={{
-            content: {
-              padding: '5px',
-            },
-          }}
         >
           <CocktailSelection selectedCocktail={selectedCocktail} handleCloseModal={handleCloseModal} />
         </Modal>
