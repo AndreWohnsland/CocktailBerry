@@ -266,7 +266,7 @@ const ConfigWindow: React.FC = () => {
     <>
       <TabSelector selectedTab={selectedTab} onSelectTab={setSelectedTab} />
       <div className='flex flex-col w-full max-w-3xl items-center justify-center mt-8'>
-        <div className='flex-grow p-1 w-full'>
+        <div className='flex-grow p-2 w-full'>
           {Object.keys(configData).map(
             (key) =>
               isInCurrentTab(key, selectedTab) && (
@@ -278,7 +278,7 @@ const ConfigWindow: React.FC = () => {
               ),
           )}
         </div>
-        <div className='flex flex-col items-center justify-center w-full px-1'>
+        <div className='flex flex-col items-center justify-center w-full px-2'>
           <button onClick={postConfig} className='button-primary-filled p-2 w-full mb-2'>
             Save
           </button>
