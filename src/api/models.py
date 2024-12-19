@@ -84,5 +84,16 @@ class PrepareCocktailRequest(BaseModel):
     is_virgin: bool = False
 
 
+class AddonData(BaseModel):
+    name: str
+    description: str
+    url: str
+    disabled_since: str
+    is_installable: bool
+    file_name: str
+    installed: bool
+    official: bool
+
+
 class DataResponse(BaseModel, Generic[T]):
     data: T

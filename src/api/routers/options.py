@@ -11,14 +11,15 @@ from typing import Literal
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 
-from src.api.models import DataResponse
+from src.api.internal.utils import map_addon
+from src.api.models import AddonData, DataResponse
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import ConsumeData, generate_consume_data
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
+from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.models import PrepareResult
-from src.ui.create_backup_restore_window import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.updater import Updater
 from src.utils import get_log_files, get_platform_data, has_connection, read_log_file, update_os
 
@@ -128,7 +129,7 @@ async def upload_backup(
     if not file_name:
         raise HTTPException(400, detail="Could not get filename from file")
     if not file_name.endswith(".zip"):
-        raise HTTPException(400, detail="Uploaded file is not a ZIP file")
+        raise HTTPException(400, detail="Uploaded file is not a ZIP backup file")
 
     with tempfile.TemporaryDirectory() as tmp_dirname:
         tmpdir = Path(tmp_dirname)
@@ -150,7 +151,9 @@ async def upload_backup(
             backup_files.extend(FILE_SELECTION_MAPPER[name])
         for needed_file in backup_files:
             if not (extracted_root / needed_file.name).exists():
-                raise HTTPException(status_code=400, detail=f"Backup file {needed_file.name} not found in the ZIP")
+                raise HTTPException(
+                    status_code=400, detail=f"Backup file {needed_file.name} not found in the ZIP backup"
+                )
 
         for _file in backup_files:
             source_path = extracted_root / _file.name
@@ -185,9 +188,8 @@ async def update_wifi_data():
 
 
 @router.get("/addon")
-async def addon_data():
-    # Return addon window data
-    return {"message": "NOT IMPLEMENTED"}
+async def addon_data() -> list[AddonData]:
+    return map_addon()
 
 
 @router.get("/connection")

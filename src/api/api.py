@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from src.api.routers import bottles, cocktails, ingredients, options
 from src.config.config_manager import CONFIG as cfg
 from src.config.errors import ConfigError
+from src.data_utils import CouldNotInstallAddonError
 from src.database_commander import DatabaseTransactionError
 from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
 from src.machine.controller import MACHINE
@@ -130,6 +131,14 @@ async def database_transaction_error_handler(request: Request, exc: DatabaseTran
 
 @app.exception_handler(ConfigError)
 async def config_error_handler(request: Request, exc: ConfigError):
+    return JSONResponse(
+        status_code=406,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(CouldNotInstallAddonError)
+async def addon_error_handler(request: Request, exc: CouldNotInstallAddonError):
     return JSONResponse(
         status_code=406,
         content={"detail": str(exc)},
