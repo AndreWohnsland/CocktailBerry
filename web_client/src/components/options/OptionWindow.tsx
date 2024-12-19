@@ -25,7 +25,7 @@ const OptionWindow = () => {
   const themes = ['default', 'berry', 'bavaria', 'alien', 'custom'];
 
   const cleanClick = async () => {
-    const started = await executeAndShow(cleanMachine);
+    const started = await confirmAndExecute('Start the cleaning Program', cleanMachine);
     if (!started) return;
     setIsProgressModalOpen(true);
   };
