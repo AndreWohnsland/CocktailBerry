@@ -9,12 +9,13 @@ interface IConfig {
   changeTheme: (theme: string) => void;
 }
 
-const STORE_CONSTANT: string = 'THEME';
+const STORE_THEME: string = 'THEME';
+const STORE_CONFIG: string = 'CONFIG';
 const ConfigContext = createContext({} as IConfig);
 
 export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
-  const [config, setConfig] = useState<ConfigData>({});
-  const [theme, setTheme] = useState<string>(localStorage.getItem(STORE_CONSTANT) || '');
+  const [config, setConfig] = useState<ConfigData>(JSON.parse(localStorage.getItem(STORE_CONFIG) || '{}'));
+  const [theme, setTheme] = useState<string>(localStorage.getItem(STORE_THEME) || '');
 
   const fetchConfigValues = async () => {
     const configValues = await getConfigValues();
@@ -33,9 +34,15 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     if (theme) {
       document.documentElement.className = theme;
       document.body.className = theme;
-      localStorage.setItem(STORE_CONSTANT, theme);
+      localStorage.setItem(STORE_THEME, theme);
     }
   }, [theme]);
+
+  useEffect(() => {
+    if (theme) {
+      localStorage.setItem(STORE_CONFIG, JSON.stringify(config));
+    }
+  }, [config]);
 
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);
