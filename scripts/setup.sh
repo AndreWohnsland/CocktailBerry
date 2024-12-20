@@ -24,6 +24,9 @@ is_raspberry_pi5() {
 echo "> Installing updates, this may take a while..."
 sudo apt update && sudo sudo apt -y full-upgrade
 
+echo "> Installing nmcli, this is needed for wifi setup"
+sudo apt install network-manager
+
 # Generating launcher script
 echo "> (Re-)Generating launcher script at: ~/launcher.sh"
 rm ~/launcher.sh

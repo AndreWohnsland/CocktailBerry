@@ -225,3 +225,27 @@ def _parse_debug_logs(log: str) -> list[str]:
     information_list = [x for x in re.split(date_regex, log) if x != ""]
     pairs = [" ".join(information_list[i : i + 2]) for i in range(0, len(information_list), 2)]
     return pairs[::-1]
+
+
+def setup_wifi(ssid: str, password: str) -> bool:
+    """Configure a WiFi network with the given SSID and password."""
+    try:
+        subprocess.run(["nmcli", "dev", "wifi", "connect", ssid, "password", password], check=True)
+        return True
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Failed to connect to WiFi network: {ssid}: {e}")
+        logger.log_exception(e)
+        return False
+
+
+def list_available_ssids() -> list[str]:
+    """List all available WiFi networks."""
+    try:
+        result = subprocess.run(
+            ["nmcli", "-t", "-f", "SSID", "dev", "wifi"], stdout=subprocess.PIPE, text=True, check=True
+        )
+        return [line.strip() for line in result.stdout.splitlines() if line.strip()]
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Failed to list available WiFi networks: {e}")
+        logger.log_exception(e)
+        return []
