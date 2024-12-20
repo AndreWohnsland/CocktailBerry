@@ -95,5 +95,10 @@ class AddonData(BaseModel):
     official: bool
 
 
+class WifiData(BaseModel):
+    ssid: str
+    password: str
+
+
 class DataResponse(BaseModel, Generic[T]):
     data: T
