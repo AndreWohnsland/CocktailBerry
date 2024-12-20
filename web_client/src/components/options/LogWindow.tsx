@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLogs } from '../../api/options';
 import { JumpToTopButton } from '../common/JumpToTopButton';
+import ErrorComponent from '../common/ErrorComponent';
+import LoadingData from '../common/LoadingData';
 
 const LogWindow: React.FC = () => {
-  const { data, isLoading, isError } = useLogs();
+  const { data, isLoading, error } = useLogs();
   const [selectedLogType, setSelectedLogType] = useState<string>('INFO');
 
   const handleLogTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -21,6 +23,9 @@ const LogWindow: React.FC = () => {
     }
   }, [data]);
 
+  if (isLoading) return <LoadingData />;
+  if (error) return <ErrorComponent text={error.message} />;
+
   const setStyle = (log: string): string => {
     let style = 'px-1';
     if (selectedLogType === 'debuglog.log') {
@@ -34,21 +39,13 @@ const LogWindow: React.FC = () => {
     return style;
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error loading logs</div>;
-  }
-
   const logData = data?.data;
 
   return (
     <div className='flex flex-col w-full max-w-7xl'>
       <div className='flex flex-col items-center justify-center flex-shrink-0'>
-        <div className='flex flex-row items-center'>
-          <h2 className='text-2xl font-bold text-secondary mr-4'>Log Data:</h2>
+        <div className='flex flex-row items-center w-full max-w-lg px-2'>
+          <h2 className='text-2xl font-bold text-secondary mr-4'>Logs:</h2>
           <select value={selectedLogType} onChange={handleLogTypeChange} className='mt-2 p-2 select-base'>
             {logData &&
               Object.keys(logData).map((logType) => (

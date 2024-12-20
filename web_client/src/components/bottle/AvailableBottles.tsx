@@ -5,6 +5,8 @@ import ListView from './ListView';
 import { useNavigate } from 'react-router-dom';
 import { FaPlusCircle, FaMinusCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import ErrorComponent from '../common/ErrorComponent';
+import LoadingData from '../common/LoadingData';
 
 const AvailableBottles: React.FC = () => {
   const { data: ingredients, error: ingredientsError, isLoading: ingredientsLoading } = useIngredients();
@@ -19,6 +21,10 @@ const AvailableBottles: React.FC = () => {
     setFreeIngredients((ingredients ?? []).filter((ingredient) => !(available ?? []).includes(ingredient.id)));
     setAvailableIngredients((ingredients ?? []).filter((ingredient) => (available ?? []).includes(ingredient.id)));
   }, [ingredients, available]);
+
+  if (ingredientsLoading || availableLoading) return <LoadingData />;
+  if (ingredientsError || availableError)
+    return <ErrorComponent text={ingredientsError?.message || availableError?.message} />;
 
   const moveSelected = (
     setFrom: React.Dispatch<React.SetStateAction<Ingredient[]>>,
@@ -43,14 +49,6 @@ const AvailableBottles: React.FC = () => {
       });
     }
   };
-
-  if (ingredientsLoading || availableLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (ingredientsError || availableError) {
-    return <div>Error: {ingredientsError?.message || availableError?.message}</div>;
-  }
 
   return (
     <div className='max-w-7xl w-full px-1'>
