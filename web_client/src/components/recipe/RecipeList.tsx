@@ -15,6 +15,8 @@ import {
 import { Cocktail, CocktailInput } from '../../types/models';
 import { useIngredients } from '../../api/ingredients';
 import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
+import LoadingData from '../common/LoadingData';
+import ErrorComponent from '../common/ErrorComponent';
 
 const RecipeList: React.FC = () => {
   const { data: cocktails, isLoading, error, refetch } = useCocktails(false, 10, false);
@@ -22,8 +24,8 @@ const RecipeList: React.FC = () => {
   const { data: ingredients, isLoading: ingredientsLoading, error: ingredientsError } = useIngredients();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (isLoading || ingredientsLoading) return <div>Loading...</div>;
-  if (error || ingredientsError) return <div>Error loading cocktails</div>;
+  if (isLoading || ingredientsLoading) return <LoadingData />;
+  if (error || ingredientsError) return <ErrorComponent text={error?.message || ingredientsError?.message} />;
 
   const sortedCocktails = cocktails?.sort((a, b) => a.name.localeCompare(b.name));
 

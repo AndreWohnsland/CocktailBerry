@@ -5,6 +5,8 @@ import BottleComponent from './BottleComponent';
 import { Ingredient } from '../../types/models';
 import { useNavigate } from 'react-router-dom';
 import { executeAndShow } from '../../utils';
+import LoadingData from '../common/LoadingData';
+import ErrorComponent from '../common/ErrorComponent';
 
 const BottleList: React.FC = () => {
   const {
@@ -27,13 +29,9 @@ const BottleList: React.FC = () => {
     }
   }, [bottles, ingredients]);
 
-  if (bottlesLoading || ingredientsLoading || isFetching) {
-    return <div>Loading...</div>;
-  }
-
-  if (bottlesError || ingredientsError) {
-    return <div>Error: {bottlesError?.message || ingredientsError?.message}</div>;
-  }
+  if (bottlesLoading || ingredientsLoading || isFetching) return <LoadingData />;
+  if (bottlesError || ingredientsError)
+    return <ErrorComponent text={bottlesError?.message || ingredientsError?.message} />;
 
   const handleToggle = (bottleNumber: number) => {
     setToggledBottles((prev) => ({

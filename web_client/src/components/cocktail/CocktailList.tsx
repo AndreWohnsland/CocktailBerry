@@ -5,6 +5,8 @@ import { Cocktail } from '../../types/models';
 import CocktailSelection from './CocktailSelection';
 import { MdNoDrinks } from 'react-icons/md';
 import { API_URL } from '../../api/common';
+import ErrorComponent from '../common/ErrorComponent';
+import LoadingData from '../common/LoadingData';
 
 Modal.setAppElement('#root');
 
@@ -12,13 +14,8 @@ const CocktailList: React.FC = () => {
   const { data: cocktails, error, isLoading } = useCocktails();
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  if (isLoading) return <LoadingData />;
+  if (error) return <ErrorComponent text={error.message} />;
 
   const handleCocktailClick = (cocktail: Cocktail) => {
     setSelectedCocktail(cocktail);

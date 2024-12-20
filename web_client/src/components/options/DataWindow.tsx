@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useConsumeData } from '../../api/options';
+import LoadingData from '../common/LoadingData';
+import ErrorComponent from '../common/ErrorComponent';
 
 const ConsumeBarChart: React.FC<{
   title: string;
@@ -36,12 +38,8 @@ const ConsumeBarChart: React.FC<{
 };
 
 const ConsumeWindow: React.FC = () => {
-  const { data, isLoading, isError } = useConsumeData();
+  const { data, isLoading, error } = useConsumeData();
   const [selectedDataType, setSelectedDataType] = useState<string>('AT RESET');
-
-  const handleDataTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDataType(event.target.value);
-  };
 
   useEffect(() => {
     if (data) {
@@ -49,13 +47,12 @@ const ConsumeWindow: React.FC = () => {
     }
   }, [data]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  if (isLoading) return <LoadingData />;
+  if (error) return <ErrorComponent text={error.message} />;
 
-  if (isError) {
-    return <div>Error loading consumption data</div>;
-  }
+  const handleDataTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDataType(event.target.value);
+  };
 
   const consumeData = data?.data;
 
@@ -68,7 +65,7 @@ const ConsumeWindow: React.FC = () => {
   return (
     <div className='flex flex-col w-full max-w-5xl'>
       <div className='flex flex-col items-center justify-center flex-shrink-0'>
-        <div className='flex flex-row items-center w-full px-2'>
+        <div className='flex flex-row items-center w-full max-w-lg px-2'>
           <h2 className='text-2xl font-bold text-secondary mr-4 text-center'>Data:</h2>
           <select value={selectedDataType} onChange={handleDataTypeChange} className='select-base'>
             {consumeData &&

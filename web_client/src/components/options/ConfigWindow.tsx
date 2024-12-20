@@ -6,9 +6,11 @@ import { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../..
 import { executeAndShow, isInCurrentTab } from '../../utils';
 import TabSelector from './TabSelector';
 import { useConfig as useConfigProvider } from '../../ConfigProvider';
+import ErrorComponent from '../common/ErrorComponent';
+import LoadingData from '../common/LoadingData';
 
 const ConfigWindow: React.FC = () => {
-  const { data, isLoading, isError } = useConfig();
+  const { data, isLoading, error } = useConfig();
   const [configData, setConfigData] = useState<ConfigData>({});
   const [selectedTab, setSelectedTab] = useState('UI');
   const { refetchConfig, changeTheme } = useConfigProvider();
@@ -23,6 +25,9 @@ const ConfigWindow: React.FC = () => {
       setConfigData(extractedData);
     }
   }, [data]);
+
+  if (isLoading) return <LoadingData />;
+  if (error) return <ErrorComponent text={error.message} />;
 
   const getBaseConfig = (
     key: string,
@@ -251,14 +256,6 @@ const ConfigWindow: React.FC = () => {
       }
     });
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error loading configuration</div>;
-  }
 
   return (
     <>

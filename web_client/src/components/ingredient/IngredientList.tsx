@@ -7,13 +7,15 @@ import { deleteIngredient, postIngredient, updateIngredient, useIngredients } fr
 import { Ingredient, IngredientInput } from '../../types/models';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { confirmAndExecute, executeAndShow } from '../../utils';
+import LoadingData from '../common/LoadingData';
+import ErrorComponent from '../common/ErrorComponent';
 
 const IngredientList: React.FC = () => {
   const { data: ingredients, isLoading, error, refetch } = useIngredients();
   const [selectedIngredient, setSelectedIngredient] = useState<IngredientInput | null>(null);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading ingredients</div>;
+  if (isLoading) return <LoadingData />;
+  if (error) return <ErrorComponent text={error.message} />;
 
   const sortedIngredients = ingredients?.sort((a, b) => a.name.localeCompare(b.name));
 
