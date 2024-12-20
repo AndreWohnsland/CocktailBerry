@@ -11,7 +11,7 @@ from typing import Literal
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 
-from src.api.models import DataResponse
+from src.api.models import DataResponse, WifiData
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import AddonData, ConsumeData, generate_consume_data, get_addon_data
@@ -20,7 +20,15 @@ from src.machine.controller import MACHINE
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.models import PrepareResult
 from src.updater import Updater
-from src.utils import get_log_files, get_platform_data, has_connection, read_log_file, update_os
+from src.utils import (
+    get_log_files,
+    get_platform_data,
+    has_connection,
+    list_available_ssids,
+    read_log_file,
+    setup_wifi,
+    update_os,
+)
 
 _logger = LoggerHandler("options_router")
 _platform_data = get_platform_data()
@@ -180,10 +188,21 @@ async def rfid_writer():
     return {"message": "NOT IMPLEMENTED"}
 
 
+@router.get("/wifi")
+async def get_available_ssids() -> list[str]:
+    if _platform_data.system == "Windows":
+        raise HTTPException(status_code=400, detail="Cannot scan WiFi on Windows")
+    return list_available_ssids()
+
+
 @router.post("/wifi")
-async def update_wifi_data():
-    # Return WiFi window data
-    return {"message": "NOT IMPLEMENTED"}
+async def update_wifi_data(wifi_data: WifiData):
+    if _platform_data.system == "Windows":
+        raise HTTPException(status_code=400, detail="Cannot set WiFi on Windows")
+    success = setup_wifi(wifi_data.ssid, wifi_data.password)
+    if not success:
+        raise HTTPException(400, detail="Could not setup WiFi, check logs for more information")
+    return {"message": f"Wifi {wifi_data.ssid} setup successfully"}
 
 
 @router.get("/addon")

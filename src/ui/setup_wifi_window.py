@@ -1,27 +1,21 @@
 from __future__ import annotations
 
-import os
 import subprocess
 import time
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QLineEdit, QMainWindow, qApp
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.logger_handler import LoggerHandler
 from src.ui.icons import ICONS
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_WiFiWindow
-from src.utils import get_platform_data, time_print
+from src.utils import get_platform_data, setup_wifi, time_print
 
 if TYPE_CHECKING:
     from src.ui_elements import Ui_MainWindow
 
-
-_logger = LoggerHandler("WiFiSetup")
-_WPA_FILE_PATH = "/etc/wpa_supplicant/wpa_supplicant.conf"
 _platform_data = get_platform_data()
 
 
@@ -71,50 +65,18 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         qApp.processEvents()
 
     def _enter_wifi(self):
-        """Enter the wifi credentials into the wpa_supplicant.conf.
-
-        Restarts wlan0 interface, checks for internet after that.
-        """
+        """Enter the wifi data into the system and check if the connection was successful."""
         if _platform_data.system == "Windows":
             time_print("Cannot do that on windows")
             return
-        if not Path(_WPA_FILE_PATH).exists():
-            self._make_wpa_file()
-        os.popen(f"sudo chmod a+rw {_WPA_FILE_PATH}")
-        # Wait short, otherwise, it may not be applied below
-        time.sleep(1)
 
         ssid = self.input_ssid.text()
         password = self.input_password.text()
-        cmd = ["wpa_passphrase", ssid, password]
-        try:
-            with open(_WPA_FILE_PATH, "a", encoding="utf-8") as wpa_file:
-                subprocess.run(cmd, stdout=wpa_file, check=False)
-        except PermissionError:
-            _logger.log_event(
-                "ERROR",
-                "Could not write to wpa_supplicant.conf, check if the file got write access for all users. "
-                + "You can change it with: 'sudo chmod a+rw {_WPA_FILE_PATH}'",
-            )
-            DP_CONTROLLER.say_wifi_setup_failed()
-            return
-        # This can happen if on Win / wpa_passphrase not installed
-        except FileNotFoundError:
-            _logger.log_event(
-                "ERROR",
-                "Got a FileNotFoundError, this is most likely because the wpa_passphrase command is not recognized. "
-                + "Run 'sudo apt-get install wpasupplicant' to install it.",
-            )
+        success = setup_wifi(ssid, password)
+        if not success:
             DP_CONTROLLER.say_wifi_setup_failed()
             return
 
-        cmd = ["wpa_cli", "-i", "wlan0", "reconfigure"]
-        wpa_response = subprocess.run(cmd, stdout=subprocess.PIPE, check=False)
-        wpa_text = wpa_response.stdout.decode("utf-8")
-        response_ok = "ok" in wpa_text.lower()
-        if not response_ok:
-            _logger.log_event("WARNING", "Could not reconfigure wlan0, maybe a restart will solve this.")
-        # Try up to x5 to check for connection
         tries = 0
         is_connected = False
         while tries < 5 and not is_connected:
@@ -123,18 +85,3 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
             time.sleep(3)
             tries += 1
         DP_CONTROLLER.say_wifi_entered(is_connected, ssid, password)
-
-    def _make_wpa_file(self):
-        """Create the bare bone wpa file."""
-        file_path = Path(_WPA_FILE_PATH)
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-
-        config_lines = [
-            "ctrl_interface=DIR=/var/run/wpa_supplicant/wpa_supplicant.conf",
-            "update_config=1",
-            "",
-        ]
-        config = "\n".join(config_lines)
-
-        with file_path.open("w", encoding="utf-8") as config_file:
-            config_file.write(config)
