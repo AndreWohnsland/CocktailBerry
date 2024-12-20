@@ -12,9 +12,10 @@ import ConfigWindow from './components/options/ConfigWindow.tsx';
 import DataWindow from './components/options/DataWindow.tsx';
 import LogWindow from './components/options/LogWindow.tsx';
 import { ToastContainer } from 'react-toastify';
+import GettingConfiguration from './components/common/GettingConfiguration.tsx';
 
 function App() {
-  const { theme } = useConfig();
+  const { theme, config } = useConfig();
 
   return (
     <div className={`${theme} min-h-screen`}>
@@ -22,19 +23,24 @@ function App() {
         <Header />
         <div className='app-container pt-12'>
           <ToastContainer position='top-center' />
-          <Routes>
-            <Route path='cocktails' element={<CocktailList />} />
-            <Route path='ingredients' element={<IngredientList />} />
-            <Route path='recipes' element={<RecipeList />} />
-            <Route path='bottles' element={<BottleList />} />
-            <Route path='bottles/available' element={<AvailableBottles />} />
-            <Route path='options' element={<OptionWindow />} />
-            <Route path='configuration' element={<ConfigWindow />} />
-            <Route path='data' element={<DataWindow />} />
-            <Route path='logs' element={<LogWindow />} />
-            <Route path='calibration' element={<CalibrationWindow />} />
-            <Route path='/' element={<Navigate to='/cocktails' />} />
-          </Routes>
+          {/* do not show routes when config is empty */}
+          {Object.keys(config).length === 0 ? (
+            <GettingConfiguration />
+          ) : (
+            <Routes>
+              <Route path='cocktails' element={<CocktailList />} />
+              <Route path='ingredients' element={<IngredientList />} />
+              <Route path='recipes' element={<RecipeList />} />
+              <Route path='bottles' element={<BottleList />} />
+              <Route path='bottles/available' element={<AvailableBottles />} />
+              <Route path='options' element={<OptionWindow />} />
+              <Route path='configuration' element={<ConfigWindow />} />
+              <Route path='data' element={<DataWindow />} />
+              <Route path='logs' element={<LogWindow />} />
+              <Route path='calibration' element={<CalibrationWindow />} />
+              <Route path='/' element={<Navigate to='/cocktails' />} />
+            </Routes>
+          )}
         </div>
       </BrowserRouter>
     </div>
