@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse
 from src.api.models import DataResponse, WifiData
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.data_utils import AddonData, ConsumeData, generate_consume_data, get_addon_data
+from src.data_utils import AddonData, ConsumeData, generate_consume_data, get_addon_data, install_addon, remove_addon
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
@@ -53,7 +53,7 @@ async def update_options(options: dict):
     return {"message": "Options updated successfully!"}
 
 
-@router.post("/clean")
+@router.post("/clean", tags=["preparation"])
 async def clean_machine(background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         raise HTTPException(status_code=400, detail="Preparation already in progress")
@@ -185,6 +185,8 @@ async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, l
 @router.post("/rfid/scan")
 async def rfid_writer():
     # Return RFID writer data
+    if _platform_data.system == "Windows":
+        raise HTTPException(status_code=400, detail="NO RFID on Windows")
     return {"message": "NOT IMPLEMENTED"}
 
 
@@ -208,6 +210,18 @@ async def update_wifi_data(wifi_data: WifiData):
 @router.get("/addon")
 async def addon_data() -> list[AddonData]:
     return get_addon_data()
+
+
+@router.post("/addon")
+async def add_addon(addon: AddonData):
+    install_addon(addon)
+    return {"message": f"Addon {addon.name} installed"}
+
+
+@router.delete("/addon/remove")
+async def delete_addon(addon: AddonData):
+    remove_addon(addon)
+    return {"message": f"Addon {addon.name} removed"}
 
 
 @router.get("/connection")
