@@ -122,3 +122,19 @@ interface SingleConsumeData {
   ingredients: { [key: string]: number };
   cost?: { [key: string]: number };
 }
+
+export interface WifiData {
+  ssid: string;
+  password: string;
+}
+
+export interface AddonData {
+  name: string;
+  description: string;
+  url: string;
+  disabled_since: string;
+  is_installable: boolean;
+  file_name: string;
+  installed: boolean;
+  official: boolean;
+}

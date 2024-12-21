@@ -97,3 +97,39 @@ export const getConsumeData = async (): Promise<ConsumeData> => {
 export const useConsumeData = (): UseQueryResult<ConsumeData, Error> => {
   return useQuery<ConsumeData, Error>('consumeData', getConsumeData);
 };
+
+// Internet and Wifi
+export const checkInternetConnection = async (): Promise<{ is_connected: boolean }> => {
+  return axiosInstance.get<{ is_connected: boolean }>(`${options_url}/connection`).then((res) => res.data);
+};
+
+export const getAvailableSsids = async (): Promise<string[]> => {
+  return axiosInstance.get<string[]>(`${options_url}/wifi`).then((res) => res.data);
+};
+
+export const useAvailableSsids = (): UseQueryResult<string[], Error> => {
+  return useQuery<string[], Error>('availableSsids', getAvailableSsids);
+};
+
+export const updateWifiData = async (wifiData: WifiData): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${options_url}/wifi`, wifiData).then((res) => res.data);
+};
+
+// Addons
+export const getAddonData = async (): Promise<AddonData[]> => {
+  return axiosInstance.get<AddonData[]>(`${options_url}/addon`).then((res) => res.data);
+};
+
+export const useAddonData = (): UseQueryResult<AddonData[], Error> => {
+  return useQuery<AddonData[], Error>('addonData', getAddonData);
+};
+
+export const addAddon = async (addon: AddonData): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${options_url}/addon`, addon).then((res) => res.data);
+};
+
+export const deleteAddon = async (addon: AddonData): Promise<{ message: string }> => {
+  return axiosInstance
+    .delete<{ message: string }>(`${options_url}/addon/remove`, { data: addon })
+    .then((res) => res.data);
+};
