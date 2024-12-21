@@ -1,7 +1,6 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import axios from 'axios';
 import { Cocktail, CocktailInput, CocktailStatus } from '../types/models';
-import { API_URL } from './common';
+import { API_URL, axiosInstance } from './common';
 
 const cocktail_url = `${API_URL}/cocktails`;
 
@@ -10,7 +9,7 @@ export const fetchCocktails = async (
   max_hand_add: number = 3,
   scale: boolean = true,
 ): Promise<Cocktail[]> => {
-  return axios
+  return axiosInstance
     .get<Cocktail[]>(cocktail_url, {
       params: {
         only_possible,
@@ -44,7 +43,7 @@ export const prepareCocktail = async (
   alcohol_factor: number,
   is_virgin: boolean,
 ): Promise<CocktailStatus> => {
-  return axios
+  return axiosInstance
     .post<CocktailStatus>(
       `${cocktail_url}/prepare/${cocktail.id}`,
       {
@@ -63,7 +62,7 @@ export const prepareCocktail = async (
 };
 
 export const getCocktailStatus = async (): Promise<CocktailStatus> => {
-  return axios
+  return axiosInstance
     .get<CocktailStatus>(`${cocktail_url}/prepare/status`, {
       headers: {
         Accept: 'application/json',
@@ -82,7 +81,7 @@ export const getCocktailStatus = async (): Promise<CocktailStatus> => {
 };
 
 export const stopCocktail = async (): Promise<void> => {
-  return axios
+  return axiosInstance
     .post<void>(
       `${cocktail_url}/prepare/stop`,
       {},
@@ -100,7 +99,7 @@ export const stopCocktail = async (): Promise<void> => {
 };
 
 export const deleteCocktail = async (id: number): Promise<{ message: string }> => {
-  return axios
+  return axiosInstance
     .delete<{ message: string }>(`${cocktail_url}/${id}`, {
       headers: {
         Accept: 'application/json',
@@ -110,7 +109,7 @@ export const deleteCocktail = async (id: number): Promise<{ message: string }> =
 };
 
 export const postCocktail = async (cocktail: CocktailInput): Promise<Cocktail> => {
-  return axios
+  return axiosInstance
     .post<Cocktail>(cocktail_url, cocktail, {
       headers: {
         Accept: 'application/json',
@@ -121,7 +120,7 @@ export const postCocktail = async (cocktail: CocktailInput): Promise<Cocktail> =
 };
 
 export const updateCocktail = async (cocktail: CocktailInput): Promise<Cocktail> => {
-  return axios
+  return axiosInstance
     .put<Cocktail>(`${cocktail_url}/${cocktail.id}`, cocktail, {
       headers: {
         Accept: 'application/json',
@@ -135,7 +134,7 @@ export const uploadCocktailImage = async (id: number, file: File): Promise<{ mes
   const formData = new FormData();
   formData.append('file', file);
 
-  return axios
+  return axiosInstance
     .post<{ message: string }>(`${cocktail_url}/${id}/image`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -145,7 +144,7 @@ export const uploadCocktailImage = async (id: number, file: File): Promise<{ mes
 };
 
 export const deleteCocktailImage = async (id: number): Promise<{ message: string }> => {
-  return axios
+  return axiosInstance
     .delete<{ message: string }>(`${cocktail_url}/${id}/image`, {
       headers: {
         Accept: 'application/json',
@@ -155,7 +154,7 @@ export const deleteCocktailImage = async (id: number): Promise<{ message: string
 };
 
 export const enableAllRecipes = async (): Promise<{ message: string }> => {
-  return axios
+  return axiosInstance
     .post<{ message: string }>(`${cocktail_url}/enable`, null, {
       headers: {
         Accept: 'application/json',

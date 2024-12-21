@@ -1,12 +1,11 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import axios from 'axios';
 import { Ingredient, IngredientInput } from '../types/models';
-import { API_URL } from './common';
+import { API_URL, axiosInstance } from './common';
 
 const ingredient_url = `${API_URL}/ingredients`;
 
 export const fetchIngredients = async (hand: boolean = true, machine: boolean = true): Promise<Ingredient[]> => {
-  return axios
+  return axiosInstance
     .get<Ingredient[]>(ingredient_url, {
       params: {
         hand,
@@ -29,7 +28,7 @@ export const useIngredients = (hand: boolean = true, machine: boolean = true): U
 
 export const useAvailableIngredients = (): UseQueryResult<number[], Error> => {
   return useQuery<number[], Error>(['availableIngredients'], () =>
-    axios
+    axiosInstance
       .get<number[]>(`${ingredient_url}/available`, {
         headers: {
           Accept: 'application/json',
@@ -44,7 +43,7 @@ export const useAvailableIngredients = (): UseQueryResult<number[], Error> => {
 };
 
 export const postAvailableIngredients = async (available: number[]): Promise<{ message: string }> => {
-  return axios
+  return axiosInstance
     .post<{ message: string }>(`${ingredient_url}/available`, available, {
       headers: {
         Accept: 'application/json',
@@ -55,7 +54,7 @@ export const postAvailableIngredients = async (available: number[]): Promise<{ m
 };
 
 export const deleteIngredient = async (id: number): Promise<{ message: string }> => {
-  return axios
+  return axiosInstance
     .delete<{ message: string }>(`${ingredient_url}/${id}`, {
       headers: {
         Accept: 'application/json',
@@ -65,7 +64,7 @@ export const deleteIngredient = async (id: number): Promise<{ message: string }>
 };
 
 export const postIngredient = async (ingredient: IngredientInput): Promise<{ message: string }> => {
-  return axios
+  return axiosInstance
     .post<{ message: string }>(ingredient_url, ingredient, {
       headers: {
         Accept: 'application/json',
@@ -76,7 +75,7 @@ export const postIngredient = async (ingredient: IngredientInput): Promise<{ mes
 };
 
 export const updateIngredient = async (ingredient: IngredientInput): Promise<{ message: string }> => {
-  return axios
+  return axiosInstance
     .put<{ message: string }>(`${ingredient_url}/${ingredient.id}`, ingredient, {
       headers: {
         Accept: 'application/json',
