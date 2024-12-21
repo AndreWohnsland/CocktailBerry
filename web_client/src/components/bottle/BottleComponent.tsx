@@ -135,39 +135,41 @@ const BottleComponent: React.FC<BottleProps> = ({
         className='col-span-2 sm:col-span-1 mb-3 sm:mb-0 mx-3 sm:mx-0'
       />
       <Modal isOpen={isModalOpen} onRequestClose={closeModal} className='modal slim' overlayClassName='overlay z-20'>
-        <div className='px-4 rounded w-full h-full flex flex-col'>
-          <div className='flex justify-between items-center mb-2'>
+        <div className='rounded w-full h-full flex flex-col'>
+          <div className='pl-2 flex justify-between items-center mb-2'>
             <h2 className='text-xl font-bold text-secondary'>{selectedIngredient?.name || 'Ingredient'}</h2>
             <button onClick={closeModal} aria-label='close'>
               <AiOutlineCloseCircle className='text-danger' size={34} />
             </button>
           </div>
-          <p className='text-neutral text-center mt-4'>{`Adjust the fill level of the bottle, maximum is ${selectedIngredient?.bottle_volume}`}</p>
-          <div className='flex-grow'></div>
-          <div className='flex justify-center items-center mb-4'>
-            <button className='button-primary p-2 h-full' onClick={() => setFillLevel(0)}>
-              Min
-            </button>
-            <button onClick={() => adjustFillLevel(-50)} className='button-primary p-2 mx-2'>
-              <FaMinus size={25} />
-            </button>
-            <input type='number' value={tempFillLevel} readOnly className='input-base h-full' />
-            <button onClick={() => adjustFillLevel(50)} className='button-primary p-2 mx-2'>
-              <FaPlus size={25} />
-            </button>
-            <button
-              className='button-primary p-2 h-full'
-              onClick={() => setFillLevel(selectedIngredient?.bottle_volume || 0)}
-            >
-              Max
-            </button>
-          </div>
-          <div className='flex-grow'></div>
-          <div className='flex justify-between'></div>
-          <div className='mt-4 w-full'>
-            <button onClick={handleAdjustment} className='button-primary-filled w-full p-2 mb-2'>
-              Save
-            </button>
+          <div className='w-full h-full flex flex-col px-2'>
+            <p className='text-neutral text-center mt-4'>{`Adjust the fill level of the bottle, maximum is ${selectedIngredient?.bottle_volume}`}</p>
+            <div className='flex-grow'></div>
+            <div className='flex justify-center items-center mb-4'>
+              <button className='button-primary p-2 h-full' onClick={() => setFillLevel(0)}>
+                Min
+              </button>
+              <button onClick={() => adjustFillLevel(-50)} className='button-primary p-2 mx-2'>
+                <FaMinus size={25} />
+              </button>
+              <input type='number' value={tempFillLevel} readOnly className='input-base h-full' />
+              <button onClick={() => adjustFillLevel(50)} className='button-primary p-2 mx-2'>
+                <FaPlus size={25} />
+              </button>
+              <button
+                className='button-primary p-2 h-full'
+                onClick={() => setFillLevel(selectedIngredient?.bottle_volume || 0)}
+              >
+                Max
+              </button>
+            </div>
+            <div className='flex-grow'></div>
+            <div className='flex justify-between'></div>
+            <div className='mt-4 w-full'>
+              <button onClick={handleAdjustment} className='button-primary-filled w-full p-2 mb-2'>
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </Modal>
