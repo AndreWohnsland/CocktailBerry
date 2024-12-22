@@ -8,17 +8,13 @@ from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.logger_handler import LoggerHandler
-from src.machine.controller import MACHINE
-from src.models import Ingredient
+from src.models import Cocktail, PrepareResult
+from src.tabs import maker
 from src.tabs.bottles import set_fill_level_bars
 from src.ui_elements.bonusingredient import Ui_addingredient
-from src.utils import time_print
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
-
-_logger = LoggerHandler("additional_ingredient")
 
 
 class GetIngredientWindow(QMainWindow, Ui_addingredient):
@@ -59,22 +55,27 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
         # if there is nothing selected, just do nothing
         if ingredient_name == "":
             return
-        _, level = DB_COMMANDER.get_ingredient_bottle_and_level_by_name(ingredient_name)
-        ingredient_data: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore
+        ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
+        if ingredient is None:
+            return
         # need to set amount, otherwise it will be 0
-        ingredient_data.amount = volume
+        ingredient.amount = volume
 
+        cocktail = Cocktail(0, ingredient_name, 0, volume, True, True, [ingredient])
+        result, message = maker.validate_cocktail(cocktail)
         self.close()
-        if volume > level and cfg.MAKER_CHECK_BOTTLE:
-            DP_CONTROLLER.say_not_enough_ingredient_volume(ingredient_name, level, volume)
-            if cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[2]:
-                DP_CONTROLLER.set_tabwidget_tab(self.mainscreen, "bottles")
+
+        # Go to refill dialog, if this window is not locked
+        if (result == PrepareResult.NOT_ENOUGH_INGREDIENTS) and (
+            cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[2]
+        ):
+            self.mainscreen.open_refill_dialog(cocktail)
             return
 
-        time_print(f"Spending {volume} ml {ingredient_name}")
-        made_volume, _, _ = MACHINE.make_cocktail(self.mainscreen, [ingredient_data], ingredient_name, False)
-        consumed_volume = made_volume[0]
-        DB_COMMANDER.increment_ingredient_consumption(ingredient_name, consumed_volume)
+        # No special case: just show the message
+        if result != PrepareResult.VALIDATION_OK:
+            DP_CONTROLLER.standard_box(message, close_time=60)
+            return
+
+        maker.prepare_ingredient(ingredient, self.mainscreen)
         set_fill_level_bars(self.mainscreen)
-        volume_string = f"{consumed_volume} ml"
-        _logger.log_event("INFO", f"{volume_string:6} | {ingredient_name}")
