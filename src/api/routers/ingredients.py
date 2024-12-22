@@ -1,10 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import map_ingredient
-from src.api.models import IngredientInput
+from src.api.models import ErrorDetail, IngredientInput
 from src.database_commander import DatabaseCommander
+from src.dialog_handler import DialogHandler
+from src.models import Cocktail, CocktailStatus, PrepareResult
+from src.tabs import maker
 
 router = APIRouter(tags=["ingredients"], prefix="/ingredients")
+_dialog_handler = DialogHandler()
 
 
 @router.get("")
@@ -73,3 +78,35 @@ async def post_available_ingredients(available: list[int]):
     DBC.delete_existing_handadd_ingredient()
     DBC.insert_multiple_existing_handadd_ingredients(available)
     return {"message": "Ingredients were updated!"}
+
+
+@router.post(
+    "/{ingredient_id:int}/prepare",
+    tags=["preparation"],
+    responses={
+        200: {"description": "Ingredient preparation started", "model": CocktailStatus},
+        400: {"description": "Validation error", "model": ErrorDetail},
+        404: {
+            "description": "Ingredient not found",
+            "content": {"application/json": {"example": {"detail": "Ingredient not found"}}},
+        },
+    },
+)
+async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: BackgroundTasks):
+    DBC = DatabaseCommander()
+    ingredient = DBC.get_ingredient(ingredient_id)
+    if ingredient is None:
+        message = _dialog_handler.get_translation("element_not_found", element_name=f"Ingredient (id={ingredient_id})")
+        raise HTTPException(status_code=404, detail=message)
+    if ingredient.hand:
+        raise HTTPException(
+            status_code=400,
+            detail="Hand add ingredient cannot be prepared!",
+        )
+    ingredient.amount = amount
+    cocktail = Cocktail(0, ingredient.name, 0, amount, True, True, [ingredient])
+    result, message = maker.validate_cocktail(cocktail)
+    if result != PrepareResult.VALIDATION_OK:
+        return JSONResponse(status_code=400, content={"status": result.value, "detail": message})
+    background_tasks.add_task(maker.prepare_cocktail, cocktail)
+    return CocktailStatus(status=PrepareResult.IN_PROGRESS)
