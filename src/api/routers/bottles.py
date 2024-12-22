@@ -10,6 +10,7 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import MACHINE
 from src.models import PrepareResult
+from src.tabs import maker
 
 router = APIRouter(tags=["bottles"], prefix="/bottles")
 
@@ -50,3 +51,13 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
         DBC.set_ingredient_level_to_value(ingredient_id, amount)
     DBC.set_bottle_at_slot(ingredient_id, bottle_id)
     return {"message": f"Bottle {bottle_id} updated successfully to {amount} of ingredient {ingredient_id}!"}
+
+
+@router.post("/{bottle_id}/calibrate", tags=["preparation"])
+def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks):
+    if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
+        raise HTTPException(
+            status_code=400, detail={"status": PrepareResult.IN_PROGRESS, "detail": DH.cocktail_in_progress()}
+        )
+    background_tasks.add_task(maker.calibrate, bottle_id, amount)
+    return {"message": f"Bottle {bottle_id} calibration to {amount} started!"}
