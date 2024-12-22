@@ -11,8 +11,10 @@ import CalibrationWindow from './components/options/CalibrationWindow.tsx';
 import ConfigWindow from './components/options/ConfigWindow.tsx';
 import DataWindow from './components/options/DataWindow.tsx';
 import LogWindow from './components/options/LogWindow.tsx';
+import WifiManager from './components/options/WifiManager.tsx';
 import { ToastContainer } from 'react-toastify';
 import GettingConfiguration from './components/common/GettingConfiguration.tsx';
+import AddonManager from './components/options/AddonManager.tsx';
 
 function App() {
   const { theme, config } = useConfig();
@@ -37,6 +39,8 @@ function App() {
               <Route path='configuration' element={<ConfigWindow />} />
               <Route path='data' element={<DataWindow />} />
               <Route path='logs' element={<LogWindow />} />
+              <Route path='wifi' element={<WifiManager />} />
+              <Route path='addons' element={<AddonManager />} />
               <Route path='calibration' element={<CalibrationWindow />} />
               <Route path='/' element={<Navigate to='/cocktails' />} />
             </Routes>

@@ -5,10 +5,7 @@ import {
   shutdownSystem,
   updateSystem,
   updateSoftware,
-  updateWifiData,
   checkInternetConnection,
-  getAddonData,
-  getRfidWriter,
   createBackup,
   uploadBackup,
   updateOptions,
@@ -76,13 +73,9 @@ const OptionWindow = () => {
         displayName={'Cleaning the Machine'}
       />
       <div className='flex flex-col items-center max-w-5xl w-full p-2 pt-0'>
-        <div className='dropdown-container flex flex-row items-center mb-4'>
-          <p className='mr-2'>Theme:</p>
-          <select
-            className='theme-dropdown select-base w-full p-2'
-            value={theme}
-            onChange={(e) => themeSelect(e.target.value)}
-          >
+        <div className='dropdown-container flex flex-row items-center mb-4 w-full max-w-md'>
+          <p className='mr-2 text-neutral'>Theme:</p>
+          <select className='select-base w-full !p-2' value={theme} onChange={(e) => themeSelect(e.target.value)}>
             {themes.map((t) => (
               <option key={t} value={t}>
                 {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -130,16 +123,16 @@ const OptionWindow = () => {
           >
             Update CocktailBerry Software
           </button>
-          <button className='button-primary p-4' onClick={updateWifiData}>
+          <button className='button-primary p-4' onClick={() => navigate('/wifi')}>
             WiFi
           </button>
           <button className='button-primary p-4' onClick={() => executeAndShow(checkInternetConnection)}>
             Internet Check
           </button>
-          <button className='button-primary p-4' onClick={getAddonData}>
+          <button className='button-primary p-4' onClick={() => navigate('/addons')}>
             Addons
           </button>
-          <button className='button-primary p-4' onClick={getRfidWriter}>
+          <button className='button-neutral p-4' disabled={true}>
             Write RFID
           </button>
         </div>
