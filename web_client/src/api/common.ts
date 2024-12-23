@@ -14,9 +14,9 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.data && error.response.data.detail) {
+    if (error?.response?.data !== undefined) {
       // Reformat the error message to include response data
-      return Promise.reject(new Error(error.response.data.detail));
+      return Promise.reject(error.response.data);
     }
     return Promise.reject(error);
   },
