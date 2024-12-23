@@ -212,8 +212,8 @@ dialog:
     en: 'Element {element_name} already exists!'
     de: 'Element {element_name} gibt es schon!'
   cocktail_in_progress:
-    en: 'A cocktail is currently in progress. Please wait until it is finished.'
-    de: 'Ein Cocktail wird gerade zubereitet. Bitte warte, bis er fertig ist.'
+    en: 'A preparation is currently in progress. Please wait until it is finished.'
+    de: 'Eine Zubereitung is bereits im Gange. Bitte warte, bis diese fertig ist.'
 
 # Change of language in UI elements
 ui:
