@@ -47,6 +47,7 @@ class Ingredient(CocktailIngredient):
     fill_level: int
     pump_speed: int
     cost: int = 0
+    bottle: Optional[int] = None
 
 
 class IngredientInput(BaseModel):

@@ -56,6 +56,7 @@ def map_ingredient(ingredient: Optional[DBIngredient]) -> Optional[Ingredient]:
         recipe_order=ingredient.recipe_order,
         unit=ingredient.unit,
         bottle_volume=ingredient.bottle_volume,
+        bottle=ingredient.bottle,
         fill_level=ingredient.fill_level,
         pump_speed=ingredient.pump_speed,
         cost=ingredient.cost,
