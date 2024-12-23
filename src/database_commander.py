@@ -316,16 +316,6 @@ class DatabaseCommander:
                 FROM Bottles LEFT JOIN Ingredients ON Ingredients.ID = Bottles.ID ORDER BY Bottles.Bottle"""
         return self.handler.query_database(query)
 
-    def get_ingredient_bottle_and_level_by_name(self, ingredient_name):
-        """Return (Bottle_number, level) for the given ingredient."""
-        query = """SELECT Bottles.Bottle, Ingredients.Fill_level
-                FROM Bottles INNER JOIN Ingredients ON Ingredients.ID = Bottles.ID
-                WHERE Ingredients.Name = ?"""
-        data = self.handler.query_database(query, (ingredient_name,))
-        if data:
-            return data[0][0], data[0][1]
-        return 0, 0
-
     # set (update) commands
     def set_bottle_order(self, ingredient_names: list[str] | list[int]):
         """Set bottles to the given list of bottles, need all bottles."""
