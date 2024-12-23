@@ -1,5 +1,5 @@
 import CocktailList from './components/cocktail/CocktailList.tsx';
-import { Route, Routes, Navigate, BrowserRouter } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Header from './components/Header.tsx';
 import { useConfig } from './ConfigProvider.tsx';
 import IngredientList from './components/ingredient/IngredientList.tsx';
@@ -21,7 +21,6 @@ function App() {
 
   return (
     <div className={`${theme} min-h-screen`}>
-      <BrowserRouter>
         <Header />
         <div className='app-container pt-12'>
           <ToastContainer position='top-center' />
@@ -46,7 +45,6 @@ function App() {
             </Routes>
           )}
         </div>
-      </BrowserRouter>
     </div>
   );
 }
