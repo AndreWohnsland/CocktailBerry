@@ -57,7 +57,7 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         raise HTTPException(
-            status_code=400, detail={"status": PrepareResult.IN_PROGRESS, "detail": DH.cocktail_in_progress()}
+            status_code=400, detail={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
         )
     background_tasks.add_task(maker.calibrate, bottle_id, amount)
     return {"message": f"Bottle {bottle_id} calibration to {amount} started!"}
