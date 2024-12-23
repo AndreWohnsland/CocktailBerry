@@ -1,6 +1,14 @@
 import axios from 'axios';
 
-const axiosInstance = axios.create();
+export const API_URL = `${import.meta.env.VITE_APP_API_URL || 'http://localhost:8000'}`;
+
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+});
 
 // Add a response interceptor to process errors globally
 axiosInstance.interceptors.response.use(
@@ -15,4 +23,3 @@ axiosInstance.interceptors.response.use(
 );
 
 export { axiosInstance };
-export const API_URL = `${import.meta.env.VITE_APP_API_URL || 'http://localhost:8000'}`;
