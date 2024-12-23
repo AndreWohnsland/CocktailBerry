@@ -1,6 +1,7 @@
 from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import map_bottles
 from src.api.models import Bottle
@@ -56,8 +57,8 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
 @router.post("/{bottle_id}/calibrate", tags=["preparation"])
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
-        raise HTTPException(
-            status_code=400, detail={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
+        return JSONResponse(
+            status_code=400, content={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
         )
     background_tasks.add_task(maker.calibrate, bottle_id, amount)
     return {"message": f"Bottle {bottle_id} calibration to {amount} started!"}

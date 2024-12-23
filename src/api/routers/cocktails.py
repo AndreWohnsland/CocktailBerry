@@ -2,6 +2,7 @@ import asyncio
 from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, File, HTTPException, UploadFile, WebSocket
+from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail
 from src.api.models import Cocktail, CocktailInput, CocktailStatus, ErrorDetail, PrepareCocktailRequest
@@ -49,7 +50,7 @@ async def prepare_cocktail(
     cocktail_id: int,
     request: PrepareCocktailRequest,
     background_tasks: BackgroundTasks,
-) -> CocktailStatus:
+):
     DBC = DatabaseCommander()
     factor = request.alcohol_factor if not request.is_virgin else 0
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -58,8 +59,8 @@ async def prepare_cocktail(
         raise HTTPException(status_code=404, detail=message)
     cocktail.scale_cocktail(request.volume, factor)
     result, msg = maker.validate_cocktail(cocktail)
-    if result != maker.PrepareResult.VALIDATION_OK:
-        raise HTTPException(status_code=400, detail={"status": result.value, "detail": msg})
+    if result != PrepareResult.VALIDATION_OK:
+        return JSONResponse(status_code=400, content={"status": result.value, "detail": msg})
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
