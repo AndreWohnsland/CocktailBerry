@@ -127,6 +127,12 @@ input[type='file']::-ms-browse {
   z-index: 10;
 }
 
+.sticky-top {
+  position: sticky;
+  top: 2.5rem;
+  z-index: 10;
+}
+
 .app-container {
   @apply min-h-screen;
   background-color: var(--background-color);
