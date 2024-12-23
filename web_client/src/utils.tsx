@@ -39,11 +39,12 @@ export const confirmAndExecute = async (message: string, executable: () => Promi
   }
 };
 
-export const errorToast = (error: any, message: string) => {
-  const errorMessage = error?.response?.data?.detail || error.message || error;
+export const errorToast = (error: any, prefix?: string) => {
+  const errorMessage = error?.response?.data?.detail || error.message || error || 'An error occurred';
   const randomNumber = Math.floor(100000 + Math.random() * 900000);
-  toast(`${message}: ${errorMessage}`, {
-    toastId: `${message}-error-${randomNumber}`,
+  const prefixMessage = prefix ? `${prefix}: ` : '';
+  toast(`${prefixMessage}${errorMessage}`, {
+    toastId: `${prefix}-error-${randomNumber}`,
     pauseOnHover: false,
   });
 };
@@ -60,9 +61,11 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<bo
       success = true;
     })
     .catch((error) => {
+      console.log(error);
       info = error?.response?.data?.detail || error.message || error;
       toastId = 'execute-show-error';
     });
+  console.log(info);
   if (typeof info === 'object') {
     info = JSON.stringify(info);
   }
