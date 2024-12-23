@@ -25,6 +25,7 @@ export interface Ingredient extends CocktailIngredient {
   fill_level: number;
   pump_speed: number;
   cost: number;
+  bottle?: number;
 }
 
 export interface IngredientInput {
