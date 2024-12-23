@@ -98,10 +98,16 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
     if ingredient is None:
         message = _dialog_handler.get_translation("element_not_found", element_name=f"Ingredient (id={ingredient_id})")
         raise HTTPException(status_code=404, detail=message)
+    print(ingredient)
     if ingredient.hand:
         raise HTTPException(
             status_code=400,
             detail="Hand add ingredient cannot be prepared!",
+        )
+    if ingredient.bottle is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Ingredient is not connected to the machine!",
         )
     ingredient.amount = amount
     cocktail = Cocktail(0, ingredient.name, 0, amount, True, True, [ingredient])
