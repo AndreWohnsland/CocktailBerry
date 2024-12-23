@@ -61,11 +61,9 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<bo
       success = true;
     })
     .catch((error) => {
-      console.log(error);
-      info = error?.response?.data?.detail || error.message || error;
+      info = error?.response?.data?.detail || error?.detail || error?.message || error;
       toastId = 'execute-show-error';
     });
-  console.log(info);
   if (typeof info === 'object') {
     info = JSON.stringify(info);
   }
