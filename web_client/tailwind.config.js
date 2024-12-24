@@ -9,7 +9,6 @@ export default {
         neutral: 'var(--neutral-color)',
         background: 'var(--background-color)',
         danger: 'var(--danger-color)',
-        text: 'var(--text-color)',
       },
       screens: {
         'h-xs': { raw: '(min-height: 400px)' },

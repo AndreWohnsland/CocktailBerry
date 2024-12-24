@@ -28,7 +28,7 @@ html,
 body {
   margin: 0;
   background-color: var(--background-color);
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
 .button-primary {
@@ -136,7 +136,7 @@ input[type='file']::-ms-browse {
 .app-container {
   @apply min-h-screen;
   background-color: var(--background-color);
-  color: var(--text-color);
+  color: var(--primary-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -172,7 +172,7 @@ input[type='file']::-ms-browse {
   right: auto;
   bottom: auto;
   transform: translate(-50%, -50%);
-  color: var(--text-color);
+  color: var(--primary-color);
   background: var(--background-color);
   padding: 10px;
   border-radius: 8px;
