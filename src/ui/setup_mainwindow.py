@@ -86,7 +86,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         MACHINE.init_machine()
         MACHINE.default_led()
         self.showFullScreen()
-        # as long as its not UI_DEVENVIRONMENT (usually touchscreen) hide the cursor
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
         ICONS.set_mainwindow_icons(self)

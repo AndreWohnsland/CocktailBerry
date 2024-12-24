@@ -60,7 +60,6 @@ class ConfigManager:
     UI_LANGUAGE: SupportedLanguagesType = "en"
     # Width and height of the touchscreen
     # Mainly used for dev and comparison for the desired touch dimensions
-    # Used if UI_DEVENVIRONMENT is set to True
     UI_WIDTH: int = 800
     UI_HEIGHT: int = 480
     UI_PICTURE_SIZE: int = 240
