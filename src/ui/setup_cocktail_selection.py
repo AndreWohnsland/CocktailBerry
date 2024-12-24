@@ -99,6 +99,9 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         if result != PrepareResult.VALIDATION_OK:
             DP_CONTROLLER.standard_box(message, close_time=60)
             return
+        # Only show team dialog if it is enabled
+        if cfg.TEAMS_ACTIVE:
+            self.mainscreen.open_team_window()
 
         result, message = maker.prepare_cocktail(self.cocktail, self.mainscreen)
         # show dialog in case of cancel or if there are handadds

@@ -101,9 +101,6 @@ class MachineController:
 
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
-        # Only show team dialog if it is enabled
-        if cfg.TEAMS_ACTIVE and is_cocktail and w is not None:
-            w.open_team_window()
         if w is not None:
             w.open_progression_window(recipe)
         prep_data = _build_preparation_data(ingredient_list)
