@@ -70,7 +70,7 @@ const BottleList: React.FC = () => {
           <button className='button-primary-filled p-2' onClick={handleApply}>
             Apply New
           </button>
-          <button className='button-primary p-2 ' onClick={() => navigate('/bottles/available')}>
+          <button className='button-primary p-2 ' onClick={() => navigate('/manage/bottles/available')}>
             Available
           </button>
         </div>

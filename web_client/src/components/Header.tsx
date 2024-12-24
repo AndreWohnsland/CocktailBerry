@@ -15,13 +15,13 @@ const Header: React.FC = () => {
           <NavLink to='/cocktails' className={({ isActive }) => getNavLinkClass(isActive)}>
             Cocktails
           </NavLink>
-          <NavLink to='/ingredients' className={({ isActive }) => getNavLinkClass(isActive)}>
+          <NavLink to='/manage/ingredients' className={({ isActive }) => getNavLinkClass(isActive)}>
             Ingredients
           </NavLink>
-          <NavLink to='/recipes' className={({ isActive }) => getNavLinkClass(isActive)}>
+          <NavLink to='/manage/recipes' className={({ isActive }) => getNavLinkClass(isActive)}>
             Recipes
           </NavLink>
-          <NavLink to='/bottles' className={({ isActive }) => getNavLinkClass(isActive)}>
+          <NavLink to='/manage/bottles' className={({ isActive }) => getNavLinkClass(isActive)}>
             Bottles
           </NavLink>
           <NavLink to='/options' className={({ isActive }) => getNavLinkClass(isActive)}>

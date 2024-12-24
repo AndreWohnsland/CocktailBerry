@@ -87,13 +87,13 @@ const OptionWindow = () => {
           <button className='button-primary-filled p-4' onClick={cleanClick}>
             Cleaning
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('/calibration')}>
+          <button className='button-primary p-4' onClick={() => navigate('calibration')}>
             Calibration
           </button>
-          <button className='button-primary-filled p-4' onClick={() => navigate('/configuration')}>
+          <button className='button-primary-filled p-4' onClick={() => navigate('configuration')}>
             Configuration
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('/data')}>
+          <button className='button-primary p-4' onClick={() => navigate('data')}>
             Data
           </button>
           <button className='button-primary p-4' onClick={() => executeAndShow(getBackupClick)}>
@@ -108,7 +108,7 @@ const OptionWindow = () => {
           <button className='button-primary p-4' onClick={() => confirmAndExecute('Shutdown', shutdownSystem)}>
             Shutdown
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('/logs')}>
+          <button className='button-primary p-4' onClick={() => navigate('logs')}>
             Logs
           </button>
           <button
@@ -123,13 +123,13 @@ const OptionWindow = () => {
           >
             Update CocktailBerry Software
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('/wifi')}>
+          <button className='button-primary p-4' onClick={() => navigate('wifi')}>
             WiFi
           </button>
           <button className='button-primary p-4' onClick={() => executeAndShow(checkInternetConnection)}>
             Internet Check
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('/addons')}>
+          <button className='button-primary p-4' onClick={() => navigate('addons')}>
             Addons
           </button>
           <button className='button-neutral p-4' disabled={true}>
