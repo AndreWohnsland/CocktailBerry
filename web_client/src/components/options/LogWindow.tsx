@@ -27,7 +27,7 @@ const LogWindow: React.FC = () => {
   if (error) return <ErrorComponent text={error.message} />;
 
   const setStyle = (log: string): string => {
-    let style = 'px-1';
+    let style = 'px-1 break-all';
     if (selectedLogType === 'debuglog.log') {
       return style + ' mb-6';
     }
@@ -56,7 +56,7 @@ const LogWindow: React.FC = () => {
           </select>
         </div>
       </div>
-      <div className='flex-grow p-4'>
+      <div className='flex-grow p-2'>
         {logData &&
           logData[selectedLogType]?.map((log: string, index: number) => (
             <div key={index} className={setStyle(log)}>
