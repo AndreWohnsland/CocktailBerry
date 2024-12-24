@@ -1,8 +1,8 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import { Cocktail, CocktailInput, CocktailStatus } from '../types/models';
-import { API_URL, axiosInstance } from './common';
+import { axiosInstance } from './common';
 
-const cocktail_url = `${API_URL}/cocktails`;
+const cocktail_url = '/cocktails';
 
 export const fetchCocktails = async (
   only_possible: boolean = true,
@@ -15,9 +15,6 @@ export const fetchCocktails = async (
         only_possible,
         max_hand_add,
         scale,
-      },
-      headers: {
-        Accept: 'application/json',
       },
     })
     .then((res) => res.data)
@@ -44,30 +41,17 @@ export const prepareCocktail = async (
   is_virgin: boolean,
 ): Promise<CocktailStatus> => {
   return axiosInstance
-    .post<CocktailStatus>(
-      `${cocktail_url}/prepare/${cocktail.id}`,
-      {
-        volume,
-        alcohol_factor,
-        is_virgin,
-      },
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      },
-    )
+    .post<CocktailStatus>(`${cocktail_url}/prepare/${cocktail.id}`, {
+      volume,
+      alcohol_factor,
+      is_virgin,
+    })
     .then((res) => res.data);
 };
 
 export const getCocktailStatus = async (): Promise<CocktailStatus> => {
   return axiosInstance
-    .get<CocktailStatus>(`${cocktail_url}/prepare/status`, {
-      headers: {
-        Accept: 'application/json',
-      },
-    })
+    .get<CocktailStatus>(`${cocktail_url}/prepare/status`)
     .then((res) => res.data)
     .catch((error) => {
       console.error('Error fetching cocktail status:', error);
@@ -82,16 +66,7 @@ export const getCocktailStatus = async (): Promise<CocktailStatus> => {
 
 export const stopCocktail = async (): Promise<void> => {
   return axiosInstance
-    .post<void>(
-      `${cocktail_url}/prepare/stop`,
-      {},
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      },
-    )
+    .post<void>(`${cocktail_url}/prepare/stop`)
     .then((res) => res.data)
     .catch((error) => {
       console.error('Error stopping cocktail preparation:', error);
@@ -99,35 +74,15 @@ export const stopCocktail = async (): Promise<void> => {
 };
 
 export const deleteCocktail = async (id: number): Promise<{ message: string }> => {
-  return axiosInstance
-    .delete<{ message: string }>(`${cocktail_url}/${id}`, {
-      headers: {
-        Accept: 'application/json',
-      },
-    })
-    .then((res) => res.data);
+  return axiosInstance.delete<{ message: string }>(`${cocktail_url}/${id}`).then((res) => res.data);
 };
 
 export const postCocktail = async (cocktail: CocktailInput): Promise<Cocktail> => {
-  return axiosInstance
-    .post<Cocktail>(cocktail_url, cocktail, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((res) => res.data);
+  return axiosInstance.post<Cocktail>(cocktail_url, cocktail).then((res) => res.data);
 };
 
 export const updateCocktail = async (cocktail: CocktailInput): Promise<Cocktail> => {
-  return axiosInstance
-    .put<Cocktail>(`${cocktail_url}/${cocktail.id}`, cocktail, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((res) => res.data);
+  return axiosInstance.put<Cocktail>(`${cocktail_url}/${cocktail.id}`, cocktail).then((res) => res.data);
 };
 
 export const uploadCocktailImage = async (id: number, file: File): Promise<{ message: string }> => {
@@ -144,21 +99,9 @@ export const uploadCocktailImage = async (id: number, file: File): Promise<{ mes
 };
 
 export const deleteCocktailImage = async (id: number): Promise<{ message: string }> => {
-  return axiosInstance
-    .delete<{ message: string }>(`${cocktail_url}/${id}/image`, {
-      headers: {
-        Accept: 'application/json',
-      },
-    })
-    .then((res) => res.data);
+  return axiosInstance.delete<{ message: string }>(`${cocktail_url}/${id}/image`).then((res) => res.data);
 };
 
 export const enableAllRecipes = async (): Promise<{ message: string }> => {
-  return axiosInstance
-    .post<{ message: string }>(`${cocktail_url}/enable`, null, {
-      headers: {
-        Accept: 'application/json',
-      },
-    })
-    .then((res) => res.data);
+  return axiosInstance.post<{ message: string }>(`${cocktail_url}/enable`).then((res) => res.data);
 };

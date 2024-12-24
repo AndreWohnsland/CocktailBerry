@@ -1,8 +1,8 @@
 import { Bottle } from '../types/models';
 import { useQuery, UseQueryResult } from 'react-query';
-import { API_URL, axiosInstance } from './common';
+import { axiosInstance } from './common';
 
-const bottle_url = `${API_URL}/bottles`;
+const bottle_url = '/bottles';
 
 export const getBottles = async (): Promise<Bottle[]> => {
   return axiosInstance.get<Bottle[]>(`${bottle_url}`).then((response) => response.data);
@@ -19,5 +19,11 @@ export const refillBottle = async (bottleNumbers: number[]) => {
 export const updateBottle = async (bottleId: number, ingredientId: number, amount?: number) => {
   return axiosInstance
     .put(`${bottle_url}/${bottleId}`, null, { params: { ingredient_id: ingredientId, amount } })
+    .then((response) => response.data);
+};
+
+export const calibrateBottle = async (bottle_id: number, amount: number): Promise<{ message: string }> => {
+  return axiosInstance
+    .post<{ message: string }>(`${bottle_url}/${bottle_id}/calibrate`, null, { params: { amount } })
     .then((response) => response.data);
 };

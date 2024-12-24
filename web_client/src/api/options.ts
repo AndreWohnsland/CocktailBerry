@@ -1,9 +1,9 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from 'axios';
-import { API_URL, axiosInstance } from './common';
+import { axiosInstance } from './common';
 import { ConsumeData, LogData, ConfigData, ConfigDataWithUiInfo, AddonData, WifiData } from '../types/models';
 
-const options_url = `${API_URL}/options`;
+const options_url = '/options';
 
 // Config
 export const getConfig = async (): Promise<ConfigDataWithUiInfo> => {
@@ -19,13 +19,7 @@ export const useConfig = (): UseQueryResult<ConfigDataWithUiInfo, Error> => {
 };
 
 export const updateOptions = async (options: ConfigData): Promise<{ message: string }> => {
-  return axiosInstance
-    .post<{ message: string }>(options_url, options, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((res) => res.data);
+  return axiosInstance.post<{ message: string }>(options_url, options).then((res) => res.data);
 };
 
 // Clean
