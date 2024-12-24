@@ -7,12 +7,17 @@ import { MdNoDrinks } from 'react-icons/md';
 import { API_URL } from '../../api/common';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import { useConfig } from '../../ConfigProvider';
+import SingleIngredientSelection from './SingleIngredientSelection';
 
 Modal.setAppElement('#root');
 
 const CocktailList: React.FC = () => {
   const { data: cocktails, error, isLoading } = useCocktails();
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
+  const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const { config } = useConfig();
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
@@ -49,6 +54,21 @@ const CocktailList: React.FC = () => {
               </div>
             </div>
           ))}
+        {config.MAKER_ADD_SINGLE_INGREDIENT && (
+          <div
+            className='border-2 border-primary hover:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary hover:bg-secondary text-background'
+            onClick={() => setSingleIngredientOpen(true)}
+          >
+            <h2 className='text-center py-1 flex items-center justify-center'>Single Ingredient</h2>
+            <div className='relative w-full' style={{ paddingTop: '100%' }}>
+              <img
+                src={`${API_URL}/static/default/default.jpg`}
+                alt='Single Ingredient'
+                className='absolute top-0 left-0 w-full h-full object-cover'
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {selectedCocktail && (
@@ -62,6 +82,9 @@ const CocktailList: React.FC = () => {
           <CocktailSelection selectedCocktail={selectedCocktail} handleCloseModal={handleCloseModal} />
         </Modal>
       )}
+      <Modal isOpen={singleIngredientOpen} className='modal slim' overlayClassName='overlay z-20'>
+        <SingleIngredientSelection onClose={() => setSingleIngredientOpen(false)} />
+      </Modal>
     </div>
   );
 };
