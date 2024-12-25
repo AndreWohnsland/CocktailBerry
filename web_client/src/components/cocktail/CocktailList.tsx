@@ -9,6 +9,7 @@ import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import { useConfig } from '../../ConfigProvider';
 import SingleIngredientSelection from './SingleIngredientSelection';
+import { FaEraser, FaSearch } from 'react-icons/fa';
 
 Modal.setAppElement('#root');
 
@@ -17,6 +18,7 @@ const CocktailList: React.FC = () => {
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [search, setSearch] = useState('');
   const { config } = useConfig();
 
   if (isLoading) return <LoadingData />;
@@ -30,10 +32,45 @@ const CocktailList: React.FC = () => {
     setSelectedCocktail(null);
   };
 
+  let displayedCocktails = cocktails;
+
+  if (showSearch && search) {
+    displayedCocktails = displayedCocktails?.filter(
+      (cocktail) =>
+        cocktail.name.toLowerCase().includes(search.toLowerCase()) ||
+        cocktail.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(search.toLowerCase())),
+    );
+  }
+
   return (
     <div className='px-2 centered max-w-7xl'>
+      <div className='sticky-top mb-2 flex flex-row'>
+        <div className='flex-grow'></div>
+        <input
+          type='text'
+          placeholder='Search'
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className='input-base mr-1 w-full p-3 max-w-sm'
+          hidden={!showSearch}
+        />
+        <div hidden={!showSearch}>
+          <button
+            onClick={() => setSearch('')}
+            className='button-neutral flex items-center justify-center p-2 mr-1 !border'
+          >
+            <FaEraser size={20} />
+          </button>
+        </div>
+        <button
+          onClick={() => setShowSearch(!showSearch)}
+          className='button-primary flex items-center justify-center p-2 !border pointer-events-auto'
+        >
+          <FaSearch size={20} />
+        </button>
+      </div>
       <div className='flex flex-wrap gap-3 justify-center items-center w-full'>
-        {cocktails
+        {displayedCocktails
           ?.sort((a, b) => a.name.localeCompare(b.name))
           .map((cocktail) => (
             <div
