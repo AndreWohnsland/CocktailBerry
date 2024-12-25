@@ -77,8 +77,11 @@ dialog:
     en: 'All data was exported and amount was reset! File is at: {file_path}'
     de: 'Alle Daten wurden exportiert und die Mengen zurückgesetzt! Datei ist unter: {file_path}'
   not_enough_ingredient_volume:
-    en: "{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left.\n\nThe bottle tab is locked, please inform a person with permission."
-    de: "{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden.\n\nDer Flaschen Tab ist gesperrt, bitte informiere eine berechtigte Person."
+    en: '{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left. Please refill the bottle.'
+    de: '{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden. Bitte Flasche auffüllen.'
+  bottle_tab_locked:
+    en: 'The bottle tab is locked, please inform a person with permission.'
+    de: 'Der Flaschen Tab ist gesperrt, bitte informiere eine berechtigte Person.'
   name_already_exists:
     en: 'This name is already used!'
     de: 'Dieser Name wurde bereits verwendet!'

@@ -98,6 +98,7 @@ allowed_keys = Literal[
     "no_ingredient_selected",
     "no_recipe_selected",
     "not_enough_ingredient_volume",
+    "bottle_tab_locked",
     "python_deprecated",
     "qtsass_not_successful",
     "recipe_added",
