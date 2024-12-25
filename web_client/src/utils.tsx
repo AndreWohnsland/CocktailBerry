@@ -81,7 +81,14 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<bo
 export const OPTIONTABS = ['UI', 'MAKER', 'HARDWARE', 'SOFTWARE', 'OTHER'];
 
 const exactSorting: { [key: string]: string[] } = {
-  UI: ['MAKER_THEME'],
+  UI: [
+    'MAKER_THEME',
+    'CUSTOM_COLOR_PRIMARY',
+    'CUSTOM_COLOR_SECONDARY',
+    'CUSTOM_COLOR_NEUTRAL',
+    'CUSTOM_COLOR_BACKGROUND',
+    'CUSTOM_COLOR_DANGER',
+  ],
   HARDWARE: ['MAKER_PUMP_REVERSION', 'MAKER_REVERSION_PIN', 'MAKER_PINS_INVERTED'],
 };
 
@@ -92,17 +99,24 @@ const tabConfig: { [key: string]: string[] } = {
   SOFTWARE: ['MICROSERVICE', 'TEAM'],
 };
 
+/**
+ * Determines if a given config belongs to a specific tab.
+ * @param configName - The configuration name.
+ * @param tab - The tab to check.
+ * @returns True if the config belongs to the tab, false otherwise.
+ */
 export const isInCurrentTab = (configName: string, tab: string): boolean => {
   if (exactSorting[tab]?.includes(configName)) {
     return true;
   }
 
   if (tabConfig[tab]?.some((prefix) => configName.toLowerCase().startsWith(prefix.toLowerCase()))) {
-    return true;
+    // Ensure it isn't already handled by exactSorting
+    const isInExactSorting = Object.keys(exactSorting).some((key) => exactSorting[key].includes(configName));
+    return !isInExactSorting;
   }
 
   if (tab === 'OTHER') {
-    // Check if configName is not in any other tab
     const isInOtherTabs =
       Object.keys(exactSorting).some((key) => exactSorting[key].includes(configName)) ||
       Object.keys(tabConfig).some((key) =>
