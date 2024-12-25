@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cocktail } from '../../types/models';
+import { Cocktail, PrepareResult } from '../../types/models';
 import { FaSkullCrossbones, FaGlassMartiniAlt, FaWineGlassAlt } from 'react-icons/fa';
 import { IoIosHappy } from 'react-icons/io';
 import { PiPintGlassFill } from 'react-icons/pi';
@@ -7,12 +7,12 @@ import { ImMug } from 'react-icons/im';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { TbGlassChampagne } from 'react-icons/tb';
 import { MdNoDrinks } from 'react-icons/md';
-import { scaleCocktail } from '../../utils';
+import { errorToast, scaleCocktail } from '../../utils';
 import { prepareCocktail } from '../../api/cocktails';
 import ProgressModal from './ProgressModal';
-import { toast } from 'react-toastify';
 import { API_URL } from '../../api/common';
 import { useConfig } from '../../ConfigProvider';
+import RefillPrompt from './RefillPrompt';
 
 interface CocktailModalProps {
   selectedCocktail: Cocktail;
@@ -35,6 +35,8 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   const [alcohol, setAlcohol] = useState<alcoholState>('normal');
   const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(selectedCocktail);
   const [isProgressModalOpen, setProgressModalOpen] = useState(false);
+  const [isRefillOpen, setRefillOpen] = useState(false);
+  const [refillMessage, setRefillMessage] = useState('');
   const { config } = useConfig();
   const possibleServingSizes = (config.MAKER_PREPARE_VOLUME as number[]) || mlAmounts;
   if (config.MAKER_USE_RECIPE_VOLUME) {
@@ -58,11 +60,14 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
         setProgressModalOpen(true);
       })
       .catch((error) => {
-        const errorMessage = error.response?.data?.detail?.detail || 'An error occurred';
-        toast(errorMessage, {
-          toastId: 'cocktail-error',
-          pauseOnHover: false,
-        });
+        const errorReason = error.status as PrepareResult | undefined;
+        const refillAllowed = (config.UI_MAKER_PASSWORD as number) === 0 && (config.UI_LOCKED_TABS as boolean[])[2];
+        if (errorReason === 'NOT_ENOUGH_INGREDIENTS' && refillAllowed) {
+          setRefillMessage(error.detail);
+          setRefillOpen(true);
+          return;
+        }
+        errorToast(error);
       });
   };
 
@@ -166,6 +171,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
           </div>
         </div>
       </div>
+      <RefillPrompt isOpen={isRefillOpen} message={refillMessage} onClose={() => setRefillOpen(false)} />
       <ProgressModal
         isOpen={isProgressModalOpen}
         onRequestClose={() => setProgressModalOpen(false)}
