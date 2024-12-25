@@ -121,6 +121,36 @@ input[type='file']::-ms-browse {
   @apply button-primary px-2 mr-2 border;
 }
 
+input[type='color'] {
+  @apply rounded-md h-10;
+  border: 1px solid var(--primary-color);
+  background-color: var(--background-color);
+  color: var(--primary-color);
+  appearance: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+input[type='color']::-webkit-color-swatch {
+  border: none;
+}
+
+input[type='color']::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type='color']::-moz-focus-inner {
+  border: 0;
+}
+
+/* Override the picker dropdown itself (requires experimental flags in some browsers) */
+input[type='color']::file-selector-button {
+  background: var(--background-color);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
 .sticky-bottom {
   position: sticky;
   bottom: 0;

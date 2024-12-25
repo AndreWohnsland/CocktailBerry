@@ -9,6 +9,17 @@ import { useConfig as useConfigProvider } from '../../ConfigProvider';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 
+// some of the config are "old" meaning they are only used in the QT but not React UI
+// we will define them here and skip the values for those (e.g. not generate input fields)
+const configToIgnore = ['UI_WIDTH', 'UI_HEIGHT', 'UI_PICTURE_SIZE'];
+const colorConfigs = [
+  'CUSTOM_COLOR_PRIMARY',
+  'CUSTOM_COLOR_SECONDARY',
+  'CUSTOM_COLOR_NEUTRAL',
+  'CUSTOM_COLOR_BACKGROUND',
+  'CUSTOM_COLOR_DANGER',
+];
+
 const ConfigWindow: React.FC = () => {
   const { data, isLoading, error } = useConfig();
   const [configData, setConfigData] = useState<ConfigData>({});
@@ -20,6 +31,9 @@ const ConfigWindow: React.FC = () => {
       // need to extract ConfigDataWithUiInfo to ConfigData (extract key: {value: value} to key: value)
       const extractedData: { [key: string]: PossibleConfigValue } = {};
       Object.keys(data).forEach((key) => {
+        if (configToIgnore.includes(key)) {
+          return;
+        }
         extractedData[key] = data[key].value;
       });
       setConfigData(extractedData);
@@ -155,6 +169,15 @@ const ConfigWindow: React.FC = () => {
     </div>
   );
 
+  const renderColorField = (key: string, value: string) => {
+    return (
+      <div className='flex flex-row items-center w-full'>
+        <input type='color' value={value} onChange={(e) => handleInputChange(key, e.target.value)} className='w-full' />
+        <span className='ml-2 w-20 text-neutral'>{value}</span>
+      </div>
+    );
+  };
+
   const renderListField = (key: string, value: any[]) => {
     const defaultValue = value.length > 0 ? value[0] : '';
     const baseConfig = getBaseConfig(key);
@@ -201,7 +224,8 @@ const ConfigWindow: React.FC = () => {
           <>
             {typeof value === 'boolean' && renderBooleanField(key, value)}
             {typeof value === 'number' && renderNumberField(key, value)}
-            {typeof value === 'string' && renderStringField(key, value)}
+            {typeof value === 'string' && colorConfigs.includes(key) && renderColorField(key, value)}
+            {typeof value === 'string' && !colorConfigs.includes(key) && renderStringField(key, value)}
           </>
         )}
       </div>
