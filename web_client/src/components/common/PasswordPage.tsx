@@ -22,8 +22,8 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ requiredPassword, passwordN
   return (
     <div className='flex flex-col justify-between items-center p-4 w-full max-w-md'>
       <h1 className='text-secondary text-2xl font-bold mb-8'>Password needed</h1>
-      <p>This section is protected by the {passwordName}</p>
-      <p className='mt-2'>Enter the password to continue:</p>
+      <p className='w-full text-center'>This section is protected by the {passwordName}.</p>
+      <p className='mt-2 w-full text-center'>Enter the password to continue:</p>
       <form className='w-full mt-4' onSubmit={handlePasswordSubmit}>
         <input
           className='input-base'
