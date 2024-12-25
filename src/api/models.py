@@ -103,3 +103,7 @@ class WifiData(BaseModel):
 
 class DataResponse(BaseModel, Generic[T]):
     data: T
+
+
+class PasswordInput(BaseModel):
+    password: int

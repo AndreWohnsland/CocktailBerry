@@ -1,10 +1,11 @@
 import asyncio
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, File, HTTPException, UploadFile, WebSocket
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, WebSocket
 from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail
+from src.api.middleware import maker_protected
 from src.api.models import Cocktail, CocktailInput, CocktailStatus, ErrorDetail, PrepareCocktailRequest
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
@@ -17,6 +18,13 @@ from src.utils import time_print
 
 _dialog_handler = DialogHandler()
 router = APIRouter(tags=["cocktails"], prefix="/cocktails")
+protected_router = APIRouter(
+    tags=["cocktails", "maker protected"],
+    prefix="/cocktails",
+    dependencies=[
+        Depends(maker_protected(1)),
+    ],
+)
 
 
 @router.get("")
@@ -97,7 +105,7 @@ async def stop_cocktail():
     return {"message": "Cocktail preparation stopped!"}
 
 
-@router.post("")
+@protected_router.post("")
 async def create_cocktail(cocktail: CocktailInput) -> Optional[Cocktail]:
     DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
@@ -108,7 +116,7 @@ async def create_cocktail(cocktail: CocktailInput) -> Optional[Cocktail]:
     return map_cocktail(db_cocktail, False)
 
 
-@router.put("/{cocktail_id}")
+@protected_router.put("/{cocktail_id}")
 async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> Optional[Cocktail]:
     DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
@@ -125,14 +133,14 @@ async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> Optional
     return map_cocktail(db_cocktail, False)
 
 
-@router.delete("/{cocktail_id}")
+@protected_router.delete("/{cocktail_id}")
 async def delete_cocktail(cocktail_id: int):
     DBC = DatabaseCommander()
     DBC.delete_recipe(cocktail_id)
     return {"message": f"Cocktail {cocktail_id} deleted successfully!"}
 
 
-@router.post("/{cocktail_id}/image")
+@protected_router.post("/{cocktail_id}/image")
 async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)):
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -150,7 +158,7 @@ async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)):
     return {"message": "Image uploaded successfully"}
 
 
-@router.delete("/{cocktail_id}/image")
+@protected_router.delete("/{cocktail_id}/image")
 async def delete_cocktail_image(cocktail_id: int):
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -167,7 +175,7 @@ async def delete_cocktail_image(cocktail_id: int):
     return {"message": "Image deleted successfully"}
 
 
-@router.post("/enable")
+@protected_router.post("/enable")
 async def enable_all_recipes():
     DBC = DatabaseCommander()
     DBC.set_all_recipes_enabled()

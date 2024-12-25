@@ -1,9 +1,10 @@
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import map_bottles
+from src.api.middleware import maker_protected
 from src.api.models import Bottle
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
@@ -14,6 +15,13 @@ from src.models import PrepareResult
 from src.tabs import maker
 
 router = APIRouter(tags=["bottles"], prefix="/bottles")
+protected_router = APIRouter(
+    tags=["bottles", "maker protected"],
+    prefix="/bottles",
+    dependencies=[
+        Depends(maker_protected(2)),
+    ],
+)
 
 
 @router.get("")
@@ -23,7 +31,7 @@ async def get_bottles() -> list[Bottle]:
     return [map_bottles(i) for i in ingredients]
 
 
-@router.post("/refill")
+@protected_router.post("/refill")
 async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         raise HTTPException(
@@ -45,7 +53,7 @@ async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundT
     return {"message": f"Bottle {bottle_numbers} refilled successfully!"}
 
 
-@router.put("/{bottle_id}")
+@protected_router.put("/{bottle_id}")
 async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int] = None):
     DBC = DatabaseCommander()
     if amount is not None:
@@ -54,7 +62,7 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
     return {"message": f"Bottle {bottle_id} updated successfully to {amount} of ingredient {ingredient_id}!"}
 
 
-@router.post("/{bottle_id}/calibrate", tags=["preparation"])
+@protected_router.post("/{bottle_id}/calibrate", tags=["preparation"])
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         return JSONResponse(

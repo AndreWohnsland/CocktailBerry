@@ -1,15 +1,23 @@
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import map_ingredient
+from src.api.middleware import maker_protected
 from src.api.models import ErrorDetail, IngredientInput
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DialogHandler
 from src.models import Cocktail, CocktailStatus, PrepareResult
 from src.tabs import maker
 
-router = APIRouter(tags=["ingredients"], prefix="/ingredients")
 _dialog_handler = DialogHandler()
+router = APIRouter(tags=["ingredients"], prefix="/ingredients")
+protected_router = APIRouter(
+    tags=["ingredients", "maker protected"],
+    prefix="/ingredients",
+    dependencies=[
+        Depends(maker_protected(0)),
+    ],
+)
 
 
 @router.get("")
@@ -26,7 +34,7 @@ async def get_ingredient(ingredient_id: int):
     return map_ingredient(ingredient)
 
 
-@router.post("")
+@protected_router.post("")
 async def add_ingredient(ingredient: IngredientInput):
     DBC = DatabaseCommander()
     DBC.insert_new_ingredient(
@@ -42,7 +50,7 @@ async def add_ingredient(ingredient: IngredientInput):
     return map_ingredient(db_ingredient)
 
 
-@router.put("/{ingredient_id:int}")
+@protected_router.put("/{ingredient_id:int}")
 async def update_ingredients(ingredient_id: int, ingredient: IngredientInput):
     DBC = DatabaseCommander()
     DBC.set_ingredient_data(
@@ -59,7 +67,7 @@ async def update_ingredients(ingredient_id: int, ingredient: IngredientInput):
     return {"message": f"Ingredient {ingredient_id} was updated to {ingredient}"}
 
 
-@router.delete("/{ingredient_id:int}")
+@protected_router.delete("/{ingredient_id:int}")
 async def delete_ingredients(ingredient_id: int):
     DBC = DatabaseCommander()
     DBC.delete_ingredient(ingredient_id)
@@ -72,7 +80,7 @@ async def get_available_ingredients() -> list[int]:
     return DBC.get_available_ids()
 
 
-@router.post("/available")
+@protected_router.post("/available")
 async def post_available_ingredients(available: list[int]):
     DBC = DatabaseCommander()
     DBC.delete_existing_handadd_ingredient()

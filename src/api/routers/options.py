@@ -11,7 +11,8 @@ from typing import Literal
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 
-from src.api.models import DataResponse, WifiData
+from src.api.middleware import master_protected_dependency
+from src.api.models import DataResponse, PasswordInput, WifiData
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import AddonData, ConsumeData, generate_consume_data, get_addon_data, install_addon, remove_addon
@@ -34,26 +35,38 @@ _logger = LoggerHandler("options_router")
 _platform_data = get_platform_data()
 
 router = APIRouter(tags=["options"], prefix="/options")
+protected_router = APIRouter(
+    tags=["options", "master protected"],
+    prefix="/options",
+    dependencies=[
+        Depends(master_protected_dependency),
+    ],
+)
 
 
 @router.get("")
 async def get_options():
-    return cfg.get_config()
+    # need to sanitized the passwords before returning, frontend only need to know if they are set
+    # e.g. 0: False otherwise: True
+    config = cfg.get_config()
+    config["UI_MASTERPASSWORD"] = config["UI_MASTERPASSWORD"] != 0
+    config["UI_MAKER_PASSWORD"] = config["UI_MAKER_PASSWORD"] != 0
+    return config
 
 
-@router.get("/ui")
+@protected_router.get("/full")
 async def get_options_with_ui_properties():
     return cfg.get_config_with_ui_information()
 
 
-@router.post("")
+@protected_router.post("")
 async def update_options(options: dict):
     cfg.set_config(options, True)
     cfg.sync_config_to_file()
     return {"message": "Options updated successfully!"}
 
 
-@router.post("/clean", tags=["preparation"])
+@protected_router.post("/clean", tags=["preparation"])
 async def clean_machine(background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         raise HTTPException(status_code=400, detail="Preparation already in progress")
@@ -63,7 +76,7 @@ async def clean_machine(background_tasks: BackgroundTasks):
     return {"message": "Cleaning process started"}
 
 
-@router.post("/reboot")
+@protected_router.post("/reboot")
 async def reboot_system():
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot reboot on Windows")
@@ -72,7 +85,7 @@ async def reboot_system():
     return {"message": "System rebooting"}
 
 
-@router.post("/shutdown")
+@protected_router.post("/shutdown")
 async def shutdown_system():
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot shutdown on Windows")
@@ -81,12 +94,12 @@ async def shutdown_system():
     return {"message": "System shutting down"}
 
 
-@router.get("/data")
+@protected_router.get("/data")
 async def data_insights() -> DataResponse[dict[str, ConsumeData]]:
     return DataResponse(data=generate_consume_data())
 
 
-@router.get("/backup")
+@protected_router.get("/backup")
 async def create_backup():
     backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
     zip_file_name = f"{backup_folder_name}.zip"
@@ -127,7 +140,7 @@ def parse_restored_file(
     return data  # type: ignore
 
 
-@router.post("/backup")
+@protected_router.post("/backup")
 async def upload_backup(
     file: UploadFile = File(...),
     restored_file: list[Literal["style", "config", "images", "database"]] = Depends(parse_restored_file),
@@ -174,7 +187,7 @@ async def upload_backup(
     return {"message": "Backup restored successfully"}
 
 
-@router.get("/logs")
+@protected_router.get("/logs")
 async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, list[str]]]:
     log_data: dict[str, list[str]] = {}
     for _file in get_log_files():
@@ -182,7 +195,7 @@ async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, l
     return DataResponse(data=log_data)
 
 
-@router.post("/rfid/scan")
+@protected_router.post("/rfid/scan")
 async def rfid_writer():
     # Return RFID writer data
     if _platform_data.system == "Windows":
@@ -190,14 +203,14 @@ async def rfid_writer():
     return {"message": "NOT IMPLEMENTED"}
 
 
-@router.get("/wifi")
+@protected_router.get("/wifi")
 async def get_available_ssids() -> list[str]:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot scan WiFi on Windows")
     return list_available_ssids()
 
 
-@router.post("/wifi")
+@protected_router.post("/wifi")
 async def update_wifi_data(wifi_data: WifiData):
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot set WiFi on Windows")
@@ -207,24 +220,24 @@ async def update_wifi_data(wifi_data: WifiData):
     return {"message": f"Wifi {wifi_data.ssid} setup successfully"}
 
 
-@router.get("/addon")
+@protected_router.get("/addon")
 async def addon_data() -> list[AddonData]:
     return get_addon_data()
 
 
-@router.post("/addon")
+@protected_router.post("/addon")
 async def add_addon(addon: AddonData):
     install_addon(addon)
     return {"message": f"Addon {addon.name} installed"}
 
 
-@router.delete("/addon/remove")
+@protected_router.delete("/addon/remove")
 async def delete_addon(addon: AddonData):
     remove_addon(addon)
     return {"message": f"Addon {addon.name} removed"}
 
 
-@router.get("/connection")
+@protected_router.get("/connection")
 async def check_internet_connection():
     is_connected = has_connection()
     return {
@@ -233,7 +246,7 @@ async def check_internet_connection():
     }
 
 
-@router.post("/update/system")
+@protected_router.post("/update/system")
 async def update_system(background_tasks: BackgroundTasks):
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot update system on Windows")
@@ -241,7 +254,7 @@ async def update_system(background_tasks: BackgroundTasks):
     return {"message": "System update started"}
 
 
-@router.post("/update/software")
+@protected_router.post("/update/software")
 async def update_software():
     updater = Updater()
     update_available, info = updater.check_for_updates()
@@ -253,3 +266,17 @@ async def update_software():
     if not success:
         raise HTTPException(400, detail="Could not update, see in logs for more information.")
     return {"message": "Software update "}
+
+
+@router.post("/password/master/validate")
+async def validate_master_password(password: PasswordInput):
+    if password.password != cfg.UI_MASTERPASSWORD:
+        raise HTTPException(status_code=403, detail="Invalid Master Password")
+    return {"message": "Master password is valid"}
+
+
+@router.post("/password/maker/validate")
+async def validate_maker_password(password: PasswordInput):
+    if password.password != cfg.UI_MAKER_PASSWORD:
+        raise HTTPException(status_code=403, detail="Invalid Maker Password")
+    return {"message": "Maker password is valid"}

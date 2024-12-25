@@ -76,6 +76,14 @@ _TAGS_METADATA = [
         "description": "Options for the machine.",
     },
     {
+        "name": "maker protected",
+        "description": "Need x-maker-key header with the maker password, if this section is set to protected and password is set.",  # noqa: E501
+    },
+    {
+        "name": "master protected",
+        "description": "Need x-master-key header with the master password if password is set.",
+    },
+    {
         "name": "testing",
         "description": "For testing purposes.",
     },
@@ -146,9 +154,13 @@ async def addon_error_handler(request: Request, exc: CouldNotInstallAddonError):
 
 
 app.include_router(cocktails.router)
+app.include_router(cocktails.protected_router)
 app.include_router(bottles.router)
+app.include_router(bottles.protected_router)
 app.include_router(options.router)
+app.include_router(options.protected_router)
 app.include_router(ingredients.router)
+app.include_router(ingredients.protected_router)
 
 
 @app.get("/", tags=["testing"])

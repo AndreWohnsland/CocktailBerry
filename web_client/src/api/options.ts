@@ -7,7 +7,7 @@ const options_url = '/options';
 
 // Config
 export const getConfig = async (): Promise<ConfigDataWithUiInfo> => {
-  return axiosInstance.get<ConfigDataWithUiInfo>(`${options_url}/ui`).then((res) => res.data);
+  return axiosInstance.get<ConfigDataWithUiInfo>(`${options_url}/full`).then((res) => res.data);
 };
 
 export const getConfigValues = async (): Promise<ConfigData> => {
