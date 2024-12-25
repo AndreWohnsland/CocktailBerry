@@ -69,7 +69,7 @@ const CocktailList: React.FC = () => {
           <FaSearch size={20} />
         </button>
       </div>
-      <div className='flex flex-wrap gap-3 justify-center items-center w-full'>
+      <div className='flex flex-wrap gap-3 justify-center items-center w-full mb-4'>
         {displayedCocktails
           ?.sort((a, b) => a.name.localeCompare(b.name))
           .map((cocktail) => (
