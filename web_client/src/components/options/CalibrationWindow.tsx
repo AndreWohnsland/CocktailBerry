@@ -19,7 +19,7 @@ const CalibrationWindow = () => {
         <div className='flex flex-col space-y-2'>
           <button
             className='button-primary button-primary p-2 flex justify-center items-center'
-            onClick={() => setChannel(Math.min(channel + 1, config.MAKER_NUMBER_BOTTLES as number))}
+            onClick={() => setChannel(Math.min(channel + 1, config.MAKER_NUMBER_BOTTLES))}
           >
             <FaPlus size={30} />
           </button>

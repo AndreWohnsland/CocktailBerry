@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { getConfigValues } from './api/options';
-import { ConfigData } from './types/models';
+import { DefinedConfigData } from './types/models';
 
 interface IConfig {
-  config: ConfigData;
+  config: DefinedConfigData;
   refetchConfig: () => Promise<void>;
   theme: string;
   changeTheme: (theme: string) => void;
@@ -14,7 +14,7 @@ const STORE_CONFIG: string = 'CONFIG';
 const ConfigContext = createContext({} as IConfig);
 
 export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
-  const [config, setConfig] = useState<ConfigData>(JSON.parse(localStorage.getItem(STORE_CONFIG) || '{}'));
+  const [config, setConfig] = useState<DefinedConfigData>(JSON.parse(localStorage.getItem(STORE_CONFIG) || '{}'));
   const [theme, setTheme] = useState<string>(localStorage.getItem(STORE_THEME) || '');
 
   const fetchConfigValues = async () => {
@@ -39,9 +39,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   }, [theme]);
 
   useEffect(() => {
-    if (theme) {
-      localStorage.setItem(STORE_CONFIG, JSON.stringify(config));
-    }
+    localStorage.setItem(STORE_CONFIG, JSON.stringify(config));
   }, [config]);
 
   const handleThemeChange = (newTheme: string) => {

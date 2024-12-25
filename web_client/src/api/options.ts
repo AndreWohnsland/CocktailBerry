@@ -1,7 +1,15 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from 'axios';
 import { axiosInstance } from './common';
-import { ConsumeData, LogData, ConfigData, ConfigDataWithUiInfo, AddonData, WifiData } from '../types/models';
+import {
+  ConsumeData,
+  LogData,
+  ConfigData,
+  ConfigDataWithUiInfo,
+  AddonData,
+  WifiData,
+  DefinedConfigData,
+} from '../types/models';
 
 const options_url = '/options';
 
@@ -10,8 +18,8 @@ export const getConfig = async (): Promise<ConfigDataWithUiInfo> => {
   return axiosInstance.get<ConfigDataWithUiInfo>(`${options_url}/full`).then((res) => res.data);
 };
 
-export const getConfigValues = async (): Promise<ConfigData> => {
-  return axiosInstance.get<ConfigData>(options_url).then((res) => res.data);
+export const getConfigValues = async (): Promise<DefinedConfigData> => {
+  return axiosInstance.get<DefinedConfigData>(options_url).then((res) => res.data);
 };
 
 export const useConfig = (): UseQueryResult<ConfigDataWithUiInfo, Error> => {
