@@ -121,6 +121,12 @@ class ConfigManager:
     TEAMS_ACTIVE: bool = False
     TEAM_BUTTON_NAMES: ClassVar[list[str]] = ["Team 1", "Team 2"]
     TEAM_API_URL: str = "http://127.0.0.1:8080"
+    # Custom theme settings
+    CUSTOM_COLOR_PRIMARY: str = "#007bff"
+    CUSTOM_COLOR_SECONDARY: str = "#ef9700"
+    CUSTOM_COLOR_NEUTRAL: str = "#96adba"
+    CUSTOM_COLOR_BACKGROUND: str = "#0d0d0d"
+    CUSTOM_COLOR_DANGER: str = "#d00000"
     # Config to change the displayed values in the maker to another unit
     EXP_MAKER_UNIT: str = "ml"
     EXP_MAKER_FACTOR: float = 1.0
@@ -183,6 +189,11 @@ class ConfigManager:
             "TEAMS_ACTIVE": BoolType(check_name="Teams Active"),
             "TEAM_BUTTON_NAMES": ListType(StringType(), 2),
             "TEAM_API_URL": StringType(),
+            "CUSTOM_COLOR_PRIMARY": StringType(),
+            "CUSTOM_COLOR_SECONDARY": StringType(),
+            "CUSTOM_COLOR_NEUTRAL": StringType(),
+            "CUSTOM_COLOR_BACKGROUND": StringType(),
+            "CUSTOM_COLOR_DANGER": StringType(),
             "EXP_MAKER_UNIT": StringType(),
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
         }

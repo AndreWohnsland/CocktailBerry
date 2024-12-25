@@ -652,6 +652,21 @@ ui:
     TEAM_API_URL:
       en: 'URL address for teams API'
       de: 'URL Adresse der Teams API'
+    CUSTOM_COLOR_PRIMARY:
+      en: 'Custom primary (most elements) color if custom theme is selected'
+      de: 'Eigene primäre (meisten Elemente) Farbe, wenn custom Theme ausgewählt ist'
+    CUSTOM_COLOR_SECONDARY:
+      en: 'Custom secondary (active, hover) color if custom theme is selected'
+      de: 'Eigene sekundäre (aktiv, hover) Farbe, wenn custom Theme ausgewählt ist'
+    CUSTOM_COLOR_NEUTRAL:
+      en: 'Custom neutral (inactive, subtle) color if custom theme is selected'
+      de: 'Eigene neutrale (inaktiv, subtile) Farbe, wenn custom Theme ausgewählt ist'
+    CUSTOM_COLOR_BACKGROUND:
+      en: 'Custom background color if custom theme is selected'
+      de: 'Eigene Hintergrundfarbe, wenn custom Theme ausgewählt ist'
+    CUSTOM_COLOR_DANGER:
+      en: 'Custom danger (e.g. delete) color if custom theme is selected'
+      de: 'Eigene Gefahr (z.B. löschen) Farbe, wenn custom Theme ausgewählt ist'
     EXP_MAKER_UNIT:
       en: 'Unit to show in the maker tab for volume'
       de: 'Anzeigeeinheit der Volumen im Maker Tab'
