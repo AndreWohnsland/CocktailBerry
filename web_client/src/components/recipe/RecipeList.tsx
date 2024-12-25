@@ -84,10 +84,13 @@ const RecipeList: React.FC = () => {
   };
 
   const handleUploadImage = async () => {
-    if (!selectedCocktail?.id) return;
+    if (!selectedCocktail?.id) {
+      errorToast('Recipe needs to be created before uploading image.');
+      return;
+    }
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
-      errorToast('Please select a file before uploading.', 'No File');
+      errorToast('Please select a file before uploading.');
       return;
     }
     const success = await executeAndShow(() => uploadCocktailImage(selectedCocktail.id!, file));
@@ -175,7 +178,7 @@ const RecipeList: React.FC = () => {
             onClick={handleEnableAllRecipes}
             className='flex justify-center items-center py-3 p-2 button-neutral-filled w-full'
           >
-            <span className='ml-4 text-xl'>Enable All</span>
+            <span className='text-xl'>Enable All</span>
           </button>
         </div>
         {sortedCocktails?.map((cocktail) => (
@@ -285,7 +288,11 @@ const RecipeList: React.FC = () => {
                 Add Ingredient
               </button>
               <div className='flex items-center pt-1'>
-                <button type='button' onClick={handleUploadImage} className='button-secondary p-2 mr-1'>
+                <button
+                  type='button'
+                  onClick={handleUploadImage}
+                  className={`${selectedCocktail?.id ? 'button-secondary' : 'button-neutral'} p-2 mr-1`}
+                >
                   <FaUpload />
                 </button>
                 <input type='file' accept='image/*' ref={fileInputRef} className='input-base p-1 mr-1' />
