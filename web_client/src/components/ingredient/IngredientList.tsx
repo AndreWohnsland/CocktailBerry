@@ -9,15 +9,22 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
+import SearchBar from '../common/SearchBar';
 
 const IngredientList: React.FC = () => {
   const { data: ingredients, isLoading, error, refetch } = useIngredients();
   const [selectedIngredient, setSelectedIngredient] = useState<IngredientInput | null>(null);
+  const [search, setSearch] = useState('');
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
 
-  const sortedIngredients = ingredients?.sort((a, b) => a.name.localeCompare(b.name));
+  let displayedIngredients = ingredients?.sort((a, b) => a.name.localeCompare(b.name));
+  if (search) {
+    displayedIngredients = displayedIngredients?.filter((ingredient) =>
+      ingredient.name.toLowerCase().includes(search.toLowerCase()),
+    );
+  }
 
   const handleIngredientClick = (ingredient: Ingredient) => {
     setSelectedIngredient({ ...ingredient });
@@ -96,6 +103,7 @@ const IngredientList: React.FC = () => {
 
   return (
     <div className='p-2 w-full max-w-3xl'>
+      <SearchBar search={search} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full'>
           <button
@@ -106,7 +114,7 @@ const IngredientList: React.FC = () => {
             <span className='ml-4 text-xl'>New</span>
           </button>
         </div>
-        {sortedIngredients?.map((ingredient) => (
+        {displayedIngredients?.map((ingredient) => (
           <div key={ingredient.id}>
             <button
               onClick={() => handleIngredientClick(ingredient)}

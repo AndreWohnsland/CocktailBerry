@@ -17,17 +17,26 @@ import { useIngredients } from '../../api/ingredients';
 import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
 import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
+import SearchBar from '../common/SearchBar';
 
 const RecipeList: React.FC = () => {
   const { data: cocktails, isLoading, error, refetch } = useCocktails(false, 10, false);
   const [selectedCocktail, setSelectedCocktail] = useState<CocktailInput | null>(null);
   const { data: ingredients, isLoading: ingredientsLoading, error: ingredientsError } = useIngredients();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [search, setSearch] = useState('');
 
   if (isLoading || ingredientsLoading) return <LoadingData />;
   if (error || ingredientsError) return <ErrorComponent text={error?.message || ingredientsError?.message} />;
 
-  const sortedCocktails = cocktails?.sort((a, b) => a.name.localeCompare(b.name));
+  let displayedCocktails = cocktails?.sort((a, b) => a.name.localeCompare(b.name));
+  if (search) {
+    displayedCocktails = displayedCocktails?.filter(
+      (cocktail) =>
+        cocktail.name.toLowerCase().includes(search.toLowerCase()) ||
+        cocktail.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(search.toLowerCase())),
+    );
+  }
 
   const handleCocktailClick = (cocktail: Cocktail) => {
     setSelectedCocktail({
@@ -165,6 +174,7 @@ const RecipeList: React.FC = () => {
 
   return (
     <div className='p-2 w-full max-w-3xl'>
+      <SearchBar search={search} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full flex flex-row gap-4'>
           <button
@@ -181,7 +191,7 @@ const RecipeList: React.FC = () => {
             <span className='text-xl'>Enable All</span>
           </button>
         </div>
-        {sortedCocktails?.map((cocktail) => (
+        {displayedCocktails?.map((cocktail) => (
           <button
             key={cocktail.id}
             onClick={() => handleCocktailClick(cocktail)}
