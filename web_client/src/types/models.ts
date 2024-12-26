@@ -87,10 +87,75 @@ export interface LogData {
   data: { [key: string]: string[] };
 }
 
+// generic interface for the config data
 export interface ConfigData {
   [key: string]: PossibleConfigValue;
 }
 
+// explicit interface for the config data returned to the frontend for UI setup
+// this alters slightly from the "real" config, since it for example abstracts password into bool (is it set or not)
+export interface DefinedConfigData {
+  UI_DEVENVIRONMENT: boolean;
+  UI_MASTERPASSWORD: boolean;
+  UI_MAKER_PASSWORD: boolean;
+  UI_LOCKED_TABS: [boolean, boolean, boolean];
+  UI_LANGUAGE: string;
+  UI_WIDTH: number;
+  UI_HEIGHT: number;
+  UI_PICTURE_SIZE: number;
+  PUMP_CONFIG: PumpConfig[];
+  MAKER_NAME: string;
+  MAKER_NUMBER_BOTTLES: number;
+  MAKER_PREPARE_VOLUME: number[];
+  MAKER_SIMULTANEOUSLY_PUMPS: number;
+  MAKER_CLEAN_TIME: number;
+  MAKER_ALCOHOL_FACTOR: number;
+  MAKER_PUMP_REVERSION: boolean;
+  MAKER_REVERSION_PIN: number;
+  MAKER_SEARCH_UPDATES: boolean;
+  MAKER_CHECK_BOTTLE: boolean;
+  MAKER_PINS_INVERTED: boolean;
+  MAKER_THEME: string;
+  MAKER_MAX_HAND_INGREDIENTS: number;
+  MAKER_CHECK_INTERNET: boolean;
+  MAKER_USE_RECIPE_VOLUME: boolean;
+  MAKER_ADD_SINGLE_INGREDIENT: boolean;
+  LED_PINS: number[];
+  LED_BRIGHTNESS: number;
+  LED_COUNT: number;
+  LED_NUMBER_RINGS: number;
+  LED_DEFAULT_ON: boolean;
+  LED_IS_WS: boolean;
+  RFID_READER: string;
+  MICROSERVICE_ACTIVE: boolean;
+  MICROSERVICE_BASE_URL: string;
+  TEAMS_ACTIVE: boolean;
+  TEAM_BUTTON_NAMES: string[];
+  TEAM_API_URL: string;
+  CUSTOM_COLOR_PRIMARY: string;
+  CUSTOM_COLOR_SECONDARY: string;
+  CUSTOM_COLOR_NEUTRAL: string;
+  CUSTOM_COLOR_BACKGROUND: string;
+  CUSTOM_COLOR_DANGER: string;
+  EXP_MAKER_UNIT: string;
+  EXP_MAKER_FACTOR: number;
+}
+
+export interface CustomColors {
+  primary: string;
+  secondary: string;
+  background: string;
+  neutral: string;
+  danger: string;
+}
+
+export interface PumpConfig {
+  pin: number;
+  volume_flow: number;
+  tube_volume: number;
+}
+
+// generic interface for the config data with ui information
 export interface ConfigDataWithUiInfo {
   [key: string]: PossibleUiInformation & {
     [additionalKey: string]: PossibleUiInformation | undefined;
