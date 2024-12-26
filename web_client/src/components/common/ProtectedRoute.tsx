@@ -2,32 +2,25 @@ import React from 'react';
 import { useConfig } from '../../ConfigProvider';
 import { useAuth } from '../../AuthProvider';
 import PasswordPage from './PasswordPage';
+import { validateMakerPassword, validateMasterPassword } from '../../api/options';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredPassword: number;
-  setAuthenticated: () => void;
+  setAuthenticated: (password: number) => void;
   passwordName: string;
+  authMethod: (password: number) => Promise<{ message: string }>;
   isProtected?: boolean;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
-  requiredPassword,
   setAuthenticated,
   passwordName,
+  authMethod,
   isProtected = true,
 }) => {
-  const needsPassword = isProtected && requiredPassword !== 0;
-
-  if (needsPassword) {
-    return (
-      <PasswordPage
-        requiredPassword={requiredPassword}
-        passwordName={passwordName}
-        setAuthenticated={setAuthenticated}
-      />
-    );
+  if (isProtected) {
+    return <PasswordPage passwordName={passwordName} setAuthenticated={setAuthenticated} authMethod={authMethod} />;
   }
 
   return <>{children}</>;
@@ -40,14 +33,18 @@ interface MakerPasswordProtectedProps {
 
 export const MakerPasswordProtected: React.FC<MakerPasswordProtectedProps> = ({ children, tabNumber }) => {
   const { config } = useConfig();
-  const isProtected = (config.UI_LOCKED_TABS as boolean[])[tabNumber];
-  const { makerAuthenticated, setMakerAuthenticated } = useAuth();
+  const isProtected = config.UI_LOCKED_TABS[tabNumber];
+  const { makerAuthenticated, setMakerAuthenticated, setMakerPassword } = useAuth();
+  const hasPassword = config.UI_MAKER_PASSWORD;
   return (
     <ProtectedRoute
-      requiredPassword={config.UI_MAKER_PASSWORD as number}
-      isProtected={isProtected && !makerAuthenticated}
-      setAuthenticated={() => setMakerAuthenticated(true)}
+      isProtected={hasPassword && isProtected && !makerAuthenticated}
+      setAuthenticated={(password: number) => {
+        setMakerAuthenticated(true);
+        setMakerPassword(password);
+      }}
       passwordName='Maker Password'
+      authMethod={validateMakerPassword}
     >
       {children}
     </ProtectedRoute>
@@ -60,13 +57,17 @@ interface MasterPasswordProtectedProps {
 
 export const MasterPasswordProtected: React.FC<MasterPasswordProtectedProps> = ({ children }) => {
   const { config } = useConfig();
-  const { masterAuthenticated, setMasterAuthenticated } = useAuth();
+  const { masterAuthenticated, setMasterAuthenticated, setMasterPassword } = useAuth();
+  const hasPassword = config.UI_MASTERPASSWORD;
   return (
     <ProtectedRoute
-      requiredPassword={config.UI_MASTERPASSWORD as number}
-      isProtected={!masterAuthenticated}
-      setAuthenticated={() => setMasterAuthenticated(true)}
+      isProtected={hasPassword && !masterAuthenticated}
+      setAuthenticated={(password: number) => {
+        setMasterAuthenticated(true);
+        setMasterPassword(password);
+      }}
       passwordName='Master Password'
+      authMethod={validateMasterPassword}
     >
       {children}
     </ProtectedRoute>

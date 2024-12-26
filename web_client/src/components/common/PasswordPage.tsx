@@ -2,21 +2,24 @@ import React, { useState } from 'react';
 import { errorToast } from '../../utils';
 
 interface PasswordPageProps {
-  requiredPassword: number;
   passwordName: string;
-  setAuthenticated: () => void;
+  setAuthenticated: (password: number) => void;
+  authMethod: (password: number) => Promise<{ message: string }>;
 }
 
-const PasswordPage: React.FC<PasswordPageProps> = ({ requiredPassword, passwordName, setAuthenticated }) => {
+const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthenticated, authMethod }) => {
   const [password, setPassword] = useState('');
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (Number(password) === requiredPassword) {
-      setAuthenticated();
-    } else {
-      errorToast('Incorrect password');
-    }
+    const usedPassword = Number(password);
+    authMethod(usedPassword)
+      .then(() => {
+        setAuthenticated(usedPassword);
+      })
+      .catch((err) => {
+        errorToast(err);
+      });
   };
 
   return (
