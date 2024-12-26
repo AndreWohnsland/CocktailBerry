@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
+import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
 import { useCocktails } from '../../api/cocktails';
-import { Cocktail } from '../../types/models';
-import CocktailSelection from './CocktailSelection';
-import { MdNoDrinks } from 'react-icons/md';
 import { API_URL } from '../../api/common';
+import { useConfig } from '../../ConfigProvider';
+import { Cocktail } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
-import { useConfig } from '../../ConfigProvider';
+import SearchBar from '../common/SearchBar';
+import CocktailSelection from './CocktailSelection';
 import SingleIngredientSelection from './SingleIngredientSelection';
-import { FaEraser, FaSearch } from 'react-icons/fa';
-
-Modal.setAppElement('#root');
 
 const CocktailList: React.FC = () => {
   const { data: cocktails, error, isLoading } = useCocktails();
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
   const [search, setSearch] = useState('');
   const { config } = useConfig();
 
@@ -33,8 +30,7 @@ const CocktailList: React.FC = () => {
   };
 
   let displayedCocktails = cocktails;
-
-  if (showSearch && search) {
+  if (search) {
     displayedCocktails = displayedCocktails?.filter(
       (cocktail) =>
         cocktail.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -44,31 +40,7 @@ const CocktailList: React.FC = () => {
 
   return (
     <div className='px-2 centered max-w-7xl'>
-      <div className='sticky-top mb-2 flex flex-row'>
-        <div className='flex-grow'></div>
-        <input
-          type='text'
-          placeholder='Search'
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className='input-base mr-1 w-full p-3 max-w-sm'
-          hidden={!showSearch}
-        />
-        <div hidden={!showSearch}>
-          <button
-            onClick={() => setSearch('')}
-            className='button-neutral flex items-center justify-center p-2 mr-1 !border'
-          >
-            <FaEraser size={20} />
-          </button>
-        </div>
-        <button
-          onClick={() => setShowSearch(!showSearch)}
-          className='button-primary flex items-center justify-center p-2 !border pointer-events-auto'
-        >
-          <FaSearch size={20} />
-        </button>
-      </div>
+      <SearchBar search={search} setSearch={setSearch}></SearchBar>
       <div className='flex flex-wrap gap-3 justify-center items-center w-full mb-4'>
         {displayedCocktails
           ?.sort((a, b) => a.name.localeCompare(b.name))
