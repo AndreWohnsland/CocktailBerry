@@ -61,7 +61,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
       })
       .catch((error) => {
         const errorReason = error.status as PrepareResult | undefined;
-        const refillAllowed = config.UI_MAKER_PASSWORD && config.UI_LOCKED_TABS[2];
+        const refillAllowed = !(config.UI_MAKER_PASSWORD && config.UI_LOCKED_TABS[2]);
         if (errorReason === 'NOT_ENOUGH_INGREDIENTS' && refillAllowed) {
           setRefillMessage(error.detail);
           setRefillOpen(true);
