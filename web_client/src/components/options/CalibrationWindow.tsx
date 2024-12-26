@@ -3,15 +3,17 @@ import { useConfig } from '../../ConfigProvider';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { calibrateBottle } from '../../api/bottles';
 import { executeAndShow } from '../../utils';
+import { useTranslation } from 'react-i18next';
 
 const CalibrationWindow = () => {
   const [channel, setChannel] = useState(1);
   const [amount, setAmount] = useState(10);
   const { config } = useConfig();
+  const { t } = useTranslation();
 
   return (
     <div className='flex flex-col justify-between items-center p-4 w-full max-w-md'>
-      <h1 className='text-secondary text-2xl font-bold mb-8'>Pump Calibration Program</h1>
+      <h1 className='text-secondary text-2xl font-bold mb-8'>{t('calibration.pumpCalibrationProgram')}</h1>
       <div className='grid grid-cols-3 gap-4 items-center w-full max-w-sm'>
         <div className='text-center'>
           <div className='text-4xl font-bold'>{channel}</div>
@@ -30,7 +32,7 @@ const CalibrationWindow = () => {
             <FaMinus size={30} />
           </button>
         </div>
-        <div className='text-center text-lg font-semibold text-neutral'>Pump</div>
+        <div className='text-center text-lg font-semibold text-neutral'>{t('calibration.pump')}</div>
 
         <div className='text-center'>
           <div className='text-4xl font-bold'>{amount}</div>
@@ -49,14 +51,14 @@ const CalibrationWindow = () => {
             <FaMinus size={30} />
           </button>
         </div>
-        <div className='text-center text-lg font-semibold text-neutral'>Amount</div>
+        <div className='text-center text-lg font-semibold text-neutral'>{t('calibration.amount')}</div>
       </div>
 
       <button
         className='button-primary-filled text-lg p-4 w-full mt-8'
         onClick={() => executeAndShow(() => calibrateBottle(channel, amount))}
       >
-        Start
+        {t('start')}
       </button>
     </div>
   );

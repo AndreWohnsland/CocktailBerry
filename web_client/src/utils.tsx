@@ -31,7 +31,7 @@ export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
 };
 
 export const confirmAndExecute = async (message: string, executable: () => Promise<void | any>): Promise<boolean> => {
-  const confirmation = window.confirm(`Do you want to ${message}?`);
+  const confirmation = window.confirm(message);
   if (confirmation) {
     return executeAndShow(executable);
   } else {

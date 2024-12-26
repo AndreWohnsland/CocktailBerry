@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useConsumeData } from '../../api/options';
 import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
+import { useTranslation } from 'react-i18next';
 
 const ConsumeBarChart: React.FC<{
   title: string;
@@ -40,6 +41,7 @@ const ConsumeBarChart: React.FC<{
 const ConsumeWindow: React.FC = () => {
   const { data, isLoading, error } = useConsumeData();
   const [selectedDataType, setSelectedDataType] = useState<string>('AT RESET');
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (data) {
@@ -54,10 +56,26 @@ const ConsumeWindow: React.FC = () => {
     setSelectedDataType(event.target.value);
   };
 
+  const createSelectionUserText = (value: string) => {
+    if (value === 'AT RESET') {
+      return t('data.atReset');
+    } else if (value === 'ALL') {
+      return t('data.allTime');
+    } else if (/^\d{8}$/.test(value)) {
+      // Format YYYYMMDD to YYYY.MM.DD
+      const year = value.slice(0, 4);
+      const month = value.slice(4, 6);
+      const day = value.slice(6, 8);
+      return t('data.dateFormat', { year, month, day });
+    } else {
+      return value;
+    }
+  };
+
   const consumeData = data?.data;
 
   if (!consumeData) {
-    return <div>No data</div>;
+    return <div>{t('data.noData')}</div>;
   }
 
   const selectedData = consumeData[selectedDataType];
@@ -66,12 +84,12 @@ const ConsumeWindow: React.FC = () => {
     <div className='flex flex-col w-full max-w-5xl'>
       <div className='flex flex-col items-center justify-center flex-shrink-0'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
-          <h2 className='text-2xl font-bold text-secondary mr-4 text-center'>Data:</h2>
+          <h2 className='text-2xl font-bold text-secondary mr-4 text-center'>{t('data.data')}:</h2>
           <select value={selectedDataType} onChange={handleDataTypeChange} className='select-base'>
             {consumeData &&
               Object.keys(consumeData).map((dataType) => (
                 <option key={dataType} value={dataType}>
-                  {dataType}
+                  {createSelectionUserText(dataType)}
                 </option>
               ))}
           </select>
@@ -81,9 +99,9 @@ const ConsumeWindow: React.FC = () => {
       <div className='flex-grow p-2'>
         {consumeData && (
           <>
-            <ConsumeBarChart title='Recipes' data={selectedData.recipes} unit='x' />
-            <ConsumeBarChart title='Ingredients' data={selectedData.ingredients} />
-            {selectedData.cost && <ConsumeBarChart title='Cost' data={selectedData.cost} />}
+            <ConsumeBarChart title={t('data.recipes')} data={selectedData.recipes} unit='x' />
+            <ConsumeBarChart title={t('data.ingredients')} data={selectedData.ingredients} />
+            {selectedData.cost && <ConsumeBarChart title={t('data.cost')} data={selectedData.cost} />}
           </>
         )}
       </div>

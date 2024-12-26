@@ -7,6 +7,7 @@ import { FaPlusCircle, FaMinusCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import { useTranslation } from 'react-i18next';
 
 const AvailableBottles: React.FC = () => {
   const { data: ingredients, error: ingredientsError, isLoading: ingredientsLoading } = useIngredients();
@@ -16,6 +17,7 @@ const AvailableBottles: React.FC = () => {
   const [selectedAvailable, setSelectedAvailable] = useState<Ingredient[]>([]);
   const [selectedFree, setSelectedFree] = useState<Ingredient[]>([]);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setFreeIngredients((ingredients ?? []).filter((ingredient) => !(available ?? []).includes(ingredient.id)));
@@ -54,7 +56,7 @@ const AvailableBottles: React.FC = () => {
     <div className='max-w-7xl w-full px-1'>
       <div className='flex flex-col sm:flex-row justify-start items-start w-full h-full sm:h-[70vh]'>
         <div className='w-full sm:w-1/2 h-[50vh] sm:h-full'>
-          <h2 className='font-bold mb-2 text-center text-xl text-secondary'>Available</h2>
+          <h2 className='font-bold mb-2 text-center text-xl text-secondary'>{t('bottles.available')}</h2>
           <ListView
             ingredientList={availableIngredients}
             setSelected={setSelectedAvailable}
@@ -78,17 +80,17 @@ const AvailableBottles: React.FC = () => {
           </button>
         </div>
         <div className='w-full sm:w-1/2 h-[50vh] sm:h-full'>
-          <h2 className='font-bold mb-2 text-center text-xl text-secondary'>Possible to Add</h2>
+          <h2 className='font-bold mb-2 text-center text-xl text-secondary'>{t('bottles.possibleToAdd')}</h2>
 
           <ListView ingredientList={freeIngredients} setSelected={setSelectedFree} selected={selectedFree} />
         </div>
       </div>
       <div className='w-full flex justify-between mt-12'>
         <button onClick={() => navigate(-1)} className='button-primary p-2 w-1/2 mr-2'>
-          Back
+          {t('back')}
         </button>
         <button onClick={updateAvailable} className='button-primary-filled p-2 w-1/2'>
-          Apply
+          {t('apply')}
         </button>
       </div>
     </div>

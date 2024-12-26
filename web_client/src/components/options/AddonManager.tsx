@@ -5,9 +5,11 @@ import { FaPlus, FaTrashAlt } from 'react-icons/fa';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import { confirmAndExecute, executeAndShow } from '../../utils';
+import { useTranslation } from 'react-i18next';
 
 const AddonManager: React.FC = () => {
   const { data: addons, isLoading, error, refetch } = useAddonData();
+  const { t } = useTranslation();
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
@@ -34,7 +36,7 @@ const AddonManager: React.FC = () => {
   };
 
   const handleDelete = async (addon: AddonData) => {
-    confirmAndExecute(`Delete the Addon: ${addon.name}`, () => deleteAddon(addon)).then((success) => {
+    confirmAndExecute(t('addons.deleteTheAddon', { addon: addon.name }), () => deleteAddon(addon)).then((success) => {
       if (success) {
         refetch();
       }
@@ -43,7 +45,7 @@ const AddonManager: React.FC = () => {
 
   return (
     <div className='p-4 w-full max-w-3xl'>
-      <h2 className='text-2xl text-center mb-4 text-secondary font-bold'>Manage Addons</h2>
+      <h2 className='text-2xl text-center mb-4 text-secondary font-bold'>{t('addons.manageAddons')}</h2>
       <div className='grid grid-cols-1 gap-2'>
         {sortedAddons?.map((addon) => (
           <div key={addon.name} className='border border-primary p-4 rounded-xl'>
@@ -54,20 +56,18 @@ const AddonManager: React.FC = () => {
                   onClick={() => handleInstall(addon)}
                   className='button-primary-filled flex items-center p-2 px-4'
                 >
-                  <FaPlus className='mr-2' /> Add
+                  <FaPlus className='mr-2' />
+                  {t('add')}
                 </button>
               ) : !addon.is_installable && !addon.installed ? (
-                <div className='button-neutral !border !font-normal p-2 px-4'>Cannot be installed</div>
+                <div className='button-neutral !border !font-normal p-2 px-4'>{t('addons.cannotBeInstalled')}</div>
               ) : (
                 <button onClick={() => handleDelete(addon)} className='button-danger-filled flex items-center p-2 px-4'>
-                  <FaTrashAlt className='mr-2' /> Delete
+                  <FaTrashAlt className='mr-2' /> {t('delete')}
                 </button>
               )}
             </div>
             <p>{addon.description}</p>
-            {/*
-    ...existing code...
-  */}
           </div>
         ))}
       </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaWineBottle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import Modal from 'react-modal';
@@ -13,6 +14,7 @@ interface RefillPromptProps {
 const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, onClose }) => {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setIsChecked(false);
@@ -27,10 +29,10 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, onClose })
             onClick={() => navigate('/manage/bottles')}
           >
             <FaWineBottle className='mr-3' size={25} />
-            Go to Bottles
+            {t('cocktails.goToBottles')}
           </button>
           <button className='button-danger p-2 px-4 flex flex-row items-center' onClick={onClose}>
-            Later
+            {t('cocktails.later')}
             <IoClose className='ml-3' size={25} />
           </button>
         </div>
@@ -47,7 +49,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, onClose })
             className='cursor-pointer'
           />
           <label htmlFor='doneCheck' className='cursor-pointer text-neutral'>
-            Bottle is refilled
+            {t('cocktails.bottleRefilledCheck')}
           </label>
         </div>
         <div className='flex-grow'></div>
@@ -60,7 +62,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, onClose })
           }}
           disabled={!isChecked}
         >
-          Apply Refill
+          {t('cocktails.applyRefill')}
         </button>
       </div>
     </Modal>

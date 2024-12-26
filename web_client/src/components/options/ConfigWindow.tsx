@@ -8,6 +8,7 @@ import TabSelector from './TabSelector';
 import { useConfig as useConfigProvider } from '../../ConfigProvider';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import { useTranslation } from 'react-i18next';
 
 // some of the config are "old" meaning they are only used in the QT but not React UI
 // we will define them here and skip the values for those (e.g. not generate input fields)
@@ -25,6 +26,7 @@ const ConfigWindow: React.FC = () => {
   const [configData, setConfigData] = useState<ConfigData>({});
   const [selectedTab, setSelectedTab] = useState('UI');
   const { refetchConfig, changeTheme } = useConfigProvider();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (data) {
@@ -299,7 +301,7 @@ const ConfigWindow: React.FC = () => {
         </div>
         <div className='flex flex-col items-center justify-center w-full px-2'>
           <button onClick={postConfig} className='button-primary-filled p-2 w-full mb-2'>
-            Save
+            {t('save')}
           </button>
         </div>
       </div>

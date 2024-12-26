@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { getConfigValues } from './api/options';
 import { DefinedConfigData } from './types/models';
+import { useTranslation } from 'react-i18next';
 
 interface IConfig {
   config: DefinedConfigData;
@@ -16,6 +17,7 @@ const ConfigContext = createContext({} as IConfig);
 export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [config, setConfig] = useState<DefinedConfigData>(JSON.parse(localStorage.getItem(STORE_CONFIG) || '{}'));
   const [theme, setTheme] = useState<string>(localStorage.getItem(STORE_THEME) || '');
+  const { i18n } = useTranslation();
 
   const fetchConfigValues = async () => {
     const configValues = await getConfigValues();
@@ -40,6 +42,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem(STORE_CONFIG, JSON.stringify(config));
+    i18n.changeLanguage(config?.UI_LANGUAGE || 'en');
   }, [config]);
 
   const handleThemeChange = (newTheme: string) => {

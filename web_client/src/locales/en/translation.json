@@ -1,0 +1,121 @@
+{
+  "new": "New",
+  "create": "Create",
+  "apply": "Apply",
+  "save": "Save",
+  "delete": "Delete",
+  "submit": "Submit",
+  "add": "Add",
+  "back": "Back",
+  "start": "Start",
+  "search": "Search",
+  "cancel": "Cancel",
+  "close": "Close",
+  "skeletons": {
+    "errorPersistInformation": "If this persists, please check that CocktailBerry is running and you are in the same network!",
+    "couldNotLoadData": "Could not load data",
+    "loadingData": "Loading Data ...",
+    "loadingDataDescription": "Fetching data from backend, this should be quick ...",
+    "gettingConfiguration": "Getting Configuration",
+    "gettingConfigurationDescription": "Fetching data from backend for setup, this should be quick ..."
+  },
+  "header": {
+    "cocktails": "Cocktails",
+    "ingredients": "Ingredients",
+    "recipes": "Recipes",
+    "bottles": "Bottles",
+    "options": "Options"
+  },
+  "cocktails": {
+    "goToBottles": "Go to Bottles",
+    "later": "Later",
+    "bottleRefilledCheck": "Bottle is refilled",
+    "applyRefill": "Apply Refill",
+    "singleIngredient": "Single Ingredient",
+    "selectIngredient": "Select Ingredient",
+    "spend": "Spend"
+  },
+  "ingredients": {
+    "newIngredient": "New Ingredient",
+    "name": "Name",
+    "alcohol": "Alcohol",
+    "bottleVolume": "Bottle Volume",
+    "cost": "Cost",
+    "pumpSpeed": "Pump Speed",
+    "unit": "Unit",
+    "onlyAddByHand": "Can only add by Hand",
+    "deleteIngredient": "Do you want to delete the Ingredient?"
+  },
+  "recipes": {
+    "newRecipe": "New Recipe",
+    "enableAll": "Enable All",
+    "name": "Name",
+    "enabled": "Enabled",
+    "virginAvailable": "Virgin Available",
+    "addIngredient": "Add Ingredient",
+    "selectIngredient": "Select Ingredient",
+    "enableAllRecipes": "Do you want to enable all Recipes?",
+    "deleteRecipe": "Do you want to delete the Recipe?",
+    "deleteExistingImage": "Do you want to delete the existing user image?"
+  },
+  "bottles": {
+    "applyNew": "Apply New",
+    "available": "Available",
+    "possibleToAdd": "Possible to Add",
+    "adjustHeader": "Adjust the fill level of the bottle, maximum is {{maximum}}"
+  },
+  "options": {
+    "cleaning": "Cleaning",
+    "calibration": "Calibration",
+    "configuration": "Configuration",
+    "data": "Data",
+    "backup": "Backup",
+    "restore": "Restore",
+    "reboot": "Reboot",
+    "shutdown": "Shutdown",
+    "logs": "Logs",
+    "updateSystem": "Update System",
+    "updateCocktailBerry": "Update CocktailBerry Software",
+    "wifi": "WiFi",
+    "internetCheck": "Internet Check",
+    "addons": "Addons",
+    "writeRfid": "Write RFID",
+    "cleaningTheMachine": "Cleaning the Machine",
+    "startCleaningProgram": "Do you want to start the Cleaning Program?",
+    "rebootTheSystem": "Do you want to reboot the System?",
+    "shutdownTheSystem": "Do you want to shutdown the System?",
+    "updateTheSystem": "Do you want to update the System?"
+  },
+  "calibration": {
+    "pumpCalibrationProgram": "Pump Calibration Program",
+    "pump": "Pump",
+    "amount": "Amount"
+  },
+  "data": {
+    "data": "Data",
+    "noData": "No Data",
+    "atReset": "Since Reset",
+    "allTime": "All time",
+    "recipes": "Recipes",
+    "ingredients": "Ingredients",
+    "cost": "Cost",
+    "dateFormat": "{{year}}-{{month}}-{{day}}"
+  },
+  "addons": {
+    "manageAddons": "Manage Addons",
+    "cannotBeInstalled": "Cannot be Installed",
+    "deleteTheAddon": "Do you want to delete the addon '{{addon}}'?"
+  },
+  "wifi": {
+    "setupWifi": "Set Up WiFi",
+    "selectSsid": "Select SSID",
+    "password": "Password",
+    "connectToWifi": "Do you want to use the data to connect to WiFi {{selectedSsid}}?"
+  },
+  "password": {
+    "enterPassword": "Enter Password",
+    "passwordNeeded": "{{passwordName}} Password Needed",
+    "passwordProtectedBy": "This section is protected by the {{passwordName}} password.",
+    "enterThePassword": "Enter the password to continue:"
+  }
+}

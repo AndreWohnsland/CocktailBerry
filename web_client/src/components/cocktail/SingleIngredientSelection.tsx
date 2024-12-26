@@ -5,6 +5,7 @@ import { Ingredient } from '../../types/models';
 import { errorToast } from '../../utils';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import ProgressModal from './ProgressModal';
+import { useTranslation } from 'react-i18next';
 
 interface SingleIngredientSelectionProps {
   onClose: () => void;
@@ -15,6 +16,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [amount, setAmount] = useState<number>(10);
   const [isProgressModalOpen, setProgressModalOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleDecrement = () => {
     setAmount((prev) => Math.max(10, prev - 10));
@@ -53,7 +55,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
               onChange={(e) => setSelectedId(Number(e.target.value))}
             >
               <option value='' disabled>
-                Select Ingredient
+                {t('cocktails.selectIngredient')}
               </option>
               {allIngredients
                 .filter((ingredient: Ingredient) => ingredient.bottle !== null)
@@ -83,7 +85,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
               onClick={handleSpend}
               disabled={!selectedId}
             >
-              Spend
+              {t('cocktails.spend')}
             </button>
           </div>
           <div className='flex-grow'></div>

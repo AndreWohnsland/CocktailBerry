@@ -18,6 +18,7 @@ import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
 import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
 import SearchBar from '../common/SearchBar';
+import { useTranslation } from 'react-i18next';
 
 const RecipeList: React.FC = () => {
   const { data: cocktails, isLoading, error, refetch } = useCocktails(false, 10, false);
@@ -25,6 +26,7 @@ const RecipeList: React.FC = () => {
   const { data: ingredients, isLoading: ingredientsLoading, error: ingredientsError } = useIngredients();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState('');
+  const { t } = useTranslation();
 
   if (isLoading || ingredientsLoading) return <LoadingData />;
   if (error || ingredientsError) return <ErrorComponent text={error?.message || ingredientsError?.message} />;
@@ -86,7 +88,7 @@ const RecipeList: React.FC = () => {
   };
 
   const handleEnableAllRecipes = async () => {
-    const success = await confirmAndExecute('Enable all Recipes', enableAllRecipes);
+    const success = await confirmAndExecute(t('recipes.enableAllRecipes'), enableAllRecipes);
     if (success) {
       refetch();
     }
@@ -110,7 +112,7 @@ const RecipeList: React.FC = () => {
 
   const handleDeleteImage = async () => {
     if (!selectedCocktail?.id) return;
-    const success = await confirmAndExecute('Delete existing user image', () =>
+    const success = await confirmAndExecute(t('recipes.deleteExistingImage'), () =>
       deleteCocktailImage(selectedCocktail.id!),
     );
     if (success) {
@@ -153,7 +155,7 @@ const RecipeList: React.FC = () => {
   const handleDelete = async () => {
     const cocktailId = selectedCocktail?.id;
     if (!cocktailId) return;
-    const success = await executeAndShow(() => deleteCocktail(cocktailId));
+    const success = await confirmAndExecute(t('recipes.deleteRecipe'), () => deleteCocktail(cocktailId));
     if (success) {
       closeModal();
       refetch();
@@ -182,13 +184,13 @@ const RecipeList: React.FC = () => {
             className='flex justify-center items-center py-3 p-2 button-secondary-filled w-full'
           >
             <FaPlus size={25} />
-            <span className='ml-4 text-xl'>New</span>
+            <span className='ml-4 text-xl'>{t('new')}</span>
           </button>
           <button
             onClick={handleEnableAllRecipes}
             className='flex justify-center items-center py-3 p-2 button-neutral-filled w-full'
           >
-            <span className='text-xl'>Enable All</span>
+            <span className='text-xl'>{t('recipes.enableAll')}</span>
           </button>
         </div>
         {displayedCocktails?.map((cocktail) => (
@@ -214,7 +216,7 @@ const RecipeList: React.FC = () => {
         >
           <div className='px-1 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
-              <h2 className='text-xl font-bold text-secondary'>{selectedCocktail.name || 'New Recipe'}</h2>
+              <h2 className='text-xl font-bold text-secondary'>{selectedCocktail.name || t('recipes.newRecipe')}</h2>
               <button onClick={closeModal} aria-label='close'>
                 <AiOutlineCloseCircle className='text-danger' size={34} />
               </button>
@@ -222,7 +224,7 @@ const RecipeList: React.FC = () => {
             <div className='flex-grow'></div>
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>
               <label className='flex justify-center items-center'>
-                <p className='pr-2'>Name:</p>
+                <p className='pr-2'>{t('recipes.name')}:</p>
                 <input
                   type='text'
                   name='name'
@@ -233,7 +235,7 @@ const RecipeList: React.FC = () => {
               </label>
               <div className='flex flex-row items-center w-full justify-center'>
                 <label className='flex justify-center items-center pr-4'>
-                  <p className='pr-2'>Enabled:</p>
+                  <p className='pr-2'>{t('recipes.enabled')}:</p>
                   <input
                     type='checkbox'
                     name='enabled'
@@ -243,7 +245,7 @@ const RecipeList: React.FC = () => {
                   />
                 </label>
                 <label className='flex justify-center items-center'>
-                  <p className='pr-2'>Virgin Available:</p>
+                  <p className='pr-2'>{t('recipes.virginAvailable')}:</p>
                   <input
                     type='checkbox'
                     name='virgin_available'
@@ -260,7 +262,7 @@ const RecipeList: React.FC = () => {
                     onChange={(e) => handleIngredientChange(index, e)}
                     className='select-base p-2 mr-2'
                   >
-                    <option value=''>Select Ingredient</option>
+                    <option value=''>{t('recipes.selectIngredient')}</option>
                     {ingredients?.map((ing) => (
                       <option key={ing.id} value={ing.id}>
                         {ing.name}
@@ -295,7 +297,7 @@ const RecipeList: React.FC = () => {
                 className='button-neutral p-1 flex items-center justify-center'
               >
                 <FaPlus className='mr-2' />
-                Add Ingredient
+                {t('recipes.addIngredient')}
               </button>
               <div className='flex items-center pt-1'>
                 <button
@@ -326,11 +328,13 @@ const RecipeList: React.FC = () => {
             <div className='flex justify-between mt-2'>
               <button
                 type='button'
-                onClick={() => confirmAndExecute('Delete Cocktail', handleDelete)}
-                className='button-danger-filled p-2 px-4 flex justify-between items-center'
+                onClick={handleDelete}
+                className={`${
+                  selectedCocktail?.id ? 'button-danger-filled' : 'button-neutral'
+                } p-2 px-4 flex justify-between items-center`}
               >
                 <FaTrashAlt className='mr-2' />
-                Delete
+                {t('delete')}
               </button>
               <button
                 type='button'
@@ -340,8 +344,8 @@ const RecipeList: React.FC = () => {
                 onClick={handlePost}
                 disabled={!isValidCocktail()}
               >
-                <FaPen className='mr-2' />
-                {selectedCocktail?.id ? ' Apply' : ' Create'}
+                {selectedCocktail?.id ? <FaPen className='mr-2' /> : <FaPlus className='mr-2' />}
+                {selectedCocktail?.id ? t('apply') : t('create')}
               </button>
             </div>
           </div>

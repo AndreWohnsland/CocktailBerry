@@ -43,7 +43,7 @@ export const MakerPasswordProtected: React.FC<MakerPasswordProtectedProps> = ({ 
         setMakerAuthenticated(true);
         setMakerPassword(password);
       }}
-      passwordName='Maker Password'
+      passwordName='Maker'
       authMethod={validateMakerPassword}
     >
       {children}
@@ -66,7 +66,7 @@ export const MasterPasswordProtected: React.FC<MasterPasswordProtectedProps> = (
         setMasterAuthenticated(true);
         setMasterPassword(password);
       }}
-      passwordName='Master Password'
+      passwordName='Master'
       authMethod={validateMasterPassword}
     >
       {children}

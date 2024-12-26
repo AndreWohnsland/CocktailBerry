@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { executeAndShow } from '../../utils';
 import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
+import { useTranslation } from 'react-i18next';
 
 const BottleList: React.FC = () => {
   const {
@@ -20,6 +21,7 @@ const BottleList: React.FC = () => {
   const [freeIngredients, setFreeIngredients] = useState<Ingredient[]>([]);
   const [toggledBottles, setToggledBottles] = useState<{ [key: number]: boolean }>({});
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (bottles && ingredients) {
@@ -44,6 +46,7 @@ const BottleList: React.FC = () => {
     const toggledNumbers = Object.keys(toggledBottles)
       .filter((key) => toggledBottles[Number(key)])
       .map(Number);
+    if (!toggledNumbers.length) return;
     const success = await executeAndShow(() => refillBottle(toggledNumbers));
     if (success) {
       await bottleRefetch();
@@ -68,10 +71,10 @@ const BottleList: React.FC = () => {
         </div>
         <div className='sticky-bottom w-full grid grid-cols-2 gap-2 py-1 mt-2 bg-background'>
           <button className='button-primary-filled p-2' onClick={handleApply}>
-            Apply New
+            {t('bottles.applyNew')}
           </button>
           <button className='button-primary p-2 ' onClick={() => navigate('/manage/bottles/available')}>
-            Available
+            {t('bottles.available')}
           </button>
         </div>
       </div>

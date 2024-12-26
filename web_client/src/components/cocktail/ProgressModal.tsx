@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { getCocktailStatus, stopCocktail } from '../../api/cocktails';
+import { useTranslation } from 'react-i18next';
 
 interface ProgressModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
   const [currentProgress, setCurrentProgress] = useState(progress);
   const [currentStatus, setCurrentStatus] = useState<string>('IN_PROGRESS');
   const [message, setMessage] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const closeWindow = () => {
     setCurrentProgress(0);
@@ -84,11 +86,11 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         <div className='text-center mt-8'>
           {currentStatus === 'IN_PROGRESS' ? (
             <button className='mt-4 px-4 py-2 button-primary w-1/2' onClick={stopCocktail}>
-              Cancel
+              {t('cancel')}
             </button>
           ) : (
             <button className='mt-4 px-4 py-2 button-primary w-1/2' onClick={closeWindow}>
-              Close
+              {t('close')}
             </button>
           )}
         </div>

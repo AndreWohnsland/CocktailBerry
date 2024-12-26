@@ -10,6 +10,7 @@ import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
 import CocktailSelection from './CocktailSelection';
 import SingleIngredientSelection from './SingleIngredientSelection';
+import { useTranslation } from 'react-i18next';
 
 const CocktailList: React.FC = () => {
   const { data: cocktails, error, isLoading } = useCocktails();
@@ -17,6 +18,7 @@ const CocktailList: React.FC = () => {
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
   const [search, setSearch] = useState('');
   const { config } = useConfig();
+  const { t } = useTranslation();
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
@@ -68,7 +70,7 @@ const CocktailList: React.FC = () => {
             className='border-2 border-primary hover:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary hover:bg-secondary text-background'
             onClick={() => setSingleIngredientOpen(true)}
           >
-            <h2 className='text-center py-1 flex items-center justify-center'>Single Ingredient</h2>
+            <h2 className='text-center py-1 flex items-center justify-center'>{t('cocktails.singleIngredient')}</h2>
             <div className='relative w-full' style={{ paddingTop: '100%' }}>
               <img
                 src={`${API_URL}/static/default/default.jpg`}

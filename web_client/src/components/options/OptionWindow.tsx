@@ -14,15 +14,17 @@ import { confirmAndExecute, executeAndShow } from '../../utils';
 import { useNavigate } from 'react-router-dom';
 import ProgressModal from '../cocktail/ProgressModal';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const OptionWindow = () => {
   const { theme, changeTheme } = useConfig();
   const navigate = useNavigate();
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const themes = ['default', 'berry', 'bavaria', 'alien', 'custom'];
+  const { t } = useTranslation();
 
   const cleanClick = async () => {
-    const started = await confirmAndExecute('Start the cleaning Program', cleanMachine);
+    const started = await confirmAndExecute(t('options.startCleaningProgram'), cleanMachine);
     if (!started) return;
     setIsProgressModalOpen(true);
   };
@@ -70,7 +72,7 @@ const OptionWindow = () => {
         isOpen={isProgressModalOpen}
         onRequestClose={() => setIsProgressModalOpen(false)}
         progress={0}
-        displayName={'Cleaning the Machine'}
+        displayName={t('options.cleaningTheMachine')}
       />
       <div className='flex flex-col items-center max-w-5xl w-full p-2 pt-0'>
         <div className='dropdown-container flex flex-row items-center mb-4 w-full max-w-md'>
@@ -85,55 +87,61 @@ const OptionWindow = () => {
         </div>
         <div className='grid gap-1 w-full grid-cols-1 md:grid-cols-2'>
           <button className='button-primary-filled p-4' onClick={cleanClick}>
-            Cleaning
+            {t('options.cleaning')}
           </button>
           <button className='button-primary p-4' onClick={() => navigate('calibration')}>
-            Calibration
+            {t('options.calibration')}
           </button>
           <button className='button-primary-filled p-4' onClick={() => navigate('configuration')}>
-            Configuration
+            {t('options.configuration')}
           </button>
           <button className='button-primary p-4' onClick={() => navigate('data')}>
-            Data
+            {t('options.data')}
           </button>
           <button className='button-primary p-4' onClick={() => executeAndShow(getBackupClick)}>
-            Backup
+            {t('options.backup')}
           </button>
           <button className='button-primary p-4' onClick={() => executeAndShow(uploadBackupClick)}>
-            Restore
+            {t('options.restore')}
           </button>
-          <button className='button-primary p-4' onClick={() => confirmAndExecute('Reboot', rebootSystem)}>
-            Reboot
+          <button
+            className='button-primary p-4'
+            onClick={() => confirmAndExecute(t('options.rebootTheSystem'), rebootSystem)}
+          >
+            {t('options.reboot')}
           </button>
-          <button className='button-primary p-4' onClick={() => confirmAndExecute('Shutdown', shutdownSystem)}>
-            Shutdown
+          <button
+            className='button-primary p-4'
+            onClick={() => confirmAndExecute(t('options.shutdownTheSystem'), shutdownSystem)}
+          >
+            {t('options.shutdown')}
           </button>
           <button className='button-primary p-4' onClick={() => navigate('logs')}>
-            Logs
+            {t('options.logs')}
           </button>
           <button
             className='button-primary-filled p-4'
-            onClick={() => confirmAndExecute('Update system', updateSystem)}
+            onClick={() => confirmAndExecute(t('options.updateTheSystem'), updateSystem)}
           >
-            Update System
+            {t('options.updateSystem')}
           </button>
           <button
             className='button-primary-filled p-4 col-span-1 md:col-span-2'
             onClick={() => executeAndShow(updateSoftware)}
           >
-            Update CocktailBerry Software
+            {t('options.updateCocktailBerry')}
           </button>
           <button className='button-primary p-4' onClick={() => navigate('wifi')}>
-            WiFi
+            {t('options.wifi')}
           </button>
           <button className='button-primary p-4' onClick={() => executeAndShow(checkInternetConnection)}>
-            Internet Check
+            {t('options.internetCheck')}
           </button>
           <button className='button-primary p-4' onClick={() => navigate('addons')}>
-            Addons
+            {t('options.addons')}
           </button>
           <button className='button-neutral p-4' disabled={true}>
-            Write RFID
+            {t('options.writeRfid')}
           </button>
         </div>
       </div>

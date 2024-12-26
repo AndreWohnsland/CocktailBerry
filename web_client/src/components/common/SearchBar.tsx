@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaEraser, FaSearch } from 'react-icons/fa';
 
 interface SearchBarProps {
@@ -9,6 +10,7 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch }) => {
   const [savedSearch, setSavedSearch] = React.useState(search);
   const [showSearch, setShowSearch] = React.useState(false);
+  const { t } = useTranslation();
 
   const handleHideToggle = () => {
     if (showSearch) {
@@ -25,7 +27,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch }) => {
       <div className='flex-grow'></div>
       <input
         type='text'
-        placeholder='Search'
+        placeholder={t('search')}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className='input-base mr-1 w-full p-3 max-w-sm'

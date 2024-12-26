@@ -10,11 +10,13 @@ import { confirmAndExecute, executeAndShow } from '../../utils';
 import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
 import SearchBar from '../common/SearchBar';
+import { useTranslation } from 'react-i18next';
 
 const IngredientList: React.FC = () => {
   const { data: ingredients, isLoading, error, refetch } = useIngredients();
   const [selectedIngredient, setSelectedIngredient] = useState<IngredientInput | null>(null);
   const [search, setSearch] = useState('');
+  const { t } = useTranslation();
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
@@ -38,9 +40,9 @@ const IngredientList: React.FC = () => {
       bottle_volume: 0,
       fill_level: 0,
       cost: 0,
-      pump_speed: 0,
+      pump_speed: 100,
       hand: false,
-      unit: '',
+      unit: 'ml',
     });
   };
 
@@ -67,7 +69,7 @@ const IngredientList: React.FC = () => {
   const handleDelete = async () => {
     const ingredientId = selectedIngredient?.id;
     if (!ingredientId) return;
-    const success = await executeAndShow(() => deleteIngredient(ingredientId));
+    const success = await confirmAndExecute(t('ingredients.deleteIngredient'), () => deleteIngredient(ingredientId));
     if (success) {
       closeModal();
       refetch();
@@ -111,7 +113,7 @@ const IngredientList: React.FC = () => {
             className='flex justify-center items-center py-3 p-2 button-secondary-filled w-full'
           >
             <FaPlus size={25} />
-            <span className='ml-4 text-xl'>New</span>
+            <span className='ml-4 text-xl'>{t('new')}</span>
           </button>
         </div>
         {displayedIngredients?.map((ingredient) => (
@@ -136,7 +138,9 @@ const IngredientList: React.FC = () => {
         >
           <div className='px-4 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
-              <h2 className='text-xl font-bold text-secondary'>{selectedIngredient.name || 'New Ingredient'}</h2>
+              <h2 className='text-xl font-bold text-secondary'>
+                {selectedIngredient.name || t('ingredients.newIngredient')}
+              </h2>
               <button onClick={closeModal} aria-label='close'>
                 <AiOutlineCloseCircle className='text-danger' size={34} />
               </button>
@@ -144,7 +148,7 @@ const IngredientList: React.FC = () => {
             <div className='flex-grow'></div>
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>
               <label className='flex justify-center items-center'>
-                <p className='pr-2'>Name:</p>
+                <p className='pr-2'>{t('ingredients.name')}:</p>
                 <input
                   type='text'
                   name='name'
@@ -154,7 +158,7 @@ const IngredientList: React.FC = () => {
                 />
               </label>
               <label className='flex justify-center items-center'>
-                <p className='pr-2'>Alcohol:</p>
+                <p className='pr-2'>{t('ingredients.alcohol')}:</p>
                 <input
                   type='number'
                   name='alcohol'
@@ -164,7 +168,7 @@ const IngredientList: React.FC = () => {
                 />
               </label>
               <label className='flex justify-center items-center' style={{ whiteSpace: 'nowrap' }}>
-                <p className='pr-2'>Bottle Volume:</p>
+                <p className='pr-2'>{t('ingredients.bottleVolume')}:</p>
                 <input
                   type='number'
                   name='bottle_volume'
@@ -174,7 +178,7 @@ const IngredientList: React.FC = () => {
                 />
               </label>
               <label className='flex justify-center items-center'>
-                <p className='pr-2'>Cost:</p>
+                <p className='pr-2'>{t('ingredients.cost')}:</p>
                 <input
                   type='number'
                   name='cost'
@@ -184,7 +188,7 @@ const IngredientList: React.FC = () => {
                 />
               </label>
               <div className='flex justify-start items-center' style={{ whiteSpace: 'nowrap' }}>
-                <p className='pr-2'>Pump Speed:</p>
+                <p className='pr-2'>{t('ingredients.pumpSpeed')}:</p>
                 <input
                   type='number'
                   name='pump_speed'
@@ -194,7 +198,7 @@ const IngredientList: React.FC = () => {
                 />
               </div>
               <label className='flex justify-center items-center'>
-                <p className='pr-2'>Unit:</p>
+                <p className='pr-2'>{t('ingredients.unit')}:</p>
                 <input
                   type='text'
                   name='unit'
@@ -204,7 +208,7 @@ const IngredientList: React.FC = () => {
                 />
               </label>
               <label className='flex justify-center items-center col-span-2 h-xs:col-span-1'>
-                <p className='text-primary pr-2'>Can only add by Hand:</p>
+                <p className='text-primary pr-2'>{t('ingredients.onlyAddByHand')}:</p>
                 <input
                   type='checkbox'
                   name='hand'
@@ -219,11 +223,13 @@ const IngredientList: React.FC = () => {
             <div className='flex justify-between mt-2'>
               <button
                 type='button'
-                onClick={() => confirmAndExecute('Delete Ingredient', handleDelete)}
-                className='button-danger-filled p-2 px-4 flex justify-between items-center'
+                onClick={handleDelete}
+                className={`${
+                  selectedIngredient?.id ? 'button-danger-filled' : 'button-neutral'
+                } p-2 px-4 flex justify-between items-center`}
               >
                 <FaTrashAlt className='mr-2' />
-                Delete
+                {t('delete')}
               </button>
               <button
                 type='button'
@@ -233,8 +239,8 @@ const IngredientList: React.FC = () => {
                 disabled={!isValidIngredient()}
                 onClick={handlePost}
               >
-                <FaPen className='mr-2' />
-                {selectedIngredient?.id ? ' Apply' : ' Create'}
+                {selectedIngredient?.id ? <FaPen className='mr-2' /> : <FaPlus className='mr-2' />}
+                {selectedIngredient?.id ? t('apply') : t('create')}
               </button>
             </div>
           </div>
