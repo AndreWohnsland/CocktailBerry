@@ -114,7 +114,10 @@ async def create_cocktail(cocktail: CocktailInput) -> Optional[Cocktail]:
     db_cocktail = DBC.insert_new_recipe(
         cocktail.name, recipe_alcohol_level, recipe_volume, cocktail.enabled, cocktail.virgin_available, ingredient_data
     )
-    return map_cocktail(db_cocktail, False)
+    return {
+        "message": DH.get_translation("recipe_added", recipe_name=db_cocktail.name),
+        "cocktail": map_cocktail(db_cocktail, False),
+    }
 
 
 @protected_router.put("/{cocktail_id}")
@@ -131,7 +134,10 @@ async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> Optional
         cocktail.virgin_available,
         ingredient_data,
     )
-    return map_cocktail(db_cocktail, False)
+    return {
+        "message": DH.get_translation("recipe_updated", old_name=cocktail_id, new_name=db_cocktail.name),
+        "cocktail": map_cocktail(db_cocktail, False),
+    }
 
 
 @protected_router.delete("/{cocktail_id}")

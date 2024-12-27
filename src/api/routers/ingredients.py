@@ -46,7 +46,10 @@ async def add_ingredient(ingredient: IngredientInput):
         unit=ingredient.unit,
     )
     db_ingredient = DBC.get_ingredient(ingredient.name)
-    return map_ingredient(db_ingredient)
+    return {
+        "message": DH.get_translation("ingredient_added", ingredient_name=ingredient.name),
+        "data": map_ingredient(db_ingredient),
+    }
 
 
 @protected_router.put("/{ingredient_id:int}")
@@ -63,10 +66,12 @@ async def update_ingredients(ingredient_id: int, ingredient: IngredientInput):
         cost=ingredient.cost,
         unit=ingredient.unit,
     )
+    db_ingredient = DBC.get_ingredient(ingredient_id)
     return {
         "message": DH.get_translation(
-            "ingredient_changed", selected_ingredient=ingredient_id, ingredient_name=ingredient
-        )
+            "ingredient_changed", selected_ingredient=ingredient_id, ingredient_name=ingredient.name
+        ),
+        "data": map_ingredient(db_ingredient),
     }
 
 
