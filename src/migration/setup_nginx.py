@@ -12,6 +12,8 @@ NGINX_CONFIG_FILE = """server {
     # Handle React app routes
     location / {
         try_files $uri /index.html;
+        # Add cache control headers
+        add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";
     }
 
     # Proxy API requests to FastAPI
@@ -21,6 +23,9 @@ NGINX_CONFIG_FILE = """server {
       proxy_set_header Host $host;
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass_request_headers on;
+      proxy_set_header X-Master-Key $http_x_master_key;
+      proxy_set_header X-Maker-Key $http_x_maker_key;
     }
 }
 """
@@ -36,8 +41,17 @@ def setup_nginx():
         subprocess.run(["sudo", "apt", "update"], check=True)
         subprocess.run(["sudo", "apt", "install", "-y", "nginx"], check=True)
 
-        # Create the web root directory if it doesn't exist
+        # Create the web root directory if it doesn't exist, clear it if it does
         web_root.mkdir(parents=True, exist_ok=True)
+        for file in web_root.glob("*"):
+            file.unlink()
+        tmp_path = Path("/tmp/cocktailberry_web_client.tar.gz")
+        url = "https://github.com/AndreWohnsland/CocktailBerry/releases/latest/download/cocktailberry_web_client.tar.gz"
+
+        # Download the tar.gz file to the tmp directory, extract it into the web root directory, remove the tar.gz file
+        subprocess.run(["sudo", "curl", "-L", "-o", str(tmp_path), url], check=True)
+        subprocess.run(["sudo", "tar", "-xzf", str(tmp_path), "-C", str(web_root)], check=True)
+        tmp_path.unlink()
         config_path.write_text(NGINX_CONFIG_FILE)
 
         # Remove existing symbolic link if it exists
