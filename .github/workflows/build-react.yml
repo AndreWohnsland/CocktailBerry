@@ -34,11 +34,15 @@ jobs:
         name: cocktailberry_web_client
         path: ./web_client/dist
 
+    - name: Compress Build Folder
+      if: github.event_name == 'release'
+      run: tar -czvf cocktailberry_web_client.tar.gz -C ./web_client dist
+
     - name: Upload binaries to release
       if: github.event_name == 'release'
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ./web_client/dist
-        asset_name: cocktailberry_web_client
+        file: cocktailberry_web_client.tar.gz
+        asset_name: cocktailberry_web_client.tar.gz
         tag: ${{ github.event.release.tag_name }}
