@@ -100,6 +100,10 @@ export const useConsumeData = (): UseQueryResult<ConsumeData, Error> => {
   return useQuery<ConsumeData, Error>('consumeData', getConsumeData);
 };
 
+export const resetDataInsights = async (): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${options_url}/data/reset`).then((res) => res.data);
+};
+
 // Internet and Wifi
 export const checkInternetConnection = async (): Promise<{ is_connected: boolean }> => {
   return axiosInstance.get<{ is_connected: boolean }>(`${options_url}/connection`).then((res) => res.data);

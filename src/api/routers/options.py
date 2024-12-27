@@ -17,10 +17,12 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import AddonData, ConsumeData, generate_consume_data, get_addon_data, install_addon, remove_addon
 from src.dialog_handler import DIALOG_HANDLER as DH
+from src.filepath import SAVE_FOLDER
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.models import PrepareResult
+from src.save_handler import SAVE_HANDLER
 from src.updater import Updater
 from src.utils import (
     get_log_files,
@@ -102,7 +104,13 @@ async def data_insights() -> DataResponse[dict[str, ConsumeData]]:
     return DataResponse(data=generate_consume_data())
 
 
-@protected_router.get("/backup")
+@protected_router.post("/data/reset", summary="Reset the data insights")
+async def reset_data_insights():
+    SAVE_HANDLER.export_data()
+    return {"message": DH.get_translation("all_data_exported", file_path=str(SAVE_FOLDER))}
+
+
+@protected_router.get("/backup", summary="Create a backup of CocktailBerry data")
 async def create_backup():
     backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
     zip_file_name = f"{backup_folder_name}.zip"

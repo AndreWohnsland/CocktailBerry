@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useConsumeData } from '../../api/options';
+import { resetDataInsights, useConsumeData } from '../../api/options';
 import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
 import { useTranslation } from 'react-i18next';
+import { FaUndo } from 'react-icons/fa';
+import { confirmAndExecute } from '../../utils';
 
 const ConsumeBarChart: React.FC<{
   title: string;
@@ -15,7 +17,7 @@ const ConsumeBarChart: React.FC<{
   const displayUnit = unit ? unit : '';
 
   return (
-    <div className='mb-6'>
+    <div className='mb-6 w-full'>
       <h3 className='text-2xl font-bold text-secondary mb-4 text-center'>{`${title} (${sumValues}${displayUnit})`}</h3>
       <div className='space-y-2'>
         {sortedEntries.map(([key, value]) => (
@@ -39,7 +41,7 @@ const ConsumeBarChart: React.FC<{
 };
 
 const ConsumeWindow: React.FC = () => {
-  const { data, isLoading, error } = useConsumeData();
+  const { data, isLoading, error, refetch } = useConsumeData();
   const [selectedDataType, setSelectedDataType] = useState<string>('AT RESET');
   const { t } = useTranslation();
 
@@ -54,6 +56,15 @@ const ConsumeWindow: React.FC = () => {
 
   const handleDataTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedDataType(event.target.value);
+  };
+
+  const resetData = () => {
+    confirmAndExecute(t('data.resetTheData'), resetDataInsights).then((success) => {
+      if (success) {
+        refetch();
+        setSelectedDataType('AT RESET');
+      }
+    });
   };
 
   const createSelectionUserText = (value: string) => {
@@ -82,7 +93,7 @@ const ConsumeWindow: React.FC = () => {
 
   return (
     <div className='flex flex-col w-full max-w-5xl'>
-      <div className='flex flex-col items-center justify-center flex-shrink-0'>
+      <div className='flex flex-col items-center justify-center flex-shrink-0 mb-2'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
           <h2 className='text-2xl font-bold text-secondary mr-4 text-center'>{t('data.data')}:</h2>
           <select value={selectedDataType} onChange={handleDataTypeChange} className='select-base'>
@@ -96,12 +107,21 @@ const ConsumeWindow: React.FC = () => {
         </div>
       </div>
 
-      <div className='flex-grow p-2'>
+      <div className='flex-grow p-2 items-center justify-center flex flex-col w-full'>
         {consumeData && (
           <>
             <ConsumeBarChart title={t('data.recipes')} data={selectedData.recipes} unit='x' />
             <ConsumeBarChart title={t('data.ingredients')} data={selectedData.ingredients} />
             {selectedData.cost && <ConsumeBarChart title={t('data.cost')} data={selectedData.cost} />}
+            {consumeData['AT RESET'].recipes && Object.keys(consumeData['AT RESET'].recipes).length > 0 && (
+              <button
+                className='button-danger p-2 w-full flex items-center justify-center max-w-lg'
+                onClick={resetData}
+              >
+                <FaUndo className='mr-4' size={20} />
+                {t('data.reset')}
+              </button>
+            )}
           </>
         )}
       </div>
