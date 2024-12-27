@@ -99,7 +99,9 @@
     "recipes": "Recipes",
     "ingredients": "Ingredients",
     "cost": "Cost",
-    "dateFormat": "{{year}}-{{month}}-{{day}}"
+    "dateFormat": "{{year}}-{{month}}-{{day}}",
+    "reset": "Reset Data",
+    "resetTheData": "Do you want to reset the data?"
   },
   "addons": {
     "manageAddons": "Manage Addons",

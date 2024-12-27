@@ -51,7 +51,7 @@ dialog:
     de: "Zutat mit dem Namen:\n<{ingredient_name}>\neingetragen"
   ingredient_changed:
     en: "Ingredient\n<{selected_ingredient}>\nwas updated to\n<{ingredient_name}>"
-    de: "Zutat mit dem Namen:\n<{selected_ingredient}>\nunter\n<{ingredient_name}>\naktualisiert"
+    de: "Zutat\n<{selected_ingredient}>\nnach\n<{ingredient_name}>\naktualisiert"
   available_ingredient_updated:
     en: 'Available ingredients were updated!'
     de: 'Verfügbare Zutaten wurden aktualisiert!'
@@ -78,7 +78,7 @@ dialog:
     de: "Rezept unter dem Namen:\n<{recipe_name}>\neingetragen!"
   recipe_updated:
     en: "Recipe\n<{old_name}>\nupdated to\n<{new_name}>"
-    de: "Rezept mit dem Namen:\n<{old_name}>\nunter dem Namen:\n<{new_name}>\naktualisiert!"
+    de: "Rezept\n<{old_name}>\nnach\n<{new_name}>\naktualisiert!"
   recipe_at_least_one_ingredient:
     en: 'You need to use at least one ingredient!'
     de: 'Es muss mindestens eine Zutat eingetragen sein!'

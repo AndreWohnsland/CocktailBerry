@@ -99,7 +99,9 @@
     "recipes": "Rezepte",
     "ingredients": "Zutaten",
     "cost": "Kosten",
-    "dateFormat": "{{day}}.{{month}}.{{year}}"
+    "dateFormat": "{{day}}.{{month}}.{{year}}",
+    "reset": "Daten Zurücksetzen",
+    "resetTheData": "Möchtest du die Daten zurücksetzen?"
   },
   "addons": {
     "manageAddons": "Addons verwalten",
