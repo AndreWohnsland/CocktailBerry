@@ -54,7 +54,7 @@
     "virginAvailable": "Virgin verfügbar",
     "addIngredient": "Zutat hinzufügen",
     "selectIngredient": "Zutat auswählen",
-    "allRecipes": "Alle Rezepte",
+    "enableAllRecipes": "Möchtest du alle Rezepte aktivieren?",
     "deleteRecipe": "Möchtest du das Rezept löschen?",
     "deleteExistingImage": "Möchtest du das existierende eigene Bild löschen?"
   },
