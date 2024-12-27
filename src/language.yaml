@@ -19,6 +19,12 @@ dialog:
   bottles_renewed:
     en: 'Renewed selected bottles!'
     de: 'Ausgewählte Flaschen erneuert!'
+  bottle_updated:
+    en: 'Bottle {bottle_id} updated successfully to {amount} of ingredient {ingredient_id}!'
+    de: 'Flasche {bottle_id} erfolgreich auf {amount} von Zutat {ingredient_id} aktualisiert!'
+  bottle_calibration_started:
+    en: 'Bottle {bottle_id} calibration to {amount} started!'
+    de: 'Flasche {bottle_id} Kalibrierung auf {amount} gestartet!'
   no_recipe_selected:
     en: 'No recipe selected!'
     de: 'Kein Rezept ausgewählt!'
@@ -46,6 +52,9 @@ dialog:
   ingredient_changed:
     en: "Ingredient\n<{selected_ingredient}>\nwas updated to\n<{ingredient_name}>"
     de: "Zutat mit dem Namen:\n<{selected_ingredient}>\nunter\n<{ingredient_name}>\naktualisiert"
+  available_ingredient_updated:
+    en: 'Available ingredients were updated!'
+    de: 'Verfügbare Zutaten wurden aktualisiert!'
   cocktail_canceled:
     en: 'The cocktail was cancelled!'
     de: 'Der Cocktail wurde abgebrochen!'
@@ -62,7 +71,7 @@ dialog:
     en: "Recipe\n<{recipe_name}>\nwas deleted"
     de: "Rezept mit dem Namen\n<{recipe_name}>\nwurde gelöscht!"
   all_recipes_enabled:
-    en: 'All recipes are set to active!'
+    en: 'All recipes are enabled!'
     de: 'Alle Rezepte wurden wieder aktiv gesetzt!'
   recipe_added:
     en: "Recipe\n<{recipe_name}>\nwas added!"
@@ -217,6 +226,24 @@ dialog:
   cocktail_in_progress:
     en: 'A preparation is currently in progress. Please wait until it is finished.'
     de: 'Eine Zubereitung is bereits im Gange. Bitte warte, bis diese fertig ist.'
+  preparation_cancelled:
+    en: 'The preparation was cancelled.'
+    de: 'Die Zubereitung wurde abgebrochen.'
+  image_deleted:
+    en: 'Image deleted successfully.'
+    de: 'Bild erfolgreich gelöscht.'
+  image_uploaded:
+    en: 'Image uploaded successfully.'
+    de: 'Bild erfolgreich hochgeladen.'
+  hand_ingredient_cannot_prepared:
+    en: 'Hand ingredients cannot be prepared.'
+    de: 'Hand Zutaten können nicht zubereitet werden.'
+  ingredient_not_connected:
+    en: 'Ingredient is not connected to the machine!'
+    de: 'Zutat ist nicht mit der Maschine verbunden!'
+  cleaning_started:
+    en: 'Cleaning process started!'
+    de: 'Reinigung gestartet!'
 
 # Change of language in UI elements
 ui:

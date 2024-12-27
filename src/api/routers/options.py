@@ -9,13 +9,14 @@ from pathlib import Path
 from typing import Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from src.api.middleware import master_protected_dependency
 from src.api.models import DataResponse, PasswordInput, WifiData
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import AddonData, ConsumeData, generate_consume_data, get_addon_data, install_addon, remove_addon
+from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
@@ -69,11 +70,13 @@ async def update_options(options: dict):
 @protected_router.post("/clean", tags=["preparation"])
 async def clean_machine(background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
-        raise HTTPException(status_code=400, detail="Preparation already in progress")
+        return JSONResponse(
+            status_code=400, content={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
+        )
     _logger.log_header("INFO", "Cleaning the Pumps")
     revert_pumps = cfg.MAKER_PUMP_REVERSION
     background_tasks.add_task(MACHINE.clean_pumps, None, revert_pumps)
-    return {"message": "Cleaning process started"}
+    return {"message": DH.get_translation("cleaning_started")}
 
 
 @protected_router.post("/reboot")
@@ -171,9 +174,7 @@ async def upload_backup(
             backup_files.extend(FILE_SELECTION_MAPPER[name])
         for needed_file in backup_files:
             if not (extracted_root / needed_file.name).exists():
-                raise HTTPException(
-                    status_code=400, detail=f"Backup file {needed_file.name} not found in the ZIP backup"
-                )
+                raise HTTPException(status_code=400, detail=DH.get_translation("backup_failed", file=needed_file.name))
 
         for _file in backup_files:
             source_path = extracted_root / _file.name
@@ -216,8 +217,8 @@ async def update_wifi_data(wifi_data: WifiData):
         raise HTTPException(status_code=400, detail="Cannot set WiFi on Windows")
     success = setup_wifi(wifi_data.ssid, wifi_data.password)
     if not success:
-        raise HTTPException(400, detail="Could not setup WiFi, check logs for more information")
-    return {"message": f"Wifi {wifi_data.ssid} setup successfully"}
+        raise HTTPException(400, detail=DH.get_translation("wifi_setup_failed"))
+    return {"message": DH.get_translation("wifi_success")}
 
 
 @protected_router.get("/addon")
@@ -242,7 +243,9 @@ async def check_internet_connection():
     is_connected = has_connection()
     return {
         "is_connected": is_connected,
-        "message": "Internet connection is available" if is_connected else "No internet connection",
+        "message": DH.get_translation("internet_connection_ok")
+        if is_connected
+        else DH.get_translation("internet_connection_not_ok"),
     }
 
 
@@ -259,13 +262,13 @@ async def update_software():
     updater = Updater()
     update_available, info = updater.check_for_updates()
     if not update_available and not info:
-        return {"message": "CocktailBerry is up to date"}
+        return {"message": DH.get_translation("cocktailberry_up_to_date")}
     if not update_available and info:
         return {"message": info}
     success = updater.update()
     if not success:
-        raise HTTPException(400, detail="Could not update, see in logs for more information.")
-    return {"message": "Software update "}
+        raise HTTPException(400, detail=DH.get_translation("update_failed"))
+    return {"message": "Software update started"}
 
 
 @router.post("/password/master/validate")

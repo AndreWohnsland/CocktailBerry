@@ -5,11 +5,10 @@ from src.api.internal.utils import map_ingredient
 from src.api.middleware import maker_protected
 from src.api.models import ErrorDetail, IngredientInput
 from src.database_commander import DatabaseCommander
-from src.dialog_handler import DialogHandler
+from src.dialog_handler import DIALOG_HANDLER as DH
 from src.models import Cocktail, CocktailStatus, PrepareResult
 from src.tabs import maker
 
-_dialog_handler = DialogHandler()
 router = APIRouter(tags=["ingredients"], prefix="/ingredients")
 protected_router = APIRouter(
     tags=["ingredients", "maker protected"],
@@ -64,14 +63,18 @@ async def update_ingredients(ingredient_id: int, ingredient: IngredientInput):
         cost=ingredient.cost,
         unit=ingredient.unit,
     )
-    return {"message": f"Ingredient {ingredient_id} was updated to {ingredient}"}
+    return {
+        "message": DH.get_translation(
+            "ingredient_changed", selected_ingredient=ingredient_id, ingredient_name=ingredient
+        )
+    }
 
 
 @protected_router.delete("/{ingredient_id:int}")
 async def delete_ingredients(ingredient_id: int):
     DBC = DatabaseCommander()
     DBC.delete_ingredient(ingredient_id)
-    return {"message": f"Ingredient {ingredient_id} was deleted!"}
+    return {"message": DH.get_translation("ingredient_deleted", ingredient_name=ingredient_id)}
 
 
 @router.get("/available")
@@ -85,7 +88,7 @@ async def post_available_ingredients(available: list[int]):
     DBC = DatabaseCommander()
     DBC.delete_existing_handadd_ingredient()
     DBC.insert_multiple_existing_handadd_ingredients(available)
-    return {"message": "Ingredients were updated!"}
+    return {"message": DH.get_translation("available_ingredient_updated")}
 
 
 @router.post(
@@ -104,18 +107,18 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
     DBC = DatabaseCommander()
     ingredient = DBC.get_ingredient(ingredient_id)
     if ingredient is None:
-        message = _dialog_handler.get_translation("element_not_found", element_name=f"Ingredient (id={ingredient_id})")
+        message = DH.get_translation("element_not_found", element_name=f"Ingredient (id={ingredient_id})")
         raise HTTPException(status_code=404, detail=message)
     print(ingredient)
     if ingredient.hand:
         raise HTTPException(
             status_code=400,
-            detail="Hand add ingredient cannot be prepared!",
+            detail=DH.get_translation("hand_ingredient_cannot_prepared"),
         )
     if ingredient.bottle is None:
         raise HTTPException(
             status_code=400,
-            detail="Ingredient is not connected to the machine!",
+            detail=DH.get_translation("ingredient_not_connected"),
         )
     ingredient.amount = amount
     cocktail = Cocktail(0, ingredient.name, 0, amount, True, True, [ingredient])

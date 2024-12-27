@@ -9,14 +9,13 @@ from src.api.middleware import maker_protected
 from src.api.models import Cocktail, CocktailInput, CocktailStatus, ErrorDetail, PrepareCocktailRequest
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
-from src.dialog_handler import DialogHandler
+from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
 from src.models import Cocktail as DbCocktail
 from src.models import PrepareResult
 from src.tabs import maker
 from src.utils import time_print
 
-_dialog_handler = DialogHandler()
 router = APIRouter(tags=["cocktails"], prefix="/cocktails")
 protected_router = APIRouter(
     tags=["cocktails", "maker protected"],
@@ -63,7 +62,7 @@ async def prepare_cocktail(
     factor = request.alcohol_factor if not request.is_virgin else 0
     cocktail = DBC.get_cocktail(cocktail_id)
     if cocktail is None:
-        message = _dialog_handler.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
+        message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
         raise HTTPException(status_code=404, detail=message)
     cocktail.scale_cocktail(request.volume, factor)
     result, msg = maker.validate_cocktail(cocktail)
@@ -102,7 +101,7 @@ async def websocket_endpoint(websocket: WebSocket):
 async def stop_cocktail():
     shared.cocktail_status.status = PrepareResult.CANCELED
     time_print("Canceling the cocktail!")
-    return {"message": "Cocktail preparation stopped!"}
+    return {"message": DH.get_translation("preparation_cancelled")}
 
 
 @protected_router.post("")
@@ -137,7 +136,7 @@ async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> Optional
 async def delete_cocktail(cocktail_id: int):
     DBC = DatabaseCommander()
     DBC.delete_recipe(cocktail_id)
-    return {"message": f"Cocktail {cocktail_id} deleted successfully!"}
+    return {"message": DH.get_translation("recipe_deleted", recipe_name=cocktail_id)}
 
 
 @protected_router.post("/{cocktail_id}/image")
@@ -145,7 +144,7 @@ async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)):
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
     if cocktail is None:
-        message = _dialog_handler.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
+        message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
         raise HTTPException(status_code=404, detail=message)
     try:
         contents = await file.read()
@@ -155,7 +154,7 @@ async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)):
         save_image(image, cocktail_id)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {e!s}")
-    return {"message": "Image uploaded successfully"}
+    return {"message": DH.get_translation("image_uploaded")}
 
 
 @protected_router.delete("/{cocktail_id}/image")
@@ -163,20 +162,21 @@ async def delete_cocktail_image(cocktail_id: int):
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
     if cocktail is None:
-        message = _dialog_handler.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
+        message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
         raise HTTPException(status_code=404, detail=message)
     user_image_path = find_user_cocktail_image(cocktail)
     if user_image_path is None or not user_image_path.exists():
-        raise HTTPException(status_code=404, detail="User image not found.")
+        message = DH.get_translation("element_not_found", element_name=f"Cocktail Image (id={cocktail_id})")
+        raise HTTPException(status_code=404, detail=message)
     try:
         user_image_path.unlink()
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to delete image: {e!s}")
-    return {"message": "Image deleted successfully"}
+    return {"message": DH.get_translation("image_deleted")}
 
 
 @protected_router.post("/enable")
 async def enable_all_recipes():
     DBC = DatabaseCommander()
     DBC.set_all_recipes_enabled()
-    return {"message": "All recipes enabled"}
+    return {"message": DH.get_translation("all_recipes_enabled")}

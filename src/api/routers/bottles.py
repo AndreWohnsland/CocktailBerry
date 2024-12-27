@@ -34,8 +34,13 @@ async def get_bottles() -> list[Bottle]:
 @protected_router.post("/refill")
 async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
+        return JSONResponse(
+            status_code=400, content={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
+        )
+    if any(num < 1 or num > cfg.MAKER_NUMBER_BOTTLES for num in bottle_numbers):
         raise HTTPException(
-            status_code=400, detail={"status": PrepareResult.IN_PROGRESS.value, "message": DH.cocktail_in_progress()}
+            status_code=400,
+            detail=f"Invalid bottle number, valid_range 1-{cfg.MAKER_NUMBER_BOTTLES}",
         )
     DBC = DatabaseCommander()
     DBC.set_bottle_volumelevel_to_max(bottle_numbers)
@@ -50,7 +55,7 @@ async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundT
     # if there is at least one tube volume defined, flush the tubes
     if ingredients:
         background_tasks.add_task(MACHINE.make_cocktail, None, ingredients, "renew", False)
-    return {"message": f"Bottle {bottle_numbers} refilled successfully!"}
+    return {"message": f"{DH.get_translation('bottles_renewed')} {bottle_numbers}"}
 
 
 @protected_router.put("/{bottle_id}")
@@ -59,7 +64,9 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
     if amount is not None:
         DBC.set_ingredient_level_to_value(ingredient_id, amount)
     DBC.set_bottle_at_slot(ingredient_id, bottle_id)
-    return {"message": f"Bottle {bottle_id} updated successfully to {amount} of ingredient {ingredient_id}!"}
+    return {
+        "message": DH.get_translation("bottle_updated", bottle_id=bottle_id, amount=amount, ingredient_id=ingredient_id)
+    }
 
 
 @protected_router.post("/{bottle_id}/calibrate", tags=["preparation"])
@@ -69,4 +76,4 @@ def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTa
             status_code=400, content={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
         )
     background_tasks.add_task(maker.calibrate, bottle_id, amount)
-    return {"message": f"Bottle {bottle_id} calibration to {amount} started!"}
+    return {"message": DH.get_translation("bottle_calibration_started", bottle_id=bottle_id, amount=amount)}
