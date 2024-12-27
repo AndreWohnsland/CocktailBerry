@@ -1,8 +1,7 @@
 import csv
 import datetime
 
-from src.database_commander import DB_COMMANDER
-from src.display_controller import DP_CONTROLLER
+from src.database_commander import DatabaseCommander
 from src.filepath import SAVE_FOLDER
 from src.logger_handler import LoggerHandler
 
@@ -12,32 +11,31 @@ _logger = LoggerHandler("save_handler")
 class SaveHandler:
     def export_data(self):
         """Export the ingredient and recipe data to two separate csvs, resets consumption."""
-        if not DP_CONTROLLER.ask_to_export_data():
-            return False
         # need to do cost first, since consumption is reset after other exports
         self._export_cost()
         self._export_ingredients()
         self._export_recipes()
-        DP_CONTROLLER.say_all_data_exported(str(SAVE_FOLDER))
-        return True
 
     def _export_ingredients(self):
         """Export the ingredients to a csv file, resets consumption."""
-        consumption_list = DB_COMMANDER.get_consumption_data_lists_ingredients()
+        DBC = DatabaseCommander()
+        consumption_list = DBC.get_consumption_data_lists_ingredients()
         self._write_rows_to_csv("Ingredient_export", [*consumption_list, [" "]])
-        DB_COMMANDER.delete_consumption_ingredients()
+        DBC.delete_consumption_ingredients()
         _logger.log_event("INFO", "Ingredient data was exported")
 
     def _export_recipes(self):
         """Export the recipes to a csv file, resets count."""
-        consumption_list = DB_COMMANDER.get_consumption_data_lists_recipes()
+        DBC = DatabaseCommander()
+        consumption_list = DBC.get_consumption_data_lists_recipes()
         self._write_rows_to_csv("Recipe_export", [*consumption_list, [" "]])
-        DB_COMMANDER.delete_consumption_recipes()
+        DBC.delete_consumption_recipes()
         _logger.log_event("INFO", "Recipe data was exported")
 
     def _export_cost(self):
         """Export the cost to a csv file, this does not need resetting."""
-        cost_list = DB_COMMANDER.get_cost_data_lists_ingredients()
+        DBC = DatabaseCommander()
+        cost_list = DBC.get_cost_data_lists_ingredients()
         self._write_rows_to_csv("Cost_export", [*cost_list, [" "]])
 
     def _write_rows_to_csv(self, filename: str, data_rows: list):

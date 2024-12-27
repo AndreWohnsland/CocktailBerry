@@ -44,8 +44,10 @@ class DataWindow(QMainWindow, Ui_DataWindow):
 
     def _export_and_recalculate(self):
         """Export the data and recalculates the dropdowns / plot."""
-        if not SAVE_HANDLER.export_data():
+        if not DP_CONTROLLER.ask_to_export_data():
             return
+        SAVE_HANDLER.export_data()
+        DP_CONTROLLER.say_all_data_exported(str(SAVE_FOLDER))
         current_selection = self.selection_data.currentText()
         self._populate_data()
         DP_CONTROLLER.set_combobox_item(self.selection_data, current_selection)
