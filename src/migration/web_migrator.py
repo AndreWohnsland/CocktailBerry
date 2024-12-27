@@ -8,7 +8,7 @@ python runme.py api
 new_web_entry = """[Desktop Entry]
 Type=Application
 Name=CocktailBerry Web
-Exec=chromium-browser --kiosk http://localhost:5173
+Exec=chromium-browser --kiosk http://localhost
 Terminal=false
 """
 script_entry_path = Path.home() / "launcher.sh"

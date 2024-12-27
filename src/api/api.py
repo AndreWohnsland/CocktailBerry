@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from src import __version__
 from src.api.routers import bottles, cocktails, ingredients, options
 from src.config.config_manager import CONFIG as cfg
 from src.config.errors import ConfigError
@@ -110,10 +111,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="CocktailBerry API",
-    version="1.0",
+    version=__version__,
     description=_DESC,
     openapi_tags=_TAGS_METADATA,
     lifespan=lifespan,
+    root_path="/api",
 )
 
 # Configure CORS
@@ -163,7 +165,7 @@ app.include_router(ingredients.router)
 app.include_router(ingredients.protected_router)
 
 
-@app.get("/", tags=["testing"])
+@app.get("/", tags=["testing"], summary="Test endpoint, check if api works")
 async def root():
     return {"message": "Welcome to CocktailBerry, this API works!"}
 
