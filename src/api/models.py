@@ -11,6 +11,7 @@ T = TypeVar("T")
 class ErrorDetail(BaseModel):
     status: PrepareResult
     detail: str
+    bottle: Optional[int] = None
 
 
 class CocktailStatus(BaseModel):

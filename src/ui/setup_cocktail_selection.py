@@ -86,7 +86,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         if db_cocktail is not None:
             self.cocktail = db_cocktail
         self._scale_cocktail(amount)
-        result, message = maker.validate_cocktail(self.cocktail)
+        result, message, _ = maker.validate_cocktail(self.cocktail)
 
         # Go to refill dialog, if this window is not locked
         if (result == PrepareResult.NOT_ENOUGH_INGREDIENTS) and (

@@ -122,8 +122,10 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
         )
     ingredient.amount = amount
     cocktail = Cocktail(0, ingredient.name, 0, amount, True, True, [ingredient])
-    result, message = maker.validate_cocktail(cocktail)
+    result, message, _ = maker.validate_cocktail(cocktail)
     if result != PrepareResult.VALIDATION_OK:
-        return JSONResponse(status_code=400, content={"status": result.value, "detail": message})
+        return JSONResponse(
+            status_code=400, content={"status": result.value, "detail": message, "bottle": ingredient.bottle}
+        )
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)

@@ -62,7 +62,7 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
         ingredient.amount = volume
 
         cocktail = Cocktail(0, ingredient_name, 0, volume, True, True, [ingredient])
-        result, message = maker.validate_cocktail(cocktail)
+        result, message, _ = maker.validate_cocktail(cocktail)
         self.close()
 
         # Go to refill dialog, if this window is not locked

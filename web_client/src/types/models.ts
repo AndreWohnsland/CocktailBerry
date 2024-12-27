@@ -81,6 +81,7 @@ export interface CocktailStatus {
 export interface ApiError {
   detail: string;
   status?: PrepareResult;
+  bottle?: number;
 }
 
 export interface LogData {

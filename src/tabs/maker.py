@@ -107,14 +107,14 @@ def interrupt_cocktail():
     time_print("Canceling the cocktail!")
 
 
-def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str]:
+def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredient | None]:
     """Validate the cocktail.
 
     Returns the validator code | Error message (in case of addon).
     """
     addon_data: dict[str, Any] = {"cocktail": cocktail}
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
-        return PrepareResult.IN_PROGRESS, DH.cocktail_in_progress()
+        return PrepareResult.IN_PROGRESS, DH.cocktail_in_progress(), None
     empty_ingredient = None
     if cfg.MAKER_CHECK_BOTTLE:
         empty_ingredient = cocktail.enough_fill_level()
@@ -126,13 +126,13 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str]:
         )
         if cfg.UI_MAKER_PASSWORD != 0 and cfg.UI_LOCKED_TABS[2]:
             msg += f' \n\n{DH.get_translation("bottle_tab_locked")}'
-        return PrepareResult.NOT_ENOUGH_INGREDIENTS, msg
+        return PrepareResult.NOT_ENOUGH_INGREDIENTS, msg, empty_ingredient
     try:
         ADDONS.before_cocktail(addon_data)
     except RuntimeError as err:
-        return PrepareResult.ADDON_ERROR, str(err)
+        return PrepareResult.ADDON_ERROR, str(err), None
 
-    return PrepareResult.VALIDATION_OK, ""
+    return PrepareResult.VALIDATION_OK, "", None
 
 
 def calibrate(bottle_number: int, amount: int):

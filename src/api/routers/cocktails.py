@@ -65,9 +65,11 @@ async def prepare_cocktail(
         message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
         raise HTTPException(status_code=404, detail=message)
     cocktail.scale_cocktail(request.volume, factor)
-    result, msg = maker.validate_cocktail(cocktail)
+    result, msg, ingredient = maker.validate_cocktail(cocktail)
     if result != PrepareResult.VALIDATION_OK:
-        return JSONResponse(status_code=400, content={"status": result.value, "detail": msg})
+        # we need also provide the frontend with the ingredient id that caused the error
+        bottle = ingredient.bottle if ingredient is not None else None
+        return JSONResponse(status_code=400, content={"status": result.value, "detail": msg, "bottle": bottle})
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
