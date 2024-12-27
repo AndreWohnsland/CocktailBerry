@@ -37,6 +37,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   const [isProgressModalOpen, setProgressModalOpen] = useState(false);
   const [isRefillOpen, setRefillOpen] = useState(false);
   const [refillMessage, setRefillMessage] = useState('');
+  const [emptyBottleNumber, setEmptyBottleNumber] = useState(0);
   const { config } = useConfig();
   const possibleServingSizes = config.MAKER_PREPARE_VOLUME || mlAmounts;
   if (config.MAKER_USE_RECIPE_VOLUME) {
@@ -64,6 +65,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
         const refillAllowed = !(config.UI_MAKER_PASSWORD && config.UI_LOCKED_TABS[2]);
         if (errorReason === 'NOT_ENOUGH_INGREDIENTS' && refillAllowed) {
           setRefillMessage(error.detail);
+          setEmptyBottleNumber(error.bottle);
           setRefillOpen(true);
           return;
         }
@@ -171,7 +173,12 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
           </div>
         </div>
       </div>
-      <RefillPrompt isOpen={isRefillOpen} message={refillMessage} onClose={() => setRefillOpen(false)} />
+      <RefillPrompt
+        isOpen={isRefillOpen}
+        bottleNumber={emptyBottleNumber}
+        message={refillMessage}
+        onClose={() => setRefillOpen(false)}
+      />
       <ProgressModal
         isOpen={isProgressModalOpen}
         onRequestClose={() => setProgressModalOpen(false)}

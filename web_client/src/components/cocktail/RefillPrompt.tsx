@@ -4,14 +4,17 @@ import { FaWineBottle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
+import { executeAndShow } from '../../utils';
+import { refillBottle } from '../../api/bottles';
 
 interface RefillPromptProps {
   isOpen: boolean;
   message: string;
+  bottleNumber: number;
   onClose: () => void;
 }
 
-const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, onClose }) => {
+const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumber, onClose }) => {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -19,6 +22,13 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, onClose })
   useEffect(() => {
     setIsChecked(false);
   }, [isOpen]);
+
+  const applyRefillBottle = () => {
+    if (!isChecked) return;
+    executeAndShow(() => refillBottle([bottleNumber])).then((success) => {
+      if (success) onClose();
+    });
+  };
 
   return (
     <Modal isOpen={isOpen} className='modal slim' overlayClassName='overlay z-30'>
@@ -55,11 +65,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, onClose })
         <div className='flex-grow'></div>
         <button
           className={`${isChecked ? 'button-primary-filled' : 'button-neutral'} px-4 py-2 w-full`}
-          onClick={() => {
-            if (isChecked) {
-              alert('Apply clicked!');
-            }
-          }}
+          onClick={applyRefillBottle}
           disabled={!isChecked}
         >
           {t('cocktails.applyRefill')}
