@@ -1,7 +1,7 @@
 # CocktailBerry Web
 
 !!! info "This is in Beta State"
-    This is a fairly new implementation and still in Beta state.
+    This is a new implementation and still in Beta state.
     If you spot any issues, please report them in the [GitHub repository](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose).
     In general, most features should work as expected, but there might be some edge cases that are not covered yet.
 
@@ -15,7 +15,7 @@ Advanced users can use the API for their own use, like writing their own fronten
 
 ## Installation
 
-The easiest way to use the new interface is to use the cocktailberry CLI, once you installed CocktailBerry the usual way.
+The easiest way to use the new interface is to use the cocktailberry CLI [setup-web command](commands.md#switch-to-cocktailberry-web), once you installed CocktailBerry the usual way.
 Existing installations should update to at least version v2.0.0 to have this command available.
 
 !!! warning "Before starting"
@@ -28,10 +28,11 @@ Existing installations should update to at least version v2.0.0 to have this com
 # active virtual environment at newer installations
 source ~/.env-cocktailberry/bin/activate
 cd ~/CocktailBerry
-python runme.py setup-web
+python runme.py setup-web # optional with --ssl to enable https
 ```
 
 This will set up the web interface as the default interface and start it instead of the old main program.
+You can now access the the website by opening your browser and navigating to `http://<ip>` or locally on `http://localhost`.
 
 ## Rollback
 

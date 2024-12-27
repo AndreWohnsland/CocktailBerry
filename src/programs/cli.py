@@ -172,12 +172,12 @@ def api(port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAP
 
 
 @cli.command()
-def setup_web():
+def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL for the Nginx configuration")):
     """Set up the web interface.
 
     This will set up the web interface for CocktailBerry.
     This is an alternative setup and overwrites the current app.
-    The web interface will be available at http://localhost:5173 or proxy it with Nginx to just localhost/the ip.
+    The web interface will be available at http://localhost or proxy it with Nginx to just localhost/the ip.
     The api will be available at http://localhost:8000.
     """
     if _platform_data.system == "Windows":
@@ -185,7 +185,7 @@ def setup_web():
         return
     replace_backend_script()
     subprocess.run(["sudo", "python", str(WEB_MIGRATION_SCRIPT.absolute())], check=True)
-    subprocess.run(["sudo", "python", str(NGINX_SCRIPT.absolute())], check=True)
+    subprocess.run(["sudo", "python", str(NGINX_SCRIPT.absolute()), "--ssl" if use_ssl else "--no-ssl"], check=True)
 
 
 @cli.command()
