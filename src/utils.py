@@ -60,34 +60,34 @@ def get_platform_data() -> PlatformData:
     )
 
 
-def set_system_time(time_string: str):
+def set_system_datetime(datetime_string: str):
     """Set the system time to the given time, uses YYYY-MM-DD HH:MM:SS as format."""
     p_data = get_platform_data()
     # checking system, currently only setting on Linux (RPi), bc. its only one supported
     supported_os = ["Linux"]
-    logger.log_event("INFO", f"Setting time to: {time_string}")
-    if p_data.system in supported_os:
-        # need first disable timesyncd, otherwise you cannot set time
-        time_commands = [
-            "sudo systemctl stop systemd-timesyncd",
-            f"sudo timedatectl set-time '{time_string}'",
-            "sudo systemctl start systemd-timesyncd",
-        ]
-        try:
-            # Use subprocess.run to capture the command's output and error
-            for time_command in time_commands:
-                subprocess.run(time_command, shell=True, check=True, capture_output=True, text=True)
-            logger.log_event("INFO", "Time set successfully")
-
-        except subprocess.CalledProcessError as err:
-            # Log any exceptions that occurred during command execution
-            err_msg = err.stderr.replace("\n", " ")
-            logger.log_event("ERROR", f"Could not set time, error: {err_msg}")
-            logger.log_exception(err)
-    else:
+    logger.log_event("INFO", f"Setting time to: {datetime_string}")
+    if p_data.system not in supported_os:
         logger.log_event(
             "WARNING", f"Could not set time, your OS is: {p_data.system}. Currently supported OS are: {supported_os}"
         )
+        return
+    # need first disable timesyncd, otherwise you cannot set time
+    time_commands = [
+        "sudo systemctl stop systemd-timesyncd",
+        f"sudo timedatectl set-time '{datetime_string}'",
+        "sudo systemctl start systemd-timesyncd",
+    ]
+    try:
+        # Use subprocess.run to capture the command's output and error
+        for time_command in time_commands:
+            subprocess.run(time_command, shell=True, check=True, capture_output=True, text=True)
+        logger.log_event("INFO", "Time set successfully")
+
+    except subprocess.CalledProcessError as err:
+        # Log any exceptions that occurred during command execution
+        err_msg = err.stderr.replace("\n", " ")
+        logger.log_event("ERROR", f"Could not set time, error: {err_msg}")
+        logger.log_exception(err)
 
 
 def restart_program():
