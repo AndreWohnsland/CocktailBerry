@@ -1,4 +1,3 @@
-import Modal from 'react-modal';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import AvailableBottles from './components/bottle/AvailableBottles.tsx';
@@ -18,8 +17,6 @@ import WifiManager from './components/options/WifiManager.tsx';
 import RecipeList from './components/recipe/RecipeList.tsx';
 import { useConfig } from './ConfigProvider.tsx';
 import useAxiosInterceptors from './hooks/useAxiosInterceptors.ts';
-
-Modal.setAppElement('#root');
 
 function App() {
   const { config } = useConfig();
