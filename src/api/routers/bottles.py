@@ -24,14 +24,14 @@ protected_router = APIRouter(
 )
 
 
-@router.get("")
+@router.get("", summary="Get all bottles with their ingredients.")
 async def get_bottles() -> list[Bottle]:
     DBC = DatabaseCommander()
     ingredients = DBC.get_ingredients_at_bottles()[: cfg.MAKER_NUMBER_BOTTLES]
     return [map_bottles(i) for i in ingredients]
 
 
-@protected_router.post("/refill")
+@protected_router.post("/refill", summary="Refill all bottles to maximum.")
 async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         return JSONResponse(
@@ -58,7 +58,7 @@ async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundT
     return {"message": f"{DH.get_translation('bottles_renewed')} {bottle_numbers}"}
 
 
-@protected_router.put("/{bottle_id}")
+@protected_router.put("/{bottle_id}", summary="Update bottle to ingredient and fill level.")
 async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int] = None):
     DBC = DatabaseCommander()
     if amount is not None:
@@ -69,7 +69,7 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
     }
 
 
-@protected_router.post("/{bottle_id}/calibrate", tags=["preparation"])
+@protected_router.post("/{bottle_id}/calibrate", tags=["preparation"], summary="Calibrate bottle with given amount.")
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         return JSONResponse(

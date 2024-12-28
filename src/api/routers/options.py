@@ -47,7 +47,7 @@ protected_router = APIRouter(
 )
 
 
-@router.get("")
+@router.get("", summary="Get the current options, passwords are sanitized as boolean (yes/no)")
 async def get_options():
     # need to sanitized the passwords before returning, frontend only need to know if they are set
     # e.g. 0: False otherwise: True
@@ -57,19 +57,19 @@ async def get_options():
     return config
 
 
-@protected_router.get("/full")
+@protected_router.get("/full", summary="Get the current options with UI properties/descriptions and passwords")
 async def get_options_with_ui_properties():
     return cfg.get_config_with_ui_information()
 
 
-@protected_router.post("")
+@protected_router.post("", summary="Update the options")
 async def update_options(options: dict):
     cfg.set_config(options, True)
     cfg.sync_config_to_file()
     return {"message": "Options updated successfully!"}
 
 
-@protected_router.post("/clean", tags=["preparation"])
+@protected_router.post("/clean", tags=["preparation"], summary="Start the machine cleaning")
 async def clean_machine(background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         return JSONResponse(
@@ -81,7 +81,7 @@ async def clean_machine(background_tasks: BackgroundTasks):
     return {"message": DH.get_translation("cleaning_started")}
 
 
-@protected_router.post("/reboot")
+@protected_router.post("/reboot", summary="Reboot the system")
 async def reboot_system():
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot reboot on Windows")
@@ -90,7 +90,7 @@ async def reboot_system():
     return {"message": "System rebooting"}
 
 
-@protected_router.post("/shutdown")
+@protected_router.post("/shutdown", summary="Shutdown the system")
 async def shutdown_system():
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot shutdown on Windows")
@@ -99,7 +99,7 @@ async def shutdown_system():
     return {"message": "System shutting down"}
 
 
-@protected_router.get("/data")
+@protected_router.get("/data", summary="Get the data insights")
 async def data_insights() -> DataResponse[dict[str, ConsumeData]]:
     return DataResponse(data=generate_consume_data())
 
@@ -151,7 +151,7 @@ def parse_restored_file(
     return data  # type: ignore
 
 
-@protected_router.post("/backup")
+@protected_router.post("/backup", summary="Restore a backup of CocktailBerry data")
 async def upload_backup(
     file: UploadFile = File(...),
     restored_file: list[Literal["style", "config", "images", "database"]] = Depends(parse_restored_file),
@@ -196,7 +196,7 @@ async def upload_backup(
     return {"message": "Backup restored successfully"}
 
 
-@protected_router.get("/logs")
+@protected_router.get("/logs", summary="Get the logs")
 async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, list[str]]]:
     log_data: dict[str, list[str]] = {}
     for _file in get_log_files():
@@ -204,7 +204,7 @@ async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, l
     return DataResponse(data=log_data)
 
 
-@protected_router.post("/rfid/scan")
+@protected_router.post("/rfid/scan", summary="Scan RFID card")
 async def rfid_writer():
     # Return RFID writer data
     if _platform_data.system == "Windows":
@@ -212,14 +212,14 @@ async def rfid_writer():
     return {"message": "NOT IMPLEMENTED"}
 
 
-@protected_router.get("/wifi")
+@protected_router.get("/wifi", summary="Get available WiFi SSIDs")
 async def get_available_ssids() -> list[str]:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot scan WiFi on Windows")
     return list_available_ssids()
 
 
-@protected_router.post("/wifi")
+@protected_router.post("/wifi", summary="Set WiFi SSID and password")
 async def update_wifi_data(wifi_data: WifiData):
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot set WiFi on Windows")
@@ -229,24 +229,24 @@ async def update_wifi_data(wifi_data: WifiData):
     return {"message": DH.get_translation("wifi_success")}
 
 
-@protected_router.get("/addon")
+@protected_router.get("/addon", summary="Get installed and available addons")
 async def addon_data() -> list[AddonData]:
     return get_addon_data()
 
 
-@protected_router.post("/addon")
+@protected_router.post("/addon", summary="Install addon")
 async def add_addon(addon: AddonData):
     install_addon(addon)
     return {"message": f"Addon {addon.name} installed"}
 
 
-@protected_router.delete("/addon/remove")
+@protected_router.delete("/addon/remove", summary="Remove addon")
 async def delete_addon(addon: AddonData):
     remove_addon(addon)
     return {"message": f"Addon {addon.name} removed"}
 
 
-@protected_router.get("/connection")
+@protected_router.get("/connection", summary="Check internet connection")
 async def check_internet_connection():
     is_connected = has_connection()
     return {
@@ -257,7 +257,7 @@ async def check_internet_connection():
     }
 
 
-@protected_router.post("/update/system")
+@protected_router.post("/update/system", summary="Update the system")
 async def update_system(background_tasks: BackgroundTasks):
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot update system on Windows")
@@ -265,7 +265,7 @@ async def update_system(background_tasks: BackgroundTasks):
     return {"message": "System update started"}
 
 
-@protected_router.post("/update/software")
+@protected_router.post("/update/software", summary="Update CocktailBerry software")
 async def update_software():
     updater = Updater()
     update_available, info = updater.check_for_updates()
@@ -279,14 +279,14 @@ async def update_software():
     return {"message": "Software update started"}
 
 
-@router.post("/password/master/validate")
+@router.post("/password/master/validate", summary="Validate Master Password")
 async def validate_master_password(password: PasswordInput):
     if password.password != cfg.UI_MASTERPASSWORD:
         raise HTTPException(status_code=403, detail="Invalid Master Password")
     return {"message": "Master password is valid"}
 
 
-@router.post("/password/maker/validate")
+@router.post("/password/maker/validate", summary="Validate Maker Password")
 async def validate_maker_password(password: PasswordInput):
     if password.password != cfg.UI_MAKER_PASSWORD:
         raise HTTPException(status_code=403, detail="Invalid Maker Password")

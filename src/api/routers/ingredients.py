@@ -19,21 +19,21 @@ protected_router = APIRouter(
 )
 
 
-@router.get("")
+@router.get("", summary="Get all ingredients, filtered by machine and hand")
 async def get_ingredients(machine: bool = True, hand: bool = True):
     DBC = DatabaseCommander()
     ingredients = DBC.get_all_ingredients(get_machine=machine, get_hand=hand)
     return [map_ingredient(i) for i in ingredients]
 
 
-@router.get("/{ingredient_id:int}")
+@router.get("/{ingredient_id:int}", summary="Get ingredient by ID")
 async def get_ingredient(ingredient_id: int):
     DBC = DatabaseCommander()
     ingredient = DBC.get_ingredient(ingredient_id)
     return map_ingredient(ingredient)
 
 
-@protected_router.post("")
+@protected_router.post("", summary="Add new ingredient")
 async def add_ingredient(ingredient: IngredientInput):
     DBC = DatabaseCommander()
     DBC.insert_new_ingredient(
@@ -52,8 +52,8 @@ async def add_ingredient(ingredient: IngredientInput):
     }
 
 
-@protected_router.put("/{ingredient_id:int}")
-async def update_ingredients(ingredient_id: int, ingredient: IngredientInput):
+@protected_router.put("/{ingredient_id:int}", summary="Update ingredient by ID")
+async def update_ingredient(ingredient_id: int, ingredient: IngredientInput):
     DBC = DatabaseCommander()
     DBC.set_ingredient_data(
         ingredient_name=ingredient.name,
@@ -75,14 +75,14 @@ async def update_ingredients(ingredient_id: int, ingredient: IngredientInput):
     }
 
 
-@protected_router.delete("/{ingredient_id:int}")
+@protected_router.delete("/{ingredient_id:int}", summary="Delete ingredient by ID")
 async def delete_ingredients(ingredient_id: int):
     DBC = DatabaseCommander()
     DBC.delete_ingredient(ingredient_id)
     return {"message": DH.get_translation("ingredient_deleted", ingredient_name=ingredient_id)}
 
 
-@router.get("/available")
+@router.get("/available", summary="Get available ingredients IDs")
 async def get_available_ingredients() -> list[int]:
     DBC = DatabaseCommander()
     return DBC.get_available_ids()
@@ -107,6 +107,7 @@ async def post_available_ingredients(available: list[int]):
             "content": {"application/json": {"example": {"detail": "Ingredient not found"}}},
         },
     },
+    summary="Prepare given amount of ingredient by ID",
 )
 async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: BackgroundTasks):
     DBC = DatabaseCommander()

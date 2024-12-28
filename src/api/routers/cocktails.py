@@ -26,7 +26,7 @@ protected_router = APIRouter(
 )
 
 
-@router.get("")
+@router.get("", summary="Get all cocktails, limited to possible cocktails by default")
 async def get_cocktails(only_possible: bool = True, max_hand_add: int = 3, scale: bool = True) -> list[Cocktail]:
     DBC = DatabaseCommander()
     cocktails = DBC.get_possible_cocktails(max_hand_add) if only_possible else DBC.get_all_cocktails()
@@ -34,7 +34,7 @@ async def get_cocktails(only_possible: bool = True, max_hand_add: int = 3, scale
     return [c for c in mapped_cocktails if c is not None]
 
 
-@router.get("/{cocktail_id}")
+@router.get("/{cocktail_id}", summary="Get a cocktail by ID")
 async def get_cocktail(cocktail_id: int) -> Optional[Cocktail]:
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -52,6 +52,7 @@ async def get_cocktail(cocktail_id: int) -> Optional[Cocktail]:
             "content": {"application/json": {"example": {"detail": "Cocktail not found"}}},
         },
     },
+    summary="Prepare a cocktail by ID and defined properties",
 )
 async def prepare_cocktail(
     cocktail_id: int,
@@ -74,7 +75,7 @@ async def prepare_cocktail(
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
 
-@router.get("/prepare/status", tags=["preparation"])
+@router.get("/prepare/status", tags=["preparation"], summary="Get the current cocktail preparation status")
 async def get_cocktail_status() -> CocktailStatus:
     status = shared.cocktail_status
     return CocktailStatus(
@@ -99,15 +100,15 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.close()
 
 
-@router.post("/prepare/stop", tags=["preparation"])
+@router.post("/prepare/stop", tags=["preparation"], summary="Stop the current cocktail preparation")
 async def stop_cocktail():
     shared.cocktail_status.status = PrepareResult.CANCELED
     time_print("Canceling the cocktail!")
     return {"message": DH.get_translation("preparation_cancelled")}
 
 
-@protected_router.post("")
-async def create_cocktail(cocktail: CocktailInput) -> Optional[Cocktail]:
+@protected_router.post("", summary="Create a new cocktail")
+async def create_cocktail(cocktail: CocktailInput):
     DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
     ingredient_data = [(i.id, i.amount, i.recipe_order) for i in cocktail.ingredients]
@@ -120,8 +121,8 @@ async def create_cocktail(cocktail: CocktailInput) -> Optional[Cocktail]:
     }
 
 
-@protected_router.put("/{cocktail_id}")
-async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> Optional[Cocktail]:
+@protected_router.put("/{cocktail_id}", summary="Update a cocktail by ID")
+async def update_cocktail(cocktail_id: int, cocktail: CocktailInput):
     DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
     ingredient_data = [(i.id, i.amount, i.recipe_order) for i in cocktail.ingredients]
@@ -140,14 +141,14 @@ async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> Optional
     }
 
 
-@protected_router.delete("/{cocktail_id}")
+@protected_router.delete("/{cocktail_id}", summary="Delete a cocktail by ID")
 async def delete_cocktail(cocktail_id: int):
     DBC = DatabaseCommander()
     DBC.delete_recipe(cocktail_id)
     return {"message": DH.get_translation("recipe_deleted", recipe_name=cocktail_id)}
 
 
-@protected_router.post("/{cocktail_id}/image")
+@protected_router.post("/{cocktail_id}/image", summary="Upload an image for a cocktail")
 async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)):
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -165,7 +166,7 @@ async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)):
     return {"message": DH.get_translation("image_uploaded")}
 
 
-@protected_router.delete("/{cocktail_id}/image")
+@protected_router.delete("/{cocktail_id}/image", summary="Delete an image for a cocktail")
 async def delete_cocktail_image(cocktail_id: int):
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -183,7 +184,7 @@ async def delete_cocktail_image(cocktail_id: int):
     return {"message": DH.get_translation("image_deleted")}
 
 
-@protected_router.post("/enable")
+@protected_router.post("/enable", summary="Enable all recipes")
 async def enable_all_recipes():
     DBC = DatabaseCommander()
     DBC.set_all_recipes_enabled()
