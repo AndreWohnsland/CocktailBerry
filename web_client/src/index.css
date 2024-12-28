@@ -35,7 +35,7 @@ body {
   @apply button-base border-primary text-primary bg-background;
 }
 
-.button-primary:hover {
+.button-primary:active {
   @apply button-base text-secondary border-secondary;
 }
 
@@ -43,7 +43,7 @@ body {
   @apply button-base border-primary bg-primary text-background;
 }
 
-.button-primary-filled:hover {
+.button-primary-filled:active {
   @apply button-base border-secondary bg-secondary;
 }
 

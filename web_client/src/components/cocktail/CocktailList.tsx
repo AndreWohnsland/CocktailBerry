@@ -49,7 +49,7 @@ const CocktailList: React.FC = () => {
           .map((cocktail) => (
             <div
               key={cocktail.id}
-              className='border-2 border-primary hover:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary hover:bg-secondary text-background'
+              className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
               onClick={() => handleCocktailClick(cocktail)}
             >
               <h2 className='text-center py-1 flex items-center justify-center'>
