@@ -75,11 +75,25 @@ def get_ip():
         return "127.0.0.1"
 
 
+def download_latest_web_client():
+    """Download the latest web client from the GitHub release page."""
+    # Create the web root directory if it doesn't exist
+    web_root = Path("/var/www/cocktailberry_web_client")
+    web_root.mkdir(parents=True, exist_ok=True)
+    # Download the tar.gz file to the tmp directory, extract it into the web root directory, remove the tar.gz file
+    tmp_path = Path("/tmp/cocktailberry_web_client.tar.gz")
+    url = "https://github.com/AndreWohnsland/CocktailBerry/releases/latest/download/cocktailberry_web_client.tar.gz"
+    subprocess.run(["sudo", "curl", "-L", "-o", str(tmp_path), url], check=True)
+    for file in web_root.glob("*"):
+        file.unlink()
+    subprocess.run(["sudo", "tar", "-xzf", str(tmp_path), "-C", str(web_root)], check=True)
+    tmp_path.unlink()
+
+
 def setup_nginx(use_ssl):
     """Install and configures Nginx to serve a React app."""
     config_path = Path("/etc/nginx/sites-available/cocktailberry_web_client")
     config_path_enabled = Path("/etc/nginx/sites-enabled/cocktailberry_web_client")
-    web_root = Path("/var/www/cocktailberry_web_client")
     try:
         # Install Nginx
         subprocess.run(["sudo", "apt", "update"], check=True)
@@ -117,11 +131,6 @@ def setup_nginx(use_ssl):
             # Create configuration snippets for SSL
             Path("/etc/nginx/snippets/self-signed.conf").write_text(SELF_SIGNED_CONF)
             Path("/etc/nginx/snippets/ssl-params.conf").write_text(SSL_PARAMS_CONF)
-
-        # Create the web root directory if it doesn't exist, clear it if it does
-        web_root.mkdir(parents=True, exist_ok=True)
-        for file in web_root.glob("*"):
-            file.unlink()
 
         # Write the Nginx configuration file
         nginx_config = NGINX_CONFIG_FILE.format(
@@ -161,4 +170,5 @@ if __name__ == "__main__":
         help="Use SSL for the Nginx configuration.",
     )
     args = parser.parse_args()
+    download_latest_web_client()
     setup_nginx(args.use_ssl)
