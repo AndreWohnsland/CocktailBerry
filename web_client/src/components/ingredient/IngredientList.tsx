@@ -129,13 +129,13 @@ const IngredientList: React.FC = () => {
         ))}
       </div>
 
-      {selectedIngredient && (
-        <Modal
-          isOpen={!!selectedIngredient}
-          onRequestClose={closeModal}
-          className='modal'
-          overlayClassName='overlay z-20'
-        >
+      <Modal
+        isOpen={!!selectedIngredient}
+        onRequestClose={closeModal}
+        className='modal'
+        overlayClassName='overlay z-20'
+      >
+        {selectedIngredient && (
           <div className='px-4 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
               <h2 className='text-xl font-bold text-secondary'>
@@ -244,8 +244,8 @@ const IngredientList: React.FC = () => {
               </button>
             </div>
           </div>
-        </Modal>
-      )}
+        )}
+      </Modal>
     </div>
   );
 };

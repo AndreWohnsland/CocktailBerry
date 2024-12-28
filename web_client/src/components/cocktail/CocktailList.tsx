@@ -82,17 +82,18 @@ const CocktailList: React.FC = () => {
         )}
       </div>
 
-      {selectedCocktail && (
-        <Modal
-          isOpen={!!selectedCocktail}
-          onRequestClose={handleCloseModal}
-          contentLabel='Cocktail Details'
-          className='modal'
-          overlayClassName='overlay z-20'
-        >
+      <Modal
+        isOpen={!!selectedCocktail}
+        onRequestClose={handleCloseModal}
+        contentLabel='Cocktail Details'
+        className='modal'
+        overlayClassName='overlay z-20'
+        preventScroll={true}
+      >
+        {selectedCocktail && (
           <CocktailSelection selectedCocktail={selectedCocktail} handleCloseModal={handleCloseModal} />
-        </Modal>
-      )}
+        )}
+      </Modal>
       <Modal isOpen={singleIngredientOpen} className='modal slim' overlayClassName='overlay z-20'>
         <SingleIngredientSelection onClose={() => setSingleIngredientOpen(false)} />
       </Modal>

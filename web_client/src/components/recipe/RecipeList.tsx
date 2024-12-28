@@ -207,13 +207,8 @@ const RecipeList: React.FC = () => {
         ))}
       </div>
 
-      {selectedCocktail && (
-        <Modal
-          isOpen={!!selectedCocktail}
-          onRequestClose={closeModal}
-          className='modal'
-          overlayClassName='overlay z-20'
-        >
+      <Modal isOpen={!!selectedCocktail} onRequestClose={closeModal} className='modal' overlayClassName='overlay z-20'>
+        {selectedCocktail && (
           <div className='px-1 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
               <h2 className='text-xl font-bold text-secondary'>{selectedCocktail.name || t('recipes.newRecipe')}</h2>
@@ -349,8 +344,8 @@ const RecipeList: React.FC = () => {
               </button>
             </div>
           </div>
-        </Modal>
-      )}
+        )}
+      </Modal>
     </div>
   );
 };
