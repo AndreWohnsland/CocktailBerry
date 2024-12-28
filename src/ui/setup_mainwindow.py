@@ -5,7 +5,6 @@ Also defines the Mode for controls.
 
 # pylint: disable=unnecessary-lambda
 import platform
-import sys
 from typing import Optional
 
 from PyQt5.QtCore import QEventLoop
@@ -20,6 +19,7 @@ from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.models import Cocktail
+from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
 from src.ui.icons import BUTTON_SIZE, ICONS
@@ -37,7 +37,6 @@ from src.ui.setup_refill_dialog import RefillDialog
 from src.ui.setup_team_window import TeamScreen
 from src.ui_elements import Ui_MainWindow
 from src.updater import Updater
-from src.utils import has_connection
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -96,14 +95,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def update_check(self):
         """Check if there is an update and asks to update, if exists."""
-        if not cfg.MAKER_SEARCH_UPDATES:
-            return
-        updater = Updater()
-        update_available, info = updater.check_for_updates()
+        update_available, info = can_update()
         if not update_available:
             return
         if not DP_CONTROLLER.ask_to_update(info):
             return
+        updater = Updater()
         success = updater.update()
         if not success:
             DP_CONTROLLER.say_update_failed()
@@ -113,20 +110,15 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         Asks user to adjust time, if there is no no connection.
         """
-        # only needed if microservice is also active
-        if not cfg.MAKER_CHECK_INTERNET or not cfg.MICROSERVICE_ACTIVE:
+        if connection_okay():
             return
-        # Also first check if there is no connection b4 using this
-        if has_connection():
-            return
-        # And also asks the user if he want to adjust the time
+        # Asks the user if he want to adjust the time
         if DP_CONTROLLER.ask_to_adjust_time():
             self.datepicker = DatePicker()
 
     def _deprecation_check(self):
         """Check if to display the deprecation warning for newer python version install."""
-        sys_python = sys.version_info
-        if sys_python < FUTURE_PYTHON_VERSION:
+        if is_python_deprecated():
             DP_CONTROLLER.say_python_deprecated(
                 platform.python_version(), f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
             )
