@@ -11,6 +11,8 @@
   "search": "Suchen",
   "cancel": "Abbrechen",
   "close": "Schließen",
+  "date": "Datum",
+  "time": "Zeit",
   "skeletons": {
     "errorPersistInformation": "Wenn dieses Problem weiterhin besteht, überprüfen bitte, ob CocktailBerry läuft und du dich im selben Netzwerk befindest!",
     "couldNotLoadData": "Daten konnten nicht geladen werden",
@@ -79,7 +81,7 @@
     "wifi": "WLAN",
     "internetCheck": "Internetprüfung",
     "addons": "Addons",
-    "writeRfid": "RFID schreiben",
+    "adjustTime": "Zeit Anpassen",
     "cleaningTheMachine": "Reinigung der Machine",
     "startCleaningProgram": "Möchtest du das Reinigungsprogramm starten?",
     "rebootTheSystem": "Möchtest du das System neu starten?",
@@ -119,5 +121,20 @@
     "passwordNeeded": "{{passwordName}} Passwort Benötigt",
     "passwordProtectedBy": "Dieser Bereich ist durch das {{passwordName}} Passwort geschützt.",
     "enterThePassword": "Gib das Passwort ein, um fortzufahren:"
+  },
+  "issues": {
+    "systemIssues": "Systemprobleme",
+    "info": "Diese Probleme werden einmal angezeigt, nachdem das Programm gestartet wurde und Probleme gefunden hat. Ignorierst du diese, werden sie bis zum nächsten Neustart nicht wieder angezeigt. Es wird jedoch empfohlen, sich um sie zu kümmern.",
+    "deprecationWaring": "Zu alte Version",
+    "systemPythonDeprecated": "Dein System verwendet eine ältere Version von Python, als zukünftig benötigt wird. Es ist kein CocktailBerry Update mehr möglich.",
+    "InternetConnectionIssue": "Problem mit Internetverbindung",
+    "noInternetConnection": "Es scheint keine Internetverbindung zu bestehen, dies führt zu einer falscher Zeit. Da du den Mikroservice aktiviert hast, passe die Zeit manuell an, ansonsten haben gesendete Daten die falsche Zeit!",
+    "adjustTime": "Zeit Anpassen",
+    "noIssues": "Das System funktioniert einwandfrei.",
+    "reset": "Nicht mehr Erinnern"
+  },
+  "timeManager": {
+    "adjustTime": "Zeit und Tag Anpassen",
+    "adjustTimeConfirmation": "Möchtest du die Systemzeit auf die eingegebene Zeit updaten?"
   }
 }
