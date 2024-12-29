@@ -10,12 +10,14 @@ from fastapi.staticfiles import StaticFiles
 from src import __version__
 from src.api.routers import bottles, cocktails, ingredients, options
 from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import shared
 from src.config.errors import ConfigError
 from src.data_utils import CouldNotInstallAddonError
 from src.database_commander import DatabaseTransactionError
 from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
 from src.machine.controller import MACHINE
 from src.programs.addons import ADDONS
+from src.startup_checks import connection_okay, is_python_deprecated
 from src.utils import start_resource_tracker, time_print
 
 _DESC = """
@@ -101,8 +103,10 @@ async def lifespan(app: FastAPI):
         logger.error(f"Config Error: {e}")
         logger.exception(e)
         time_print(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
-        time_print("Opening the config window to correct the error.")
+        # TODO: some fix that it is still possible to use the API but with default settings
         raise
+    shared.startup_need_time_adjustment = not connection_okay() or True
+    shared.startup_python_deprecated = is_python_deprecated() or True
     MACHINE.init_machine()
     MACHINE.default_led()
     yield
@@ -170,5 +174,5 @@ async def root():
     return {"message": "Welcome to CocktailBerry, this API works!"}
 
 
-def run_api(port: int = 8888):
-    uvicorn.run("src.api.api:app", host="0.0.0.0", port=port)
+def run_api(port: int = 8000):
+    uvicorn.run(app, host="0.0.0.0", port=port)

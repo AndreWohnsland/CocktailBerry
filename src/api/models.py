@@ -108,3 +108,13 @@ class DataResponse(BaseModel, Generic[T]):
 
 class PasswordInput(BaseModel):
     password: int
+
+
+class IssueData(BaseModel):
+    deprecated: bool
+    internet: bool
+
+
+class DateTimeInput(BaseModel):
+    date: str
+    time: str

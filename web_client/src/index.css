@@ -151,6 +151,12 @@ input[type='color']::file-selector-button {
   border: 1px solid var(--primary-color);
 }
 
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator {
+  color: var(--primary-color);
+  background-color: var(--primary-color);
+}
+
 .sticky-bottom {
   position: sticky;
   bottom: 0;

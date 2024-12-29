@@ -205,3 +205,8 @@ export interface AddonData {
   installed: boolean;
   official: boolean;
 }
+
+export interface IssueData {
+  deprecated: boolean;
+  internet: boolean;
+}

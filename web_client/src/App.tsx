@@ -1,5 +1,5 @@
 import Modal from 'react-modal';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import AvailableBottles from './components/bottle/AvailableBottles.tsx';
 import BottleList from './components/bottle/BottleList.tsx';
@@ -18,12 +18,24 @@ import WifiManager from './components/options/WifiManager.tsx';
 import RecipeList from './components/recipe/RecipeList.tsx';
 import { useConfig } from './ConfigProvider.tsx';
 import useAxiosInterceptors from './hooks/useAxiosInterceptors.ts';
+import { useIssues } from './api/options.ts';
+import { useEffect } from 'react';
+import IssuePage from './components/IssuePage.tsx';
+import TimeManager from './components/options/TimeManager.tsx';
 
 Modal.setAppElement('#root');
 
 function App() {
   const { config } = useConfig();
   useAxiosInterceptors();
+  const navigate = useNavigate();
+  const { data: issues, isSuccess } = useIssues();
+
+  useEffect(() => {
+    if (issues?.deprecated || issues?.internet) {
+      navigate('/issues');
+    }
+  }, [isSuccess, issues, navigate]);
 
   return (
     <div className='min-h-screen'>
@@ -124,6 +136,15 @@ function App() {
                 </MasterPasswordProtected>
               }
             />
+            <Route
+              path='options/time'
+              element={
+                <MasterPasswordProtected>
+                  <TimeManager />
+                </MasterPasswordProtected>
+              }
+            />
+            <Route path='/issues' element={<IssuePage />} />
             <Route path='/' element={<Navigate to='/cocktails' />} />
           </Routes>
         )}

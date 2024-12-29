@@ -140,8 +140,8 @@ const OptionWindow = () => {
           <button className='button-primary p-4' onClick={() => navigate('addons')}>
             {t('options.addons')}
           </button>
-          <button className='button-neutral p-4' disabled={true}>
-            {t('options.writeRfid')}
+          <button className='button-primary p-4' onClick={() => navigate('time')}>
+            {t('options.adjustTime')}
           </button>
         </div>
       </div>

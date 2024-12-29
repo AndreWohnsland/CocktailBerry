@@ -12,7 +12,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Qu
 from fastapi.responses import FileResponse, JSONResponse
 
 from src.api.middleware import master_protected_dependency
-from src.api.models import DataResponse, PasswordInput, WifiData
+from src.api.models import DataResponse, DateTimeInput, IssueData, PasswordInput, WifiData
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import AddonData, ConsumeData, generate_consume_data, get_addon_data, install_addon, remove_addon
@@ -30,6 +30,7 @@ from src.utils import (
     has_connection,
     list_available_ssids,
     read_log_file,
+    set_system_datetime,
     setup_wifi,
     update_os,
 )
@@ -291,3 +292,31 @@ async def validate_maker_password(password: PasswordInput):
     if password.password != cfg.UI_MAKER_PASSWORD:
         raise HTTPException(status_code=403, detail="Invalid Maker Password")
     return {"message": "Maker password is valid"}
+
+
+@router.get("/issues", summary="Check if CocktailBerry has issues")
+async def check_issues() -> IssueData:
+    return IssueData(
+        deprecated=shared.startup_python_deprecated,
+        internet=shared.startup_need_time_adjustment,
+    )
+
+
+@router.post("/issues/reset", summary="Reset issues")
+async def reset_issues():
+    shared.startup_python_deprecated = False
+    shared.startup_need_time_adjustment = False
+    return {"message": "Issues reset successfully!"}
+
+
+@router.post("/datetime", summary="Update the system date and time")
+async def update_datetime(data: DateTimeInput):
+    # need YYYY-MM-DD HH:MM:SS format, time from web is "just" HH:MM
+    # users might also add ms, so remove them as well
+    time_string = data.time.split(".")[0]
+    # Add ":00" if seconds are missing
+    if len(time_string.split(":")) == 2:
+        time_string += ":00"
+    datetime_string = f"{data.date} {time_string}"
+    set_system_datetime(datetime_string)
+    return {"message": "Success"}

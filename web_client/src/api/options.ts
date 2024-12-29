@@ -9,6 +9,7 @@ import {
   AddonData,
   WifiData,
   DefinedConfigData,
+  IssueData,
 } from '../types/models';
 
 const options_url = '/options';
@@ -151,4 +152,24 @@ export const validateMasterPassword = async (password: number): Promise<{ messag
   return axiosInstance
     .post<{ message: string }>(`${options_url}/password/master/validate`, { password })
     .then((res) => res.data);
+};
+
+// State management / user information
+export const getIssues = async (): Promise<IssueData> => {
+  return axiosInstance.get<IssueData>(`${options_url}/issues`).then((res) => res.data);
+};
+
+export const useIssues = (): UseQueryResult<IssueData, Error> => {
+  return useQuery<IssueData, Error>('issues', getIssues, {
+    staleTime: 60000,
+  });
+};
+
+export const resetIssue = async (): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${options_url}/issues/reset`).then((res) => res.data);
+};
+
+export const updateDateTime = async (date: string, time: string): Promise<{ message: string }> => {
+  const data = { date, time };
+  return axiosInstance.post<{ message: string }>(`${options_url}/datetime`, data).then((res) => res.data);
 };

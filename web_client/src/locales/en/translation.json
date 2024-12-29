@@ -130,7 +130,7 @@
     "InternetConnectionIssue": "Internet Connection Issue",
     "noInternetConnection": "You seem to have no internet connection, this will result in wrong time. Since you have the microservice activated, please consider adjusting time manually, otherwise send data have the wrong time!",
     "adjustTime": "Adjust Time",
-    "noIssues": "Your system is functioning properly.",
+    "noIssues": "Your system is functioning properly, or existing issues were set to ignore.",
     "reset": "Do not show again"
   },
   "timeManager": {

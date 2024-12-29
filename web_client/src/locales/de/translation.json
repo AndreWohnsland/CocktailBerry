@@ -130,7 +130,7 @@
     "InternetConnectionIssue": "Problem mit Internetverbindung",
     "noInternetConnection": "Es scheint keine Internetverbindung zu bestehen, dies führt zu einer falscher Zeit. Da du den Mikroservice aktiviert hast, passe die Zeit manuell an, ansonsten haben gesendete Daten die falsche Zeit!",
     "adjustTime": "Zeit Anpassen",
-    "noIssues": "Das System funktioniert einwandfrei.",
+    "noIssues": "Das System funktioniert einwandfrei, oder bestehende Probleme wurden für diese Session ignoriert.",
     "reset": "Nicht mehr Erinnern"
   },
   "timeManager": {
