@@ -206,7 +206,14 @@ export interface AddonData {
   official: boolean;
 }
 
+export interface StartupIssue {
+  has_issue: boolean;
+  ignored: boolean;
+  message: string;
+}
+
 export interface IssueData {
-  deprecated: boolean;
-  internet: boolean;
+  deprecated: StartupIssue;
+  internet: StartupIssue;
+  config: StartupIssue;
 }

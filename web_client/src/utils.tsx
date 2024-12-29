@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { Cocktail } from './types/models';
+import { Cocktail, IssueData } from './types/models';
 
 export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
   // Step 1: Adjust alcoholic ingredients to match the target alcohol percentage
@@ -126,4 +126,14 @@ export const isInCurrentTab = (configName: string, tab: string): boolean => {
   }
 
   return false;
+};
+
+export const hasStartupIssues = (issueData: IssueData | undefined): boolean => {
+  if (!issueData) return false;
+  return Object.values(issueData).some((issue) => issue.has_issue);
+};
+
+export const hastNotIgnoredStartupIssues = (issueData: IssueData | undefined): boolean => {
+  if (!issueData) return false;
+  return Object.values(issueData).some((issue) => issue.has_issue && !issue.ignored);
 };

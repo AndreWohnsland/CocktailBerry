@@ -82,6 +82,7 @@
     "internetCheck": "Internetprüfung",
     "addons": "Addons",
     "adjustTime": "Zeit Anpassen",
+    "issues": "Probleme",
     "cleaningTheMachine": "Reinigung der Machine",
     "startCleaningProgram": "Möchtest du das Reinigungsprogramm starten?",
     "rebootTheSystem": "Möchtest du das System neu starten?",
@@ -128,9 +129,12 @@
     "deprecationWaring": "Zu alte Version",
     "systemPythonDeprecated": "Dein System verwendet eine ältere Version von Python, als zukünftig benötigt wird. Es ist kein CocktailBerry Update mehr möglich.",
     "InternetConnectionIssue": "Problem mit Internetverbindung",
-    "noInternetConnection": "Es scheint keine Internetverbindung zu bestehen, dies führt zu einer falscher Zeit. Da du den Mikroservice aktiviert hast, passe die Zeit manuell an, ansonsten haben gesendete Daten die falsche Zeit!",
+    "noInternetConnection": "Es scheint keine Internetverbindung zu bestehen, dies führt zu einer falschen Zeit. Da du den Mikroservice aktiviert hast, passe die Zeit manuell an, ansonsten sind gesendete Daten falsch!",
     "adjustTime": "Zeit Anpassen",
-    "noIssues": "Das System funktioniert einwandfrei, oder bestehende Probleme wurden für diese Session ignoriert.",
+    "configIssue": "Configurations Fehler",
+    "configSetToDefault": "Die fehlerhafte Konfiguration wurde auf den Standardwert gesetzt, bitte passe diese an:",
+    "goToConfig": "Gehe zur Configuration",
+    "noIssues": "Das System funktioniert einwandfrei.",
     "reset": "Nicht mehr Erinnern"
   },
   "timeManager": {

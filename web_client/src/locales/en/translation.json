@@ -82,6 +82,7 @@
     "internetCheck": "Internet Check",
     "addons": "Addons",
     "adjustTime": "Adjust Time",
+    "issues": "Issues",
     "cleaningTheMachine": "Cleaning the Machine",
     "startCleaningProgram": "Do you want to start the Cleaning Program?",
     "rebootTheSystem": "Do you want to reboot the System?",
@@ -128,9 +129,12 @@
     "deprecationWaring": "Deprecation Warning",
     "systemPythonDeprecated": "You System is using an older version of Python than needed in the future. You will not be able to do updates.",
     "InternetConnectionIssue": "Internet Connection Issue",
-    "noInternetConnection": "You seem to have no internet connection, this will result in wrong time. Since you have the microservice activated, please consider adjusting time manually, otherwise send data have the wrong time!",
+    "noInternetConnection": "You seem to have no internet connection, this will result in wrong time. Since you have the microservice activated, please consider adjusting time manually, otherwise send data is faulty!",
     "adjustTime": "Adjust Time",
-    "noIssues": "Your system is functioning properly, or existing issues were set to ignore.",
+    "configIssue": "Config Issue",
+    "configSetToDefault": "The faulty config was set the the default, please adjust it:",
+    "goToConfig": "Go to Config",
+    "noIssues": "Your system is functioning properly.",
     "reset": "Do not show again"
   },
   "timeManager": {

@@ -67,6 +67,8 @@ async def get_options_with_ui_properties():
 async def update_options(options: dict):
     cfg.set_config(options, True)
     cfg.sync_config_to_file()
+    # resolve the issue, when we get here, there was no error in the config and we can resolve potential issues
+    shared.startup_config_issue.has_issue = False
     return {"message": DH.get_translation("options_updated")}
 
 
@@ -299,14 +301,16 @@ async def check_issues() -> IssueData:
     return IssueData(
         deprecated=shared.startup_python_deprecated,
         internet=shared.startup_need_time_adjustment,
+        config=shared.startup_config_issue,
     )
 
 
-@router.post("/issues/reset", summary="Reset issues")
-async def reset_issues():
-    shared.startup_python_deprecated = False
-    shared.startup_need_time_adjustment = False
-    return {"message": "Issues reset successfully!"}
+@router.post("/issues/ignore", summary="Ignore issues")
+async def ignore_issues():
+    shared.startup_python_deprecated.set_ignored()
+    shared.startup_need_time_adjustment.set_ignored()
+    shared.startup_config_issue.set_ignored()
+    return {"message": "Issues ignored"}
 
 
 @router.post("/datetime", summary="Update the system date and time")
@@ -319,4 +323,6 @@ async def update_datetime(data: DateTimeInput):
         time_string += ":00"
     datetime_string = f"{data.date} {time_string}"
     set_system_datetime(datetime_string)
+    # resolve the internet connection issue, since time is set properly now (only thing we care)
+    shared.startup_need_time_adjustment.has_issue = False
     return {"message": "Success"}

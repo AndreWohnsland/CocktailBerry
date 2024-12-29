@@ -101,12 +101,14 @@ async def lifespan(app: FastAPI):
         cfg.read_local_config(update_config=True)
     except ConfigError as e:
         logger.error(f"Config Error: {e}")
-        logger.exception(e)
         time_print(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
-        # TODO: some fix that it is still possible to use the API but with default settings
-        raise
-    shared.startup_need_time_adjustment = not connection_okay() or True
-    shared.startup_python_deprecated = is_python_deprecated() or True
+        shared.startup_config_issue.set_issue(message=str(e))
+        # only read in valid config and use default for faulty ones
+        cfg.read_local_config(validate=False)
+    if not connection_okay():
+        shared.startup_need_time_adjustment.set_issue()
+    if is_python_deprecated():
+        shared.startup_python_deprecated.set_issue()
     MACHINE.init_machine()
     MACHINE.default_led()
     yield

@@ -3,7 +3,7 @@ from typing import Annotated, Generic, Optional, TypeVar
 from annotated_types import Len
 from pydantic import BaseModel, Field
 
-from src.models import PrepareResult
+from src.models import PrepareResult, StartupIssue
 
 T = TypeVar("T")
 
@@ -111,8 +111,9 @@ class PasswordInput(BaseModel):
 
 
 class IssueData(BaseModel):
-    deprecated: bool
-    internet: bool
+    deprecated: StartupIssue
+    internet: StartupIssue
+    config: StartupIssue
 
 
 class DateTimeInput(BaseModel):

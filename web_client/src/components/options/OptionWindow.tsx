@@ -143,6 +143,9 @@ const OptionWindow = () => {
           <button className='button-primary p-4' onClick={() => navigate('time')}>
             {t('options.adjustTime')}
           </button>
+          <button className='button-primary p-4' onClick={() => navigate('/issues')}>
+            {t('options.issues')}
+          </button>
         </div>
       </div>
     </>

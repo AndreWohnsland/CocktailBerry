@@ -22,6 +22,7 @@ import { useIssues } from './api/options.ts';
 import { useEffect } from 'react';
 import IssuePage from './components/IssuePage.tsx';
 import TimeManager from './components/options/TimeManager.tsx';
+import { hastNotIgnoredStartupIssues } from './utils.tsx';
 
 Modal.setAppElement('#root');
 
@@ -32,7 +33,7 @@ function App() {
   const { data: issues, isSuccess } = useIssues();
 
   useEffect(() => {
-    if (issues?.deprecated || issues?.internet) {
+    if (hastNotIgnoredStartupIssues(issues)) {
       navigate('/issues');
     }
   }, [isSuccess, issues, navigate]);

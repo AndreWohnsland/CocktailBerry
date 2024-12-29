@@ -32,7 +32,7 @@ from src.config.errors import ConfigError
 from src.config.validators import build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
-from src.models import CocktailStatus
+from src.models import CocktailStatus, StartupIssue
 from src.utils import get_platform_data, time_print
 
 _logger = LoggerHandler("config_manager")
@@ -384,8 +384,9 @@ class Shared:
         self.alcohol_factor: float = 1.0
         self.cocktail_status = CocktailStatus()
         # those are used to display once the message after startup if there are some issues
-        self.startup_need_time_adjustment = False
-        self.startup_python_deprecated = False
+        self.startup_need_time_adjustment = StartupIssue()
+        self.startup_python_deprecated = StartupIssue()
+        self.startup_config_issue = StartupIssue()
 
 
 def version_callback(value: bool):

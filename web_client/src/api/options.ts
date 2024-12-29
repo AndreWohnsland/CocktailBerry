@@ -165,8 +165,8 @@ export const useIssues = (): UseQueryResult<IssueData, Error> => {
   });
 };
 
-export const resetIssue = async (): Promise<{ message: string }> => {
-  return axiosInstance.post<{ message: string }>(`${options_url}/issues/reset`).then((res) => res.data);
+export const ignoreIssues = async (): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${options_url}/issues/ignore`).then((res) => res.data);
 };
 
 export const updateDateTime = async (date: string, time: string): Promise<{ message: string }> => {
