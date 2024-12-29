@@ -66,7 +66,7 @@ async def get_options_with_ui_properties():
 async def update_options(options: dict):
     cfg.set_config(options, True)
     cfg.sync_config_to_file()
-    return {"message": "Options updated successfully!"}
+    return {"message": DH.get_translation("options_updated")}
 
 
 @protected_router.post("/clean", tags=["preparation"], summary="Start the machine cleaning")
