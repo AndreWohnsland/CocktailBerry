@@ -13,11 +13,11 @@ import SingleIngredientSelection from './SingleIngredientSelection';
 import { useTranslation } from 'react-i18next';
 
 const CocktailList: React.FC = () => {
-  const { data: cocktails, error, isLoading } = useCocktails();
+  const { config } = useConfig();
+  const { data: cocktails, error, isLoading } = useCocktails(true, config.MAKER_MAX_HAND_INGREDIENTS || 0);
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const { config } = useConfig();
   const { t } = useTranslation();
 
   if (isLoading) return <LoadingData />;
