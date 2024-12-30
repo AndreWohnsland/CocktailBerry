@@ -83,7 +83,7 @@ def data_import(
     If the units are not in ml, please provide the conversion factor into ml.
     The file should contain the cocktail name, followed by ingredient data (amount, name).
     For further information regarding the file structure,
-    please see https://cocktailberry.readthedocs.io/commands/#importing-recipes-from-file.
+    please see https://docs.cocktailberry.org/commands/#importing-recipes-from-file.
     """
     importer(path, conversion, no_unit)
 
@@ -95,13 +95,13 @@ def update_database():
     Adds the new recipes including missing ingredients to the local database.
     Ignore recipes that collide with names of your self-added recipes.
     Creates a backup before doing the update,
-    see also https://cocktailberry.readthedocs.io/troubleshooting/#restoring-database.
+    see also https://docs.cocktailberry.org/troubleshooting/#restoring-database.
 
     Please take note that the ingredients are in german, so if you renamed your ingredients,
     this will most likely add all ingredients from the new recipes in german to your local database.
     If you are not satisfied the result, consult the documentation how to use the backup.
     You can also create a own backup with the build in CocktailBerry backup function over the program interface.
-    More information also at https://cocktailberry.readthedocs.io/commands/#updating-local-database
+    More information also at https://docs.cocktailberry.org/commands/#updating-local-database
     """
     add_new_recipes_from_default_db()
 
@@ -113,7 +113,7 @@ def clear_database():
     After this action, there will be no recipes or ingredients in your local CocktailBerry data.
     A backup of your local database is created before deleting.
     Use this if you want to build your own custom database and not use any of the supplied data.
-    See also: https://cocktailberry.readthedocs.io/commands/#clearing-local-database.
+    See also: https://docs.cocktailberry.org/commands/#clearing-local-database.
     """
     clear_local_database()
 
@@ -125,6 +125,7 @@ def create_addon(addon_name: str):
     The file is saved under the addons folder.
     File name will be the name converted to lower case, space are replaced with underscores
     and stripped of special characters.
+    For more information see https://docs.cocktailberry.org/addons/#creating-addons.
     """
     generate_addon_skeleton(addon_name)
 
@@ -143,6 +144,7 @@ def setup_microservice(
     A compose file will be created in the home directory, if this command was not already run once.
     If this file already exists, the values will be replaced with the provided ones.
     If you are using compose version 1, please specify the flag.
+    For more context, see https://docs.cocktailberry.org/advanced/#installation-of-services.
     """
     setup_service(api_key, hook_endpoint, hook_header, use_v1)
 
@@ -157,6 +159,7 @@ def setup_teams_service(
 
     You can use english [en] or german [de] as language.
     Will run the frontend at localhost:8050 (http://localhost:8050), backend at localhost:8080 (http://localhost:8080).
+    See also https://docs.cocktailberry.org/advanced/#dashboard-with-teams.
     """
     setup_teams(language)
 
@@ -167,6 +170,7 @@ def api(port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAP
 
     Can be used as an alternative way to control the machine, for example over an external program or a web ui.
     The FastAPI server will be started at the given port.
+    See also https://docs.cocktailberry.org/web/.
     """
     run_api(port)
 
@@ -179,6 +183,7 @@ def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL f
     This is an alternative setup and overwrites the current app.
     The web interface will be available at http://localhost or proxy it with Nginx to just localhost/the ip.
     The api will be available at http://localhost:8000.
+    See also https://docs.cocktailberry.org/web/.
     """
     if _platform_data.system == "Windows":
         print("Web setup is not supported on Windows")
@@ -195,6 +200,7 @@ def switch_back():
     This will switch back to the Qt setup for CocktailBerry.
     This is an alternative setup and overwrites the current app.
     The web interface will be removed.
+    See also https://docs.cocktailberry.org/web/.
     """
     if _platform_data.system == "Windows":
         print("Web setup is not supported on Windows")
