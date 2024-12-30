@@ -160,9 +160,7 @@ export const getIssues = async (): Promise<IssueData> => {
 };
 
 export const useIssues = (): UseQueryResult<IssueData, Error> => {
-  return useQuery<IssueData, Error>('issues', getIssues, {
-    staleTime: 60000,
-  });
+  return useQuery<IssueData, Error>('issues', getIssues);
 };
 
 export const ignoreIssues = async (): Promise<{ message: string }> => {
