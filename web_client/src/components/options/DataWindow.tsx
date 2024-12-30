@@ -3,14 +3,16 @@ import { resetDataInsights, useConsumeData } from '../../api/options';
 import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
 import { useTranslation } from 'react-i18next';
-import { FaUndo } from 'react-icons/fa';
+import { FaCocktail, FaUndo } from 'react-icons/fa';
 import { confirmAndExecute } from '../../utils';
+import { FaCoins, FaLemon } from 'react-icons/fa6';
 
 const ConsumeBarChart: React.FC<{
   title: string;
   data: Record<string, number>;
   unit?: string;
-}> = ({ title, data, unit }) => {
+  icon?: React.ReactNode;
+}> = ({ title, data, unit, icon }) => {
   const sortedEntries = Object.entries(data).sort((a, b) => b[1] - a[1]);
   const maxValue = Math.max(...Object.values(data));
   const sumValues = Object.values(data).reduce((acc, curr) => acc + curr, 0);
@@ -18,7 +20,10 @@ const ConsumeBarChart: React.FC<{
 
   return (
     <div className='mb-6 w-full'>
-      <h3 className='text-2xl font-bold text-secondary mb-4 text-center'>{`${title} (${sumValues}${displayUnit})`}</h3>
+      <h3 className='text-2xl font-bold text-secondary mb-4 text-center flex items-center justify-center'>
+        {icon && <span className='mr-3'>{icon}</span>}
+        {`${title} (${sumValues}${displayUnit})`}
+      </h3>
       <div className='space-y-2'>
         {sortedEntries.map(([key, value]) => (
           <div
@@ -110,9 +115,11 @@ const ConsumeWindow: React.FC = () => {
       <div className='flex-grow p-2 items-center justify-center flex flex-col w-full'>
         {consumeData && (
           <>
-            <ConsumeBarChart title={t('data.recipes')} data={selectedData.recipes} unit='x' />
-            <ConsumeBarChart title={t('data.ingredients')} data={selectedData.ingredients} />
-            {selectedData.cost && <ConsumeBarChart title={t('data.cost')} data={selectedData.cost} />}
+            <ConsumeBarChart title={t('data.recipes')} data={selectedData.recipes} unit='x' icon={<FaCocktail />} />
+            <ConsumeBarChart title={t('data.ingredients')} data={selectedData.ingredients} icon={<FaLemon />} />
+            {selectedData.cost && (
+              <ConsumeBarChart title={t('data.cost')} data={selectedData.cost} icon={<FaCoins />} />
+            )}
             {consumeData['AT RESET'].recipes && Object.keys(consumeData['AT RESET'].recipes).length > 0 && (
               <button
                 className='button-danger p-2 w-full flex items-center justify-center max-w-lg'

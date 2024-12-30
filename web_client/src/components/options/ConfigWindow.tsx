@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { updateOptions, useConfig } from '../../api/options';
 import { RxCrossCircled } from 'react-icons/rx';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaSave } from 'react-icons/fa';
 import { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
 import { executeAndShow, isInCurrentTab } from '../../utils';
 import TabSelector from './TabSelector';
@@ -300,7 +300,11 @@ const ConfigWindow: React.FC = () => {
           )}
         </div>
         <div className='flex flex-col items-center justify-center w-full px-2'>
-          <button onClick={postConfig} className='button-primary-filled p-2 w-full mb-2'>
+          <button
+            onClick={postConfig}
+            className='button-primary-filled p-2 w-full mb-2 flex items-center justify-center'
+          >
+            <FaSave className='mr-2' size={20} />
             {t('save')}
           </button>
         </div>

@@ -15,6 +15,13 @@ import { useNavigate } from 'react-router-dom';
 import ProgressModal from '../cocktail/ProgressModal';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
+import { FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
+import { BsBootstrapReboot } from 'react-icons/bs';
+import { RiShutDownLine } from 'react-icons/ri';
+import { GrUpdate } from 'react-icons/gr';
+import { FaCocktail, FaExclamationTriangle, FaInfoCircle, FaRegClock } from 'react-icons/fa';
+import { TiDocumentAdd } from 'react-icons/ti';
 
 const OptionWindow = () => {
   const { theme, changeTheme } = useConfig();
@@ -86,64 +93,95 @@ const OptionWindow = () => {
           </select>
         </div>
         <div className='grid gap-1 w-full grid-cols-1 md:grid-cols-2'>
-          <button className='button-primary-filled p-4' onClick={cleanClick}>
+          <button className='button-primary-filled p-4 flex items-center justify-center' onClick={cleanClick}>
+            <MdWaterDrop size={22} className='mr-2' />
             {t('options.cleaning')}
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('calibration')}>
+          <button
+            className='button-primary p-4 flex items-center justify-center'
+            onClick={() => navigate('calibration')}
+          >
+            <FaScaleUnbalanced size={20} className='mr-2' />
             {t('options.calibration')}
           </button>
-          <button className='button-primary-filled p-4' onClick={() => navigate('configuration')}>
+          <button
+            className='button-primary-filled p-4 flex items-center justify-center'
+            onClick={() => navigate('configuration')}
+          >
+            <FaGear size={20} className='mr-2' />
             {t('options.configuration')}
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('data')}>
+          <button className='button-primary p-4 flex items-center justify-center' onClick={() => navigate('data')}>
+            <FaChartSimple size={20} className='mr-2' />
             {t('options.data')}
           </button>
-          <button className='button-primary p-4' onClick={() => executeAndShow(getBackupClick)}>
+          <button
+            className='button-primary p-4 flex items-center justify-center'
+            onClick={() => executeAndShow(getBackupClick)}
+          >
+            <FaDownload size={20} className='mr-2' />
             {t('options.backup')}
           </button>
-          <button className='button-primary p-4' onClick={() => executeAndShow(uploadBackupClick)}>
+          <button
+            className='button-primary p-4 flex items-center justify-center'
+            onClick={() => executeAndShow(uploadBackupClick)}
+          >
+            <FaUpload size={20} className='mr-2' />
             {t('options.restore')}
           </button>
           <button
-            className='button-primary p-4'
+            className='button-primary p-4 flex items-center justify-center'
             onClick={() => confirmAndExecute(t('options.rebootTheSystem'), rebootSystem)}
           >
+            <BsBootstrapReboot size={20} className='mr-2' />
             {t('options.reboot')}
           </button>
           <button
-            className='button-primary p-4'
+            className='button-primary p-4 flex items-center justify-center'
             onClick={() => confirmAndExecute(t('options.shutdownTheSystem'), shutdownSystem)}
           >
+            <RiShutDownLine size={20} className='mr-2' />
             {t('options.shutdown')}
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('logs')}>
+          <button className='button-primary p-4 flex items-center justify-center' onClick={() => navigate('logs')}>
+            <FaInfoCircle size={20} className='mr-2' />
             {t('options.logs')}
           </button>
           <button
-            className='button-primary-filled p-4'
+            className='button-primary-filled p-4 flex items-center justify-center'
             onClick={() => confirmAndExecute(t('options.updateTheSystem'), updateSystem)}
           >
+            <GrUpdate size={20} className='mr-2' />
             {t('options.updateSystem')}
           </button>
           <button
-            className='button-primary-filled p-4 col-span-1 md:col-span-2'
+            className='button-primary-filled p-4 col-span-1 md:col-span-2 flex items-center justify-center'
             onClick={() => executeAndShow(updateSoftware)}
           >
+            <FaCocktail size={20} className='mr-2' />
             {t('options.updateCocktailBerry')}
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('wifi')}>
+          <button className='button-primary p-4 flex items-center justify-center' onClick={() => navigate('wifi')}>
+            <FaWifi size={20} className='mr-2' />
             {t('options.wifi')}
           </button>
-          <button className='button-primary p-4' onClick={() => executeAndShow(checkInternetConnection)}>
+          <button
+            className='button-primary p-4 flex items-center justify-center'
+            onClick={() => executeAndShow(checkInternetConnection)}
+          >
+            <MdOutlineSignalWifiStatusbarConnectedNoInternet4 size={20} className='mr-2' />
             {t('options.internetCheck')}
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('addons')}>
+          <button className='button-primary p-4 flex items-center justify-center' onClick={() => navigate('addons')}>
+            <TiDocumentAdd size={24} className='mr-2' />
             {t('options.addons')}
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('time')}>
+          <button className='button-primary p-4 flex items-center justify-center' onClick={() => navigate('time')}>
+            <FaRegClock size={20} className='mr-2' />
             {t('options.adjustTime')}
           </button>
-          <button className='button-primary p-4' onClick={() => navigate('/issues')}>
+          <button className='button-primary p-4 flex items-center justify-center' onClick={() => navigate('/issues')}>
+            <FaExclamationTriangle size={20} className='mr-2' />
             {t('options.issues')}
           </button>
         </div>
