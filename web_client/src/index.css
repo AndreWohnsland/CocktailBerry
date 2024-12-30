@@ -205,6 +205,12 @@ input[type='time']::-webkit-calendar-picker-indicator {
   max-width: 600px;
 }
 
+@media (max-width: 640px) {
+  .modal.slim.h-fit {
+    max-height: 600px;
+  }
+}
+
 .overlay {
   position: fixed;
   top: 0;

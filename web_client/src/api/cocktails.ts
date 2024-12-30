@@ -39,12 +39,14 @@ export const prepareCocktail = async (
   volume: number,
   alcohol_factor: number,
   is_virgin: boolean,
+  teamName?: string,
 ): Promise<CocktailStatus> => {
   return axiosInstance
     .post<CocktailStatus>(`${cocktail_url}/prepare/${cocktail.id}`, {
       volume,
       alcohol_factor,
       is_virgin,
+      selected_team: teamName,
     })
     .then((res) => res.data);
 };

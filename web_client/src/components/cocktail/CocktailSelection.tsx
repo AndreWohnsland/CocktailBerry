@@ -13,6 +13,7 @@ import ProgressModal from './ProgressModal';
 import { API_URL } from '../../api/common';
 import { useConfig } from '../../ConfigProvider';
 import RefillPrompt from './RefillPrompt';
+import TeamSelection from './TeamSelection';
 
 interface CocktailModalProps {
   selectedCocktail: Cocktail;
@@ -35,13 +36,15 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   const [alcohol, setAlcohol] = useState<alcoholState>('normal');
   const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(selectedCocktail);
   const [isProgressModalOpen, setProgressModalOpen] = useState(false);
+  // Refill state
   const [isRefillOpen, setRefillOpen] = useState(false);
   const [refillMessage, setRefillMessage] = useState('');
   const [emptyBottleNumber, setEmptyBottleNumber] = useState(0);
+  // Team selection state
+  const [isTeamOpen, setTeamOpen] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const { config } = useConfig();
   const possibleServingSizes = config.MAKER_PREPARE_VOLUME || mlAmounts;
-  if (config.MAKER_USE_RECIPE_VOLUME) {
-  }
 
   const handleAlcoholState = (state: alcoholState) => {
     if (state === alcohol) {
@@ -55,8 +58,17 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   };
 
   const prepareCocktailClick = async (amount: number) => {
+    if (config.TEAMS_ACTIVE) {
+      setSelectedAmount(amount);
+      setTeamOpen(true);
+    } else {
+      handlePrepareCocktail(amount);
+    }
+  };
+
+  const handlePrepareCocktail = async (amount: number, teamName: string | undefined = undefined) => {
     const factor = alcoholFactor[alcohol];
-    prepareCocktail(displayCocktail, amount, factor, alcohol === 'virgin')
+    prepareCocktail(displayCocktail, amount, factor, alcohol === 'virgin', teamName)
       .then(() => {
         setProgressModalOpen(true);
       })
@@ -185,6 +197,12 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
         progress={0}
         displayName={displayCocktail.name}
         triggerOnClose={handleCloseModal}
+      />
+      <TeamSelection
+        isOpen={isTeamOpen}
+        amount={selectedAmount!}
+        prepareCocktail={handlePrepareCocktail}
+        onClose={() => setTeamOpen(false)}
       />
     </>
   );

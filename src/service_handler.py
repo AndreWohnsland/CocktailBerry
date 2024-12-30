@@ -6,7 +6,7 @@ from typing import Optional
 import requests
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DatabaseCommander
 from src.logger_handler import LogFiles, LoggerHandler
 from src.models import Cocktail
 
@@ -121,6 +121,7 @@ class ServiceHandler:
             Dict: Status code and message, or empty if cannot reach service
 
         """
+        DBC = DatabaseCommander()
         try:
             if payload is not None:
                 req = requests.post(endpoint, data=payload, headers=self.headers, timeout=2)
@@ -141,7 +142,7 @@ class ServiceHandler:
             self._log_connection_error(endpoint, post_type)
             # only save failed team data for now
             if post_type is PostType.TEAMDATA:
-                DB_COMMANDER.save_failed_teamdata(payload)
+                DBC.save_failed_teamdata(payload)
             return {}
 
     def _log_connection_error(self, endpoint: str, post_type: PostType):
@@ -150,11 +151,12 @@ class ServiceHandler:
     def _check_failed_data(self):
         """Get one failed teamdata and sends it."""
         endpoint = f"{cfg.TEAM_API_URL}/cocktail"
-        failed_data = DB_COMMANDER.get_failed_teamdata()
+        DBC = DatabaseCommander()
+        failed_data = DBC.get_failed_teamdata()
         if failed_data:
             msg_id, payload = failed_data
             # Delete the old thing before recursion hell comes live
-            DB_COMMANDER.delete_failed_teamdata(msg_id)
+            DBC.delete_failed_teamdata(msg_id)
             self._try_to_send(endpoint, PostType.TEAMDATA, payload)
 
 

@@ -84,6 +84,8 @@ class PrepareCocktailRequest(BaseModel):
     volume: int = Field(..., gt=0)
     alcohol_factor: float
     is_virgin: bool = False
+    selected_team: Optional[str] = None
+    team_member_name: Optional[str] = None
 
 
 class AddonData(BaseModel):

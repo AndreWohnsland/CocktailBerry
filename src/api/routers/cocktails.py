@@ -71,6 +71,12 @@ async def prepare_cocktail(
         # we need also provide the frontend with the ingredient id that caused the error
         bottle = ingredient.bottle if ingredient is not None else None
         return JSONResponse(status_code=400, content={"status": result.value, "detail": msg, "bottle": bottle})
+    # handle team data
+    shared.team_member_name = None
+    shared.selected_team = "No Team"
+    if request.selected_team is not None:
+        shared.selected_team = request.selected_team
+        shared.team_member_name = request.team_member_name
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 

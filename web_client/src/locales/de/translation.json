@@ -35,7 +35,8 @@
     "applyRefill": "Nachfüllen Registrieren",
     "singleIngredient": "Einzelne Zutat",
     "selectIngredient": "Zutat auswählen",
-    "spend": "Ausgeben"
+    "spend": "Ausgeben",
+    "selectTeam": "Team Auswählen"
   },
   "ingredients": {
     "newIngredient": "Neue Zutat",

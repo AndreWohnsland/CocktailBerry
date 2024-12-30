@@ -35,7 +35,8 @@
     "applyRefill": "Apply Refill",
     "singleIngredient": "Single Ingredient",
     "selectIngredient": "Select Ingredient",
-    "spend": "Spend"
+    "spend": "Spend",
+    "selectTeam": "Select Team"
   },
   "ingredients": {
     "newIngredient": "New Ingredient",
