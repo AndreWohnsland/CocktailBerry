@@ -175,7 +175,7 @@ const RecipeList: React.FC = () => {
   };
 
   return (
-    <div className='p-2 w-full max-w-3xl'>
+    <div className='p-2 pt-0 w-full max-w-3xl'>
       <SearchBar search={search} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full flex flex-row gap-4'>
@@ -197,8 +197,8 @@ const RecipeList: React.FC = () => {
           <button
             key={cocktail.id}
             onClick={() => handleCocktailClick(cocktail)}
-            className={`p-2 py-4 w-full flex justify-center items-center ${
-              cocktail.enabled ? 'button-primary' : 'button-neutral'
+            className={`p-2 py-4 w-full flex justify-center items-center button-primary ${
+              !cocktail.enabled && 'disabled'
             }`}
           >
             {cocktail.virgin_available && <MdNoDrinks size={20} className='mr-2' />}
@@ -257,7 +257,9 @@ const RecipeList: React.FC = () => {
                     onChange={(e) => handleIngredientChange(index, e)}
                     className='select-base p-2 mr-2'
                   >
-                    <option value=''>{t('recipes.selectIngredient')}</option>
+                    <option value={0} disabled>
+                      {t('recipes.selectIngredient')}
+                    </option>
                     {ingredients?.map((ing) => (
                       <option key={ing.id} value={ing.id}>
                         {ing.name}
@@ -298,7 +300,7 @@ const RecipeList: React.FC = () => {
                 <button
                   type='button'
                   onClick={handleUploadImage}
-                  className={`${selectedCocktail?.id ? 'button-secondary' : 'button-neutral'} p-2 mr-1`}
+                  className={`${!selectedCocktail?.id && 'disabled'} p-2 mr-1 button-secondary`}
                 >
                   <FaUpload />
                 </button>
@@ -306,11 +308,9 @@ const RecipeList: React.FC = () => {
                 <button
                   type='button'
                   onClick={handleDeleteImage}
-                  className={
-                    selectedCocktail.image === selectedCocktail.default_image
-                      ? 'button-neutral p-2'
-                      : 'button-danger p-2'
-                  }
+                  className={`button-danger p-2 ${
+                    selectedCocktail.image === selectedCocktail.default_image && 'disabled'
+                  }`}
                   disabled={
                     selectedCocktail.image === selectedCocktail.default_image || selectedCocktail.id === undefined
                   }
@@ -324,17 +324,18 @@ const RecipeList: React.FC = () => {
               <button
                 type='button'
                 onClick={handleDelete}
+                disabled={!selectedCocktail?.id}
                 className={`${
-                  selectedCocktail?.id ? 'button-danger-filled' : 'button-neutral'
-                } p-2 px-4 flex justify-between items-center`}
+                  !selectedCocktail?.id && 'disabled'
+                } p-2 px-4 flex justify-between items-center button-danger-filled`}
               >
                 <FaTrashAlt className='mr-2' />
                 {t('delete')}
               </button>
               <button
                 type='button'
-                className={`p-2 px-4 flex justify-between items-center ${
-                  isValidCocktail() ? 'button-primary-filled' : 'button-neutral-filled'
+                className={`p-2 px-4 flex justify-between items-center button-primary-filled ${
+                  !isValidCocktail() && 'disabled'
                 }`}
                 onClick={handlePost}
                 disabled={!isValidCocktail()}

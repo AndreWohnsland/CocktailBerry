@@ -71,6 +71,10 @@ body {
   @apply button-base border-danger bg-danger text-background;
 }
 
+.disabled {
+  filter: grayscale(70%);
+}
+
 .select-base {
   @apply bg-background border border-primary text-primary font-bold rounded-lg text-center p-1 w-full;
 }

@@ -18,6 +18,10 @@ const WifiManager: React.FC = () => {
     );
   };
 
+  const dataValid = () => {
+    return selectedSsid !== '' && password !== '';
+  };
+
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
 
@@ -53,7 +57,11 @@ const WifiManager: React.FC = () => {
             className='input-base !p-2'
           />
         </label>
-        <button type='submit' className='col-span-1 md:col-span-2 button-primary-filled p-2 mt-4'>
+        <button
+          type='submit'
+          disabled={!dataValid()}
+          className={`col-span-1 md:col-span-2 button-primary-filled p-2 mt-4 ${!dataValid() && 'disabled'}`}
+        >
           {t('submit')}
         </button>
       </form>

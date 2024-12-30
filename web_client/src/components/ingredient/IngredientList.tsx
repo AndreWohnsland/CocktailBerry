@@ -104,7 +104,7 @@ const IngredientList: React.FC = () => {
   };
 
   return (
-    <div className='p-2 w-full max-w-3xl'>
+    <div className='p-2 pt-0 w-full max-w-3xl'>
       <SearchBar search={search} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full'>
@@ -224,17 +224,18 @@ const IngredientList: React.FC = () => {
               <button
                 type='button'
                 onClick={handleDelete}
+                disabled={!selectedIngredient?.id}
                 className={`${
-                  selectedIngredient?.id ? 'button-danger-filled' : 'button-neutral'
-                } p-2 px-4 flex justify-between items-center`}
+                  !selectedIngredient?.id && 'disabled'
+                } button-danger-filled p-2 px-4 flex justify-between items-center`}
               >
                 <FaTrashAlt className='mr-2' />
                 {t('delete')}
               </button>
               <button
                 type='button'
-                className={`p-2 px-4 flex justify-between items-center ${
-                  isValidIngredient() ? 'button-primary-filled' : 'button-neutral-filled'
+                className={`p-2 px-4 flex justify-between items-center button-primary-filled ${
+                  !isValidIngredient() && 'disabled'
                 }`}
                 disabled={!isValidIngredient()}
                 onClick={handlePost}

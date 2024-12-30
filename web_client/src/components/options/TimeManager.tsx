@@ -45,7 +45,7 @@ const TimeManager: React.FC = () => {
         </label>
         <button
           type='submit'
-          className={`col-span-1 md:col-span-2 p-2 mt-4 ${dataValid() ? 'button-primary-filled' : 'button-neutral'}`}
+          className={`col-span-1 md:col-span-2 p-2 mt-4 button-primary-filled ${!dataValid() && 'disabled'}`}
           disabled={!dataValid()}
         >
           {t('submit')}
