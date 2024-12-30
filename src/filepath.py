@@ -35,4 +35,6 @@ NGINX_CONFIG_FILE = SCRIPTS_FOLDER / "cocktailberry_web_client"
 TEAMS_DOCKER_FILE = ROOT_PATH / "dashboard" / "docker-compose.both.yaml"
 
 # API
-STATIC_API_FOLDER = SRC_PATH / "api" / "static"
+API_FOLDER = SRC_PATH / "api"
+STATIC_API_FOLDER = API_FOLDER / "static"
+WEB_APP_FOLDER = API_FOLDER / "webapp"
