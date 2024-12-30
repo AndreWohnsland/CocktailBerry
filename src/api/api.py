@@ -17,7 +17,8 @@ from src.database_commander import DatabaseTransactionError
 from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
 from src.machine.controller import MACHINE
 from src.programs.addons import ADDONS
-from src.startup_checks import connection_okay, is_python_deprecated
+from src.startup_checks import can_update, connection_okay, is_python_deprecated
+from src.updater import Updater
 from src.utils import start_resource_tracker, time_print
 
 _DESC = """
@@ -111,6 +112,11 @@ async def lifespan(app: FastAPI):
         shared.startup_python_deprecated.set_issue()
     MACHINE.init_machine()
     MACHINE.default_led()
+    update_available, _ = can_update()
+    if update_available:
+        time_print("Update available, performing update...")
+        updater = Updater()
+        updater.update()
     yield
     MACHINE.cleanup()
 
