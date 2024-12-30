@@ -53,19 +53,19 @@ class Ingredient(CocktailIngredient):
 
 class IngredientInput(BaseModel):
     name: str
-    alcohol: int
-    bottle_volume: int
-    fill_level: int
-    cost: int
-    pump_speed: int
+    alcohol: int = Field(..., ge=0)
+    bottle_volume: int = Field(..., gt=0)
+    fill_level: int = Field(..., ge=0)
+    cost: int = Field(..., ge=0)
+    pump_speed: int = Field(..., gt=0)
     hand: bool
     unit: str
 
 
 class CocktailIngredientInput(BaseModel):
     id: int
-    amount: int
-    recipe_order: int
+    amount: int = Field(..., gt=0)
+    recipe_order: int = Field(..., gt=0)
 
 
 class CocktailInput(BaseModel):
@@ -82,7 +82,7 @@ class Bottle(BaseModel):
 
 class PrepareCocktailRequest(BaseModel):
     volume: int = Field(..., gt=0)
-    alcohol_factor: float
+    alcohol_factor: float = Field(..., ge=0)
     is_virgin: bool = False
     selected_team: Optional[str] = None
     team_member_name: Optional[str] = None
@@ -109,7 +109,7 @@ class DataResponse(BaseModel, Generic[T]):
 
 
 class PasswordInput(BaseModel):
-    password: int
+    password: int = Field(..., ge=0)
 
 
 class IssueData(BaseModel):
