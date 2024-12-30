@@ -16,6 +16,7 @@ from src.data_utils import CouldNotInstallAddonError
 from src.database_commander import DatabaseTransactionError
 from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
 from src.machine.controller import MACHINE
+from src.migration.setup_web import download_latest_web_client
 from src.programs.addons import ADDONS
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.updater import Updater
@@ -117,6 +118,8 @@ async def lifespan(app: FastAPI):
         time_print("Update available, performing update...")
         updater = Updater()
         updater.update()
+        # need to get also latest web build
+        download_latest_web_client()
     yield
     MACHINE.cleanup()
 
