@@ -105,37 +105,35 @@ const BottleComponent: React.FC<BottleProps> = ({
 
   return (
     <>
-      <div className='flex flex-row col-span-2 sm:col-span-1 mx-3 sm:mx-0'>
-        <div className='place-content-center text-center text-secondary font-bold text-2xl mx-1 w-12'>
-          {bottle.number}
+      <div className='h-full grid grid-cols-2 place-items-stretch gap-2 w-full mb-2 sm:mb-0'>
+        <div className='flex flex-row col-span-2 sm:col-span-1 max-h-20'>
+          <div className='place-content-center text-center text-secondary font-bold text-2xl mx-1 w-12'>
+            {bottle.number}
+          </div>
+          <select
+            className='select-base block w-full !p-2'
+            name={`ingredient-bottle-${bottle.number}`}
+            value={selectedIngredientId}
+            onChange={handleSelectionChange}
+          >
+            {selectedIngredient && <option value={selectedIngredient.id}>{selectedIngredient.name}</option>}
+            <option key={0} value={0}>
+              -
+            </option>
+            {freeIngredients
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((ingredient) => (
+                <option key={ingredient.id} value={ingredient.id}>
+                  {ingredient.name}
+                </option>
+              ))}
+          </select>
+          <button onClick={onToggle} className={getClass()}>
+            {t('new')}
+          </button>
         </div>
-        <select
-          className='select-base block w-full p-1.5'
-          name={`ingredient-bottle-${bottle.number}`}
-          value={selectedIngredientId}
-          onChange={handleSelectionChange}
-        >
-          {selectedIngredient && <option value={selectedIngredient.id}>{selectedIngredient.name}</option>}
-          <option key={0} value={0}>
-            -
-          </option>
-          {freeIngredients
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((ingredient) => (
-              <option key={ingredient.id} value={ingredient.id}>
-                {ingredient.name}
-              </option>
-            ))}
-        </select>
-        <button onClick={onToggle} className={getClass()}>
-          {t('new')}
-        </button>
+        <ProgressBar fillPercent={fillPercent} onClick={openModal} className='col-span-2 sm:col-span-1 max-h-20' />
       </div>
-      <ProgressBar
-        fillPercent={fillPercent}
-        onClick={openModal}
-        className='col-span-2 sm:col-span-1 mb-3 sm:mb-0 mx-3 sm:mx-0'
-      />
       <Modal isOpen={isModalOpen} onRequestClose={closeModal} className='modal slim' overlayClassName='overlay z-20'>
         <div className='rounded w-full h-full flex flex-col'>
           <div className='pl-2 flex justify-between items-center mb-2'>

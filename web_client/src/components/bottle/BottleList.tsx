@@ -55,30 +55,30 @@ const BottleList: React.FC = () => {
   };
 
   return (
-    <>
-      <div className='px-1 max-w-7xl w-full h-full'>
-        <div className='grid grid-cols-2 place-items-stretch gap-2 w-full h-full'>
-          {bottles?.map((bottle) => (
-            <BottleComponent
-              key={bottle.number}
-              bottle={bottle}
-              isToggled={toggledBottles[bottle.number] || false}
-              onToggle={() => handleToggle(bottle.number)}
-              freeIngredients={freeIngredients}
-              setFreeIngredients={setFreeIngredients}
-            />
-          ))}
-        </div>
-        <div className='sticky-bottom w-full grid grid-cols-2 gap-2 py-1 mt-2 bg-background'>
-          <button className='button-primary-filled p-2' onClick={handleApply}>
-            {t('bottles.applyNew')}
-          </button>
-          <button className='button-primary p-2 ' onClick={() => navigate('/manage/bottles/available')}>
-            {t('bottles.available')}
-          </button>
-        </div>
+    <div className='max-w-7xl w-full h-full flex flex-col px-2'>
+      <div className='grow'></div>
+      <div className='w-full grow gap-2 flex flex-col overflow-y-auto'>
+        {bottles?.map((bottle) => (
+          <BottleComponent
+            key={bottle.number}
+            bottle={bottle}
+            isToggled={toggledBottles[bottle.number] || false}
+            onToggle={() => handleToggle(bottle.number)}
+            freeIngredients={freeIngredients}
+            setFreeIngredients={setFreeIngredients}
+          />
+        ))}
       </div>
-    </>
+      <div className='sticky-bottom w-full grid grid-cols-2 gap-2 py-1 mt-2 bg-background'>
+        <button className='button-primary-filled p-2' onClick={handleApply}>
+          {t('bottles.applyNew')}
+        </button>
+        <button className='button-primary p-2 ' onClick={() => navigate('/manage/bottles/available')}>
+          {t('bottles.available')}
+        </button>
+      </div>
+      <div className='grow'></div>
+    </div>
   );
 };
 

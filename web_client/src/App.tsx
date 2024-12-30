@@ -39,9 +39,9 @@ function App() {
   }, [isSuccess, issues, navigate]);
 
   return (
-    <div className='min-h-screen'>
+    <div className='min-h-screen flex w-full h-full'>
       <Header />
-      <div className='app-container pt-12'>
+      <div className='min-h-screen pt-12 flex flex-col w-full justify-center items-center'>
         <ToastContainer position='top-center' />
         {/* do not show routes when config is empty */}
         {Object.keys(config).length === 0 ? (

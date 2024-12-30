@@ -12,8 +12,9 @@ const CalibrationWindow = () => {
   const { t } = useTranslation();
 
   return (
-    <div className='flex flex-col justify-between items-center p-4 w-full max-w-md'>
+    <div className='flex flex-col justify-between items-center p-4 w-full h-full max-w-md max-h-[40rem]'>
       <h1 className='text-secondary text-2xl font-bold mb-8'>{t('calibration.pumpCalibrationProgram')}</h1>
+      <div className='flex-grow'></div>
       <div className='grid grid-cols-3 gap-4 items-center w-full max-w-sm'>
         <div className='text-center'>
           <div className='text-4xl font-bold'>{channel}</div>
@@ -53,7 +54,7 @@ const CalibrationWindow = () => {
         </div>
         <div className='text-center text-lg font-semibold text-neutral'>{t('calibration.amount')}</div>
       </div>
-
+      <div className='flex-grow'></div>
       <button
         className='button-primary-filled text-lg p-4 w-full mt-8'
         onClick={() => executeAndShow(() => calibrateBottle(channel, amount))}

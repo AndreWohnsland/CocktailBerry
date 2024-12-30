@@ -169,38 +169,6 @@ input[type='time']::-webkit-calendar-picker-indicator {
   z-index: 10;
 }
 
-.app-container {
-  @apply min-h-screen;
-  background-color: var(--background-color);
-  color: var(--primary-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.content {
-  text-align: center;
-}
-
-.content p {
-  font-size: 1.2em;
-  margin-bottom: 20px;
-}
-
-.content ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.content ul li {
-  background-color: var(--secondary-color);
-  color: var(--background-color);
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 5px;
-}
-
 .modal {
   position: absolute;
   top: 50%;
