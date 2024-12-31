@@ -64,7 +64,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumb
         </div>
         <div className='flex-grow'></div>
         <button
-          className={`${isChecked ? 'button-primary-filled' : 'button-neutral'} px-4 py-2 w-full`}
+          className={`${!isChecked && 'disabled'} button-primary-filled px-4 py-2 w-full`}
           onClick={applyRefillBottle}
           disabled={!isChecked}
         >
