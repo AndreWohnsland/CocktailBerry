@@ -6,6 +6,7 @@ from typing import Any, Callable, ClassVar
 
 import typer
 import yaml
+from pydantic.dataclasses import dataclass as api_dataclass
 from pyfiglet import Figlet
 
 from src import (
@@ -32,7 +33,7 @@ from src.config.errors import ConfigError
 from src.config.validators import build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
-from src.models import CocktailStatus, StartupIssue
+from src.models import CocktailStatus
 from src.utils import get_platform_data, time_print
 
 _logger = LoggerHandler("config_manager")
@@ -375,6 +376,20 @@ class ConfigManager:
         # Define a choose type for the add on
         addon_choose = ChooseType(options, validation_function)
         self.config_type[config_name] = addon_choose
+
+
+@api_dataclass
+class StartupIssue:
+    has_issue: bool = False
+    ignored: bool = False
+    message: str = ""
+
+    def set_issue(self, message: str = ""):
+        self.has_issue = True
+        self.message = message
+
+    def set_ignored(self):
+        self.ignored = True
 
 
 class Shared:

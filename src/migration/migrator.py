@@ -132,6 +132,8 @@ class Migrator:
 
     def _backup_config_file(self, suffix):
         """Save the config file at ~/cb_backup/custom_config_pre_{suffix}.yaml."""
+        if not CUSTOM_CONFIG_FILE.exists():
+            return
         save_path = Path.home() / "cb_backup" / f"custom_config_pre_{suffix}.yaml"
         _logger.log_event("INFO", f"Backing up config file to {save_path}")
         # Ensure the backup directory exists

@@ -3,7 +3,8 @@ from typing import Annotated, Generic, Optional, TypeVar
 from annotated_types import Len
 from pydantic import BaseModel, Field
 
-from src.models import PrepareResult, StartupIssue
+from src.config.config_manager import StartupIssue
+from src.models import PrepareResult
 
 T = TypeVar("T")
 

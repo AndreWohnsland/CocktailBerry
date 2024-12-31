@@ -5,15 +5,12 @@ import shutil
 import sqlite3
 from pathlib import Path
 
-from src.dialog_handler import DialogHandler, allowed_keys
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, Ingredient
 from src.utils import time_print
 
 _logger = LoggerHandler("database_module")
-
-_dialog_handler = DialogHandler()
 
 
 class DatabaseTransactionError(Exception):
@@ -22,9 +19,15 @@ class DatabaseTransactionError(Exception):
     The reason will be contained in the message with the corresponding translation key.
     """
 
+    # TODO: Fix this in the future, we currently would break the migrator since this result in a new dependency
+    from src.dialog_handler import allowed_keys
+
     def __init__(self, translation_key: allowed_keys, language_args: dict | None = None):
+        from src.dialog_handler import DialogHandler
+
+        DH = DialogHandler()
         self.language_args = language_args if language_args is not None else {}
-        messsage = _dialog_handler.get_translation(translation_key, **self.language_args)
+        messsage = DH.get_translation(translation_key, **self.language_args)
         super().__init__(messsage)
         self.translation_key = translation_key
 

@@ -3,8 +3,6 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional, Union
 
-from pydantic.dataclasses import dataclass as api_dataclass
-
 
 class PrepareResult(Enum):
     """Result of the prepare_cocktail function."""
@@ -140,17 +138,3 @@ class Cocktail:
             ing.amount = round(ing.amount * scaling)
         self.adjusted_amount = amount
         self.adjusted_ingredients.sort()
-
-
-@api_dataclass
-class StartupIssue:
-    has_issue: bool = False
-    ignored: bool = False
-    message: str = ""
-
-    def set_issue(self, message: str = ""):
-        self.has_issue = True
-        self.message = message
-
-    def set_ignored(self):
-        self.ignored = True
