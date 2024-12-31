@@ -159,12 +159,12 @@ class ConfigManager:
                     },
                     PumpConfig,
                 ),
-                self.choose_bottle_number,
+                lambda: self.choose_bottle_number(ignore_limits=True),
             ),
             "MAKER_NAME": StringType([validate_max_length]),
-            "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, 999)]),
             "MAKER_PREPARE_VOLUME": ListType(IntType([build_number_limiter(25, 1000)], suffix="ml"), 1),
-            "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, 999)]),
             "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
             "MAKER_ALCOHOL_FACTOR": IntType([build_number_limiter(10, 200)], suffix="%"),
             "MAKER_PUMP_REVERSION": BoolType(check_name="Pump can be Reversed"),
@@ -290,8 +290,11 @@ class ConfigManager:
             return
         config_setting.validate(configname, configvalue)
 
-    def choose_bottle_number(self, get_all=False):
+    def choose_bottle_number(self, get_all=False, ignore_limits=False):
         """Select the number of Bottles, limits by max supported count."""
+        # for new app (no limits), this exists for legacy reason (QT)
+        if ignore_limits:
+            return self.MAKER_NUMBER_BOTTLES
         if get_all:
             return MAX_SUPPORTED_BOTTLES
         return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)

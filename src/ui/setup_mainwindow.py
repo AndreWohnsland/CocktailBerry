@@ -51,6 +51,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.logger = LoggerHandler("CocktailBerry")
         self.logger.log_start_program()
 
+        # limit bottles to 24 for this QT app (web can handle any number)
+        cfg.MAKER_NUMBER_BOTTLES = min(cfg.MAKER_NUMBER_BOTTLES, 24)
+
         # init the empty further screens
         self.numpad_window: Optional[NumpadWidget] = None
         self.keyboard_window: Optional[KeyboardWidget] = None
