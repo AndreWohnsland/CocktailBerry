@@ -1,17 +1,14 @@
 from pathlib import Path
 
+from filepath import COCKTAIL_WEB_DESKTOP
+
 new_backend_script_content = """source ~/.env-cocktailberry/bin/activate
 cd ~/CocktailBerry/
 python runme.py api
 """
 
-new_web_entry = """[Desktop Entry]
-Type=Application
-Name=CocktailBerry Web
-Exec=chromium-browser --kiosk http://localhost
-Terminal=false
-"""
 script_entry_path = Path.home() / "launcher.sh"
+desktop_file = Path.home() / "Desktop" / "cocktail_web.desktop"
 web_entry_path = Path("/etc/xdg/autostart/cocktail_web.desktop")
 
 
@@ -24,9 +21,14 @@ def replace_backend_script():
     script_entry_path.chmod(0o755)
 
 
+def add_web_desktop_file():
+    desktop_file.write_text(COCKTAIL_WEB_DESKTOP.read_text())
+    desktop_file.chmod(0o755)
+
+
 def _create_web_entry():
     """Create the web entry for the autostart."""
-    web_entry_path.write_text(new_web_entry)
+    web_entry_path.write_text(COCKTAIL_WEB_DESKTOP.read_text())
 
 
 # This section need to be run as root in a subprocess

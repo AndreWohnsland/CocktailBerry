@@ -15,7 +15,7 @@ from src.filepath import CUSTOM_CONFIG_FILE, NGINX_SCRIPT, QT_MIGRATION_SCRIPT, 
 from src.logger_handler import LoggerHandler
 from src.migration.qt_migrator import roll_back_to_qt_script
 from src.migration.update_data import add_new_recipes_from_default_db
-from src.migration.web_migrator import replace_backend_script
+from src.migration.web_migrator import add_web_desktop_file, replace_backend_script
 from src.programs.addons import ADDONS, generate_addon_skeleton
 from src.programs.calibration import run_calibration
 from src.programs.clearing import clear_local_database
@@ -189,6 +189,7 @@ def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL f
         print("Web setup is not supported on Windows")
         return
     replace_backend_script()
+    add_web_desktop_file()
     subprocess.run(["sudo", "python", str(WEB_MIGRATION_SCRIPT.absolute())], check=True)
     subprocess.run(["sudo", "python", str(NGINX_SCRIPT.absolute()), "--ssl" if use_ssl else "--no-ssl"], check=True)
 
