@@ -177,7 +177,11 @@ async def upload_backup(
         with zipfile.ZipFile(zip_file_path, "r") as zipf:
             zipf.extractall(tmpdir)
 
-        extracted_root = tmpdir / zip_file_path.stem
+        # Detect the extracted root folder
+        extracted_items = [item for item in tmpdir.iterdir() if item.is_dir()]
+        if len(extracted_items) != 1:
+            raise HTTPException(400, detail="Invalid ZIP structure: expected a single root folder")
+        extracted_root = extracted_items[0]
 
         # Check for required files inside the extracted folder
         backup_files = NEEDED_BACKUP_FILES
