@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from src.filepath import COCKTAIL_WEB_DESKTOP
+ROOT_PATH = Path(__file__).parents[2].absolute()
+COCKTAIL_WEB_DESKTOP = ROOT_PATH / "scripts" / "cocktail_web.desktop"
 
 new_backend_script_content = """source ~/.env-cocktailberry/bin/activate
 cd ~/CocktailBerry/
