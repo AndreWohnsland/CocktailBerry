@@ -68,7 +68,7 @@ if [ "$1" = "dashboard" ]; then
   echo "> Setting up Dashboard"
   cd dashboard/ || exit
   # Letting user choose the frontend type (WebApp or Qt)
-  echo -n "Use new dashboard? This is strongly recommended! Oterwise will use old Qt App, but this will only work on a standalone device and has no remote access option (y/n) "
+  echo -n "Use new dashboard? This is strongly recommended! Otherwise will use old Qt App, but this will only work on a standalone device and has no remote access option (y/n) "
   read -r answer
   echo -n "Enter your display language (en, de): "
   read -r language
@@ -100,7 +100,7 @@ else
   echo "> Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   echo "> Installing needed Python libraries"
-  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil distro
+  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil distro fastapi[standard] uvicorn
   # try to install mfrc522, this will probably fail on non raspberry pi devices
   if is_raspberry_pi; then
     pip install mfrc522 rpi_ws281x || echo "ERROR: Could not install mfrc522, are you on a Raspberry Pi?"
