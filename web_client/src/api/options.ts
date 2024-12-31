@@ -1,5 +1,4 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import axios from 'axios';
 import { axiosInstance } from './common';
 import {
   ConsumeData,
@@ -75,7 +74,7 @@ export const uploadBackup = async (file: File): Promise<{ message: string }> => 
   const formData = new FormData();
   formData.append('file', file);
 
-  return axios
+  return axiosInstance
     .post<{ message: string }>(`${options_url}/backup`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
