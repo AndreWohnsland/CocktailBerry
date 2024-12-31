@@ -1,19 +1,10 @@
 import argparse
+import shutil
 import socket
 import subprocess
 from pathlib import Path
 
-NGINX_CONFIG_FILE = """server {
-    listen 80;
-    server_name localhost;
-    {ssl_redirect}
-}
-
-server {
-    {ssl_listen}
-    server_name localhost;
-
-    {ssl_includes}
+COMMON_SERVER_BLOCK = """server_name localhost;
 
     # Serve the React app
     root /var/www/cocktailberry_web_client;
@@ -22,22 +13,44 @@ server {
     # Handle React app routes
     location / {
         try_files $uri /index.html;
-        # Add cache control headers
         add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";
     }
 
     # Proxy API requests to FastAPI
     location /api/ {
-      # rewrite ^/api/(.*)$ /$1 break;
-      proxy_pass http://127.0.0.1:8000;
-      proxy_set_header Host $host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header X-Master-Key $http_x_master_key;
-      proxy_set_header X-Maker-Key $http_x_maker_key;
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Master-Key $http_x_master_key;
+        proxy_set_header X-Maker-Key $http_x_maker_key;
     }
-}
+"""
+
+NON_SSL_CONFIG = f"""
+server {{
+    listen 80;
+    {COMMON_SERVER_BLOCK}
+}}
+"""
+
+
+SSL_CONFIG = f"""
+server {{
+    listen 80;
+    server_name localhost;
+    return 301 https://$host$request_uri;
+}}
+
+server {{
+    listen 443 ssl;
+    {COMMON_SERVER_BLOCK}
+
+    # SSL settings
+    include snippets/self-signed.conf;
+    include snippets/ssl-params.conf;
+}}
 """
 
 SELF_SIGNED_CONF = """ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
@@ -85,7 +98,10 @@ def download_latest_web_client():
     url = "https://github.com/AndreWohnsland/CocktailBerry/releases/latest/download/cocktailberry_web_client.tar.gz"
     subprocess.run(["sudo", "curl", "-L", "-o", str(tmp_path), url], check=True)
     for file in web_root.glob("*"):
-        file.unlink()
+        if file.is_file():
+            file.unlink()
+        elif file.is_dir():
+            shutil.rmtree(file)
     subprocess.run(["sudo", "tar", "-xzf", str(tmp_path), "-C", str(web_root)], check=True)
     tmp_path.unlink()
 
@@ -94,6 +110,7 @@ def setup_nginx(use_ssl):
     """Install and configures Nginx to serve a React app."""
     config_path = Path("/etc/nginx/sites-available/cocktailberry_web_client")
     config_path_enabled = Path("/etc/nginx/sites-enabled/cocktailberry_web_client")
+    default_site = Path("/etc/nginx/sites-enabled/default")
     try:
         # Install Nginx
         subprocess.run(["sudo", "apt", "update"], check=True)
@@ -132,17 +149,17 @@ def setup_nginx(use_ssl):
             Path("/etc/nginx/snippets/self-signed.conf").write_text(SELF_SIGNED_CONF)
             Path("/etc/nginx/snippets/ssl-params.conf").write_text(SSL_PARAMS_CONF)
 
-        # Write the Nginx configuration file
-        nginx_config = NGINX_CONFIG_FILE.format(
-            ssl_redirect="return 301 https://$host$request_uri;" if use_ssl else "",
-            ssl_listen="listen 443 ssl;" if use_ssl else "listen 80;",
-            ssl_includes="include snippets/self-signed.conf;\n    include snippets/ssl-params.conf;" if use_ssl else "",
-        )
-        config_path.write_text(nginx_config)
+            config_path.write_text(SSL_CONFIG)
+        else:
+            config_path.write_text(NON_SSL_CONFIG)
 
         # Enable the configuration
         if not config_path_enabled.exists():
             config_path_enabled.symlink_to(config_path)
+
+        # remove default site
+        if default_site.exists():
+            default_site.unlink()
 
         # Restart Nginx to apply changes
         subprocess.run(["sudo", "systemctl", "restart", "nginx"], check=True)
@@ -171,4 +188,4 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     download_latest_web_client()
-    setup_nginx(args.use_ssl)
+    setup_nginx(args.ssl)
