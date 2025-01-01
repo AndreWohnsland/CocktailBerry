@@ -37,7 +37,7 @@ sudo chmod +x ~/launcher.sh
 echo "> Copying desktop file to: /etc/xdg/autostart/cocktail.desktop"
 sudo cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
 
-# also adding the desktop file to the desktop, addidng picture to /usr/share/pixmaps
+# also adding the desktop file to the desktop, adding picture to /usr/share/pixmaps
 echo "> Copying desktop file to: ~/Desktop/cocktail.desktop"
 sudo cp ~/CocktailBerry/scripts/cocktail.desktop ~/Desktop/
 sudo chmod +x ~/Desktop/cocktail.desktop
@@ -63,7 +63,7 @@ echo "> Activating virtual environment, this is needed since Raspbery Pi OS Book
 source ~/.env-cocktailberry/bin/activate
 
 cd ~/CocktailBerry/ || exit
-# Making neccecary steps for the according program
+# Making necessary steps for the according program
 if [ "$1" = "dashboard" ]; then
   echo "> Setting up Dashboard"
   cd dashboard/ || exit
