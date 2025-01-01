@@ -14,6 +14,7 @@ from src.config.errors import ConfigError
 from src.filepath import CUSTOM_CONFIG_FILE, NGINX_SCRIPT, QT_MIGRATION_SCRIPT, WEB_MIGRATION_SCRIPT
 from src.logger_handler import LoggerHandler
 from src.migration.qt_migrator import roll_back_to_qt_script
+from src.migration.squeekboard import create_and_start_squeekboard_service, stop_and_disable_squeekboard_service
 from src.migration.update_data import add_new_recipes_from_default_db
 from src.migration.web_migrator import add_web_desktop_file, replace_backend_script
 from src.programs.addons import ADDONS, generate_addon_skeleton
@@ -208,3 +209,24 @@ def switch_back():
         return
     roll_back_to_qt_script()
     subprocess.run(["sudo", "python", str(QT_MIGRATION_SCRIPT.absolute())], check=True)
+
+
+@cli.command()
+def add_squeekboard():
+    """Add and start the Squeekboard service.
+
+    This will create, enable, and start the Squeekboard virtual keyboard service.
+    The service will be set up to start automatically on boot.
+    This enables the virtual keyboard as soon as you click on an input field.
+    """
+    create_and_start_squeekboard_service()
+
+
+@cli.command()
+def remove_squeekboard():
+    """Stop and disable the Squeekboard service.
+
+    This will stop and disable the Squeekboard virtual keyboard service.
+    The service will no longer start automatically on boot.
+    """
+    stop_and_disable_squeekboard_service()
