@@ -27,6 +27,12 @@ However, a touchscreen can be used to control the app directly on the Raspberry 
 As a word of caution: Currently it is difficult to propagate events to open the keyboard on kiosk mode (full screen).
 You might start with a none full screen web browser first.
 
+## Limitations
+
+Currently, the web interface might have some issues with touch screens directly connected to the Raspberry Pi.
+In some occasions, older OS or not properly configured screens, the default keyboard might not show up.
+If you are using an external device to control the app, this should not be an issue.
+
 ## Installation
 
 The easiest way to use the new interface is to use the cocktailberry CLI [setup-web command](commands.md#switch-to-cocktailberry-web), once you installed CocktailBerry the usual way.
