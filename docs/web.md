@@ -32,6 +32,7 @@ You might start with a none full screen web browser first.
 Currently, the web interface might have some issues with touch screens directly connected to the Raspberry Pi.
 In some occasions, older OS or not properly configured screens, the default keyboard might not show up.
 If you are using an external device to control the app, this should not be an issue.
+In case you are using a touch screen directly connected to the Raspberry Pi, running the browser in non-kiosk mode might help.
 
 ## Installation
 
