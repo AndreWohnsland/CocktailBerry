@@ -33,6 +33,30 @@
       "console": "integratedTerminal",
       "justMyCode": true,
       "args": ["-d"]
+    },
+    {
+      "name": "Debug FastApi over uvicorn",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["src.api.api:app", "--reload"]
+    },
+    {
+      "name": "Debug FastApi over fastapi CLI",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "fastapi",
+      "cwd": "${workspaceFolder}/src/api/",
+      "args": ["dev", "./api.py"]
+    },
+    {
+      "name": "Run Frontend",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/web_client",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["dev"],
+      "console": "integratedTerminal"
     }
   ]
 }
