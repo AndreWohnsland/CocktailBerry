@@ -123,7 +123,8 @@ To get started, have a quick look into the [Guidelines for contributing](./CONTR
 
 # Development
 
-This project uses [uv](https://docs.astral.sh/uv/) to manage all its dependencies. To get started, you need to install Rye and then install the dependencies.
+This project uses [uv](https://docs.astral.sh/uv/) to manage all its dependencies. To get started, you need to install uv and then install the dependencies.
+See also at the [dev notes](./docs/.devnotes.md) section.
 
 ```bash
 uv sync
