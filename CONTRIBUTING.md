@@ -23,9 +23,16 @@ Pull requests are the best way to propose changes to the codebase:
 5. Make sure your code lints (pylint & autopep8).
 6. Issue that pull request!
 
-## Any contributions you make will be under the MIT Software License
+## Any contributions you make will be under the GPL-3.0 License
 
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
+By submitting code changes to this project, you agree to license your contributions under the same [GNU General Public License, version 3 (GPL-3.0)](https://choosealicense.com/licenses/gpl-3.0/) that governs the project.
+
+In short:
+
+- Your contributions will inherit the GPL-3.0 terms, requiring any distributed modifications to remain open-source.
+- This ensures that the project and its derivatives continue to promote software freedom and openness.
+
+If you have any concerns about this, feel free to contact the maintainers before contributing.
 
 ## Report bugs using Github's [issues](https://github.com/AndreWohnsland/CocktailBerry/issues)
 
