@@ -35,13 +35,13 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   const originalCocktail = JSON.parse(JSON.stringify(selectedCocktail));
   const [alcohol, setAlcohol] = useState<alcoholState>('normal');
   const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(selectedCocktail);
-  const [isProgressModalOpen, setProgressModalOpen] = useState(false);
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   // Refill state
-  const [isRefillOpen, setRefillOpen] = useState(false);
+  const [isRefillOpen, setIsRefillOpen] = useState(false);
   const [refillMessage, setRefillMessage] = useState('');
   const [emptyBottleNumber, setEmptyBottleNumber] = useState(0);
   // Team selection state
-  const [isTeamOpen, setTeamOpen] = useState(false);
+  const [isTeamOpen, setIsTeamOpen] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const { config } = useConfig();
   const possibleServingSizes = config.MAKER_PREPARE_VOLUME || mlAmounts;
@@ -60,7 +60,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   const prepareCocktailClick = async (amount: number) => {
     if (config.TEAMS_ACTIVE) {
       setSelectedAmount(amount);
-      setTeamOpen(true);
+      setIsTeamOpen(true);
     } else {
       handlePrepareCocktail(amount);
     }
@@ -70,7 +70,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
     const factor = alcoholFactor[alcohol];
     prepareCocktail(displayCocktail, amount, factor, alcohol === 'virgin', teamName)
       .then(() => {
-        setProgressModalOpen(true);
+        setIsProgressModalOpen(true);
       })
       .catch((error) => {
         const errorReason = error.status as PrepareResult | undefined;
@@ -78,7 +78,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
         if (errorReason === 'NOT_ENOUGH_INGREDIENTS' && refillAllowed) {
           setRefillMessage(error.detail);
           setEmptyBottleNumber(error.bottle);
-          setRefillOpen(true);
+          setIsRefillOpen(true);
           return;
         }
         errorToast(error);
@@ -189,11 +189,11 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
         isOpen={isRefillOpen}
         bottleNumber={emptyBottleNumber}
         message={refillMessage}
-        onClose={() => setRefillOpen(false)}
+        onClose={() => setIsRefillOpen(false)}
       />
       <ProgressModal
         isOpen={isProgressModalOpen}
-        onRequestClose={() => setProgressModalOpen(false)}
+        onRequestClose={() => setIsProgressModalOpen(false)}
         progress={0}
         displayName={displayCocktail.name}
         triggerOnClose={handleCloseModal}
@@ -202,7 +202,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
         isOpen={isTeamOpen}
         amount={selectedAmount!}
         prepareCocktail={handlePrepareCocktail}
-        onClose={() => setTeamOpen(false)}
+        onClose={() => setIsTeamOpen(false)}
       />
     </>
   );

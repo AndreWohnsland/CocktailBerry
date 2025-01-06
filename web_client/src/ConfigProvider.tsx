@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
 import { getConfigValues } from './api/options';
 import { DefinedConfigData } from './types/models';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +15,8 @@ const STORE_CONFIG: string = 'CONFIG';
 const ConfigContext = createContext({} as IConfig);
 
 export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
-  const [config, setConfig] = useState<DefinedConfigData>(JSON.parse(localStorage.getItem(STORE_CONFIG) || '{}'));
-  const [theme, setTheme] = useState<string>(localStorage.getItem(STORE_THEME) || '');
+  const [config, setConfig] = useState<DefinedConfigData>(JSON.parse(localStorage.getItem(STORE_CONFIG) ?? '{}'));
+  const [theme, setTheme] = useState<string>(localStorage.getItem(STORE_THEME) ?? '');
   const { i18n } = useTranslation();
 
   const fetchConfigValues = async () => {
@@ -49,18 +49,17 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     setTheme(newTheme);
   };
 
-  return (
-    <ConfigContext.Provider
-      value={{
-        config,
-        refetchConfig: fetchConfigValues,
-        theme,
-        changeTheme: handleThemeChange,
-      }}
-    >
-      {children}
-    </ConfigContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      config,
+      refetchConfig: fetchConfigValues,
+      theme,
+      changeTheme: handleThemeChange,
+    }),
+    [config, theme],
   );
+
+  return <ConfigContext.Provider value={contextValue}>{children}</ConfigContext.Provider>;
 };
 
 export const useConfig = () => useContext(ConfigContext);

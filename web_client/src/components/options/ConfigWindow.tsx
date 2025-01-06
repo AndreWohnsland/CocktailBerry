@@ -48,10 +48,14 @@ const ConfigWindow: React.FC = () => {
   const getBaseConfig = (
     key: string,
   ): { prefix?: string; suffix?: string; immutable: boolean; allowed?: string[]; checkName: string } => {
-    const match = key.match(/^([^[\].]+)/);
-    const baseConfigName = match ? match[0] : '';
-    const nestedMatch = key.match(/\.([^.]+)$/);
-    const nestedProperty = nestedMatch ? nestedMatch[1] : '';
+    const baseConfigRegex = /^([^[\].]+)/;
+    const nestedPropertyRegex = /\.([^.]+)$/;
+
+    const baseConfigMatch = baseConfigRegex.exec(key);
+    const baseConfigName = baseConfigMatch ? baseConfigMatch[0] : '';
+
+    const nestedPropertyMatch = nestedPropertyRegex.exec(key);
+    const nestedProperty = nestedPropertyMatch ? nestedPropertyMatch[1] : '';
 
     const selectedData = data?.[baseConfigName];
     const nestedData = selectedData?.[nestedProperty] || selectedData;

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
 import { CustomColors } from './types/models';
 import { useConfig } from './ConfigProvider';
 
@@ -14,7 +14,7 @@ export const CustomColorProvider = ({ children }: { children: React.ReactNode })
   const { theme, config } = useConfig();
   const [customColors, setCustomColors] = useState<CustomColors>(
     JSON.parse(
-      localStorage.getItem(STORE_CUSTOM_COLOR) ||
+      localStorage.getItem(STORE_CUSTOM_COLOR) ??
         JSON.stringify({
           primary: config?.CUSTOM_COLOR_PRIMARY || '#007bff',
           secondary: config?.CUSTOM_COLOR_SECONDARY || '#ef9700',
@@ -55,9 +55,15 @@ export const CustomColorProvider = ({ children }: { children: React.ReactNode })
     }
   }, [theme, customColors]);
 
-  return (
-    <CustomColorContext.Provider value={{ customColors, setCustomColors }}>{children}</CustomColorContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      customColors,
+      setCustomColors,
+    }),
+    [customColors],
   );
+
+  return <CustomColorContext.Provider value={contextValue}>{children}</CustomColorContext.Provider>;
 };
 
 export const useCustomColor = () => useContext(CustomColorContext);

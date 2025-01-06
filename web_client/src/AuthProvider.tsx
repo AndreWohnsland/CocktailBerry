@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useConfig } from './ConfigProvider';
 
@@ -43,22 +43,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [location, masterAuthenticated, makerAuthenticated, protectedManagementPaths]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        masterAuthenticated,
-        setMasterAuthenticated,
-        makerAuthenticated,
-        setMakerAuthenticated,
-        masterPassword,
-        setMasterPassword,
-        makerPassword,
-        setMakerPassword,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      masterAuthenticated,
+      setMasterAuthenticated,
+      makerAuthenticated,
+      setMakerAuthenticated,
+      masterPassword,
+      setMasterPassword,
+      makerPassword,
+      setMakerPassword,
+    }),
+    [masterAuthenticated, makerAuthenticated, masterPassword, makerPassword],
   );
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

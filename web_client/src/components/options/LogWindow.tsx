@@ -13,7 +13,7 @@ const LogWindow: React.FC = () => {
   };
 
   useEffect(() => {
-    if (data && data.data) {
+    if (data?.data) {
       const logTypes = Object.keys(data.data);
       if (logTypes.includes('production_logs.log')) {
         setSelectedLogType('production_logs.log');
@@ -57,12 +57,11 @@ const LogWindow: React.FC = () => {
         </div>
       </div>
       <div className='flex-grow p-2'>
-        {logData &&
-          logData[selectedLogType]?.map((log: string, index: number) => (
-            <div key={index} className={setStyle(log)}>
-              {log}
-            </div>
-          ))}
+        {logData?.[selectedLogType]?.map((log: string, index: number) => (
+          <div key={index} className={setStyle(log)}>
+            {log}
+          </div>
+        ))}
       </div>
       <JumpToTopButton />
     </div>

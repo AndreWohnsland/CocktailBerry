@@ -13,21 +13,20 @@ const ListView: React.FC<ListViewProps> = ({ ingredientList, setSelected, select
   };
 
   return (
-    <>
-      <div className='h-full overflow-y-auto border-2 border-neutral rounded-md px-2 py-1'>
-        {ingredientList.map((ingredient) => (
-          <div
-            key={ingredient.id}
-            onClick={() => handleSelect(ingredient)}
-            className={`cursor-pointer p-2 my-1 rounded border font-bold ${
-              selected.includes(ingredient) ? 'text-background bg-secondary border-secondary' : 'border-transparent'
-            }`}
-          >
-            {ingredient.name}
-          </div>
-        ))}
-      </div>
-    </>
+    <div className='h-full overflow-y-auto border-2 border-neutral rounded-md px-2 py-1'>
+      {ingredientList.map((ingredient) => (
+        <div
+          key={ingredient.id}
+          onClick={() => handleSelect(ingredient)}
+          className={`cursor-pointer p-2 my-1 rounded border font-bold ${
+            selected.includes(ingredient) ? 'text-background bg-secondary border-secondary' : 'border-transparent'
+          }`}
+          role='button'
+        >
+          {ingredient.name}
+        </div>
+      ))}
+    </div>
   );
 };
 

@@ -30,7 +30,7 @@ const WifiManager: React.FC = () => {
       <h2 className='text-2xl text-center mb-4 text-secondary font-bold'>{t('wifi.setupWifi')}</h2>
       <form onSubmit={handleSubmit} className='grid grid-cols-1 md:grid-cols-2 gap-2'>
         <label className='text-neutral text-center'>
-          SSID:
+          {'SSID:'}
           <select
             value={selectedSsid}
             onChange={(e) => setSelectedSsid(e.target.value)}

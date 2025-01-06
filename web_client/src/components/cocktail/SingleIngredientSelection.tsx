@@ -15,7 +15,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
   const { data: allIngredients = [] } = useIngredients(false, true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [amount, setAmount] = useState<number>(10);
-  const [isProgressModalOpen, setProgressModalOpen] = useState(false);
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const { t } = useTranslation();
 
   const handleDecrement = () => {
@@ -30,7 +30,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
     if (!selectedId) return;
     prepareIngredient(selectedId, amount)
       .then(() => {
-        setProgressModalOpen(true);
+        setIsProgressModalOpen(true);
       })
       .catch((error) => {
         errorToast(error);
@@ -93,7 +93,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
       </div>
       <ProgressModal
         isOpen={isProgressModalOpen}
-        onRequestClose={() => setProgressModalOpen(false)}
+        onRequestClose={() => setIsProgressModalOpen(false)}
         progress={0}
         displayName={allIngredients.find((ingredient) => ingredient.id === selectedId)?.name || ''}
         triggerOnClose={onClose}

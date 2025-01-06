@@ -43,6 +43,24 @@ const AddonManager: React.FC = () => {
     });
   };
 
+  const createAddonButton = (addon: AddonData) => {
+    if (addon.is_installable && addon.official && !addon.installed) {
+      return (
+        <button onClick={() => handleInstall(addon)} className='button-primary-filled flex items-center p-2 px-4'>
+          <FaPlus className='mr-2' />
+          {t('add')}
+        </button>
+      );
+    } else if (!addon.is_installable && !addon.installed) {
+      return <div className='button-neutral !border !font-normal p-2 px-4'>{t('addons.cannotBeInstalled')}</div>;
+    } else {
+      return (
+        <button onClick={() => handleDelete(addon)} className='button-danger-filled flex items-center p-2 px-4'>
+          <FaTrashAlt className='mr-2' /> {t('delete')}
+        </button>
+      );
+    }
+  };
   return (
     <div className='p-4 w-full max-w-3xl'>
       <h2 className='text-2xl text-center mb-4 text-secondary font-bold'>{t('addons.manageAddons')}</h2>
@@ -51,21 +69,7 @@ const AddonManager: React.FC = () => {
           <div key={addon.name} className='border border-primary p-4 rounded-xl'>
             <div className='flex justify-between items-center mb-4'>
               <h3 className='text-lg text-secondary font-semibold'>{addon.name}</h3>
-              {addon.is_installable && addon.official && !addon.installed ? (
-                <button
-                  onClick={() => handleInstall(addon)}
-                  className='button-primary-filled flex items-center p-2 px-4'
-                >
-                  <FaPlus className='mr-2' />
-                  {t('add')}
-                </button>
-              ) : !addon.is_installable && !addon.installed ? (
-                <div className='button-neutral !border !font-normal p-2 px-4'>{t('addons.cannotBeInstalled')}</div>
-              ) : (
-                <button onClick={() => handleDelete(addon)} className='button-danger-filled flex items-center p-2 px-4'>
-                  <FaTrashAlt className='mr-2' /> {t('delete')}
-                </button>
-              )}
+              {createAddonButton(addon)}
             </div>
             <p>{addon.description}</p>
           </div>

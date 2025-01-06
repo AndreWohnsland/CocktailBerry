@@ -62,7 +62,7 @@ export const createBackup = async (): Promise<{ data: Blob; fileName: string }> 
 
   if (contentDisposition) {
     const match = contentDisposition.match(/filename="(.+?)"/);
-    if (match && match[1]) {
+    if (match?.[1]) {
       fileName = match[1];
     }
   }

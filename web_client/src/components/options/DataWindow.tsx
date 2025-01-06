@@ -16,7 +16,7 @@ const ConsumeBarChart: React.FC<{
   const sortedEntries = Object.entries(data).sort((a, b) => b[1] - a[1]);
   const maxValue = Math.max(...Object.values(data));
   const sumValues = Object.values(data).reduce((acc, curr) => acc + curr, 0);
-  const displayUnit = unit ? unit : '';
+  const displayUnit = unit || '';
 
   return (
     <div className='mb-6 w-full'>

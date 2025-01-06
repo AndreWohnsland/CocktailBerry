@@ -30,12 +30,12 @@ export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
   return { ...cocktail, alcohol: Math.round(newAlcoholPercent), ingredients };
 };
 
-export const confirmAndExecute = async (message: string, executable: () => Promise<void | any>): Promise<boolean> => {
+export const confirmAndExecute = async (message: string, executable: () => Promise<any>): Promise<boolean> => {
   const confirmation = window.confirm(message);
   if (confirmation) {
     return executeAndShow(executable);
   } else {
-    return Promise.resolve(false);
+    return false;
   }
 };
 
