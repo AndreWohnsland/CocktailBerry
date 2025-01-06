@@ -39,7 +39,8 @@ const BottleComponent: React.FC<BottleProps> = ({
   };
 
   const openModal = () => {
-    setTempFillLevel(selectedIngredient?.fill_level || 0);
+    if (!selectedIngredient) return;
+    setTempFillLevel(Math.max(selectedIngredient?.fill_level, 0) || 0);
     setIsModalOpen(true);
   };
 
