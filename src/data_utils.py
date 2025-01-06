@@ -196,9 +196,11 @@ def install_addon(addon: Union[AddonData, str]):
         if req.ok:
             addon_file.write_bytes(req.content)
         else:
-            CouldNotInstallAddonError(f"Could not get {addon.name} from {addon.url}: {req.status_code} {req.reason}")
+            raise CouldNotInstallAddonError(
+                f"Could not get {addon.name} from {addon.url}: {req.status_code} {req.reason}"
+            )
     except ReqConnectionError:
-        CouldNotInstallAddonError(f"Could not get {addon.name} from {addon.url}: No internet connection")
+        raise CouldNotInstallAddonError(f"Could not get {addon.name} from {addon.url}: No internet connection")
 
 
 def remove_addon(addon: Union[AddonData, str]):

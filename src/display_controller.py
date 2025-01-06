@@ -595,7 +595,6 @@ class DisplayController(DialogHandler):
 
     def adjust_bottle_number_displayed(self, w: MainScreen):
         """Remove the UI elements if not all ten bottles are used per config."""
-        # TODO: Build up elements instead of deleting them. This is way better (lol)
         # give the ui a little time to build up, it might happen that we get a
         # QPaintDevice: Cannot destroy paint device that is being painted otherwise
         time.sleep(0.1)
