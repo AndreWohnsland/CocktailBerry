@@ -21,21 +21,24 @@ is_raspberry_pi5() {
   fi
 }
 
-echo "Installing updates, this may take a while..."
+echo "> Installing updates, this may take a while..."
 sudo apt update && sudo sudo apt -y full-upgrade
 
+echo "> Installing nmcli, this is needed for wifi setup"
+sudo apt install network-manager
+
 # Generating launcher script
-echo "(Re-)Generating launcher script at: ~/launcher.sh"
+echo "> (Re-)Generating launcher script at: ~/launcher.sh"
 rm ~/launcher.sh
 touch ~/launcher.sh
 sudo chmod +x ~/launcher.sh
 
 # using desktop file for autostart
-echo "Copying desktop file to: /etc/xdg/autostart/cocktail.desktop"
+echo "> Copying desktop file to: /etc/xdg/autostart/cocktail.desktop"
 sudo cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
 
-# also adding the desktop file to the desktop, addidng picture to /usr/share/pixmaps
-echo "Copying desktop file to: ~/Desktop/cocktail.desktop"
+# also adding the desktop file to the desktop, adding picture to /usr/share/pixmaps
+echo "> Copying desktop file to: ~/Desktop/cocktail.desktop"
 sudo cp ~/CocktailBerry/scripts/cocktail.desktop ~/Desktop/
 sudo chmod +x ~/Desktop/cocktail.desktop
 sudo cp ~/CocktailBerry/src/ui_elements/cocktailberry.png /usr/share/pixmaps/cocktailberry.png
@@ -46,26 +49,26 @@ sudo chmod +x /usr/share/applications/cocktail.desktop
 
 # Making write permission for all to wpa
 # We need this if we want to change wifi settings within CocktailBerry
-echo "Giving write permission to /etc/wpa_supplicant/wpa_supplicant.conf"
+echo "> Giving write permission to /etc/wpa_supplicant/wpa_supplicant.conf"
 sudo chmod a+w /etc/wpa_supplicant/wpa_supplicant.conf
 
 # Since bookworm, venv are not optional but recommended, to not overwrite sys python things
 # therefore remove existing and create env for cocktailberry, using system site packages
 # This way, pyqt is already there and no pain installing it somehow
-echo "(Re-)Creating virtual environment for CocktailBerry, located at ~/.venv-cocktailberry"
+echo "> (Re-)Creating virtual environment for CocktailBerry, located at ~/.venv-cocktailberry"
 rm -rf ~/.env-cocktailberry
 python -m venv --system-site-packages ~/.env-cocktailberry
-echo "Activating virtual environment, this is needed since Raspbery Pi OS Bookworm"
+echo "> Activating virtual environment, this is needed since Raspbery Pi OS Bookworm"
 # shellcheck disable=SC1090
 source ~/.env-cocktailberry/bin/activate
 
 cd ~/CocktailBerry/ || exit
-# Making neccecary steps for the according program
+# Making necessary steps for the according program
 if [ "$1" = "dashboard" ]; then
-  echo "Setting up Dashboard"
+  echo "> Setting up Dashboard"
   cd dashboard/ || exit
   # Letting user choose the frontend type (WebApp or Qt)
-  echo -n "Use new dashboard? This is strongly recommended! Oterwise will use old Qt App, but this will only work on a standalone device and has no remote access option (y/n) "
+  echo -n "Use new dashboard? This is strongly recommended! Otherwise will use old Qt App, but this will only work on a standalone device and has no remote access option (y/n) "
   read -r answer
   echo -n "Enter your display language (en, de): "
   read -r language
@@ -87,17 +90,18 @@ if [ "$1" = "dashboard" ]; then
     pip install -r requirements.txt
   fi
 else
-  echo "Setting up CocktailBerry"
+  echo "> Setting up CocktailBerry"
   {
     echo "source ~/.env-cocktailberry/bin/activate"
     echo "export QT_SCALE_FACTOR=1"
     echo "cd ~/CocktailBerry/"
     echo "python runme.py"
   } >>~/launcher.sh
-  echo "Installing PyQt"
+  echo "> Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
-  echo "Installing needed Python libraries"
-  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil distro
+  echo "> Installing needed Python libraries"
+  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil distro uvicorn
+  pip install "fastapi[standard]"
   # try to install mfrc522, this will probably fail on non raspberry pi devices
   if is_raspberry_pi; then
     pip install mfrc522 rpi_ws281x || echo "ERROR: Could not install mfrc522, are you on a Raspberry Pi?"
@@ -116,7 +120,7 @@ else
   fi
   # still cp the file, but do not inform the user anymore, since this is not the default anymore
   cp microservice/.env.example microservice/.env
-  echo "Install qtsass, this may take a while depending on your OS, so it is time for a coffe break :)"
+  echo "> Install qtsass, this may take a while depending on your OS, so it is time for a coffe break :)"
   echo "If this takes too long for you, you can cancel this step with 'ctrl + c' and install qtsass later manually with 'pip install qtsass'"
   echo "qtsass is needed if you want to customize the CocktailBerry GUI and use your own colors"
   pip install qtsass

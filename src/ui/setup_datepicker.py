@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMainWindow
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.datepicker import Ui_Datepicker
-from src.utils import set_system_time
+from src.utils import set_system_datetime
 
 
 class DatePicker(QMainWindow, Ui_Datepicker):
@@ -28,8 +28,8 @@ class DatePicker(QMainWindow, Ui_Datepicker):
         d: QDate = self.selected_date.date()  # pylint: disable=invalid-name
         t: QTime = self.selected_time.time()  # pylint: disable=invalid-name
         # Need the format = timedatectl set-time YYYY-MM-DD HH:MM:SS
-        time_string = f"{d.year()}-{d.month():02}-{d.day():02} {t.hour():02}:{t.minute():02}:00"
-        set_system_time(time_string)
+        datetime_string = f"{d.year()}-{d.month():02}-{d.day():02} {t.hour():02}:{t.minute():02}:00"
+        set_system_datetime(datetime_string)
         self.close()
 
     def _init_date_and_time(self):

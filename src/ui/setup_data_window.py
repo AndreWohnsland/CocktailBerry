@@ -1,11 +1,7 @@
-import csv
-from pathlib import Path
-from typing import Literal, Optional, Union
-
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QGridLayout, QMainWindow, QProgressBar
 
-from src.database_commander import DB_COMMANDER
+from src.data_utils import ALL_TIME, SINCE_RESET, ConsumeData, generate_consume_data, get_saved_dates
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.filepath import SAVE_FOLDER
@@ -27,50 +23,35 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         self.button_reset.clicked.connect(self._export_and_recalculate)
         self.selection_data.activated.connect(self._display_data)
 
-        self.since_reset_str = UI_LANGUAGE.get_translation("since_reset", "data_window")
-        self.all_time_str = UI_LANGUAGE.get_translation("all_time", "data_window")
         self.grid = None
         self.grid_current_row = 0
 
-        self._find_data_files()
+        self.consume_data: dict[str, ConsumeData] = {}
         self._populate_data()
-        self._plot_data(
-            self.data_recipes[self.since_reset_str],
-            self.data_ingredients[self.since_reset_str],
-            self.data_cost.get(self.since_reset_str, None),
-        )
+        self._plot_data(self.consume_data[SINCE_RESET])
 
         UI_LANGUAGE.adjust_data_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _find_data_files(self):
-        """Assign all existing files to the class variables."""
-        self.recipe_files = self._get_saved_data_files()
-        self.ingredient_files = self._get_saved_data_files("Ingredient")
-        self.cost_files = self._get_saved_data_files("Cost")
-
     def _populate_data(self):
         """Get data from files and db, assigns objects and fill dropdown."""
-        self.data_recipes = self._get_recipe_data()
-        self.data_ingredients = self._get_ingredient_data()
-        self.data_cost = self._get_cost_data()
-
+        self.consume_data = generate_consume_data()
         # generates the dropdown with options
-        drop_down_options = [self.since_reset_str, self.all_time_str, *self.recipe_files]
+        dates = get_saved_dates()
+        drop_down_options = [SINCE_RESET, ALL_TIME, *dates]
         DP_CONTROLLER.fill_single_combobox(self.selection_data, drop_down_options, clear_first=True, first_empty=False)
 
     def _export_and_recalculate(self):
         """Export the data and recalculates the dropdowns / plot."""
-        if not SAVE_HANDLER.export_data():
+        if not DP_CONTROLLER.ask_to_export_data():
             return
+        SAVE_HANDLER.export_data()
+        DP_CONTROLLER.say_all_data_exported(str(SAVE_FOLDER))
         current_selection = self.selection_data.currentText()
-        self._find_data_files()
         self._populate_data()
         DP_CONTROLLER.set_combobox_item(self.selection_data, current_selection)
-        ingredient_data = self._get_ingredient_by_key(current_selection)
-        cost_data = self._get_cost_by_key(current_selection)
-        self._plot_data(self.data_recipes[current_selection], ingredient_data, cost_data)
+        self._plot_data(self.consume_data[current_selection])
 
     def _get_saved_data_files(self, pattern: str = "Recipe"):
         """Check the logs folder for all existing log files."""
@@ -78,91 +59,15 @@ class DataWindow(QMainWindow, Ui_DataWindow):
 
     def _display_data(self):
         selection = self.selection_data.currentText()
-        recipe_data = self.data_recipes[selection]
-        ingredient_data = self._get_ingredient_by_key(selection)
-        cost_data = self._get_cost_by_key(selection)
-        self._plot_data(recipe_data, ingredient_data, cost_data)
+        self._plot_data(self.consume_data[selection])
 
-    def _get_ingredient_by_key(self, key: str):
-        """Get ingredient by the selection recipe data key.
-
-        Schema is identical, need to replace Recipe with Ingredient.
-        """
-        return self.data_ingredients[key.replace("_Recipe_", "_Ingredient_")]
-
-    def _get_cost_by_key(self, key: str):
-        """Get cost by the selection recipe data key.
-
-        Schema is identical, need to replace Recipe with Cost.
-        """
-        # old data does not have cost, so need to check
-        return self.data_cost.get(key.replace("_Recipe_", "_Cost_"), None)
-
-    def _read_csv_file(self, to_read: Path):
-        """Read and extracts the given csv file."""
-        data = []
-        with to_read.open(encoding="utf-8") as csv_file:
-            reader = csv.reader(csv_file, delimiter=",")
-            for row in reader:
-                data.append(row)
-        return self._extract_data(data)
-
-    def _get_data(self, data_type: Union[Literal["recipe"], Literal["ingredient"], Literal["cost"]]):
-        """Get the data from the database and the files."""
-        db_methods = {
-            "recipe": DB_COMMANDER.get_consumption_data_lists_recipes,
-            "ingredient": DB_COMMANDER.get_consumption_data_lists_ingredients,
-            "cost": DB_COMMANDER.get_cost_data_lists_ingredients,
-        }
-        parsing_files = {
-            "recipe": self.recipe_files,
-            "ingredient": self.ingredient_files,
-            "cost": self.cost_files,
-        }
-        data = db_methods[data_type]()
-        data = self._extract_data(data)
-        for file in parsing_files[data_type]:
-            parsed_data = self._read_csv_file(SAVE_FOLDER / file)
-            # we only need the reset data from the file, life time is already in the db
-            data[file] = parsed_data[self.since_reset_str]
-        return data
-
-    def _get_recipe_data(self):
-        """Get the recipe data from the database and the files."""
-        return self._get_data("recipe")
-
-    def _get_ingredient_data(self):
-        """Get the ingredient data from the database and the files."""
-        return self._get_data("ingredient")
-
-    def _get_cost_data(self):
-        """Get the cost data from the database and the files."""
-        return self._get_data("cost")
-
-    def _extract_data(self, data: list[list]):
-        """Extract the needed data from the exported data."""
-        # The data has three rows:
-        # first is the Names, with the first column being the date
-        names = data[0][1::]
-        # second is resettable data
-        # data comes from csv, so it is str, need to convert to int
-        since_reset = data[1][1::]
-        since_reset = [int(x) for x in since_reset]
-        # third is life time data
-        all_time = data[2][1::]
-        all_time = [int(x) for x in all_time]
-
-        # Extract both into a dict containing name: quant
-        # using only quantities greater than zero
-        extracted = {}
-        extracted[self.all_time_str] = {x: y for x, y in zip(names, all_time) if y > 0}
-        extracted[self.since_reset_str] = {x: y for x, y in zip(names, since_reset) if y > 0}
-        return extracted
-
-    def _plot_data(self, data: dict, ingredient_data: dict, cost_data: Optional[dict] = None):
+    def _plot_data(self, consume_data: ConsumeData):
         """Plot the given data in a barplot."""
         # first need to sort, then extract list of names / values
-        names, values = self._sort_extract_data(data)
+        recipe_data = consume_data.recipes
+        ingredient_data = consume_data.ingredients
+        cost_data = consume_data.cost
+        names, values = self._sort_extract_data(recipe_data)
 
         self._clear_data()
         cocktail_label = UI_LANGUAGE.get_translation("cocktails_made", "data_window")
@@ -170,8 +75,8 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         # regenerates the grid layout
         self.grid = QGridLayout()
         self.content_container.addLayout(self.grid)
-        # if there is no data, skip
-        if not data:
+        # if there is no recipe_data, skip
+        if not recipe_data:
             return
 
         # first generate chart for recipe

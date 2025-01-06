@@ -54,13 +54,10 @@ def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: list[Cock
         ing_mapping[ing.name] = ing
     _logger.log_event("INFO", f"Adding recipes: {[c.name for c in cocktails_to_add]}")
     for rec in cocktails_to_add:
-        local_db.insert_new_recipe(rec.name, rec.alcohol, rec.amount, rec.enabled, rec.virgin_available)
-        new_cocktail = local_db.get_cocktail(rec.name)
-        if new_cocktail is None:
-            continue
-        for ing in rec.ingredients:
-            ing_data = ing_mapping[ing.name]
-            local_db.insert_recipe_data(new_cocktail.id, ing_data.id, ing.amount, 1)
+        ingredient_data = [(ing_mapping[i.name].id, i.amount, 1) for i in rec.ingredients]
+        local_db.insert_new_recipe(
+            rec.name, rec.alcohol, rec.amount, rec.enabled, rec.virgin_available, ingredient_data
+        )
 
 
 def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCommander, ingredient_to_add: list[str]):
@@ -244,3 +241,18 @@ def change_slower_flag_to_pump_speed(slow_factor: float):
         _logger.log_event(
             "ERROR", "Could not convert slow flag to pump speed column in DB, this may because it was already done"
         )
+
+
+def fix_amount_in_recipe():
+    """Recalculate the amount in the Recipe table."""
+    _logger.log_event("INFO", "Adding team buffer table to database")
+    db_handler = DatabaseHandler()
+    db_handler.query_database(
+        """UPDATE Recipes
+            SET Amount = (
+                SELECT SUM(Amount)
+                FROM RecipeData
+                WHERE RecipeData.Recipe_ID = Recipes.ID
+                GROUP BY RecipeData.Recipe_ID
+            );"""
+    )

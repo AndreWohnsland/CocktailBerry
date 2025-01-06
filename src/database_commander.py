@@ -1,14 +1,52 @@
+from __future__ import annotations
+
 import datetime
 import shutil
 import sqlite3
-from typing import Optional, Union
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, Ingredient
 from src.utils import time_print
 
+if TYPE_CHECKING:
+    from src.dialog_handler import allowed_keys
+
 _logger = LoggerHandler("database_module")
+
+
+class DatabaseTransactionError(Exception):
+    """Raises an error if something will not work in the database with the given command.
+
+    The reason will be contained in the message with the corresponding translation key.
+    """
+
+    # TODO: Fix this in the future, we currently would break the migrator since this result in a new dependency
+
+    def __init__(self, translation_key: allowed_keys, language_args: dict | None = None):
+        from src.dialog_handler import DialogHandler
+
+        DH = DialogHandler()
+        self.language_args = language_args if language_args is not None else {}
+        messsage = DH.get_translation(translation_key, **self.language_args)
+        super().__init__(messsage)
+        self.translation_key = translation_key
+
+
+class ElementNotFoundError(DatabaseTransactionError):
+    """Informs that the element was not found in the database."""
+
+    def __init__(self, element_name: str):
+        super().__init__("element_not_found", {"element_name": element_name})
+
+
+class ElementAlreadyExistsError(DatabaseTransactionError):
+    """Informs that the element already is in the db."""
+
+    def __init__(self, element_name: str):
+        super().__init__("element_already_exists", {"element_name": element_name})
 
 
 class DatabaseCommander:
@@ -65,7 +103,7 @@ class DatabaseCommander:
         ingredients = self.__get_recipe_ingredients_by_id(recipe_id)
         return Cocktail(recipe_id, name, alcohol, amount, bool(enabled), bool(virgin), ingredients)
 
-    def get_cocktail(self, search: Union[str, int]) -> Optional[Cocktail]:
+    def get_cocktail(self, search: str | int) -> Cocktail | None:
         """Get all needed data for the cocktail from ID or name."""
         condition = "Name" if isinstance(search, str) else "ID"
         query = f"SELECT ID, Name, Alcohol, Amount, Enabled, Virgin FROM Recipes WHERE {condition}=?"
@@ -87,11 +125,11 @@ class DatabaseCommander:
             cocktails.append(self.__build_cocktail(*recipe))
         return cocktails
 
-    def get_possible_cocktails(self):
+    def get_possible_cocktails(self, max_hand_ingredients: int) -> list[Cocktail]:
         """Return a list of currently possible cocktails with the current bottles."""
         all_cocktails = self.get_all_cocktails(get_disabled=False)
         handadds_ids = self.get_available_ids()
-        return [x for x in all_cocktails if x.is_possible(handadds_ids)]
+        return [x for x in all_cocktails if x.is_possible(handadds_ids, max_hand_ingredients)]
 
     def get_ingredient_names_at_bottles(self) -> list[str]:
         """Return ingredient name for all bottles."""
@@ -125,6 +163,31 @@ class DatabaseCommander:
             unit=ing[9],
         )
 
+    def get_ingredients_at_bottles(self) -> list[Ingredient]:
+        """Return ingredient name for all bottles."""
+        query = """SELECT
+                I.ID, I.Name, I.Alcohol, I.Volume, I.Fill_level, I.Hand, I.Pump_speed, B.Bottle, I.Cost, I.Unit
+                FROM Bottles as B
+                LEFT JOIN Ingredients as I
+                ON I.ID=B.ID
+                ORDER BY B.Bottle"""
+        result = self.handler.query_database(query)
+        return [
+            Ingredient(
+                id=ing[0],
+                name=ing[1],
+                alcohol=ing[2],
+                bottle_volume=ing[3],
+                fill_level=ing[4],
+                hand=bool(ing[5]),
+                pump_speed=ing[6],
+                bottle=ing[7],
+                cost=ing[8],
+                unit=ing[9],
+            )
+            for ing in result
+        ]
+
     def get_bottle_fill_levels(self) -> list[int]:
         """Return percentage of fill level, limited to [0, 100]."""
         query = """SELECT Ingredients.Fill_level, Ingredients.Volume FROM Bottles
@@ -139,7 +202,7 @@ class DatabaseCommander:
             levels.append(proportion)
         return levels
 
-    def get_ingredient(self, search: Union[str, int]) -> Optional[Ingredient]:
+    def get_ingredient(self, search: str | int) -> Ingredient | None:
         """Get all needed data for the ingredient from ID or name."""
         condition = "I.Name" if isinstance(search, str) else "I.ID"
         query = f"""SELECT
@@ -202,7 +265,7 @@ class DatabaseCommander:
         recipe_list = self.handler.query_database(query, (ingredient_id,))
         return [recipe[0] for recipe in recipe_list]
 
-    def __get_multiple_ingredient_ids_from_names(self, name_list: list[str]) -> list[int]:
+    def __get_multiple_ingredient_ids_from_names(self, name_list: list[str] | list[int]) -> list[int]:
         """Get all the ids for the selected names."""
         question_marks = ",".join(["?"] * len(name_list))
         query = f"SELECT ID FROM Ingredients WHERE Name in ({question_marks})"
@@ -248,7 +311,7 @@ class DatabaseCommander:
         """Return a list of the IDs of all available defined ingredients."""
         query = "SELECT ID FROM Available"
         result = self.handler.query_database(query)
-        return [x[0] for x in result]
+        return [int(x[0]) for x in result]
 
     def get_bottle_data_bottle_window(self):
         """Get all needed data for bottles, ordered by bottle number.
@@ -259,26 +322,20 @@ class DatabaseCommander:
                 FROM Bottles LEFT JOIN Ingredients ON Ingredients.ID = Bottles.ID ORDER BY Bottles.Bottle"""
         return self.handler.query_database(query)
 
-    def get_ingredient_bottle_and_level_by_name(self, ingredient_name):
-        """Return (Bottle_number, level) for the given ingredient."""
-        query = """SELECT Bottles.Bottle, Ingredients.Fill_level
-                FROM Bottles INNER JOIN Ingredients ON Ingredients.ID = Bottles.ID
-                WHERE Ingredients.Name = ?"""
-        data = self.handler.query_database(query, (ingredient_name,))
-        if data:
-            return data[0][0], data[0][1]
-        return 0, 0
-
     # set (update) commands
-    def set_bottle_order(self, ingredient_names: list[str]):
+    def set_bottle_order(self, ingredient_names: list[str] | list[int]):
         """Set bottles to the given list of bottles, need all bottles."""
-        for i, ingredient in enumerate(ingredient_names):
-            bottle = i + 1
-            query = """UPDATE OR IGNORE Bottles
-                    SET ID = (SELECT ID FROM Ingredients WHERE Name = ?)
-                    WHERE Bottle = ?"""
-            search_tuple = (ingredient, bottle)
-            self.handler.query_database(query, search_tuple)
+        for bottle, ingredient in enumerate(ingredient_names, start=1):
+            self.set_bottle_at_slot(ingredient, bottle)  # type: ignore[arg-type]
+
+    def set_bottle_at_slot(self, ingredient: str | int, bottle_number: int):
+        """Set the bottle at the given slot."""
+        id_str = "?" if isinstance(ingredient, int) else "(SELECT ID FROM Ingredients WHERE Name = ?)"
+        query = f"""UPDATE OR IGNORE Bottles
+                SET ID = {id_str}
+                WHERE Bottle = ?"""
+        search_tuple = (ingredient, bottle_number)
+        self.handler.query_database(query, search_tuple)
 
     def set_bottle_volumelevel_to_max(self, bottle_number_list: list[int]):
         """Set the each i-th bottle to max level if arg is true."""
@@ -353,13 +410,26 @@ class DatabaseCommander:
         query = "UPDATE OR IGNORE Recipes SET Enabled = 1"
         self.handler.query_database(query)
 
-    def set_recipe(self, recipe_id: int, name: str, alcohol_level: int, volume: int, enabled: int, virgin: int):
+    def set_recipe(
+        self,
+        recipe_id: int,
+        name: str,
+        alcohol_level: int,
+        volume: int,
+        enabled: int,
+        virgin: int,
+        ingredient_data: list[tuple[int, int, int]],
+    ) -> Cocktail:
         """Update the given recipe id to new properties."""
+        self.delete_recipe_ingredient_data(recipe_id)
         query = """UPDATE OR IGNORE Recipes
                 SET Name = ?, Alcohol = ?, Amount = ?, Enabled = ?, Virgin = ?
                 WHERE ID = ?"""
         search_tuple = (name, alcohol_level, volume, enabled, virgin, recipe_id)
         self.handler.query_database(query, search_tuple)
+        for _id, amount, order in ingredient_data:
+            self.insert_recipe_data(recipe_id, _id, amount, order)
+        return self.get_cocktail(recipe_id)  # type: ignore
 
     def set_ingredient_level_to_value(self, ingredient_id: int, value: int):
         """Set the given ingredient id to a defined level."""
@@ -378,21 +448,36 @@ class DatabaseCommander:
         unit: str,
     ):
         """Insert a new ingredient into the database."""
-        query = """INSERT OR IGNORE INTO
+        query = """INSERT INTO
                 Ingredients(
                     Name, Alcohol, Volume, Consumption_lifetime, Consumption, Fill_level, Hand, Pump_speed, Cost, Unit
                 )
                 VALUES (?,?,?,0,0,0,?,?,?,?)"""
         search_tuple = (ingredient_name, alcohol_level, volume, int(only_hand), pump_speed, cost, unit)
-        self.handler.query_database(query, search_tuple)
+        try:
+            self.handler.query_database(query, search_tuple)
+        except sqlite3.IntegrityError:
+            raise ElementAlreadyExistsError(ingredient_name)
 
-    def insert_new_recipe(self, name: str, alcohol_level: int, volume: int, enabled: int, virgin: int):
+    def insert_new_recipe(
+        self,
+        name: str,
+        alcohol_level: int,
+        volume: int,
+        enabled: int,
+        virgin: int,
+        ingredient_data: list[tuple[int, int, int]],
+    ) -> Cocktail:
         """Insert a new recipe into the database."""
         query = """INSERT OR IGNORE INTO
                 Recipes(Name, Alcohol, Amount, Counter_lifetime, Counter, Enabled, Virgin)
                 VALUES (?,?,?,0,0,?,?)"""
         search_tuple = (name, alcohol_level, volume, enabled, virgin)
         self.handler.query_database(query, search_tuple)
+        cocktail: Cocktail = self.get_cocktail(name)  # type: ignore
+        for _id, amount, order in ingredient_data:
+            self.insert_recipe_data(cocktail.id, _id, amount, order)
+        return self.get_cocktail(name)  # type: ignore
 
     def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, order_number: int):
         """Insert given data into the recipe_data table."""
@@ -400,9 +485,12 @@ class DatabaseCommander:
         search_tuple = (recipe_id, ingredient_id, ingredient_volume, order_number)
         self.handler.query_database(query, search_tuple)
 
-    def insert_multiple_existing_handadd_ingredients_by_name(self, ingredient_names: list[str]):
+    def insert_multiple_existing_handadd_ingredients(self, ingredient_list: list[str] | list[int]):
         """Insert the IDS of the given ingredient list into the available table."""
-        ingredient_id = self.__get_multiple_ingredient_ids_from_names(ingredient_names)
+        if isinstance(ingredient_list[0], str):
+            ingredient_id: list[str] | list[int] = self.__get_multiple_ingredient_ids_from_names(ingredient_list)
+        else:
+            ingredient_id = ingredient_list
         question_marks = ",".join(["(?)"] * len(ingredient_id))
         query = f"INSERT INTO Available(ID) VALUES {question_marks}"
         self.handler.query_database(query, ingredient_id)
@@ -410,6 +498,12 @@ class DatabaseCommander:
     # delete
     def delete_ingredient(self, ingredient_id: int):
         """Delete an ingredient by id."""
+        if self.get_bottle_usage(ingredient_id):
+            raise DatabaseTransactionError("ingredient_still_at_bottle")
+        recipe_list = self.get_recipe_usage_list(ingredient_id)
+        if recipe_list:
+            recipe_string = ", ".join(recipe_list)
+            raise DatabaseTransactionError("ingredient_still_at_recipe", {"recipe_string": recipe_string})
         query = "DELETE FROM Ingredients WHERE ID = ?"
         self.handler.query_database(query, (ingredient_id,))
 
@@ -423,11 +517,15 @@ class DatabaseCommander:
         query = "UPDATE OR IGNORE Ingredients SET Consumption = 0"
         self.handler.query_database(query)
 
-    def delete_recipe(self, recipe_name: str):
+    def delete_recipe(self, recipe_name: str | int):
         """Delete the given recipe by name and all according ingredient_data."""
         # if using FK with cascade delete, this will prob no longer necessary
-        query1 = "DELETE FROM RecipeData WHERE Recipe_ID = (SELECT ID FROM Recipes WHERE Name = ?)"
-        query2 = "DELETE FROM Recipes WHERE Name = ?"
+        if isinstance(recipe_name, str):
+            query1 = "DELETE FROM RecipeData WHERE Recipe_ID = (SELECT ID FROM Recipes WHERE Name = ?)"
+            query2 = "DELETE FROM Recipes WHERE Name = ?"
+        else:
+            query1 = "DELETE FROM RecipeData WHERE Recipe_ID = ?"
+            query2 = "DELETE FROM Recipes WHERE ID = ?"
         self.handler.query_database(query1, (recipe_name,))
         self.handler.query_database(query2, (recipe_name,))
 
@@ -474,26 +572,32 @@ class DatabaseHandler:
     database_path = DATABASE_PATH
     database_path_default = DEFAULT_DATABASE_PATH
 
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close_connection()
+
     def __init__(self, use_default=False):
-        self.database_path = DatabaseHandler.database_path
         if not self.database_path_default.exists():
             time_print("Creating Database")
             self.create_tables()
         if not self.database_path.exists():
             time_print("Copying default database for maker usage")
             self.copy_default_database()
+        self.connector_path = self.database_path
         if use_default:
-            self.connect_database(str(self.database_path_default.absolute()))
-        else:
-            self.connect_database()
+            self.connector_path = self.database_path_default
+        self.connect_database(self.connector_path)
 
-    def connect_database(self, path: Optional[str] = None):
+    def connect_database(self, path: str | Path | None = None):
         """Connect to the given path or local database, creates cursor."""
         if path:
             self.database = sqlite3.connect(path)
         else:
             self.database = sqlite3.connect(self.database_path)
         self.cursor = self.database.cursor()
+
+    def close_connection(self):
+        self.cursor.close()
+        self.database.close()
 
     def query_database(self, sql: str, search_tuple=()):
         """Execute the given query, if select command, return the data."""

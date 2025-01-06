@@ -40,6 +40,48 @@ If you want omit the machine name, version and platform data, use the `-q` flag.
 
 In case you want to hide the terminal completely, see [this section](faq.md#how-to-minimize-start-terminal).
 
+## CocktailBerry Web
+
+Run the FastAPI web server.
+Can be used as an alternative way to control the machine, for example over an external program or a web ui. The FastAPI server will be started at the given port.
+
+```bash
+python runme.py api [OPTIONS]
+
+# Options:
+#   -p, --port INTEGER  Port for the FastAPI server [default: 8000]
+#   --help              Show help
+```
+
+## Switch to CocktailBerry Web
+
+This command will set up the web interface as the default interface.
+Take care, this wil no longer start the main program, but the web interface.
+The web interface will then be accessible over a web browser, which will be opened in Kiosk mode on the machine.
+If you want to access the web interface from another device, you can open the browser and navigate to `http://<ip>` or locally on `http://localhost`.
+You can also set up SSL, this is only necessary if you want to manage backups over another device and not directly on the machine.
+This is the limitation sending files over the network, which is not possible without SSL.
+If SSL is enabled, since this is a self-signed certificate, you will get a warning in the browser, which user can ignore.
+
+```bash
+python runme.py setup-web
+
+# Options:
+#   --ssl   -s        Use SSL for the Nginx configuration    
+#   --help            Show help
+```
+
+## Switch to old Main Program
+
+In case you activated the web interface as the default interface, you can switch back to the old main program.
+This command will switch back to the old main program.
+This will no longer start the web interface, but the main program.
+The main program will then be started as usual as an full windowed app.
+
+```bash
+python runme.py switch-back
+```
+
 ## Updating Local Database
 
 You can use the CLI command to merge the latest recipes in your local database.

@@ -1,8 +1,27 @@
 import copy
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Optional, Union
 
-from src.config.config_manager import CONFIG as cfg
+
+class PrepareResult(Enum):
+    """Result of the prepare_cocktail function."""
+
+    VALIDATION_OK = "VALIDATION_OK"
+    IN_PROGRESS = "IN_PROGRESS"
+    FINISHED = "FINISHED"
+    CANCELED = "CANCELED"
+    NOT_ENOUGH_INGREDIENTS = "NOT_ENOUGH_INGREDIENTS"
+    COCKTAIL_NOT_FOUND = "COCKTAIL_NOT_FOUND"
+    ADDON_ERROR = "ADDON_ERROR"
+
+
+@dataclass
+class CocktailStatus:
+    progress: int = 0
+    completed: bool = False
+    message: Optional[str] = None
+    status: PrepareResult = PrepareResult.FINISHED
 
 
 @dataclass
@@ -69,7 +88,7 @@ class Cocktail:
         """Returns if the cocktail is virgin."""
         return self.adjusted_alcohol == 0
 
-    def is_possible(self, hand_available: list[int]):
+    def is_possible(self, hand_available: list[int], max_hand_ingredients: int):
         """Return if the recipe is possible with given additional hand add ingredients."""
         machine = self.machineadds
         # If machine got not at least 1 add (=all handadd) return false
@@ -78,7 +97,7 @@ class Cocktail:
             return False
         hand = self.handadds
         # if the number of hand adds is higher than the allowed hand adds, return false
-        if len(hand) > cfg.MAKER_MAX_HAND_INGREDIENTS:
+        if len(hand) > max_hand_ingredients:
             return False
         for ing in machine:
             if ing.bottle is None:

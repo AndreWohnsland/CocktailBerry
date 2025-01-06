@@ -1,0 +1,145 @@
+{
+  "new": "Neu",
+  "create": "Erstellen",
+  "apply": "Anwenden",
+  "save": "Speichern",
+  "delete": "Löschen",
+  "submit": "Absenden",
+  "add": "Hinzufügen",
+  "back": "Zurück",
+  "start": "Starten",
+  "search": "Suchen",
+  "cancel": "Abbrechen",
+  "close": "Schließen",
+  "date": "Datum",
+  "time": "Zeit",
+  "skeletons": {
+    "errorPersistInformation": "Wenn dieses Problem weiterhin besteht, überprüfen bitte, ob CocktailBerry läuft und du dich im selben Netzwerk befindest!",
+    "couldNotLoadData": "Daten konnten nicht geladen werden",
+    "loadingData": "Daten werden geladen ...",
+    "loadingDataDescription": "Daten werden vom Backend abgerufen, das sollte schnell gehen ...",
+    "gettingConfiguration": "Konfiguration wird abgerufen",
+    "gettingConfigurationDescription": "Daten werden vom Backend für die Einrichtung abgerufen, das sollte schnell gehen ..."
+  },
+  "header": {
+    "cocktails": "Cocktails",
+    "ingredients": "Zutaten",
+    "recipes": "Rezepte",
+    "bottles": "Flaschen",
+    "options": "Optionen"
+  },
+  "cocktails": {
+    "goToBottles": "Zu den Flaschen",
+    "later": "Später",
+    "bottleRefilledCheck": "Flasche ist nachgefüllt",
+    "applyRefill": "Nachfüllen Registrieren",
+    "singleIngredient": "Einzelne Zutat",
+    "selectIngredient": "Zutat auswählen",
+    "spend": "Ausgeben",
+    "selectTeam": "Team Auswählen"
+  },
+  "ingredients": {
+    "newIngredient": "Neue Zutat",
+    "name": "Name",
+    "alcohol": "Alkohol",
+    "bottleVolume": "Flaschenvolumen",
+    "cost": "Kosten",
+    "pumpSpeed": "Pumpgeschwindigkeit",
+    "unit": "Einheit",
+    "onlyAddByHand": "Kann nur von Hand hinzugefügt werden",
+    "deleteIngredient": "Möchtest du die Zutat löschen?"
+  },
+  "recipes": {
+    "newRecipe": "Neues Rezept",
+    "enableAll": "Alle aktivieren",
+    "name": "Name",
+    "enabled": "Aktiviert",
+    "virginAvailable": "Virgin verfügbar",
+    "addIngredient": "Zutat hinzufügen",
+    "selectIngredient": "Zutat auswählen",
+    "enableAllRecipes": "Möchtest du alle Rezepte aktivieren?",
+    "deleteRecipe": "Möchtest du das Rezept löschen?",
+    "deleteExistingImage": "Möchtest du das existierende eigene Bild löschen?"
+  },
+  "bottles": {
+    "applyNew": "Neue Registrieren",
+    "available": "Verfügbar",
+    "possibleToAdd": "Mögliche zum Hinzuzufügen",
+    "adjustHeader": "Füllstand der Flasche anpassen, Maximum ist {{maximum}}"
+  },
+  "options": {
+    "cleaning": "Reinigung",
+    "calibration": "Kalibrierung",
+    "configuration": "Konfiguration",
+    "data": "Daten",
+    "backup": "Sicherung",
+    "restore": "Wiederherstellen",
+    "reboot": "Neustart",
+    "shutdown": "Herunterfahren",
+    "logs": "Logs",
+    "updateSystem": "System aktualisieren",
+    "updateCocktailBerry": "CocktailBerry Software aktualisieren",
+    "wifi": "WLAN",
+    "internetCheck": "Internetprüfung",
+    "addons": "Addons",
+    "adjustTime": "Zeit Anpassen",
+    "issues": "Probleme",
+    "cleaningTheMachine": "Reinigung der Machine",
+    "startCleaningProgram": "Möchtest du das Reinigungsprogramm starten?",
+    "rebootTheSystem": "Möchtest du das System neu starten?",
+    "shutdownTheSystem": "Möchtest du das System herunterfahren?",
+    "updateTheSystem": "Möchtest du das System aktualisieren?"
+  },
+  "calibration": {
+    "pumpCalibrationProgram": "Pumpen Kalibrieren",
+    "pump": "Pumpe",
+    "amount": "Menge"
+  },
+  "data": {
+    "data": "Daten",
+    "noData": "Keine Daten",
+    "atReset": "Seit Zurücksetzen",
+    "allTime": "Gesamte Zeit",
+    "recipes": "Rezepte",
+    "ingredients": "Zutaten",
+    "cost": "Kosten",
+    "dateFormat": "{{day}}.{{month}}.{{year}}",
+    "reset": "Daten Zurücksetzen",
+    "resetTheData": "Möchtest du die Daten zurücksetzen?"
+  },
+  "addons": {
+    "manageAddons": "Addons verwalten",
+    "cannotBeInstalled": "Kann nicht installiert werden",
+    "deleteTheAddon": "Möchtest du das Addon '{{addon}}' löschen?"
+  },
+  "wifi": {
+    "setupWifi": "WLAN einrichten",
+    "selectSsid": "SSID auswählen",
+    "password": "Passwort",
+    "connectToWifi": "Möchtest du die Daten verwenden um zu '{{selectedSsid}}' verbinden?"
+  },
+  "password": {
+    "enterPassword": "Passwort eingeben",
+    "passwordNeeded": "{{passwordName}} Passwort Benötigt",
+    "passwordProtectedBy": "Dieser Bereich ist durch das {{passwordName}} Passwort geschützt.",
+    "enterThePassword": "Gib das Passwort ein, um fortzufahren:"
+  },
+  "issues": {
+    "systemIssues": "Systemprobleme",
+    "info": "Diese Probleme werden einmal angezeigt, nachdem das Programm gestartet wurde und Probleme gefunden hat. Ignorierst du diese, werden sie bis zum nächsten Neustart nicht wieder angezeigt. Es wird jedoch empfohlen, sich um sie zu kümmern.",
+    "deprecationWaring": "Zu alte Version",
+    "systemPythonDeprecated": "Dein System verwendet eine ältere Version von Python, als zukünftig benötigt wird. Es ist kein CocktailBerry Update mehr möglich.",
+    "InternetConnectionIssue": "Problem mit Internetverbindung",
+    "noInternetConnection": "Es scheint keine Internetverbindung zu bestehen, dies führt zu einer falschen Zeit. Da du den Mikroservice aktiviert hast, passe die Zeit manuell an, ansonsten sind gesendete Daten falsch!",
+    "adjustTime": "Zeit Anpassen",
+    "configIssue": "Configurations Fehler",
+    "configSetToDefault": "Die fehlerhafte Konfiguration wurde auf den Standardwert gesetzt, bitte passe diese an:",
+    "goToConfig": "Gehe zur Configuration",
+    "noIssues": "Das System funktioniert einwandfrei.",
+    "reset": "Nicht mehr Erinnern"
+  },
+  "timeManager": {
+    "adjustTime": "Zeit und Tag Anpassen",
+    "adjustTimeConfirmation": "Möchtest du die Systemzeit auf die eingegebene Zeit updaten?"
+  }
+}

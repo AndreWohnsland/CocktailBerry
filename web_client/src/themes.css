@@ -1,0 +1,39 @@
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #ef9700;
+  --background-color: #0d0d0d;
+  --neutral-color: #96adba;
+  --danger-color: #d00000;
+}
+
+.default {
+  --primary-color: #007bff;
+  --secondary-color: #ef9700;
+  --background-color: #0d0d0d;
+  --neutral-color: #96adba;
+  --danger-color: #d00000;
+}
+
+.berry {
+  --primary-color: #3a4cbf;
+  --secondary-color: #ec407a;
+  --background-color: #0d0d0d;
+  --neutral-color: #5761a1;
+  --danger-color: #d00000;
+}
+
+.bavaria {
+  --primary-color: #007bff;
+  --secondary-color: #01276a;
+  --background-color: #dad9d9;
+  --neutral-color: #44648d;
+  --danger-color: #d00000;
+}
+
+.alien {
+  --primary-color: #00dd4a;
+  --secondary-color: #00e4d1;
+  --background-color: #111111;
+  --neutral-color: #489869;
+  --danger-color: #d00000;
+}

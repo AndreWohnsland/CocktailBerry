@@ -129,6 +129,19 @@ class FloatType(ConfigType):
     ):
         super().__init__(float, validator_functions, prefix, suffix)
 
+    def validate(self, configname: str, value: Any):
+        """Validate the given value."""
+        # also accepts integers since they are basically floats
+        if not (isinstance(value, (int, float))):
+            raise ConfigError(f"The value <{value}> for '{configname}' is not of type {self.config_type}")
+        for validator in self.validator_functions:
+            validator(configname, value)
+
+    def to_config(self, value: float | int) -> float:
+        """Deserialize the given value."""
+        # deserialize to a float (in case an int was given)
+        return float(value)
+
 
 class BoolType(ConfigType):
     """Boolean configuration type."""

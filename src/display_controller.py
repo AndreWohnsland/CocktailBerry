@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable, Literal
@@ -7,6 +8,7 @@ from typing import TYPE_CHECKING, Callable, Literal
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
+    QApplication,
     QCheckBox,
     QComboBox,
     QLabel,
@@ -591,8 +593,11 @@ class DisplayController(DialogHandler):
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]
 
-    def adjust_bottle_number_displayed(self, w: Ui_MainWindow):
+    def adjust_bottle_number_displayed(self, w: MainScreen):
         """Remove the UI elements if not all ten bottles are used per config."""
+        # give the ui a little time to build up, it might happen that we get a
+        # QPaintDevice: Cannot destroy paint device that is being painted otherwise
+        time.sleep(0.1)
         used_bottles = cfg.choose_bottle_number()
         # This needs to be done to get rid of registered bottles in the then removed bottles
         all_bottles = DB_COMMANDER.get_ingredient_names_at_bottles()
@@ -608,7 +613,9 @@ class DisplayController(DialogHandler):
         ]
         for elements in to_adjust:
             for element in elements[used_bottles::]:
+                element.hide()  # Hide element first
                 element.deleteLater()
+            QApplication.processEvents()
 
     def set_ingredient_add_label(self, w: Ui_MainWindow, item_selected: bool):
         """Change the label of the ingredient button."""

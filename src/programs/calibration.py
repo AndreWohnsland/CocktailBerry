@@ -8,7 +8,7 @@ from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
-from src.models import Ingredient
+from src.tabs import maker
 from src.ui_elements.calibration import Ui_CalibrationWindow
 
 logger = LoggerHandler("calibration_module")
@@ -40,25 +40,7 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         """Output the set number of volume according to defined volume flow."""
         channel_number = int(self.channel.text())
         amount = int(self.amount.text())
-        display_name = f"{amount} ml volume, pump #{channel_number}"
-        ing = Ingredient(
-            id=0,
-            name="Calibration",
-            alcohol=0,
-            bottle_volume=1000,
-            fill_level=1000,
-            hand=False,
-            pump_speed=100,
-            amount=amount,
-            bottle=channel_number,
-        )
-        MACHINE.make_cocktail(
-            w=None,
-            ingredient_list=[ing],
-            recipe=display_name,
-            is_cocktail=False,
-            verbose=False,
-        )
+        maker.calibrate(channel_number, amount)
 
 
 @logerror

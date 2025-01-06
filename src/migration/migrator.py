@@ -10,8 +10,10 @@ check_python_version()
 import configparser
 import importlib.util
 import platform
+import shutil
 import subprocess
 import sys
+from pathlib import Path
 from typing import Any
 
 import yaml
@@ -28,6 +30,7 @@ from src.migration.update_data import (
     add_unit_column_to_ingredients,
     add_virgin_flag_to_db,
     change_slower_flag_to_pump_speed,
+    fix_amount_in_recipe,
     remove_is_alcoholic_column,
     remove_old_recipe_columns,
     rename_database_to_english,
@@ -112,14 +115,30 @@ class Migrator:
                 _combine_pump_setting_into_one_config,
                 lambda: self._install_pip_package("distro", "1.36.0"),
             ],
+            "2.0.0": [
+                lambda: self._install_pip_package("fastapi[standard]", "2.0.0"),
+                lambda: self._install_pip_package("uvicorn", "2.0.0"),
+                fix_amount_in_recipe,
+            ],
         }
 
         for version, actions in version_actions.items():
             if self.older_than_version_with_logging(version):
+                self._backup_config_file(version)
                 for action in actions:
                     action()
 
         self._check_local_version_data()
+
+    def _backup_config_file(self, suffix):
+        """Save the config file at ~/cb_backup/custom_config_pre_{suffix}.yaml."""
+        if not CUSTOM_CONFIG_FILE.exists():
+            return
+        save_path = Path.home() / "cb_backup" / f"custom_config_pre_{suffix}.yaml"
+        _logger.log_event("INFO", f"Backing up config file to {save_path}")
+        # Ensure the backup directory exists
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(CUSTOM_CONFIG_FILE, save_path)
 
     def _migration_log(self, version: str):
         """Log the migration message fro the version."""
@@ -174,8 +193,19 @@ class Migrator:
         if importlib.util.find_spec(package_name) is not None:
             _logger.log_event("INFO", f"Package {package_name} is already installed, skipping installation.")
             return
+        # Check if uv is available
+        uv_executable = shutil.which("uv")  # Find the uv executable in PATH
+        pip_command = [sys.executable, "-m", "pip", "install", package_name]
+
+        # Use uv install if uv is available
+        if uv_executable:
+            _logger.log_event("INFO", "Detected 'uv' command. Using 'uv pip install' for package installation.")
+            pip_command = [uv_executable, "pip", "install", package_name]
+        else:
+            _logger.log_event("INFO", "'uv' not detected. Falling back to 'pip' for package installation.")
+
         try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
+            subprocess.check_call(pip_command)
             _logger.log_event("INFO", f"Successfully installed {package_name}")
         except subprocess.CalledProcessError as err:
             err_msg = f"Could not install {package_name} using pip. Please install it manually!"

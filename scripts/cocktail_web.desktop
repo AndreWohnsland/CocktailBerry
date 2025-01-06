@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=CocktailBerry Web
+Exec=firefox http://localhost
+Terminal=false
+Icon=/usr/share/pixmaps/cocktailberry.png
+X-GNOME-Autostart-enabled=true

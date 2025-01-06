@@ -6,6 +6,7 @@ from typing import Any, Callable, ClassVar
 
 import typer
 import yaml
+from pydantic.dataclasses import dataclass as api_dataclass
 from pyfiglet import Figlet
 
 from src import (
@@ -28,12 +29,14 @@ from src.config.config_types import (
     PumpConfig,
     StringType,
 )
+from src.config.errors import ConfigError
 from src.config.validators import build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
+from src.models import CocktailStatus
 from src.utils import get_platform_data, time_print
 
-logger = LoggerHandler("config_manager")
+_logger = LoggerHandler("config_manager")
 
 
 _default_pins = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
@@ -58,7 +61,6 @@ class ConfigManager:
     UI_LANGUAGE: SupportedLanguagesType = "en"
     # Width and height of the touchscreen
     # Mainly used for dev and comparison for the desired touch dimensions
-    # Used if UI_DEVENVIRONMENT is set to True
     UI_WIDTH: int = 800
     UI_HEIGHT: int = 480
     UI_PICTURE_SIZE: int = 240
@@ -120,6 +122,12 @@ class ConfigManager:
     TEAMS_ACTIVE: bool = False
     TEAM_BUTTON_NAMES: ClassVar[list[str]] = ["Team 1", "Team 2"]
     TEAM_API_URL: str = "http://127.0.0.1:8080"
+    # Custom theme settings
+    CUSTOM_COLOR_PRIMARY: str = "#007bff"
+    CUSTOM_COLOR_SECONDARY: str = "#ef9700"
+    CUSTOM_COLOR_NEUTRAL: str = "#96adba"
+    CUSTOM_COLOR_BACKGROUND: str = "#0d0d0d"
+    CUSTOM_COLOR_DANGER: str = "#d00000"
     # Config to change the displayed values in the maker to another unit
     EXP_MAKER_UNIT: str = "ml"
     EXP_MAKER_FACTOR: float = 1.0
@@ -144,7 +152,7 @@ class ConfigManager:
             "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": IntType([build_number_limiter(100, 1000)]),
             "PUMP_CONFIG": ListType(
-                DictType(
+                DictType[PumpConfig](
                     {
                         "pin": IntType([build_number_limiter(0, 1000)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
@@ -152,12 +160,12 @@ class ConfigManager:
                     },
                     PumpConfig,
                 ),
-                self.choose_bottle_number,
+                lambda: self.choose_bottle_number(ignore_limits=True),
             ),
             "MAKER_NAME": StringType([validate_max_length]),
-            "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, 999)]),
             "MAKER_PREPARE_VOLUME": ListType(IntType([build_number_limiter(25, 1000)], suffix="ml"), 1),
-            "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, MAX_SUPPORTED_BOTTLES)]),
+            "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, 999)]),
             "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
             "MAKER_ALCOHOL_FACTOR": IntType([build_number_limiter(10, 200)], suffix="%"),
             "MAKER_PUMP_REVERSION": BoolType(check_name="Pump can be Reversed"),
@@ -182,18 +190,26 @@ class ConfigManager:
             "TEAMS_ACTIVE": BoolType(check_name="Teams Active"),
             "TEAM_BUTTON_NAMES": ListType(StringType(), 2),
             "TEAM_API_URL": StringType(),
+            "CUSTOM_COLOR_PRIMARY": StringType(),
+            "CUSTOM_COLOR_SECONDARY": StringType(),
+            "CUSTOM_COLOR_NEUTRAL": StringType(),
+            "CUSTOM_COLOR_BACKGROUND": StringType(),
+            "CUSTOM_COLOR_DANGER": StringType(),
             "EXP_MAKER_UNIT": StringType(),
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
         }
 
-    def read_local_config(self, update_config: bool = False):
+    def read_local_config(self, update_config: bool = False, validate: bool = True):
         """Read the local config file and set the values if they are valid.
 
-        Might throw a ConfigError if the config is not valid.
+        Might throw a ConfigError if the config is not valid and should be validated.
         Ignore the error if the file is not found, as it is created at the first start of the program.
         """
-        with contextlib.suppress(FileNotFoundError):
-            self._read_config()
+        configuration: dict = {}
+        with contextlib.suppress(FileNotFoundError), open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
+            configuration = yaml.safe_load(stream)
+        if configuration:
+            self.set_config(configuration, validate)
         if update_config:
             self.sync_config_to_file()
 
@@ -202,35 +218,70 @@ class ConfigManager:
 
         Is used to sync new properties into the file.
         """
-        config = {}
-        for name, setting in self.config_type.items():
-            config[name] = setting.to_config(getattr(self, name))
+        config = self.get_config()
         with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
 
-    def validate_and_set_config(self, configuration: dict):
+    def get_config(self):
+        """Get a dict of all config values."""
+        config = {}
+        for name, setting in self.config_type.items():
+            config[name] = setting.to_config(getattr(self, name))
+        return config
+
+    def get_config_with_ui_information(self):
+        """Get a dict of all config values with additional information for the UI."""
+        from src.dialog_handler import UI_LANGUAGE
+
+        config: dict[str, dict[str, Any]] = {}
+        for name, setting in self.config_type.items():
+            setting_data = {"value": setting.to_config(getattr(self, name))}
+            setting_data["description"] = UI_LANGUAGE.get_config_description(name)
+            self._enhance_config_specific_information(setting_data, setting)
+            config[name] = setting_data
+        return config
+
+    def _enhance_config_specific_information(self, config: dict[str, Any], setting: ConfigInterface):
+        config["prefix"] = setting.prefix
+        config["suffix"] = setting.suffix
+        if isinstance(setting, ChooseType):
+            config["allowed"] = setting.allowed
+        if isinstance(setting, BoolType):
+            config["check_name"] = setting.check_name
+        if isinstance(setting, ListType):
+            config["immutable"] = setting.immutable
+            list_type = setting.list_type
+            # in case of list we need to go into the object, all list object types are the same
+            self._enhance_config_specific_information(config, list_type)
+        if isinstance(setting, DictType):
+            for key, value in setting.dict_types.items():
+                config[key] = {}
+                self._enhance_config_specific_information(config[key], value)
+
+    def set_config(self, configuration: dict, validate: bool):
         """Validate the config and set new values."""
         # Some lists may depend on other config variables like number of bottles
         # Therefore, by default, split list types from the rest and check them afterwards
         no_list_or_dict = {k: value for k, value in configuration.items() if not isinstance(value, (list, dict))}
-        self._validate_and_set_config(no_list_or_dict)
+        self._set_config(no_list_or_dict, validate)
         list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, (list, dict))}
-        self._validate_and_set_config(list_or_dict)
+        self._set_config(list_or_dict, validate)
 
-    def _validate_and_set_config(self, configuration: dict):
+    def _set_config(self, configuration: dict, validate: bool):
         for config_name, config_value in configuration.items():
             config_setting = self.config_type.get(config_name)
             # old or user added configs will not be validated
             if config_setting is None:
                 continue
-            config_setting.validate(config_name, config_value)
-            setattr(self, config_name, config_setting.from_config(config_value))
-
-    def _read_config(self):
-        """Read all the config data from the file and validates it."""
-        with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
-            configuration = yaml.safe_load(stream)
-            self.validate_and_set_config(configuration)
+            # Validate and set the value, if not possible to validate, do not set (use default)
+            # If validate is False, the error will be ignored, otherwise raised
+            try:
+                config_setting.validate(config_name, config_value)
+                setattr(self, config_name, config_setting.from_config(config_value))
+            except ConfigError as e:
+                _logger.error(f"Config Error: {e}")
+                if validate:
+                    raise e
 
     def _validate_config_type(self, configname: str, configvalue: Any):
         """Validate the configvalue if its fit the type / conditions."""
@@ -240,8 +291,11 @@ class ConfigManager:
             return
         config_setting.validate(configname, configvalue)
 
-    def choose_bottle_number(self, get_all=False):
+    def choose_bottle_number(self, get_all=False, ignore_limits=False):
         """Select the number of Bottles, limits by max supported count."""
+        # for new app (no limits), this exists for legacy reason (QT)
+        if ignore_limits:
+            return self.MAKER_NUMBER_BOTTLES
         if get_all:
             return MAX_SUPPORTED_BOTTLES
         return min(self.MAKER_NUMBER_BOTTLES, MAX_SUPPORTED_BOTTLES)
@@ -324,16 +378,33 @@ class ConfigManager:
         self.config_type[config_name] = addon_choose
 
 
+@api_dataclass
+class StartupIssue:
+    has_issue: bool = False
+    ignored: bool = False
+    message: str = ""
+
+    def set_issue(self, message: str = ""):
+        self.has_issue = True
+        self.message = message
+
+    def set_ignored(self):
+        self.ignored = True
+
+
 class Shared:
     """Shared global variables which may dynamically change and are needed on different spaces."""
 
     def __init__(self):
-        self.cocktail_started = False
-        self.make_cocktail = True
         self.old_ingredient: list[str] = []
         self.selected_team = "No Team"
         self.team_member_name: str | None = None
         self.alcohol_factor: float = 1.0
+        self.cocktail_status = CocktailStatus()
+        # those are used to display once the message after startup if there are some issues
+        self.startup_need_time_adjustment = StartupIssue()
+        self.startup_python_deprecated = StartupIssue()
+        self.startup_config_issue = StartupIssue()
 
 
 def version_callback(value: bool):

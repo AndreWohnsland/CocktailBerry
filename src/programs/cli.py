@@ -1,28 +1,34 @@
 # pylint: disable=unused-argument
 import os
-import sys
+import subprocess
 from pathlib import Path
 from typing import Optional
 
 import typer
 
 from src import PROJECT_NAME
+from src.api.api import run_api
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import show_start_message, version_callback
 from src.config.errors import ConfigError
-from src.filepath import CUSTOM_CONFIG_FILE
+from src.filepath import CUSTOM_CONFIG_FILE, NGINX_SCRIPT, QT_MIGRATION_SCRIPT, WEB_MIGRATION_SCRIPT
 from src.logger_handler import LoggerHandler
+from src.migration.qt_migrator import roll_back_to_qt_script
+from src.migration.squeekboard import create_and_start_squeekboard_service, stop_and_disable_squeekboard_service
 from src.migration.update_data import add_new_recipes_from_default_db
+from src.migration.web_migrator import add_web_desktop_file, replace_backend_script
 from src.programs.addons import ADDONS, generate_addon_skeleton
 from src.programs.calibration import run_calibration
 from src.programs.clearing import clear_local_database
 from src.programs.cocktailberry import run_cocktailberry
+from src.programs.config_window import run_config_window
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
-from src.utils import generate_custom_style_file, start_resource_tracker, time_print
+from src.utils import generate_custom_style_file, get_platform_data, start_resource_tracker, time_print
 
 _logger = LoggerHandler("cocktailberry")
 cli = typer.Typer(add_completion=False)
+_platform_data = get_platform_data()
 
 
 @cli.callback(invoke_without_command=True)
@@ -39,7 +45,7 @@ def main(
     """Start the cocktail program. Optional, can start the calibration program.
 
     If you want to debug your microservice, you can use the --debug flag.
-    For more information visit https://cocktailberry.readthedocs.io/ or https://github.com/AndreWohnsland/CocktailBerry.
+    For more information visit https://docs.cocktailberry.org/ or https://github.com/AndreWohnsland/CocktailBerry.
     """
     if ctx.invoked_subcommand is not None:
         return
@@ -53,9 +59,11 @@ def main(
     except ConfigError as e:
         _logger.error(f"Config Error: {e}")
         _logger.log_exception(e)
-        time_print(f"Config Error: {e}, please check the config file.")
-        time_print(f"You can edit the file at: {CUSTOM_CONFIG_FILE}")
-        sys.exit(1)
+        time_print(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
+        time_print("Opening the config window to correct the error.")
+        # just read in the config without validation
+        cfg.read_local_config(validate=False)
+        run_config_window(message=f"Config Error: {e}, please adjust this config!")
     if debug:
         os.environ.setdefault("DEBUG_MS", "True")
         time_print("Using debug mode")
@@ -76,7 +84,7 @@ def data_import(
     If the units are not in ml, please provide the conversion factor into ml.
     The file should contain the cocktail name, followed by ingredient data (amount, name).
     For further information regarding the file structure,
-    please see https://cocktailberry.readthedocs.io/commands/#importing-recipes-from-file.
+    please see https://docs.cocktailberry.org/commands/#importing-recipes-from-file.
     """
     importer(path, conversion, no_unit)
 
@@ -88,13 +96,13 @@ def update_database():
     Adds the new recipes including missing ingredients to the local database.
     Ignore recipes that collide with names of your self-added recipes.
     Creates a backup before doing the update,
-    see also https://cocktailberry.readthedocs.io/troubleshooting/#restoring-database.
+    see also https://docs.cocktailberry.org/troubleshooting/#restoring-database.
 
     Please take note that the ingredients are in german, so if you renamed your ingredients,
     this will most likely add all ingredients from the new recipes in german to your local database.
     If you are not satisfied the result, consult the documentation how to use the backup.
     You can also create a own backup with the build in CocktailBerry backup function over the program interface.
-    More information also at https://cocktailberry.readthedocs.io/commands/#updating-local-database
+    More information also at https://docs.cocktailberry.org/commands/#updating-local-database
     """
     add_new_recipes_from_default_db()
 
@@ -106,7 +114,7 @@ def clear_database():
     After this action, there will be no recipes or ingredients in your local CocktailBerry data.
     A backup of your local database is created before deleting.
     Use this if you want to build your own custom database and not use any of the supplied data.
-    See also: https://cocktailberry.readthedocs.io/commands/#clearing-local-database.
+    See also: https://docs.cocktailberry.org/commands/#clearing-local-database.
     """
     clear_local_database()
 
@@ -118,6 +126,7 @@ def create_addon(addon_name: str):
     The file is saved under the addons folder.
     File name will be the name converted to lower case, space are replaced with underscores
     and stripped of special characters.
+    For more information see https://docs.cocktailberry.org/addons/#creating-addons.
     """
     generate_addon_skeleton(addon_name)
 
@@ -136,6 +145,7 @@ def setup_microservice(
     A compose file will be created in the home directory, if this command was not already run once.
     If this file already exists, the values will be replaced with the provided ones.
     If you are using compose version 1, please specify the flag.
+    For more context, see https://docs.cocktailberry.org/advanced/#installation-of-services.
     """
     setup_service(api_key, hook_endpoint, hook_header, use_v1)
 
@@ -150,5 +160,73 @@ def setup_teams_service(
 
     You can use english [en] or german [de] as language.
     Will run the frontend at localhost:8050 (http://localhost:8050), backend at localhost:8080 (http://localhost:8080).
+    See also https://docs.cocktailberry.org/advanced/#dashboard-with-teams.
     """
     setup_teams(language)
+
+
+@cli.command()
+def api(port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAPI server")):
+    """Run the FastAPI server.
+
+    Can be used as an alternative way to control the machine, for example over an external program or a web ui.
+    The FastAPI server will be started at the given port.
+    See also https://docs.cocktailberry.org/web/.
+    """
+    run_api(port)
+
+
+@cli.command()
+def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL for the Nginx configuration")):
+    """Set up the web interface.
+
+    This will set up the web interface for CocktailBerry.
+    This is an alternative setup and overwrites the current app.
+    The web interface will be available at http://localhost or proxy it with Nginx to just localhost/the ip.
+    The api will be available at http://localhost:8000.
+    See also https://docs.cocktailberry.org/web/.
+    """
+    if _platform_data.system == "Windows":
+        print("Web setup is not supported on Windows")
+        return
+    replace_backend_script()
+    add_web_desktop_file()
+    subprocess.run(["sudo", "python", str(WEB_MIGRATION_SCRIPT.absolute())], check=True)
+    subprocess.run(["sudo", "python", str(NGINX_SCRIPT.absolute()), "--ssl" if use_ssl else "--no-ssl"], check=True)
+
+
+@cli.command()
+def switch_back():
+    """Switch back to the Qt setup.
+
+    This will switch back to the Qt setup for CocktailBerry.
+    This is an alternative setup and overwrites the current app.
+    The web interface will be removed.
+    See also https://docs.cocktailberry.org/web/.
+    """
+    if _platform_data.system == "Windows":
+        print("Web setup is not supported on Windows")
+        return
+    roll_back_to_qt_script()
+    subprocess.run(["sudo", "python", str(QT_MIGRATION_SCRIPT.absolute())], check=True)
+
+
+@cli.command()
+def add_squeekboard():
+    """Add and start the Squeekboard service.
+
+    This will create, enable, and start the Squeekboard virtual keyboard service.
+    The service will be set up to start automatically on boot.
+    This enables the virtual keyboard as soon as you click on an input field.
+    """
+    create_and_start_squeekboard_service()
+
+
+@cli.command()
+def remove_squeekboard():
+    """Stop and disable the Squeekboard service.
+
+    This will stop and disable the Squeekboard virtual keyboard service.
+    The service will no longer start automatically on boot.
+    """
+    stop_and_disable_squeekboard_service()

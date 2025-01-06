@@ -16,38 +16,9 @@ from PyQt5.QtWidgets import (
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.filepath import (
-    CUSTOM_CONFIG_FILE,
-    CUSTOM_STYLE_FILE,
-    CUSTOM_STYLE_SCSS,
-    DATABASE_PATH,
-    USER_IMAGE_FOLDER,
-    VERSION_FILE,
-)
+from src.migration.backup import FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.ui.creation_utils import HEADER_FONT, LARGE_FONT, adjust_font, create_button, create_label, create_spacer
 from src.utils import restart_program
-
-# the version.ini file is always required, as it pins the user version and possible needed migration on backup restore
-NEEDED_BACKUP_FILES = [VERSION_FILE]
-# version.ini will always be copied, so it is not needed to be in the list
-OPTIONAL_BACKUP_FILES = [
-    CUSTOM_STYLE_FILE,
-    CUSTOM_STYLE_SCSS,
-    CUSTOM_CONFIG_FILE,
-    USER_IMAGE_FOLDER,
-    DATABASE_PATH,
-]
-BACKUP_FILES = NEEDED_BACKUP_FILES + OPTIONAL_BACKUP_FILES
-
-
-# A backup type (styles) may have more than one file, so a mapper is needed
-# In addition, we need a translation for this
-_FILE_SELECTION_MAPPER = {
-    "style": [CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS],
-    "config": [CUSTOM_CONFIG_FILE],
-    "images": [USER_IMAGE_FOLDER],
-    "database": [DATABASE_PATH],
-}
 
 
 class BackupRestoreWindow(QMainWindow):
@@ -131,7 +102,7 @@ class BackupRestoreWindow(QMainWindow):
 
     def _generate_checkboxes(self):
         """Generate the checkboxes for the backup files."""
-        for backup_type, file_paths in _FILE_SELECTION_MAPPER.items():
+        for backup_type, file_paths in FILE_SELECTION_MAPPER.items():
             # if not all needed files exist in the backup, skip
             # This should not happen, but if the user tempers with the backup, it might
             skip = False
@@ -161,6 +132,6 @@ class BackupRestoreWindow(QMainWindow):
         description: list[str] = []
         for backup_type, checkbox in self.config_objects.items():
             if checkbox.isChecked():
-                selected_files.extend(_FILE_SELECTION_MAPPER[backup_type])
+                selected_files.extend(FILE_SELECTION_MAPPER[backup_type])
                 description.append(UI_LANGUAGE.get_translation(backup_type, "backup_window"))
         return selected_files, description

@@ -123,14 +123,21 @@ To get started, have a quick look into the [Guidelines for contributing](./CONTR
 
 # Development
 
-This project uses [Rye](https://rye.astral.sh/guide/) to manage all its dependencies. To get started, you need to install Rye and then install the dependencies.
+This project uses [uv](https://docs.astral.sh/uv/) to manage all its dependencies. To get started, you need to install uv and then install the dependencies.
+See also at the [dev notes](./docs/.devnotes.md) section.
 
 ```bash
-rye sync --no-lock
+uv sync
 ```
 
 This will install all dependencies and you can start developing. Then just run
 
 ```bash
-rye run python runme.py
+uv run python runme.py
+```
+
+If you want to develop the api, you can also run it with
+
+```bash
+uv run fastapi dev .\src\api\api.py
 ```

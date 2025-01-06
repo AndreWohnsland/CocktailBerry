@@ -4,7 +4,7 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER, DatabaseTransactionError
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.models import Ingredient
@@ -127,21 +127,16 @@ def delete_ingredient(w):
     if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD):
         return
 
-    # Check if still used at a bottle or within a recipe
     ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
     if not ingredient:
         return
-    if DB_COMMANDER.get_bottle_usage(ingredient.id):
-        DP_CONTROLLER.say_ingredient_still_at_bottle()
-        return
-    recipe_list = DB_COMMANDER.get_recipe_usage_list(ingredient.id)
-    if recipe_list:
-        recipe_string = ", ".join(recipe_list[:10])
-        DP_CONTROLLER.say_ingredient_still_at_recipe(recipe_string)
-        return
 
     # if everything is okay, delete from DB and remove from UI
-    DB_COMMANDER.delete_ingredient(ingredient.id)
+    try:
+        DB_COMMANDER.delete_ingredient(ingredient.id)
+    except DatabaseTransactionError as e:
+        DP_CONTROLLER.standard_box(str(e), "Error")
+        return
     DP_CONTROLLER.delete_item_in_multiple_combobox(DP_CONTROLLER.get_comboboxes_bottles(w), ingredient.name)
     DP_CONTROLLER.delete_item_in_multiple_combobox(DP_CONTROLLER.get_comboboxes_recipes(w), ingredient.name)
     clear_ingredient_information(w)

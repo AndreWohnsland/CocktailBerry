@@ -19,6 +19,12 @@ dialog:
   bottles_renewed:
     en: 'Renewed selected bottles!'
     de: 'Ausgewählte Flaschen erneuert!'
+  bottle_updated:
+    en: 'Bottle {bottle_id} updated successfully to {amount} of ingredient {ingredient_id}!'
+    de: 'Flasche {bottle_id} erfolgreich auf {amount} von Zutat {ingredient_id} aktualisiert!'
+  bottle_calibration_started:
+    en: 'Bottle {bottle_id} calibration to {amount} started!'
+    de: 'Flasche {bottle_id} Kalibrierung auf {amount} gestartet!'
   no_recipe_selected:
     en: 'No recipe selected!'
     de: 'Kein Rezept ausgewählt!'
@@ -45,7 +51,10 @@ dialog:
     de: "Zutat mit dem Namen:\n<{ingredient_name}>\neingetragen"
   ingredient_changed:
     en: "Ingredient\n<{selected_ingredient}>\nwas updated to\n<{ingredient_name}>"
-    de: "Zutat mit dem Namen:\n<{selected_ingredient}>\nunter\n<{ingredient_name}>\naktualisiert"
+    de: "Zutat\n<{selected_ingredient}>\nnach\n<{ingredient_name}>\naktualisiert"
+  available_ingredient_updated:
+    en: 'Available ingredients were updated!'
+    de: 'Verfügbare Zutaten wurden aktualisiert!'
   cocktail_canceled:
     en: 'The cocktail was cancelled!'
     de: 'Der Cocktail wurde abgebrochen!'
@@ -62,14 +71,14 @@ dialog:
     en: "Recipe\n<{recipe_name}>\nwas deleted"
     de: "Rezept mit dem Namen\n<{recipe_name}>\nwurde gelöscht!"
   all_recipes_enabled:
-    en: 'All recipes are set to active!'
+    en: 'All recipes are enabled!'
     de: 'Alle Rezepte wurden wieder aktiv gesetzt!'
   recipe_added:
     en: "Recipe\n<{recipe_name}>\nwas added!"
     de: "Rezept unter dem Namen:\n<{recipe_name}>\neingetragen!"
   recipe_updated:
     en: "Recipe\n<{old_name}>\nupdated to\n<{new_name}>"
-    de: "Rezept mit dem Namen:\n<{old_name}>\nunter dem Namen:\n<{new_name}>\naktualisiert!"
+    de: "Rezept\n<{old_name}>\nnach\n<{new_name}>\naktualisiert!"
   recipe_at_least_one_ingredient:
     en: 'You need to use at least one ingredient!'
     de: 'Es muss mindestens eine Zutat eingetragen sein!'
@@ -77,8 +86,11 @@ dialog:
     en: 'All data was exported and amount was reset! File is at: {file_path}'
     de: 'Alle Daten wurden exportiert und die Mengen zurückgesetzt! Datei ist unter: {file_path}'
   not_enough_ingredient_volume:
-    en: "{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left.\n\nThe bottle tab is locked, please inform a person with permission."
-    de: "{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden.\n\nDer Flaschen Tab ist gesperrt, bitte informiere eine berechtigte Person."
+    en: '{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left. Please refill the bottle.'
+    de: '{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden. Bitte Flasche auffüllen.'
+  bottle_tab_locked:
+    en: 'The bottle tab is locked, please inform a person with permission.'
+    de: 'Der Flaschen Tab ist gesperrt, bitte informiere eine berechtigte Person.'
   name_already_exists:
     en: 'This name is already used!'
     de: 'Dieser Name wurde bereits verwendet!'
@@ -205,6 +217,36 @@ dialog:
   ingredient_must_be_handadd:
     en: 'Ingredient must be configured as hand add (set checkbox) when using other units than ml. This is because the machine only supports ml as output unit.'
     de: 'Zutat muss als per Hand hinzufügen konfiguriert sein (Checkbox setzen), wenn andere Einheiten als ml verwendet werden. Dies liegt daran, dass die Maschine nur ml als Ausgabeeinheit unterstützt.'
+  element_not_found:
+    en: 'Element {element_name} not found!'
+    de: 'Element {element_name} nicht gefunden!'
+  element_already_exists:
+    en: 'Element {element_name} already exists!'
+    de: 'Element {element_name} gibt es schon!'
+  cocktail_in_progress:
+    en: 'A preparation is currently in progress. Please wait until it is finished.'
+    de: 'Eine Zubereitung is bereits im Gange. Bitte warte, bis diese fertig ist.'
+  preparation_cancelled:
+    en: 'The preparation was cancelled.'
+    de: 'Die Zubereitung wurde abgebrochen.'
+  image_deleted:
+    en: 'Image deleted successfully.'
+    de: 'Bild erfolgreich gelöscht.'
+  image_uploaded:
+    en: 'Image uploaded successfully.'
+    de: 'Bild erfolgreich hochgeladen.'
+  hand_ingredient_cannot_prepared:
+    en: 'Hand ingredients cannot be prepared.'
+    de: 'Hand Zutaten können nicht zubereitet werden.'
+  ingredient_not_connected:
+    en: 'Ingredient is not connected to the machine!'
+    de: 'Zutat ist nicht mit der Maschine verbunden!'
+  cleaning_started:
+    en: 'Cleaning process started!'
+    de: 'Reinigung gestartet!'
+  options_updated:
+    en: 'Options updated!'
+    de: 'Optionen aktualisiert!'
 
 # Change of language in UI elements
 ui:
@@ -640,6 +682,21 @@ ui:
     TEAM_API_URL:
       en: 'URL address for teams API'
       de: 'URL Adresse der Teams API'
+    CUSTOM_COLOR_PRIMARY:
+      en: 'Custom primary (most elements) color if custom theme is selected'
+      de: 'Eigene primäre (meisten Elemente) Farbe, wenn custom Theme ausgewählt ist'
+    CUSTOM_COLOR_SECONDARY:
+      en: 'Custom secondary (active, hover) color if custom theme is selected'
+      de: 'Eigene sekundäre (aktiv, hover) Farbe, wenn custom Theme ausgewählt ist'
+    CUSTOM_COLOR_NEUTRAL:
+      en: 'Custom neutral (inactive, subtle) color if custom theme is selected'
+      de: 'Eigene neutrale (inaktiv, subtile) Farbe, wenn custom Theme ausgewählt ist'
+    CUSTOM_COLOR_BACKGROUND:
+      en: 'Custom background color if custom theme is selected'
+      de: 'Eigene Hintergrundfarbe, wenn custom Theme ausgewählt ist'
+    CUSTOM_COLOR_DANGER:
+      en: 'Custom danger (e.g. delete) color if custom theme is selected'
+      de: 'Eigene Gefahr (z.B. löschen) Farbe, wenn custom Theme ausgewählt ist'
     EXP_MAKER_UNIT:
       en: 'Unit to show in the maker tab for volume'
       de: 'Anzeigeeinheit der Volumen im Maker Tab'

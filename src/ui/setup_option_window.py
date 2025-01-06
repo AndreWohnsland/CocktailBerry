@@ -14,8 +14,9 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
+from src.migration.backup import BACKUP_FILES, NEEDED_BACKUP_FILES
 from src.programs.calibration import run_calibration
-from src.ui.create_backup_restore_window import BACKUP_FILES, NEEDED_BACKUP_FILES, BackupRestoreWindow
+from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
 from src.ui.creation_utils import setup_worker_thread
 from src.ui.setup_addon_window import AddonWindow

@@ -1,3 +1,4 @@
+from io import BytesIO
 from pathlib import Path
 from typing import Optional, Union
 
@@ -48,18 +49,18 @@ def find_user_cocktail_image(cocktail: Cocktail):
     return cocktail_image
 
 
-def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500) -> Optional[Image.Image]:
+def process_image(image_data: Union[str, bytes, Path], resize_size: int = 500) -> Optional[Image.Image]:
     """Resize and crop (1x1) the given image to the desired size."""
     # Open the image file
     try:
-        img: Image.Image = Image.open(image_path)
+        img = Image.open(BytesIO(image_data)) if isinstance(image_data, bytes) else Image.open(image_data)
     # catch errors in file things
     except (FileNotFoundError, UnidentifiedImageError):
         return None
     # first check if the image needs to be rotated
-    img = check_picture_orientation(img)
+    adjusted_img = check_picture_orientation(img)
     # Calculate dimensions for cropping
-    width, height = img.size
+    width, height = adjusted_img.size
     if width > height:
         left = int((width - height) / 2)
         top = 0
@@ -71,11 +72,11 @@ def process_image(image_path: Union[str, bytes, Path], resize_size: int = 500) -
         bottom = int((height + width) / 2)
         right = width
     # Crop the image
-    img = img.crop((left, top, right, bottom))
+    adjusted_img = adjusted_img.crop((left, top, right, bottom))
     # Resize the image
-    img = img.resize((resize_size, resize_size), Image.Resampling.LANCZOS)
+    adjusted_img = adjusted_img.resize((resize_size, resize_size), Image.Resampling.LANCZOS)
     # always convert to rgb
-    return img.convert("RGB")
+    return adjusted_img.convert("RGB")
 
 
 def check_picture_orientation(img: Image.Image) -> Image.Image:
