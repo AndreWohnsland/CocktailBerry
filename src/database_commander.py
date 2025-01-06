@@ -265,7 +265,7 @@ class DatabaseCommander:
         recipe_list = self.handler.query_database(query, (ingredient_id,))
         return [recipe[0] for recipe in recipe_list]
 
-    def __get_multiple_ingredient_ids_from_names(self, name_list: list[str]) -> list[int]:
+    def __get_multiple_ingredient_ids_from_names(self, name_list: list[str] | list[int]) -> list[int]:
         """Get all the ids for the selected names."""
         question_marks = ",".join(["?"] * len(name_list))
         query = f"SELECT ID FROM Ingredients WHERE Name in ({question_marks})"
@@ -326,7 +326,7 @@ class DatabaseCommander:
     def set_bottle_order(self, ingredient_names: list[str] | list[int]):
         """Set bottles to the given list of bottles, need all bottles."""
         for bottle, ingredient in enumerate(ingredient_names, start=1):
-            self.set_bottle_at_slot(ingredient, bottle)
+            self.set_bottle_at_slot(ingredient, bottle)  # type: ignore[arg-type]
 
     def set_bottle_at_slot(self, ingredient: str | int, bottle_number: int):
         """Set the bottle at the given slot."""
@@ -488,7 +488,7 @@ class DatabaseCommander:
     def insert_multiple_existing_handadd_ingredients(self, ingredient_list: list[str] | list[int]):
         """Insert the IDS of the given ingredient list into the available table."""
         if isinstance(ingredient_list[0], str):
-            ingredient_id = self.__get_multiple_ingredient_ids_from_names(ingredient_list)  # type: ignore
+            ingredient_id: list[str] | list[int] = self.__get_multiple_ingredient_ids_from_names(ingredient_list)
         else:
             ingredient_id = ingredient_list
         question_marks = ",".join(["(?)"] * len(ingredient_id))

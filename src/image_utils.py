@@ -58,9 +58,9 @@ def process_image(image_data: Union[str, bytes, Path], resize_size: int = 500) -
     except (FileNotFoundError, UnidentifiedImageError):
         return None
     # first check if the image needs to be rotated
-    img = check_picture_orientation(img)
+    adjusted_img = check_picture_orientation(img)
     # Calculate dimensions for cropping
-    width, height = img.size
+    width, height = adjusted_img.size
     if width > height:
         left = int((width - height) / 2)
         top = 0
@@ -72,11 +72,11 @@ def process_image(image_data: Union[str, bytes, Path], resize_size: int = 500) -
         bottom = int((height + width) / 2)
         right = width
     # Crop the image
-    img = img.crop((left, top, right, bottom))
+    adjusted_img = adjusted_img.crop((left, top, right, bottom))
     # Resize the image
-    img = img.resize((resize_size, resize_size), Image.Resampling.LANCZOS)
+    adjusted_img = adjusted_img.resize((resize_size, resize_size), Image.Resampling.LANCZOS)
     # always convert to rgb
-    return img.convert("RGB")
+    return adjusted_img.convert("RGB")
 
 
 def check_picture_orientation(img: Image.Image) -> Image.Image:
