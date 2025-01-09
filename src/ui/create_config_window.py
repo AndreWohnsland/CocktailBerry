@@ -44,6 +44,14 @@ from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.utils import restart_program
 
 CONFIG_TYPES_POSSIBLE = Union[str, int, float, bool, list[Any], dict[str, Any]]
+# Those are only for the v2 program
+CONFIG_TO_SKIP = (
+    "CUSTOM_COLOR_PRIMARY",
+    "CUSTOM_COLOR_SECONDARY",
+    "CUSTOM_COLOR_NEUTRAL",
+    "CUSTOM_COLOR_BACKGROUND",
+    "CUSTOM_COLOR_DANGER",
+)
 
 
 class ConfigWindow(QMainWindow, Ui_ConfigWindow):
@@ -63,6 +71,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
     def _init_ui(self):
         # adds all the configs to the window
         for key, config_setting in cfg.config_type.items():
+            if key in CONFIG_TO_SKIP:
+                continue
             self._choose_display_style(key, config_setting)
 
         self.button_save.clicked.connect(self._save_config)

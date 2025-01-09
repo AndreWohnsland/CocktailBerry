@@ -499,7 +499,7 @@ class DialogHandler:
         self.__output_language_dialog("qtsass_not_successful")
 
     def say_cocktailberry_up_to_date(self):
-        """Informs that cocktailberry is up to date."""
+        """Informs that CocktailBerry is up to date."""
         self.__output_language_dialog("cocktailberry_up_to_date")
 
     def say_update_failed(self):
