@@ -37,7 +37,7 @@ Installing maliit keyboard might also be an alternative.
 
 ## Installation
 
-The easiest way to use the new interface is to use the cocktailberry CLI [setup-web command](commands.md#switch-to-cocktailberry-web), once you installed CocktailBerry the usual way.
+The easiest way to use the new interface is to use the CocktailBerry CLI [setup-web command](commands.md#switch-to-cocktailberry-web), once you installed CocktailBerry the usual way.
 Existing installations should update to at least version v2.0.0 to have this command available.
 
 !!! warning "Before starting"
