@@ -45,10 +45,10 @@ async def lifespan(app: FastAPI):
     update_available, _ = can_update()
     if update_available:
         time_print("Update available, performing update...")
-        updater = Updater()
-        updater.update()
         # need to get also latest web build
         download_latest_web_client()
+        updater = Updater()
+        updater.update()
     yield
     MACHINE.cleanup()
 
