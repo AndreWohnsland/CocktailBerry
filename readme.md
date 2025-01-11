@@ -11,7 +11,7 @@
 
 [![Support CocktailBerry](https://img.shields.io/badge/Support%20CocktailBerry-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
-CocktailBerry is a Python and Qt based app for a cocktail machine on the Raspberry Pi.
+CocktailBerry is a Python and Qt (or React for v2) based app for a cocktail machine on the Raspberry Pi.
 It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
 Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://cocktailberry.readthedocs.io/).
 
@@ -21,7 +21,10 @@ Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
 <a href="https://cocktailberry.readthedocs.io/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
 <a href="https://stats-cocktailberry.streamlit.app/"><img src="docs/pictures/dashboardbutton.png" alt="dashboard" height="70"/></a>
 
-This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface. It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients. Track and display cocktail data for different teams to even further increase the fun. Let's get started!
+This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface.
+It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
+Track and display cocktail data for different teams to even further increase the fun.
+Let's get started!
 
 Like this project? Give it a star on GitHub! ⭐
 
@@ -30,6 +33,11 @@ Like this project? Give it a star on GitHub! ⭐
 <img src="docs/pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
 
 # Features
+
+CocktailBerry currently comes in two versions, v1 and v2.
+The v1 is the stable version which ships the QT app as a single application.
+[v2](https://docs.cocktailberry.org/web/) is the new version with a separate API and UI, which offers more flexibility, but might have some issues on build in touchscreens.
+Both versions have the full feature set listed below.
 
 CocktailBerry can do:
 
@@ -60,7 +68,8 @@ In addition, there is the possibility to use and set up a second device as a das
 
 Here are some simple steps to get CocktailBerry running. You need to have **Python 3.9** or newer and **git** installed.
 
-On the RPi, you can try the new [all in one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh). One command should install everything:
+On the RPi, you can try the new [all in one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh).
+One command should install everything:
 
 ```bash
 wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash
@@ -77,7 +86,8 @@ pip install -r requirements.txt
 python runme.py
 ```
 
-This will start the CocktailBerry program. You may want to run the provided installer script for the RPi instead of pip. See [Installation](https://cocktailberry.readthedocs.io/installation/) for more information.
+This will start the CocktailBerry program. You may want to run the provided installer script for the RPi instead of pip.
+See [Installation](https://cocktailberry.readthedocs.io/installation/) for more information.
 
 ```bash
 sh scripts/setup.sh
@@ -87,7 +97,8 @@ Now you can [Set Up](https://cocktailberry.readthedocs.io/setup/#setting-up-the-
 
 # Interface
 
-The interface was programmed with PyQt5 for the users to easily interact with CocktailBerry and enter new ingredients/recipes. There are different views for the tasks.
+The interface was programmed with PyQt5 for the users to easily interact with CocktailBerry and enter new ingredients/recipes.
+There are different views for the tasks.
 
 The Maker GUI:
 
@@ -111,11 +122,17 @@ The Bottle GUI:
 
 # Pull Requests and Issues
 
-If you want to support this project, feel free to fork it and create your own pull request. If you run into any issues, feel free to open a ticket / issue. If you think there is a super important feature missing, open a feature request. It may be implemented in the future.
+If you want to support this project, feel free to fork it and create your own pull request.
+If you run into any issues, feel free to open a ticket / issue.
+If you think there is a super important feature missing, open a feature request.
+It may be implemented in the future.
 
 # Contributing Possibilities
 
-To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md). Here is a general list of features or refactoring things, I may do in the future. With your help, these things come even faster! If your idea is not on the list, feel free to open a feature request, I may consider it!
+To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md).
+Here is a general list of features or refactoring things, I may do in the future.
+With your help, these things come even faster!
+If your idea is not on the list, feel free to open a feature request, I may consider it!
 
 - `easy`: Translate all dialogs / UI to your native language
 - `medium`: Help to move to v2 with API based control and a separate UI
@@ -123,14 +140,16 @@ To get started, have a quick look into the [Guidelines for contributing](./CONTR
 
 # Development
 
-This project uses [uv](https://docs.astral.sh/uv/) to manage all its dependencies. To get started, you need to install uv and then install the dependencies.
-See also at the [dev notes](./docs/.devnotes.md) section.
+This project uses [uv](https://docs.astral.sh/uv/) to manage all its dependencies.
+To get started, you need to install uv and then install the dependencies.
+See also at the [dev notes](./docs/.devnotes.md) section for a complete run down.
 
 ```bash
 uv sync
 ```
 
-This will install all dependencies and you can start developing. Then just run
+This will install all dependencies and you can start developing.
+Then just run:
 
 ```bash
 uv run python runme.py
