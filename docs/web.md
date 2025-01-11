@@ -55,6 +55,7 @@ python runme.py setup-web # optional with --ssl to enable https
 
 This will set up the web interface as the default interface and start it instead of the old main program.
 You can now access the the website by opening your browser and navigating to `http://<ip>` or locally on `http://localhost`.
+You will need SSL setup if you want to manage backups remotely, see also [setup-web command](commands.md#switch-to-cocktailberry-web).
 
 ## Enable the Virtual Keyboard
 
