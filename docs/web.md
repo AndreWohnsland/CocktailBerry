@@ -66,7 +66,7 @@ If it should not show up when clicking on an input field, you can try to enable 
 ```bash
 source ~/.env-cocktailberry/bin/activate
 cd ~/CocktailBerry
-python runme.py add-squeekboard
+python runme.py add-virtual-keyboard
 ```
 
 ## Disable the Virtual Keyboard
@@ -76,7 +76,7 @@ If you enabled it via the command above and want to disable it again, you can do
 ```bash
 source ~/.env-cocktailberry/bin/activate
 cd ~/CocktailBerry
-python runme.py remove-squeekboard
+python runme.py remove-virtual-keyboard
 ```
 
 In case you have not enabled it via the command above, you can also disable it by removing over raspi-config.
