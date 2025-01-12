@@ -70,6 +70,7 @@ def main(
     generate_custom_style_file()
     if calibration:
         run_calibration()
+        return
     run_cocktailberry()
 
 
