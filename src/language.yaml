@@ -182,8 +182,8 @@ dialog:
     en: 'Should the pump flow be reverted? This will activated the reversion pin and change the flow direction.'
     de: 'Soll die Pumpenrichtung geändert werden? Dies wird den Umkehrpin aktivieren und die Pumpenrichtung ändern.'
   welcome_dialog:
-    en: "CocktailBerry Software Version {version} by Andre Wohnsland.\n{platform}.\n\nCheck https://cocktailberry.readthedocs.io for more information."
-    de: "CocktailBerry Software Version {version} von Andre Wohnsland.\n{platform}.\n\nMehr Informationen unter https://cocktailberry.readthedocs.io."
+    en: "CocktailBerry Software Version {version} by Andre Wohnsland.\n{platform}.\n\nCheck https://docs.cocktailberry.org for more information.\nThere is an alternative v2 Web UI available, have a look in the documentation for more info."
+    de: "CocktailBerry Software Version {version} von Andre Wohnsland.\n{platform}.\n\nMehr Informationen unter https://docs.cocktailberry.org.\nEs gibt eine neue v2 Web Ui, schau in der Dokumentation für mehr Informationen."
   wifi_setup_failed:
     en: 'There was an error setting up WiFi. Please check the logs for further information.'
     de: 'Es ist ein Fehler beim Einrichten des WiFi aufgetreten. Schaue in die Logs für mehr Informationen.'
