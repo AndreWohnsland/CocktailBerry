@@ -213,8 +213,8 @@ def switch_back():
 
 
 @cli.command()
-def add_squeekboard():
-    """Add and start the Squeekboard service.
+def add_virtual_keyboard():
+    """Add and start the virtual keyboard service.
 
     This will create, enable, and start the Squeekboard virtual keyboard service.
     The service will be set up to start automatically on boot.
@@ -224,8 +224,8 @@ def add_squeekboard():
 
 
 @cli.command()
-def remove_squeekboard():
-    """Stop and disable the Squeekboard service.
+def remove_virtual_keyboard():
+    """Stop and disable the virtual keyboard service.
 
     This will stop and disable the Squeekboard virtual keyboard service.
     The service will no longer start automatically on boot.
