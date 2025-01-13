@@ -28,6 +28,11 @@ Like this project? Give it a star on [GitHub](https://github.com/AndreWohnsland/
 
 ## Features
 
+CocktailBerry currently comes in two versions, v1 and v2.
+The v1 is the stable version which ships the QT app as a single application.
+[v2](https://docs.cocktailberry.org/web/) is the new version with a separate API and UI, which offers more flexibility, but might have some issues on build in touchscreens.
+Both versions have the full feature set listed below.
+
 CocktailBerry can do:
 
 - Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
