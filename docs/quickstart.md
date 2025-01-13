@@ -17,6 +17,7 @@ You need to have [**Python 3.9**](https://www.python.org/downloads/) or newer an
     to get the script and run it on the Pi. To easy to be true, isn't it?
 
 Now you can [Set Up](setup.md#setting-up-the-machine-modifying-other-values) your CocktailBerry and tweak the settings to your liking.
+If you want to have the new v2 API and app, see [web setup](web.md) how to easily switch after the setup.
 
 ## Other OS
 
