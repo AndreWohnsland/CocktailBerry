@@ -1,6 +1,6 @@
 #!/bin/bash
 # Setup Script for the CocktailBerry Machine or the Dashboard
-# Usage: sh setup.sh [options]
+# Usage: bash setup.sh [options]
 # Options:
 # dashboard: set up dashboard, otherwise will set up CocktailBerry
 

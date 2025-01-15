@@ -33,6 +33,7 @@ You can always install the other things later, the docs provide information with
     to get the script and run it on the Pi. To easy to be true, isn't it?
 
 If you want to have the new v2 API and app, see [web setup](web.md) how to easily switch after the setup.
+Or add a `-s v2` at the end of the command to execute the switch directly after installing.
 
 ### Manual Installation
 

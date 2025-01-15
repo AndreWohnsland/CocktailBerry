@@ -18,6 +18,7 @@ You need to have [**Python 3.9**](https://www.python.org/downloads/) or newer an
 
 Now you can [Set Up](setup.md#setting-up-the-machine-modifying-other-values) your CocktailBerry and tweak the settings to your liking.
 If you want to have the new v2 API and app, see [web setup](web.md) how to easily switch after the setup.
+Or add a `-s v2` at the end of the command to execute the switch directly after installing.
 
 ## Other OS
 
