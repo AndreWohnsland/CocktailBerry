@@ -1,5 +1,20 @@
 #!/bin/bash
-# Usage: wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash
+# Usage: wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash [-s v2]
+
+# Parse arguments
+V2_FLAG=false
+for arg in "$@"; do
+  case $arg in
+  v2)
+    V2_FLAG=true
+    shift
+    ;;
+  *)
+    echo "Invalid option: $arg" 1>&2
+    exit 1
+    ;;
+  esac
+done
 
 # Welcome and system updates
 echo "~~~~~~~ CocktailBerry All In One Installation Script v1 ~~~~~~~~"
@@ -116,18 +131,31 @@ cd ~/CocktailBerry
 echo "~~ Setting up and installing CocktailBerry ~~"
 bash scripts/setup.sh
 
-echo ~ "Register successful installation: ~~"
+echo "~~ Register successful installation: ~~"
 OS_INFO=$(sed -nr 's/^PRETTY_NAME="(.+)"/\1/p' /etc/os-release)
+if [ -z "$OS_INFO" ]; then
+  OS_INFO="not provided"
+fi
 curl -X 'POST' 'https://api.cocktailberry.org/api/v1/public/installation' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"os_version": "'"$OS_INFO"'"}'
 echo ""
 
+# if the script has the v2 flag, switch over to v2
+if [ "$V2_FLAG" = true ]; then
+  echo "~~ Switching to v2 since the flag is set in the command ~~"
+  # shellcheck disable=SC1090
+  source ~/.env-cocktailberry/bin/activate
+  # shellcheck disable=SC2164
+  cd ~/CocktailBerry
+  python runme.py setup-web
+fi
+
 echo "~~ Everything should be set now! Have fun with CocktailBerry :) ~~"
 echo "Made by Andre Wohnsland and contributors with <3"
-echo "Documentation is found at: https://cocktailberry.readthedocs.io/"
+echo "Documentation is found at: https://docs.cocktailberry.org/"
 echo "Source code at: https://github.com/AndreWohnsland/CocktailBerry"
 echo "If you want to set up your microservice, check the docks for a complete guide. Docker and compose should already be installed."
 echo "You can use the CocktailBerry CLI for an interactive setup. Use 'python ~/CocktailBerry/runme.py setup-microservice' to start."
 echo "CocktailBerry will start at system start. To start it now, type 'bash ~/launcher.sh'."
-echo "If the desctop panel shifts / blocks the application, right click panel > panel settings > Advanced > uncheck Reserve space, and not covered by maximised windows."
+echo "If the desktop panel shifts / blocks the application, right click panel > panel settings > Advanced > uncheck Reserve space, and not covered by maximised windows."
 
 newgrp docker
