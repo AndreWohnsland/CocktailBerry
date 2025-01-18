@@ -1,5 +1,4 @@
 import os
-from typing import Dict, List, Tuple
 
 DEFAULT_HOOK_EP = "enpointforhook"
 DEFAULT_API_KEY = "readdocshowtoget"
@@ -7,8 +6,8 @@ OLD_API_ENDPOINT = "https://cocktailberryapi-1-u0613408.deta.app/cocktail"
 API_ENDPOINT = "https://api.cocktailberry.org/api/v1/cocktail"
 
 
-def generate_urls_and_headers() -> List[Tuple[str, Dict[str, str]]]:
-    """Generates the urls as well as the header from the .env data"""
+def generate_urls_and_headers() -> list[tuple[str, dict[str, str]]]:
+    """Generate the urls as well as the header from the .env data."""
     hook_url = os.getenv("HOOK_ENDPOINT")
     api_key = os.getenv("API_KEY")
     hook_headers_config = os.getenv("HOOK_HEADERS", None)
