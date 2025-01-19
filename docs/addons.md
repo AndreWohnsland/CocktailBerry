@@ -124,7 +124,10 @@ class Addon(AddonInterface): # (2)!
     def after_cocktail(self, data: dict): # (6)!
         pass
 
-    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]): # (7)!
+    def cocktail_trigger(
+        self,
+        prepare: Callable[[Cocktail], tuple[bool, str]]
+    ): # (7)!
         pass
 
     def build_gui(
