@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, TypeVar
+from typing import TYPE_CHECKING, Callable
 
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtWidgets import QDialog, QLabel, QSizePolicy
@@ -17,8 +17,6 @@ from src.tabs.maker import PrepareResult
 from src.ui.creation_utils import LARGE_FONT, create_button, create_label, set_strike_through, set_underline
 from src.ui.icons import ICONS
 from src.ui_elements import Ui_CocktailSelection
-
-T = TypeVar("T", int, float)
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -295,12 +293,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             icon = ICONS.generate_icon(icon_name, ICONS.color.background)
             ICONS.set_icon(button, icon, False)
             self.container_prepare_button.addWidget(button)
-
-
-def _limit_number(val: T, min_val: T, max_val: T) -> T:
-    """Limits the number in the boundaries."""
-    limited = max(min_val, val)
-    return min(max_val, limited)
 
 
 def _generate_needed_cocktail_icons(amount: int):
