@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, TypeVar
+from typing import TYPE_CHECKING, Callable
 
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtWidgets import QDialog, QLabel, QSizePolicy
@@ -12,13 +12,10 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.image_utils import find_cocktail_image
 from src.models import Cocktail, Ingredient
-from src.tabs import bottles, maker
-from src.tabs.maker import PrepareResult
 from src.ui.creation_utils import LARGE_FONT, create_button, create_label, set_strike_through, set_underline
 from src.ui.icons import ICONS
+from src.ui.shared import qt_prepare_flow
 from src.ui_elements import Ui_CocktailSelection
-
-T = TypeVar("T", int, float)
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -86,35 +83,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         if db_cocktail is not None:
             self.cocktail = db_cocktail
         self._scale_cocktail(amount)
-        result, message, _ = maker.validate_cocktail(self.cocktail)
-
-        # Go to refill dialog, if this window is not locked
-        if (result == PrepareResult.NOT_ENOUGH_INGREDIENTS) and (
-            cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[2]
-        ):
-            self.mainscreen.open_refill_dialog(self.cocktail)
-            return
-
-        # No special case: just show the message
-        if result != PrepareResult.VALIDATION_OK:
-            DP_CONTROLLER.standard_box(message, close_time=60)
-            return
-        # Only show team dialog if it is enabled
-        if cfg.TEAMS_ACTIVE:
-            self.mainscreen.open_team_window()
-
-        result, message = maker.prepare_cocktail(self.cocktail, self.mainscreen)
-        # show dialog in case of cancel or if there are handadds
-        if result == PrepareResult.CANCELED:
-            DP_CONTROLLER.say_cocktail_canceled()
-        elif len(self.cocktail.handadds) > 0:
-            DP_CONTROLLER.standard_box(message, close_time=60)
-
-        # Otherwise clean up the rest
-        self.virgin_checkbox.setChecked(False)
-        bottles.set_fill_level_bars(self.mainscreen)
-        DP_CONTROLLER.reset_alcohol_factor()
-        self.mainscreen.container_maker.setCurrentWidget(self.mainscreen.cocktail_view)
+        qt_prepare_flow(self.mainscreen, self.cocktail)
 
     def _scale_cocktail(self, amount: int | None = None):
         """Scale the cocktail to given conditions for volume and alcohol."""
@@ -295,12 +264,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             icon = ICONS.generate_icon(icon_name, ICONS.color.background)
             ICONS.set_icon(button, icon, False)
             self.container_prepare_button.addWidget(button)
-
-
-def _limit_number(val: T, min_val: T, max_val: T) -> T:
-    """Limits the number in the boundaries."""
-    limited = max(min_val, val)
-    return min(max_val, limited)
 
 
 def _generate_needed_cocktail_icons(amount: int):

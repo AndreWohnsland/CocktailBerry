@@ -19,6 +19,7 @@ from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.models import Cocktail
+from src.programs.addons import ADDONS
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
@@ -53,6 +54,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         # limit bottles to 24 for this QT app (web can handle any number)
         cfg.MAKER_NUMBER_BOTTLES = min(cfg.MAKER_NUMBER_BOTTLES, 24)
+
+        # Removes the elements not used depending on number of bottles in bottle tab
+        # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
+        DP_CONTROLLER.adjust_bottle_number_displayed(self)
 
         # init the empty further screens
         self.numpad_window: Optional[NumpadWidget] = None
@@ -95,6 +100,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.update_check()
         self._connection_check()
         self._deprecation_check()
+        ADDONS.start_trigger_loop(self)
 
     def update_check(self):
         """Check if there is an update and asks to update, if exists."""
@@ -291,10 +297,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # add custom icon delegate to search list
         self.list_widget_found_cocktails.setItemDelegate(ItemDelegate(self))
         self.list_widget_found_cocktails.setIconSize(BUTTON_SIZE)
-
-        # Removes the elements not used depending on number of bottles in bottle tab
-        # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
-        DP_CONTROLLER.adjust_bottle_number_displayed(self)
 
         # gets the bottle ingredients into the global list
         bottles.get_bottle_ingredients()

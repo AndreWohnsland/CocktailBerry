@@ -7,6 +7,7 @@ Currently, addons can be triggered at:
 - Just before the program exits
 - Before a cocktail is prepared, this may also prevent the cocktail
 - After a cocktail is prepared
+- Run a continuous loop, which can trigger a cocktail preparation
 - Build up it's own GUI or buttons to execute other program logic
 
 You can use the addons to implement some exotic feature, just for you, or make it accessible for the public.
@@ -123,11 +124,14 @@ class Addon(AddonInterface): # (2)!
     def after_cocktail(self, data: dict): # (6)!
         pass
 
+    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]): # (7)!
+        pass
+
     def build_gui(
         self,
         container,
         button_generator
-    ) -> bool: # (7)!
+    ) -> bool: # (8)!
         return False
 ```
 
@@ -137,7 +141,8 @@ class Addon(AddonInterface): # (2)!
 4. Method for cleanup, executed a program end just before the program closes.
 5. Executed right before the cocktail preparation. In case of a RuntimeError, the cocktail will not be prepared and the message will be shown to the user instead.
 6. Executed right after the cocktail preparation, before other services are connected or DB is updated.
-7. Will be used if the user navigates to the addon window and selects your addon. The container is a PyQt5 Layout widget you can (but not must) use to define custom GUI elements and connect them to functions. If you just want to have buttons executing functions, you can use the button generator function. Return False, if not implemented.
+7. This function will be run in a thread on a continuous loop. You can use the `prepare` function to trigger a cocktail preparation. It will return a boolean if the cocktail was prepared successfully and a message string holding more information. There is currently no GUI indication that this cocktail preparation was triggered.
+8. Will be used if the user navigates to the addon window and selects your addon. The container is a PyQt5 Layout widget you can (but not must) use to define custom GUI elements and connect them to functions. If you just want to have buttons executing functions, you can use the button generator function. Return False, if not implemented.
 
 Now that you know the skeleton, you can fill it with your program logic.
 
@@ -372,7 +377,7 @@ def setup(self):
 
 There are scenarios where you want to persistently store your data.
 You can either define your own database location and use a framework to your liking, or use the default CocktailBerry database.
-If you want to use the default database, import the `DB_COMMANDER` object.
+If you want to use the default database, import the `DatabaseCommander` class and create an instance of it.
 The handler attribute have the `query_database` command as an abstraction to interact with the database.
 Here you can execute SQLite commands passed as a string.
 If you want to have dynamic arguments, you can pass them according to the SQLite syntax (`?`), with the corresponding values in the second argument as tuple.
@@ -381,9 +386,10 @@ Changes are automatically committed by the handler.
 Please take note that you need to create your table if it does not exist.
 
 ```python
-from src.database_commander import DB_COMMANDER as dbc # (1)!
+from src.database_commander import DatabaseCommander # (1)!
 
 def setup(self):
+    dbc = DatabaseCommander()
     dbc.handler.query_database(
         "CREATE TABLE IF NOT EXISTS YourTable(...)"
     ) # (2)!
@@ -399,7 +405,7 @@ def setup(self):
     ) # (4)!
 ```
 
-1. Import the `DB_COMMANDER` from CocktailBerry to use the default database.
+1. Import the `DatabaseCommander` from CocktailBerry to use the default database.
 2. Ensure that your table exists, so creating it at initialization is a good practice.
 3. The `handler` object can call the `query_database` command. This uses the SQLite syntax. Results are fetched and returned as list of tuples. Changes are committed after the execution, so no need for a `.commit()`.
 4. If you want to provide dynamic values, you can use the question mark `?` in the query and pass the value along with the second argument in a tuple.

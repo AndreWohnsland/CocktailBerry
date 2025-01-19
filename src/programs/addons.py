@@ -2,18 +2,25 @@ from __future__ import annotations
 
 import atexit
 import re
+import threading
 from importlib import import_module
-from typing import Any, Callable, Literal, Protocol
+from typing import TYPE_CHECKING, Any, Callable, Literal, Protocol
 
 import typer
 from PyQt5.QtWidgets import QVBoxLayout
 
 from src import __version__
+from src.api.internal.preparation import api_addon_prepare_flow
 from src.filepath import ADDON_FOLDER, ADDON_SKELTON
 from src.logger_handler import LoggerHandler
+from src.models import Cocktail
+from src.ui.shared import qt_prepare_flow
 from src.utils import time_print
 
-_SupportedActions = Literal["setup", "cleanup", "before_cocktail", "after_cocktail"]
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
+_SupportedActions = Literal["setup", "cleanup", "before_cocktail", "after_cocktail", "cocktail_trigger"]
 _logger = LoggerHandler("AddonManager")
 
 
@@ -67,6 +74,44 @@ class AddOnManager:
             time_print(f"Used Addons: {addon_string}")
         self._try_function_for_addons("setup")
         atexit.register(self.cleanup_addons)
+
+    def _create_cocktail_preparation(self, w: MainScreen | None = None) -> Callable[[Cocktail], tuple[bool, str]]:
+        """Build the cocktail prepare function for the addon based on v1 (Qt) or v2."""
+        if w is not None:
+            return lambda cocktail: qt_prepare_flow(w, cocktail)
+        # Caution, this currently does not work properly, because QT needs to be run on the main thread
+        # We can neither run this on a tread, nor a QThread, because it will not work
+        return api_addon_prepare_flow
+
+    def start_trigger_loop(self, w: MainScreen | None = None):
+        """Start the trigger loop for all addons.
+
+        This will start a thread for each addon that will call the cocktail_trigger function.
+        The function is used to prepare a cocktail over a programmed condition from the addon.
+        """
+        prepare_function = self._create_cocktail_preparation(w)
+
+        def run_in_background(addon, prepare_function):
+            while True:
+                try:
+                    func: Callable = getattr(addon, "cocktail_trigger")
+                    func(prepare_function)
+                # In case of an interface change in base app, this error will occur
+                except TypeError:
+                    _logger.error(
+                        f"Could not execute cocktail_trigger for {addon.__module__}. "
+                        + "This is probably due to a change in CocktailBerry that the addon currently did not adapt to."
+                    )
+                    break
+                # If the function is not found (should usually not happen), ignore it
+                except AttributeError:
+                    break
+
+        # Start threads, need to use QThread for GUI to work in case of QT (does not work, currently no GUI support)
+        for addon in self.addons.values():
+            thread = threading.Thread(target=run_in_background, args=(addon, prepare_function))
+            thread.daemon = True
+            thread.start()
 
     def cleanup_addons(self):
         """Clean up all the addons."""
