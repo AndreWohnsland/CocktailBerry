@@ -11,7 +11,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.errors import ConfigError
 
 # You can access the default database with help of the dbc
-from src.database_commander import DB_COMMANDER as dbc
+from src.database_commander import DatabaseCommander
 
 # Use the uil to add description and according translation
 from src.dialog_handler import UI_LANGUAGE as uil
@@ -22,6 +22,7 @@ from src.display_controller import DP_CONTROLLER as dpc
 # Use the LoggerHandler class for your logger
 from src.logger_handler import LoggerHandler
 
+from src.models import Cocktail
 # The addon interface will provide intellisense for all possible methods
 from src.programs.addons import AddonInterface
 
@@ -46,6 +47,14 @@ class Addon(AddonInterface):
 
     def after_cocktail(self, data: dict[str, Any]):
         """Run this method after the cocktail preparation."""
+
+    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]):
+        """Will be executed in the background loop and can trigger a cocktail preparation.
+
+        Use the prepare function to start a cocktail preparation with prepare(cocktail).
+        It will return True, if the cocktail preparation was successful, otherwise False.
+        In addition, there is a message, which can contain further information.
+        """
 
     def build_gui(self, container: QVBoxLayout, button_generator: Callable[[str, Callable[[], None]], None]) -> bool:
         """Build up the GUI to do additional things on command.

@@ -19,6 +19,7 @@ from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.models import Cocktail
+from src.programs.addons import ADDONS
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
@@ -99,6 +100,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.update_check()
         self._connection_check()
         self._deprecation_check()
+        ADDONS.start_trigger_loop(self)
 
     def update_check(self):
         """Check if there is an update and asks to update, if exists."""

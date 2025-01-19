@@ -49,6 +49,7 @@ async def lifespan(app: FastAPI):
         download_latest_web_client()
         updater = Updater()
         updater.update()
+    ADDONS.start_trigger_loop()
     yield
     MACHINE.cleanup()
 
