@@ -54,6 +54,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # limit bottles to 24 for this QT app (web can handle any number)
         cfg.MAKER_NUMBER_BOTTLES = min(cfg.MAKER_NUMBER_BOTTLES, 24)
 
+        # Removes the elements not used depending on number of bottles in bottle tab
+        # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
+        DP_CONTROLLER.adjust_bottle_number_displayed(self)
+
         # init the empty further screens
         self.numpad_window: Optional[NumpadWidget] = None
         self.keyboard_window: Optional[KeyboardWidget] = None
@@ -291,10 +295,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # add custom icon delegate to search list
         self.list_widget_found_cocktails.setItemDelegate(ItemDelegate(self))
         self.list_widget_found_cocktails.setIconSize(BUTTON_SIZE)
-
-        # Removes the elements not used depending on number of bottles in bottle tab
-        # This also does adjust DB inserting data, since in the not used bottles may a ingredient be registered
-        DP_CONTROLLER.adjust_bottle_number_displayed(self)
 
         # gets the bottle ingredients into the global list
         bottles.get_bottle_ingredients()
