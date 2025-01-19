@@ -3,6 +3,7 @@ import datetime
 import os
 import shutil
 import tempfile
+import time
 import zipfile
 from collections.abc import Sequence
 from pathlib import Path
@@ -30,6 +31,7 @@ from src.utils import (
     has_connection,
     list_available_ssids,
     read_log_file,
+    restart_program,
     set_system_datetime,
     setup_wifi,
     update_os,
@@ -63,12 +65,19 @@ async def get_options_with_ui_properties():
     return cfg.get_config_with_ui_information()
 
 
+def _restart_task():
+    time.sleep(1)
+    restart_program()
+
+
 @protected_router.post("", summary="Update the options")
-async def update_options(options: dict):
+async def update_options(options: dict, background_tasks: BackgroundTasks):
     cfg.set_config(options, True)
     cfg.sync_config_to_file()
     # resolve the issue, when we get here, there was no error in the config and we can resolve potential issues
     shared.startup_config_issue.has_issue = False
+    # also create a background task to restart the backend after 1 second
+    background_tasks.add_task(_restart_task)
     return {"message": DH.get_translation("options_updated")}
 
 

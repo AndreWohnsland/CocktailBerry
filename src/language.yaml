@@ -245,8 +245,8 @@ dialog:
     en: 'Cleaning process started!'
     de: 'Reinigung gestartet!'
   options_updated:
-    en: 'Options updated!'
-    de: 'Optionen aktualisiert!'
+    en: 'Options updated! Backend will be restarted.'
+    de: 'Optionen aktualisiert! Backend wird neu gestartet.'
 
 # Change of language in UI elements
 ui:
