@@ -3,6 +3,7 @@ from __future__ import annotations
 import atexit
 import re
 import threading
+import time
 from importlib import import_module
 from typing import TYPE_CHECKING, Any, Callable, Literal, Protocol
 
@@ -93,6 +94,7 @@ class AddOnManager:
 
         def run_in_background(addon, prepare_function):
             while True:
+                time.sleep(0.5)
                 try:
                     func: Callable = getattr(addon, "cocktail_trigger")
                     func(prepare_function)
