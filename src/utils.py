@@ -92,10 +92,16 @@ def set_system_datetime(datetime_string: str):
 
 def restart_program():
     """Restart the CocktailBerry application."""
+    arguments = sys.argv[1:]
+    # skip out if this is the dev program (will not work restart here)
+    # This is because we run it with fastapi dev instead the python runme.py ...
+    if arguments[0] == "dev":
+        time_print("Will not restart because of dev program.")
+        return
     # trigger manually, since exec function will not trigger exit fun.
     atexit._run_exitfuncs()  # pylint: disable=protected-access
     python = sys.executable
-    os.execl(python, python, EXECUTABLE, *sys.argv[1:])
+    os.execl(python, python, EXECUTABLE, *arguments)
 
 
 def generate_custom_style_file():
