@@ -5,7 +5,7 @@ import re
 import threading
 import time
 from importlib import import_module
-from typing import TYPE_CHECKING, Any, Callable, Literal, Protocol
+from typing import TYPE_CHECKING, Any, Callable, Literal, Protocol, runtime_checkable
 
 import typer
 from PyQt5.QtWidgets import QVBoxLayout
@@ -23,8 +23,10 @@ if TYPE_CHECKING:
 
 _SupportedActions = Literal["setup", "cleanup", "before_cocktail", "after_cocktail", "cocktail_trigger"]
 _logger = LoggerHandler("AddonManager")
+_check_addon = "please check addon or contact provider"
 
 
+@runtime_checkable
 class AddonInterface(Protocol):
     def setup(self):
         """Init the addon."""
@@ -58,7 +60,7 @@ class AddOnManager:
             try:
                 module = import_module(f"addons.{filename}")
             except ModuleNotFoundError as e:
-                message = f"Could not import addon: {filename} due to <{e}>, please check addon or contact provider."
+                message = f"Could not import addon: {filename} due to <{e}>, {_check_addon}."
                 _logger.log_event("ERROR", message)
                 time_print(message)
                 continue
@@ -67,11 +69,15 @@ class AddOnManager:
                 name = module.ADDON_NAME
             # Check if the module implemented the addon class, otherwise log error and skip module
             if not hasattr(module, "Addon"):
-                _logger.log_event(
-                    "WARNING", f"Could not get Addon class from {name}, please check addon or contact provider."
-                )
+                _logger.log_event("WARNING", f"Could not get Addon class from {name}, {_check_addon}.")
                 continue
             addon = getattr(module, "Addon")
+            if not issubclass(addon, AddonInterface):
+                _logger.log_event(
+                    "WARNING",
+                    f"Addon class in {name} does not implement the AddonInterface, {_check_addon}.",
+                )
+                continue
             self.addons[name] = addon()
 
     def setup_addons(self):
