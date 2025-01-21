@@ -55,14 +55,20 @@ class AddOnManager:
         filenames = [x.stem for x in addon_files if "__init__" not in x.stem]
         self.addons: dict[str, AddonInterface] = {}
         for filename in filenames:
-            module = import_module(f"addons.{filename}")
+            try:
+                module = import_module(f"addons.{filename}")
+            except ModuleNotFoundError as e:
+                message = f"Could not import addon: {filename} due to <{e}>, please check addon or contact provider."
+                _logger.log_event("ERROR", message)
+                time_print(message)
+                continue
             name = filename
             if hasattr(module, "ADDON_NAME"):
                 name = module.ADDON_NAME
             # Check if the module implemented the addon class, otherwise log error and skip module
             if not hasattr(module, "Addon"):
                 _logger.log_event(
-                    "ERROR", f"Could not get Addon class from {name}, please check addon or contact provider."
+                    "WARNING", f"Could not get Addon class from {name}, please check addon or contact provider."
                 )
                 continue
             addon = getattr(module, "Addon")
