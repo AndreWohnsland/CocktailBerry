@@ -48,6 +48,13 @@ class AddonInterface(Protocol):
         """Logic to build up the addon GUI."""
         return False
 
+    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]):
+        """Will be executed in the background loop and can trigger a cocktail preparation.
+
+        Use the prepare function to start a cocktail preparation with prepare(cocktail).
+        Return if cocktail preparation was successful and a message.
+        """
+
 
 class AddOnManager:
     """Class to handle the execution of all the addons."""
