@@ -39,9 +39,9 @@ class MachineController:
         self._print_time = 0.0
 
     def init_machine(self):
-        self._pin_controller = self._chose_controller()
-        self._led_controller = LedController(self._pin_controller)
-        self._reverter = Reverter(self._pin_controller, cfg.MAKER_PUMP_REVERSION, cfg.MAKER_REVERSION_PIN)
+        self.pin_controller = self._chose_controller()
+        self.led_controller = LedController(self.pin_controller)
+        self.reverter = Reverter(self.pin_controller, cfg.MAKER_PUMP_REVERSION, cfg.MAKER_REVERSION_PIN)
         self.set_up_pumps()
 
     def _chose_controller(self) -> PinController:
@@ -62,10 +62,10 @@ class MachineController:
             w.open_progression_window("Cleaning")
         _header_print("Start Cleaning")
         if revert_pumps:
-            self._reverter.revert_on()
+            self.reverter.revert_on()
         self._start_preparation(w, prep_data, False)
         if revert_pumps:
-            self._reverter.revert_off()
+            self.reverter.revert_off()
         _header_print("Done Cleaning")
         if w is not None:
             w.close_progression_window()
@@ -106,10 +106,10 @@ class MachineController:
         prep_data = _build_preparation_data(ingredient_list)
         _header_print(f"Starting {recipe}")
         if is_cocktail:
-            self._led_controller.preparation_start()
+            self.led_controller.preparation_start()
         current_time, max_time = self._start_preparation(w, prep_data, verbose)
         if is_cocktail:
-            self._led_controller.preparation_end()
+            self.led_controller.preparation_end()
         consumption = [round(x.consumption) for x in prep_data]
         time_print(f"Total calculated consumption: {consumption}")
         _header_print(f"Finished {recipe}")
@@ -193,14 +193,14 @@ class MachineController:
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
         active_pins = [x.pin for x in used_config]
         time_print(f"<i> Initializing Pins: {active_pins}")
-        self._pin_controller.initialize_pin_list(active_pins)
-        self._reverter.initialize_pin()
+        self.pin_controller.initialize_pin_list(active_pins)
+        self.reverter.initialize_pin()
         atexit.register(self.cleanup)
 
     def _start_pumps(self, pin_list: list[int], print_prefix: str = ""):
         """Informs and opens all given pins."""
         time_print(f"{print_prefix}<o> Opening Pins: {pin_list}")
-        self._pin_controller.activate_pin_list(pin_list)
+        self.pin_controller.activate_pin_list(pin_list)
 
     def close_all_pumps(self):
         """Close all pins connected to the pumps."""
@@ -211,16 +211,16 @@ class MachineController:
     def cleanup(self):
         """Cleanup for shutdown the machine."""
         self.close_all_pumps()
-        self._pin_controller.cleanup_pin_list()
+        self.pin_controller.cleanup_pin_list()
 
     def _stop_pumps(self, pin_list: list[int], print_prefix: str = ""):
         """Informs and closes all given pins."""
         time_print(f"{print_prefix}<x> Closing Pins: {pin_list}")
-        self._pin_controller.close_pin_list(pin_list)
+        self.pin_controller.close_pin_list(pin_list)
 
     def default_led(self):
         """Turn the LED on."""
-        self._led_controller.default_led()
+        self.led_controller.default_led()
 
     def _consumption_print(self, consumption: list[float], current_time: float, max_time: float, interval=1):
         """Display each interval seconds information for cocktail preparation."""
