@@ -235,3 +235,31 @@ python runme.py setup-teams-service [OPTIONS]
 
 Set up the teams microservice. You can use english (en) or german (de) as language.
 Will run the frontend at `localhost:8050` (http://127.0.0.1:8050), backend at `localhost:8080` (http://127.0.0.1:8080).
+
+## Create an Access Point
+
+You can also use CocktailBerry to set up an access point.
+The access point will be crated on a virtual wlan1 interface.
+So you can still use the wlan0 interface for your normal network connection.
+This requires that you can have a virtual interface on your chip, for example the Raspberry Pi 3B+.
+
+```bash
+python runme.py setup-ap [OPTIONS]
+
+# Options:
+#   --ssid      SSID Name of the AP [default: CocktailBerry]
+#   --password  Password of the AP [default: cocktailconnect]
+#   --help      Show help
+```
+
+## Remove the Access Point
+
+If you want to remove the access point, you can use this.
+
+```bash
+python runme.py remove-ap [OPTIONS]
+
+# Options:
+#   --ssid      SSID Name of the AP [default: CocktailBerry]
+#   --help      Show help
+```
