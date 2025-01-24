@@ -1,0 +1,21 @@
+name: Validate Translations
+run-name: Validates that there is no translation (key) missing
+
+on: [pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⤵️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: 🔍 Run translation validation
+        run: |
+          python .github/scripts/validate_translation.py
