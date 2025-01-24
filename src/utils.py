@@ -255,3 +255,21 @@ def list_available_ssids() -> list[str]:
         logger.error(f"Failed to list available WiFi networks: {e}")
         logger.log_exception(e)
         return []
+
+
+def create_ap(ssid: str = "CocktailBerry", password: str = "cocktailconnect"):
+    commands = [
+        "sudo iw dev wlan0 interface add wlan1 type __ap",
+        f"sudo nmcli connection add type wifi ifname wlan1 con-name {ssid} ssid {ssid}",
+        f"sudo nmcli connection modify {ssid} 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared",
+        f'sudo nmcli connection modify {ssid} wifi-sec.key-mgmt wpa-psk wifi-sec.psk "{password}"',
+        f"sudo nmcli con up id {ssid}",
+    ]
+    delete_ap(ssid)
+    for command in commands:
+        subprocess.run(command, shell=True, check=True)
+
+
+def delete_ap(ssid: str = "CocktailBerry"):
+    subprocess.run("sudo iw dev wlan1 del", shell=True, check=False)
+    subprocess.run(f"sudo nmcli connection delete {ssid}", shell=True, check=False)

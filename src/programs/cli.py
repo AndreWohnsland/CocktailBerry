@@ -24,7 +24,14 @@ from src.programs.cocktailberry import run_cocktailberry
 from src.programs.config_window import run_config_window
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
-from src.utils import generate_custom_style_file, get_platform_data, start_resource_tracker, time_print
+from src.utils import (
+    create_ap,
+    delete_ap,
+    generate_custom_style_file,
+    get_platform_data,
+    start_resource_tracker,
+    time_print,
+)
 
 _logger = LoggerHandler("cocktailberry")
 cli = typer.Typer(add_completion=False)
@@ -194,6 +201,7 @@ def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL f
     add_web_desktop_file()
     subprocess.run(["sudo", "python", str(WEB_MIGRATION_SCRIPT.absolute())], check=True)
     subprocess.run(["sudo", "python", str(NGINX_SCRIPT.absolute()), "--ssl" if use_ssl else "--no-ssl"], check=True)
+    typer.echo(typer.style("Web setup was successful!", fg=typer.colors.GREEN, bold=True))
 
 
 @cli.command()
@@ -210,6 +218,7 @@ def switch_back():
         return
     roll_back_to_qt_script()
     subprocess.run(["sudo", "python", str(QT_MIGRATION_SCRIPT.absolute())], check=True)
+    typer.echo(typer.style("Switched back to Qt setup successfully!", fg=typer.colors.GREEN, bold=True))
 
 
 @cli.command()
@@ -221,6 +230,7 @@ def add_virtual_keyboard():
     This enables the virtual keyboard as soon as you click on an input field.
     """
     create_and_start_squeekboard_service()
+    typer.echo(typer.style("Virtual keyboard added and started successfully!", fg=typer.colors.GREEN, bold=True))
 
 
 @cli.command()
@@ -231,3 +241,34 @@ def remove_virtual_keyboard():
     The service will no longer start automatically on boot.
     """
     stop_and_disable_squeekboard_service()
+    typer.echo(typer.style("Virtual keyboard stopped and disabled successfully!", fg=typer.colors.GREEN, bold=True))
+
+
+@cli.command()
+def setup_ap(
+    ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP"),
+    password: str = typer.Option("cocktailconnect", "--password", help="Password of the AP"),
+):
+    """Set up the access point.
+
+    The access point will be created on a virtual wlan1 interface.
+    So you can still use the wlan0 interface for your normal network connection.
+    This requires that you can have a virtual interface on your chip, for example the Raspberry Pi 3B+.
+    """
+    if len(password) < 8:
+        typer.echo(typer.style("Password must be at least 8 characters long.", fg=typer.colors.RED, bold=True))
+        raise typer.Exit(code=1)
+    create_ap(ssid, password)
+    msg = f"Access Point {ssid=} created with {password=} successfully!"
+    typer.echo(typer.style(msg, fg=typer.colors.GREEN, bold=True))
+    typer.echo("Within it, CocktailBerry is at: http://10.42.0.1 or https://10.42.0.1")
+
+
+@cli.command()
+def remove_ap(ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP")):
+    """Remove the access point.
+
+    Remove the given config for this access point and remove virtual wlan1 interface.
+    """
+    delete_ap(ssid)
+    typer.echo(typer.style(f"Access Point {ssid=} removed successfully!", fg=typer.colors.GREEN, bold=True))
