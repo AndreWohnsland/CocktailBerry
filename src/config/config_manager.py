@@ -131,6 +131,7 @@ class ConfigManager:
     # Config to change the displayed values in the maker to another unit
     EXP_MAKER_UNIT: str = "ml"
     EXP_MAKER_FACTOR: float = 1.0
+    EXP_DEMO_MODE: bool = False
 
     def __init__(self) -> None:
         """Try to read in the custom configs. If the file is not there, ignores the error.
@@ -197,6 +198,7 @@ class ConfigManager:
             "CUSTOM_COLOR_DANGER": StringType(),
             "EXP_MAKER_UNIT": StringType(),
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
+            "EXP_DEMO_MODE": BoolType(check_name="Activate Demo Mode"),
         }
 
     def read_local_config(self, update_config: bool = False, validate: bool = True):

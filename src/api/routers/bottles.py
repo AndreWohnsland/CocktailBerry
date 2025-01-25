@@ -31,7 +31,7 @@ async def get_bottles() -> list[Bottle]:
     return [map_bottles(i) for i in ingredients]
 
 
-@protected_router.post("/refill", summary="Refill all bottles to maximum.")
+@protected_router.post("/refill", summary="Refill all given bottles to maximum.")
 async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundTasks):
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         return JSONResponse(
