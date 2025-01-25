@@ -245,6 +245,9 @@ dialog:
     en: 'Cleaning process started!'
     de: 'Reinigung gestartet!'
   options_updated:
+    en: 'Options updated!'
+    de: 'Optionen aktualisiert!'
+  options_updated_and_restart:
     en: 'Options updated! Backend will be restarted.'
     de: 'Optionen aktualisiert! Backend wird neu gestartet.'
 
@@ -703,6 +706,9 @@ ui:
     EXP_MAKER_FACTOR:
       en: 'Multiplication factor for the displayed volumes in the maker tab'
       de: 'Multiplikationsfaktor für die angezeigten Volumen im Maker Tab'
+    EXP_DEMO_MODE:
+      en: 'Set the API into demo mode (no destructive actions)'
+      de: 'Setze die API in den Demo Modus (keine destruktiven Aktionen)'
 
   ##### COLOR WINDOW #####
   # all values for settings in color window

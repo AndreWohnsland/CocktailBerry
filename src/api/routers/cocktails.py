@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, WebSocket
 from fastapi.responses import JSONResponse
 
-from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail
+from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail, not_on_demo
 from src.api.middleware import maker_protected
 from src.api.models import Cocktail, CocktailInput, CocktailStatus, ErrorDetail, PrepareCocktailRequest
 from src.config.config_manager import shared
@@ -113,7 +113,7 @@ async def stop_cocktail():
     return {"message": DH.get_translation("preparation_cancelled")}
 
 
-@protected_router.post("", summary="Create a new cocktail")
+@protected_router.post("", summary="Create a new cocktail", dependencies=[not_on_demo])
 async def create_cocktail(cocktail: CocktailInput):
     DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
@@ -127,7 +127,7 @@ async def create_cocktail(cocktail: CocktailInput):
     }
 
 
-@protected_router.put("/{cocktail_id}", summary="Update a cocktail by ID")
+@protected_router.put("/{cocktail_id}", summary="Update a cocktail by ID", dependencies=[not_on_demo])
 async def update_cocktail(cocktail_id: int, cocktail: CocktailInput):
     DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
@@ -147,14 +147,14 @@ async def update_cocktail(cocktail_id: int, cocktail: CocktailInput):
     }
 
 
-@protected_router.delete("/{cocktail_id}", summary="Delete a cocktail by ID")
+@protected_router.delete("/{cocktail_id}", summary="Delete a cocktail by ID", dependencies=[not_on_demo])
 async def delete_cocktail(cocktail_id: int):
     DBC = DatabaseCommander()
     DBC.delete_recipe(cocktail_id)
     return {"message": DH.get_translation("recipe_deleted", recipe_name=cocktail_id)}
 
 
-@protected_router.post("/{cocktail_id}/image", summary="Upload an image for a cocktail")
+@protected_router.post("/{cocktail_id}/image", summary="Upload an image for a cocktail", dependencies=[not_on_demo])
 async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)):
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -172,7 +172,7 @@ async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)):
     return {"message": DH.get_translation("image_uploaded")}
 
 
-@protected_router.delete("/{cocktail_id}/image", summary="Delete an image for a cocktail")
+@protected_router.delete("/{cocktail_id}/image", summary="Delete an image for a cocktail", dependencies=[not_on_demo])
 async def delete_cocktail_image(cocktail_id: int):
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)

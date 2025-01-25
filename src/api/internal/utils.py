@@ -1,5 +1,7 @@
 from typing import Optional
 
+from fastapi import Depends, HTTPException, Request
+
 from src.api.models import Bottle, Cocktail, CocktailIngredient, CocktailInput, Ingredient
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER as DBC
@@ -89,3 +91,18 @@ def create_image_url(cocktail: DBCocktail, default: bool = False) -> str:
     if default_folder_name in image_path.parts:
         return f"/static/default/{image_path.name}"
     return f"/static/user/{image_path.name}"
+
+
+def demo_mode_protection():
+    if cfg.EXP_DEMO_MODE:
+        raise HTTPException(status_code=403, detail="Not allowed in demo mode")
+
+
+async def only_change_theme_on_demo(request: Request):
+    if cfg.EXP_DEMO_MODE:
+        options: dict = await request.json()
+        if any(key != "MAKER_THEME" for key in options):
+            raise HTTPException(status_code=403, detail="Cannot do that on demo mode")
+
+
+not_on_demo = Depends(demo_mode_protection)

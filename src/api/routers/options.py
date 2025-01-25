@@ -12,6 +12,7 @@ from typing import Literal
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 
+from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
 from src.api.middleware import master_protected_dependency
 from src.api.models import DataResponse, DateTimeInput, IssueData, PasswordInput, WifiData
 from src.config.config_manager import CONFIG as cfg
@@ -70,14 +71,17 @@ def _restart_task():
     restart_program()
 
 
-@protected_router.post("", summary="Update the options")
+@protected_router.post("", summary="Update the options", dependencies=[Depends(only_change_theme_on_demo)])
 async def update_options(options: dict, background_tasks: BackgroundTasks):
     cfg.set_config(options, True)
     cfg.sync_config_to_file()
     # resolve the issue, when we get here, there was no error in the config and we can resolve potential issues
     shared.startup_config_issue.has_issue = False
     # also create a background task to restart the backend after 1 second
-    background_tasks.add_task(_restart_task)
+    # only do this if more than the theme was changed (theme is handled by the frontend)
+    if any(key != "MAKER_THEME" for key in options):
+        background_tasks.add_task(_restart_task)
+        return {"message": DH.get_translation("options_updated_and_restart")}
     return {"message": DH.get_translation("options_updated")}
 
 
@@ -93,7 +97,7 @@ async def clean_machine(background_tasks: BackgroundTasks):
     return {"message": DH.get_translation("cleaning_started")}
 
 
-@protected_router.post("/reboot", summary="Reboot the system")
+@protected_router.post("/reboot", summary="Reboot the system", dependencies=[not_on_demo])
 async def reboot_system():
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot reboot on Windows")
@@ -102,7 +106,7 @@ async def reboot_system():
     return {"message": "System rebooting"}
 
 
-@protected_router.post("/shutdown", summary="Shutdown the system")
+@protected_router.post("/shutdown", summary="Shutdown the system", dependencies=[not_on_demo])
 async def shutdown_system():
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot shutdown on Windows")
@@ -116,13 +120,13 @@ async def data_insights() -> DataResponse[dict[str, ConsumeData]]:
     return DataResponse(data=generate_consume_data())
 
 
-@protected_router.post("/data/reset", summary="Reset the data insights")
+@protected_router.post("/data/reset", summary="Reset the data insights", dependencies=[not_on_demo])
 async def reset_data_insights():
     SAVE_HANDLER.export_data()
     return {"message": DH.get_translation("all_data_exported", file_path=str(SAVE_FOLDER))}
 
 
-@protected_router.get("/backup", summary="Create a backup of CocktailBerry data")
+@protected_router.get("/backup", summary="Create a backup of CocktailBerry data", dependencies=[not_on_demo])
 async def create_backup():
     backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
     zip_file_name = f"{backup_folder_name}.zip"
@@ -163,7 +167,7 @@ def parse_restored_file(
     return data  # type: ignore
 
 
-@protected_router.post("/backup", summary="Restore a backup of CocktailBerry data")
+@protected_router.post("/backup", summary="Restore a backup of CocktailBerry data", dependencies=[not_on_demo])
 async def upload_backup(
     file: UploadFile = File(...),
     restored_file: list[Literal["style", "config", "images", "database"]] = Depends(parse_restored_file),
@@ -235,7 +239,7 @@ async def get_available_ssids() -> list[str]:
     return list_available_ssids()
 
 
-@protected_router.post("/wifi", summary="Set WiFi SSID and password")
+@protected_router.post("/wifi", summary="Set WiFi SSID and password", dependencies=[not_on_demo])
 async def update_wifi_data(wifi_data: WifiData):
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot set WiFi on Windows")
@@ -273,7 +277,7 @@ async def check_internet_connection():
     }
 
 
-@protected_router.post("/update/system", summary="Update the system")
+@protected_router.post("/update/system", summary="Update the system", dependencies=[not_on_demo])
 async def update_system(background_tasks: BackgroundTasks):
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot update system on Windows")
@@ -281,7 +285,7 @@ async def update_system(background_tasks: BackgroundTasks):
     return {"message": "System update started"}
 
 
-@protected_router.post("/update/software", summary="Update CocktailBerry software")
+@protected_router.post("/update/software", summary="Update CocktailBerry software", dependencies=[not_on_demo])
 async def update_software():
     updater = Updater()
     update_available, info = updater.check_for_updates()
@@ -318,7 +322,7 @@ async def check_issues() -> IssueData:
     )
 
 
-@router.post("/issues/ignore", summary="Ignore issues")
+@router.post("/issues/ignore", summary="Ignore issues", dependencies=[not_on_demo])
 async def ignore_issues():
     shared.startup_python_deprecated.set_ignored()
     shared.startup_need_time_adjustment.set_ignored()
@@ -326,7 +330,7 @@ async def ignore_issues():
     return {"message": "Issues ignored"}
 
 
-@router.post("/datetime", summary="Update the system date and time")
+@router.post("/datetime", summary="Update the system date and time", dependencies=[not_on_demo])
 async def update_datetime(data: DateTimeInput):
     # need YYYY-MM-DD HH:MM:SS format, time from web is "just" HH:MM
     # users might also add ms, so remove them as well

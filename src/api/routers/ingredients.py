@@ -1,7 +1,7 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
-from src.api.internal.utils import map_ingredient
+from src.api.internal.utils import map_ingredient, not_on_demo
 from src.api.middleware import maker_protected
 from src.api.models import ErrorDetail, IngredientInput
 from src.database_commander import DatabaseCommander
@@ -33,7 +33,7 @@ async def get_ingredient(ingredient_id: int):
     return map_ingredient(ingredient)
 
 
-@protected_router.post("", summary="Add new ingredient")
+@protected_router.post("", summary="Add new ingredient", dependencies=[not_on_demo])
 async def add_ingredient(ingredient: IngredientInput):
     DBC = DatabaseCommander()
     DBC.insert_new_ingredient(
@@ -52,7 +52,7 @@ async def add_ingredient(ingredient: IngredientInput):
     }
 
 
-@protected_router.put("/{ingredient_id:int}", summary="Update ingredient by ID")
+@protected_router.put("/{ingredient_id:int}", summary="Update ingredient by ID", dependencies=[not_on_demo])
 async def update_ingredient(ingredient_id: int, ingredient: IngredientInput):
     DBC = DatabaseCommander()
     DBC.set_ingredient_data(
@@ -75,7 +75,7 @@ async def update_ingredient(ingredient_id: int, ingredient: IngredientInput):
     }
 
 
-@protected_router.delete("/{ingredient_id:int}", summary="Delete ingredient by ID")
+@protected_router.delete("/{ingredient_id:int}", summary="Delete ingredient by ID", dependencies=[not_on_demo])
 async def delete_ingredients(ingredient_id: int):
     DBC = DatabaseCommander()
     DBC.delete_ingredient(ingredient_id)
