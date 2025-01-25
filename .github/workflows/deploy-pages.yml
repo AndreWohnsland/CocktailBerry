@@ -40,9 +40,7 @@ jobs:
       - name: Build production bundle
         uses: borales/actions-yarn@v5
         with:
-          cmd: build
-        env:
-          VITE_APP_API_URL: http://apidemo.cocktailberry.org/api/
+          cmd: build-demo
           
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
