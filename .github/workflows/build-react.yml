@@ -21,12 +21,16 @@ jobs:
         node-version: '20'
 
     - name: Install Dependencies
-      working-directory: ./web_client
-      run: npm install
+      uses: borales/actions-yarn@v5
+      with:
+        cmd: install
+        dir: ./web_client
 
     - name: Build React App
-      working-directory: ./web_client
-      run: npm run build
+      uses: borales/actions-yarn@v5
+      with:
+        cmd: build
+        dir: ./web_client
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
