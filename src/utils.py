@@ -251,7 +251,7 @@ def list_available_ssids() -> list[str]:
             ["nmcli", "-t", "-f", "SSID", "dev", "wifi"], stdout=subprocess.PIPE, text=True, check=True
         )
         return [line.strip() for line in result.stdout.splitlines() if line.strip()]
-    except subprocess.CalledProcessError as e:
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
         logger.error(f"Failed to list available WiFi networks: {e}")
         logger.log_exception(e)
         return []
