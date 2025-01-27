@@ -13,12 +13,14 @@
 
 CocktailBerry is a Python and Qt (or React for v2) based app for a cocktail machine on the Raspberry Pi.
 It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
-Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://cocktailberry.readthedocs.io/).
+Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://docs.cocktailberry.org).
+
+<a href="https://demo.cocktailberry.org/"><img src="docs/pictures/demobutton.png" alt="v2-demo" height="70"/></a>
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
 
 <a href="https://cocktailberry.org/"><img src="docs/pictures/websitebutton.png" alt="website" height="70"/></a>
-<a href="https://cocktailberry.readthedocs.io/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
+<a href="https://docs.cocktailberry.org/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
 <a href="https://stats-cocktailberry.streamlit.app/"><img src="docs/pictures/dashboardbutton.png" alt="dashboard" height="70"/></a>
 
 This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface.

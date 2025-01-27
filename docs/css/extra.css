@@ -1,46 +1,48 @@
-
 @media screen and (max-width: 768px) {
-img {
+  img {
     width: auto;
     height: auto;
-}}
+  }
+}
 
 .cta-btn {
-    padding: 15px;
-    border-radius: 7px;
-    margin: 0px 10px 0px;
-    text-decoration: none;
-    font-size: x-large;
-    font-weight: bold;
+  padding: 8px 15px 8px 15px;
+  border-radius: 7px;
+  margin: 5px;
+  text-decoration: none;
+  font-size: x-large;
+  font-weight: bold;
+  white-space: nowrap;
 }
 
 .primary-btn {
-    color: white !important;
-    background-color: rgb(57, 72, 158);
+  color: white !important;
+  background-color: rgb(57, 72, 158);
 }
 
 .secondary-btn {
-    color: white !important;
-    background-color: rgb(255, 40, 102);
+  color: white !important;
+  background-color: rgb(255, 40, 102);
 }
 
 .mid-flex {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* Allow elements to wrap onto a new line */
+  gap: 10px; /* Optional: Adds spacing between items */
 }
 
-#announcement-content a{
-    color: inherit;
-    text-decoration: none;
+#announcement-content a {
+  color: inherit;
+  text-decoration: none;
 }
 
 #announcement-content {
-    text-align: center;
-    background-color: #39489e;
+  text-align: center;
+  background-color: #39489e;
 }
 
 .md-banner {
-    background-color: #39489e;
+  background-color: #39489e;
 }
