@@ -61,6 +61,14 @@ async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundT
 @protected_router.put("/{bottle_id}", summary="Update bottle to ingredient and fill level.")
 async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int] = None):
     DBC = DatabaseCommander()
+    ingredients = DBC.get_ingredients_at_bottles()[: cfg.MAKER_NUMBER_BOTTLES]
+    # cannot assign the same ingredient to multiple bottles
+    already_at_slot = next((i.bottle for i in ingredients if i.id == ingredient_id), None)
+    if already_at_slot is not None:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Ingredient already at slot {already_at_slot}",
+        )
     if amount is not None:
         DBC.set_ingredient_level_to_value(ingredient_id, amount)
     DBC.set_bottle_at_slot(ingredient_id, bottle_id)
