@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Bottle, Ingredient } from '../../types/models';
 import { updateBottle } from '../../api/bottles';
-import { toast } from 'react-toastify';
 import ProgressBar from '../common/ProgressBar';
 import Modal from 'react-modal';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { executeAndShow } from '../../utils';
+import { errorToast, executeAndShow } from '../../utils';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
 
@@ -82,12 +81,14 @@ const BottleComponent: React.FC<BottleProps> = ({
     if (newIngredientId !== 0) {
       newIngredient = freeIngredients.find((ingredient) => ingredient.id === newIngredientId);
       if (newIngredient) {
+        // remove the selected ingredient from possible ones
         possibleIngredients = possibleIngredients.filter((ingredient) => ingredient.id !== newIngredientId);
       }
     }
 
+    // add the old (previous) ingredient to the possible ones
     if (selectedIngredient) {
-      possibleIngredients = [...freeIngredients, selectedIngredient];
+      possibleIngredients = [...possibleIngredients, selectedIngredient];
     }
 
     try {
@@ -97,10 +98,7 @@ const BottleComponent: React.FC<BottleProps> = ({
       setFreeIngredients(possibleIngredients);
     } catch (error) {
       console.error('Error updating bottle:', error);
-      toast(`Error updating bottle: ${error}`, {
-        toastId: 'bottle--update-error',
-        pauseOnHover: false,
-      });
+      errorToast(error);
     }
   };
 
