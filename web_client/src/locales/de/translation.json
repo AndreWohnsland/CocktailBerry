@@ -116,7 +116,9 @@
     "setupWifi": "WLAN einrichten",
     "selectSsid": "SSID auswählen",
     "password": "Passwort",
-    "connectToWifi": "Möchtest du die Daten verwenden um zu '{{selectedSsid}}' verbinden?"
+    "connectToWifi": "Möchtest du die Daten verwenden um zu '{{selectedSsid}}' verbinden?",
+    "switchToSelect": "Existierendes WLAN auswählen",
+    "switchToInput": "Zu Texteingabe wechseln"
   },
   "password": {
     "enterPassword": "Passwort eingeben",
