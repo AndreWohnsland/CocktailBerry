@@ -116,7 +116,9 @@
     "setupWifi": "Set Up WiFi",
     "selectSsid": "Select SSID",
     "password": "Password",
-    "connectToWifi": "Do you want to use the data to connect to WiFi {{selectedSsid}}?"
+    "connectToWifi": "Do you want to use the data to connect to WiFi {{selectedSsid}}?",
+    "switchToSelect": "Select existing WiFi",
+    "switchToInput": "Switch to text input"
   },
   "password": {
     "enterPassword": "Enter Password",
