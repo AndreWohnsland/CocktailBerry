@@ -52,7 +52,7 @@ extend-safe-fixes = [
   "D205", # 1 blank line required between summary line and description
   "W291", # Trailing whitespace
   ]
-per-file-ignores = { "runme.py" = ["E402"], "migrator.py" = ["E402"] }
+per-file-ignores = { "runme.py" = ["E402"], "migrator.py" = ["E402"], "api.py" = ["E402"] }
 select = [
   "C", # Convention
   "D", # pydocstyle 
