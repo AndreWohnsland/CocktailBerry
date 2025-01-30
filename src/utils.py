@@ -95,7 +95,7 @@ def restart_program():
     arguments = sys.argv[1:]
     # skip out if this is the dev program (will not work restart here)
     # This is because we run it with fastapi dev instead the python runme.py ...
-    if arguments[0] == "dev":
+    if len(arguments) != 0 and arguments[0] == "dev":
         time_print("Will not restart because of dev program.")
         return
     # trigger manually, since exec function will not trigger exit fun.
