@@ -4,6 +4,7 @@ import http.client as httplib
 import os
 import platform
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -100,8 +101,13 @@ def restart_program():
         return
     # trigger manually, since exec function will not trigger exit fun.
     atexit._run_exitfuncs()  # pylint: disable=protected-access
+    # either run with uv or python (old setup)
+    uv_executable = shutil.which("uv")
     python = sys.executable
-    os.execl(python, python, EXECUTABLE, *arguments)
+    if uv_executable is not None:
+        os.execl(uv_executable, "uv", "run", EXECUTABLE, *arguments)
+    else:
+        os.execl(python, "python", EXECUTABLE, *arguments)
 
 
 def generate_custom_style_file():
