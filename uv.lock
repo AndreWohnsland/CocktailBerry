@@ -219,7 +219,7 @@ name = "click"
 version = "8.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/96/d3/f04c7bfcf5c1862a2a5b845c6b2b360488cf47af55dfa79c98f6a6bf98b5/click-8.1.7.tar.gz", hash = "sha256:ca9853ad459e787e2192211578cc907e7594e294c7ccc834310722b41b9ca6de", size = 336121 }
 wheels = [
@@ -238,16 +238,24 @@ dependencies = [
     { name = "pillow" },
     { name = "psutil" },
     { name = "pyfiglet" },
-    { name = "pyqt5" },
-    { name = "pyqt5-qt5" },
-    { name = "pyqtspinner" },
     { name = "pyyaml" },
-    { name = "qtawesome" },
-    { name = "qtsass" },
     { name = "requests" },
     { name = "sse-starlette" },
     { name = "typer" },
     { name = "uvicorn" },
+]
+
+[package.optional-dependencies]
+override-dependencies = [
+    { name = "pyqt5", marker = "platform_machine != 'aarch64' and sys_platform != 'linux'" },
+    { name = "pyqt5-qt5", marker = "platform_machine != 'aarch64' and sys_platform != 'linux'" },
+]
+v1 = [
+    { name = "pyqt5" },
+    { name = "pyqt5-qt5" },
+    { name = "pyqtspinner" },
+    { name = "qtawesome" },
+    { name = "qtsass" },
 ]
 
 [package.dev-dependencies]
@@ -269,12 +277,14 @@ requires-dist = [
     { name = "pillow", specifier = ">=10.4.0" },
     { name = "psutil", specifier = ">=6.0.0" },
     { name = "pyfiglet", specifier = ">=1.0.2" },
-    { name = "pyqt5", specifier = "==5.15.7" },
-    { name = "pyqt5-qt5", specifier = "==5.15.2" },
-    { name = "pyqtspinner", specifier = ">=2.0.0" },
+    { name = "pyqt5", marker = "platform_machine != 'aarch64' and sys_platform != 'linux' and extra == 'override-dependencies'" },
+    { name = "pyqt5", marker = "extra == 'v1'", specifier = "==5.15.7" },
+    { name = "pyqt5-qt5", marker = "platform_machine != 'aarch64' and sys_platform != 'linux' and extra == 'override-dependencies'" },
+    { name = "pyqt5-qt5", marker = "extra == 'v1'", specifier = "==5.15.2" },
+    { name = "pyqtspinner", marker = "extra == 'v1'", specifier = ">=2.0.0" },
     { name = "pyyaml", specifier = ">=6.0.1" },
-    { name = "qtawesome", specifier = ">=1.3.1" },
-    { name = "qtsass", specifier = ">=0.4.0" },
+    { name = "qtawesome", marker = "extra == 'v1'", specifier = ">=1.3.1" },
+    { name = "qtsass", marker = "extra == 'v1'", specifier = ">=0.4.0" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "sse-starlette", specifier = ">=2.1.3" },
     { name = "typer", specifier = ">=0.12.3" },
@@ -583,7 +593,7 @@ name = "ipykernel"
 version = "6.29.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "appnope", marker = "platform_system == 'Darwin'" },
+    { name = "appnope", marker = "sys_platform == 'darwin'" },
     { name = "comm" },
     { name = "debugpy" },
     { name = "ipython" },
@@ -820,7 +830,7 @@ version = "1.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "ghp-import" },
     { name = "importlib-metadata", marker = "python_full_version < '3.10'" },
     { name = "jinja2" },

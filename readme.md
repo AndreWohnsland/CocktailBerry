@@ -147,7 +147,7 @@ To get started, you need to install uv and then install the dependencies.
 See also at the [dev notes](./docs/.devnotes.md) section for a complete run down.
 
 ```bash
-uv sync
+uv sync --all-extras
 ```
 
 This will install all dependencies and you can start developing.
