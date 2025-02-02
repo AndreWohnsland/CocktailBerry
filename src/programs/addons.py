@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import atexit
+import contextlib
 import re
 import threading
 import time
@@ -8,15 +9,18 @@ from importlib import import_module
 from typing import TYPE_CHECKING, Any, Callable, Literal, Protocol, runtime_checkable
 
 import typer
-from PyQt5.QtWidgets import QVBoxLayout
 
 from src import __version__
 from src.api.internal.preparation import api_addon_prepare_flow
 from src.filepath import ADDON_FOLDER, ADDON_SKELTON
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
-from src.ui.shared import qt_prepare_flow
 from src.utils import time_print
+
+with contextlib.suppress(ModuleNotFoundError):
+    from PyQt5.QtWidgets import QVBoxLayout
+
+    from src.ui.shared import qt_prepare_flow
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
