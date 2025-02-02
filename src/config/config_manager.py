@@ -402,6 +402,7 @@ class Shared:
         self.selected_team = "No Team"
         self.team_member_name: str | None = None
         self.alcohol_factor: float = 1.0
+        self.is_v1 = False
         self.cocktail_status = CocktailStatus()
         # those are used to display once the message after startup if there are some issues
         self.startup_need_time_adjustment = StartupIssue()

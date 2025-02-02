@@ -91,7 +91,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             return
         # Also asks if to restart program to get new config
         if DP_CONTROLLER.ask_to_restart_for_config():
-            restart_program()
+            restart_program(is_v1=True)
         self.close()
 
     def _choose_display_style(self, config_name: str, config_setting: ConfigInterface):

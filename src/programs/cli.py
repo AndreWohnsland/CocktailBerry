@@ -9,7 +9,7 @@ import typer
 from src import PROJECT_NAME
 from src.api.api import run_api
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import show_start_message, version_callback
+from src.config.config_manager import shared, show_start_message, version_callback
 from src.config.errors import ConfigError
 from src.filepath import CUSTOM_CONFIG_FILE, NGINX_SCRIPT, QT_MIGRATION_SCRIPT, WEB_MIGRATION_SCRIPT
 from src.logger_handler import LoggerHandler
@@ -74,6 +74,7 @@ def main(
     if debug:
         os.environ.setdefault("DEBUG_MS", "True")
         time_print("Using debug mode")
+    shared.is_v1 = True
     generate_custom_style_file()
     if calibration:
         run_calibration()
