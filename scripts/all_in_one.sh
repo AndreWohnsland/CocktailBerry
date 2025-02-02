@@ -78,6 +78,11 @@ else
   echo "Pip is already installed!"
 fi
 
+echo "~~ Installing uv ~~"
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# shellcheck disable=SC1091
+source "$HOME"/.local/bin/env
+
 # Warning if debian is not at least v11. Still go on because some users may use none debian
 # Check if /etc/debian_version exists
 if [ -f /etc/debian_version ]; then
