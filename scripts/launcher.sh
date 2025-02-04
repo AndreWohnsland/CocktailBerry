@@ -13,4 +13,5 @@
 # launcher.sh for CocktailBerry
 export QT_SCALE_FACTOR=1
 cd ~/CocktailBerry/ || echo "Did not find ~/CocktailBerry/" && exit
-python runme.py
+uv venv --system-site-packages --python "$(python -V | awk '{print $2}')"
+uv run --python "$(python -V | awk '{print $2}')" --all-extras runme.py

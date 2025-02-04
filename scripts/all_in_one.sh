@@ -147,11 +147,9 @@ echo ""
 # if the script has the v2 flag, switch over to v2
 if [ "$V2_FLAG" = true ]; then
   echo "~~ Switching to v2 since the flag is set in the command ~~"
-  # shellcheck disable=SC1090
-  source ~/.env-cocktailberry/bin/activate
   # shellcheck disable=SC2164
   cd ~/CocktailBerry
-  python runme.py setup-web
+  uv run api.py setup-web
 fi
 
 echo "~~ Everything should be set now! Have fun with CocktailBerry :) ~~"
