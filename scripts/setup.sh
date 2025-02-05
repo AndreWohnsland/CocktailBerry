@@ -52,17 +52,11 @@ sudo chmod +x /usr/share/applications/cocktail.desktop
 echo "> Giving write permission to /etc/wpa_supplicant/wpa_supplicant.conf"
 sudo chmod a+w /etc/wpa_supplicant/wpa_supplicant.conf
 
-# Since bookworm, venv are not optional but recommended, to not overwrite sys python things
-# therefore remove existing and create env for cocktailberry, using system site packages
-# This way, pyqt is already there and no pain installing it somehow
-echo "> (Re-)Creating virtual environment for CocktailBerry, located at ~/.venv-cocktailberry"
-rm -rf ~/.env-cocktailberry
-python -m venv --system-site-packages ~/.env-cocktailberry
-echo "> Activating virtual environment, this is needed since Raspbery Pi OS Bookworm"
-# shellcheck disable=SC1090
-source ~/.env-cocktailberry/bin/activate
-
 cd ~/CocktailBerry/ || exit
+# creating project venv with uv
+echo "> Creating project venv with uv"
+uv venv --system-site-packages --python "$(python -V | awk '{print $2}')" || echo "ERROR: Could not create venv with uv, is uv installed?"
+
 # Making necessary steps for the according program
 if [ "$1" = "dashboard" ]; then
   echo "> Setting up Dashboard"
@@ -82,7 +76,7 @@ if [ "$1" = "dashboard" ]; then
     docker compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?"
     {
       echo "export UI_LANGUAGE=$language"
-      echo "source ~/.env-cocktailberry/bin/activate"
+      echo "source ~/CocktailBerry/.venv/bin/activate"
       echo "cd ~/CocktailBerry/dashboard/qt-app/"
       echo "python main.py"
     } >>~/launcher.sh
@@ -92,37 +86,24 @@ if [ "$1" = "dashboard" ]; then
 else
   echo "> Setting up CocktailBerry"
   {
-    echo "source ~/.env-cocktailberry/bin/activate"
     echo "export QT_SCALE_FACTOR=1"
     echo "cd ~/CocktailBerry/"
-    echo "python runme.py"
+    echo "uv venv --system-site-packages --python \"$(python -V | awk '{print $2}')\""
+    echo "uv run --python \"$(python -V | awk '{print $2}')\" --all-extras runme.py"
   } >>~/launcher.sh
   echo "> Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
-  echo "> Installing needed Python libraries"
-  pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev pyqtspinner pillow psutil distro uvicorn
-  pip install "fastapi[standard]"
-  # try to install mfrc522, this will probably fail on non raspberry pi devices
-  if is_raspberry_pi; then
-    pip install mfrc522 rpi_ws281x || echo "ERROR: Could not install mfrc522, are you on a Raspberry Pi?"
-    # the rpi5 is a tricky thing, so we need a new gpi controller and add also the user to this group
-  fi
+  echo "> Installing needed Python libraries, including qtsass, this may take a while depending on your OS, so it is time for a coffee break :)"
+  uv sync --all-extras
   if is_raspberry_pi5; then
-    pip install gpiozero || echo "ERROR: Could not install gpiozero, are you on a Raspberry Pi5?"
     sudo usermod -aG gpio "$(whoami)"
     newgrp gpio
   fi
-  # try to install python-periphery, so other devices may also use the gpio
-  pip install python-periphery || echo "ERROR: Could not install python-periphery, if you are on a RPi, this is not needed"
   # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
   if ! is_raspberry_pi; then
     ./setup_non_rpi.sh
   fi
   # still cp the file, but do not inform the user anymore, since this is not the default anymore
   cp microservice/.env.example microservice/.env
-  echo "> Install qtsass, this may take a while depending on your OS, so it is time for a coffe break :)"
-  echo "If this takes too long for you, you can cancel this step with 'ctrl + c' and install qtsass later manually with 'pip install qtsass'"
-  echo "qtsass is needed if you want to customize the CocktailBerry GUI and use your own colors"
-  pip install qtsass
 fi
 echo "Done with the setup"
