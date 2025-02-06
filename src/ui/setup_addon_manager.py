@@ -74,7 +74,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
 
         # Ask to restart
         if DP_CONTROLLER.ask_to_restart_for_config():
-            restart_program()
+            restart_program(is_v1=True)
 
     def _install_addon(self, addon: AddonData):
         """Try to install addon, log if req is not ok or no connection."""

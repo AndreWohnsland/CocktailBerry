@@ -1,9 +1,9 @@
 from pathlib import Path
 
-old_backend_script_content = """source ~/.env-cocktailberry/bin/activate
-export QT_SCALE_FACTOR=1
+old_backend_script_content = """export QT_SCALE_FACTOR=1
 cd ~/CocktailBerry/
-python runme.py
+uv venv --system-site-packages --python \"$(python -V | awk '{print $2}')\"
+uv run --python \"$(python -V | awk '{print $2}')\" --all-extras runme.py
 """
 
 script_entry_path = Path.home() / "launcher.sh"

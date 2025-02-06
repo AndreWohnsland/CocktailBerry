@@ -3,9 +3,8 @@ from pathlib import Path
 ROOT_PATH = Path(__file__).parents[2].absolute()
 COCKTAIL_WEB_DESKTOP = ROOT_PATH / "scripts" / "cocktail_web.desktop"
 
-new_backend_script_content = """source ~/.env-cocktailberry/bin/activate
-cd ~/CocktailBerry/
-python runme.py api
+new_backend_script_content = """cd ~/CocktailBerry/
+uv run api.py
 """
 
 script_entry_path = Path.home() / "launcher.sh"

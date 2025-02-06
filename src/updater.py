@@ -5,6 +5,7 @@ from git import GitCommandError, Repo  # type: ignore
 from requests import Response
 
 from src import FUTURE_PYTHON_VERSION
+from src.config.config_manager import shared
 from src.filepath import ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.migration.migrator import Migrator, _Version
@@ -38,7 +39,7 @@ class Updater:
         # restart the program, this will not work if executed over IDE
         time_print("Restarting the application!")
         _logger.log_event("INFO", "Restarting program to reload updated code")
-        restart_program()
+        restart_program(is_v1=shared.is_v1)
         # technically, this will not be reached, but makes mypy happy and is easier for the logic
         return True
 

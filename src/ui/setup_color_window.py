@@ -171,4 +171,4 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         if importlib.util.find_spec("qtsass") is None:
             DP_CONTROLLER.say_qtsass_not_successful()
             return
-        restart_program()
+        restart_program(is_v1=True)

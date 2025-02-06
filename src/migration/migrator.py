@@ -120,6 +120,7 @@ class Migrator:
                 lambda: self._install_pip_package("uvicorn", "2.0.0"),
                 fix_amount_in_recipe,
             ],
+            "2.1.0": [_install_uv],
         }
 
         for version, actions in version_actions.items():
@@ -298,6 +299,24 @@ def _get_converted_value(new_type: type, default_value: Any, local_config: Any):
     except ValueError:
         new_value = default_value
     return new_value
+
+
+def _install_uv():
+    """Install uv for python dependency management."""
+    _logger.info("Installing uv for python dependency management")
+    uv_installed = shutil.which("uv")
+    if uv_installed:
+        _logger.info("uv is already installed, skipping installation")
+        return
+    platform_name = platform.system().lower()
+    if platform_name == "windows":
+        subprocess.run(
+            'powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"',
+            check=False,
+            shell=True,
+        )
+    else:
+        subprocess.run("curl -LsSf https://astral.sh/uv/install.sh | sh", check=False, shell=True)
 
 
 class _Version:

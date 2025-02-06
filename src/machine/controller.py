@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import atexit
+import contextlib
 import time
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import qApp
+# Only needed in v1
+with contextlib.suppress(ModuleNotFoundError):
+    from PyQt5.QtWidgets import qApp
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared

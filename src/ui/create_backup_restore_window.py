@@ -98,7 +98,7 @@ class BackupRestoreWindow(QMainWindow):
                 shutil.copy(self.backup_path / _file.name, _file)
             if _file.is_dir():
                 shutil.copytree(self.backup_path / _file.name, _file, dirs_exist_ok=True)
-        restart_program()
+        restart_program(is_v1=True)
 
     def _generate_checkboxes(self):
         """Generate the checkboxes for the backup files."""

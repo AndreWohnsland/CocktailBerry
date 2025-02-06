@@ -4,6 +4,7 @@ import http.client as httplib
 import os
 import platform
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -90,7 +91,7 @@ def set_system_datetime(datetime_string: str):
         logger.log_exception(err)
 
 
-def restart_program():
+def restart_program(is_v1: bool = False):
     """Restart the CocktailBerry application."""
     arguments = sys.argv[1:]
     # skip out if this is the dev program (will not work restart here)
@@ -100,8 +101,14 @@ def restart_program():
         return
     # trigger manually, since exec function will not trigger exit fun.
     atexit._run_exitfuncs()  # pylint: disable=protected-access
+    # either run with uv or python (old setup)
+    uv_executable = shutil.which("uv")
     python = sys.executable
-    os.execl(python, python, EXECUTABLE, *arguments)
+    # We need to use base python venv if we are in v1 (does not work with PyQt)
+    if uv_executable is not None and not is_v1:
+        os.execl(uv_executable, "uv", "run", EXECUTABLE, *arguments)
+    else:
+        os.execl(python, "python", EXECUTABLE, *arguments)
 
 
 def generate_custom_style_file():

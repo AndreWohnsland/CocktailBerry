@@ -9,20 +9,25 @@ from threading import Event, Thread
 from typing import TYPE_CHECKING, Literal
 
 import yaml
-from PyQt5.QtCore import QEventLoop, Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QDialog, QFileDialog
+
+# We do not need those in v2, so its okay to fail there
+try:
+    from PyQt5.QtCore import QEventLoop, Qt
+    from PyQt5.QtGui import QIcon
+    from PyQt5.QtWidgets import QDialog, QFileDialog
+except ModuleNotFoundError:
+    pass
 
 from src import __version__
 from src.config.config_manager import CONFIG as cfg
 from src.filepath import APP_ICON_FILE, LANGUAGE_FILE, STYLE_FOLDER
 from src.logger_handler import LoggerHandler
-from src.ui_elements.addonmanager import Ui_AddonManager
 from src.utils import get_platform_data
 
 if TYPE_CHECKING:
     from src.ui_elements import (
         Ui_addingredient,
+        Ui_AddonManager,
         Ui_Addonwindow,
         Ui_available,
         Ui_Bottlewindow,

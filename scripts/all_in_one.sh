@@ -78,6 +78,11 @@ else
   echo "Pip is already installed!"
 fi
 
+echo "~~ Installing uv ~~"
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# shellcheck disable=SC1091
+source "$HOME"/.local/bin/env
+
 # Warning if debian is not at least v11. Still go on because some users may use none debian
 # Check if /etc/debian_version exists
 if [ -f /etc/debian_version ]; then
@@ -142,11 +147,9 @@ echo ""
 # if the script has the v2 flag, switch over to v2
 if [ "$V2_FLAG" = true ]; then
   echo "~~ Switching to v2 since the flag is set in the command ~~"
-  # shellcheck disable=SC1090
-  source ~/.env-cocktailberry/bin/activate
   # shellcheck disable=SC2164
   cd ~/CocktailBerry
-  python runme.py setup-web
+  uv run api.py setup-web
 fi
 
 echo "~~ Everything should be set now! Have fun with CocktailBerry :) ~~"
