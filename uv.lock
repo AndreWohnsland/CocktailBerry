@@ -270,7 +270,6 @@ dev = [
     { name = "mkdocs" },
     { name = "mkdocs-material" },
     { name = "mypy" },
-    { name = "python-periphery" },
     { name = "ruff" },
 ]
 
@@ -305,7 +304,6 @@ dev = [
     { name = "mkdocs", specifier = ">=1.6.1" },
     { name = "mkdocs-material", specifier = ">=9.5.49" },
     { name = "mypy", specifier = ">=1.14.1" },
-    { name = "python-periphery", specifier = ">=2.4.1" },
     { name = "ruff", specifier = ">=0.9.1" },
 ]
 

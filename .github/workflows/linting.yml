@@ -9,7 +9,7 @@ jobs:
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v5
       - name: 🔍 Lint with ruff
-        run: uv run ruff check src
+        run: uv run --all-extras ruff check src
   mypy:
     runs-on: ubuntu-latest
     steps:
@@ -18,4 +18,4 @@ jobs:
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v5
       - name: 🔍 Lint with MyPy
-        run: uv run mypy src
+        run: uv run --all-extras mypy src
