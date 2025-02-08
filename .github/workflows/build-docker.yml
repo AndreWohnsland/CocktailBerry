@@ -34,12 +34,17 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # Create a new branch
+          BRANCH_NAME="update-version-${{ github.event.release.tag_name }}"
+          git checkout -b $BRANCH_NAME
           # Check if there are any changes to commit
           if git diff --quiet; then
             echo "No changes to commit"
           else
             git commit -am "Update version to ${{ github.event.release.tag_name }}"
-            git push origin HEAD:${{ github.event.release.target_commitish }}
+            git push origin $BRANCH_NAME
+            # Create a pull request
+            gh pr create --title "Update version to ${{ github.event.release.tag_name }}" --body "This PR updates the version to ${{ github.event.release.tag_name }}" --head $BRANCH_NAME --base master
           fi
 
   build-and-push-image:
