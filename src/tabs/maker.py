@@ -125,7 +125,7 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
             empty_ingredient.amount,
         )
         if cfg.UI_MAKER_PASSWORD != 0 and cfg.UI_LOCKED_TABS[2]:
-            msg += f' \n\n{DH.get_translation("bottle_tab_locked")}'
+            msg += f" \n\n{DH.get_translation('bottle_tab_locked')}"
         return PrepareResult.NOT_ENOUGH_INGREDIENTS, msg, empty_ingredient
     try:
         ADDONS.before_cocktail(addon_data)
