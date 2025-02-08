@@ -15,7 +15,7 @@ try:
 
     GPIO.setmode(GPIO.BCM)
     DEV = False
-except ModuleNotFoundError:
+except (ModuleNotFoundError, RuntimeError):
     DEV = True
 
 try:
@@ -23,7 +23,7 @@ try:
     from gpiozero import InputDevice, OutputDevice  # type: ignore
 
     ZERO_DEV = False
-except ModuleNotFoundError:
+except (ModuleNotFoundError, RuntimeError):
     ZERO_DEV = True
 
 

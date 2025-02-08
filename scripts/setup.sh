@@ -88,8 +88,8 @@ else
   {
     echo "export QT_SCALE_FACTOR=1"
     echo "cd ~/CocktailBerry/"
-    echo "uv venv --system-site-packages --python \"$(python -V | awk '{print $2}')\""
-    echo "uv run --python \"$(python -V | awk '{print $2}')\" --all-extras runme.py"
+    echo "uv venv --system-site-packages --python \"\$(python -V | awk '{print \$2}')\""
+    echo "uv run --python \"\$(python -V | awk '{print \$2}')\" --all-extras runme.py"
   } >>~/launcher.sh
   echo "> Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
@@ -101,7 +101,7 @@ else
   fi
   # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
   if ! is_raspberry_pi; then
-    ./setup_non_rpi.sh
+    bash scripts/setup_non_rpi.sh
   fi
   # still cp the file, but do not inform the user anymore, since this is not the default anymore
   cp microservice/.env.example microservice/.env

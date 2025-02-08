@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import contextlib
+
 # pylint: disable=wrong-import-order,wrong-import-position,too-few-public-methods,ungrouped-imports
+from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
+from src.migration.web_migrator import replace_backend_script
 from src.python_vcheck import check_python_version
 
 # Version check takes place before anything, else other imports may throw an error
@@ -120,7 +124,10 @@ class Migrator:
                 lambda: self._install_pip_package("uvicorn", "2.0.0"),
                 fix_amount_in_recipe,
             ],
-            "2.1.0": [_install_uv],
+            "2.1.0": [
+                _install_uv,
+                _check_and_replace_qt_launcher_script,
+            ],
         }
 
         for version, actions in version_actions.items():
@@ -317,6 +324,27 @@ def _install_uv():
         )
     else:
         subprocess.run("curl -LsSf https://astral.sh/uv/install.sh | sh", check=False, shell=True)
+
+
+def _check_and_replace_qt_launcher_script():
+    # check if the script has the basic python runme.py command without api
+    needed_commands = ["python runme.py", "export QT_SCALE_FACTOR=1"]
+    current_script_text = script_entry_path.read_text()
+    with contextlib.suppress(FileNotFoundError):
+        _logger.info("Updating the launcher script to the new version with uv")
+        if not all(command in current_script_text for command in needed_commands):
+            replace_backend_script()
+            return
+        # need to also add uv venv on linux here if uv is already available
+        # This is because we need the system site package for pyqt
+        uv_executable = shutil.which("uv")
+        platform_name = platform.system().lower()
+        if uv_executable and platform_name == "linux":
+            subprocess.run(
+                [uv_executable, "uv", "venv", "--system-site-packages", "--python", "$(python -V | awk '{print $2}')"],
+                check=True,
+            )
+        roll_back_to_qt_script()
 
 
 class _Version:
