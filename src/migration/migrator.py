@@ -329,8 +329,8 @@ def _install_uv():
 def _check_and_replace_qt_launcher_script():
     # check if the script has the basic python runme.py command without api
     needed_commands = ["runme.py"]
-    current_script_text = script_entry_path.read_text()
     with contextlib.suppress(FileNotFoundError):
+        current_script_text = script_entry_path.read_text()
         _logger.info("Updating the launcher script to the new version with uv")
         if not all(command in current_script_text for command in needed_commands):
             replace_backend_script()
