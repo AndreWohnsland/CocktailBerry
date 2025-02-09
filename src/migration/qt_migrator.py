@@ -1,8 +1,24 @@
 from pathlib import Path
 
 old_backend_script_content = """export QT_SCALE_FACTOR=1
-cd ~/CocktailBerry/
-uv venv --system-site-packages --python "$(python -V | awk '{print $2}')"
+create_or_update_venv() {
+  system_python_version=$(python -V | awk '{print $2}')
+  if [ -f ".venv/bin/python" ]; then
+    venv_python_version=$(.venv/bin/python -V | awk '{print $2}')
+  else
+    venv_python_version=""
+  fi
+
+  if [ "$venv_python_version" != "$system_python_version" ]; then
+    uv venv --system-site-packages --python "$system_python_version"
+    echo "Virtual environment created/updated."
+  else
+    echo "Virtual environment is up-to-date."
+  fi
+}
+
+cd ~/CocktailBerry/ || echo "Did not find ~/CocktailBerry/" && exit
+create_or_update_venv
 uv run --python "$(python -V | awk '{print $2}')" --all-extras runme.py
 """
 
