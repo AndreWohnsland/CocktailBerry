@@ -86,12 +86,8 @@ if [ "$1" = "dashboard" ]; then
   fi
 else
   echo "> Setting up CocktailBerry"
-  {
-    echo "export QT_SCALE_FACTOR=1"
-    echo "cd ~/CocktailBerry/"
-    echo "uv venv --system-site-packages --python \"\$(python -V | awk '{print \$2}')\""
-    echo "uv run --python \"\$(python -V | awk '{print \$2}')\" --all-extras runme.py"
-  } >>~/launcher.sh
+  sudo cp ~/CocktailBerry/scripts/launcher.sh ~/launcher.sh
+  sudo chmod +x ~/launcher.sh
   echo "> Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   echo "> Installing needed Python libraries, including qtsass, this may take a while depending on your OS, so it is time for a coffee break :)"
