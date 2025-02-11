@@ -56,9 +56,6 @@ cd ~/CocktailBerry/ || exit
 # creating project venv with uv
 echo "> Creating project venv with uv"
 # set uv env variable "" to extra index piwheels if rpi
-if is_raspberry_pi; then
-  export UV_INDEX_URL=https://www.piwheels.org/simple
-fi
 uv venv --system-site-packages --python "$(python -V | awk '{print $2}')" || echo "ERROR: Could not create venv with uv, is uv installed?"
 
 # Making necessary steps for the according program

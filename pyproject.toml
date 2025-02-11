@@ -49,6 +49,12 @@ override-dependencies = [
     "pyqt5; sys_platform != 'linux' and platform_machine != 'aarch64'"
 ]
 
+[tool.uv.pip]
+extra-index-url = [
+    "https://pypi.python.org/simple",
+    "https://www.piwheels.org/simple"
+]
+
 [tool.hatch.metadata]
 allow-direct-references = true
 
