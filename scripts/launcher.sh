@@ -29,6 +29,6 @@ create_or_update_venv() {
 
 # launcher.sh for CocktailBerry
 export QT_SCALE_FACTOR=1
-cd ~/CocktailBerry/ || echo "Did not find ~/CocktailBerry/" && exit
+cd ~/CocktailBerry/ || echo "Did not find ~/CocktailBerry/"
 create_or_update_venv
 uv run --python "$(python -V | awk '{print $2}')" --all-extras runme.py
