@@ -339,7 +339,8 @@ def _check_and_replace_qt_launcher_script():
         # This is because we need the system site package for pyqt
         uv_executable = shutil.which("uv")
         platform_name = platform.system().lower()
-        if uv_executable and platform_name == "linux":
+        venv_folder = Path(__file__).parents[2].absolute() / ".venv"
+        if not venv_folder.exists() and uv_executable and platform_name == "linux":
             subprocess.run(
                 [uv_executable, "uv", "venv", "--system-site-packages", "--python", "$(python -V | awk '{print $2}')"],
                 check=True,
