@@ -3,7 +3,7 @@
 # Usage: bash setup.sh [options]
 # Options:
 # dashboard: set up dashboard, otherwise will set up CocktailBerry
-
+# cicd: skip some things for cicd
 is_raspberry_pi() {
   if grep -q "Raspberry Pi" /proc/device-tree/model 2>/dev/null; then
     return 0
@@ -21,8 +21,12 @@ is_raspberry_pi5() {
   fi
 }
 
-echo "> Installing updates, this may take a while..."
-sudo apt update && sudo sudo apt -y full-upgrade
+if [ "$1" = "cicd" ]; then
+  echo "> Skipping update process"
+else
+  echo "> Updating system, this may take a while..."
+  sudo apt update && sudo sudo apt -y full-upgrade
+fi
 
 echo "> Installing nmcli, this is needed for wifi setup"
 sudo apt install network-manager
@@ -52,10 +56,11 @@ sudo chmod +x /usr/share/applications/cocktail.desktop
 echo "> Giving write permission to /etc/wpa_supplicant/wpa_supplicant.conf"
 sudo chmod a+w /etc/wpa_supplicant/wpa_supplicant.conf
 
-cd ~/CocktailBerry/ || exit
+if [ "$1" != "cicd" ]; then
+  cd ~/CocktailBerry/ || exit
+fi
 # creating project venv with uv
 echo "> Creating project venv with uv"
-# set uv env variable "" to extra index piwheels if rpi
 uv venv --system-site-packages --python "$(python -V | awk '{print $2}')" || echo "ERROR: Could not create venv with uv, is uv installed?"
 
 # Making necessary steps for the according program
@@ -86,7 +91,7 @@ if [ "$1" = "dashboard" ]; then
   fi
 else
   echo "> Setting up CocktailBerry"
-  sudo cp ~/CocktailBerry/scripts/launcher.sh ~/launcher.sh
+  sudo cp ~/CocktailBerry/scripts/v1-launcher.sh ~/launcher.sh
   sudo chmod +x ~/launcher.sh
   echo "> Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
