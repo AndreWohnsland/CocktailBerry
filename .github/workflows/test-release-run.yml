@@ -15,4 +15,4 @@ jobs:
       - name: Run setup.sh
         run: |
           chmod +x scripts/setup.sh
-          ./scripts/setup.sh
+          ./scripts/setup.sh cicd
