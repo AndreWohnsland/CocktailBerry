@@ -4,6 +4,7 @@ from pathlib import Path
 
 # Root Path
 ROOT_PATH = Path(__file__).parents[1].absolute()
+VENV_FOLDER = ROOT_PATH / ".venv"
 CUSTOM_CONFIG_FILE = ROOT_PATH / "custom_config.yaml"
 VERSION_FILE = ROOT_PATH / ".version.ini"
 LOG_FOLDER = ROOT_PATH / "logs"

@@ -23,7 +23,7 @@ from typing import Any
 import yaml
 
 from src import FUTURE_PYTHON_VERSION, __version__
-from src.filepath import CUSTOM_CONFIG_FILE, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, VERSION_FILE
+from src.filepath import CUSTOM_CONFIG_FILE, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, VENV_FOLDER, VERSION_FILE
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
     add_cost_column_to_ingredients,
@@ -339,8 +339,7 @@ def _check_and_replace_qt_launcher_script():
         # This is because we need the system site package for pyqt
         uv_executable = shutil.which("uv")
         platform_name = platform.system().lower()
-        venv_folder = Path(__file__).parents[2].absolute() / ".venv"
-        if not venv_folder.exists() and uv_executable and platform_name == "linux":
+        if not VENV_FOLDER.exists() and uv_executable and platform_name == "linux":
             subprocess.run(
                 [uv_executable, "uv", "venv", "--system-site-packages", "--python", "$(python -V | awk '{print $2}')"],
                 check=True,
