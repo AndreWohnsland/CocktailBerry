@@ -82,26 +82,6 @@ The main program will then be started as usual as an full windowed app.
 python runme.py switch-back
 ```
 
-## Updating Local Database
-
-You can use the CLI command to merge the latest recipes in your local database.
-To update run the command:
-
-```bash
-python runme.py update-database [OPTIONS]
-
-# Options:
-#   --help  Show help
-```
-
-This can be useful if your CocktailBerry has been running for quite a while and you want to get more recipes.
-The new recipes will be added to your database, including any missing ingredients.
-
-!!! warning "Made many Changes?"
-    Please take in consideration that if you made a lot of changes, especially renaming your ingredients, this may add existing ingredients under a different name.
-    It is best to make a backup before running the command, to have the possibility to restore the old state.
-    The script will also create a local backup, which you can use if you did not backup your data manually.
-
 ## Clearing Local Database
 
 There may be CocktailBerry owners, who want to create a complete new database.
