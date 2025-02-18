@@ -4,6 +4,10 @@ from pathlib import Path
 
 # Root Path
 ROOT_PATH = Path(__file__).parents[1].absolute()
+HOME_PATH = Path.home().absolute()
+BACKUP_FOLDER = HOME_PATH / "cb_backup"
+# Ensure the backup directory exists
+BACKUP_FOLDER.mkdir(parents=True, exist_ok=True)
 VENV_FOLDER = ROOT_PATH / ".venv"
 CUSTOM_CONFIG_FILE = ROOT_PATH / "custom_config.yaml"
 VERSION_FILE = ROOT_PATH / ".version.ini"

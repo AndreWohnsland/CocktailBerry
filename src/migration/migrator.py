@@ -23,7 +23,14 @@ from typing import Any
 import yaml
 
 from src import FUTURE_PYTHON_VERSION, __version__
-from src.filepath import CUSTOM_CONFIG_FILE, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, VENV_FOLDER, VERSION_FILE
+from src.filepath import (
+    BACKUP_FOLDER,
+    CUSTOM_CONFIG_FILE,
+    CUSTOM_STYLE_FILE,
+    CUSTOM_STYLE_SCSS,
+    VENV_FOLDER,
+    VERSION_FILE,
+)
 from src.logger_handler import LoggerHandler
 from src.migration.update_data import (
     add_cost_column_to_ingredients,
@@ -142,10 +149,8 @@ class Migrator:
         """Save the config file at ~/cb_backup/custom_config_pre_{suffix}.yaml."""
         if not CUSTOM_CONFIG_FILE.exists():
             return
-        save_path = Path.home() / "cb_backup" / f"custom_config_pre_{suffix}.yaml"
+        save_path = BACKUP_FOLDER / f"custom_config_pre_{suffix}.yaml"
         _logger.log_event("INFO", f"Backing up config file to {save_path}")
-        # Ensure the backup directory exists
-        save_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(CUSTOM_CONFIG_FILE, save_path)
 
     def _migration_log(self, version: str):
