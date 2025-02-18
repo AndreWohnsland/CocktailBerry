@@ -42,6 +42,10 @@ class Ingredient:
     recipe_order: int = 2
     unit: str = "ml"
 
+    def __post_init__(self):
+        # limit fill level to [0, bottle_volume]
+        self.fill_level = max(0, min(self.fill_level, self.bottle_volume))
+
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name."""
         self_compare = (int(self.bottle is None), -self.amount, -len(self.name))
