@@ -174,6 +174,8 @@ const RecipeList: React.FC = () => {
     }
   };
 
+  const sortedIngredients = ingredients?.sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <div className='p-2 pt-0 w-full max-w-3xl'>
       <SearchBar search={search} setSearch={setSearch}></SearchBar>
@@ -260,7 +262,7 @@ const RecipeList: React.FC = () => {
                     <option value={0} disabled>
                       {t('recipes.selectIngredient')}
                     </option>
-                    {ingredients?.map((ing) => (
+                    {sortedIngredients?.map((ing) => (
                       <option key={ing.id} value={ing.id}>
                         {ing.name}
                       </option>
