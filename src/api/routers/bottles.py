@@ -63,7 +63,7 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
     DBC = DatabaseCommander()
     ingredients = DBC.get_ingredients_at_bottles()[: cfg.MAKER_NUMBER_BOTTLES]
     # cannot assign the same ingredient to multiple bottles
-    already_at_slot = next((i.bottle for i in ingredients if i.id == ingredient_id), None)
+    already_at_slot = next((i.bottle for i in ingredients if i.id == ingredient_id and i.bottle != bottle_id), None)
     if already_at_slot is not None:
         raise HTTPException(
             status_code=400,
