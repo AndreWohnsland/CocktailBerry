@@ -1,7 +1,7 @@
 import copy
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional, Union
+from typing import Optional
 
 
 class PrepareResult(Enum):
@@ -33,7 +33,7 @@ class Ingredient:
     alcohol: int
     bottle_volume: int
     fill_level: int
-    hand: Union[bool, int]
+    hand: bool
     pump_speed: int
     amount: int = 0
     bottle: Optional[int] = None

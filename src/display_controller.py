@@ -51,8 +51,8 @@ class RecipeInput:
     ingredient_names: list[str]
     ingredient_volumes: list[str]
     ingredient_order: list[str]
-    enabled: int
-    virgin: int
+    enabled: bool
+    virgin: bool
 
 
 @dataclass
@@ -150,8 +150,8 @@ class DisplayController(DialogHandler):
         ingredient_volumes = self.get_lineedit_text(self.get_lineedits_recipe(w))
         ingredient_names = self.get_current_combobox_items(self.get_comboboxes_recipes(w))
         ingredient_order = self.get_lineedit_text(self.get_lineedits_recipe_order(w))
-        enabled = int(w.CHBenabled.isChecked())
-        virgin = int(w.offervirgin_checkbox.isChecked())
+        enabled = w.CHBenabled.isChecked()
+        virgin = w.offervirgin_checkbox.isChecked()
         return RecipeInput(
             recipe_name,
             selected_recipe,
