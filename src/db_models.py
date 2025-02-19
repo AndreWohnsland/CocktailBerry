@@ -19,6 +19,12 @@ class DbCocktailIngredient(Base):
     ingredient: Mapped["DbIngredient"] = relationship("DbIngredient", back_populates="cocktail_associations")
     cocktail: Mapped["DbRecipe"] = relationship("DbRecipe", back_populates="ingredient_associations")
 
+    def __init__(self, cocktail_id: int, ingredient_id: int, amount: int, recipe_order: int = 1):
+        self.cocktail_id = cocktail_id
+        self.ingredient_id = ingredient_id
+        self.amount = amount
+        self.recipe_order = recipe_order
+
 
 class DbIngredient(Base):
     __tablename__ = "Ingredients"
@@ -41,6 +47,32 @@ class DbIngredient(Base):
     )
     available: Mapped[Optional["DbAvailable"]] = relationship("DbAvailable", back_populates="ingredient", uselist=False)
 
+    def __init__(
+        self,
+        name: str,
+        alcohol: int,
+        volume: int,
+        consumption_lifetime: int = 0,
+        consumption: int = 0,
+        fill_level: int = 0,
+        hand: bool = False,
+        slow: bool = False,
+        cost: int = 0,
+        unit: str = "ml",
+        pump_speed: int = 100,
+    ):
+        self.name = name
+        self.alcohol = alcohol
+        self.volume = volume
+        self.consumption_lifetime = consumption_lifetime
+        self.consumption = consumption
+        self.fill_level = fill_level
+        self.hand = hand
+        self.slow = slow
+        self.cost = cost
+        self.unit = unit
+        self.pump_speed = pump_speed
+
 
 class DbRecipe(Base):
     __tablename__ = "Recipes"
@@ -57,6 +89,24 @@ class DbRecipe(Base):
         "DbCocktailIngredient", back_populates="cocktail", cascade="all, delete-orphan"
     )
 
+    def __init__(
+        self,
+        name: str,
+        alcohol: int,
+        amount: int,
+        counter_lifetime: int = 0,
+        counter: int = 0,
+        enabled: bool = True,
+        virgin: bool = False,
+    ):
+        self.name = name
+        self.alcohol = alcohol
+        self.amount = amount
+        self.counter_lifetime = counter_lifetime
+        self.counter = counter
+        self.enabled = enabled
+        self.virgin = virgin
+
 
 class DbBottle(Base):
     __tablename__ = "Bottles"
@@ -67,6 +117,10 @@ class DbBottle(Base):
 
     ingredient: Mapped[Optional["DbIngredient"]] = relationship("DbIngredient", back_populates="bottle")
 
+    def __init__(self, number: int, id: Optional[int] = None):
+        self.number = number
+        self.id = id
+
 
 class DbAvailable(Base):
     __tablename__ = "Available"
@@ -74,8 +128,14 @@ class DbAvailable(Base):
 
     ingredient: Mapped["DbIngredient"] = relationship("DbIngredient", back_populates="available")
 
+    def __init__(self, id: int):
+        self.id = id
+
 
 class DbTeamdata(Base):
     __tablename__ = "Teamdata"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, nullable=False, name="ID")
     payload: Mapped[str] = mapped_column(nullable=False, name="Payload")
+
+    def __init__(self, payload: str):
+        self.payload = payload
