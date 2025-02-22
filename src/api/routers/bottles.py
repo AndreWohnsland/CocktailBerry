@@ -49,6 +49,8 @@ async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundT
     for num in bottle_numbers:
         ing = DBC.get_ingredient_at_bottle(num)
         pump_config = cfg.PUMP_CONFIG[num - 1]
+        if ing is None:
+            continue
         if pump_config.tube_volume > 0:
             ing.amount = pump_config.tube_volume
             ingredients.append(ing)

@@ -102,6 +102,8 @@ def renew_bottles(w, bottles: list[int]):
     # check if any of those slots have a tube volume defined
     for num in bottles:
         ing = DB_COMMANDER.get_ingredient_at_bottle(num)
+        if ing is None:
+            continue
         pump_config = cfg.PUMP_CONFIG[num - 1]
         if pump_config.tube_volume > 0:
             ing.amount = pump_config.tube_volume
