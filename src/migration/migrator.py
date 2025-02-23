@@ -1,23 +1,18 @@
 from __future__ import annotations
 
-import contextlib
-
-# pylint: disable=wrong-import-order,wrong-import-position,too-few-public-methods,ungrouped-imports
-from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
-from src.migration.web_migrator import replace_backend_script
 from src.python_vcheck import check_python_version
 
 # Version check takes place before anything, else other imports may throw an error
 check_python_version()
 
-
+# pylint: disable=wrong-import-order,wrong-import-position,too-few-public-methods,ungrouped-imports
 import configparser
+import contextlib
 import importlib.util
 import platform
 import shutil
 import subprocess
 import sys
-from pathlib import Path
 from typing import Any
 
 import yaml
@@ -32,8 +27,10 @@ from src.filepath import (
     VERSION_FILE,
 )
 from src.logger_handler import LoggerHandler
+from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
 from src.migration.update_data import (
     add_cost_column_to_ingredients,
+    add_foreign_keys,
     add_more_bottles_to_db,
     add_order_column_to_ingredient_data,
     add_slower_ingredient_flag_to_db,
@@ -42,10 +39,12 @@ from src.migration.update_data import (
     add_virgin_flag_to_db,
     change_slower_flag_to_pump_speed,
     fix_amount_in_recipe,
+    remove_is_alcoholic_and_hand_from_recipe_data,
     remove_is_alcoholic_column,
     remove_old_recipe_columns,
     rename_database_to_english,
 )
+from src.migration.web_migrator import replace_backend_script
 
 _logger = LoggerHandler("migrator_module")
 
@@ -134,6 +133,10 @@ class Migrator:
             "2.1.0": [
                 _install_uv,
                 _check_and_replace_qt_launcher_script,
+            ],
+            "2.2.0": [
+                add_foreign_keys,
+                remove_is_alcoholic_and_hand_from_recipe_data,
             ],
         }
 

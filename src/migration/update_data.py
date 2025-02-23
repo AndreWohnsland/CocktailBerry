@@ -1,8 +1,10 @@
 import contextlib
+import shutil
 import sqlite3
+from datetime import datetime
 from sqlite3 import OperationalError
 
-from src.filepath import DATABASE_PATH
+from src.filepath import BACKUP_FOLDER, DATABASE_PATH
 from src.logger_handler import LoggerHandler
 
 _logger = LoggerHandler("update_data_module")
@@ -175,9 +177,31 @@ def fix_amount_in_recipe():
     )
 
 
+def remove_is_alcoholic_and_hand_from_recipe_data():
+    """Remove the is_alcoholic and hand columns from the RecipeData table."""
+    _logger.log_event("INFO", "Removing is_alcoholic and hand columns from RecipeData DB")
+    try:
+        execute_raw_sql("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
+        execute_raw_sql("ALTER TABLE RecipeData DROP COLUMN Hand;")
+    except OperationalError:
+        _logger.log_event(
+            "ERROR", "Could not remove is_alcoholic and hand columns from DB, this may because they do not exist"
+        )
+
+
 def add_foreign_keys():
+    """Add foreign keys to the database.
+
+    Since we are working with SQLite, there is no way to add them by default.
+    We will need to create a new table with the keys, copy the data and then rename the table.
+    """
+    # copy the database into a date-time.backup file
+
+    backup_path = BACKUP_FOLDER / f"database_backup_{datetime.now().strftime('%Y%m%d%H%M%S')}.db"
+    shutil.copy(DATABASE_PATH, backup_path)
+    _logger.log_event("INFO", f"Created backup of database at {backup_path}")
+    _logger.log_event("INFO", "Adding foreign keys to the database")
     execute_raw_sql("PRAGMA foreign_keys=off;")
-    execute_raw_sql("BEGIN TRANSACTION;")
     execute_raw_sql("""
         CREATE TABLE RecipeData_new (
             Recipe_ID INTEGER NOT NULL,
@@ -226,5 +250,4 @@ def add_foreign_keys():
     execute_raw_sql("DROP TABLE Available;")
     execute_raw_sql("ALTER TABLE Available_new RENAME TO Available;")
     execute_raw_sql("CREATE INDEX idx_available_id ON Available (ID);")
-    execute_raw_sql("COMMIT;")
     execute_raw_sql("PRAGMA foreign_keys=on;")
