@@ -43,6 +43,7 @@ dev-dependencies = [
     "mkdocs>=1.6.1",
     "mypy>=1.14.1",
     "ipykernel>=6.29.5",
+    "pytest>=8.3.4",
 ]
 # This is a workaround for the missing support of aarch64 in pyqt5, need to install this over apt +
 # include this with system site packages
