@@ -36,7 +36,6 @@ class DbIngredient(Base):
     consumption: Mapped[int] = mapped_column(default=0, name="Consumption")
     fill_level: Mapped[int] = mapped_column(default=0, name="Fill_level")
     hand: Mapped[bool] = mapped_column(default=False, name="Hand")
-    slow: Mapped[bool] = mapped_column(default=False, name="Slow")
     cost: Mapped[int] = mapped_column(default=0, name="Cost")
     unit: Mapped[str] = mapped_column(default="ml", name="Unit")
     pump_speed: Mapped[int] = mapped_column(default=100, name="Pump_speed")
