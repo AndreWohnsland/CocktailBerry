@@ -56,14 +56,14 @@ class DatabaseCommander:
     database_path = DATABASE_PATH
     database_path_default = DEFAULT_DATABASE_PATH
 
-    def __init__(self, use_default=False):
+    def __init__(self, use_default=False, db_url: str | None = None):
         if not self.database_path.exists():
             time_print("Copying default database for maker usage")
             self.copy_default_database()
-        self.connector_path = self.database_path
-        if use_default:
-            self.connector_path = self.database_path_default
-        self.db_url = f"sqlite:///{self.connector_path}"
+        if db_url is None:
+            self.db_url = f"sqlite:///{self.database_path_default if use_default else self.database_path}"
+        else:
+            self.db_url = db_url
         self.engine = create_engine(self.db_url, echo=False)
         Base.metadata.create_all(self.engine)
         self.Session = scoped_session(sessionmaker(bind=self.engine, expire_on_commit=False))
@@ -84,6 +84,18 @@ class DatabaseCommander:
     def copy_default_database(self):
         """Create a local copy of the database."""
         shutil.copy(self.database_path_default, self.database_path)
+
+    def copy_default_data_to_current_db(self):
+        default_engine = create_engine(f"sqlite:///{self.database_path_default}", echo=False)
+        with default_engine.connect() as conn:
+            for table in Base.metadata.sorted_tables:
+                data = conn.execute(table.select()).fetchall()
+                if not data:
+                    continue
+                # Convert each row to a dictionary
+                data_dicts = [dict(row._mapping) for row in data]
+                with self.session_scope() as session:
+                    session.execute(table.insert(), data_dicts)
 
     def create_backup(self):
         """Create a backup locally in the same folder, used before migrations."""
