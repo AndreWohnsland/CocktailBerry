@@ -562,6 +562,8 @@ class DatabaseCommander:
         """Delete an ingredient by id."""
         if self.get_bottle_usage(ingredient_id):
             raise DatabaseTransactionError("ingredient_still_at_bottle")
+        if ingredient_id in self.get_available_ids():
+            raise DatabaseTransactionError("ingredient_still_in_available")
         recipe_list = self.get_recipe_usage_list(ingredient_id)
         if recipe_list:
             recipe_string = ", ".join(recipe_list)
