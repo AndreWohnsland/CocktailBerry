@@ -190,9 +190,14 @@ class DatabaseCommander:
     def get_ingredient_names_at_bottles(self) -> list[str]:
         """Return ingredient name for all bottles."""
         with self.session_scope() as session:
-            data = session.query(DbIngredient.name).filter(DbIngredient.bottle != None).all()  # noqa: E711
+            data = (
+                session.query(DbIngredient)
+                .join(DbIngredient.bottle)  # explicit join using the relationship
+                .order_by(DbBottle.number)  # order by the mapped 'number' attribute (column "Bottle")
+                .all()
+            )
             # need to flatten the names since they are in a tuple
-            return [x[0] for x in data]
+            return [x.name for x in data]
 
     def get_ingredient_at_bottle(self, bottle: int) -> Ingredient | None:
         """Return ingredient name for all bottles."""
