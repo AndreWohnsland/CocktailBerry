@@ -1,4 +1,4 @@
-name: Linting
+name: Code Check
 on: [pull_request]
 jobs:
   ruff:
@@ -24,3 +24,13 @@ jobs:
           pip install -r mypy_requirements.txt
           pip install pyqt5==5.15.7 pyqt5-qt5==5.15.2
           mypy src
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+      - name: 🔍 Run PyTest
+        run: |
+          uv run pytest
