@@ -6,6 +6,7 @@ import sqlite3
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any, Literal
 
+import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
@@ -497,7 +498,7 @@ class DatabaseCommander:
                 session.commit()
             except Exception as e:
                 session.rollback()
-                if isinstance(e, sqlite3.IntegrityError):
+                if isinstance(e, (sqlite3.IntegrityError, sqlalchemy.exc.IntegrityError)):
                     raise ElementAlreadyExistsError(ingredient_name)
                 raise e
 
@@ -526,7 +527,7 @@ class DatabaseCommander:
                 session.commit()
             except Exception as e:
                 session.rollback()
-                if isinstance(e, sqlite3.IntegrityError):
+                if isinstance(e, (sqlite3.IntegrityError, sqlalchemy.exc.IntegrityError)):
                     raise ElementAlreadyExistsError(name)
                 raise e
 
@@ -614,7 +615,7 @@ class DatabaseCommander:
             session.query(DbRecipe).delete()
             session.query(DbIngredient).delete()
 
-    def save_failed_teamdata(self, payload):
+    def save_failed_teamdata(self, payload: str):
         """Save the failed payload into the db to buffer."""
         with self.session_scope() as session:
             new_teamdata = DbTeamdata(payload=payload)
@@ -628,7 +629,7 @@ class DatabaseCommander:
                 return (data.id, data.payload)
             return None
 
-    def delete_failed_teamdata(self, data_id):
+    def delete_failed_teamdata(self, data_id: int):
         """Delete the given teamdata by id."""
         with self.session_scope() as session:
             teamdata = session.query(DbTeamdata).filter(DbTeamdata.id == data_id).one_or_none()
