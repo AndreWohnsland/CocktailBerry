@@ -3,16 +3,13 @@ from unittest.mock import patch
 import pytest
 from sqlalchemy.orm import Session
 
-from src.database_commander import DatabaseCommander, DatabaseTransactionError
+from src.database_commander import (
+    DatabaseCommander,
+    DatabaseTransactionError,
+    ElementAlreadyExistsError,
+    ElementNotFoundError,
+)
 from src.db_models import DbIngredient, DbRecipe
-
-
-@pytest.fixture
-def db_commander():
-    """Fixture to create an in-memory SQLite database and populate it with test data."""
-    db_commander = DatabaseCommander(db_url="sqlite:///:memory:")
-    db_commander.copy_default_data_to_current_db()
-    yield db_commander
 
 
 class TestCocktail:
@@ -25,30 +22,36 @@ class TestCocktail:
         assert cocktail.amount == 290
         assert cocktail.enabled is True
         assert cocktail.virgin_available is False
-        assert len(cocktail.ingredients) == 3
+        assert len(cocktail.ingredients) == 2
 
         ingredient = cocktail.ingredients[0]
-        assert ingredient.name == "Weißer Rum"
-        assert ingredient.alcohol == 40
-        assert ingredient.amount == 80
+        assert ingredient.name == "Cola"
+        assert ingredient.alcohol == 0
+        assert ingredient.amount == 210
 
     def test_get_all_cocktails(self, db_commander: DatabaseCommander):
         """Test the get_all_cocktails method."""
         cocktails = db_commander.get_all_cocktails()
-        assert len(cocktails) > 0
+        assert len(cocktails) == 4
         cocktail = cocktails[0]
         assert cocktail.name == "Cuba Libre"
         assert cocktail.alcohol == 11
         assert cocktail.amount == 290
         assert cocktail.enabled is True
         assert cocktail.virgin_available is False
-        assert len(cocktail.ingredients) == 3
+        assert len(cocktail.ingredients) == 2
 
     def test_get_possible_cocktails(self, db_commander: DatabaseCommander):
         """Test the get_possible_cocktails method."""
-        possible_cocktails = db_commander.get_possible_cocktails(max_hand_ingredients=2)
-        assert len(possible_cocktails) > 0
+        possible_cocktails = db_commander.get_possible_cocktails(max_hand_ingredients=1)
+        assert len(possible_cocktails) == 2
         assert possible_cocktails[0].name == "Cuba Libre"
+
+    def test_get_disabled_cocktails(self, db_commander: DatabaseCommander):
+        """Test that we can get only not enabled cocktails."""
+        disabled_cocktails = db_commander.get_all_cocktails(status="disabled")
+        assert len(disabled_cocktails) == 1
+        assert disabled_cocktails[0].name == "Tequila Sunrise"
 
     def test_increment_recipe_counter(self, db_commander: DatabaseCommander):
         """Test the increment_recipe_counter method."""
@@ -61,7 +64,7 @@ class TestCocktail:
 
     def test_set_recipe(self, db_commander: DatabaseCommander):
         """Test the set_recipe method."""
-        db_commander.set_recipe(1, "Cuba Libre", 11, 290, True, False, [(1, 80, 1)])
+        db_commander.set_recipe(1, "Cuba Libre", 11, 290, True, False, [(1, 80, 1), (2, 210, 2)])
         cocktail = db_commander.get_cocktail(1)
         assert cocktail is not None
         assert cocktail.name == "Cuba Libre"
@@ -101,42 +104,98 @@ class TestCocktail:
         assert cocktail is not None
         assert len(cocktail.ingredients) == 0
 
+    def test_get_nonexistent_cocktail(self, db_commander: DatabaseCommander):
+        """Test getting a cocktail that does not exist."""
+        cocktail = db_commander.get_cocktail(999)
+        assert cocktail is None
+
+    def test_insert_duplicate_recipe(self, db_commander: DatabaseCommander):
+        """Test inserting a recipe with a duplicate name."""
+        with pytest.raises(ElementAlreadyExistsError):
+            db_commander.insert_new_recipe("Cuba Libre", 11, 290, True, False, [(1, 80, 1), (2, 210, 2)])
+
+    def test_delete_nonexistent_recipe(self, db_commander: DatabaseCommander):
+        """Test deleting a recipe that does not exist."""
+        with pytest.raises(ElementNotFoundError):
+            db_commander.delete_recipe(999)
+
+    def test_set_nonexistent_recipe(self, db_commander: DatabaseCommander):
+        """Test setting a recipe that does not exist."""
+        with pytest.raises(ElementNotFoundError):
+            db_commander.set_recipe(999, "Nonexistent", 0, 0, False, False, [])
+
+    def test_increment_nonexistent_recipe_counter(self, db_commander: DatabaseCommander):
+        """Test incrementing the counter of a recipe that does not exist."""
+        with pytest.raises(ElementNotFoundError):
+            db_commander.increment_recipe_counter("Nonexistent")
+
+    def test_delete_recipe_still_in_use(self, db_commander: DatabaseCommander):
+        """Test deleting a recipe that is still in use."""
+        db_commander.insert_new_recipe("Test Recipe", 0, 100, True, False, [(1, 50, 1)])
+        with pytest.raises(DatabaseTransactionError):
+            db_commander.delete_ingredient(1)
+
+    def test_enable_all_recipes(self, db_commander: DatabaseCommander):
+        """Test enabling all recipes."""
+        db_commander.set_all_recipes_enabled()
+        cocktails = db_commander.get_all_cocktails()
+        assert all(cocktail.enabled for cocktail in cocktails)
+
 
 class TestIngredient:
     def test_get_ingredient(self, db_commander: DatabaseCommander):
         """Test the get_ingredient method."""
         ingredient = db_commander.get_ingredient(1)
         assert ingredient is not None
-        assert ingredient.name == "Fanta"
-        assert ingredient.alcohol == 0
+        assert ingredient.name == "White Rum"
+        assert ingredient.alcohol == 40
         assert ingredient.bottle_volume == 1000
-        assert ingredient.fill_level == 1000
+        assert ingredient.fill_level == 0
         assert ingredient.hand is False
         assert ingredient.pump_speed == 100
 
     def test_get_all_ingredients(self, db_commander: DatabaseCommander):
         """Test the get_all_ingredients method."""
         ingredients = db_commander.get_all_ingredients()
-        assert len(ingredients) > 0
+        assert len(ingredients) == 6
         ingredient = ingredients[1]
         assert ingredient.name == "Cola"
-        assert ingredient.alcohol == 00
+        assert ingredient.alcohol == 0
         assert ingredient.bottle_volume == 1000
-        assert ingredient.fill_level == 1000
+        assert ingredient.fill_level == 0
         assert ingredient.hand is False
         assert ingredient.pump_speed == 100
+
+    def test_get_all_machine_ingredients(self, db_commander: DatabaseCommander):
+        """Test the get_all_machine_ingredients method."""
+        ingredients = db_commander.get_all_ingredients(get_hand=False)
+        assert len(ingredients) == 5
+        ingredient = ingredients[1]
+        assert ingredient.name == "Cola"
+
+    def test_get_all_hand_ingredients(self, db_commander: DatabaseCommander):
+        """Test the get_all_hand_ingredients method."""
+        ingredients = db_commander.get_all_ingredients(get_machine=False)
+        assert len(ingredients) == 1
+        ingredient = ingredients[0]
+        assert ingredient.name == "Blue Curacao"
+
+    def test_get_all_ingredients_return_empty_if_both_false(self, db_commander: DatabaseCommander):
+        """Test the get_all_ingredients method."""
+        ingredients = db_commander.get_all_ingredients(get_hand=False, get_machine=False)
+        assert len(ingredients) == 0
 
     def test_get_ingredient_at_bottle(self, db_commander: DatabaseCommander):
         """Test the get_ingredient_at_bottle method."""
         ingredient = db_commander.get_ingredient_at_bottle(1)
         assert ingredient is not None
-        assert ingredient.name == "Orangensaft"
+        assert ingredient.name == "White Rum"
 
     def test_get_ingredient_names_at_bottles(self, db_commander: DatabaseCommander):
         """Test the get_ingredient_names_at_bottles method."""
         ingredient_names = db_commander.get_ingredient_names_at_bottles()
-        assert len(ingredient_names) > 0
-        assert ingredient_names[1] == "Tequila"
+        assert len(ingredient_names) == 4
+        assert ingredient_names[1] == "Cola"
 
     def test_set_ingredient_data(self, db_commander: DatabaseCommander):
         """Test the set_ingredient_data method."""
@@ -160,6 +219,11 @@ class TestIngredient:
         assert ingredient is not None
         assert ingredient.fill_level == 500
 
+    def test_raise_not_found_on_set_ingredient_level_to_value(self, db_commander: DatabaseCommander):
+        """Test the set_ingredient_level_to_value method."""
+        with pytest.raises(ElementNotFoundError):
+            db_commander.set_ingredient_level_to_value(999, 500)
+
     def test_insert_new_ingredient(self, db_commander: DatabaseCommander):
         """Test the insert_new_ingredient method."""
         db_commander.insert_new_ingredient("New Ingredient", 0, 1000, False, 10, 100, "ml")
@@ -169,16 +233,16 @@ class TestIngredient:
 
     def test_increment_ingredient_consumption(self, db_commander: DatabaseCommander):
         """Test the increment_ingredient_consumption method."""
-        db_commander.increment_ingredient_consumption("Weißer Rum", 100)
+        db_commander.increment_ingredient_consumption("White Rum", 100)
         session = Session(db_commander.engine)
-        ingredient = session.query(DbIngredient).filter_by(name="Weißer Rum").first()
+        ingredient = session.query(DbIngredient).filter_by(name="White Rum").first()
         session.close()
         assert ingredient is not None
         assert ingredient.consumption == 100
 
     def test_set_multiple_ingredient_consumption(self, db_commander: DatabaseCommander):
         """Test the set_multiple_ingredient_consumption method."""
-        ingredients = ["Weißer Rum", "Cola"]
+        ingredients = ["White Rum", "Cola"]
         amounts = [100, 50]
         db_commander.set_multiple_ingredient_consumption(ingredients, amounts)
         session = Session(db_commander.engine)
@@ -190,11 +254,12 @@ class TestIngredient:
         assert ingredient_2 is not None
         assert ingredient_2.consumption == 50
 
-    def test_delete_ingredient_fails(self, db_commander: DatabaseCommander):
+    @pytest.mark.parametrize("ingredient_id", (1, 4, 6))
+    def test_delete_ingredient_fails(self, db_commander: DatabaseCommander, ingredient_id: int):
         """Test the delete_ingredient method."""
         with pytest.raises(DatabaseTransactionError):
-            db_commander.delete_ingredient(1)
-        ingredient = db_commander.get_ingredient(1)
+            db_commander.delete_ingredient(ingredient_id)
+        ingredient = db_commander.get_ingredient(ingredient_id)
         assert ingredient is not None
 
     def test_delete_ingredient(self, db_commander: DatabaseCommander):
@@ -206,11 +271,15 @@ class TestIngredient:
         ingredient = db_commander.get_ingredient(ingredient.id)
         assert ingredient is None
 
-    def test_insert_multiple_existing_handadd_ingredients(self, db_commander: DatabaseCommander):
+    @pytest.mark.parametrize("ing", ([1, 2], ["White Rum", "Cola"]))
+    def test_insert_multiple_existing_handadd_ingredients(
+        self, db_commander: DatabaseCommander, ing: list[str] | list[int]
+    ):
         """Test the insert_multiple_existing_handadd_ingredients method."""
-        db_commander.insert_multiple_existing_handadd_ingredients(["Weißer Rum"])
+        db_commander.insert_multiple_existing_handadd_ingredients(ing)
         names = db_commander.get_available_ingredient_names()
-        assert "Weißer Rum" in names
+        assert "White Rum" in names
+        assert "Cola" in names
 
     def test_delete_existing_handadd_ingredient(self, db_commander: DatabaseCommander):
         """Test the delete_existing_handadd_ingredient method."""
@@ -218,25 +287,55 @@ class TestIngredient:
         names = db_commander.get_available_ingredient_names()
         assert len(names) == 0
 
+    def test_get_nonexistent_ingredient(self, db_commander: DatabaseCommander):
+        """Test getting an ingredient that does not exist."""
+        ingredient = db_commander.get_ingredient(999)
+        assert ingredient is None
+
+    def test_insert_duplicate_ingredient(self, db_commander: DatabaseCommander):
+        """Test inserting an ingredient with a duplicate name."""
+        with pytest.raises(ElementAlreadyExistsError):
+            db_commander.insert_new_ingredient("White Rum", 40, 1000, False, 100, 100, "ml")
+
+    def test_delete_nonexistent_ingredient(self, db_commander: DatabaseCommander):
+        """Test deleting an ingredient that does not exist."""
+        with pytest.raises(ElementNotFoundError):
+            db_commander.delete_ingredient(999)
+
+    def test_set_nonexistent_ingredient(self, db_commander: DatabaseCommander):
+        """Test setting an ingredient that does not exist."""
+        with pytest.raises(ElementNotFoundError):
+            db_commander.set_ingredient_data("Nonexistent", 0, 0, 0, False, 0, 999, 0, "ml")
+
+    def test_increment_nonexistent_ingredient_consumption(self, db_commander: DatabaseCommander):
+        """Test incrementing the consumption of an ingredient that does not exist."""
+        with pytest.raises(ElementNotFoundError):
+            db_commander.increment_ingredient_consumption("Nonexistent", 100)
+
+    def test_delete_ingredient_still_in_use(self, db_commander: DatabaseCommander):
+        """Test deleting an ingredient that is still in use."""
+        with pytest.raises(DatabaseTransactionError):
+            db_commander.delete_ingredient(1)
+
 
 class TestBottle:
     def test_get_bottle_fill_levels(self, db_commander: DatabaseCommander):
         """Test the get_bottle_fill_levels method."""
         fill_levels = db_commander.get_bottle_fill_levels()
-        assert len(fill_levels) > 0
-        assert fill_levels[0] == 100
+        assert len(fill_levels) == 4
+        assert fill_levels[0] == 0
 
     def test_get_bottle_data(self, db_commander: DatabaseCommander):
         ingredients = db_commander.get_ingredients_at_bottles()
-        assert len(ingredients) > 0
-        assert ingredients[0].name == "Orangensaft"
-        assert ingredients[3].name == "Brauner Rum"
+        assert len(ingredients) == 4
+        assert ingredients[0].name == "White Rum"
+        assert ingredients[1].name == "Cola"
 
     @pytest.mark.parametrize(
         "ingredient_id, expected_usage",
         [
-            (1, False),
-            (27, True),
+            (1, True),
+            (4, False),
         ],
     )
     def test_get_bottle_usage(self, db_commander: DatabaseCommander, ingredient_id: int, expected_usage: bool):
@@ -246,13 +345,25 @@ class TestBottle:
 
     def test_set_bottle_order(self, db_commander: DatabaseCommander):
         """Test the set_bottle_order method."""
-        db_commander.set_bottle_order(["Weißer Rum", "Cuba Libre"])
+        db_commander.set_bottle_order(["White Rum", "Cola"])
         data = db_commander.get_bottle_data_bottle_window()
-        assert data[0][0] == "Weißer Rum"
+        assert data[0][0] == "White Rum"
 
-    def test_set_bottle_at_slot(self, db_commander: DatabaseCommander):
+    def test_get_ingredient_at_bottle(self, db_commander: DatabaseCommander):
+        """Test the get_ingredient_at_bottle method."""
+        ingredient = db_commander.get_ingredient_at_bottle(1)
+        assert ingredient is not None
+        assert ingredient.name == "White Rum"
+
+    def test_get_ingredient_at_bottle_not_set(self, db_commander: DatabaseCommander):
+        """Test the get_ingredient_at_bottle method when no ingredient is set."""
+        ingredient = db_commander.get_ingredient_at_bottle(10)
+        assert ingredient is None
+
+    @pytest.mark.parametrize("ing", [6, "Fanta"])
+    def test_set_bottle_at_slot(self, db_commander: DatabaseCommander, ing: int | str):
         """Test the set_bottle_at_slot method."""
-        db_commander.set_bottle_at_slot("Fanta", 1)
+        db_commander.set_bottle_at_slot(ing, 1)
         ingredient = db_commander.get_ingredient_at_bottle(1)
         assert ingredient is not None
         assert ingredient.name == "Fanta"
@@ -276,14 +387,14 @@ class TestAvailable:
     def test_get_available_ingredient_names(self, db_commander: DatabaseCommander):
         """Test the get_available_ingredient_names method."""
         names = db_commander.get_available_ingredient_names()
-        assert len(names) > 0
+        assert len(names) == 1
         assert names[0] == "Blue Curacao"
 
     def test_get_available_ids(self, db_commander: DatabaseCommander):
         """Test the get_available_ids method."""
         ids = db_commander.get_available_ids()
-        assert len(ids) > 0
-        assert ids[0] == 1
+        assert len(ids) == 1
+        assert ids[0] == 4
 
 
 class TestData:
@@ -297,23 +408,23 @@ class TestData:
         """Test the get_consumption_data_lists_ingredients method."""
         data = db_commander.get_consumption_data_lists_ingredients()
         assert len(data) == 3
-        assert data[0][1] == "Fanta"
+        assert data[0][1] == "White Rum"
 
     def test_get_cost_data_lists_ingredients(self, db_commander: DatabaseCommander):
         """Test the get_cost_data_lists_ingredients method."""
         data = db_commander.get_cost_data_lists_ingredients()
         assert len(data) == 3
-        assert data[0][1] == "Fanta"
+        assert data[0][1] == "White Rum"
 
     def test_get_bottle_data_bottle_window(self, db_commander: DatabaseCommander):
         """Test the get_bottle_data_bottle_window method."""
         data = db_commander.get_bottle_data_bottle_window()
-        assert len(data) > 0
-        orange_juice = data[0]
-        assert orange_juice[0] == "Orangensaft"
-        assert orange_juice[1] == 1000
-        assert orange_juice[2] == 27
-        assert orange_juice[3] == 1000
+        assert len(data) == 4
+        white_rum = data[0]
+        assert white_rum[0] == "White Rum"
+        assert white_rum[1] == 0
+        assert white_rum[2] == 1
+        assert white_rum[3] == 1000
 
     def test_delete_consumption_recipes(self, db_commander: DatabaseCommander):
         """Test the delete_consumption_recipes method."""
@@ -324,7 +435,7 @@ class TestData:
 
     def test_delete_consumption_ingredients(self, db_commander: DatabaseCommander):
         """Test the delete_consumption_ingredients method."""
-        db_commander.increment_ingredient_consumption("Fanta", 100)
+        db_commander.increment_ingredient_consumption("White Rum", 100)
         db_commander.delete_consumption_ingredients()
         data = db_commander.get_consumption_data_lists_ingredients()
         assert data[1][1] == 0
@@ -353,6 +464,11 @@ class TestFailedTeamData:
         assert data is not None
         assert data[1] == "test_payload"
 
+    def test_get_nonexistent_failed_teamdata(self, db_commander: DatabaseCommander):
+        """Test getting failed teamdata that does not exist."""
+        data = db_commander.get_failed_teamdata()
+        assert data is None
+
     def test_delete_failed_teamdata(self, db_commander: DatabaseCommander):
         """Test the delete_failed_teamdata method."""
         db_commander.save_failed_teamdata("test_payload")
@@ -361,3 +477,8 @@ class TestFailedTeamData:
         db_commander.delete_failed_teamdata(data[0])
         data = db_commander.get_failed_teamdata()
         assert data is None
+
+    def test_delete_nonexistent_failed_teamdata(self, db_commander: DatabaseCommander):
+        """Test deleting failed teamdata that does not exist."""
+        with pytest.raises(ElementNotFoundError):
+            db_commander.delete_failed_teamdata(999)
