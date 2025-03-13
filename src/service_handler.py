@@ -141,7 +141,7 @@ class ServiceHandler:
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             self._log_connection_error(endpoint, post_type)
             # only save failed team data for now
-            if post_type is PostType.TEAMDATA:
+            if post_type is PostType.TEAMDATA and payload is not None:
                 DBC.save_failed_teamdata(payload)
             return {}
 
