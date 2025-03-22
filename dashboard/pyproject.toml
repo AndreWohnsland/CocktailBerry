@@ -18,7 +18,7 @@ dash = "^2.17.0"
 numpy = "^1.26.4"
 scipy = "^1.13.0"
 plotly = "^5.22.0"
-gunicorn = "^22.0.0"
+gunicorn = "^23.0.0"
 
 [tool.poetry.dev-dependencies]
 pip-chill = "^1.0.3"
