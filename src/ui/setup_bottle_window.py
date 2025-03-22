@@ -84,6 +84,8 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         number = cfg.choose_bottle_number()
         label_name = [getattr(self, f"LAmount{i}") for i in range(1, number + 1)]
         for label, ingredient_id, max_volume in zip(label_name, self.id_list, self.max_volume):
+            if ingredient_id == 0:
+                continue
             new_amount = min(int(label.text()), max_volume)
             DB_COMMANDER.set_ingredient_level_to_value(ingredient_id, new_amount)
         set_fill_level_bars(self.mainscreen)

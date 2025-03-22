@@ -150,7 +150,7 @@ class TestIngredient:
         assert ingredient.name == "White Rum"
         assert ingredient.alcohol == 40
         assert ingredient.bottle_volume == 1000
-        assert ingredient.fill_level == 0
+        assert ingredient.fill_level == 1000
         assert ingredient.hand is False
         assert ingredient.pump_speed == 100
 
@@ -194,7 +194,7 @@ class TestIngredient:
     def test_get_ingredient_names_at_bottles(self, db_commander: DatabaseCommander):
         """Test the get_ingredient_names_at_bottles method."""
         ingredient_names = db_commander.get_ingredient_names_at_bottles()
-        assert len(ingredient_names) == 4
+        assert len(ingredient_names) == 24
         assert ingredient_names[1] == "Cola"
 
     def test_set_ingredient_data(self, db_commander: DatabaseCommander):
@@ -322,12 +322,13 @@ class TestBottle:
     def test_get_bottle_fill_levels(self, db_commander: DatabaseCommander):
         """Test the get_bottle_fill_levels method."""
         fill_levels = db_commander.get_bottle_fill_levels()
-        assert len(fill_levels) == 4
-        assert fill_levels[0] == 0
+        assert len(fill_levels) == 24
+        assert fill_levels[0] == 100
+        assert fill_levels[1] == 0
 
     def test_get_bottle_data(self, db_commander: DatabaseCommander):
         ingredients = db_commander.get_ingredients_at_bottles()
-        assert len(ingredients) == 4
+        assert len(ingredients) == 24
         assert ingredients[0].name == "White Rum"
         assert ingredients[1].name == "Cola"
 
@@ -374,6 +375,26 @@ class TestBottle:
         fill_levels = db_commander.get_bottle_fill_levels()
         assert fill_levels[0] == 100
 
+    def test_get_ingredient_names_at_bottles_with_empty(self, db_commander: DatabaseCommander):
+        """Test the get_ingredient_names_at_bottles method with empty bottles."""
+        ingredient_names = db_commander.get_ingredient_names_at_bottles()
+        assert len(ingredient_names) == 24  # Includes the empty bottle
+        assert ingredient_names[3] == ""  # Bottle 4 is empty
+        # we have 4 bottles with ingredients
+        assert len([name for name in ingredient_names if name != ""]) == 4
+
+    def test_get_bottle_data_bottle_window_with_empty(self, db_commander: DatabaseCommander):
+        """Test the get_bottle_data_bottle_window method with empty bottles."""
+        data = db_commander.get_bottle_data_bottle_window()
+        assert len(data) == 24  # Includes the empty bottle
+        empty_bottle = data[3]
+        assert empty_bottle[0] == ""  # Name is empty string
+        assert empty_bottle[1] == 0  # Fill level is 0
+        assert empty_bottle[2] == 0  # ID is 0
+        assert empty_bottle[3] == 0  # Volume is 0
+        # we have 4 bottles with ingredients
+        assert len([bottle for bottle in data if bottle[0] != ""]) == 4
+
 
 class TestBackup:
     def test_create_backup(self, db_commander: DatabaseCommander):
@@ -419,12 +440,14 @@ class TestData:
     def test_get_bottle_data_bottle_window(self, db_commander: DatabaseCommander):
         """Test the get_bottle_data_bottle_window method."""
         data = db_commander.get_bottle_data_bottle_window()
-        assert len(data) == 4
+        assert len(data) == 24
         white_rum = data[0]
         assert white_rum[0] == "White Rum"
-        assert white_rum[1] == 0
+        assert white_rum[1] == 1000
         assert white_rum[2] == 1
         assert white_rum[3] == 1000
+        # other ingredients are empty (no fill level)
+        assert data[1][1] == 0
 
     def test_delete_consumption_recipes(self, db_commander: DatabaseCommander):
         """Test the delete_consumption_recipes method."""

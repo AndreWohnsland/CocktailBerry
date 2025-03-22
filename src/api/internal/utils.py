@@ -66,7 +66,7 @@ def map_ingredient(ingredient: Optional[DBIngredient]) -> Optional[Ingredient]:
 
 
 def map_bottles(ing: DBIngredient) -> Bottle:
-    return Bottle(number=ing.bottle or 0, ingredient=map_ingredient(ing) if ing.id else None)
+    return Bottle(number=ing.bottle or 0, ingredient=map_ingredient(ing) if ing.id > 0 else None)
 
 
 def calculate_cocktail_volume_and_concentration(cocktail: CocktailInput):

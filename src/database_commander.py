@@ -154,6 +154,12 @@ class DatabaseCommander:
             unit=data.unit,
         )
 
+    def _empty_ingredient(self, bottle: int) -> Ingredient:
+        """Return an empty ingredient dataclass."""
+        return Ingredient(
+            id=0, name="", alcohol=0, bottle_volume=0, fill_level=0, hand=False, pump_speed=0, bottle=bottle
+        )
+
     def get_cocktail(self, search: str | int) -> Cocktail | None:
         """Get all needed data for the cocktail from ID or name."""
         with self.session_scope() as session:
@@ -189,16 +195,15 @@ class DatabaseCommander:
         return [x for x in all_cocktails if x.is_possible(handadds_ids, max_hand_ingredients)]
 
     def get_ingredient_names_at_bottles(self) -> list[str]:
-        """Return ingredient name for all bottles."""
+        """Return ingredient name for all bottles, including empty ones as empty strings."""
         with self.session_scope() as session:
             data = (
-                session.query(DbIngredient)
-                .join(DbIngredient.bottle)  # explicit join using the relationship
-                .order_by(DbBottle.number)  # order by the mapped 'number' attribute (column "Bottle")
+                session.query(DbBottle.number, DbIngredient.name)
+                .outerjoin(DbBottle.ingredient)
+                .order_by(DbBottle.number)
                 .all()
             )
-            # need to flatten the names since they are in a tuple
-            return [x.name for x in data]
+            return [name if name is not None else "" for _, name in data]
 
     def get_ingredient_at_bottle(self, bottle: int) -> Ingredient | None:
         """Return ingredient name for all bottles."""
@@ -212,13 +217,18 @@ class DatabaseCommander:
         """Return ingredient name for all bottles."""
         with self.session_scope() as session:
             data = (
-                session.query(DbIngredient)
-                .join(DbBottle, DbIngredient.id == DbBottle.id)
-                .filter(DbIngredient.bottle != None)  # noqa: E711
+                session.query(DbBottle, DbIngredient)
+                .outerjoin(DbIngredient, DbBottle.id == DbIngredient.id)
                 .order_by(DbBottle.number)
                 .all()
             )
-            return [self._map_ingredient(x) for x in data]
+            result = []
+            for bottle, ingredient in data:
+                if ingredient is None:
+                    result.append(self._empty_ingredient(bottle.number))
+                else:
+                    result.append(self._map_ingredient(ingredient))
+            return result
 
     def get_bottle_fill_levels(self) -> list[int]:
         """Return percentage of fill level, limited to [0, 100]."""
@@ -325,20 +335,29 @@ class DatabaseCommander:
             return [x[0] for x in data]
 
     def get_bottle_data_bottle_window(self) -> list[tuple[str, int, int, int]]:
-        """Get all needed data for bottles, ordered by bottle number."""
+        """Get all needed data for bottles, ordered by bottle number, including empty ones."""
         with self.session_scope() as session:
             data = (
                 session.query(
+                    DbBottle.number,
                     DbIngredient.name,
                     DbIngredient.fill_level,
                     DbIngredient.id,
                     DbIngredient.volume,
                 )
-                .select_from(DbBottle)
                 .outerjoin(DbBottle.ingredient)
                 .order_by(DbBottle.number)
-            ).all()
-            return [(name, fill_level, id, volume) for name, fill_level, id, volume in data]
+                .all()
+            )
+            return [
+                (
+                    name if name is not None else "",
+                    fill_level if fill_level is not None else 0,
+                    ing_id if ing_id is not None else 0,
+                    volume if volume is not None else 0,
+                )
+                for _, name, fill_level, ing_id, volume in data
+            ]
 
     # set (update) commands
     def set_bottle_order(self, ingredient_names: list[str] | list[int]):
