@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QLabel, QMainWindow
 
 from src import MAX_SUPPORTED_BOTTLES
 from src.config.config_manager import CONFIG as cfg
@@ -93,17 +93,11 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
 
     def assign_bottle_data(self):
         number = cfg.choose_bottle_number()
-        bottle_data = DB_COMMANDER.get_bottle_data_bottle_window()[:number]
-        for i, (ingredient_name, bottle_level, ingredient_id, ingredient_volume) in enumerate(bottle_data, start=1):
-            labelobj = getattr(self, f"LName{i}")
-            label_name = getattr(self, f"LAmount{i}")
-            if bottle_level is not None:
-                label_name.setText(str(bottle_level))
-                self.id_list.append(ingredient_id)
-                self.max_volume.append(ingredient_volume)
-                labelobj.setText(f"    {ingredient_name}")
-            else:
-                label_name.setText("0")
-                self.id_list.append(0)
-                self.max_volume.append(0)
-                labelobj.setText("")
+        ingredients = DB_COMMANDER.get_ingredients_at_bottles()[:number]
+        for i, ingredient in enumerate(ingredients, start=1):
+            labelobj: QLabel = getattr(self, f"LName{i}")
+            label_name: QLabel = getattr(self, f"LAmount{i}")
+            label_name.setText(str(ingredient.fill_level))
+            self.id_list.append(ingredient.id)
+            self.max_volume.append(ingredient.bottle_volume)
+            labelobj.setText(f"    {ingredient.name or '-'}")
