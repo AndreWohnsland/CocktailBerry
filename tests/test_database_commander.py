@@ -347,8 +347,8 @@ class TestBottle:
     def test_set_bottle_order(self, db_commander: DatabaseCommander):
         """Test the set_bottle_order method."""
         db_commander.set_bottle_order(["White Rum", "Cola"])
-        data = db_commander.get_bottle_data_bottle_window()
-        assert data[0][0] == "White Rum"
+        data = db_commander.get_ingredients_at_bottles()
+        assert data[0].name == "White Rum"
 
     def test_get_ingredient_at_bottle(self, db_commander: DatabaseCommander):
         """Test the get_ingredient_at_bottle method."""
@@ -382,18 +382,6 @@ class TestBottle:
         assert ingredient_names[3] == ""  # Bottle 4 is empty
         # we have 4 bottles with ingredients
         assert len([name for name in ingredient_names if name != ""]) == 4
-
-    def test_get_bottle_data_bottle_window_with_empty(self, db_commander: DatabaseCommander):
-        """Test the get_bottle_data_bottle_window method with empty bottles."""
-        data = db_commander.get_bottle_data_bottle_window()
-        assert len(data) == 24  # Includes the empty bottle
-        empty_bottle = data[3]
-        assert empty_bottle[0] == ""  # Name is empty string
-        assert empty_bottle[1] == 0  # Fill level is 0
-        assert empty_bottle[2] == 0  # ID is 0
-        assert empty_bottle[3] == 0  # Volume is 0
-        # we have 4 bottles with ingredients
-        assert len([bottle for bottle in data if bottle[0] != ""]) == 4
 
 
 class TestBackup:
@@ -436,18 +424,6 @@ class TestData:
         data = db_commander.get_cost_data_lists_ingredients()
         assert len(data) == 3
         assert data[0][1] == "White Rum"
-
-    def test_get_bottle_data_bottle_window(self, db_commander: DatabaseCommander):
-        """Test the get_bottle_data_bottle_window method."""
-        data = db_commander.get_bottle_data_bottle_window()
-        assert len(data) == 24
-        white_rum = data[0]
-        assert white_rum[0] == "White Rum"
-        assert white_rum[1] == 1000
-        assert white_rum[2] == 1
-        assert white_rum[3] == 1000
-        # other ingredients are empty (no fill level)
-        assert data[1][1] == 0
 
     def test_delete_consumption_recipes(self, db_commander: DatabaseCommander):
         """Test the delete_consumption_recipes method."""
