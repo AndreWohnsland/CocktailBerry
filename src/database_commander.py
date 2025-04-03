@@ -110,8 +110,6 @@ class DatabaseCommander:
 
     def _map_cocktail(self, recipe: DbRecipe) -> Cocktail:
         """Map the Recipe database class to the Cocktail dataclass."""
-        if recipe is None:
-            return None
         return Cocktail(
             id=recipe.id,
             name=recipe.name,
