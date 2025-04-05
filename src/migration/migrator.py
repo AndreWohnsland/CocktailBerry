@@ -1,32 +1,36 @@
 from __future__ import annotations
 
-import contextlib
-
-# pylint: disable=wrong-import-order,wrong-import-position,too-few-public-methods,ungrouped-imports
-from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
-from src.migration.web_migrator import replace_backend_script
 from src.python_vcheck import check_python_version
 
 # Version check takes place before anything, else other imports may throw an error
 check_python_version()
 
-
+# pylint: disable=wrong-import-order,wrong-import-position,too-few-public-methods,ungrouped-imports
 import configparser
+import contextlib
 import importlib.util
 import platform
 import shutil
 import subprocess
 import sys
-from pathlib import Path
 from typing import Any
 
 import yaml
 
 from src import FUTURE_PYTHON_VERSION, __version__
-from src.filepath import CUSTOM_CONFIG_FILE, CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, VERSION_FILE
+from src.filepath import (
+    BACKUP_FOLDER,
+    CUSTOM_CONFIG_FILE,
+    CUSTOM_STYLE_FILE,
+    CUSTOM_STYLE_SCSS,
+    VENV_FOLDER,
+    VERSION_FILE,
+)
 from src.logger_handler import LoggerHandler
+from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
 from src.migration.update_data import (
     add_cost_column_to_ingredients,
+    add_foreign_keys,
     add_more_bottles_to_db,
     add_order_column_to_ingredient_data,
     add_slower_ingredient_flag_to_db,
@@ -35,10 +39,12 @@ from src.migration.update_data import (
     add_virgin_flag_to_db,
     change_slower_flag_to_pump_speed,
     fix_amount_in_recipe,
+    remove_is_alcoholic_and_hand_from_recipe_data,
     remove_is_alcoholic_column,
     remove_old_recipe_columns,
     rename_database_to_english,
 )
+from src.migration.web_migrator import replace_backend_script
 
 _logger = LoggerHandler("migrator_module")
 
@@ -128,6 +134,10 @@ class Migrator:
                 _install_uv,
                 _check_and_replace_qt_launcher_script,
             ],
+            "2.2.0": [
+                add_foreign_keys,
+                remove_is_alcoholic_and_hand_from_recipe_data,
+            ],
         }
 
         for version, actions in version_actions.items():
@@ -142,10 +152,8 @@ class Migrator:
         """Save the config file at ~/cb_backup/custom_config_pre_{suffix}.yaml."""
         if not CUSTOM_CONFIG_FILE.exists():
             return
-        save_path = Path.home() / "cb_backup" / f"custom_config_pre_{suffix}.yaml"
+        save_path = BACKUP_FOLDER / f"custom_config_pre_{suffix}.yaml"
         _logger.log_event("INFO", f"Backing up config file to {save_path}")
-        # Ensure the backup directory exists
-        save_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(CUSTOM_CONFIG_FILE, save_path)
 
     def _migration_log(self, version: str):
@@ -339,8 +347,7 @@ def _check_and_replace_qt_launcher_script():
         # This is because we need the system site package for pyqt
         uv_executable = shutil.which("uv")
         platform_name = platform.system().lower()
-        venv_folder = Path(__file__).parents[2].absolute() / ".venv"
-        if not venv_folder.exists() and uv_executable and platform_name == "linux":
+        if not VENV_FOLDER.exists() and uv_executable and platform_name == "linux":
             subprocess.run(
                 [uv_executable, "uv", "venv", "--system-site-packages", "--python", "$(python -V | awk '{print $2}')"],
                 check=True,

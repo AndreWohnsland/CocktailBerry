@@ -141,7 +141,7 @@ class ServiceHandler:
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             self._log_connection_error(endpoint, post_type)
             # only save failed team data for now
-            if post_type is PostType.TEAMDATA:
+            if post_type is PostType.TEAMDATA and payload is not None:
                 DBC.save_failed_teamdata(payload)
             return {}
 
@@ -153,7 +153,7 @@ class ServiceHandler:
         endpoint = f"{cfg.TEAM_API_URL}/cocktail"
         DBC = DatabaseCommander()
         failed_data = DBC.get_failed_teamdata()
-        if failed_data:
+        if failed_data is not None:
             msg_id, payload = failed_data
             # Delete the old thing before recursion hell comes live
             DBC.delete_failed_teamdata(msg_id)

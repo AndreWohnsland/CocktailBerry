@@ -34,6 +34,9 @@ dialog:
   ingredient_still_at_bottle:
     en: 'Error, the ingredient is still used at a bottle!'
     de: 'Fehler, die Zutat ist noch in der Belegung registriert!'
+  ingredient_still_in_available:
+    en: 'Error, the ingredient is still registered at available ingredients!'
+    de: 'Fehler, die Zutat ist noch unter den verfügbaren Zutaten registriert!'
   ingredient_still_at_recipe:
     en: "Ingredient can not be deleted, it is still used at:\n<{recipe_string}>"
     de: "Zutat kann nicht gelöscht werden, da sie in:\n<{recipe_string}>\ngenutzt wird"

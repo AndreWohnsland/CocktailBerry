@@ -29,13 +29,13 @@ const RecipeList: React.FC = () => {
   const { t } = useTranslation();
 
   if (isLoading || ingredientsLoading) return <LoadingData />;
-  if (error || ingredientsError) return <ErrorComponent text={error?.message || ingredientsError?.message} />;
+  if (error || ingredientsError) return <ErrorComponent text={error?.message ?? ingredientsError?.message} />;
 
   let displayedCocktails = cocktails?.sort((a, b) => a.name.localeCompare(b.name));
   if (search) {
     displayedCocktails = displayedCocktails?.filter(
       (cocktail) =>
-        cocktail.name.toLowerCase().includes(search.toLowerCase()) ||
+        cocktail.name.toLowerCase().includes(search.toLowerCase()) ??
         cocktail.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(search.toLowerCase())),
     );
   }
@@ -174,6 +174,8 @@ const RecipeList: React.FC = () => {
     }
   };
 
+  const sortedIngredients = ingredients?.sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <div className='p-2 pt-0 w-full max-w-3xl'>
       <SearchBar search={search} setSearch={setSearch}></SearchBar>
@@ -211,7 +213,7 @@ const RecipeList: React.FC = () => {
         {selectedCocktail && (
           <div className='px-1 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
-              <h2 className='text-xl font-bold text-secondary'>{selectedCocktail.name || t('recipes.newRecipe')}</h2>
+              <h2 className='text-xl font-bold text-secondary'>{selectedCocktail.name ?? t('recipes.newRecipe')}</h2>
               <button onClick={closeModal} aria-label='close'>
                 <AiOutlineCloseCircle className='text-danger' size={34} />
               </button>
@@ -260,7 +262,7 @@ const RecipeList: React.FC = () => {
                     <option value={0} disabled>
                       {t('recipes.selectIngredient')}
                     </option>
-                    {ingredients?.map((ing) => (
+                    {sortedIngredients?.map((ing) => (
                       <option key={ing.id} value={ing.id}>
                         {ing.name}
                       </option>

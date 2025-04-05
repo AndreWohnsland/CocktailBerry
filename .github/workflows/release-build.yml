@@ -30,6 +30,10 @@ jobs:
         run: |
           sed -i "/^version = \".*\"$/s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" pyproject.toml
 
+      - name: Update version in uv.toml
+        run: |
+          sed -i "/^version = \".*\"$/s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" uv.lock
+
       - name: Commit changes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

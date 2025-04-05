@@ -1,91 +1,21 @@
 import contextlib
+import shutil
+import sqlite3
+from datetime import datetime
 from sqlite3 import OperationalError
 
-from src.database_commander import DatabaseCommander, DatabaseHandler
+from src.filepath import BACKUP_FOLDER, DATABASE_PATH
 from src.logger_handler import LoggerHandler
-from src.models import Cocktail, Ingredient
 
 _logger = LoggerHandler("update_data_module")
 
 
-def add_new_recipes_from_default_db():
-    """Add the new recipes since the initial creation of the db."""
-    new_names = [
-        "Beachbum",
-        "Bay Breeze",
-        "Belladonna",
-        "Black-Eyed Susan",
-        "Blue Hawaii",
-        "Blue Ricardo",
-        "Flamingo",
-        "Orange Crush",
-        "Bocce Ball",
-        "Fuzzy Navel",
-        "Madras",
-        "Woo Woo",
-        "Vodka Tonic",
-        "Sidewinder’s Fang",  # noqa: RUF001
-        "212",
-        "Cantarito",
-        "Paloma",
-    ]
-    _logger.log_event("INFO", "Adding new recipes from default db, if any are missing.")
-    _add_new_recipes_from_list(new_names)
-
-
-def _add_new_recipes_from_list(new_names: list[str]):
-    """Add the new recipes from the given list."""
-    # build connection to provided and local db
-    # gets the new recipe data, check whats missing and insert it
-    default_db = DatabaseCommander(use_default=True)
-    local_db = DatabaseCommander()
-    local_db.create_backup()
-    cocktails_to_add = _get_new_cocktails(new_names, default_db, local_db)
-    ingredient_to_add = _get_new_ingredients(local_db, cocktails_to_add)
-    _insert_new_ingredients(default_db, local_db, ingredient_to_add)
-    _insert_new_recipes(local_db, cocktails_to_add)
-
-
-def _insert_new_recipes(local_db: DatabaseCommander, cocktails_to_add: list[Cocktail]):
-    """Insert the data for the new recipes into the db."""
-    all_ingredients = local_db.get_all_ingredients()
-    ing_mapping: dict[str, Ingredient] = {}
-    for ing in all_ingredients:
-        ing_mapping[ing.name] = ing
-    _logger.log_event("INFO", f"Adding recipes: {[c.name for c in cocktails_to_add]}")
-    for rec in cocktails_to_add:
-        ingredient_data = [(ing_mapping[i.name].id, i.amount, 1) for i in rec.ingredients]
-        local_db.insert_new_recipe(
-            rec.name, rec.alcohol, rec.amount, rec.enabled, rec.virgin_available, ingredient_data
-        )
-
-
-def _insert_new_ingredients(default_db: DatabaseCommander, local_db: DatabaseCommander, ingredient_to_add: list[str]):
-    """Get and inserts the given ingredients into the local db."""
-    _logger.log_event("INFO", f"Adding ingredients: {ingredient_to_add}")
-    for ingredient in ingredient_to_add:
-        ing = default_db.get_ingredient(ingredient)
-        if ing is None:
-            continue
-        local_db.insert_new_ingredient(
-            ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), ing.pump_speed, ing.cost, ing.unit
-        )
-
-
-def _get_new_ingredients(local_db: DatabaseCommander, cocktails_to_add: list[Cocktail]) -> list[str]:
-    """Return the names of the missing ingredients for the given cocktails."""
-    ingredients_in_new = []
-    for cocktail in cocktails_to_add:
-        ingredients_in_new.extend([i.name for i in cocktail.ingredients])
-    existing_ingredients = [i.name for i in local_db.get_all_ingredients()]
-    return list(set(ingredients_in_new).difference(set(existing_ingredients)))
-
-
-def _get_new_cocktails(new_names: list[str], default_db: DatabaseCommander, local_db: DatabaseCommander):
-    """Return the cocktails that are not already in the local db by the given names."""
-    already_existing_names = [x.name for x in local_db.get_all_cocktails() if x.name in new_names]
-    cocktail_difference = list(set(new_names).difference(set(already_existing_names)))
-    return [x for x in default_db.get_all_cocktails() if x.name in cocktail_difference]
+def execute_raw_sql(query: str, params: tuple = ()):
+    """Execute raw SQL query using sqlite3."""
+    with sqlite3.connect(DATABASE_PATH) as connection:
+        cursor = connection.cursor()
+        cursor.execute(query, params)
+        connection.commit()
 
 
 def rename_database_to_english():
@@ -133,28 +63,25 @@ def remove_old_recipe_columns():
 
 def _try_execute_db_commands(commands: list[str]):
     """Try to execute each command, pass if OperationalError."""
-    db_handler = DatabaseHandler()
     for command in commands:
         # this may occur if renaming already took place
         with contextlib.suppress(OperationalError):
-            db_handler.query_database(command)
+            execute_raw_sql(command)
 
 
 def add_more_bottles_to_db():
     """Update the bottles to support up to 16 bottles."""
     _logger.log_event("INFO", "Adding bottle numbers 11 to 16 to DB")
-    db_handler = DatabaseHandler()
     # Adding constraint if still missing
-    db_handler.query_database("CREATE UNIQUE INDEX IF NOT EXISTS idx_bottle ON Bottles(Bottle)")
+    execute_raw_sql("CREATE UNIQUE INDEX IF NOT EXISTS idx_bottle ON Bottles(Bottle)")
     for bottle_count in range(11, 17):
-        db_handler.query_database("INSERT OR IGNORE INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
+        execute_raw_sql("INSERT OR IGNORE INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
 
 
 def add_team_buffer_to_database():
     """Add an additional table for buffering not send team data."""
     _logger.log_event("INFO", "Adding team buffer table to database")
-    db_handler = DatabaseHandler()
-    db_handler.query_database(
+    execute_raw_sql(
         """CREATE TABLE IF NOT EXISTS Teamdata(
             ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             Payload TEXT NOT NULL);"""
@@ -164,10 +91,9 @@ def add_team_buffer_to_database():
 def add_virgin_flag_to_db():
     """Add the virgin flag column to the DB."""
     _logger.log_event("INFO", "Adding virgin flag column to Recipes DB")
-    db_handler = DatabaseHandler()
     try:
-        db_handler.query_database("ALTER TABLE Recipes ADD COLUMN Virgin INTEGER DEFAULT 0;")
-        db_handler.query_database("Update Recipes SET Virgin = 0;")
+        execute_raw_sql("ALTER TABLE Recipes ADD COLUMN Virgin INTEGER DEFAULT 0;")
+        execute_raw_sql("Update Recipes SET Virgin = 0;")
     except OperationalError:
         _logger.log_event("ERROR", "Could not add virgin flag column to DB, this may because it already exists")
 
@@ -175,10 +101,9 @@ def add_virgin_flag_to_db():
 def add_slower_ingredient_flag_to_db():
     """Add the slower ingredient flag column to the DB."""
     _logger.log_event("INFO", "Adding Slow flag column to Ingredients DB")
-    db_handler = DatabaseHandler()
     try:
-        db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Slow INTEGER DEFAULT 0;")
-        db_handler.query_database("Update Ingredients SET Slow = 0;")
+        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Slow INTEGER DEFAULT 0;")
+        execute_raw_sql("Update Ingredients SET Slow = 0;")
     except OperationalError:
         _logger.log_event("ERROR", "Could not add Slow flag column to DB, this may because it already exists")
 
@@ -186,9 +111,8 @@ def add_slower_ingredient_flag_to_db():
 def remove_is_alcoholic_column():
     """Remove the is_alcoholic column from the DB."""
     _logger.log_event("INFO", "Removing is_alcoholic column from DB")
-    db_handler = DatabaseHandler()
     try:
-        db_handler.query_database("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
+        execute_raw_sql("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
     except OperationalError:
         _logger.log_event("ERROR", "Could not remove is_alcoholic column from DB, this may because it does not exist")
 
@@ -196,9 +120,8 @@ def remove_is_alcoholic_column():
 def add_cost_column_to_ingredients():
     """Add the cost column to the ingredients table."""
     _logger.log_event("INFO", "Adding cost column to Ingredients DB")
-    db_handler = DatabaseHandler()
     try:
-        db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Cost INTEGER DEFAULT 0;")
+        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Cost INTEGER DEFAULT 0;")
     except OperationalError:
         _logger.log_event("ERROR", "Could not add cost column to DB, this may because it already exists")
 
@@ -206,9 +129,8 @@ def add_cost_column_to_ingredients():
 def add_order_column_to_ingredient_data():
     """Add the order column to the RecipeData table."""
     _logger.log_event("INFO", "Adding Recipe_Order column to RecipeData DB")
-    db_handler = DatabaseHandler()
     try:
-        db_handler.query_database("ALTER TABLE RecipeData ADD COLUMN Recipe_Order INTEGER DEFAULT 1;")
+        execute_raw_sql("ALTER TABLE RecipeData ADD COLUMN Recipe_Order INTEGER DEFAULT 1;")
     except OperationalError:
         _logger.log_event("ERROR", "Could not add order column to DB, this may because it already exists")
 
@@ -216,9 +138,8 @@ def add_order_column_to_ingredient_data():
 def add_unit_column_to_ingredients():
     """Add the unit column to the Ingredients table."""
     _logger.log_event("INFO", "Adding unit column to Ingredients DB")
-    db_handler = DatabaseHandler()
     try:
-        db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Unit TEXT DEFAULT 'ml';")
+        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Unit TEXT DEFAULT 'ml';")
     except OperationalError:
         _logger.log_event("ERROR", "Could not add unit column to DB, this may because it already exists")
 
@@ -232,11 +153,10 @@ def change_slower_flag_to_pump_speed(slow_factor: float):
     _logger.log_event(
         "INFO", f"Converting Slow flag to Pump Speed column in Ingredients DB, using slow factor {slow_factor}"
     )
-    db_handler = DatabaseHandler()
     try:
-        db_handler.query_database("ALTER TABLE Ingredients ADD COLUMN Pump_speed INTEGER DEFAULT 100;")
-        db_handler.query_database("UPDATE Ingredients SET Pump_speed = ? WHERE Slow = 1;", (pump_speed,))
-        db_handler.query_database("ALTER TABLE Ingredients DROP COLUMN Slow;")
+        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Pump_speed INTEGER DEFAULT 100;")
+        execute_raw_sql("UPDATE Ingredients SET Pump_speed = ? WHERE Slow = 1;", (pump_speed,))
+        execute_raw_sql("ALTER TABLE Ingredients DROP COLUMN Slow;")
     except OperationalError:
         _logger.log_event(
             "ERROR", "Could not convert slow flag to pump speed column in DB, this may because it was already done"
@@ -246,8 +166,7 @@ def change_slower_flag_to_pump_speed(slow_factor: float):
 def fix_amount_in_recipe():
     """Recalculate the amount in the Recipe table."""
     _logger.log_event("INFO", "Adding team buffer table to database")
-    db_handler = DatabaseHandler()
-    db_handler.query_database(
+    execute_raw_sql(
         """UPDATE Recipes
             SET Amount = (
                 SELECT SUM(Amount)
@@ -256,3 +175,79 @@ def fix_amount_in_recipe():
                 GROUP BY RecipeData.Recipe_ID
             );"""
     )
+
+
+def remove_is_alcoholic_and_hand_from_recipe_data():
+    """Remove the is_alcoholic and hand columns from the RecipeData table."""
+    _logger.log_event("INFO", "Removing is_alcoholic and hand columns from RecipeData DB")
+    try:
+        execute_raw_sql("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
+        execute_raw_sql("ALTER TABLE RecipeData DROP COLUMN Hand;")
+    except OperationalError:
+        _logger.log_event(
+            "ERROR", "Could not remove is_alcoholic and hand columns from DB, this may because they do not exist"
+        )
+
+
+def add_foreign_keys():
+    """Add foreign keys to the database.
+
+    Since we are working with SQLite, there is no way to add them by default.
+    We will need to create a new table with the keys, copy the data and then rename the table.
+    """
+    # copy the database into a date-time.backup file
+
+    backup_path = BACKUP_FOLDER / f"database_backup_{datetime.now().strftime('%Y%m%d%H%M%S')}.db"
+    shutil.copy(DATABASE_PATH, backup_path)
+    _logger.log_event("INFO", f"Created backup of database at {backup_path}")
+    _logger.log_event("INFO", "Adding foreign keys to the database")
+    execute_raw_sql("PRAGMA foreign_keys=off;")
+    execute_raw_sql("""
+        CREATE TABLE RecipeData_new (
+            Recipe_ID INTEGER NOT NULL,
+            Ingredient_ID INTEGER NOT NULL,
+            Amount INTEGER NOT NULL,
+            Is_alcoholic BOOLEAN,
+            Hand BOOLEAN,
+            Recipe_Order INTEGER DEFAULT 1,
+            PRIMARY KEY (Recipe_ID, Ingredient_ID),
+            FOREIGN KEY (Recipe_ID) REFERENCES Recipes(ID) ON DELETE CASCADE,
+            FOREIGN KEY (Ingredient_ID) REFERENCES Ingredients(ID) ON DELETE RESTRICT
+        );
+    """)
+    execute_raw_sql("""
+        INSERT INTO RecipeData_new (Recipe_ID, Ingredient_ID, Amount, Is_alcoholic, Hand, Recipe_Order)
+        SELECT Recipe_ID, Ingredient_ID, Amount, Is_alcoholic, Hand, Recipe_Order FROM RecipeData;
+    """)
+    execute_raw_sql("DROP TABLE RecipeData;")
+    execute_raw_sql("ALTER TABLE RecipeData_new RENAME TO RecipeData;")
+    execute_raw_sql("CREATE INDEX idx_recipe_data_recipe_id ON RecipeData (Recipe_ID);")
+    execute_raw_sql("CREATE INDEX idx_recipe_data_ingredient_id ON RecipeData (Ingredient_ID);")
+    execute_raw_sql("""
+        CREATE TABLE Bottles_new (
+            Bottle INTEGER PRIMARY KEY NOT NULL,
+            ID INTEGER,
+            FOREIGN KEY (ID) REFERENCES Ingredients(ID) ON DELETE RESTRICT
+        );
+    """)
+    execute_raw_sql("""
+        INSERT INTO Bottles_new (Bottle, ID)
+        SELECT Bottle, ID FROM Bottles;
+    """)
+    execute_raw_sql("DROP TABLE Bottles;")
+    execute_raw_sql("ALTER TABLE Bottles_new RENAME TO Bottles;")
+    execute_raw_sql("CREATE INDEX idx_bottles_id ON Bottles (ID);")
+    execute_raw_sql("""
+        CREATE TABLE Available_new (
+            ID INTEGER PRIMARY KEY NOT NULL,
+            FOREIGN KEY (ID) REFERENCES Ingredients(ID)
+        );
+    """)
+    execute_raw_sql("""
+        INSERT INTO Available_new (ID)
+        SELECT ID FROM Available;
+    """)
+    execute_raw_sql("DROP TABLE Available;")
+    execute_raw_sql("ALTER TABLE Available_new RENAME TO Available;")
+    execute_raw_sql("CREATE INDEX idx_available_id ON Available (ID);")
+    execute_raw_sql("PRAGMA foreign_keys=on;")

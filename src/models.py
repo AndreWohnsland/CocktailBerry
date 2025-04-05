@@ -1,7 +1,7 @@
 import copy
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional, Union
+from typing import Optional
 
 
 class PrepareResult(Enum):
@@ -33,7 +33,7 @@ class Ingredient:
     alcohol: int
     bottle_volume: int
     fill_level: int
-    hand: Union[bool, int]
+    hand: bool
     pump_speed: int
     amount: int = 0
     bottle: Optional[int] = None
@@ -41,6 +41,10 @@ class Ingredient:
     cost: int = 0
     recipe_order: int = 2
     unit: str = "ml"
+
+    def __post_init__(self):
+        # limit fill level to [0, bottle_volume]
+        self.fill_level = max(0, min(self.fill_level, self.bottle_volume))
 
     def __lt__(self, other):
         """Sort machine first, then highest amount and longest name."""

@@ -89,9 +89,10 @@ In case the machine got a RTC build in and uses it, this option can usually be s
 ## Get the LED Working
 
 Getting the WS281x to work may be a little bit tricky.
-You MUST run the program as root/sudo (`sudo python runme.py`), so you also need to change this in `~/launcher.sh`.
+You can either run the program as root/sudo (`sudo python runme.py`), so you also need to change this in `~/launcher.sh`.
 If you are using the latest installer, there will be a virtual environment created, so you should use this as root.
-This also does not require to reinstall the python packages for the main program.
+This also does you require to reinstall the python packages for the main program.
+A better way would be to add the user to the gpio/other needed groups, so you can run the program as normal user.
 
 ```bash
 sudo ~/.env-cocktailberry/bin/python -E runme.py
@@ -315,23 +316,13 @@ Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh
 
 ```bash
 #!/bin/bash
-# launcher.sh for dashboard
-# no need for sudo if there were no Numpy import errors
-cd /home/pi/CocktailBerry/dashboard/qt-app/
-sudo python main.py
+# code to start the application, see v1-launcher.sh
 ```
 
-```bash
-#!/bin/bash
-# launcher.sh for CocktailBerry
-cd /home/pi/CocktailBerry/
-python runme.py
-```
-
-If your setup is equal to mine (Raspberry Pi, CocktailBerry GitHub cloned to the home (`/home/pi/`) folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
+If your setup is equal to mine (Raspberry Pi, CocktailBerry GitHub cloned to the home folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
 
 ```bash
-cp ~/CocktailBerry/scripts/launcher.sh ~/
+cp ~/CocktailBerry/scripts/v1-launcher.sh ~/
 cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
 ```
 

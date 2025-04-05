@@ -15,7 +15,6 @@ from src.filepath import CUSTOM_CONFIG_FILE, NGINX_SCRIPT, QT_MIGRATION_SCRIPT, 
 from src.logger_handler import LoggerHandler
 from src.migration.qt_migrator import roll_back_to_qt_script
 from src.migration.squeekboard import create_and_start_squeekboard_service, stop_and_disable_squeekboard_service
-from src.migration.update_data import add_new_recipes_from_default_db
 from src.migration.web_migrator import add_web_desktop_file, replace_backend_script
 from src.programs.addons import ADDONS, generate_addon_skeleton
 from src.programs.calibration import run_calibration
@@ -96,24 +95,6 @@ def data_import(
     please see https://docs.cocktailberry.org/commands/#importing-recipes-from-file.
     """
     importer(path, conversion, no_unit)
-
-
-@cli.command()
-def update_database():
-    """Use the default provided database to check for newly added recipes due to new updates.
-
-    Adds the new recipes including missing ingredients to the local database.
-    Ignore recipes that collide with names of your self-added recipes.
-    Creates a backup before doing the update,
-    see also https://docs.cocktailberry.org/troubleshooting/#restoring-database.
-
-    Please take note that the ingredients are in german, so if you renamed your ingredients,
-    this will most likely add all ingredients from the new recipes in german to your local database.
-    If you are not satisfied the result, consult the documentation how to use the backup.
-    You can also create a own backup with the build in CocktailBerry backup function over the program interface.
-    More information also at https://docs.cocktailberry.org/commands/#updating-local-database
-    """
-    add_new_recipes_from_default_db()
 
 
 @cli.command()

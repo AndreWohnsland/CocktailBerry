@@ -147,8 +147,8 @@ def _enter_or_update_recipe(
     recipe_name: str,
     recipe_volume: int,
     recipe_alcohol_level: int,
-    enabled: int,
-    virgin: int,
+    enabled: bool,
+    virgin: bool,
     ingredient_data: list[Ingredient],
 ) -> Cocktail:
     """Logic to insert/update data into DB."""

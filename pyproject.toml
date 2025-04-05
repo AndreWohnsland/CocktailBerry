@@ -1,6 +1,6 @@
 [project]
 name = "CocktailBerry"
-version = "2.1.1"
+version = "2.2.0"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
 authors = [{ name= "Andre Wohnsland" , email =  "cocktailmakeraw@gmail.com" }]
 readme = "readme.md"
@@ -22,6 +22,8 @@ dependencies = [
     "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
     "gpiozero>=2.0.1 ; sys_platform == 'linux'",
     "python-periphery>=2.4.1",
+    "sqlalchemy>=2.0.38",
+    "alembic>=1.14.1",
 ]
 requires-python = ">= 3.9"
 
@@ -41,6 +43,8 @@ dev-dependencies = [
     "mkdocs>=1.6.1",
     "mypy>=1.14.1",
     "ipykernel>=6.29.5",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
 ]
 # This is a workaround for the missing support of aarch64 in pyqt5, need to install this over apt +
 # include this with system site packages
