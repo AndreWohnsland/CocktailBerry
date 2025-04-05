@@ -39,7 +39,7 @@ from src.migration.update_data import (
     add_virgin_flag_to_db,
     change_slower_flag_to_pump_speed,
     fix_amount_in_recipe,
-    remove_is_alcoholic_and_hand_from_recipe_data,
+    remove_hand_from_recipe_data,
     remove_is_alcoholic_column,
     remove_old_recipe_columns,
     rename_database_to_english,
@@ -136,7 +136,7 @@ class Migrator:
             ],
             "2.2.0": [
                 add_foreign_keys,
-                remove_is_alcoholic_and_hand_from_recipe_data,
+                remove_hand_from_recipe_data,
             ],
         }
 

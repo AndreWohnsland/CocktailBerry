@@ -4,7 +4,7 @@ import sqlite3
 from datetime import datetime
 from sqlite3 import OperationalError
 
-from src.filepath import BACKUP_FOLDER, DATABASE_PATH
+from src.filepath import BACKUP_FOLDER, DATABASE_PATH, DEFAULT_DATABASE_PATH
 from src.logger_handler import LoggerHandler
 
 _logger = LoggerHandler("update_data_module")
@@ -12,6 +12,9 @@ _logger = LoggerHandler("update_data_module")
 
 def execute_raw_sql(query: str, params: tuple = ()):
     """Execute raw SQL query using sqlite3."""
+    if not DATABASE_PATH.exists():
+        _logger.log_event("INFO", f"Copying default database from {DEFAULT_DATABASE_PATH} to {DATABASE_PATH}")
+        shutil.copyfile(DEFAULT_DATABASE_PATH, DATABASE_PATH)
     with sqlite3.connect(DATABASE_PATH) as connection:
         cursor = connection.cursor()
         cursor.execute(query, params)
@@ -177,16 +180,13 @@ def fix_amount_in_recipe():
     )
 
 
-def remove_is_alcoholic_and_hand_from_recipe_data():
-    """Remove the is_alcoholic and hand columns from the RecipeData table."""
-    _logger.log_event("INFO", "Removing is_alcoholic and hand columns from RecipeData DB")
+def remove_hand_from_recipe_data():
+    """Remove the hand columns from the RecipeData table."""
+    _logger.log_event("INFO", "Removing hand columns from RecipeData DB")
     try:
-        execute_raw_sql("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
         execute_raw_sql("ALTER TABLE RecipeData DROP COLUMN Hand;")
     except OperationalError:
-        _logger.log_event(
-            "ERROR", "Could not remove is_alcoholic and hand columns from DB, this may because they do not exist"
-        )
+        _logger.log_event("ERROR", "Could not remove hand columns from DB, this may because they do not exist")
 
 
 def add_foreign_keys():
@@ -207,8 +207,6 @@ def add_foreign_keys():
             Recipe_ID INTEGER NOT NULL,
             Ingredient_ID INTEGER NOT NULL,
             Amount INTEGER NOT NULL,
-            Is_alcoholic BOOLEAN,
-            Hand BOOLEAN,
             Recipe_Order INTEGER DEFAULT 1,
             PRIMARY KEY (Recipe_ID, Ingredient_ID),
             FOREIGN KEY (Recipe_ID) REFERENCES Recipes(ID) ON DELETE CASCADE,
@@ -216,8 +214,8 @@ def add_foreign_keys():
         );
     """)
     execute_raw_sql("""
-        INSERT INTO RecipeData_new (Recipe_ID, Ingredient_ID, Amount, Is_alcoholic, Hand, Recipe_Order)
-        SELECT Recipe_ID, Ingredient_ID, Amount, Is_alcoholic, Hand, Recipe_Order FROM RecipeData;
+        INSERT INTO RecipeData_new (Recipe_ID, Ingredient_ID, Amount, Recipe_Order)
+        SELECT Recipe_ID, Ingredient_ID, Amount, Recipe_Order FROM RecipeData;
     """)
     execute_raw_sql("DROP TABLE RecipeData;")
     execute_raw_sql("ALTER TABLE RecipeData_new RENAME TO RecipeData;")
