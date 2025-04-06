@@ -16,6 +16,10 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         DP_CONTROLLER.initialize_window_object(self)
         self.PBabbrechen.clicked.connect(interrupt_cocktail)
         self.mainscreen = parent
+        self.show_screen(cocktail_type)
+
+    def show_screen(self, cocktail_type="Cocktail"):
+        """Show the Progress screen."""
         UI_LANGUAGE.adjust_progress_screen(self, cocktail_type)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)

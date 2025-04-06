@@ -135,7 +135,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def open_cocktail_selection(self, cocktail: Cocktail):
         """Open the cocktail selection screen."""
         if self.cocktail_selection is not None:
+            # Clean up all internal layouts and widgets recursively
+            DP_CONTROLLER.delete_items_of_layout(self.cocktail_selection.layout())
+            # Remove from stacked widget
             self.container_maker.removeWidget(self.cocktail_selection)
+            # Schedule for deletion and remove reference
+            self.cocktail_selection.deleteLater()
+            self.cocktail_selection = None
         self.cocktail_selection = CocktailSelection(
             self, cocktail, lambda: self.container_maker.setCurrentWidget(self.cocktail_view)
         )
@@ -163,7 +169,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def open_progression_window(self, cocktail_type: str = "Cocktail"):
         """Open up the progression window to show the Cocktail status."""
-        self.progress_window = ProgressScreen(self, cocktail_type)
+        if self.progress_window is None:
+            self.progress_window = ProgressScreen(self, cocktail_type)
+        self.progress_window.show_screen(cocktail_type)
 
     def change_progression_window(self, pb_value: int):
         """Change the value of the progression bar of the ProBarWindow."""
@@ -175,7 +183,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """Close the progression window at the end of the cycle."""
         if self.progress_window is None:
             return
-        self.progress_window.close()
+        self.progress_window.hide()
 
     def open_team_window(self):
         self.team_window = TeamScreen(self)
