@@ -1,6 +1,7 @@
-from typing import Any, Callable
+from typing import Any, Callable, TYPE_CHECKING
 
-from PyQt5.QtWidgets import QVBoxLayout
+if TYPE_CHECKING:
+    from PyQt5.QtWidgets import QVBoxLayout
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # Imports are automatically generated for all the examples from the docs
