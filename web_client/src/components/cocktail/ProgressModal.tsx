@@ -73,6 +73,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       className='modal'
       overlayClassName='overlay z-30'
       shouldCloseOnOverlayClick={false}
+      preventScroll={true}
     >
       <div className='progress-modal h-full flex flex-col justify-between'>
         <h2 className='text-4xl font-bold mb-8 text-center text-secondary'>{displayName}</h2>

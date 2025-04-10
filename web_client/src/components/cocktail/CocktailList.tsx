@@ -96,7 +96,7 @@ const CocktailList: React.FC = () => {
           <CocktailSelection selectedCocktail={selectedCocktail} handleCloseModal={handleCloseModal} />
         )}
       </Modal>
-      <Modal isOpen={singleIngredientOpen} className='modal slim' overlayClassName='overlay z-20'>
+      <Modal isOpen={singleIngredientOpen} className='modal slim' overlayClassName='overlay z-20' preventScroll={true}>
         <SingleIngredientSelection onClose={() => setSingleIngredientOpen(false)} />
       </Modal>
     </div>

@@ -31,7 +31,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumb
   };
 
   return (
-    <Modal isOpen={isOpen} className='modal slim' overlayClassName='overlay z-30'>
+    <Modal isOpen={isOpen} className='modal slim' overlayClassName='overlay z-30' preventScroll={true}>
       <div className='flex flex-col items-center justify-center w-full h-full'>
         <div className='flex justify-between w-full mb-2'>
           <button
