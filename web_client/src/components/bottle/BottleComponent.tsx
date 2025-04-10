@@ -133,7 +133,13 @@ const BottleComponent: React.FC<BottleProps> = ({
         </div>
         <ProgressBar fillPercent={fillPercent} onClick={openModal} className='col-span-2 sm:col-span-1 max-h-20' />
       </div>
-      <Modal isOpen={isModalOpen} onRequestClose={closeModal} className='modal slim' overlayClassName='overlay z-20'>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        className='modal slim'
+        overlayClassName='overlay z-20'
+        preventScroll={true}
+      >
         <div className='rounded w-full h-full flex flex-col'>
           <div className='pl-2 flex justify-between items-center mb-2'>
             <h2 className='text-xl font-bold text-secondary'>{selectedIngredient?.name || 'Ingredient'}</h2>
