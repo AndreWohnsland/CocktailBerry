@@ -150,6 +150,13 @@ See also at the [dev notes](./docs/.devnotes.md) section for a complete run down
 uv sync --all-extras
 ```
 
+We also use pre-commits to check the code style and run some tests before every commit.
+You can install them with:
+
+```bash
+uv run pre-commit install --install-hooks
+```
+
 This will install all dependencies and you can start developing.
 Then just run:
 

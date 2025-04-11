@@ -1,0 +1,45 @@
+---
+default_install_hook_types:
+  - commit-msg
+  - pre-commit
+  - pre-push
+exclude: ^(.*(\.?venv.*)/)
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: ☕️ Use Ruff to format code
+        language: system
+        types: [python]
+        entry: uv run ruff format
+        require_serial: true
+      - id: ruff-linting
+        name: ☕️ Use Ruff to lint code
+        language: system
+        types: [python]
+        entry: uv run ruff check --fix
+        require_serial: true
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-json
+        name: ☕️ Check for JSON syntax errors
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.10.0
+    hooks:
+      - id: shellcheck
+        name: ☕️ Ensure Shell Scripts are good with ShellCheck
+        files: .*\.sh$
+        args: [-x]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        name: ☕️ Ensure types are correct with mypy
+        args:
+          - '--config-file=pyproject.toml'
+          - '--python-version=3.11'
+        additional_dependencies:
+          - types-pyyaml>=6.0.12
+          - types-requests>=2.32.0
+        pass_filenames: false
