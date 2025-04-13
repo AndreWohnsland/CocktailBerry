@@ -16,6 +16,7 @@ _platform_data = get_platform_data()
 
 @cli.callback(invoke_without_command=True)
 def api(
+    ctx: typer.Context,
     port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAPI server"),
     version: Optional[bool] = typer.Option(
         None, "--version", "-V", callback=version_callback, help="Show current version."
@@ -27,6 +28,8 @@ def api(
     The FastAPI server will be started at the given port.
     See also https://docs.cocktailberry.org/web/.
     """
+    if ctx.invoked_subcommand is not None:
+        return
     run_api(port)
 
 
