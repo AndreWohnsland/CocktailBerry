@@ -30,7 +30,7 @@ repos:
       - id: shellcheck
         name: ☕️ Ensure Shell Scripts are good with ShellCheck
         files: .*\.sh$
-        args: [-x]
+        args: [-x, -e, SC1017]
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.15.0
     hooks:

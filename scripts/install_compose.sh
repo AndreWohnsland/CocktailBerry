@@ -22,10 +22,10 @@ pip install -q lastversion
 
 if [ "$(getconf LONG_BIT)" = "64" ]; then
   echo "> Detected 64 bit system, using aarch64 compose image"
-  DOWNLOAD_URL=$(lastversion --assets --filter '\-linux-aarch64(?!.sha256)' docker/compose)
+  DOWNLOAD_URL=$(lastversion --assets --filter '\-linux-aarch64$' docker/compose)
 else
   echo "> Detected 32 bit system, using armv7l compose image"
-  DOWNLOAD_URL=$(lastversion --assets --filter '\-linux-armv7(?!.sha256)' docker/compose)
+  DOWNLOAD_URL=$(lastversion --assets --filter '\-linux-armv7l$' docker/compose)
 fi
 curl -SL "$DOWNLOAD_URL" -o "$DOCKER_CONFIG/cli-plugins/docker-compose"
 chmod +x "$DOCKER_CONFIG/cli-plugins/docker-compose"
