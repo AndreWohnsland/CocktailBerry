@@ -19,7 +19,7 @@ done
 # Welcome and system updates
 echo "~~~~~~~ CocktailBerry All In One Installation Script v1 ~~~~~~~~"
 echo "~~ Updating system to latest version, depending on your system age, this may take some time ... ~~"
-sudo apt-get update && sudo apt-get -y upgrade
+sudo apt-get update && sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
 # Steps for git
 echo "~~ Check if git is installed ~~"
