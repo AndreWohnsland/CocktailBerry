@@ -150,6 +150,9 @@ if [ "$V2_FLAG" = true ]; then
   # shellcheck disable=SC2164
   cd ~/CocktailBerry
   uv run api.py setup-web
+  # informs the user that with v2 he still needs to run cocktailberry before opening the web
+  echo "- !!! You need to run 'bash ~/launcher.sh' or click the CocktailBerry icon before opening the web interface."
+  echo "- !!! When CocktailBerry is running, you can open the web interface at http://localhost in the web or over the CocktailBerry Web icon."
 fi
 
 echo "~~ Everything should be set now! Have fun with CocktailBerry :) ~~"
@@ -158,7 +161,7 @@ echo "Documentation is found at: https://docs.cocktailberry.org/"
 echo "Source code at: https://github.com/AndreWohnsland/CocktailBerry"
 echo "If you want to set up your microservice, check the docks for a complete guide. Docker and compose should already be installed."
 echo "You can use the CocktailBerry CLI for an interactive setup. Use 'python ~/CocktailBerry/runme.py setup-microservice' to start."
-echo "CocktailBerry will start at system start. To start it now, type 'bash ~/launcher.sh'."
+echo "CocktailBerry will start at system start. To start it now, type 'bash ~/launcher.sh' or click the CocktailBerry icon."
 echo "If the desktop panel shifts / blocks the application, right click panel > panel settings > Advanced > uncheck Reserve space, and not covered by maximised windows."
 
 newgrp docker
