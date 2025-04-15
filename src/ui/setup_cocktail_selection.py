@@ -114,6 +114,9 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.LAlkoholgehalt.setText(f"{self.cocktail.adjusted_alcohol:.1f}%")
         display_data = self.cocktail.machineadds
         hand = self.cocktail.handadds
+        # remove ingredients that have amount of 0
+        hand = [ing for ing in hand if ing.amount > 0]
+        display_data = [ing for ing in display_data if ing.amount > 0]
         # Activates or deactivates the virgin checkbox, depending on the virgin flag
         self.virgin_checkbox.setEnabled(self.cocktail.virgin_available)
         # Styles does not work on strikeout, so we use internal qt things
@@ -124,6 +127,10 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             display_data.extend([Ingredient(-1, "", 0, 0, 0, False, 100, 100), *hand])
         fields_ingredient = self.get_labels_maker_ingredients()
         fields_volume = self.get_labels_maker_volume()
+        # clean the ui elements
+        for field_ingredient, field_volume in zip(fields_ingredient, fields_volume):
+            field_ingredient.setText("")
+            field_volume.setText("")
         for field_ingredient, field_volume, ing in zip(fields_ingredient, fields_volume, display_data):
             # -1 indicates no ingredient
             if ing.id == -1:
