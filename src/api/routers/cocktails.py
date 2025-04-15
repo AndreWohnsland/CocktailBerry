@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail, not_on_demo
 from src.api.middleware import maker_protected
 from src.api.models import Cocktail, CocktailInput, CocktailStatus, ErrorDetail, PrepareCocktailRequest
+from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
@@ -65,6 +66,11 @@ async def prepare_cocktail(
     if cocktail is None:
         message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
         raise HTTPException(status_code=404, detail=message)
+    # need to check if the cocktail is possible
+    # this can happen if there is no ui guidance, e.g. only a direct post of an id
+    hand_ids = DBC.get_available_ids()
+    if not cocktail.is_possible(hand_ids, cfg.MAKER_MAX_HAND_INGREDIENTS):
+        raise HTTPException(status_code=400, detail=DH.get_translation("cocktail_not_possible"))
     cocktail.scale_cocktail(request.volume, factor)
     result, msg, ingredient = maker.validate_cocktail(cocktail)
     if result != PrepareResult.VALIDATION_OK:

@@ -81,6 +81,7 @@ allowed_keys = Literal[
     "cleaning_started",
     "cocktail_canceled",
     "cocktail_in_progress",
+    "cocktail_not_possible",
     "cocktail_ready_add",
     "cocktail_ready",
     "cocktailberry_up_to_date",
