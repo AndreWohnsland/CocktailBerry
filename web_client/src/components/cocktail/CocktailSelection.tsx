@@ -85,10 +85,11 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
       });
   };
 
-  const machineIngredients = displayCocktail.ingredients
+  const ingredientsWithAmount = displayCocktail.ingredients.filter((ingredient) => ingredient.amount > 0);
+  const machineIngredients = ingredientsWithAmount
     .filter((ingredient) => !ingredient.hand)
     .sort((a, b) => b.amount - a.amount);
-  const handIngredients = displayCocktail.ingredients
+  const handIngredients = ingredientsWithAmount
     .filter((ingredient) => ingredient.hand)
     .sort((a, b) => b.amount - a.amount);
 
