@@ -67,6 +67,9 @@ dialog:
   cocktail_ready_add:
     en: 'Also add:'
     de: 'Noch hinzufügen:'
+  cocktail_not_possible:
+    en: 'Cocktail is not possible to make, not all ingredients are available!'
+    de: 'Cocktail zubereiten ist nicht möglich, nicht alle Zutaten sind verfügbar!'
   enter_cocktail_name:
     en: 'Please enter cocktail name!'
     de: 'Bitte Cocktail Namen eingeben!'
