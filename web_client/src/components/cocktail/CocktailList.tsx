@@ -55,6 +55,7 @@ const CocktailList: React.FC = () => {
             >
               <h2 className='text-center py-1 flex items-center justify-center'>
                 {cocktail.virgin_available && <MdNoDrinks className='mr-2' />}
+                {cocktail.only_virgin && 'V. '}
                 {cocktail.name}
               </h2>
               <div className='relative w-full' style={{ paddingTop: '100%' }}>
