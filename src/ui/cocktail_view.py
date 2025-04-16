@@ -46,7 +46,10 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen):
     header_font_size = round(square_size / 15.8)
     header_height = round(square_size / 6.3)
     single_ingredient_label = UI_LANGUAGE.get_translation("label_single_ingredient", "main_window")
-    name_label = cocktail.name if cocktail is not None else single_ingredient_label
+    name_label = single_ingredient_label
+    if cocktail is not None:
+        prefix = "V. " if cocktail.only_virgin else ""
+        name_label = f"{prefix}{cocktail.name}"
     button = create_button(
         name_label,
         font_size=header_font_size,

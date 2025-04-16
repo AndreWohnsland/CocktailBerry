@@ -32,26 +32,52 @@ class TestCocktail:
     def test_get_all_cocktails(self, db_commander: DatabaseCommander):
         """Test the get_all_cocktails method."""
         cocktails = db_commander.get_all_cocktails()
-        assert len(cocktails) == 4
-        cocktail = cocktails[0]
-        assert cocktail.name == "Cuba Libre"
-        assert cocktail.alcohol == 11
-        assert cocktail.amount == 290
-        assert cocktail.enabled is True
-        assert cocktail.virgin_available is False
-        assert len(cocktail.ingredients) == 2
+        assert len(cocktails) == 5
+
+        cuba_libre = next((c for c in cocktails if c.name == "Cuba Libre"), None)
+        assert cuba_libre is not None
+        assert cuba_libre.alcohol == 11
+        assert cuba_libre.amount == 290
+        assert cuba_libre.enabled is True
+        assert cuba_libre.virgin_available is False
+        assert len(cuba_libre.ingredients) == 2
 
     def test_get_possible_cocktails(self, db_commander: DatabaseCommander):
         """Test the get_possible_cocktails method."""
         possible_cocktails = db_commander.get_possible_cocktails(max_hand_ingredients=1)
-        assert len(possible_cocktails) == 2
-        assert possible_cocktails[0].name == "Cuba Libre"
+        # Now we should have 3 possible cocktails: Cuba Libre, With Handadd, and Virgin Only Possible
+        assert len(possible_cocktails) == 3
+        # Check that Cuba Libre is in the list
+        cuba_libre = next((c for c in possible_cocktails if c.name == "Cuba Libre"), None)
+        assert cuba_libre is not None
+        assert cuba_libre.only_virgin is False
+
+    def test_get_possible_cocktail_virgin_only(self, db_commander: DatabaseCommander):
+        """Test that a cocktail that can only be made in virgin form is properly flagged."""
+        possible_cocktails = db_commander.get_possible_cocktails(max_hand_ingredients=1)
+
+        virgin_only = next((c for c in possible_cocktails if c.name == "Virgin Only Possible"), None)
+        assert virgin_only is not None
+        assert virgin_only.only_virgin is True
+
+        # Verify that this cocktail has an alcoholic ingredient that's not available
+        alcoholic_ingredients = [ing for ing in virgin_only.ingredients if ing.alcohol > 0]
+        assert len(alcoholic_ingredients) > 0
+
+        # Check that the virgin ingredients are available either via machine or hand
+        virgin_ingredients = [ing for ing in virgin_only.ingredients if ing.alcohol == 0]
+        assert len(virgin_ingredients) > 0
+
+        for ing in virgin_ingredients:
+            # Either the ingredient is connected to a bottle or it's in the available handadd list
+            assert ing.bottle is not None or ing.id in db_commander.get_available_ids()
 
     def test_get_disabled_cocktails(self, db_commander: DatabaseCommander):
         """Test that we can get only not enabled cocktails."""
         disabled_cocktails = db_commander.get_all_cocktails(status="disabled")
         assert len(disabled_cocktails) == 1
-        assert disabled_cocktails[0].name == "Tequila Sunrise"
+        tequila_sunrise = next((c for c in disabled_cocktails if c.name == "Tequila Sunrise"), None)
+        assert tequila_sunrise is not None
 
     def test_increment_recipe_counter(self, db_commander: DatabaseCommander):
         """Test the increment_recipe_counter method."""
@@ -157,28 +183,31 @@ class TestIngredient:
     def test_get_all_ingredients(self, db_commander: DatabaseCommander):
         """Test the get_all_ingredients method."""
         ingredients = db_commander.get_all_ingredients()
-        assert len(ingredients) == 6
-        ingredient = ingredients[1]
-        assert ingredient.name == "Cola"
-        assert ingredient.alcohol == 0
-        assert ingredient.bottle_volume == 1000
-        assert ingredient.fill_level == 0
-        assert ingredient.hand is False
-        assert ingredient.pump_speed == 100
+        assert len(ingredients) == 7
+
+        cola = next((i for i in ingredients if i.name == "Cola"), None)
+        assert cola is not None
+        assert cola.alcohol == 0
+        assert cola.bottle_volume == 1000
+        assert cola.fill_level == 0
+        assert cola.hand is False
+        assert cola.pump_speed == 100
 
     def test_get_all_machine_ingredients(self, db_commander: DatabaseCommander):
         """Test the get_all_machine_ingredients method."""
         ingredients = db_commander.get_all_ingredients(get_hand=False)
-        assert len(ingredients) == 5
-        ingredient = ingredients[1]
-        assert ingredient.name == "Cola"
+        assert len(ingredients) == 6
+
+        cola = next((i for i in ingredients if i.name == "Cola"), None)
+        assert cola is not None
 
     def test_get_all_hand_ingredients(self, db_commander: DatabaseCommander):
         """Test the get_all_hand_ingredients method."""
         ingredients = db_commander.get_all_ingredients(get_machine=False)
         assert len(ingredients) == 1
-        ingredient = ingredients[0]
-        assert ingredient.name == "Blue Curacao"
+
+        blue_curacao = next((i for i in ingredients if i.name == "Blue Curacao"), None)
+        assert blue_curacao is not None
 
     def test_get_all_ingredients_return_empty_if_both_false(self, db_commander: DatabaseCommander):
         """Test the get_all_ingredients method."""

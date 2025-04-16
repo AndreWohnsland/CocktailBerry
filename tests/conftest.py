@@ -16,6 +16,8 @@ def db_commander():
     db_commander.insert_new_ingredient("Tequila", 38, 750, False, 100, 200, "ml")  # id 5
     # This one will not be added to the machine / available
     db_commander.insert_new_ingredient("Fanta", 0, 1000, False, 100, 50, "ml")  # id 6
+    # Adding a new alcoholic ingredient that is NOT available (neither via machine nor hand)
+    db_commander.insert_new_ingredient("Vodka", 40, 1000, False, 100, 150, "ml")  # id 7
 
     # create bottle 1-24
     with db_commander.session_scope() as session:
@@ -31,6 +33,8 @@ def db_commander():
     db_commander.insert_new_recipe("With Handadd", 20, 250, True, False, [(1, 50, 1), (4, 200, 2)])  # id 3
     # not all ingredients are available
     db_commander.insert_new_recipe("Not Available", 10, 250, True, False, [(4, 50, 1), (6, 200, 2)])  # id 4
+    # This one should be possible only in its virgin form
+    db_commander.insert_new_recipe("Virgin Only Possible", 12, 300, True, True, [(7, 100, 1), (2, 200, 2)])  # id 5
 
     # Assign ingredients to bottles
     db_commander.set_bottle_at_slot("White Rum", 1)

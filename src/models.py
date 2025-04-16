@@ -64,6 +64,7 @@ class Cocktail:
     enabled: bool
     virgin_available: bool
     ingredients: list[Ingredient]
+    only_virgin: bool = False
     adjusted_alcohol: float = 0
     adjusted_amount: int = 0
     adjusted_ingredients: list[Ingredient] = field(default_factory=list, init=False)
@@ -80,12 +81,22 @@ class Cocktail:
     @property
     def handadds(self):
         """Returns a list of all handadd Ingredients."""
-        return [x for x in self.adjusted_ingredients if x.bottle is None]
+        return [x for x in self.adjusted_ingredients if x.bottle is None and x.amount > 0]
 
     @property
     def machineadds(self):
         """Returns a list of all machine Ingredients."""
-        return [x for x in self.adjusted_ingredients if x.bottle is not None]
+        return [x for x in self.adjusted_ingredients if x.bottle is not None and x.amount > 0]
+
+    @property
+    def virgin_handadds(self):
+        """Returns a list of all non-alcoholic handadd Ingredients."""
+        return [x for x in self.handadds if x.alcohol == 0]
+
+    @property
+    def virgin_machineadds(self):
+        """Returns a list of all non-alcoholic machine Ingredients."""
+        return [x for x in self.machineadds if x.alcohol == 0]
 
     @property
     def is_virgin(self):
@@ -94,20 +105,52 @@ class Cocktail:
 
     def is_possible(self, hand_available: list[int], max_hand_ingredients: int):
         """Return if the recipe is possible with given additional hand add ingredients."""
-        machine = self.machineadds
+        self.only_virgin = False
+        if self._is_normal_cocktail_possible(hand_available, max_hand_ingredients):
+            return True
+        if self.virgin_available and self._is_virgin_cocktail_possible(hand_available, max_hand_ingredients):
+            self.only_virgin = True
+            return True
+        return False
+
+    def _has_all_ingredients(
+        self,
+        hand_available: list[int],
+        max_hand_ingredients: int,
+        machine_adds: list[Ingredient],
+        hand_adds: list[Ingredient],
+    ) -> bool:
+        """Return if the recipe is possible with given additional hand add ingredients."""
         # If machine got not at least 1 add (=all handadd) return false
         # We don't want to let the user do all the work
-        if len(machine) < 1:
+        if len(machine_adds) < 1:
             return False
-        hand = self.handadds
         # if the number of hand adds is higher than the allowed hand adds, return false
-        if len(hand) > max_hand_ingredients:
+        if len(hand_adds) > max_hand_ingredients:
             return False
-        for ing in machine:
+        for ing in machine_adds:
             if ing.bottle is None:
                 return False
-        hand_id = {x.id for x in hand}
+        hand_id = {x.id for x in hand_adds}
         return not hand_id - set(hand_available)
+
+    def _is_normal_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int):
+        """Check if the normal (alcoholic) cocktail is possible."""
+        return self._has_all_ingredients(
+            hand_available,
+            max_hand_ingredients,
+            self.machineadds,
+            self.handadds,
+        )
+
+    def _is_virgin_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int):
+        """Check if the virgin cocktail is possible."""
+        return self._has_all_ingredients(
+            hand_available,
+            max_hand_ingredients,
+            self.virgin_machineadds,
+            self.virgin_handadds,
+        )
 
     def enough_fill_level(self) -> Optional[Ingredient]:
         """Check if the needed volume is there.

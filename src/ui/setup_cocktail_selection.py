@@ -72,6 +72,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # and when it changes, the gui elements will not update
         db_cocktail = DB_COMMANDER.get_cocktail(cocktail.id)
         if db_cocktail is not None:
+            # need to revaluate if there is only the virgin version available
+            db_cocktail.is_possible(DB_COMMANDER.get_available_ids(), cfg.MAKER_MAX_HAND_INGREDIENTS)
             cocktail = db_cocktail
         self.cocktail = cocktail
         self._set_image()
@@ -108,21 +110,14 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.prepare_button.setText(
             UI_LANGUAGE.get_translation("prepare_button", "cocktail_selection", amount=amount, unit=cfg.EXP_MAKER_UNIT)
         )
-        self.LAlkoholname.setText(self.cocktail.name)
+        virgin_prefix = "V. " if self.cocktail.is_virgin else ""
+        self.LAlkoholname.setText(f"{virgin_prefix}{self.cocktail.name}")
         display_volume = self._decide_rounding(amount * cfg.EXP_MAKER_FACTOR, 20)
         self.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")
         self.LAlkoholgehalt.setText(f"{self.cocktail.adjusted_alcohol:.1f}%")
         display_data = self.cocktail.machineadds
         hand = self.cocktail.handadds
-        # remove ingredients that have amount of 0
-        hand = [ing for ing in hand if ing.amount > 0]
-        display_data = [ing for ing in display_data if ing.amount > 0]
-        # Activates or deactivates the virgin checkbox, depending on the virgin flag
-        self.virgin_checkbox.setEnabled(self.cocktail.virgin_available)
-        # Styles does not work on strikeout, so we use internal qt things
-        # To be precise, they do work at start, but does not support dynamic changes
-        set_strike_through(self.virgin_checkbox, not self.cocktail.virgin_available)
-        # when there is handadd, also build some additional data
+        self._apply_virgin_setting()
         if hand:
             display_data.extend([Ingredient(-1, "", 0, 0, 0, False, 100, 100), *hand])
         fields_ingredient = self.get_labels_maker_ingredients()
@@ -153,6 +148,16 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
 
+    def _apply_virgin_setting(self):
+        # hide the strong/weak buttons, since they are not needed
+        self.increase_alcohol.setVisible(not self.cocktail.only_virgin)
+        self.decrease_alcohol.setVisible(not self.cocktail.only_virgin)
+        can_change_virgin = self.cocktail.virgin_available and not self.cocktail.only_virgin
+        self.virgin_checkbox.setEnabled(can_change_virgin)
+        # Styles does not work on strikeout, so we use internal qt things
+        # To be precise, they do work at start, but does not support dynamic changes
+        set_strike_through(self.virgin_checkbox, not can_change_virgin)
+
     def _decide_rounding(self, val: float, threshold=8):
         """Return the right rounding for numbers displayed to the user."""
         if val >= threshold:
@@ -165,14 +170,17 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.LAlkoholgehalt.setText("")
         self.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         self.LMenge.setText("")
-        self.virgin_checkbox.setChecked(False)
+        self.virgin_checkbox.setChecked(self.cocktail.only_virgin)
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(), self.get_labels_maker_volume()):
             field_ingredient.setText("")
             field_volume.setText("")
 
     def reset_alcohol_factor(self):
         """Set the alcohol slider to default (100%) value."""
-        shared.alcohol_factor = 1.0
+        if self.cocktail.only_virgin:
+            shared.alcohol_factor = 0.0
+        else:
+            shared.alcohol_factor = 1.0
 
     def adjust_maker_label_size_cocktaildata(self):
         """Adjust the font size for larger screens."""

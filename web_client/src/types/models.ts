@@ -15,6 +15,7 @@ export interface Cocktail {
   amount: number;
   enabled: boolean;
   virgin_available: boolean;
+  only_virgin: boolean;
   ingredients: CocktailIngredient[];
   image: string;
   default_image: string;

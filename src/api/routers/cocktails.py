@@ -66,12 +66,15 @@ async def prepare_cocktail(
     if cocktail is None:
         message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
         raise HTTPException(status_code=404, detail=message)
+    cocktail.scale_cocktail(request.volume, factor)
     # need to check if the cocktail is possible
     # this can happen if there is no ui guidance, e.g. only a direct post of an id
+    # the cocktail might only be possible in the virgin version, but the user requested a non-virgin version
     hand_ids = DBC.get_available_ids()
-    if not cocktail.is_possible(hand_ids, cfg.MAKER_MAX_HAND_INGREDIENTS):
+    if not cocktail.is_possible(hand_ids, cfg.MAKER_MAX_HAND_INGREDIENTS) or (
+        cocktail.only_virgin and not cocktail.is_virgin
+    ):
         raise HTTPException(status_code=400, detail=DH.get_translation("cocktail_not_possible"))
-    cocktail.scale_cocktail(request.volume, factor)
     result, msg, ingredient = maker.validate_cocktail(cocktail)
     if result != PrepareResult.VALIDATION_OK:
         # we need also provide the frontend with the ingredient id that caused the error
