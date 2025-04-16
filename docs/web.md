@@ -10,7 +10,7 @@ The goal of this release is to provide a more polished and at the same time more
 It includes a new web interface that can be used to control the app from any device in the same network.
 This allows users to control the app from their phone, tablet, or any other device that has a web browser.
 Machines without a display (e.g. Headless) are no dream any longer, you can build and use them now with CocktailBerry.
-In addition, the api (backend) is no longer tightly coupled to the frontend.
+In addition, the API (backend) is no longer tightly coupled to the frontend.
 Advanced users can use the API for their own use, like writing their own frontend or automating tasks over home automation.
 
 ## Requirements
