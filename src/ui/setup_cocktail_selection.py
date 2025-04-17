@@ -110,7 +110,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.prepare_button.setText(
             UI_LANGUAGE.get_translation("prepare_button", "cocktail_selection", amount=amount, unit=cfg.EXP_MAKER_UNIT)
         )
-        virgin_prefix = "V. " if self.cocktail.is_virgin else ""
+        virgin_prefix = "Virgin " if self.cocktail.is_virgin else ""
         self.LAlkoholname.setText(f"{virgin_prefix}{self.cocktail.name}")
         display_volume = self._decide_rounding(amount * cfg.EXP_MAKER_FACTOR, 20)
         self.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")

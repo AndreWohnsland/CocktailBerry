@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import qtawesome as qta
 from PyQt5.QtCore import QSize
@@ -36,6 +36,7 @@ _TIME_ICON = "fa5s.hourglass-start"
 _SEARCH_ICON = "fa.search"
 _UPLOAD_ICON = "fa.upload"
 _QUESTION_ICON = "fa5.question-circle"
+_BORDER_ICON = "fa5.square"
 BUTTON_SIZE = QSize(36, 36)
 SMALL_BUTTON_SIZE = QSize(24, 24)
 
@@ -61,6 +62,7 @@ class PresetIcon:
     huge_glass = _HUGE_GLASS
     skull = _SKULL
     easy = _EASY
+    border = _BORDER_ICON
 
 
 @dataclass
@@ -160,7 +162,7 @@ class IconSetter:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self.set_icon(ui_element, fa_icon, no_text)
 
-    def generate_icon(self, icon_name: str, color: str, color_active: str | None = None) -> QIcon:
+    def generate_icon(self, icon_name: str, color: str, color_active: str | None = None, border: bool = False) -> QIcon:
         """Generate an icon with the given color and size.
 
         Args:
@@ -168,11 +170,20 @@ class IconSetter:
             icon_name (str): icon name in qta, e.g. "fa5s.cog"
             color (str): given color name in hex, e.g. "#007bff"
             color_active (str): given active color name, will use color if None, defaults to None
+            border (bool): if True, add a border to the icon, defaults to False
 
         """
-        if color_active is None:
-            color_active = color
-        return qta.icon(icon_name, color=color, color_active=color_active)
+        icon_option: dict[str, Any] = {
+            "color": color,
+            "color_active": color if color_active is None else color_active,
+        }
+        if not border:
+            return qta.icon(icon_name, options=[icon_option])
+        return qta.icon(
+            icon_name,
+            _BORDER_ICON,
+            options=[icon_option, {**icon_option, "scale_factor": 1.3}],
+        )
 
     def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary=False):
         """Set a spinner button to the icon."""

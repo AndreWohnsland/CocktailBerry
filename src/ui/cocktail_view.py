@@ -46,10 +46,7 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen):
     header_font_size = round(square_size / 15.8)
     header_height = round(square_size / 6.3)
     single_ingredient_label = UI_LANGUAGE.get_translation("label_single_ingredient", "main_window")
-    name_label = single_ingredient_label
-    if cocktail is not None:
-        prefix = "V. " if cocktail.only_virgin else ""
-        name_label = f"{prefix}{cocktail.name}"
+    name_label = single_ingredient_label if cocktail is None else cocktail.name
     button = create_button(
         name_label,
         font_size=header_font_size,
@@ -59,7 +56,8 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen):
         css_class="btn-inverted btn-half-top",
     )
     if cocktail is not None and cocktail.virgin_available:
-        icon = ICONS.generate_icon(PresetIcon.virgin, ICONS.color.background)
+        button.setText(f" {name_label}")
+        icon = ICONS.generate_icon(PresetIcon.virgin, ICONS.color.background, border=cocktail.only_virgin)
         button.setIcon(icon)
         button.setIconSize(QSize(20, 20))
     label = ClickableLabel(name_label)

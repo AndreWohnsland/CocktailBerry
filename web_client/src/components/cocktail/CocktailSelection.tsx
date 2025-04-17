@@ -34,7 +34,9 @@ const alcoholFactor = {
 const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, handleCloseModal }) => {
   const originalCocktail = JSON.parse(JSON.stringify(selectedCocktail));
   const [alcohol, setAlcohol] = useState<alcoholState>(selectedCocktail.only_virgin ? 'virgin' : 'normal');
-  const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(selectedCocktail);
+  const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(
+    selectedCocktail.only_virgin ? scaleCocktail(originalCocktail, alcoholFactor['virgin']) : selectedCocktail,
+  );
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   // Refill state
   const [isRefillOpen, setIsRefillOpen] = useState(false);
@@ -52,8 +54,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
       setDisplayCocktail(originalCocktail);
     } else {
       setAlcohol(state);
-      const factor = alcoholFactor[state];
-      setDisplayCocktail(scaleCocktail(originalCocktail, factor));
+      setDisplayCocktail(scaleCocktail(originalCocktail, alcoholFactor[state]));
     }
   };
 
@@ -142,13 +143,13 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
               <AiOutlineCloseCircle className='text-danger' size={34} />
             </button>
           </div>
-          <div>
-            <h2 className='text-2xl font-bold text-center text-neutral underline'>
-              {alcohol === 'virgin' && 'V. '}
+          <div className='flex-grow flex flex-col justify-center w-full'>
+            <h2 className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral underline mb-2'>
+              {alcohol === 'virgin' && 'Virgin '}
               {selectedCocktail.name}
             </h2>
-            <div className='mt-2'>
-              <ul className='text-center'>
+            <div className='my-2'>
+              <ul className='text-center text-base md:text-lg lg:text-xl space-y-1'>
                 {machineIngredients.map((ingredient) => (
                   <li key={ingredient.id} className='text-text'>
                     {ingredient.name}:
