@@ -30,9 +30,9 @@ jobs:
         run: |
           sed -i "/^version = \".*\"$/s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" pyproject.toml
 
-      - name: Update version in uv.toml
+      - name: Update version in uv.lock for cocktailberry
         run: |
-          sed -i "/^version = \".*\"$/s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" uv.lock
+          sed -i "/name = \"cocktailberry\"/,/version = \".*\"/ s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" uv.lock
 
       - name: Commit changes
         env:
