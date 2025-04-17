@@ -136,7 +136,7 @@ const IngredientList: React.FC = () => {
         overlayClassName='overlay z-20'
       >
         {selectedIngredient && (
-          <div className='px-4 rounded w-full h-full flex flex-col'>
+          <div className='px-1 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
               <h2 className='text-xl font-bold text-secondary'>
                 {selectedIngredient.name || t('ingredients.newIngredient')}
