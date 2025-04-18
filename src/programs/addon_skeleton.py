@@ -1,4 +1,4 @@
-from typing import Any, Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QVBoxLayout
@@ -22,8 +22,8 @@ from src.display_controller import DP_CONTROLLER as dpc
 
 # Use the LoggerHandler class for your logger
 from src.logger_handler import LoggerHandler
-
 from src.models import Cocktail
+
 # The addon interface will provide intellisense for all possible methods
 from src.programs.addons import AddonInterface
 
@@ -57,7 +57,7 @@ class Addon(AddonInterface):
         In addition, there is a message, which can contain further information.
         """
 
-    def build_gui(self, container: QVBoxLayout, button_generator: Callable[[str, Callable[[], None]], None]) -> bool:
+    def build_gui(self, container: "QVBoxLayout", button_generator: Callable[[str, Callable[[], None]], None]) -> bool:
         """Build up the GUI to do additional things on command.
 
         Returns
