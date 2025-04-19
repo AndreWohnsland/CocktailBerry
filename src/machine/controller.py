@@ -128,19 +128,7 @@ class MachineController:
         self._print_time = 0.0
         current_time = 0.0
         # need to cut data into chunks
-        chunk = cfg.MAKER_SIMULTANEOUSLY_PUMPS
-        # also take the recipe order in consideration
-        # first separate the preparation data into a list of lists,
-        # where each list contains the data for one recipe order
-        unique_orders = list({x.recipe_order for x in prep_data})
-        # sort to ensure lowest order is first
-        unique_orders.sort()
-        chunked_preparation: list[list[_PreparationData]] = []
-        for number in unique_orders:
-            # get all the same order number
-            order_chunk = [x for x in prep_data if x.recipe_order == number]
-            # split the chunk again, if the size exceeds the chunk size
-            chunked_preparation.extend([order_chunk[i : i + chunk] for i in range(0, len(order_chunk), chunk)])
+        chunked_preparation = self._chunk_preparation_data(prep_data)
         chunk_max = [max(x.flow_time for x in y) for y in chunked_preparation]
         max_time = round(sum(chunk_max), 2)
         cocktail_start_time = time.perf_counter()
@@ -174,6 +162,23 @@ class MachineController:
             progress = _generate_progress(current_time, max_time)
             self._stop_pumps(pins, progress)
         return current_time, max_time
+
+    def _chunk_preparation_data(self, prep_data: list[_PreparationData]) -> list[list[_PreparationData]]:
+        """Chunk the preparation data into smaller sections respecting the MAKER_SIMULTANEOUSLY_PUMPS."""
+        chunk = cfg.MAKER_SIMULTANEOUSLY_PUMPS
+        # also take the recipe order in consideration
+        # first separate the preparation data into a list of lists,
+        # where each list contains the data for one recipe order
+        unique_orders = list({x.recipe_order for x in prep_data})
+        # sort to ensure lowest order is first
+        unique_orders.sort()
+        chunked_preparation: list[list[_PreparationData]] = []
+        for number in unique_orders:
+            # get all the same order number
+            order_chunk = [x for x in prep_data if x.recipe_order == number]
+            # split the chunk again, if the size exceeds the chunk size
+            chunked_preparation.extend([order_chunk[i : i + chunk] for i in range(0, len(order_chunk), chunk)])
+        return chunked_preparation
 
     def _process_preparation_section(
         self,
