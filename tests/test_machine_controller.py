@@ -1,5 +1,7 @@
 from unittest.mock import ANY, MagicMock, patch
 
+import pytest
+
 from src.config.config_manager import CONFIG
 from src.config.config_types import PumpConfig
 from src.machine.controller import MachineController, _build_preparation_data, _PreparationData
@@ -63,13 +65,13 @@ class TestController:
             # Verify results
             assert len(prep_data) == 2
             assert prep_data[0].pin == 1
-            assert prep_data[0].volume_flow == 10.0
-            assert prep_data[0].flow_time == 10.0  # 100ml / 10ml/s
+            assert prep_data[0].volume_flow == pytest.approx(10.0)
+            assert prep_data[0].flow_time == pytest.approx(10.0)  # 100ml / 10ml/s
             assert prep_data[0].recipe_order == 1
 
             assert prep_data[1].pin == 2
-            assert prep_data[1].volume_flow == 10.0  # 20.0 * 0.5 (pump_speed 50%)
-            assert prep_data[1].flow_time == 20.0  # 200ml / 10ml/s
+            assert prep_data[1].volume_flow == pytest.approx(10.0)  # 20.0 * 0.5 (pump_speed 50%)
+            assert prep_data[1].flow_time == pytest.approx(20.0)  # 200ml / 10ml/s
             assert prep_data[1].recipe_order == 2
 
         finally:
@@ -166,8 +168,8 @@ class TestController:
         current_time, max_time = mc._start_preparation(None, prep_data, True)
 
         # Verify the method worked correctly
-        assert max_time == 2.0  # 1.0s + 1.0s for the two ingredients
-        assert current_time == 2.0  # Last time value from our mock
+        assert max_time == pytest.approx(2.0)  # 1.0s + 1.0s for the two ingredients
+        assert current_time == pytest.approx(2.0)  # Last time value from our mock
 
         # Verify _start_pumps was called for both chunks with correct pins
         assert mc._start_pumps.call_count == 2
