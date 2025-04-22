@@ -93,12 +93,12 @@ def _extract_data(data: list[list]):
     # first is the Names, with the first column being the date
     names = data[0][1::]
     # second is resettable data
-    # data comes from csv, so it is str, need to convert to int
+    # data comes from csv, so it is str, need to convert to float
     since_reset = data[1][1::]
-    since_reset = [int(x) for x in since_reset]
+    since_reset = [float(x) for x in since_reset]
     # third is life time data
     all_time = data[2][1::]
-    all_time = [int(x) for x in all_time]
+    all_time = [float(x) for x in all_time]
 
     # Extract both into a dict containing name: quant
     # using only quantities greater than zero
