@@ -1,9 +1,15 @@
 name: Smoke Test the setup script on the runner
+
 on:
   push:
     branches:
       - master
   workflow_dispatch:
+
+env:
+  CC: gcc
+  CXX: g++
+
 jobs:
   install-CocktailBerry:
     runs-on: ubuntu-latest
