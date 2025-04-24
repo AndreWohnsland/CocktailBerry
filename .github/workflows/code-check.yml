@@ -1,8 +1,16 @@
 name: Code Check
-on: [pull_request]
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CC: gcc
+  CXX: g++
+
 jobs:
   ruff:
-    runs-on: raspberry
+    runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
@@ -10,6 +18,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
       - name: 🔍 Lint with ruff
         run: uv run --all-extras ruff check src
+
   mypy:
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +34,7 @@ jobs:
           pip install pyqt5==5.15.7 pyqt5-qt5==5.15.2
           mypy src
   pytest:
-    runs-on: raspberry
+    runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
