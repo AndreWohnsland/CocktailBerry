@@ -2,7 +2,7 @@ name: Code Check
 on: [pull_request]
 jobs:
   ruff:
-    runs-on: ubuntu-latest
+    runs-on: raspberry
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
           pip install pyqt5==5.15.7 pyqt5-qt5==5.15.2
           mypy src
   pytest:
-    runs-on: ubuntu-latest
+    runs-on: raspberry
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
