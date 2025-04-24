@@ -32,5 +32,4 @@ jobs:
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v5
       - name: 🔍 Run PyTest
-        run: |
-          uv run pytest
+        run: uv run pytest
