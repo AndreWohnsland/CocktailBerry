@@ -1,9 +1,10 @@
 import json
 import os
 import warnings
-import requests
-import plotly.express as px
+
 import pandas as pd
+import plotly.express as px
+import requests
 from language import language
 from store import store
 
@@ -12,14 +13,16 @@ warnings.filterwarnings("ignore")
 
 
 DF_START = pd.DataFrame(
-    [(language.DEFAULT_MESSAGE, language.CALL_TO_ACTION, 1), ],
-    columns=["Team", "Person", "Amount"]
+    [
+        (language.DEFAULT_MESSAGE, language.CALL_TO_ACTION, 1),
+    ],
+    columns=["Team", "Person", "Amount"],
 )
 px_colors = px.colors.qualitative.Plotly
 
 
 def __give_team_number(df: pd.DataFrame):
-    """Adds the number to the team names"""
+    """Add the number to the team names."""
     stats = df.groupby("Team")["Amount"].sum()
     for team, amount in stats.items():
         df.Team.replace("^" + str(team) + "$", f"{team} ({amount})", inplace=True, regex=True)
@@ -49,7 +52,7 @@ def get_plot_data(datatype: int):
 
 
 def generate_treemap(df: pd.DataFrame):
-    """Generates a treemap out of the df"""
+    """Generate a treemap out of the df."""
     # if its 1st or 2nd graph type (today data) add color mapping that team keeps
     # same color, even if the value changes
     additional_config = {}
@@ -57,10 +60,10 @@ def generate_treemap(df: pd.DataFrame):
         team_names = sorted(df.Team.unique())
         color_discrete_map = dict(zip(team_names, px_colors))
         color_discrete_map["(?)"] = "darkgrey"
-        additional_config = dict(color="Team", color_discrete_map=color_discrete_map)
-    fig = px.treemap(df, path=[px.Constant("Teams"), 'Team', 'Person'], values='Amount', **additional_config)
+        additional_config = {"color": "Team", "color_discrete_map": color_discrete_map}
+    fig = px.treemap(df, path=[px.Constant("Teams"), "Team", "Person"], values="Amount", **additional_config)
     fig.update_traces(root_color="darkgrey", texttemplate="<b>%{label}</b><br>(%{value:.0f})")
-    fig.update_layout(margin=dict(t=0, l=0, r=0, b=0), hovermode=False, font=dict(size=24))
-    fig.layout.plot_bgcolor = 'rgb(14, 17, 23)'
-    fig.layout.paper_bgcolor = 'rgb(14, 17, 23)'
+    fig.update_layout(margin={"t": 0, "l": 0, "r": 0, "b": 0}, hovermode=False, font={"size": 24})
+    fig.layout.plot_bgcolor = "rgb(14, 17, 23)"
+    fig.layout.paper_bgcolor = "rgb(14, 17, 23)"
     return fig
