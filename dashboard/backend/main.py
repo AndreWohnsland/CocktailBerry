@@ -1,9 +1,9 @@
 from typing import Optional
 
 import uvicorn
+from db_controller import DBController
 from fastapi import FastAPI
 
-from db_controller import DBController
 from models import TeamInfo
 
 app = FastAPI()
