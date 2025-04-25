@@ -1,28 +1,21 @@
-[tool.poetry]
+[project]
 name = "dashboard"
-version = "0.1.0"
-description = "Dasboard app for CocktailBerry"
-authors = ["Andre <Andre_Wohnsland@web.de>"]
-
-[tool.poetry.dependencies]
-python = ">=3.9,<4.0"
-fastapi = "^0.111.0"
-uvicorn = "^0.29.0"
-matplotlib = "^3.4.3"
-pywaffle = "^0.6.3"
-pandas = "^2.2.1"
-requests = "^2.31.0"
-python-dotenv = "^1.0.1"
-PyYAML = "^6.0.1"
-dash = "^2.17.0"
-numpy = "^1.26.4"
-scipy = "^1.13.0"
-plotly = "^5.22.0"
-gunicorn = "^22.0.0"
-
-[tool.poetry.dev-dependencies]
-pip-chill = "^1.0.3"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+version = "1.0.0"
+description = "CocktailBerry Dashboard"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "dash>=3.0.4",
+    "fastapi>=0.115.5",
+    "gunicorn>=23.0.0",
+    "matplotlib>=3.10.1",
+    "numpy>=2.2.5",
+    "pandas>=2.2.3",
+    "plotly>=6.0.1",
+    "python-dotenv>=1.0.1",
+    "pywaffle>=1.1.1",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.3",
+    "scipy>=1.15.2",
+    "uvicorn>=0.32.1",
+]
