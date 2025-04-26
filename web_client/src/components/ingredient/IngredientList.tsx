@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 const IngredientList: React.FC = () => {
   const { data: ingredients, isLoading, error, refetch } = useIngredients();
   const [selectedIngredient, setSelectedIngredient] = useState<IngredientInput | null>(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string | null>(null);
   const { t } = useTranslation();
 
   if (isLoading) return <LoadingData />;
