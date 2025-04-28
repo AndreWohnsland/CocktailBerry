@@ -10,14 +10,14 @@ interface SearchBarProps {
 // note: the internal search should never be null, but we communicate to external component with null
 // if the search is hidden. This is to know externally if the search is shown or not, and should be applied.
 const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput }) => {
-  const [savedSearch, setSavedSearch] = React.useState<string>(search || '');
+  const [savedSearch, setSavedSearch] = React.useState<string>(search ?? '');
   const [showSearch, setShowSearch] = React.useState(false);
   const { t } = useTranslation();
 
   const handleHideToggle = () => {
     // it is currently shown, so need to save the search value and hide it
     if (showSearch) {
-      setSavedSearch(search || '');
+      setSavedSearch(search ?? '');
       setSearch(null);
     } else {
       setSearch(savedSearch);
@@ -31,7 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput }) 
       <input
         type='text'
         placeholder={t('search')}
-        value={search || ''}
+        value={search ?? ''}
         onChange={(e) => setSearch(e.target.value)}
         className='input-base mr-1 w-full p-3 max-w-sm'
         hidden={!showSearch}
