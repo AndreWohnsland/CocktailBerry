@@ -17,7 +17,8 @@ const CocktailList: React.FC = () => {
   const { data: cocktails, error, isLoading } = useCocktails(true, config.MAKER_MAX_HAND_INGREDIENTS || 0);
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string | null>(null);
+  const [showOnlyVirginPossible, setShowOnlyVirginPossible] = useState(false);
   const { t } = useTranslation();
 
   if (isLoading) return <LoadingData />;
@@ -31,6 +32,10 @@ const CocktailList: React.FC = () => {
     setSelectedCocktail(null);
   };
 
+  const handleHideToggle = () => {
+    setShowOnlyVirginPossible(!showOnlyVirginPossible);
+  };
+
   let displayedCocktails = cocktails;
   if (search) {
     displayedCocktails = displayedCocktails?.filter(
@@ -39,10 +44,27 @@ const CocktailList: React.FC = () => {
         cocktail.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(search.toLowerCase())),
     );
   }
+  if (search !== null && showOnlyVirginPossible) {
+    displayedCocktails = displayedCocktails?.filter((cocktail) => cocktail.virgin_available);
+    displayedCocktails = displayedCocktails?.map((cocktail) => {
+      return { ...cocktail, only_virgin: true };
+    });
+  }
+
+  const virginToggleButton = (
+    <button
+      onClick={handleHideToggle}
+      className={`flex items-center justify-center p-2 !border pointer-events-auto ${
+        showOnlyVirginPossible ? 'button-secondary' : 'button-primary'
+      }`}
+    >
+      <MdNoDrinks size={20} />
+    </button>
+  );
 
   return (
     <div className='px-2 centered max-w-7xl'>
-      <SearchBar search={search} setSearch={setSearch}></SearchBar>
+      <SearchBar search={search} setSearch={setSearch} afterInput={virginToggleButton} />
       <div className='flex flex-wrap gap-3 justify-center items-center w-full mb-4'>
         {displayedCocktails
           ?.sort((a, b) => a.name.localeCompare(b.name))

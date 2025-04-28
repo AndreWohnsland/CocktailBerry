@@ -25,7 +25,7 @@ const RecipeList: React.FC = () => {
   const [selectedCocktail, setSelectedCocktail] = useState<CocktailInput | null>(null);
   const { data: ingredients, isLoading: ingredientsLoading, error: ingredientsError } = useIngredients();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string | null>(null);
   const { t } = useTranslation();
 
   if (isLoading || ingredientsLoading) return <LoadingData />;
