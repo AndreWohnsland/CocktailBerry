@@ -1,4 +1,4 @@
-fastapi[standard]==0.115.6
+fastapi[standard]==0.115.12
 uvicorn==0.34.0
-requests==2.31.0
-python-dotenv==1.0.1
+requests==2.32.3
+python-dotenv==1.1.0
