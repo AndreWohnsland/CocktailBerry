@@ -61,7 +61,7 @@ extra-index-url = [
 ]
 
 [tool.uv.workspace]
-members = ["dashboard"]
+members = ["dashboard", "microservice"]
 
 [tool.hatch.metadata]
 allow-direct-references = true

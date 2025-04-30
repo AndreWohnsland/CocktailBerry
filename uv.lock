@@ -9,6 +9,7 @@ resolution-markers = [
 members = [
     "cocktailberry",
     "dashboard",
+    "microservice",
 ]
 overrides = [
     { name = "pyqt5", marker = "platform_machine != 'aarch64' and sys_platform != 'linux'" },
@@ -1253,6 +1254,25 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/3c/34/f2e893baa79d82d4faad8abb7c5c0fcd138d367f6f38071f7afe883f65a2/mfrc522-0.0.7.tar.gz", hash = "sha256:74c7020a4fc4870f5d7022542c36143fba771055a2fae2e5929e6a1159d2bf00", size = 5652 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d5/b5/d33c0634cece0931c3c4e0978b0db58f248045c3b379ccf2d512b76fe044/mfrc522-0.0.7-py3-none-any.whl", hash = "sha256:874fd0385a7e40190063b60af83d615534b1f764c6b776fed1fcc94551c1e62f", size = 18610 },
+]
+
+[[package]]
+name = "microservice"
+version = "1.0.0"
+source = { virtual = "microservice" }
+dependencies = [
+    { name = "fastapi", extra = ["standard"] },
+    { name = "python-dotenv" },
+    { name = "requests" },
+    { name = "uvicorn" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi", extras = ["standard"], specifier = ">=0.115.5" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
+    { name = "requests", specifier = ">=2.32.3" },
+    { name = "uvicorn", specifier = ">=0.32.1" },
 ]
 
 [[package]]

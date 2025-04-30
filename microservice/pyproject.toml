@@ -1,0 +1,12 @@
+[project]
+name = "microservice"
+version = "1.0.0"
+description = "Microservice for CocktailBerry"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.115.5",
+    "python-dotenv>=1.0.1",
+    "requests>=2.32.3",
+    "uvicorn>=0.32.1",
+]
