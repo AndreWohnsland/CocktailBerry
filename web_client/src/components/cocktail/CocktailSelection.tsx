@@ -35,7 +35,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   const originalCocktail = JSON.parse(JSON.stringify(selectedCocktail));
   const [alcohol, setAlcohol] = useState<alcoholState>(selectedCocktail.only_virgin ? 'virgin' : 'normal');
   const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(
-    selectedCocktail.only_virgin ? scaleCocktail(originalCocktail, alcoholFactor['virgin']) : selectedCocktail,
+    selectedCocktail.only_virgin ? scaleCocktail(originalCocktail, 0) : selectedCocktail,
   );
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   // Refill state
@@ -207,7 +207,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
         isOpen={isProgressModalOpen}
         onRequestClose={() => setIsProgressModalOpen(false)}
         progress={0}
-        displayName={displayCocktail.name}
+        displayName={`${alcohol === 'virgin' ? 'Virgin ' : ''}${displayCocktail.name}`}
         triggerOnClose={handleCloseModal}
       />
       <TeamSelection
