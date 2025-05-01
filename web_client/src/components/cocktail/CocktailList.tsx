@@ -24,16 +24,8 @@ const CocktailList: React.FC = () => {
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
 
-  const handleCocktailClick = (cocktail: Cocktail) => {
-    setSelectedCocktail(cocktail);
-  };
-
   const handleCloseModal = () => {
     setSelectedCocktail(null);
-  };
-
-  const handleHideToggle = () => {
-    setShowOnlyVirginPossible(!showOnlyVirginPossible);
   };
 
   let displayedCocktails = cocktails;
@@ -53,7 +45,7 @@ const CocktailList: React.FC = () => {
 
   const virginToggleButton = (
     <button
-      onClick={handleHideToggle}
+      onClick={() => setShowOnlyVirginPossible(!showOnlyVirginPossible)}
       className={`flex items-center justify-center p-2 !border pointer-events-auto ${
         showOnlyVirginPossible ? 'button-secondary' : 'button-primary'
       }`}
@@ -72,7 +64,7 @@ const CocktailList: React.FC = () => {
             <div
               key={cocktail.id}
               className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
-              onClick={() => handleCocktailClick(cocktail)}
+              onClick={() => setSelectedCocktail(cocktail)}
               role='button'
             >
               <h2 className='text-center py-1 flex items-center justify-center'>
