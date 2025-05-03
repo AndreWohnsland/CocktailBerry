@@ -306,8 +306,8 @@ class DatabaseCommander:
             ingredients = self._get_all_db_ingredients(session)
             return self._convert_consumption_data(
                 [x.name for x in ingredients],
-                [x.consumption * x.cost / 1000 for x in ingredients],
-                [x.consumption_lifetime * x.cost / 1000 for x in ingredients],
+                [x.cost_consumption for x in ingredients],
+                [x.cost_consumption_lifetime for x in ingredients],
             )
 
     def _convert_consumption_data(self, headers: list[Any], resettable: list[Any], lifetime: list[Any]):
@@ -402,7 +402,13 @@ class DatabaseCommander:
 
             ingredient.consumption_lifetime += ingredient_consumption
             ingredient.consumption += ingredient_consumption
+            # update fill level, limit to 0
             ingredient.fill_level -= ingredient_consumption
+            ingredient.fill_level = max(ingredient.fill_level, 0)
+            # update the cost consumption
+            occurred_cost = int(round(ingredient.cost / ingredient.volume * ingredient_consumption, 0))
+            ingredient.cost_consumption += occurred_cost
+            ingredient.cost_consumption_lifetime += occurred_cost
 
     def set_multiple_ingredient_consumption(
         self,

@@ -30,6 +30,7 @@ from src.logger_handler import LoggerHandler
 from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
 from src.migration.update_data import (
     add_cost_column_to_ingredients,
+    add_cost_consumption_column_to_ingredients,
     add_foreign_keys,
     add_more_bottles_to_db,
     add_order_column_to_ingredient_data,
@@ -137,6 +138,9 @@ class Migrator:
             "2.2.0": [
                 add_foreign_keys,
                 remove_hand_from_recipe_data,
+            ],
+            "2.2.2": [
+                add_cost_consumption_column_to_ingredients,
             ],
         }
 

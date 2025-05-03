@@ -249,3 +249,20 @@ def add_foreign_keys():
     execute_raw_sql("ALTER TABLE Available_new RENAME TO Available;")
     execute_raw_sql("CREATE INDEX idx_available_id ON Available (ID);")
     execute_raw_sql("PRAGMA foreign_keys=on;")
+
+
+def add_cost_consumption_column_to_ingredients():
+    """Add the cost consumption column to the Ingredients table."""
+    _logger.log_event("INFO", "Adding cost consumption column to Ingredients DB")
+    try:
+        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Cost_consumption_lifetime INTEGER DEFAULT 0;")
+        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Cost_consumption INTEGER DEFAULT 0;")
+        # also calculate the current value (Consumption * cost / volume) since cost are per bottle volume
+        execute_raw_sql(
+            """UPDATE Ingredients
+                SET Cost_consumption = (Consumption * Cost / Volume),
+                    Cost_consumption_lifetime = (Consumption_lifetime * Cost / Volume);
+            """
+        )
+    except OperationalError:
+        _logger.log_event("ERROR", "Could not add cost consumption column to DB, this may because it already exists")

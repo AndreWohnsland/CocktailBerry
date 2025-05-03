@@ -34,6 +34,8 @@ class DbIngredient(Base):
     volume: Mapped[int] = mapped_column(name="Volume")
     consumption_lifetime: Mapped[int] = mapped_column(name="Consumption_lifetime")
     consumption: Mapped[int] = mapped_column(default=0, name="Consumption")
+    cost_consumption_lifetime: Mapped[int] = mapped_column(name="Cost_consumption_lifetime")
+    cost_consumption: Mapped[int] = mapped_column(default=0, name="Cost_consumption")
     fill_level: Mapped[int] = mapped_column(default=0, name="Fill_level")
     hand: Mapped[bool] = mapped_column(default=False, name="Hand")
     cost: Mapped[int] = mapped_column(default=0, name="Cost")
@@ -53,6 +55,8 @@ class DbIngredient(Base):
         volume: int,
         consumption_lifetime: int = 0,
         consumption: int = 0,
+        cost_consumption_lifetime: int = 0,
+        cost_consumption: int = 0,
         fill_level: int = 0,
         hand: bool = False,
         slow: bool = False,
@@ -65,6 +69,8 @@ class DbIngredient(Base):
         self.volume = volume
         self.consumption_lifetime = consumption_lifetime
         self.consumption = consumption
+        self.cost_consumption_lifetime = cost_consumption_lifetime
+        self.cost_consumption = cost_consumption
         self.fill_level = fill_level
         self.hand = hand
         self.slow = slow
