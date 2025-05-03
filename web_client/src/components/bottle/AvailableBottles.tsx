@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { postAvailableIngredients, useAvailableIngredients, useIngredients } from '../../api/ingredients';
 import { Ingredient } from '../../types/models';
-import ListView from './ListView';
-import { useNavigate } from 'react-router-dom';
-import { FaPlusCircle, FaMinusCircle } from 'react-icons/fa';
-import { toast } from 'react-toastify';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
-import { useTranslation } from 'react-i18next';
+import ListView from './ListView';
 
 const AvailableBottles: React.FC = () => {
   const { data: ingredients, error: ingredientsError, isLoading: ingredientsLoading } = useIngredients();

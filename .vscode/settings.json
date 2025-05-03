@@ -23,6 +23,9 @@
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
   "python.analysis.autoImportCompletions": true,
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,

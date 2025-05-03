@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { resetDataInsights, useConsumeData } from '../../api/options';
-import LoadingData from '../common/LoadingData';
-import ErrorComponent from '../common/ErrorComponent';
 import { useTranslation } from 'react-i18next';
 import { FaCocktail, FaUndo } from 'react-icons/fa';
-import { confirmAndExecute } from '../../utils';
 import { FaCoins, FaLemon } from 'react-icons/fa6';
+import { resetDataInsights, useConsumeData } from '../../api/options';
+import { confirmAndExecute } from '../../utils';
+import ErrorComponent from '../common/ErrorComponent';
+import LoadingData from '../common/LoadingData';
 
 const ConsumeBarChart: React.FC<{
   title: string;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { confirmAndExecute } from '../../utils';
 import { updateDateTime } from '../../api/options';
+import { confirmAndExecute } from '../../utils';
 
 const TimeManager: React.FC = () => {
   const [date, setDate] = useState<string>('');

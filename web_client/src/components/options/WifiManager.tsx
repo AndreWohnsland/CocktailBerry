@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useAvailableSsids, updateWifiData } from '../../api/options';
+import { useTranslation } from 'react-i18next';
+import { updateWifiData, useAvailableSsids } from '../../api/options';
+import { confirmAndExecute } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
-import { confirmAndExecute } from '../../utils';
-import { useTranslation } from 'react-i18next';
 
 const WifiManager: React.FC = () => {
   const { data: ssids, isLoading, error } = useAvailableSsids();

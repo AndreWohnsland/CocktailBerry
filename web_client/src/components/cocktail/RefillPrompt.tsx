@@ -4,8 +4,8 @@ import { FaWineBottle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
-import { executeAndShow } from '../../utils';
 import { refillBottle } from '../../api/bottles';
+import { executeAndShow } from '../../utils';
 
 interface RefillPromptProps {
   isOpen: boolean;

@@ -1,8 +1,8 @@
 import React from 'react';
-import { useConfig } from '../../ConfigProvider';
-import { useAuth } from '../../AuthProvider';
-import PasswordPage from './PasswordPage';
 import { validateMakerPassword, validateMasterPassword } from '../../api/options';
+import { useAuth } from '../../AuthProvider';
+import { useConfig } from '../../ConfigProvider';
+import PasswordPage from './PasswordPage';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
-import Modal from 'react-modal';
-import { FaPlus, FaTrashAlt, FaPen, FaUpload } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { FaPen, FaPlus, FaTrashAlt, FaUpload } from 'react-icons/fa';
 import { MdNoDrinks } from 'react-icons/md';
+import Modal from 'react-modal';
 import {
   deleteCocktail,
   deleteCocktailImage,
@@ -12,13 +13,12 @@ import {
   uploadCocktailImage,
   useCocktails,
 } from '../../api/cocktails';
-import { Cocktail, CocktailInput } from '../../types/models';
 import { useIngredients } from '../../api/ingredients';
+import { Cocktail, CocktailInput } from '../../types/models';
 import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
-import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
+import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
-import { useTranslation } from 'react-i18next';
 
 const RecipeList: React.FC = () => {
   const { data: cocktails, isLoading, error, refetch } = useCocktails(false, 10, false);

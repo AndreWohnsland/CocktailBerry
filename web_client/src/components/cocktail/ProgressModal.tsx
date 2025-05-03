@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { getCocktailStatus, stopCocktail } from '../../api/cocktails';
-import { useTranslation } from 'react-i18next';
 
 interface ProgressModalProps {
   isOpen: boolean;

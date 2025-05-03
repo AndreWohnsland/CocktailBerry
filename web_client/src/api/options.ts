@@ -1,15 +1,15 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import { axiosInstance } from './common';
 import {
-  ConsumeData,
-  LogData,
+  AddonData,
   ConfigData,
   ConfigDataWithUiInfo,
-  AddonData,
-  WifiData,
+  ConsumeData,
   DefinedConfigData,
   IssueData,
+  LogData,
+  WifiData,
 } from '../types/models';
+import { axiosInstance } from './common';
 
 const options_url = '/options';
 

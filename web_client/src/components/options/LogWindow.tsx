@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLogs } from '../../api/options';
-import { JumpToTopButton } from '../common/JumpToTopButton';
 import ErrorComponent from '../common/ErrorComponent';
+import { JumpToTopButton } from '../common/JumpToTopButton';
 import LoadingData from '../common/LoadingData';
 
 const LogWindow: React.FC = () => {

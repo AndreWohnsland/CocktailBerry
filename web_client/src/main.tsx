@@ -1,14 +1,14 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.tsx';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { ConfigProvider } from './ConfigProvider.tsx';
-import { AuthProvider } from './AuthProvider.tsx';
 import { BrowserRouter } from 'react-router-dom';
+import App from './App.tsx';
+import { AuthProvider } from './AuthProvider.tsx';
+import { ConfigProvider } from './ConfigProvider.tsx';
 import { CustomColorProvider } from './CustomColorProvider.tsx';
 import './i18n';
+import './index.css';
 
 const queryClient = new QueryClient();
 
