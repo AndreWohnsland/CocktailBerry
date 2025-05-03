@@ -262,26 +262,50 @@ class TestIngredient:
 
     def test_increment_ingredient_consumption(self, db_commander: DatabaseCommander):
         """Test the increment_ingredient_consumption method."""
-        db_commander.increment_ingredient_consumption("White Rum", 100)
+        consumption = 100
+        db_commander.increment_ingredient_consumption("White Rum", consumption)
         session = Session(db_commander.engine)
         ingredient = session.query(DbIngredient).filter_by(name="White Rum").first()
         session.close()
         assert ingredient is not None
-        assert ingredient.consumption == 100
+        assert ingredient.consumption == consumption
+        assert ingredient.consumption_lifetime == consumption
+        cost = int(round(ingredient.cost / ingredient.volume * consumption, 0))
+        assert ingredient.cost_consumption == cost
+        assert ingredient.cost_consumption_lifetime == cost
+        # check multiple times works as well
+        db_commander.increment_ingredient_consumption("White Rum", consumption)
+        ingredient = session.query(DbIngredient).filter_by(name="White Rum").first()
+        session.close()
+        assert ingredient is not None
+        assert ingredient.consumption == 2 * consumption
+        assert ingredient.consumption_lifetime == 2 * consumption
+        assert ingredient.cost_consumption == 2 * cost
+        assert ingredient.cost_consumption_lifetime == 2 * cost
 
     def test_set_multiple_ingredient_consumption(self, db_commander: DatabaseCommander):
         """Test the set_multiple_ingredient_consumption method."""
         ingredients = ["White Rum", "Cola"]
-        amounts = [100, 50]
+        amount_1 = 100
+        amount_2 = 50
+        amounts = [amount_1, amount_2]
         db_commander.set_multiple_ingredient_consumption(ingredients, amounts)
         session = Session(db_commander.engine)
         ingredient_1 = session.query(DbIngredient).filter_by(name=ingredients[0]).first()
         ingredient_2 = session.query(DbIngredient).filter_by(name=ingredients[1]).first()
         session.close()
         assert ingredient_1 is not None
-        assert ingredient_1.consumption == 100
+        assert ingredient_1.consumption == amount_1
+        assert ingredient_1.consumption_lifetime == amount_1
+        cost_1 = int(round(ingredient_1.cost / ingredient_1.volume * amount_1, 0))
+        assert ingredient_1.cost_consumption == cost_1
+        assert ingredient_1.cost_consumption_lifetime == cost_1
         assert ingredient_2 is not None
-        assert ingredient_2.consumption == 50
+        assert ingredient_2.consumption == amount_2
+        assert ingredient_2.consumption_lifetime == amount_2
+        cost_2 = int(round(ingredient_2.cost / ingredient_2.volume * amount_2, 0))
+        assert ingredient_2.cost_consumption == cost_2
+        assert ingredient_2.cost_consumption_lifetime == cost_2
 
     @pytest.mark.parametrize("ingredient_id", (1, 4, 6))
     def test_delete_ingredient_fails(self, db_commander: DatabaseCommander, ingredient_id: int):
