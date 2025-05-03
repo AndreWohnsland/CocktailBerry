@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
 import { useCocktails } from '../../api/cocktails';
@@ -10,7 +11,6 @@ import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
 import CocktailSelection from './CocktailSelection';
 import SingleIngredientSelection from './SingleIngredientSelection';
-import { useTranslation } from 'react-i18next';
 
 const CocktailList: React.FC = () => {
   const { config } = useConfig();

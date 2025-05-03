@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { refillBottle, useBottles } from '../../api/bottles';
 import { useIngredients } from '../../api/ingredients';
-import BottleComponent from './BottleComponent';
 import { Ingredient } from '../../types/models';
-import { useNavigate } from 'react-router-dom';
 import { executeAndShow } from '../../utils';
-import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
-import { useTranslation } from 'react-i18next';
+import LoadingData from '../common/LoadingData';
+import BottleComponent from './BottleComponent';
 
 const BottleList: React.FC = () => {
   const {

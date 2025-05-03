@@ -1,6 +1,6 @@
-import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
-import { CustomColors } from './types/models';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useConfig } from './ConfigProvider';
+import { CustomColors } from './types/models';
 
 interface ICustomColor {
   customColors: CustomColors;

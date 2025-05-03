@@ -1,16 +1,16 @@
 // components/IngredientList.tsx
 import React, { useState } from 'react';
-import Modal from 'react-modal';
-import { FaPlus, FaTrashAlt, FaPen } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { FaPen, FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { IoHandLeft } from 'react-icons/io5';
+import Modal from 'react-modal';
 import { deleteIngredient, postIngredient, updateIngredient, useIngredients } from '../../api/ingredients';
 import { Ingredient, IngredientInput } from '../../types/models';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { confirmAndExecute, executeAndShow } from '../../utils';
-import LoadingData from '../common/LoadingData';
 import ErrorComponent from '../common/ErrorComponent';
+import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
-import { useTranslation } from 'react-i18next';
 
 const IngredientList: React.FC = () => {
   const { data: ingredients, isLoading, error, refetch } = useIngredients();

@@ -1,11 +1,11 @@
 import React from 'react';
-import { useAddonData, addAddon, deleteAddon } from '../../api/options';
-import { AddonData } from '../../types/models';
+import { useTranslation } from 'react-i18next';
 import { FaPlus, FaTrashAlt } from 'react-icons/fa';
+import { addAddon, deleteAddon, useAddonData } from '../../api/options';
+import { AddonData } from '../../types/models';
+import { confirmAndExecute, executeAndShow } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
-import { confirmAndExecute, executeAndShow } from '../../utils';
-import { useTranslation } from 'react-i18next';
 
 const AddonManager: React.FC = () => {
   const { data: addons, isLoading, error, refetch } = useAddonData();

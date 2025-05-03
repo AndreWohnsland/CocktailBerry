@@ -1,27 +1,27 @@
-import { useConfig } from '../../ConfigProvider';
-import {
-  cleanMachine,
-  rebootSystem,
-  shutdownSystem,
-  updateSystem,
-  updateSoftware,
-  checkInternetConnection,
-  createBackup,
-  uploadBackup,
-  updateOptions,
-} from '../../api/options';
-import { confirmAndExecute, executeAndShow } from '../../utils';
-import { useNavigate } from 'react-router-dom';
-import ProgressModal from '../cocktail/ProgressModal';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
-import { FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
 import { BsBootstrapReboot } from 'react-icons/bs';
-import { RiShutDownLine } from 'react-icons/ri';
-import { GrUpdate } from 'react-icons/gr';
 import { FaCocktail, FaExclamationTriangle, FaInfoCircle, FaRegClock } from 'react-icons/fa';
+import { FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
+import { GrUpdate } from 'react-icons/gr';
+import { MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
+import { RiShutDownLine } from 'react-icons/ri';
 import { TiDocumentAdd } from 'react-icons/ti';
+import { useNavigate } from 'react-router-dom';
+import { useConfig } from '../../ConfigProvider';
+import {
+  checkInternetConnection,
+  cleanMachine,
+  createBackup,
+  rebootSystem,
+  shutdownSystem,
+  updateOptions,
+  updateSoftware,
+  updateSystem,
+  uploadBackup,
+} from '../../api/options';
+import { confirmAndExecute, executeAndShow } from '../../utils';
+import ProgressModal from '../cocktail/ProgressModal';
 
 const OptionWindow = () => {
   const { theme, changeTheme } = useConfig();

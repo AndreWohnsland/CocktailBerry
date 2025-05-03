@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Bottle, Ingredient } from '../../types/models';
-import { updateBottle } from '../../api/bottles';
-import ProgressBar from '../common/ProgressBar';
-import Modal from 'react-modal';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { errorToast, executeAndShow } from '../../utils';
-import { FaMinus, FaPlus } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { FaMinus, FaPlus } from 'react-icons/fa6';
+import Modal from 'react-modal';
+import { updateBottle } from '../../api/bottles';
+import { Bottle, Ingredient } from '../../types/models';
+import { errorToast, executeAndShow } from '../../utils';
+import ProgressBar from '../common/ProgressBar';
 
 interface BottleProps {
   bottle: Bottle;

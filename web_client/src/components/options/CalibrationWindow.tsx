@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useConfig } from '../../ConfigProvider';
-import { FaPlus, FaMinus } from 'react-icons/fa';
-import { calibrateBottle } from '../../api/bottles';
-import { executeAndShow } from '../../utils';
 import { useTranslation } from 'react-i18next';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import { calibrateBottle } from '../../api/bottles';
+import { useConfig } from '../../ConfigProvider';
+import { executeAndShow } from '../../utils';
 
 const CalibrationWindow = () => {
   const [channel, setChannel] = useState(1);

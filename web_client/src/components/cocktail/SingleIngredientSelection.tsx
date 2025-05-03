@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { useIngredients, prepareIngredient } from '../../api/ingredients';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import { prepareIngredient, useIngredients } from '../../api/ingredients';
 import { Ingredient } from '../../types/models';
 import { errorToast } from '../../utils';
-import { FaMinus, FaPlus } from 'react-icons/fa';
 import ProgressModal from './ProgressModal';
-import { useTranslation } from 'react-i18next';
 
 interface SingleIngredientSelectionProps {
   onClose: () => void;

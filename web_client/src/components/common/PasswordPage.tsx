@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { errorToast } from '../../utils';
 import { useTranslation } from 'react-i18next';
+import { errorToast } from '../../utils';
 
 interface PasswordPageProps {
   passwordName: string;

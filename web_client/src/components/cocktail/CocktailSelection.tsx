@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Cocktail, PrepareResult } from '../../types/models';
-import { FaSkullCrossbones, FaGlassMartiniAlt, FaWineGlassAlt } from 'react-icons/fa';
-import { IoIosHappy } from 'react-icons/io';
-import { PiPintGlassFill } from 'react-icons/pi';
-import { ImMug } from 'react-icons/im';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { TbGlassChampagne } from 'react-icons/tb';
+import { FaGlassMartiniAlt, FaSkullCrossbones, FaWineGlassAlt } from 'react-icons/fa';
+import { ImMug } from 'react-icons/im';
+import { IoIosHappy } from 'react-icons/io';
 import { MdNoDrinks } from 'react-icons/md';
-import { errorToast, scaleCocktail } from '../../utils';
+import { PiPintGlassFill } from 'react-icons/pi';
+import { TbGlassChampagne } from 'react-icons/tb';
 import { prepareCocktail } from '../../api/cocktails';
-import ProgressModal from './ProgressModal';
 import { API_URL } from '../../api/common';
 import { useConfig } from '../../ConfigProvider';
+import { Cocktail, PrepareResult } from '../../types/models';
+import { errorToast, scaleCocktail } from '../../utils';
+import ProgressModal from './ProgressModal';
 import RefillPrompt from './RefillPrompt';
 import TeamSelection from './TeamSelection';
 

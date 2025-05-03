@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { updateOptions, useConfig } from '../../api/options';
-import { RxCrossCircled } from 'react-icons/rx';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaPlus, FaSave } from 'react-icons/fa';
+import { RxCrossCircled } from 'react-icons/rx';
+import { updateOptions, useConfig } from '../../api/options';
+import { useConfig as useConfigProvider } from '../../ConfigProvider';
 import { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
 import { executeAndShow, isInCurrentTab } from '../../utils';
-import TabSelector from './TabSelector';
-import { useConfig as useConfigProvider } from '../../ConfigProvider';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
-import { useTranslation } from 'react-i18next';
+import TabSelector from './TabSelector';
 
 // some of the config are "old" meaning they are only used in the QT but not React UI
 // we will define them here and skip the values for those (e.g. not generate input fields)

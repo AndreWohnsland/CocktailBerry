@@ -1,5 +1,5 @@
-import { Bottle } from '../types/models';
 import { useQuery, UseQueryResult } from 'react-query';
+import { Bottle } from '../types/models';
 import { axiosInstance } from './common';
 
 const bottle_url = '/bottles';
