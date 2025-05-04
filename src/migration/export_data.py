@@ -85,7 +85,7 @@ def migrate_csv_export_data_to_db():
     _logger.log_event("INFO", f"Migrated {migrated_csv_count} csv export files")
 
 
-def _migrate_recipe_export_file(recipe_file, export_date):
+def _migrate_recipe_export_file(recipe_file: Path, export_date: datetime.date):
     """Migrate a single recipe export file to the database."""
     try:
         with open(recipe_file, encoding="utf-8") as csv_file:
@@ -101,13 +101,13 @@ def _migrate_recipe_export_file(recipe_file, export_date):
             consumption_values = rows[1][1:]
 
             for recipe_name, consumption in zip(recipe_names, consumption_values):
-                consumption = int(float(consumption))
-                if consumption <= 0:
+                ing_consumption = int(float(consumption))
+                if ing_consumption <= 0:
                     continue
 
                 execute_raw_sql(
                     "INSERT INTO CocktailExport (Export_Date, Recipe_Name, Counter) VALUES (?, ?, ?)",
-                    (export_date, recipe_name, consumption),
+                    (export_date, recipe_name, ing_consumption),
                 )
 
         recipe_file.unlink()

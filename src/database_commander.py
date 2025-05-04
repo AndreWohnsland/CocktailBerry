@@ -641,24 +641,49 @@ class DatabaseCommander:
 
     def export_recipe_data(self):
         """Save the recipe consumption data to the database and reset counters."""
+        today = datetime.date.today()
         with self.session_scope() as session:
             recipes = self._get_db_cocktails(session)
             for recipe in recipes:
-                if recipe.counter > 0:
+                if recipe.counter == 0:
+                    continue
+                existing_export = (
+                    session.query(DbCocktailExport)
+                    .filter(DbCocktailExport.export_date == today)
+                    .filter(DbCocktailExport.recipe_name == recipe.name)
+                    .one_or_none()
+                )
+                if existing_export:
+                    existing_export.counter += recipe.counter
+                else:
                     session.add(DbCocktailExport(recipe.name, recipe.counter))
+
             # Reset counters after recording
             session.query(DbRecipe).update({DbRecipe.counter: 0})
         _logger.log_event("INFO", "Recipe consumption data was saved to database")
 
     def export_ingredient_data(self):
         """Save the ingredient consumption and cost data to the database and reset counters."""
+        today = datetime.date.today()
         with self.session_scope() as session:
             ingredients = self._get_all_db_ingredients(session)
             for ingredient in ingredients:
-                if ingredient.consumption > 0:
+                if ingredient.consumption == 0:
+                    continue
+                existing_export = (
+                    session.query(DbIngredientExport)
+                    .filter(DbIngredientExport.export_date == today)
+                    .filter(DbIngredientExport.ingredient_name == ingredient.name)
+                    .one_or_none()
+                )
+                if existing_export:
+                    existing_export.consumption += ingredient.consumption
+                    existing_export.cost_consumption += ingredient.cost_consumption
+                else:
                     session.add(
                         DbIngredientExport(ingredient.name, ingredient.consumption, ingredient.cost_consumption)
                     )
+
             # Reset consumption after recording
             session.query(DbIngredient).update({DbIngredient.consumption: 0, DbIngredient.cost_consumption: 0})
         _logger.log_event("INFO", "Ingredient consumption data was saved to database")

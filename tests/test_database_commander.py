@@ -639,3 +639,42 @@ class TestExports:
         # Today's date should be in the list
         today = datetime.date.today().strftime("%Y-%m-%d")
         assert today in export_dates
+
+    def test_multiple_exports_same_day(self, db_commander: DatabaseCommander):
+        """Test that multiple exports on the same day are combined correctly."""
+        today = datetime.date.today()
+
+        # First export
+        db_commander.increment_recipe_counter("Cuba Libre")
+        db_commander.increment_ingredient_consumption("White Rum", 50)
+        db_commander.export_recipe_data()
+        db_commander.export_ingredient_data()
+
+        # Second export on the same day
+        db_commander.increment_recipe_counter("Cuba Libre")
+        db_commander.increment_recipe_counter("Cuba Libre")
+        db_commander.increment_ingredient_consumption("White Rum", 100)
+        db_commander.export_recipe_data()
+        db_commander.export_ingredient_data()
+
+        # Verify exports were combined
+        export_data = db_commander.get_export_data()
+        today_str = today.strftime("%Y-%m-%d")
+
+        # Check that the recipe counter was combined (1 + 2 = 3)
+        assert today_str in export_data
+        assert "Cuba Libre" in export_data[today_str].recipes
+        assert export_data[today_str].recipes["Cuba Libre"] == 3
+
+        # Check that the ingredient consumption was combined (50 + 100 = 150)
+        assert "White Rum" in export_data[today_str].ingredients
+        assert export_data[today_str].ingredients["White Rum"] == 150
+
+        # Check that the cost consumption was also combined correctly
+        ingredient = db_commander.get_ingredient("White Rum")
+        assert ingredient is not None
+        expected_cost = int(round(ingredient.cost / ingredient.bottle_volume * 150, 0))
+        today_cost = export_data[today_str].cost
+        assert today_cost is not None
+        assert "White Rum" in today_cost
+        assert today_cost["White Rum"] == expected_cost
