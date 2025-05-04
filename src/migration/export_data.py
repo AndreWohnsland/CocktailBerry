@@ -146,8 +146,8 @@ def _migrate_ingredient_export_file(ingredient_file: Path, cost_file_path: Path 
                 cost_file_path.unlink()
 
             for ingredient_name, consumption in zip(ingredient_names, consumption_values):
-                consumption = int(float(consumption))
-                if consumption <= 0:
+                int_consumption = int(float(consumption))
+                if int_consumption <= 0:
                     continue
 
                 cost_consumption = cost_data.get(ingredient_name, 0)
@@ -155,7 +155,7 @@ def _migrate_ingredient_export_file(ingredient_file: Path, cost_file_path: Path 
                 execute_raw_sql(
                     """INSERT INTO IngredientExport (Export_Date, Ingredient_Name, Consumption, Cost_Consumption)
                     VALUES (?, ?, ?, ?)""",
-                    (export_date, ingredient_name, consumption, cost_consumption),
+                    (export_date, ingredient_name, int_consumption, cost_consumption),
                 )
 
         ingredient_file.unlink()
