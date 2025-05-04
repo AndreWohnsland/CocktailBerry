@@ -1,7 +1,14 @@
 import copy
-from dataclasses import dataclass, field
+from dataclasses import field
 from enum import Enum
 from typing import Optional
+
+from pydantic.dataclasses import dataclass as pydantic_dataclass
+
+from src import __version__
+from src.migration.migrator import _Version
+
+_NOT_SET = "Not Set"
 
 
 class PrepareResult(Enum):
@@ -16,7 +23,7 @@ class PrepareResult(Enum):
     ADDON_ERROR = "ADDON_ERROR"
 
 
-@dataclass
+@pydantic_dataclass
 class CocktailStatus:
     progress: int = 0
     completed: bool = False
@@ -24,7 +31,7 @@ class CocktailStatus:
     status: PrepareResult = PrepareResult.FINISHED
 
 
-@dataclass
+@pydantic_dataclass
 class Ingredient:
     """Class to represent one ingredient."""
 
@@ -53,7 +60,7 @@ class Ingredient:
         return self_compare < other_compare
 
 
-@dataclass
+@pydantic_dataclass
 class Cocktail:
     """Class to represent one cocktail."""
 
@@ -185,3 +192,30 @@ class Cocktail:
             ing.amount = round(ing.amount * scaling)
         self.adjusted_amount = amount
         self.adjusted_ingredients.sort()
+
+
+@pydantic_dataclass
+class ConsumeData:
+    recipes: dict[str, int]
+    ingredients: dict[str, int]
+    cost: Optional[dict[str, int]]
+
+
+@pydantic_dataclass
+class AddonData:
+    name: str = _NOT_SET
+    description: str = _NOT_SET
+    url: str = _NOT_SET
+    disabled_since: str = ""
+    is_installable: bool = True
+    file_name: str = ""
+    installed: bool = False
+    official: bool = True
+
+    def __post_init__(self):
+        if self.file_name:
+            return
+        self.file_name = self.url.rsplit("/", maxsplit=1)[-1]
+        if self.disabled_since != "":
+            local_version = _Version(__version__)
+            self.is_installable = local_version < _Version(self.disabled_since.replace("v", ""))

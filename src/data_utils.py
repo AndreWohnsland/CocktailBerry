@@ -1,86 +1,25 @@
-import csv
 import json
-from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 
 import requests
-from pydantic.dataclasses import dataclass
 from requests.exceptions import ConnectionError as ReqConnectionError
 
-from src import __version__
 from src.database_commander import DatabaseCommander
-from src.filepath import ADDON_FOLDER, SAVE_FOLDER
+from src.filepath import ADDON_FOLDER
 from src.logger_handler import LoggerHandler
-from src.migration.migrator import _Version
+from src.models import AddonData, ConsumeData
 from src.programs.addons import ADDONS
 
 ALL_TIME = "ALL"
 SINCE_RESET = "AT RESET"
 _GITHUB_ADDON_SOURCE = "https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Addons/main/addon_data.json"
-_NOT_SET = "Not Set"
+
 
 _logger = LoggerHandler("DataUtils")
 
 
-@dataclass
-class ConsumeData:
-    recipes: dict[str, int]
-    ingredients: dict[str, int]
-    cost: Optional[dict[str, int]]
-
-
-@dataclass
-class AddonData:
-    name: str = _NOT_SET
-    description: str = _NOT_SET
-    url: str = _NOT_SET
-    disabled_since: str = ""
-    is_installable: bool = True
-    file_name: str = ""
-    installed: bool = False
-    official: bool = True
-
-    def __post_init__(self):
-        if self.file_name:
-            return
-        self.file_name = self.url.rsplit("/", maxsplit=1)[-1]
-        if self.disabled_since != "":
-            local_version = _Version(__version__)
-            self.is_installable = local_version < _Version(self.disabled_since.replace("v", ""))
-
-
 class CouldNotInstallAddonError(Exception):
     pass
-
-
-def _generate_consumption_from_file(date_string: str):
-    # we need to get the pattern of the files, the are date_string_xxx-increasing number
-    recipe_files = sorted(SAVE_FOLDER.glob(f"{date_string}_Recipe*.csv"), key=lambda f: int(f.stem.split("-")[-1]))
-    ingredient_files = sorted(
-        SAVE_FOLDER.glob(f"{date_string}_Ingredient*.csv"), key=lambda f: int(f.stem.split("-")[-1])
-    )
-    cost_files = sorted(SAVE_FOLDER.glob(f"{date_string}_Cost*.csv"), key=lambda f: int(f.stem.split("-")[-1]))
-
-    # Select the oldest file (lowest last number)
-    recipe_file = recipe_files[0]
-    ingredient_file = ingredient_files[0]
-    cost_file = cost_files[0] if cost_files else None
-    recipe_data = _read_csv_file(SAVE_FOLDER / recipe_file)[SINCE_RESET]
-    ingredient_data = _read_csv_file(SAVE_FOLDER / ingredient_file)[SINCE_RESET]
-    cost_data = None
-    if cost_file:
-        cost_data = _read_csv_file(SAVE_FOLDER / cost_file)[SINCE_RESET]
-    return ConsumeData(recipe_data, ingredient_data, cost_data)
-
-
-def _read_csv_file(to_read: Path):
-    """Read and extracts the given csv file."""
-    data = []
-    with to_read.open(encoding="utf-8") as csv_file:
-        reader = csv.reader(csv_file, delimiter=",")
-        for row in reader:
-            data.append(row)
-    return _extract_data(data)
 
 
 def _extract_data(data: list[list]):
@@ -108,31 +47,21 @@ def _extract_data(data: list[list]):
     return extracted
 
 
-def get_saved_dates() -> list[str]:
-    """Extract the timestamp pattern from the file."""
-    # pattern is something like "20241201_Recipe_export-155942"
-    recipes_files = [file.name for file in SAVE_FOLDER.glob("*Recipe*.csv")]
-    dates = set()
-    for file_name in recipes_files:
-        date_str = file_name.split("_")[0]
-        dates.add(date_str)
-    return list(dates)
-
-
 def generate_consume_data() -> dict[str, ConsumeData]:
-    """Get data from files and db, assigns objects and fill dropdown."""
-    dates = get_saved_dates()
-    # first get things from database
+    """Get data from database, assigns objects and fill dropdown."""
     DBC = DatabaseCommander()
     consume_data: dict[str, ConsumeData] = {}
+
+    # Get current data in DB (since reset and all time)
     recipe_db = _extract_data(DBC.get_consumption_data_lists_recipes())
     ingredient_db = _extract_data(DBC.get_consumption_data_lists_ingredients())
     cost_db = _extract_data(DBC.get_cost_data_lists_ingredients())
     consume_data[SINCE_RESET] = ConsumeData(recipe_db[SINCE_RESET], ingredient_db[SINCE_RESET], cost_db[SINCE_RESET])
     consume_data[ALL_TIME] = ConsumeData(recipe_db[ALL_TIME], ingredient_db[ALL_TIME], cost_db[ALL_TIME])
-    # then iterate over dates and get data there
-    for d in dates:
-        consume_data[d] = _generate_consumption_from_file(d)
+
+    # Get historical export data from database and merge it with current data
+    consume_data.update(DBC.get_export_data())
+
     return consume_data
 
 

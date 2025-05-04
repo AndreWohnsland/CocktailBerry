@@ -27,6 +27,7 @@ from src.filepath import (
     VERSION_FILE,
 )
 from src.logger_handler import LoggerHandler
+from src.migration.export_data import add_export_tables_to_db, migrate_csv_export_data_to_db
 from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
 from src.migration.update_data import (
     add_cost_column_to_ingredients,
@@ -141,6 +142,10 @@ class Migrator:
             ],
             "2.2.2": [
                 add_cost_consumption_column_to_ingredients,
+            ],
+            "2.3.0": [
+                add_export_tables_to_db,
+                migrate_csv_export_data_to_db,
             ],
         }
 

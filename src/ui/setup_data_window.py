@@ -1,10 +1,11 @@
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QGridLayout, QMainWindow, QProgressBar
 
-from src.data_utils import ALL_TIME, SINCE_RESET, ConsumeData, generate_consume_data, get_saved_dates
+from src.data_utils import ALL_TIME, SINCE_RESET, generate_consume_data
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.filepath import SAVE_FOLDER
+from src.models import ConsumeData
 from src.save_handler import SAVE_HANDLER
 from src.ui.creation_utils import create_label
 from src.ui_elements import Ui_DataWindow
@@ -38,7 +39,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         """Get data from files and db, assigns objects and fill dropdown."""
         self.consume_data = generate_consume_data()
         # generates the dropdown with options
-        dates = get_saved_dates()
+        dates = DBC.get_export_dates()
         drop_down_options = [SINCE_RESET, ALL_TIME, *dates]
         DP_CONTROLLER.fill_single_combobox(self.selection_data, drop_down_options, clear_first=True, first_empty=False)
 
@@ -47,15 +48,11 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         if not DP_CONTROLLER.ask_to_export_data():
             return
         SAVE_HANDLER.export_data()
-        DP_CONTROLLER.say_all_data_exported(str(SAVE_FOLDER))
+        DP_CONTROLLER.say_all_data_exported()
         current_selection = self.selection_data.currentText()
         self._populate_data()
         DP_CONTROLLER.set_combobox_item(self.selection_data, current_selection)
         self._plot_data(self.consume_data[current_selection])
-
-    def _get_saved_data_files(self, pattern: str = "Recipe"):
-        """Check the logs folder for all existing log files."""
-        return [file.name for file in SAVE_FOLDER.glob(f"*{pattern}*.csv")]
 
     def _display_data(self):
         selection = self.selection_data.currentText()
@@ -95,7 +92,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         if cost_data is not None:
             total_cost = sum(cost_data.values())
             cost_label = UI_LANGUAGE.get_translation("cost_ingredients", "data_window")
-            cost_label = f"{cost_label}{total_cost/100:.2f}"
+            cost_label = f"{cost_label}{total_cost / 100:.2f}"
         self._add_header(self.grid_current_row + 1, cost_label)
         # we stop here if there is no cost data
         if cost_data is None:
