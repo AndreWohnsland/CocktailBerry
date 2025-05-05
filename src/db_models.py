@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 
 from sqlalchemy import ForeignKey, PrimaryKeyConstraint
@@ -144,3 +145,37 @@ class DbTeamdata(Base):
 
     def __init__(self, payload: str):
         self.payload = payload
+
+
+class DbCocktailExport(Base):
+    __tablename__ = "CocktailExport"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
+    export_date: Mapped[datetime.date] = mapped_column(nullable=False, name="Export_Date", default=datetime.date.today)
+    recipe_name: Mapped[str] = mapped_column(nullable=False, name="Recipe_Name")
+    counter: Mapped[int] = mapped_column(nullable=False, name="Counter")
+
+    def __init__(self, recipe_name: str, counter: int, export_date: datetime.date | None = None):
+        self.recipe_name = recipe_name
+        self.counter = counter
+        self.export_date = export_date or datetime.date.today()
+
+
+class DbIngredientExport(Base):
+    __tablename__ = "IngredientExport"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
+    export_date: Mapped[datetime.date] = mapped_column(nullable=False, name="Export_Date", default=datetime.date.today)
+    ingredient_name: Mapped[str] = mapped_column(nullable=False, name="Ingredient_Name")
+    consumption: Mapped[int] = mapped_column(nullable=False, name="Consumption")
+    cost_consumption: Mapped[int] = mapped_column(nullable=False, name="Cost_Consumption")
+
+    def __init__(
+        self,
+        ingredient_name: str,
+        consumption: int,
+        cost_consumption: int,
+        export_date: datetime.date | None = None,
+    ):
+        self.ingredient_name = ingredient_name
+        self.consumption = consumption
+        self.cost_consumption = cost_consumption
+        self.export_date = export_date or datetime.date.today()

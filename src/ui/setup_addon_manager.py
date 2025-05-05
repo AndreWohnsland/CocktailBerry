@@ -1,10 +1,11 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHeaderView, QMainWindow, QTableWidgetItem
 
-from src.data_utils import AddonData, CouldNotInstallAddonError, get_addon_data, install_addon, remove_addon
+from src.data_utils import CouldNotInstallAddonError, get_addon_data, install_addon, remove_addon
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
+from src.models import AddonData
 from src.programs.addons import ADDONS
 from src.ui_elements import Ui_AddonManager
 from src.utils import restart_program

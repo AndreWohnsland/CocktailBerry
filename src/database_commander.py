@@ -10,11 +10,21 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
-from src.db_models import Base, DbAvailable, DbBottle, DbCocktailIngredient, DbIngredient, DbRecipe, DbTeamdata
+from src.db_models import (
+    Base,
+    DbAvailable,
+    DbBottle,
+    DbCocktailExport,
+    DbCocktailIngredient,
+    DbIngredient,
+    DbIngredientExport,
+    DbRecipe,
+    DbTeamdata,
+)
 from src.dialog_handler import DialogHandler
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, HOME_PATH
 from src.logger_handler import LoggerHandler
-from src.models import Cocktail, Ingredient
+from src.models import Cocktail, ConsumeData, Ingredient
 from src.utils import time_print
 
 if TYPE_CHECKING:
@@ -628,6 +638,88 @@ class DatabaseCommander:
             if teamdata is None:
                 raise ElementNotFoundError(f"Teamdata ID {data_id} not found")
             session.delete(teamdata)
+
+    def export_recipe_data(self):
+        """Save the recipe consumption data to the database and reset counters."""
+        today = datetime.date.today()
+        with self.session_scope() as session:
+            recipes = self._get_db_cocktails(session)
+            for recipe in recipes:
+                if recipe.counter == 0:
+                    continue
+                existing_export = (
+                    session.query(DbCocktailExport)
+                    .filter(DbCocktailExport.export_date == today)
+                    .filter(DbCocktailExport.recipe_name == recipe.name)
+                    .one_or_none()
+                )
+                if existing_export:
+                    existing_export.counter += recipe.counter
+                else:
+                    session.add(DbCocktailExport(recipe.name, recipe.counter))
+
+            # Reset counters after recording
+            session.query(DbRecipe).update({DbRecipe.counter: 0})
+        _logger.log_event("INFO", "Recipe consumption data was saved to database")
+
+    def export_ingredient_data(self):
+        """Save the ingredient consumption and cost data to the database and reset counters."""
+        today = datetime.date.today()
+        with self.session_scope() as session:
+            ingredients = self._get_all_db_ingredients(session)
+            for ingredient in ingredients:
+                if ingredient.consumption == 0:
+                    continue
+                existing_export = (
+                    session.query(DbIngredientExport)
+                    .filter(DbIngredientExport.export_date == today)
+                    .filter(DbIngredientExport.ingredient_name == ingredient.name)
+                    .one_or_none()
+                )
+                if existing_export:
+                    existing_export.consumption += ingredient.consumption
+                    existing_export.cost_consumption += ingredient.cost_consumption
+                else:
+                    session.add(
+                        DbIngredientExport(ingredient.name, ingredient.consumption, ingredient.cost_consumption)
+                    )
+
+            # Reset consumption after recording
+            session.query(DbIngredient).update({DbIngredient.consumption: 0, DbIngredient.cost_consumption: 0})
+        _logger.log_event("INFO", "Ingredient consumption data was saved to database")
+
+    def get_export_dates(self) -> list[str]:
+        """Get all available export dates from the database."""
+        with self.session_scope() as session:
+            recipe_dates = session.query(DbCocktailExport.export_date).distinct().all()
+            all_dates = {date[0].strftime("%Y-%m-%d") for date in recipe_dates}
+            return sorted(all_dates)
+
+    def get_export_data(self) -> dict[str, ConsumeData]:
+        """Get all export data from the database."""
+        with self.session_scope() as session:
+            recipe_exports = session.query(DbCocktailExport).all()
+            ingredient_exports = session.query(DbIngredientExport).all()
+            date_grouped_data: dict[str, dict[str, dict[str, int]]] = {}
+
+            for export in recipe_exports:
+                date_str = export.export_date.strftime("%Y-%m-%d")
+                if date_str not in date_grouped_data:
+                    date_grouped_data[date_str] = {"recipes": {}, "ingredients": {}, "cost": {}}
+                date_grouped_data[date_str]["recipes"][export.recipe_name] = export.counter
+
+            for export in ingredient_exports:
+                date_str = export.export_date.strftime("%Y-%m-%d")
+                if date_str not in date_grouped_data:
+                    date_grouped_data[date_str] = {"recipes": {}, "ingredients": {}, "cost": {}}
+                date_grouped_data[date_str]["ingredients"][export.ingredient_name] = export.consumption
+                if export.cost_consumption > 0:
+                    date_grouped_data[date_str]["cost"][export.ingredient_name] = export.cost_consumption
+
+            return {
+                date_str: ConsumeData(recipes=data["recipes"], ingredients=data["ingredients"], cost=data["cost"])
+                for date_str, data in date_grouped_data.items()
+            }
 
 
 DB_COMMANDER = DatabaseCommander()

@@ -89,8 +89,8 @@ dialog:
     en: 'You need to use at least one ingredient!'
     de: 'Es muss mindestens eine Zutat eingetragen sein!'
   all_data_exported:
-    en: 'All data was exported and amount was reset! File is at: {file_path}'
-    de: 'Alle Daten wurden exportiert und die Mengen zurückgesetzt! Datei ist unter: {file_path}'
+    en: 'All data was exported and amount was reset!'
+    de: 'Alle Daten wurden exportiert und die Mengen zurückgesetzt!'
   not_enough_ingredient_volume:
     en: '{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left. Please refill the bottle.'
     de: '{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden. Bitte Flasche auffüllen.'

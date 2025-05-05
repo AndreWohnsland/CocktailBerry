@@ -416,9 +416,9 @@ class DialogHandler:
         """Informs user that the recipe got no according ingredients."""
         self.__output_language_dialog("recipe_at_least_one_ingredient")
 
-    def say_all_data_exported(self, file_path: str):
+    def say_all_data_exported(self):
         """Informs user that all data have been exported."""
-        self.__output_language_dialog("all_data_exported", file_path=file_path)
+        self.__output_language_dialog("all_data_exported")
 
     def not_enough_ingredient_volume(self, ingredient_name: str, level: int, volume: int):
         """Informs user that the ingredient got not enough volume for cocktail."""
