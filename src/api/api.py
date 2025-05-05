@@ -42,13 +42,14 @@ async def lifespan(app: FastAPI):
         shared.startup_python_deprecated.set_issue()
     MACHINE.init_machine()
     MACHINE.default_led()
-    update_available, _ = can_update()
-    if update_available:
-        time_print("Update available, performing update...")
-        # need to get also latest web build
-        download_latest_web_client()
-        updater = Updater()
-        updater.update()
+    if cfg.MAKER_SEARCH_UPDATES:
+        update_available, _ = can_update()
+        if update_available:
+            time_print("Update available, performing update...")
+            # need to get also latest web build
+            download_latest_web_client()
+            updater = Updater()
+            updater.update()
     ADDONS.start_trigger_loop()
     yield
     MACHINE.cleanup()
