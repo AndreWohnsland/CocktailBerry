@@ -144,7 +144,7 @@ If your idea is not on the list, feel free to open a feature request, I may cons
 
 This project uses [uv](https://docs.astral.sh/uv/) to manage all its dependencies.
 To get started, you need to install uv and then install the dependencies.
-See also at the [dev notes](./docs/.devnotes.md) section for a complete run down.
+See also at the [dev notes](./docs/.devnotes.md) section for a complete run down as well as extra information.
 
 ```bash
 uv sync --all-extras
