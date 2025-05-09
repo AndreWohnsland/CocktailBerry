@@ -160,7 +160,7 @@ This will install all dependencies and you can start developing.
 Then just run:
 
 ```bash
-uv run python runme.py
+uv run runme.py
 ```
 
 If you want to develop the api, you can also run it with
