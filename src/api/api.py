@@ -19,9 +19,10 @@ from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FO
 from src.machine.controller import MACHINE
 from src.migration.setup_web import download_latest_web_client
 from src.programs.addons import ADDONS
+from src.resource_stats import start_resource_tracker
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.updater import Updater
-from src.utils import start_resource_tracker, time_print
+from src.utils import time_print
 
 
 @asynccontextmanager

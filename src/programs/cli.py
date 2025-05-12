@@ -23,14 +23,8 @@ from src.programs.cocktailberry import run_cocktailberry
 from src.programs.config_window import run_config_window
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
-from src.utils import (
-    create_ap,
-    delete_ap,
-    generate_custom_style_file,
-    get_platform_data,
-    start_resource_tracker,
-    time_print,
-)
+from src.resource_stats import start_resource_tracker
+from src.utils import create_ap, delete_ap, generate_custom_style_file, get_platform_data, time_print
 
 _logger = LoggerHandler("cocktailberry")
 cli = typer.Typer(add_completion=False)
