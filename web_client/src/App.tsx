@@ -20,6 +20,7 @@ import OptionWindow from './components/options/OptionWindow.tsx';
 import TimeManager from './components/options/TimeManager.tsx';
 import WifiManager from './components/options/WifiManager.tsx';
 import RecipeList from './components/recipe/RecipeList.tsx';
+import ResourceWindow from './components/resources/ResourceWindow.tsx';
 import { useConfig } from './ConfigProvider.tsx';
 import useAxiosInterceptors from './hooks/useAxiosInterceptors.ts';
 import { hastNotIgnoredStartupIssues } from './utils.tsx';
@@ -142,6 +143,14 @@ function App() {
               element={
                 <MasterPasswordProtected>
                   <TimeManager />
+                </MasterPasswordProtected>
+              }
+            />
+            <Route
+              path='options/resources'
+              element={
+                <MasterPasswordProtected>
+                  <ResourceWindow />
                 </MasterPasswordProtected>
               }
             />

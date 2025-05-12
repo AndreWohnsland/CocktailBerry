@@ -18,11 +18,12 @@ from src.api.models import DataResponse, DateTimeInput, IssueData, PasswordInput
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import generate_consume_data, get_addon_data, install_addon, remove_addon
+from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
-from src.models import AddonData, ConsumeData, PrepareResult
+from src.models import AddonData, ConsumeData, PrepareResult, ResourceInfo, ResourceStats
 from src.save_handler import SAVE_HANDLER
 from src.updater import Updater
 from src.utils import (
@@ -342,3 +343,23 @@ async def update_datetime(data: DateTimeInput):
     # resolve the internet connection issue, since time is set properly now (only thing we care)
     shared.startup_need_time_adjustment.has_issue = False
     return {"message": "Success"}
+
+
+@router.get(
+    "/resource_tracker/{session_number:int}",
+    summary="Get system resource usage statistics",
+    response_model=ResourceStats,
+)
+async def get_resource_stats_endpoint(session_number: int) -> ResourceStats:
+    """Get system resource usage statistics and timeline for the current session."""
+    return DatabaseCommander().get_resource_stats(session_number)
+
+
+@router.get(
+    "/resource_tracker/sessions",
+    summary="Get start date and session number of all sessions",
+    response_model=list[ResourceInfo],
+)
+async def get_resource_stats_all_sessions_endpoint() -> list[ResourceInfo]:
+    """Get system resource usage statistics and timeline for all sessions."""
+    return DatabaseCommander().get_resource_session_numbers()

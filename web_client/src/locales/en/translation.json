@@ -78,6 +78,7 @@
     "shutdown": "Shutdown",
     "logs": "Logs",
     "updateSystem": "Update System",
+    "systemResourceUsage": "System Resource Usage",
     "updateCocktailBerry": "Update CocktailBerry Software",
     "wifi": "WiFi",
     "internetCheck": "Internet Check",
@@ -143,5 +144,10 @@
   "timeManager": {
     "adjustTime": "Adjust Time and Date",
     "adjustTimeConfirmation": "Do you want to adjust system time to given data?"
+  },
+  "resources": {
+    "resourceTracker": "Starttime",
+    "cpuMetrics": "CPU Metrics",
+    "ramMetrics": "RAM Metrics"
   }
 }

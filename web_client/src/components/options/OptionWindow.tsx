@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { BsBootstrapReboot } from 'react-icons/bs';
 import { FaCocktail, FaExclamationTriangle, FaInfoCircle, FaRegClock } from 'react-icons/fa';
 import { FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
@@ -153,6 +154,13 @@ const OptionWindow = () => {
           >
             <GrUpdate size={20} className='mr-2' />
             {t('options.updateSystem')}
+          </button>
+          <button
+            className='button-primary p-4 col-span-1 md:col-span-2 flex items-center justify-center'
+            onClick={() => navigate('resources')}
+          >
+            <AiOutlineLoading3Quarters size={22} className='mr-2' />
+            {t('options.systemResourceUsage')}
           </button>
           <button
             className='button-primary-filled p-4 col-span-1 md:col-span-2 flex items-center justify-center'
