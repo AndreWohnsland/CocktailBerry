@@ -45,6 +45,7 @@ if TYPE_CHECKING:
         Ui_PictureWindow,
         Ui_Progressbarwindow,
         Ui_RefillPrompt,
+        Ui_ResourceWindow,
         Ui_RFIDWriterWindow,
         Ui_Teamselection,
         Ui_WiFiWindow,
@@ -910,6 +911,10 @@ class UiLanguage:
                 needed_volume=needed_volume,
             )
         )
+
+    def adjust_resource_window(self, w: Ui_ResourceWindow):
+        """Translate the elements of the data window."""
+        w.button_back.setText(self._choose_language("back"))
 
 
 UI_LANGUAGE = UiLanguage()
