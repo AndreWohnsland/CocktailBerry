@@ -1,11 +1,12 @@
 import contextlib
+import os
 import shutil
 import sqlite3
 from datetime import datetime
 from sqlite3 import OperationalError
 
-from src.filepath import BACKUP_FOLDER, DATABASE_PATH, DEFAULT_DATABASE_PATH
-from src.logger_handler import LoggerHandler
+from src.filepath import BACKUP_FOLDER, DATABASE_PATH, DEFAULT_DATABASE_PATH, LOG_FOLDER
+from src.logger_handler import LogFiles, LoggerHandler
 
 _logger = LoggerHandler("update_data_module")
 
@@ -266,3 +267,30 @@ def add_cost_consumption_column_to_ingredients():
         )
     except OperationalError:
         _logger.log_event("ERROR", "Could not add cost consumption column to DB, this may because it already exists")
+
+
+def add_resource_usage_table():
+    """Add the ResourceUsage table to the database."""
+    _logger.log_event("INFO", "Adding ResourceUsage table to database")
+    try:
+        execute_raw_sql("""
+            CREATE TABLE IF NOT EXISTS ResourceUsage (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                Timestamp DATETIME NOT NULL DEFAULT (datetime('now')),
+                CPU_Usage REAL NOT NULL,
+                RAM_Usage REAL NOT NULL,
+                Session INTEGER NOT NULL
+            );
+        """)
+        execute_raw_sql("CREATE INDEX IF NOT EXISTS idx_resource_usage_session ON ResourceUsage (Session);")
+    except OperationalError:
+        _logger.log_event("ERROR", "Could not add ResourceUsage table to DB, this may because it already exists")
+
+
+def clear_resource_log_file():
+    """Clear the resource log file."""
+    _logger.log_event("INFO", "Clearing resource log file")
+    resource_log = LOG_FOLDER / f"{LogFiles.RESOURCES}.log"
+    if resource_log.exists():
+        with contextlib.suppress(OSError):
+            os.remove(str(resource_log))
