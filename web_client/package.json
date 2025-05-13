@@ -20,7 +20,8 @@
     "react-modal": "^3.16.3",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.30.0",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "recharts": "^2.15.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.26.0",

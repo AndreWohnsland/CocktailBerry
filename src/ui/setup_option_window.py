@@ -22,6 +22,7 @@ from src.ui.creation_utils import setup_worker_thread
 from src.ui.setup_addon_window import AddonWindow
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_log_window import LogWindow
+from src.ui.setup_resource_window import ResourceWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
@@ -73,6 +74,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_check_internet.clicked.connect(self._check_internet_connection)
         self.button_update_system.clicked.connect(self._update_system)
         self.button_update_software.clicked.connect(self._update_software)
+        self.button_resources.clicked.connect(self._resource_insights)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 
@@ -83,6 +85,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.addon_window: AddonWindow | None = None
         self.data_window: DataWindow | None = None
         self.backup_restore_window: BackupRestoreWindow | None = None
+        self.resource_window: ResourceWindow | None = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -127,6 +130,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _data_insights(self):
         """Open the data window."""
         self.data_window = DataWindow()
+
+    def _resource_insights(self):
+        """Open the resource window."""
+        self.resource_window = ResourceWindow()
 
     def _open_calibration(self):
         """Open the calibration window."""

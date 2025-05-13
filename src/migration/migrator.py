@@ -35,11 +35,13 @@ from src.migration.update_data import (
     add_foreign_keys,
     add_more_bottles_to_db,
     add_order_column_to_ingredient_data,
+    add_resource_usage_table,
     add_slower_ingredient_flag_to_db,
     add_team_buffer_to_database,
     add_unit_column_to_ingredients,
     add_virgin_flag_to_db,
     change_slower_flag_to_pump_speed,
+    clear_resource_log_file,
     fix_amount_in_recipe,
     remove_hand_from_recipe_data,
     remove_is_alcoholic_column,
@@ -140,12 +142,14 @@ class Migrator:
                 add_foreign_keys,
                 remove_hand_from_recipe_data,
             ],
-            "2.2.2": [
-                add_cost_consumption_column_to_ingredients,
-            ],
+            "2.2.2": [add_cost_consumption_column_to_ingredients],
             "2.3.0": [
                 add_export_tables_to_db,
                 migrate_csv_export_data_to_db,
+            ],
+            "2.4.0": [
+                clear_resource_log_file,
+                add_resource_usage_table,
             ],
         }
 

@@ -10,7 +10,7 @@ $files = @(
   "customcolor", "addonwindow", "addonmanager",
   "datawindow", "cocktail_selection",
   "picture_window", "refill_prompt",
-  "config_window"
+  "config_window", "resource_window"
 )
 
 foreach ($f in $files) {

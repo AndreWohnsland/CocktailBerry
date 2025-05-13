@@ -678,3 +678,74 @@ class TestExports:
         assert today_cost is not None
         assert "White Rum" in today_cost
         assert today_cost["White Rum"] == expected_cost
+
+
+class TestResourceUsage:
+    def test_save_and_get_resource_stats(self, db_commander: DatabaseCommander):
+        """Test saving resource usage and retrieving resource stats."""
+        # Prepare test data
+        cpu_values = [10.5, 20.0, 15.0]
+        ram_values = [10.0, 20.0, 15.0]
+        session_number = 33
+        now = datetime.datetime.now()
+        for cpu, ram in zip(cpu_values, ram_values):
+            db_commander.save_resource_usage(cpu, ram, session_number, timestamp=now)
+
+        # Retrieve resource stats for session 1
+        stats = db_commander.get_resource_stats(session_number)
+        assert stats is not None
+        assert stats.samples == len(cpu_values)
+        assert stats.min_cpu == min(cpu_values)
+        assert stats.max_cpu == max(cpu_values)
+        assert pytest.approx(stats.mean_cpu) == round(sum(cpu_values) / len(cpu_values), 1)
+        assert pytest.approx(stats.median_cpu) == sorted(cpu_values)[len(cpu_values) // 2]
+        assert stats.min_ram == min(ram_values)
+        assert stats.max_ram == max(ram_values)
+        assert pytest.approx(stats.mean_ram) == round(sum(ram_values) / len(ram_values), 1)
+        assert pytest.approx(stats.median_ram) == sorted(ram_values)[len(ram_values) // 2]
+        assert stats.raw_cpu == cpu_values
+        assert stats.raw_ram == ram_values
+        assert stats.raw_ram == ram_values
+
+    def test_save_and_get_resource_stats_returns_empty_data(self, db_commander: DatabaseCommander):
+        """Test saving resource usage and retrieving empty resource stats."""
+        stats = db_commander.get_resource_stats(1)
+        assert stats is not None
+        assert stats.samples == 0
+        assert stats.min_cpu == pytest.approx(0.0)
+        assert stats.max_cpu == pytest.approx(0.0)
+        assert stats.mean_cpu == pytest.approx(0.0)
+        assert stats.median_cpu == pytest.approx(0.0)
+        assert stats.min_ram == pytest.approx(0.0)
+        assert stats.max_ram == pytest.approx(0.0)
+        assert stats.mean_ram == pytest.approx(0.0)
+        assert stats.median_ram == pytest.approx(0.0)
+        assert len(stats.raw_cpu) == 0
+        assert len(stats.raw_ram) == 0
+
+    def test_get_resource_session_numbers(self, db_commander: DatabaseCommander):
+        """Test getting resource session numbers."""
+        cpu_values = [10.5, 20.0, 15.0]
+        ram_values = [10.0, 20.0, 15.0]
+        session_numbers = [2, 1, 3]
+        now = datetime.datetime.now()
+        for cpu, ram, session_number in zip(cpu_values, ram_values, session_numbers):
+            db_commander.save_resource_usage(cpu, ram, session_number, timestamp=now)
+
+        inserted_numbers = db_commander.get_resource_session_numbers()
+        assert len(inserted_numbers) == 3
+        assert [x.session_id for x in inserted_numbers] == sorted(session_numbers)
+        # check that the date string second element is "%Y-%m-%d %H:%M"
+        assert all(now.strftime("%Y-%m-%d %H:%M") == x.start_time for x in inserted_numbers)
+
+    def test_get_highest_session_number(self, db_commander: DatabaseCommander):
+        """Test getting the highest session number."""
+        cpu_values = [10.5, 20.0, 15.0]
+        ram_values = [10.0, 20.0, 15.0]
+        session_numbers = [1, 2, 3]
+        now = datetime.datetime.now()
+        for cpu, ram, session_number in zip(cpu_values, ram_values, session_numbers):
+            db_commander.save_resource_usage(cpu, ram, session_number, timestamp=now)
+
+        highest_session_number = db_commander.get_highest_session_number()
+        assert highest_session_number == max(session_numbers)

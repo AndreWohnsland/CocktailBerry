@@ -4,6 +4,7 @@ import datetime
 import shutil
 import sqlite3
 from contextlib import contextmanager
+from statistics import mean, median
 from typing import TYPE_CHECKING, Any, Literal
 
 import sqlalchemy
@@ -19,12 +20,13 @@ from src.db_models import (
     DbIngredient,
     DbIngredientExport,
     DbRecipe,
+    DbResourceUsage,
     DbTeamdata,
 )
 from src.dialog_handler import DialogHandler
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, HOME_PATH
 from src.logger_handler import LoggerHandler
-from src.models import Cocktail, ConsumeData, Ingredient
+from src.models import Cocktail, ConsumeData, Ingredient, ResourceInfo, ResourceStats
 from src.utils import time_print
 
 if TYPE_CHECKING:
@@ -720,6 +722,66 @@ class DatabaseCommander:
                 date_str: ConsumeData(recipes=data["recipes"], ingredients=data["ingredients"], cost=data["cost"])
                 for date_str, data in date_grouped_data.items()
             }
+
+    def save_resource_usage(
+        self, cpu_usage: float, ram_usage: float, session_number: int, timestamp: datetime.datetime | None = None
+    ):
+        """Save the resource usage to the database."""
+        with self.session_scope() as session:
+            usage = DbResourceUsage(
+                cpu_usage=cpu_usage,
+                ram_usage=ram_usage,
+                session=session_number,
+                timestamp=timestamp,
+            )
+            session.add(usage)
+            session.commit()
+
+    def get_resource_stats(self, session_number: int) -> ResourceStats:
+        """Get the resource usage for a specific session."""
+        with self.session_scope() as session_scope:
+            query = (
+                session_scope.query(DbResourceUsage)
+                .filter(DbResourceUsage.session == session_number)
+                .order_by(DbResourceUsage.timestamp)
+            )
+            data = query.all()
+            if not data:
+                return ResourceStats(0, 0, 0, 0, 0, 0, 0, 0, 0, [], [])
+            cpu_values = [d.cpu_usage for d in data]
+            ram_values = [d.ram_usage for d in data]
+            return ResourceStats(
+                min_cpu=min(cpu_values),
+                max_cpu=max(cpu_values),
+                mean_cpu=round(mean(cpu_values), 1),
+                median_cpu=median(cpu_values),
+                min_ram=min(ram_values),
+                max_ram=max(ram_values),
+                mean_ram=round(mean(ram_values), 1),
+                median_ram=median(ram_values),
+                samples=len(data),
+                raw_cpu=cpu_values,
+                raw_ram=ram_values,
+            )
+
+    def get_resource_session_numbers(self) -> list[ResourceInfo]:
+        """Get all session numbers with their minimum timestamp from the database."""
+        with self.session_scope() as session:
+            data = (
+                session.query(DbResourceUsage.session, sqlalchemy.func.min(DbResourceUsage.timestamp))
+                .group_by(DbResourceUsage.session)
+                .all()
+            )
+            return sorted(
+                [ResourceInfo(row[0], row[1].strftime("%Y-%m-%d %H:%M") if row[1] else "") for row in data],
+                key=lambda x: x.session_id,
+            )
+
+    def get_highest_session_number(self) -> int:
+        """Get the highest session number from the database, zero if there is no data."""
+        with self.session_scope() as session:
+            data = session.query(DbResourceUsage.session).order_by(DbResourceUsage.session.desc()).first()
+            return data[0] if data else 0
 
 
 DB_COMMANDER = DatabaseCommander()

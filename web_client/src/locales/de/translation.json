@@ -78,6 +78,7 @@
     "shutdown": "Herunterfahren",
     "logs": "Logs",
     "updateSystem": "System aktualisieren",
+    "systemResourceUsage": "System Ressourcen Auslastung",
     "updateCocktailBerry": "CocktailBerry Software aktualisieren",
     "wifi": "WLAN",
     "internetCheck": "Internetprüfung",
@@ -143,5 +144,10 @@
   "timeManager": {
     "adjustTime": "Zeit und Tag Anpassen",
     "adjustTimeConfirmation": "Möchtest du die Systemzeit auf die eingegebene Zeit updaten?"
+  },
+  "resources": {
+    "resourceTracker": "Startzeitpunkt",
+    "cpuMetrics": "CPU Metriken",
+    "ramMetrics": "RAM Metriken"
   }
 }

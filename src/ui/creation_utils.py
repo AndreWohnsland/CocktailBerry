@@ -2,7 +2,7 @@ from typing import Callable, Optional
 
 from PyQt5.QtCore import QObject, QSize, Qt, QThread
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QLabel, QPushButton, QSizePolicy, QSpacerItem, QWidget
+from PyQt5.QtWidgets import QGridLayout, QLabel, QProgressBar, QPushButton, QSizePolicy, QSpacerItem, QWidget
 
 from src.ui.icons import ICONS
 
@@ -16,6 +16,11 @@ class FontSize:
     SMALL = SMALL_FONT
     MEDIUM = MEDIUM_FONT
     LARGE = LARGE_FONT
+
+
+class RowCounter:
+    def __init__(self, value=0):
+        self.value = value
 
 
 def adjust_font(element: QWidget, font_size: int, bold: bool = False):
@@ -113,6 +118,53 @@ def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable
     _thread.finished.connect(ICONS.stop_spinner)  # type: ignore[attr-defined]
 
     return _thread
+
+
+def add_grid_spacer(grid: QGridLayout, row_counter: RowCounter):
+    """Add a spacer to the grid layout and increment row."""
+    spacer_label = create_label("", 12)
+    spacer_label.setMaximumSize(QSize(16777215, 30))
+    grid.addWidget(spacer_label, row_counter.value, 0, 1, 1)
+    row_counter.value += 1
+
+
+def add_grid_text(grid: QGridLayout, row_counter: RowCounter, text: str, font_size: int = MEDIUM_FONT):
+    """Add a text to the grid layout and increment row."""
+    text_label = create_label(text, font_size, False, True)
+    grid.addWidget(text_label, row_counter.value, 0, 1, 3)
+    row_counter.value += 1
+
+
+def add_grid_header(grid: QGridLayout, row_counter: RowCounter, text: str):
+    """Add a header to the grid layout and increment row by 2."""
+    header_label = create_label(text, 20, True, True, css_class="header-underline", min_h=40, max_h=50)
+    grid.addWidget(header_label, row_counter.value, 0, 1, 3)
+    row_counter.value += 2
+
+
+def generate_grid_bar_chart(
+    parent: QWidget,
+    grid: QGridLayout,
+    row_counter: RowCounter,
+    names: list,
+    values: list,
+    quantifier: str = "x",
+):
+    """Generate one bar in the grid for each name/value and increment row."""
+    if not values:
+        return
+    max_value = max(values)
+    for name, value in zip(names, values):
+        grid.addWidget(create_label(f"{name} ", 20, False, True), row_counter.value, 0, 1, 1)
+        grid.addWidget(
+            create_label(f" {value}{quantifier} ", 20, True, True, css_class="secondary"), row_counter.value, 1, 1, 1
+        )
+        displayed_bar = QProgressBar(parent)
+        displayed_bar.setTextVisible(False)
+        displayed_bar.setProperty("cssClass", "no-bg")
+        displayed_bar.setValue(int(100 * value / max_value) if max_value else 0)
+        grid.addWidget(displayed_bar, row_counter.value, 2, 1, 1)
+        row_counter.value += 1
 
 
 def generate_bottle_management(row: int):

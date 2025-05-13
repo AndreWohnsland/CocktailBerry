@@ -137,14 +137,13 @@ With your help, these things come even faster!
 If your idea is not on the list, feel free to open a feature request, I may consider it!
 
 - `easy`: Translate all dialogs / UI to your native language
-- `medium`: Help to move to v2 with API based control and a separate UI
 - `easy-hard`: Implement a cool [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) and make it verified
 
 # Development
 
 This project uses [uv](https://docs.astral.sh/uv/) to manage all its dependencies.
 To get started, you need to install uv and then install the dependencies.
-See also at the [dev notes](./docs/.devnotes.md) section for a complete run down.
+See also at the [dev notes](./docs/.devnotes.md) section for a complete run down as well as extra information.
 
 ```bash
 uv sync --all-extras
@@ -161,11 +160,11 @@ This will install all dependencies and you can start developing.
 Then just run:
 
 ```bash
-uv run python runme.py
+uv run runme.py
 ```
 
 If you want to develop the api, you can also run it with
 
 ```bash
-uv run fastapi dev .\src\api\api.py
+uv run fastapi dev ./src/api/api.py
 ```

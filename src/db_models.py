@@ -179,3 +179,20 @@ class DbIngredientExport(Base):
         self.consumption = consumption
         self.cost_consumption = cost_consumption
         self.export_date = export_date or datetime.date.today()
+
+
+class DbResourceUsage(Base):
+    __tablename__ = "ResourceUsage"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
+    timestamp: Mapped[datetime.datetime] = mapped_column(
+        nullable=False, name="Timestamp", default=datetime.datetime.now
+    )
+    cpu_usage: Mapped[float] = mapped_column(nullable=False, name="CPU_Usage")
+    ram_usage: Mapped[float] = mapped_column(nullable=False, name="RAM_Usage")
+    session: Mapped[int] = mapped_column(nullable=False, name="Session")
+
+    def __init__(self, cpu_usage: float, ram_usage: float, session: int, timestamp: datetime.datetime | None = None):
+        self.cpu_usage = cpu_usage
+        self.ram_usage = ram_usage
+        self.session = session
+        self.timestamp = timestamp or datetime.datetime.now()

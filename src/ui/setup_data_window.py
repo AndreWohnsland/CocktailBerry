@@ -1,5 +1,4 @@
-from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QGridLayout, QMainWindow, QProgressBar
+from PyQt5.QtWidgets import QGridLayout, QMainWindow
 
 from src.data_utils import ALL_TIME, SINCE_RESET, generate_consume_data
 from src.database_commander import DB_COMMANDER as DBC
@@ -7,7 +6,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.models import ConsumeData
 from src.save_handler import SAVE_HANDLER
-from src.ui.creation_utils import create_label
+from src.ui.creation_utils import RowCounter, add_grid_header, add_grid_spacer, generate_grid_bar_chart
 from src.ui_elements import Ui_DataWindow
 
 
@@ -25,7 +24,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         self.selection_data.activated.connect(self._display_data)
 
         self.grid = None
-        self.grid_current_row = 0
+        self.row_counter = RowCounter(0)
 
         self.consume_data: dict[str, ConsumeData] = {}
         self._populate_data()
@@ -72,52 +71,36 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         # regenerates the grid layout
         self.grid = QGridLayout()
         self.content_container.addLayout(self.grid)
+        self.row_counter = RowCounter(0)
         # if there is no recipe_data, skip
         if not recipe_data:
             return
 
         # first generate chart for recipe
-        self._generate_bar_chart(names, values)
+        generate_grid_bar_chart(self, self.grid, self.row_counter, names, values)
         # generate data for ingredients
         names, values = self._sort_extract_data(ingredient_data)
         label = UI_LANGUAGE.get_translation("ingredient_volume", "data_window")
         ingredient_label = f"{label}{sum(values) / 1000:.2f} l"
         # add empty line to get some space
-        self._add_spacer(self.grid_current_row)
-        self._add_header(self.grid_current_row, ingredient_label)
-        self._generate_bar_chart(names, values, self.grid_current_row, " ml")
+        add_grid_spacer(self.grid, self.row_counter)
+        add_grid_header(self.grid, self.row_counter, ingredient_label)
+        generate_grid_bar_chart(self, self.grid, self.row_counter, names, values, " ml")
         # generate cost at the end
-        self._add_spacer(self.grid_current_row)
+        add_grid_spacer(self.grid, self.row_counter)
         cost_label = UI_LANGUAGE.get_translation("no_cost_data", "data_window")
         if cost_data is not None:
             total_cost = sum(cost_data.values())
             cost_label = UI_LANGUAGE.get_translation("cost_ingredients", "data_window")
             cost_label = f"{cost_label}{total_cost / 100:.2f}"
-        self._add_header(self.grid_current_row + 1, cost_label)
+        add_grid_header(self.grid, self.row_counter, cost_label)
         # we stop here if there is no cost data
         if cost_data is None:
             return
         names, values = self._sort_extract_data(cost_data)
         # need to convert values from cent or similar to euro
         values = [x / 100 for x in values]
-        self._generate_bar_chart(names, values, self.grid_current_row, "")
-
-    def _add_spacer(self, row: int):
-        """Add a spacer to the grid layout."""
-        if self.grid is None:
-            return
-        spacer_label = create_label("", 12)
-        spacer_label.setMaximumSize(QSize(16777215, 30))
-        self.grid.addWidget(spacer_label, row, 0, 1, 1)
-        self.grid_current_row += 1
-
-    def _add_header(self, row: int, text: str):
-        """Add a header to the grid layout."""
-        if self.grid is None:
-            return
-        header_label = create_label(text, 20, True, True, css_class="header-underline", min_h=40, max_h=50)
-        self.grid.addWidget(header_label, row, 0, 1, 3)
-        self.grid_current_row += 2
+        generate_grid_bar_chart(self, self.grid, self.row_counter, names, values, "")
 
     def _sort_extract_data(self, data: dict):
         sorted_data = dict(sorted(data.items(), key=lambda i: -i[1]))
@@ -125,25 +108,9 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         values = list(sorted_data.values())
         return names, values
 
-    def _generate_bar_chart(self, names: list, values: list, start_row: int = 0, quantifier: str = "x"):
-        """Generate one bar in the grid."""
-        if self.grid is None:
-            return
-        for i, (name, value) in enumerate(zip(names, values), start_row):
-            self.grid.addWidget(create_label(f"{name} ", 20, False, True), i, 0, 1, 1)
-            self.grid.addWidget(
-                create_label(f" {value}{quantifier} ", 20, True, True, css_class="secondary"), i, 1, 1, 1
-            )
-            displayed_bar = QProgressBar(self)
-            displayed_bar.setTextVisible(False)
-            displayed_bar.setProperty("cssClass", "no-bg")
-            displayed_bar.setValue(int(100 * value / max(values)))
-            self.grid.addWidget(displayed_bar, i, 2, 1, 1)
-            self.grid_current_row += 1
-
     def _clear_data(self):
         """Remove data from the grid layout."""
-        self.grid_current_row = 0
+        self.row_counter = RowCounter(0)
         if self.grid is None:
             return
         for i in reversed(range(self.grid.count())):

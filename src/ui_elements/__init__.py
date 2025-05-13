@@ -15,40 +15,42 @@ from src.ui_elements.progressbarwindow import Ui_Progressbarwindow
 from src.ui_elements.rfidwriter import Ui_RFIDWriterWindow
 from src.ui_elements.teamselection import Ui_Teamselection
 from src.ui_elements.wifiwindow import Ui_WiFiWindow
-from .customcolor import Ui_ColorWindow
-from .addonwindow import Ui_Addonwindow
+
 from .addonmanager import Ui_AddonManager
-from .datawindow import Ui_DataWindow
+from .addonwindow import Ui_Addonwindow
 from .cocktail_selection import Ui_CocktailSelection
+from .config_window import Ui_ConfigWindow
+from .customcolor import Ui_ColorWindow
+from .datawindow import Ui_DataWindow
 from .picture_window import Ui_PictureWindow
 from .refill_prompt import Ui_RefillPrompt
-from .config_window import Ui_ConfigWindow
-
+from .resource_window import Ui_ResourceWindow
 
 __all__ = [
-    "Ui_available",
-    "Ui_addingredient",
+    "Ui_AddonManager",
+    "Ui_Addonwindow",
     "Ui_Bottlewindow",
     "Ui_CalibrationWindow",
-    "Ui_MainWindow",
+    "Ui_CocktailSelection",
+    "Ui_ColorWindow",
+    "Ui_ConfigWindow",
     "Ui_CustomDialog",
     "Ui_CustomPrompt",
+    "Ui_DataWindow",
     "Ui_Datepicker",
     "Ui_Keyboard",
     "Ui_LogWindow",
+    "Ui_MainWindow",
     "Ui_NumpadWindow",
     "Ui_Optionwindow",
     "Ui_PasswordDialog",
+    "Ui_PictureWindow",
     "Ui_Progressbarwindow",
     "Ui_RFIDWriterWindow",
+    "Ui_RefillPrompt",
+    "Ui_ResourceWindow",
     "Ui_Teamselection",
     "Ui_WiFiWindow",
-    "Ui_ColorWindow",
-    "Ui_Addonwindow",
-    "Ui_AddonManager",
-    "Ui_DataWindow",
-    "Ui_CocktailSelection",
-    "Ui_PictureWindow",
-    "Ui_RefillPrompt",
-    "Ui_ConfigWindow",
+    "Ui_addingredient",
+    "Ui_available",
 ]
