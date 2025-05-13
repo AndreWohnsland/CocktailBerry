@@ -712,14 +712,14 @@ class TestResourceUsage:
         stats = db_commander.get_resource_stats(1)
         assert stats is not None
         assert stats.samples == 0
-        assert stats.min_cpu == 0.0
-        assert stats.max_cpu == 0.0
-        assert stats.mean_cpu == 0.0
-        assert stats.median_cpu == 0.0
-        assert stats.min_ram == 0.0
-        assert stats.max_ram == 0.0
-        assert stats.mean_ram == 0.0
-        assert stats.median_ram == 0.0
+        assert stats.min_cpu == pytest.approx(0.0)
+        assert stats.max_cpu == pytest.approx(0.0)
+        assert stats.mean_cpu == pytest.approx(0.0)
+        assert stats.median_cpu == pytest.approx(0.0)
+        assert stats.min_ram == pytest.approx(0.0)
+        assert stats.max_ram == pytest.approx(0.0)
+        assert stats.mean_ram == pytest.approx(0.0)
+        assert stats.median_ram == pytest.approx(0.0)
         assert len(stats.raw_cpu) == 0
         assert len(stats.raw_ram) == 0
 
