@@ -93,7 +93,7 @@ const ResourceWindow: React.FC = () => {
     isLoading: statsLoading,
     error: statsError,
     refetch: refetchStats,
-  } = useResourceStats(selectedSession ?? -1);
+  } = useResourceStats(selectedSession ?? 0);
   const { t } = useTranslation();
 
   useEffect(() => {
