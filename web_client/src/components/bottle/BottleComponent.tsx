@@ -23,10 +23,10 @@ const BottleComponent: React.FC<BottleProps> = ({
   freeIngredients,
   setFreeIngredients,
 }) => {
-  const [selectedIngredientId, setSelectedIngredientId] = useState(bottle.ingredient?.id || 0);
+  const [selectedIngredientId, setSelectedIngredientId] = useState(bottle.ingredient?.id ?? 0);
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | undefined>(bottle.ingredient);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tempFillLevel, setTempFillLevel] = useState(selectedIngredient?.fill_level || 0);
+  const [tempFillLevel, setTempFillLevel] = useState(selectedIngredient?.fill_level ?? 0);
   const { t } = useTranslation();
 
   const getClass = () => {
@@ -39,7 +39,7 @@ const BottleComponent: React.FC<BottleProps> = ({
 
   const openModal = () => {
     if (!selectedIngredient) return;
-    setTempFillLevel(Math.max(selectedIngredient?.fill_level, 0) || 0);
+    setTempFillLevel(Math.max(selectedIngredient?.fill_level, 0) ?? 0);
     setIsModalOpen(true);
   };
 
@@ -68,7 +68,7 @@ const BottleComponent: React.FC<BottleProps> = ({
   };
 
   const fillPercent = Math.max(
-    Math.round(((selectedIngredient?.fill_level || 0) / (selectedIngredient?.bottle_volume || 1)) * 100),
+    Math.round(((selectedIngredient?.fill_level ?? 0) / (selectedIngredient?.bottle_volume ?? 1)) * 100),
     0,
   );
 
@@ -142,7 +142,7 @@ const BottleComponent: React.FC<BottleProps> = ({
       >
         <div className='rounded w-full h-full flex flex-col'>
           <div className='pl-2 flex justify-between items-center mb-2'>
-            <h2 className='text-xl font-bold text-secondary'>{selectedIngredient?.name || 'Ingredient'}</h2>
+            <h2 className='text-xl font-bold text-secondary'>{selectedIngredient?.name ?? 'Ingredient'}</h2>
             <button onClick={closeModal} aria-label='close'>
               <AiOutlineCloseCircle className='text-danger' size={34} />
             </button>
@@ -165,7 +165,7 @@ const BottleComponent: React.FC<BottleProps> = ({
               </button>
               <button
                 className='button-primary p-2 h-full'
-                onClick={() => setFillLevel(selectedIngredient?.bottle_volume || 0)}
+                onClick={() => setFillLevel(selectedIngredient?.bottle_volume ?? 0)}
               >
                 Max
               </button>

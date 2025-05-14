@@ -14,7 +14,7 @@ import SingleIngredientSelection from './SingleIngredientSelection';
 
 const CocktailList: React.FC = () => {
   const { config } = useConfig();
-  const { data: cocktails, error, isLoading } = useCocktails(true, config.MAKER_MAX_HAND_INGREDIENTS || 0);
+  const { data: cocktails, error, isLoading } = useCocktails(true, config.MAKER_MAX_HAND_INGREDIENTS ?? 0);
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
   const [search, setSearch] = useState<string | null>(null);
@@ -32,7 +32,7 @@ const CocktailList: React.FC = () => {
   if (search) {
     displayedCocktails = displayedCocktails?.filter(
       (cocktail) =>
-        cocktail.name.toLowerCase().includes(search.toLowerCase()) ||
+        cocktail.name.toLowerCase().includes(search.toLowerCase()) ??
         cocktail.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(search.toLowerCase())),
     );
   }

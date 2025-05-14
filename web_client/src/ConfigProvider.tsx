@@ -42,7 +42,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem(STORE_CONFIG, JSON.stringify(config));
-    i18n.changeLanguage(config?.UI_LANGUAGE || 'en');
+    i18n.changeLanguage(config?.UI_LANGUAGE ?? 'en');
   }, [config]);
 
   const handleThemeChange = (newTheme: string) => {

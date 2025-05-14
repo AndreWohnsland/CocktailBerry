@@ -16,11 +16,11 @@ export const CustomColorProvider = ({ children }: { children: React.ReactNode })
     JSON.parse(
       localStorage.getItem(STORE_CUSTOM_COLOR) ??
         JSON.stringify({
-          primary: config?.CUSTOM_COLOR_PRIMARY || '#007bff',
-          secondary: config?.CUSTOM_COLOR_SECONDARY || '#ef9700',
-          background: config?.CUSTOM_COLOR_BACKGROUND || '#0d0d0d',
-          neutral: config?.CUSTOM_COLOR_NEUTRAL || '#96adba',
-          danger: config?.CUSTOM_COLOR_DANGER || '#d00000',
+          primary: config?.CUSTOM_COLOR_PRIMARY ?? '#007bff',
+          secondary: config?.CUSTOM_COLOR_SECONDARY ?? '#ef9700',
+          background: config?.CUSTOM_COLOR_BACKGROUND ?? '#0d0d0d',
+          neutral: config?.CUSTOM_COLOR_NEUTRAL ?? '#96adba',
+          danger: config?.CUSTOM_COLOR_DANGER ?? '#d00000',
         }),
     ),
   );
@@ -30,11 +30,11 @@ export const CustomColorProvider = ({ children }: { children: React.ReactNode })
       return;
     }
     setCustomColors({
-      primary: config.CUSTOM_COLOR_PRIMARY || '#007bff',
-      secondary: config.CUSTOM_COLOR_SECONDARY || '#ef9700',
-      background: config.CUSTOM_COLOR_BACKGROUND || '#0d0d0d',
-      neutral: config.CUSTOM_COLOR_NEUTRAL || '#96adba',
-      danger: config.CUSTOM_COLOR_DANGER || '#d00000',
+      primary: config.CUSTOM_COLOR_PRIMARY ?? '#007bff',
+      secondary: config.CUSTOM_COLOR_SECONDARY ?? '#ef9700',
+      background: config.CUSTOM_COLOR_BACKGROUND ?? '#0d0d0d',
+      neutral: config.CUSTOM_COLOR_NEUTRAL ?? '#96adba',
+      danger: config.CUSTOM_COLOR_DANGER ?? '#d00000',
     });
   }, [config]);
 

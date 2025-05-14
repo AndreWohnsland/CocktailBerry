@@ -58,13 +58,13 @@ const ConfigWindow: React.FC = () => {
     const nestedProperty = nestedPropertyMatch ? nestedPropertyMatch[1] : '';
 
     const selectedData = data?.[baseConfigName];
-    const nestedData = selectedData?.[nestedProperty] || selectedData;
+    const nestedData = selectedData?.[nestedProperty] ?? selectedData;
     return {
       prefix: nestedData?.prefix,
       suffix: nestedData?.suffix,
-      immutable: selectedData?.immutable || false,
+      immutable: selectedData?.immutable ?? false,
       allowed: nestedData?.allowed,
-      checkName: nestedData?.check_name || 'on',
+      checkName: nestedData?.check_name ?? 'on',
     };
   };
 
@@ -92,11 +92,11 @@ const ConfigWindow: React.FC = () => {
 
           if (/^\d+$/.test(nextPart)) {
             // If the next part is an index, ensure it's an array
-            current[part] = current[part] || [];
+            current[part] = current[part] ?? [];
             current = current[part] as { [key: string]: PossibleConfigValue };
           } else {
             // Otherwise, it's an object
-            current[part] = current[part] || {};
+            current[part] = current[part] ?? {};
             current = current[part] as { [key: string]: PossibleConfigValue };
           }
         }

@@ -26,7 +26,7 @@ const AvailableBottles: React.FC = () => {
 
   if (ingredientsLoading || availableLoading) return <LoadingData />;
   if (ingredientsError || availableError)
-    return <ErrorComponent text={ingredientsError?.message || availableError?.message} />;
+    return <ErrorComponent text={ingredientsError?.message ?? availableError?.message} />;
 
   const moveSelected = (
     setFrom: React.Dispatch<React.SetStateAction<Ingredient[]>>,

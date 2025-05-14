@@ -46,7 +46,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   const [isTeamOpen, setIsTeamOpen] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const { config } = useConfig();
-  const possibleServingSizes = config.MAKER_PREPARE_VOLUME || mlAmounts;
+  const possibleServingSizes = config.MAKER_PREPARE_VOLUME ?? mlAmounts;
 
   const handleAlcoholState = (state: alcoholState) => {
     if (state === alcohol) {
