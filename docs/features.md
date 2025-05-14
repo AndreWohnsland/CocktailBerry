@@ -38,6 +38,12 @@ Usually, updating to the lastest version is always a good idea.
 | **v1.32.0** | Refill over Maker Screen <br> Improved Teams feature                                                                 |
 | **v1.33.0** | Adjust pump speed individually                                                                                       |
 | **v1.34.0** | New buttons in selection screen <br> Well-ordered config window                                                      |
+| **v1.35.0** | Monitoring of CPU and RAM usage <br> Option to limit max hand adds                                                   |
+| **v1.37.0** | Raspberry Pi 5 support (beta)                                                                                        |
+| **v1.39.0** | Alter base alcohol factor over config                                                                                |
+| **v2.0.0**  | API version of the program <br> New frontend for remote access                                                       |
+| **v2.3.0**  | Option to filter virgin cocktails (v2)                                                                               |
+| **v2.4.0**  | Resource tracker visualization                                                                                       |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.
