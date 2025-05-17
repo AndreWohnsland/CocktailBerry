@@ -17,7 +17,7 @@ Detailed information, installation steps and SetUp can be found at the [Official
 
 <a href="https://demo.cocktailberry.org/"><img src="docs/pictures/demobutton.png" alt="v2-demo" height="70"/></a>
 
-Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
+Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
 
 <a href="https://cocktailberry.org/"><img src="docs/pictures/websitebutton.png" alt="website" height="70"/></a>
 <a href="https://docs.cocktailberry.org/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
