@@ -8,7 +8,7 @@ import { PiPintGlassFill } from 'react-icons/pi';
 import { TbGlassChampagne } from 'react-icons/tb';
 import { prepareCocktail } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
-import { useConfig } from '../../ConfigProvider';
+import { useConfig } from '../../providers/ConfigProvider';
 import { Cocktail, PrepareResult } from '../../types/models';
 import { errorToast, scaleCocktail } from '../../utils';
 import ProgressModal from './ProgressModal';

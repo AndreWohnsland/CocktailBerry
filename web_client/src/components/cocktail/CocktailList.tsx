@@ -4,7 +4,7 @@ import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
 import { useCocktails } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
-import { useConfig } from '../../ConfigProvider';
+import { useConfig } from '../../providers/ConfigProvider';
 import { Cocktail } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FaPlus, FaSave } from 'react-icons/fa';
 import { RxCrossCircled } from 'react-icons/rx';
 import { updateOptions, useConfig } from '../../api/options';
-import { useConfig as useConfigProvider } from '../../ConfigProvider';
+import { useConfig as useConfigProvider } from '../../providers/ConfigProvider';
 import { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
 import { executeAndShow, isInCurrentTab } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';

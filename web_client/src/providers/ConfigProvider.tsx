@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getConfigValues } from './api/options';
-import { DefinedConfigData } from './types/models';
+import { getConfigValues } from '../api/options';
+import { DefinedConfigData } from '../types/models';
 
 interface IConfig {
   config: DefinedConfigData;
