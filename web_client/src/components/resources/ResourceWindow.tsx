@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { useResourceInfo, useResourceStats } from '../../api/options';
+import defaultColor from '../../defaults/defaultColor';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 
@@ -41,8 +42,8 @@ const chipStyle = (value: number) => {
 
 const ResourceStatsChart: React.FC<StatsProps> = ({ title, min, max, mean, median, raw }) => {
   const fmt = (val: number) => `${val.toFixed(1)}%`;
-  const primaryColor = getThemeColor('primary', '#007bff');
-  const secondaryColor = getThemeColor('secondary', '#ef9700');
+  const primaryColor = getThemeColor('primary', defaultColor.primary);
+  const secondaryColor = getThemeColor('secondary', defaultColor.secondary);
   const chartData = aggregateData(raw, MAX_POINTS).map((value, index) => ({ index, value }));
   return (
     <div className='mb-6 w-full'>

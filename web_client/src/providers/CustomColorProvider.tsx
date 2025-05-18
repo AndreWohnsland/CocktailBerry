@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import defaultColor from '../defaults/defaultColor';
 import { CustomColors } from '../types/models';
 import { useConfig } from './ConfigProvider';
 
@@ -6,14 +7,6 @@ interface ICustomColor {
   customColors: CustomColors;
   setCustomColors: (colors: CustomColors) => void;
 }
-
-const defaultColor: CustomColors = {
-  primary: '#007bff',
-  secondary: '#ef9700',
-  background: '#0d0d0d',
-  neutral: '#96adba',
-  danger: '#d00000',
-};
 
 const STORE_CUSTOM_COLOR: string = 'COLORS';
 const CustomColorContext = createContext({} as ICustomColor);
