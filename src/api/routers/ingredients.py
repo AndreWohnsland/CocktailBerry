@@ -1,7 +1,7 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import map_ingredient, not_on_demo
+from src.api.internal.validation import raise_on_validation_not_okay
 from src.api.middleware import maker_protected
 from src.api.models import ApiMessage, ApiMessageWithData, ErrorDetail, Ingredient, IngredientInput
 from src.database_commander import DatabaseCommander
@@ -120,7 +120,6 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
     if ingredient is None:
         message = DH.get_translation("element_not_found", element_name=f"Ingredient (id={ingredient_id})")
         raise HTTPException(status_code=404, detail=message)
-    print(ingredient)
     if ingredient.hand:
         raise HTTPException(
             status_code=400,
@@ -133,10 +132,6 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
         )
     ingredient.amount = amount
     cocktail = Cocktail(0, ingredient.name, 0, amount, True, True, [ingredient])
-    result, message, _ = maker.validate_cocktail(cocktail)
-    if result != PrepareResult.VALIDATION_OK:
-        return JSONResponse(
-            status_code=400, content={"status": result.value, "detail": message, "bottle": ingredient.bottle}
-        )  # type: ignore[return-value]
+    raise_on_validation_not_okay(cocktail)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)

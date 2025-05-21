@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 
 from src import __version__
 from src.api.api_config import DESCRIPTION, TAGS_METADATA
+from src.api.internal.validation import ValidationError
 from src.api.models import ApiMessage
 from src.api.routers import bottles, cocktails, ingredients, options
 from src.config.config_manager import CONFIG as cfg
@@ -103,6 +104,16 @@ async def addon_error_handler(request: Request, exc: CouldNotInstallAddonError) 
         status_code=406,
         content={"detail": str(exc)},
     )
+
+
+@app.exception_handler(ValidationError)
+async def validation_error_handler(request: Request, exc: ValidationError) -> JSONResponse:
+    content = {
+        "status": exc.status,
+        "detail": exc.detail_msg,
+        "bottle": exc.bottle,
+    }
+    return JSONResponse(status_code=exc.status_code, content=content)
 
 
 app.include_router(cocktails.router)

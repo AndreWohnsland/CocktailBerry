@@ -10,9 +10,10 @@ from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
 
 from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
+from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import master_protected_dependency
 from src.api.models import ApiMessage, DataResponse, DateTimeInput, IssueData, PasswordInput, WifiData
 from src.config.config_manager import CONFIG as cfg
@@ -23,7 +24,7 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MACHINE
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
-from src.models import AddonData, ConsumeData, PrepareResult, ResourceInfo, ResourceStats
+from src.models import AddonData, ConsumeData, ResourceInfo, ResourceStats
 from src.save_handler import SAVE_HANDLER
 from src.updater import Updater
 from src.utils import (
@@ -87,10 +88,7 @@ async def update_options(options: dict, background_tasks: BackgroundTasks) -> Ap
 
 @protected_router.post("/clean", tags=["preparation"], summary="Start the machine cleaning")
 async def clean_machine(background_tasks: BackgroundTasks) -> ApiMessage:
-    if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
-        return JSONResponse(
-            status_code=400, content={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
-        )  # type: ignore[return-value]
+    raise_when_cocktail_is_in_progress()
     _logger.log_header("INFO", "Cleaning the Pumps")
     revert_pumps = cfg.MAKER_PUMP_REVERSION
     background_tasks.add_task(MACHINE.clean_pumps, None, revert_pumps)

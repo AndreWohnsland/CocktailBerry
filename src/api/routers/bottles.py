@@ -1,17 +1,15 @@
 from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import map_bottles
+from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import maker_protected
 from src.api.models import ApiMessage, Bottle
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import MACHINE
-from src.models import PrepareResult
 from src.tabs import maker
 
 router = APIRouter(tags=["bottles"], prefix="/bottles")
@@ -33,10 +31,7 @@ async def get_bottles() -> list[Bottle]:
 
 @protected_router.post("/refill", summary="Refill all given bottles to maximum.")
 async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundTasks) -> ApiMessage:
-    if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
-        return JSONResponse(
-            status_code=400, content={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
-        )  # type: ignore[return-value]
+    raise_when_cocktail_is_in_progress()
     if any(num < 1 or num > cfg.MAKER_NUMBER_BOTTLES for num in bottle_numbers):
         raise HTTPException(
             status_code=400,
@@ -81,9 +76,6 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
 
 @protected_router.post("/{bottle_id}/calibrate", tags=["preparation"], summary="Calibrate bottle with given amount.")
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks) -> ApiMessage:
-    if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
-        return JSONResponse(
-            status_code=400, content={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
-        )  # type: ignore[return-value]
+    raise_when_cocktail_is_in_progress()
     background_tasks.add_task(maker.calibrate, bottle_id, amount)
     return ApiMessage(message=DH.get_translation("bottle_calibration_started", bottle_id=bottle_id, amount=amount))

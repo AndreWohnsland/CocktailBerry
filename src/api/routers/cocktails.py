@@ -2,9 +2,9 @@ import asyncio
 from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, WebSocket
-from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail, not_on_demo
+from src.api.internal.validation import raise_on_validation_not_okay
 from src.api.middleware import maker_protected
 from src.api.models import (
     ApiMessage,
@@ -83,11 +83,7 @@ async def prepare_cocktail(
         cocktail.only_virgin and not cocktail.is_virgin
     ):
         raise HTTPException(status_code=400, detail=DH.get_translation("cocktail_not_possible"))
-    result, msg, ingredient = maker.validate_cocktail(cocktail)
-    if result != PrepareResult.VALIDATION_OK:
-        # we need also provide the frontend with the ingredient id that caused the error
-        bottle = ingredient.bottle if ingredient is not None else None
-        return JSONResponse(status_code=400, content={"status": result.value, "detail": msg, "bottle": bottle})  # type: ignore[return-value]
+    raise_on_validation_not_okay(cocktail)
     # handle team data
     shared.team_member_name = None
     shared.selected_team = "No Team"

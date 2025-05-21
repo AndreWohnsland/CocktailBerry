@@ -14,6 +14,9 @@ class ErrorDetail(BaseModel):
     detail: str
     bottle: Optional[int] = None
 
+    class Config:  # noqa: D106
+        use_enum_values = True
+
 
 class CocktailStatus(BaseModel):
     progress: int = 0
