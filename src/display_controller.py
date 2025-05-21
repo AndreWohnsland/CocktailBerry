@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
 
 class ItemDelegate(QStyledItemDelegate):
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
         option.decorationPosition = QStyleOptionViewItem.Right  # type: ignore
         super().paint(painter, option, index)
 
@@ -114,7 +114,7 @@ class DisplayController(DialogHandler):
                 list_widget_data.append(item.text())  # type: ignore
         return list_widget_data
 
-    def get_ingredient_data(self, w: Ui_MainWindow):
+    def get_ingredient_data(self, w: Ui_MainWindow) -> Ingredient:
         """Return an Ingredient Object from the ingredient data fields."""
         ingredient_input = self.get_ingredient_fields(w)
         ingredient_name, alcohol_level, volume, ingredient_cost, unit, speed = self.get_lineedit_text(
@@ -162,7 +162,7 @@ class DisplayController(DialogHandler):
             virgin,
         )
 
-    def remove_recipe_from_list_widget(self, w: Ui_MainWindow, recipe_name: str):
+    def remove_recipe_from_list_widget(self, w: Ui_MainWindow, recipe_name: str) -> None:
         """Remove a recipe from the list widget."""
         self.delete_list_widget_item(w.LWRezepte, recipe_name)
 
@@ -229,7 +229,7 @@ class DisplayController(DialogHandler):
         maximal: int = 1000,
         delta: int = 10,
         side_effect: Callable | None = None,
-    ):
+    ) -> None:
         """Increase or decreases the value by a given amount in the boundaries.
 
         Also executes a side effect function, if one is given.
@@ -244,7 +244,7 @@ class DisplayController(DialogHandler):
         if side_effect is not None:
             side_effect()
 
-    def set_display_settings(self, window_object: QWidget, resize: bool = True):
+    def set_display_settings(self, window_object: QWidget, resize: bool = True) -> None:
         """Check dev environment, adjust cursor and resize accordingly, if resize is wished."""
         if not cfg.UI_DEVENVIRONMENT:
             window_object.setCursor(Qt.BlankCursor)  # type: ignore
@@ -252,7 +252,7 @@ class DisplayController(DialogHandler):
             window_object.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
             window_object.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
 
-    def initialize_window_object(self, window_object: QWidget, x_pos: int = 0, y_pos: int = 0):
+    def initialize_window_object(self, window_object: QWidget, x_pos: int = 0, y_pos: int = 0) -> None:
         """Initialize the window, set according flags, sets icon and stylesheet."""
         window_object.setWindowFlags(
             Qt.Window | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint  # type: ignore
@@ -263,13 +263,13 @@ class DisplayController(DialogHandler):
         window_object.setWindowIcon(QIcon(icon_path))
         window_object.move(x_pos, y_pos)
 
-    def inject_stylesheet(self, window_object: QWidget):
+    def inject_stylesheet(self, window_object: QWidget) -> None:
         """Add the central stylesheet to the gui."""
         style_file = f"{cfg.MAKER_THEME}.css"
         with open(STYLE_FOLDER / style_file, encoding="utf-8") as file_handler:
             window_object.setStyleSheet(file_handler.read())
 
-    def set_tab_width(self, mainscreen: MainScreen):
+    def set_tab_width(self, mainscreen: MainScreen) -> None:
         """Hack to set tabs to full screen width, inheritance, change the with to approximately match full width."""
         total_width = mainscreen.frameGeometry().width()
         first_tab_width = 40
@@ -286,7 +286,9 @@ class DisplayController(DialogHandler):
         )
 
     # TabWidget
-    def set_tabwidget_tab(self, w: Ui_MainWindow, tab: Literal["search", "maker", "ingredients", "recipes", "bottles"]):
+    def set_tabwidget_tab(
+        self, w: Ui_MainWindow, tab: Literal["search", "maker", "ingredients", "recipes", "bottles"]
+    ) -> None:
         """Set the tabwidget to the given tab.
 
         tab: ['maker', 'ingredients', 'recipes', 'bottles'].
@@ -294,17 +296,17 @@ class DisplayController(DialogHandler):
         tabs = {"search": 0, "maker": 1, "ingredients": 2, "recipes": 3, "bottles": 4}
         w.tabWidget.setCurrentIndex(tabs.get(tab, 1))
 
-    def reset_alcohol_factor(self):
+    def reset_alcohol_factor(self) -> None:
         """Set the alcohol slider to default (100%) value."""
         shared.alcohol_factor = 1.0
 
     # LineEdit
-    def clean_multiple_lineedit(self, lineedit_list: list[QLineEdit]):
+    def clean_multiple_lineedit(self, lineedit_list: list[QLineEdit]) -> None:
         """Clear a list of line edits."""
         for lineedit in lineedit_list:
             lineedit.clear()
 
-    def fill_multiple_lineedit(self, lineedit_list: list[QLineEdit], text_list: Sequence[str | int]):
+    def fill_multiple_lineedit(self, lineedit_list: list[QLineEdit], text_list: Sequence[str | int]) -> None:
         """Fill a list of line edits."""
         for lineedit, text in zip(lineedit_list, text_list):
             lineedit.setText(str(text))
@@ -317,7 +319,7 @@ class DisplayController(DialogHandler):
         clear_first: bool = False,
         sort_items: bool = True,
         first_empty: bool = True,
-    ):
+    ) -> None:
         """Fill a combobox with given items, with the option to sort and fill a empty element as first element."""
         if clear_first:
             combobox.clear()
@@ -334,7 +336,7 @@ class DisplayController(DialogHandler):
         clear_first: bool = False,
         sort_items: bool = True,
         first_empty: bool = True,
-    ):
+    ) -> None:
         """Fill multiple comboboxes with identical items, can sort and insert filler as first item."""
         for combobox in combobox_list:
             self.fill_single_combobox(combobox, item_list, clear_first, sort_items, first_empty)
@@ -346,44 +348,44 @@ class DisplayController(DialogHandler):
         clear_first: bool = False,
         sort_items: bool = True,
         first_empty: bool = True,
-    ):
+    ) -> None:
         """Fill multiple comboboxes with different items, can sort and insert filler as first item."""
         for combobox, item_list in zip(combobox_list, list_of_item_list):
             self.fill_single_combobox(combobox, item_list, clear_first, sort_items, first_empty)
 
-    def delete_single_combobox_item(self, combobox: QComboBox, item: str):
+    def delete_single_combobox_item(self, combobox: QComboBox, item: str) -> None:
         """Delete the given item from a combobox."""
         index = combobox.findText(item, Qt.MatchFixedString)  # type: ignore
         if index >= 0:
             combobox.removeItem(index)
 
     # This seems to be currently unused
-    def delete_multiple_combobox_item(self, combobox: QComboBox, item_list: list[str]):
+    def delete_multiple_combobox_item(self, combobox: QComboBox, item_list: list[str]) -> None:
         """Delete the given items from a combobox."""
         for item in item_list:
             self.delete_single_combobox_item(combobox, item)
 
-    def delete_item_in_multiple_combobox(self, combobox_list: list[QComboBox], item: str):
+    def delete_item_in_multiple_combobox(self, combobox_list: list[QComboBox], item: str) -> None:
         """Delete the given item from multiple comboboxes."""
         for combobox in combobox_list:
             self.delete_single_combobox_item(combobox, item)
 
-    def set_multiple_combobox_to_top_item(self, combobox_list: list[QComboBox]):
+    def set_multiple_combobox_to_top_item(self, combobox_list: list[QComboBox]) -> None:
         """Set the list of comboboxes to the top item."""
         for combobox in combobox_list:
             combobox.setCurrentIndex(0)
 
-    def set_multiple_combobox_items(self, combobox_list: list[QComboBox], items_to_set: list[str]):
+    def set_multiple_combobox_items(self, combobox_list: list[QComboBox], items_to_set: list[str]) -> None:
         """Set a list of comboboxes to the according item."""
         for combobox, item in zip(combobox_list, items_to_set):
             self.set_combobox_item(combobox, item)
 
-    def set_combobox_item(self, combobox: QComboBox, item: str):
+    def set_combobox_item(self, combobox: QComboBox, item: str) -> None:
         """Set the combobox to the given item."""
         index = combobox.findText(item, Qt.MatchFixedString)  # type: ignore
         combobox.setCurrentIndex(index)
 
-    def adjust_bottle_comboboxes(self, combobox_list: list[QComboBox], old_item: str, new_item: str):
+    def adjust_bottle_comboboxes(self, combobox_list: list[QComboBox], old_item: str, new_item: str) -> None:
         """Remove the old item name and add new one in given comboboxes, sorting afterwards."""
         for combobox in combobox_list:
             if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):  # type: ignore
@@ -392,37 +394,37 @@ class DisplayController(DialogHandler):
                 self.delete_single_combobox_item(combobox, new_item)
             combobox.model().sort(0)
 
-    def rename_single_combobox(self, combobox: QComboBox, old_item: str, new_item: str):
+    def rename_single_combobox(self, combobox: QComboBox, old_item: str, new_item: str) -> None:
         """Rename the old item to new one in given box."""
         index = combobox.findText(old_item, Qt.MatchFixedString)  # type: ignore
         if index >= 0:
             combobox.setItemText(index, new_item)
             combobox.model().sort(0)
 
-    def rename_multiple_combobox(self, combobox_list: list[QComboBox], old_item: str, new_item: str):
+    def rename_multiple_combobox(self, combobox_list: list[QComboBox], old_item: str, new_item: str) -> None:
         """Rename an item in multiple comboboxes."""
         for combobox in combobox_list:
             self.rename_single_combobox(combobox, old_item, new_item)
 
     # buttons / toggle buttons
-    def untoggle_buttons(self, button_list: list[QPushButton]):
+    def untoggle_buttons(self, button_list: list[QPushButton]) -> None:
         """Set toggle to false in given button list."""
         for button in button_list:
             button.setChecked(False)
 
     # progress bars
-    def set_progress_bar_values(self, progress_bar_list: list[QProgressBar], value_list: list[int]):
+    def set_progress_bar_values(self, progress_bar_list: list[QProgressBar], value_list: list[int]) -> None:
         """Set values of progress bars to given value."""
         for progress_bar, value in zip(progress_bar_list, value_list):
             progress_bar.setValue(value)
 
     # list widget
-    def unselect_list_widget_items(self, list_widget: QListWidget):
+    def unselect_list_widget_items(self, list_widget: QListWidget) -> None:
         """Unselect all items in the list widget."""
         for i in range(list_widget.count()):
             list_widget.item(i).setSelected(False)
 
-    def select_list_widget_item(self, list_widget: QListWidget, to_select: str | Cocktail):
+    def select_list_widget_item(self, list_widget: QListWidget, to_select: str | Cocktail) -> None:
         """Select the first item in the list widget."""
         if isinstance(to_select, Cocktail):
             to_select = to_select.name
@@ -434,14 +436,14 @@ class DisplayController(DialogHandler):
                 list_widget.setCurrentItem(item)
                 break
 
-    def delete_list_widget_item(self, list_widget: QListWidget, item: str):
+    def delete_list_widget_item(self, list_widget: QListWidget, item: str) -> None:
         """Delete an item in the list widget."""
         index_to_delete = list_widget.findItems(item, Qt.MatchExactly)  # type: ignore
         if len(index_to_delete) > 0:
             for index in index_to_delete:
                 list_widget.takeItem(list_widget.row(index))
 
-    def fill_list_widget(self, list_widget: QListWidget, item_list: list[str] | list[Cocktail]):
+    def fill_list_widget(self, list_widget: QListWidget, item_list: list[str] | list[Cocktail]) -> None:
         """Add item list to list widget."""
         for item in item_list:
             lw_item = self._generate_list_widget_item(item)
@@ -463,29 +465,29 @@ class DisplayController(DialogHandler):
         lw_item.setData(Qt.UserRole, item_data)  # type: ignore
         return lw_item
 
-    def clear_list_widget(self, list_widget: QListWidget):
+    def clear_list_widget(self, list_widget: QListWidget) -> None:
         """Clear the given list widget."""
         list_widget.clear()
 
-    def clear_list_widget_recipes(self, w: Ui_MainWindow):
+    def clear_list_widget_recipes(self, w: Ui_MainWindow) -> None:
         """Clear the recipes list widget."""
         w.LWRezepte.clear()
 
-    def clear_list_widget_ingredients(self, w: Ui_MainWindow):
+    def clear_list_widget_ingredients(self, w: Ui_MainWindow) -> None:
         """Clear the ingredients list widget."""
         w.LWZutaten.clear()
 
-    def fill_list_widget_recipes(self, w: Ui_MainWindow, recipe_names: list[str]):
+    def fill_list_widget_recipes(self, w: Ui_MainWindow, recipe_names: list[str]) -> None:
         """Fill the recipe list widget with given recipes."""
         self.fill_list_widget(w.LWRezepte, recipe_names)
 
     # checkboxes
-    def set_checkbox_value(self, checkbox: QCheckBox, value: int | bool):
+    def set_checkbox_value(self, checkbox: QCheckBox, value: int | bool) -> None:
         """Set the checked state of the checkbox to given value."""
         checkbox.setChecked(bool(value))
 
     # Layouts
-    def delete_items_of_layout(self, layout: QLayout | None = None):
+    def delete_items_of_layout(self, layout: QLayout | None = None) -> None:
         """Recursively delete all items of the given layout."""
         if layout is not None:
             while layout.count():
@@ -514,7 +516,7 @@ class DisplayController(DialogHandler):
         font.setUnderline(underline)
         element.setFont(font)
 
-    def clear_recipe_data_recipes(self, w: Ui_MainWindow, select_other_item: bool):
+    def clear_recipe_data_recipes(self, w: Ui_MainWindow, select_other_item: bool) -> None:
         """Clear the recipe data in recipe view, only clears selection if no other item was selected."""
         w.LECocktail.clear()
         w.offervirgin_checkbox.setChecked(False)
@@ -525,7 +527,7 @@ class DisplayController(DialogHandler):
         line_edit_order = self.get_lineedits_recipe_order(w)
         self.fill_multiple_lineedit(line_edit_order, [1] * len(line_edit_order))
 
-    def set_recipe_data(self, w: Ui_MainWindow, cocktail: Cocktail):
+    def set_recipe_data(self, w: Ui_MainWindow, cocktail: Cocktail) -> None:
         """Fill the recipe data in the recipe view with the cocktail object."""
         w.CHBenabled.setChecked(bool(cocktail.enabled))
         w.offervirgin_checkbox.setChecked(bool(cocktail.virgin_available))
@@ -538,13 +540,13 @@ class DisplayController(DialogHandler):
         self.fill_multiple_lineedit(self.get_lineedits_recipe_order(w)[: len(order)], order)
         w.LECocktail.setText(cocktail.name)
 
-    def update_maker_view(self, w: MainScreen):
+    def update_maker_view(self, w: MainScreen) -> None:
         """Refresh the maker view, sets tab also to maker and not selection."""
         w.cocktail_view.populate_cocktails()
         w.container_maker.setCurrentWidget(w.cocktail_view)
 
     # Some more "specific" function, not using generic but specified field sets
-    def set_label_bottles(self, w: Ui_MainWindow, label_names: list[str]):
+    def set_label_bottles(self, w: Ui_MainWindow, label_names: list[str]) -> None:
         """Set the bottle label text to given names."""
         labels = self.get_label_bottles(w)
         self.fill_multiple_lineedit(labels, label_names)  # type: ignore
@@ -577,7 +579,7 @@ class DisplayController(DialogHandler):
         """Return all recipe line edit objects."""
         return [getattr(w, f"line_edit_recipe_order_{x}") for x in range(1, 9)]
 
-    def get_ingredient_fields(self, w: Ui_MainWindow):
+    def get_ingredient_fields(self, w: Ui_MainWindow) -> IngredientInputFields:
         """Return all needed Elements for Ingredients."""
         return IngredientInputFields(
             w.line_edit_ingredient_name,
@@ -608,7 +610,7 @@ class DisplayController(DialogHandler):
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]
 
-    def adjust_bottle_number_displayed(self, w: MainScreen):
+    def adjust_bottle_number_displayed(self, w: MainScreen) -> None:
         """Remove the UI elements if not all ten bottles are used per config."""
         # give the ui a little time to build up, it might happen that we get a
         # QPaintDevice: Cannot destroy paint device that is being painted otherwise
@@ -632,11 +634,11 @@ class DisplayController(DialogHandler):
                 element.deleteLater()
             QApplication.processEvents()
 
-    def set_ingredient_add_label(self, w: Ui_MainWindow, item_selected: bool):
+    def set_ingredient_add_label(self, w: Ui_MainWindow, item_selected: bool) -> None:
         """Change the label of the ingredient button."""
         self._choose_button_label(w.PBZutathinzu, item_selected)
 
-    def set_recipe_add_label(self, w: Ui_MainWindow, item_selected: bool):
+    def set_recipe_add_label(self, w: Ui_MainWindow, item_selected: bool) -> None:
         """Change the label of the ingredient button."""
         self._choose_button_label(w.PBRezepthinzu, item_selected)
 

@@ -9,18 +9,18 @@ class Reverter:
         self.use_reversion = use_reversion
         self.revert_pin = revert_pin
 
-    def initialize_pin(self):
+    def initialize_pin(self) -> None:
         if self.use_reversion:
             time_print(f"Initializing Reversion Pin: {self.revert_pin}")
             self._pin_controller.initialize_pin_list([self.revert_pin])
 
-    def revert_on(self):
+    def revert_on(self) -> None:
         """Reverts the pump to be inverted."""
         if not self.use_reversion:
             return
         self._pin_controller.activate_pin_list([self.revert_pin])
 
-    def revert_off(self):
+    def revert_off(self) -> None:
         """Disables the reversion pin."""
         if not self.use_reversion:
             return

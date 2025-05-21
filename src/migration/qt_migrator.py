@@ -35,7 +35,7 @@ def _remove_web_entry() -> None:
         print("Web entry not found. Nothing to remove.")
 
 
-def roll_back_to_qt_script():
+def roll_back_to_qt_script() -> None:
     """Roll back to the Qt setup."""
     # use the backup file if it exists
     script_entry_path.write_text(old_backend_script_content)

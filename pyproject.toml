@@ -104,9 +104,7 @@ ignore = [
   "D107", # Missing docstring in __init__
   "D203", # 1 blank line required before class docstring
   "D213", # Multi-line docstring summary should start at the second line
-  # currently, ignore return type annotations
-  "ANN201",
-  "ANN401",
+  "ANN401", # no Any for *args or **kwargs
 ]
 
 [tool.mypy]

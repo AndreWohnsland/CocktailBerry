@@ -8,7 +8,7 @@ from src.filepath import DEFAULT_COCKTAIL_IMAGE, DEFAULT_IMAGE_FOLDER, USER_IMAG
 from src.models import Cocktail
 
 
-def find_cocktail_image(cocktail: Cocktail):
+def find_cocktail_image(cocktail: Cocktail) -> Path:
     """Find the image for the given cocktail."""
     # setting default cocktail image
     cocktail_image = find_default_cocktail_image(cocktail)
@@ -19,7 +19,7 @@ def find_cocktail_image(cocktail: Cocktail):
     return cocktail_image
 
 
-def find_default_cocktail_image(cocktail: Cocktail):
+def find_default_cocktail_image(cocktail: Cocktail) -> Path:
     """Find the system defined image for the given cocktail."""
     # setting default cocktail image
     cocktail_image = DEFAULT_COCKTAIL_IMAGE
@@ -31,7 +31,7 @@ def find_default_cocktail_image(cocktail: Cocktail):
     return cocktail_image
 
 
-def find_user_cocktail_image(cocktail: Cocktail):
+def find_user_cocktail_image(cocktail: Cocktail) -> Path | None:
     """Find the user defined image for the given cocktail.
 
     Returns None if not set.
@@ -40,7 +40,7 @@ def find_user_cocktail_image(cocktail: Cocktail):
     # also allow cocktail name with underscores as image name
     image_paths = [
         USER_IMAGE_FOLDER / f"{cocktail.id}.jpg",
-        USER_IMAGE_FOLDER / f'{cocktail.name.lower().replace(" ", "_")}.jpg',
+        USER_IMAGE_FOLDER / f"{cocktail.name.lower().replace(' ', '_')}.jpg",
     ]
     for path in image_paths:
         if path.exists():
@@ -102,6 +102,6 @@ def check_picture_orientation(img: Image.Image) -> Image.Image:
     return img
 
 
-def save_image(image: Image.Image, save_id: int):
+def save_image(image: Image.Image, save_id: int) -> None:
     """Save the given image to the user folder."""
     image.save(USER_IMAGE_FOLDER / f"{save_id}.jpg", "JPEG")

@@ -9,7 +9,7 @@ from src.migration.update_data import _try_execute_db_commands, execute_raw_sql
 _logger = LoggerHandler("export_tables_migration")
 
 
-def add_export_tables_to_db():
+def add_export_tables_to_db() -> None:
     """Add tables for storing export data in the database instead of CSV files."""
     _logger.log_event("INFO", "Adding export tables to database")
     commands = [
@@ -34,7 +34,7 @@ def add_export_tables_to_db():
     _try_execute_db_commands(commands)
 
 
-def migrate_csv_export_data_to_db():
+def migrate_csv_export_data_to_db() -> None:
     """Migrate existing CSV export data to the database tables."""
     _logger.log_event("INFO", "Migrating existing CSV export data to database")
     recipe_files = list(SAVE_FOLDER.glob("*_Recipe*.csv"))

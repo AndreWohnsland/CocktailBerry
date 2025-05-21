@@ -41,7 +41,7 @@ class MachineController:
         # Time for print intervals, need to remember the last print time
         self._print_time = 0.0
 
-    def init_machine(self):
+    def init_machine(self) -> None:
         self.pin_controller = self._chose_controller()
         self.led_controller = LedController(self.pin_controller)
         self.reverter = Reverter(self.pin_controller, cfg.MAKER_PUMP_REVERSION, cfg.MAKER_REVERSION_PIN)
@@ -54,7 +54,7 @@ class MachineController:
         # In case none is found, fall back to generic using python-periphery
         return GenericController(cfg.MAKER_PINS_INVERTED)
 
-    def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False):
+    def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False) -> None:
         """Clean the pumps for the defined time in the config.
 
         Activates all pumps for the given time.
@@ -83,7 +83,7 @@ class MachineController:
         is_cocktail: bool = True,
         verbose: bool = True,
         finish_message: str = "",
-    ):
+    ) -> tuple[list[int], float, float]:
         """RPI Logic to prepare the cocktail.
 
         Calculates needed time for each slot according to data and config.
@@ -198,7 +198,7 @@ class MachineController:
                 self._stop_pumps([data.pin], progress)
                 data.closed = True
 
-    def set_up_pumps(self):
+    def set_up_pumps(self) -> None:
         """Get all used pins, prints pins and uses controller class to set up."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
         active_pins = [x.pin for x in used_config]
@@ -212,13 +212,13 @@ class MachineController:
         time_print(f"{print_prefix}<o> Opening Pins: {pin_list}")
         self.pin_controller.activate_pin_list(pin_list)
 
-    def close_all_pumps(self):
+    def close_all_pumps(self) -> None:
         """Close all pins connected to the pumps."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
         active_pins = [x.pin for x in used_config]
         self._stop_pumps(active_pins)
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Cleanup for shutdown the machine."""
         self.close_all_pumps()
         self.pin_controller.cleanup_pin_list()
@@ -228,7 +228,7 @@ class MachineController:
         time_print(f"{print_prefix}<x> Closing Pins: {pin_list}")
         self.pin_controller.close_pin_list(pin_list)
 
-    def default_led(self):
+    def default_led(self) -> None:
         """Turn the LED on."""
         self.led_controller.default_led()
 

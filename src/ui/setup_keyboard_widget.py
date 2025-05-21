@@ -81,20 +81,20 @@ class KeyboardWidget(QMainWindow, Ui_Keyboard):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def back_button_clicked(self):
+    def back_button_clicked(self) -> None:
         """Close the Window without any further action."""
         self.close()
 
-    def clear_button_clicked(self):
+    def clear_button_clicked(self) -> None:
         """Clear the input."""
         self.LName.setText("")
 
-    def enter_button_clicked(self):
+    def enter_button_clicked(self) -> None:
         """Close and enter the String value back to the Lineedit."""
         self.le_to_write.setText(self.LName.text())
         self.close()
 
-    def input_button_clicked(self, input_default: str | int, input_shift: str | int, input_control: str | int):
+    def input_button_clicked(self, input_default: str | int, input_shift: str | int, input_control: str | int) -> None:
         """Enter the input_value into the field, adds it to the string.
 
         Can either have the normal or the shift value, if there is no difference both input arguments are the same.
@@ -108,7 +108,7 @@ class KeyboardWidget(QMainWindow, Ui_Keyboard):
         string_value += str(add_value)
         self.LName.setText(string_value)
 
-    def delete_clicked(self):
+    def delete_clicked(self) -> None:
         string_value = self.LName.text()
         self.LName.setText(string_value[:-1])
 

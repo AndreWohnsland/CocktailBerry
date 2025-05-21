@@ -66,7 +66,7 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         shared.team_member_name = text
         self.person_label.setText(text)
 
-    def set_team(self, team: str):
+    def set_team(self, team: str) -> None:
         time_print(f"Team {team} selected")
         shared.selected_team = team
         if self._rfid_reader is not None:

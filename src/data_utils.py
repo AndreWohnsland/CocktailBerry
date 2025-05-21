@@ -114,7 +114,7 @@ def _estimate_addon(addon_name: str) -> AddonData:
     return found_addon
 
 
-def install_addon(addon: Union[AddonData, str]):
+def install_addon(addon: Union[AddonData, str]) -> None:
     """Try to install addon, log if req is not ok or no connection."""
     if isinstance(addon, str):
         addon = _estimate_addon(addon)
@@ -132,7 +132,7 @@ def install_addon(addon: Union[AddonData, str]):
         raise CouldNotInstallAddonError(f"Could not get {addon.name} from {addon.url}: No internet connection")
 
 
-def remove_addon(addon: Union[AddonData, str]):
+def remove_addon(addon: Union[AddonData, str]) -> None:
     """Remove the addon from the system."""
     if isinstance(addon, str):
         addon = _estimate_addon(addon)

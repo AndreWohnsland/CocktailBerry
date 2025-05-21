@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from src.api.internal.utils import map_ingredient, not_on_demo
 from src.api.middleware import maker_protected
-from src.api.models import ErrorDetail, IngredientInput
+from src.api.models import ApiMessage, ApiMessageWithData, ErrorDetail, Ingredient, IngredientInput
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.models import Cocktail, CocktailStatus, PrepareResult
@@ -20,21 +20,22 @@ protected_router = APIRouter(
 
 
 @router.get("", summary="Get all ingredients, filtered by machine and hand")
-async def get_ingredients(machine: bool = True, hand: bool = True):
+async def get_ingredients(machine: bool = True, hand: bool = True) -> list[Ingredient]:
     DBC = DatabaseCommander()
     ingredients = DBC.get_all_ingredients(get_machine=machine, get_hand=hand)
     return [map_ingredient(i) for i in ingredients]
 
 
+# TODO: Check if a 404 is better than a None returned here
 @router.get("/{ingredient_id:int}", summary="Get ingredient by ID")
-async def get_ingredient(ingredient_id: int):
+async def get_ingredient(ingredient_id: int) -> Ingredient | None:
     DBC = DatabaseCommander()
     ingredient = DBC.get_ingredient(ingredient_id)
     return map_ingredient(ingredient)
 
 
 @protected_router.post("", summary="Add new ingredient", dependencies=[not_on_demo])
-async def add_ingredient(ingredient: IngredientInput):
+async def add_ingredient(ingredient: IngredientInput) -> ApiMessageWithData[Ingredient]:
     DBC = DatabaseCommander()
     DBC.insert_new_ingredient(
         ingredient_name=ingredient.name,
@@ -46,14 +47,16 @@ async def add_ingredient(ingredient: IngredientInput):
         unit=ingredient.unit,
     )
     db_ingredient = DBC.get_ingredient(ingredient.name)
-    return {
-        "message": DH.get_translation("ingredient_added", ingredient_name=ingredient.name),
-        "data": map_ingredient(db_ingredient),
-    }
+    if db_ingredient is None:
+        raise HTTPException(status_code=400, detail="Critical error: ingredient not found after creation")
+    return ApiMessageWithData(
+        message=DH.get_translation("ingredient_added", ingredient_name=ingredient.name),
+        data=map_ingredient(db_ingredient),
+    )
 
 
 @protected_router.put("/{ingredient_id:int}", summary="Update ingredient by ID", dependencies=[not_on_demo])
-async def update_ingredient(ingredient_id: int, ingredient: IngredientInput):
+async def update_ingredient(ingredient_id: int, ingredient: IngredientInput) -> ApiMessageWithData[Ingredient]:
     DBC = DatabaseCommander()
     DBC.set_ingredient_data(
         ingredient_name=ingredient.name,
@@ -67,19 +70,21 @@ async def update_ingredient(ingredient_id: int, ingredient: IngredientInput):
         unit=ingredient.unit,
     )
     db_ingredient = DBC.get_ingredient(ingredient_id)
-    return {
-        "message": DH.get_translation(
+    if db_ingredient is None:
+        raise HTTPException(status_code=400, detail="Critical error: ingredient not found after update")
+    return ApiMessageWithData(
+        message=DH.get_translation(
             "ingredient_changed", selected_ingredient=ingredient_id, ingredient_name=ingredient.name
         ),
-        "data": map_ingredient(db_ingredient),
-    }
+        data=map_ingredient(db_ingredient),
+    )
 
 
 @protected_router.delete("/{ingredient_id:int}", summary="Delete ingredient by ID", dependencies=[not_on_demo])
-async def delete_ingredients(ingredient_id: int):
+async def delete_ingredients(ingredient_id: int) -> ApiMessage:
     DBC = DatabaseCommander()
     DBC.delete_ingredient(ingredient_id)
-    return {"message": DH.get_translation("ingredient_deleted", ingredient_name=ingredient_id)}
+    return ApiMessage(message=DH.get_translation("ingredient_deleted", ingredient_name=ingredient_id))
 
 
 @router.get("/available", summary="Get available ingredients IDs")
@@ -89,11 +94,11 @@ async def get_available_ingredients() -> list[int]:
 
 
 @protected_router.post("/available")
-async def post_available_ingredients(available: list[int]):
+async def post_available_ingredients(available: list[int]) -> ApiMessage:
     DBC = DatabaseCommander()
     DBC.delete_existing_handadd_ingredient()
     DBC.insert_multiple_existing_handadd_ingredients(available)
-    return {"message": DH.get_translation("available_ingredient_updated")}
+    return ApiMessage(message=DH.get_translation("available_ingredient_updated"))
 
 
 @router.post(
@@ -109,7 +114,7 @@ async def post_available_ingredients(available: list[int]):
     },
     summary="Prepare given amount of ingredient by ID",
 )
-async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: BackgroundTasks):
+async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: BackgroundTasks) -> CocktailStatus:
     DBC = DatabaseCommander()
     ingredient = DBC.get_ingredient(ingredient_id)
     if ingredient is None:
@@ -132,6 +137,6 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
     if result != PrepareResult.VALIDATION_OK:
         return JSONResponse(
             status_code=400, content={"status": result.value, "detail": message, "bottle": ingredient.bottle}
-        )
+        )  # type: ignore[return-value]
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)

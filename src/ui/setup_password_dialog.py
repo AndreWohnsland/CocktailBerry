@@ -31,11 +31,11 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def number_clicked(self, number: int):
+    def number_clicked(self, number: int) -> None:
         """Add the clicked number to the lineedit."""
         self.password_field.setText(f"{self.password_field.text()}{number}")
 
-    def enter_clicked(self):
+    def enter_clicked(self) -> None:
         """Enters/Closes the Dialog."""
         password_string = self.password_field.text()
         password = 0 if len(password_string) == 0 else int(password_string)
@@ -51,7 +51,7 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
         self.password_success.emit(False)
         self.close()
 
-    def del_clicked(self):
+    def del_clicked(self) -> None:
         """Delete the last digit in the lineedit."""
         current_string = self.password_field.text()
         self.password_field.setText(current_string[:-1])

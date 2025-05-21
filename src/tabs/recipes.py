@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 
-def fill_recipe_box_with_ingredients(w: MainScreen):
+def fill_recipe_box_with_ingredients(w: MainScreen) -> None:
     """Assign all ingredients to the Comboboxes in the recipe tab."""
     comboboxes_recipe = DP_CONTROLLER.get_comboboxes_recipes(w)
     ingredient_list = [x.name for x in DB_COMMANDER.get_all_ingredients()]
@@ -24,7 +24,7 @@ def fill_recipe_box_with_ingredients(w: MainScreen):
 
 
 @logerror
-def handle_enter_recipe(w: MainScreen):
+def handle_enter_recipe(w: MainScreen) -> None:
     """Enters or updates the recipe into the db."""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     # destructure each element from recipe input to the variables
@@ -166,7 +166,7 @@ def _enter_or_update_recipe(
     )
 
 
-def load_recipe_view_names(w: MainScreen):
+def load_recipe_view_names(w: MainScreen) -> None:
     """Update the ListWidget in the recipe Tab."""
     cocktails = DB_COMMANDER.get_all_cocktails()
     recipe_list = [x.name for x in cocktails]
@@ -175,7 +175,7 @@ def load_recipe_view_names(w: MainScreen):
 
 
 @logerror
-def load_selected_recipe_data(w: MainScreen):
+def load_selected_recipe_data(w: MainScreen) -> None:
     """Load all Data from the recipe DB into the according Fields in the recipe tab."""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name = recipe_input.selected_recipe
@@ -191,7 +191,7 @@ def load_selected_recipe_data(w: MainScreen):
 
 
 @logerror
-def delete_recipe(w: MainScreen):
+def delete_recipe(w: MainScreen) -> None:
     """Delete the selected recipe, requires the Password."""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name = recipe_input.selected_recipe
@@ -211,7 +211,7 @@ def delete_recipe(w: MainScreen):
 
 
 @logerror
-def enable_all_recipes(w: MainScreen):
+def enable_all_recipes(w: MainScreen) -> None:
     """Set all recipes to enabled."""
     if not DP_CONTROLLER.ask_enable_all_recipes():
         return

@@ -11,7 +11,7 @@ from src.logger_handler import LogFiles, LoggerHandler
 _logger = LoggerHandler("update_data_module")
 
 
-def execute_raw_sql(query: str, params: tuple = ()):
+def execute_raw_sql(query: str, params: tuple = ()) -> None:
     """Execute raw SQL query using sqlite3."""
     if not DATABASE_PATH.exists():
         _logger.log_event("INFO", f"Copying default database from {DEFAULT_DATABASE_PATH} to {DATABASE_PATH}")
@@ -22,7 +22,7 @@ def execute_raw_sql(query: str, params: tuple = ()):
         connection.commit()
 
 
-def rename_database_to_english():
+def rename_database_to_english() -> None:
     """Rename all German columns to English ones."""
     _logger.log_event("INFO", "Renaming German column names to English ones")
     commands = [
@@ -56,7 +56,7 @@ def rename_database_to_english():
     _try_execute_db_commands(commands)
 
 
-def remove_old_recipe_columns():
+def remove_old_recipe_columns() -> None:
     _logger.log_event("INFO", "Remove Comment from Recipes and Hand from RecipeData table")
     commands = [
         "ALTER TABLE Recipes DROP COLUMN Comment",
@@ -73,7 +73,7 @@ def _try_execute_db_commands(commands: list[str]) -> None:
             execute_raw_sql(command)
 
 
-def add_more_bottles_to_db():
+def add_more_bottles_to_db() -> None:
     """Update the bottles to support up to 16 bottles."""
     _logger.log_event("INFO", "Adding bottle numbers 11 to 16 to DB")
     # Adding constraint if still missing
@@ -82,7 +82,7 @@ def add_more_bottles_to_db():
         execute_raw_sql("INSERT OR IGNORE INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
 
 
-def add_team_buffer_to_database():
+def add_team_buffer_to_database() -> None:
     """Add an additional table for buffering not send team data."""
     _logger.log_event("INFO", "Adding team buffer table to database")
     execute_raw_sql(
@@ -92,7 +92,7 @@ def add_team_buffer_to_database():
     )
 
 
-def add_virgin_flag_to_db():
+def add_virgin_flag_to_db() -> None:
     """Add the virgin flag column to the DB."""
     _logger.log_event("INFO", "Adding virgin flag column to Recipes DB")
     try:
@@ -102,7 +102,7 @@ def add_virgin_flag_to_db():
         _logger.log_event("ERROR", "Could not add virgin flag column to DB, this may because it already exists")
 
 
-def add_slower_ingredient_flag_to_db():
+def add_slower_ingredient_flag_to_db() -> None:
     """Add the slower ingredient flag column to the DB."""
     _logger.log_event("INFO", "Adding Slow flag column to Ingredients DB")
     try:
@@ -112,7 +112,7 @@ def add_slower_ingredient_flag_to_db():
         _logger.log_event("ERROR", "Could not add Slow flag column to DB, this may because it already exists")
 
 
-def remove_is_alcoholic_column():
+def remove_is_alcoholic_column() -> None:
     """Remove the is_alcoholic column from the DB."""
     _logger.log_event("INFO", "Removing is_alcoholic column from DB")
     try:
@@ -121,7 +121,7 @@ def remove_is_alcoholic_column():
         _logger.log_event("ERROR", "Could not remove is_alcoholic column from DB, this may because it does not exist")
 
 
-def add_cost_column_to_ingredients():
+def add_cost_column_to_ingredients() -> None:
     """Add the cost column to the ingredients table."""
     _logger.log_event("INFO", "Adding cost column to Ingredients DB")
     try:
@@ -130,7 +130,7 @@ def add_cost_column_to_ingredients():
         _logger.log_event("ERROR", "Could not add cost column to DB, this may because it already exists")
 
 
-def add_order_column_to_ingredient_data():
+def add_order_column_to_ingredient_data() -> None:
     """Add the order column to the RecipeData table."""
     _logger.log_event("INFO", "Adding Recipe_Order column to RecipeData DB")
     try:
@@ -139,7 +139,7 @@ def add_order_column_to_ingredient_data():
         _logger.log_event("ERROR", "Could not add order column to DB, this may because it already exists")
 
 
-def add_unit_column_to_ingredients():
+def add_unit_column_to_ingredients() -> None:
     """Add the unit column to the Ingredients table."""
     _logger.log_event("INFO", "Adding unit column to Ingredients DB")
     try:
@@ -148,7 +148,7 @@ def add_unit_column_to_ingredients():
         _logger.log_event("ERROR", "Could not add unit column to DB, this may because it already exists")
 
 
-def change_slower_flag_to_pump_speed(slow_factor: float):
+def change_slower_flag_to_pump_speed(slow_factor: float) -> None:
     """Add the pump speed column to the Ingredients table.
 
     Removes the slow flag column from the Ingredients table.
@@ -167,7 +167,7 @@ def change_slower_flag_to_pump_speed(slow_factor: float):
         )
 
 
-def fix_amount_in_recipe():
+def fix_amount_in_recipe() -> None:
     """Recalculate the amount in the Recipe table."""
     _logger.log_event("INFO", "Adding team buffer table to database")
     execute_raw_sql(
@@ -181,7 +181,7 @@ def fix_amount_in_recipe():
     )
 
 
-def remove_hand_from_recipe_data():
+def remove_hand_from_recipe_data() -> None:
     """Remove the hand columns from the RecipeData table."""
     _logger.log_event("INFO", "Removing hand columns from RecipeData DB")
     try:
@@ -190,7 +190,7 @@ def remove_hand_from_recipe_data():
         _logger.log_event("ERROR", "Could not remove hand columns from DB, this may because they do not exist")
 
 
-def add_foreign_keys():
+def add_foreign_keys() -> None:
     """Add foreign keys to the database.
 
     Since we are working with SQLite, there is no way to add them by default.
@@ -252,7 +252,7 @@ def add_foreign_keys():
     execute_raw_sql("PRAGMA foreign_keys=on;")
 
 
-def add_cost_consumption_column_to_ingredients():
+def add_cost_consumption_column_to_ingredients() -> None:
     """Add the cost consumption column to the Ingredients table."""
     _logger.log_event("INFO", "Adding cost consumption column to Ingredients DB")
     try:
@@ -269,7 +269,7 @@ def add_cost_consumption_column_to_ingredients():
         _logger.log_event("ERROR", "Could not add cost consumption column to DB, this may because it already exists")
 
 
-def add_resource_usage_table():
+def add_resource_usage_table() -> None:
     """Add the ResourceUsage table to the database."""
     _logger.log_event("INFO", "Adding ResourceUsage table to database")
     try:
@@ -287,7 +287,7 @@ def add_resource_usage_table():
         _logger.log_event("ERROR", "Could not add ResourceUsage table to DB, this may because it already exists")
 
 
-def clear_resource_log_file():
+def clear_resource_log_file() -> None:
     """Clear the resource log file."""
     _logger.log_event("INFO", "Clearing resource log file")
     resource_log = LOG_FOLDER / f"{LogFiles.RESOURCES}.log"

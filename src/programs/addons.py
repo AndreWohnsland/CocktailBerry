@@ -32,16 +32,16 @@ _check_addon = "please check addon or contact provider"
 
 @runtime_checkable
 class AddonInterface(Protocol):
-    def setup(self):
+    def setup(self) -> None:
         """Init the addon."""
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Clean up the addon."""
 
-    def before_cocktail(self, data: dict[str, Any]):
+    def before_cocktail(self, data: dict[str, Any]) -> None:
         """Logic to be executed before the cocktail."""
 
-    def after_cocktail(self, data: dict[str, Any]):
+    def after_cocktail(self, data: dict[str, Any]) -> None:
         """Logic to be executed after the cocktail."""
 
     def build_gui(
@@ -52,7 +52,7 @@ class AddonInterface(Protocol):
         """Logic to build up the addon GUI."""
         return False
 
-    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]):
+    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]) -> None:
         """Will be executed in the background loop and can trigger a cocktail preparation.
 
         Use the prepare function to start a cocktail preparation with prepare(cocktail).
@@ -91,7 +91,7 @@ class AddOnManager:
                 continue
             self.addons[name] = addon()
 
-    def setup_addons(self):
+    def setup_addons(self) -> None:
         """Execute all the setup function of the addons."""
         if self.addons:
             addon_string = ", ".join(list(self.addons.keys()))
@@ -107,7 +107,7 @@ class AddOnManager:
         # We can neither run this on a tread, nor a QThread, because it will not work
         return api_addon_prepare_flow
 
-    def start_trigger_loop(self, w: MainScreen | None = None):
+    def start_trigger_loop(self, w: MainScreen | None = None) -> None:
         """Start the trigger loop for all addons.
 
         This will start a thread for each addon that will call the cocktail_trigger function.
@@ -138,15 +138,15 @@ class AddOnManager:
             thread.daemon = True
             thread.start()
 
-    def cleanup_addons(self):
+    def cleanup_addons(self) -> None:
         """Clean up all the addons."""
         self._try_function_for_addons("cleanup")
 
-    def before_cocktail(self, data: dict[str, Any]):
+    def before_cocktail(self, data: dict[str, Any]) -> None:
         """Execute addon part before cocktail."""
         self._try_function_for_addons("before_cocktail", data)
 
-    def after_cocktail(self, data: dict[str, Any]):
+    def after_cocktail(self, data: dict[str, Any]) -> None:
         """Execute addon part after cocktail."""
         self._try_function_for_addons("after_cocktail", data)
 
@@ -192,7 +192,7 @@ class AddOnManager:
         return False
 
 
-def generate_addon_skeleton(name: str):
+def generate_addon_skeleton(name: str) -> None:
     """Create an base addon file unter the given name."""
     # Converts space into underscores
     file_name = name.replace(" ", "_")

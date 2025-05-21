@@ -33,14 +33,14 @@ class RefillDialog(QMainWindow, Ui_RefillPrompt):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def apply_refill(self):
+    def apply_refill(self) -> None:
         """Apply the refill to the bottle."""
         # usually, the bottle have to be set, otherwise we would not be at this window
         self.close()
         if self.ingredient.bottle is not None:
             bottles.renew_bottles(self.main_window, [self.ingredient.bottle])
 
-    def checkbox_done_changed(self):
+    def checkbox_done_changed(self) -> None:
         """Only enables the apply button if the checkbox is checked."""
         self.button_apply.setEnabled(self.checkbox_done.isChecked())
 

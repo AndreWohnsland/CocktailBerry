@@ -10,7 +10,7 @@ from src.logger_handler import LogFiles, LoggerHandler
 _logger = LoggerHandler("resource_tracker", LogFiles.RESOURCES)
 
 
-def save_resource_usage(cpu_usage: float, ram_usage: float, session: int, timestamp: datetime | None = None):
+def save_resource_usage(cpu_usage: float, ram_usage: float, session: int, timestamp: datetime | None = None) -> None:
     DBC = DatabaseCommander()
     DBC.save_resource_usage(cpu_usage, ram_usage, session, timestamp)
 
@@ -28,7 +28,7 @@ def _resource_logger_thread(log_interval: int, session_number: int) -> None:
         time.sleep(log_interval - sense_interval)
 
 
-def start_resource_tracker():
+def start_resource_tracker() -> None:
     """Start a thread that tracks the system resources."""
     session_number = DatabaseCommander().get_highest_session_number() + 1
     log_thread = threading.Thread(target=_resource_logger_thread, args=(15, session_number), daemon=True)

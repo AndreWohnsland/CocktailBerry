@@ -43,15 +43,15 @@ class LedController:
         except RuntimeError:
             _logger.log_event("ERROR", "Could not set up the WS281x, is the program running as root?")
 
-    def preparation_start(self):
+    def preparation_start(self) -> None:
         for led in self.led_list:
             led.preparation_start()
 
-    def preparation_end(self, duration: int = 5):
+    def preparation_end(self, duration: int = 5) -> None:
         for led in self.led_list:
             led.preparation_end(duration)
 
-    def default_led(self):
+    def default_led(self) -> None:
         if cfg.LED_DEFAULT_ON:
             for led in self.led_list:
                 led.turn_on()

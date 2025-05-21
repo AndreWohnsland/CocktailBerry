@@ -32,7 +32,7 @@ class CustomDialog(QMainWindow, Ui_CustomDialog):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def close_clicked(self):
+    def close_clicked(self) -> None:
         if self.close_callback is not None:
             self.close_callback()
         self.close()

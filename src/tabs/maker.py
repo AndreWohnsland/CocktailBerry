@@ -101,7 +101,7 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[P
     return PrepareResult.FINISHED, add_message
 
 
-def interrupt_cocktail():
+def interrupt_cocktail() -> None:
     """Interrupts the cocktail preparation."""
     shared.cocktail_status.status = PrepareResult.CANCELED
     time_print("Canceling the cocktail!")
@@ -135,7 +135,7 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
     return PrepareResult.VALIDATION_OK, "", None
 
 
-def calibrate(bottle_number: int, amount: int):
+def calibrate(bottle_number: int, amount: int) -> None:
     """Calibrate a bottle."""
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     display_name = f"{amount} ml volume, pump #{bottle_number}"
@@ -159,7 +159,7 @@ def calibrate(bottle_number: int, amount: int):
     )
 
 
-def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None):
+def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> None:
     """Prepare an ingredient."""
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     time_print(f"Spending {ingredient.amount} ml {ingredient.name}")

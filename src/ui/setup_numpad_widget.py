@@ -48,18 +48,18 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         self.show()
         DP_CONTROLLER.set_display_settings(self, resize=False)
 
-    def number_clicked(self, number: int):
+    def number_clicked(self, number: int) -> None:
         """Add the clicked number to the lineedit."""
         text = str(number) if self.overwrite_number else f"{self.source_line_edit.text()}{number}"
         self.source_line_edit.setText(text)
         if self.header_is_entered_number:
             self.LHeader.setText(text)
 
-    def enter_clicked(self):
+    def enter_clicked(self) -> None:
         """Enters/Closes the Dialog."""
         self.close()
 
-    def del_clicked(self):
+    def del_clicked(self) -> None:
         """Delete the last digit in the lineedit."""
         current_string = self.source_line_edit.text()[:-1]
         self.source_line_edit.setText(current_string)

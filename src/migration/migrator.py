@@ -88,7 +88,7 @@ class Migrator:
         with open(VERSION_FILE, "w", encoding="utf-8") as config_file:
             self.config.write(config_file)
 
-    def make_migrations(self):
+    def make_migrations(self) -> None:
         """Make migration dependant on current local and program version."""
         _logger.log_event("INFO", f"Local version is: {self.local_version}, checking for necessary migrations")
         self._python_to_old_warning(FUTURE_PYTHON_VERSION)

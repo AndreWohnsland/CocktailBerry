@@ -123,3 +123,12 @@ class IssueData(BaseModel):
 class DateTimeInput(BaseModel):
     date: str
     time: str
+
+
+class ApiMessage(BaseModel):
+    message: str
+
+
+class ApiMessageWithData(BaseModel, Generic[T]):
+    message: str
+    data: T

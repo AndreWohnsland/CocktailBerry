@@ -86,31 +86,31 @@ class Cocktail:
     # also changes handadd to machine add if the handadd is currently at the machine
     # this way the user needs to add less, if it happens to be also on the machine
     @property
-    def handadds(self):
+    def handadds(self) -> list[Ingredient]:
         """Returns a list of all handadd Ingredients."""
         return [x for x in self.adjusted_ingredients if x.bottle is None and x.amount > 0]
 
     @property
-    def machineadds(self):
+    def machineadds(self) -> list[Ingredient]:
         """Returns a list of all machine Ingredients."""
         return [x for x in self.adjusted_ingredients if x.bottle is not None and x.amount > 0]
 
     @property
-    def virgin_handadds(self):
+    def virgin_handadds(self) -> list[Ingredient]:
         """Returns a list of all non-alcoholic handadd Ingredients."""
         return [x for x in self.handadds if x.alcohol == 0]
 
     @property
-    def virgin_machineadds(self):
+    def virgin_machineadds(self) -> list[Ingredient]:
         """Returns a list of all non-alcoholic machine Ingredients."""
         return [x for x in self.machineadds if x.alcohol == 0]
 
     @property
-    def is_virgin(self):
+    def is_virgin(self) -> bool:
         """Returns if the cocktail is virgin."""
         return self.adjusted_alcohol == 0
 
-    def is_possible(self, hand_available: list[int], max_hand_ingredients: int):
+    def is_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Return if the recipe is possible with given additional hand add ingredients."""
         self.only_virgin = False
         if self._is_normal_cocktail_possible(hand_available, max_hand_ingredients):
@@ -170,7 +170,7 @@ class Cocktail:
                 return ing
         return None
 
-    def scale_cocktail(self, amount: int, alcohol_factor: float):
+    def scale_cocktail(self, amount: int, alcohol_factor: float) -> None:
         """Scale the base cocktail recipe to given volume and alcohol factor.
 
         The scaling is saved in the adjusted_* properties.

@@ -12,7 +12,7 @@ desktop_file = Path.home() / "Desktop" / "cocktail_web.desktop"
 web_entry_path = Path("/etc/xdg/autostart/cocktail_web.desktop")
 
 
-def replace_backend_script():
+def replace_backend_script() -> None:
     """Replace the content for the shell script to start the backend."""
     backup_path = script_entry_path.with_suffix(".bak")
     if script_entry_path.exists() and not backup_path.exists():
@@ -21,7 +21,7 @@ def replace_backend_script():
     script_entry_path.chmod(0o755)
 
 
-def add_web_desktop_file():
+def add_web_desktop_file() -> None:
     desktop_file.write_text(COCKTAIL_WEB_DESKTOP.read_text())
     desktop_file.chmod(0o755)
 

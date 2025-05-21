@@ -28,7 +28,7 @@ class _RecipeInformation:
         return f"{self.name}: {self.ingredients}"
 
 
-def importer(file_path: Path, factor: float = 1.0, no_unit: bool = False, sep: str = "\n"):
+def importer(file_path: Path, factor: float = 1.0, no_unit: bool = False, sep: str = "\n") -> None:
     """Import the recipe data from the file into the database."""
     _check_file(file_path)
     print(f"Loading data from: {file_path.absolute()}\nUsing factor: {factor}, data got no unit: {no_unit}\n")

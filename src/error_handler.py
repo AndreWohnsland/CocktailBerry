@@ -13,7 +13,7 @@ from src.utils import time_print
 _logger = LoggerHandler("error_logger", LogFiles.DEBUG)
 
 
-def logerror(func: Callable):
+def logerror(func: Callable) -> Callable:
     """Wrap a function, execute it and log the exception.
 
     Close the machine pump, then re-raise the exception.

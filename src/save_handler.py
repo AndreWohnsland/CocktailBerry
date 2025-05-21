@@ -2,7 +2,7 @@ from src.database_commander import DatabaseCommander
 
 
 class SaveHandler:
-    def export_data(self):
+    def export_data(self) -> None:
         """Export the ingredient and recipe data to database, resets consumption."""
         DBC = DatabaseCommander()
         DBC.export_ingredient_data()

@@ -7,14 +7,14 @@ import time
 import zipfile
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 
 from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
 from src.api.middleware import master_protected_dependency
-from src.api.models import DataResponse, DateTimeInput, IssueData, PasswordInput, WifiData
+from src.api.models import ApiMessage, DataResponse, DateTimeInput, IssueData, PasswordInput, WifiData
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import generate_consume_data, get_addon_data, install_addon, remove_addon
@@ -52,7 +52,7 @@ protected_router = APIRouter(
 
 
 @router.get("", summary="Get the current options, passwords are sanitized as boolean (yes/no)")
-async def get_options():
+async def get_options() -> dict[str, Any]:
     # need to sanitized the passwords before returning, frontend only need to know if they are set
     # e.g. 0: False otherwise: True
     config = cfg.get_config()
@@ -62,7 +62,7 @@ async def get_options():
 
 
 @protected_router.get("/full", summary="Get the current options with UI properties/descriptions and passwords")
-async def get_options_with_ui_properties():
+async def get_options_with_ui_properties() -> dict[str, Any]:
     return cfg.get_config_with_ui_information()
 
 
@@ -72,7 +72,7 @@ def _restart_task() -> None:
 
 
 @protected_router.post("", summary="Update the options", dependencies=[Depends(only_change_theme_on_demo)])
-async def update_options(options: dict, background_tasks: BackgroundTasks):
+async def update_options(options: dict, background_tasks: BackgroundTasks) -> ApiMessage:
     cfg.set_config(options, True)
     cfg.sync_config_to_file()
     # resolve the issue, when we get here, there was no error in the config and we can resolve potential issues
@@ -81,38 +81,38 @@ async def update_options(options: dict, background_tasks: BackgroundTasks):
     # only do this if more than the theme was changed (theme is handled by the frontend)
     if any(key != "MAKER_THEME" for key in options):
         background_tasks.add_task(_restart_task)
-        return {"message": DH.get_translation("options_updated_and_restart")}
-    return {"message": DH.get_translation("options_updated")}
+        return ApiMessage(message=DH.get_translation("options_updated_and_restart"))
+    return ApiMessage(message=DH.get_translation("options_updated"))
 
 
 @protected_router.post("/clean", tags=["preparation"], summary="Start the machine cleaning")
-async def clean_machine(background_tasks: BackgroundTasks):
+async def clean_machine(background_tasks: BackgroundTasks) -> ApiMessage:
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         return JSONResponse(
             status_code=400, content={"status": PrepareResult.IN_PROGRESS.value, "detail": DH.cocktail_in_progress()}
-        )
+        )  # type: ignore[return-value]
     _logger.log_header("INFO", "Cleaning the Pumps")
     revert_pumps = cfg.MAKER_PUMP_REVERSION
     background_tasks.add_task(MACHINE.clean_pumps, None, revert_pumps)
-    return {"message": DH.get_translation("cleaning_started")}
+    return ApiMessage(message=DH.get_translation("cleaning_started"))
 
 
 @protected_router.post("/reboot", summary="Reboot the system", dependencies=[not_on_demo])
-async def reboot_system():
+async def reboot_system() -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot reboot on Windows")
     atexit._run_exitfuncs()  # pylint: disable=protected-access
     os.system("sudo reboot")
-    return {"message": "System rebooting"}
+    return ApiMessage(message="System rebooting")
 
 
 @protected_router.post("/shutdown", summary="Shutdown the system", dependencies=[not_on_demo])
-async def shutdown_system():
+async def shutdown_system() -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot shutdown on Windows")
     atexit._run_exitfuncs()  # pylint: disable=protected-access
     os.system("sudo shutdown now")
-    return {"message": "System shutting down"}
+    return ApiMessage(message="System shutting down")
 
 
 @protected_router.get("/data", summary="Get the data insights")
@@ -121,13 +121,13 @@ async def data_insights() -> DataResponse[dict[str, ConsumeData]]:
 
 
 @protected_router.post("/data/reset", summary="Reset the data insights", dependencies=[not_on_demo])
-async def reset_data_insights():
+async def reset_data_insights() -> ApiMessage:
     SAVE_HANDLER.export_data()
-    return {"message": DH.get_translation("all_data_exported")}
+    return ApiMessage(message=DH.get_translation("all_data_exported"))
 
 
 @protected_router.get("/backup", summary="Create a backup of CocktailBerry data", dependencies=[not_on_demo])
-async def create_backup():
+async def create_backup() -> FileResponse:
     backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
     zip_file_name = f"{backup_folder_name}.zip"
     zip_file_path = Path(tempfile.gettempdir()) / zip_file_name  # Store in the system's temp folder
@@ -171,7 +171,7 @@ def parse_restored_file(
 async def upload_backup(
     file: UploadFile = File(...),
     restored_file: list[Literal["style", "config", "images", "database"]] = Depends(parse_restored_file),
-):
+) -> ApiMessage:
     file_name = file.filename
     if not file_name:
         raise HTTPException(400, detail="Could not get filename from file")
@@ -213,7 +213,7 @@ async def upload_backup(
             elif source_path.is_dir():
                 shutil.copytree(source_path, target_path, dirs_exist_ok=True)
 
-    return {"message": "Backup restored successfully"}
+    return ApiMessage(message="Backup restored successfully")
 
 
 @protected_router.get("/logs", summary="Get the logs")
@@ -225,11 +225,11 @@ async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, l
 
 
 @protected_router.post("/rfid/scan", summary="Scan RFID card")
-async def rfid_writer():
+async def rfid_writer() -> ApiMessage:
     # Return RFID writer data
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="NO RFID on Windows")
-    return {"message": "NOT IMPLEMENTED"}
+    return ApiMessage(message="NOT IMPLEMENTED")
 
 
 @protected_router.get("/wifi", summary="Get available WiFi SSIDs")
@@ -240,13 +240,13 @@ async def get_available_ssids() -> list[str]:
 
 
 @protected_router.post("/wifi", summary="Set WiFi SSID and password", dependencies=[not_on_demo])
-async def update_wifi_data(wifi_data: WifiData):
+async def update_wifi_data(wifi_data: WifiData) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot set WiFi on Windows")
     success = setup_wifi(wifi_data.ssid, wifi_data.password)
     if not success:
         raise HTTPException(400, detail=DH.get_translation("wifi_setup_failed"))
-    return {"message": DH.get_translation("wifi_success")}
+    return ApiMessage(message=DH.get_translation("wifi_success"))
 
 
 @protected_router.get("/addon", summary="Get installed and available addons")
@@ -255,19 +255,19 @@ async def addon_data() -> list[AddonData]:
 
 
 @protected_router.post("/addon", summary="Install addon")
-async def add_addon(addon: AddonData):
+async def add_addon(addon: AddonData) -> ApiMessage:
     install_addon(addon)
-    return {"message": f"Addon {addon.name} installed"}
+    return ApiMessage(message=f"Addon {addon.name} installed")
 
 
 @protected_router.delete("/addon/remove", summary="Remove addon")
-async def delete_addon(addon: AddonData):
+async def delete_addon(addon: AddonData) -> ApiMessage:
     remove_addon(addon)
-    return {"message": f"Addon {addon.name} removed"}
+    return ApiMessage(message=f"Addon {addon.name} removed")
 
 
 @protected_router.get("/connection", summary="Check internet connection")
-async def check_internet_connection():
+async def check_internet_connection() -> dict[str, str | bool]:
     is_connected = has_connection()
     return {
         "is_connected": is_connected,
@@ -278,39 +278,39 @@ async def check_internet_connection():
 
 
 @protected_router.post("/update/system", summary="Update the system", dependencies=[not_on_demo])
-async def update_system(background_tasks: BackgroundTasks):
+async def update_system(background_tasks: BackgroundTasks) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot update system on Windows")
     background_tasks.add_task(update_os)
-    return {"message": "System update started"}
+    return ApiMessage(message="System update started")
 
 
 @protected_router.post("/update/software", summary="Update CocktailBerry software", dependencies=[not_on_demo])
-async def update_software():
+async def update_software() -> ApiMessage:
     updater = Updater()
     update_available, info = updater.check_for_updates()
     if not update_available and not info:
-        return {"message": DH.get_translation("cocktailberry_up_to_date")}
+        return ApiMessage(message=DH.get_translation("cocktailberry_up_to_date"))
     if not update_available and info:
-        return {"message": info}
+        return ApiMessage(message=info)
     success = updater.update()
     if not success:
         raise HTTPException(400, detail=DH.get_translation("update_failed"))
-    return {"message": "Software update started"}
+    return ApiMessage(message="Software update started")
 
 
 @router.post("/password/master/validate", summary="Validate Master Password")
-async def validate_master_password(password: PasswordInput):
+async def validate_master_password(password: PasswordInput) -> ApiMessage:
     if password.password != cfg.UI_MASTERPASSWORD:
         raise HTTPException(status_code=403, detail="Invalid Master Password")
-    return {"message": "Master password is valid"}
+    return ApiMessage(message="Master password is valid")
 
 
 @router.post("/password/maker/validate", summary="Validate Maker Password")
-async def validate_maker_password(password: PasswordInput):
+async def validate_maker_password(password: PasswordInput) -> ApiMessage:
     if password.password != cfg.UI_MAKER_PASSWORD:
         raise HTTPException(status_code=403, detail="Invalid Maker Password")
-    return {"message": "Maker password is valid"}
+    return ApiMessage(message="Maker password is valid")
 
 
 @router.get("/issues", summary="Check if CocktailBerry has issues")
@@ -323,15 +323,15 @@ async def check_issues() -> IssueData:
 
 
 @router.post("/issues/ignore", summary="Ignore issues", dependencies=[not_on_demo])
-async def ignore_issues():
+async def ignore_issues() -> ApiMessage:
     shared.startup_python_deprecated.set_ignored()
     shared.startup_need_time_adjustment.set_ignored()
     shared.startup_config_issue.set_ignored()
-    return {"message": "Issues ignored"}
+    return ApiMessage(message="Issues ignored")
 
 
 @router.post("/datetime", summary="Update the system date and time", dependencies=[not_on_demo])
-async def update_datetime(data: DateTimeInput):
+async def update_datetime(data: DateTimeInput) -> ApiMessage:
     # need YYYY-MM-DD HH:MM:SS format, time from web is "just" HH:MM
     # users might also add ms, so remove them as well
     time_string = data.time.split(".")[0]
@@ -342,7 +342,7 @@ async def update_datetime(data: DateTimeInput):
     set_system_datetime(datetime_string)
     # resolve the internet connection issue, since time is set properly now (only thing we care)
     shared.startup_need_time_adjustment.has_issue = False
-    return {"message": "Success"}
+    return ApiMessage(message="Success")
 
 
 @router.get(

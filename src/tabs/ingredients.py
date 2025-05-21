@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 @logerror
-def handle_enter_ingredient(w: MainScreen):
+def handle_enter_ingredient(w: MainScreen) -> None:
     """Insert or update the ingredient into the DB.
 
     If all values are given and its name is not already in the DB.
@@ -113,7 +113,7 @@ def _change_existing_ingredient(w: MainScreen, ingredient_list_widget: QListWidg
     return True
 
 
-def load_ingredients(w: MainScreen):
+def load_ingredients(w: MainScreen) -> None:
     """Load all ingredient names into the ListWidget."""
     DP_CONTROLLER.clear_list_widget_ingredients(w)
     ingredients = DB_COMMANDER.get_all_ingredients()
@@ -122,7 +122,7 @@ def load_ingredients(w: MainScreen):
 
 
 @logerror
-def delete_ingredient(w: MainScreen):
+def delete_ingredient(w: MainScreen) -> None:
     """Delete an ingredient out of the DB if its not needed in any recipe."""
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_input.selected_ingredient)
@@ -152,7 +152,7 @@ def delete_ingredient(w: MainScreen):
 
 
 @logerror
-def display_selected_ingredient(w: MainScreen):
+def display_selected_ingredient(w: MainScreen) -> None:
     """Search the DB entry for the ingredient and displays them."""
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_input.selected_ingredient)
@@ -184,7 +184,7 @@ def display_selected_ingredient(w: MainScreen):
 
 
 @logerror
-def clear_ingredient_information(w: MainScreen):
+def clear_ingredient_information(w: MainScreen) -> None:
     """Clear all entries in the ingredient windows."""
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     DP_CONTROLLER.clean_multiple_lineedit(

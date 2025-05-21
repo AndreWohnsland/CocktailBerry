@@ -23,7 +23,7 @@ class RowCounter:
         self.value = value
 
 
-def adjust_font(element: QWidget, font_size: int, bold: bool = False):
+def adjust_font(element: QWidget, font_size: int, bold: bool = False) -> None:
     """Adjust the font to given size and optional bold."""
     font = QFont()
     font.setPointSize(font_size)
@@ -33,21 +33,21 @@ def adjust_font(element: QWidget, font_size: int, bold: bool = False):
     element.setFont(font)
 
 
-def set_underline(element: QWidget, underline: bool):
+def set_underline(element: QWidget, underline: bool) -> None:
     """Set the strike through property of the font."""
     font = element.font()
     font.setUnderline(underline)
     element.setFont(font)
 
 
-def set_strike_through(element: QWidget, strike_through: bool):
+def set_strike_through(element: QWidget, strike_through: bool) -> None:
     """Set the strike through property of the font."""
     font = element.font()
     font.setStrikeOut(strike_through)
     element.setFont(font)
 
 
-def create_spacer(height: int, width: int = 20, expand: bool = False):
+def create_spacer(height: int, width: int = 20, expand: bool = False) -> QSpacerItem:
     """Create a spacer of given height and optional width."""
     policy = QSizePolicy.Expanding if expand else QSizePolicy.Fixed  # type: ignore
     return QSpacerItem(width, height, QSizePolicy.Minimum, policy)  # type: ignore
@@ -63,7 +63,7 @@ def create_button(
     min_h: int = 70,
     bold: bool = True,
     css_class: Optional[str] = None,
-):
+) -> QPushButton:
     btn = QPushButton(label, parent)
     btn.setMaximumSize(QSize(max_w, max_h))
     btn.setMinimumSize(QSize(min_w, min_h))
@@ -83,7 +83,7 @@ def create_label(
     min_w: int = 0,
     min_h: int = 20,
     css_class: Optional[str] = None,
-):
+) -> QLabel:
     """Create a label with given text and properties."""
     label = QLabel(text)
     label.setMaximumSize(QSize(max_w, max_h))
@@ -96,7 +96,7 @@ def create_label(
     return label
 
 
-def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable):
+def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable) -> QThread:
     """Move worker the thread and set necessary things (spinner, eg) up.
 
     Worker needs done = pyqtSignal() and emit that at the end of run function.
@@ -120,7 +120,7 @@ def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable
     return _thread
 
 
-def add_grid_spacer(grid: QGridLayout, row_counter: RowCounter):
+def add_grid_spacer(grid: QGridLayout, row_counter: RowCounter) -> None:
     """Add a spacer to the grid layout and increment row."""
     spacer_label = create_label("", 12)
     spacer_label.setMaximumSize(QSize(16777215, 30))
@@ -128,14 +128,14 @@ def add_grid_spacer(grid: QGridLayout, row_counter: RowCounter):
     row_counter.value += 1
 
 
-def add_grid_text(grid: QGridLayout, row_counter: RowCounter, text: str, font_size: int = MEDIUM_FONT):
+def add_grid_text(grid: QGridLayout, row_counter: RowCounter, text: str, font_size: int = MEDIUM_FONT) -> None:
     """Add a text to the grid layout and increment row."""
     text_label = create_label(text, font_size, False, True)
     grid.addWidget(text_label, row_counter.value, 0, 1, 3)
     row_counter.value += 1
 
 
-def add_grid_header(grid: QGridLayout, row_counter: RowCounter, text: str):
+def add_grid_header(grid: QGridLayout, row_counter: RowCounter, text: str) -> None:
     """Add a header to the grid layout and increment row by 2."""
     header_label = create_label(text, 20, True, True, css_class="header-underline", min_h=40, max_h=50)
     grid.addWidget(header_label, row_counter.value, 0, 1, 3)
@@ -149,7 +149,7 @@ def generate_grid_bar_chart(
     names: list,
     values: list,
     quantifier: str = "x",
-):
+) -> None:
     """Generate one bar in the grid for each name/value and increment row."""
     if not values:
         return
@@ -167,6 +167,6 @@ def generate_grid_bar_chart(
         row_counter.value += 1
 
 
-def generate_bottle_management(row: int):
+def generate_bottle_management(row: int) -> int:
     """Generate a row for bottle management."""
     return row

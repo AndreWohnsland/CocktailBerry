@@ -30,7 +30,7 @@ class GenericController(PinController):
         self.gpios: dict[int, GPIO] = {}
         self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True):
+    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         """Set up the given pin list."""
         if not self.dev_displayed:
             time_print(
@@ -59,19 +59,19 @@ class GenericController(PinController):
             logger.log_exception(e)
             logger.log_event("ERROR", "Could not set up GPIOs, please have a look into the error logs")
 
-    def activate_pin_list(self, pin_list: list[int]):
+    def activate_pin_list(self, pin_list: list[int]) -> None:
         """Activates the given pin list."""
         if not self.devenvironment:
             for pin in pin_list:
                 self.gpios[pin].write(self.high)
 
-    def close_pin_list(self, pin_list: list[int]):
+    def close_pin_list(self, pin_list: list[int]) -> None:
         """Close the given pin_list."""
         if not self.devenvironment:
             for pin in pin_list:
                 self.gpios[pin].write(self.low)
 
-    def cleanup_pin_list(self, pin_list: Optional[list[int]] = None):
+    def cleanup_pin_list(self, pin_list: Optional[list[int]] = None) -> None:
         """Clean up the given pin list, or all pins if none is given."""
         if self.devenvironment:
             return
@@ -96,21 +96,21 @@ class GenericGPIO(GPIOController):
         super().__init__(high, low, inverted, pin)
         self.gpio = None
 
-    def initialize(self):
+    def initialize(self) -> None:
         init_value = "high" if self.inverted else "out"
         self.gpio = GPIO(self.pin, init_value)
 
-    def activate(self):
+    def activate(self) -> None:
         if self.gpio is None:
             return
         self.gpio.write(self.high)
 
-    def close(self):
+    def close(self) -> None:
         if self.gpio is None:
             return
         self.gpio.write(self.low)
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         if self.gpio is None:
             return
         self.gpio.close()

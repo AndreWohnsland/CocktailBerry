@@ -23,7 +23,7 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         self.mainscreen = parent
         self.show_screen(cocktail_type)
 
-    def show_screen(self, cocktail_type: str = "Cocktail"):
+    def show_screen(self, cocktail_type: str = "Cocktail") -> None:
         """Show the Progress screen."""
         UI_LANGUAGE.adjust_progress_screen(self, cocktail_type)
         self.showFullScreen()

@@ -19,7 +19,7 @@ WantedBy=graphical.target
 service_name = "squeekboard.service"
 
 
-def create_and_start_squeekboard_service():
+def create_and_start_squeekboard_service() -> None:
     service_path = Path("/etc/systemd/system") / service_name
     # Write the service content to the file using sudo
     with subprocess.Popen(["sudo", "tee", str(service_path)], stdin=subprocess.PIPE) as process:
@@ -31,7 +31,7 @@ def create_and_start_squeekboard_service():
     print("Squeekboard service created, enabled, and started successfully.")
 
 
-def stop_and_disable_squeekboard_service():
+def stop_and_disable_squeekboard_service() -> None:
     subprocess.run(["sudo", "systemctl", "stop", service_name], check=True)
     subprocess.run(["sudo", "systemctl", "disable", service_name], check=True)
     print("Squeekboard service stopped and disabled successfully.")

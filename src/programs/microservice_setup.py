@@ -27,7 +27,7 @@ def setup_service(
     hook_endpoint: Optional[str] = None,
     hook_header: Optional[str] = None,
     use_v1: bool = False,
-):
+) -> None:
     """Set up the microservice if any of args is given skip input.
 
     Else prompt user for data.
@@ -128,7 +128,7 @@ def _get_ip() -> str:
     return sock_ip
 
 
-def setup_teams(language: LanguageChoice):
+def setup_teams(language: LanguageChoice) -> None:
     """Set up the Teams frontend + backend from compose file, using the given language."""
     msg = f"Setting up the Teams Docker Compose images, using {language.name} language ..."
     typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))

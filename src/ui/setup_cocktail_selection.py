@@ -64,7 +64,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.virgin_checkbox.stateChanged.connect(self.update_cocktail_data)
         self.adjust_maker_label_size_cocktaildata()
 
-    def set_cocktail(self, cocktail: Cocktail):
+    def set_cocktail(self, cocktail: Cocktail) -> None:
         """Get the latest info from the db, gets the cocktails."""
         self.clear_recipe_data_maker()
         # need to refetch the cocktail from db, because the db might have changed
@@ -102,7 +102,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             factor = 0
         self.cocktail.scale_cocktail(amount, factor)
 
-    def update_cocktail_data(self):
+    def update_cocktail_data(self) -> None:
         """Update the cocktail data in the selection view."""
         self._scale_cocktail()
         amount = self.cocktail.adjusted_amount
@@ -165,7 +165,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             return int(round(val, 0))
         return round(val, 1)
 
-    def clear_recipe_data_maker(self):
+    def clear_recipe_data_maker(self) -> None:
         """Clear the cocktail data in the maker view, only clears selection if no other item was selected."""
         self.LAlkoholgehalt.setText("")
         self.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
@@ -175,14 +175,14 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             field_ingredient.setText("")
             field_volume.setText("")
 
-    def reset_alcohol_factor(self):
+    def reset_alcohol_factor(self) -> None:
         """Set the alcohol slider to default (100%) value."""
         if self.cocktail.only_virgin:
             shared.alcohol_factor = 0.0
         else:
             shared.alcohol_factor = 1.0
 
-    def adjust_maker_label_size_cocktaildata(self):
+    def adjust_maker_label_size_cocktaildata(self) -> None:
         """Adjust the font size for larger screens."""
         # iterate over all size types and adjust size relative to window height
         # default height was 480 for provided UI
@@ -236,7 +236,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         else:
             self.adjust_alcohol(1.0)
 
-    def adjust_alcohol(self, amount: float):
+    def adjust_alcohol(self, amount: float) -> None:
         """Change the alcohol factor to the given value."""
         shared.alcohol_factor = amount
         self.update_cocktail_data()

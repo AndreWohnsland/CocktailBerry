@@ -39,7 +39,7 @@ def _square_size() -> int:
     return int(cfg.UI_WIDTH / (n_columns * 1.17))
 
 
-def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen):
+def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> QVBoxLayout:
     """Generate a image block for the given cocktail."""
     # those factors are taken from calculations based on the old static values
     square_size = _square_size()
@@ -106,7 +106,7 @@ class CocktailView(QWidget):
 
         self.mainscreen = mainscreen
 
-    def populate_cocktails(self):
+    def populate_cocktails(self) -> None:
         """Add the given cocktails to the grid."""
         n_columns = _n_columns()
         DP_CONTROLLER.delete_items_of_layout(self.grid)

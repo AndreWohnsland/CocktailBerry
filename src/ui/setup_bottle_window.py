@@ -96,7 +96,7 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         set_fill_level_bars(self.mainscreen)
         self.close()
 
-    def assign_bottle_data(self):
+    def assign_bottle_data(self) -> None:
         number = cfg.choose_bottle_number()
         ingredients = DB_COMMANDER.get_ingredients_at_bottles()[:number]
         for i, ingredient in enumerate(ingredients, start=1):
