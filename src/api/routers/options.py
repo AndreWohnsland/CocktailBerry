@@ -7,7 +7,7 @@ import time
 import zipfile
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
@@ -167,8 +167,8 @@ def parse_restored_file(
 
 @protected_router.post("/backup", summary="Restore a backup of CocktailBerry data", dependencies=[not_on_demo])
 async def upload_backup(
-    file: UploadFile = File(...),
-    restored_file: list[Literal["style", "config", "images", "database"]] = Depends(parse_restored_file),
+    file: Annotated[UploadFile, File(...)],
+    restored_file: Annotated[list[Literal["style", "config", "images", "database"]], Depends(parse_restored_file)],
 ) -> ApiMessage:
     file_name = file.filename
     if not file_name:
@@ -346,7 +346,6 @@ async def update_datetime(data: DateTimeInput) -> ApiMessage:
 @router.get(
     "/resource_tracker/{session_number:int}",
     summary="Get system resource usage statistics",
-    response_model=ResourceStats,
 )
 async def get_resource_stats_endpoint(session_number: int) -> ResourceStats:
     """Get system resource usage statistics and timeline for the current session."""
@@ -356,7 +355,6 @@ async def get_resource_stats_endpoint(session_number: int) -> ResourceStats:
 @router.get(
     "/resource_tracker/sessions",
     summary="Get start date and session number of all sessions",
-    response_model=list[ResourceInfo],
 )
 async def get_resource_stats_all_sessions_endpoint() -> list[ResourceInfo]:
     """Get system resource usage statistics and timeline for all sessions."""

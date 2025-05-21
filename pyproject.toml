@@ -82,6 +82,7 @@ extend-safe-fixes = [
 per-file-ignores = { "runme.py" = ["E402"], "migrator.py" = ["E402"], "api.py" = ["E402"] }
 select = [
   "ANN", # Type annotations
+  "FAST", # FastAPI
   "C", # Convention
   "D", # pydocstyle 
   "E", # pycodestyle

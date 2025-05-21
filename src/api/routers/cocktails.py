@@ -1,4 +1,5 @@
 import asyncio
+from typing import Annotated
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, WebSocket
 
@@ -170,7 +171,7 @@ async def delete_cocktail(cocktail_id: int) -> ApiMessage:
 
 
 @protected_router.post("/{cocktail_id}/image", summary="Upload an image for a cocktail", dependencies=[not_on_demo])
-async def upload_cocktail_image(cocktail_id: int, file: UploadFile = File(...)) -> ApiMessage:
+async def upload_cocktail_image(cocktail_id: int, file: Annotated[UploadFile, File(...)]) -> ApiMessage:
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
     if cocktail is None:
