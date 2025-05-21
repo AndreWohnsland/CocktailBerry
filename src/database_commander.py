@@ -707,19 +707,19 @@ class DatabaseCommander:
             ingredient_exports = session.query(DbIngredientExport).all()
             date_grouped_data: dict[str, dict[str, dict[str, int]]] = {}
 
-            for export in recipe_exports:
-                date_str = export.export_date.strftime("%Y-%m-%d")
+            for r_export in recipe_exports:
+                date_str = r_export.export_date.strftime("%Y-%m-%d")
                 if date_str not in date_grouped_data:
                     date_grouped_data[date_str] = {"recipes": {}, "ingredients": {}, "cost": {}}
-                date_grouped_data[date_str]["recipes"][export.recipe_name] = export.counter
+                date_grouped_data[date_str]["recipes"][r_export.recipe_name] = r_export.counter
 
-            for export in ingredient_exports:
-                date_str = export.export_date.strftime("%Y-%m-%d")
+            for i_export in ingredient_exports:
+                date_str = i_export.export_date.strftime("%Y-%m-%d")
                 if date_str not in date_grouped_data:
                     date_grouped_data[date_str] = {"recipes": {}, "ingredients": {}, "cost": {}}
-                date_grouped_data[date_str]["ingredients"][export.ingredient_name] = export.consumption
-                if export.cost_consumption > 0:
-                    date_grouped_data[date_str]["cost"][export.ingredient_name] = export.cost_consumption
+                date_grouped_data[date_str]["ingredients"][i_export.ingredient_name] = i_export.consumption
+                if i_export.cost_consumption > 0:
+                    date_grouped_data[date_str]["cost"][i_export.ingredient_name] = i_export.cost_consumption
 
             return {
                 date_str: ConsumeData(recipes=data["recipes"], ingredients=data["ingredients"], cost=data["cost"])

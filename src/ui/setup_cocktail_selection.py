@@ -105,7 +105,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     def update_cocktail_data(self) -> None:
         """Update the cocktail data in the selection view."""
         self._scale_cocktail()
-        amount = self.cocktail.adjusted_amount
+        amount: int | float = self.cocktail.adjusted_amount
         # Need to set the button text here, since we need cocktail
         self.prepare_button.setText(
             UI_LANGUAGE.get_translation("prepare_button", "cocktail_selection", amount=amount, unit=cfg.EXP_MAKER_UNIT)
@@ -275,7 +275,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 min_h=60,
                 max_h=80,
             )
-            button.clicked.connect(lambda _, v=volume: self._prepare_cocktail(v))
+            button.clicked.connect(lambda _, v=volume: self._prepare_cocktail(v))  # type: ignore[attr-defined]
             icon = ICONS.generate_icon(icon_name, ICONS.color.background)
             ICONS.set_icon(button, icon, False)
             self.container_prepare_button.addWidget(button)

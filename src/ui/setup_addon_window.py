@@ -59,7 +59,7 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
 
     def _button_generator(self, label: str, func: Callable[[], None]) -> None:
         button = create_button(label, self)
-        button.clicked.connect(func)
+        button.clicked.connect(func)  # type: ignore[attr-defined]
         self.addon_container.addWidget(button)
 
     def _open_manager(self) -> None:

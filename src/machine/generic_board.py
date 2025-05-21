@@ -94,7 +94,7 @@ class GenericGPIO(GPIOController):
         low = False
         high = True
         super().__init__(high, low, inverted, pin)
-        self.gpio = None
+        self.gpio: GPIO | None = None
 
     def initialize(self) -> None:
         init_value = "high" if self.inverted else "out"

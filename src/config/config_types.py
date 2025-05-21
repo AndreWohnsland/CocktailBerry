@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Callable, Generic, NoReturn, Protocol, TypeVar, get_args
+from typing import Any, Callable, Generic, Protocol, TypeVar, get_args
 
 from src import SupportedLanguagesType, SupportedRfidType, SupportedThemesType
 from src.config.errors import ConfigError
@@ -25,7 +25,7 @@ class ConfigInterface(Protocol):
     suffix: str | None = None
 
     @abstractmethod
-    def validate(self, configname: str, value: Any) -> NoReturn:
+    def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
         raise NotImplementedError
 

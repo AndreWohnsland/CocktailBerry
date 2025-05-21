@@ -31,7 +31,7 @@ def _build_comment_maker(cocktail: Cocktail) -> str:
     # sort by descending length of the name and unit combined
     length_desc = sorted(hand_add, key=lambda x: len(x.name) + len(x.unit), reverse=True)
     for ing in length_desc:
-        amount = ing.amount
+        amount: int | float = ing.amount
         if ing.unit != "ml":
             amount = ing.amount * cfg.EXP_MAKER_FACTOR
         # usually show decimal places, up to 8, but if not ml is used clip decimal place

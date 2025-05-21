@@ -75,10 +75,10 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
     layout.addWidget(label)
     if cocktail is not None:
         # take care of the button overload thingy, otherwise the first element will be a bool
-        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_selection(c))
+        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_selection(c))  # type: ignore[attr-defined]
         label.clicked.connect(lambda c=cocktail: mainscreen.open_cocktail_selection(c))
     else:
-        button.clicked.connect(mainscreen.open_ingredient_window)
+        button.clicked.connect(mainscreen.open_ingredient_window)  # type: ignore[attr-defined]
         label.clicked.connect(mainscreen.open_ingredient_window)
     return layout
 
@@ -114,15 +114,16 @@ class CocktailView(QWidget):
         # sort cocktails by name
         cocktails.sort(key=lambda x: x.name.lower())
         # add last "filler" element, this is for the single ingredient element
+        displayed_cocktails: list[Cocktail | None] = []
         if cfg.MAKER_ADD_SINGLE_INGREDIENT:
-            cocktails = [*cocktails, None]
+            displayed_cocktails = [*cocktails, None]
         # fill the grid with n_columns columns, then go to another row
-        for i in range(0, len(cocktails), n_columns):
+        for i in range(0, len(displayed_cocktails), n_columns):
             for j in range(n_columns):
-                if i + j >= len(cocktails):
+                if i + j >= len(displayed_cocktails):
                     break
                 block = generate_image_block(
-                    cocktails[i + j],
+                    displayed_cocktails[i + j],
                     self.mainscreen,
                 )
                 self.grid.addLayout(block, i // n_columns, j)

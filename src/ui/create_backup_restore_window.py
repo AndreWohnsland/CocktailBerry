@@ -71,10 +71,10 @@ class BackupRestoreWindow(QMainWindow):
 
         # adds the back button
         self.button_back = create_button(UI_LANGUAGE.get_translation("back"), max_h=100)
-        self.button_back.clicked.connect(self.close)
+        self.button_back.clicked.connect(self.close)  # type: ignore[attr-defined]
         # adds the save button
         self.button_save = create_button(UI_LANGUAGE.get_translation("apply"), max_h=100, css_class="btn-inverted")
-        self.button_save.clicked.connect(self._upload_backup)
+        self.button_save.clicked.connect(self._upload_backup)  # type: ignore[attr-defined]
         # places them side by side in a container
         self.hbox = QHBoxLayout()
         self.hbox.addWidget(self.button_back)

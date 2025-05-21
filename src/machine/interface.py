@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Any, NoReturn, Optional
+from typing import Any, Optional
 
 # Grace period, will be switched once Python 3.8+ is mandatory
 try:
@@ -12,15 +12,15 @@ class PinController(Protocol):  # type: ignore
     """Interface to control the pins."""
 
     @abstractmethod
-    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> NoReturn:
+    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def activate_pin_list(self, pin_list: list[int]) -> NoReturn:
+    def activate_pin_list(self, pin_list: list[int]) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def close_pin_list(self, pin_list: list[int]) -> NoReturn:
+    def close_pin_list(self, pin_list: list[int]) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -42,19 +42,19 @@ class GPIOController:
             self.high, self.low = self.low, self.high
 
     @abstractmethod
-    def initialize(self) -> NoReturn:
+    def initialize(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def activate(self) -> NoReturn:
+    def activate(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def close(self) -> NoReturn:
+    def close(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def cleanup(self) -> NoReturn:
+    def cleanup(self) -> None:
         raise NotImplementedError
 
 

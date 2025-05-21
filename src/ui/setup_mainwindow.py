@@ -324,7 +324,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         bottles.set_fill_level_bars(self)
 
         for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
-            combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
+            combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))  # type: ignore[attr-defined]
 
     def handle_tab_bar_clicked(self, index: int) -> None:
         """Protects tabs other than maker tab with a password."""
