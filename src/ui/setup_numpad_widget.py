@@ -1,7 +1,13 @@
+from typing import TYPE_CHECKING
+
 from PyQt5.QtWidgets import QDialog, QLineEdit
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.numpad import Ui_NumpadWindow
+
+if TYPE_CHECKING:
+    from src.ui.create_config_window import ConfigWindow
+    from src.ui.setup_mainwindow import MainScreen
 
 
 class NumpadWidget(QDialog, Ui_NumpadWindow):
@@ -9,15 +15,15 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
 
     def __init__(
         self,
-        parent,
+        parent: MainScreen | ConfigWindow,
         le_to_write: QLineEdit,
         x_pos: int = 0,
         y_pos: int = 0,
         header_text: str = "Password",
-        use_float=False,
+        use_float: bool = False,
         overwrite_number: bool = False,
         header_is_entered_number: bool = False,
-    ):
+    ) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)

@@ -5,8 +5,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable, Literal
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QModelIndex, Qt
+from PyQt5.QtGui import QIcon, QPainter
 from PyQt5.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
 
 class ItemDelegate(QStyledItemDelegate):
-    def paint(self, painter, option, index):
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
         option.decorationPosition = QStyleOptionViewItem.Right  # type: ignore
         super().paint(painter, option, index)
 
@@ -223,7 +223,12 @@ class DisplayController(DialogHandler):
     ###########################
     # Misc
     def change_input_value(
-        self, label: QLabel | QLineEdit, minimal=0, maximal=1000, delta=10, side_effect: Callable | None = None
+        self,
+        label: QLabel | QLineEdit,
+        minimal: int = 0,
+        maximal: int = 1000,
+        delta: int = 10,
+        side_effect: Callable | None = None,
     ):
         """Increase or decreases the value by a given amount in the boundaries.
 
@@ -239,7 +244,7 @@ class DisplayController(DialogHandler):
         if side_effect is not None:
             side_effect()
 
-    def set_display_settings(self, window_object: QWidget, resize=True):
+    def set_display_settings(self, window_object: QWidget, resize: bool = True):
         """Check dev environment, adjust cursor and resize accordingly, if resize is wished."""
         if not cfg.UI_DEVENVIRONMENT:
             window_object.setCursor(Qt.BlankCursor)  # type: ignore
@@ -306,7 +311,12 @@ class DisplayController(DialogHandler):
 
     # Combobox
     def fill_single_combobox(
-        self, combobox: QComboBox, item_list: list[str], clear_first=False, sort_items=True, first_empty=True
+        self,
+        combobox: QComboBox,
+        item_list: list[str],
+        clear_first: bool = False,
+        sort_items: bool = True,
+        first_empty: bool = True,
     ):
         """Fill a combobox with given items, with the option to sort and fill a empty element as first element."""
         if clear_first:
@@ -318,7 +328,12 @@ class DisplayController(DialogHandler):
             combobox.model().sort(0)
 
     def fill_multiple_combobox(
-        self, combobox_list: list[QComboBox], item_list: list[str], clear_first=False, sort_items=True, first_empty=True
+        self,
+        combobox_list: list[QComboBox],
+        item_list: list[str],
+        clear_first: bool = False,
+        sort_items: bool = True,
+        first_empty: bool = True,
     ):
         """Fill multiple comboboxes with identical items, can sort and insert filler as first item."""
         for combobox in combobox_list:
@@ -328,9 +343,9 @@ class DisplayController(DialogHandler):
         self,
         combobox_list: list[QComboBox],
         list_of_item_list: list[list[str]],
-        clear_first=False,
-        sort_items=True,
-        first_empty=True,
+        clear_first: bool = False,
+        sort_items: bool = True,
+        first_empty: bool = True,
     ):
         """Fill multiple comboboxes with different items, can sort and insert filler as first item."""
         for combobox, item_list in zip(combobox_list, list_of_item_list):
@@ -481,7 +496,7 @@ class DisplayController(DialogHandler):
                 else:
                     self.delete_items_of_layout(item.layout())
 
-    def _decide_rounding(self, val: float, threshold=8):
+    def _decide_rounding(self, val: float, threshold: int = 8):
         """Get the right rounding for numbers displayed to the user."""
         if val >= threshold:
             return int(val)
@@ -535,17 +550,17 @@ class DisplayController(DialogHandler):
         self.fill_multiple_lineedit(labels, label_names)  # type: ignore
 
     # Migration from supporter.py
-    def get_pushbuttons_newbottle(self, w: Ui_MainWindow, get_all=False) -> list[QPushButton]:
+    def get_pushbuttons_newbottle(self, w: Ui_MainWindow, get_all: bool = False) -> list[QPushButton]:
         """Return all new bottles toggle button objects."""
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"PBneu{x}") for x in range(1, number + 1)]
 
-    def get_levelbar_bottles(self, w: Ui_MainWindow, get_all=False) -> list[QProgressBar]:
+    def get_levelbar_bottles(self, w: Ui_MainWindow, get_all: bool = False) -> list[QProgressBar]:
         """Return all bottles progress bar objects."""
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"ProBBelegung{x}") for x in range(1, number + 1)]
 
-    def get_comboboxes_bottles(self, w: Ui_MainWindow, get_all=False) -> list[QComboBox]:
+    def get_comboboxes_bottles(self, w: Ui_MainWindow, get_all: bool = False) -> list[QComboBox]:
         """Return all bottles combo box objects."""
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"CBB{x}") for x in range(1, number + 1)]
@@ -575,7 +590,7 @@ class DisplayController(DialogHandler):
             w.line_edit_ingredient_unit,
         )
 
-    def get_label_bottles(self, w: Ui_MainWindow, get_all=False) -> list[QLabel]:
+    def get_label_bottles(self, w: Ui_MainWindow, get_all: bool = False) -> list[QLabel]:
         """Return all bottles label objects."""
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"LBelegung{x}") for x in range(1, number + 1)]
@@ -588,7 +603,7 @@ class DisplayController(DialogHandler):
         """Return all maker label objects for ingredient name."""
         return [getattr(w, f"LZutat{x}") for x in range(1, 10)]
 
-    def get_number_label_bottles(self, w: Ui_MainWindow, get_all=False) -> list[QLabel]:
+    def get_number_label_bottles(self, w: Ui_MainWindow, get_all: bool = False) -> list[QLabel]:
         """Return all label object for the number of the bottle."""
         number = cfg.choose_bottle_number(get_all)
         return [getattr(w, f"bottleLabel{x}") for x in range(1, number + 1)]

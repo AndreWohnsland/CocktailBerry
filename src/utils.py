@@ -117,10 +117,10 @@ def generate_custom_style_file():
         CUSTOM_STYLE_FILE.write_text(compiled_default.read_text())
 
 
-def time_print(msg: str, **kwargs):
+def time_print(msg: str):
     """Print the given string with a timestamp in the 'HH:MM:SS: ' prefix."""
     now = datetime.datetime.now()
-    print(f"{now.strftime('%H:%M:%S')}:  {msg}", **kwargs)
+    print(f"{now.strftime('%H:%M:%S')}:  {msg}")
 
 
 def update_os():

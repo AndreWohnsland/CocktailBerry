@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 class CocktailSelection(QDialog, Ui_CocktailSelection):
     """Class for the Cocktail selection view."""
 
-    def __init__(self, mainscreen: MainScreen, cocktail: Cocktail, maker_screen_activate: Callable):
+    def __init__(self, mainscreen: MainScreen, cocktail: Cocktail, maker_screen_activate: Callable) -> None:
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -158,7 +158,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # To be precise, they do work at start, but does not support dynamic changes
         set_strike_through(self.virgin_checkbox, not can_change_virgin)
 
-    def _decide_rounding(self, val: float, threshold=8):
+    def _decide_rounding(self, val: float, threshold: int = 8):
         """Return the right rounding for numbers displayed to the user."""
         if val >= threshold:
             # needs to be int, otherwise we would need to format .0 or .1 which is difficult

@@ -37,7 +37,7 @@ class _PreparationData:
 class MachineController:
     """Controller Class for all Machine related Pin routines."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Time for print intervals, need to remember the last print time
         self._print_time = 0.0
 
@@ -79,9 +79,9 @@ class MachineController:
         self,
         w: MainScreen | None,
         ingredient_list: list[Ingredient],
-        recipe="",
-        is_cocktail=True,
-        verbose=True,
+        recipe: str = "",
+        is_cocktail: bool = True,
+        verbose: bool = True,
         finish_message: str = "",
     ):
         """RPI Logic to prepare the cocktail.
@@ -230,7 +230,7 @@ class MachineController:
         """Turn the LED on."""
         self.led_controller.default_led()
 
-    def _consumption_print(self, consumption: list[float], current_time: float, max_time: float, interval=1):
+    def _consumption_print(self, consumption: list[float], current_time: float, max_time: float, interval: int = 1):
         """Display each interval seconds information for cocktail preparation."""
         # we do not want to print at the beginning
         if round(self._print_time, 1) == 0:

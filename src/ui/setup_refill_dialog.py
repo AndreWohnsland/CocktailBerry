@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class RefillDialog(QMainWindow, Ui_RefillPrompt):
     """Class for the Team selection Screen."""
 
-    def __init__(self, parent: MainScreen, ingredient: Ingredient):
+    def __init__(self, parent: MainScreen, ingredient: Ingredient) -> None:
         """Initialize the RefillDialog."""
         super().__init__()
         self.setupUi(self)

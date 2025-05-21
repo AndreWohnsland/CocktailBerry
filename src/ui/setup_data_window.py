@@ -13,7 +13,7 @@ from src.ui_elements import Ui_DataWindow
 class DataWindow(QMainWindow, Ui_DataWindow):
     """Creates the log window Widget."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)

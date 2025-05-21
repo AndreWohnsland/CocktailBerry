@@ -10,11 +10,7 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, Protocol, TypeVar, get_args
 
-from src import (
-    SupportedLanguagesType,
-    SupportedRfidType,
-    SupportedThemesType,
-)
+from src import SupportedLanguagesType, SupportedRfidType, SupportedThemesType
 from src.config.errors import ConfigError
 
 SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
@@ -102,7 +98,7 @@ class StringType(ConfigType):
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
-    ):
+    ) -> None:
         super().__init__(str, validator_functions, prefix, suffix)
 
 
@@ -114,7 +110,7 @@ class IntType(ConfigType):
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
-    ):
+    ) -> None:
         super().__init__(int, validator_functions, prefix, suffix)
 
 
@@ -126,7 +122,7 @@ class FloatType(ConfigType):
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
-    ):
+    ) -> None:
         super().__init__(float, validator_functions, prefix, suffix)
 
     def validate(self, configname: str, value: Any):
@@ -152,7 +148,7 @@ class BoolType(ConfigType):
         prefix: str | None = None,
         suffix: str | None = None,
         check_name: str = "on",
-    ):
+    ) -> None:
         super().__init__(bool, validator_functions, prefix, suffix)
         self.check_name = check_name
 
@@ -168,7 +164,7 @@ class ListType(ConfigType):
         prefix: str | None = None,
         suffix: str | None = None,
         immutable: bool = False,
-    ):
+    ) -> None:
         # ignore type here, since parent class should only expose other types not child types
         super().__init__(list, validator_functions, prefix, suffix)  # type: ignore
         self.list_type = list_type
@@ -197,7 +193,7 @@ class ListType(ConfigType):
 
 class ConfigClass:
     # keep method to show that child implementation have at least one attribute for initialization
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         pass
 
     def to_config(self) -> dict[str, Any]:
@@ -233,7 +229,7 @@ class DictType(ConfigType, Generic[T]):
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
-    ):
+    ) -> None:
         # ignore type here, since parent class should only expose other types not child types
         super().__init__(dict, validator_functions, prefix, suffix)  # type: ignore
         self.dict_types = dict_types

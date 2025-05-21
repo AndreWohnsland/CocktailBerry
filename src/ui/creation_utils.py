@@ -19,7 +19,7 @@ class FontSize:
 
 
 class RowCounter:
-    def __init__(self, value=0):
+    def __init__(self, value: int = 0) -> None:
         self.value = value
 
 

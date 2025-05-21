@@ -115,7 +115,7 @@ class AddOnManager:
         """
         prepare_function = self._create_cocktail_preparation(w)
 
-        def run_in_background(addon, prepare_function):
+        def run_in_background(addon: AddonInterface, prepare_function: Callable[[Cocktail], tuple[bool, str]]):
             while True:
                 time.sleep(0.5)
                 try:

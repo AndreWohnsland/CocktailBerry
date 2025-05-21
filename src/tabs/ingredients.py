@@ -3,6 +3,10 @@
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
+from typing import TYPE_CHECKING
+
+from PyQt5.QtWidgets import QListWidget
+
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER, DatabaseTransactionError
 from src.display_controller import DP_CONTROLLER
@@ -10,9 +14,12 @@ from src.error_handler import logerror
 from src.models import Ingredient
 from src.tabs import bottles
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 
 @logerror
-def handle_enter_ingredient(w):
+def handle_enter_ingredient(w: MainScreen):
     """Insert or update the ingredient into the DB.
 
     If all values are given and its name is not already in the DB.
@@ -40,7 +47,7 @@ def handle_enter_ingredient(w):
     DP_CONTROLLER.say_ingredient_added_or_changed(ingredient.name, new_ingredient, ingredient.selected)
 
 
-def _add_new_ingredient(w, ing: Ingredient):
+def _add_new_ingredient(w: MainScreen, ing: Ingredient):
     """Add the ingredient into the database."""
     existing_ingredient = DB_COMMANDER.get_ingredient(ing.name)
     if existing_ingredient:
@@ -58,7 +65,7 @@ def _add_new_ingredient(w, ing: Ingredient):
     return True
 
 
-def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
+def _change_existing_ingredient(w: MainScreen, ingredient_list_widget: QListWidget, ing: Ingredient):
     """Change the existing ingredient."""
     if not ing.selected:
         DP_CONTROLLER.say_no_ingredient_selected()
@@ -106,7 +113,7 @@ def _change_existing_ingredient(w, ingredient_list_widget, ing: Ingredient):
     return True
 
 
-def load_ingredients(w):
+def load_ingredients(w: MainScreen):
     """Load all ingredient names into the ListWidget."""
     DP_CONTROLLER.clear_list_widget_ingredients(w)
     ingredients = DB_COMMANDER.get_all_ingredients()
@@ -115,7 +122,7 @@ def load_ingredients(w):
 
 
 @logerror
-def delete_ingredient(w):
+def delete_ingredient(w: MainScreen):
     """Delete an ingredient out of the DB if its not needed in any recipe."""
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_input.selected_ingredient)
@@ -145,7 +152,7 @@ def delete_ingredient(w):
 
 
 @logerror
-def display_selected_ingredient(w):
+def display_selected_ingredient(w: MainScreen):
     """Search the DB entry for the ingredient and displays them."""
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     selected_ingredient = DP_CONTROLLER.get_list_widget_selection(ingredient_input.selected_ingredient)
@@ -177,7 +184,7 @@ def display_selected_ingredient(w):
 
 
 @logerror
-def clear_ingredient_information(w):
+def clear_ingredient_information(w: MainScreen):
     """Clear all entries in the ingredient windows."""
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     DP_CONTROLLER.clean_multiple_lineedit(

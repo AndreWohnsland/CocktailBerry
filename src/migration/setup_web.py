@@ -108,7 +108,7 @@ def download_latest_web_client():
     tmp_path.unlink()
 
 
-def setup_nginx(use_ssl):
+def setup_nginx(use_ssl: bool):
     """Install and configures Nginx to serve a React app."""
     config_path = Path("/etc/nginx/sites-available/cocktailberry_web_client")
     config_path_enabled = Path("/etc/nginx/sites-enabled/cocktailberry_web_client")

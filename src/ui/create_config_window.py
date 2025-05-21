@@ -1,17 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Literal, Union
+from typing import TYPE_CHECKING, Any, Callable, Literal, Union
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QBoxLayout,
-    QCheckBox,
-    QComboBox,
-    QHBoxLayout,
-    QMainWindow,
-    QPushButton,
-    QVBoxLayout,
-)
+from PyQt5.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import (
@@ -43,6 +35,9 @@ from src.ui_elements import Ui_ConfigWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.utils import restart_program
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 CONFIG_TYPES_POSSIBLE = Union[str, int, float, bool, list[Any], dict[str, Any]]
 # Those are only for the v2 program
 CONFIG_TO_SKIP = (
@@ -56,12 +51,12 @@ CONFIG_TO_SKIP = (
 
 
 class ConfigWindow(QMainWindow, Ui_ConfigWindow):
-    def __init__(self, parent):
+    def __init__(self, parent: None | MainScreen) -> None:
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
-        self.config_objects = {}
+        self.config_objects: dict[str, Callable[[], CONFIG_TYPES_POSSIBLE]] = {}
         self.color_window: ColorWindow | None = None
         self.button_custom_color: QPushButton | None = None
         UI_LANGUAGE.adjust_config_window(self)
@@ -187,7 +182,12 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addWidget(config_input)
         return lambda: float(config_input.text() or 0.0)
 
-    def _build_bool_field(self, layout: QBoxLayout, current_value: bool, displayed_text="on") -> Callable[[], bool]:
+    def _build_bool_field(
+        self,
+        layout: QBoxLayout,
+        current_value: bool,
+        displayed_text: str = "on",
+    ) -> Callable[[], bool]:
         """Build a field for bool input with a checkbox."""
         config_input = QCheckBox(displayed_text)
         adjust_font(config_input, MEDIUM_FONT)
@@ -230,7 +230,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
 
     def _add_ui_element_to_list(
         self,
-        initial_value,
+        initial_value: CONFIG_TYPES_POSSIBLE,
         getter_fn_list: list,
         config_name: str,
         container: QBoxLayout,
@@ -257,7 +257,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         container.addLayout(h_container)
         getter_fn_list.append(getter_fn)
 
-    def _remove_ui_element_from_list(self, element: QHBoxLayout, getter_fn, getter_fn_list: list[Callable]):
+    def _remove_ui_element_from_list(self, element: QHBoxLayout, getter_fn: Callable, getter_fn_list: list[Callable]):
         """Remove the referenced element from the ui."""
 
         def recursive_delete(widget: QBoxLayout):
@@ -300,7 +300,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addLayout(h_container)
         return lambda: {key: getter() for key, getter in getter_fn_dict.items()}
 
-    def _build_fallback_field(self, layout: QBoxLayout, current_value) -> Callable[[], str]:
+    def _build_fallback_field(self, layout: QBoxLayout, current_value: CONFIG_TYPES_POSSIBLE) -> Callable[[], str]:
         """Build the default input field for string input."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)

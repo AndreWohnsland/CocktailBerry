@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from PyQt5.QtCore import QDate, QTime
 from PyQt5.QtWidgets import QMainWindow
 
@@ -6,11 +8,14 @@ from src.display_controller import DP_CONTROLLER
 from src.ui_elements.datepicker import Ui_Datepicker
 from src.utils import set_system_datetime
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 
 class DatePicker(QMainWindow, Ui_Datepicker):
     """Creates the Window for the user to change date and time."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: MainScreen) -> None:
         """Set up the datepicker window."""
         super().__init__()
         self.setupUi(self)

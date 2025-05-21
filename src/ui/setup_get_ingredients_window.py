@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class GetIngredientWindow(QMainWindow, Ui_addingredient):
     """Create a Dialog to chose an additional ingredient and the amount to spend this ingredient."""
 
-    def __init__(self, parent: MainScreen):
+    def __init__(self, parent: MainScreen) -> None:
         """Init. Connects all the buttons and get values for the Combobox."""
         super().__init__()
         self.setupUi(self)

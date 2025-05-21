@@ -4,6 +4,7 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
 from collections import Counter
+from typing import TYPE_CHECKING
 
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
@@ -11,8 +12,11 @@ from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.models import Cocktail, Ingredient
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
 
-def fill_recipe_box_with_ingredients(w):
+
+def fill_recipe_box_with_ingredients(w: MainScreen):
     """Assign all ingredients to the Comboboxes in the recipe tab."""
     comboboxes_recipe = DP_CONTROLLER.get_comboboxes_recipes(w)
     ingredient_list = [x.name for x in DB_COMMANDER.get_all_ingredients()]
@@ -20,7 +24,7 @@ def fill_recipe_box_with_ingredients(w):
 
 
 @logerror
-def handle_enter_recipe(w):
+def handle_enter_recipe(w: MainScreen):
     """Enters or updates the recipe into the db."""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     # destructure each element from recipe input to the variables
@@ -162,7 +166,7 @@ def _enter_or_update_recipe(
     )
 
 
-def load_recipe_view_names(w):
+def load_recipe_view_names(w: MainScreen):
     """Update the ListWidget in the recipe Tab."""
     cocktails = DB_COMMANDER.get_all_cocktails()
     recipe_list = [x.name for x in cocktails]
@@ -171,7 +175,7 @@ def load_recipe_view_names(w):
 
 
 @logerror
-def load_selected_recipe_data(w):
+def load_selected_recipe_data(w: MainScreen):
     """Load all Data from the recipe DB into the according Fields in the recipe tab."""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name = recipe_input.selected_recipe
@@ -187,7 +191,7 @@ def load_selected_recipe_data(w):
 
 
 @logerror
-def delete_recipe(w):
+def delete_recipe(w: MainScreen):
     """Delete the selected recipe, requires the Password."""
     recipe_input = DP_CONTROLLER.get_recipe_field_data(w)
     recipe_name = recipe_input.selected_recipe
@@ -207,7 +211,7 @@ def delete_recipe(w):
 
 
 @logerror
-def enable_all_recipes(w):
+def enable_all_recipes(w: MainScreen):
     """Set all recipes to enabled."""
     if not DP_CONTROLLER.ask_enable_all_recipes():
         return

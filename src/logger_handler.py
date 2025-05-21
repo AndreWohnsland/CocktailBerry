@@ -18,7 +18,7 @@ class LoggerHandler:
 
     log_folder = LOG_FOLDER
 
-    def __init__(self, logger_name: str, filename: str = LogFiles.PRODUCTION):
+    def __init__(self, logger_name: str, filename: str = LogFiles.PRODUCTION) -> None:
         self.logger_name = logger_name
         self.path = LoggerHandler.log_folder / f"{filename}.log"
 

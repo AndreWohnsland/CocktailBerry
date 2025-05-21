@@ -293,7 +293,7 @@ class ConfigManager:
             return
         config_setting.validate(configname, configvalue)
 
-    def choose_bottle_number(self, get_all=False, ignore_limits=False):
+    def choose_bottle_number(self, get_all: bool = False, ignore_limits: bool = False):
         """Select the number of Bottles, limits by max supported count."""
         # for new app (no limits), this exists for legacy reason (QT)
         if ignore_limits:
@@ -397,7 +397,7 @@ class StartupIssue:
 class Shared:
     """Shared global variables which may dynamically change and are needed on different spaces."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.old_ingredient: list[str] = []
         self.selected_team = "No Team"
         self.team_member_name: str | None = None

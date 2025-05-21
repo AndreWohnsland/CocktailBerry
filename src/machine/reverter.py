@@ -3,7 +3,7 @@ from src.utils import time_print
 
 
 class Reverter:
-    def __init__(self, pin_controller: PinController, use_reversion: bool, revert_pin: int):
+    def __init__(self, pin_controller: PinController, use_reversion: bool, revert_pin: int) -> None:
         self._pin_controller = pin_controller
         # only init if reversion is enabled, otherwise it may be an invalid pin
         self.use_reversion = use_reversion

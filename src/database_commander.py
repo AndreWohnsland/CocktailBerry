@@ -41,7 +41,7 @@ class DatabaseTransactionError(Exception):
     The reason will be contained in the message with the corresponding translation key.
     """
 
-    def __init__(self, translation_key: allowed_keys, language_args: dict | None = None):
+    def __init__(self, translation_key: allowed_keys, language_args: dict | None = None) -> None:
         DH = DialogHandler()
         self.language_args = language_args if language_args is not None else {}
         messsage = DH.get_translation(translation_key, **self.language_args)
@@ -52,14 +52,14 @@ class DatabaseTransactionError(Exception):
 class ElementNotFoundError(DatabaseTransactionError):
     """Informs that the element was not found in the database."""
 
-    def __init__(self, element_name: str):
+    def __init__(self, element_name: str) -> None:
         super().__init__("element_not_found", {"element_name": element_name})
 
 
 class ElementAlreadyExistsError(DatabaseTransactionError):
     """Informs that the element already is in the db."""
 
-    def __init__(self, element_name: str):
+    def __init__(self, element_name: str) -> None:
         super().__init__("element_already_exists", {"element_name": element_name})
 
 
@@ -69,7 +69,7 @@ class DatabaseCommander:
     database_path = DATABASE_PATH
     database_path_default = DEFAULT_DATABASE_PATH
 
-    def __init__(self, use_default=False, db_url: str | None = None):
+    def __init__(self, use_default: bool = False, db_url: str | None = None) -> None:
         if not self.database_path.exists():
             time_print("Copying default database for maker usage")
             self.copy_default_database()

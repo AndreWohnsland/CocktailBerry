@@ -41,7 +41,7 @@ class _Worker(QObject):
 
     done = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: None | QObject = None) -> None:
         super().__init__(parent)
 
     def run(self):
@@ -52,7 +52,7 @@ class _Worker(QObject):
 class OptionWindow(QMainWindow, Ui_Optionwindow):
     """Class for the Option selection window."""
 
-    def __init__(self, parent: MainScreen):
+    def __init__(self, parent: MainScreen) -> None:
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)

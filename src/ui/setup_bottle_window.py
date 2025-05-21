@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from PyQt5.QtWidgets import QLabel, QMainWindow
 
 from src import MAX_SUPPORTED_BOTTLES
@@ -8,11 +10,14 @@ from src.display_controller import DP_CONTROLLER
 from src.tabs.bottles import set_fill_level_bars
 from src.ui_elements.bottlewindow import Ui_Bottlewindow
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 
 class BottleWindow(QMainWindow, Ui_Bottlewindow):
     """Creates the Window to change to levels of the bottles."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: MainScreen) -> None:
         """Init. Connects all the buttons, gets the names from Mainwindow/DB."""
         super().__init__()
         self.setupUi(self)
@@ -25,8 +30,8 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         # get all the DB values and assign the necessary to the level labels
         # note: since there can be blank bottles (id=0 so no match)
         # # this needs to be caught as well (no selection from D
-        self.id_list = []
-        self.max_volume = []
+        self.id_list: list[int] = []
+        self.max_volume: list[int] = []
         self.assign_bottle_data()
         # creates lists of the objects and assigns functions later through a loop
         number = cfg.choose_bottle_number()

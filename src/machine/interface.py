@@ -33,13 +33,7 @@ class PinController(Protocol):  # type: ignore
 
 
 class GPIOController:
-    def __init__(
-        self,
-        high: Any,
-        low: Any,
-        inverted: bool,
-        pin: int
-    ):
+    def __init__(self, high: Any, low: Any, inverted: bool, pin: int) -> None:
         self.high = high
         self.low = low
         self.inverted = inverted

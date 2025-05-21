@@ -10,7 +10,7 @@ from src.ui_elements import Ui_ResourceWindow
 class ResourceWindow(QMainWindow, Ui_ResourceWindow):
     """Creates the resource Window."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)

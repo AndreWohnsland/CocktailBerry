@@ -161,7 +161,7 @@ class Migrator:
 
         self._check_local_version_data()
 
-    def _backup_config_file(self, suffix):
+    def _backup_config_file(self, suffix: str):
         """Save the config file at ~/cb_backup/custom_config_pre_{suffix}.yaml."""
         if not CUSTOM_CONFIG_FILE.exists():
             return
@@ -269,7 +269,7 @@ def _update_config_value_type(config_name: str, new_type: type, default_value: A
         yaml.dump(configuration, stream, default_flow_style=False)
 
 
-def _get_local_config(config_name) -> dict[str, Any] | None:
+def _get_local_config(config_name: str) -> dict[str, Any] | None:
     if not CUSTOM_CONFIG_FILE.exists():
         _logger.info(f"No local config detected for {config_name}, skipping conversion")
         return None
@@ -411,6 +411,6 @@ class _Version:
 class CouldNotMigrateException(Exception):
     """Raised when there was an error with the migration."""
 
-    def __init__(self, version):
+    def __init__(self, version: str) -> None:
         self.message = f"Error while migration to version: {version}"
         super().__init__(self.message)

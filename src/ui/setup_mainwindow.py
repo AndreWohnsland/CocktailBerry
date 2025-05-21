@@ -5,7 +5,7 @@ Also defines the Mode for controls.
 
 # pylint: disable=unnecessary-lambda
 import platform
-from typing import Optional
+from typing import Any, Optional
 
 from PyQt5.QtCore import QEventLoop
 from PyQt5.QtGui import QIntValidator
@@ -43,7 +43,7 @@ from src.updater import Updater
 class MainScreen(QMainWindow, Ui_MainWindow):
     """Creates the Mainscreen."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Init the main window. Many of the button and List connects are in pass_setup."""
         super().__init__()
         self.setupUi(self)
@@ -123,7 +123,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         # Asks the user if he want to adjust the time
         if DP_CONTROLLER.ask_to_adjust_time():
-            self.datepicker = DatePicker()
+            self.datepicker = DatePicker(self)
 
     def _deprecation_check(self):
         """Check if to display the deprecation warning for newer python version install."""
@@ -153,9 +153,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def open_numpad(
         self,
         le_to_write: QLineEdit,
-        x_pos=0,
-        y_pos=0,
-        header_text="Password",
+        x_pos: int = 0,
+        y_pos: int = 0,
+        header_text: str = "Password",
         overwrite_number: bool = False,
     ):
         """Open up the NumpadWidget connected to the lineedit offset from the left upper side."""
@@ -163,7 +163,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             self, le_to_write, x_pos, y_pos, header_text, overwrite_number=overwrite_number
         )
 
-    def open_keyboard(self, le_to_write, max_char_len=30):
+    def open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 30):
         """Open up the keyboard connected to the lineedit."""
         self.keyboard_window = KeyboardWidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
 
@@ -189,7 +189,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.team_window = TeamScreen(self)
         loop = QEventLoop()
 
-        def wait_for_selection(_):
+        def wait_for_selection(_: Any):
             """Just wait for the selection to be done."""
             loop.quit()
 
@@ -326,7 +326,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
             combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
 
-    def handle_tab_bar_clicked(self, index):
+    def handle_tab_bar_clicked(self, index: int):
         """Protects tabs other than maker tab with a password."""
         old_index = self.previous_tab_index
         unprotected_tabs = [0, 1] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 2) if not x]

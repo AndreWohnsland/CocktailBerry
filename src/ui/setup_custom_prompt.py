@@ -11,7 +11,7 @@ class CustomPrompt(QMainWindow, Ui_CustomPrompt):
 
     user_okay = pyqtSignal(bool)
 
-    def __init__(self, information):
+    def __init__(self, information: str) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)

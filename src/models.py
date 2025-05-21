@@ -49,11 +49,11 @@ class Ingredient:
     recipe_order: int = 2
     unit: str = "ml"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # limit fill level to [0, bottle_volume]
         self.fill_level = max(0, min(self.fill_level, self.bottle_volume))
 
-    def __lt__(self, other):
+    def __lt__(self, other: "Ingredient") -> bool:
         """Sort machine first, then highest amount and longest name."""
         self_compare = (int(self.bottle is None), -self.amount, -len(self.name))
         other_compare = (int(other.bottle is None), -other.amount, -len(other.name))
@@ -76,7 +76,7 @@ class Cocktail:
     adjusted_amount: int = 0
     adjusted_ingredients: list[Ingredient] = field(default_factory=list, init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.ingredients.sort()
         # shallow copy will keep same Ingredients as references
         self.adjusted_ingredients = copy.deepcopy(self.ingredients)
@@ -212,7 +212,7 @@ class AddonData:
     installed: bool = False
     official: bool = True
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.file_name:
             return
         self.file_name = self.url.rsplit("/", maxsplit=1)[-1]

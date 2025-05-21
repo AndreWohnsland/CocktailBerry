@@ -90,7 +90,7 @@ class GenericController(PinController):
 
 
 class GenericGPIO(GPIOController):
-    def __init__(self, inverted: bool, pin: int):
+    def __init__(self, inverted: bool, pin: int) -> None:
         low = False
         high = True
         super().__init__(high, low, inverted, pin)

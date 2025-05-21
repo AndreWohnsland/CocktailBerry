@@ -27,7 +27,7 @@ class _RecipeInformation:
         return f"{self.name}: {self.ingredients}"
 
 
-def importer(file_path: Path, factor: float = 1.0, no_unit=False, sep="\n"):
+def importer(file_path: Path, factor: float = 1.0, no_unit: bool = False, sep: str = "\n"):
     """Import the recipe data from the file into the database."""
     _check_file(file_path)
     print(f"Loading data from: {file_path.absolute()}\nUsing factor: {factor}, data got no unit: {no_unit}\n")
@@ -46,7 +46,7 @@ def _check_file(file_path: Path):
         _abort("ERROR: The path does not lead to a file!")
 
 
-def _parse_recipe_text(recipe_text: str, factor: float, no_unit=False, sep="\n"):
+def _parse_recipe_text(recipe_text: str, factor: float, no_unit: bool = False, sep: str = "\n"):
     """Extract the recipe information out of the given text."""
     # split by newline, remove empty lines
     line_list = [x.strip() for x in recipe_text.split(sep) if x.strip()]

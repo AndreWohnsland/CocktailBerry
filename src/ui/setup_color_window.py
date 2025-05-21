@@ -15,6 +15,7 @@ from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.migration.migrator import CouldNotMigrateException, Migrator
 from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_font, create_spacer, setup_worker_thread
 from src.ui.icons import parse_colors
+from src.ui.setup_mainwindow import MainScreen
 from src.ui_elements import Ui_ColorWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.utils import restart_program
@@ -34,7 +35,7 @@ class _Worker(QObject):
 
     done = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: None | QObject = None) -> None:
         super().__init__(parent)
 
     def run(self):
@@ -47,7 +48,7 @@ class _Worker(QObject):
 class ColorWindow(QMainWindow, Ui_ColorWindow):
     """Creates the log window Widget."""
 
-    def __init__(self, parent):
+    def __init__(self, parent: None | MainScreen) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)

@@ -1,7 +1,7 @@
 import json
 import os
 from enum import Enum
-from typing import Optional
+from typing import Any, Optional
 
 import requests
 
@@ -23,7 +23,7 @@ logger = LoggerHandler("microservice", LogFiles.SERVICE)
 class ServiceHandler:
     """Class to handle all calls to the microservice within the docker."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.base_url = cfg.MICROSERVICE_BASE_URL
         self.headers = {"content-type": "application/json"}
@@ -45,7 +45,7 @@ class ServiceHandler:
         endpoint = self._decide_debug_endpoint(f"{self.base_url}/hookhandler/cocktail")
         return self._try_to_send(endpoint, PostType.COCKTAIL, payload=payload)
 
-    def send_export_data(self, file_name: str, binary_file, is_disabled=True) -> dict:
+    def send_export_data(self, file_name: str, binary_file: Any, is_disabled: bool = True) -> dict:
         """Post the given file to the microservice handling internet traffic to send data to external source."""
         if not cfg.MICROSERVICE_ACTIVE:
             return _service_disabled()

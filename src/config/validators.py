@@ -3,7 +3,7 @@ from __future__ import annotations
 from src.config.errors import ConfigError
 
 
-def validate_max_length(configname: str, data: str, max_len=30):
+def validate_max_length(configname: str, data: str, max_len: int = 30):
     """Validate if data exceeds maximum length."""
     if len(data) <= max_len:
         return

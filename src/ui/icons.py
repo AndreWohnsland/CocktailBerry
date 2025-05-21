@@ -77,7 +77,7 @@ class ColorInformation:
     progressbg: str
     tabborder: str
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: str) -> str:
         return getattr(self, item)
 
 
@@ -108,7 +108,7 @@ def parse_colors(theme: SupportedThemesType | None = None) -> ColorInformation:
 
 
 class IconSetter:
-    def __init__(self):
+    def __init__(self) -> None:
         self.color = parse_colors()
         self.presets = PresetIcon()
         self._spinner: WaitingSpinner | None = None
@@ -185,7 +185,7 @@ class IconSetter:
             options=[icon_option, {**icon_option, "scale_factor": 1.3}],
         )
 
-    def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary=False):
+    def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary: bool = False):
         """Set a spinner button to the icon."""
         color = self.color.primary if primary else self.color.background
         if icon == "spin":

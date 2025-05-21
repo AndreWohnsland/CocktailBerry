@@ -6,7 +6,7 @@ from __future__ import annotations
 import time
 from pathlib import Path
 from threading import Event, Thread
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import yaml
 
@@ -151,21 +151,21 @@ class DialogHandler:
         with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, str]] = yaml.safe_load(stream)["dialog"]
 
-    def get_translation(self, dialog_key: allowed_keys, **kwargs) -> str:
+    def get_translation(self, dialog_key: allowed_keys, **kwargs: Any) -> str:
         try:
             return self._choose_language(dialog_key, **kwargs)
         except KeyError:
             _logger.error(f"No translation for {dialog_key} found")
             return "ERROR: NO TRANSLATION FOUND"
 
-    def _choose_language(self, dialog_name: str, **kwargs) -> str:
+    def _choose_language(self, dialog_name: str, **kwargs: Any) -> str:
         """Choose either the given language if exists, or english if not piping additional info into template."""
         language = cfg.UI_LANGUAGE
         element = self.dialogs[dialog_name]
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
-    def standard_box(self, message: str, title: str = "", use_ok=False, close_time: int | None = None):
+    def standard_box(self, message: str, title: str = "", use_ok: bool = False, close_time: int | None = None):
         """Display the messagebox for the Maker. Uses a Custom QDialog with Close-Button."""
         from src.ui.setup_custom_dialog import CustomDialog
 
@@ -254,7 +254,13 @@ class DialogHandler:
 
         return self.password_outcome
 
-    def __output_language_dialog(self, dialog_name: str, use_ok=False, close_time: int | None = None, **kwargs):
+    def __output_language_dialog(
+        self,
+        dialog_name: str,
+        use_ok: bool = False,
+        close_time: int | None = None,
+        **kwargs: Any,
+    ):
         msg = self._choose_language(dialog_name, **kwargs)
         self.standard_box(msg, use_ok=use_ok, close_time=close_time)
 
@@ -535,7 +541,7 @@ class DialogHandler:
     # Methods for prompting ####
     ############################
 
-    def ask_to_update(self, release_information):
+    def ask_to_update(self, release_information: str):
         """Asks the user if he wants to get the latest update."""
         message = self._choose_language("update_available")
         message = f"{message}\n\n{release_information}"
@@ -627,7 +633,7 @@ class UiLanguage:
         with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, dict[str, str]]] = yaml.safe_load(stream)["ui"]
 
-    def _choose_language(self, element_name: str, ui_element_name="generics", **kwargs) -> str:
+    def _choose_language(self, element_name: str, ui_element_name: str = "generics", **kwargs: Any) -> str:
         """Choose either the given language if exists, or english if not piping additional info into template."""
         language = cfg.UI_LANGUAGE
         ui_element = self.dialogs[ui_element_name]
@@ -651,7 +657,7 @@ class UiLanguage:
         """Return the add text."""
         return self._choose_language("change_button")
 
-    def get_translation(self, name: str, ui_element_name: str = "generics", **kwargs):
+    def get_translation(self, name: str, ui_element_name: str = "generics", **kwargs: Any):
         """Get the translation by given key and window."""
         try:
             return self._choose_language(name, ui_element_name, **kwargs)

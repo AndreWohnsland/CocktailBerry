@@ -11,7 +11,7 @@ _DEFAULT_SELECTED = "production_logs.log"
 class LogWindow(QMainWindow, Ui_LogWindow):
     """Creates the log window Widget."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)

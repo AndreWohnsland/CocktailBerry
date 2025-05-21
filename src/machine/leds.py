@@ -81,7 +81,7 @@ class _normalLED(_LED):
         self._pin_controller = _pin_controller
         self._pin_controller.initialize_pin_list([self.pin])
 
-    def __del__(self):
+    def __del__(self) -> None:
         self._pin_controller.cleanup_pin_list([self.pin])
 
     def turn_on(self):
@@ -167,7 +167,7 @@ class _controllableLED(_LED):
                 self.strip.setPixelColor(iter_pos, Color(0, 0, 0))
         self.strip.show()
 
-    def turn_on(self, color=None):
+    def turn_on(self, color: None | Color = None):
         """Turn all leds on to given color."""
         if color is None:
             color = Color(255, 255, 255)

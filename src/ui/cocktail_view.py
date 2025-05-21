@@ -84,7 +84,7 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen):
 
 
 class CocktailView(QWidget):
-    def __init__(self, mainscreen: MainScreen):
+    def __init__(self, mainscreen: MainScreen) -> None:
         super().__init__()
         self.scroll_area = TouchScrollArea()  # Create a QScrollArea
         self.scroll_area.setWidgetResizable(True)  # Make it resizable

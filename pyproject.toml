@@ -81,6 +81,7 @@ extend-safe-fixes = [
   ]
 per-file-ignores = { "runme.py" = ["E402"], "migrator.py" = ["E402"], "api.py" = ["E402"] }
 select = [
+  "ANN", # Type annotations
   "C", # Convention
   "D", # pydocstyle 
   "E", # pycodestyle
@@ -103,6 +104,10 @@ ignore = [
   "D107", # Missing docstring in __init__
   "D203", # 1 blank line required before class docstring
   "D213", # Multi-line docstring summary should start at the second line
+  # currently, ignore return type annotations
+  "ANN201",
+  "ANN202",
+  "ANN401",
 ]
 
 [tool.mypy]

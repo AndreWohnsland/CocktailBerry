@@ -14,7 +14,7 @@ from src.ui_elements import Ui_PictureWindow
 class PictureWindow(QMainWindow, Ui_PictureWindow):
     """Class for the Progress screen during Cocktail making."""
 
-    def __init__(self, cocktail: Cocktail, refresh_cocktail_view: Callable):
+    def __init__(self, cocktail: Cocktail, refresh_cocktail_view: Callable) -> None:
         super().__init__()
         self.setupUi(self)
         self.cocktail = cocktail

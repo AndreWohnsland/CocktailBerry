@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHeaderView, QMainWindow, QTableWidgetItem
 
@@ -10,13 +12,16 @@ from src.programs.addons import ADDONS
 from src.ui_elements import Ui_AddonManager
 from src.utils import restart_program
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 _logger = LoggerHandler("AddonManager")
 
 
 class AddonManager(QMainWindow, Ui_AddonManager):
     """Creates A window to display addon GUI for the user."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: MainScreen) -> None:
         """Initialize the object."""
         super().__init__()
         self.setupUi(self)

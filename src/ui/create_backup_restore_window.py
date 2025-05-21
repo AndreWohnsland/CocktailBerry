@@ -1,5 +1,6 @@
 import shutil
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -20,9 +21,12 @@ from src.migration.backup import FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.ui.creation_utils import HEADER_FONT, LARGE_FONT, adjust_font, create_button, create_label, create_spacer
 from src.utils import restart_program
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 
 class BackupRestoreWindow(QMainWindow):
-    def __init__(self, parent, backup_path: Path):
+    def __init__(self, parent: MainScreen, backup_path: Path) -> None:
         super().__init__()
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent

@@ -13,7 +13,7 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
 
     password_success = pyqtSignal(bool)  # Signal to communicate data
 
-    def __init__(self, right_password: int, header_type: Literal["master", "maker"] = "master"):
+    def __init__(self, right_password: int, header_type: Literal["master", "maker"] = "master") -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)

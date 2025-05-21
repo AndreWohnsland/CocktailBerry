@@ -12,7 +12,13 @@ from src.ui_elements.customdialog import Ui_CustomDialog
 class CustomDialog(QMainWindow, Ui_CustomDialog):
     """Class for the Team selection Screen."""
 
-    def __init__(self, message: str, title: str = "Information", use_ok=False, close_callback: Callable | None = None):
+    def __init__(
+        self,
+        message: str,
+        title: str = "Information",
+        use_ok: bool = False,
+        close_callback: Callable | None = None,
+    ) -> None:
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)

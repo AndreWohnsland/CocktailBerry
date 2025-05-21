@@ -1,17 +1,20 @@
-from __future__ import annotations
-
 import string
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QLineEdit, QMainWindow
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.keyboard import Ui_Keyboard
 
+if TYPE_CHECKING:
+    from src.ui.create_config_window import ConfigWindow
+    from src.ui.setup_mainwindow import MainScreen
+
 
 class KeyboardWidget(QMainWindow, Ui_Keyboard):
     """Creates a keyboard where the user can enter names or similar strings to Lineedits."""
 
-    def __init__(self, parent, le_to_write: QLineEdit, max_char_len: int = 30):
+    def __init__(self, parent: MainScreen | ConfigWindow, le_to_write: QLineEdit, max_char_len: int = 30) -> None:
         super().__init__()
         self.setupUi(self)
         self.mainscreen = parent

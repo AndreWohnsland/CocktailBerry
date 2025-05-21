@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from PyQt5.QtWidgets import QListWidget, QMainWindow
 
 from src.database_commander import DB_COMMANDER
@@ -5,11 +7,14 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.available import Ui_available
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 
 class AvailableWindow(QMainWindow, Ui_available):
     """Opens a window where the user can select all available ingredients."""
 
-    def __init__(self, parent):
+    def __init__(self, parent: MainScreen) -> None:
         super().__init__()
         self.setupUi(self)
         self.mainscreen = parent

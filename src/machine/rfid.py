@@ -59,7 +59,7 @@ class RFIDReader:
             return _BasicMFRC522()
         return None
 
-    def __new__(cls):
+    def __new__(cls) -> "RFIDReader":
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
         return cls._instance

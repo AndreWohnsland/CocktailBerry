@@ -15,7 +15,7 @@ logger = LoggerHandler("calibration_module")
 
 
 class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
-    def __init__(self, standalone: bool):
+    def __init__(self, standalone: bool) -> None:
         """Init the calibration Screen."""
         super().__init__()
         self.setupUi(self)
@@ -44,7 +44,7 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
 
 
 @logerror
-def run_calibration(standalone=True):
+def run_calibration(standalone: bool = True):
     """Execute the calibration screen."""
     if standalone:
         app = QApplication(sys.argv)

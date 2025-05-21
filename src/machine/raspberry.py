@@ -186,7 +186,7 @@ class Rpi5Controller(PinController):
 
 
 class RaspberryGPIO(GPIOController):
-    def __init__(self, inverted: bool, pin: int):
+    def __init__(self, inverted: bool, pin: int) -> None:
         low = GPIO.LOW if not DEV else 0
         high = GPIO.HIGH if not DEV else 1
         super().__init__(high, low, inverted, pin)
