@@ -26,11 +26,13 @@ async def get_ingredients(machine: bool = True, hand: bool = True) -> list[Ingre
     return [map_ingredient(i) for i in ingredients]
 
 
-# TODO: Check if a 404 is better than a None returned here
 @router.get("/{ingredient_id:int}", summary="Get ingredient by ID")
-async def get_ingredient(ingredient_id: int) -> Ingredient | None:
+async def get_ingredient(ingredient_id: int) -> Ingredient:
     DBC = DatabaseCommander()
     ingredient = DBC.get_ingredient(ingredient_id)
+    if ingredient is None:
+        message = DH.get_translation("element_not_found", element_name=f"Ingredient (id={ingredient_id})")
+        raise HTTPException(status_code=404, detail=message)
     return map_ingredient(ingredient)
 
 

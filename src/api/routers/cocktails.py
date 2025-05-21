@@ -1,5 +1,4 @@
 import asyncio
-from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, WebSocket
 
@@ -44,9 +43,12 @@ async def get_cocktails(only_possible: bool = True, max_hand_add: int = 3, scale
 
 
 @router.get("/{cocktail_id}", summary="Get a cocktail by ID")
-async def get_cocktail(cocktail_id: int) -> Optional[Cocktail]:
+async def get_cocktail(cocktail_id: int) -> Cocktail:
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
+    if cocktail is None:
+        message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
+        raise HTTPException(status_code=404, detail=message)
     return map_cocktail(cocktail)
 
 
