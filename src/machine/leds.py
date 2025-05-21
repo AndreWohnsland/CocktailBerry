@@ -84,26 +84,26 @@ class _normalLED(_LED):
     def __del__(self) -> None:
         self._pin_controller.cleanup_pin_list([self.pin])
 
-    def turn_on(self):
+    def turn_on(self) -> None:
         """Turn the LEDs on."""
         self._pin_controller.activate_pin_list([self.pin])
 
-    def turn_off(self):
+    def turn_off(self) -> None:
         """Turn the LEDs off."""
         self._pin_controller.close_pin_list([self.pin])
 
-    def preparation_start(self):
+    def preparation_start(self) -> None:
         """Turn the LED on during preparation."""
         self.turn_on()
 
-    def preparation_end(self, duration: int = 5):
+    def preparation_end(self, duration: int = 5) -> None:
         """Blink for some time after preparation."""
         self.turn_off()
         blinker = Thread(target=self._blink_for, kwargs={"duration": duration})
         blinker.daemon = True
         blinker.start()
 
-    def _blink_for(self, duration: int = 5, interval: float = 0.2):
+    def _blink_for(self, duration: int = 5, interval: float = 0.2) -> None:
         current_time = 0.0
         step = interval / 2
         while current_time <= duration:
@@ -133,7 +133,7 @@ class _controllableLED(_LED):
         self.strip.begin()
         self.is_preparing = False
 
-    def _preparation_thread(self):
+    def _preparation_thread(self) -> None:
         """Fill one by one with same random color, then repeats / overwrites old ones."""
         # Make the circle / dot approximate 2 rounds per second
         wait_ms = 500 / cfg.LED_COUNT
@@ -159,7 +159,7 @@ class _controllableLED(_LED):
                 self.strip.show()
                 time.sleep(wait_ms / 1000)
 
-    def turn_off(self):
+    def turn_off(self) -> None:
         """Turn all leds off."""
         for k in range(0, cfg.LED_NUMBER_RINGS):
             for i in range(0, cfg.LED_COUNT):
@@ -167,7 +167,7 @@ class _controllableLED(_LED):
                 self.strip.setPixelColor(iter_pos, Color(0, 0, 0))
         self.strip.show()
 
-    def turn_on(self, color: None | Color = None):
+    def turn_on(self, color: None | Color = None) -> None:
         """Turn all leds on to given color."""
         if color is None:
             color = Color(255, 255, 255)
@@ -177,7 +177,7 @@ class _controllableLED(_LED):
                 self.strip.setPixelColor(iter_pos, color)
         self.strip.show()
 
-    def _wheel(self, pos: int):
+    def _wheel(self, pos: int) -> Color:
         """Generate rainbow colors across 0-255 positions."""
         if pos < 85:
             return Color(pos * 3, 255 - pos * 3, 0)
@@ -187,7 +187,7 @@ class _controllableLED(_LED):
         pos -= 170
         return Color(0, pos * 3, 255 - pos * 3)
 
-    def _end_thread(self, duration: int = 5):
+    def _end_thread(self, duration: int = 5) -> None:
         """Rainbow animation fades across all pixels at once."""
         wait_ms = 10.0
         current_time = 0.0
@@ -211,14 +211,14 @@ class _controllableLED(_LED):
         else:
             self.turn_off()
 
-    def preparation_start(self):
+    def preparation_start(self) -> None:
         """Effect during preparation."""
         self.is_preparing = True
         cycler = Thread(target=self._preparation_thread)
         cycler.daemon = True
         cycler.start()
 
-    def preparation_end(self, duration: int = 5):
+    def preparation_end(self, duration: int = 5) -> None:
         """Plays an effect after the preparation for x seconds."""
         self.is_preparing = False
         rainbow = Thread(target=self._end_thread, kwargs={"duration": duration})

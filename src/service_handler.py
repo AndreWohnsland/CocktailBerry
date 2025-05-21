@@ -90,7 +90,7 @@ class ServiceHandler:
             self._log_connection_error(endpoint, PostType.TEAMDATA)
             return {}
 
-    def _decide_debug_endpoint(self, endpoint: str):
+    def _decide_debug_endpoint(self, endpoint: str) -> str:
         """Check if to use the given or the debug ep."""
         debug = os.getenv("DEBUG_MS", "False") == "True"
         if debug:
@@ -145,10 +145,10 @@ class ServiceHandler:
                 DBC.save_failed_teamdata(payload)
             return {}
 
-    def _log_connection_error(self, endpoint: str, post_type: PostType):
+    def _log_connection_error(self, endpoint: str, post_type: PostType) -> None:
         logger.log_event("ERROR", f"Could not connect to: '{endpoint}' for {post_type.value}")
 
-    def _check_failed_data(self):
+    def _check_failed_data(self) -> None:
         """Get one failed teamdata and sends it."""
         endpoint = f"{cfg.TEAM_API_URL}/cocktail"
         DBC = DatabaseCommander()
@@ -160,7 +160,7 @@ class ServiceHandler:
             self._try_to_send(endpoint, PostType.TEAMDATA, payload)
 
 
-def _service_disabled():
+def _service_disabled() -> dict:
     """Return that microservice is disabled."""
     return {
         "status": 503,
@@ -168,7 +168,7 @@ def _service_disabled():
     }
 
 
-def _team_disabled():
+def _team_disabled() -> dict:
     """Return that teams is disabled."""
     return {
         "status": 503,

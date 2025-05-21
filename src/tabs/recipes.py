@@ -127,7 +127,7 @@ def _check_enter_constraints(current_recipe_name: str, new_recipe_name: str, new
     return cocktail_current.id, False
 
 
-def _build_recipe_data(names: list[str], volumes: list[int], orders: list[int]):
+def _build_recipe_data(names: list[str], volumes: list[int], orders: list[int]) -> tuple[int, list[Ingredient], int]:
     """Get volume, ingredient objects and concentration of cocktails."""
     recipe_volume = sum(volumes)
     ingredient_data: list[Ingredient] = []

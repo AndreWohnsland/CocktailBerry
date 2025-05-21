@@ -112,9 +112,9 @@ class KeyboardWidget(QMainWindow, Ui_Keyboard):
         string_value = self.LName.text()
         self.LName.setText(string_value[:-1])
 
-    def _shift_control_clicked(self):
+    def _shift_control_clicked(self) -> None:
         """Select the right character set for the buttons."""
-        character_set = self.button_value_default_list
+        character_set: list[str | int] | list[str] = self.button_value_default_list
         # if shift is toggled, use the upper letters
         if self.shift.isChecked():
             character_set = self.button_value_shift_list
@@ -123,7 +123,7 @@ class KeyboardWidget(QMainWindow, Ui_Keyboard):
             character_set = self.button_value_control_list
         self._change_displayed_characters(character_set)
 
-    def _change_displayed_characters(self, character_list: list):
+    def _change_displayed_characters(self, character_list: list) -> None:
         """Change the displayed values on the buttons."""
         for obj, char in zip(self.input_button_list, character_list):
             # fix for & sign, it needs to be a && in pyqt

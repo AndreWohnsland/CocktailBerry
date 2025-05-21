@@ -69,7 +69,7 @@ class RFIDReader:
         rfid_thread = Thread(target=self._read_thread, args=(side_effect,), daemon=True)
         rfid_thread.start()
 
-    def _read_thread(self, side_effect: Callable[[str, str], None]):
+    def _read_thread(self, side_effect: Callable[[str, str], None]) -> None:
         """Execute the reading until reads a value or got canceled."""
         if self.rfid is None or self.is_active:
             return
@@ -94,7 +94,7 @@ class RFIDReader:
         )
         rfid_thread.start()
 
-    def _write_thread(self, text: str, side_effect: Optional[Callable[[str], None]] = None):
+    def _write_thread(self, text: str, side_effect: Optional[Callable[[str], None]] = None) -> None:
         """Execute the writing until successful or canceled."""
         if self.rfid is None or self.is_active:
             return

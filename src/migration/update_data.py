@@ -65,7 +65,7 @@ def remove_old_recipe_columns():
     _try_execute_db_commands(commands)
 
 
-def _try_execute_db_commands(commands: list[str]):
+def _try_execute_db_commands(commands: list[str]) -> None:
     """Try to execute each command, pass if OperationalError."""
     for command in commands:
         # this may occur if renaming already took place

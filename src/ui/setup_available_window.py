@@ -34,11 +34,11 @@ class AvailableWindow(QMainWindow, Ui_available):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _cancel_click(self):
+    def _cancel_click(self) -> None:
         """Close the window without any further action."""
         self.close()
 
-    def _accepted_clicked(self):
+    def _accepted_clicked(self) -> None:
         """Write the new availability into the DB."""
         DB_COMMANDER.delete_existing_handadd_ingredient()
         ingredient_names = [self.LWVorhanden.item(i).text() for i in range(self.LWVorhanden.count())]
@@ -49,7 +49,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         DP_CONTROLLER.update_maker_view(self.mainscreen)
         self.close()
 
-    def _change_ingredient(self, lw_to_add: QListWidget, lw_removed: QListWidget):
+    def _change_ingredient(self, lw_to_add: QListWidget, lw_removed: QListWidget) -> None:
         if not lw_removed.selectedItems():
             return
 

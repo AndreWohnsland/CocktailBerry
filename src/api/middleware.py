@@ -27,7 +27,7 @@ def master_protected_dependency(master_password: Optional[str] = Security(master
 
 
 def maker_protected(tab: Literal[0, 1, 2] = 1):
-    def dependency(maker_password: Optional[str] = Security(maker_password_header)):
+    def dependency(maker_password: Optional[str] = Security(maker_password_header)) -> None:
         if cfg.UI_MAKER_PASSWORD == 0:
             return
         if not cfg.UI_LOCKED_TABS[tab]:

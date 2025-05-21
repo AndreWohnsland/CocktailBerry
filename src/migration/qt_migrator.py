@@ -26,7 +26,7 @@ script_entry_path = Path.home() / "launcher.sh"
 web_entry_path = Path("/etc/xdg/autostart/cocktail_web.desktop")
 
 
-def _remove_web_entry():
+def _remove_web_entry() -> None:
     """Remove the web entry for the autostart."""
     if web_entry_path.exists():
         web_entry_path.unlink()

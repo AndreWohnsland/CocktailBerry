@@ -35,7 +35,7 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _set_up_addon_gui(self):
+    def _set_up_addon_gui(self) -> None:
         addon_name = self.selection_addon.currentText()
         # If there is no addon, there will be not text.
         if not addon_name:
@@ -57,10 +57,10 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
             label.setAlignment(Qt.AlignCenter)  # type: ignore
             self.addon_container.addWidget(label)
 
-    def _button_generator(self, label: str, func: Callable[[], None]):
+    def _button_generator(self, label: str, func: Callable[[], None]) -> None:
         button = create_button(label, self)
         button.clicked.connect(func)
         self.addon_container.addWidget(button)
 
-    def _open_manager(self):
+    def _open_manager(self) -> None:
         self.addon_manager = AddonManager(self.mainscreen)

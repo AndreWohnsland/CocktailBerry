@@ -141,7 +141,7 @@ class Cocktail:
         hand_id = {x.id for x in hand_adds}
         return not hand_id - set(hand_available)
 
-    def _is_normal_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int):
+    def _is_normal_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Check if the normal (alcoholic) cocktail is possible."""
         return self._has_all_ingredients(
             hand_available,
@@ -150,7 +150,7 @@ class Cocktail:
             self.handadds,
         )
 
-    def _is_virgin_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int):
+    def _is_virgin_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Check if the virgin cocktail is possible."""
         return self._has_all_ingredients(
             hand_available,

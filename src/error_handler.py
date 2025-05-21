@@ -20,7 +20,7 @@ def logerror(func: Callable):
     """
 
     @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             result = func(*args, **kwargs)
         # pylint: disable=broad-except

@@ -47,7 +47,7 @@ def handle_enter_ingredient(w: MainScreen):
     DP_CONTROLLER.say_ingredient_added_or_changed(ingredient.name, new_ingredient, ingredient.selected)
 
 
-def _add_new_ingredient(w: MainScreen, ing: Ingredient):
+def _add_new_ingredient(w: MainScreen, ing: Ingredient) -> bool:
     """Add the ingredient into the database."""
     existing_ingredient = DB_COMMANDER.get_ingredient(ing.name)
     if existing_ingredient:
@@ -65,7 +65,7 @@ def _add_new_ingredient(w: MainScreen, ing: Ingredient):
     return True
 
 
-def _change_existing_ingredient(w: MainScreen, ingredient_list_widget: QListWidget, ing: Ingredient):
+def _change_existing_ingredient(w: MainScreen, ingredient_list_widget: QListWidget, ing: Ingredient) -> bool:
     """Change the existing ingredient."""
     if not ing.selected:
         DP_CONTROLLER.say_no_ingredient_selected()

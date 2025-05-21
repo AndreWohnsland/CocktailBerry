@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 _logger = LoggerHandler("maker_module")
 
 
-def _build_comment_maker(cocktail: Cocktail):
+def _build_comment_maker(cocktail: Cocktail) -> str:
     """Build the additional comment for the completion message (if there are handadds)."""
     comment = ""
     hand_add = cocktail.handadds
@@ -45,7 +45,7 @@ def _build_comment_maker(cocktail: Cocktail):
     return comment
 
 
-def _log_cocktail(cocktail_volume: int, real_volume: int, cocktail_name: str, taken_time: float):
+def _log_cocktail(cocktail_volume: int, real_volume: int, cocktail_name: str, taken_time: float) -> None:
     """Enter a log entry for the made cocktail."""
     volume_string = f"{cocktail_volume} ml"
     cancel_log_addition = ""

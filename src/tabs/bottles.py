@@ -59,7 +59,7 @@ def calculate_combobox_bottles(w: MainScreen):
     DP_CONTROLLER.fill_multiple_combobox_individually(combobox_bottles, shown_ingredients, True)
 
 
-def __register_bottles(w: MainScreen):
+def __register_bottles(w: MainScreen) -> None:
     """Insert the selected bottle order into the DB."""
     # Checks where are entries and appends them to a list
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)

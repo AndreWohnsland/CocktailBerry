@@ -35,7 +35,7 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _write_rfid(self):
+    def _write_rfid(self) -> None:
         """Try to write the label to the RFID."""
         text = self.input_text.text()
         if len(text) < 3:
@@ -45,17 +45,17 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
         self.button_write.setDisabled(True)
         self.rfid.write_rfid(text, self._display_success)
 
-    def _close_window(self):
+    def _close_window(self) -> None:
         self.rfid.cancel_reading()
         self.close()
 
     def __del__(self) -> None:
         self.rfid.cancel_reading()
 
-    def _display_success(self, _: str):
+    def _display_success(self, _: str) -> None:
         self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("success"))
         self.button_write.setDisabled(False)
 
-    def _open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 30):
+    def _open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 30) -> None:
         """Open up the keyboard connected to the lineedit."""
         self.keyboard_window = KeyboardWidget(self.mainscreen, le_to_write=le_to_write, max_char_len=max_char_len)

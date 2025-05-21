@@ -44,7 +44,7 @@ class _Worker(QObject):
     def __init__(self, parent: None | QObject = None) -> None:
         super().__init__(parent)
 
-    def run(self):
+    def run(self) -> None:
         update_os()
         self.done.emit()
 
@@ -90,12 +90,12 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _open_config(self):
+    def _open_config(self) -> None:
         """Open the config window."""
         # self.close()
         self.config_window = ConfigWindow(self.mainscreen)
 
-    def _init_clean_machine(self):
+    def _init_clean_machine(self) -> None:
         """Start clean process if user confirms the action."""
         if not DP_CONTROLLER.ask_to_start_cleaning():
             return
@@ -107,7 +107,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         MACHINE.clean_pumps(self.mainscreen, revert_pumps)
         DP_CONTROLLER.say_done()
 
-    def _reboot_system(self):
+    def _reboot_system(self) -> None:
         """Reboots the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_reboot():
             return
@@ -117,7 +117,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         os.system("sudo reboot")
         self.close()
 
-    def _shutdown_system(self):
+    def _shutdown_system(self) -> None:
         """Shutdown the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_shutdown():
             return
@@ -127,20 +127,20 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         os.system("sudo shutdown now")
         self.close()
 
-    def _data_insights(self):
+    def _data_insights(self) -> None:
         """Open the data window."""
         self.data_window = DataWindow()
 
-    def _resource_insights(self):
+    def _resource_insights(self) -> None:
         """Open the resource window."""
         self.resource_window = ResourceWindow()
 
-    def _open_calibration(self):
+    def _open_calibration(self) -> None:
         """Open the calibration window."""
         self.close()
         run_calibration(standalone=False)
 
-    def _create_backup(self):
+    def _create_backup(self) -> None:
         """Prompt the user for a folder path to save the backup to.
 
         Saves the config, custom database and version to the location.
@@ -168,7 +168,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
-    def _upload_backup(self):
+    def _upload_backup(self) -> None:
         """Open the backup restore window."""
         location = DP_CONTROLLER.ask_for_backup_location()
         if not location:
@@ -180,32 +180,32 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
                 return
         self.backup_restore_window = BackupRestoreWindow(self.mainscreen, location)
 
-    def _show_logs(self):
+    def _show_logs(self) -> None:
         """Open the logs window."""
         # self.close()
         self.log_window = LogWindow()
 
-    def _open_rfid_writer(self):
+    def _open_rfid_writer(self) -> None:
         """Open the rfid writer window."""
         self.close()
         self.rfid_writer_window = RFIDWriterWindow(self.mainscreen)
 
-    def _open_wifi_window(self):
+    def _open_wifi_window(self) -> None:
         """Open a window to configure wifi."""
         # self.close()
         self.wifi_window = WiFiWindow(self.mainscreen)
 
-    def _open_addon_window(self):
+    def _open_addon_window(self) -> None:
         """Open a window to configure wifi."""
         # self.close()
         self.addon_window = AddonWindow(self.mainscreen)
 
-    def _check_internet_connection(self):
+    def _check_internet_connection(self) -> None:
         """Check if there is a active internet connection."""
         is_connected = has_connection()
         DP_CONTROLLER.say_internet_connection_status(is_connected)
 
-    def _update_system(self):
+    def _update_system(self) -> None:
         """Make a system update and upgrade."""
         if not DP_CONTROLLER.ask_to_update_system():
             return
@@ -217,7 +217,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             self._worker, self, self._finish_update_worker
         )
 
-    def _update_software(self):
+    def _update_software(self) -> None:
         """First asks and then updates the software."""
         updater = Updater()
         update_available, info = updater.check_for_updates()
@@ -234,12 +234,12 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if DP_CONTROLLER.ask_to_update(info):
             updater.update()
 
-    def _finish_update_worker(self):
+    def _finish_update_worker(self) -> None:
         """End the spinner, checks if installation was successful."""
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo reboot")
 
-    def _is_windows(self):
+    def _is_windows(self) -> bool:
         """Linux things cannot be done on windows.
 
         Print a msg and return true if win.

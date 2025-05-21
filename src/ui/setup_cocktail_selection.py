@@ -47,16 +47,16 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         DP_CONTROLLER.set_display_settings(self, False)
         self._connect_elements()
 
-    def _back(self):
+    def _back(self) -> None:
         self.maker_screen_activate()
 
-    def _set_image(self):
+    def _set_image(self) -> None:
         """Set the image of the cocktail."""
         image_path = find_cocktail_image(self.cocktail)
         pixmap = QPixmap(str(image_path))
         self.image_container.setPixmap(pixmap)
 
-    def _connect_elements(self):
+    def _connect_elements(self) -> None:
         """Init all the needed buttons."""
         self.button_back.clicked.connect(self._back)
         self.increase_alcohol.clicked.connect(self._higher_alcohol)
@@ -78,7 +78,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.cocktail = cocktail
         self._set_image()
 
-    def _prepare_cocktail(self, amount: int):
+    def _prepare_cocktail(self, amount: int) -> None:
         """Prepare the cocktail and switches to the maker screen, if successful."""
         # same applies here, need to refetch the cocktail from db
         db_cocktail = DB_COMMANDER.get_cocktail(self.cocktail.id)
@@ -87,7 +87,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self._scale_cocktail(amount)
         qt_prepare_flow(self.mainscreen, self.cocktail)
 
-    def _scale_cocktail(self, amount: int | None = None):
+    def _scale_cocktail(self, amount: int | None = None) -> None:
         """Scale the cocktail to given conditions for volume and alcohol."""
         # if no amount is given, take the middle of the volume list
         # this will give the first element if there is only one element
@@ -148,7 +148,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
 
-    def _apply_virgin_setting(self):
+    def _apply_virgin_setting(self) -> None:
         # hide the strong/weak buttons, since they are not needed
         self.increase_alcohol.setVisible(not self.cocktail.only_virgin)
         self.decrease_alcohol.setVisible(not self.cocktail.only_virgin)
@@ -158,7 +158,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # To be precise, they do work at start, but does not support dynamic changes
         set_strike_through(self.virgin_checkbox, not can_change_virgin)
 
-    def _decide_rounding(self, val: float, threshold: int = 8):
+    def _decide_rounding(self, val: float, threshold: int = 8) -> int | float:
         """Return the right rounding for numbers displayed to the user."""
         if val >= threshold:
             # needs to be int, otherwise we would need to format .0 or .1 which is difficult
@@ -220,7 +220,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Return all maker label objects for ingredient name."""
         return [getattr(self, f"LZutat{x}") for x in range(1, 10)]
 
-    def _higher_alcohol(self, checked: bool):
+    def _higher_alcohol(self, checked: bool) -> None:
         """Increases the alcohol factor."""
         self.decrease_alcohol.setChecked(False)
         if checked:
@@ -228,7 +228,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         else:
             self.adjust_alcohol(1.0)
 
-    def _lower_alcohol(self, checked: bool):
+    def _lower_alcohol(self, checked: bool) -> None:
         """Decreases the alcohol factor."""
         self.increase_alcohol.setChecked(False)
         if checked:
@@ -241,7 +241,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         shared.alcohol_factor = amount
         self.update_cocktail_data()
 
-    def _adjust_preparation_buttons(self):
+    def _adjust_preparation_buttons(self) -> None:
         """Decide if to use a single or multiple buttons and adjusts the text accordingly.
 
         Also connects the functions to the buttons.
@@ -281,7 +281,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             self.container_prepare_button.addWidget(button)
 
 
-def _generate_needed_cocktail_icons(amount: int):
+def _generate_needed_cocktail_icons(amount: int) -> list[str]:
     icon_list = [
         ICONS.presets.tiny_glass,
         ICONS.presets.small_glass,

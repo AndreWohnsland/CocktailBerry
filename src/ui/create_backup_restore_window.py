@@ -36,7 +36,7 @@ class BackupRestoreWindow(QMainWindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _init_ui(self):
+    def _init_ui(self) -> None:
         # This is not shown (full screen) and only for dev reasons. need no translation
         self.setWindowTitle("Restore Backup")
         # init the central widget with its container layout
@@ -86,7 +86,7 @@ class BackupRestoreWindow(QMainWindow):
         self.layout_container.addWidget(self.scroll_area)
         self.setCentralWidget(self.central_widget)
 
-    def _upload_backup(self):
+    def _upload_backup(self) -> None:
         """Prompt the user for a folder path to load the backup from.
 
         Loads the config, custom database and version from the location.
@@ -104,7 +104,7 @@ class BackupRestoreWindow(QMainWindow):
                 shutil.copytree(self.backup_path / _file.name, _file, dirs_exist_ok=True)
         restart_program(is_v1=True)
 
-    def _generate_checkboxes(self):
+    def _generate_checkboxes(self) -> None:
         """Generate the checkboxes for the backup files."""
         for backup_type, file_paths in FILE_SELECTION_MAPPER.items():
             # if not all needed files exist in the backup, skip

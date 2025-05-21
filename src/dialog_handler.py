@@ -169,7 +169,7 @@ class DialogHandler:
         """Display the messagebox for the Maker. Uses a Custom QDialog with Close-Button."""
         from src.ui.setup_custom_dialog import CustomDialog
 
-        def close_thread(event: Event, box: CustomDialog, close_time: int):
+        def close_thread(event: Event, box: CustomDialog, close_time: int) -> None:
             """Close the box after given time if event is not set."""
             time.sleep(close_time)
             if event.is_set():
@@ -213,7 +213,7 @@ class DialogHandler:
         self.prompt_outcome = False
         loop = QEventLoop()
 
-        def handle_dialog_outcome(result: bool):
+        def handle_dialog_outcome(result: bool) -> None:
             self.prompt_outcome = result
             loop.quit()
 
@@ -243,7 +243,7 @@ class DialogHandler:
         self.password_outcome = False
         loop = QEventLoop()
 
-        def handle_dialog_outcome(result: bool):
+        def handle_dialog_outcome(result: bool) -> None:
             self.password_outcome = result
             loop.quit()
 
@@ -260,11 +260,11 @@ class DialogHandler:
         use_ok: bool = False,
         close_time: int | None = None,
         **kwargs: Any,
-    ):
+    ) -> None:
         msg = self._choose_language(dialog_name, **kwargs)
         self.standard_box(msg, use_ok=use_ok, close_time=close_time)
 
-    def _generate_file_dialog(self, message: str = ""):
+    def _generate_file_dialog(self, message: str = "") -> QFileDialog:
         """Create the base file dialog and shows it with the full screen settings."""
         file_dialog = QFileDialog()
         style_file = f"{cfg.MAKER_THEME}.css"
@@ -290,7 +290,7 @@ class DialogHandler:
         file_dialog.raise_()
         return file_dialog
 
-    def _parse_file_dialog(self, file_dialog: QFileDialog):
+    def _parse_file_dialog(self, file_dialog: QFileDialog) -> Path | None:
         """Extract the selected file/folder from the file dialog."""
         if file_dialog.exec_() == QDialog.Accepted:  # type: ignore
             file_name = file_dialog.selectedFiles()[0]  # get the selected file
@@ -299,7 +299,7 @@ class DialogHandler:
                 return Path(file_name).absolute()
         return None
 
-    def _get_folder_location(self, message: str):
+    def _get_folder_location(self, message: str) -> Path | None:
         """Return the selected folder."""
         file_dialog = self._generate_file_dialog(message)
         file_dialog.setFileMode(QFileDialog.Directory)  # type: ignore
@@ -358,11 +358,11 @@ class DialogHandler:
         """Informs user that the ingredient was deleted."""
         self.__output_language_dialog("ingredient_deleted", ingredient_name=ingredient_name)
 
-    def __say_ingredient_added(self, ingredient_name: str):
+    def __say_ingredient_added(self, ingredient_name: str) -> None:
         """Informs user that the ingredient was added to the database."""
         self.__output_language_dialog("ingredient_added", ingredient_name=ingredient_name)
 
-    def __say_ingredient_changed(self, selected_ingredient: str | None, ingredient_name: str):
+    def __say_ingredient_changed(self, selected_ingredient: str | None, ingredient_name: str) -> None:
         """Informs user that the ingredient was changed."""
         self.__output_language_dialog(
             "ingredient_changed", selected_ingredient=selected_ingredient, ingredient_name=ingredient_name

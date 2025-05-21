@@ -114,7 +114,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if not success:
             DP_CONTROLLER.say_update_failed()
 
-    def _connection_check(self):
+    def _connection_check(self) -> None:
         """Check if there is an internet connection.
 
         Asks user to adjust time, if there is no no connection.
@@ -125,7 +125,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if DP_CONTROLLER.ask_to_adjust_time():
             self.datepicker = DatePicker(self)
 
-    def _deprecation_check(self):
+    def _deprecation_check(self) -> None:
         """Check if to display the deprecation warning for newer python version install."""
         if is_python_deprecated():
             DP_CONTROLLER.say_python_deprecated(
@@ -189,7 +189,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.team_window = TeamScreen(self)
         loop = QEventLoop()
 
-        def wait_for_selection(_: Any):
+        def wait_for_selection(_: Any) -> None:
             """Just wait for the selection to be done."""
             loop.quit()
 
@@ -344,7 +344,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Set back to the prev tab if password not right
         self.tabWidget.setCurrentIndex(old_index)
 
-    def _apply_search_to_list(self):
+    def _apply_search_to_list(self) -> None:
         """Apply the search to the list widget."""
         search = self.input_search_cocktail.text()
         DP_CONTROLLER.clear_list_widget(self.list_widget_found_cocktails)
@@ -362,7 +362,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 to_fill.append(cocktail)
         DP_CONTROLLER.fill_list_widget(self.list_widget_found_cocktails, to_fill)
 
-    def _enter_search_to_maker(self):
+    def _enter_search_to_maker(self) -> None:
         """Switches to the cocktail selection of the given search."""
         search = DP_CONTROLLER.get_list_widget_selection(self.list_widget_found_cocktails)
         if not search:

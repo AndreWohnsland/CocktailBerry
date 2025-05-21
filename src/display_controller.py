@@ -447,7 +447,7 @@ class DisplayController(DialogHandler):
             lw_item = self._generate_list_widget_item(item)
             list_widget.addItem(lw_item)
 
-    def _generate_list_widget_item(self, item_data: str | Cocktail):
+    def _generate_list_widget_item(self, item_data: str | Cocktail) -> QListWidgetItem:
         """Add the element to the list widget item.
 
         If is is a cocktail object, build in the virgin possibility as indicator.
@@ -496,19 +496,19 @@ class DisplayController(DialogHandler):
                 else:
                     self.delete_items_of_layout(item.layout())
 
-    def _decide_rounding(self, val: float, threshold: int = 8):
+    def _decide_rounding(self, val: float, threshold: int = 8) -> int | float:
         """Get the right rounding for numbers displayed to the user."""
         if val >= threshold:
             return int(val)
         return round(val, 1)
 
-    def _set_strike_through(self, element: QWidget, strike_through: bool):
+    def _set_strike_through(self, element: QWidget, strike_through: bool) -> None:
         """Set the strike through property of the font."""
         font = element.font()
         font.setStrikeOut(strike_through)
         element.setFont(font)
 
-    def _set_underline(self, element: QWidget, underline: bool):
+    def _set_underline(self, element: QWidget, underline: bool) -> None:
         """Set the strike through property of the font."""
         font = element.font()
         font.setUnderline(underline)
@@ -640,7 +640,7 @@ class DisplayController(DialogHandler):
         """Change the label of the ingredient button."""
         self._choose_button_label(w.PBRezepthinzu, item_selected)
 
-    def _choose_button_label(self, button: QPushButton, item_selected: bool):
+    def _choose_button_label(self, button: QPushButton, item_selected: bool) -> None:
         """Chooses the right labeling for the button."""
         if item_selected:
             button.setText(UI_LANGUAGE.get_change_text())

@@ -85,7 +85,7 @@ def migrate_csv_export_data_to_db():
     _logger.log_event("INFO", f"Migrated {migrated_csv_count} csv export files")
 
 
-def _migrate_recipe_export_file(recipe_file: Path, export_date: datetime.date):
+def _migrate_recipe_export_file(recipe_file: Path, export_date: datetime.date) -> None:
     """Migrate a single recipe export file to the database."""
     try:
         with open(recipe_file, encoding="utf-8") as csv_file:
@@ -115,7 +115,9 @@ def _migrate_recipe_export_file(recipe_file: Path, export_date: datetime.date):
         _logger.log_event("ERROR", f"Error migrating recipe export file {recipe_file}: {e!s}")
 
 
-def _migrate_ingredient_export_file(ingredient_file: Path, cost_file_path: Path | None, export_date: datetime.date):
+def _migrate_ingredient_export_file(
+    ingredient_file: Path, cost_file_path: Path | None, export_date: datetime.date
+) -> None:
     """Migrate a single ingredient export file with its cost data to the database."""
     try:
         with open(ingredient_file, encoding="utf-8") as csv_file:

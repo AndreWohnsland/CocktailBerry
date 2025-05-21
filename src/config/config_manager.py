@@ -243,7 +243,7 @@ class ConfigManager:
             config[name] = setting_data
         return config
 
-    def _enhance_config_specific_information(self, config: dict[str, Any], setting: ConfigInterface):
+    def _enhance_config_specific_information(self, config: dict[str, Any], setting: ConfigInterface) -> None:
         config["prefix"] = setting.prefix
         config["suffix"] = setting.suffix
         if isinstance(setting, ChooseType):
@@ -269,7 +269,7 @@ class ConfigManager:
         list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, (list, dict))}
         self._set_config(list_or_dict, validate)
 
-    def _set_config(self, configuration: dict, validate: bool):
+    def _set_config(self, configuration: dict, validate: bool) -> None:
         for config_name, config_value in configuration.items():
             config_setting = self.config_type.get(config_name)
             # old or user added configs will not be validated
@@ -285,7 +285,7 @@ class ConfigManager:
                 if validate:
                     raise e
 
-    def _validate_config_type(self, configname: str, configvalue: Any):
+    def _validate_config_type(self, configname: str, configvalue: Any) -> None:
         """Validate the configvalue if its fit the type / conditions."""
         config_setting = self.config_type.get(configname)
         # old or user added configs will not be validated

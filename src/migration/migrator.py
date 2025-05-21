@@ -13,7 +13,7 @@ import platform
 import shutil
 import subprocess
 import sys
-from typing import Any
+from typing import Any, Callable, TypeVar
 
 import yaml
 
@@ -51,6 +51,7 @@ from src.migration.update_data import (
 from src.migration.web_migrator import replace_backend_script
 
 _logger = LoggerHandler("migrator_module")
+T = TypeVar("T")
 
 
 class Migrator:
@@ -62,7 +63,7 @@ class Migrator:
         self.config.read(VERSION_FILE)
         self.local_version = _Version(self._get_local_version())
 
-    def _get_local_version(self):
+    def _get_local_version(self) -> str | None:
         try:
             local_version = self.config["DEFAULT"]["LOCALVERSION"]
         except KeyError:
@@ -80,7 +81,7 @@ class Migrator:
             self._migration_log(version)
         return is_older
 
-    def _write_local_version(self):
+    def _write_local_version(self) -> None:
         """Write the latest version to the local version."""
         _logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
         self.config["DEFAULT"]["LOCALVERSION"] = str(self.program_version.version)
@@ -161,7 +162,7 @@ class Migrator:
 
         self._check_local_version_data()
 
-    def _backup_config_file(self, suffix: str):
+    def _backup_config_file(self, suffix: str) -> None:
         """Save the config file at ~/cb_backup/custom_config_pre_{suffix}.yaml."""
         if not CUSTOM_CONFIG_FILE.exists():
             return
@@ -169,11 +170,11 @@ class Migrator:
         _logger.log_event("INFO", f"Backing up config file to {save_path}")
         shutil.copy(CUSTOM_CONFIG_FILE, save_path)
 
-    def _migration_log(self, version: str):
+    def _migration_log(self, version: str) -> None:
         """Log the migration message fro the version."""
         _logger.log_event("INFO", f"Making migrations for v{version}")
 
-    def _python_to_old_warning(self, least_python: tuple[int, int]):
+    def _python_to_old_warning(self, least_python: tuple[int, int]) -> None:
         """Log a warning that the future python is higher than system python."""
         sys_python = sys.version_info
         if sys_python < least_python:
@@ -183,7 +184,7 @@ class Migrator:
                 "WARNING", f"Your used Python ({sys_format}) is deprecated, please upgrade to {future_format} or higher"
             )
 
-    def _check_local_version_data(self):
+    def _check_local_version_data(self) -> None:
         """Check to update the local version data."""
         if self.older_than_version(self.program_version.version):
             self._update_custom_theme()
@@ -191,7 +192,7 @@ class Migrator:
         else:
             _logger.log_event("INFO", "Nothing to migrate")
 
-    def _update_custom_theme(self):
+    def _update_custom_theme(self) -> None:
         """Check and updates (compiles) the custom theme."""
         # skip if library is not installed, or file does not exist
         lib_not_installed = importlib.util.find_spec("qtsass") is None
@@ -202,7 +203,7 @@ class Migrator:
 
         qtsass.compile_filename(CUSTOM_STYLE_SCSS, CUSTOM_STYLE_FILE)
 
-    def _change_git_repo(self):
+    def _change_git_repo(self) -> None:
         """Set the git source to the new named repo."""
         _logger.log_event("INFO", "Changing git origin to new repo name")
         try:
@@ -216,7 +217,7 @@ class Migrator:
             _logger.log_exception(err)
             raise CouldNotMigrateException("1.6.0") from err
 
-    def _install_pip_package(self, package_name: str, version_to_migrate: str):
+    def _install_pip_package(self, package_name: str, version_to_migrate: str) -> None:
         """Try to install a python package over pip."""
         _logger.log_event("INFO", f"Trying to install {package_name}, it is needed since v{version_to_migrate}")
         if importlib.util.find_spec(package_name) is not None:
@@ -244,7 +245,7 @@ class Migrator:
             raise CouldNotMigrateException(version_to_migrate) from err
 
 
-def _update_config_value_type(config_name: str, new_type: type, default_value: Any):
+def _update_config_value_type(config_name: str, new_type: Callable[[Any], T], default_value: T) -> None:
     """Update the local config file, use the new given type.
 
     Uses the default if fails to convert.
@@ -277,7 +278,7 @@ def _get_local_config(config_name: str) -> dict[str, Any] | None:
         return yaml.safe_load(stream)
 
 
-def _combine_pump_setting_into_one_config():
+def _combine_pump_setting_into_one_config() -> None:
     """Combine the pump settings into one config.
 
     The pump settings were split into two different configs, now they will be combined.
@@ -305,7 +306,7 @@ def _combine_pump_setting_into_one_config():
         yaml.dump(configuration, stream, default_flow_style=False)
 
 
-def _move_slow_factor_to_db():
+def _move_slow_factor_to_db() -> None:
     """Convert the slow factor from the config to the database.
 
     Will use the slow flag and the config value to calculate the pump speed,
@@ -321,15 +322,15 @@ def _move_slow_factor_to_db():
     change_slower_flag_to_pump_speed(slow_factor)
 
 
-def _get_converted_value(new_type: type, default_value: Any, local_config: Any):
+def _get_converted_value(new_type: Callable[[Any], T], default_value: T, local_config: Any) -> T:
     try:
         new_value = new_type(local_config)
-    except ValueError:
+    except (ValueError, TypeError):
         new_value = default_value
     return new_value
 
 
-def _install_uv():
+def _install_uv() -> None:
     """Install uv for python dependency management."""
     _logger.info("Installing uv for python dependency management")
     uv_installed = shutil.which("uv")
@@ -347,7 +348,7 @@ def _install_uv():
         subprocess.run("curl -LsSf https://astral.sh/uv/install.sh | sh", check=False, shell=True)
 
 
-def _check_and_replace_qt_launcher_script():
+def _check_and_replace_qt_launcher_script() -> None:
     # check if the script has the basic python runme.py command without api
     needed_commands = ["runme.py"]
     with contextlib.suppress(FileNotFoundError):
@@ -413,4 +414,5 @@ class CouldNotMigrateException(Exception):
 
     def __init__(self, version: str) -> None:
         self.message = f"Error while migration to version: {version}"
+        super().__init__(self.message)
         super().__init__(self.message)

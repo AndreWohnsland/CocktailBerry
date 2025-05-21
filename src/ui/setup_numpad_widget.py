@@ -66,13 +66,13 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         if self.header_is_entered_number:
             self.LHeader.setText(current_string)
 
-    def _add_float(self, use_float: bool):
+    def _add_float(self, use_float: bool) -> None:
         if not use_float:
             self.PBdot.deleteLater()
             return
         self.PBdot.clicked.connect(self._dot_clicked)
 
-    def _dot_clicked(self):
+    def _dot_clicked(self) -> None:
         """Add a dot if its not the first letter or a dot already exists."""
         current_string = self.source_line_edit.text()
         if "." in current_string or len(current_string) == 0:

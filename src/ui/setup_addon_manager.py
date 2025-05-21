@@ -39,7 +39,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _fill_addon_list(self):
+    def _fill_addon_list(self) -> None:
         """Fill the addon list widget with all the addon data."""
         self.table_addons.setRowCount(len(self._addon_information))
         self.table_addons.setColumnCount(1)
@@ -63,7 +63,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         self.table_addons.resizeColumnsToContents()
         self.table_addons.resizeRowsToContents()
 
-    def _apply_changes(self):
+    def _apply_changes(self) -> None:
         # First apply all the user checked settings
         for addon in self._addon_information:
             # ignore unofficial addons here
@@ -82,7 +82,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         if DP_CONTROLLER.ask_to_restart_for_config():
             restart_program(is_v1=True)
 
-    def _install_addon(self, addon: AddonData):
+    def _install_addon(self, addon: AddonData) -> None:
         """Try to install addon, log if req is not ok or no connection."""
         try:
             install_addon(addon)

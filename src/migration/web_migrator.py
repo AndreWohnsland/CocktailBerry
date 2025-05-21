@@ -26,7 +26,7 @@ def add_web_desktop_file():
     desktop_file.chmod(0o755)
 
 
-def _create_web_entry():
+def _create_web_entry() -> None:
     """Create the web entry for the autostart."""
     web_entry_path.write_text(COCKTAIL_WEB_DESKTOP.read_text())
 

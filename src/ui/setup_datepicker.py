@@ -28,7 +28,7 @@ class DatePicker(QMainWindow, Ui_Datepicker):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _ok_clicked(self):
+    def _ok_clicked(self) -> None:
         """Submit the selected Time in the interface to the OS."""
         d: QDate = self.selected_date.date()  # pylint: disable=invalid-name
         t: QTime = self.selected_time.time()  # pylint: disable=invalid-name
@@ -37,6 +37,6 @@ class DatePicker(QMainWindow, Ui_Datepicker):
         set_system_datetime(datetime_string)
         self.close()
 
-    def _init_date_and_time(self):
+    def _init_date_and_time(self) -> None:
         self.selected_time.setTime(QTime.currentTime())
         self.selected_date.setDate(QDate.currentDate())

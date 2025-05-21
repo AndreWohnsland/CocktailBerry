@@ -22,7 +22,7 @@ class CouldNotInstallAddonError(Exception):
     pass
 
 
-def _extract_data(data: list[list]):
+def _extract_data(data: list[list]) -> dict[str, dict[str, int]]:
     """Extract the needed data from the exported data.
 
     Since DB method and exported files are similar in the core,
@@ -30,18 +30,18 @@ def _extract_data(data: list[list]):
     """
     # The data has three rows:
     # first is the Names, with the first column being the date
-    names = data[0][1::]
+    names = [str(x) for x in data[0][1::]]  # explicitly convert to str (only for typing)
     # second is resettable data
     # data comes from csv, so it is str, need to convert to float
     since_reset = data[1][1::]
-    since_reset = [float(x) for x in since_reset]
+    since_reset = [int(x) for x in since_reset]
     # third is life time data
     all_time = data[2][1::]
-    all_time = [float(x) for x in all_time]
+    all_time = [int(x) for x in all_time]
 
     # Extract both into a dict containing name: quant
     # using only quantities greater than zero
-    extracted = {}
+    extracted: dict[str, dict[str, int]] = {}
     extracted[ALL_TIME] = {x: y for x, y in zip(names, all_time) if y > 0}
     extracted[SINCE_RESET] = {x: y for x, y in zip(names, since_reset) if y > 0}
     return extracted

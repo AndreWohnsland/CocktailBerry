@@ -15,7 +15,7 @@ def save_resource_usage(cpu_usage: float, ram_usage: float, session: int, timest
     DBC.save_resource_usage(cpu_usage, ram_usage, session, timestamp)
 
 
-def _resource_logger_thread(log_interval: int, session_number: int):
+def _resource_logger_thread(log_interval: int, session_number: int) -> None:
     _logger.log_header("INFO", "Starting resource tracker, will only log if RAM usage is above 90%")
     _logger.info("The whole data points will be saved in the Database and can be accessed via the GUI.")
     sense_interval = 5

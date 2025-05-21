@@ -19,7 +19,7 @@ class ResourceWindow(QMainWindow, Ui_ResourceWindow):
 
         # limit the plot to x data points (will be aggregated in buckets)
         self.max_data_points = 15
-        self.grid = None
+        self.grid: QGridLayout | None = None
         self.row_counter = RowCounter(0)
         resource_info = DBC.get_resource_session_numbers()
         self.session_data = {f"{x.start_time} ({x.session_id})": x.session_id for x in resource_info}
@@ -37,7 +37,7 @@ class ResourceWindow(QMainWindow, Ui_ResourceWindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _select_resource_data(self):
+    def _select_resource_data(self) -> None:
         """Select the resource data from the database and fill the table."""
         self._clear_data()
         self.grid = QGridLayout()
@@ -82,7 +82,7 @@ class ResourceWindow(QMainWindow, Ui_ResourceWindow):
         buckets = [data[i : i + bucket_size] for i in range(0, len(data), bucket_size)]
         return [round(sum(x) / len(x), 1) for x in buckets]
 
-    def _clear_data(self):
+    def _clear_data(self) -> None:
         """Remove data from the grid layout."""
         self.row_counter = RowCounter(0)
         if self.grid is None:

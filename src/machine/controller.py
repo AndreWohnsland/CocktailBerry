@@ -123,7 +123,9 @@ class MachineController:
             shared.cocktail_status.message = finish_message
         return consumption, current_time, max_time
 
-    def _start_preparation(self, w: MainScreen | None, prep_data: list[_PreparationData], verbose: bool = True):
+    def _start_preparation(
+        self, w: MainScreen | None, prep_data: list[_PreparationData], verbose: bool = True
+    ) -> tuple[float, float]:
         """Prepare the volumes of the given data."""
         self._print_time = 0.0
         current_time = 0.0
@@ -141,9 +143,9 @@ class MachineController:
             section_time = 0.0
             section_max = max(x.flow_time for x in section)
             pins = [x.pin for x in section]
-            progress = _generate_progress(current_time, max_time)
+            progress_string = _generate_progress(current_time, max_time)
             section_start_time = time.perf_counter()
-            self._start_pumps(pins, progress)
+            self._start_pumps(pins, progress_string)
             # iterate over each prep data
             while section_time < section_max and shared.cocktail_status.status != PrepareResult.CANCELED:
                 self._process_preparation_section(current_time, max_time, section, section_time)
@@ -159,8 +161,8 @@ class MachineController:
                     w.change_progression_window(progress)
                     qApp.processEvents()
 
-            progress = _generate_progress(current_time, max_time)
-            self._stop_pumps(pins, progress)
+            progress_string = _generate_progress(current_time, max_time)
+            self._stop_pumps(pins, progress_string)
         return current_time, max_time
 
     def _chunk_preparation_data(self, prep_data: list[_PreparationData]) -> list[list[_PreparationData]]:
@@ -186,7 +188,7 @@ class MachineController:
         max_time: float,
         section: list[_PreparationData],
         section_time: float,
-    ):
+    ) -> None:
         """Iterate over the data in each section and control pumps accordingly."""
         for data in section:
             if data.flow_time > section_time and not data.closed:
@@ -205,7 +207,7 @@ class MachineController:
         self.reverter.initialize_pin()
         atexit.register(self.cleanup)
 
-    def _start_pumps(self, pin_list: list[int], print_prefix: str = ""):
+    def _start_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and opens all given pins."""
         time_print(f"{print_prefix}<o> Opening Pins: {pin_list}")
         self.pin_controller.activate_pin_list(pin_list)
@@ -221,7 +223,7 @@ class MachineController:
         self.close_all_pumps()
         self.pin_controller.cleanup_pin_list()
 
-    def _stop_pumps(self, pin_list: list[int], print_prefix: str = ""):
+    def _stop_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and closes all given pins."""
         time_print(f"{print_prefix}<x> Closing Pins: {pin_list}")
         self.pin_controller.close_pin_list(pin_list)
@@ -230,7 +232,9 @@ class MachineController:
         """Turn the LED on."""
         self.led_controller.default_led()
 
-    def _consumption_print(self, consumption: list[float], current_time: float, max_time: float, interval: int = 1):
+    def _consumption_print(
+        self, consumption: list[float], current_time: float, max_time: float, interval: int = 1
+    ) -> None:
         """Display each interval seconds information for cocktail preparation."""
         # we do not want to print at the beginning
         if round(self._print_time, 1) == 0:
@@ -275,12 +279,12 @@ def _build_clean_data() -> list[_PreparationData]:
     return prep_data
 
 
-def _generate_progress(current_time: float, total_time: float):
+def _generate_progress(current_time: float, total_time: float) -> str:
     """Print the current passed time in relation to total time."""
     return f"{current_time: <4.1f} | {total_time: >4.1f} s: "
 
 
-def _header_print(msg: str):
+def _header_print(msg: str) -> None:
     """Format the message with dashes around."""
     time_print(f"{' ' + msg + ' ':-^80}")
 

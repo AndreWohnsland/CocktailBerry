@@ -80,11 +80,11 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _cancel_clicked(self):
+    def _cancel_clicked(self) -> None:
         """Close the Window without a change."""
         self.close()
 
-    def _enter_clicked(self):
+    def _enter_clicked(self) -> None:
         """Enters the Data and closes the window."""
         number = cfg.choose_bottle_number()
         label_name = [getattr(self, f"LAmount{i}") for i in range(1, number + 1)]

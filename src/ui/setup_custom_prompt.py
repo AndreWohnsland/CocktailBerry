@@ -24,10 +24,10 @@ class CustomPrompt(QMainWindow, Ui_CustomPrompt):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _yes_clicked(self):
+    def _yes_clicked(self) -> None:
         """Accept the message."""
         self.user_okay.emit(True)
 
-    def _no_clicked(self):
+    def _no_clicked(self) -> None:
         """Rejects the message."""
         self.user_okay.emit(False)

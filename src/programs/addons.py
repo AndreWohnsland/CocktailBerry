@@ -115,7 +115,7 @@ class AddOnManager:
         """
         prepare_function = self._create_cocktail_preparation(w)
 
-        def run_in_background(addon: AddonInterface, prepare_function: Callable[[Cocktail], tuple[bool, str]]):
+        def run_in_background(addon: AddonInterface, prepare_function: Callable[[Cocktail], tuple[bool, str]]) -> None:
             while True:
                 time.sleep(0.5)
                 try:
@@ -154,7 +154,7 @@ class AddOnManager:
         self,
         function_name: _SupportedActions,
         data: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         """Try the according function for the list of addons.
 
         Catches AttributeError (function was not defined).

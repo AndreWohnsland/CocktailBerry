@@ -66,7 +66,7 @@ async def get_options_with_ui_properties():
     return cfg.get_config_with_ui_information()
 
 
-def _restart_task():
+def _restart_task() -> None:
     time.sleep(1)
     restart_program()
 

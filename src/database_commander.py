@@ -292,7 +292,7 @@ class DatabaseCommander:
             )
         return [recipe[0] for recipe in data]
 
-    def get_consumption_data_lists_recipes(self):
+    def get_consumption_data_lists_recipes(self) -> list[list[Any]]:
         """Return the recipe consumption data ready to export."""
         with self.session_scope() as session:
             cocktails = self._get_db_cocktails(session)
@@ -302,7 +302,7 @@ class DatabaseCommander:
                 [x.counter_lifetime for x in cocktails],
             )
 
-    def get_consumption_data_lists_ingredients(self):
+    def get_consumption_data_lists_ingredients(self) -> list[list[Any]]:
         """Return the ingredient consumption data ready to export."""
         with self.session_scope() as session:
             ingredients = self._get_all_db_ingredients(session)
@@ -312,7 +312,7 @@ class DatabaseCommander:
                 [x.consumption_lifetime for x in ingredients],
             )
 
-    def get_cost_data_lists_ingredients(self):
+    def get_cost_data_lists_ingredients(self) -> list[list[Any]]:
         """Return the ingredient cost data ready to export."""
         with self.session_scope() as session:
             ingredients = self._get_all_db_ingredients(session)
@@ -322,7 +322,9 @@ class DatabaseCommander:
                 [x.cost_consumption_lifetime for x in ingredients],
             )
 
-    def _convert_consumption_data(self, headers: list[Any], resettable: list[Any], lifetime: list[Any]):
+    def _convert_consumption_data(
+        self, headers: list[str], resettable: list[int], lifetime: list[int]
+    ) -> list[list[Any]]:
         """Convert the data from the db cursor into needed csv format."""
         return [["date", *headers], [datetime.date.today(), *resettable], ["lifetime", *lifetime]]
 

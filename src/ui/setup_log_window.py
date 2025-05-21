@@ -33,7 +33,7 @@ class LogWindow(QMainWindow, Ui_LogWindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _read_logs(self):
+    def _read_logs(self) -> None:
         """Read the current selected log file."""
         log_name = self.selection_logs.currentText()
         # Return if empty selection

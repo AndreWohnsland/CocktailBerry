@@ -106,7 +106,6 @@ ignore = [
   "D213", # Multi-line docstring summary should start at the second line
   # currently, ignore return type annotations
   "ANN201",
-  "ANN202",
   "ANN401",
 ]
 

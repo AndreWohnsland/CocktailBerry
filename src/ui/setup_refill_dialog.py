@@ -44,7 +44,7 @@ class RefillDialog(QMainWindow, Ui_RefillPrompt):
         """Only enables the apply button if the checkbox is checked."""
         self.button_apply.setEnabled(self.checkbox_done.isChecked())
 
-    def _go_to_bottle_tab(self):
+    def _go_to_bottle_tab(self) -> None:
         """Switch to the bottle tab."""
         DP_CONTROLLER.set_tabwidget_tab(self.main_window, "bottles")
         self.close()
