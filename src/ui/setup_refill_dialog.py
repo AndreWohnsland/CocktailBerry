@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class RefillDialog(QMainWindow, Ui_RefillPrompt):
     """Class for the Team selection Screen."""
 
-    def __init__(self, parent: MainScreen, ingredient: Ingredient):
+    def __init__(self, parent: MainScreen, ingredient: Ingredient) -> None:
         """Initialize the RefillDialog."""
         super().__init__()
         self.setupUi(self)
@@ -33,18 +33,18 @@ class RefillDialog(QMainWindow, Ui_RefillPrompt):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def apply_refill(self):
+    def apply_refill(self) -> None:
         """Apply the refill to the bottle."""
         # usually, the bottle have to be set, otherwise we would not be at this window
         self.close()
         if self.ingredient.bottle is not None:
             bottles.renew_bottles(self.main_window, [self.ingredient.bottle])
 
-    def checkbox_done_changed(self):
+    def checkbox_done_changed(self) -> None:
         """Only enables the apply button if the checkbox is checked."""
         self.button_apply.setEnabled(self.checkbox_done.isChecked())
 
-    def _go_to_bottle_tab(self):
+    def _go_to_bottle_tab(self) -> None:
         """Switch to the bottle tab."""
         DP_CONTROLLER.set_tabwidget_tab(self.main_window, "bottles")
         self.close()

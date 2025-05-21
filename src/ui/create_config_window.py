@@ -1,17 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Literal, Union
+from typing import TYPE_CHECKING, Any, Callable, Literal, Union
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QBoxLayout,
-    QCheckBox,
-    QComboBox,
-    QHBoxLayout,
-    QMainWindow,
-    QPushButton,
-    QVBoxLayout,
-)
+from PyQt5.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import (
@@ -43,6 +35,9 @@ from src.ui_elements import Ui_ConfigWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.utils import restart_program
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 CONFIG_TYPES_POSSIBLE = Union[str, int, float, bool, list[Any], dict[str, Any]]
 # Those are only for the v2 program
 CONFIG_TO_SKIP = (
@@ -56,12 +51,12 @@ CONFIG_TO_SKIP = (
 
 
 class ConfigWindow(QMainWindow, Ui_ConfigWindow):
-    def __init__(self, parent):
+    def __init__(self, parent: None | MainScreen) -> None:
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
-        self.config_objects = {}
+        self.config_objects: dict[str, Callable[[], CONFIG_TYPES_POSSIBLE]] = {}
         self.color_window: ColorWindow | None = None
         self.button_custom_color: QPushButton | None = None
         UI_LANGUAGE.adjust_config_window(self)
@@ -69,7 +64,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _init_ui(self):
+    def _init_ui(self) -> None:
         # adds all the configs to the window
         for key, config_setting in cfg.config_type.items():
             if key in CONFIG_TO_SKIP:
@@ -82,7 +77,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         # so add a spacer to the end
         self.vbox_other.addItem(create_spacer(1, expand=True))
 
-    def _save_config(self):
+    def _save_config(self) -> None:
         try:
             cfg.set_config(self._retrieve_values(), True)
             cfg.sync_config_to_file()
@@ -94,7 +89,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             restart_program(is_v1=True)
         self.close()
 
-    def _choose_display_style(self, config_name: str, config_setting: ConfigInterface):
+    def _choose_display_style(self, config_name: str, config_setting: ConfigInterface) -> None:
         """Create the input face for the according config types."""
         # Add the elements header to the view
         header = create_label(f"{config_name}:", font_size=LARGE_FONT, bold=True)
@@ -115,7 +110,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         # Add small spacer after each section
         vbox.addItem(create_spacer(12))
 
-    def _build_custom_color_button(self, vbox: QVBoxLayout):
+    def _build_custom_color_button(self, vbox: QVBoxLayout) -> None:
         """Build a button to edit custom theme."""
         self.button_custom_color = create_button(
             "Define Custom Color", min_w=0, max_w=16777215, max_h=200, min_h=50, font_size=LARGE_FONT, bold=True
@@ -123,7 +118,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.button_custom_color.clicked.connect(self._open_color_window)  # type: ignore
         vbox.addWidget(self.button_custom_color)  # type: ignore[arg-type]
 
-    def _open_color_window(self):
+    def _open_color_window(self) -> None:
         self.color_window = ColorWindow(self.mainscreen)
 
     def _build_input_field(
@@ -187,7 +182,12 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addWidget(config_input)
         return lambda: float(config_input.text() or 0.0)
 
-    def _build_bool_field(self, layout: QBoxLayout, current_value: bool, displayed_text="on") -> Callable[[], bool]:
+    def _build_bool_field(
+        self,
+        layout: QBoxLayout,
+        current_value: bool,
+        displayed_text: str = "on",
+    ) -> Callable[[], bool]:
         """Build a field for bool input with a checkbox."""
         config_input = QCheckBox(displayed_text)
         adjust_font(config_input, MEDIUM_FONT)
@@ -230,12 +230,12 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
 
     def _add_ui_element_to_list(
         self,
-        initial_value,
+        initial_value: CONFIG_TYPES_POSSIBLE,
         getter_fn_list: list,
         config_name: str,
         container: QBoxLayout,
         config_setting: ListType,
-    ):
+    ) -> None:
         """Add an additional input element for list buildup."""
         # Gets the type of the list elements
         list_setting = config_setting.list_type
@@ -257,10 +257,12 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         container.addLayout(h_container)
         getter_fn_list.append(getter_fn)
 
-    def _remove_ui_element_from_list(self, element: QHBoxLayout, getter_fn, getter_fn_list: list[Callable]):
+    def _remove_ui_element_from_list(
+        self, element: QHBoxLayout, getter_fn: Callable, getter_fn_list: list[Callable]
+    ) -> None:
         """Remove the referenced element from the ui."""
 
-        def recursive_delete(widget: QBoxLayout):
+        def recursive_delete(widget: QBoxLayout) -> None:
             """Recursively delete all children of the given widget."""
             for i in reversed(range(widget.count())):
                 found_element = widget.itemAt(i)
@@ -300,7 +302,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addLayout(h_container)
         return lambda: {key: getter() for key, getter in getter_fn_dict.items()}
 
-    def _build_fallback_field(self, layout: QBoxLayout, current_value) -> Callable[[], str]:
+    def _build_fallback_field(self, layout: QBoxLayout, current_value: CONFIG_TYPES_POSSIBLE) -> Callable[[], str]:
         """Build the default input field for string input."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
@@ -322,10 +324,10 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addWidget(config_input)
         return config_input.currentText
 
-    def _retrieve_values(self):
+    def _retrieve_values(self) -> dict[str, CONFIG_TYPES_POSSIBLE]:
         return {key: getter() for key, getter in self.config_objects.items()}
 
-    def _choose_tab_container(self, config_name: str):
+    def _choose_tab_container(self, config_name: str) -> QVBoxLayout:
         """Get the object name of the tab container, that the config belongs to."""
         # specific sorting for some values where prefix may not match the category good enough
         exact_sorting = {

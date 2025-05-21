@@ -8,7 +8,7 @@ from src.ui.setup_mainwindow import MainScreen
 
 
 @logerror
-def run_cocktailberry():
+def run_cocktailberry() -> None:
     """Execute the cocktail program."""
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)  # type: ignore
     app = QApplication(sys.argv)

@@ -24,14 +24,14 @@ if TYPE_CHECKING:
 _logger = LoggerHandler("maker_module")
 
 
-def _build_comment_maker(cocktail: Cocktail):
+def _build_comment_maker(cocktail: Cocktail) -> str:
     """Build the additional comment for the completion message (if there are handadds)."""
     comment = ""
     hand_add = cocktail.handadds
     # sort by descending length of the name and unit combined
     length_desc = sorted(hand_add, key=lambda x: len(x.name) + len(x.unit), reverse=True)
     for ing in length_desc:
-        amount = ing.amount
+        amount: int | float = ing.amount
         if ing.unit != "ml":
             amount = ing.amount * cfg.EXP_MAKER_FACTOR
         # usually show decimal places, up to 8, but if not ml is used clip decimal place
@@ -45,7 +45,7 @@ def _build_comment_maker(cocktail: Cocktail):
     return comment
 
 
-def _log_cocktail(cocktail_volume: int, real_volume: int, cocktail_name: str, taken_time: float):
+def _log_cocktail(cocktail_volume: int, real_volume: int, cocktail_name: str, taken_time: float) -> None:
     """Enter a log entry for the made cocktail."""
     volume_string = f"{cocktail_volume} ml"
     cancel_log_addition = ""
@@ -101,7 +101,7 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[P
     return PrepareResult.FINISHED, add_message
 
 
-def interrupt_cocktail():
+def interrupt_cocktail() -> None:
     """Interrupts the cocktail preparation."""
     shared.cocktail_status.status = PrepareResult.CANCELED
     time_print("Canceling the cocktail!")
@@ -135,7 +135,7 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
     return PrepareResult.VALIDATION_OK, "", None
 
 
-def calibrate(bottle_number: int, amount: int):
+def calibrate(bottle_number: int, amount: int) -> None:
     """Calibrate a bottle."""
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     display_name = f"{amount} ml volume, pump #{bottle_number}"
@@ -159,7 +159,7 @@ def calibrate(bottle_number: int, amount: int):
     )
 
 
-def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None):
+def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> None:
     """Prepare an ingredient."""
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     time_print(f"Spending {ingredient.amount} ml {ingredient.name}")

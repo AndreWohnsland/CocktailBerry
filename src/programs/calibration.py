@@ -15,7 +15,7 @@ logger = LoggerHandler("calibration_module")
 
 
 class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
-    def __init__(self, standalone: bool):
+    def __init__(self, standalone: bool) -> None:
         """Init the calibration Screen."""
         super().__init__()
         self.setupUi(self)
@@ -36,7 +36,7 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         DP_CONTROLLER.set_display_settings(self)
         logger.log_start_program("calibration")
 
-    def output_volume(self):
+    def output_volume(self) -> None:
         """Output the set number of volume according to defined volume flow."""
         channel_number = int(self.channel.text())
         amount = int(self.amount.text())
@@ -44,7 +44,7 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
 
 
 @logerror
-def run_calibration(standalone=True):
+def run_calibration(standalone: bool = True) -> None:
     """Execute the calibration screen."""
     if standalone:
         app = QApplication(sys.argv)

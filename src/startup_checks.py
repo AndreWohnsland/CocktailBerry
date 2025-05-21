@@ -14,7 +14,7 @@ def can_update() -> tuple[bool, str]:
     return updater.check_for_updates()
 
 
-def connection_okay():
+def connection_okay() -> bool:
     """Check if there is an internet connection, if needed."""
     # only needed if microservice is also active
     if not cfg.MAKER_CHECK_INTERNET or not cfg.MICROSERVICE_ACTIVE:
@@ -22,7 +22,7 @@ def connection_okay():
     return has_connection()
 
 
-def is_python_deprecated():
+def is_python_deprecated() -> bool:
     """Check if to display the deprecation warning for newer python version install."""
     sys_python = sys.version_info
     return sys_python < FUTURE_PYTHON_VERSION

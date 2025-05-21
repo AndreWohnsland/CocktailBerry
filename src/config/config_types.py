@@ -10,11 +10,7 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, Protocol, TypeVar, get_args
 
-from src import (
-    SupportedLanguagesType,
-    SupportedRfidType,
-    SupportedThemesType,
-)
+from src import SupportedLanguagesType, SupportedRfidType, SupportedThemesType
 from src.config.errors import ConfigError
 
 SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
@@ -29,7 +25,7 @@ class ConfigInterface(Protocol):
     suffix: str | None = None
 
     @abstractmethod
-    def validate(self, configname: str, value: Any):
+    def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
         raise NotImplementedError
 
@@ -55,14 +51,14 @@ class ChooseType(ConfigInterface):
     allowed: list[str] = field(default_factory=list)
     validator_functions: list[Callable[[str, Any], None]] = field(default_factory=list)
 
-    def validate(self, configname: str, value: Any):
+    def validate(self, configname: str, value: Any) -> None:
         if value not in self.allowed:
             raise ConfigError(f"Value <{value}> for '{configname}' is not supported, please use any of {self.allowed}")
         for validator in self.validator_functions:
             validator(configname, value)
 
     @property
-    def ui_type(self):
+    def ui_type(self) -> type[ChooseType]:
         return type(self)
 
 
@@ -81,7 +77,7 @@ class ConfigType(ConfigInterface):
     prefix: str | None = None
     suffix: str | None = None
 
-    def validate(self, configname: str, value: Any):
+    def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
         if not isinstance(value, self.config_type):
             raise ConfigError(f"The value <{value}> for '{configname}' is not of type {self.config_type}")
@@ -89,7 +85,7 @@ class ConfigType(ConfigInterface):
             validator(configname, value)
 
     @property
-    def ui_type(self):
+    def ui_type(self) -> type[str] | type[int] | type[float] | type[bool]:
         """Return the type for the UI."""
         return self.config_type
 
@@ -102,7 +98,7 @@ class StringType(ConfigType):
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
-    ):
+    ) -> None:
         super().__init__(str, validator_functions, prefix, suffix)
 
 
@@ -114,7 +110,7 @@ class IntType(ConfigType):
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
-    ):
+    ) -> None:
         super().__init__(int, validator_functions, prefix, suffix)
 
 
@@ -126,10 +122,10 @@ class FloatType(ConfigType):
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
-    ):
+    ) -> None:
         super().__init__(float, validator_functions, prefix, suffix)
 
-    def validate(self, configname: str, value: Any):
+    def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
         # also accepts integers since they are basically floats
         if not (isinstance(value, (int, float))):
@@ -152,7 +148,7 @@ class BoolType(ConfigType):
         prefix: str | None = None,
         suffix: str | None = None,
         check_name: str = "on",
-    ):
+    ) -> None:
         super().__init__(bool, validator_functions, prefix, suffix)
         self.check_name = check_name
 
@@ -168,7 +164,7 @@ class ListType(ConfigType):
         prefix: str | None = None,
         suffix: str | None = None,
         immutable: bool = False,
-    ):
+    ) -> None:
         # ignore type here, since parent class should only expose other types not child types
         super().__init__(list, validator_functions, prefix, suffix)  # type: ignore
         self.list_type = list_type
@@ -176,7 +172,7 @@ class ListType(ConfigType):
         self.min_length = min_length
         self.immutable = immutable
 
-    def validate(self, configname: str, value: Any):
+    def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
         super().validate(configname, value)
         # check for min length
@@ -197,7 +193,7 @@ class ListType(ConfigType):
 
 class ConfigClass:
     # keep method to show that child implementation have at least one attribute for initialization
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         pass
 
     def to_config(self) -> dict[str, Any]:
@@ -216,7 +212,7 @@ class PumpConfig(ConfigClass):
         self.volume_flow = volume_flow
         self.tube_volume = tube_volume
 
-    def to_config(self):
+    def to_config(self) -> dict[str, int | float]:
         return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
 
 
@@ -233,13 +229,13 @@ class DictType(ConfigType, Generic[T]):
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
-    ):
+    ) -> None:
         # ignore type here, since parent class should only expose other types not child types
         super().__init__(dict, validator_functions, prefix, suffix)  # type: ignore
         self.dict_types = dict_types
         self.config_class = config_class
 
-    def validate(self, configname: str, config_dict: dict[str, Any]):
+    def validate(self, configname: str, config_dict: dict[str, Any]) -> None:
         """Validate the given value."""
         super().validate(configname, config_dict)
         for key_name, key_type in self.dict_types.items():

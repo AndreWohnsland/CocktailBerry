@@ -13,7 +13,7 @@ from src.ui_elements import Ui_DataWindow
 class DataWindow(QMainWindow, Ui_DataWindow):
     """Creates the log window Widget."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
@@ -23,7 +23,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         self.button_reset.clicked.connect(self._export_and_recalculate)
         self.selection_data.activated.connect(self._display_data)
 
-        self.grid = None
+        self.grid: QGridLayout | None = None
         self.row_counter = RowCounter(0)
 
         self.consume_data: dict[str, ConsumeData] = {}
@@ -34,7 +34,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _populate_data(self):
+    def _populate_data(self) -> None:
         """Get data from files and db, assigns objects and fill dropdown."""
         self.consume_data = generate_consume_data()
         # generates the dropdown with options
@@ -42,7 +42,7 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         drop_down_options = [SINCE_RESET, ALL_TIME, *dates]
         DP_CONTROLLER.fill_single_combobox(self.selection_data, drop_down_options, clear_first=True, first_empty=False)
 
-    def _export_and_recalculate(self):
+    def _export_and_recalculate(self) -> None:
         """Export the data and recalculates the dropdowns / plot."""
         if not DP_CONTROLLER.ask_to_export_data():
             return
@@ -53,11 +53,11 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         DP_CONTROLLER.set_combobox_item(self.selection_data, current_selection)
         self._plot_data(self.consume_data[current_selection])
 
-    def _display_data(self):
+    def _display_data(self) -> None:
         selection = self.selection_data.currentText()
         self._plot_data(self.consume_data[selection])
 
-    def _plot_data(self, consume_data: ConsumeData):
+    def _plot_data(self, consume_data: ConsumeData) -> None:
         """Plot the given data in a barplot."""
         # first need to sort, then extract list of names / values
         recipe_data = consume_data.recipes
@@ -99,16 +99,16 @@ class DataWindow(QMainWindow, Ui_DataWindow):
             return
         names, values = self._sort_extract_data(cost_data)
         # need to convert values from cent or similar to euro
-        values = [x / 100 for x in values]
-        generate_grid_bar_chart(self, self.grid, self.row_counter, names, values, "")
+        relative_values = [x / 100 for x in values]
+        generate_grid_bar_chart(self, self.grid, self.row_counter, names, relative_values, "")
 
-    def _sort_extract_data(self, data: dict):
+    def _sort_extract_data(self, data: dict[str, int]) -> tuple[list[str], list[int]]:
         sorted_data = dict(sorted(data.items(), key=lambda i: -i[1]))
         names = list(sorted_data.keys())
         values = list(sorted_data.values())
         return names, values
 
-    def _clear_data(self):
+    def _clear_data(self) -> None:
         """Remove data from the grid layout."""
         self.row_counter = RowCounter(0)
         if self.grid is None:

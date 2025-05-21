@@ -2,6 +2,7 @@ import re
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import NoReturn
 
 import typer
 
@@ -27,7 +28,7 @@ class _RecipeInformation:
         return f"{self.name}: {self.ingredients}"
 
 
-def importer(file_path: Path, factor: float = 1.0, no_unit=False, sep="\n"):
+def importer(file_path: Path, factor: float = 1.0, no_unit: bool = False, sep: str = "\n") -> None:
     """Import the recipe data from the file into the database."""
     _check_file(file_path)
     print(f"Loading data from: {file_path.absolute()}\nUsing factor: {factor}, data got no unit: {no_unit}\n")
@@ -38,7 +39,7 @@ def importer(file_path: Path, factor: float = 1.0, no_unit=False, sep="\n"):
     _insert_recipes(recipes)
 
 
-def _check_file(file_path: Path):
+def _check_file(file_path: Path) -> None:
     """Check if path exists and path is a file."""
     if not file_path.exists():
         _abort("ERROR: This file does not exists!")
@@ -46,7 +47,9 @@ def _check_file(file_path: Path):
         _abort("ERROR: The path does not lead to a file!")
 
 
-def _parse_recipe_text(recipe_text: str, factor: float, no_unit=False, sep="\n"):
+def _parse_recipe_text(
+    recipe_text: str, factor: float, no_unit: bool = False, sep: str = "\n"
+) -> list[_RecipeInformation]:
     """Extract the recipe information out of the given text."""
     # split by newline, remove empty lines
     line_list = [x.strip() for x in recipe_text.split(sep) if x.strip()]
@@ -77,7 +80,7 @@ def _parse_recipe_text(recipe_text: str, factor: float, no_unit=False, sep="\n")
     return recipe_data
 
 
-def _data_inspection(recipes: list[_RecipeInformation]):
+def _data_inspection(recipes: list[_RecipeInformation]) -> list[str]:
     """Print some information of the data.
 
     Checks if there are duplicates in the provided, abort if this is the case.
@@ -106,7 +109,7 @@ def _data_inspection(recipes: list[_RecipeInformation]):
     return list(unique_ingredients)
 
 
-def _check_data_length(recipes: list[_RecipeInformation]):
+def _check_data_length(recipes: list[_RecipeInformation]) -> None:
     """Print first and last element, abort if no data."""
     if len(recipes):
         print(f"{'First parsed recipe':-^30}")
@@ -118,7 +121,7 @@ def _check_data_length(recipes: list[_RecipeInformation]):
         _abort("No recipes found in file")
 
 
-def _check_intersection(recipes: list[_RecipeInformation], unique_recipes: set[str]):
+def _check_intersection(recipes: list[_RecipeInformation], unique_recipes: set[str]) -> None:
     """Check if there is an intersection with existing data in the database.
 
     If an intersection exists, ask the user to continue.
@@ -145,7 +148,7 @@ def _check_intersection(recipes: list[_RecipeInformation], unique_recipes: set[s
         print([r.name for r in recipes], "\n")
 
 
-def _insert_not_existing_ingredients(ingredients: list[str]):
+def _insert_not_existing_ingredients(ingredients: list[str]) -> None:
     """Check the given ingredients with the DB and insert missing ones."""
     existing_ingredients = DB_COMMANDER.get_all_ingredients()
     existing_names = [x.name for x in existing_ingredients]
@@ -162,7 +165,7 @@ def _insert_not_existing_ingredients(ingredients: list[str]):
     print("")
 
 
-def _insert_recipes(recipes: list[_RecipeInformation]):
+def _insert_recipes(recipes: list[_RecipeInformation]) -> None:
     """Use the given recipe information to insert the data into the DB.
 
     Gets missing ingredient data from the database.
@@ -182,7 +185,7 @@ def _insert_recipes(recipes: list[_RecipeInformation]):
     print("\nImport finished!")
 
 
-def _abort(msg: str):
+def _abort(msg: str) -> NoReturn:
     """Raise typer exit, with given message before."""
     typer.echo(typer.style(f"{msg}, aborting...", fg=typer.colors.RED, bold=True))
     raise typer.Exit()

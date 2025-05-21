@@ -139,7 +139,7 @@ const IngredientList: React.FC = () => {
           <div className='px-1 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
               <h2 className='text-xl font-bold text-secondary'>
-                {selectedIngredient.name || t('ingredients.newIngredient')}
+                {selectedIngredient.name ?? t('ingredients.newIngredient')}
               </h2>
               <button onClick={closeModal} aria-label='close'>
                 <AiOutlineCloseCircle className='text-danger' size={34} />

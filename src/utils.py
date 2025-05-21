@@ -58,7 +58,7 @@ def get_platform_data() -> PlatformData:
     )
 
 
-def set_system_datetime(datetime_string: str):
+def set_system_datetime(datetime_string: str) -> None:
     """Set the system time to the given time, uses YYYY-MM-DD HH:MM:SS as format."""
     p_data = get_platform_data()
     # checking system, currently only setting on Linux (RPi), bc. its only one supported
@@ -88,7 +88,7 @@ def set_system_datetime(datetime_string: str):
         logger.log_exception(err)
 
 
-def restart_program(is_v1: bool = False):
+def restart_program(is_v1: bool = False) -> None:
     """Restart the CocktailBerry application."""
     arguments = sys.argv[1:]
     # skip out if this is the dev program (will not work restart here)
@@ -108,7 +108,7 @@ def restart_program(is_v1: bool = False):
         os.execl(python, "python", EXECUTABLE, *arguments)
 
 
-def generate_custom_style_file():
+def generate_custom_style_file() -> None:
     """Generate the custom style file, if it does not exist."""
     default_style_file = STYLE_FOLDER / "default.scss"
     compiled_default = STYLE_FOLDER / "default.css"
@@ -117,13 +117,13 @@ def generate_custom_style_file():
         CUSTOM_STYLE_FILE.write_text(compiled_default.read_text())
 
 
-def time_print(msg: str, **kwargs):
+def time_print(msg: str) -> None:
     """Print the given string with a timestamp in the 'HH:MM:SS: ' prefix."""
     now = datetime.datetime.now()
-    print(f"{now.strftime('%H:%M:%S')}:  {msg}", **kwargs)
+    print(f"{now.strftime('%H:%M:%S')}:  {msg}")
 
 
-def update_os():
+def update_os() -> None:
     distribution = distro.id().lower()
 
     if distribution in ["raspbian", "debian", "ubuntu"]:
@@ -236,7 +236,7 @@ def list_available_ssids() -> list[str]:
         return []
 
 
-def create_ap(ssid: str = "CocktailBerry", password: str = "cocktailconnect"):
+def create_ap(ssid: str = "CocktailBerry", password: str = "cocktailconnect") -> None:
     commands = [
         "sudo iw dev wlan0 interface add wlan1 type __ap",
         f"sudo nmcli connection add type wifi ifname wlan1 con-name {ssid} ssid {ssid}",
@@ -249,6 +249,6 @@ def create_ap(ssid: str = "CocktailBerry", password: str = "cocktailconnect"):
         subprocess.run(command, shell=True, check=True)
 
 
-def delete_ap(ssid: str = "CocktailBerry"):
+def delete_ap(ssid: str = "CocktailBerry") -> None:
     subprocess.run("sudo iw dev wlan1 del", shell=True, check=False)
     subprocess.run(f"sudo nmcli connection delete {ssid}", shell=True, check=False)

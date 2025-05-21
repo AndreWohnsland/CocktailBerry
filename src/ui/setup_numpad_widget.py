@@ -1,7 +1,13 @@
+from typing import TYPE_CHECKING
+
 from PyQt5.QtWidgets import QDialog, QLineEdit
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.numpad import Ui_NumpadWindow
+
+if TYPE_CHECKING:
+    from src.ui.create_config_window import ConfigWindow
+    from src.ui.setup_mainwindow import MainScreen
 
 
 class NumpadWidget(QDialog, Ui_NumpadWindow):
@@ -9,15 +15,15 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
 
     def __init__(
         self,
-        parent,
+        parent: MainScreen | ConfigWindow,
         le_to_write: QLineEdit,
         x_pos: int = 0,
         y_pos: int = 0,
         header_text: str = "Password",
-        use_float=False,
+        use_float: bool = False,
         overwrite_number: bool = False,
         header_is_entered_number: bool = False,
-    ):
+    ) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
@@ -42,31 +48,31 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         self.show()
         DP_CONTROLLER.set_display_settings(self, resize=False)
 
-    def number_clicked(self, number: int):
+    def number_clicked(self, number: int) -> None:
         """Add the clicked number to the lineedit."""
         text = str(number) if self.overwrite_number else f"{self.source_line_edit.text()}{number}"
         self.source_line_edit.setText(text)
         if self.header_is_entered_number:
             self.LHeader.setText(text)
 
-    def enter_clicked(self):
+    def enter_clicked(self) -> None:
         """Enters/Closes the Dialog."""
         self.close()
 
-    def del_clicked(self):
+    def del_clicked(self) -> None:
         """Delete the last digit in the lineedit."""
         current_string = self.source_line_edit.text()[:-1]
         self.source_line_edit.setText(current_string)
         if self.header_is_entered_number:
             self.LHeader.setText(current_string)
 
-    def _add_float(self, use_float: bool):
+    def _add_float(self, use_float: bool) -> None:
         if not use_float:
             self.PBdot.deleteLater()
             return
         self.PBdot.clicked.connect(self._dot_clicked)
 
-    def _dot_clicked(self):
+    def _dot_clicked(self) -> None:
         """Add a dot if its not the first letter or a dot already exists."""
         current_string = self.source_line_edit.text()
         if "." in current_string or len(current_string) == 0:

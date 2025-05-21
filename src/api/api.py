@@ -1,4 +1,6 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import Any
 
 import uvicorn
 from fastapi import FastAPI, Request
@@ -9,6 +11,8 @@ from fastapi.staticfiles import StaticFiles
 
 from src import __version__
 from src.api.api_config import DESCRIPTION, TAGS_METADATA
+from src.api.internal.validation import ValidationError
+from src.api.models import ApiMessage
 from src.api.routers import bottles, cocktails, ingredients, options
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
@@ -26,7 +30,7 @@ from src.utils import time_print
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     start_resource_tracker()
     ADDONS.setup_addons()
     try:
@@ -79,7 +83,7 @@ app.mount("/static/user", StaticFiles(directory=USER_IMAGE_FOLDER), name="user_i
 
 
 @app.exception_handler(DatabaseTransactionError)
-async def database_transaction_error_handler(request: Request, exc: DatabaseTransactionError):
+async def database_transaction_error_handler(request: Request, exc: DatabaseTransactionError) -> JSONResponse:
     return JSONResponse(
         status_code=406,
         content={"detail": str(exc)},
@@ -87,7 +91,7 @@ async def database_transaction_error_handler(request: Request, exc: DatabaseTran
 
 
 @app.exception_handler(ConfigError)
-async def config_error_handler(request: Request, exc: ConfigError):
+async def config_error_handler(request: Request, exc: ConfigError) -> JSONResponse:
     return JSONResponse(
         status_code=406,
         content={"detail": str(exc)},
@@ -95,11 +99,21 @@ async def config_error_handler(request: Request, exc: ConfigError):
 
 
 @app.exception_handler(CouldNotInstallAddonError)
-async def addon_error_handler(request: Request, exc: CouldNotInstallAddonError):
+async def addon_error_handler(request: Request, exc: CouldNotInstallAddonError) -> JSONResponse:
     return JSONResponse(
         status_code=406,
         content={"detail": str(exc)},
     )
+
+
+@app.exception_handler(ValidationError)
+async def validation_error_handler(request: Request, exc: ValidationError) -> JSONResponse:
+    content = {
+        "status": exc.status,
+        "detail": exc.detail_msg,
+        "bottle": exc.bottle,
+    }
+    return JSONResponse(status_code=exc.status_code, content=content)
 
 
 app.include_router(cocktails.router)
@@ -113,9 +127,9 @@ app.include_router(ingredients.protected_router)
 
 
 @app.get("/", tags=["testing"], summary="Test endpoint, check if api works")
-async def root():
-    return {"message": "Welcome to CocktailBerry, this API works!"}
+async def root() -> ApiMessage:
+    return ApiMessage(message="Welcome to CocktailBerry, this API works!")
 
 
-def run_api(port: int = 8000):
+def run_api(port: int = 8000) -> None:
     uvicorn.run(app, host="0.0.0.0", port=port)

@@ -1,5 +1,6 @@
 from typing import Callable
 
+from PIL import Image
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QMainWindow
 
@@ -14,11 +15,11 @@ from src.ui_elements import Ui_PictureWindow
 class PictureWindow(QMainWindow, Ui_PictureWindow):
     """Class for the Progress screen during Cocktail making."""
 
-    def __init__(self, cocktail: Cocktail, refresh_cocktail_view: Callable):
+    def __init__(self, cocktail: Cocktail, refresh_cocktail_view: Callable) -> None:
         super().__init__()
         self.setupUi(self)
         self.cocktail = cocktail
-        self.new_picture = None
+        self.new_picture: Image.Image | None = None
         self.refresh_cocktail_view = refresh_cocktail_view
         DP_CONTROLLER.initialize_window_object(self)
         self.button_back.clicked.connect(self.close)
@@ -31,7 +32,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _set_picture(self):
+    def _set_picture(self) -> None:
         """Upload the picture to the user folder."""
         if self.new_picture is not None:
             save_image(self.new_picture, self.cocktail.id)
@@ -39,7 +40,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
             self.refresh_cocktail_view()
         self.close()
 
-    def _remove_picture(self):
+    def _remove_picture(self) -> None:
         """Remove the picture from the user folder."""
         if not DP_CONTROLLER.ask_to_remove_picture():
             return
@@ -52,7 +53,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         self.picture_user.setText("No Image\nAvailable")
         self.refresh_cocktail_view()
 
-    def _prepare_picture(self):
+    def _prepare_picture(self) -> None:
         """Crops and show the picture."""
         selected_path = DP_CONTROLLER.ask_for_image_location()
         if selected_path is None:
@@ -71,7 +72,7 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         pixmap = QPixmap.fromImage(q_image)
         self.picture_user.setPixmap(pixmap)
 
-    def _get_pictures(self):
+    def _get_pictures(self) -> None:
         """Populate the pictures for system and user."""
         self.system_image_path = find_default_cocktail_image(self.cocktail)
         # it should always exist, but just in case the user deleted it or some other weird thing happened
@@ -83,4 +84,5 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         if self.user_image_path is None or not self.user_image_path.exists():
             return
         user_pixmap = QPixmap(str(self.user_image_path))
+        self.picture_user.setPixmap(user_pixmap)
         self.picture_user.setPixmap(user_pixmap)

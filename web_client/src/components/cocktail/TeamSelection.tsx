@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
-import { useConfig } from '../../ConfigProvider';
+import { useConfig } from '../../providers/ConfigProvider';
 
 interface TeamSelectionProps {
   isOpen: boolean;

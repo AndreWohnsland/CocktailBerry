@@ -1,17 +1,20 @@
-from __future__ import annotations
-
 import string
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QLineEdit, QMainWindow
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.keyboard import Ui_Keyboard
 
+if TYPE_CHECKING:
+    from src.ui.create_config_window import ConfigWindow
+    from src.ui.setup_mainwindow import MainScreen
+
 
 class KeyboardWidget(QMainWindow, Ui_Keyboard):
     """Creates a keyboard where the user can enter names or similar strings to Lineedits."""
 
-    def __init__(self, parent, le_to_write: QLineEdit, max_char_len: int = 30):
+    def __init__(self, parent: MainScreen | ConfigWindow, le_to_write: QLineEdit, max_char_len: int = 30) -> None:
         super().__init__()
         self.setupUi(self)
         self.mainscreen = parent
@@ -78,20 +81,20 @@ class KeyboardWidget(QMainWindow, Ui_Keyboard):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def back_button_clicked(self):
+    def back_button_clicked(self) -> None:
         """Close the Window without any further action."""
         self.close()
 
-    def clear_button_clicked(self):
+    def clear_button_clicked(self) -> None:
         """Clear the input."""
         self.LName.setText("")
 
-    def enter_button_clicked(self):
+    def enter_button_clicked(self) -> None:
         """Close and enter the String value back to the Lineedit."""
         self.le_to_write.setText(self.LName.text())
         self.close()
 
-    def input_button_clicked(self, input_default: str | int, input_shift: str | int, input_control: str | int):
+    def input_button_clicked(self, input_default: str | int, input_shift: str | int, input_control: str | int) -> None:
         """Enter the input_value into the field, adds it to the string.
 
         Can either have the normal or the shift value, if there is no difference both input arguments are the same.
@@ -105,13 +108,13 @@ class KeyboardWidget(QMainWindow, Ui_Keyboard):
         string_value += str(add_value)
         self.LName.setText(string_value)
 
-    def delete_clicked(self):
+    def delete_clicked(self) -> None:
         string_value = self.LName.text()
         self.LName.setText(string_value[:-1])
 
-    def _shift_control_clicked(self):
+    def _shift_control_clicked(self) -> None:
         """Select the right character set for the buttons."""
-        character_set = self.button_value_default_list
+        character_set: list[str | int] | list[str] = self.button_value_default_list
         # if shift is toggled, use the upper letters
         if self.shift.isChecked():
             character_set = self.button_value_shift_list
@@ -120,7 +123,7 @@ class KeyboardWidget(QMainWindow, Ui_Keyboard):
             character_set = self.button_value_control_list
         self._change_displayed_characters(character_set)
 
-    def _change_displayed_characters(self, character_list: list):
+    def _change_displayed_characters(self, character_list: list) -> None:
         """Change the displayed values on the buttons."""
         for obj, char in zip(self.input_button_list, character_list):
             # fix for & sign, it needs to be a && in pyqt

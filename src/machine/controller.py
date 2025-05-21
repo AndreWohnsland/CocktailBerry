@@ -37,11 +37,11 @@ class _PreparationData:
 class MachineController:
     """Controller Class for all Machine related Pin routines."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Time for print intervals, need to remember the last print time
         self._print_time = 0.0
 
-    def init_machine(self):
+    def init_machine(self) -> None:
         self.pin_controller = self._chose_controller()
         self.led_controller = LedController(self.pin_controller)
         self.reverter = Reverter(self.pin_controller, cfg.MAKER_PUMP_REVERSION, cfg.MAKER_REVERSION_PIN)
@@ -54,7 +54,7 @@ class MachineController:
         # In case none is found, fall back to generic using python-periphery
         return GenericController(cfg.MAKER_PINS_INVERTED)
 
-    def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False):
+    def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False) -> None:
         """Clean the pumps for the defined time in the config.
 
         Activates all pumps for the given time.
@@ -79,11 +79,11 @@ class MachineController:
         self,
         w: MainScreen | None,
         ingredient_list: list[Ingredient],
-        recipe="",
-        is_cocktail=True,
-        verbose=True,
+        recipe: str = "",
+        is_cocktail: bool = True,
+        verbose: bool = True,
         finish_message: str = "",
-    ):
+    ) -> tuple[list[int], float, float]:
         """RPI Logic to prepare the cocktail.
 
         Calculates needed time for each slot according to data and config.
@@ -123,7 +123,9 @@ class MachineController:
             shared.cocktail_status.message = finish_message
         return consumption, current_time, max_time
 
-    def _start_preparation(self, w: MainScreen | None, prep_data: list[_PreparationData], verbose: bool = True):
+    def _start_preparation(
+        self, w: MainScreen | None, prep_data: list[_PreparationData], verbose: bool = True
+    ) -> tuple[float, float]:
         """Prepare the volumes of the given data."""
         self._print_time = 0.0
         current_time = 0.0
@@ -141,9 +143,9 @@ class MachineController:
             section_time = 0.0
             section_max = max(x.flow_time for x in section)
             pins = [x.pin for x in section]
-            progress = _generate_progress(current_time, max_time)
+            progress_string = _generate_progress(current_time, max_time)
             section_start_time = time.perf_counter()
-            self._start_pumps(pins, progress)
+            self._start_pumps(pins, progress_string)
             # iterate over each prep data
             while section_time < section_max and shared.cocktail_status.status != PrepareResult.CANCELED:
                 self._process_preparation_section(current_time, max_time, section, section_time)
@@ -159,8 +161,8 @@ class MachineController:
                     w.change_progression_window(progress)
                     qApp.processEvents()
 
-            progress = _generate_progress(current_time, max_time)
-            self._stop_pumps(pins, progress)
+            progress_string = _generate_progress(current_time, max_time)
+            self._stop_pumps(pins, progress_string)
         return current_time, max_time
 
     def _chunk_preparation_data(self, prep_data: list[_PreparationData]) -> list[list[_PreparationData]]:
@@ -186,7 +188,7 @@ class MachineController:
         max_time: float,
         section: list[_PreparationData],
         section_time: float,
-    ):
+    ) -> None:
         """Iterate over the data in each section and control pumps accordingly."""
         for data in section:
             if data.flow_time > section_time and not data.closed:
@@ -196,7 +198,7 @@ class MachineController:
                 self._stop_pumps([data.pin], progress)
                 data.closed = True
 
-    def set_up_pumps(self):
+    def set_up_pumps(self) -> None:
         """Get all used pins, prints pins and uses controller class to set up."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
         active_pins = [x.pin for x in used_config]
@@ -205,32 +207,34 @@ class MachineController:
         self.reverter.initialize_pin()
         atexit.register(self.cleanup)
 
-    def _start_pumps(self, pin_list: list[int], print_prefix: str = ""):
+    def _start_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and opens all given pins."""
         time_print(f"{print_prefix}<o> Opening Pins: {pin_list}")
         self.pin_controller.activate_pin_list(pin_list)
 
-    def close_all_pumps(self):
+    def close_all_pumps(self) -> None:
         """Close all pins connected to the pumps."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
         active_pins = [x.pin for x in used_config]
         self._stop_pumps(active_pins)
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Cleanup for shutdown the machine."""
         self.close_all_pumps()
         self.pin_controller.cleanup_pin_list()
 
-    def _stop_pumps(self, pin_list: list[int], print_prefix: str = ""):
+    def _stop_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and closes all given pins."""
         time_print(f"{print_prefix}<x> Closing Pins: {pin_list}")
         self.pin_controller.close_pin_list(pin_list)
 
-    def default_led(self):
+    def default_led(self) -> None:
         """Turn the LED on."""
         self.led_controller.default_led()
 
-    def _consumption_print(self, consumption: list[float], current_time: float, max_time: float, interval=1):
+    def _consumption_print(
+        self, consumption: list[float], current_time: float, max_time: float, interval: int = 1
+    ) -> None:
         """Display each interval seconds information for cocktail preparation."""
         # we do not want to print at the beginning
         if round(self._print_time, 1) == 0:
@@ -275,12 +279,12 @@ def _build_clean_data() -> list[_PreparationData]:
     return prep_data
 
 
-def _generate_progress(current_time: float, total_time: float):
+def _generate_progress(current_time: float, total_time: float) -> str:
     """Print the current passed time in relation to total time."""
     return f"{current_time: <4.1f} | {total_time: >4.1f} s: "
 
 
-def _header_print(msg: str):
+def _header_print(msg: str) -> None:
     """Format the message with dashes around."""
     time_print(f"{' ' + msg + ' ':-^80}")
 

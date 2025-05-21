@@ -1,5 +1,5 @@
 from itertools import cycle
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
@@ -14,13 +14,16 @@ from src.ui.creation_utils import create_button
 from src.ui_elements.teamselection import Ui_Teamselection
 from src.utils import time_print
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 
 class TeamScreen(QMainWindow, Ui_Teamselection):
     """Class for the Team selection Screen."""
 
     selection_done = pyqtSignal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: MainScreen) -> None:
         """Initialize the Team selection Screen."""
         super().__init__()
         self.setupUi(self)
@@ -29,7 +32,7 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         team_colors = cycle(["btn-teamone", "btn-teamtwo"])
         for team_name in cfg.TEAM_BUTTON_NAMES:
             team_button = create_button(team_name, font_size=40, max_h=300, min_h=100, css_class=next(team_colors))
-            team_button.clicked.connect(lambda _, t=team_name: self.set_team(t))
+            team_button.clicked.connect(lambda _, t=team_name: self.set_team(t))  # type: ignore[attr-defined]
             self.button_container.addWidget(team_button)
             setattr(self, f"button_{team_name}", team_button)
         self.mainscreen = parent
@@ -46,10 +49,10 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         self._thread = QThread()
         self._worker.moveToThread(self._thread)
         # Connect signals and slots
-        self._thread.started.connect(self._worker.run)
+        self._thread.started.connect(self._worker.run)  # type: ignore[attr-defined]
         self._worker.done.connect(self._thread.quit)
         self._worker.done.connect(self._worker.deleteLater)
-        self._thread.finished.connect(self._thread.deleteLater)
+        self._thread.finished.connect(self._thread.deleteLater)  # type: ignore[attr-defined]
         self._thread.start()
 
         if cfg.RFID_READER != "No":
@@ -59,11 +62,11 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
             # we do not need the person label, so remove it
             self.person_label.deleteLater()
 
-    def _write_rfid_value(self, text: str, _id: str):
+    def _write_rfid_value(self, text: str, _id: str) -> None:
         shared.team_member_name = text
         self.person_label.setText(text)
 
-    def set_team(self, team: str):
+    def set_team(self, team: str) -> None:
         time_print(f"Team {team} selected")
         shared.selected_team = team
         if self._rfid_reader is not None:
@@ -71,11 +74,11 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         self.selection_done.emit(team)
         self.close()
 
-    def __del__(self):
+    def __del__(self) -> None:
         if self._rfid_reader is not None:
             self._rfid_reader.cancel_reading()
 
-    def _get_leaderboard_data(self):
+    def _get_leaderboard_data(self) -> None:
         """Get leaderboard data.
 
         Change the button afterwards with the number as prefix in brackets.
@@ -93,10 +96,10 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
 
         done = pyqtSignal()
 
-        def __init__(self, func: Callable, parent=None):
+        def __init__(self, func: Callable, parent: None | QObject = None) -> None:
             super().__init__(parent)
             self.func = func
 
-        def run(self):
+        def run(self) -> None:
             self.func()
             self.done.emit()

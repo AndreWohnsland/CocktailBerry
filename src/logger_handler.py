@@ -18,7 +18,7 @@ class LoggerHandler:
 
     log_folder = LOG_FOLDER
 
-    def __init__(self, logger_name: str, filename: str = LogFiles.PRODUCTION):
+    def __init__(self, logger_name: str, filename: str = LogFiles.PRODUCTION) -> None:
         self.logger_name = logger_name
         self.path = LoggerHandler.log_folder / f"{filename}.log"
 
@@ -41,11 +41,11 @@ class LoggerHandler:
         if filename != LogFiles.DEBUG:
             self._debug_logger = LoggerHandler(f"{logger_name}_debug", LogFiles.DEBUG)
 
-    def log_event(self, level: _AcceptedLogLevels, message: str):
+    def log_event(self, level: _AcceptedLogLevels, message: str) -> None:
         """Simply logs a message of given level."""
         self.logger.log(getattr(logging, level), message)
 
-    def log_header(self, level: _AcceptedLogLevels, message: str):
+    def log_header(self, level: _AcceptedLogLevels, message: str) -> None:
         """Log a message of given level formatted as header."""
         self.log_event(
             level,
@@ -54,33 +54,33 @@ class LoggerHandler:
             ),
         )
 
-    def log_start_program(self, program_type: str = "maker"):
+    def log_start_program(self, program_type: str = "maker") -> None:
         """Log the start of the program, optionally can define program type."""
         self.log_header("INFO", f"Starting the {program_type} program")
 
-    def log_exception(self, message: Union[str, object]):
+    def log_exception(self, message: Union[str, object]) -> None:
         """Log an exception with the given message."""
         if self._debug_logger is None:
             self.logger.exception(message)
         else:
             self._debug_logger.log_exception(message)
 
-    def debug(self, message: object, *args: object, **kwargs: object):
+    def debug(self, message: object, *args: object, **kwargs: object) -> None:
         """Log the message under the debug level."""
         self.logger.debug(message, *args, **kwargs)  # type: ignore
 
-    def info(self, message: object, *args: object, **kwargs: object):
+    def info(self, message: object, *args: object, **kwargs: object) -> None:
         """Log the message under the info level."""
         self.logger.info(message, *args, **kwargs)  # type: ignore
 
-    def warning(self, message: object, *args: object, **kwargs: object):
+    def warning(self, message: object, *args: object, **kwargs: object) -> None:
         """Log the message under the warning level."""
         self.logger.warning(message, *args, **kwargs)  # type: ignore
 
-    def error(self, message: object, *args: object, **kwargs: object):
+    def error(self, message: object, *args: object, **kwargs: object) -> None:
         """Log the message under the error level."""
         self.logger.error(message, *args, **kwargs)  # type: ignore
 
-    def critical(self, message: object, *args: object, **kwargs: object):
+    def critical(self, message: object, *args: object, **kwargs: object) -> None:
         """Log the message under the critical level."""
         self.logger.critical(message, *args, **kwargs)  # type: ignore

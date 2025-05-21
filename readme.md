@@ -17,7 +17,7 @@ Detailed information, installation steps and SetUp can be found at the [Official
 
 <a href="https://demo.cocktailberry.org/"><img src="docs/pictures/demobutton.png" alt="v2-demo" height="70"/></a>
 
-Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳 
+Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
 
 <a href="https://cocktailberry.org/"><img src="docs/pictures/websitebutton.png" alt="website" height="70"/></a>
 <a href="https://docs.cocktailberry.org/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
@@ -48,10 +48,10 @@ CocktailBerry can do:
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
 - Define connected ingredients to the machine and existing additional ingredients over the UI
 - Auto calculates and displays possible recipes dependent on given information
-- Supports up to 24 Bottles / Pumps
 - Option to serve cocktails without alcohol
 - Execute a cleaning program to get rid of remaining fluids
-- Export data for later data analysis
+- Visualize the cocktail data and get insights
+- Run headless, so you can access it over another device
 - Send cocktail production data to a given endpoint, for example a webhook
 - Keep track of cocktail count and volume from different teams for some fun competition
 - Select different themes to fit your liking

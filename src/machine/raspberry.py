@@ -62,7 +62,7 @@ class RpiController(PinController):
             self.low, self.high = self.high, self.low
         self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True):
+    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         """Set up the given pin list."""
         if not self.dev_displayed:
             time_print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
@@ -79,17 +79,17 @@ class RpiController(PinController):
         else:
             logger.log_event("WARNING", f"Could not import RPi.GPIO. Will not be able to control pins: {pin_list}")
 
-    def activate_pin_list(self, pin_list: list[int]):
+    def activate_pin_list(self, pin_list: list[int]) -> None:
         """Activates the given pin list."""
         if not self.devenvironment:
             GPIO.output(pin_list, self.high)
 
-    def close_pin_list(self, pin_list: list[int]):
+    def close_pin_list(self, pin_list: list[int]) -> None:
         """Close the given pin_list."""
         if not self.devenvironment:
             GPIO.output(pin_list, self.low)
 
-    def cleanup_pin_list(self, pin_list: list[int] | None = None):
+    def cleanup_pin_list(self, pin_list: list[int] | None = None) -> None:
         """Clean up the given pin list, or all pins if none is given."""
         if self.devenvironment:
             return
@@ -122,7 +122,7 @@ class Rpi5Controller(PinController):
         ] = {}  # Dictionary to store GPIO pin objects (InputDevice/OutputDevice)
         self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True):
+    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         """Set up the given pin list using gpiozero with error handling."""
         if not self.dev_displayed:
             time_print(f"Devenvironment on the RPi5 module is {'on' if self.devenvironment else 'off'}")
@@ -144,7 +144,7 @@ class Rpi5Controller(PinController):
                 # Catch any error and continue, printing the pin and error message
                 logger.log_event("WARNING", f"Error: Could not initialize GPIO pin {pin}. Reason: {e!s}")
 
-    def activate_pin_list(self, pin_list: list[int]):
+    def activate_pin_list(self, pin_list: list[int]) -> None:
         """Activates the given pin list (sets to high)."""
         if self.devenvironment:
             return
@@ -156,7 +156,7 @@ class Rpi5Controller(PinController):
                     "WARNING", f"Could not activate GPIO pin {pin}. Reason: Pin not activated or not an OutputDevice."
                 )
 
-    def close_pin_list(self, pin_list: list[int]):
+    def close_pin_list(self, pin_list: list[int]) -> None:
         """Close (deactivate) the given pin_list (sets to low)."""
         if self.devenvironment:
             return
@@ -164,7 +164,7 @@ class Rpi5Controller(PinController):
             if pin in self.gpios and isinstance(self.gpios[pin], OutputDevice):
                 self.gpios[pin].off()
 
-    def cleanup_pin_list(self, pin_list: list[int] | None = None):
+    def cleanup_pin_list(self, pin_list: list[int] | None = None) -> None:
         """Clean up the given pin list, or all pins if none is given."""
         if pin_list is None:
             # Clean up all pins
@@ -186,19 +186,19 @@ class Rpi5Controller(PinController):
 
 
 class RaspberryGPIO(GPIOController):
-    def __init__(self, inverted: bool, pin: int):
+    def __init__(self, inverted: bool, pin: int) -> None:
         low = GPIO.LOW if not DEV else 0
         high = GPIO.HIGH if not DEV else 1
         super().__init__(high, low, inverted, pin)
 
-    def initialize(self):
+    def initialize(self) -> None:
         GPIO.setup(self.pin, GPIO.OUT, initial=self.low)
 
-    def activate(self):
+    def activate(self) -> None:
         GPIO.output(self.pin, self.high)
 
-    def close(self):
+    def close(self) -> None:
         GPIO.output(self.pin, self.low)
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         GPIO.cleanup(self.pin)

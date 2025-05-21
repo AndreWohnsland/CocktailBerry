@@ -9,7 +9,6 @@ import { MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'r
 import { RiShutDownLine } from 'react-icons/ri';
 import { TiDocumentAdd } from 'react-icons/ti';
 import { useNavigate } from 'react-router-dom';
-import { useConfig } from '../../ConfigProvider';
 import {
   checkInternetConnection,
   cleanMachine,
@@ -21,6 +20,7 @@ import {
   updateSystem,
   uploadBackup,
 } from '../../api/options';
+import { useConfig } from '../../providers/ConfigProvider';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import ProgressModal from '../cocktail/ProgressModal';
 

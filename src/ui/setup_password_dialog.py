@@ -13,7 +13,7 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
 
     password_success = pyqtSignal(bool)  # Signal to communicate data
 
-    def __init__(self, right_password: int, header_type: Literal["master", "maker"] = "master"):
+    def __init__(self, right_password: int, header_type: Literal["master", "maker"] = "master") -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
@@ -31,11 +31,11 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def number_clicked(self, number: int):
+    def number_clicked(self, number: int) -> None:
         """Add the clicked number to the lineedit."""
         self.password_field.setText(f"{self.password_field.text()}{number}")
 
-    def enter_clicked(self):
+    def enter_clicked(self) -> None:
         """Enters/Closes the Dialog."""
         password_string = self.password_field.text()
         password = 0 if len(password_string) == 0 else int(password_string)
@@ -46,12 +46,12 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
         DP_CONTROLLER.say_wrong_password()
         self.password_field.clear()
 
-    def _cancel_clicked(self):
+    def _cancel_clicked(self) -> None:
         """Cancel the password confirmation an aborts process."""
         self.password_success.emit(False)
         self.close()
 
-    def del_clicked(self):
+    def del_clicked(self) -> None:
         """Delete the last digit in the lineedit."""
         current_string = self.password_field.text()
         self.password_field.setText(current_string[:-1])

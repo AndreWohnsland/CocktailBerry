@@ -21,7 +21,7 @@ def api(
     version: Optional[bool] = typer.Option(
         None, "--version", "-V", callback=version_callback, help="Show current version."
     ),
-):
+) -> None:
     """Run the FastAPI server.
 
     Can be used as an alternative way to control the machine, for example over an external program or a web ui.
@@ -34,7 +34,7 @@ def api(
 
 
 @cli.command()
-def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL for the Nginx configuration")):
+def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL for the Nginx configuration")) -> None:
     """Set up the web interface.
 
     This will set up the web interface for CocktailBerry.
@@ -54,7 +54,7 @@ def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL f
 
 
 @cli.command()
-def add_virtual_keyboard():
+def add_virtual_keyboard() -> None:
     """Add and start the virtual keyboard service.
 
     This will create, enable, and start the Squeekboard virtual keyboard service.
@@ -66,7 +66,7 @@ def add_virtual_keyboard():
 
 
 @cli.command()
-def remove_virtual_keyboard():
+def remove_virtual_keyboard() -> None:
     """Stop and disable the virtual keyboard service.
 
     This will stop and disable the Squeekboard virtual keyboard service.
@@ -80,7 +80,7 @@ def remove_virtual_keyboard():
 def setup_ap(
     ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP"),
     password: str = typer.Option("cocktailconnect", "--password", help="Password of the AP"),
-):
+) -> None:
     """Set up the access point.
 
     The access point will be created on a virtual wlan1 interface.
@@ -97,7 +97,7 @@ def setup_ap(
 
 
 @cli.command()
-def remove_ap(ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP")):
+def remove_ap(ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP")) -> None:
     """Remove the access point.
 
     Remove the given config for this access point and remove virtual wlan1 interface.

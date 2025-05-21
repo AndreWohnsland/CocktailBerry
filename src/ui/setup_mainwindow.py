@@ -5,7 +5,7 @@ Also defines the Mode for controls.
 
 # pylint: disable=unnecessary-lambda
 import platform
-from typing import Optional
+from typing import Any, Optional
 
 from PyQt5.QtCore import QEventLoop
 from PyQt5.QtGui import QIntValidator
@@ -43,7 +43,7 @@ from src.updater import Updater
 class MainScreen(QMainWindow, Ui_MainWindow):
     """Creates the Mainscreen."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Init the main window. Many of the button and List connects are in pass_setup."""
         super().__init__()
         self.setupUi(self)
@@ -102,7 +102,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self._deprecation_check()
         ADDONS.start_trigger_loop(self)
 
-    def update_check(self):
+    def update_check(self) -> None:
         """Check if there is an update and asks to update, if exists."""
         update_available, info = can_update()
         if not update_available:
@@ -114,7 +114,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if not success:
             DP_CONTROLLER.say_update_failed()
 
-    def _connection_check(self):
+    def _connection_check(self) -> None:
         """Check if there is an internet connection.
 
         Asks user to adjust time, if there is no no connection.
@@ -123,16 +123,16 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         # Asks the user if he want to adjust the time
         if DP_CONTROLLER.ask_to_adjust_time():
-            self.datepicker = DatePicker()
+            self.datepicker = DatePicker(self)
 
-    def _deprecation_check(self):
+    def _deprecation_check(self) -> None:
         """Check if to display the deprecation warning for newer python version install."""
         if is_python_deprecated():
             DP_CONTROLLER.say_python_deprecated(
                 platform.python_version(), f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
             )
 
-    def open_cocktail_selection(self, cocktail: Cocktail):
+    def open_cocktail_selection(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
         if self.cocktail_selection is not None:
             # Clean up all internal layouts and widgets recursively
@@ -153,43 +153,43 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def open_numpad(
         self,
         le_to_write: QLineEdit,
-        x_pos=0,
-        y_pos=0,
-        header_text="Password",
+        x_pos: int = 0,
+        y_pos: int = 0,
+        header_text: str = "Password",
         overwrite_number: bool = False,
-    ):
+    ) -> None:
         """Open up the NumpadWidget connected to the lineedit offset from the left upper side."""
         self.numpad_window = NumpadWidget(
             self, le_to_write, x_pos, y_pos, header_text, overwrite_number=overwrite_number
         )
 
-    def open_keyboard(self, le_to_write, max_char_len=30):
+    def open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 30) -> None:
         """Open up the keyboard connected to the lineedit."""
         self.keyboard_window = KeyboardWidget(self, le_to_write=le_to_write, max_char_len=max_char_len)
 
-    def open_progression_window(self, cocktail_type: str = "Cocktail"):
+    def open_progression_window(self, cocktail_type: str = "Cocktail") -> None:
         """Open up the progression window to show the Cocktail status."""
         if self.progress_window is None:
             self.progress_window = ProgressScreen(self, cocktail_type)
         self.progress_window.show_screen(cocktail_type)
 
-    def change_progression_window(self, pb_value: int):
+    def change_progression_window(self, pb_value: int) -> None:
         """Change the value of the progression bar of the ProBarWindow."""
         if self.progress_window is None:
             return
         self.progress_window.progressBar.setValue(pb_value)
 
-    def close_progression_window(self):
+    def close_progression_window(self) -> None:
         """Close the progression window at the end of the cycle."""
         if self.progress_window is None:
             return
         self.progress_window.hide()
 
-    def open_team_window(self):
+    def open_team_window(self) -> None:
         self.team_window = TeamScreen(self)
         loop = QEventLoop()
 
-        def wait_for_selection(_):
+        def wait_for_selection(_: Any) -> None:
             """Just wait for the selection to be done."""
             loop.quit()
 
@@ -198,24 +198,24 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.team_window.selection_done.connect(wait_for_selection)
         loop.exec_()
 
-    def open_option_window(self):
+    def open_option_window(self) -> None:
         """Open up the options."""
         if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD):
             return
         self.option_window = OptionWindow(self)
 
-    def open_bottle_window(self):
+    def open_bottle_window(self) -> None:
         """Open the bottle window to change the volume levels."""
         self.bottle_window = BottleWindow(self)
 
-    def open_ingredient_window(self):
+    def open_ingredient_window(self) -> None:
         """Open a window to spend one single ingredient."""
         self.ingredient_window = GetIngredientWindow(self)
 
-    def open_available_window(self):
+    def open_available_window(self) -> None:
         self.available_window = AvailableWindow(self)
 
-    def open_picture_window(self):
+    def open_picture_window(self) -> None:
         cocktail_name = DP_CONTROLLER.get_list_widget_selection(self.LWRezepte)
         if not cocktail_name:
             DP_CONTROLLER.say_create_cocktail_first()
@@ -226,14 +226,14 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         self.picture_window = PictureWindow(cocktail, self.cocktail_view.populate_cocktails)
 
-    def open_refill_dialog(self, cocktail: Cocktail):
+    def open_refill_dialog(self, cocktail: Cocktail) -> None:
         """Open the refill dialog for the given ingredient."""
         empty_ingredient = cocktail.enough_fill_level()
         if empty_ingredient is None:
             return
         self.refill_dialog = RefillDialog(self, empty_ingredient)
 
-    def connect_other_windows(self):
+    def connect_other_windows(self) -> None:
         """Links the buttons and lineedits to the other ui elements."""
         self.LECocktail.clicked.connect(lambda: self.open_keyboard(self.LECocktail))
         self.option_button.clicked.connect(self.open_option_window)
@@ -274,7 +274,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             lambda: self.open_keyboard(self.line_edit_ingredient_unit, max_char_len=20)
         )
 
-    def connect_objects(self):
+    def connect_objects(self) -> None:
         """Connect all the functions with the Buttons."""
         # First, connect all the push buttons with the Functions
         self.PBZutathinzu.clicked.connect(lambda: ingredients.handle_enter_ingredient(self))
@@ -324,9 +324,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         bottles.set_fill_level_bars(self)
 
         for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
-            combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
+            combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))  # type: ignore[attr-defined]
 
-    def handle_tab_bar_clicked(self, index):
+    def handle_tab_bar_clicked(self, index: int) -> None:
         """Protects tabs other than maker tab with a password."""
         old_index = self.previous_tab_index
         unprotected_tabs = [0, 1] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 2) if not x]
@@ -344,7 +344,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Set back to the prev tab if password not right
         self.tabWidget.setCurrentIndex(old_index)
 
-    def _apply_search_to_list(self):
+    def _apply_search_to_list(self) -> None:
         """Apply the search to the list widget."""
         search = self.input_search_cocktail.text()
         DP_CONTROLLER.clear_list_widget(self.list_widget_found_cocktails)
@@ -362,7 +362,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 to_fill.append(cocktail)
         DP_CONTROLLER.fill_list_widget(self.list_widget_found_cocktails, to_fill)
 
-    def _enter_search_to_maker(self):
+    def _enter_search_to_maker(self) -> None:
         """Switches to the cocktail selection of the given search."""
         search = DP_CONTROLLER.get_list_widget_selection(self.list_widget_found_cocktails)
         if not search:

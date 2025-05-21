@@ -59,17 +59,17 @@ class RFIDReader:
             return _BasicMFRC522()
         return None
 
-    def __new__(cls):
+    def __new__(cls) -> "RFIDReader":
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
         return cls._instance
 
-    def read_rfid(self, side_effect: Callable[[str, str], None]):
+    def read_rfid(self, side_effect: Callable[[str, str], None]) -> None:
         """Start the rfid reader, calls an side effect with the read value and id."""
         rfid_thread = Thread(target=self._read_thread, args=(side_effect,), daemon=True)
         rfid_thread.start()
 
-    def _read_thread(self, side_effect: Callable[[str, str], None]):
+    def _read_thread(self, side_effect: Callable[[str, str], None]) -> None:
         """Execute the reading until reads a value or got canceled."""
         if self.rfid is None or self.is_active:
             return
@@ -82,7 +82,7 @@ class RFIDReader:
             time.sleep(0.5)
         self.is_active = False
 
-    def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None):
+    def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None) -> None:
         """Write the value to the RFID."""
         rfid_thread = Thread(
             target=self._write_thread,
@@ -94,7 +94,7 @@ class RFIDReader:
         )
         rfid_thread.start()
 
-    def _write_thread(self, text: str, side_effect: Optional[Callable[[str], None]] = None):
+    def _write_thread(self, text: str, side_effect: Optional[Callable[[str], None]] = None) -> None:
         """Execute the writing until successful or canceled."""
         if self.rfid is None or self.is_active:
             return
@@ -108,7 +108,7 @@ class RFIDReader:
             time.sleep(0.1)
         self.is_active = False
 
-    def cancel_reading(self):
+    def cancel_reading(self) -> None:
         """Cancel the reading loop."""
         self.is_active = False
 

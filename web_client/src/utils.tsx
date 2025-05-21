@@ -40,7 +40,7 @@ export const confirmAndExecute = async (message: string, executable: () => Promi
 };
 
 const extractErrorMessage = (error: any): string => {
-  let errorMessage = error?.response?.data?.detail || error?.detail || error.message || error || 'An error occurred';
+  let errorMessage = error?.response?.data?.detail ?? error?.detail ?? error.message ?? error ?? 'An error occurred';
   if (typeof errorMessage === 'object') {
     errorMessage = JSON.stringify(errorMessage);
   }
@@ -65,7 +65,7 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<bo
   const randomNumber = Math.floor(100000 + Math.random() * 900000);
   await executable()
     .then((result) => {
-      info = result?.message || result;
+      info = result?.message ?? result;
       success = true;
     })
     .catch((error) => {

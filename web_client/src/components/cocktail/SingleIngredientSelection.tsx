@@ -51,7 +51,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
           <div className='flex flex-col items-center'>
             <select
               className='select-base w-full !p-3 mb-8'
-              value={selectedId || ''}
+              value={selectedId ?? ''}
               onChange={(e) => setSelectedId(Number(e.target.value))}
             >
               <option value='' disabled>
@@ -95,7 +95,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
         isOpen={isProgressModalOpen}
         onRequestClose={() => setIsProgressModalOpen(false)}
         progress={0}
-        displayName={allIngredients.find((ingredient) => ingredient.id === selectedId)?.name || ''}
+        displayName={allIngredients.find((ingredient) => ingredient.id === selectedId)?.name ?? ''}
         triggerOnClose={onClose}
       />
     </>

@@ -1,7 +1,7 @@
 import sys
 
 import requests
-from git import GitCommandError, Repo  # type: ignore
+from git import GitCommandError, Repo, TagReference  # type: ignore
 from requests import Response
 
 from src import FUTURE_PYTHON_VERSION
@@ -18,7 +18,7 @@ _GITHUB_RELEASE_URL = "https://api.github.com/repos/andrewohnsland/cocktailberry
 class Updater:
     """Class to get update from GitHub."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the updater class."""
         self.git_path = ROOT_PATH
         self.repo = Repo(self.git_path)
@@ -84,11 +84,11 @@ class Updater:
             info = self._parse_release_data(release_data)
         return update_available, info
 
-    def _get_latest_tag(self):
+    def _get_latest_tag(self) -> TagReference:
         """Extract the latest version number from the tags."""
         return sorted(self.repo.tags, key=lambda t: _Version(t.name.replace("v", "")))[-1]
 
-    def _parse_release_data(self, response: Response):
+    def _parse_release_data(self, response: Response) -> str:
         """Convert the response into a string to display."""
         migrator = Migrator()
         text = ""

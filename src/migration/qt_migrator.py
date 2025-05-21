@@ -26,7 +26,7 @@ script_entry_path = Path.home() / "launcher.sh"
 web_entry_path = Path("/etc/xdg/autostart/cocktail_web.desktop")
 
 
-def _remove_web_entry():
+def _remove_web_entry() -> None:
     """Remove the web entry for the autostart."""
     if web_entry_path.exists():
         web_entry_path.unlink()
@@ -35,7 +35,7 @@ def _remove_web_entry():
         print("Web entry not found. Nothing to remove.")
 
 
-def roll_back_to_qt_script():
+def roll_back_to_qt_script() -> None:
     """Roll back to the Qt setup."""
     # use the backup file if it exists
     script_entry_path.write_text(old_backend_script_content)

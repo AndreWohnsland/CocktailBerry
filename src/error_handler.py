@@ -4,7 +4,7 @@ import re
 import sys
 import traceback
 from functools import wraps
-from typing import Callable
+from typing import Any, Callable
 
 from src.logger_handler import LogFiles, LoggerHandler
 from src.machine.controller import MACHINE
@@ -13,14 +13,14 @@ from src.utils import time_print
 _logger = LoggerHandler("error_logger", LogFiles.DEBUG)
 
 
-def logerror(func: Callable):
+def logerror(func: Callable) -> Callable:
     """Wrap a function, execute it and log the exception.
 
     Close the machine pump, then re-raise the exception.
     """
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             result = func(*args, **kwargs)
         # pylint: disable=broad-except

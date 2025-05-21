@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { calibrateBottle } from '../../api/bottles';
-import { useConfig } from '../../ConfigProvider';
+import { useConfig } from '../../providers/ConfigProvider';
 import { executeAndShow } from '../../utils';
 
 const CalibrationWindow = () => {

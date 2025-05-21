@@ -27,7 +27,7 @@ def setup_service(
     hook_endpoint: Optional[str] = None,
     hook_header: Optional[str] = None,
     use_v1: bool = False,
-):
+) -> None:
     """Set up the microservice if any of args is given skip input.
 
     Else prompt user for data.
@@ -79,13 +79,13 @@ def setup_service(
     subprocess.run(cmd, check=False)
 
 
-def _get_env_var(regex: str, compose_setup: str):
+def _get_env_var(regex: str, compose_setup: str) -> str:
     """Get the the according matched value from the file."""
     match = re.search(regex, compose_setup)
     return "" if match is None else match[2]
 
 
-def _replace_env_var(regex: str, compose_setup: str, value: str):
+def _replace_env_var(regex: str, compose_setup: str, value: str) -> str:
     """Replace the value in the file."""
     return re.sub(regex, r"\1" + value, compose_setup)
 
@@ -114,7 +114,7 @@ class LanguageChoice(str, Enum):
     GERMAN = "de"
 
 
-def _get_ip():
+def _get_ip() -> str:
     """Get the IP of the machine, because gethostbyname does not work on all systems."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(0)
@@ -128,7 +128,7 @@ def _get_ip():
     return sock_ip
 
 
-def setup_teams(language: LanguageChoice):
+def setup_teams(language: LanguageChoice) -> None:
     """Set up the Teams frontend + backend from compose file, using the given language."""
     msg = f"Setting up the Teams Docker Compose images, using {language.name} language ..."
     typer.echo(typer.style(msg, fg=typer.colors.BLUE, bold=True))

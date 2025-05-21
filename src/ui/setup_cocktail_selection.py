@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 class CocktailSelection(QDialog, Ui_CocktailSelection):
     """Class for the Cocktail selection view."""
 
-    def __init__(self, mainscreen: MainScreen, cocktail: Cocktail, maker_screen_activate: Callable):
+    def __init__(self, mainscreen: MainScreen, cocktail: Cocktail, maker_screen_activate: Callable) -> None:
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
@@ -47,16 +47,16 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         DP_CONTROLLER.set_display_settings(self, False)
         self._connect_elements()
 
-    def _back(self):
+    def _back(self) -> None:
         self.maker_screen_activate()
 
-    def _set_image(self):
+    def _set_image(self) -> None:
         """Set the image of the cocktail."""
         image_path = find_cocktail_image(self.cocktail)
         pixmap = QPixmap(str(image_path))
         self.image_container.setPixmap(pixmap)
 
-    def _connect_elements(self):
+    def _connect_elements(self) -> None:
         """Init all the needed buttons."""
         self.button_back.clicked.connect(self._back)
         self.increase_alcohol.clicked.connect(self._higher_alcohol)
@@ -64,7 +64,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.virgin_checkbox.stateChanged.connect(self.update_cocktail_data)
         self.adjust_maker_label_size_cocktaildata()
 
-    def set_cocktail(self, cocktail: Cocktail):
+    def set_cocktail(self, cocktail: Cocktail) -> None:
         """Get the latest info from the db, gets the cocktails."""
         self.clear_recipe_data_maker()
         # need to refetch the cocktail from db, because the db might have changed
@@ -78,7 +78,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.cocktail = cocktail
         self._set_image()
 
-    def _prepare_cocktail(self, amount: int):
+    def _prepare_cocktail(self, amount: int) -> None:
         """Prepare the cocktail and switches to the maker screen, if successful."""
         # same applies here, need to refetch the cocktail from db
         db_cocktail = DB_COMMANDER.get_cocktail(self.cocktail.id)
@@ -87,7 +87,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self._scale_cocktail(amount)
         qt_prepare_flow(self.mainscreen, self.cocktail)
 
-    def _scale_cocktail(self, amount: int | None = None):
+    def _scale_cocktail(self, amount: int | None = None) -> None:
         """Scale the cocktail to given conditions for volume and alcohol."""
         # if no amount is given, take the middle of the volume list
         # this will give the first element if there is only one element
@@ -102,10 +102,10 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             factor = 0
         self.cocktail.scale_cocktail(amount, factor)
 
-    def update_cocktail_data(self):
+    def update_cocktail_data(self) -> None:
         """Update the cocktail data in the selection view."""
         self._scale_cocktail()
-        amount = self.cocktail.adjusted_amount
+        amount: int | float = self.cocktail.adjusted_amount
         # Need to set the button text here, since we need cocktail
         self.prepare_button.setText(
             UI_LANGUAGE.get_translation("prepare_button", "cocktail_selection", amount=amount, unit=cfg.EXP_MAKER_UNIT)
@@ -148,7 +148,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
 
-    def _apply_virgin_setting(self):
+    def _apply_virgin_setting(self) -> None:
         # hide the strong/weak buttons, since they are not needed
         self.increase_alcohol.setVisible(not self.cocktail.only_virgin)
         self.decrease_alcohol.setVisible(not self.cocktail.only_virgin)
@@ -158,14 +158,14 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # To be precise, they do work at start, but does not support dynamic changes
         set_strike_through(self.virgin_checkbox, not can_change_virgin)
 
-    def _decide_rounding(self, val: float, threshold=8):
+    def _decide_rounding(self, val: float, threshold: int = 8) -> int | float:
         """Return the right rounding for numbers displayed to the user."""
         if val >= threshold:
             # needs to be int, otherwise we would need to format .0 or .1 which is difficult
             return int(round(val, 0))
         return round(val, 1)
 
-    def clear_recipe_data_maker(self):
+    def clear_recipe_data_maker(self) -> None:
         """Clear the cocktail data in the maker view, only clears selection if no other item was selected."""
         self.LAlkoholgehalt.setText("")
         self.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
@@ -175,14 +175,14 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             field_ingredient.setText("")
             field_volume.setText("")
 
-    def reset_alcohol_factor(self):
+    def reset_alcohol_factor(self) -> None:
         """Set the alcohol slider to default (100%) value."""
         if self.cocktail.only_virgin:
             shared.alcohol_factor = 0.0
         else:
             shared.alcohol_factor = 1.0
 
-    def adjust_maker_label_size_cocktaildata(self):
+    def adjust_maker_label_size_cocktaildata(self) -> None:
         """Adjust the font size for larger screens."""
         # iterate over all size types and adjust size relative to window height
         # default height was 480 for provided UI
@@ -220,7 +220,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Return all maker label objects for ingredient name."""
         return [getattr(self, f"LZutat{x}") for x in range(1, 10)]
 
-    def _higher_alcohol(self, checked: bool):
+    def _higher_alcohol(self, checked: bool) -> None:
         """Increases the alcohol factor."""
         self.decrease_alcohol.setChecked(False)
         if checked:
@@ -228,7 +228,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         else:
             self.adjust_alcohol(1.0)
 
-    def _lower_alcohol(self, checked: bool):
+    def _lower_alcohol(self, checked: bool) -> None:
         """Decreases the alcohol factor."""
         self.increase_alcohol.setChecked(False)
         if checked:
@@ -236,12 +236,12 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         else:
             self.adjust_alcohol(1.0)
 
-    def adjust_alcohol(self, amount: float):
+    def adjust_alcohol(self, amount: float) -> None:
         """Change the alcohol factor to the given value."""
         shared.alcohol_factor = amount
         self.update_cocktail_data()
 
-    def _adjust_preparation_buttons(self):
+    def _adjust_preparation_buttons(self) -> None:
         """Decide if to use a single or multiple buttons and adjusts the text accordingly.
 
         Also connects the functions to the buttons.
@@ -275,13 +275,13 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 min_h=60,
                 max_h=80,
             )
-            button.clicked.connect(lambda _, v=volume: self._prepare_cocktail(v))
+            button.clicked.connect(lambda _, v=volume: self._prepare_cocktail(v))  # type: ignore[attr-defined]
             icon = ICONS.generate_icon(icon_name, ICONS.color.background)
             ICONS.set_icon(button, icon, False)
             self.container_prepare_button.addWidget(button)
 
 
-def _generate_needed_cocktail_icons(amount: int):
+def _generate_needed_cocktail_icons(amount: int) -> list[str]:
     icon_list = [
         ICONS.presets.tiny_glass,
         ICONS.presets.small_glass,

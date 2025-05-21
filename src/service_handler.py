@@ -1,7 +1,7 @@
 import json
 import os
 from enum import Enum
-from typing import Optional
+from typing import Any, Optional
 
 import requests
 
@@ -23,7 +23,7 @@ logger = LoggerHandler("microservice", LogFiles.SERVICE)
 class ServiceHandler:
     """Class to handle all calls to the microservice within the docker."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.base_url = cfg.MICROSERVICE_BASE_URL
         self.headers = {"content-type": "application/json"}
@@ -45,7 +45,7 @@ class ServiceHandler:
         endpoint = self._decide_debug_endpoint(f"{self.base_url}/hookhandler/cocktail")
         return self._try_to_send(endpoint, PostType.COCKTAIL, payload=payload)
 
-    def send_export_data(self, file_name: str, binary_file, is_disabled=True) -> dict:
+    def send_export_data(self, file_name: str, binary_file: Any, is_disabled: bool = True) -> dict:
         """Post the given file to the microservice handling internet traffic to send data to external source."""
         if not cfg.MICROSERVICE_ACTIVE:
             return _service_disabled()
@@ -90,7 +90,7 @@ class ServiceHandler:
             self._log_connection_error(endpoint, PostType.TEAMDATA)
             return {}
 
-    def _decide_debug_endpoint(self, endpoint: str):
+    def _decide_debug_endpoint(self, endpoint: str) -> str:
         """Check if to use the given or the debug ep."""
         debug = os.getenv("DEBUG_MS", "False") == "True"
         if debug:
@@ -145,10 +145,10 @@ class ServiceHandler:
                 DBC.save_failed_teamdata(payload)
             return {}
 
-    def _log_connection_error(self, endpoint: str, post_type: PostType):
+    def _log_connection_error(self, endpoint: str, post_type: PostType) -> None:
         logger.log_event("ERROR", f"Could not connect to: '{endpoint}' for {post_type.value}")
 
-    def _check_failed_data(self):
+    def _check_failed_data(self) -> None:
         """Get one failed teamdata and sends it."""
         endpoint = f"{cfg.TEAM_API_URL}/cocktail"
         DBC = DatabaseCommander()
@@ -160,7 +160,7 @@ class ServiceHandler:
             self._try_to_send(endpoint, PostType.TEAMDATA, payload)
 
 
-def _service_disabled():
+def _service_disabled() -> dict:
     """Return that microservice is disabled."""
     return {
         "status": 503,
@@ -168,7 +168,7 @@ def _service_disabled():
     }
 
 
-def _team_disabled():
+def _team_disabled() -> dict:
     """Return that teams is disabled."""
     return {
         "status": 503,

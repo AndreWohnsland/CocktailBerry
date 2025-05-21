@@ -20,7 +20,7 @@ class DbCocktailIngredient(Base):
     ingredient: Mapped["DbIngredient"] = relationship("DbIngredient", back_populates="cocktail_associations")
     cocktail: Mapped["DbRecipe"] = relationship("DbRecipe", back_populates="ingredient_associations")
 
-    def __init__(self, cocktail_id: int, ingredient_id: int, amount: int, recipe_order: int = 1):
+    def __init__(self, cocktail_id: int, ingredient_id: int, amount: int, recipe_order: int = 1) -> None:
         self.cocktail_id = cocktail_id
         self.ingredient_id = ingredient_id
         self.amount = amount
@@ -64,7 +64,7 @@ class DbIngredient(Base):
         cost: int = 0,
         unit: str = "ml",
         pump_speed: int = 100,
-    ):
+    ) -> None:
         self.name = name
         self.alcohol = alcohol
         self.volume = volume
@@ -104,7 +104,7 @@ class DbRecipe(Base):
         counter: int = 0,
         enabled: bool = True,
         virgin: bool = False,
-    ):
+    ) -> None:
         self.name = name
         self.alcohol = alcohol
         self.amount = amount
@@ -123,7 +123,7 @@ class DbBottle(Base):
 
     ingredient: Mapped[Optional["DbIngredient"]] = relationship("DbIngredient", back_populates="bottle")
 
-    def __init__(self, number: int, id: Optional[int] = None):
+    def __init__(self, number: int, id: Optional[int] = None) -> None:
         self.number = number
         self.id = id
 
@@ -134,7 +134,7 @@ class DbAvailable(Base):
 
     ingredient: Mapped["DbIngredient"] = relationship("DbIngredient", back_populates="available")
 
-    def __init__(self, id: int):
+    def __init__(self, id: int) -> None:
         self.id = id
 
 
@@ -143,7 +143,7 @@ class DbTeamdata(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, nullable=False, name="ID")
     payload: Mapped[str] = mapped_column(nullable=False, name="Payload")
 
-    def __init__(self, payload: str):
+    def __init__(self, payload: str) -> None:
         self.payload = payload
 
 
@@ -154,7 +154,7 @@ class DbCocktailExport(Base):
     recipe_name: Mapped[str] = mapped_column(nullable=False, name="Recipe_Name")
     counter: Mapped[int] = mapped_column(nullable=False, name="Counter")
 
-    def __init__(self, recipe_name: str, counter: int, export_date: datetime.date | None = None):
+    def __init__(self, recipe_name: str, counter: int, export_date: datetime.date | None = None) -> None:
         self.recipe_name = recipe_name
         self.counter = counter
         self.export_date = export_date or datetime.date.today()
@@ -174,7 +174,7 @@ class DbIngredientExport(Base):
         consumption: int,
         cost_consumption: int,
         export_date: datetime.date | None = None,
-    ):
+    ) -> None:
         self.ingredient_name = ingredient_name
         self.consumption = consumption
         self.cost_consumption = cost_consumption
@@ -191,7 +191,13 @@ class DbResourceUsage(Base):
     ram_usage: Mapped[float] = mapped_column(nullable=False, name="RAM_Usage")
     session: Mapped[int] = mapped_column(nullable=False, name="Session")
 
-    def __init__(self, cpu_usage: float, ram_usage: float, session: int, timestamp: datetime.datetime | None = None):
+    def __init__(
+        self,
+        cpu_usage: float,
+        ram_usage: float,
+        session: int,
+        timestamp: datetime.datetime | None = None,
+    ) -> None:
         self.cpu_usage = cpu_usage
         self.ram_usage = ram_usage
         self.session = session

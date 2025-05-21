@@ -6,7 +6,7 @@ from src.logger_handler import LoggerHandler
 _logger = LoggerHandler("clear_module")
 
 
-def clear_local_database():
+def clear_local_database() -> None:
     """Remove the recipes, ingredients, links between them as well as entered bottles."""
     typer.confirm(
         "Delete local Database Data? This includes recipes and ingredients. A backup will be created before deletion.",

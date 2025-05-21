@@ -15,6 +15,7 @@ from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.migration.migrator import CouldNotMigrateException, Migrator
 from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_font, create_spacer, setup_worker_thread
 from src.ui.icons import parse_colors
+from src.ui.setup_mainwindow import MainScreen
 from src.ui_elements import Ui_ColorWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.utils import restart_program
@@ -34,10 +35,10 @@ class _Worker(QObject):
 
     done = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: None | QObject = None) -> None:
         super().__init__(parent)
 
-    def run(self):
+    def run(self) -> None:
         migrator = Migrator()
         with contextlib.suppress(CouldNotMigrateException):
             migrator._install_pip_package("qtsass", "1.17.0")
@@ -47,7 +48,7 @@ class _Worker(QObject):
 class ColorWindow(QMainWindow, Ui_ColorWindow):
     """Creates the log window Widget."""
 
-    def __init__(self, parent):
+    def __init__(self, parent: None | MainScreen) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
@@ -82,7 +83,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
                 self._worker, self, self._finish_installer_worker
             )
 
-    def _set_selected_template(self):
+    def _set_selected_template(self) -> None:
         """Use the selected template and fills the color into the fields."""
         template: SupportedThemesType = self.selection_template.currentText()  # type: ignore
         colors = parse_colors(template)
@@ -92,7 +93,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             line_edit.setText(color_value)
             line_edit.setStyleSheet(self._generate_style(color_value))
 
-    def _generate_color_fields(self):
+    def _generate_color_fields(self) -> None:
         """Generate all the needed fields to change colors."""
         # adds a spacer on top
         self.color_container.addItem(create_spacer(20))
@@ -100,7 +101,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             self._generate_color_section(color.name)
             self.color_container.addItem(create_spacer(12))
 
-    def _generate_color_section(self, color_name: str):
+    def _generate_color_section(self, color_name: str) -> None:
         """Generate a section for the color including color pad, and user input."""
         header = QLabel(f"{color_name}:")
         adjust_font(header, LARGE_FONT, True)
@@ -122,7 +123,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         self.color_container.addWidget(color_input)
         self.inputs_colors[color_name] = color_input
 
-    def _connect_color_picker(self, line_edit_to_write: QLineEdit):
+    def _connect_color_picker(self, line_edit_to_write: QLineEdit) -> None:
         """Open a color picker for the user to select the color.
 
         Uses the current color as default.
@@ -141,11 +142,11 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             line_edit_to_write.setText(selected_color)
             line_edit_to_write.setStyleSheet(self._generate_style(selected_color))
 
-    def _generate_style(self, color: str):
+    def _generate_style(self, color: str) -> str:
         """Generate a style with same bg and font color."""
         return f"background-color: {color}; color: {color};"
 
-    def _apply_settings(self):
+    def _apply_settings(self) -> None:
         """Apply the settings to the custom.scss file.
 
         Builds the css file afterwards with the qtsass package.
@@ -165,7 +166,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         qtsass.compile_filename(CUSTOM_STYLE_SCSS, CUSTOM_STYLE_FILE)
         self.close()
 
-    def _finish_installer_worker(self):
+    def _finish_installer_worker(self) -> None:
         """End the spinner, checks if installation was successful."""
         # Informs the user if it is still not found
         if importlib.util.find_spec("qtsass") is None:

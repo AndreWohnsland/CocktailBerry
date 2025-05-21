@@ -49,11 +49,11 @@ class Ingredient:
     recipe_order: int = 2
     unit: str = "ml"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # limit fill level to [0, bottle_volume]
         self.fill_level = max(0, min(self.fill_level, self.bottle_volume))
 
-    def __lt__(self, other):
+    def __lt__(self, other: "Ingredient") -> bool:
         """Sort machine first, then highest amount and longest name."""
         self_compare = (int(self.bottle is None), -self.amount, -len(self.name))
         other_compare = (int(other.bottle is None), -other.amount, -len(other.name))
@@ -76,7 +76,7 @@ class Cocktail:
     adjusted_amount: int = 0
     adjusted_ingredients: list[Ingredient] = field(default_factory=list, init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.ingredients.sort()
         # shallow copy will keep same Ingredients as references
         self.adjusted_ingredients = copy.deepcopy(self.ingredients)
@@ -86,31 +86,31 @@ class Cocktail:
     # also changes handadd to machine add if the handadd is currently at the machine
     # this way the user needs to add less, if it happens to be also on the machine
     @property
-    def handadds(self):
+    def handadds(self) -> list[Ingredient]:
         """Returns a list of all handadd Ingredients."""
         return [x for x in self.adjusted_ingredients if x.bottle is None and x.amount > 0]
 
     @property
-    def machineadds(self):
+    def machineadds(self) -> list[Ingredient]:
         """Returns a list of all machine Ingredients."""
         return [x for x in self.adjusted_ingredients if x.bottle is not None and x.amount > 0]
 
     @property
-    def virgin_handadds(self):
+    def virgin_handadds(self) -> list[Ingredient]:
         """Returns a list of all non-alcoholic handadd Ingredients."""
         return [x for x in self.handadds if x.alcohol == 0]
 
     @property
-    def virgin_machineadds(self):
+    def virgin_machineadds(self) -> list[Ingredient]:
         """Returns a list of all non-alcoholic machine Ingredients."""
         return [x for x in self.machineadds if x.alcohol == 0]
 
     @property
-    def is_virgin(self):
+    def is_virgin(self) -> bool:
         """Returns if the cocktail is virgin."""
         return self.adjusted_alcohol == 0
 
-    def is_possible(self, hand_available: list[int], max_hand_ingredients: int):
+    def is_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Return if the recipe is possible with given additional hand add ingredients."""
         self.only_virgin = False
         if self._is_normal_cocktail_possible(hand_available, max_hand_ingredients):
@@ -141,7 +141,7 @@ class Cocktail:
         hand_id = {x.id for x in hand_adds}
         return not hand_id - set(hand_available)
 
-    def _is_normal_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int):
+    def _is_normal_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Check if the normal (alcoholic) cocktail is possible."""
         return self._has_all_ingredients(
             hand_available,
@@ -150,7 +150,7 @@ class Cocktail:
             self.handadds,
         )
 
-    def _is_virgin_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int):
+    def _is_virgin_cocktail_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Check if the virgin cocktail is possible."""
         return self._has_all_ingredients(
             hand_available,
@@ -170,7 +170,7 @@ class Cocktail:
                 return ing
         return None
 
-    def scale_cocktail(self, amount: int, alcohol_factor: float):
+    def scale_cocktail(self, amount: int, alcohol_factor: float) -> None:
         """Scale the base cocktail recipe to given volume and alcohol factor.
 
         The scaling is saved in the adjusted_* properties.
@@ -212,7 +212,7 @@ class AddonData:
     installed: bool = False
     official: bool = True
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.file_name:
             return
         self.file_name = self.url.rsplit("/", maxsplit=1)[-1]

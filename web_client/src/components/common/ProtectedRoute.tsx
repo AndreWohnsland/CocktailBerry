@@ -1,7 +1,7 @@
 import React from 'react';
 import { validateMakerPassword, validateMasterPassword } from '../../api/options';
-import { useAuth } from '../../AuthProvider';
-import { useConfig } from '../../ConfigProvider';
+import { useAuth } from '../../providers/AuthProvider';
+import { useConfig } from '../../providers/ConfigProvider';
 import PasswordPage from './PasswordPage';
 
 interface ProtectedRouteProps {

@@ -3,6 +3,10 @@
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER
@@ -10,8 +14,11 @@ from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.machine.controller import MACHINE
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
 
-def get_bottle_ingredients():
+
+def get_bottle_ingredients() -> None:
     """At the start of the program, get all the ingredients from the DB."""
     bottles = DB_COMMANDER.get_ingredient_names_at_bottles()
     # replace Nones with empty string, command will return none for empty bottles
@@ -19,7 +26,7 @@ def get_bottle_ingredients():
 
 
 @logerror
-def refresh_bottle_cb(w):
+def refresh_bottle_cb(w: MainScreen) -> None:
     """Add or remove items to the bottle comboboxes depending on the changed value."""
     # Creating a list of the new and old bottles used
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
@@ -39,7 +46,7 @@ def refresh_bottle_cb(w):
 
 
 @logerror
-def calculate_combobox_bottles(w):
+def calculate_combobox_bottles(w: MainScreen) -> None:
     """Fill each bottle combobox with the possible remaining options."""
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     used_ingredients = shared.old_ingredient
@@ -54,7 +61,7 @@ def calculate_combobox_bottles(w):
     DP_CONTROLLER.fill_multiple_combobox_individually(combobox_bottles, shown_ingredients, True)
 
 
-def __register_bottles(w):
+def __register_bottles(w: MainScreen) -> None:
     """Insert the selected bottle order into the DB."""
     # Checks where are entries and appends them to a list
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
@@ -66,14 +73,14 @@ def __register_bottles(w):
     set_fill_level_bars(w)
 
 
-def read_in_bottles(w):
+def read_in_bottles(w: MainScreen) -> None:
     """Read the bottle_order into the BottleTab."""
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     ingredient_names = DB_COMMANDER.get_ingredient_names_at_bottles()
     DP_CONTROLLER.set_multiple_combobox_items(combobox_bottles, ingredient_names)
 
 
-def refresh_bottle_information(w):
+def refresh_bottle_information(w: MainScreen) -> None:
     """Load or updates the Labels of the Bottles (volume level)."""
     label_names = DB_COMMANDER.get_ingredient_names_at_bottles()
     label_names = [f"  {x}:" if x else "  -  " for x in label_names]
@@ -81,7 +88,7 @@ def refresh_bottle_information(w):
 
 
 @logerror
-def renew_checked_bottles(w):
+def renew_checked_bottles(w: MainScreen) -> None:
     """Renews all the Bottles which are checked as new."""
     pushbutton_new_list = DP_CONTROLLER.get_pushbuttons_newbottle(w)
     renew_bottle = DP_CONTROLLER.get_toggle_status(pushbutton_new_list)
@@ -94,7 +101,7 @@ def renew_checked_bottles(w):
     renew_bottles(w, bottle_numbers)
 
 
-def renew_bottles(w, bottles: list[int]):
+def renew_bottles(w: MainScreen, bottles: list[int]) -> None:
     """Renews the bottles at given slot, flush the tubes if needed."""
     DB_COMMANDER.set_bottle_volumelevel_to_max(bottles)
     set_fill_level_bars(w)
@@ -114,7 +121,7 @@ def renew_bottles(w, bottles: list[int]):
     DP_CONTROLLER.say_bottles_renewed()
 
 
-def set_fill_level_bars(w):
+def set_fill_level_bars(w: MainScreen) -> None:
     """Get the proportion of actual and maximal volume of each connected bottle and assigns it."""
     progress_bars = DP_CONTROLLER.get_levelbar_bottles(w)
     fill_levels = DB_COMMANDER.get_bottle_fill_levels()

@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import shutil
 import sqlite3
+from collections.abc import Generator
 from contextlib import contextmanager
 from statistics import mean, median
 from typing import TYPE_CHECKING, Any, Literal
@@ -41,7 +42,7 @@ class DatabaseTransactionError(Exception):
     The reason will be contained in the message with the corresponding translation key.
     """
 
-    def __init__(self, translation_key: allowed_keys, language_args: dict | None = None):
+    def __init__(self, translation_key: allowed_keys, language_args: dict | None = None) -> None:
         DH = DialogHandler()
         self.language_args = language_args if language_args is not None else {}
         messsage = DH.get_translation(translation_key, **self.language_args)
@@ -52,14 +53,14 @@ class DatabaseTransactionError(Exception):
 class ElementNotFoundError(DatabaseTransactionError):
     """Informs that the element was not found in the database."""
 
-    def __init__(self, element_name: str):
+    def __init__(self, element_name: str) -> None:
         super().__init__("element_not_found", {"element_name": element_name})
 
 
 class ElementAlreadyExistsError(DatabaseTransactionError):
     """Informs that the element already is in the db."""
 
-    def __init__(self, element_name: str):
+    def __init__(self, element_name: str) -> None:
         super().__init__("element_already_exists", {"element_name": element_name})
 
 
@@ -69,7 +70,7 @@ class DatabaseCommander:
     database_path = DATABASE_PATH
     database_path_default = DEFAULT_DATABASE_PATH
 
-    def __init__(self, use_default=False, db_url: str | None = None):
+    def __init__(self, use_default: bool = False, db_url: str | None = None) -> None:
         if not self.database_path.exists():
             time_print("Copying default database for maker usage")
             self.copy_default_database()
@@ -82,7 +83,7 @@ class DatabaseCommander:
         self.Session = scoped_session(sessionmaker(bind=self.engine, expire_on_commit=False))
 
     @contextmanager
-    def session_scope(self):
+    def session_scope(self) -> Generator[Session, None, None]:
         """Provide a transactional scope around a series of operations."""
         session = self.Session()
         try:
@@ -94,11 +95,11 @@ class DatabaseCommander:
         finally:
             session.close()
 
-    def copy_default_database(self):
+    def copy_default_database(self) -> None:
         """Create a local copy of the database."""
         shutil.copy(self.database_path_default, self.database_path)
 
-    def copy_default_data_to_current_db(self):
+    def copy_default_data_to_current_db(self) -> None:
         default_engine = create_engine(f"sqlite:///{self.database_path_default}", echo=False)
         with default_engine.connect() as conn:
             for table in Base.metadata.sorted_tables:
@@ -110,7 +111,7 @@ class DatabaseCommander:
                 with self.session_scope() as session:
                     session.execute(table.insert(), data_dicts)
 
-    def create_backup(self):
+    def create_backup(self) -> None:
         """Create a backup locally in the same folder, used before migrations."""
         dtime = datetime.datetime.now()
         suffix = dtime.strftime("%Y-%m-%d-%H-%M-%S")
@@ -275,7 +276,7 @@ class DatabaseCommander:
             ingredients = self._get_all_db_ingredients(session, get_machine, get_hand)
             return [self._map_ingredient(x) for x in ingredients]
 
-    def get_bottle_usage(self, ingredient_id: int):
+    def get_bottle_usage(self, ingredient_id: int) -> bool:
         """Return if the ingredient id is currently used at a bottle."""
         with self.session_scope() as session:
             count = session.query(DbBottle).where(DbBottle.id == ingredient_id).count()
@@ -292,7 +293,7 @@ class DatabaseCommander:
             )
         return [recipe[0] for recipe in data]
 
-    def get_consumption_data_lists_recipes(self):
+    def get_consumption_data_lists_recipes(self) -> list[list[Any]]:
         """Return the recipe consumption data ready to export."""
         with self.session_scope() as session:
             cocktails = self._get_db_cocktails(session)
@@ -302,7 +303,7 @@ class DatabaseCommander:
                 [x.counter_lifetime for x in cocktails],
             )
 
-    def get_consumption_data_lists_ingredients(self):
+    def get_consumption_data_lists_ingredients(self) -> list[list[Any]]:
         """Return the ingredient consumption data ready to export."""
         with self.session_scope() as session:
             ingredients = self._get_all_db_ingredients(session)
@@ -312,7 +313,7 @@ class DatabaseCommander:
                 [x.consumption_lifetime for x in ingredients],
             )
 
-    def get_cost_data_lists_ingredients(self):
+    def get_cost_data_lists_ingredients(self) -> list[list[Any]]:
         """Return the ingredient cost data ready to export."""
         with self.session_scope() as session:
             ingredients = self._get_all_db_ingredients(session)
@@ -322,7 +323,9 @@ class DatabaseCommander:
                 [x.cost_consumption_lifetime for x in ingredients],
             )
 
-    def _convert_consumption_data(self, headers: list[Any], resettable: list[Any], lifetime: list[Any]):
+    def _convert_consumption_data(
+        self, headers: list[str], resettable: list[int], lifetime: list[int]
+    ) -> list[list[Any]]:
         """Convert the data from the db cursor into needed csv format."""
         return [["date", *headers], [datetime.date.today(), *resettable], ["lifetime", *lifetime]]
 
@@ -339,12 +342,12 @@ class DatabaseCommander:
             return [x[0] for x in data]
 
     # set (update) commands
-    def set_bottle_order(self, ingredient_names: list[str] | list[int]):
+    def set_bottle_order(self, ingredient_names: list[str] | list[int]) -> None:
         """Set bottles to the given list of bottles, need all bottles."""
         for bottle, ingredient in enumerate(ingredient_names, start=1):
             self.set_bottle_at_slot(ingredient, bottle)  # type: ignore[arg-type]
 
-    def set_bottle_at_slot(self, ingredient: str | int, bottle_number: int):
+    def set_bottle_at_slot(self, ingredient: str | int, bottle_number: int) -> None:
         """Set the bottle at the given slot."""
         with self.session_scope() as session:
             if isinstance(ingredient, int):
@@ -360,7 +363,7 @@ class DatabaseCommander:
                 session.add(bottle)
             bottle.id = ingredient_id
 
-    def set_bottle_volumelevel_to_max(self, bottle_number_list: list[int]):
+    def set_bottle_volumelevel_to_max(self, bottle_number_list: list[int]) -> None:
         """Set the each i-th bottle to max level if arg is true."""
         with self.session_scope() as session:
             for bottle_number in bottle_number_list:
@@ -379,7 +382,7 @@ class DatabaseCommander:
         ingredient_id: int,
         cost: int,
         unit: str,
-    ):
+    ) -> None:
         """Update the given ingredient id to new properties."""
         with self.session_scope() as session:
             ingredient = session.query(DbIngredient).filter(DbIngredient.id == ingredient_id).one_or_none()
@@ -395,7 +398,7 @@ class DatabaseCommander:
             ingredient.cost = cost
             ingredient.unit = unit
 
-    def increment_recipe_counter(self, recipe_name: str):
+    def increment_recipe_counter(self, recipe_name: str) -> None:
         """Increase the recipe counter by one of given recipe name."""
         with self.session_scope() as session:
             recipe = session.query(DbRecipe).filter(DbRecipe.name == recipe_name).one_or_none()
@@ -405,7 +408,7 @@ class DatabaseCommander:
             recipe.counter_lifetime += 1
             recipe.counter += 1
 
-    def increment_ingredient_consumption(self, ingredient_name: str, ingredient_consumption: int):
+    def increment_ingredient_consumption(self, ingredient_name: str, ingredient_consumption: int) -> None:
         """Increase the consumption of given ingredient name by a given amount."""
         with self.session_scope() as session:
             ingredient = session.query(DbIngredient).filter(DbIngredient.name == ingredient_name).one_or_none()
@@ -426,12 +429,12 @@ class DatabaseCommander:
         self,
         ingredient_name_list: list[str],
         ingredient_consumption_list: list[int],
-    ):
+    ) -> None:
         """Increase multiple ingredients by the according given consumption."""
         for ingredient_name, ingredient_consumption in zip(ingredient_name_list, ingredient_consumption_list):
             self.increment_ingredient_consumption(ingredient_name, ingredient_consumption)
 
-    def set_all_recipes_enabled(self):
+    def set_all_recipes_enabled(self) -> None:
         """Enable all recipes."""
         with self.session_scope() as session:
             session.query(DbRecipe).update({DbRecipe.enabled: True})
@@ -464,7 +467,7 @@ class DatabaseCommander:
             session.commit()
             return self.get_cocktail(recipe_id)  # type: ignore
 
-    def set_ingredient_level_to_value(self, ingredient_id: int, value: int):
+    def set_ingredient_level_to_value(self, ingredient_id: int, value: int) -> None:
         """Set the given ingredient id to a defined level."""
         with self.session_scope() as session:
             ingredient = session.query(DbIngredient).filter(DbIngredient.id == ingredient_id).one_or_none()
@@ -482,7 +485,7 @@ class DatabaseCommander:
         pump_speed: int,
         cost: int,
         unit: str,
-    ):
+    ) -> None:
         """Insert a new ingredient into the database."""
         new_ingredient = DbIngredient(
             name=ingredient_name,
@@ -540,7 +543,7 @@ class DatabaseCommander:
                 self.insert_recipe_data(cocktail.id, _id, amount, order)
             return self.get_cocktail(name)  # type: ignore
 
-    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, order_number: int):
+    def insert_recipe_data(self, recipe_id: int, ingredient_id: int, ingredient_volume: int, order_number: int) -> None:
         """Insert given data into the recipe_data table."""
         with self.session_scope() as session:
             new_cocktail_ingredient = DbCocktailIngredient(
@@ -551,7 +554,7 @@ class DatabaseCommander:
             )
             session.add(new_cocktail_ingredient)
 
-    def insert_multiple_existing_handadd_ingredients(self, ingredient_list: list[str] | list[int]):
+    def insert_multiple_existing_handadd_ingredients(self, ingredient_list: list[str] | list[int]) -> None:
         """Insert the IDS of the given ingredient list into the available table."""
         with self.session_scope() as session:
             if isinstance(ingredient_list[0], str):
@@ -563,7 +566,7 @@ class DatabaseCommander:
                 session.add(DbAvailable(id=_id))
 
     # delete
-    def delete_ingredient(self, ingredient_id: int):
+    def delete_ingredient(self, ingredient_id: int) -> None:
         """Delete an ingredient by id."""
         if self.get_bottle_usage(ingredient_id):
             raise DatabaseTransactionError("ingredient_still_at_bottle")
@@ -579,17 +582,17 @@ class DatabaseCommander:
                 raise ElementNotFoundError(f"Ingredient ID {ingredient_id} not found")
             session.delete(ingredient)
 
-    def delete_consumption_recipes(self):
+    def delete_consumption_recipes(self) -> None:
         """Set the resettable consumption of all recipes to zero."""
         with self.session_scope() as session:
             session.query(DbRecipe).update({DbRecipe.counter: 0})
 
-    def delete_consumption_ingredients(self):
+    def delete_consumption_ingredients(self) -> None:
         """Set the resettable consumption of all ingredients to zero."""
         with self.session_scope() as session:
             session.query(DbIngredient).update({DbIngredient.consumption: 0})
 
-    def delete_recipe(self, recipe_name: str | int):
+    def delete_recipe(self, recipe_name: str | int) -> None:
         """Delete the given recipe by name and all according ingredient_data."""
         with self.session_scope() as session:
             if isinstance(recipe_name, str):
@@ -600,17 +603,17 @@ class DatabaseCommander:
                 raise ElementNotFoundError(f"Recipe {recipe_name} not found")
             session.delete(recipe)
 
-    def delete_recipe_ingredient_data(self, recipe_id: int):
+    def delete_recipe_ingredient_data(self, recipe_id: int) -> None:
         """Delete ingredient_data by given ID."""
         with self.session_scope() as session:
             session.query(DbCocktailIngredient).filter(DbCocktailIngredient.cocktail_id == recipe_id).delete()
 
-    def delete_existing_handadd_ingredient(self):
+    def delete_existing_handadd_ingredient(self) -> None:
         """Delete all ingredient in the available table."""
         with self.session_scope() as session:
             session.query(DbAvailable).delete()
 
-    def delete_database_data(self):
+    def delete_database_data(self) -> None:
         """Remove all the data from the db for a local reset."""
         with self.session_scope() as session:
             session.query(DbAvailable).delete()
@@ -619,7 +622,7 @@ class DatabaseCommander:
             session.query(DbRecipe).delete()
             session.query(DbIngredient).delete()
 
-    def save_failed_teamdata(self, payload: str):
+    def save_failed_teamdata(self, payload: str) -> None:
         """Save the failed payload into the db to buffer."""
         with self.session_scope() as session:
             new_teamdata = DbTeamdata(payload=payload)
@@ -633,7 +636,7 @@ class DatabaseCommander:
                 return (data.id, data.payload)
             return None
 
-    def delete_failed_teamdata(self, data_id: int):
+    def delete_failed_teamdata(self, data_id: int) -> None:
         """Delete the given teamdata by id."""
         with self.session_scope() as session:
             teamdata = session.query(DbTeamdata).filter(DbTeamdata.id == data_id).one_or_none()
@@ -641,7 +644,7 @@ class DatabaseCommander:
                 raise ElementNotFoundError(f"Teamdata ID {data_id} not found")
             session.delete(teamdata)
 
-    def export_recipe_data(self):
+    def export_recipe_data(self) -> None:
         """Save the recipe consumption data to the database and reset counters."""
         today = datetime.date.today()
         with self.session_scope() as session:
@@ -664,7 +667,7 @@ class DatabaseCommander:
             session.query(DbRecipe).update({DbRecipe.counter: 0})
         _logger.log_event("INFO", "Recipe consumption data was saved to database")
 
-    def export_ingredient_data(self):
+    def export_ingredient_data(self) -> None:
         """Save the ingredient consumption and cost data to the database and reset counters."""
         today = datetime.date.today()
         with self.session_scope() as session:
@@ -704,19 +707,19 @@ class DatabaseCommander:
             ingredient_exports = session.query(DbIngredientExport).all()
             date_grouped_data: dict[str, dict[str, dict[str, int]]] = {}
 
-            for export in recipe_exports:
-                date_str = export.export_date.strftime("%Y-%m-%d")
+            for r_export in recipe_exports:
+                date_str = r_export.export_date.strftime("%Y-%m-%d")
                 if date_str not in date_grouped_data:
                     date_grouped_data[date_str] = {"recipes": {}, "ingredients": {}, "cost": {}}
-                date_grouped_data[date_str]["recipes"][export.recipe_name] = export.counter
+                date_grouped_data[date_str]["recipes"][r_export.recipe_name] = r_export.counter
 
-            for export in ingredient_exports:
-                date_str = export.export_date.strftime("%Y-%m-%d")
+            for i_export in ingredient_exports:
+                date_str = i_export.export_date.strftime("%Y-%m-%d")
                 if date_str not in date_grouped_data:
                     date_grouped_data[date_str] = {"recipes": {}, "ingredients": {}, "cost": {}}
-                date_grouped_data[date_str]["ingredients"][export.ingredient_name] = export.consumption
-                if export.cost_consumption > 0:
-                    date_grouped_data[date_str]["cost"][export.ingredient_name] = export.cost_consumption
+                date_grouped_data[date_str]["ingredients"][i_export.ingredient_name] = i_export.consumption
+                if i_export.cost_consumption > 0:
+                    date_grouped_data[date_str]["cost"][i_export.ingredient_name] = i_export.cost_consumption
 
             return {
                 date_str: ConsumeData(recipes=data["recipes"], ingredients=data["ingredients"], cost=data["cost"])
@@ -725,7 +728,7 @@ class DatabaseCommander:
 
     def save_resource_usage(
         self, cpu_usage: float, ram_usage: float, session_number: int, timestamp: datetime.datetime | None = None
-    ):
+    ) -> None:
         """Save the resource usage to the database."""
         with self.session_scope() as session:
             usage = DbResourceUsage(

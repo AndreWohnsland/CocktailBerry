@@ -201,7 +201,7 @@ class ConfigManager:
             "EXP_DEMO_MODE": BoolType(check_name="Activate Demo Mode"),
         }
 
-    def read_local_config(self, update_config: bool = False, validate: bool = True):
+    def read_local_config(self, update_config: bool = False, validate: bool = True) -> None:
         """Read the local config file and set the values if they are valid.
 
         Might throw a ConfigError if the config is not valid and should be validated.
@@ -215,7 +215,7 @@ class ConfigManager:
         if update_config:
             self.sync_config_to_file()
 
-    def sync_config_to_file(self):
+    def sync_config_to_file(self) -> None:
         """Write the config attributes to the config file.
 
         Is used to sync new properties into the file.
@@ -224,14 +224,14 @@ class ConfigManager:
         with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
 
-    def get_config(self):
+    def get_config(self) -> dict[str, Any]:
         """Get a dict of all config values."""
         config = {}
         for name, setting in self.config_type.items():
             config[name] = setting.to_config(getattr(self, name))
         return config
 
-    def get_config_with_ui_information(self):
+    def get_config_with_ui_information(self) -> dict[str, dict[str, Any]]:
         """Get a dict of all config values with additional information for the UI."""
         from src.dialog_handler import UI_LANGUAGE
 
@@ -243,7 +243,7 @@ class ConfigManager:
             config[name] = setting_data
         return config
 
-    def _enhance_config_specific_information(self, config: dict[str, Any], setting: ConfigInterface):
+    def _enhance_config_specific_information(self, config: dict[str, Any], setting: ConfigInterface) -> None:
         config["prefix"] = setting.prefix
         config["suffix"] = setting.suffix
         if isinstance(setting, ChooseType):
@@ -260,7 +260,7 @@ class ConfigManager:
                 config[key] = {}
                 self._enhance_config_specific_information(config[key], value)
 
-    def set_config(self, configuration: dict, validate: bool):
+    def set_config(self, configuration: dict, validate: bool) -> None:
         """Validate the config and set new values."""
         # Some lists may depend on other config variables like number of bottles
         # Therefore, by default, split list types from the rest and check them afterwards
@@ -269,7 +269,7 @@ class ConfigManager:
         list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, (list, dict))}
         self._set_config(list_or_dict, validate)
 
-    def _set_config(self, configuration: dict, validate: bool):
+    def _set_config(self, configuration: dict, validate: bool) -> None:
         for config_name, config_value in configuration.items():
             config_setting = self.config_type.get(config_name)
             # old or user added configs will not be validated
@@ -285,7 +285,7 @@ class ConfigManager:
                 if validate:
                     raise e
 
-    def _validate_config_type(self, configname: str, configvalue: Any):
+    def _validate_config_type(self, configname: str, configvalue: Any) -> None:
         """Validate the configvalue if its fit the type / conditions."""
         config_setting = self.config_type.get(configname)
         # old or user added configs will not be validated
@@ -293,7 +293,7 @@ class ConfigManager:
             return
         config_setting.validate(configname, configvalue)
 
-    def choose_bottle_number(self, get_all=False, ignore_limits=False):
+    def choose_bottle_number(self, get_all: bool = False, ignore_limits: bool = False) -> int:
         """Select the number of Bottles, limits by max supported count."""
         # for new app (no limits), this exists for legacy reason (QT)
         if ignore_limits:
@@ -310,7 +310,7 @@ class ConfigManager:
         list_validation_function: list[Callable[[str, Any], None]] | None = None,
         list_type: type | None = None,
         min_length: int | Callable[[], int] = 0,
-    ):
+    ) -> None:
         """Add the configuration under the given name.
 
         Adds the default value, if it is currently not set in the config file.
@@ -360,7 +360,7 @@ class ConfigManager:
         options: list[str],
         default_value: str | None = None,
         validation_function: list[Callable[[str, Any], None]] | None = None,
-    ):
+    ) -> None:
         """Add a configuration value under the given name, which can only be from given options.
 
         This is used to create a dropdown selection for the user to prevent unintended values.
@@ -386,18 +386,18 @@ class StartupIssue:
     ignored: bool = False
     message: str = ""
 
-    def set_issue(self, message: str = ""):
+    def set_issue(self, message: str = "") -> None:
         self.has_issue = True
         self.message = message
 
-    def set_ignored(self):
+    def set_ignored(self) -> None:
         self.ignored = True
 
 
 class Shared:
     """Shared global variables which may dynamically change and are needed on different spaces."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.old_ingredient: list[str] = []
         self.selected_team = "No Team"
         self.team_member_name: str | None = None
@@ -410,7 +410,7 @@ class Shared:
         self.startup_config_issue = StartupIssue()
 
 
-def version_callback(value: bool):
+def version_callback(value: bool) -> None:
     """Return the version of the program."""
     if value:
         typer.echo(f"{PROJECT_NAME} Version {__version__}. Created by Andre Wohnsland.")
@@ -420,7 +420,7 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
-def show_start_message(machine_name: str = PROJECT_NAME):
+def show_start_message(machine_name: str = PROJECT_NAME) -> None:
     """Show the starting message in both Figlet and normal font."""
     figlet = Figlet()
     start_message = f"{machine_name} Version {__version__}"

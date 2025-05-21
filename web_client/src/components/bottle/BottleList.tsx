@@ -33,7 +33,7 @@ const BottleList: React.FC = () => {
 
   if (bottlesLoading || ingredientsLoading || isFetching) return <LoadingData />;
   if (bottlesError || ingredientsError)
-    return <ErrorComponent text={bottlesError?.message || ingredientsError?.message} />;
+    return <ErrorComponent text={bottlesError?.message ?? ingredientsError?.message} />;
 
   const handleToggle = (bottleNumber: number) => {
     setToggledBottles((prev) => ({
@@ -62,7 +62,7 @@ const BottleList: React.FC = () => {
           <BottleComponent
             key={bottle.number}
             bottle={bottle}
-            isToggled={toggledBottles[bottle.number] || false}
+            isToggled={toggledBottles[bottle.number] ?? false}
             onToggle={() => handleToggle(bottle.number)}
             freeIngredients={freeIngredients}
             setFreeIngredients={setFreeIngredients}

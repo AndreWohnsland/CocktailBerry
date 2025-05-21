@@ -4,11 +4,11 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.tsx';
-import { AuthProvider } from './AuthProvider.tsx';
-import { ConfigProvider } from './ConfigProvider.tsx';
-import { CustomColorProvider } from './CustomColorProvider.tsx';
 import './i18n';
 import './index.css';
+import { AuthProvider } from './providers/AuthProvider.tsx';
+import { ConfigProvider } from './providers/ConfigProvider.tsx';
+import { CustomColorProvider } from './providers/CustomColorProvider.tsx';
 
 const queryClient = new QueryClient();
 

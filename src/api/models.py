@@ -14,6 +14,9 @@ class ErrorDetail(BaseModel):
     detail: str
     bottle: Optional[int] = None
 
+    class Config:  # noqa: D106
+        use_enum_values = True
+
 
 class CocktailStatus(BaseModel):
     progress: int = 0
@@ -123,3 +126,12 @@ class IssueData(BaseModel):
 class DateTimeInput(BaseModel):
     date: str
     time: str
+
+
+class ApiMessage(BaseModel):
+    message: str
+
+
+class ApiMessageWithData(BaseModel, Generic[T]):
+    message: str
+    data: T

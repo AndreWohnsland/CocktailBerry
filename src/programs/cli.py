@@ -41,7 +41,7 @@ def main(
     version: Optional[bool] = typer.Option(
         None, "--version", "-V", callback=version_callback, help="Show current version."
     ),
-):
+) -> None:
     """Start the cocktail program. Optional, can start the calibration program.
 
     If you want to debug your microservice, you can use the --debug flag.
@@ -80,7 +80,7 @@ def data_import(
     path: Path,
     conversion: float = typer.Option(1.0, "--conversion", "-c", help="Conversion factor to ml"),
     no_unit: bool = typer.Option(False, "--no-unit", "-nu", help="Ingredient data got no unit text"),
-):
+) -> None:
     """Import the recipe data from a file.
 
     If the units are not in ml, please provide the conversion factor into ml.
@@ -92,7 +92,7 @@ def data_import(
 
 
 @cli.command()
-def clear_database():
+def clear_database() -> None:
     """Clear the local database from the entered or default data.
 
     After this action, there will be no recipes or ingredients in your local CocktailBerry data.
@@ -104,7 +104,7 @@ def clear_database():
 
 
 @cli.command()
-def create_addon(addon_name: str):
+def create_addon(addon_name: str) -> None:
     """Create the base file for an addon under the given name.
 
     The file is saved under the addons folder.
@@ -121,7 +121,7 @@ def setup_microservice(
     hook_endpoint: Optional[str] = typer.Option(None, "--hook-endpoint", "-e", help="Custom hook endpoint"),
     hook_header: Optional[str] = typer.Option(None, "--hook-header", "-h", help="Custom hook headers"),
     use_v1: bool = typer.Option(False, "--old-compose", "-o", help="Use compose v1"),
-):
+) -> None:
     """Set up the microservice.
 
     If the API key, hook endpoint or hook header is not provided as an option, prompts the user for the values.
@@ -139,7 +139,7 @@ def setup_teams_service(
     language: LanguageChoice = typer.Option(
         LanguageChoice.ENGLISH, "--language", "-l", help="language for the teams service"
     ),
-):
+) -> None:
     """Set up the teams microservice.
 
     You can use english [en] or german [de] as language.
@@ -150,7 +150,7 @@ def setup_teams_service(
 
 
 @cli.command()
-def api(port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAPI server")):
+def api(port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAPI server")) -> None:
     """Run the FastAPI server.
 
     Can be used as an alternative way to control the machine, for example over an external program or a web ui.
@@ -161,7 +161,7 @@ def api(port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAP
 
 
 @cli.command()
-def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL for the Nginx configuration")):
+def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL for the Nginx configuration")) -> None:
     """Set up the web interface.
 
     This will set up the web interface for CocktailBerry.
@@ -181,7 +181,7 @@ def setup_web(use_ssl: bool = typer.Option(False, "--ssl", "-s", help="Use SSL f
 
 
 @cli.command()
-def switch_back():
+def switch_back() -> None:
     """Switch back to the Qt setup.
 
     This will switch back to the Qt setup for CocktailBerry.
@@ -198,7 +198,7 @@ def switch_back():
 
 
 @cli.command()
-def add_virtual_keyboard():
+def add_virtual_keyboard() -> None:
     """Add and start the virtual keyboard service.
 
     This will create, enable, and start the Squeekboard virtual keyboard service.
@@ -210,7 +210,7 @@ def add_virtual_keyboard():
 
 
 @cli.command()
-def remove_virtual_keyboard():
+def remove_virtual_keyboard() -> None:
     """Stop and disable the virtual keyboard service.
 
     This will stop and disable the Squeekboard virtual keyboard service.
@@ -224,7 +224,7 @@ def remove_virtual_keyboard():
 def setup_ap(
     ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP"),
     password: str = typer.Option("cocktailconnect", "--password", help="Password of the AP"),
-):
+) -> None:
     """Set up the access point.
 
     The access point will be created on a virtual wlan1 interface.
@@ -241,7 +241,7 @@ def setup_ap(
 
 
 @cli.command()
-def remove_ap(ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP")):
+def remove_ap(ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP")) -> None:
     """Remove the access point.
 
     Remove the given config for this access point and remove virtual wlan1 interface.

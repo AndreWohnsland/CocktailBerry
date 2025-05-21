@@ -77,7 +77,7 @@ add_header X-XSS-Protection "1; mode=block";
 """
 
 
-def get_ip():
+def get_ip() -> str:
     """Retrieve the actual IP address of the Raspberry Pi on the local network."""
     try:
         # Create a socket connection to identify the correct network interface
@@ -90,7 +90,7 @@ def get_ip():
         return "127.0.0.1"
 
 
-def download_latest_web_client():
+def download_latest_web_client() -> None:
     """Download the latest web client from the GitHub release page."""
     # Create the web root directory if it doesn't exist
     web_root = Path("/var/www/cocktailberry_web_client")
@@ -108,7 +108,7 @@ def download_latest_web_client():
     tmp_path.unlink()
 
 
-def setup_nginx(use_ssl):
+def setup_nginx(use_ssl: bool) -> None:
     """Install and configures Nginx to serve a React app."""
     config_path = Path("/etc/nginx/sites-available/cocktailberry_web_client")
     config_path_enabled = Path("/etc/nginx/sites-enabled/cocktailberry_web_client")

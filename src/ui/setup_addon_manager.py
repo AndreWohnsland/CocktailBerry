@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHeaderView, QMainWindow, QTableWidgetItem
 
@@ -10,13 +12,16 @@ from src.programs.addons import ADDONS
 from src.ui_elements import Ui_AddonManager
 from src.utils import restart_program
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 _logger = LoggerHandler("AddonManager")
 
 
 class AddonManager(QMainWindow, Ui_AddonManager):
     """Creates A window to display addon GUI for the user."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: MainScreen) -> None:
         """Initialize the object."""
         super().__init__()
         self.setupUi(self)
@@ -34,7 +39,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _fill_addon_list(self):
+    def _fill_addon_list(self) -> None:
         """Fill the addon list widget with all the addon data."""
         self.table_addons.setRowCount(len(self._addon_information))
         self.table_addons.setColumnCount(1)
@@ -58,7 +63,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         self.table_addons.resizeColumnsToContents()
         self.table_addons.resizeRowsToContents()
 
-    def _apply_changes(self):
+    def _apply_changes(self) -> None:
         # First apply all the user checked settings
         for addon in self._addon_information:
             # ignore unofficial addons here
@@ -77,7 +82,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         if DP_CONTROLLER.ask_to_restart_for_config():
             restart_program(is_v1=True)
 
-    def _install_addon(self, addon: AddonData):
+    def _install_addon(self, addon: AddonData) -> None:
         """Try to install addon, log if req is not ok or no connection."""
         try:
             install_addon(addon)

@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Callable, Literal, Optional
 
 from fastapi import HTTPException, Security
 from fastapi.security import APIKeyHeader
@@ -18,7 +18,7 @@ def _parse_password(password: Optional[str]) -> int:
         raise HTTPException(status_code=403, detail="Invalid Password")
 
 
-def master_protected_dependency(master_password: Optional[str] = Security(master_password_header)):
+def master_protected_dependency(master_password: Optional[str] = Security(master_password_header)) -> None:
     if cfg.UI_MASTERPASSWORD == 0:
         return
     password = _parse_password(master_password)
@@ -26,8 +26,8 @@ def master_protected_dependency(master_password: Optional[str] = Security(master
         raise HTTPException(status_code=403, detail="Invalid Master Password")
 
 
-def maker_protected(tab: Literal[0, 1, 2] = 1):
-    def dependency(maker_password: Optional[str] = Security(maker_password_header)):
+def maker_protected(tab: Literal[0, 1, 2] = 1) -> Callable[[str], None]:
+    def dependency(maker_password: Optional[str] = Security(maker_password_header)) -> None:
         if cfg.UI_MAKER_PASSWORD == 0:
             return
         if not cfg.UI_LOCKED_TABS[tab]:

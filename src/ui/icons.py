@@ -77,7 +77,7 @@ class ColorInformation:
     progressbg: str
     tabborder: str
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: str) -> str:
         return getattr(self, item)
 
 
@@ -108,12 +108,12 @@ def parse_colors(theme: SupportedThemesType | None = None) -> ColorInformation:
 
 
 class IconSetter:
-    def __init__(self):
+    def __init__(self) -> None:
         self.color = parse_colors()
         self.presets = PresetIcon()
         self._spinner: WaitingSpinner | None = None
 
-    def set_mainwindow_icons(self, w: Ui_MainWindow):
+    def set_mainwindow_icons(self, w: Ui_MainWindow) -> None:
         """Set the icons of the main window according to style sheets props."""
         # For solid buttons, they use bg color for icon
         for ui_element, icon, no_text in [
@@ -137,7 +137,7 @@ class IconSetter:
         w.tabWidget.setIconSize(SMALL_BUTTON_SIZE)
         w.tabWidget.setTabText(0, "")
 
-    def set_cocktail_selection_icons(self, w: Ui_CocktailSelection):
+    def set_cocktail_selection_icons(self, w: Ui_CocktailSelection) -> None:
         """Set the icons of the cocktail selection window according to style sheets props."""
         for ui_element, icon, no_text in [
             (w.prepare_button, _COCKTAIL_ICON, False),
@@ -147,14 +147,14 @@ class IconSetter:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self.set_icon(ui_element, fa_icon, no_text)
 
-    def set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool, size: QSize = BUTTON_SIZE):
+    def set_icon(self, ui_element: QPushButton, icon: QIcon, no_text: bool, size: QSize = BUTTON_SIZE) -> None:
         """Set the icon of the given ui element."""
         ui_element.setIcon(icon)
         ui_element.setIconSize(size)
         if no_text:
             ui_element.setText("")
 
-    def set_picture_window_icons(self, w: Ui_PictureWindow):
+    def set_picture_window_icons(self, w: Ui_PictureWindow) -> None:
         for ui_element, icon, no_text in [
             (w.button_upload, _UPLOAD_ICON, True),
             (w.button_remove, _DELETE_ICON, True),
@@ -185,7 +185,7 @@ class IconSetter:
             options=[icon_option, {**icon_option, "scale_factor": 1.3}],
         )
 
-    def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary=False):
+    def set_wait_icon(self, button: QPushButton, icon: Literal["spin", "time"] = "time", primary: bool = False) -> None:
         """Set a spinner button to the icon."""
         color = self.color.primary if primary else self.color.background
         if icon == "spin":
@@ -197,13 +197,13 @@ class IconSetter:
         button.setIconSize(BUTTON_SIZE)
         button.setIcon(used_icon)  # type: ignore
 
-    def remove_icon(self, button: QPushButton):
+    def remove_icon(self, button: QPushButton) -> None:
         """Remove the spinner from the button."""
         # Removes the previous set "padding"
         button.setText(button.text().strip())
         button.setIcon(QIcon())
 
-    def start_spinner(self, parent_widget: QWidget):
+    def start_spinner(self, parent_widget: QWidget) -> None:
         """Start a spinner above the parent widget, locks parent."""
         self._spinner = WaitingSpinner(
             parent_widget,
@@ -219,7 +219,7 @@ class IconSetter:
         )
         self._spinner.start()
 
-    def stop_spinner(self):
+    def stop_spinner(self) -> None:
         """Stop the spinner."""
         if self._spinner is None:
             return

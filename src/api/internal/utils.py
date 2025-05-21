@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, overload
 
 from fastapi import Depends, HTTPException, Request
 
@@ -12,6 +12,10 @@ from src.models import Cocktail as DBCocktail
 from src.models import Ingredient as DBIngredient
 
 
+@overload
+def map_cocktail(cocktail: None, scale: bool = True) -> None: ...
+@overload
+def map_cocktail(cocktail: DBCocktail, scale: bool = True) -> Cocktail: ...
 def map_cocktail(cocktail: Optional[DBCocktail], scale: bool = True) -> Optional[Cocktail]:
     if cocktail is None:
         return None
@@ -47,6 +51,10 @@ def map_cocktail(cocktail: Optional[DBCocktail], scale: bool = True) -> Optional
     )
 
 
+@overload
+def map_ingredient(ingredient: None) -> None: ...
+@overload
+def map_ingredient(ingredient: DBIngredient) -> Ingredient: ...
 def map_ingredient(ingredient: Optional[DBIngredient]) -> Optional[Ingredient]:
     if ingredient is None:
         return None
@@ -70,7 +78,7 @@ def map_bottles(ing: DBIngredient) -> Bottle:
     return Bottle(number=ing.bottle or 0, ingredient=map_ingredient(ing) if ing.id > 0 else None)
 
 
-def calculate_cocktail_volume_and_concentration(cocktail: CocktailInput):
+def calculate_cocktail_volume_and_concentration(cocktail: CocktailInput) -> tuple[int, int]:
     recipe_volume_concentration = 0
     recipe_volume = 0
     for ing in cocktail.ingredients:
@@ -94,12 +102,12 @@ def create_image_url(cocktail: DBCocktail, default: bool = False) -> str:
     return f"/static/user/{image_path.name}"
 
 
-def demo_mode_protection():
+def demo_mode_protection() -> None:
     if cfg.EXP_DEMO_MODE:
         raise HTTPException(status_code=403, detail="Not allowed in demo mode")
 
 
-async def only_change_theme_on_demo(request: Request):
+async def only_change_theme_on_demo(request: Request) -> None:
     if cfg.EXP_DEMO_MODE:
         options: dict = await request.json()
         if any(key != "MAKER_THEME" for key in options):

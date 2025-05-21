@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QMainWindow
@@ -10,11 +10,14 @@ from src.ui.creation_utils import MEDIUM_FONT, adjust_font, create_button
 from src.ui.setup_addon_manager import AddonManager
 from src.ui_elements import Ui_Addonwindow
 
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 
 class AddonWindow(QMainWindow, Ui_Addonwindow):
     """Creates A window to display addon GUI for the user."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: MainScreen) -> None:
         """Initialize the object."""
         super().__init__()
         self.setupUi(self)
@@ -32,7 +35,7 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _set_up_addon_gui(self):
+    def _set_up_addon_gui(self) -> None:
         addon_name = self.selection_addon.currentText()
         # If there is no addon, there will be not text.
         if not addon_name:
@@ -54,10 +57,10 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
             label.setAlignment(Qt.AlignCenter)  # type: ignore
             self.addon_container.addWidget(label)
 
-    def _button_generator(self, label: str, func: Callable[[], None]):
+    def _button_generator(self, label: str, func: Callable[[], None]) -> None:
         button = create_button(label, self)
-        button.clicked.connect(func)
+        button.clicked.connect(func)  # type: ignore[attr-defined]
         self.addon_container.addWidget(button)
 
-    def _open_manager(self):
+    def _open_manager(self) -> None:
         self.addon_manager = AddonManager(self.mainscreen)

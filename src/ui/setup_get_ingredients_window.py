@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class GetIngredientWindow(QMainWindow, Ui_addingredient):
     """Create a Dialog to chose an additional ingredient and the amount to spend this ingredient."""
 
-    def __init__(self, parent: MainScreen):
+    def __init__(self, parent: MainScreen) -> None:
         """Init. Connects all the buttons and get values for the Combobox."""
         super().__init__()
         self.setupUi(self)
@@ -45,11 +45,11 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _cancel_clicked(self):
+    def _cancel_clicked(self) -> None:
         """Close the Window without a change."""
         self.close()
 
-    def _spend_clicked(self):
+    def _spend_clicked(self) -> None:
         """Call the progress bar window and spends the given amount of the ingredient."""
         ingredient_name, volume = DP_CONTROLLER.get_ingredient_window_data(self)
         # if there is nothing selected, just do nothing

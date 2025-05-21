@@ -14,7 +14,7 @@ from src.ui_elements import Ui_WiFiWindow
 from src.utils import get_platform_data, setup_wifi, time_print
 
 if TYPE_CHECKING:
-    from src.ui_elements import Ui_MainWindow
+    from src.ui.setup_mainwindow import MainScreen
 
 _platform_data = get_platform_data()
 
@@ -22,7 +22,7 @@ _platform_data = get_platform_data()
 class WiFiWindow(QMainWindow, Ui_WiFiWindow):
     """Class for the enter wifi window."""
 
-    def __init__(self, mainscreen: Ui_MainWindow):
+    def __init__(self, mainscreen: MainScreen) -> None:
         """Init the window and connect the elements."""
         super().__init__()
         self.setupUi(self)
@@ -44,7 +44,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _check_valid_inputs(self):
+    def _check_valid_inputs(self) -> None:
         """Check if both, name and password are at least one character, otherwise enter is disabled."""
         is_valid = len(self.input_password.text()) > 0 and len(self.input_ssid.text()) > 0
         if is_valid:
@@ -52,11 +52,11 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
             return
         self.button_enter.setDisabled(True)
 
-    def _open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 64):
+    def _open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 64) -> None:
         """Open up the keyboard connected to the lineedit."""
         self.keyboard_window = KeyboardWidget(self.mainscreen, le_to_write=le_to_write, max_char_len=max_char_len)
 
-    def _wifi_enter_process(self):
+    def _wifi_enter_process(self) -> None:
         """Start to enter wifi, uses a spinner during progress."""
         ICONS.set_wait_icon(self.button_enter)
         qApp.processEvents()
@@ -64,7 +64,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         ICONS.remove_icon(self.button_enter)
         qApp.processEvents()
 
-    def _enter_wifi(self):
+    def _enter_wifi(self) -> None:
         """Enter the wifi data into the system and check if the connection was successful."""
         if _platform_data.system == "Windows":
             time_print("Cannot do that on windows")
