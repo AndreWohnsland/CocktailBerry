@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { axiosInstance } from '../api/common';
-import { useAuth } from '../AuthProvider';
+import { useAuth } from '../providers/AuthProvider';
 
 const useAxiosInterceptors = () => {
   const { makerPassword, masterPassword } = useAuth();

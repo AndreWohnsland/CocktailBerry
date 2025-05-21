@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useConfig } from './providers/ConfigProvider';
+import { useConfig } from './ConfigProvider';
 
 interface AuthContextType {
   masterAuthenticated: boolean;

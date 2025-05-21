@@ -20,4 +20,3 @@ def build_number_limiter(min_val: int | float = 1, max_val: int | float = 100) -
             raise ConfigError(f"{configname} must be between {min_val} and {max_val}.")
 
     return limit_number
-    return limit_number
