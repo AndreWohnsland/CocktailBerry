@@ -72,7 +72,7 @@ class ChooseOptions:
 class ConfigType(ConfigInterface):
     """Base class for configuration types."""
 
-    config_type: type[str] | type[int] | type[float] | type[bool]
+    config_type: type[str | int | float | bool]
     validator_functions: list[Callable[[str, Any], None]] = field(default_factory=list)
     prefix: str | None = None
     suffix: str | None = None
@@ -85,7 +85,7 @@ class ConfigType(ConfigInterface):
             validator(configname, value)
 
     @property
-    def ui_type(self) -> type[str] | type[int] | type[float] | type[bool]:
+    def ui_type(self) -> type[str | int | float | bool]:
         """Return the type for the UI."""
         return self.config_type
 
@@ -133,7 +133,7 @@ class FloatType(ConfigType):
         for validator in self.validator_functions:
             validator(configname, value)
 
-    def to_config(self, value: float | int) -> float:
+    def to_config(self, value: float) -> float:
         """Deserialize the given value."""
         # deserialize to a float (in case an int was given)
         return float(value)

@@ -80,6 +80,11 @@ def process_image(image_data: Union[str, bytes, Path], resize_size: int = 500) -
 
 
 def check_picture_orientation(img: Image.Image) -> Image.Image:
+    # EXIF orientation tag values
+    ORIENTATION_ROTATE_180 = 3
+    ORIENTATION_ROTATE_90_CW = 6
+    ORIENTATION_ROTATE_270_CW = 8
+
     # Check for EXIF orientation tag
     exif_data = img.getexif()
     orientation = exif_data.get(0x0112, 1)  # 0x0112 is the EXIF Orientation tag
@@ -88,16 +93,16 @@ def check_picture_orientation(img: Image.Image) -> Image.Image:
     # 1: Horizontal (normal)
     # 2: Mirror horizontal
     # 3: Rotate 180 <- is the same in rotate
-    if orientation == 3:
+    if orientation == ORIENTATION_ROTATE_180:
         img = img.rotate(180, expand=True)
     # 4: Mirror vertical
     # 5: Mirror horizontal and rotate 270 CW
     # 6: Rotate 90 CW <- is 270 counter CW
-    elif orientation == 6:
+    elif orientation == ORIENTATION_ROTATE_90_CW:
         img = img.rotate(270, expand=True)
     # 7: Mirror horizontal and rotate 90 CW
     # 8: Rotate 270 CW <- is 90 counter CW
-    elif orientation == 8:
+    elif orientation == ORIENTATION_ROTATE_270_CW:
         img = img.rotate(90, expand=True)
     return img
 

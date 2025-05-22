@@ -141,7 +141,7 @@ class TestController:
         mc._stop_pumps.assert_any_call([1], ANY)
 
     @patch("time.perf_counter")
-    def test_start_preparation(self, mock_time):
+    def test_start_preparation(self, mock_time: MagicMock):
         # Mock time to simulate passage of time during preparation
         # First call is for cocktail_start_time, then section_start_time, then repeatedly in the while loop
         mock_time.side_effect = [

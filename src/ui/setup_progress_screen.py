@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
     """Class for the Progress screen during Cocktail making."""
 
-    def __init__(self, parent: MainScreen, cocktail_type: str = "Cocktail") -> None:
+    def __init__(self, parent: "MainScreen", cocktail_type: str = "Cocktail") -> None:
         """Initialize the Progress screen."""
         super().__init__()
         self.setupUi(self)

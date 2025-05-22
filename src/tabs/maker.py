@@ -82,7 +82,8 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[P
     ADDONS.after_cocktail(addon_data)
 
     # only post if cocktail was made over 50%
-    if percentage_made >= 0.5:
+    minimum_cocktail_progress = 0.5
+    if percentage_made >= minimum_cocktail_progress:
         SERVICE_HANDLER.post_team_data(shared.selected_team, real_volume, shared.team_member_name)
         SERVICE_HANDLER.post_cocktail_to_hook(display_name, real_volume, cocktail)
 

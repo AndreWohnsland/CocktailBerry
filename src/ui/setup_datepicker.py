@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class DatePicker(QMainWindow, Ui_Datepicker):
     """Creates the Window for the user to change date and time."""
 
-    def __init__(self, parent: MainScreen) -> None:
+    def __init__(self, parent: "MainScreen") -> None:
         """Set up the datepicker window."""
         super().__init__()
         self.setupUi(self)

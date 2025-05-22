@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class KeyboardWidget(QMainWindow, Ui_Keyboard):
     """Creates a keyboard where the user can enter names or similar strings to Lineedits."""
 
-    def __init__(self, parent: MainScreen | ConfigWindow, le_to_write: QLineEdit, max_char_len: int = 30) -> None:
+    def __init__(self, parent: "MainScreen | ConfigWindow", le_to_write: QLineEdit, max_char_len: int = 30) -> None:
         super().__init__()
         self.setupUi(self)
         self.mainscreen = parent
@@ -127,6 +127,7 @@ class KeyboardWidget(QMainWindow, Ui_Keyboard):
         """Change the displayed values on the buttons."""
         for obj, char in zip(self.input_button_list, character_list):
             # fix for & sign, it needs to be a && in pyqt
+            display_char = char
             if char == "&":
-                char = "&&"
-            obj.setText(str(char))
+                display_char = "&&"
+            obj.setText(str(display_char))

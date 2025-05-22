@@ -208,7 +208,7 @@ class ConfigManager:
         Ignore the error if the file is not found, as it is created at the first start of the program.
         """
         configuration: dict = {}
-        with contextlib.suppress(FileNotFoundError), open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
+        with contextlib.suppress(FileNotFoundError), CUSTOM_CONFIG_FILE.open(encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
         if configuration:
             self.set_config(configuration, validate)
@@ -221,7 +221,7 @@ class ConfigManager:
         Is used to sync new properties into the file.
         """
         config = self.get_config()
-        with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
+        with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
             yaml.dump(config, stream, default_flow_style=False)
 
     def get_config(self) -> dict[str, Any]:
@@ -305,7 +305,7 @@ class ConfigManager:
     def add_config(
         self,
         config_name: str,
-        default_value: str | int | float | bool | list[str] | list[int] | list[float],
+        default_value: str | float | bool | list[str] | list[int] | list[float],
         validation_function: list[Callable[[str, Any], None]] | None = None,
         list_validation_function: list[Callable[[str, Any], None]] | None = None,
         list_type: type | None = None,

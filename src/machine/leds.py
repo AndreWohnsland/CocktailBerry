@@ -150,7 +150,7 @@ class _controllableLED(_LED):
             )
             for i in range(cfg.LED_COUNT):
                 # If multiple identical ring LEDs operate them simultaneously
-                for k in range(0, cfg.LED_NUMBER_RINGS):
+                for k in range(cfg.LED_NUMBER_RINGS):
                     iter_pos = k * cfg.LED_COUNT + i
                     self.strip.setPixelColor(iter_pos, color)
                     # Turn of 2 leading LEDs to have a more spinner like light effect
@@ -163,8 +163,8 @@ class _controllableLED(_LED):
 
     def turn_off(self) -> None:
         """Turn all leds off."""
-        for k in range(0, cfg.LED_NUMBER_RINGS):
-            for i in range(0, cfg.LED_COUNT):
+        for k in range(cfg.LED_NUMBER_RINGS):
+            for i in range(cfg.LED_COUNT):
                 iter_pos = k * cfg.LED_COUNT + i
                 self.strip.setPixelColor(iter_pos, Color(0, 0, 0))
         self.strip.show()
@@ -173,21 +173,24 @@ class _controllableLED(_LED):
         """Turn all leds on to given color."""
         if color is None:
             color = Color(255, 255, 255)
-        for k in range(0, cfg.LED_NUMBER_RINGS):
-            for i in range(0, cfg.LED_COUNT):
+        for k in range(cfg.LED_NUMBER_RINGS):
+            for i in range(cfg.LED_COUNT):
                 iter_pos = k * cfg.LED_COUNT + i
                 self.strip.setPixelColor(iter_pos, color)
         self.strip.show()
 
     def _wheel(self, pos: int) -> Color:
         """Generate rainbow colors across 0-255 positions."""
-        if pos < 85:
-            return Color(pos * 3, 255 - pos * 3, 0)
-        if pos < 170:
-            pos -= 85
-            return Color(255 - pos * 3, 0, pos * 3)
-        pos -= 170
-        return Color(0, pos * 3, 255 - pos * 3)
+        first_section = 85
+        second_section = 170
+        max_position = 255
+        if pos < first_section:
+            return Color(pos * 3, max_position - pos * 3, 0)
+        if pos < second_section:
+            pos -= first_section
+            return Color(max_position - pos * 3, 0, pos * 3)
+        pos -= second_section
+        return Color(0, pos * 3, max_position - pos * 3)
 
     def _end_thread(self, duration: int = 5) -> None:
         """Rainbow animation fades across all pixels at once."""
@@ -199,7 +202,7 @@ class _controllableLED(_LED):
         while current_time <= duration:
             for j in wheel_order:
                 for i in range(cfg.LED_COUNT):
-                    for k in range(0, cfg.LED_NUMBER_RINGS):
+                    for k in range(cfg.LED_NUMBER_RINGS):
                         iter_pos = k * cfg.LED_COUNT + i
                         self.strip.setPixelColor(iter_pos, self._wheel((i + j) & 255))
                 self.strip.show()

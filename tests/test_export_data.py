@@ -1,6 +1,7 @@
 import datetime
 from io import StringIO
 from pathlib import Path
+from typing import Any
 from unittest.mock import MagicMock, call, patch
 
 from src.filepath import SAVE_FOLDER
@@ -34,7 +35,7 @@ class TestExportData:
             str(cost_file): cost_csv_content,
         }
 
-        def mock_file_open(filename, *args, **kwargs):
+        def mock_file_open(filename: Any, *args: Any, **kwargs: Any):
             mock = MagicMock()
             content = mock_file_contents.get(str(filename), "")
             mock.__enter__.return_value = StringIO(content)
@@ -48,7 +49,7 @@ class TestExportData:
             patch("src.migration.export_data.execute_raw_sql") as mock_execute_sql,
         ):
             # Configure mock_glob to return appropriate files for each pattern
-            def glob_side_effect(pattern):
+            def glob_side_effect(pattern: str):
                 if "_Recipe" in pattern:
                     return [recipe_file]
                 if "_Ingredient" in pattern:
@@ -130,7 +131,7 @@ class TestExportData:
             str(ingredient_file): ingredient_csv_content,
         }
 
-        def mock_file_open(filename, *args, **kwargs):
+        def mock_file_open(filename: Any, *args: Any, **kwargs: Any):
             mock = MagicMock()
             content = mock_file_contents.get(str(filename), "")
             mock.__enter__.return_value = StringIO(content)
@@ -145,7 +146,7 @@ class TestExportData:
         ):
             # Cost file doesn't exist
             # Configure mock_glob to return appropriate files for each pattern
-            def glob_side_effect(pattern):
+            def glob_side_effect(pattern: str):
                 if "_Recipe" in pattern:
                     return [recipe_file]
                 if "_Ingredient" in pattern:
@@ -212,7 +213,7 @@ class TestExportData:
             str(cost_file): cost_csv_content,
         }
 
-        def mock_file_open(filename, *args, **kwargs):
+        def mock_file_open(filename: Any, *args: Any, **kwargs: Any):
             mock = MagicMock()
             content = mock_file_contents.get(str(filename), "")
             mock.__enter__.return_value = StringIO(content)
@@ -226,7 +227,7 @@ class TestExportData:
             patch("src.migration.export_data.execute_raw_sql") as mock_execute_sql,
         ):
             # Configure mock_glob to return appropriate files for each pattern
-            def glob_side_effect(pattern):
+            def glob_side_effect(pattern: str):
                 if "_Recipe" in pattern:
                     return [recipe_file]
                 if "_Ingredient" in pattern:

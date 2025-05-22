@@ -79,7 +79,8 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
 
         tries = 0
         is_connected = False
-        while tries < 5 and not is_connected:
+        max_tries = 5
+        while tries < max_tries and not is_connected:
             ssid_output = subprocess.run(["iwgetid"], stdout=subprocess.PIPE, check=False).stdout.decode("utf-8")
             is_connected = ssid in ssid_output
             time.sleep(3)

@@ -181,7 +181,7 @@ async def upload_backup(
         zip_file_path = tmpdir / file_name
 
         # Save the uploaded file
-        with open(zip_file_path, "wb") as buffer:
+        with zip_file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
         # Extract the ZIP file
@@ -334,7 +334,8 @@ async def update_datetime(data: DateTimeInput) -> ApiMessage:
     # users might also add ms, so remove them as well
     time_string = data.time.split(".")[0]
     # Add ":00" if seconds are missing
-    if len(time_string.split(":")) == 2:
+    len_without_seconds = 2
+    if len(time_string.split(":")) == len_without_seconds:
         time_string += ":00"
     datetime_string = f"{data.date} {time_string}"
     set_system_datetime(datetime_string)

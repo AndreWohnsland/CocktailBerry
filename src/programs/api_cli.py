@@ -87,7 +87,8 @@ def setup_ap(
     So you can still use the wlan0 interface for your normal network connection.
     This requires that you can have a virtual interface on your chip, for example the Raspberry Pi 3B+.
     """
-    if len(password) < 8:
+    required_password_chars = 8
+    if len(password) < required_password_chars:
         typer.echo(typer.style("Password must be at least 8 characters long.", fg=typer.colors.RED, bold=True))
         raise typer.Exit(code=1)
     create_ap(ssid, password)

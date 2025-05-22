@@ -85,7 +85,7 @@ class Migrator:
         """Write the latest version to the local version."""
         _logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
         self.config["DEFAULT"]["LOCALVERSION"] = str(self.program_version.version)
-        with open(VERSION_FILE, "w", encoding="utf-8") as config_file:
+        with VERSION_FILE.open("w", encoding="utf-8") as config_file:
             self.config.write(config_file)
 
     def make_migrations(self) -> None:
@@ -266,7 +266,7 @@ def _update_config_value_type(config_name: str, new_type: Callable[[Any], T], de
         configuration[config_name] = new_values
     else:
         configuration[config_name] = _get_converted_value(new_type, default_value, local_config)
-    with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
 
 
@@ -274,7 +274,7 @@ def _get_local_config(config_name: str) -> dict[str, Any] | None:
     if not CUSTOM_CONFIG_FILE.exists():
         _logger.info(f"No local config detected for {config_name}, skipping conversion")
         return None
-    with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
+    with CUSTOM_CONFIG_FILE.open(encoding="UTF-8") as stream:
         return yaml.safe_load(stream)
 
 
@@ -302,7 +302,7 @@ def _combine_pump_setting_into_one_config() -> None:
     for pin, volume_flow in zip(pump_pins, pump_volume_flow):
         pump_config.append({"pin": pin, "volume_flow": volume_flow, "tube_volume": tube_volume})
     configuration["PUMP_CONFIG"] = pump_config
-    with open(CUSTOM_CONFIG_FILE, "w", encoding="UTF-8") as stream:
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
 
 
@@ -316,7 +316,7 @@ def _move_slow_factor_to_db() -> None:
         slow_factor = 1.0
     else:
         configuration: dict[str, Any] = {}
-        with open(CUSTOM_CONFIG_FILE, encoding="UTF-8") as stream:
+        with CUSTOM_CONFIG_FILE.open(encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
         slow_factor = configuration.get("PUMP_SLOW_FACTOR", 1.0)
     change_slower_flag_to_pump_speed(slow_factor)
@@ -392,10 +392,10 @@ class _Version:
         self.minor = minor
         self.patch = patch
 
-    def __gt__(self, __o: object) -> bool:
+    def __gt__(self, __o: object, /) -> bool:
         return (self.major, self.minor, self.patch) > (__o.major, __o.minor, __o.patch)  # type: ignore
 
-    def __eq__(self, __o: object) -> bool:
+    def __eq__(self, __o: object, /) -> bool:
         return self.version == __o.version  # type: ignore
 
     def __str__(self) -> str:

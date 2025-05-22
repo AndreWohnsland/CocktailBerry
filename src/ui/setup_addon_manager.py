@@ -21,7 +21,7 @@ _logger = LoggerHandler("AddonManager")
 class AddonManager(QMainWindow, Ui_AddonManager):
     """Creates A window to display addon GUI for the user."""
 
-    def __init__(self, parent: MainScreen) -> None:
+    def __init__(self, parent: "MainScreen") -> None:
         """Initialize the object."""
         super().__init__()
         self.setupUi(self)

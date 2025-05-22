@@ -1,4 +1,3 @@
-import os
 import re
 import socket
 import subprocess
@@ -135,7 +134,7 @@ def setup_teams(language: LanguageChoice) -> None:
     # since we need to alter the env var, need a tmp file
     # this is because we cant set env vars in docker compose over the up command as string but file
     tmp_env_file = Path.home().absolute() / ".tmp_docker.env"
-    with open(tmp_env_file, "w", encoding="utf_8") as tmp_file:
+    with tmp_env_file.open("w", encoding="utf_8") as tmp_file:
         tmp_file.write(f"UI_LANGUAGE={language.value}")
     # first need to pull latest image, otherwise it will use the old one, if it exists
     subprocess.run(
@@ -155,7 +154,7 @@ def setup_teams(language: LanguageChoice) -> None:
     ]
     subprocess.run(cmd, check=False)
     typer.echo(typer.style("Done!", fg=typer.colors.GREEN, bold=True))
-    os.remove(tmp_env_file)
+    tmp_env_file.unlink()
     host_name = socket.gethostname()
     host_ip = _get_ip()
     msg = f"Teams frontend URL: http://{host_ip}:8050, service url: http://{host_ip}:8080 machine name is {host_name}"

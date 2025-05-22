@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class BottleWindow(QMainWindow, Ui_Bottlewindow):
     """Creates the Window to change to levels of the bottles."""
 
-    def __init__(self, parent: MainScreen) -> None:
+    def __init__(self, parent: "MainScreen") -> None:
         """Init. Connects all the buttons, gets the names from Mainwindow/DB."""
         super().__init__()
         self.setupUi(self)

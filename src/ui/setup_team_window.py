@@ -23,7 +23,7 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
 
     selection_done = pyqtSignal(str)
 
-    def __init__(self, parent: MainScreen) -> None:
+    def __init__(self, parent: "MainScreen") -> None:
         """Initialize the Team selection Screen."""
         super().__init__()
         self.setupUi(self)
@@ -85,11 +85,10 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         """
         data = SERVICE_HANDLER.get_team_data()
         for name, number in data.items():
-            try:
-                button = getattr(self, f"button_{name}")
+            button_attr = f"button_{name}"
+            if hasattr(self, button_attr):
+                button = getattr(self, button_attr)
                 button.setText(f"{name} ({number}x)")
-            except AttributeError:
-                pass
 
     class _Worker(QObject):
         """Worker to install qtsass on a thread."""
