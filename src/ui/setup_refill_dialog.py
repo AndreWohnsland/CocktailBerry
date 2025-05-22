@@ -6,11 +6,11 @@ from PyQt5.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.models import Ingredient
 from src.tabs import bottles
 from src.ui_elements import Ui_RefillPrompt
 
 if TYPE_CHECKING:
+    from src.models import Ingredient
     from src.ui.setup_mainwindow import MainScreen
 
 

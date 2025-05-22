@@ -359,7 +359,7 @@ class DatabaseCommander:
             bottle = session.query(DbBottle).filter(DbBottle.number == bottle_number).one_or_none()
             # if the bottle is none, we need to create a new bottle
             if bottle is None:
-                bottle = DbBottle(number=bottle_number, id=ingredient_id)
+                bottle = DbBottle(number=bottle_number, _id=ingredient_id)
                 session.add(bottle)
             bottle.id = ingredient_id
 
@@ -563,7 +563,7 @@ class DatabaseCommander:
             else:
                 ingredient_id = ingredient_list  # type: ignore
             for _id in ingredient_id:
-                session.add(DbAvailable(id=_id))
+                session.add(DbAvailable(_id=_id))
 
     # delete
     def delete_ingredient(self, ingredient_id: int) -> None:

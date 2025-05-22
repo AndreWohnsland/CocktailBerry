@@ -190,7 +190,8 @@ class DisplayController(DialogHandler):
         ):
             self.say_needs_to_be_int()
             return False
-        if int(ing_input.alcohol_level.text()) > 100:
+        max_alcohol_level = 100
+        if int(ing_input.alcohol_level.text()) > max_alcohol_level:
             self.say_alcohol_level_max_limit()
             return False
         # if the unit is other than ml, the ingredient need to be handadd
@@ -266,7 +267,7 @@ class DisplayController(DialogHandler):
     def inject_stylesheet(self, window_object: QWidget) -> None:
         """Add the central stylesheet to the gui."""
         style_file = f"{cfg.MAKER_THEME}.css"
-        with open(STYLE_FOLDER / style_file, encoding="utf-8") as file_handler:
+        with (STYLE_FOLDER / style_file).open(encoding="utf-8") as file_handler:
             window_object.setStyleSheet(file_handler.read())
 
     def set_tab_width(self, mainscreen: MainScreen) -> None:

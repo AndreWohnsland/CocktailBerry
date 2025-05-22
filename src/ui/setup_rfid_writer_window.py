@@ -38,7 +38,8 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
     def _write_rfid(self) -> None:
         """Try to write the label to the RFID."""
         text = self.input_text.text()
-        if len(text) < 3:
+        min_text_length = 3
+        if len(text) < min_text_length:
             self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("error"))
             return
         self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("prompt"))

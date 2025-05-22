@@ -79,17 +79,25 @@ extend-safe-fixes = [
   "D205", # 1 blank line required between summary line and description
   "W291", # Trailing whitespace
   ]
-per-file-ignores = { "runme.py" = ["E402"], "migrator.py" = ["E402"], "api.py" = ["E402"] }
+per-file-ignores = {"runme.py" = ["E402"], "migrator.py" = ["E402"], "api.py" = ["E402"], "tests/*" = ["ANN201", "ANN202", "PLR2004"] }
 select = [
+  "A", # flake8-builtins
   "ANN", # Type annotations
-  "FAST", # FastAPI
   "C", # Convention
+  "C4", # flake-comprehensions
   "D", # pydocstyle 
   "E", # pycodestyle
   "F", # Pyflakes
+  "FAST", # FastAPI
   "I", # isort 
   "ICN001", # {name} should be imported as {asname},
+  "PIE", # flake8-pie
+  "PL", # pylint
+  "PTH", # flake8-use-pathlib
+  "PYI", # flake8-pyi
+  "Q", # flake8-quotes
   "R", # Refactor
+  "RET", # flake8-return
   "RUF", # Ruff
   "SIM", # flake8-simplify
   "UP", # pyupgrade
@@ -106,6 +114,7 @@ ignore = [
   "D203", # 1 blank line required before class docstring
   "D213", # Multi-line docstring summary should start at the second line
   "ANN401", # no Any for *args or **kwargs
+  "PLR0913", # Too many arguments
 ]
 
 [tool.mypy]

@@ -148,7 +148,7 @@ class DialogHandler:
         self.password_outcome = False
         self.prompt_outcome = False
         self.message_box: None | Ui_CustomDialog = None
-        with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
+        with LANGUAGE_FILE.open(encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, str]] = yaml.safe_load(stream)["dialog"]
 
     def get_translation(self, dialog_key: allowed_keys, **kwargs: Any) -> str:
@@ -268,7 +268,7 @@ class DialogHandler:
         """Create the base file dialog and shows it with the full screen settings."""
         file_dialog = QFileDialog()
         style_file = f"{cfg.MAKER_THEME}.css"
-        with open(STYLE_FOLDER / style_file, encoding="utf-8") as file_handler:
+        with (STYLE_FOLDER / style_file).open(encoding="utf-8") as file_handler:
             file_dialog.setStyleSheet(file_handler.read())
         file_dialog.setWindowIcon(QIcon(self.icon_path))
         file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # type: ignore
@@ -630,7 +630,7 @@ class UiLanguage:
     """Class to set the UI language to the appropriate Language."""
 
     def __init__(self) -> None:
-        with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
+        with LANGUAGE_FILE.open(encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, dict[str, str]]] = yaml.safe_load(stream)["ui"]
 
     def _choose_language(self, element_name: str, ui_element_name: str = "generics", **kwargs: Any) -> str:

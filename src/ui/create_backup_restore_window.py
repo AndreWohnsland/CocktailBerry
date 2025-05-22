@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 
 class BackupRestoreWindow(QMainWindow):
-    def __init__(self, parent: MainScreen, backup_path: Path) -> None:
+    def __init__(self, parent: "MainScreen", backup_path: Path) -> None:
         super().__init__()
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class AvailableWindow(QMainWindow, Ui_available):
     """Opens a window where the user can select all available ingredients."""
 
-    def __init__(self, parent: MainScreen) -> None:
+    def __init__(self, parent: "MainScreen") -> None:
         super().__init__()
         self.setupUi(self)
         self.mainscreen = parent
