@@ -1,8 +1,7 @@
 import datetime
-from io import StringIO
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import call, mock_open, patch
 
 from src.filepath import SAVE_FOLDER
 from src.migration.export_data import migrate_csv_export_data_to_db
@@ -35,15 +34,14 @@ class TestExportData:
             str(cost_file): cost_csv_content,
         }
 
-        def mock_file_open(filename: Any, *args: Any, **kwargs: Any):
-            mock = MagicMock()
-            content = mock_file_contents.get(str(filename), "")
-            mock.__enter__.return_value = StringIO(content)
-            return mock
+        def mock_file_open(path: Any, *args: Any, **kwargs: Any):
+            content = mock_file_contents.get(str(path), "")
+            m = mock_open(read_data=content)
+            return m()
 
         with (
             patch("pathlib.Path.glob") as mock_glob,
-            patch("builtins.open", side_effect=mock_file_open),
+            patch("pathlib.Path.open", new=mock_file_open),
             patch("pathlib.Path.unlink") as mock_unlink,
             patch("pathlib.Path.exists", return_value=True),
             patch("src.migration.export_data.execute_raw_sql") as mock_execute_sql,
@@ -131,15 +129,14 @@ class TestExportData:
             str(ingredient_file): ingredient_csv_content,
         }
 
-        def mock_file_open(filename: Any, *args: Any, **kwargs: Any):
-            mock = MagicMock()
-            content = mock_file_contents.get(str(filename), "")
-            mock.__enter__.return_value = StringIO(content)
-            return mock
+        def mock_file_open(path: Any, *args: Any, **kwargs: Any):
+            content = mock_file_contents.get(str(path), "")
+            m = mock_open(read_data=content)
+            return m()
 
         with (
             patch("pathlib.Path.glob") as mock_glob,
-            patch("builtins.open", side_effect=mock_file_open),
+            patch("pathlib.Path.open", new=mock_file_open),
             patch("pathlib.Path.unlink") as mock_unlink,
             patch("pathlib.Path.exists", return_value=False),
             patch("src.migration.export_data.execute_raw_sql") as mock_execute_sql,
@@ -213,15 +210,14 @@ class TestExportData:
             str(cost_file): cost_csv_content,
         }
 
-        def mock_file_open(filename: Any, *args: Any, **kwargs: Any):
-            mock = MagicMock()
-            content = mock_file_contents.get(str(filename), "")
-            mock.__enter__.return_value = StringIO(content)
-            return mock
+        def mock_file_open(path: Any, *args: Any, **kwargs: Any):
+            content = mock_file_contents.get(str(path), "")
+            m = mock_open(read_data=content)
+            return m()
 
         with (
             patch("pathlib.Path.glob") as mock_glob,
-            patch("builtins.open", side_effect=mock_file_open),
+            patch("pathlib.Path.open", new=mock_file_open),
             patch("pathlib.Path.unlink"),
             patch("pathlib.Path.exists", return_value=True),
             patch("src.migration.export_data.execute_raw_sql") as mock_execute_sql,
