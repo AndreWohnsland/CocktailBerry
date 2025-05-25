@@ -87,12 +87,13 @@ def migrate_csv_export_data_to_db() -> None:
 
 def _migrate_recipe_export_file(recipe_file: Path, export_date: datetime.date) -> None:
     """Migrate a single recipe export file to the database."""
+    needed_document_rows = 2
     try:
-        with open(recipe_file, encoding="utf-8") as csv_file:
+        with recipe_file.open(encoding="utf-8") as csv_file:
             reader = csv.reader(csv_file)
             rows = list(reader)
 
-            if len(rows) < 2:
+            if len(rows) < needed_document_rows:
                 return
 
             # First row contains headers with recipe names
@@ -119,12 +120,14 @@ def _migrate_ingredient_export_file(
     ingredient_file: Path, cost_file_path: Path | None, export_date: datetime.date
 ) -> None:
     """Migrate a single ingredient export file with its cost data to the database."""
+    needed_document_rows = 2
+    document_with_cost_rows = 3
     try:
-        with open(ingredient_file, encoding="utf-8") as csv_file:
+        with ingredient_file.open(encoding="utf-8") as csv_file:
             reader = csv.reader(csv_file)
             rows = list(reader)
 
-            if len(rows) < 2:
+            if len(rows) < needed_document_rows:
                 return
 
             # First row contains headers with ingredient names
@@ -135,11 +138,11 @@ def _migrate_ingredient_export_file(
             # Read cost data if available
             cost_data = {}
             if cost_file_path and cost_file_path.exists():
-                with open(cost_file_path, encoding="utf-8") as cost_file:
+                with cost_file_path.open(encoding="utf-8") as cost_file:
                     cost_reader = csv.reader(cost_file)
                     cost_rows = list(cost_reader)
 
-                    if len(cost_rows) >= 2:
+                    if len(cost_rows) >= document_with_cost_rows:
                         cost_names = cost_rows[0][1:]
                         cost_values = cost_rows[1][1:]
 

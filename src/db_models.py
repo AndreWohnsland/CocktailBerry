@@ -123,9 +123,9 @@ class DbBottle(Base):
 
     ingredient: Mapped[Optional["DbIngredient"]] = relationship("DbIngredient", back_populates="bottle")
 
-    def __init__(self, number: int, id: Optional[int] = None) -> None:
+    def __init__(self, number: int, _id: Optional[int] = None) -> None:
         self.number = number
-        self.id = id
+        self.id = _id
 
 
 class DbAvailable(Base):
@@ -134,8 +134,8 @@ class DbAvailable(Base):
 
     ingredient: Mapped["DbIngredient"] = relationship("DbIngredient", back_populates="available")
 
-    def __init__(self, id: int) -> None:
-        self.id = id
+    def __init__(self, _id: int) -> None:
+        self.id = _id
 
 
 class DbTeamdata(Base):

@@ -15,7 +15,7 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
 
     def __init__(
         self,
-        parent: MainScreen | ConfigWindow,
+        parent: "MainScreen | ConfigWindow",
         le_to_write: QLineEdit,
         x_pos: int = 0,
         y_pos: int = 0,

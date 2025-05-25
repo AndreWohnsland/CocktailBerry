@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+from pathlib import Path
 from typing import Literal
 
 from src.logger_handler import LoggerHandler
@@ -29,7 +30,7 @@ except (ModuleNotFoundError, RuntimeError):
 
 def is_rpi5() -> bool:
     model = "No Model"
-    with contextlib.suppress(FileNotFoundError), open("/proc/device-tree/model", encoding="utf-8") as f:
+    with contextlib.suppress(FileNotFoundError), Path("/proc/device-tree/model").open(encoding="utf-8") as f:
         model = f.read()
     return "raspberry pi 5" in model.lower()
 
@@ -37,7 +38,7 @@ def is_rpi5() -> bool:
 def is_rpi() -> bool:
     """Check if the current machine is a Raspberry Pi."""
     model = "No Model"
-    with contextlib.suppress(FileNotFoundError), open("/proc/device-tree/model", encoding="utf-8") as f:
+    with contextlib.suppress(FileNotFoundError), Path("/proc/device-tree/model").open(encoding="utf-8") as f:
         model = f.read()
     return "raspberry pi" in model.lower()
 
