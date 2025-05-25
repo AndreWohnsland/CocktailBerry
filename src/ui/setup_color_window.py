@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import contextlib
 import importlib.util
 import re
 from dataclasses import fields
-from typing import Optional, get_args
+from typing import TYPE_CHECKING, get_args
 
 from PyQt5.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt5.QtGui import QColor
@@ -15,7 +17,6 @@ from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.migration.migrator import CouldNotMigrateException, Migrator
 from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_font, create_spacer, setup_worker_thread
 from src.ui.icons import parse_colors
-from src.ui.setup_mainwindow import MainScreen
 from src.ui_elements import Ui_ColorWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.utils import restart_program
@@ -26,6 +27,10 @@ try:
     _QTSASS_INSTALLED = True
 except ModuleNotFoundError:
     _QTSASS_INSTALLED = False
+
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
+
 
 THEMES = list(get_args(SupportedThemesType))
 
@@ -54,7 +59,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
-        self.color_picker: Optional[QColorDialog] = None
+        self.color_picker: QColorDialog | None = None
         self.inputs_colors: dict[str, ClickableLineEdit] = {}
         self.custom_colors = parse_colors("custom")
         # Connect all the buttons, generates a list of the numbers an object names to do that

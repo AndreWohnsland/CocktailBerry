@@ -3,6 +3,8 @@
 This includes all functions for the Lists, DB and Buttons/Dropdowns.
 """
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QListWidget
