@@ -60,9 +60,6 @@ extra-index-url = [
     "https://www.piwheels.org/simple"
 ]
 
-[tool.uv.workspace]
-members = ["dashboard", "microservice"]
-
 [tool.hatch.metadata]
 allow-direct-references = true
 

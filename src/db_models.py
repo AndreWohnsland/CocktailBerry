@@ -154,7 +154,7 @@ class DbCocktailExport(Base):
     recipe_name: Mapped[str] = mapped_column(nullable=False, name="Recipe_Name")
     counter: Mapped[int] = mapped_column(nullable=False, name="Counter")
 
-    def __init__(self, recipe_name: str, counter: int, export_date: datetime.date | None = None) -> None:
+    def __init__(self, recipe_name: str, counter: int, export_date: Optional[datetime.date] = None) -> None:
         self.recipe_name = recipe_name
         self.counter = counter
         self.export_date = export_date or datetime.date.today()
@@ -173,7 +173,7 @@ class DbIngredientExport(Base):
         ingredient_name: str,
         consumption: int,
         cost_consumption: int,
-        export_date: datetime.date | None = None,
+        export_date: Optional[datetime.date] = None,
     ) -> None:
         self.ingredient_name = ingredient_name
         self.consumption = consumption
@@ -196,7 +196,7 @@ class DbResourceUsage(Base):
         cpu_usage: float,
         ram_usage: float,
         session: int,
-        timestamp: datetime.datetime | None = None,
+        timestamp: Optional[datetime.datetime] = None,
     ) -> None:
         self.cpu_usage = cpu_usage
         self.ram_usage = ram_usage

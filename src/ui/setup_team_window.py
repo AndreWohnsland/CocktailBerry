@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from itertools import cycle
 from typing import TYPE_CHECKING, Callable
 
@@ -23,7 +25,7 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
 
     selection_done = pyqtSignal(str)
 
-    def __init__(self, parent: "MainScreen") -> None:
+    def __init__(self, parent: MainScreen) -> None:
         """Initialize the Team selection Screen."""
         super().__init__()
         self.setupUi(self)

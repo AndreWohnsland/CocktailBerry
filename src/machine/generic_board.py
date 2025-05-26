@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 from src.logger_handler import LoggerHandler
 from src.machine.interface import GPIOController, PinController
@@ -71,7 +71,7 @@ class GenericController(PinController):
             for pin in pin_list:
                 self.gpios[pin].write(self.low)
 
-    def cleanup_pin_list(self, pin_list: Optional[list[int]] = None) -> None:
+    def cleanup_pin_list(self, pin_list: list[int] | None = None) -> None:
         """Clean up the given pin list, or all pins if none is given."""
         if self.devenvironment:
             return
