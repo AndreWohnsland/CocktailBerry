@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 from io import BytesIO
 from pathlib import Path
-from typing import Optional, Union
 
 from PIL import Image, UnidentifiedImageError
 
@@ -49,7 +50,7 @@ def find_user_cocktail_image(cocktail: Cocktail) -> Path | None:
     return cocktail_image
 
 
-def process_image(image_data: Union[str, bytes, Path], resize_size: int = 500) -> Optional[Image.Image]:
+def process_image(image_data: str | bytes | Path, resize_size: int = 500) -> Image.Image | None:
     """Resize and crop (1x1) the given image to the desired size."""
     # Open the image file
     try:

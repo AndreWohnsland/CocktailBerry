@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from fastapi import HTTPException
 
 from src.config.config_manager import shared

@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import datetime
-from typing import Optional
 
 from sqlalchemy import ForeignKey, PrimaryKeyConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -17,8 +18,8 @@ class DbCocktailIngredient(Base):
     amount: Mapped[int] = mapped_column(name="Amount", nullable=False)
     recipe_order: Mapped[int] = mapped_column(name="Recipe_Order", default=1)
 
-    ingredient: Mapped["DbIngredient"] = relationship("DbIngredient", back_populates="cocktail_associations")
-    cocktail: Mapped["DbRecipe"] = relationship("DbRecipe", back_populates="ingredient_associations")
+    ingredient: Mapped[DbIngredient] = relationship("DbIngredient", back_populates="cocktail_associations")
+    cocktail: Mapped[DbRecipe] = relationship("DbRecipe", back_populates="ingredient_associations")
 
     def __init__(self, cocktail_id: int, ingredient_id: int, amount: int, recipe_order: int = 1) -> None:
         self.cocktail_id = cocktail_id
@@ -43,11 +44,11 @@ class DbIngredient(Base):
     unit: Mapped[str] = mapped_column(default="ml", name="Unit")
     pump_speed: Mapped[int] = mapped_column(default=100, name="Pump_speed")
 
-    bottle: Mapped[Optional["DbBottle"]] = relationship("DbBottle", uselist=False, back_populates="ingredient")
-    cocktail_associations: Mapped[list["DbCocktailIngredient"]] = relationship(
+    bottle: Mapped[DbBottle | None] = relationship("DbBottle", uselist=False, back_populates="ingredient")
+    cocktail_associations: Mapped[list[DbCocktailIngredient]] = relationship(
         "DbCocktailIngredient", back_populates="ingredient"
     )
-    available: Mapped[Optional["DbAvailable"]] = relationship("DbAvailable", back_populates="ingredient", uselist=False)
+    available: Mapped[DbAvailable | None] = relationship("DbAvailable", back_populates="ingredient", uselist=False)
 
     def __init__(
         self,
@@ -91,7 +92,7 @@ class DbRecipe(Base):
     enabled: Mapped[bool] = mapped_column(default=True, name="Enabled")
     virgin: Mapped[bool] = mapped_column(default=False, name="Virgin")
 
-    ingredient_associations: Mapped[list["DbCocktailIngredient"]] = relationship(
+    ingredient_associations: Mapped[list[DbCocktailIngredient]] = relationship(
         "DbCocktailIngredient", back_populates="cocktail", cascade="all, delete-orphan"
     )
 
@@ -117,13 +118,11 @@ class DbRecipe(Base):
 class DbBottle(Base):
     __tablename__ = "Bottles"
     number: Mapped[int] = mapped_column(primary_key=True, nullable=False, name="Bottle")
-    id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("Ingredients.ID", ondelete="RESTRICT"), nullable=True, name="ID"
-    )
+    id: Mapped[int | None] = mapped_column(ForeignKey("Ingredients.ID", ondelete="RESTRICT"), nullable=True, name="ID")
 
-    ingredient: Mapped[Optional["DbIngredient"]] = relationship("DbIngredient", back_populates="bottle")
+    ingredient: Mapped[DbIngredient | None] = relationship("DbIngredient", back_populates="bottle")
 
-    def __init__(self, number: int, _id: Optional[int] = None) -> None:
+    def __init__(self, number: int, _id: int | None = None) -> None:
         self.number = number
         self.id = _id
 
@@ -132,7 +131,7 @@ class DbAvailable(Base):
     __tablename__ = "Available"
     id: Mapped[int] = mapped_column(ForeignKey("Ingredients.ID"), primary_key=True, nullable=False, name="ID")
 
-    ingredient: Mapped["DbIngredient"] = relationship("DbIngredient", back_populates="available")
+    ingredient: Mapped[DbIngredient] = relationship("DbIngredient", back_populates="available")
 
     def __init__(self, _id: int) -> None:
         self.id = _id
