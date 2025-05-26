@@ -49,9 +49,9 @@ function App() {
           <GettingConfiguration />
         ) : (
           <Routes>
-            <Route path='/cocktails' element={<CocktailList />} />
+            <Route path='cocktails' element={<CocktailList />} />
             <Route
-              path='/manage/ingredients'
+              path='manage/ingredients'
               element={
                 <MakerPasswordProtected tabNumber={0}>
                   <IngredientList />
@@ -59,7 +59,7 @@ function App() {
               }
             />
             <Route
-              path='/manage/recipes'
+              path='manage/recipes'
               element={
                 <MakerPasswordProtected tabNumber={1}>
                   <RecipeList />
@@ -67,7 +67,7 @@ function App() {
               }
             />
             <Route
-              path='/manage/bottles'
+              path='manage/bottles'
               element={
                 <MakerPasswordProtected tabNumber={2}>
                   <BottleList />
@@ -75,7 +75,7 @@ function App() {
               }
             />
             <Route
-              path='/manage/bottles/available'
+              path='manage/bottles/available'
               element={
                 <MakerPasswordProtected tabNumber={2}>
                   <AvailableBottles />
@@ -83,7 +83,7 @@ function App() {
               }
             />
             <Route
-              path='/options'
+              path='options'
               element={
                 <MasterPasswordProtected>
                   <OptionWindow />
@@ -91,7 +91,7 @@ function App() {
               }
             />
             <Route
-              path='/options/configuration'
+              path='options/configuration'
               element={
                 <MasterPasswordProtected>
                   <ConfigWindow />
@@ -99,7 +99,7 @@ function App() {
               }
             />
             <Route
-              path='/options/data'
+              path='options/data'
               element={
                 <MasterPasswordProtected>
                   <DataWindow />
@@ -107,7 +107,7 @@ function App() {
               }
             />
             <Route
-              path='/options/logs'
+              path='options/logs'
               element={
                 <MasterPasswordProtected>
                   <LogWindow />
@@ -115,7 +115,7 @@ function App() {
               }
             />
             <Route
-              path='/options/wifi'
+              path='options/wifi'
               element={
                 <MasterPasswordProtected>
                   <WifiManager />
@@ -123,7 +123,7 @@ function App() {
               }
             />
             <Route
-              path='/options/addons'
+              path='options/addons'
               element={
                 <MasterPasswordProtected>
                   <AddonManager />
@@ -131,7 +131,7 @@ function App() {
               }
             />
             <Route
-              path='/options/calibration'
+              path='options/calibration'
               element={
                 <MasterPasswordProtected>
                   <CalibrationWindow />
@@ -139,7 +139,7 @@ function App() {
               }
             />
             <Route
-              path='/options/time'
+              path='options/time'
               element={
                 <MasterPasswordProtected>
                   <TimeManager />
@@ -147,14 +147,14 @@ function App() {
               }
             />
             <Route
-              path='/options/resources'
+              path='options/resources'
               element={
                 <MasterPasswordProtected>
                   <ResourceWindow />
                 </MasterPasswordProtected>
               }
             />
-            <Route path='/issues' element={<IssuePage />} />
+            <Route path='issues' element={<IssuePage />} />
             <Route path='/' element={<Navigate to='/cocktails' />} />
           </Routes>
         )}
