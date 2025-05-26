@@ -11,21 +11,31 @@ env:
 jobs:
   ruff:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.11']
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
-      - name: Install the latest version of uv
+      - name: Install the latest version of uv using Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: 🔍 Lint with ruff
         run: uv run --all-extras ruff check src
 
   mypy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.11']
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
-      - name: Install the latest version of uv
+      - name: Install the latest version of uv using Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: Install additional PyQt5 dependency
         run: uv export --all-extras --no-hashes --format requirements-txt > mypy_requirements.txt
       - name: 🔍 Lint with MyPy
@@ -35,10 +45,15 @@ jobs:
           mypy src
   pytest:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.11']
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
-      - name: Install the latest version of uv
+      - name: Install the latest version of uv using Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: 🔍 Run PyTest
         run: uv run pytest
