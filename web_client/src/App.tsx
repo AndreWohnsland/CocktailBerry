@@ -154,7 +154,7 @@ function App() {
                 </MasterPasswordProtected>
               }
             />
-            <Route path='/issues' element={<IssuePage />} />
+            <Route path='issues' element={<IssuePage />} />
             <Route path='/' element={<Navigate to='/cocktails' />} />
           </Routes>
         )}
