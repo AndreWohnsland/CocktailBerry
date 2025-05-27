@@ -115,8 +115,9 @@ class CocktailView(QWidget):
         cocktails.sort(key=lambda x: x.name.lower())
         # add last "filler" element, this is for the single ingredient element
         displayed_cocktails: list[Cocktail | None] = []
+        displayed_cocktails.extend(cocktails)
         if cfg.MAKER_ADD_SINGLE_INGREDIENT:
-            displayed_cocktails = [*cocktails, None]
+            displayed_cocktails.append(None)
         # fill the grid with n_columns columns, then go to another row
         for i in range(0, len(displayed_cocktails), n_columns):
             for j in range(n_columns):
