@@ -86,8 +86,8 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
 class CocktailView(QWidget):
     def __init__(self, mainscreen: MainScreen) -> None:
         super().__init__()
-        self.scroll_area = TouchScrollArea()  # Create a QScrollArea
-        self.scroll_area.setWidgetResizable(True)  # Make it resizable
+        self.scroll_area = TouchScrollArea()
+        self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
         self.scroll_area.setFrameShape(QFrame.NoFrame)  # type: ignore
         self.scroll_area.setFrameShadow(QFrame.Plain)  # type: ignore
@@ -96,9 +96,9 @@ class CocktailView(QWidget):
 
         self.grid = QGridLayout()
         self.grid.setVerticalSpacing(15)
-        self.grid_widget = QWidget()  # Create a QWidget
-        self.grid_widget.setLayout(self.grid)  # Set its layout to grid
-        self.scroll_area.setWidget(self.grid_widget)  # Set the scroll area's widget to the QWidget with the grid layout
+        self.grid_widget = QWidget()
+        self.grid_widget.setLayout(self.grid)
+        self.scroll_area.setWidget(self.grid_widget)
 
         self.vertical_layout = QVBoxLayout()
         self.vertical_layout.addWidget(self.scroll_area)
@@ -113,18 +113,17 @@ class CocktailView(QWidget):
         cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
         # sort cocktails by name
         cocktails.sort(key=lambda x: x.name.lower())
-        # add last "filler" element, this is for the single ingredient element
-        displayed_cocktails: list[Cocktail | None] = []
-        displayed_cocktails.extend(cocktails)
-        if cfg.MAKER_ADD_SINGLE_INGREDIENT:
-            displayed_cocktails.append(None)
         # fill the grid with n_columns columns, then go to another row
-        for i in range(0, len(displayed_cocktails), n_columns):
+        for i in range(0, len(cocktails), n_columns):
             for j in range(n_columns):
-                if i + j >= len(displayed_cocktails):
+                if i + j >= len(cocktails):
                     break
-                block = generate_image_block(
-                    displayed_cocktails[i + j],
-                    self.mainscreen,
-                )
+                block = generate_image_block(cocktails[i + j], self.mainscreen)
                 self.grid.addLayout(block, i // n_columns, j)
+        # Optionally add the single ingredient block after all cocktails
+        if cfg.MAKER_ADD_SINGLE_INGREDIENT:
+            total = len(cocktails)
+            row = total // n_columns
+            col = total % n_columns
+            block = generate_image_block(None, self.mainscreen)
+            self.grid.addLayout(block, row, col)
