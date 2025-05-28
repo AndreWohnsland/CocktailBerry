@@ -89,13 +89,19 @@ In case the machine got a RTC build in and uses it, this option can usually be s
 ## Get the LED Working
 
 Getting the WS281x to work may be a little bit tricky.
-You can either run the program as root/sudo (`sudo python runme.py`), so you also need to change this in `~/launcher.sh`.
+You need to run the program as root/sudo, so you also need to change this in `~/launcher.sh`.
 If you are using the latest installer, there will be a virtual environment created, so you should use this as root.
 This also does you require to reinstall the python packages for the main program.
 A better way would be to add the user to the gpio/other needed groups, so you can run the program as normal user.
 
 ```bash
-sudo ~/.env-cocktailberry/bin/python -E runme.py
+# for v1:
+# change this line
+# uv run --python "$(python -V | awk '{print $2}')" --all-extras runme.py
+# into:
+uv sync --python "$(python -V | awk '{print $2}')" --all-extras
+# add this line
+sudo -E .venv/bin/python runme.py
 ```
 
 If the GUI looks different than when you run it without sudo, try the `-E` flag, this should use your environment for Qt.
