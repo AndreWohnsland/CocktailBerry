@@ -222,6 +222,7 @@ class MachineController:
         """Cleanup for shutdown the machine."""
         self.close_all_pumps()
         self.pin_controller.cleanup_pin_list()
+        self.led_controller.turn_off()
 
     def _stop_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and closes all given pins."""

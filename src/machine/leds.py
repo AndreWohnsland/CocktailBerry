@@ -58,6 +58,11 @@ class LedController:
             for led in self.led_list:
                 led.turn_on()
 
+    def turn_off(self) -> None:
+        """Turn all LEDs off."""
+        for led in self.led_list:
+            led.turn_off()
+
 
 class _LED(Protocol):
     @abstractmethod
