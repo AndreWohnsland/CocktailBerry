@@ -96,7 +96,7 @@ else
   echo "> Installing PyQt"
   sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
   echo "> Installing needed Python libraries, including qtsass, this may take a while depending on your OS, so it is time for a coffee break :)"
-  uv sync --all-extras
+  uv sync --python "$(python -V | awk '{print $2}')" --all-extras
   if is_raspberry_pi5; then
     sudo usermod -aG gpio "$(whoami)"
     newgrp gpio
