@@ -163,5 +163,6 @@ echo "If you want to set up your microservice, check the docks for a complete gu
 echo "You can use the CocktailBerry CLI for an interactive setup. Use 'python ~/CocktailBerry/runme.py setup-microservice' to start."
 echo "CocktailBerry will start at system start. To start it now, type 'bash ~/launcher.sh' or click the CocktailBerry icon."
 echo "If the desktop panel shifts / blocks the application, right click panel > panel settings > Advanced > uncheck Reserve space, and not covered by maximised windows."
+echo "Please close this terminal and open a new one to start using CocktailBerry."
 
 newgrp docker
