@@ -147,7 +147,7 @@ class DialogHandler:
         self.icon_path = str(APP_ICON_FILE)
         self.password_outcome = False
         self.prompt_outcome = False
-        self.message_box: None | Ui_CustomDialog = None
+        self._open_message_boxes: set[Ui_CustomDialog] = set()
         with LANGUAGE_FILE.open(encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, str]] = yaml.safe_load(stream)["dialog"]
 
@@ -181,20 +181,27 @@ class DialogHandler:
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
         event = Event()
-        self.message_box = CustomDialog(fancy_message, title, use_ok, event.set)
+        dialog = CustomDialog(fancy_message, title, use_ok, event.set)
+        self._open_message_boxes.add(dialog)
+
+        def _remove_dialog(_: Any) -> None:
+            """Remove the dialog from set when it is closed/destroyed."""
+            self._open_message_boxes.discard(dialog)
+
+        dialog.destroyed.connect(_remove_dialog)  # type: ignore[attr-defined]
+
         # If there is a close time, start auto close
         if close_time is not None:
             auto_closer = Thread(
                 target=close_thread,
                 args=(
                     event,
-                    self.message_box,
+                    dialog,
                     close_time,
                 ),
                 daemon=True,
             )
             auto_closer.start()
-        # Need to set event, in case thread is still waiting
 
     def user_okay(self, text: str) -> bool:
         """Prompts the user for the given message and asks for confirmation.
