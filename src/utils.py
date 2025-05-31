@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import atexit
 import datetime
 import http.client as httplib
 import os
 import platform
 import re
-import shutil
 import subprocess
 import sys
 from collections import Counter
@@ -16,7 +17,8 @@ import distro
 from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, LOG_FOLDER, ROOT_PATH, STYLE_FOLDER
 from src.logger_handler import LoggerHandler
 
-EXECUTABLE = ROOT_PATH / "runme.py"
+EXECUTABLE_V1 = ROOT_PATH / "runme.py"
+EXECUTABLE_V2 = ROOT_PATH / "api.py"
 logger = LoggerHandler("utils")
 _DEBUG_FILE = "debuglog.log"
 
@@ -88,24 +90,53 @@ def set_system_datetime(datetime_string: str) -> None:
         logger.log_exception(err)
 
 
-def restart_program(is_v1: bool = False) -> None:
-    """Restart the CocktailBerry application."""
+def _common_restart() -> tuple[list[str], str, str | None]:
+    """Run atexit functions, returns program arguments, python and uv executable path."""
     arguments = sys.argv[1:]
+    uv_executable = os.getenv("UV")  # will only return if run with uv
+    python = sys.executable
+    # trigger manually, since exec function will not trigger exit fun.
+    atexit._run_exitfuncs()  # pylint: disable=protected-access
+    return arguments, python, uv_executable
+
+
+def restart_v1() -> None:
+    """Restart the v1 Application.
+
+    Cases we have:
+    - Standard: uv run --python <version> --all-extras runme.py [arguments]
+    - Root privilege: uv sync --python <version> --all-extras && sudo -E path/env/python runme.py [arguments]
+    """
+    arguments, python, uv_executable = _common_restart()
+    py_version = subprocess.check_output([python, "-V"], text=True).strip().split()[1]
+    uv_args = ["--python", py_version, "--all-extras"]
+    cmd = [uv_executable, "run", *uv_args] if uv_executable else [python]
+    if "SUDO_USER" in os.environ:
+        cmd = ["sudo", "-E", python]
+        if uv_executable:
+            subprocess.run([uv_executable, "sync", *uv_args], check=True)
+    os.execvp(cmd[0], [*cmd, str(EXECUTABLE_V1), *arguments])
+
+
+def restart_v2() -> None:
+    """Restart the v2 Application.
+
+    Cases we have:
+    - Standard: uv run runme.py [arguments]
+    - Root privilege: uv sync && sudo -E path/env/python runme.py [arguments]
+    """
+    arguments, python, uv_executable = _common_restart()
     # skip out if this is the dev program (will not work restart here)
     # This is because we run it with fastapi dev instead the python runme.py ...
     if len(arguments) != 0 and arguments[0] == "dev":
         time_print("Will not restart because of dev program.")
         return
-    # trigger manually, since exec function will not trigger exit fun.
-    atexit._run_exitfuncs()  # pylint: disable=protected-access
-    # either run with uv or python (old setup)
-    uv_executable = shutil.which("uv")
-    python = sys.executable
-    # We need to use base python venv if we are in v1 (does not work with PyQt)
-    if uv_executable is not None and not is_v1:
-        os.execl(uv_executable, "uv", "run", EXECUTABLE, *arguments)
-    else:
-        os.execl(python, "python", EXECUTABLE, *arguments)
+    cmd = [uv_executable, "run"] if uv_executable else [python]
+    if "SUDO_USER" in os.environ:
+        cmd = ["sudo", "-E", python]
+        if uv_executable:
+            subprocess.run([uv_executable, "sync"], check=True)
+    os.execvp(cmd[0], [*cmd, str(EXECUTABLE_V2), *arguments])
 
 
 def generate_custom_style_file() -> None:

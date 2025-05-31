@@ -19,7 +19,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.migration.backup import FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.ui.creation_utils import HEADER_FONT, LARGE_FONT, adjust_font, create_button, create_label, create_spacer
-from src.utils import restart_program
+from src.utils import restart_v1
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -102,7 +102,7 @@ class BackupRestoreWindow(QMainWindow):
                 shutil.copy(self.backup_path / _file.name, _file)
             if _file.is_dir():
                 shutil.copytree(self.backup_path / _file.name, _file, dirs_exist_ok=True)
-        restart_program(is_v1=True)
+        restart_v1()
 
     def _generate_checkboxes(self) -> None:
         """Generate the checkboxes for the backup files."""

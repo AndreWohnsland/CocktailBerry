@@ -10,7 +10,7 @@ from src.logger_handler import LoggerHandler
 from src.models import AddonData
 from src.programs.addons import ADDONS
 from src.ui_elements import Ui_AddonManager
-from src.utils import restart_program
+from src.utils import restart_v1
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -80,7 +80,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
 
         # Ask to restart
         if DP_CONTROLLER.ask_to_restart_for_config():
-            restart_program(is_v1=True)
+            restart_v1()
 
     def _install_addon(self, addon: AddonData) -> None:
         """Try to install addon, log if req is not ok or no connection."""
