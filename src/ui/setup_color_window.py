@@ -19,7 +19,7 @@ from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_fo
 from src.ui.icons import parse_colors
 from src.ui_elements import Ui_ColorWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
-from src.utils import restart_program
+from src.utils import restart_v1
 
 try:
     import qtsass
@@ -177,4 +177,4 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         if importlib.util.find_spec("qtsass") is None:
             DP_CONTROLLER.say_qtsass_not_successful()
             return
-        restart_program(is_v1=True)
+        restart_v1()

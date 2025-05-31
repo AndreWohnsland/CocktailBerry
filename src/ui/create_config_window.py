@@ -33,7 +33,7 @@ from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui_elements import Ui_ConfigWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
-from src.utils import restart_program
+from src.utils import restart_v1
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -86,7 +86,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             return
         # Also asks if to restart program to get new config
         if DP_CONTROLLER.ask_to_restart_for_config():
-            restart_program(is_v1=True)
+            restart_v1()
         self.close()
 
     def _choose_display_style(self, config_name: str, config_setting: ConfigInterface) -> None:

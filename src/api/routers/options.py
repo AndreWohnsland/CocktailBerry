@@ -35,7 +35,7 @@ from src.utils import (
     has_connection,
     list_available_ssids,
     read_log_file,
-    restart_program,
+    restart_v2,
     set_system_datetime,
     setup_wifi,
     update_os,
@@ -71,7 +71,7 @@ async def get_options_with_ui_properties() -> dict[str, Any]:
 
 def _restart_task() -> None:
     time.sleep(1)
-    restart_program()
+    restart_v2()
 
 
 @protected_router.post("", summary="Update the options", dependencies=[Depends(only_change_theme_on_demo)])
