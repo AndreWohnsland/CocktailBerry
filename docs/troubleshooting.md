@@ -95,13 +95,16 @@ This also does you require to reinstall the python packages for the main program
 A better way would be to add the user to the gpio/other needed groups, so you can run the program as normal user.
 
 ```bash
-# for v1:
-# change this line
+# for v1: change this line
 # uv run --python "$(python -V | awk '{print $2}')" --all-extras runme.py
 # into:
 uv sync --python "$(python -V | awk '{print $2}')" --all-extras
-# add this line
 sudo -E .venv/bin/python runme.py
+# for v2: change this line
+# uv run api.py
+# into:
+uv sync
+sudo -E .venv/bin/python api.py
 ```
 
 If the GUI looks different than when you run it without sudo, try the `-E` flag, this should use your environment for Qt.
