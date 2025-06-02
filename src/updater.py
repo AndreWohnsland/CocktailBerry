@@ -50,7 +50,14 @@ class Updater:
         """Check if there is a new version available."""
         # if not on master (e.g. dev) return false
         update_problem = ""
-        if self.repo.active_branch.name != "master":
+        try:
+            branch_name = self.repo.active_branch.name
+        except TypeError as err:
+            update_problem = f"Cannot update: {err}"
+            _logger.log_event("ERROR", update_problem)
+            _logger.log_exception(err)
+            return False, update_problem
+        if branch_name != "master":
             update_problem = "Not on master branch, not checking for updates"
             _logger.log_event("WARNING", update_problem)
             return False, update_problem
