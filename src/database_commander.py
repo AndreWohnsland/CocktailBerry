@@ -82,6 +82,11 @@ class DatabaseCommander:
         Base.metadata.create_all(self.engine)
         self.Session = scoped_session(sessionmaker(bind=self.engine, expire_on_commit=False))
 
+    def __del__(self) -> None:
+        """Close the session when the object is deleted."""
+        self.Session.remove()
+        self.engine.dispose()
+
     @contextmanager
     def session_scope(self) -> Generator[Session, None, None]:
         """Provide a transactional scope around a series of operations."""
