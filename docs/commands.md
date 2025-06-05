@@ -10,6 +10,11 @@ You can use this to get information on the commands when running locally.
     When you want to use other than the default options, change the `~/launcher.sh` file accordingly.
     Just add the flags or their according values to the `python runme.py` command.
 
+!!! info "V1 or V2?"
+    If you are already running the API (V2) version, you need to use the command `api.py` instead of `runme.py`.
+    Everything else (like the options) is the same.
+    Also, if you are on the latest version, you should use `uv run ...` instead of `python ...`.
+
 ## The Main Program
 
 This is usually what you want to run.
