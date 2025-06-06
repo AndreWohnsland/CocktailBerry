@@ -77,6 +77,7 @@ Mk2 as well as Mk3 is printed on a 3D printer.
 But there may be some other custom-builds out there, check out the [official dashboard](https://stats-cocktailberry.streamlit.app/#existing-machines) for more impressions.
 The electronics are hidden in a waterproof housing, the pumps are within the casing.
 See [Hardware](hardware.md) for a detailed example list of components.
+You can also have a look at the official website for cocktailberry for more examples and information: [cocktailberry.org](https://cocktailberry.org).
 
 <figure markdown>
   ![Frontview](pictures/Frontview.jpg){width="700"}
