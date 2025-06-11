@@ -75,7 +75,7 @@ extend-safe-fixes = [
   "D107", # Missing docstring in __init__
   "D205", # 1 blank line required between summary line and description
   "W291", # Trailing whitespace
-  ]
+]
 per-file-ignores = {"runme.py" = ["E402"], "migrator.py" = ["E402"], "api.py" = ["E402"], "tests/*" = ["ANN201", "ANN202", "PLR2004"] }
 select = [
   "A", # flake8-builtins

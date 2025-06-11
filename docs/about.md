@@ -8,7 +8,7 @@ Let's get started!
 
 ## tl;dr
 
-The too long; didn't read is, that you can easily install the software by just flashing the Raspberry Pi OS on a SD card, insert it, start the device and install the software with just one command.
+You can easily install the software by just flashing the Raspberry Pi OS on a SD card, insert it, start the device and install the software with just one command.
 Then, get some coffee and let the script do the work.
 When you come back, you can set up the machine over the graphical user interface and start mixing cocktails.
 This way, you don't have to know much about software an can go full focus on the hardware.
@@ -77,6 +77,7 @@ Mk2 as well as Mk3 is printed on a 3D printer.
 But there may be some other custom-builds out there, check out the [official dashboard](https://stats-cocktailberry.streamlit.app/#existing-machines) for more impressions.
 The electronics are hidden in a waterproof housing, the pumps are within the casing.
 See [Hardware](hardware.md) for a detailed example list of components.
+You can also have a look at the official website for cocktailberry for more examples and information: [cocktailberry.org](https://cocktailberry.org).
 
 <figure markdown>
   ![Frontview](pictures/Frontview.jpg){width="700"}
