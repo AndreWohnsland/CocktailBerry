@@ -30,7 +30,7 @@ Let's get started!
 
 Like this project? Give it a star on GitHub! ⭐
 
-## tl;dr
+## TL;DR
 
 <img src="docs/pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
 
