@@ -125,10 +125,9 @@ The Bottle GUI:
 
 # Pull Requests and Issues
 
-If you want to support this project, feel free to fork it and create your own pull request.
-If you run into any issues, feel free to open a ticket / issue.
-If you think there is a super important feature missing, open a feature request.
-It may be implemented in the future.
+If you want to support this project, feel free to fork it and create your own pull request.  
+Encounter a problem? Open a ticket or issue to let us know.  
+Have an idea for an important feature? Submit a feature request—it may be implemented in the future.
 
 # Contributing Possibilities
 
