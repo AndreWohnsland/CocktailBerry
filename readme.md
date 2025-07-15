@@ -134,7 +134,7 @@ Have an idea for an important feature? Submit a feature request—it may be impl
 To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md).
 Here is a general list of features or refactoring things, I may do in the future.
 With your help, these things come even faster!
-If your idea is not on the list, feel free to open a feature request, I may consider it!
+If your idea is not on the list, feel free to open a feature request!
 
 - `easy`: Translate all dialogs / UI to your native language
 - `easy`: Submit a feature request or issue
