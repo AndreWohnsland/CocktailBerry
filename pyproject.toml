@@ -15,14 +15,14 @@ dependencies = [
     "pillow>=10.4.0",
     "psutil>=6.0.0",
     "distro>=1.9.0",
-    "fastapi[standard]>=0.115.2",
-    "uvicorn>=0.32.0",
+    "fastapi[standard]>=0.115.12",
+    "uvicorn>=0.34.0",
     "sse-starlette>=2.1.3",
     "mfrc522>=0.0.7 ; sys_platform == 'linux'",
     "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
     "gpiozero>=2.0.1 ; sys_platform == 'linux'",
     "python-periphery>=2.4.1",
-    "sqlalchemy>=2.0.38",
+    "sqlalchemy>=2.0.40",
     "alembic>=1.14.1",
 ]
 requires-python = ">= 3.9"
