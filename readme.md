@@ -30,7 +30,7 @@ Let's get started!
 
 Like this project? Give it a star on GitHub! ⭐
 
-## tl;dr
+# TL;DR
 
 <img src="docs/pictures/Cocktailmaker_action.gif" alt="Cocktail in the making" width="400"/>
 
@@ -47,7 +47,7 @@ CocktailBerry can do:
 - Add new ingredients and recipes with needed information over the UI
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
 - Define connected ingredients to the machine and existing additional ingredients over the UI
-- Auto calculates and displays possible recipes dependent on given information
+- Auto calculate and display possible recipes dependent on given information
 - Option to serve cocktails without alcohol
 - Execute a cleaning program to get rid of remaining fluids
 - Visualize the cocktail data and get insights
@@ -69,6 +69,7 @@ In addition, there is the possibility to use and set up a second device as a das
 # Quickstart
 
 Here are some simple steps to get CocktailBerry running. You need to have **Python 3.11** or newer and **git** installed.
+If you are using a Raspberry Pi and a current OS, you should be good to go.
 
 On the RPi, you can try the new [all in one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh).
 One command should install everything:
@@ -99,7 +100,7 @@ Now you can [Set Up](https://cocktailberry.readthedocs.io/setup/#setting-up-the-
 
 # Interface
 
-The interface was programmed with PyQt5 for the users to easily interact with CocktailBerry and enter new ingredients/recipes.
+The interface was programmed with PyQt5 (v1) for the users to easily interact with CocktailBerry and enter new ingredients/recipes.
 There are different views for the tasks.
 
 The Maker GUI:
@@ -124,19 +125,19 @@ The Bottle GUI:
 
 # Pull Requests and Issues
 
-If you want to support this project, feel free to fork it and create your own pull request.
-If you run into any issues, feel free to open a ticket / issue.
-If you think there is a super important feature missing, open a feature request.
-It may be implemented in the future.
+If you want to support this project, feel free to fork it and create your own pull request.  
+Encounter a problem? Open a ticket or issue to let us know.  
+Have an idea for an important feature? Submit a feature request—it may be implemented in the future.
 
 # Contributing Possibilities
 
 To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md).
 Here is a general list of features or refactoring things, I may do in the future.
 With your help, these things come even faster!
-If your idea is not on the list, feel free to open a feature request, I may consider it!
+If your idea is not on the list, feel free to open a feature request!
 
 - `easy`: Translate all dialogs / UI to your native language
+- `easy`: Submit a feature request or issue
 - `easy-hard`: Implement a cool [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) and make it verified
 
 # Development
