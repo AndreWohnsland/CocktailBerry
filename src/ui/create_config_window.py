@@ -289,10 +289,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         getter_fn_dict: dict[str, Callable] = {}
         # if used with the list constructor, we will get a empty string, if a new value is added to the list.
         # in this case extract the dict keys from the config setting and use empty strings as values
-        if current_value == "":
-            dict_values = {key: "" for key in config_setting.dict_types}
-        else:
-            dict_values = current_value.to_config()
+        dict_values = dict.fromkeys(config_setting.dict_types, "") if current_value == "" else current_value.to_config()
         for key, value in dict_values.items():
             value_setting = config_setting.dict_types.get(key)
             if value_setting is None:

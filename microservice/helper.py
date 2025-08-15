@@ -18,22 +18,20 @@ def generate_urls_and_headers() -> list[tuple[str, dict[str, str]]]:
         # Split the header config into a list
         # the config is header:value,header2:value2
         headers = hook_headers_config.split(",")
-        hook_headers = dict([x.split(":") for x in headers])
-    api_headers = {
-        "content-type": "application/json",
-        "x-api-key": api_key,
-    }
-    use_hook = (hook_url != DEFAULT_HOOK_EP) and (hook_url is not None)
-    use_api = (api_key != DEFAULT_API_KEY) and (api_key is not None)
-    endpoint_data = []
-    if use_hook:
+        hook_headers = dict(x.split(":") for x in headers)
+    endpoint_data: list[tuple[str, dict[str, str]]] = []
+    if (hook_url != DEFAULT_HOOK_EP) and (hook_url is not None):
         endpoint_data.append(
             (
                 hook_url,
                 hook_headers,
             )
         )
-    if use_api:
+    if (api_key != DEFAULT_API_KEY) and (api_key is not None):
+        api_headers = {
+            "content-type": "application/json",
+            "x-api-key": api_key,
+        }
         endpoint_data.append(
             (
                 API_ENDPOINT,
