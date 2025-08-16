@@ -423,7 +423,9 @@ class DisplayController(DialogHandler):
     def unselect_list_widget_items(self, list_widget: QListWidget) -> None:
         """Unselect all items in the list widget."""
         for i in range(list_widget.count()):
-            list_widget.item(i).setSelected(False)
+            list_widget_item = list_widget.item(i)
+            if list_widget_item is not None:
+                list_widget_item.setSelected(False)
 
     def select_list_widget_item(self, list_widget: QListWidget, to_select: str | Cocktail) -> None:
         """Select the first item in the list widget."""
@@ -432,7 +434,8 @@ class DisplayController(DialogHandler):
         for i in range(list_widget.count()):
             item = list_widget.item(i)
             data = item.data(Qt.UserRole)  # type: ignore
-            current_name = data.name if data else item.text()
+            item_text = item.text() if item else ""
+            current_name = data.name if data else item_text
             if current_name == to_select:
                 list_widget.setCurrentItem(item)
                 break

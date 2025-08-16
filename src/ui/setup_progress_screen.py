@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
@@ -28,3 +29,7 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         UI_LANGUAGE.adjust_progress_screen(self, cocktail_type)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        interrupt_cocktail()
+        super().closeEvent(event)

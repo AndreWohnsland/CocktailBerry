@@ -3,16 +3,14 @@
 
 from __future__ import annotations
 
-import time
 from pathlib import Path
-from threading import Event, Thread
 from typing import TYPE_CHECKING, Any, Literal
 
 import yaml
 
 # We do not need those in v2, so its okay to fail there
 try:
-    from PyQt5.QtCore import QEventLoop, Qt
+    from PyQt5.QtCore import Qt
     from PyQt5.QtGui import QIcon
     from PyQt5.QtWidgets import QDialog, QFileDialog
 except ModuleNotFoundError:
@@ -145,9 +143,6 @@ class DialogHandler:
 
     def __init__(self) -> None:
         self.icon_path = str(APP_ICON_FILE)
-        self.password_outcome = False
-        self.prompt_outcome = False
-        self._open_message_boxes: set[Ui_CustomDialog] = set()
         with LANGUAGE_FILE.open(encoding="UTF-8") as stream:
             self.dialogs: dict[str, dict[str, str]] = yaml.safe_load(stream)["dialog"]
 
@@ -165,71 +160,21 @@ class DialogHandler:
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
-    def standard_box(self, message: str, title: str = "", use_ok: bool = False, close_time: int | None = None) -> None:
-        """Display the messagebox for the Maker. Uses a Custom QDialog with Close-Button."""
+    def standard_box(self, message: str, title: str = "", use_ok: bool = False, close_time: int | None = None) -> bool:
+        """Display the messagebox for the Maker. Uses a Custom QDialog with Close-Button. Blocks until closed."""
         from src.ui.setup_custom_dialog import CustomDialog
-
-        def close_thread(event: Event, box: CustomDialog, close_time: int) -> None:
-            """Close the box after given time if event is not set."""
-            time.sleep(close_time)
-            if event.is_set():
-                return
-            box.close()
 
         if not title:
             title = self._choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
-        event = Event()
-        dialog = CustomDialog(fancy_message, title, use_ok, event.set)
-        self._open_message_boxes.add(dialog)
-
-        def _remove_dialog(_: Any) -> None:
-            """Remove the dialog from set when it is closed/destroyed."""
-            self._open_message_boxes.discard(dialog)
-
-        dialog.destroyed.connect(_remove_dialog)  # type: ignore[attr-defined]
-
-        # If there is a close time, start auto close
-        if close_time is not None:
-            auto_closer = Thread(
-                target=close_thread,
-                args=(
-                    event,
-                    dialog,
-                    close_time,
-                ),
-                daemon=True,
-            )
-            auto_closer.start()
+        return CustomDialog(fancy_message, title, use_ok, close_time=close_time).exec()
 
     def user_okay(self, text: str) -> bool:
-        """Prompts the user for the given message and asks for confirmation.
-
-        Args:
-        ----
-            text (str): Text to be displayed
-
-        Returns:
-        -------
-            bool: If the user accepted the prompted message
-
-        """
+        """Prompts the user for the given message and asks for confirmation."""
         from src.ui.setup_custom_prompt import CustomPrompt
 
-        self.prompt_outcome = False
-        loop = QEventLoop()
-
-        def handle_dialog_outcome(result: bool) -> None:
-            self.prompt_outcome = result
-            loop.quit()
-
-        msg_box = CustomPrompt(text)
-        msg_box.user_okay.connect(handle_dialog_outcome)
-
-        loop.exec_()
-
-        return self.prompt_outcome
+        return CustomPrompt(text).exec()
 
     def password_prompt(
         self,
@@ -247,19 +192,7 @@ class DialogHandler:
         # Empty means zero in this case, since the config is an int
         if right_password == 0:
             return True
-        self.password_outcome = False
-        loop = QEventLoop()
-
-        def handle_dialog_outcome(result: bool) -> None:
-            self.password_outcome = result
-            loop.quit()
-
-        password_window = PasswordDialog(right_password, header_type)
-        password_window.password_success.connect(handle_dialog_outcome)
-
-        loop.exec_()
-
-        return self.password_outcome
+        return PasswordDialog(right_password, header_type).exec()
 
     def __output_language_dialog(
         self,

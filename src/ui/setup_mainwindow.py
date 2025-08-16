@@ -98,8 +98,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         ICONS.set_mainwindow_icons(self)
         DP_CONTROLLER.say_welcome_message()
         self.update_check()
-        self._connection_check()
         self._deprecation_check()
+        self._connection_check()
         ADDONS.start_trigger_loop(self)
 
     def update_check(self) -> None:
@@ -169,8 +169,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def open_progression_window(self, cocktail_type: str = "Cocktail") -> None:
         """Open up the progression window to show the Cocktail status."""
-        if self.progress_window is None:
-            self.progress_window = ProgressScreen(self, cocktail_type)
+        self.progress_window = ProgressScreen(self, cocktail_type)
         self.progress_window.show_screen(cocktail_type)
 
     def change_progression_window(self, pb_value: int) -> None:

@@ -1,6 +1,6 @@
 from typing import Literal
 
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import QEventLoop
 from PyQt5.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
@@ -9,49 +9,61 @@ from src.ui_elements.passworddialog import Ui_PasswordDialog
 
 
 class PasswordDialog(QMainWindow, Ui_PasswordDialog):
-    """Creates the Password Widget."""
-
-    password_success = pyqtSignal(bool)  # Signal to communicate data
+    """Password dialog that blocks until closed and returns success/failure."""
 
     def __init__(self, right_password: int, header_type: Literal["master", "maker"] = "master") -> None:
-        """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
         self.right_password = right_password
+        self._result = False
+        self._loop: QEventLoop | None = None
+
         DP_CONTROLLER.initialize_window_object(self)
-        # Connect all the buttons, generates a list of the numbers an object names to do that
-        self.enter_button.clicked.connect(self.enter_clicked)
+
+        # Buttons
+        self.enter_button.clicked.connect(self._enter_clicked)
         self.cancel_button.clicked.connect(self._cancel_clicked)
-        self.PBdel.clicked.connect(self.del_clicked)
-        self.number_list = list(range(10))
-        self.attribute_numbers = [getattr(self, "PB" + str(x)) for x in self.number_list]
-        for obj, number in zip(self.attribute_numbers, self.number_list):
-            obj.clicked.connect(lambda _, n=number: self.number_clicked(number=n))
+        self.PBdel.clicked.connect(self._del_clicked)
+
+        # Connect number buttons dynamically
+        for number in range(10):
+            getattr(self, f"PB{number}").clicked.connect(lambda _, n=number: self._number_clicked(n))
+
         UI_LANGUAGE.adjust_password_window(self, header_type)
-        self.showFullScreen()
-        DP_CONTROLLER.set_display_settings(self)
 
-    def number_clicked(self, number: int) -> None:
-        """Add the clicked number to the lineedit."""
-        self.password_field.setText(f"{self.password_field.text()}{number}")
-
-    def enter_clicked(self) -> None:
-        """Enters/Closes the Dialog."""
-        password_string = self.password_field.text()
-        password = 0 if len(password_string) == 0 else int(password_string)
-        if self.right_password == password:
-            self.password_success.emit(True)
-            self.close()
-            return
-        DP_CONTROLLER.say_wrong_password()
-        self.password_field.clear()
-
-    def _cancel_clicked(self) -> None:
-        """Cancel the password confirmation an aborts process."""
-        self.password_success.emit(False)
+    def _finish(self, result: bool) -> None:
+        """Store result, exit event loop, close window."""
+        self._result = result
+        if self._loop is not None:
+            self._loop.quit()
         self.close()
 
-    def del_clicked(self) -> None:
-        """Delete the last digit in the lineedit."""
-        current_string = self.password_field.text()
-        self.password_field.setText(current_string[:-1])
+    def _number_clicked(self, number: int) -> None:
+        """Append clicked number to line edit."""
+        self.password_field.setText(self.password_field.text() + str(number))
+
+    def _enter_clicked(self) -> None:
+        """Check entered password and finish if correct, otherwise reset."""
+        password_string = self.password_field.text()
+        password = int(password_string) if password_string else 0
+        if password == self.right_password:
+            self._finish(True)
+        else:
+            DP_CONTROLLER.say_wrong_password()
+            self.password_field.clear()
+
+    def _cancel_clicked(self) -> None:
+        """Cancel password entry."""
+        self._finish(False)
+
+    def _del_clicked(self) -> None:
+        """Delete the last digit."""
+        self.password_field.setText(self.password_field.text()[:-1])
+
+    def exec(self) -> bool:
+        """Block until user confirms or cancels. Returns True if password correct, False otherwise."""
+        self._loop = QEventLoop()
+        self.showFullScreen()
+        DP_CONTROLLER.set_display_settings(self)
+        self._loop.exec_()
+        return self._result
