@@ -17,7 +17,7 @@ class DatePicker(QMainWindow, Ui_Datepicker):
 
     def __init__(self, parent: "MainScreen") -> None:
         """Set up the datepicker window."""
-        super().__init__()
+        super().__init__(parent)
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         # connects all the buttons
