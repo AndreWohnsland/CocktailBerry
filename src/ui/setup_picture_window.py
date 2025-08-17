@@ -10,7 +10,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.image_utils import find_default_cocktail_image, find_user_cocktail_image, process_image, save_image
 from src.models import Cocktail
-from src.ui.icons import ICONS
+from src.ui.icons import IconSetter
 from src.ui_elements import Ui_PictureWindow
 
 
@@ -28,7 +28,8 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         self.button_enter.clicked.connect(self._set_picture)
         self.button_remove.clicked.connect(self._remove_picture)
         self.button_upload.clicked.connect(self._prepare_picture)
-        ICONS.set_picture_window_icons(self)
+        icons = IconSetter()
+        icons.set_picture_window_icons(self)
         UI_LANGUAGE.adjust_picture_window(self, cocktail.name)
         self._get_pictures()
         self.showFullScreen()

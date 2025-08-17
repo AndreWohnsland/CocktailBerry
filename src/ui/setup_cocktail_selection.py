@@ -13,7 +13,7 @@ from src.display_controller import DP_CONTROLLER
 from src.image_utils import find_cocktail_image
 from src.models import Cocktail, Ingredient
 from src.ui.creation_utils import LARGE_FONT, create_button, create_label, set_strike_through, set_underline
-from src.ui.icons import ICONS
+from src.ui.icons import IconSetter
 from src.ui.shared import qt_prepare_flow
 from src.ui_elements import Ui_CocktailSelection
 
@@ -37,7 +37,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         picture_size = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.60))
         self.image_container.setMinimumSize(picture_size, picture_size)
         self.image_container.setMaximumSize(picture_size, picture_size)
-        ICONS.set_cocktail_selection_icons(self)
+        self.icons = IconSetter()
+        self.icons.set_cocktail_selection_icons(self)
         self._adjust_preparation_buttons()
 
         UI_LANGUAGE.adjust_cocktail_selection_screen(self)
@@ -131,7 +132,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             if ing.id == -1:
                 ingredient_name = UI_LANGUAGE.get_add_self()
                 field_ingredient.setProperty("cssClass", "hand-separator")
-                field_ingredient.setStyleSheet(f"color: {ICONS.color.neutral};")
+                field_ingredient.setStyleSheet(f"color: {self.icons.color.neutral};")
                 set_underline(field_ingredient, True)
             else:
                 field_ingredient.setProperty("cssClass", None)
@@ -257,7 +258,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # in addition, we need to clean the button container of the button first
         DP_CONTROLLER.delete_items_of_layout(self.container_prepare_button)
         volume_list = sorted(int(x) for x in cfg.MAKER_PREPARE_VOLUME)
-        icon_list = _generate_needed_cocktail_icons(len(volume_list))
+        icon_list = _generate_needed_cocktail_icons(self.icons, len(volume_list))
 
         # First add the label, we don't need it in every button
         volume_label = create_label(
@@ -276,18 +277,18 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 max_h=80,
             )
             button.clicked.connect(lambda _, v=volume: self._prepare_cocktail(v))  # type: ignore[attr-defined]
-            icon = ICONS.generate_icon(icon_name, ICONS.color.background)
-            ICONS.set_icon(button, icon, False)
+            icon = self.icons.generate_icon(icon_name, self.icons.color.background)
+            self.icons.set_icon(button, icon, False)
             self.container_prepare_button.addWidget(button)
 
 
-def _generate_needed_cocktail_icons(amount: int) -> list[str]:
+def _generate_needed_cocktail_icons(icon_setter: IconSetter, amount: int) -> list[str]:
     icon_list = [
-        ICONS.presets.tiny_glass,
-        ICONS.presets.small_glass,
-        ICONS.presets.medium_glass,
-        ICONS.presets.big_glass,
-        ICONS.presets.huge_glass,
+        icon_setter.presets.tiny_glass,
+        icon_setter.presets.small_glass,
+        icon_setter.presets.medium_glass,
+        icon_setter.presets.big_glass,
+        icon_setter.presets.huge_glass,
     ]
     length = len(icon_list)
     if amount <= length:

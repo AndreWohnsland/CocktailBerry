@@ -23,7 +23,7 @@ from src.programs.addons import ADDONS
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
-from src.ui.icons import BUTTON_SIZE, ICONS
+from src.ui.icons import BUTTON_SIZE, IconSetter
 from src.ui.setup_available_window import AvailableWindow
 from src.ui.setup_bottle_window import BottleWindow
 from src.ui.setup_cocktail_selection import CocktailSelection
@@ -95,7 +95,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)
-        ICONS.set_mainwindow_icons(self)
+        icons = IconSetter()
+        icons.set_mainwindow_icons(self)
         DP_CONTROLLER.say_welcome_message()
         self.update_check()
         self._deprecation_check()

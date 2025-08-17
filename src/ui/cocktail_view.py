@@ -14,7 +14,7 @@ from src.filepath import DEFAULT_COCKTAIL_IMAGE
 from src.image_utils import find_cocktail_image
 from src.models import Cocktail
 from src.ui.creation_utils import create_button
-from src.ui.icons import ICONS, PresetIcon
+from src.ui.icons import IconSetter, PresetIcon
 from src.ui_elements.clickable_label import ClickableLabel
 from src.ui_elements.touch_scroll_area import TouchScrollArea
 
@@ -55,9 +55,10 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
         max_w=square_size,
         css_class="btn-inverted btn-half-top",
     )
+    icons = IconSetter()
     if cocktail is not None and cocktail.virgin_available:
         button.setText(f" {name_label}")
-        icon = ICONS.generate_icon(PresetIcon.virgin, ICONS.color.background, border=cocktail.only_virgin)
+        icon = icons.generate_icon(PresetIcon.virgin, icons.color.background, border=cocktail.only_virgin)
         button.setIcon(icon)
         button.setIconSize(QSize(20, 20))
     label = ClickableLabel(name_label)

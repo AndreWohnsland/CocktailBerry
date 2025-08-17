@@ -4,7 +4,7 @@ from PyQt5.QtCore import QObject, QSize, Qt, QThread
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QGridLayout, QLabel, QProgressBar, QPushButton, QSizePolicy, QSpacerItem, QWidget
 
-from src.ui.icons import ICONS
+from src.ui.icons import IconSetter
 
 SMALL_FONT = 14
 MEDIUM_FONT = 16
@@ -101,7 +101,8 @@ def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable
 
     Worker needs done = pyqtSignal() and emit that at the end of run function.
     """
-    ICONS.start_spinner(parent)
+    icons = IconSetter()
+    icons.start_spinner(parent)
     # Create a  thread object. move worker to thread
     _thread = QThread()  # pylint: disable=attribute-defined-outside-init
     worker.moveToThread(_thread)
@@ -115,7 +116,7 @@ def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable
     # Start the thread, connect to the finish function
     _thread.start()
     _thread.finished.connect(after_finish)  # type: ignore[attr-defined]
-    _thread.finished.connect(ICONS.stop_spinner)  # type: ignore[attr-defined]
+    _thread.finished.connect(icons.stop_spinner)  # type: ignore[attr-defined]
 
     return _thread
 
