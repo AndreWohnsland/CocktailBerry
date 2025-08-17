@@ -101,16 +101,16 @@ QTabWidget::pane {
 QTabBar::tab {
   background-color: #0b0e41;
   font-weight: bold;
-  color: #292929;
+  color: #b9b9b9;
   border-width: 1px;
-  border-color: #292929;
+  border-color: #b9b9b9;
   border-style: solid;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 5px 0px 5px 0px;
   width: 150px; }
   QTabBar::tab:selected {
-    color: #292929;
+    color: #b9b9b9;
     background-color: #007bff; }
   QTabBar::tab:disabled {
     text-decoration: line-through; }

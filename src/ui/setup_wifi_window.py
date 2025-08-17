@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QLineEdit, QMainWindow, qApp
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.ui.icons import ICONS
+from src.ui.icons import IconSetter
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_WiFiWindow
 from src.utils import get_platform_data, setup_wifi, time_print
@@ -58,10 +58,11 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
 
     def _wifi_enter_process(self) -> None:
         """Start to enter wifi, uses a spinner during progress."""
-        ICONS.set_wait_icon(self.button_enter)
+        icons = IconSetter()
+        icons.set_wait_icon(self.button_enter)
         qApp.processEvents()
         self._enter_wifi()
-        ICONS.remove_icon(self.button_enter)
+        icons.remove_icon(self.button_enter)
         qApp.processEvents()
 
     def _enter_wifi(self) -> None:

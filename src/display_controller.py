@@ -30,7 +30,7 @@ from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE, DialogHandler
 from src.filepath import APP_ICON_FILE, STYLE_FOLDER
 from src.models import Cocktail, Ingredient
-from src.ui.icons import ICONS
+from src.ui.icons import IconSetter
 from src.ui_elements.bonusingredient import Ui_addingredient
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 
@@ -458,10 +458,11 @@ class DisplayController(DialogHandler):
 
         If is is a cocktail object, build in the virgin possibility as indicator.
         """
+        icons = IconSetter()
         if isinstance(item_data, Cocktail):
             cocktail_icon = QIcon()
             if item_data.virgin_available:
-                cocktail_icon = ICONS.generate_icon(ICONS.presets.virgin, ICONS.color.primary, ICONS.color.secondary)
+                cocktail_icon = icons.generate_icon(icons.presets.virgin, icons.color.primary, icons.color.secondary)
             lw_item = QListWidgetItem(cocktail_icon, item_data.name)
 
         else:

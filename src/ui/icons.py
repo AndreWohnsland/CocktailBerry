@@ -224,6 +224,3 @@ class IconSetter:
         if self._spinner is None:
             return
         self._spinner.stop()
-
-
-ICONS = IconSetter()
