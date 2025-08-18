@@ -561,6 +561,8 @@ class DatabaseCommander:
 
     def insert_multiple_existing_handadd_ingredients(self, ingredient_list: list[str] | list[int]) -> None:
         """Insert the IDS of the given ingredient list into the available table."""
+        if not ingredient_list:
+            return
         with self.session_scope() as session:
             if isinstance(ingredient_list[0], str):
                 data = session.query(DbIngredient.id).filter(DbIngredient.name.in_(ingredient_list)).all()

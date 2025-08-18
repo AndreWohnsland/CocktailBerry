@@ -461,6 +461,11 @@ class TestAvailable:
         assert len(ids) == 1
         assert ids[0] == 4
 
+    def test_insert_empty_silently_skip(self, db_commander: DatabaseCommander):
+        db_commander.delete_existing_handadd_ingredient()
+        db_commander.insert_multiple_existing_handadd_ingredients([])
+        assert db_commander.get_available_ingredient_names() == []
+
 
 class TestData:
     def test_get_consumption_data_lists_recipes(self, db_commander: DatabaseCommander):
