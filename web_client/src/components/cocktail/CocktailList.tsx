@@ -32,7 +32,7 @@ const CocktailList: React.FC = () => {
   if (search) {
     displayedCocktails = displayedCocktails?.filter(
       (cocktail) =>
-        cocktail.name.toLowerCase().includes(search.toLowerCase()) ??
+        cocktail.name.toLowerCase().includes(search.toLowerCase()) ||
         cocktail.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(search.toLowerCase())),
     );
   }
