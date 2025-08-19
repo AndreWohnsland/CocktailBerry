@@ -80,7 +80,8 @@ body {
 }
 
 .select-base:focus {
-  outline: none;
+  @apply border-secondary;
+  outline: 1px solid var(--secondary-color);
 }
 
 .input-base {
@@ -92,7 +93,8 @@ body {
 }
 
 .input-base:focus {
-  @apply border-primary;
+  @apply border-secondary;
+  outline: 2px solid var(--secondary-color);
 }
 
 input[type='checkbox'] {

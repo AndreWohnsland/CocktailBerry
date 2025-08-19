@@ -37,3 +37,19 @@
   --neutral-color: #489869;
   --danger-color: #d00000;
 }
+
+.purple {
+  --primary-color: #d167ff;
+  --secondary-color: #01e6ff;
+  --background-color: #1b1b1b;
+  --neutral-color: #b694ba;
+  --danger-color: #d00000;
+}
+
+.tropical {
+  --primary-color: #55ecf7;
+  --secondary-color: #fff70f;
+  --background-color: #2b2b2b;
+  --neutral-color: #96adba;
+  --danger-color: #d00000;
+}

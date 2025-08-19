@@ -28,7 +28,7 @@ const OptionWindow = () => {
   const { theme, changeTheme } = useConfig();
   const navigate = useNavigate();
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
-  const themes = ['default', 'berry', 'bavaria', 'alien', 'custom'];
+  const themes = ['default', 'berry', 'bavaria', 'alien', 'tropical', 'purple', 'custom'];
   const { t } = useTranslation();
 
   const cleanClick = async () => {
