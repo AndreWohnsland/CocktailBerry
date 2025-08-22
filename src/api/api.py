@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 
 from src import __version__
 from src.api.api_config import DESCRIPTION, TAGS_METADATA
+from src.api.internal.log_config import log_config
 from src.api.internal.validation import ValidationError
 from src.api.models import ApiMessage
 from src.api.routers import bottles, cocktails, ingredients, options
@@ -132,4 +133,4 @@ async def root() -> ApiMessage:
 
 
 def run_api(port: int = 8000) -> None:
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port, log_config=log_config)
