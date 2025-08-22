@@ -17,32 +17,40 @@
       "justMyCode": true
     },
     {
-      "name": "Python: Calibration program",
+      "name": "Calibration program over CLI",
       "type": "debugpy",
       "request": "launch",
-      "program": "${file}",
+      "program": "${workspaceFolder}/runme.py",
       "console": "integratedTerminal",
       "justMyCode": true,
       "args": ["-c"]
     },
     {
-      "name": "Python: Main program in debug mode",
+      "name": "Main program in debug mode over CLI",
       "type": "debugpy",
       "request": "launch",
-      "program": "${file}",
+      "program": "${workspaceFolder}/runme.py",
       "console": "integratedTerminal",
       "justMyCode": true,
       "args": ["-d"]
     },
     {
-      "name": "Debug FastApi over uvicorn",
+      "name": "Run Backend over CLI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/api.py",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Debug FastApi (Backend) over uvicorn",
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
       "args": ["src.api.api:app", "--reload"]
     },
     {
-      "name": "Debug FastApi over fastapi CLI",
+      "name": "Debug FastApi (Backend) over fastapi CLI",
       "type": "debugpy",
       "request": "launch",
       "module": "fastapi",
@@ -50,7 +58,7 @@
       "args": ["dev", "./api.py"]
     },
     {
-      "name": "Run Frontend",
+      "name": "Node: Run Frontend",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/web_client",
