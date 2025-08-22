@@ -12,9 +12,17 @@ const ListView: React.FC<ListViewProps> = ({ ingredientList, setSelected, select
     setSelected((prev) => (prev.includes(ingredient) ? prev.filter((i) => i !== ingredient) : [...prev, ingredient]));
   };
 
+  // Sort ingredients: hand=true first, then by name alphabetically
+  const sortedIngredients = [...ingredientList].sort((a, b) => {
+    if (a.hand === b.hand) {
+      return a.name.localeCompare(b.name);
+    }
+    return a.hand ? -1 : 1;
+  });
+
   return (
     <div className='h-full overflow-y-auto border-2 border-neutral rounded-md px-2 py-1'>
-      {ingredientList.map((ingredient) => (
+      {sortedIngredients.map((ingredient) => (
         <div
           key={ingredient.id}
           onClick={() => handleSelect(ingredient)}
