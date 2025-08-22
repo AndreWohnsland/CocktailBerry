@@ -226,3 +226,20 @@ input[type='time']::-webkit-calendar-picker-indicator {
   overflow: hidden;
   padding-right: var(--scrollbar-width, 15px); /* Prevent layout shift when scrollbar disappears */
 }
+
+/* Custom Scrollbar Styling */
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  background: var(--background-color);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+}
+::-webkit-scrollbar-track {
+  background: var(--background-color);
+}
+
+/* Firefox */
+* {
+  scrollbar-color: var(--primary-color) var(--background-color);
+}
