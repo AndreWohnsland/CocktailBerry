@@ -7,7 +7,7 @@ from functools import wraps
 from typing import Any, Callable
 
 from src.logger_handler import LogFiles, LoggerHandler
-from src.machine.controller import MACHINE
+from src.machine.controller import MachineController
 from src.utils import time_print
 
 _logger = LoggerHandler("error_logger", LogFiles.DEBUG)
@@ -34,7 +34,8 @@ def logerror(func: Callable) -> Callable:
             _logger.log_exception(msg)
             time_print(msg)
             try:
-                MACHINE.close_all_pumps()
+                mc = MachineController()
+                mc.close_all_pumps()
             except Exception as e:
                 _logger.log_exception(f"Error while closing the pumps: {e}")
             raise

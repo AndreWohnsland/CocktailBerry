@@ -17,7 +17,7 @@ from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MACHINE
+from src.machine.controller import MachineController
 from src.models import Cocktail
 from src.programs.addons import ADDONS
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
@@ -90,8 +90,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         DP_CONTROLLER.initialize_window_object(self)
 
         UI_LANGUAGE.adjust_mainwindow(self)
-        MACHINE.init_machine()
-        MACHINE.default_led()
+        mc = MachineController()
+        mc.init_machine()
+        mc.default_led()
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
         DP_CONTROLLER.set_tab_width(self)

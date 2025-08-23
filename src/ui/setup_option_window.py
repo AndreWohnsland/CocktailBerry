@@ -13,7 +13,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MACHINE
+from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, NEEDED_BACKUP_FILES
 from src.programs.calibration import run_calibration
 from src.ui.create_backup_restore_window import BackupRestoreWindow
@@ -104,7 +104,8 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         revert_pumps = False
         if cfg.MAKER_PUMP_REVERSION:
             revert_pumps = DP_CONTROLLER.ask_to_use_reverted_pump()
-        MACHINE.clean_pumps(self.mainscreen, revert_pumps)
+        mc = MachineController()
+        mc.clean_pumps(self.mainscreen, revert_pumps)
         DP_CONTROLLER.say_done()
 
     def _reboot_system(self) -> None:

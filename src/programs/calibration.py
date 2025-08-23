@@ -7,7 +7,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MACHINE
+from src.machine.controller import MachineController
 from src.tabs import maker
 from src.ui_elements.calibration import Ui_CalibrationWindow
 
@@ -22,7 +22,8 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
         if standalone:
             cfg.read_local_config()
-            MACHINE.init_machine()
+            mc = MachineController()
+            mc.init_machine()
         # Connect the Button
         bottles = cfg.MAKER_NUMBER_BOTTLES
         self.PB_start.clicked.connect(self.output_volume)

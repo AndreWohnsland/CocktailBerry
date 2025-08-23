@@ -24,7 +24,7 @@ from src.data_utils import generate_consume_data, get_addon_data, install_addon,
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MACHINE
+from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.models import AddonData, ConsumeData, ResourceInfo, ResourceStats
 from src.save_handler import SAVE_HANDLER
@@ -93,7 +93,8 @@ async def clean_machine(background_tasks: BackgroundTasks) -> ApiMessage:
     raise_when_cocktail_is_in_progress()
     _logger.log_header("INFO", "Cleaning the Pumps")
     revert_pumps = cfg.MAKER_PUMP_REVERSION
-    background_tasks.add_task(MACHINE.clean_pumps, None, revert_pumps)
+    mc = MachineController()
+    background_tasks.add_task(mc.clean_pumps, None, revert_pumps)
     return ApiMessage(message=DH.get_translation("cleaning_started"))
 
 

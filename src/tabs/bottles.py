@@ -12,7 +12,7 @@ from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
-from src.machine.controller import MACHINE
+from src.machine.controller import MachineController
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -117,7 +117,8 @@ def renew_bottles(w: MainScreen, bottles: list[int]) -> None:
             ingredients.append(ing)
     # if there is at least one tube volume defined, flush the tubes
     if ingredients:
-        MACHINE.make_cocktail(w, ingredients, "renew", False)
+        mc = MachineController()
+        mc.make_cocktail(w, ingredients, "renew", False)
     DP_CONTROLLER.say_bottles_renewed()
 
 
