@@ -18,12 +18,11 @@ from src.api.routers import bottles, cocktails, ingredients, options
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.config.errors import ConfigError
-from src.data_utils import CouldNotInstallAddonError
 from src.database_commander import DatabaseTransactionError
 from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
 from src.machine.controller import MachineController
 from src.migration.setup_web import download_latest_web_client
-from src.programs.addons import ADDONS
+from src.programs.addons import ADDONS, CouldNotInstallAddonError
 from src.resource_stats import start_resource_tracker
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.updater import Updater

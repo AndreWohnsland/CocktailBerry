@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from src.migration.version import Version
 from src.python_vcheck import check_python_version
 
 # Version check takes place before anything, else other imports may throw an error
@@ -58,10 +59,10 @@ class Migrator:
     """Class to do all necessary migration locally for new versions."""
 
     def __init__(self) -> None:
-        self.program_version = _Version(__version__)
+        self.program_version = Version(__version__)
         self.config = configparser.ConfigParser()
         self.config.read(VERSION_FILE)
-        self.local_version = _Version(self._get_local_version())
+        self.local_version = Version(self._get_local_version())
 
     def _get_local_version(self) -> str | None:
         try:
@@ -72,11 +73,11 @@ class Migrator:
 
     def older_than_version(self, version: str | None) -> bool:
         """Check if the current version is below the given version."""
-        return _Version(version) > self.local_version
+        return Version(version) > self.local_version
 
     def older_than_version_with_logging(self, version: str) -> bool:
         """Check if the current version is below the given version."""
-        is_older = _Version(version) > self.local_version
+        is_older = Version(version) > self.local_version
         if is_older:
             self._migration_log(version)
         return is_older
@@ -367,46 +368,6 @@ def _check_and_replace_qt_launcher_script() -> None:
                 check=True,
             )
         roll_back_to_qt_script()
-
-
-class _Version:
-    """Class to compare semantic version numbers."""
-
-    def __init__(self, version_number: str | None) -> None:
-        self.version = version_number
-        # no version was found, just assume the worst, so using first version
-        if version_number is None:
-            major = 1
-            minor = 0
-            patch = 0
-        # otherwise split version for later comparison
-        else:
-            major_str, minor_str, *patch_str = version_number.split(".")
-            major = int(major_str)
-            minor = int(minor_str)
-            # Some version like 1.0 or 1.1 don't got a patch property
-            # List unpacking will return an empty list or a list of one
-            # Future version should contain patch (e.g. 1.1.0) as well
-            patch = int(patch_str[0]) if patch_str else 0
-        self.major = major
-        self.minor = minor
-        self.patch = patch
-
-    def __gt__(self, __o: object, /) -> bool:
-        return (self.major, self.minor, self.patch) > (__o.major, __o.minor, __o.patch)  # type: ignore
-
-    def __eq__(self, __o: object, /) -> bool:
-        return self.version == __o.version  # type: ignore
-
-    def __str__(self) -> str:
-        if self.version is None:
-            return "No defined Version"
-        return f"v{self.version}"
-
-    def __repr__(self) -> str:
-        if self.version is None:
-            return "Version(not defined)"
-        return f"Version({self.version})"
 
 
 class CouldNotMigrateException(Exception):

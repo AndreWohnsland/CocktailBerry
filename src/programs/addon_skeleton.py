@@ -10,20 +10,15 @@ if TYPE_CHECKING:
 # Use the cfg to add your config / validation
 from src.config.config_manager import CONFIG as cfg
 from src.config.errors import ConfigError
-
 # You can access the default database with help of the dbc
 from src.database_commander import DatabaseCommander
-
 # Use the uil to add description and according translation
 from src.dialog_handler import UI_LANGUAGE as uil
-
 # Use the dpc to display dialogues or prompts to the user
 from src.display_controller import DP_CONTROLLER as dpc
-
 # Use the LoggerHandler class for your logger
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
-
 # The addon interface will provide intellisense for all possible methods
 from src.programs.addons import AddonInterface
 
@@ -33,6 +28,8 @@ _logger = LoggerHandler("ADDON: ADDON_NAME_HOLDER")
 
 # The class needs to be called Addon and inherit from the AddonInterface
 class Addon(AddonInterface):
+    ADDON_VERSION = "1.0.0"
+    
     def setup(self):
         """Init the addon, executed at program start."""
 
