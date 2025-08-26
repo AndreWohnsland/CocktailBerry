@@ -16,9 +16,11 @@ const AddonManager: React.FC = () => {
 
   const sortedAddons = addons?.sort((a, b) => {
     const getPriority = (addon: AddonData) => {
-      if (addon.is_installable && addon.official && addon.installed) return 1;
-      if (addon.is_installable && !addon.installed) return 2;
-      return 3;
+      if (!addon.official) return 10;
+      if (addon.is_installable && addon.installed) return 1;
+      if (addon.installed) return 2;
+      if (addon.is_installable && !addon.installed) return 3;
+      return 4;
     };
     const priorityDifference = getPriority(a) - getPriority(b);
     if (priorityDifference !== 0) {
@@ -48,11 +50,19 @@ const AddonManager: React.FC = () => {
       return (
         <button onClick={() => handleInstall(addon)} className='button-primary-filled flex items-center p-2 px-4'>
           <FaPlus className='mr-2' />
-          {t('add')}
+          {t('add')} ({addon.version})
         </button>
+      );
+    } else if (!addon.satisfy_min_version && !addon.installed) {
+      return (
+        <div className='button-neutral !border !font-normal p-2 px-4'>
+          {t('addons.minVersionNotMet', { version: addon.minimal_version })}
+        </div>
       );
     } else if (!addon.is_installable && !addon.installed) {
       return <div className='button-neutral !border !font-normal p-2 px-4'>{t('addons.cannotBeInstalled')}</div>;
+    } else if (!addon.official) {
+      return <div className='button-neutral !border !font-normal p-2 px-4'>{t('addons.notOfficial')}</div>;
     } else {
       return (
         <button onClick={() => handleDelete(addon)} className='button-danger-filled flex items-center p-2 px-4'>
@@ -68,7 +78,14 @@ const AddonManager: React.FC = () => {
         {sortedAddons?.map((addon) => (
           <div key={addon.name} className='border border-primary p-4 rounded-xl'>
             <div className='flex justify-between items-center mb-4'>
-              <h3 className='text-lg text-secondary font-semibold'>{addon.name}</h3>
+              <div className='flex flex-col'>
+                <h3 className='text-lg text-secondary font-semibold'>{addon.name}</h3>
+                {addon.local_version && (
+                  <h4 className='text-secondary text-sm font-normal'>
+                    {t('addons.localVersion', { version: addon.local_version })}
+                  </h4>
+                )}
+              </div>
               {createAddonButton(addon)}
             </div>
             <p>{addon.description}</p>

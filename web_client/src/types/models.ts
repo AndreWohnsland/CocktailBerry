@@ -202,9 +202,15 @@ export interface AddonData {
   url: string;
   disabled_since: string;
   is_installable: boolean;
+  disabled: boolean;
+  satisfy_min_version: boolean;
+  minimal_version: string;
+  version: string;
+  local_version?: string;
   file_name: string;
   installed: boolean;
   official: boolean;
+  can_update: boolean;
 }
 
 export interface StartupIssue {
