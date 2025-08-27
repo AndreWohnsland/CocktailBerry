@@ -93,17 +93,6 @@ class PrepareCocktailRequest(BaseModel):
     team_member_name: Optional[str] = None
 
 
-class AddonData(BaseModel):
-    name: str
-    description: str
-    url: str
-    disabled_since: str
-    is_installable: bool
-    file_name: str
-    installed: bool
-    official: bool
-
-
 class WifiData(BaseModel):
     ssid: str
     password: str

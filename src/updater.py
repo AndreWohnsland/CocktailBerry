@@ -8,7 +8,8 @@ from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import shared
 from src.filepath import ROOT_PATH
 from src.logger_handler import LoggerHandler
-from src.migration.migrator import Migrator, _Version
+from src.migration.migrator import Migrator
+from src.migration.version import Version
 from src.utils import restart_v1, restart_v2, time_print
 
 _logger = LoggerHandler("updater_module")
@@ -96,7 +97,7 @@ class Updater:
 
     def _get_latest_tag(self) -> TagReference:
         """Extract the latest version number from the tags."""
-        return sorted(self.repo.tags, key=lambda t: _Version(t.name.replace("v", "")))[-1]
+        return sorted(self.repo.tags, key=lambda t: Version(t.name.replace("v", "")))[-1]
 
     def _parse_release_data(self, response: Response) -> str:
         """Convert the response into a string to display."""

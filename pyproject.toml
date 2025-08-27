@@ -113,6 +113,7 @@ ignore = [
   "D213", # Multi-line docstring summary should start at the second line
   "ANN401", # no Any for *args or **kwargs
   "PLR0913", # Too many arguments
+  "PLC0415", # `import` should be at the top-level of a file
 ]
 
 [tool.mypy]

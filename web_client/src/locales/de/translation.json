@@ -110,7 +110,10 @@
   },
   "addons": {
     "manageAddons": "Addons verwalten",
+    "localVersion": "Lokale Version: {{version}}",
+    "minVersionNotMet": "Braucht Version: {{version}}",
     "cannotBeInstalled": "Kann nicht installiert werden",
+    "notOfficial": "Nicht Offiziell",
     "deleteTheAddon": "Möchtest du das Addon '{{addon}}' löschen?"
   },
   "wifi": {

@@ -12,7 +12,7 @@ from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MACHINE
+from src.machine.controller import MachineController
 from src.models import Cocktail, CocktailStatus, Ingredient, PrepareResult
 from src.programs.addons import ADDONS
 from src.service_handler import SERVICE_HANDLER
@@ -67,7 +67,8 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[P
     time_print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
     add_message = DH.cocktail_ready(_build_comment_maker(cocktail))
     canceled_message = DH.get_translation("cocktail_canceled")
-    consumption, taken_time, max_time = MACHINE.make_cocktail(
+    mc = MachineController()
+    consumption, taken_time, max_time = mc.make_cocktail(
         w, ingredient_bottles, display_name, finish_message=add_message
     )
     DBC = DatabaseCommander()
@@ -151,7 +152,8 @@ def calibrate(bottle_number: int, amount: int) -> None:
         amount=amount,
         bottle=bottle_number,
     )
-    MACHINE.make_cocktail(
+    mc = MachineController()
+    mc.make_cocktail(
         w=None,
         ingredient_list=[ing],
         recipe=display_name,
@@ -164,7 +166,8 @@ def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> N
     """Prepare an ingredient."""
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     time_print(f"Spending {ingredient.amount} ml {ingredient.name}")
-    made_volume, _, _ = MACHINE.make_cocktail(w, [ingredient], ingredient.name, False)
+    mc = MachineController()
+    made_volume, _, _ = mc.make_cocktail(w, [ingredient], ingredient.name, False)
     consumed_volume = made_volume[0]
     DBC = DatabaseCommander()
     DBC.increment_ingredient_consumption(ingredient.name, consumed_volume)

@@ -5,20 +5,14 @@ default_install_hook_types:
   - pre-push
 exclude: ^(.*(\.?venv.*)/)
 repos:
-  - repo: local
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.10
     hooks:
       - id: ruff-format
         name: ☕️ Use Ruff to format code
-        language: system
-        types: [python]
-        entry: uv run ruff format
-        require_serial: true
-      - id: ruff-linting
+      - id: ruff-check
         name: ☕️ Use Ruff to lint code
-        language: system
-        types: [python]
-        entry: uv run ruff check --fix
-        require_serial: true
+        args: [--fix]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:

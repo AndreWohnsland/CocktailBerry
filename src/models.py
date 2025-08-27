@@ -6,7 +6,7 @@ from typing import Optional
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from src import __version__
-from src.migration.migrator import _Version
+from src.migration.version import Version
 
 _NOT_SET = "Not Set"
 
@@ -207,18 +207,32 @@ class AddonData:
     description: str = _NOT_SET
     url: str = _NOT_SET
     disabled_since: str = ""
-    is_installable: bool = True
+    is_installable: bool = False
+    disabled: bool = False
+    satisfy_min_version: bool = False
+    minimal_version: str = ""
+    version: str = "1.0.0"
+    local_version: Optional[str] = None
     file_name: str = ""
     installed: bool = False
     official: bool = True
+    can_update: bool = False
 
     def __post_init__(self) -> None:
-        if self.file_name:
-            return
-        self.file_name = self.url.rsplit("/", maxsplit=1)[-1]
+        if not self.file_name:
+            self.file_name = self.url.rsplit("/", maxsplit=1)[-1]
+        current_version = Version(__version__)
+        if self.minimal_version != "":
+            self.satisfy_min_version = Version(self.minimal_version) <= current_version
         if self.disabled_since != "":
-            local_version = _Version(__version__)
-            self.is_installable = local_version < _Version(self.disabled_since.replace("v", ""))
+            self.disabled = current_version >= Version(self.disabled_since)
+        self.is_installable = self.satisfy_min_version and not self.disabled
+        if self.local_version is not None:
+            self.can_update = (
+                Version(self.local_version) < Version(self.version) and self.is_installable and self.official
+            )
+        else:
+            self.can_update = False
 
 
 @pydantic_dataclass

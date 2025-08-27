@@ -9,7 +9,7 @@ from src.api.models import ApiMessage, Bottle
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
-from src.machine.controller import MACHINE
+from src.machine.controller import MachineController
 from src.tabs import maker
 
 router = APIRouter(tags=["bottles"], prefix="/bottles")
@@ -51,7 +51,8 @@ async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundT
             ingredients.append(ing)
     # if there is at least one tube volume defined, flush the tubes
     if ingredients:
-        background_tasks.add_task(MACHINE.make_cocktail, None, ingredients, "renew", False)
+        mc = MachineController()
+        background_tasks.add_task(mc.make_cocktail, None, ingredients, "renew", False)
     return ApiMessage(message=f"{DH.get_translation('bottles_renewed')} {bottle_numbers}")
 
 

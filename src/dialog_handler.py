@@ -815,7 +815,6 @@ class UiLanguage:
     def adjust_addon_manager(self, w: Ui_AddonManager) -> None:
         """Translate the elements of the addon manager."""
         w.button_back.setText(self._choose_language("back"))
-        w.button_apply.setText(self._choose_language("apply"))
 
     def adjust_data_window(self, w: Ui_DataWindow) -> None:
         """Translate the elements of the data window."""

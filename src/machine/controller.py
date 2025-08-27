@@ -4,7 +4,7 @@ import atexit
 import contextlib
 import time
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 # Only needed in v1
 with contextlib.suppress(ModuleNotFoundError):
@@ -36,6 +36,13 @@ class _PreparationData:
 
 class MachineController:
     """Controller Class for all Machine related Pin routines."""
+
+    _instance: MachineController | None = None
+
+    def __new__(cls, *args: Any, **kwargs: Any) -> "MachineController":  # noqa: UP037
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def __init__(self) -> None:
         # Time for print intervals, need to remember the last print time

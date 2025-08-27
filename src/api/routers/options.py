@@ -20,13 +20,14 @@ from src.api.middleware import master_protected_dependency
 from src.api.models import ApiMessage, DataResponse, DateTimeInput, IssueData, PasswordInput, WifiData
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.data_utils import generate_consume_data, get_addon_data, install_addon, remove_addon
+from src.data_utils import generate_consume_data
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MACHINE
+from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.models import AddonData, ConsumeData, ResourceInfo, ResourceStats
+from src.programs.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
 from src.updater import Updater
 from src.utils import (
@@ -93,7 +94,8 @@ async def clean_machine(background_tasks: BackgroundTasks) -> ApiMessage:
     raise_when_cocktail_is_in_progress()
     _logger.log_header("INFO", "Cleaning the Pumps")
     revert_pumps = cfg.MAKER_PUMP_REVERSION
-    background_tasks.add_task(MACHINE.clean_pumps, None, revert_pumps)
+    mc = MachineController()
+    background_tasks.add_task(mc.clean_pumps, None, revert_pumps)
     return ApiMessage(message=DH.get_translation("cleaning_started"))
 
 
@@ -251,18 +253,22 @@ async def update_wifi_data(wifi_data: WifiData) -> ApiMessage:
 
 @protected_router.get("/addon", summary="Get installed and available addons")
 async def addon_data() -> list[AddonData]:
-    return get_addon_data()
+    return ADDONS.get_addon_data()
 
 
 @protected_router.post("/addon", summary="Install addon")
 async def add_addon(addon: AddonData) -> ApiMessage:
-    install_addon(addon)
-    return ApiMessage(message=f"Addon {addon.name} installed")
+    possible_addons = ADDONS.get_addon_data()
+    matched_addon = next((a for a in possible_addons if a.name == addon.name and a.official), None)
+    if matched_addon:
+        ADDONS.install_addon(matched_addon)
+        return ApiMessage(message=f"Addon {addon.name} installed")
+    raise HTTPException(400, detail="Addon is not official or not found")
 
 
 @protected_router.delete("/addon/remove", summary="Remove addon")
 async def delete_addon(addon: AddonData) -> ApiMessage:
-    remove_addon(addon)
+    ADDONS.remove_addon(addon)
     return ApiMessage(message=f"Addon {addon.name} removed")
 
 
