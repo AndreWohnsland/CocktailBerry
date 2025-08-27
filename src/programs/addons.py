@@ -86,7 +86,7 @@ class AddOnManager:
         """Load an addon from a file."""
         try:
             module = import_module(f"addons.{filename}")
-        except (ModuleNotFoundError, ImportError) as e:
+        except ImportError as e:
             message = f"Could not import addon: {filename} due to <{e}>, {_check_addon}."
             _logger.log_event("ERROR", message)
             time_print(message)

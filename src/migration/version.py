@@ -45,4 +45,3 @@ class Version:
 
     def __hash__(self) -> int:
         return hash((self.major, self.minor, self.patch))
-        return hash((self.major, self.minor, self.patch))
