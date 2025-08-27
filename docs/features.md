@@ -44,6 +44,8 @@ Usually, updating to the lastest version is always a good idea.
 | **v2.0.0**  | API version of the program <br> New frontend for remote access                                                       |
 | **v2.3.0**  | Option to filter virgin cocktails (v2)                                                                               |
 | **v2.4.0**  | Resource tracker visualization                                                                                       |
+| **v2.5.0**  | Improved LED control                                                                                                 |
+| **v2.6.0**  | More update management for addons                                                                                    |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.
