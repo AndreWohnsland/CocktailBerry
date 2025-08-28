@@ -142,6 +142,10 @@ export const deleteAddon = async (addon: AddonData): Promise<{ message: string }
     .then((res) => res.data);
 };
 
+export const updateAddon = async (addon: AddonData): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${optionsUrl}/addon/update`, addon).then((res) => res.data);
+};
+
 // Authentication
 export const validateMakerPassword = async (password: number): Promise<{ message: string }> => {
   return axiosInstance
