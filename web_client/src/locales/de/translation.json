@@ -114,7 +114,9 @@
     "minVersionNotMet": "Braucht Version: {{version}}",
     "cannotBeInstalled": "Kann nicht installiert werden",
     "notOfficial": "Nicht Offiziell",
-    "deleteTheAddon": "Möchtest du das Addon '{{addon}}' löschen?"
+    "deleteTheAddon": "Möchtest du das Addon '{{addon}}' löschen?",
+    "updateTheAddon": "Möchtest du das Addon '{{addon}}' updaten?",
+    "update": "Update ({{version}})"
   },
   "wifi": {
     "setupWifi": "WLAN einrichten",

@@ -43,28 +43,43 @@ class AddonManager(QMainWindow, Ui_AddonManager):
             if widget:
                 widget.deleteLater()
 
-        for i, addon in enumerate(self._addon_information):
-            if addon.installed and addon.official and not addon.is_installable:
-                btn = create_button("Remove", font_size=16, max_w=150, css_class="btn-inverted destructive")
-                btn.clicked.connect(lambda _, a=addon, b=btn, c=i: self._remove_addon(a, b, c))
-            elif addon.official and addon.is_installable:
-                btn = create_button("Install", font_size=16, max_w=150, css_class="btn-inverted")
-                btn.clicked.connect(lambda _, a=addon, b=btn, c=i: self._install_addon(a, b, c))
-            else:
-                if addon.disabled:
-                    text = "Disabled"
-                elif not addon.official:
-                    text = "Unofficial"
-                else:
-                    text = f"needs {addon.minimal_version}+"
-                btn = create_button(text, font_size=16, max_w=150, css_class="neutral btn-inverted")
-                btn.setEnabled(False)
+        current_grid_index = 0
 
-            self.gridLayout_2.addWidget(btn, i, 0)
+        for addon in sorted(
+            self._addon_information,
+            key=lambda x: (x.official, x.installed, x.is_installable, x.name),
+            reverse=True,
+        ):
+            btn = self._create_addon_button(current_grid_index, addon)
+            self.gridLayout_2.addWidget(btn, current_grid_index, 0)
             content = f"{addon.name} ({addon.file_name})\n{addon.description}"
             label = create_label(content, SMALL_FONT)
             label.setWordWrap(True)
-            self.gridLayout_2.addWidget(label, i, 1)
+            self.gridLayout_2.addWidget(label, current_grid_index, 1)
+            current_grid_index += 1
+            if addon.can_update:
+                btn = create_button(f"Update ({addon.version})", font_size=16, css_class="btn-inverted")
+                btn.clicked.connect(lambda _, a=addon, b=btn, c=current_grid_index: self._update_addon(a, b, c))
+                self.gridLayout_2.addWidget(btn, current_grid_index, 1)
+                current_grid_index += 1
+
+    def _create_addon_button(self, current_grid_index: int, addon: AddonData) -> QPushButton:
+        if addon.installed and addon.official:
+            btn = create_button("Remove", font_size=16, max_w=150, css_class="btn-inverted destructive")
+            btn.clicked.connect(lambda _, a=addon, b=btn, c=current_grid_index: self._remove_addon(a, b, c))
+        elif addon.official and addon.is_installable:
+            btn = create_button("Install", font_size=16, max_w=150, css_class="btn-inverted")
+            btn.clicked.connect(lambda _, a=addon, b=btn, c=current_grid_index: self._install_addon(a, b, c))
+        else:
+            if addon.disabled:
+                text = "Disabled"
+            elif not addon.official:
+                text = "Unofficial"
+            else:
+                text = f"needs {addon.minimal_version}+"
+            btn = create_button(text, font_size=16, max_w=150, css_class="neutral btn-inverted")
+            btn.setEnabled(False)
+        return btn
 
     def _install_addon(self, addon: AddonData, btn: QPushButton, pos: int) -> None:
         """Try to install addon, log if req is not ok or no connection."""
@@ -88,3 +103,12 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         btn = create_button("Install", font_size=16, max_w=200, css_class="btn-inverted")
         btn.clicked.connect(lambda _, a=addon, b=btn, c=pos: self._install_addon(a, b, c))
         self.gridLayout_2.addWidget(btn, pos, 0)
+
+    def _update_addon(self, addon: AddonData, btn: QPushButton, pos: int) -> None:
+        """Try to update addon, log if req is not ok or no connection."""
+        try:
+            ADDONS.reload_addon(addon)
+            DIALOG_HANDLER.standard_box("Addon updated successfully", "Success")
+            btn.deleteLater()
+        except CouldNotInstallAddonError as e:
+            _logger.log_event("ERROR", str(e))
