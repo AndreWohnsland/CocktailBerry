@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaPlus, FaTrashAlt } from 'react-icons/fa';
-import { addAddon, deleteAddon, useAddonData } from '../../api/options';
+import { addAddon, deleteAddon, updateAddon, useAddonData } from '../../api/options';
 import { AddonData } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
@@ -39,6 +39,14 @@ const AddonManager: React.FC = () => {
 
   const handleDelete = async (addon: AddonData) => {
     confirmAndExecute(t('addons.deleteTheAddon', { addon: addon.name }), () => deleteAddon(addon)).then((success) => {
+      if (success) {
+        refetch();
+      }
+    });
+  };
+
+  const handleUpdate = async (addon: AddonData) => {
+    confirmAndExecute(t('addons.updateTheAddon', { addon: addon.name }), () => updateAddon(addon)).then((success) => {
       if (success) {
         refetch();
       }
@@ -89,6 +97,11 @@ const AddonManager: React.FC = () => {
               {createAddonButton(addon)}
             </div>
             <p>{addon.description}</p>
+            {addon.can_update && (
+              <button onClick={() => handleUpdate(addon)} className='button-primary-filled p-2 px-4 mt-6 w-full'>
+                {t('addons.update', { version: addon.version })}
+              </button>
+            )}
           </div>
         ))}
       </div>

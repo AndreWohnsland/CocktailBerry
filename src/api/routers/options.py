@@ -272,6 +272,18 @@ async def delete_addon(addon: AddonData) -> ApiMessage:
     return ApiMessage(message=f"Addon {addon.name} removed")
 
 
+@protected_router.post("/addon/update", summary="Update addon")
+async def update_addon(addon: AddonData) -> ApiMessage:
+    possible_addons = ADDONS.get_addon_data()
+    matched_addon = next((a for a in possible_addons if a.name == addon.name and a.official), None)
+    if not matched_addon:
+        raise HTTPException(400, detail="Addon is not official or not found")
+    if matched_addon.can_update:
+        ADDONS.reload_addon(matched_addon)
+        return ApiMessage(message=f"Addon {addon.name} updated")
+    raise HTTPException(400, detail="Addon cannot be updated")
+
+
 @protected_router.get("/connection", summary="Check internet connection")
 async def check_internet_connection() -> dict[str, Union[str, bool]]:  # noqa: UP007
     is_connected = has_connection()

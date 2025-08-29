@@ -114,7 +114,9 @@
     "minVersionNotMet": "Needs Version: {{version}}",
     "cannotBeInstalled": "Cannot be Installed",
     "notOfficial": "Not Official",
-    "deleteTheAddon": "Do you want to delete the addon '{{addon}}'?"
+    "deleteTheAddon": "Do you want to delete the addon '{{addon}}'?",
+    "updateTheAddon": "Do you want to update the addon '{{addon}}'?",
+    "update": "Update ({{version}})"
   },
   "wifi": {
     "setupWifi": "Set Up WiFi",
