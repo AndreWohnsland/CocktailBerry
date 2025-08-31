@@ -55,21 +55,27 @@ export const updateSoftware = async (): Promise<{ message: string }> => {
 };
 
 export const createBackup = async (): Promise<{ data: Blob; fileName: string }> => {
-  const response = await axiosInstance.get(`${optionsUrl}/backup`, {
-    responseType: 'blob',
-  });
+  try {
+    const response = await axiosInstance.get(`${optionsUrl}/backup`, {
+      responseType: 'blob',
+    });
 
-  const contentDisposition = response.headers['content-disposition'];
-  let fileName = 'backup.zip'; // fallback filename
+    const contentDisposition = response.headers['content-disposition'];
+    let fileName = 'backup.zip'; // fallback filename
 
-  if (contentDisposition) {
-    const match = contentDisposition.match(/filename="(.+?)"/);
-    if (match?.[1]) {
-      fileName = match[1];
+    if (contentDisposition) {
+      const match = contentDisposition.match(/filename="(.+?)"/);
+      if (match?.[1]) fileName = match[1];
     }
+    return { data: response.data, fileName };
+  } catch (error: any) {
+    if (error instanceof Blob) {
+      const text = await error.text();
+      const json = JSON.parse(text);
+      throw new Error(json.detail || 'An error occurred while creating the backup');
+    }
+    throw error;
   }
-
-  return { data: response.data, fileName };
 };
 
 export const uploadBackup = async (file: File): Promise<{ message: string }> => {

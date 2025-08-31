@@ -38,34 +38,27 @@ const OptionWindow = () => {
   };
 
   const getBackupClick = async () => {
-    try {
-      const { data, fileName } = await createBackup();
-      const options = {
-        suggestedName: fileName,
-        types: [
-          {
-            description: 'Backup Files',
-            accept: { 'application/octet-stream': ['.zip'] },
-          },
-        ],
-      };
-      const fileHandle = await window.showSaveFilePicker(options);
-      const writable = await fileHandle.createWritable();
-      await writable.write(new Blob([data], { type: 'application/octet-stream' }));
-      await writable.close();
-    } catch (error) {
-      console.error('Error saving backup:', error);
-    }
+    const { data, fileName } = await createBackup();
+    const options = {
+      suggestedName: fileName,
+      types: [
+        {
+          description: 'Backup Files',
+          accept: { 'application/octet-stream': ['.zip'] },
+        },
+      ],
+    };
+    const fileHandle = await window.showSaveFilePicker(options);
+    const writable = await fileHandle.createWritable();
+    await writable.write(new Blob([data], { type: 'application/octet-stream' }));
+    await writable.close();
+    return Promise.resolve(t('options.backupSavedSuccessfully', { fileName: fileHandle.name }));
   };
 
   const uploadBackupClick = async () => {
     let file = undefined;
-    try {
-      const [fileHandle] = await window.showOpenFilePicker();
-      file = await fileHandle.getFile();
-    } catch {
-      return;
-    }
+    const [fileHandle] = await window.showOpenFilePicker();
+    file = await fileHandle.getFile();
     return uploadBackup(file);
   };
 
