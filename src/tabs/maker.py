@@ -8,7 +8,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import shared
+from src.config.config_manager import Tab, shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
@@ -126,7 +126,7 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
             empty_ingredient.fill_level,
             empty_ingredient.amount,
         )
-        if cfg.UI_MAKER_PASSWORD != 0 and cfg.UI_LOCKED_TABS[2]:
+        if cfg.UI_MAKER_PASSWORD != 0 and cfg.UI_LOCKED_TABS[Tab.MAKER]:
             msg += f" \n\n{DH.get_translation('bottle_tab_locked')}"
         return PrepareResult.NOT_ENOUGH_INGREDIENTS, msg, empty_ingredient
     try:

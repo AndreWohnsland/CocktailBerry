@@ -8,6 +8,7 @@ import { PiPintGlassFill } from 'react-icons/pi';
 import { TbGlassChampagne } from 'react-icons/tb';
 import { prepareCocktail } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
+import { Tabs } from '../../constants/tabs';
 import { useConfig } from '../../providers/ConfigProvider';
 import { Cocktail, PrepareResult } from '../../types/models';
 import { errorToast, scaleCocktail } from '../../utils';
@@ -75,7 +76,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
       })
       .catch((error) => {
         const errorReason = error.status as PrepareResult | undefined;
-        const refillAllowed = !(config.UI_MAKER_PASSWORD && config.UI_LOCKED_TABS[2]);
+        const refillAllowed = !(config.UI_MAKER_PASSWORD && config.UI_LOCKED_TABS[Tabs.Bottles]);
         if (errorReason === 'NOT_ENOUGH_INGREDIENTS' && refillAllowed) {
           setRefillMessage(error.detail);
           setEmptyBottleNumber(error.bottle);

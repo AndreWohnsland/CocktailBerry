@@ -100,7 +100,7 @@ export interface DefinedConfigData {
   UI_DEVENVIRONMENT: boolean;
   UI_MASTERPASSWORD: boolean;
   UI_MAKER_PASSWORD: boolean;
-  UI_LOCKED_TABS: [boolean, boolean, boolean];
+  UI_LOCKED_TABS: [boolean, boolean, boolean, boolean];
   UI_LANGUAGE: string;
   UI_WIDTH: number;
   UI_HEIGHT: number;

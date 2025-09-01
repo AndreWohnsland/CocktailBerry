@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Tabs } from '../constants/tabs';
 import { useConfig } from './ConfigProvider';
 
 interface AuthContextType {
@@ -26,9 +27,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   let protectedManagementPaths: string[] = [];
   if (config.UI_LOCKED_TABS) {
     protectedManagementPaths = [
-      config.UI_LOCKED_TABS[0] ? '/manage/ingredients' : '',
-      config.UI_LOCKED_TABS[1] ? '/manage/recipes' : '',
-      config.UI_LOCKED_TABS[2] ? '/manage/bottles' : '',
+      config.UI_LOCKED_TABS[Tabs.Maker] ? '/cocktails' : '',
+      config.UI_LOCKED_TABS[Tabs.Ingredients] ? '/manage/ingredients' : '',
+      config.UI_LOCKED_TABS[Tabs.Recipes] ? '/manage/recipes' : '',
+      config.UI_LOCKED_TABS[Tabs.Bottles] ? '/manage/bottles' : '',
     ].filter((path) => path !== '');
   }
 

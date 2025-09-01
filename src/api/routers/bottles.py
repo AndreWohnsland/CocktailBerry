@@ -7,6 +7,7 @@ from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import maker_protected
 from src.api.models import ApiMessage, Bottle
 from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import Tab
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import MachineController
@@ -17,7 +18,7 @@ protected_router = APIRouter(
     tags=["bottles", "maker protected"],
     prefix="/bottles",
     dependencies=[
-        Depends(maker_protected(2)),
+        Depends(maker_protected(Tab.BOTTLES)),
     ],
 )
 

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from PyQt5.QtWidgets import QMainWindow
 
 from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import Tab
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -67,7 +68,7 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
 
         # Go to refill dialog, if this window is not locked
         if (result == PrepareResult.NOT_ENOUGH_INGREDIENTS) and (
-            cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[2]
+            cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[Tab.BOTTLES]
         ):
             self.mainscreen.open_refill_dialog(cocktail)
             return
@@ -78,4 +79,5 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
             return
 
         maker.prepare_ingredient(ingredient, self.mainscreen)
+        set_fill_level_bars(self.mainscreen)
         set_fill_level_bars(self.mainscreen)

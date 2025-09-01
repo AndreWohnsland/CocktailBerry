@@ -118,7 +118,8 @@ async def validation_error_handler(request: Request, exc: ValidationError) -> JS
 
 
 app.include_router(cocktails.router)
-app.include_router(cocktails.protected_router)
+app.include_router(cocktails.protected_maker_router)
+app.include_router(cocktails.protected_recipes_router)
 app.include_router(bottles.router)
 app.include_router(bottles.protected_router)
 app.include_router(options.router)

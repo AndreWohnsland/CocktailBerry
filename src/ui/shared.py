@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import Tab
 from src.display_controller import DP_CONTROLLER
 from src.models import Cocktail, PrepareResult
 from src.tabs import bottles, maker
@@ -20,7 +21,9 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
     result, message, _ = maker.validate_cocktail(cocktail)
 
     # Go to refill dialog, if this window is not locked
-    if (result == PrepareResult.NOT_ENOUGH_INGREDIENTS) and (cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[2]):
+    if (result == PrepareResult.NOT_ENOUGH_INGREDIENTS) and (
+        cfg.UI_MAKER_PASSWORD == 0 or not cfg.UI_LOCKED_TABS[Tab.BOTTLES]
+    ):
         w.open_refill_dialog(cocktail)
         return False, message
 

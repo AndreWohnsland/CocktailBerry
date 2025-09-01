@@ -4,6 +4,7 @@ from src.api.internal.utils import map_ingredient, not_on_demo
 from src.api.internal.validation import raise_on_validation_not_okay
 from src.api.middleware import maker_protected
 from src.api.models import ApiMessage, ApiMessageWithData, ErrorDetail, Ingredient, IngredientInput
+from src.config.config_manager import Tab
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.models import Cocktail, CocktailStatus, PrepareResult
@@ -14,7 +15,7 @@ protected_router = APIRouter(
     tags=["ingredients", "maker protected"],
     prefix="/ingredients",
     dependencies=[
-        Depends(maker_protected(0)),
+        Depends(maker_protected(Tab.INGREDIENTS)),
     ],
 )
 
@@ -105,7 +106,7 @@ async def post_available_ingredients(available: list[int]) -> ApiMessage:
 
 @router.post(
     "/{ingredient_id:int}/prepare",
-    tags=["preparation"],
+    tags=["preparation", "maker protected"],
     responses={
         200: {"description": "Ingredient preparation started", "model": CocktailStatus},
         400: {"description": "Validation error", "model": ErrorDetail},
@@ -115,6 +116,7 @@ async def post_available_ingredients(available: list[int]) -> ApiMessage:
         },
     },
     summary="Prepare given amount of ingredient by ID",
+    dependencies=[Depends(maker_protected(Tab.MAKER))],
 )
 async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: BackgroundTasks) -> CocktailStatus:
     DBC = DatabaseCommander()
