@@ -99,6 +99,8 @@ const tabConfig: { [key: string]: string[] } = {
   SOFTWARE: ['MICROSERVICE', 'TEAM'],
 };
 
+const skipConfig = ['EXP_DEMO_MODE'];
+
 /**
  * Determines if a given config belongs to a specific tab.
  * @param configName - The configuration name.
@@ -106,6 +108,10 @@ const tabConfig: { [key: string]: string[] } = {
  * @returns True if the config belongs to the tab, false otherwise.
  */
 export const isInCurrentTab = (configName: string, tab: string): boolean => {
+  if (skipConfig.includes(configName)) {
+    return false;
+  }
+
   if (exactSorting[tab]?.includes(configName)) {
     return true;
   }
