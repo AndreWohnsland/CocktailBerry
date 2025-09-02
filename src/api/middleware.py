@@ -1,9 +1,10 @@
-from typing import Callable, Literal, Optional
+from typing import Callable, Optional
 
 from fastapi import HTTPException, Security
 from fastapi.security import APIKeyHeader
 
 from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import Tab
 
 master_password_header = APIKeyHeader(name="x-master-key", scheme_name="Master Password", auto_error=False)
 maker_password_header = APIKeyHeader(name="x-maker-key", scheme_name="Maker Password", auto_error=False)
@@ -26,7 +27,7 @@ def master_protected_dependency(master_password: Optional[str] = Security(master
         raise HTTPException(status_code=403, detail="Invalid Master Password")
 
 
-def maker_protected(tab: Literal[0, 1, 2] = 1) -> Callable[[str], None]:
+def maker_protected(tab: Tab) -> Callable[[str], None]:
     def dependency(maker_password: Optional[str] = Security(maker_password_header)) -> None:
         if cfg.UI_MAKER_PASSWORD == 0:
             return

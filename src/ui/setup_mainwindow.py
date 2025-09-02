@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QLineEdit, QMainWindow
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import CONFIG as cfg
+from src.config.config_manager import Tab
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER, ItemDelegate
@@ -78,11 +79,15 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
 
+        # if maker tab is locked, we need to start with another tab
+        if cfg.UI_LOCKED_TABS[Tab.MAKER] and cfg.UI_MAKER_PASSWORD != 0:
+            self.tabWidget.setCurrentIndex(0)
         # keep track of previous index for index changed signal,
         # we need this because the signal does not emit the previous index
         self.previous_tab_index = self.tabWidget.currentIndex()
         # also keep a list of available cocktails for search in cocktails
         self.available_cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
+        self._apply_search_to_list()
 
         # internal initialization
         self.connect_objects()
@@ -330,7 +335,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def handle_tab_bar_clicked(self, index: int) -> None:
         """Protects tabs other than maker tab with a password."""
         old_index = self.previous_tab_index
-        unprotected_tabs = [0, 1] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 2) if not x]
+        unprotected_tabs = [0] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 1) if not x]
         # since the search window lives in the main window now,
         # switching to it needs to get the current available cocktails
         if index == 0:

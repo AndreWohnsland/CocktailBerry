@@ -16,7 +16,7 @@ from src.api.models import (
     PrepareCocktailRequest,
 )
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import shared
+from src.config.config_manager import Tab, shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
@@ -25,12 +25,20 @@ from src.models import PrepareResult
 from src.tabs import maker
 from src.utils import time_print
 
-router = APIRouter(tags=["cocktails"], prefix="/cocktails")
-protected_router = APIRouter(
+_prefix = "/cocktails"
+router = APIRouter(tags=["cocktails"], prefix=_prefix)
+protected_maker_router = APIRouter(
     tags=["cocktails", "maker protected"],
-    prefix="/cocktails",
+    prefix=_prefix,
     dependencies=[
-        Depends(maker_protected(1)),
+        Depends(maker_protected(Tab.MAKER)),
+    ],
+)
+protected_recipes_router = APIRouter(
+    tags=["cocktails", "maker protected"],
+    prefix=_prefix,
+    dependencies=[
+        Depends(maker_protected(Tab.RECIPES)),
     ],
 )
 
@@ -53,7 +61,7 @@ async def get_cocktail(cocktail_id: int) -> Cocktail:
     return map_cocktail(cocktail)
 
 
-@router.post(
+@protected_maker_router.post(
     "/prepare/{cocktail_id:int}",
     tags=["preparation"],
     responses={
@@ -122,14 +130,14 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     await websocket.close()
 
 
-@router.post("/prepare/stop", tags=["preparation"], summary="Stop the current cocktail preparation")
+@protected_maker_router.post("/prepare/stop", tags=["preparation"], summary="Stop the current cocktail preparation")
 async def stop_cocktail() -> ApiMessage:
     shared.cocktail_status.status = PrepareResult.CANCELED
     time_print("Canceling the cocktail!")
     return ApiMessage(message=DH.get_translation("preparation_cancelled"))
 
 
-@protected_router.post("", summary="Create a new cocktail", dependencies=[not_on_demo])
+@protected_recipes_router.post("", summary="Create a new cocktail", dependencies=[not_on_demo])
 async def create_cocktail(cocktail: CocktailInput) -> ApiMessageWithData[Cocktail]:
     DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
@@ -143,7 +151,7 @@ async def create_cocktail(cocktail: CocktailInput) -> ApiMessageWithData[Cocktai
     )
 
 
-@protected_router.put("/{cocktail_id}", summary="Update a cocktail by ID", dependencies=[not_on_demo])
+@protected_recipes_router.put("/{cocktail_id}", summary="Update a cocktail by ID", dependencies=[not_on_demo])
 async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> ApiMessageWithData[Cocktail]:
     DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
@@ -163,14 +171,16 @@ async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> ApiMessa
     )
 
 
-@protected_router.delete("/{cocktail_id}", summary="Delete a cocktail by ID", dependencies=[not_on_demo])
+@protected_recipes_router.delete("/{cocktail_id}", summary="Delete a cocktail by ID", dependencies=[not_on_demo])
 async def delete_cocktail(cocktail_id: int) -> ApiMessage:
     DBC = DatabaseCommander()
     DBC.delete_recipe(cocktail_id)
     return ApiMessage(message=DH.get_translation("recipe_deleted", recipe_name=cocktail_id))
 
 
-@protected_router.post("/{cocktail_id}/image", summary="Upload an image for a cocktail", dependencies=[not_on_demo])
+@protected_recipes_router.post(
+    "/{cocktail_id}/image", summary="Upload an image for a cocktail", dependencies=[not_on_demo]
+)
 async def upload_cocktail_image(cocktail_id: int, file: Annotated[UploadFile, File(...)]) -> ApiMessage:
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -188,7 +198,9 @@ async def upload_cocktail_image(cocktail_id: int, file: Annotated[UploadFile, Fi
     return ApiMessage(message=DH.get_translation("image_uploaded"))
 
 
-@protected_router.delete("/{cocktail_id}/image", summary="Delete an image for a cocktail", dependencies=[not_on_demo])
+@protected_recipes_router.delete(
+    "/{cocktail_id}/image", summary="Delete an image for a cocktail", dependencies=[not_on_demo]
+)
 async def delete_cocktail_image(cocktail_id: int) -> ApiMessage:
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -206,7 +218,7 @@ async def delete_cocktail_image(cocktail_id: int) -> ApiMessage:
     return ApiMessage(message=DH.get_translation("image_deleted"))
 
 
-@protected_router.post("/enable", summary="Enable all recipes")
+@protected_recipes_router.post("/enable", summary="Enable all recipes")
 async def enable_all_recipes() -> ApiMessage:
     DBC = DatabaseCommander()
     DBC.set_all_recipes_enabled()

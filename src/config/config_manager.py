@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 import random
+from enum import IntEnum
 from typing import Any, Callable, ClassVar
 
 import typer
@@ -43,6 +44,16 @@ _default_pins = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
 _default_volume_flow = [30.0] * 10
 
 
+class Tab(IntEnum):
+    MAKER = 0
+    INGREDIENTS = 1
+    RECIPES = 2
+    BOTTLES = 3
+
+
+TAB_ORDER = [Tab.MAKER, Tab.INGREDIENTS, Tab.RECIPES, Tab.BOTTLES]
+
+
 class ConfigManager:
     """Manager for all static configuration of the machine.
 
@@ -56,7 +67,7 @@ class ConfigManager:
     # Password to lock other tabs than maker tab
     UI_MAKER_PASSWORD: int = 0
     # specify which of the tabs will be locked
-    UI_LOCKED_TABS: ClassVar[list[bool]] = [True, True, True]
+    UI_LOCKED_TABS: ClassVar[list[bool]] = [False, True, True, True]
     # Language to use, use two chars look up documentation, if not provided fallback to en
     UI_LANGUAGE: SupportedLanguagesType = "en"
     # Width and height of the touchscreen
@@ -147,7 +158,7 @@ class ConfigManager:
             "UI_DEVENVIRONMENT": BoolType(check_name="Dev active"),
             "UI_MASTERPASSWORD": IntType(),
             "UI_MAKER_PASSWORD": IntType(),
-            "UI_LOCKED_TABS": ListType(BoolType(check_name="locked"), 3, immutable=True),
+            "UI_LOCKED_TABS": ListType(BoolType(check_name="locked"), 4, immutable=True),
             "UI_LANGUAGE": ChooseOptions.language,
             "UI_WIDTH": IntType([build_number_limiter(1, 10000)]),
             "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),

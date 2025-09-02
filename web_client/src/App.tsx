@@ -21,6 +21,7 @@ import TimeManager from './components/options/TimeManager.tsx';
 import WifiManager from './components/options/WifiManager.tsx';
 import RecipeList from './components/recipe/RecipeList.tsx';
 import ResourceWindow from './components/resources/ResourceWindow.tsx';
+import { Tabs } from './constants/tabs.ts';
 import useAxiosInterceptors from './hooks/useAxiosInterceptors.ts';
 import { useConfig } from './providers/ConfigProvider.tsx';
 import { hastNotIgnoredStartupIssues } from './utils.tsx';
@@ -49,11 +50,18 @@ function App() {
           <GettingConfiguration />
         ) : (
           <Routes>
-            <Route path='cocktails' element={<CocktailList />} />
+            <Route
+              path='cocktails'
+              element={
+                <MakerPasswordProtected tabNumber={Tabs.Maker}>
+                  <CocktailList />
+                </MakerPasswordProtected>
+              }
+            />
             <Route
               path='manage/ingredients'
               element={
-                <MakerPasswordProtected tabNumber={0}>
+                <MakerPasswordProtected tabNumber={Tabs.Ingredients}>
                   <IngredientList />
                 </MakerPasswordProtected>
               }
@@ -61,7 +69,7 @@ function App() {
             <Route
               path='manage/recipes'
               element={
-                <MakerPasswordProtected tabNumber={1}>
+                <MakerPasswordProtected tabNumber={Tabs.Recipes}>
                   <RecipeList />
                 </MakerPasswordProtected>
               }
@@ -69,7 +77,7 @@ function App() {
             <Route
               path='manage/bottles'
               element={
-                <MakerPasswordProtected tabNumber={2}>
+                <MakerPasswordProtected tabNumber={Tabs.Bottles}>
                   <BottleList />
                 </MakerPasswordProtected>
               }
@@ -77,7 +85,7 @@ function App() {
             <Route
               path='manage/bottles/available'
               element={
-                <MakerPasswordProtected tabNumber={2}>
+                <MakerPasswordProtected tabNumber={Tabs.Bottles}>
                   <AvailableBottles />
                 </MakerPasswordProtected>
               }

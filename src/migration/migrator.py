@@ -153,6 +153,9 @@ class Migrator:
                 clear_resource_log_file,
                 add_resource_usage_table,
             ],
+            "2.6.0": [
+                _add_maker_lock_value,
+            ],
         }
 
         for version, actions in version_actions.items():
@@ -321,6 +324,20 @@ def _move_slow_factor_to_db() -> None:
             configuration = yaml.safe_load(stream)
         slow_factor = configuration.get("PUMP_SLOW_FACTOR", 1.0)
     change_slower_flag_to_pump_speed(slow_factor)
+
+
+def _add_maker_lock_value() -> None:
+    """Add the maker lock value to the config."""
+    configuration = _get_local_config("UI_LOCKED_TABS")
+    if configuration is None:
+        return
+    locked_tabs: list[bool] = configuration.get("UI_LOCKED_TABS", [False, True, True, True])
+    if len(locked_tabs) == 3:  # noqa: PLR2004
+        locked_tabs.insert(0, False)
+    _logger.info(f"Using for migration: {locked_tabs=}")
+    configuration["UI_LOCKED_TABS"] = locked_tabs
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
 
 
 def _get_converted_value(new_type: Callable[[Any], T], default_value: T, local_config: Any) -> T:
