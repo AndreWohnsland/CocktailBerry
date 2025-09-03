@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { FaGlassMartiniAlt, FaSkullCrossbones, FaWineGlassAlt } from 'react-icons/fa';
+import { GrFormNextLink, GrFormPreviousLink } from 'react-icons/gr';
 import { ImMug } from 'react-icons/im';
 import { IoIosHappy } from 'react-icons/io';
 import { MdNoDrinks } from 'react-icons/md';
@@ -19,6 +20,8 @@ import TeamSelection from './TeamSelection';
 interface CocktailModalProps {
   selectedCocktail: Cocktail;
   handleCloseModal: () => void;
+  cocktails: Cocktail[];
+  setSelectedCocktail: (cocktail: Cocktail) => void;
 }
 
 type alcoholState = 'high' | 'low' | 'normal' | 'virgin';
@@ -32,12 +35,15 @@ const alcoholFactor = {
   virgin: 0,
 };
 
-const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, handleCloseModal }) => {
+const CocktailSelection: React.FC<CocktailModalProps> = ({
+  selectedCocktail,
+  handleCloseModal,
+  cocktails,
+  setSelectedCocktail,
+}) => {
   const originalCocktail = JSON.parse(JSON.stringify(selectedCocktail));
-  const [alcohol, setAlcohol] = useState<alcoholState>(selectedCocktail.only_virgin ? 'virgin' : 'normal');
-  const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(
-    selectedCocktail.only_virgin ? scaleCocktail(originalCocktail, 0) : selectedCocktail,
-  );
+  const [alcohol, setAlcohol] = useState<alcoholState>('normal');
+  const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(selectedCocktail);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   // Refill state
   const [isRefillOpen, setIsRefillOpen] = useState(false);
@@ -48,6 +54,18 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const { config } = useConfig();
   const possibleServingSizes = config.MAKER_PREPARE_VOLUME ?? mlAmounts;
+
+  useEffect(() => {
+    const initialAlcoholState = selectedCocktail.only_virgin ? 'virgin' : 'normal';
+    setAlcohol(initialAlcoholState);
+    setDisplayCocktail(initialAlcoholState === 'virgin' ? scaleCocktail(selectedCocktail, 0) : selectedCocktail);
+  }, [selectedCocktail]);
+
+  const changeCocktailBy = (number: number) => {
+    const currentIndex = cocktails.findIndex((c) => c.id === selectedCocktail.id);
+    const nextIndex = (currentIndex + number + cocktails.length) % cocktails.length;
+    setSelectedCocktail(cocktails[nextIndex]);
+  };
 
   const handleAlcoholState = (state: alcoholState) => {
     if (state === alcohol) {
@@ -103,11 +121,27 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({ selectedCocktail, han
   return (
     <>
       <div className='flex flex-col sm:flex-row items-center md:items-start justify-center w-full h-full'>
-        <img
-          src={`${API_URL}${selectedCocktail.image}`}
-          alt={selectedCocktail.name}
-          className='w-full h-full object-cover border-2 border-neutral rounded-lg overflow-hidden sm:mr-2 mb-2 flex-1'
-        />
+        <div className='relative w-full h-full sm:mr-2 mb-2 flex-1'>
+          <img
+            src={`${API_URL}${selectedCocktail.image}`}
+            alt={selectedCocktail.name}
+            className='w-full h-full object-cover border-2 border-neutral rounded-lg overflow-hidden'
+          />
+          <button
+            onClick={() => changeCocktailBy(-1)}
+            className='absolute left-2 top-1/2 -translate-y-1/2 bg-background opacity-80 rounded-full'
+            aria-label='previous'
+          >
+            <GrFormPreviousLink className='text-primary' size={80} />
+          </button>
+          <button
+            onClick={() => changeCocktailBy(1)}
+            className='absolute right-2 top-1/2 -translate-y-1/2 bg-background opacity-80 rounded-full'
+            aria-label='next'
+          >
+            <GrFormNextLink className='text-primary' size={80} />
+          </button>
+        </div>
         <div className='flex flex-col justify-between items-center w-full flex-1 self-stretch'>
           <div className='flex items-center justify-between mb-2 shrink w-full'>
             <span className='ml-4 text-secondary font-bold w-6 text-xl'>{displayCocktail.alcohol}%</span>

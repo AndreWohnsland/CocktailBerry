@@ -109,7 +109,12 @@ const CocktailList: React.FC = () => {
         preventScroll={true}
       >
         {selectedCocktail && (
-          <CocktailSelection selectedCocktail={selectedCocktail} handleCloseModal={handleCloseModal} />
+          <CocktailSelection
+            selectedCocktail={selectedCocktail}
+            handleCloseModal={handleCloseModal}
+            cocktails={displayedCocktails?.sort((a, b) => a.name.localeCompare(b.name)) || []}
+            setSelectedCocktail={setSelectedCocktail}
+          />
         )}
       </Modal>
       <Modal isOpen={singleIngredientOpen} className='modal slim' overlayClassName='overlay z-20' preventScroll={true}>
