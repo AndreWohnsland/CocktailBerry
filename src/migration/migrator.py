@@ -40,6 +40,7 @@ from src.migration.update_data import (
     add_slower_ingredient_flag_to_db,
     add_team_buffer_to_database,
     add_unit_column_to_ingredients,
+    add_virgin_counters_to_recipes,
     add_virgin_flag_to_db,
     change_slower_flag_to_pump_speed,
     clear_resource_log_file,
@@ -155,6 +156,9 @@ class Migrator:
             ],
             "2.6.0": [
                 _add_maker_lock_value,
+            ],
+            "2.6.1": [
+                add_virgin_counters_to_recipes,
             ],
         }
 

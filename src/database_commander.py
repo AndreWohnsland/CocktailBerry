@@ -35,6 +35,8 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("database_module")
 
+VIRGIN_NAME_TEMPLATE = "(V) {}"
+
 
 class DatabaseTransactionError(Exception):
     """Raises an error if something will not work in the database with the given command.
@@ -303,9 +305,9 @@ class DatabaseCommander:
         with self.session_scope() as session:
             cocktails = self._get_db_cocktails(session)
             return self._convert_consumption_data(
-                [x.name for x in cocktails],
-                [x.counter for x in cocktails],
-                [x.counter_lifetime for x in cocktails],
+                [x.name for x in cocktails] + [VIRGIN_NAME_TEMPLATE.format(x.name) for x in cocktails],
+                [x.counter for x in cocktails] + [x.counter_virgin for x in cocktails],
+                [x.counter_lifetime for x in cocktails] + [x.counter_lifetime_virgin for x in cocktails],
             )
 
     def get_consumption_data_lists_ingredients(self) -> list[list[Any]]:
@@ -403,15 +405,19 @@ class DatabaseCommander:
             ingredient.cost = cost
             ingredient.unit = unit
 
-    def increment_recipe_counter(self, recipe_name: str) -> None:
+    def increment_recipe_counter(self, recipe_name: str, virgin: bool) -> None:
         """Increase the recipe counter by one of given recipe name."""
         with self.session_scope() as session:
             recipe = session.query(DbRecipe).filter(DbRecipe.name == recipe_name).one_or_none()
             if recipe is None:
                 raise ElementNotFoundError(f"Recipe with name {recipe_name} not found")
 
-            recipe.counter_lifetime += 1
-            recipe.counter += 1
+            if virgin:
+                recipe.counter_lifetime_virgin += 1
+                recipe.counter_virgin += 1
+            else:
+                recipe.counter_lifetime += 1
+                recipe.counter += 1
 
     def increment_ingredient_consumption(self, ingredient_name: str, ingredient_consumption: int) -> None:
         """Increase the consumption of given ingredient name by a given amount."""
@@ -510,7 +516,7 @@ class DatabaseCommander:
                 session.commit()
             except Exception as e:
                 session.rollback()
-                if isinstance(e, (sqlite3.IntegrityError, sqlalchemy.exc.IntegrityError)):
+                if isinstance(e, (sqlite3.IntegrityError, sqlalchemy.exc.IntegrityError)):  # type: ignore
                     raise ElementAlreadyExistsError(ingredient_name)
                 raise e
 
@@ -539,7 +545,7 @@ class DatabaseCommander:
                 session.commit()
             except Exception as e:
                 session.rollback()
-                if isinstance(e, (sqlite3.IntegrityError, sqlalchemy.exc.IntegrityError)):
+                if isinstance(e, (sqlite3.IntegrityError, sqlalchemy.exc.IntegrityError)):  # type: ignore
                     raise ElementAlreadyExistsError(name)
                 raise e
 
@@ -588,16 +594,6 @@ class DatabaseCommander:
             if ingredient is None:
                 raise ElementNotFoundError(f"Ingredient ID {ingredient_id} not found")
             session.delete(ingredient)
-
-    def delete_consumption_recipes(self) -> None:
-        """Set the resettable consumption of all recipes to zero."""
-        with self.session_scope() as session:
-            session.query(DbRecipe).update({DbRecipe.counter: 0})
-
-    def delete_consumption_ingredients(self) -> None:
-        """Set the resettable consumption of all ingredients to zero."""
-        with self.session_scope() as session:
-            session.query(DbIngredient).update({DbIngredient.consumption: 0})
 
     def delete_recipe(self, recipe_name: str | int) -> None:
         """Delete the given recipe by name and all according ingredient_data."""
@@ -657,7 +653,7 @@ class DatabaseCommander:
         with self.session_scope() as session:
             recipes = self._get_db_cocktails(session)
             for recipe in recipes:
-                if recipe.counter == 0:
+                if recipe.counter + recipe.counter_virgin == 0:
                     continue
                 existing_export = (
                     session.query(DbCocktailExport)
@@ -667,11 +663,12 @@ class DatabaseCommander:
                 )
                 if existing_export:
                     existing_export.counter += recipe.counter
+                    existing_export.counter_virgin += recipe.counter_virgin
                 else:
-                    session.add(DbCocktailExport(recipe.name, recipe.counter))
+                    session.add(DbCocktailExport(recipe.name, recipe.counter, recipe.counter_virgin))
 
             # Reset counters after recording
-            session.query(DbRecipe).update({DbRecipe.counter: 0})
+            session.query(DbRecipe).update({DbRecipe.counter: 0, DbRecipe.counter_virgin: 0})
         _logger.log_event("INFO", "Recipe consumption data was saved to database")
 
     def export_ingredient_data(self) -> None:
@@ -718,7 +715,11 @@ class DatabaseCommander:
                 date_str = r_export.export_date.strftime("%Y-%m-%d")
                 if date_str not in date_grouped_data:
                     date_grouped_data[date_str] = {"recipes": {}, "ingredients": {}, "cost": {}}
-                date_grouped_data[date_str]["recipes"][r_export.recipe_name] = r_export.counter
+                if r_export.counter > 0:
+                    date_grouped_data[date_str]["recipes"][r_export.recipe_name] = r_export.counter
+                if r_export.counter_virgin > 0:
+                    name = VIRGIN_NAME_TEMPLATE.format(r_export.recipe_name)
+                    date_grouped_data[date_str]["recipes"][name] = r_export.counter_virgin
 
             for i_export in ingredient_exports:
                 date_str = i_export.export_date.strftime("%Y-%m-%d")

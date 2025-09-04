@@ -7,6 +7,7 @@ import pytest
 from sqlalchemy.orm import Session
 
 from src.database_commander import (
+    VIRGIN_NAME_TEMPLATE,
     DatabaseCommander,
     DatabaseTransactionError,
     ElementAlreadyExistsError,
@@ -84,12 +85,23 @@ class TestCocktail:
 
     def test_increment_recipe_counter(self, db_commander: DatabaseCommander):
         """Test the increment_recipe_counter method."""
-        db_commander.increment_recipe_counter("Cuba Libre")
+        db_commander.increment_recipe_counter("Cuba Libre", virgin=False)
         session = Session(db_commander.engine)
         recipe = session.query(DbRecipe).filter_by(name="Cuba Libre").first()
         session.close()
         assert recipe is not None
         assert recipe.counter == 1
+        assert recipe.counter_virgin == 0
+
+    def test_increment_recipe_counter_virgin(self, db_commander: DatabaseCommander):
+        """Test the increment_recipe_counter method."""
+        db_commander.increment_recipe_counter("Cuba Libre", virgin=True)
+        session = Session(db_commander.engine)
+        recipe = session.query(DbRecipe).filter_by(name="Cuba Libre").first()
+        session.close()
+        assert recipe is not None
+        assert recipe.counter == 0
+        assert recipe.counter_virgin == 1
 
     def test_set_recipe(self, db_commander: DatabaseCommander):
         """Test the set_recipe method."""
@@ -109,7 +121,8 @@ class TestCocktail:
         """Test the insert_recipe_data method."""
         ingredient_data = [(1, 80, 1), (2, 100, 2), (3, 50, 3)]
         cocktail = db_commander.insert_new_recipe("New Recipe", 0, 250, True, False, ingredient_data)
-        cocktail = db_commander.get_cocktail(cocktail.id)
+        assert cocktail is not None
+        cocktail = db_commander.get_cocktail(cocktail.id)  # type: ignore
         assert cocktail is not None
         assert len(cocktail.ingredients) == 3
         # test that each ingredient is existing (first integer is id)
@@ -156,7 +169,7 @@ class TestCocktail:
     def test_increment_nonexistent_recipe_counter(self, db_commander: DatabaseCommander):
         """Test incrementing the counter of a recipe that does not exist."""
         with pytest.raises(ElementNotFoundError):
-            db_commander.increment_recipe_counter("Nonexistent")
+            db_commander.increment_recipe_counter("Nonexistent", virgin=False)
 
     def test_delete_recipe_still_in_use(self, db_commander: DatabaseCommander):
         """Test deleting a recipe that is still in use."""
@@ -486,20 +499,6 @@ class TestData:
         assert len(data) == 3
         assert data[0][1] == "White Rum"
 
-    def test_delete_consumption_recipes(self, db_commander: DatabaseCommander):
-        """Test the delete_consumption_recipes method."""
-        db_commander.increment_recipe_counter("Cuba Libre")
-        db_commander.delete_consumption_recipes()
-        data = db_commander.get_consumption_data_lists_recipes()
-        assert data[1][1] == 0
-
-    def test_delete_consumption_ingredients(self, db_commander: DatabaseCommander):
-        """Test the delete_consumption_ingredients method."""
-        db_commander.increment_ingredient_consumption("White Rum", 100)
-        db_commander.delete_consumption_ingredients()
-        data = db_commander.get_consumption_data_lists_ingredients()
-        assert data[1][1] == 0
-
     def test_delete_database_data(self, db_commander: DatabaseCommander):
         """Test the delete_database_data method."""
         db_commander.delete_database_data()
@@ -549,7 +548,7 @@ class TestExports:
         """Test that recipe counters are exported correctly."""
         number_cocktails = 3
         for _ in range(number_cocktails):
-            db_commander.increment_recipe_counter("Cuba Libre")
+            db_commander.increment_recipe_counter("Cuba Libre", virgin=False)
 
         db_commander.export_recipe_data()
         export_data = db_commander.get_export_data()
@@ -639,7 +638,7 @@ class TestExports:
 
     def test_export_dates(self, db_commander: DatabaseCommander):
         """Test that export dates are returned correctly."""
-        db_commander.increment_recipe_counter("Cuba Libre")
+        db_commander.increment_recipe_counter("Cuba Libre", virgin=False)
         db_commander.export_recipe_data()
         export_dates = db_commander.get_export_dates()
 
@@ -652,14 +651,14 @@ class TestExports:
         today = datetime.date.today()
 
         # First export
-        db_commander.increment_recipe_counter("Cuba Libre")
+        db_commander.increment_recipe_counter("Cuba Libre", virgin=False)
         db_commander.increment_ingredient_consumption("White Rum", 50)
         db_commander.export_recipe_data()
         db_commander.export_ingredient_data()
 
         # Second export on the same day
-        db_commander.increment_recipe_counter("Cuba Libre")
-        db_commander.increment_recipe_counter("Cuba Libre")
+        db_commander.increment_recipe_counter("Cuba Libre", virgin=False)
+        db_commander.increment_recipe_counter("Cuba Libre", virgin=True)
         db_commander.increment_ingredient_consumption("White Rum", 100)
         db_commander.export_recipe_data()
         db_commander.export_ingredient_data()
@@ -671,7 +670,8 @@ class TestExports:
         # Check that the recipe counter was combined (1 + 2 = 3)
         assert today_str in export_data
         assert "Cuba Libre" in export_data[today_str].recipes
-        assert export_data[today_str].recipes["Cuba Libre"] == 3
+        assert export_data[today_str].recipes["Cuba Libre"] == 2
+        assert export_data[today_str].recipes.get(VIRGIN_NAME_TEMPLATE.format("Cuba Libre"), 0) == 1
 
         # Check that the ingredient consumption was combined (50 + 100 = 150)
         assert "White Rum" in export_data[today_str].ingredients
@@ -685,6 +685,20 @@ class TestExports:
         assert today_cost is not None
         assert "White Rum" in today_cost
         assert today_cost["White Rum"] == expected_cost
+
+    def test_same_cocktail_counter_only_if_greater_zero(self, db_commander: DatabaseCommander):
+        """Test that virgin and normal cocktail are only exported if consumption > 0."""
+        db_commander.increment_recipe_counter("Cuba Libre", virgin=False)
+        db_commander.increment_recipe_counter("Tequila Sunrise", virgin=True)
+        db_commander.export_recipe_data()
+        export_data = db_commander.get_export_data()
+        today = datetime.date.today().strftime("%Y-%m-%d")
+
+        assert today in export_data
+        assert "Cuba Libre" in export_data[today].recipes
+        assert VIRGIN_NAME_TEMPLATE.format("Cuba Libre") not in export_data[today].recipes
+        assert "Tequila Sunrise" not in export_data[today].recipes
+        assert VIRGIN_NAME_TEMPLATE.format("Tequila Sunrise") in export_data[today].recipes
 
 
 class TestResourceUsage:
