@@ -72,7 +72,7 @@ def prepare_cocktail(cocktail: Cocktail, w: MainScreen | None = None) -> tuple[P
         w, ingredient_bottles, display_name, finish_message=add_message
     )
     DBC = DatabaseCommander()
-    DBC.increment_recipe_counter(cocktail.name)
+    DBC.increment_recipe_counter(cocktail.name, cocktail.is_virgin)
 
     percentage_made = taken_time / max_time
     real_volume = round(cocktail.adjusted_amount * percentage_made)

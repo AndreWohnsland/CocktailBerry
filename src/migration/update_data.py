@@ -286,6 +286,17 @@ def add_resource_usage_table() -> None:
         _logger.log_event("ERROR", "Could not add ResourceUsage table to DB, this may because it already exists")
 
 
+def add_virgin_counters_to_recipes() -> None:
+    """Add the virgin counters to the Recipes table."""
+    _logger.log_event("INFO", "Adding virgin counters to Recipes DB")
+    try:
+        execute_raw_sql("ALTER TABLE Recipes ADD COLUMN Counter_virgin INTEGER DEFAULT 0;")
+        execute_raw_sql("ALTER TABLE Recipes ADD COLUMN Counter_lifetime_virgin INTEGER DEFAULT 0;")
+        execute_raw_sql("ALTER TABLE CocktailExport ADD COLUMN Counter_virgin INTEGER DEFAULT 0;")
+    except OperationalError:
+        _logger.log_event("ERROR", "Could not add virgin counters to DB, this may because they already exist")
+
+
 def clear_resource_log_file() -> None:
     """Clear the resource log file."""
     _logger.log_event("INFO", "Clearing resource log file")

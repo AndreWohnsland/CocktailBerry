@@ -87,7 +87,9 @@ class DbRecipe(Base):
     alcohol: Mapped[int] = mapped_column(nullable=False, name="Alcohol")
     amount: Mapped[int] = mapped_column(nullable=False, name="Amount")
     counter_lifetime: Mapped[int] = mapped_column(default=0, name="Counter_lifetime")
+    counter_lifetime_virgin: Mapped[int] = mapped_column(default=0, name="Counter_lifetime_virgin")
     counter: Mapped[int] = mapped_column(default=0, name="Counter")
+    counter_virgin: Mapped[int] = mapped_column(default=0, name="Counter_virgin")
     enabled: Mapped[bool] = mapped_column(default=True, name="Enabled")
     virgin: Mapped[bool] = mapped_column(default=False, name="Virgin")
 
@@ -101,7 +103,9 @@ class DbRecipe(Base):
         alcohol: int,
         amount: int,
         counter_lifetime: int = 0,
+        counter_lifetime_virgin: int = 0,
         counter: int = 0,
+        counter_virgin: int = 0,
         enabled: bool = True,
         virgin: bool = False,
     ) -> None:
@@ -109,7 +113,9 @@ class DbRecipe(Base):
         self.alcohol = alcohol
         self.amount = amount
         self.counter_lifetime = counter_lifetime
+        self.counter_lifetime_virgin = counter_lifetime_virgin
         self.counter = counter
+        self.counter_virgin = counter_virgin
         self.enabled = enabled
         self.virgin = virgin
 
@@ -153,10 +159,14 @@ class DbCocktailExport(Base):
     export_date: Mapped[datetime.date] = mapped_column(nullable=False, name="Export_Date", default=datetime.date.today)
     recipe_name: Mapped[str] = mapped_column(nullable=False, name="Recipe_Name")
     counter: Mapped[int] = mapped_column(nullable=False, name="Counter")
+    counter_virgin: Mapped[int] = mapped_column(nullable=False, name="Counter_virgin")
 
-    def __init__(self, recipe_name: str, counter: int, export_date: Optional[datetime.date] = None) -> None:
+    def __init__(
+        self, recipe_name: str, counter: int, counter_virgin: int, export_date: Optional[datetime.date] = None
+    ) -> None:
         self.recipe_name = recipe_name
         self.counter = counter
+        self.counter_virgin = counter_virgin
         self.export_date = export_date or datetime.date.today()
 
 
