@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaPlus, FaSave } from 'react-icons/fa';
 import { RxCrossCircled } from 'react-icons/rx';
 import { updateOptions, useConfig } from '../../api/options';
 import { useConfig as useConfigProvider } from '../../providers/ConfigProvider';
-import { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
+import type { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
 import { executeAndShow, isInCurrentTab } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
@@ -68,7 +69,7 @@ const ConfigWindow: React.FC = () => {
     };
   };
 
-  const handleInputChange = (key: string, value: any) => {
+  const handleInputChange = (key: string, value: boolean | string | number) => {
     // this can be a little tricky, since we need to update nested objects and arrays
     // we can have just the key, key[index], key.attribute, key[index].attribute
     // exampled are: TEAM_BUTTON_NAMES[3] or PUMP_CONFIG[10].pin
@@ -140,7 +141,7 @@ const ConfigWindow: React.FC = () => {
           value={value.toString()}
           onChange={(e) => {
             const numericValue = parseFloat(e.target.value);
-            handleInputChange(key, isNaN(numericValue) ? 0 : numericValue);
+            handleInputChange(key, Number.isNaN(numericValue) ? 0 : numericValue);
           }}
           className='input-base'
         />
@@ -184,17 +185,19 @@ const ConfigWindow: React.FC = () => {
     );
   };
 
+  // biome-ignore lint/suspicious/noExplicitAny: config is special, we can have many types here
   const renderListField = (key: string, value: any[]) => {
     const defaultValue = value.length > 0 ? value[0] : '';
     const baseConfig = getBaseConfig(key);
     return (
       <div className='flex flex-col items-center w-full'>
         {value.map((item, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: is always ordered here
           <div key={index} className='flex items-center mb-1 w-full'>
             <span className='mr-1 font-bold text-secondary min-w-4'>{index + 1}</span>
             {renderInputField(`${key}[${index}]`, item)}
             {!baseConfig.immutable && (
-              <button className='text-danger ml-2' onClick={() => handleRemoveItem(key, index)}>
+              <button type='button' className='text-danger ml-2' onClick={() => handleRemoveItem(key, index)}>
                 <RxCrossCircled size={30} />
               </button>
             )}
@@ -202,6 +205,7 @@ const ConfigWindow: React.FC = () => {
         ))}
         {!baseConfig.immutable && (
           <button
+            type='button'
             onClick={() => handleAddItem(key, defaultValue)}
             className='flex justify-center items-center mb-2 mt-1 p-1 button-neutral w-full'
           >
@@ -260,6 +264,7 @@ const ConfigWindow: React.FC = () => {
       return Object.keys(value).reduce((acc, key) => {
         acc[key] = getDefaultValue(value[key]);
         return acc;
+        // biome-ignore lint/suspicious/noExplicitAny: config is special, we can have many types here
       }, {} as any);
     }
     console.log('Unknown type');
@@ -269,7 +274,8 @@ const ConfigWindow: React.FC = () => {
   const handleRemoveItem = (key: string, index: number) => {
     setConfigData((prevData) => {
       const updatedArray = Array.isArray(prevData[key])
-        ? prevData[key].filter((_: any, i: number) => i !== index)
+        ? // biome-ignore lint/suspicious/noExplicitAny: config is special, we can have many types here
+          prevData[key].filter((_: any, i: number) => i !== index)
         : prevData[key];
       return {
         ...prevData,
@@ -305,6 +311,7 @@ const ConfigWindow: React.FC = () => {
         </div>
         <div className='flex flex-col items-center justify-center w-full px-2'>
           <button
+            type='button'
             onClick={postConfig}
             className='button-primary-filled p-2 w-full mb-2 flex items-center justify-center'
           >

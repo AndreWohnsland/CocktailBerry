@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { useResourceInfo, useResourceStats } from '../../api/options';
@@ -35,7 +36,7 @@ const aggregateData = (raw: number[], maxPoints: number): number[] => {
 };
 
 const chipStyle = (value: number) => {
-  let baseClass = 'border-2 text-background font-semibold rounded-lg text-center p-2 flex flex-col';
+  const baseClass = 'border-2 text-background font-semibold rounded-lg text-center p-2 flex flex-col';
   if (value <= 90) return `${baseClass} border-neutral bg-neutral`;
   return `${baseClass} border-danger bg-danger`;
 };
@@ -107,7 +108,7 @@ const ResourceWindow: React.FC = () => {
     if (selectedSession !== null) {
       refetchStats();
     }
-  }, [selectedSession]);
+  }, [selectedSession, refetchStats]);
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;

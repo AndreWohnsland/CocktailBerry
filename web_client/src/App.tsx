@@ -19,6 +19,7 @@ import LogWindow from './components/options/LogWindow.tsx';
 import OptionWindow from './components/options/OptionWindow.tsx';
 import TimeManager from './components/options/TimeManager.tsx';
 import WifiManager from './components/options/WifiManager.tsx';
+import RecipeCalculator from './components/recipe/RecipeCalculator.tsx';
 import RecipeList from './components/recipe/RecipeList.tsx';
 import ResourceWindow from './components/resources/ResourceWindow.tsx';
 import { Tabs } from './constants/tabs.ts';
@@ -32,13 +33,13 @@ function App() {
   const { config } = useConfig();
   useAxiosInterceptors();
   const navigate = useNavigate();
-  const { data: issues, isSuccess } = useIssues();
+  const { data: issues } = useIssues();
 
   useEffect(() => {
     if (hastNotIgnoredStartupIssues(issues)) {
       navigate('/issues');
     }
-  }, [isSuccess, issues, navigate]);
+  }, [issues, navigate]);
 
   return (
     <div className='min-h-screen flex w-full h-full'>
@@ -71,6 +72,14 @@ function App() {
               element={
                 <MakerPasswordProtected tabNumber={Tabs.Recipes}>
                   <RecipeList />
+                </MakerPasswordProtected>
+              }
+            />
+            <Route
+              path='manage/recipes/calculation'
+              element={
+                <MakerPasswordProtected tabNumber={Tabs.Recipes}>
+                  <RecipeCalculator />
                 </MakerPasswordProtected>
               }
             />

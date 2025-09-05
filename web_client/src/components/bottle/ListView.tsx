@@ -1,5 +1,5 @@
-import React from 'react';
-import { Ingredient } from '../../types/models';
+import type React from 'react';
+import type { Ingredient } from '../../types/models';
 
 interface ListViewProps {
   ingredientList: Ingredient[];
@@ -23,6 +23,9 @@ const ListView: React.FC<ListViewProps> = ({ ingredientList, setSelected, select
   return (
     <div className='h-full overflow-y-auto border-2 border-neutral rounded-md px-2 py-1'>
       {sortedIngredients.map((ingredient) => (
+        // biome-ignore lint/a11y/useFocusableInteractive: will use div for now
+        // biome-ignore lint/a11y/useKeyWithClickEvents: will use div for now
+        // biome-ignore lint/a11y/useSemanticElements: will use div for now
         <div
           key={ingredient.id}
           onClick={() => handleSelect(ingredient)}

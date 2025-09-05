@@ -1,5 +1,6 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: Some functions are quite generic wrapper and take almost anything */
 import { toast } from 'react-toastify';
-import { Cocktail, IssueData } from './types/models';
+import type { Cocktail, IssueData } from './types/models';
 
 export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
   // Step 1: Adjust alcoholic ingredients to match the target alcohol percentage
@@ -48,7 +49,7 @@ const extractErrorMessage = (error: any): string => {
 };
 
 export const errorToast = (error: any, prefix?: string) => {
-  let errorMessage = extractErrorMessage(error);
+  const errorMessage = extractErrorMessage(error);
   const randomNumber = Math.floor(100000 + Math.random() * 900000);
   const prefixMessage = prefix ? `${prefix}: ` : '';
   toast(`${prefixMessage}${errorMessage}`, {
@@ -59,7 +60,7 @@ export const errorToast = (error: any, prefix?: string) => {
 
 export const executeAndShow = async (executable: () => Promise<any>): Promise<boolean> => {
   let info = '';
-  let toastId = 'execute-show-info';
+  const toastId = 'execute-show-info';
   let success = false;
   // add some random six digit number at it
   const randomNumber = Math.floor(100000 + Math.random() * 900000);

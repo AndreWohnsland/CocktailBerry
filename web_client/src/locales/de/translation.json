@@ -155,5 +155,10 @@
     "resourceTracker": "Startzeitpunkt",
     "cpuMetrics": "CPU Metriken",
     "ramMetrics": "RAM Metriken"
+  },
+  "recipeCalculation": {
+    "title": "Rezeptrechner",
+    "neededIngredients": "Benötigte Zutaten",
+    "inNRecipes": "in {{n}} Rezepten"
   }
 }
