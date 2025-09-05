@@ -1,5 +1,5 @@
-import { useQuery, UseQueryResult } from 'react-query';
-import {
+import { type UseQueryResult, useQuery } from 'react-query';
+import type {
   AddonData,
   ConfigData,
   ConfigDataWithUiInfo,
@@ -68,6 +68,7 @@ export const createBackup = async (): Promise<{ data: Blob; fileName: string }> 
       if (match?.[1]) fileName = match[1];
     }
     return { data: response.data, fileName };
+    // biome-ignore lint/suspicious/noExplicitAny: we really want to catch all errors here
   } catch (error: any) {
     if (error instanceof Blob) {
       const text = await error.text();

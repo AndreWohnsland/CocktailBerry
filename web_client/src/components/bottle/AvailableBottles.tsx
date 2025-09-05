@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { postAvailableIngredients, useAvailableIngredients, useIngredients } from '../../api/ingredients';
-import { Ingredient } from '../../types/models';
+import type { Ingredient } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import ListView from './ListView';
@@ -65,12 +66,14 @@ const AvailableBottles: React.FC = () => {
         </div>
         <div className='flex flex-row sm:flex-col justify-center items-center mx-0 sm:mx-2 mt-9 w-full h-full sm:w-16'>
           <button
+            type='button'
             className='button-primary-filled p-2 my-2 mr-2 sm:mb-2 sm:mx-2 sm:my-0 h-1/2 w-1/2 sm:w-full items-center justify-center flex'
             onClick={() => moveSelected(setFreeIngredients, setAvailableIngredients, selectedFree, setSelectedFree)}
           >
             <FaPlusCircle size={40} />
           </button>
           <button
+            type='button'
             className='button-primary p-2 my-2 sm:mx-2 sm:my-0 h-1/2 w-1/2 sm:w-full items-center justify-center flex'
             onClick={() =>
               moveSelected(setAvailableIngredients, setFreeIngredients, selectedAvailable, setSelectedAvailable)
@@ -86,10 +89,10 @@ const AvailableBottles: React.FC = () => {
         </div>
       </div>
       <div className='w-full flex justify-between mt-12'>
-        <button onClick={() => navigate(-1)} className='button-primary p-2 w-1/2 mr-2'>
+        <button type='button' onClick={() => navigate(-1)} className='button-primary p-2 w-1/2 mr-2'>
           {t('back')}
         </button>
-        <button onClick={updateAvailable} className='button-primary-filled p-2 w-1/2'>
+        <button type='button' onClick={updateAvailable} className='button-primary-filled p-2 w-1/2'>
           {t('apply')}
         </button>
       </div>
