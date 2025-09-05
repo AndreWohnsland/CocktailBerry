@@ -48,7 +48,7 @@ function RecipeCalculator() {
           {isLoading ? (
             <p>{t('loading')}</p>
           ) : (
-            <div className='flex-grow overflow-y-auto border rounded p-2 min-h-0'>
+            <div className='flex-grow overflow-y-auto border-2 border-neutral rounded p-2 min-h-0'>
               {cocktails
                 ?.sort((a, b) => a.name.localeCompare(b.name))
                 .map((cocktail) => (
@@ -70,7 +70,7 @@ function RecipeCalculator() {
           <h2 className='font-bold mb-2 text-center text-xl text-secondary'>
             {t('recipeCalculation.neededIngredients')}
           </h2>
-          <div className='flex-grow overflow-y-auto border rounded p-2 min-h-0'>
+          <div className='flex-grow overflow-y-auto border-2 border-neutral rounded p-2 min-h-0'>
             {neededIngredients.map((ingredient) => (
               <Accordion
                 key={ingredient.id}
