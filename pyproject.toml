@@ -24,6 +24,7 @@ dependencies = [
     "python-periphery>=2.4.1",
     "sqlalchemy>=2.0.40",
     "alembic>=1.14.1",
+    "pulp>=3.2.2",
 ]
 requires-python = ">= 3.9"
 

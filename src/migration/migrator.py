@@ -160,6 +160,9 @@ class Migrator:
             "2.6.1": [
                 add_virgin_counters_to_recipes,
             ],
+            "2.6.2": [
+                lambda: self._install_pip_package("pulp", "2.6.2"),
+            ],
         }
 
         for version, actions in version_actions.items():
