@@ -9,7 +9,7 @@ from statistics import mean, median
 from typing import TYPE_CHECKING, Any, Literal
 
 import sqlalchemy
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from src.db_models import (
@@ -793,6 +793,22 @@ class DatabaseCommander:
         with self.session_scope() as session:
             data = session.query(DbResourceUsage.session).order_by(DbResourceUsage.session.desc()).first()
             return data[0] if data else 0
+
+    def get_most_used_ingredient_ids(self, k: int | None = None) -> set[int]:
+        with self.session_scope() as session:
+            count_query = (
+                session.query(DbCocktailIngredient.ingredient_id)
+                .join(DbRecipe, DbCocktailIngredient.cocktail_id == DbRecipe.id)
+                .filter(DbRecipe.enabled.is_(True))
+                .group_by(DbCocktailIngredient.ingredient_id)
+                .order_by(func.count(DbCocktailIngredient.cocktail_id).desc())
+            )
+            if k and k > 0:
+                count_query = count_query.limit(k)
+            top_pairs = count_query.all()
+            top_ing_ids: list[int] = [row[0] for row in top_pairs]
+
+        return set(top_ing_ids)
 
 
 DB_COMMANDER = DatabaseCommander()

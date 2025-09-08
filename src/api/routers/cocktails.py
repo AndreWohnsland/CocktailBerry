@@ -1,9 +1,14 @@
 import asyncio
-from typing import Annotated
+from typing import Annotated, Literal, cast
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, WebSocket
 
-from src.api.internal.utils import calculate_cocktail_volume_and_concentration, map_cocktail, not_on_demo
+from src.api.internal.utils import (
+    calculate_cocktail_volume_and_concentration,
+    map_cocktail,
+    map_ingredient,
+    not_on_demo,
+)
 from src.api.internal.validation import raise_on_validation_not_okay
 from src.api.middleware import maker_protected
 from src.api.models import (
@@ -11,12 +16,14 @@ from src.api.models import (
     ApiMessageWithData,
     Cocktail,
     CocktailInput,
+    CocktailsAndIngredients,
     CocktailStatus,
     ErrorDetail,
     PrepareCocktailRequest,
 )
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab, shared
+from src.data_utils import select_optimal
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
@@ -51,7 +58,7 @@ async def get_cocktails(only_possible: bool = True, max_hand_add: int = 3, scale
     return [c for c in mapped_cocktails if c is not None]
 
 
-@router.get("/{cocktail_id}", summary="Get a cocktail by ID")
+@router.get("/{cocktail_id:int}", summary="Get a cocktail by ID")
 async def get_cocktail(cocktail_id: int) -> Cocktail:
     DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
@@ -223,3 +230,15 @@ async def enable_all_recipes() -> ApiMessage:
     DBC = DatabaseCommander()
     DBC.set_all_recipes_enabled()
     return ApiMessage(message=DH.get_translation("all_recipes_enabled"))
+
+
+@router.get("/calculate", summary="Calculate optimal ingredient selection for given n and algorithm")
+async def calculate_optimal_ingredient_selection(
+    number_ingredients: int, algorithm: Literal["greedy", "local", "ilp"] = "ilp"
+) -> CocktailsAndIngredients:
+    alg = cast(Literal["greedy", "local", "ilp"], algorithm)
+    ingredients, cocktails = select_optimal(number_ingredients, alg)
+    return CocktailsAndIngredients(
+        ingredients=[map_ingredient(i) for i in ingredients],
+        cocktails=[map_cocktail(c, False) for c in cocktails],
+    )
