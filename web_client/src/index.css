@@ -88,11 +88,17 @@ body {
   @apply text-primary border-primary rounded-lg bg-background border text-center p-1 w-full;
 }
 
-.input-base[type='number'] {
+.input-base-large {
+  @apply text-primary border-primary rounded-lg bg-background border text-center p-2 w-full;
+}
+
+.input-base[type='number'],
+.input-base-large[type='number'] {
   @apply pr-0; /* Add padding to the left */
 }
 
-.input-base:focus {
+.input-base:focus,
+.input-base-large:focus {
   @apply border-secondary;
   outline: 2px solid var(--secondary-color);
 }

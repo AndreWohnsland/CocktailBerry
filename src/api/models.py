@@ -35,6 +35,11 @@ class CocktailIngredient(BaseModel):
     unit: str = "ml"
 
 
+class CocktailsAndIngredients(BaseModel):
+    cocktails: list["Cocktail"]
+    ingredients: list["Ingredient"]
+
+
 class Cocktail(BaseModel):
     id: int
     name: str

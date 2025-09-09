@@ -1,5 +1,5 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import { Cocktail, CocktailInput, CocktailStatus } from '../types/models';
+import { Cocktail, CocktailInput, CocktailStatus, Ingredient } from '../types/models';
 import { axiosInstance } from './common';
 
 const cocktail_url = '/cocktails';
@@ -104,4 +104,15 @@ export const deleteCocktailImage = async (id: number): Promise<{ message: string
 
 export const enableAllRecipes = async (): Promise<{ message: string }> => {
   return axiosInstance.post<{ message: string }>(`${cocktail_url}/enable`).then((res) => res.data);
+};
+
+export const calculateOptimal = async (
+  number_ingredients: number,
+  algorithm: 'greedy' | 'local' | 'ilp' = 'ilp',
+): Promise<{ cocktails: Cocktail[]; ingredients: Ingredient[] }> => {
+  return axiosInstance
+    .get<{ cocktails: Cocktail[]; ingredients: Ingredient[] }>(`${cocktail_url}/calculate`, {
+      params: { number_ingredients, algorithm },
+    })
+    .then((res) => res.data);
 };

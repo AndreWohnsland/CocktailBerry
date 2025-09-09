@@ -183,6 +183,13 @@ class TestCocktail:
         cocktails = db_commander.get_all_cocktails()
         assert all(cocktail.enabled for cocktail in cocktails)
 
+    def test_optimal_ingredient_selection(self, db_commander: DatabaseCommander):
+        """Test the optimal_ingredient_selection method."""
+        for i in range(5):
+            db_commander.insert_new_recipe(f"rumAndCola {i}", 10, 250, True, False, [(1, 50, 1), (2, 200, 2)])
+        top_ing_ids = db_commander.get_most_used_ingredient_ids(k=2)
+        assert top_ing_ids == {1, 2}
+
 
 class TestIngredient:
     def test_get_ingredient(self, db_commander: DatabaseCommander):
