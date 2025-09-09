@@ -149,6 +149,7 @@ if [ "$V2_FLAG" = true ]; then
   echo "~~ Switching to v2 since the flag is set in the command ~~"
   # shellcheck disable=SC2164
   cd ~/CocktailBerry
+  sudo cp ~/CocktailBerry/scripts/v2-launcher.sh ~/launcher.sh
   uv run api.py setup-web
   # informs the user that with v2 he still needs to run cocktailberry before opening the web
   echo "- !!! You need to run 'bash ~/launcher.sh' or click the CocktailBerry icon before opening the web interface."
