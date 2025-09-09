@@ -159,6 +159,12 @@
   "recipeCalculation": {
     "title": "Recipe Calculator",
     "neededIngredients": "Needed Ingredients",
-    "inNRecipes": "in {{n}} recipes"
+    "neededIngredientsHeader": "Needed Ingredients ({{count}})",
+    "selectAll": "Select All",
+    "inNRecipes": "in {{n}} recipes",
+    "cocktailsHeader": "Cocktails ({{count}} selected)",
+    "numberIngredients": "Number of Ingredients:",
+    "optimize": "Optimize",
+    "confirmCalculation": "This might take a while on large databases. Proceed?"
   }
 }

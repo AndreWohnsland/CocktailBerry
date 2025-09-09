@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal
 
 import pulp
@@ -103,8 +105,8 @@ def greedy_local_selection(
         improved = False
         iterations += 1
 
-        for ing_out in list(chosen):
-            for ing_in in list(top_ing_ids - chosen):
+        for ing_out in chosen:
+            for ing_in in top_ing_ids - chosen:
                 candidate = (chosen - {ing_out}) | {ing_in}
                 new_score = score(candidate)
                 if new_score > best_score:

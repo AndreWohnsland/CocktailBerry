@@ -1,7 +1,7 @@
 import asyncio
-from typing import Annotated, Literal, cast
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, WebSocket
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile, WebSocket
 
 from src.api.internal.utils import (
     calculate_cocktail_volume_and_concentration,
@@ -234,10 +234,10 @@ async def enable_all_recipes() -> ApiMessage:
 
 @router.get("/calculate", summary="Calculate optimal ingredient selection for given n and algorithm")
 async def calculate_optimal_ingredient_selection(
-    number_ingredients: int, algorithm: Literal["greedy", "local", "ilp"] = "ilp"
+    number_ingredients: Annotated[int, Query(ge=1)] = 10,
+    algorithm: Literal["greedy", "local", "ilp"] = "ilp",
 ) -> CocktailsAndIngredients:
-    alg = cast(Literal["greedy", "local", "ilp"], algorithm)
-    ingredients, cocktails = select_optimal(number_ingredients, alg)
+    ingredients, cocktails = select_optimal(number_ingredients, algorithm)
     return CocktailsAndIngredients(
         ingredients=[map_ingredient(i) for i in ingredients],
         cocktails=[map_cocktail(c, False) for c in cocktails],

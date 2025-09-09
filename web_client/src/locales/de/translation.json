@@ -159,6 +159,12 @@
   "recipeCalculation": {
     "title": "Rezeptrechner",
     "neededIngredients": "Benötigte Zutaten",
-    "inNRecipes": "in {{n}} Rezepten"
+    "neededIngredientsHeader": "Benötigte Zutaten ({{count}})",
+    "selectAll": "Alle auswählen",
+    "inNRecipes": "in {{n}} Rezepten",
+    "cocktailsHeader": "Cocktails ({{count}} ausgewählt)",
+    "numberIngredients": "Anzahl Zutaten:",
+    "optimize": "Optimieren",
+    "confirmCalculation": "Bei großen Datenbanken kann dies etwas dauern. Fortfahren?"
   }
 }
