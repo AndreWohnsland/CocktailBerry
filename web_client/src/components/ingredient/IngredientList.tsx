@@ -11,6 +11,7 @@ import { confirmAndExecute, executeAndShow } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
+import { TileButton } from '../common/TileButton';
 
 const IngredientList: React.FC = () => {
   const { data: ingredients, isLoading, error, refetch } = useIngredients();
@@ -108,24 +109,22 @@ const IngredientList: React.FC = () => {
       <SearchBar search={search} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full'>
-          <button
+          <TileButton
+            label={t('new')}
+            textSize='lg'
+            style='secondary-filled'
+            icon={FaPlus}
+            iconSize={25}
             onClick={handleNewIngredientClick}
-            className='flex justify-center items-center py-3 p-2 button-secondary-filled w-full'
-          >
-            <FaPlus size={25} />
-            <span className='ml-4 text-xl'>{t('new')}</span>
-          </button>
+          />
         </div>
         {displayedIngredients?.map((ingredient) => (
-          <div key={ingredient.id}>
-            <button
-              onClick={() => handleIngredientClick(ingredient)}
-              className='button-primary p-2 py-4 w-full flex justify-center items-center'
-            >
-              {ingredient.hand && <IoHandLeft size={20} className='mr-2' />}
-              <span>{ingredient.name}</span>
-            </button>
-          </div>
+          <TileButton
+            label={ingredient.name}
+            icon={ingredient.hand ? IoHandLeft : undefined}
+            onClick={() => handleIngredientClick(ingredient)}
+            key={ingredient.id}
+          />
         ))}
       </div>
 

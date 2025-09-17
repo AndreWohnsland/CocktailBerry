@@ -19,6 +19,7 @@ import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
+import { TileButton } from '../common/TileButton';
 
 const RecipeList: React.FC = () => {
   const { data: cocktails, isLoading, error, refetch } = useCocktails(false, 10, false);
@@ -181,31 +182,31 @@ const RecipeList: React.FC = () => {
       <SearchBar search={search} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full flex flex-row gap-4'>
-          <button
+          <TileButton
+            label={t('new')}
+            style='secondary-filled'
+            textSize='lg'
+            icon={FaPlus}
+            iconSize={25}
             onClick={handleNewCocktailClick}
-            className='flex justify-center items-center py-3 p-2 button-secondary-filled w-full'
-          >
-            <FaPlus size={25} />
-            <span className='ml-4 text-xl'>{t('new')}</span>
-          </button>
-          <button
+          />
+          <TileButton
+            label={t('recipes.enableAll')}
+            style='neutral-filled'
+            textSize='lg'
             onClick={handleEnableAllRecipes}
-            className='flex justify-center items-center py-3 p-2 button-neutral-filled w-full'
-          >
-            <span className='text-xl'>{t('recipes.enableAll')}</span>
-          </button>
+          />
         </div>
         {displayedCocktails?.map((cocktail) => (
-          <button
-            key={cocktail.id}
+          <TileButton
+            label={cocktail.name}
+            icon={cocktail.virgin_available ? MdNoDrinks : undefined}
             onClick={() => handleCocktailClick(cocktail)}
-            className={`p-2 py-4 w-full flex justify-center items-center button-primary ${
-              !cocktail.enabled && 'disabled'
-            }`}
-          >
-            {cocktail.virgin_available && <MdNoDrinks size={20} className='mr-2' />}
-            <span>{cocktail.name}</span>
-          </button>
+            key={cocktail.id}
+            style='primary'
+            textSize='sm'
+            passive={!cocktail.enabled}
+          />
         ))}
       </div>
 
