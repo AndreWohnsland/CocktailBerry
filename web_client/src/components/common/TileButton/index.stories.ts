@@ -4,10 +4,10 @@ import { fn } from 'storybook/test';
 
 import { FaPlus } from 'react-icons/fa6';
 import { IoHandLeft } from 'react-icons/io5';
-import { TileButton } from '.';
+import TileButton from '.';
 
 const meta = {
-  title: 'Example/TileTileButton',
+  title: 'Example/TileButton',
   component: TileButton,
   parameters: {
     layout: 'centered',
@@ -17,7 +17,7 @@ const meta = {
     style: {
       control: {
         type: 'select',
-        options: ['primary', 'secondary', 'primary-filled', 'secondary-filled', 'neutral', 'neutral-filled'],
+        options: ['primary', 'secondary', 'neutral'],
       },
     },
     textSize: { control: { type: 'select', options: ['sm', 'md', 'lg'] } },
@@ -56,7 +56,8 @@ export const PrimaryWithIcon: Story = {
 
 export const PrimaryFilled: Story = {
   args: {
-    style: 'primary-filled',
+    style: 'primary',
+    filled: true,
     label: 'TileButton',
   },
 };
@@ -70,7 +71,8 @@ export const Secondary: Story = {
 
 export const SecondaryFilled: Story = {
   args: {
-    style: 'secondary-filled',
+    style: 'secondary',
+    filled: true,
     label: 'TileButton',
   },
 };
@@ -84,7 +86,8 @@ export const Neutral: Story = {
 
 export const NeutralFilled: Story = {
   args: {
-    style: 'neutral-filled',
+    style: 'neutral',
+    filled: true,
     label: 'TileButton',
   },
 };

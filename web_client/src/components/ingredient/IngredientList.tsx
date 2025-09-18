@@ -11,7 +11,7 @@ import { confirmAndExecute, executeAndShow } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
-import { TileButton } from '../common/TileButton';
+import TileButton from '../common/TileButton';
 
 const IngredientList: React.FC = () => {
   const { data: ingredients, isLoading, error, refetch } = useIngredients();
@@ -112,7 +112,8 @@ const IngredientList: React.FC = () => {
           <TileButton
             label={t('new')}
             textSize='lg'
-            style='secondary-filled'
+            style='secondary'
+            filled
             icon={FaPlus}
             iconSize={25}
             onClick={handleNewIngredientClick}

@@ -19,7 +19,7 @@ import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
-import { TileButton } from '../common/TileButton';
+import TileButton from '../common/TileButton';
 
 const RecipeList: React.FC = () => {
   const { data: cocktails, isLoading, error, refetch } = useCocktails(false, 10, false);
@@ -184,7 +184,8 @@ const RecipeList: React.FC = () => {
         <div className='col-span-2 md:col-span-3 w-full flex flex-row gap-4'>
           <TileButton
             label={t('new')}
-            style='secondary-filled'
+            style='secondary'
+            filled
             textSize='lg'
             icon={FaPlus}
             iconSize={25}
@@ -192,7 +193,8 @@ const RecipeList: React.FC = () => {
           />
           <TileButton
             label={t('recipes.enableAll')}
-            style='neutral-filled'
+            style='neutral'
+            filled
             textSize='lg'
             onClick={handleEnableAllRecipes}
           />
@@ -203,8 +205,6 @@ const RecipeList: React.FC = () => {
             icon={cocktail.virgin_available ? MdNoDrinks : undefined}
             onClick={() => handleCocktailClick(cocktail)}
             key={cocktail.id}
-            style='primary'
-            textSize='sm'
             passive={!cocktail.enabled}
           />
         ))}
