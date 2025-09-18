@@ -1,8 +1,9 @@
 import { IconType } from 'react-icons';
 
-export interface ButtonProps {
+interface TileButtonProps {
   label: string;
-  style?: 'primary' | 'secondary' | 'primary-filled' | 'secondary-filled' | 'neutral' | 'neutral-filled';
+  style?: 'primary' | 'secondary' | 'neutral' | 'neutral';
+  filled?: boolean;
   textSize?: 'sm' | 'md' | 'lg';
   icon?: IconType;
   iconSize?: number;
@@ -10,7 +11,7 @@ export interface ButtonProps {
   passive?: boolean;
   onClick?: () => void;
 }
-export const TileButton = ({
+const TileButton = ({
   label,
   style = 'primary',
   className,
@@ -18,18 +19,19 @@ export const TileButton = ({
   iconSize = 20,
   textSize = 'sm',
   passive = false,
+  filled = false,
   ...props
-}: ButtonProps) => {
+}: TileButtonProps) => {
   const textSizeClass = textSize === 'sm' ? 'text-md' : textSize === 'md' ? 'text-lg' : 'text-xl';
-  const extraClasses = [passive && 'disabled', textSizeClass, className].filter(Boolean).join(' ');
+  const extraClasses = [`button-${style}${filled ? '-filled' : ''}`, passive && 'disabled', textSizeClass, className]
+    .filter(Boolean)
+    .join(' ');
   return (
-    <button
-      type='button'
-      className={`button-${style} p-2 py-4 w-full flex justify-center items-center ${extraClasses}`}
-      {...props}
-    >
+    <button type='button' className={`p-2 py-4 w-full flex justify-center items-center ${extraClasses}`} {...props}>
       {Icon && <Icon className={`mr-2`} size={iconSize} />}
       {label}
     </button>
   );
 };
+
+export default TileButton;
