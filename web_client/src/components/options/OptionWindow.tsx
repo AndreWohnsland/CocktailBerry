@@ -23,6 +23,7 @@ import {
 import { useConfig } from '../../providers/ConfigProvider';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import ProgressModal from '../cocktail/ProgressModal';
+import TileButton from '../common/TileButton';
 
 const OptionWindow = () => {
   const { theme, changeTheme } = useConfig();
@@ -87,150 +88,72 @@ const OptionWindow = () => {
           </select>
         </div>
         <div className='grid gap-1 w-full grid-cols-1 md:grid-cols-2'>
-          <button
-            type='button'
-            className='button-primary-filled p-4 flex items-center justify-center'
-            onClick={cleanClick}
-          >
-            <MdWaterDrop size={22} className='mr-2' />
-            {t('options.cleaning')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
+          <TileButton label={t('options.cleaning')} filled icon={MdWaterDrop} iconSize={22} onClick={cleanClick} />
+          <TileButton
+            label={t('options.calibration')}
+            icon={FaScaleUnbalanced}
             onClick={() => navigate('calibration')}
-          >
-            <FaScaleUnbalanced size={20} className='mr-2' />
-            {t('options.calibration')}
-          </button>
-          <button
-            type='button'
-            className='button-primary-filled p-4 flex items-center justify-center'
+          />
+          <TileButton
+            label={t('options.configuration')}
+            filled
+            icon={FaGear}
             onClick={() => navigate('configuration')}
-          >
-            <FaGear size={20} className='mr-2' />
-            {t('options.configuration')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
-            onClick={() => navigate('data')}
-          >
-            <FaChartSimple size={20} className='mr-2' />
-            {t('options.data')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
-            onClick={() => executeAndShow(getBackupClick)}
-          >
-            <FaDownload size={20} className='mr-2' />
-            {t('options.backup')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
-            onClick={() => executeAndShow(uploadBackupClick)}
-          >
-            <FaUpload size={20} className='mr-2' />
-            {t('options.restore')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
+          />
+          <TileButton label={t('options.data')} icon={FaChartSimple} onClick={() => navigate('data')} />
+          <TileButton label={t('options.backup')} icon={FaDownload} onClick={() => executeAndShow(getBackupClick)} />
+          <TileButton label={t('options.restore')} icon={FaUpload} onClick={() => executeAndShow(uploadBackupClick)} />
+          <TileButton
+            label={t('options.reboot')}
+            icon={BsBootstrapReboot}
             onClick={() => confirmAndExecute(t('options.rebootTheSystem'), rebootSystem)}
-          >
-            <BsBootstrapReboot size={20} className='mr-2' />
-            {t('options.reboot')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
+          />
+          <TileButton
+            label={t('options.shutdown')}
+            icon={RiShutDownLine}
             onClick={() => confirmAndExecute(t('options.shutdownTheSystem'), shutdownSystem)}
-          >
-            <RiShutDownLine size={20} className='mr-2' />
-            {t('options.shutdown')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
-            onClick={() => navigate('logs')}
-          >
-            <FaInfoCircle size={20} className='mr-2' />
-            {t('options.logs')}
-          </button>
-          <button
-            type='button'
-            className='button-primary-filled p-4 flex items-center justify-center'
+          />
+          <TileButton label={t('options.logs')} icon={FaInfoCircle} onClick={() => navigate('logs')} />
+          <TileButton
+            label={t('options.updateSystem')}
+            filled
+            icon={GrUpdate}
             onClick={() => confirmAndExecute(t('options.updateTheSystem'), updateSystem)}
-          >
-            <GrUpdate size={20} className='mr-2' />
-            {t('options.updateSystem')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 col-span-1 md:col-span-2 flex items-center justify-center'
+          />
+          <TileButton
+            label={t('options.systemResourceUsage')}
+            icon={AiOutlineLoading3Quarters}
+            iconSize={22}
+            className='md:col-span-2'
             onClick={() => navigate('resources')}
-          >
-            <AiOutlineLoading3Quarters size={22} className='mr-2' />
-            {t('options.systemResourceUsage')}
-          </button>
-          <button
-            type='button'
-            className='button-primary-filled p-4 col-span-1 md:col-span-2 flex items-center justify-center'
+          />
+          <TileButton
+            label={t('options.updateCocktailBerry')}
+            filled
+            icon={FaCocktail}
+            className='md:col-span-2'
             onClick={() => executeAndShow(updateSoftware)}
-          >
-            <FaCocktail size={20} className='mr-2' />
-            {t('options.updateCocktailBerry')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
-            onClick={() => navigate('wifi')}
-          >
-            <FaWifi size={20} className='mr-2' />
-            {t('options.wifi')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
+          />
+          <TileButton label={t('options.wifi')} icon={FaWifi} onClick={() => navigate('wifi')} />
+          <TileButton
+            label={t('options.internetCheck')}
+            icon={MdOutlineSignalWifiStatusbarConnectedNoInternet4}
             onClick={() => executeAndShow(checkInternetConnection)}
-          >
-            <MdOutlineSignalWifiStatusbarConnectedNoInternet4 size={20} className='mr-2' />
-            {t('options.internetCheck')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
+          />
+          <TileButton
+            label={t('options.addons')}
+            icon={TiDocumentAdd}
+            iconSize={24}
             onClick={() => navigate('addons')}
-          >
-            <TiDocumentAdd size={24} className='mr-2' />
-            {t('options.addons')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
-            onClick={() => navigate('time')}
-          >
-            <FaRegClock size={20} className='mr-2' />
-            {t('options.adjustTime')}
-          </button>
-          <button
-            type='button'
-            className='button-primary p-4 flex items-center justify-center'
-            onClick={() => navigate('/issues')}
-          >
-            <FaExclamationTriangle size={20} className='mr-2' />
-            {t('options.issues')}
-          </button>
-          <button
-            type='button'
-            className='button-primary-filled p-4 flex items-center justify-center'
+          />
+          <TileButton label={t('options.adjustTime')} icon={FaRegClock} onClick={() => navigate('time')} />
+          <TileButton label={t('options.issues')} icon={FaExclamationTriangle} onClick={() => navigate('/issues')} />
+          <TileButton
+            label={t('recipeCalculation.title')}
+            filled
+            icon={FaCalculator}
             onClick={() => navigate('/manage/recipes/calculation')}
-          >
-            <FaCalculator size={20} className='mr-2' />
-            {t('recipeCalculation.title')}
-          </button>
+          />
         </div>
       </div>
     </>
