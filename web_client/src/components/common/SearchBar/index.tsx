@@ -6,12 +6,13 @@ interface SearchBarProps {
   search: string | null;
   setSearch: (value: string | null) => void;
   afterInput?: React.ReactNode;
+  initiallyOpen?: boolean;
 }
 // note: the internal search should never be null, but we communicate to external component with null
 // if the search is hidden. This is to know externally if the search is shown or not, and should be applied.
-const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput, initiallyOpen = false }) => {
   const [savedSearch, setSavedSearch] = React.useState<string>(search ?? '');
-  const [showSearch, setShowSearch] = React.useState(false);
+  const [showSearch, setShowSearch] = React.useState(initiallyOpen);
   const { t } = useTranslation();
 
   const handleHideToggle = () => {
@@ -36,7 +37,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput }) 
         className='input-base mr-1 w-full p-3 max-w-sm'
         hidden={!showSearch}
       />
-      <div hidden={!showSearch}>
+      <div className={`flex ${!showSearch ? 'hidden' : ''}`}>
         <button
           onClick={() => setSearch('')}
           className='button-neutral flex items-center justify-center p-2 mr-1 !border'
@@ -44,11 +45,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput }) 
           <FaEraser size={20} />
         </button>
       </div>
-      {afterInput && (
-        <div hidden={!showSearch} className='mr-1'>
-          {afterInput}
-        </div>
-      )}
+      {afterInput && <div className={`mr-1 ${!showSearch ? 'hidden' : ''}`}>{afterInput}</div>}
       <button
         onClick={handleHideToggle}
         className='button-primary flex items-center justify-center p-2 !border pointer-events-auto'
