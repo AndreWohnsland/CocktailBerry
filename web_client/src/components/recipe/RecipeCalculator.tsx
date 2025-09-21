@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaCalculator } from 'react-icons/fa6';
-import { RxCrossCircled } from 'react-icons/rx';
 import { calculateOptimal, useCocktails } from '../../api/cocktails.ts';
 import type { CocktailIngredient } from '../../types/models.ts';
 import { confirmAndExecute } from '../../utils.tsx';
 import Accordion from '../common/Accordion.tsx';
+import CloseButton from '../common/CloseButton/index.tsx';
 
 type CocktailIngredientWithRecipes = CocktailIngredient & { recipes: { id: number; name: string }[] };
 
@@ -158,9 +158,7 @@ function RecipeCalculator() {
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map((recipe) => (
                       <li key={recipe.id} className='flex items-center'>
-                        <button type='button' className='text-danger' onClick={() => handleRemoveCocktail(recipe.id)}>
-                          <RxCrossCircled size={20} />
-                        </button>
+                        <CloseButton iconSize={25} onClick={() => handleRemoveCocktail(recipe.id)} />
                         <span className='ml-4'>{recipe.name}</span>
                       </li>
                     ))}

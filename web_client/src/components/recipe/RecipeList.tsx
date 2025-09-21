@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { FaPen, FaPlus, FaTrashAlt, FaUpload } from 'react-icons/fa';
 import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
@@ -16,6 +15,7 @@ import {
 import { useIngredients } from '../../api/ingredients';
 import { Cocktail, CocktailInput } from '../../types/models';
 import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
+import CloseButton from '../common/CloseButton';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
@@ -215,9 +215,7 @@ const RecipeList: React.FC = () => {
           <div className='px-1 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
               <h2 className='text-xl font-bold text-secondary'>{selectedCocktail.name ?? t('recipes.newRecipe')}</h2>
-              <button onClick={closeModal} aria-label='close'>
-                <AiOutlineCloseCircle className='text-danger' size={34} />
-              </button>
+              <CloseButton onClick={closeModal} />
             </div>
             <div className='flex-grow'></div>
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { prepareIngredient, useIngredients } from '../../api/ingredients';
 import { Ingredient } from '../../types/models';
 import { errorToast } from '../../utils';
+import CloseButton from '../common/CloseButton';
 import ProgressModal from './ProgressModal';
 
 interface SingleIngredientSelectionProps {
@@ -41,9 +41,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
     <>
       <div className='w-full h-full flex flex-col justify-center items-center'>
         <div className='flex justify-end w-full'>
-          <button onClick={onClose}>
-            <AiOutlineCloseCircle className='text-danger' size={34} />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
 
         <div className='max-w-md w-full h-full flex flex-col p-2'>

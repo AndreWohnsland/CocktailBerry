@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { FaGlassMartiniAlt, FaSkullCrossbones, FaWineGlassAlt } from 'react-icons/fa';
 import { GrFormNextLink, GrFormPreviousLink } from 'react-icons/gr';
 import { ImMug } from 'react-icons/im';
@@ -13,6 +12,7 @@ import { Tabs } from '../../constants/tabs';
 import { useConfig } from '../../providers/ConfigProvider';
 import { Cocktail, PrepareResult } from '../../types/models';
 import { errorToast, scaleCocktail } from '../../utils';
+import CloseButton from '../common/CloseButton';
 import ProgressModal from './ProgressModal';
 import RefillPrompt from './RefillPrompt';
 import TeamSelection from './TeamSelection';
@@ -174,9 +174,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
                 </button>
               )}
             </div>
-            <button onClick={handleCloseModal} aria-label='close'>
-              <AiOutlineCloseCircle className='text-danger' size={34} />
-            </button>
+            <CloseButton onClick={handleCloseModal} />
           </div>
           <div className='flex-grow flex flex-col justify-center w-full'>
             <h2 className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral underline mb-2'>
