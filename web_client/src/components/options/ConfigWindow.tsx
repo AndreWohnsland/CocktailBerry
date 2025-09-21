@@ -7,6 +7,7 @@ import { updateOptions, useConfig } from '../../api/options';
 import { useConfig as useConfigProvider } from '../../providers/ConfigProvider';
 import type { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
 import { executeAndShow, isInCurrentTab } from '../../utils';
+import CheckBox from '../common/CheckBox';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import TabSelector from './TabSelector';
@@ -109,15 +110,11 @@ const ConfigWindow: React.FC = () => {
   const renderBooleanField = (key: string, value: boolean) => {
     const baseConfig = getBaseConfig(key);
     return (
-      <label className='flex items-center'>
-        <input
-          type='checkbox'
-          checked={value}
-          onChange={(e) => handleInputChange(key, e.target.checked)}
-          className='checkbox-large'
+      <CheckBox
+        value={value}
+        checkName={baseConfig.checkName}
+        handleInputChange={(newValue) => handleInputChange(key, newValue)}
         />
-        <span className='ml-2'>{baseConfig.checkName}</span>
-      </label>
     );
   };
 
