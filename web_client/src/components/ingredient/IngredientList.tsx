@@ -1,13 +1,13 @@
 // components/IngredientList.tsx
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { FaPen, FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { IoHandLeft } from 'react-icons/io5';
 import Modal from 'react-modal';
 import { deleteIngredient, postIngredient, updateIngredient, useIngredients } from '../../api/ingredients';
 import { Ingredient, IngredientInput } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
+import CloseButton from '../common/CloseButton';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
@@ -141,9 +141,7 @@ const IngredientList: React.FC = () => {
               <h2 className='text-xl font-bold text-secondary'>
                 {selectedIngredient.name ?? t('ingredients.newIngredient')}
               </h2>
-              <button onClick={closeModal} aria-label='close'>
-                <AiOutlineCloseCircle className='text-danger' size={34} />
-              </button>
+              <CloseButton onClick={closeModal} />
             </div>
             <div className='flex-grow'></div>
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>
