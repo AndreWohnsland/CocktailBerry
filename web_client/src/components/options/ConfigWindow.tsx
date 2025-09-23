@@ -9,6 +9,7 @@ import type { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '
 import { executeAndShow, isInCurrentTab } from '../../utils';
 import CheckBox from '../common/CheckBox';
 import ColorSelect from '../common/ColorSelect';
+import DropDown from '../common/DropDown';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import TabSelector from './TabSelector';
@@ -120,13 +121,11 @@ const ConfigWindow: React.FC = () => {
   };
 
   const renderSelectionField = (key: string, value: string | number, allowedValues: (string | number)[]) => (
-    <select value={value} onChange={(e) => handleInputChange(key, e.target.value)} className='select-base'>
-      {allowedValues.map((allowedValue) => (
-        <option key={allowedValue} value={allowedValue}>
-          {allowedValue}
-        </option>
-      ))}
-    </select>
+    <DropDown
+      value={String(value)}
+      allowedValues={allowedValues.map(String)}
+      handleInputChange={(newValue) => handleInputChange(key, newValue)}
+    />
   );
 
   const renderNumberField = (key: string, value: number) => {
