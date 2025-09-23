@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import CloseButton from '.';
 
 const meta: Meta<typeof CloseButton> = {
-  title: 'Common/CloseButton',
+  title: 'Elements/CloseButton',
   component: CloseButton,
   parameters: {
     layout: 'centered',
