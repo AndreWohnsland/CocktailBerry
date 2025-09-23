@@ -8,6 +8,7 @@ import { useConfig as useConfigProvider } from '../../providers/ConfigProvider';
 import type { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
 import { executeAndShow, isInCurrentTab } from '../../utils';
 import CheckBox from '../common/CheckBox';
+import ColorSelect from '../common/ColorSelect';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import TabSelector from './TabSelector';
@@ -174,12 +175,7 @@ const ConfigWindow: React.FC = () => {
   );
 
   const renderColorField = (key: string, value: string) => {
-    return (
-      <div className='flex flex-row items-center w-full'>
-        <input type='color' value={value} onChange={(e) => handleInputChange(key, e.target.value)} className='w-full' />
-        <span className='ml-2 w-20 text-neutral'>{value}</span>
-      </div>
-    );
+    return <ColorSelect value={value} handleInputChange={(newValue) => handleInputChange(key, newValue)} />;
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: config is special, we can have many types here
