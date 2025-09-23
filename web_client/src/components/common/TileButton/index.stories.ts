@@ -7,7 +7,7 @@ import { IoHandLeft } from 'react-icons/io5';
 import TileButton from '.';
 
 const meta = {
-  title: 'Example/TileButton',
+  title: 'Common/TileButton',
   component: TileButton,
   parameters: {
     layout: 'centered',
@@ -95,6 +95,13 @@ export const NeutralFilled: Story = {
 export const Large: Story = {
   args: {
     textSize: 'lg',
+    label: 'TileButton',
+  },
+};
+
+export const Medium: Story = {
+  args: {
+    textSize: 'md',
     label: 'TileButton',
   },
 };
