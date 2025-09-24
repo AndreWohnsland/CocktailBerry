@@ -12,6 +12,8 @@ import ColorSelect from '../common/ColorSelect';
 import DropDown from '../common/DropDown';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import NumberInput from '../common/NumberInput';
+import TextInput from '../common/TextInput';
 import TabSelector from './TabSelector';
 
 // some of the config are "old" meaning they are only used in the QT but not React UI
@@ -131,19 +133,12 @@ const ConfigWindow: React.FC = () => {
   const renderNumberField = (key: string, value: number) => {
     const baseConfig = getBaseConfig(key);
     return (
-      <>
-        {baseConfig.prefix && <span className='text-neutral mx-1'>{baseConfig.prefix}</span>}
-        <input
-          type='number'
-          value={value.toString()}
-          onChange={(e) => {
-            const numericValue = parseFloat(e.target.value);
-            handleInputChange(key, Number.isNaN(numericValue) ? 0 : numericValue);
-          }}
-          className='input-base'
-        />
-        {baseConfig.suffix && <span className='text-neutral mx-1'>{baseConfig.suffix}</span>}
-      </>
+      <NumberInput
+        value={value}
+        prefix={baseConfig.prefix}
+        suffix={baseConfig.suffix}
+        handleInputChange={(newValue) => handleInputChange(key, newValue)}
+      />
     );
   };
 
