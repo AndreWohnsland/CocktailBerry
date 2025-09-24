@@ -11,6 +11,7 @@ import CheckBox from '../common/CheckBox';
 import ColorSelect from '../common/ColorSelect';
 import DropDown from '../common/DropDown';
 import ErrorComponent from '../common/ErrorComponent';
+import ListDisplay from '../common/ListDisplay';
 import LoadingData from '../common/LoadingData';
 import NumberInput from '../common/NumberInput';
 import TextInput from '../common/TextInput';
@@ -145,16 +146,12 @@ const ConfigWindow: React.FC = () => {
   const renderStringField = (key: string, value: string) => {
     const baseConfig = getBaseConfig(key);
     return (
-      <>
-        {baseConfig.prefix && <span className='text-neutral mr-1'>{baseConfig.prefix}</span>}
-        <input
-          type='text'
+      <TextInput
           value={value}
-          onChange={(e) => handleInputChange(key, e.target.value)}
-          className='input-base'
+        prefix={baseConfig.prefix}
+        suffix={baseConfig.suffix}
+        handleInputChange={(newValue) => handleInputChange(key, newValue)}
         />
-        {baseConfig.suffix && <span className='text-neutral ml-1'>{baseConfig.suffix}</span>}
-      </>
     );
   };
 
