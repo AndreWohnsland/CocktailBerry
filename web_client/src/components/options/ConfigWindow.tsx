@@ -1,8 +1,7 @@
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaPlus, FaSave } from 'react-icons/fa';
-import { RxCrossCircled } from 'react-icons/rx';
+import { FaSave } from 'react-icons/fa';
 import { updateOptions, useConfig } from '../../api/options';
 import { useConfig as useConfigProvider } from '../../providers/ConfigProvider';
 import type { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
@@ -119,7 +118,7 @@ const ConfigWindow: React.FC = () => {
         value={value}
         checkName={baseConfig.checkName}
         handleInputChange={(newValue) => handleInputChange(key, newValue)}
-        />
+      />
     );
   };
 
@@ -147,11 +146,11 @@ const ConfigWindow: React.FC = () => {
     const baseConfig = getBaseConfig(key);
     return (
       <TextInput
-          value={value}
+        value={value}
         prefix={baseConfig.prefix}
         suffix={baseConfig.suffix}
         handleInputChange={(newValue) => handleInputChange(key, newValue)}
-        />
+      />
     );
   };
 
@@ -169,35 +168,18 @@ const ConfigWindow: React.FC = () => {
     return <ColorSelect value={value} handleInputChange={(newValue) => handleInputChange(key, newValue)} />;
   };
 
-  // biome-ignore lint/suspicious/noExplicitAny: config is special, we can have many types here
-  const renderListField = (key: string, value: any[]) => {
+  const renderListField = (key: string, value: PossibleConfigValue[]) => {
     const defaultValue = value.length > 0 ? value[0] : '';
     const baseConfig = getBaseConfig(key);
     return (
-      <div className='flex flex-col items-center w-full'>
-        {value.map((item, index) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: is always ordered here
-          <div key={index} className='flex items-center mb-1 w-full'>
-            <span className='mr-1 font-bold text-secondary min-w-4'>{index + 1}</span>
-            {renderInputField(`${key}[${index}]`, item)}
-            {!baseConfig.immutable && (
-              <button type='button' className='text-danger ml-2' onClick={() => handleRemoveItem(key, index)}>
-                <RxCrossCircled size={30} />
-              </button>
-            )}
-          </div>
-        ))}
-        {!baseConfig.immutable && (
-          <button
-            type='button'
-            onClick={() => handleAddItem(key, defaultValue)}
-            className='flex justify-center items-center mb-2 mt-1 p-1 button-neutral w-full'
-          >
-            <FaPlus size={20} />
-            <span className='ml-2'>Add</span>
-          </button>
-        )}
-      </div>
+      <ListDisplay
+        defaultValue={defaultValue}
+        immutable={baseConfig.immutable}
+        onAdd={(value) => handleAddItem(key, value)}
+        onRemove={(index) => handleRemoveItem(key, index)}
+      >
+        {value.map((item, index) => renderInputField(`${key}[${index}]`, item))}
+      </ListDisplay>
     );
   };
 
