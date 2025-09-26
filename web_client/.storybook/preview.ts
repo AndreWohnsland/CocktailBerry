@@ -4,6 +4,9 @@ import type { Preview } from '@storybook/react-vite';
 // as the main application. Without this, utility classes & the custom .button-* classes
 // defined via @apply in src/index.css will not be present.
 import '../src/index.css';
+// Apply background/text color overrides for Storybook Docs pages so they
+// use the same Tailwind-driven CSS variables as the app.
+import './docs.css';
 
 const preview: Preview = {
   parameters: {

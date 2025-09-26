@@ -1,0 +1,17 @@
+/* Scope styles narrowly to the Docs examples container only. */
+
+/* The docs examples wrapper: "sbdocs sbdocs-preview sb-unstyled ..." */
+.sbdocs-preview {
+  background-color: var(--background-color) !important;
+  color: var(--primary-color) !important;
+}
+
+/* The story root inside the preview area */
+.sbdocs-preview .docs-story,
+.sbdocs-preview [data-story-root],
+.sbdocs-preview [id^='story--'] {
+  background-color: var(--background-color) !important;
+  color: var(--primary-color) !important;
+}
+
+/* Do NOT touch the rest of the Docs chrome (nav, headings, code blocks, etc.). */
