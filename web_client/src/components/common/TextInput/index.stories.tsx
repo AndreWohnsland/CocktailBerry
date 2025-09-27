@@ -30,6 +30,14 @@ export const Default: Story = {
   },
 };
 
+export const WithPlaceholder: Story = {
+  args: {
+    value: '',
+    placeholder: 'Enter text here...',
+    handleInputChange: () => {},
+  },
+};
+
 export const WithPrefixAndSuffix: Story = {
   args: {
     value: 'Text with Prefix and Suffix',
@@ -51,6 +59,14 @@ export const WithSuffix: Story = {
   args: {
     value: 'Text with Suffix',
     suffix: '.com',
+    handleInputChange: () => {},
+  },
+};
+
+export const PasswordInput: Story = {
+  args: {
+    value: 'Password',
+    type: 'password',
     handleInputChange: () => {},
   },
 };
