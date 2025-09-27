@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { errorToast } from '../../utils';
+import TextInput from './TextInput';
 
 interface PasswordPageProps {
   passwordName: string;
@@ -30,11 +31,10 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthentica
       <p className='w-full text-center'>{t('password.passwordProtectedBy', { passwordName })}</p>
       <p className='mt-2 w-full text-center'>{t('password.enterThePassword')}</p>
       <form className='w-full mt-4' onSubmit={handlePasswordSubmit}>
-        <input
-          className='input-base'
+        <TextInput
           type='password'
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          handleInputChange={setPassword}
           placeholder={t('password.enterPassword')}
         />
         <button className='button-primary-filled p-2 w-full mt-8' type='submit'>
