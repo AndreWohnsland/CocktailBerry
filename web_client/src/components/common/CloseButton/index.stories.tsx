@@ -11,7 +11,7 @@ const meta: Meta<typeof CloseButton> = {
   tags: ['autodocs'],
   args: {
     onClick: () => console.log('Close button clicked'),
-    iconSize: 30,
+    iconSize: 35,
   },
 };
 
