@@ -27,6 +27,7 @@ const meta = {
     subheader: false,
     icon: FaCocktail,
     space: 0,
+    huge: false,
   },
 } satisfies Meta<typeof TextHeader>;
 
@@ -45,6 +46,14 @@ export const HeaderNoIcon: Story = {
     text: 'Header No Logo',
     subheader: false,
     icon: undefined,
+  },
+};
+
+export const HeaderHuge: Story = {
+  args: {
+    text: 'Huge Header With Logo',
+    subheader: false,
+    huge: true,
   },
 };
 
