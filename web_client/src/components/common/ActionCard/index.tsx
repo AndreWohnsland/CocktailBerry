@@ -1,4 +1,5 @@
 import { IconType } from 'react-icons';
+import TextHeader from '../TextHeader';
 
 interface ActionCardProps {
   header?: string;
@@ -19,7 +20,7 @@ const ActionCard = ({
 }: ActionCardProps) => {
   return (
     <div className='w-full mt-4 border rounded-lg border-neutral items-center justify-center flex flex-col p-2'>
-      {header && <h2 className='text-secondary text-center text-xl mb-2'>{header}</h2>}
+      {header && <TextHeader text={header} subheader space={2} />}
       {sections.map((section, index) => (
         <p key={index} className='text-center text-primary'>
           {section}
