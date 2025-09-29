@@ -142,7 +142,7 @@ const BottleComponent: React.FC<BottleProps> = ({
       >
         <div className='rounded w-full h-full flex flex-col'>
           <div className='pl-2 flex justify-between items-center mb-2'>
-            <h2 className='text-xl font-bold text-secondary'>{selectedIngredient?.name ?? 'Ingredient'}</h2>
+            <p className='text-xl font-bold text-secondary'>{selectedIngredient?.name ?? 'Ingredient'}</p>
             <CloseButton onClick={closeModal} />
           </div>
           <div className='w-full h-full flex flex-col px-2'>

@@ -67,12 +67,12 @@ const CocktailList: React.FC = () => {
               onClick={() => setSelectedCocktail(cocktail)}
               role='button'
             >
-              <h2 className='text-center py-1 flex items-center justify-center'>
+              <p className='text-center py-1 flex items-center justify-center'>
                 {cocktail.virgin_available && (
                   <MdNoDrinks className={`mr-2 ${cocktail.only_virgin && 'border-2 border-background rounded-full'}`} />
                 )}
                 {cocktail.name}
-              </h2>
+              </p>
               <div className='relative w-full' style={{ paddingTop: '100%' }}>
                 <img
                   src={`${API_URL}${cocktail.image}`}
@@ -84,11 +84,11 @@ const CocktailList: React.FC = () => {
           ))}
         {config.MAKER_ADD_SINGLE_INGREDIENT && (
           <div
-            className='border-2 border-primary hover:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary hover:bg-secondary text-background'
+            className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
             onClick={() => setSingleIngredientOpen(true)}
             role='button'
           >
-            <h2 className='text-center py-1 flex items-center justify-center'>{t('cocktails.singleIngredient')}</h2>
+            <p className='text-center py-1 flex items-center justify-center'>{t('cocktails.singleIngredient')}</p>
             <div className='relative w-full' style={{ paddingTop: '100%' }}>
               <img
                 src={`${API_URL}/static/default/default.jpg`}

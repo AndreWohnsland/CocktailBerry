@@ -138,9 +138,9 @@ const IngredientList: React.FC = () => {
         {selectedIngredient && (
           <div className='px-1 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
-              <h2 className='text-xl font-bold text-secondary'>
+              <p className='text-xl font-bold text-secondary'>
                 {selectedIngredient.name ?? t('ingredients.newIngredient')}
-              </h2>
+              </p>
               <CloseButton onClick={closeModal} />
             </div>
             <div className='flex-grow'></div>
