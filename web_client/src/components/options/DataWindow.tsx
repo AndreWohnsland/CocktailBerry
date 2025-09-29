@@ -100,7 +100,7 @@ const ConsumeWindow: React.FC = () => {
     <div className='flex flex-col w-full max-w-5xl'>
       <div className='flex flex-col items-center justify-center flex-shrink-0 mb-2'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
-          <h2 className='text-2xl font-bold text-secondary mr-4 text-center'>{t('data.data')}:</h2>
+          <p className='text-2xl font-bold text-secondary mr-4 text-center'>{t('data.data')}:</p>
           <select value={selectedDataType} onChange={handleDataTypeChange} className='select-base'>
             {consumeData &&
               Object.keys(consumeData).map((dataType) => (

@@ -45,7 +45,7 @@ const LogWindow: React.FC = () => {
     <div className='flex flex-col w-full max-w-7xl'>
       <div className='flex flex-col items-center justify-center flex-shrink-0'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
-          <h2 className='text-2xl font-bold text-secondary mr-4'>Logs:</h2>
+          <p className='text-2xl font-bold text-secondary mr-4'>Logs:</p>
           <select value={selectedLogType} onChange={handleLogTypeChange} className='mt-2 p-2 select-base'>
             {logData &&
               Object.keys(logData).map((logType) => (
