@@ -125,7 +125,7 @@ const ResourceWindow: React.FC = () => {
     <div className='flex flex-col w-full max-w-5xl'>
       <div className='flex flex-col items-center justify-center flex-shrink-0 mb-4'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
-          <h2 className='text-2xl font-bold text-secondary mr-4 text-center'>{t('resources.resourceTracker')}:</h2>
+          <p className='text-2xl font-bold text-secondary mr-4 text-center'>{t('resources.startTime')}:</p>
           <select value={selectedSession ?? ''} onChange={handleSessionChange} className='select-base'>
             {data.map((session: { session_id: number; start_time: string }) => (
               <option key={session.session_id} value={session.session_id}>
