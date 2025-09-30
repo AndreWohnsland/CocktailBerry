@@ -8,6 +8,7 @@ import { postAvailableIngredients, useAvailableIngredients, useIngredients } fro
 import type { Ingredient } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import TextHeader from '../common/TextHeader';
 import ListView from './ListView';
 
 const AvailableBottles: React.FC = () => {
@@ -57,7 +58,7 @@ const AvailableBottles: React.FC = () => {
     <div className='max-w-7xl w-full px-1'>
       <div className='flex flex-col sm:flex-row justify-start items-start w-full h-full sm:h-[70vh]'>
         <div className='w-full sm:w-1/2 h-[50vh] sm:h-full'>
-          <h2 className='font-bold mb-2 text-center text-xl text-secondary'>{t('bottles.available')}</h2>
+          <TextHeader text={t('bottles.available')} subheader space={2} />
           <ListView
             ingredientList={availableIngredients}
             setSelected={setSelectedAvailable}
@@ -83,8 +84,7 @@ const AvailableBottles: React.FC = () => {
           </button>
         </div>
         <div className='w-full sm:w-1/2 h-[50vh] sm:h-full'>
-          <h2 className='font-bold mb-2 text-center text-xl text-secondary'>{t('bottles.possibleToAdd')}</h2>
-
+          <TextHeader text={t('bottles.possibleToAdd')} subheader space={2} />
           <ListView ingredientList={freeIngredients} setSelected={setSelectedFree} selected={selectedFree} />
         </div>
       </div>

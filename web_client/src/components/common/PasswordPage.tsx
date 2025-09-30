@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { errorToast } from '../../utils';
+import TextHeader from './TextHeader';
 import TextInput from './TextInput';
 
 interface PasswordPageProps {
@@ -27,7 +28,7 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthentica
 
   return (
     <div className='flex flex-col justify-between items-center p-4 w-full max-w-md'>
-      <h1 className='text-secondary text-2xl font-bold mb-8'>{t('password.passwordNeeded', { passwordName })}</h1>
+      <TextHeader text={t('password.passwordNeeded', { passwordName })} />
       <p className='w-full text-center'>{t('password.passwordProtectedBy', { passwordName })}</p>
       <p className='mt-2 w-full text-center'>{t('password.enterThePassword')}</p>
       <form className='w-full mt-4' onSubmit={handlePasswordSubmit}>

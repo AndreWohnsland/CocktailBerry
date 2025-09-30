@@ -4,6 +4,7 @@ import { FaMinus, FaPlus } from 'react-icons/fa';
 import { calibrateBottle } from '../../api/bottles';
 import { useConfig } from '../../providers/ConfigProvider';
 import { executeAndShow } from '../../utils';
+import TextHeader from '../common/TextHeader';
 
 const CalibrationWindow = () => {
   const [channel, setChannel] = useState(1);
@@ -13,7 +14,7 @@ const CalibrationWindow = () => {
 
   return (
     <div className='flex flex-col justify-between items-center p-4 w-full h-full max-w-md max-h-[40rem]'>
-      <h1 className='text-secondary text-2xl font-bold mb-8'>{t('calibration.pumpCalibrationProgram')}</h1>
+      <TextHeader text={t('calibration.pumpCalibrationProgram')} />
       <div className='flex-grow'></div>
       <div className='grid grid-cols-3 gap-4 items-center w-full max-w-sm'>
         <div className='text-center'>

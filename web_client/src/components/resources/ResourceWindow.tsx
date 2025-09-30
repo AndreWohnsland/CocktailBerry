@@ -6,6 +6,7 @@ import { useResourceInfo, useResourceStats } from '../../api/options';
 import defaultColor from '../../defaults/defaultColor';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import TextHeader from '../common/TextHeader';
 
 interface StatsProps {
   title: string;
@@ -48,7 +49,7 @@ const ResourceStatsChart: React.FC<StatsProps> = ({ title, min, max, mean, media
   const chartData = aggregateData(raw, MAX_POINTS).map((value, index) => ({ index, value }));
   return (
     <div className='mb-6 w-full'>
-      <h3 className='text-xl font-bold text-secondary mb-2 text-center'>{title}</h3>
+      <TextHeader text={title} subheader />
       <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2'>
         <div className={chipStyle(min)}>
           <span className='capitalize text-s opacity-80'>Min</span>

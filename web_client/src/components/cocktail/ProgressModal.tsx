@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { getCocktailStatus, stopCocktail } from '../../api/cocktails';
+import TextHeader from '../common/TextHeader';
 
 interface ProgressModalProps {
   isOpen: boolean;
@@ -76,7 +77,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       preventScroll={true}
     >
       <div className='progress-modal h-full flex flex-col justify-between'>
-        <h2 className='text-4xl font-bold mb-8 text-center text-secondary'>{displayName}</h2>
+        <TextHeader text={displayName} huge />
         {message ? (
           // biome-ignore lint/security/noDangerouslySetInnerHtml: it is from our backend, so its okay for now
           <div className='text-neutral text-center' dangerouslySetInnerHTML={{ __html: message }} />

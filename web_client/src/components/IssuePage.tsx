@@ -9,6 +9,7 @@ import { executeAndShow, hasStartupIssues } from '../utils';
 import ActionCard from './common/ActionCard';
 import ErrorComponent from './common/ErrorComponent';
 import LoadingData from './common/LoadingData';
+import TextHeader from './common/TextHeader';
 
 const IssuePage: React.FC = () => {
   const { data: issues, error, isLoading, refetch } = useIssues();
@@ -39,7 +40,7 @@ const IssuePage: React.FC = () => {
 
   return (
     <div className='w-full h-full flex flex-col items-center justify-center max-w-lg p-2'>
-      <h1 className='text-secondary text-2xl font-bold mb-4'>{t('issues.systemIssues')}</h1>
+      <TextHeader text={t('issues.systemIssues')} />
       {hasIssues && (
         <ActionCard
           header={t('issues.infoHeader')}
