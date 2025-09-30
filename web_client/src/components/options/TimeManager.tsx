@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateDateTime } from '../../api/options';
 import { confirmAndExecute } from '../../utils';
+import TextHeader from '../common/TextHeader';
 
 const TimeManager: React.FC = () => {
   const [date, setDate] = useState<string>('');
@@ -21,7 +22,7 @@ const TimeManager: React.FC = () => {
 
   return (
     <div className='p-4 w-full max-w-xl'>
-      <h2 className='text-2xl text-center mb-4 text-secondary font-bold'>{t('timeManager.adjustTime')}</h2>
+      <TextHeader text={t('timeManager.adjustTime')} />
       <form onSubmit={handleSubmit} className='grid grid-cols-1 md:grid-cols-2 gap-2'>
         <label className='text-neutral text-center'>
           {t('date')}:

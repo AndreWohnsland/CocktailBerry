@@ -4,6 +4,7 @@ import { updateWifiData, useAvailableSsids } from '../../api/options';
 import { confirmAndExecute } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import TextHeader from '../common/TextHeader';
 
 const WifiManager: React.FC = () => {
   const { data: ssids, isLoading, error } = useAvailableSsids();
@@ -35,7 +36,7 @@ const WifiManager: React.FC = () => {
 
   return (
     <div className='p-4 w-full max-w-3xl'>
-      <h2 className='text-2xl text-center mb-4 text-secondary font-bold'>{t('wifi.setupWifi')}</h2>
+      <TextHeader text={t('wifi.setupWifi')} />
       <form onSubmit={handleSubmit} className='grid grid-cols-1 md:grid-cols-2 gap-2'>
         <button type='button' onClick={toggleInputMode} className='col-span-1 md:col-span-2 button-secondary p-2 my-4'>
           {isInputMode ? t('wifi.switchToSelect') : t('wifi.switchToInput')}

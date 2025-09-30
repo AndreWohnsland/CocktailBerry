@@ -6,6 +6,7 @@ import { AddonData } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import TextHeader from '../common/TextHeader';
 
 const AddonManager: React.FC = () => {
   const { data: addons, isLoading, error, refetch } = useAddonData();
@@ -81,7 +82,7 @@ const AddonManager: React.FC = () => {
   };
   return (
     <div className='p-4 w-full max-w-3xl'>
-      <h2 className='text-2xl text-center mb-4 text-secondary font-bold'>{t('addons.manageAddons')}</h2>
+      <TextHeader text={t('addons.manageAddons')} />
       <div className='grid grid-cols-1 gap-2'>
         {sortedAddons?.map((addon) => (
           <div key={addon.name} className='border border-primary p-4 rounded-xl'>
