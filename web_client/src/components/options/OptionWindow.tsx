@@ -23,6 +23,7 @@ import {
 import { useConfig } from '../../providers/ConfigProvider';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import ProgressModal from '../cocktail/ProgressModal';
+import DropDown from '../common/DropDown';
 import TileButton from '../common/TileButton';
 
 const OptionWindow = () => {
@@ -79,13 +80,12 @@ const OptionWindow = () => {
       <div className='flex flex-col items-center max-w-5xl w-full p-2 pt-0'>
         <div className='dropdown-container flex flex-row items-center mb-4 w-full max-w-md'>
           <p className='mr-2 text-neutral'>Theme:</p>
-          <select className='select-base w-full !p-2' value={theme} onChange={(e) => themeSelect(e.target.value)}>
-            {themes.map((t) => (
-              <option key={t} value={t}>
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-              </option>
-            ))}
-          </select>
+          <DropDown
+            value={theme}
+            allowedValues={Object.fromEntries(themes.map((t) => [t, t.charAt(0).toUpperCase() + t.slice(1)]))}
+            handleInputChange={(value) => themeSelect(value)}
+            className='!p-2'
+          />
         </div>
         <div className='grid gap-1 w-full grid-cols-1 md:grid-cols-2'>
           <TileButton label={t('options.cleaning')} filled icon={MdWaterDrop} iconSize={22} onClick={cleanClick} />

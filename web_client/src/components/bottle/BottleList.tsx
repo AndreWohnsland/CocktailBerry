@@ -5,6 +5,7 @@ import { refillBottle, useBottles } from '../../api/bottles';
 import { useIngredients } from '../../api/ingredients';
 import { Ingredient } from '../../types/models';
 import { executeAndShow } from '../../utils';
+import Button from '../common/Button';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import BottleComponent from './BottleComponent';
@@ -70,12 +71,8 @@ const BottleList: React.FC = () => {
         ))}
       </div>
       <div className='sticky-bottom w-full grid grid-cols-2 gap-2 py-1 mt-2 bg-background'>
-        <button className='button-primary-filled p-2' onClick={handleApply}>
-          {t('bottles.applyNew')}
-        </button>
-        <button className='button-primary p-2 ' onClick={() => navigate('/manage/bottles/available')}>
-          {t('bottles.available')}
-        </button>
+        <Button label={t('bottles.applyNew')} filled onClick={handleApply} />
+        <Button label={t('bottles.available')} onClick={() => navigate('/manage/bottles/available')} />
       </div>
       <div className='grow'></div>
     </div>
