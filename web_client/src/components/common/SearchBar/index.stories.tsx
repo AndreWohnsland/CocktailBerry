@@ -4,7 +4,7 @@ import { useState } from 'react';
 import SearchBar from '.';
 
 const meta = {
-  title: 'Common/SearchBar',
+  title: 'Elements/SearchBar',
   component: SearchBar,
   parameters: {
     layout: 'centered',

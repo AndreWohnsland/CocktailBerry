@@ -4,7 +4,7 @@ import ListDisplay from '.';
 import NumberInput from '../NumberInput';
 
 const meta: Meta<typeof ListDisplay> = {
-  title: 'Common/ListDisplay',
+  title: 'Elements/ListDisplay',
   component: ListDisplay,
   parameters: {
     layout: 'centered',

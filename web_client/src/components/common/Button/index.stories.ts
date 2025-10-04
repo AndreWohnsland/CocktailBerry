@@ -7,7 +7,7 @@ import { IoHandLeft } from 'react-icons/io5';
 import Button from '.';
 
 const meta = {
-  title: 'Common/Button',
+  title: 'Elements/Button',
   component: Button,
   parameters: {
     layout: 'centered',
