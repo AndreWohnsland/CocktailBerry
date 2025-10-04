@@ -7,7 +7,7 @@ import { IoHandLeft } from 'react-icons/io5';
 import TileButton from '.';
 
 const meta = {
-  title: 'Common/TileButton',
+  title: 'Elements/TileButton',
   component: TileButton,
   parameters: {
     layout: 'centered',

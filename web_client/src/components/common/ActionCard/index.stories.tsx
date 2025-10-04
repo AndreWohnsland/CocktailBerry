@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import ActionCard from '.';
 
 const meta: Meta<typeof ActionCard> = {
-  title: 'Common/ActionCard',
+  title: 'Elements/ActionCard',
   component: ActionCard,
   parameters: {
     layout: 'centered',

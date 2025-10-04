@@ -5,7 +5,7 @@ import { FaLemon } from 'react-icons/fa6';
 import TextHeader from '.';
 
 const meta = {
-  title: 'Common/TextHeader',
+  title: 'Elements/TextHeader',
   component: TextHeader,
   parameters: {
     layout: 'centered',
