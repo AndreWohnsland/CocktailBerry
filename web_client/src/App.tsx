@@ -5,10 +5,12 @@ import { ToastContainer } from 'react-toastify';
 import { useIssues } from './api/options.ts';
 import AvailableBottles from './components/bottle/AvailableBottles.tsx';
 import BottleList from './components/bottle/BottleList.tsx';
+import CocktailDetailPage from './components/cocktail/CocktailDetailPage.tsx';
 import CocktailList from './components/cocktail/CocktailList.tsx';
 import GettingConfiguration from './components/common/GettingConfiguration.tsx';
 import { MakerPasswordProtected, MasterPasswordProtected } from './components/common/ProtectedRoute.tsx';
 import Header from './components/Header.tsx';
+import IngredientDetailPage from './components/ingredient/IngredientDetailPage.tsx';
 import IngredientList from './components/ingredient/IngredientList.tsx';
 import IssuePage from './components/IssuePage.tsx';
 import AddonManager from './components/options/AddonManager.tsx';
@@ -20,6 +22,7 @@ import OptionWindow from './components/options/OptionWindow.tsx';
 import TimeManager from './components/options/TimeManager.tsx';
 import WifiManager from './components/options/WifiManager.tsx';
 import RecipeCalculator from './components/recipe/RecipeCalculator.tsx';
+import RecipeDetailPage from './components/recipe/RecipeDetailPage.tsx';
 import RecipeList from './components/recipe/RecipeList.tsx';
 import ResourceWindow from './components/resources/ResourceWindow.tsx';
 import { Tabs } from './constants/tabs.ts';
@@ -60,6 +63,14 @@ function App() {
               }
             />
             <Route
+              path='cocktails/:id'
+              element={
+                <MakerPasswordProtected tabNumber={Tabs.Maker}>
+                  <CocktailDetailPage />
+                </MakerPasswordProtected>
+              }
+            />
+            <Route
               path='manage/ingredients'
               element={
                 <MakerPasswordProtected tabNumber={Tabs.Ingredients}>
@@ -68,10 +79,26 @@ function App() {
               }
             />
             <Route
+              path='manage/ingredients/:id'
+              element={
+                <MakerPasswordProtected tabNumber={Tabs.Ingredients}>
+                  <IngredientDetailPage />
+                </MakerPasswordProtected>
+              }
+            />
+            <Route
               path='manage/recipes'
               element={
                 <MakerPasswordProtected tabNumber={Tabs.Recipes}>
                   <RecipeList />
+                </MakerPasswordProtected>
+              }
+            />
+            <Route
+              path='manage/recipes/:id'
+              element={
+                <MakerPasswordProtected tabNumber={Tabs.Recipes}>
+                  <RecipeDetailPage />
                 </MakerPasswordProtected>
               }
             />

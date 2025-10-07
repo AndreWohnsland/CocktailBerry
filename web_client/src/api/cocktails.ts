@@ -34,6 +34,16 @@ export const useCocktails = (
   );
 };
 
+export const fetchCocktail = async (id: number): Promise<Cocktail> => {
+  return axiosInstance.get<Cocktail>(`${cocktail_url}/${id}`).then((res) => res.data);
+};
+
+export const useCocktail = (id: number | undefined): UseQueryResult<Cocktail, Error> => {
+  return useQuery<Cocktail, Error>(['cocktail', id], () => fetchCocktail(id!), {
+    enabled: !!id,
+  });
+};
+
 export const prepareCocktail = async (
   cocktail: Cocktail,
   volume: number,

@@ -23,6 +23,16 @@ export const useIngredients = (hand: boolean = true, machine: boolean = true): U
   return useQuery<Ingredient[], Error>(['ingredients', hand, machine], () => fetchIngredients(hand, machine));
 };
 
+export const fetchIngredient = async (id: number): Promise<Ingredient> => {
+  return axiosInstance.get<Ingredient>(`${ingredient_url}/${id}`).then((res) => res.data);
+};
+
+export const useIngredient = (id: number | undefined): UseQueryResult<Ingredient, Error> => {
+  return useQuery<Ingredient, Error>(['ingredient', id], () => fetchIngredient(id!), {
+    enabled: !!id,
+  });
+};
+
 export const useAvailableIngredients = (): UseQueryResult<number[], Error> => {
   return useQuery<number[], Error>(['availableIngredients'], () =>
     axiosInstance

@@ -2,31 +2,26 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 import { useCocktails } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
 import { useConfig } from '../../providers/ConfigProvider';
-import { Cocktail } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
-import CocktailSelection from './CocktailSelection';
 import SingleIngredientSelection from './SingleIngredientSelection';
 
 const CocktailList: React.FC = () => {
   const { config } = useConfig();
   const { data: cocktails, error, isLoading } = useCocktails(true, config.MAKER_MAX_HAND_INGREDIENTS ?? 0);
-  const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
   const [search, setSearch] = useState<string | null>(null);
   const [showOnlyVirginPossible, setShowOnlyVirginPossible] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
-
-  const handleCloseModal = () => {
-    setSelectedCocktail(null);
-  };
 
   let displayedCocktails = cocktails;
   if (search) {
@@ -64,7 +59,7 @@ const CocktailList: React.FC = () => {
             <div
               key={cocktail.id}
               className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
-              onClick={() => setSelectedCocktail(cocktail)}
+              onClick={() => navigate(`/cocktails/${cocktail.id}`)}
               role='button'
             >
               <p className='text-center py-1 flex items-center justify-center'>
@@ -100,23 +95,6 @@ const CocktailList: React.FC = () => {
         )}
       </div>
 
-      <Modal
-        isOpen={!!selectedCocktail}
-        onRequestClose={handleCloseModal}
-        contentLabel='Cocktail Details'
-        className='modal'
-        overlayClassName='overlay z-20'
-        preventScroll={true}
-      >
-        {selectedCocktail && (
-          <CocktailSelection
-            selectedCocktail={selectedCocktail}
-            handleCloseModal={handleCloseModal}
-            cocktails={displayedCocktails?.sort((a, b) => a.name.localeCompare(b.name)) || []}
-            setSelectedCocktail={setSelectedCocktail}
-          />
-        )}
-      </Modal>
       <Modal isOpen={singleIngredientOpen} className='modal slim' overlayClassName='overlay z-20' preventScroll={true}>
         <SingleIngredientSelection onClose={() => setSingleIngredientOpen(false)} />
       </Modal>
