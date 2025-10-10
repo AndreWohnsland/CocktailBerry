@@ -26,8 +26,8 @@ const BottleList: React.FC = () => {
 
   useEffect(() => {
     if (bottles && ingredients) {
-      const bottleIngredients = bottles.map((bottle) => bottle.ingredient?.id);
-      const missingIngredients = ingredients.filter((ingredient) => !bottleIngredients.includes(ingredient.id));
+      const bottleIngredients = new Set(bottles.map((bottle) => bottle.ingredient?.id));
+      const missingIngredients = ingredients.filter((ingredient) => !bottleIngredients.has(ingredient.id));
       setFreeIngredients(missingIngredients);
     }
   }, [bottles, ingredients]);

@@ -6,17 +6,15 @@ interface CheckBoxProps {
 
 const CheckBox = ({ value, checkName, handleInputChange }: CheckBoxProps) => {
   return (
-    <>
-      <label className='flex items-center'>
-        <input
-          type='checkbox'
-          checked={value}
-          onChange={(e) => handleInputChange(e.target.checked)}
-          className='checkbox-large'
-        />
-        <span className='ml-2'>{checkName}</span>
-      </label>
-    </>
+    <label className='flex items-center'>
+      <input
+        type='checkbox'
+        checked={value}
+        onChange={(e) => handleInputChange(e.target.checked)}
+        className='checkbox-large'
+      />
+      <span className='ml-2'>{checkName}</span>
+    </label>
   );
 };
 

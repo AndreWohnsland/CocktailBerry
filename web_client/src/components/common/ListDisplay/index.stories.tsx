@@ -28,8 +28,8 @@ type Story = StoryObj<typeof ListDisplay>;
 export const Default: Story = {
   args: {
     children: [
-      <NumberInput value={123} handleInputChange={(value) => console.log(value)} suffix='ml' />,
-      <NumberInput value={456} handleInputChange={(value) => console.log(value)} suffix='ml' />,
+      <NumberInput key={1} value={123} handleInputChange={(value) => console.log(value)} suffix='ml' />,
+      <NumberInput key={2} value={456} handleInputChange={(value) => console.log(value)} suffix='ml' />,
     ],
     immutable: false,
     defaultValue: '',
@@ -41,8 +41,8 @@ export const Default: Story = {
 export const Immutable: Story = {
   args: {
     children: [
-      <NumberInput value={123} handleInputChange={(value) => console.log(value)} suffix='ml' />,
-      <NumberInput value={456} handleInputChange={(value) => console.log(value)} suffix='ml' />,
+      <NumberInput key={1} value={123} handleInputChange={(value) => console.log(value)} suffix='ml' />,
+      <NumberInput key={2} value={456} handleInputChange={(value) => console.log(value)} suffix='ml' />,
     ],
     immutable: true,
     defaultValue: '',
@@ -54,7 +54,7 @@ export const Immutable: Story = {
 export const WithManyItems: Story = {
   args: {
     children: Array.from({ length: 10 }, (_, i) => (
-      <NumberInput value={i * 100} handleInputChange={(value) => console.log(value)} suffix='ml' />
+      <NumberInput key={i} value={i * 100} handleInputChange={(value) => console.log(value)} suffix='ml' />
     )),
     immutable: false,
     defaultValue: '',

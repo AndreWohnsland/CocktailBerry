@@ -42,7 +42,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   cocktails,
   setSelectedCocktail,
 }) => {
-  const originalCocktail = JSON.parse(JSON.stringify(selectedCocktail));
+  const originalCocktail = structuredClone(selectedCocktail);
   const [alcohol, setAlcohol] = useState<alcoholState>('normal');
   const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(selectedCocktail);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);

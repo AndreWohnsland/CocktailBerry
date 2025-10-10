@@ -53,8 +53,8 @@ const IngredientList: React.FC = () => {
     if (type === 'checkbox') {
       newValue = checked;
     } else if (type === 'number') {
-      const parsedValue = parseInt(value, 10);
-      if (isNaN(parsedValue)) {
+      const parsedValue = Number.parseInt(value, 10);
+      if (Number.isNaN(parsedValue)) {
         return; // Abort if the value is not a valid number
       }
       newValue = parsedValue;

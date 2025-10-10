@@ -53,7 +53,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         }
         cancelInterval();
         if (cocktailStatus.message) {
-          const formattedMessage = cocktailStatus.message.replace(/\n/g, '<br />');
+          const formattedMessage = cocktailStatus.message.replaceAll('\n', '<br />');
           setMessage(formattedMessage);
         } else {
           closeWindow();

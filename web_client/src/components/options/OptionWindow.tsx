@@ -50,16 +50,16 @@ const OptionWindow = () => {
         },
       ],
     };
-    const fileHandle = await window.showSaveFilePicker(options);
+    const fileHandle = await globalThis.window.showSaveFilePicker(options);
     const writable = await fileHandle.createWritable();
     await writable.write(new Blob([data], { type: 'application/octet-stream' }));
     await writable.close();
-    return Promise.resolve(t('options.backupSavedSuccessfully', { fileName: fileHandle.name }));
+    return t('options.backupSavedSuccessfully', { fileName: fileHandle.name });
   };
 
   const uploadBackupClick = async () => {
     let file = undefined;
-    const [fileHandle] = await window.showOpenFilePicker();
+    const [fileHandle] = await globalThis.window.showOpenFilePicker();
     file = await fileHandle.getFile();
     return uploadBackup(file);
   };

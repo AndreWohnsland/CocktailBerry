@@ -37,7 +37,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput, in
         className='input-base mr-1 w-full p-3 max-w-sm'
         hidden={!showSearch}
       />
-      <div className={`flex ${!showSearch ? 'hidden' : ''}`}>
+      <div className={`flex ${showSearch ? '' : 'hidden'}`}>
         <button
           onClick={() => setSearch('')}
           className='button-neutral flex items-center justify-center p-2 mr-1 !border'
@@ -45,7 +45,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput, in
           <FaEraser size={20} />
         </button>
       </div>
-      {afterInput && <div className={`mr-1 ${!showSearch ? 'hidden' : ''}`}>{afterInput}</div>}
+      {afterInput && <div className={`mr-1 ${showSearch ? '' : 'hidden'}`}>{afterInput}</div>}
       <button
         onClick={handleHideToggle}
         className='button-primary flex items-center justify-center p-2 !border pointer-events-auto'

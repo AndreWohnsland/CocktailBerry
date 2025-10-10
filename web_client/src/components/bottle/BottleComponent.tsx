@@ -73,7 +73,7 @@ const BottleComponent: React.FC<BottleProps> = ({
   );
 
   const handleSelectionChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newIngredientId = parseInt(event.target.value, 10);
+    const newIngredientId = Number.parseInt(event.target.value, 10);
     let possibleIngredients = freeIngredients;
     let newIngredient = undefined;
 

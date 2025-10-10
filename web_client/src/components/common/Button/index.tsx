@@ -2,7 +2,7 @@ import { IconType } from 'react-icons';
 
 interface ButtonProps {
   label: string | number;
-  style?: 'primary' | 'secondary' | 'neutral' | 'neutral';
+  style?: 'primary' | 'secondary' | 'neutral';
   filled?: boolean;
   textSize?: 'sm' | 'md' | 'lg';
   icon?: IconType;
@@ -22,7 +22,12 @@ const Button = ({
   filled = false,
   ...props
 }: ButtonProps) => {
-  const textSizeClass = textSize === 'sm' ? 'text-md' : textSize === 'md' ? 'text-lg' : 'text-xl';
+  const textMapping = {
+    sm: 'text-md',
+    md: 'text-lg',
+    lg: 'text-xl',
+  };
+  const textSizeClass = textMapping[textSize];
   const extraClasses = [`button-${style}${filled ? '-filled' : ''}`, passive && 'disabled', textSizeClass, className]
     .filter(Boolean)
     .join(' ');
