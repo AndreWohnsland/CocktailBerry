@@ -19,7 +19,7 @@ const MAX_POINTS = 100;
 
 // Helper to read themed color from CSS variables with fallback
 export const getThemeColor = (key: string, fallback: string) => {
-  if (typeof globalThis.window === 'undefined' || typeof document === 'undefined') return fallback;
+  if (globalThis.window === undefined || document === undefined) return fallback;
   const cssVar = getComputedStyle(document.documentElement).getPropertyValue(`--${key}-color`);
   return cssVar?.trim() || fallback;
 };
