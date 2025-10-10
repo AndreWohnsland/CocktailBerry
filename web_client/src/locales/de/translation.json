@@ -135,6 +135,7 @@
   },
   "issues": {
     "systemIssues": "Systemprobleme",
+    "infoHeader": "Allgemeine Information",
     "info": "Diese Probleme werden einmal angezeigt, nachdem das Programm gestartet wurde und Probleme gefunden hat. Ignorierst du diese, werden sie bis zum nächsten Neustart nicht wieder angezeigt. Es wird jedoch empfohlen, sich um sie zu kümmern.",
     "deprecationWaring": "Zu alte Version",
     "systemPythonDeprecated": "Dein System verwendet eine ältere Version von Python, als zukünftig benötigt wird. Es ist kein CocktailBerry Update mehr möglich.",
@@ -152,7 +153,7 @@
     "adjustTimeConfirmation": "Möchtest du die Systemzeit auf die eingegebene Zeit updaten?"
   },
   "resources": {
-    "resourceTracker": "Startzeitpunkt",
+    "startTime": "Startzeitpunkt",
     "cpuMetrics": "CPU Metriken",
     "ramMetrics": "RAM Metriken"
   },

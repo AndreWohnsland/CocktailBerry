@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { errorToast } from '../../utils';
+import Button from './Button';
+import TextHeader from './TextHeader';
+import TextInput from './TextInput';
 
 interface PasswordPageProps {
   passwordName: string;
@@ -12,8 +15,7 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthentica
   const [password, setPassword] = useState('');
   const { t } = useTranslation();
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePasswordSubmit = () => {
     const usedPassword = Number(password);
     authMethod(usedPassword)
       .then(() => {
@@ -26,20 +28,17 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthentica
 
   return (
     <div className='flex flex-col justify-between items-center p-4 w-full max-w-md'>
-      <h1 className='text-secondary text-2xl font-bold mb-8'>{t('password.passwordNeeded', { passwordName })}</h1>
+      <TextHeader text={t('password.passwordNeeded', { passwordName })} />
       <p className='w-full text-center'>{t('password.passwordProtectedBy', { passwordName })}</p>
       <p className='mt-2 w-full text-center'>{t('password.enterThePassword')}</p>
-      <form className='w-full mt-4' onSubmit={handlePasswordSubmit}>
-        <input
-          className='input-base'
+      <form className='w-full mt-4'>
+        <TextInput
           type='password'
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          handleInputChange={setPassword}
           placeholder={t('password.enterPassword')}
         />
-        <button className='button-primary-filled p-2 w-full mt-8' type='submit'>
-          {t('submit')}
-        </button>
+        <Button label={t('submit')} filled onClick={handlePasswordSubmit} className='w-full mt-6' />
       </form>
     </div>
   );

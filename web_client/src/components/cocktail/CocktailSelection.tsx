@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { FaGlassMartiniAlt, FaSkullCrossbones, FaWineGlassAlt } from 'react-icons/fa';
 import { GrFormNextLink, GrFormPreviousLink } from 'react-icons/gr';
 import { ImMug } from 'react-icons/im';
@@ -13,6 +12,8 @@ import { Tabs } from '../../constants/tabs';
 import { useConfig } from '../../providers/ConfigProvider';
 import { Cocktail, PrepareResult } from '../../types/models';
 import { errorToast, scaleCocktail } from '../../utils';
+import Button from '../common/Button';
+import CloseButton from '../common/CloseButton';
 import ProgressModal from './ProgressModal';
 import RefillPrompt from './RefillPrompt';
 import TeamSelection from './TeamSelection';
@@ -26,7 +27,7 @@ interface CocktailModalProps {
 
 type alcoholState = 'high' | 'low' | 'normal' | 'virgin';
 
-const mlAmounts = [200, 250, 300];
+const fallbackServingSize = [200, 250, 300];
 const icons = [TbGlassChampagne, FaWineGlassAlt, FaGlassMartiniAlt, PiPintGlassFill, ImMug];
 const alcoholFactor = {
   high: 1.25,
@@ -41,7 +42,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   cocktails,
   setSelectedCocktail,
 }) => {
-  const originalCocktail = JSON.parse(JSON.stringify(selectedCocktail));
+  const originalCocktail = structuredClone(selectedCocktail);
   const [alcohol, setAlcohol] = useState<alcoholState>('normal');
   const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(selectedCocktail);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
@@ -53,7 +54,9 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   const [isTeamOpen, setIsTeamOpen] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const { config } = useConfig();
-  const possibleServingSizes = config.MAKER_PREPARE_VOLUME ?? mlAmounts;
+  const possibleServingSizes = config.MAKER_USE_RECIPE_VOLUME
+    ? [displayCocktail.amount]
+    : config.MAKER_PREPARE_VOLUME ?? fallbackServingSize;
 
   useEffect(() => {
     const initialAlcoholState = selectedCocktail.only_virgin ? 'virgin' : 'normal';
@@ -113,9 +116,21 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
     .filter((ingredient) => ingredient.hand)
     .sort((a, b) => b.amount - a.amount);
 
-  const getIconIndex = (index: number, length: number) => {
-    const middle = Math.floor(length / 2);
-    return middle + index - Math.floor(length / 2);
+  const getIconIndex = (idx: number) => {
+    const totalIcons = icons.length;
+    const needed = Math.min(possibleServingSizes.length, totalIcons);
+    const center = Math.floor(totalIcons / 2);
+
+    // Choose a centered contiguous window; for even sizes bias to the right.
+    let start = needed % 2 === 1 ? center - Math.floor(needed / 2) : center - needed / 2 + 1;
+
+    if (start < 0) start = 0;
+    if (start + needed > totalIcons) start = totalIcons - needed;
+
+    // If more buttons than icons, clamp to last icon.
+    if (idx >= needed) return totalIcons - 1;
+
+    return start + idx;
   };
 
   return (
@@ -174,15 +189,13 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
                 </button>
               )}
             </div>
-            <button onClick={handleCloseModal} aria-label='close'>
-              <AiOutlineCloseCircle className='text-danger' size={34} />
-            </button>
+            <CloseButton onClick={handleCloseModal} />
           </div>
           <div className='flex-grow flex flex-col justify-center w-full'>
-            <h2 className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral underline mb-2'>
+            <p className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral underline mb-2'>
               {alcohol === 'virgin' && 'Virgin '}
               {selectedCocktail.name}
-            </h2>
+            </p>
             <div className='my-2'>
               <ul className='text-center text-base md:text-lg lg:text-xl space-y-1'>
                 {machineIngredients.map((ingredient) => (
@@ -205,30 +218,21 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
               </ul>
             </div>
           </div>
-          <div className='flex justify-center items-end w-full mt-auto'>
-            {config.MAKER_USE_RECIPE_VOLUME ? (
-              <button
-                className='button-primary-filled m-1 w-full max-w-xs py-2 rounded-lg flex items-center justify-center text-xl'
-                onClick={() => prepareCocktailClick(displayCocktail.amount)}
-              >
-                <FaGlassMartiniAlt className='mr-2 text-2xl' />
-                {displayCocktail.amount}
-              </button>
-            ) : (
-              possibleServingSizes.map((amount, index) => {
-                const Icon = icons[getIconIndex(index, possibleServingSizes.length)];
-                return (
-                  <button
-                    key={amount}
-                    className='button-primary-filled m-1 w-full max-w-xs py-2 rounded-lg flex items-center justify-center text-xl'
-                    onClick={() => prepareCocktailClick(amount)}
-                  >
-                    <Icon className='mr-2 text-2xl' />
-                    {amount}
-                  </button>
-                );
-              })
-            )}
+          <div className='flex justify-center items-end w-full mt-auto gap-2 sm:mb-0 mb-2'>
+            {possibleServingSizes
+              .sort((a, b) => a - b)
+              .map((amount, index) => (
+                <Button
+                  label={amount}
+                  filled
+                  key={amount}
+                  onClick={() => prepareCocktailClick(amount)}
+                  textSize='lg'
+                  className='w-full'
+                  icon={icons[getIconIndex(index)]}
+                  iconSize={25}
+                />
+              ))}
           </div>
         </div>
       </div>

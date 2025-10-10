@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
 import Modal from 'react-modal';
 import { updateBottle } from '../../api/bottles';
 import { Bottle, Ingredient } from '../../types/models';
 import { errorToast, executeAndShow } from '../../utils';
+import CloseButton from '../common/CloseButton';
 import ProgressBar from '../common/ProgressBar';
 
 interface BottleProps {
@@ -73,7 +73,7 @@ const BottleComponent: React.FC<BottleProps> = ({
   );
 
   const handleSelectionChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newIngredientId = parseInt(event.target.value, 10);
+    const newIngredientId = Number.parseInt(event.target.value, 10);
     let possibleIngredients = freeIngredients;
     let newIngredient = undefined;
 
@@ -142,25 +142,23 @@ const BottleComponent: React.FC<BottleProps> = ({
       >
         <div className='rounded w-full h-full flex flex-col'>
           <div className='pl-2 flex justify-between items-center mb-2'>
-            <h2 className='text-xl font-bold text-secondary'>{selectedIngredient?.name ?? 'Ingredient'}</h2>
-            <button onClick={closeModal} aria-label='close'>
-              <AiOutlineCloseCircle className='text-danger' size={34} />
-            </button>
+            <p className='text-xl font-bold text-secondary'>{selectedIngredient?.name ?? 'Ingredient'}</p>
+            <CloseButton onClick={closeModal} />
           </div>
           <div className='w-full h-full flex flex-col px-2'>
             <p className='text-neutral text-center mt-4'>
               {t('bottles.adjustHeader', { maximum: selectedIngredient?.bottle_volume })}
             </p>
             <div className='flex-grow'></div>
-            <div className='flex justify-center items-center mb-4'>
+            <div className='flex justify-center items-center mb-4 gap-2'>
               <button className='button-primary p-2 h-full' onClick={() => setFillLevel(0)}>
                 Min
               </button>
-              <button onClick={() => adjustFillLevel(-50)} className='button-primary p-2 mx-2'>
+              <button onClick={() => adjustFillLevel(-50)} className='button-primary p-2'>
                 <FaMinus size={25} />
               </button>
               <input type='number' value={tempFillLevel} readOnly className='input-base h-full' />
-              <button onClick={() => adjustFillLevel(50)} className='button-primary p-2 mx-2'>
+              <button onClick={() => adjustFillLevel(50)} className='button-primary p-2'>
                 <FaPlus size={25} />
               </button>
               <button

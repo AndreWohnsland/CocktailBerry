@@ -135,6 +135,7 @@
   },
   "issues": {
     "systemIssues": "System Issues",
+    "infoHeader": "General Information",
     "info": "This issues are shown once after your backend was started and found this issues. You can dismiss them, they will not show again until a restart. It is still recommended to take care of them.",
     "deprecationWaring": "Deprecation Warning",
     "systemPythonDeprecated": "You System is using an older version of Python than needed in the future. You will not be able to do updates.",
@@ -152,7 +153,7 @@
     "adjustTimeConfirmation": "Do you want to adjust system time to given data?"
   },
   "resources": {
-    "resourceTracker": "Starttime",
+    "startTime": "Starttime",
     "cpuMetrics": "CPU Metrics",
     "ramMetrics": "RAM Metrics"
   },

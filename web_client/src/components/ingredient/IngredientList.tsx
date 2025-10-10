@@ -1,16 +1,17 @@
 // components/IngredientList.tsx
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { FaPen, FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { IoHandLeft } from 'react-icons/io5';
 import Modal from 'react-modal';
 import { deleteIngredient, postIngredient, updateIngredient, useIngredients } from '../../api/ingredients';
 import { Ingredient, IngredientInput } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
+import CloseButton from '../common/CloseButton';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
+import TileButton from '../common/TileButton';
 
 const IngredientList: React.FC = () => {
   const { data: ingredients, isLoading, error, refetch } = useIngredients();
@@ -52,8 +53,8 @@ const IngredientList: React.FC = () => {
     if (type === 'checkbox') {
       newValue = checked;
     } else if (type === 'number') {
-      const parsedValue = parseInt(value, 10);
-      if (isNaN(parsedValue)) {
+      const parsedValue = Number.parseInt(value, 10);
+      if (Number.isNaN(parsedValue)) {
         return; // Abort if the value is not a valid number
       }
       newValue = parsedValue;
@@ -108,24 +109,23 @@ const IngredientList: React.FC = () => {
       <SearchBar search={search} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full'>
-          <button
+          <TileButton
+            label={t('new')}
+            textSize='lg'
+            style='secondary'
+            filled
+            icon={FaPlus}
+            iconSize={25}
             onClick={handleNewIngredientClick}
-            className='flex justify-center items-center py-3 p-2 button-secondary-filled w-full'
-          >
-            <FaPlus size={25} />
-            <span className='ml-4 text-xl'>{t('new')}</span>
-          </button>
+          />
         </div>
         {displayedIngredients?.map((ingredient) => (
-          <div key={ingredient.id}>
-            <button
-              onClick={() => handleIngredientClick(ingredient)}
-              className='button-primary p-2 py-4 w-full flex justify-center items-center'
-            >
-              {ingredient.hand && <IoHandLeft size={20} className='mr-2' />}
-              <span>{ingredient.name}</span>
-            </button>
-          </div>
+          <TileButton
+            label={ingredient.name}
+            icon={ingredient.hand ? IoHandLeft : undefined}
+            onClick={() => handleIngredientClick(ingredient)}
+            key={ingredient.id}
+          />
         ))}
       </div>
 
@@ -138,12 +138,10 @@ const IngredientList: React.FC = () => {
         {selectedIngredient && (
           <div className='px-1 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
-              <h2 className='text-xl font-bold text-secondary'>
+              <p className='text-xl font-bold text-secondary'>
                 {selectedIngredient.name ?? t('ingredients.newIngredient')}
-              </h2>
-              <button onClick={closeModal} aria-label='close'>
-                <AiOutlineCloseCircle className='text-danger' size={34} />
-              </button>
+              </p>
+              <CloseButton onClick={closeModal} />
             </div>
             <div className='flex-grow'></div>
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>

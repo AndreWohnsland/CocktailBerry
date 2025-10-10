@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { IconType } from 'react-icons';
 import { FaCocktail, FaUndo } from 'react-icons/fa';
 import { FaCoins, FaLemon } from 'react-icons/fa6';
 import { resetDataInsights, useConsumeData } from '../../api/options';
 import { confirmAndExecute } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import TextHeader from '../common/TextHeader';
 
 const ConsumeBarChart: React.FC<{
   title: string;
   data: Record<string, number>;
   unit?: string;
-  icon?: React.ReactNode;
+  icon?: IconType;
 }> = ({ title, data, unit, icon }) => {
   const sortedEntries = Object.entries(data).sort((a, b) => b[1] - a[1]);
   const maxValue = Math.max(...Object.values(data));
@@ -20,10 +22,7 @@ const ConsumeBarChart: React.FC<{
 
   return (
     <div className='mb-6 w-full'>
-      <h3 className='text-2xl font-bold text-secondary mb-4 text-center flex items-center justify-center'>
-        {icon && <span className='mr-3'>{icon}</span>}
-        {`${title} (${sumValues}${displayUnit})`}
-      </h3>
+      <TextHeader text={`${title} (${sumValues}${displayUnit})`} icon={icon} space={4} />
       <div className='space-y-2'>
         {sortedEntries.map(([key, value]) => (
           <div
@@ -100,7 +99,7 @@ const ConsumeWindow: React.FC = () => {
     <div className='flex flex-col w-full max-w-5xl'>
       <div className='flex flex-col items-center justify-center flex-shrink-0 mb-2'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
-          <h2 className='text-2xl font-bold text-secondary mr-4 text-center'>{t('data.data')}:</h2>
+          <p className='text-2xl font-bold text-secondary mr-4 text-center'>{t('data.data')}:</p>
           <select value={selectedDataType} onChange={handleDataTypeChange} className='select-base'>
             {consumeData &&
               Object.keys(consumeData).map((dataType) => (
@@ -115,11 +114,9 @@ const ConsumeWindow: React.FC = () => {
       <div className='flex-grow p-2 items-center justify-center flex flex-col w-full'>
         {consumeData && (
           <>
-            <ConsumeBarChart title={t('data.recipes')} data={selectedData.recipes} unit='x' icon={<FaCocktail />} />
-            <ConsumeBarChart title={t('data.ingredients')} data={selectedData.ingredients} icon={<FaLemon />} />
-            {selectedData.cost && (
-              <ConsumeBarChart title={t('data.cost')} data={selectedData.cost} icon={<FaCoins />} />
-            )}
+            <ConsumeBarChart title={t('data.recipes')} data={selectedData.recipes} unit='x' icon={FaCocktail} />
+            <ConsumeBarChart title={t('data.ingredients')} data={selectedData.ingredients} icon={FaLemon} />
+            {selectedData.cost && <ConsumeBarChart title={t('data.cost')} data={selectedData.cost} icon={FaCoins} />}
             {consumeData['AT RESET'].recipes && Object.keys(consumeData['AT RESET'].recipes).length > 0 && (
               <button
                 className='button-danger p-2 w-full flex items-center justify-center max-w-lg'

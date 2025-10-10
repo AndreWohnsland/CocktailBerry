@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { FaPen, FaPlus, FaTrashAlt, FaUpload } from 'react-icons/fa';
 import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
@@ -16,9 +15,11 @@ import {
 import { useIngredients } from '../../api/ingredients';
 import { Cocktail, CocktailInput } from '../../types/models';
 import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
+import CloseButton from '../common/CloseButton';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
+import TileButton from '../common/TileButton';
 
 const RecipeList: React.FC = () => {
   const { data: cocktails, isLoading, error, refetch } = useCocktails(false, 10, false);
@@ -181,31 +182,31 @@ const RecipeList: React.FC = () => {
       <SearchBar search={search} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full flex flex-row gap-4'>
-          <button
+          <TileButton
+            label={t('new')}
+            style='secondary'
+            filled
+            textSize='lg'
+            icon={FaPlus}
+            iconSize={25}
             onClick={handleNewCocktailClick}
-            className='flex justify-center items-center py-3 p-2 button-secondary-filled w-full'
-          >
-            <FaPlus size={25} />
-            <span className='ml-4 text-xl'>{t('new')}</span>
-          </button>
-          <button
+          />
+          <TileButton
+            label={t('recipes.enableAll')}
+            style='neutral'
+            filled
+            textSize='lg'
             onClick={handleEnableAllRecipes}
-            className='flex justify-center items-center py-3 p-2 button-neutral-filled w-full'
-          >
-            <span className='text-xl'>{t('recipes.enableAll')}</span>
-          </button>
+          />
         </div>
         {displayedCocktails?.map((cocktail) => (
-          <button
-            key={cocktail.id}
+          <TileButton
+            label={cocktail.name}
+            icon={cocktail.virgin_available ? MdNoDrinks : undefined}
             onClick={() => handleCocktailClick(cocktail)}
-            className={`p-2 py-4 w-full flex justify-center items-center button-primary ${
-              !cocktail.enabled && 'disabled'
-            }`}
-          >
-            {cocktail.virgin_available && <MdNoDrinks size={20} className='mr-2' />}
-            <span>{cocktail.name}</span>
-          </button>
+            key={cocktail.id}
+            passive={!cocktail.enabled}
+          />
         ))}
       </div>
 
@@ -213,10 +214,8 @@ const RecipeList: React.FC = () => {
         {selectedCocktail && (
           <div className='px-1 rounded w-full h-full flex flex-col'>
             <div className='flex justify-between items-center mb-2'>
-              <h2 className='text-xl font-bold text-secondary'>{selectedCocktail.name ?? t('recipes.newRecipe')}</h2>
-              <button onClick={closeModal} aria-label='close'>
-                <AiOutlineCloseCircle className='text-danger' size={34} />
-              </button>
+              <p className='text-xl font-bold text-secondary'>{selectedCocktail.name ?? t('recipes.newRecipe')}</p>
+              <CloseButton onClick={closeModal} />
             </div>
             <div className='flex-grow'></div>
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>
