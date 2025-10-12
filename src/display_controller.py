@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
     QApplication,
     QCheckBox,
     QComboBox,
+    QDialog,
     QLabel,
     QLayout,
     QLineEdit,
@@ -40,7 +41,7 @@ if TYPE_CHECKING:
 
 class ItemDelegate(QStyledItemDelegate):
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
-        option.decorationPosition = QStyleOptionViewItem.Right  # type: ignore
+        option.decorationPosition = QStyleOptionViewItem.Right
         super().paint(painter, option, index)
 
 
@@ -93,7 +94,7 @@ class DisplayController(DialogHandler):
         # use selected items because currentItem is sometimes still last and not the current one ...
         # The widget got only single select, so there is always (if there is a selection) one item
         first_selected = selected[0]
-        user_data: Cocktail | None = first_selected.data(Qt.UserRole)  # type: ignore
+        user_data: Cocktail | None = first_selected.data(Qt.UserRole)
         if user_data:
             # If the user data is a cocktail object, return the name, else the user data
             # Usually the data should be a cocktail object, but fallback if it may set differently
@@ -248,17 +249,28 @@ class DisplayController(DialogHandler):
     def set_display_settings(self, window_object: QWidget, resize: bool = True) -> None:
         """Check dev environment, adjust cursor and resize accordingly, if resize is wished."""
         if not cfg.UI_DEVENVIRONMENT:
-            window_object.setCursor(Qt.BlankCursor)  # type: ignore
+            window_object.setCursor(Qt.BlankCursor)
         if resize:
             window_object.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
             window_object.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
 
-    def initialize_window_object(self, window_object: QWidget, x_pos: int = 0, y_pos: int = 0) -> None:
+    def initialize_window_object(
+        self,
+        window_object: QWidget,
+        x_pos: int = 0,
+        y_pos: int = 0,
+        stay_on_top: bool = True,
+    ) -> None:
         """Initialize the window, set according flags, sets icon and stylesheet."""
-        window_object.setWindowFlags(
-            Qt.Window | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint  # type: ignore
-        )
-        window_object.setAttribute(Qt.WA_DeleteOnClose)  # type: ignore
+        # Respect the widget type so dialogs keep their expected modality behavior.
+        if isinstance(window_object, QDialog):
+            flags = Qt.Dialog | Qt.FramelessWindowHint | Qt.CustomizeWindowHint
+        else:
+            flags = Qt.Window | Qt.FramelessWindowHint | Qt.CustomizeWindowHint
+        if stay_on_top:
+            flags |= Qt.WindowStaysOnTopHint
+        window_object.setWindowFlags(flags)
+        window_object.setAttribute(Qt.WA_DeleteOnClose)
         self.inject_stylesheet(window_object)
         icon_path = str(APP_ICON_FILE)
         window_object.setWindowIcon(QIcon(icon_path))
@@ -277,7 +289,7 @@ class DisplayController(DialogHandler):
         # especially on the rpi, we need a little bit more space than mathematically calculated
         width_buffer = 15
         width = round((total_width - first_tab_width) / 4, 0) - width_buffer
-        mainscreen.tabWidget.setStyleSheet(  # type: ignore
+        mainscreen.tabWidget.setStyleSheet(
             "QTabBar::tab {"
             + f"width: {width}px;"
             + "}"
@@ -356,7 +368,7 @@ class DisplayController(DialogHandler):
 
     def delete_single_combobox_item(self, combobox: QComboBox, item: str) -> None:
         """Delete the given item from a combobox."""
-        index = combobox.findText(item, Qt.MatchFixedString)  # type: ignore
+        index = combobox.findText(item, Qt.MatchFixedString)
         if index >= 0:
             combobox.removeItem(index)
 
@@ -383,13 +395,13 @@ class DisplayController(DialogHandler):
 
     def set_combobox_item(self, combobox: QComboBox, item: str) -> None:
         """Set the combobox to the given item."""
-        index = combobox.findText(item, Qt.MatchFixedString)  # type: ignore
+        index = combobox.findText(item, Qt.MatchFixedString)
         combobox.setCurrentIndex(index)
 
     def adjust_bottle_comboboxes(self, combobox_list: list[QComboBox], old_item: str, new_item: str) -> None:
         """Remove the old item name and add new one in given comboboxes, sorting afterwards."""
         for combobox in combobox_list:
-            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):  # type: ignore
+            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):
                 combobox.addItem(old_item)
             if (new_item != "") and (new_item != combobox.currentText()):
                 self.delete_single_combobox_item(combobox, new_item)
@@ -397,7 +409,7 @@ class DisplayController(DialogHandler):
 
     def rename_single_combobox(self, combobox: QComboBox, old_item: str, new_item: str) -> None:
         """Rename the old item to new one in given box."""
-        index = combobox.findText(old_item, Qt.MatchFixedString)  # type: ignore
+        index = combobox.findText(old_item, Qt.MatchFixedString)
         if index >= 0:
             combobox.setItemText(index, new_item)
             combobox.model().sort(0)
@@ -442,7 +454,7 @@ class DisplayController(DialogHandler):
 
     def delete_list_widget_item(self, list_widget: QListWidget, item: str) -> None:
         """Delete an item in the list widget."""
-        index_to_delete = list_widget.findItems(item, Qt.MatchExactly)  # type: ignore
+        index_to_delete = list_widget.findItems(item, Qt.MatchExactly)
         if len(index_to_delete) > 0:
             for index in index_to_delete:
                 list_widget.takeItem(list_widget.row(index))
@@ -467,7 +479,7 @@ class DisplayController(DialogHandler):
 
         else:
             lw_item = QListWidgetItem(item_data)
-        lw_item.setData(Qt.UserRole, item_data)  # type: ignore
+        lw_item.setData(Qt.UserRole, item_data)
         return lw_item
 
     def clear_list_widget(self, list_widget: QListWidget) -> None:
