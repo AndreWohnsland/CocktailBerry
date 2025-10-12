@@ -25,7 +25,7 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         header_is_entered_number: bool = False,
     ) -> None:
         """Init. Connect all the buttons and set window policy."""
-        super().__init__()
+        super().__init__(parent)
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self, x_pos, y_pos)
         # Connect all the buttons, generates a list of the numbers an object names to do that
