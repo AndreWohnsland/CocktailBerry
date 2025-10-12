@@ -92,7 +92,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # internal initialization
         self.connect_objects()
         self.connect_other_windows()
-        DP_CONTROLLER.initialize_window_object(self, stay_on_top=False)
+        DP_CONTROLLER.initialize_window_object(self)
 
         UI_LANGUAGE.adjust_mainwindow(self)
         mc = MachineController()
