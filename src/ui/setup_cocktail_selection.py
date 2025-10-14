@@ -25,7 +25,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     """Class for the Cocktail selection view."""
 
     def __init__(self, mainscreen: MainScreen, cocktail: Cocktail, maker_screen_activate: Callable) -> None:
-        super().__init__()
+        super().__init__(parent=mainscreen)
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.maker_screen_activate = maker_screen_activate
