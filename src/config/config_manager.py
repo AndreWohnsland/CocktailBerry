@@ -14,6 +14,7 @@ from src import (
     MAX_SUPPORTED_BOTTLES,
     PROJECT_NAME,
     SupportedLanguagesType,
+    SupportedLedStatesType,
     SupportedRfidType,
     SupportedThemesType,
     __version__,
@@ -120,6 +121,8 @@ class ConfigManager:
     LED_NUMBER_RINGS: int = 1
     # Turns the led always on to a white when not doing anything else
     LED_DEFAULT_ON: bool = False
+    # LED does things during Preparation (e.g. on or color effects)
+    LED_PREPARATION_STATE: SupportedLedStatesType = "Effect"
     # If the led is as ws-x series (and controllable)
     LED_IS_WS: bool = True
     # if a RFID reader exists
@@ -195,6 +198,7 @@ class ConfigManager:
             "LED_COUNT": IntType([build_number_limiter(1, 500)]),
             "LED_NUMBER_RINGS": IntType([build_number_limiter(1, 10)]),
             "LED_DEFAULT_ON": BoolType(check_name="Default On"),
+            "LED_PREPARATION_STATE": ChooseOptions.leds,
             "LED_IS_WS": BoolType(check_name="WS281x"),
             "RFID_READER": ChooseOptions.rfid,
             "MICROSERVICE_ACTIVE": BoolType(check_name="Microservice Active"),

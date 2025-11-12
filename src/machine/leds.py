@@ -101,14 +101,22 @@ class _normalLED(_LED):
 
     def preparation_start(self) -> None:
         """Turn the LED on during preparation."""
-        self.turn_on()
+        if cfg.LED_PREPARATION_STATE in ("On", "Effect"):
+            self.turn_on()
+        else:
+            self.turn_off()
 
     def preparation_end(self, duration: int = 5) -> None:
         """Blink for some time after preparation."""
-        self.turn_off()
-        blinker = Thread(target=self._blink_for, kwargs={"duration": duration})
-        blinker.daemon = True
-        blinker.start()
+        if cfg.LED_PREPARATION_STATE == "Effect":
+            self.turn_off()
+            blinker = Thread(target=self._blink_for, kwargs={"duration": duration})
+            blinker.daemon = True
+            blinker.start()
+        elif cfg.LED_DEFAULT_ON:
+            self.turn_on()
+        else:
+            self.turn_off()
 
     def _blink_for(self, duration: int = 5, interval: float = 0.2) -> None:
         current_time = 0.0
@@ -223,14 +231,24 @@ class _controllableLED(_LED):
 
     def preparation_start(self) -> None:
         """Effect during preparation."""
-        self.is_preparing = True
-        cycler = Thread(target=self._preparation_thread)
-        cycler.daemon = True
-        cycler.start()
+        if cfg.LED_PREPARATION_STATE == "Effect":
+            self.is_preparing = True
+            cycler = Thread(target=self._preparation_thread)
+            cycler.daemon = True
+            cycler.start()
+        elif cfg.LED_PREPARATION_STATE == "On":
+            self.turn_on()
+        else:
+            self.turn_off()
 
     def preparation_end(self, duration: int = 5) -> None:
         """Plays an effect after the preparation for x seconds."""
-        self.is_preparing = False
-        rainbow = Thread(target=self._end_thread, kwargs={"duration": duration})
-        rainbow.daemon = True
-        rainbow.start()
+        if cfg.LED_PREPARATION_STATE == "Effect":
+            self.is_preparing = False
+            rainbow = Thread(target=self._end_thread, kwargs={"duration": duration})
+            rainbow.daemon = True
+            rainbow.start()
+        elif cfg.LED_DEFAULT_ON:
+            self.turn_on()
+        else:
+            self.turn_off()
