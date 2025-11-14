@@ -10,12 +10,13 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, Protocol, TypeVar, get_args
 
-from src import SupportedLanguagesType, SupportedRfidType, SupportedThemesType
+from src import SupportedLanguagesType, SupportedLedStatesType, SupportedRfidType, SupportedThemesType
 from src.config.errors import ConfigError
 
 SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
 SUPPORTED_THEMES = list(get_args(SupportedThemesType))
 SUPPORTED_RFID = list(get_args(SupportedRfidType))
+SUPPORTED_LED_STATES = list(get_args(SupportedLedStatesType))
 
 
 class ConfigInterface(Protocol):
@@ -66,6 +67,7 @@ class ChooseOptions:
     language = ChooseType(allowed=SUPPORTED_LANGUAGES)
     rfid = ChooseType(allowed=SUPPORTED_RFID)
     theme = ChooseType(allowed=SUPPORTED_THEMES)
+    leds = ChooseType(allowed=SUPPORTED_LED_STATES)
 
 
 @dataclass

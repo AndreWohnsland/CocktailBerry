@@ -161,7 +161,7 @@ class DialogHandler:
         return tmpl.format(**kwargs)
 
     def standard_box(self, message: str, title: str = "", use_ok: bool = False, close_time: int | None = None) -> bool:
-        """Display the messagebox for the Maker. Uses a Custom QDialog with Close-Button. Blocks until closed."""
+        """Display the messagebox for the Maker. Blocks until closed."""
         from src.ui.setup_custom_dialog import CustomDialog
 
         if not title:

@@ -65,19 +65,20 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 ??? info "List Hardware Config Values"
     Hardware config values are used to configure and enable the connected hardware.
 
-    | Value Name             | Description                                                                              |
-    | :--------------------- | :--------------------------------------------------------------------------------------- |
-    | `PUMP_CONFIG`          | List with config for each pump: pin, volume flow, tube volume to pump up                 |
-    | `LED_PINS`             | List of pins connected to LEDs for preparation                                           |
-    | `LED_BRIGHTNESS`       | Brightness for the WS281x LED (1-255)                                                    |
-    | `LED_COUNT`            | Number of LEDs on the WS281x                                                             |
-    | `LED_NUMBER_RINGS`     | Number of IDENTICAL daisy chained WS281x LED rings                                       |
-    | `LED_DEFAULT_ON`       | Always turn on to a white LED by default                                                 |
-    | `LED_IS_WS`            | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
-    | `RFID_READER`          | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
-    | `MAKER_PINS_INVERTED`  | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)              |
-    | `MAKER_PUMP_REVERSION` | Enables reversion (direction) of pump                                                    |
-    | `MAKER_REVERSION_PIN`  | [Pin](#configuring-the-pins-or-used-board) which triggers reversion                      |
+    | Value Name              | Description                                                                              |
+    | :---------------------- | :--------------------------------------------------------------------------------------- |
+    | `PUMP_CONFIG`           | List with config for each pump: pin, volume flow, tube volume to pump up                 |
+    | `LED_PINS`              | List of pins connected to LEDs for preparation                                           |
+    | `LED_BRIGHTNESS`        | Brightness for the WS281x LED (1-255)                                                    |
+    | `LED_COUNT`             | Number of LEDs on the WS281x                                                             |
+    | `LED_NUMBER_RINGS`      | Number of IDENTICAL daisy chained WS281x LED rings                                       |
+    | `LED_DEFAULT_ON`        | Always turn on to a white LED by default                                                 |
+    | `LED_PREPARATION_STATE` | Set LED state/effect during preparation (e.g. color effects, on, off)                    |
+    | `LED_IS_WS`             | Is the led a controllable WS281x LED, [see also](troubleshooting.md#get-the-led-working) |
+    | `RFID_READER`           | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)        |
+    | `MAKER_PINS_INVERTED`   | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)              |
+    | `MAKER_PUMP_REVERSION`  | Enables reversion (direction) of pump                                                    |
+    | `MAKER_REVERSION_PIN`   | [Pin](#configuring-the-pins-or-used-board) which triggers reversion                      |
 
 ??? info "List Software Config Values"
     Software config values are used to configure additional connected software and its behavior.

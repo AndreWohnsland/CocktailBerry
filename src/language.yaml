@@ -670,6 +670,9 @@ ui:
     LED_DEFAULT_ON:
       en: 'LED is on by default, use white LED color. Still use colors during preparation.'
       de: 'LED ist standardmäßig an, verwendet weiße LED Farbe. Verwendet immer noch Farben-Zyklus während der Zubereitung.'
+    LED_PREPARATION_STATE:
+      en: 'LED state during preparation, on/off/effects.'
+      de: 'LED Zustand während der Zubereitung, an/aus/Effekte.'
     LED_IS_WS:
       en: 'Is the LED a controllable (WS281x) LED'
       de: 'Ist der LED ein ansteuerbarer (WS281x) LED'

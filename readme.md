@@ -1,5 +1,7 @@
 <img src="docs/pictures/CocktailBerry.svg" alt="CocktailBerry"/>
 
+<br/>
+
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/CocktailBerry)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/CocktailBerry)
 ![Python Version](https://img.shields.io/badge/python-%3E%3D%203.11-blue)
