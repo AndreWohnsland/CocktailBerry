@@ -219,7 +219,15 @@ class PumpConfig(ConfigClass):
 
 
 class NormalLedConfig(ConfigClass):
-    """LED configuration for normal (non-WS281x) LEDs."""
+    """LED configuration for normal (non-WS281x) LEDs.
+
+    This configuration type is used for simple on/off LEDs that are controlled
+    via GPIO pins. Multiple pins can be specified to control multiple LEDs.
+
+    Attributes:
+        type: Always "normal" to identify this config variant
+        pins: List of GPIO pin numbers controlling the LEDs
+    """
 
     def __init__(self, led_type: str = "normal", pins: list[int] | None = None) -> None:
         self.type = led_type
@@ -234,7 +242,18 @@ class NormalLedConfig(ConfigClass):
 
 
 class WsLedConfig(ConfigClass):
-    """LED configuration for WS281x addressable LEDs."""
+    """LED configuration for WS281x addressable LEDs.
+
+    This configuration type is used for WS2811/WS2812/WS2812B addressable LED strips.
+    These LEDs can be individually controlled for color and brightness.
+
+    Attributes:
+        type: Always "ws281x" to identify this config variant
+        pin: GPIO pin number for the LED data line
+        count: Total number of LEDs in the strip/ring
+        brightness: Brightness level (1-255)
+        number_rings: Number of identical LED rings if using multiple
+    """
 
     def __init__(
         self,
@@ -311,8 +330,29 @@ class DictType(ConfigType, Generic[T]):
 class UnionType(ConfigType, Generic[T]):
     """Union configuration type that supports polymorphic config classes.
 
-    This type allows selecting between multiple config class variants based on a discriminator field.
-    Each variant has its own set of fields and validation.
+    This type enables dynamic configuration based on a discriminator field. It's particularly
+    useful when you need different fields depending on a type selection. For example, LED
+    configuration can be either normal LEDs (requiring pin list) or WS281x LEDs (requiring
+    pin, count, brightness, etc.).
+
+    The UnionType automatically handles:
+    - Type discrimination based on a specified field (e.g., "type")
+    - Variant-specific field validation
+    - Serialization/deserialization of different config class types
+    - UI metadata generation for dynamic form rendering
+
+    Example:
+        >>> led_union = UnionType(
+        ...     type_field="type",
+        ...     variants={
+        ...         "normal": (NormalLedConfig, {"type": StringType(), "pins": ListType(...)}),
+        ...         "ws281x": (WsLedConfig, {"type": StringType(), "pin": IntType(), ...}),
+        ...     }
+        ... )
+
+    Attributes:
+        type_field: Name of the discriminator field (typically "type")
+        variants: Dict mapping discriminator values to (ConfigClass, field_types) tuples
     """
 
     def __init__(
