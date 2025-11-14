@@ -154,15 +154,85 @@ const ConfigWindow: React.FC = () => {
     );
   };
 
-  const renderObjectField = (key: string, value: { [key: string]: PossibleConfigValueTypes }) => (
-    <div className='flex flex-row w-full'>
-      {Object.keys(value).map((subKey) => (
-        <div key={subKey} className='flex items-center w-full'>
-          {renderInputField(`${key}.${subKey}`, value[subKey])}
+  const renderObjectField = (key: string, value: { [key: string]: PossibleConfigValueTypes }) => {
+    const baseConfig = getBaseConfig(key);
+    
+    // Check if this is a UnionType by looking for type_field and variants in config metadata
+    if (baseConfig && 'type_field' in baseConfig && 'variants' in baseConfig && baseConfig.type_field && baseConfig.variants) {
+      return renderUnionField(key, value, baseConfig.type_field, baseConfig.variants);
+    }
+    
+    // Regular object field
+    return (
+      <div className='flex flex-row w-full'>
+        {Object.keys(value).map((subKey) => (
+          <div key={subKey} className='flex items-center w-full'>
+            {renderInputField(`${key}.${subKey}`, value[subKey])}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderUnionField = (
+    key: string,
+    value: { [key: string]: PossibleConfigValueTypes },
+    typeField: string,
+    variants: { [key: string]: { [fieldKey: string]: any } },
+  ) => {
+    const currentType = (value[typeField] as string) || Object.keys(variants)[0];
+    const variantFields = variants[currentType] || {};
+
+    const handleTypeChange = (newType: string) => {
+      // When type changes, we need to reconstruct the object with default values for the new variant
+      const newVariantFields = variants[newType] || {};
+      const newValue: { [key: string]: PossibleConfigValueTypes } = { [typeField]: newType };
+
+      // Initialize fields with appropriate defaults
+      Object.keys(newVariantFields).forEach((fieldKey) => {
+        if (fieldKey === typeField) return;
+        // Try to infer default from field metadata or use generic defaults
+        const fieldMeta = newVariantFields[fieldKey];
+        if (typeof fieldMeta === 'object' && 'prefix' in fieldMeta) {
+          // Infer type from metadata if possible
+          newValue[fieldKey] = 0; // Default for numbers
+        } else if (fieldKey === 'pins') {
+          newValue[fieldKey] = [];
+        } else if (fieldKey === 'pin' || fieldKey === 'count' || fieldKey === 'brightness' || fieldKey === 'number_rings') {
+          newValue[fieldKey] = 0;
+        } else {
+          newValue[fieldKey] = '';
+        }
+      });
+
+      handleInputChange(key, newValue);
+    };
+
+    return (
+      <div className='flex flex-col w-full gap-2'>
+        {/* Type selector */}
+        <div className='flex flex-row items-center w-full'>
+          <span className='text-sm font-medium mr-2'>{typeField}:</span>
+          <DropDown
+            value={currentType}
+            allowedValues={Object.keys(variants)}
+            handleInputChange={handleTypeChange}
+          />
         </div>
-      ))}
-    </div>
-  );
+
+        {/* Fields for selected variant */}
+        {Object.keys(variantFields).map((fieldKey) => {
+          if (fieldKey === typeField) return null;
+          return (
+            <div key={fieldKey} className='flex flex-row items-center w-full'>
+              <span className='text-sm font-medium mr-2'>{fieldKey}:</span>
+              {renderInputField(`${key}.${fieldKey}`, value[fieldKey] ?? (fieldKey === 'pins' ? [] : 0))}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   const renderColorField = (key: string, value: string) => {
     return <ColorSelect value={value} handleInputChange={(newValue) => handleInputChange(key, newValue)} />;

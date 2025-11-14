@@ -28,8 +28,11 @@ from src.config.config_types import (
     FloatType,
     IntType,
     ListType,
+    NormalLedConfig,
     PumpConfig,
     StringType,
+    UnionType,
+    WsLedConfig,
 )
 from src.config.errors import ConfigError
 from src.config.validators import build_number_limiter, validate_max_length
@@ -111,7 +114,9 @@ class ConfigManager:
     MAKER_USE_RECIPE_VOLUME: bool = False
     # Option to add the single ingredient option to the maker pane
     MAKER_ADD_SINGLE_INGREDIENT: bool = False
-    # List of LED pins for control
+    # New unified LED configuration - list of LED configs (normal or WS281x)
+    LED_CONFIG: ClassVar[list[WsLedConfig | NormalLedConfig]] = [WsLedConfig()]
+    # Legacy LED fields - kept for backward compatibility
     LED_PINS: ClassVar[list[int]] = []
     # Value for LED brightness
     LED_BRIGHTNESS: int = 100
@@ -193,6 +198,33 @@ class ConfigManager:
             "MAKER_CHECK_INTERNET": BoolType(check_name="Check Internet"),
             "MAKER_USE_RECIPE_VOLUME": BoolType(check_name="Use Recipe Volume"),
             "MAKER_ADD_SINGLE_INGREDIENT": BoolType(check_name="Can Spend Single Ingredient"),
+            # New unified LED config
+            "LED_CONFIG": ListType(
+                UnionType[WsLedConfig | NormalLedConfig](
+                    type_field="type",
+                    variants={
+                        "normal": (
+                            NormalLedConfig,
+                            {
+                                "type": StringType(),
+                                "pins": ListType(IntType([build_number_limiter(0, 200)]), 0),
+                            },
+                        ),
+                        "ws281x": (
+                            WsLedConfig,
+                            {
+                                "type": StringType(),
+                                "pin": IntType([build_number_limiter(0, 200)]),
+                                "count": IntType([build_number_limiter(1, 500)]),
+                                "brightness": IntType([build_number_limiter(1, 255)]),
+                                "number_rings": IntType([build_number_limiter(1, 10)]),
+                            },
+                        ),
+                    },
+                ),
+                1,
+            ),
+            # Legacy LED fields - kept for backward compatibility
             "LED_PINS": ListType(IntType([build_number_limiter(0, 200)]), 0),
             "LED_BRIGHTNESS": IntType([build_number_limiter(1, 255)]),
             "LED_COUNT": IntType([build_number_limiter(1, 500)]),
@@ -274,6 +306,14 @@ class ConfigManager:
             for key, value in setting.dict_types.items():
                 config[key] = {}
                 self._enhance_config_specific_information(config[key], value)
+        if isinstance(setting, UnionType):
+            config["type_field"] = setting.type_field
+            config["variants"] = {}
+            for variant_name, (_, field_types) in setting.variants.items():
+                config["variants"][variant_name] = {}
+                for key, value in field_types.items():
+                    config["variants"][variant_name][key] = {}
+                    self._enhance_config_specific_information(config["variants"][variant_name][key], value)
 
     def set_config(self, configuration: dict, validate: bool) -> None:
         """Validate the config and set new values."""

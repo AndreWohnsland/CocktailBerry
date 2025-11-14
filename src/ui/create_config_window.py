@@ -15,6 +15,7 @@ from src.config.config_types import (
     FloatType,
     IntType,
     ListType,
+    UnionType,
 )
 from src.config.errors import ConfigError
 from src.dialog_handler import UI_LANGUAGE
@@ -148,6 +149,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             field = self._build_selection_filed(layout, current_value, config_setting.allowed)
         elif isinstance(config_setting, DictType):
             field = self._build_dict_field(layout, config_name, current_value, config_setting)
+        elif isinstance(config_setting, UnionType):
+            field = self._build_union_field(layout, config_name, current_value, config_setting)
         else:
             field = self._build_fallback_field(layout, current_value)
 
@@ -298,6 +301,111 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             getter_fn_dict[key] = getter_fn
         layout.addLayout(h_container)
         return lambda: {key: getter() for key, getter in getter_fn_dict.items()}
+
+    def _build_union_field(
+        self,
+        layout: QBoxLayout,
+        config_name: str,
+        current_value: ConfigClass | Literal[""],
+        config_setting: UnionType,
+    ) -> Callable[[], dict]:
+        """Build a union field with type selector and dynamic fields."""
+        v_container = QVBoxLayout()
+
+        # Get current type or use first variant as default
+        if current_value == "" or not hasattr(current_value, "to_config"):
+            current_type = next(iter(config_setting.variants.keys()))
+            current_dict = {}
+        else:
+            current_dict = current_value.to_config()
+            current_type = current_dict.get(config_setting.type_field, next(iter(config_setting.variants.keys())))
+
+        # Create type selector dropdown
+        type_selector = QComboBox()
+        type_selector.addItems(list(config_setting.variants.keys()))
+        adjust_font(type_selector, MEDIUM_FONT)
+        type_selector.setProperty("cssClass", "secondary")
+        index = type_selector.findText(current_type, Qt.MatchFixedString)  # type: ignore
+        type_selector.setCurrentIndex(index)
+
+        # Container for dynamic fields
+        fields_container = QVBoxLayout()
+
+        # Dictionary to store getter functions for current variant
+        getter_fn_dict: dict[str, Callable] = {}
+
+        def rebuild_fields() -> None:
+            """Rebuild fields based on selected type."""
+            # Clear existing fields
+            while fields_container.count():
+                item = fields_container.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
+                elif item.layout():
+                    # Recursively delete layout items
+                    while item.layout().count():
+                        sub_item = item.layout().takeAt(0)
+                        if sub_item.widget():
+                            sub_item.widget().deleteLater()
+                    item.layout().deleteLater()
+
+            # Clear getter functions
+            getter_fn_dict.clear()
+
+            # Get selected type
+            selected_type = type_selector.currentText()
+            _, field_types = config_setting.variants[selected_type]
+
+            # Build fields for selected variant
+            for key, value_setting in field_types.items():
+                # Skip the type field itself
+                if key == config_setting.type_field:
+                    continue
+
+                field_layout = QHBoxLayout()
+                # Add label
+                label = create_label(f"{key}: ", MEDIUM_FONT)
+                field_layout.addWidget(label)
+
+                # Get value or use default
+                value = current_dict.get(key, "")
+                if value == "" and hasattr(value_setting, "config_type"):
+                    # Provide reasonable defaults based on type
+                    if value_setting.config_type is int:  # type: ignore
+                        value = 0
+                    elif value_setting.config_type is float:  # type: ignore
+                        value = 0.0
+                    elif value_setting.config_type is list:  # type: ignore
+                        value = []
+
+                getter_fn = self._build_input_field(config_name, value_setting, value, field_layout)
+                getter_fn_dict[key] = getter_fn
+                fields_container.addLayout(field_layout)
+
+        # Build initial fields
+        rebuild_fields()
+
+        # Connect type selector to rebuild fields
+        type_selector.currentTextChanged.connect(lambda: rebuild_fields())  # type: ignore
+
+        # Add type selector to container
+        type_label = create_label(f"{config_setting.type_field}: ", MEDIUM_FONT)
+        type_layout = QHBoxLayout()
+        type_layout.addWidget(type_label)
+        type_layout.addWidget(type_selector)
+        v_container.addLayout(type_layout)
+
+        # Add fields container
+        v_container.addLayout(fields_container)
+        layout.addLayout(v_container)
+
+        # Return getter function that includes type field
+        def get_union_value() -> dict:
+            result = {config_setting.type_field: type_selector.currentText()}
+            result.update({key: getter() for key, getter in getter_fn_dict.items()})
+            return result
+
+        return get_union_value
 
     def _build_fallback_field(self, layout: QBoxLayout, current_value: CONFIG_TYPES_POSSIBLE) -> Callable[[], str]:
         """Build the default input field for string input."""

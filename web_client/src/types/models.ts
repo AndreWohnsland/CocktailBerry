@@ -157,6 +157,21 @@ export interface PumpConfig {
   tube_volume: number;
 }
 
+export interface NormalLedConfig {
+  type: 'normal';
+  pins: number[];
+}
+
+export interface WsLedConfig {
+  type: 'ws281x';
+  pin: number;
+  count: number;
+  brightness: number;
+  number_rings: number;
+}
+
+export type LedConfig = NormalLedConfig | WsLedConfig;
+
 // generic interface for the config data with ui information
 export interface ConfigDataWithUiInfo {
   [key: string]: PossibleUiInformation & {
@@ -172,6 +187,12 @@ type PossibleUiInformation = {
   immutable?: boolean;
   allowed?: string[];
   check_name?: string;
+  type_field?: string;
+  variants?: {
+    [key: string]: {
+      [fieldKey: string]: PossibleUiInformation;
+    };
+  };
 };
 
 export type PossibleConfigValueTypes = boolean | number | string | boolean[] | number[] | string[];

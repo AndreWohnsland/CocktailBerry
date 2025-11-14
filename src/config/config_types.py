@@ -218,6 +218,58 @@ class PumpConfig(ConfigClass):
         return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
 
 
+class NormalLedConfig(ConfigClass):
+    """LED configuration for normal (non-WS281x) LEDs."""
+
+    def __init__(self, led_type: str = "normal", pins: list[int] | None = None) -> None:
+        self.type = led_type
+        self.pins = pins if pins is not None else []
+
+    def to_config(self) -> dict[str, Any]:
+        return {"type": self.type, "pins": self.pins}
+
+    @classmethod
+    def from_config(cls, config: dict) -> NormalLedConfig:
+        return cls(led_type=config.get("type", "normal"), pins=config.get("pins", []))
+
+
+class WsLedConfig(ConfigClass):
+    """LED configuration for WS281x addressable LEDs."""
+
+    def __init__(
+        self,
+        led_type: str = "ws281x",
+        pin: int = 18,
+        count: int = 24,
+        brightness: int = 100,
+        number_rings: int = 1,
+    ) -> None:
+        self.type = led_type
+        self.pin = pin
+        self.count = count
+        self.brightness = brightness
+        self.number_rings = number_rings
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "type": self.type,
+            "pin": self.pin,
+            "count": self.count,
+            "brightness": self.brightness,
+            "number_rings": self.number_rings,
+        }
+
+    @classmethod
+    def from_config(cls, config: dict) -> WsLedConfig:
+        return cls(
+            led_type=config.get("type", "ws281x"),
+            pin=config.get("pin", 18),
+            count=config.get("count", 24),
+            brightness=config.get("brightness", 100),
+            number_rings=config.get("number_rings", 1),
+        )
+
+
 T = TypeVar("T", bound="ConfigClass")
 
 
@@ -250,6 +302,84 @@ class DictType(ConfigType, Generic[T]):
     def from_config(self, config_dict: dict[str, Any]) -> ConfigClass:
         """Deserialize the given value."""
         return self.config_class.from_config(config_dict)
+
+    def to_config(self, config_class: T) -> dict[str, Any]:
+        """Serialize the given value."""
+        return config_class.to_config()
+
+
+class UnionType(ConfigType, Generic[T]):
+    """Union configuration type that supports polymorphic config classes.
+
+    This type allows selecting between multiple config class variants based on a discriminator field.
+    Each variant has its own set of fields and validation.
+    """
+
+    def __init__(
+        self,
+        type_field: str,
+        variants: dict[str, tuple[type[T], dict[str, ConfigType]]],
+        validator_functions: list[Callable[[str, Any], None]] = [],
+        prefix: str | None = None,
+        suffix: str | None = None,
+    ) -> None:
+        """Initialize UnionType.
+
+        Args:
+            type_field: The name of the discriminator field (e.g., "type")
+            variants: Dict mapping type values to (ConfigClass, field_types) tuples
+            validator_functions: Additional validation functions
+            prefix: Optional prefix for UI display
+            suffix: Optional suffix for UI display
+
+        """
+        # ignore type here, since parent class should only expose other types not child types
+        super().__init__(dict, validator_functions, prefix, suffix)  # type: ignore
+        self.type_field = type_field
+        self.variants = variants
+
+    def validate(self, configname: str, config_dict: dict[str, Any]) -> None:
+        """Validate the given value."""
+        super().validate(configname, config_dict)
+
+        # Check that type field exists
+        type_value = config_dict.get(self.type_field)
+        if type_value is None:
+            allowed_types = list(self.variants.keys())
+            raise ConfigError(
+                f"Config '{configname}' is missing required '{self.type_field}' field. "
+                f"Allowed values: {allowed_types}"
+            )
+
+        # Check that type value is valid
+        if type_value not in self.variants:
+            allowed_types = list(self.variants.keys())
+            raise ConfigError(
+                f"Config '{configname}' has invalid {self.type_field}='{type_value}'. "
+                f"Allowed values: {allowed_types}"
+            )
+
+        # Validate fields for this variant
+        _, field_types = self.variants[type_value]
+        for key_name, key_type in field_types.items():
+            # Skip the type field itself as it's already validated
+            if key_name == self.type_field:
+                continue
+            key_value = config_dict.get(key_name)
+            if key_value is None:
+                raise ConfigError(f"Config value for '{key_name}' is missing in '{configname}'")
+            key_text = f"{configname} key {key_name}"
+            key_type.validate(key_text, key_value)
+
+    def from_config(self, config_dict: dict[str, Any]) -> ConfigClass:
+        """Deserialize the given value."""
+        type_value = config_dict.get(self.type_field)
+        if type_value is None or type_value not in self.variants:
+            # Fallback to first variant if type is missing or invalid
+            type_value = next(iter(self.variants.keys()))
+
+        config_class, _ = self.variants[type_value]
+        return config_class.from_config(config_dict)
 
     def to_config(self, config_class: T) -> dict[str, Any]:
         """Serialize the given value."""
