@@ -655,6 +655,9 @@ ui:
     MAKER_ADD_SINGLE_INGREDIENT:
       en: 'Adds the option to also spend a single ingredient to the cocktails in the maker tab'
       de: 'Fügt eine Option zu den Cocktails in dem Maker Tab hinzu, auch einzelne Zutaten ausgeben zu können'
+    LED_CONFIG:
+      en: 'LED configuration list. Each entry can be either normal LEDs (with pin list) or WS281x addressable LEDs (with pin, count, brightness, and rings)'
+      de: 'LED-Konfigurationsliste. Jeder Eintrag kann entweder normale LEDs (mit Pin-Liste) oder WS281x adressierbare LEDs (mit Pin, Anzahl, Helligkeit und Ringe) sein'
     LED_PINS:
       en: 'List of pins controlling LEDs during preparation'
       de: 'Liste an Pins, die LEDs bei der Zubereitung kontrollieren'
