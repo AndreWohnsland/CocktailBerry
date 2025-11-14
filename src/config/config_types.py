@@ -222,23 +222,43 @@ class NormalLedConfig(ConfigClass):
     """LED configuration for normal (non-WS281x) LEDs.
 
     This configuration type is used for simple on/off LEDs that are controlled
-    via GPIO pins. Multiple pins can be specified to control multiple LEDs.
+    via a GPIO pin.
 
     Attributes:
         type: Always "normal" to identify this config variant
-        pins: List of GPIO pin numbers controlling the LEDs
+        pin: GPIO pin number controlling the LED
+        default_on: Whether LED is on by default
+        preparation_state: LED state during preparation (Off/On/Effect)
     """
 
-    def __init__(self, led_type: str = "normal", pins: list[int] | None = None) -> None:
+    def __init__(
+        self,
+        led_type: str = "normal",
+        pin: int = 14,
+        default_on: bool = False,
+        preparation_state: str = "Effect",
+    ) -> None:
         self.type = led_type
-        self.pins = pins if pins is not None else []
+        self.pin = pin
+        self.default_on = default_on
+        self.preparation_state = preparation_state
 
     def to_config(self) -> dict[str, Any]:
-        return {"type": self.type, "pins": self.pins}
+        return {
+            "type": self.type,
+            "pin": self.pin,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
+        }
 
     @classmethod
     def from_config(cls, config: dict) -> NormalLedConfig:
-        return cls(led_type=config.get("type", "normal"), pins=config.get("pins", []))
+        return cls(
+            led_type=config.get("type", "normal"),
+            pin=config.get("pin", 14),
+            default_on=config.get("default_on", False),
+            preparation_state=config.get("preparation_state", "Effect"),
+        )
 
 
 class WsLedConfig(ConfigClass):
@@ -253,6 +273,8 @@ class WsLedConfig(ConfigClass):
         count: Total number of LEDs in the strip/ring
         brightness: Brightness level (1-255)
         number_rings: Number of identical LED rings if using multiple
+        default_on: Whether LED is on by default
+        preparation_state: LED state during preparation (Off/On/Effect)
     """
 
     def __init__(
@@ -262,12 +284,16 @@ class WsLedConfig(ConfigClass):
         count: int = 24,
         brightness: int = 100,
         number_rings: int = 1,
+        default_on: bool = False,
+        preparation_state: str = "Effect",
     ) -> None:
         self.type = led_type
         self.pin = pin
         self.count = count
         self.brightness = brightness
         self.number_rings = number_rings
+        self.default_on = default_on
+        self.preparation_state = preparation_state
 
     def to_config(self) -> dict[str, Any]:
         return {
@@ -276,6 +302,8 @@ class WsLedConfig(ConfigClass):
             "count": self.count,
             "brightness": self.brightness,
             "number_rings": self.number_rings,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
         }
 
     @classmethod
@@ -286,6 +314,8 @@ class WsLedConfig(ConfigClass):
             count=config.get("count", 24),
             brightness=config.get("brightness", 100),
             number_rings=config.get("number_rings", 1),
+            default_on=config.get("default_on", False),
+            preparation_state=config.get("preparation_state", "Effect"),
         )
 
 

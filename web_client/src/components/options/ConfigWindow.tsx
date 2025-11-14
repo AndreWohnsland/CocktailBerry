@@ -175,28 +175,26 @@ const ConfigWindow: React.FC = () => {
   };
 
   const getDefaultValueForField = (fieldKey: string, fieldMeta: any): PossibleConfigValueTypes => {
-    // Check if field is a list type (has immutable property)
-    if (fieldMeta && typeof fieldMeta === 'object' && 'immutable' in fieldMeta) {
+    if (!fieldMeta || typeof fieldMeta !== 'object') {
+      return 0;
+    }
+
+    // Check for list type (has immutable property)
+    if ('immutable' in fieldMeta) {
       return [];
     }
-    // For other fields, check current value in data to infer type
-    // This uses the actual config value as reference
-    const baseConfigMatch = /^([^[\].]+)/.exec(fieldKey);
-    const baseConfigName = baseConfigMatch ? baseConfigMatch[0] : '';
-    const currentConfigValue = data?.[baseConfigName]?.value;
     
-    if (Array.isArray(currentConfigValue) && currentConfigValue.length > 0) {
-      const firstItem = currentConfigValue[0];
-      if (typeof firstItem === 'object' && firstItem !== null && fieldKey in firstItem) {
-        const fieldValue = firstItem[fieldKey];
-        if (Array.isArray(fieldValue)) return [];
-        if (typeof fieldValue === 'number') return 0;
-        if (typeof fieldValue === 'boolean') return false;
-        return '';
-      }
+    // Check for boolean type (has check_name property)
+    if ('check_name' in fieldMeta) {
+      return false;
     }
     
-    // Default fallback: assume number if no other info available
+    // Check for choice type (has allowed property)
+    if ('allowed' in fieldMeta && Array.isArray(fieldMeta.allowed) && fieldMeta.allowed.length > 0) {
+      return fieldMeta.allowed[0];
+    }
+    
+    // Default to number for other types (IntType, FloatType)
     return 0;
   };
 

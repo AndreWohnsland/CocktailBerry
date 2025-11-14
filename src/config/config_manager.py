@@ -207,7 +207,9 @@ class ConfigManager:
                             NormalLedConfig,
                             {
                                 "type": StringType(),
-                                "pins": ListType(IntType([build_number_limiter(0, 200)]), 0),
+                                "pin": IntType([build_number_limiter(0, 200)]),
+                                "default_on": BoolType(check_name="Default On"),
+                                "preparation_state": ChooseOptions.leds,
                             },
                         ),
                         "ws281x": (
@@ -218,6 +220,8 @@ class ConfigManager:
                                 "count": IntType([build_number_limiter(1, 500)]),
                                 "brightness": IntType([build_number_limiter(1, 255)]),
                                 "number_rings": IntType([build_number_limiter(1, 10)]),
+                                "default_on": BoolType(check_name="Default On"),
+                                "preparation_state": ChooseOptions.leds,
                             },
                         ),
                     },

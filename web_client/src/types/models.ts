@@ -159,7 +159,9 @@ export interface PumpConfig {
 
 export interface NormalLedConfig {
   type: 'normal';
-  pins: number[];
+  pin: number;
+  default_on: boolean;
+  preparation_state: string;
 }
 
 export interface WsLedConfig {
@@ -168,6 +170,8 @@ export interface WsLedConfig {
   count: number;
   brightness: number;
   number_rings: number;
+  default_on: boolean;
+  preparation_state: string;
 }
 
 export type LedConfig = NormalLedConfig | WsLedConfig;
