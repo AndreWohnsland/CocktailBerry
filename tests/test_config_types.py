@@ -255,10 +255,11 @@ class TestListType:
 
     def test_validation_with_callable_min_length(self) -> None:
         """Test min_length as a callable function.
-        
+
         This is used when the min length depends on other config values.
         """
-        min_length_func = lambda: 5
+        def min_length_func():
+            return 5
         list_type = ListType(IntType(), min_length_func)
         list_type.validate("test_config", [1, 2, 3, 4, 5])
         with pytest.raises(ConfigError, match="need at least 5 elements"):
@@ -371,7 +372,7 @@ class TestPumpConfig:
 
     def test_round_trip_serialization(self) -> None:
         """Test that serialization and deserialization are inverses.
-        
+
         This edge case ensures config data integrity during save/load cycles.
         """
         original = PumpConfig(pin=7, volume_flow=25.5, tube_volume=8)
@@ -384,13 +385,13 @@ class TestPumpConfig:
 
 class TestEdgeCases:
     """Edge case tests for config types.
-    
+
     These tests cover unusual but valid scenarios that might occur in production.
     """
 
     def test_empty_list_with_zero_min_length(self) -> None:
         """Test that empty lists are allowed when min_length is 0.
-        
+
         Edge case: Some configs might have optional list values.
         """
         list_type = ListType(IntType(), 0)
@@ -398,7 +399,7 @@ class TestEdgeCases:
 
     def test_list_with_nested_validation(self) -> None:
         """Test list validation with nested validators on list items.
-        
+
         Edge case: Ensures validators cascade properly through list items.
         """
 
@@ -413,7 +414,7 @@ class TestEdgeCases:
 
     def test_float_type_precision(self) -> None:
         """Test that float type preserves precision.
-        
+
         Edge case: Ensures no unexpected rounding in config values.
         """
         float_type = FloatType()
@@ -423,7 +424,7 @@ class TestEdgeCases:
 
     def test_choose_type_empty_allowed_list(self) -> None:
         """Test ChooseType behavior with empty allowed list.
-        
+
         Edge case: Any value should fail validation if no options are allowed.
         """
         choose_type = ChooseType(allowed=[])
@@ -432,7 +433,7 @@ class TestEdgeCases:
 
     def test_dict_type_extra_keys_ignored(self) -> None:
         """Test that DictType only validates required keys.
-        
+
         Edge case: Config files might have extra keys from future versions.
         """
         dict_types = {"required": StringType()}
@@ -442,7 +443,7 @@ class TestEdgeCases:
 
     def test_string_type_empty_string(self) -> None:
         """Test that empty strings are valid by default.
-        
+
         Edge case: Some configs might intentionally be empty strings.
         """
         string_type = StringType()
@@ -450,7 +451,7 @@ class TestEdgeCases:
 
     def test_list_type_single_element(self) -> None:
         """Test list with exactly one element at minimum length.
-        
+
         Edge case: Boundary condition for min_length validation.
         """
         list_type = ListType(StringType(), 1)

@@ -5,15 +5,13 @@ This module tests ConfigManager methods for reading, writing, and managing confi
 
 from __future__ import annotations
 
-import tempfile
 from pathlib import Path
-from typing import Any
 
 import pytest
 import yaml
 
 from src.config.config_manager import ConfigManager
-from src.config.config_types import IntType, PumpConfig, StringType
+from src.config.config_types import IntType, PumpConfig
 from src.config.errors import ConfigError
 
 
@@ -84,11 +82,11 @@ class TestConfigManagerSetConfig:
         # This should not raise, but also shouldn't update the value
         config.set_config({"UI_WIDTH": "not_an_int"}, validate=False)
         # Value should remain unchanged
-        assert config.UI_WIDTH == original_width
+        assert original_width == config.UI_WIDTH
 
     def test_set_config_ignores_unknown_keys(self) -> None:
         """Test that set_config ignores unknown config keys.
-        
+
         This handles backward compatibility with old config files.
         """
         config = ConfigManager()
@@ -100,7 +98,7 @@ class TestConfigManagerSetConfig:
         config = ConfigManager()
         new_volumes = [200, 300, 400]
         config.set_config({"MAKER_PREPARE_VOLUME": new_volumes}, validate=True)
-        assert config.MAKER_PREPARE_VOLUME == new_volumes
+        assert new_volumes == config.MAKER_PREPARE_VOLUME
 
     def test_set_config_validates_list_items(self) -> None:
         """Test that set_config validates individual list items."""
@@ -111,7 +109,7 @@ class TestConfigManagerSetConfig:
 
     def test_set_config_processes_non_list_before_list(self) -> None:
         """Test that non-list configs are processed before list configs.
-        
+
         This is important because list lengths might depend on other config values.
         """
         config = ConfigManager()
@@ -128,7 +126,7 @@ class TestConfigManagerReadLocalConfig:
 
     def test_read_local_config_handles_missing_file(self, tmp_path: Path) -> None:
         """Test that read_local_config doesn't fail when file is missing.
-        
+
         Edge case: First run when no config file exists yet.
         """
         config = ConfigManager()
@@ -204,7 +202,7 @@ class TestConfigManagerSyncConfigToFile:
             data = yaml.safe_load(f)
 
         # Should have all the keys from config_type
-        for key in config.config_type.keys():
+        for key in config.config_type:
             assert key in data
 
 
@@ -256,7 +254,7 @@ class TestConfigManagerAddConfig:
 
     def test_add_config_empty_list_with_type(self) -> None:
         """Test adding an empty list with explicit type.
-        
+
         Edge case: Empty lists need explicit type since type can't be inferred.
         """
         config = ConfigManager()
@@ -280,7 +278,7 @@ class TestConfigManagerAddConfig:
 
     def test_add_config_preserves_existing_value(self) -> None:
         """Test that add_config doesn't overwrite existing attribute.
-        
+
         Edge case: Used for addon configs that might already be set.
         """
         config = ConfigManager()
@@ -362,13 +360,13 @@ class TestConfigManagerChooseBottleNumber:
 
 class TestIntegrationConfigDumpAndLoad:
     """Integration tests for dumping and loading complete configuration.
-    
+
     These tests ensure the full config lifecycle works correctly.
     """
 
     def test_dump_and_load_default_config(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that default config can be dumped and loaded successfully.
-        
+
         This is the main integration test verifying the complete config lifecycle.
         """
         config_file = tmp_path / "test_config.yaml"
@@ -385,8 +383,8 @@ class TestIntegrationConfigDumpAndLoad:
         config2.read_local_config(update_config=False, validate=True)
 
         # Values should match
-        assert config2.UI_WIDTH == original_width
-        assert config2.MAKER_NAME == original_name
+        assert original_width == config2.UI_WIDTH
+        assert original_name == config2.MAKER_NAME
 
     def test_dump_and_load_modified_config(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that modified config values persist through dump and load."""
@@ -439,7 +437,7 @@ class TestIntegrationConfigDumpAndLoad:
 
     def test_load_config_with_new_defaults(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that loading old config file gets new default values.
-        
+
         Edge case: Simulates upgrade scenario where new config keys are added.
         """
         config_file = tmp_path / "test_config.yaml"
@@ -470,7 +468,7 @@ class TestIntegrationConfigDumpAndLoad:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """Test that config with invalid values falls back to defaults.
-        
+
         Edge case: Handles manually edited config files with errors.
         """
         config_file = tmp_path / "test_config.yaml"
@@ -493,7 +491,7 @@ class TestIntegrationConfigDumpAndLoad:
 
 class TestEdgeCasesConfigManager:
     """Edge case tests for ConfigManager.
-    
+
     These tests ensure the config system handles unusual scenarios gracefully.
     """
 
@@ -501,7 +499,7 @@ class TestEdgeCasesConfigManager:
         """Test that built-in validators from validators module work correctly."""
         from src.config.validators import build_number_limiter, validate_max_length
 
-        config = ConfigManager()
+        ConfigManager()
 
         # Test number limiter
         limiter = build_number_limiter(1, 100)
@@ -516,7 +514,7 @@ class TestEdgeCasesConfigManager:
 
     def test_config_handles_list_with_callable_min_length(self) -> None:
         """Test that list configs with callable min_length work correctly.
-        
+
         Edge case: Some list lengths depend on other config values.
         """
         config = ConfigManager()
@@ -531,7 +529,7 @@ class TestEdgeCasesConfigManager:
 
     def test_get_config_with_ui_information(self) -> None:
         """Test that get_config_with_ui_information includes UI metadata.
-        
+
         This is used by the web UI to render config forms.
         """
         config = ConfigManager()
@@ -555,7 +553,7 @@ class TestEdgeCasesConfigManager:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """Test that all config types maintain correct types through save/load.
-        
+
         Edge case: Ensures YAML serialization doesn't corrupt types.
         """
         config_file = tmp_path / "test_config.yaml"
