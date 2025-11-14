@@ -174,6 +174,32 @@ const ConfigWindow: React.FC = () => {
     );
   };
 
+  const getDefaultValueForField = (fieldKey: string, fieldMeta: any): PossibleConfigValueTypes => {
+    // Check if field is a list type (has immutable property)
+    if (fieldMeta && typeof fieldMeta === 'object' && 'immutable' in fieldMeta) {
+      return [];
+    }
+    // For other fields, check current value in data to infer type
+    // This uses the actual config value as reference
+    const baseConfigMatch = /^([^[\].]+)/.exec(fieldKey);
+    const baseConfigName = baseConfigMatch ? baseConfigMatch[0] : '';
+    const currentConfigValue = data?.[baseConfigName]?.value;
+    
+    if (Array.isArray(currentConfigValue) && currentConfigValue.length > 0) {
+      const firstItem = currentConfigValue[0];
+      if (typeof firstItem === 'object' && firstItem !== null && fieldKey in firstItem) {
+        const fieldValue = firstItem[fieldKey];
+        if (Array.isArray(fieldValue)) return [];
+        if (typeof fieldValue === 'number') return 0;
+        if (typeof fieldValue === 'boolean') return false;
+        return '';
+      }
+    }
+    
+    // Default fallback: assume number if no other info available
+    return 0;
+  };
+
   const renderUnionField = (
     key: string,
     value: { [key: string]: PossibleConfigValueTypes },
@@ -188,24 +214,19 @@ const ConfigWindow: React.FC = () => {
       const newVariantFields = variants[newType] || {};
       const newValue: { [key: string]: PossibleConfigValueTypes } = { [typeField]: newType };
 
-      // Initialize fields with appropriate defaults
+      // Initialize fields with appropriate defaults based on metadata
       Object.keys(newVariantFields).forEach((fieldKey) => {
         if (fieldKey === typeField) return;
-        // Try to infer default from field metadata or use generic defaults
         const fieldMeta = newVariantFields[fieldKey];
-        if (typeof fieldMeta === 'object' && 'prefix' in fieldMeta) {
-          // Infer type from metadata if possible
-          newValue[fieldKey] = 0; // Default for numbers
-        } else if (fieldKey === 'pins') {
-          newValue[fieldKey] = [];
-        } else if (fieldKey === 'pin' || fieldKey === 'count' || fieldKey === 'brightness' || fieldKey === 'number_rings') {
-          newValue[fieldKey] = 0;
-        } else {
-          newValue[fieldKey] = '';
-        }
+        newValue[fieldKey] = getDefaultValueForField(fieldKey, fieldMeta);
       });
 
       handleInputChange(key, newValue);
+    };
+
+    const getFieldDefaultValue = (fieldKey: string): PossibleConfigValueTypes => {
+      const fieldMeta = variantFields[fieldKey];
+      return getDefaultValueForField(fieldKey, fieldMeta);
     };
 
     return (
@@ -226,7 +247,7 @@ const ConfigWindow: React.FC = () => {
           return (
             <div key={fieldKey} className='flex flex-row items-center w-full'>
               <span className='text-sm font-medium mr-2'>{fieldKey}:</span>
-              {renderInputField(`${key}.${fieldKey}`, value[fieldKey] ?? (fieldKey === 'pins' ? [] : 0))}
+              {renderInputField(`${key}.${fieldKey}`, value[fieldKey] ?? getFieldDefaultValue(fieldKey))}
             </div>
           );
         })}
