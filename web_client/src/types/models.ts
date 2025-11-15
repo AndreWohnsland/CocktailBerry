@@ -143,6 +143,12 @@ export interface DefinedConfigData {
   EXP_MAKER_FACTOR: number;
 }
 
+export interface PumpConfig {
+  pin: number;
+  volume_flow: number;
+  tube_volume: number;
+}
+
 export interface CustomColors {
   primary: string;
   secondary: string;
@@ -151,13 +157,20 @@ export interface CustomColors {
   danger: string;
 }
 
-export interface PumpConfig {
-  pin: number;
-  volume_flow: number;
-  tube_volume: number;
-}
-
 // generic interface for the config data with ui information
+// The structure contains:
+// - Main key (e.g., "PUMP_CONFIG"): the root config item with ui metadata (value, description, prefix, suffix, etc.)
+// - Additional nested keys (e.g., "pin", "volume_flow"): UI metadata for nested dict/list item properties
+// These nested properties are flattened at the same level as the root config item.
+// Example structure for PUMP_CONFIG:
+// {
+//   "PUMP_CONFIG": {
+//     "value": [...],
+//     "description": "...",
+//     "immutable": false,
+//     "pin": { prefix: "GPIO " },
+//     "volume_flow": { suffix: "ml/s" }
+// }
 export interface ConfigDataWithUiInfo {
   [key: string]: PossibleUiInformation & {
     [additionalKey: string]: PossibleUiInformation | undefined;
