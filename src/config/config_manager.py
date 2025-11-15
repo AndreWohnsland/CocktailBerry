@@ -167,7 +167,7 @@ class ConfigManager:
             "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": IntType([build_number_limiter(100, 1000)]),
             "PUMP_CONFIG": ListType(
-                DictType[PumpConfig](
+                DictType(
                     {
                         "pin": IntType([build_number_limiter(0, 1000)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),

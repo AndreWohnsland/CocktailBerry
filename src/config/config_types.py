@@ -7,8 +7,11 @@ Simply separating by build in types is not enough for dict or list types.
 from __future__ import annotations
 
 from abc import abstractmethod
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, Protocol, TypeVar, get_args
+
+from typing_extensions import Self
 
 from src import SupportedLanguagesType, SupportedLedStatesType, SupportedRfidType, SupportedThemesType
 from src.config.errors import ConfigError
@@ -50,7 +53,7 @@ class ChooseType(ConfigInterface):
     """Base Class for auto generated single select drop down."""
 
     allowed: list[str] = field(default_factory=list)
-    validator_functions: list[Callable[[str, Any], None]] = field(default_factory=list)
+    validator_functions: Iterable[Callable[[str, Any], None]] = field(default_factory=list)
 
     def validate(self, configname: str, value: Any) -> None:
         if value not in self.allowed:
@@ -75,7 +78,7 @@ class ConfigType(ConfigInterface):
     """Base class for configuration types."""
 
     config_type: type[str | int | float | bool]
-    validator_functions: list[Callable[[str, Any], None]] = field(default_factory=list)
+    validator_functions: Iterable[Callable[[str, Any], None]] = field(default_factory=list)
     prefix: str | None = None
     suffix: str | None = None
 
@@ -97,7 +100,7 @@ class StringType(ConfigType):
 
     def __init__(
         self,
-        validator_functions: list[Callable[[str, Any], None]] = [],
+        validator_functions: Iterable[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
     ) -> None:
@@ -109,7 +112,7 @@ class IntType(ConfigType):
 
     def __init__(
         self,
-        validator_functions: list[Callable[[str, Any], None]] = [],
+        validator_functions: Iterable[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
     ) -> None:
@@ -121,7 +124,7 @@ class FloatType(ConfigType):
 
     def __init__(
         self,
-        validator_functions: list[Callable[[str, Any], None]] = [],
+        validator_functions: Iterable[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
     ) -> None:
@@ -146,7 +149,7 @@ class BoolType(ConfigType):
 
     def __init__(
         self,
-        validator_functions: list[Callable[[str, Any], None]] = [],
+        validator_functions: Iterable[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
         check_name: str = "on",
@@ -162,7 +165,7 @@ class ListType(ConfigType):
         self,
         list_type: ConfigType,
         min_length: int | Callable[[], int],
-        validator_functions: list[Callable[[str, Any], None]] = [],
+        validator_functions: Iterable[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
         immutable: bool = False,
@@ -193,6 +196,9 @@ class ListType(ConfigType):
         return [self.list_type.to_config(item) for item in value]
 
 
+ConfigClassT = TypeVar("ConfigClassT", bound="ConfigClass")
+
+
 class ConfigClass:
     # keep method to show that child implementation have at least one attribute for initialization
     def __init__(self, **kwargs: Any) -> None:
@@ -203,7 +209,7 @@ class ConfigClass:
         return {}
 
     @classmethod
-    def from_config(cls, config: dict) -> ConfigClass:
+    def from_config(cls, config: dict) -> Self:
         """Deserialize the given value."""
         return cls(**config)
 
@@ -218,16 +224,13 @@ class PumpConfig(ConfigClass):
         return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
 
 
-T = TypeVar("T", bound="ConfigClass")
-
-
-class DictType(ConfigType, Generic[T]):
+class DictType(ConfigType, Generic[ConfigClassT]):
     """Dict configuration type."""
 
     def __init__(
         self,
-        dict_types: dict[str, ConfigType],
-        config_class: type[T],
+        dict_types: Mapping[str, ConfigType],
+        config_class: type[ConfigClassT],
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
@@ -247,10 +250,10 @@ class DictType(ConfigType, Generic[T]):
             key_text = f"{configname} key {key_name}"
             key_type.validate(key_text, key_value)
 
-    def from_config(self, config_dict: dict[str, Any]) -> ConfigClass:
+    def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:
         """Deserialize the given value."""
         return self.config_class.from_config(config_dict)
 
-    def to_config(self, config_class: T) -> dict[str, Any]:
+    def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:
         """Serialize the given value."""
         return config_class.to_config()
