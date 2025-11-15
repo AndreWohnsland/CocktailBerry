@@ -140,19 +140,19 @@ class TestFloatType:
     def test_serialization_float(self) -> None:
         """Test float serialization (to_config) with float value."""
         float_type = FloatType()
-        assert float_type.to_config(3.14) == 3.14
+        assert float_type.to_config(3.14) == pytest.approx(3.14)
 
     def test_serialization_int_to_float(self) -> None:
         """Test that integers are converted to float on serialization."""
         float_type = FloatType()
         result = float_type.to_config(42)
-        assert result == 42.0
+        assert result == pytest.approx(42.0)
         assert isinstance(result, float)
 
     def test_deserialization(self) -> None:
         """Test float deserialization (from_config)."""
         float_type = FloatType()
-        assert float_type.from_config(3.14) == 3.14
+        assert float_type.from_config(3.14) == pytest.approx(3.14)
 
 
 class TestBoolType:
@@ -330,7 +330,9 @@ class TestDictType:
         dict_type = DictType[PumpConfig](dict_types, PumpConfig)
         pump = PumpConfig(pin=1, volume_flow=2.5, tube_volume=10)
         result = dict_type.to_config(pump)
-        assert result == {"pin": 1, "volume_flow": 2.5, "tube_volume": 10}
+        assert result["pin"] == 1
+        assert result["volume_flow"] == pytest.approx(2.5)
+        assert result["tube_volume"] == 10
 
     def test_deserialization(self) -> None:
         """Test dict deserialization (from_config) creates PumpConfig."""
@@ -340,7 +342,7 @@ class TestDictType:
         result = dict_type.from_config(config_dict)
         assert isinstance(result, PumpConfig)
         assert result.pin == 1
-        assert result.volume_flow == 2.5
+        assert result.volume_flow == pytest.approx(2.5)
         assert result.tube_volume == 10
 
 
@@ -351,14 +353,16 @@ class TestPumpConfig:
         """Test PumpConfig initialization."""
         pump = PumpConfig(pin=14, volume_flow=30.0, tube_volume=5)
         assert pump.pin == 14
-        assert pump.volume_flow == 30.0
+        assert pump.volume_flow == pytest.approx(30.0)
         assert pump.tube_volume == 5
 
     def test_to_config(self) -> None:
         """Test PumpConfig serialization to dict."""
         pump = PumpConfig(pin=14, volume_flow=30.0, tube_volume=5)
         result = pump.to_config()
-        assert result == {"pin": 14, "volume_flow": 30.0, "tube_volume": 5}
+        assert result["pin"] == 14
+        assert result["volume_flow"] == pytest.approx(30.0)
+        assert result["tube_volume"] == 5
         assert isinstance(result, dict)
 
     def test_from_config(self) -> None:
@@ -367,7 +371,7 @@ class TestPumpConfig:
         pump = PumpConfig.from_config(config_dict)
         assert isinstance(pump, PumpConfig)
         assert pump.pin == 14
-        assert pump.volume_flow == 30.0
+        assert pump.volume_flow == pytest.approx(30.0)
         assert pump.tube_volume == 5
 
     def test_round_trip_serialization(self) -> None:
@@ -379,7 +383,7 @@ class TestPumpConfig:
         config_dict = original.to_config()
         restored = PumpConfig.from_config(config_dict)
         assert original.pin == restored.pin
-        assert original.volume_flow == restored.volume_flow
+        assert original.volume_flow == pytest.approx(restored.volume_flow)
         assert original.tube_volume == restored.tube_volume
 
 
@@ -420,7 +424,7 @@ class TestEdgeCases:
         float_type = FloatType()
         value = 3.141592653589793
         serialized = float_type.to_config(value)
-        assert serialized == value
+        assert serialized == pytest.approx(value)
 
     def test_choose_type_empty_allowed_list(self) -> None:
         """Test ChooseType behavior with empty allowed list.

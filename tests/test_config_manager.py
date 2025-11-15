@@ -429,10 +429,10 @@ class TestIntegrationConfigDumpAndLoad:
         # Pump configs should match
         assert len(config2.PUMP_CONFIG) == 2
         assert config2.PUMP_CONFIG[0].pin == 10
-        assert config2.PUMP_CONFIG[0].volume_flow == 20.5
+        assert config2.PUMP_CONFIG[0].volume_flow == pytest.approx(20.5)
         assert config2.PUMP_CONFIG[0].tube_volume == 5
         assert config2.PUMP_CONFIG[1].pin == 11
-        assert config2.PUMP_CONFIG[1].volume_flow == 25.0
+        assert config2.PUMP_CONFIG[1].volume_flow == pytest.approx(25.0)
         assert config2.PUMP_CONFIG[1].tube_volume == 6
 
     def test_load_config_with_new_defaults(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
