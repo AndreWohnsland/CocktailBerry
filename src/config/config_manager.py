@@ -25,11 +25,14 @@ from src.config.config_types import (
     ChooseType,
     ConfigInterface,
     DictType,
+    DynamicConfigType,
     FloatType,
     IntType,
     ListType,
+    NormalLedConfig,
     PumpConfig,
     StringType,
+    WS281xLedConfig,
 )
 from src.config.errors import ConfigError
 from src.config.validators import build_number_limiter, validate_max_length
@@ -111,7 +114,19 @@ class ConfigManager:
     MAKER_USE_RECIPE_VOLUME: bool = False
     # Option to add the single ingredient option to the maker pane
     MAKER_ADD_SINGLE_INGREDIENT: bool = False
-    # List of LED pins for control
+    # List of LED configurations (supports normal and WS281x LEDs)
+    LED_CONFIG: ClassVar[list[WS281xLedConfig | NormalLedConfig]] = [
+        WS281xLedConfig(
+            led_type="ws281x",
+            pins=[],
+            brightness=100,
+            count=24,
+            number_rings=1,
+            default_on=False,
+            preparation_state="Effect",
+        )
+    ]
+    # Legacy LED configs - kept for backward compatibility, will be migrated to LED_CONFIG
     LED_PINS: ClassVar[list[int]] = []
     # Value for LED brightness
     LED_BRIGHTNESS: int = 100
@@ -193,6 +208,38 @@ class ConfigManager:
             "MAKER_CHECK_INTERNET": BoolType(check_name="Check Internet"),
             "MAKER_USE_RECIPE_VOLUME": BoolType(check_name="Use Recipe Volume"),
             "MAKER_ADD_SINGLE_INGREDIENT": BoolType(check_name="Can Spend Single Ingredient"),
+            # New LED_CONFIG using DynamicConfigType
+            "LED_CONFIG": ListType(
+                DynamicConfigType(
+                    discriminator_field="led_type",
+                    type_mapping={
+                        "normal": (
+                            {
+                                "led_type": ChooseType(allowed=["normal", "ws281x"]),
+                                "pins": ListType(IntType([build_number_limiter(0, 200)]), 0),
+                                "brightness": IntType([build_number_limiter(1, 255)]),
+                                "default_on": BoolType(check_name="Default On"),
+                                "preparation_state": ChooseOptions.leds,
+                            },
+                            NormalLedConfig,
+                        ),
+                        "ws281x": (
+                            {
+                                "led_type": ChooseType(allowed=["normal", "ws281x"]),
+                                "pins": ListType(IntType([build_number_limiter(0, 200)]), 0),
+                                "brightness": IntType([build_number_limiter(1, 255)]),
+                                "count": IntType([build_number_limiter(1, 500)]),
+                                "number_rings": IntType([build_number_limiter(1, 10)]),
+                                "default_on": BoolType(check_name="Default On"),
+                                "preparation_state": ChooseOptions.leds,
+                            },
+                            WS281xLedConfig,
+                        ),
+                    },
+                ),
+                0,
+            ),
+            # Legacy LED configs kept for backward compatibility
             "LED_PINS": ListType(IntType([build_number_limiter(0, 200)]), 0),
             "LED_BRIGHTNESS": IntType([build_number_limiter(1, 255)]),
             "LED_COUNT": IntType([build_number_limiter(1, 500)]),
@@ -216,6 +263,56 @@ class ConfigManager:
             "EXP_DEMO_MODE": BoolType(check_name="Activate Demo Mode"),
         }
 
+    def _migrate_legacy_led_config(self, loaded_config: dict) -> None:
+        """Migrate legacy LED_* configs to new LED_CONFIG structure.
+
+        This method checks if LED_CONFIG was loaded from file, and if not,
+        migrates the legacy LED_* settings.
+        
+        Args:
+            loaded_config: The configuration dict loaded from file
+        """
+        # Only migrate if LED_CONFIG was not in the loaded config
+        if "LED_CONFIG" in loaded_config:
+            return
+
+        # Check if we have any legacy LED configuration (non-default values)
+        has_legacy_led = (
+            len(self.LED_PINS) > 0
+            or self.LED_BRIGHTNESS != 100
+            or self.LED_COUNT != 24
+            or self.LED_NUMBER_RINGS != 1
+            or self.LED_DEFAULT_ON
+            or self.LED_PREPARATION_STATE != "Effect"
+        )
+
+        if not has_legacy_led:
+            # No legacy config to migrate, keep default
+            return
+
+        # Create LED config based on LED_IS_WS flag
+        if self.LED_IS_WS:
+            led_config = WS281xLedConfig(
+                led_type="ws281x",
+                pins=self.LED_PINS.copy(),
+                brightness=self.LED_BRIGHTNESS,
+                count=self.LED_COUNT,
+                number_rings=self.LED_NUMBER_RINGS,
+                default_on=self.LED_DEFAULT_ON,
+                preparation_state=self.LED_PREPARATION_STATE,
+            )
+        else:
+            led_config = NormalLedConfig(
+                led_type="normal",
+                pins=self.LED_PINS.copy(),
+                brightness=self.LED_BRIGHTNESS,
+                default_on=self.LED_DEFAULT_ON,
+                preparation_state=self.LED_PREPARATION_STATE,
+            )
+
+        self.LED_CONFIG = [led_config]
+        _logger.log_event("INFO", "Migrated legacy LED configuration to new LED_CONFIG structure")
+
     def read_local_config(self, update_config: bool = False, validate: bool = True) -> None:
         """Read the local config file and set the values if they are valid.
 
@@ -227,6 +324,8 @@ class ConfigManager:
             configuration = yaml.safe_load(stream)
         if configuration:
             self.set_config(configuration, validate)
+        # Migrate legacy LED config after loading config but before syncing
+        self._migrate_legacy_led_config(configuration if configuration else {})
         if update_config:
             self.sync_config_to_file()
 
@@ -274,6 +373,19 @@ class ConfigManager:
             for key, value in setting.dict_types.items():
                 config[key] = {}
                 self._enhance_config_specific_information(config[key], value)
+        if isinstance(setting, DynamicConfigType):
+            # Add discriminator info and type mapping
+            config["discriminator_field"] = setting.discriminator_field
+            config["type_options"] = setting.get_discriminator_options()
+            # Add schema for each type variant
+            config["type_schemas"] = {}
+            for type_value in setting.get_discriminator_options():
+                schema = setting.get_schema_for_type(type_value)
+                if schema:
+                    config["type_schemas"][type_value] = {}
+                    for key, value in schema.items():
+                        config["type_schemas"][type_value][key] = {}
+                        self._enhance_config_specific_information(config["type_schemas"][type_value][key], value)
 
     def set_config(self, configuration: dict, validate: bool) -> None:
         """Validate the config and set new values."""

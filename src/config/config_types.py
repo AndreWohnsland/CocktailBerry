@@ -239,6 +239,66 @@ class PumpConfig(ConfigClass):
         return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
 
 
+class NormalLedConfig(ConfigClass):
+    """Configuration for normal (non-WS281x) LEDs."""
+
+    def __init__(
+        self,
+        led_type: str,
+        pins: list[int],
+        brightness: int,
+        default_on: bool,
+        preparation_state: str,
+    ) -> None:
+        self.led_type = led_type
+        self.pins = pins
+        self.brightness = brightness
+        self.default_on = default_on
+        self.preparation_state = preparation_state
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "led_type": self.led_type,
+            "pins": self.pins,
+            "brightness": self.brightness,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
+        }
+
+
+class WS281xLedConfig(ConfigClass):
+    """Configuration for WS281x (controllable) LEDs."""
+
+    def __init__(
+        self,
+        led_type: str,
+        pins: list[int],
+        brightness: int,
+        count: int,
+        number_rings: int,
+        default_on: bool,
+        preparation_state: str,
+    ) -> None:
+        self.led_type = led_type
+        self.pins = pins
+        self.brightness = brightness
+        self.count = count
+        self.number_rings = number_rings
+        self.default_on = default_on
+        self.preparation_state = preparation_state
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "led_type": self.led_type,
+            "pins": self.pins,
+            "brightness": self.brightness,
+            "count": self.count,
+            "number_rings": self.number_rings,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
+        }
+
+
 class DictType(_ConfigType[ConfigClassT]):
     """Dict configuration type.
 
@@ -274,3 +334,87 @@ class DictType(_ConfigType[ConfigClassT]):
     def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:
         """Serialize the given value."""
         return config_class.to_config()
+
+
+class DynamicConfigType(_ConfigType[ConfigClassT]):
+    """Dynamic configuration type with type discriminator.
+
+    This type allows a single config to represent multiple different schemas based on a
+    discriminator field. Each discriminator value maps to a specific DictType schema and
+    ConfigClass implementation.
+
+    Example:
+        LED configuration can be either "normal" or "ws281x" type, each with different fields.
+    """
+
+    def __init__(
+        self,
+        discriminator_field: str,
+        type_mapping: Mapping[str, tuple[Mapping[str, ConfigInterface[Any]], type[ConfigClassT]]],
+        validator_functions: list[Callable[[str, Any], None]] = [],
+        prefix: str | None = None,
+        suffix: str | None = None,
+    ) -> None:
+        """Initialize DynamicConfigType.
+
+        Args:
+            discriminator_field: The field name that determines which schema to use (e.g., "led_type")
+            type_mapping: Maps discriminator values to (dict_types, config_class) tuples
+            validator_functions: Additional validation functions
+            prefix: Optional prefix for UI display
+            suffix: Optional suffix for UI display
+        """
+        super().__init__(dict, validator_functions, prefix, suffix)
+        self.discriminator_field = discriminator_field
+        self.type_mapping = type_mapping
+        # Create internal DictType instances for each variant
+        self._dict_types: dict[str, DictType] = {}
+        for type_value, (dict_types, config_class) in type_mapping.items():
+            self._dict_types[type_value] = DictType(dict_types, config_class)
+
+    def validate(self, configname: str, config_dict: dict[str, Any]) -> None:
+        """Validate the given value."""
+        super().validate(configname, config_dict)
+
+        # Check discriminator field exists
+        type_value = config_dict.get(self.discriminator_field)
+        if type_value is None:
+            raise ConfigError(
+                f"Config '{configname}' is missing discriminator field '{self.discriminator_field}'"
+            )
+
+        # Check discriminator value is valid
+        if type_value not in self.type_mapping:
+            allowed_types = list(self.type_mapping.keys())
+            raise ConfigError(
+                f"Config '{configname}' has invalid {self.discriminator_field} '{type_value}'. "
+                f"Allowed values: {allowed_types}"
+            )
+
+        # Validate using the appropriate DictType
+        dict_type = self._dict_types[type_value]
+        dict_type.validate(configname, config_dict)
+
+    def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:
+        """Deserialize the given value."""
+        type_value = config_dict.get(self.discriminator_field)
+        if type_value is None or type_value not in self._dict_types:
+            # Fallback to first available type if discriminator is missing
+            type_value = list(self.type_mapping.keys())[0]
+
+        dict_type = self._dict_types[type_value]
+        return dict_type.from_config(config_dict)
+
+    def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:
+        """Serialize the given value."""
+        return config_class.to_config()
+
+    def get_discriminator_options(self) -> list[str]:
+        """Get list of valid discriminator values."""
+        return list(self.type_mapping.keys())
+
+    def get_schema_for_type(self, type_value: str) -> Mapping[str, ConfigInterface[Any]] | None:
+        """Get the schema (dict_types) for a specific discriminator value."""
+        if type_value in self.type_mapping:
+            return self.type_mapping[type_value][0]
+        return None
