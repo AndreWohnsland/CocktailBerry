@@ -53,7 +53,14 @@ const ConfigWindow: React.FC = () => {
 
   const getBaseConfig = (
     key: string,
-  ): { prefix?: string; suffix?: string; immutable: boolean; allowed?: string[]; checkName: string } => {
+  ): {
+    prefix?: string;
+    suffix?: string;
+    immutable: boolean;
+    allowed?: string[];
+    checkName: string;
+    default?: PossibleConfigValue;
+  } => {
     const baseConfigRegex = /^([^[\].]+)/;
     const nestedPropertyRegex = /\.([^.]+)$/;
 
@@ -71,6 +78,7 @@ const ConfigWindow: React.FC = () => {
       immutable: selectedData?.immutable ?? false,
       allowed: nestedData?.allowed,
       checkName: nestedData?.check_name ?? 'on',
+      default: nestedData?.default,
     };
   };
 
@@ -169,8 +177,8 @@ const ConfigWindow: React.FC = () => {
   };
 
   const renderListField = (key: string, value: PossibleConfigValue[]) => {
-    const defaultValue = value.length > 0 ? value[0] : '';
     const baseConfig = getBaseConfig(key);
+    const defaultValue = baseConfig.default ?? value[0] ?? '';
     return (
       <ListDisplay
         defaultValue={defaultValue}
@@ -209,12 +217,14 @@ const ConfigWindow: React.FC = () => {
   };
 
   const handleAddItem = (key: string, defaultValue: PossibleConfigValue) => {
-    setConfigData((prevData) => ({
-      ...prevData,
-      [key]: Array.isArray(prevData[key])
-        ? [...prevData[key], getDefaultValue(defaultValue)]
-        : [getDefaultValue(defaultValue)],
-    }));
+    setConfigData((prevData) => {
+      const currentValue = prevData[key];
+      const newValue = Array.isArray(currentValue) ? [...currentValue, defaultValue] : [defaultValue];
+      return {
+        ...prevData,
+        [key]: newValue,
+      } as ConfigData;
+    });
   };
 
   const getDefaultValue = (value: PossibleConfigValue) => {

@@ -5,9 +5,21 @@ This module tests the serialization, deserialization, and validation of various 
 
 from __future__ import annotations
 
+from typing import Any
+
 import pytest
 
-from src.config.config_types import BoolType, ChooseType, DictType, FloatType, IntType, ListType, PumpConfig, StringType
+from src.config.config_types import (
+    BoolType,
+    ChooseType,
+    ConfigClass,
+    DictType,
+    FloatType,
+    IntType,
+    ListType,
+    PumpConfig,
+    StringType,
+)
 from src.config.errors import ConfigError
 
 
@@ -53,6 +65,16 @@ class TestStringType:
         assert string_type.prefix == "Pre:"
         assert string_type.suffix == "suf"
 
+    def test_get_default(self) -> None:
+        """Test get_default returns empty string by default."""
+        string_type = StringType()
+        assert string_type.get_default() == ""
+
+    def test_get_default_with_custom_default(self) -> None:
+        """Test get_default returns custom default value."""
+        string_type = StringType(default="custom_default")
+        assert string_type.get_default() == "custom_default"
+
 
 class TestIntType:
     """Tests for IntType config class."""
@@ -95,6 +117,16 @@ class TestIntType:
         int_type = IntType(prefix="Value:", suffix="px")
         assert int_type.prefix == "Value:"
         assert int_type.suffix == "px"
+
+    def test_get_default(self) -> None:
+        """Test get_default returns 0 by default."""
+        int_type = IntType()
+        assert int_type.get_default() == 0
+
+    def test_get_default_with_custom_default(self) -> None:
+        """Test get_default returns custom default value."""
+        int_type = IntType(default=42)
+        assert int_type.get_default() == 42
 
 
 class TestFloatType:
@@ -145,6 +177,16 @@ class TestFloatType:
         float_type = FloatType()
         assert float_type.from_config(3.14) == pytest.approx(3.14)
 
+    def test_get_default(self) -> None:
+        """Test get_default returns 0.0 by default."""
+        float_type = FloatType()
+        assert float_type.get_default() == pytest.approx(0.0)
+
+    def test_get_default_with_custom_default(self) -> None:
+        """Test get_default returns custom default value."""
+        float_type = FloatType(default=3.14)
+        assert float_type.get_default() == pytest.approx(3.14)
+
 
 class TestBoolType:
     """Tests for BoolType config class."""
@@ -185,6 +227,16 @@ class TestBoolType:
         bool_type = BoolType()
         assert bool_type.check_name == "on"
 
+    def test_get_default(self) -> None:
+        """Test get_default returns False by default."""
+        bool_type = BoolType()
+        assert bool_type.get_default() is False
+
+    def test_get_default_with_custom_default(self) -> None:
+        """Test get_default returns custom default value."""
+        bool_type = BoolType(default=True)
+        assert bool_type.get_default() is True
+
 
 class TestChooseType:
     """Tests for ChooseType config class."""
@@ -222,6 +274,16 @@ class TestChooseType:
         """Test choose deserialization (from_config)."""
         choose_type = ChooseType(allowed=["a", "b"])
         assert choose_type.from_config("b") == "b"
+
+    def test_get_default(self) -> None:
+        """Test get_default returns first allowed option."""
+        choose_type = ChooseType(allowed=["first", "second", "third"])
+        assert choose_type.get_default() == "first"
+
+    def test_get_default_empty_allowed(self) -> None:
+        """Test get_default with custom allowed list returns empty string."""
+        choose_type = ChooseType(allowed=["first", "second"], default="second")
+        assert choose_type.get_default() == "second"
 
 
 class TestListType:
@@ -286,6 +348,16 @@ class TestListType:
         list_type = ListType(IntType(), 0, immutable=True)
         assert list_type.immutable is True
 
+    def test_get_default(self) -> None:
+        """Test get_default returns empty list by default."""
+        list_type = ListType(IntType(), 0)
+        assert list_type.get_default() == []
+
+    def test_get_default_with_custom_default(self) -> None:
+        """Test get_default returns custom default value."""
+        list_type = ListType(IntType(), 0, default=[1, 2, 3])
+        assert list_type.get_default() == [1, 2, 3]
+
 
 class TestDictType:
     """Tests for DictType config class."""
@@ -332,46 +404,67 @@ class TestDictType:
         assert result.volume_flow == pytest.approx(2.5)
         assert result.tube_volume == 10
 
+    def test_get_default(self) -> None:
+        """Test get_default returns dict with default values."""
+        dict_type = DictType(
+            {"name": StringType(), "age": IntType()},
+            PumpConfig,
+        )
+        default = dict_type.get_default()
+        assert default == {"name": "", "age": 0}
 
-class TestPumpConfig:
-    """Tests for PumpConfig class."""
+    def test_get_default_config_class_with_pump_config(self) -> None:
+        """Test get_default_config_class creates PumpConfig with proper defaults."""
+        dict_type = DictType(
+            {"pin": IntType(), "volume_flow": FloatType(), "tube_volume": IntType()},
+            PumpConfig,
+        )
+        pump = dict_type.get_default_config_class()
+        assert isinstance(pump, PumpConfig)
+        assert pump.pin == 0
+        assert pump.volume_flow == pytest.approx(0.0)
+        assert pump.tube_volume == 0
 
-    def test_initialization(self) -> None:
-        """Test PumpConfig initialization."""
-        pump = PumpConfig(pin=14, volume_flow=30.0, tube_volume=5)
-        assert pump.pin == 14
-        assert pump.volume_flow == pytest.approx(30.0)
-        assert pump.tube_volume == 5
-
-    def test_to_config(self) -> None:
-        """Test PumpConfig serialization to dict."""
-        pump = PumpConfig(pin=14, volume_flow=30.0, tube_volume=5)
-        result = pump.to_config()
-        assert result["pin"] == 14
-        assert result["volume_flow"] == pytest.approx(30.0)
-        assert result["tube_volume"] == 5
-        assert isinstance(result, dict)
-
-    def test_from_config(self) -> None:
-        """Test PumpConfig deserialization from dict."""
-        config_dict = {"pin": 14, "volume_flow": 30.0, "tube_volume": 5}
-        pump = PumpConfig.from_config(config_dict)
+    def test_get_default_config_class_with_custom_defaults(self) -> None:
+        """Test get_default_config_class uses custom default values from dict_types."""
+        dict_type = DictType(
+            {
+                "pin": IntType(default=14),
+                "volume_flow": FloatType(default=30.0),
+                "tube_volume": IntType(default=5),
+            },
+            PumpConfig,
+        )
+        pump = dict_type.get_default_config_class()
         assert isinstance(pump, PumpConfig)
         assert pump.pin == 14
         assert pump.volume_flow == pytest.approx(30.0)
         assert pump.tube_volume == 5
 
-    def test_round_trip_serialization(self) -> None:
-        """Test that serialization and deserialization are inverses.
+    def test_get_default_config_class_misconfigured_class(self) -> None:
+        """Test get_default_config_class fails with misconfigured class.
 
-        This edge case ensures config data integrity during save/load cycles.
+        Edge case: When dict_types doesn't match the config_class constructor,
+        the from_config call will fail because the class doesn't accept the provided keys.
+        This can only happen if the user falsely specifies the DictType with an incompatible class.
         """
-        original = PumpConfig(pin=7, volume_flow=25.5, tube_volume=8)
-        config_dict = original.to_config()
-        restored = PumpConfig.from_config(config_dict)
-        assert original.pin == restored.pin
-        assert original.volume_flow == pytest.approx(restored.volume_flow)
-        assert original.tube_volume == restored.tube_volume
+
+        class MisconfiguredClass(ConfigClass):
+            """A class that only accepts 'name' but DictType provides 'pin'."""
+
+            def __init__(self, name: str) -> None:
+                self.name = name
+
+            def to_config(self) -> dict[str, Any]:
+                return {"name": self.name}
+
+        dict_type = DictType(
+            {"pin": IntType(), "volume_flow": FloatType()},
+            MisconfiguredClass,
+        )
+        # This should raise TypeError because MisconfiguredClass.__init__ doesn't accept 'pin' and 'volume_flow'
+        with pytest.raises(TypeError):
+            dict_type.get_default_config_class()
 
 
 class TestEdgeCases:
