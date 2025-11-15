@@ -268,9 +268,10 @@ class ConfigManager:
 
         This method checks if LED_CONFIG was loaded from file, and if not,
         migrates the legacy LED_* settings.
-        
+
         Args:
             loaded_config: The configuration dict loaded from file
+
         """
         # Only migrate if LED_CONFIG was not in the loaded config
         if "LED_CONFIG" in loaded_config:
@@ -279,8 +280,8 @@ class ConfigManager:
         # Check if we have any legacy LED configuration (non-default values)
         has_legacy_led = (
             len(self.LED_PINS) > 0
-            or self.LED_BRIGHTNESS != 100
-            or self.LED_COUNT != 24
+            or self.LED_BRIGHTNESS != 100  # noqa: PLR2004
+            or self.LED_COUNT != 24  # noqa: PLR2004
             or self.LED_NUMBER_RINGS != 1
             or self.LED_DEFAULT_ON
             or self.LED_PREPARATION_STATE != "Effect"
@@ -292,7 +293,7 @@ class ConfigManager:
 
         # Create LED config based on LED_IS_WS flag
         if self.LED_IS_WS:
-            led_config = WS281xLedConfig(
+            led_config: WS281xLedConfig | NormalLedConfig = WS281xLedConfig(
                 led_type="ws281x",
                 pins=self.LED_PINS.copy(),
                 brightness=self.LED_BRIGHTNESS,
@@ -310,7 +311,7 @@ class ConfigManager:
                 preparation_state=self.LED_PREPARATION_STATE,
             )
 
-        self.LED_CONFIG = [led_config]
+        self.LED_CONFIG = [led_config]  # type: ignore
         _logger.log_event("INFO", "Migrated legacy LED configuration to new LED_CONFIG structure")
 
     def read_local_config(self, update_config: bool = False, validate: bool = True) -> None:

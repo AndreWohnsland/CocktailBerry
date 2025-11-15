@@ -79,20 +79,20 @@ class _ConfigType(ConfigInterface[T]):
         """Return the type for the UI."""
         return self.config_type
 
-    def get_default(self) -> Any:
+    def get_default(self) -> Any:  # noqa: PLR0911
         """Get the default value for this config type."""
         # Base implementation - specific types should override if needed
-        if self.config_type == str:
+        if self.config_type is str:
             return ""
-        elif self.config_type == int:
+        if self.config_type is int:
             return 0
-        elif self.config_type == float:
+        if self.config_type is float:
             return 0.0
-        elif self.config_type == bool:
+        if self.config_type is bool:
             return False
-        elif self.config_type == list:
+        if self.config_type is list:
             return []
-        elif self.config_type == dict:
+        if self.config_type is dict:
             return {}
         return None
 
@@ -374,7 +374,7 @@ class DictType(_ConfigType[ConfigClassT]):
         return {key: value_type.get_default() for key, value_type in self.dict_types.items()}
 
 
-class DynamicConfigType(_ConfigType[ConfigClassT]):
+class DynamicConfigType(_ConfigType[ConfigClass]):
     """Dynamic configuration type with type discriminator.
 
     This type allows a single config to represent multiple different schemas based on a
@@ -382,12 +382,13 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
 
     Example:
         LED configuration can be either "normal" or "ws281x" type, each with different fields.
+
     """
 
     def __init__(
         self,
         discriminator_field: str,
-        type_mapping: Mapping[str, DictType[ConfigClassT]],
+        type_mapping: Mapping[str, DictType[Any]],
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
@@ -400,6 +401,7 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
             validator_functions: Additional validation functions
             prefix: Optional prefix for UI display
             suffix: Optional suffix for UI display
+
         """
         super().__init__(dict, validator_functions, prefix, suffix)
         self.discriminator_field = discriminator_field
@@ -412,9 +414,7 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
         # Check discriminator field exists
         type_value = config_dict.get(self.discriminator_field)
         if type_value is None:
-            raise ConfigError(
-                f"Config '{configname}' is missing discriminator field '{self.discriminator_field}'"
-            )
+            raise ConfigError(f"Config '{configname}' is missing discriminator field '{self.discriminator_field}'")
 
         # Check discriminator value is valid
         if type_value not in self.type_mapping:
@@ -428,17 +428,17 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
         dict_type = self.type_mapping[type_value]
         dict_type.validate(configname, config_dict)
 
-    def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:
+    def from_config(self, config_dict: dict[str, Any]) -> ConfigClass:
         """Deserialize the given value."""
         type_value = config_dict.get(self.discriminator_field)
         if type_value is None or type_value not in self.type_mapping:
             # Fallback to first available type if discriminator is missing
-            type_value = list(self.type_mapping.keys())[0]
+            type_value = next(iter(self.type_mapping.keys()))
 
         dict_type = self.type_mapping[type_value]
         return dict_type.from_config(config_dict)
 
-    def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:
+    def to_config(self, config_class: ConfigClass) -> dict[str, Any]:
         """Serialize the given value."""
         return config_class.to_config()
 
@@ -454,5 +454,5 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
 
     def get_default(self) -> dict[str, Any]:
         """Get the default value - use first type's default."""
-        first_type = list(self.type_mapping.keys())[0]
+        first_type = next(iter(self.type_mapping.keys()))
         return self.type_mapping[first_type].get_default()
