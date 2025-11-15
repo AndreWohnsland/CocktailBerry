@@ -294,7 +294,20 @@ const ConfigWindow: React.FC = () => {
   };
 
   const renderListField = (key: string, value: PossibleConfigValue[]) => {
-    const defaultValue = value.length > 0 ? value[0] : '';
+    const baseConfigName = key.match(/^([^[\].]+)/)?.[0] || '';
+    const selectedData = data?.[baseConfigName];
+    
+    // Determine default value for new items
+    let defaultValue: PossibleConfigValue;
+    if (value.length > 0) {
+      defaultValue = value[0];
+    } else if (selectedData?.discriminator_field && selectedData?.type_options) {
+      // For dynamic configs, create a proper default object
+      defaultValue = createDynamicConfigDefault(selectedData);
+    } else {
+      defaultValue = '';
+    }
+    
     const baseConfig = getBaseConfig(key);
     return (
       <ListDisplay
@@ -306,6 +319,33 @@ const ConfigWindow: React.FC = () => {
         {value.map((item, index) => renderInputField(`${key}[${index}]`, item))}
       </ListDisplay>
     );
+  };
+
+  const createDynamicConfigDefault = (configInfo: any) => {
+    const discriminatorField = configInfo.discriminator_field;
+    const firstType = configInfo.type_options[0];
+    const typeSchemas = configInfo.type_schemas || {};
+    const schema = typeSchemas[firstType] || {};
+    
+    const defaultObj: any = { [discriminatorField]: firstType };
+    
+    // Create default values based on schema
+    Object.keys(schema).forEach((fieldKey) => {
+      if (fieldKey === discriminatorField) return;
+      const fieldSchema = schema[fieldKey];
+      
+      if (fieldSchema.check_name !== undefined) {
+        defaultObj[fieldKey] = false;
+      } else if (fieldSchema.allowed && fieldSchema.allowed.length > 0) {
+        defaultObj[fieldKey] = fieldSchema.allowed[0];
+      } else if (fieldSchema.immutable !== undefined) {
+        defaultObj[fieldKey] = [];
+      } else {
+        defaultObj[fieldKey] = 0;
+      }
+    });
+    
+    return defaultObj;
   };
 
   const renderInputField = (key: string, value: PossibleConfigValue) => {
