@@ -154,15 +154,140 @@ const ConfigWindow: React.FC = () => {
     );
   };
 
-  const renderObjectField = (key: string, value: { [key: string]: PossibleConfigValueTypes }) => (
-    <div className='flex flex-row w-full'>
-      {Object.keys(value).map((subKey) => (
-        <div key={subKey} className='flex items-center w-full'>
-          {renderInputField(`${key}.${subKey}`, value[subKey])}
+  const renderObjectField = (key: string, value: { [key: string]: PossibleConfigValueTypes }) => {
+    // Check if this is a dynamic config (has discriminator_field)
+    const baseConfig = getBaseConfig(key);
+    const baseConfigName = key.match(/^([^[\].]+)/)?.[0] || '';
+    const selectedData = data?.[baseConfigName];
+    
+    if (selectedData?.discriminator_field && value[selectedData.discriminator_field]) {
+      return renderDynamicConfigField(key, value, selectedData);
+    }
+    
+    // Regular object field
+    return (
+      <div className='flex flex-row w-full'>
+        {Object.keys(value).map((subKey) => (
+          <div key={subKey} className='flex items-center w-full'>
+            {renderInputField(`${key}.${subKey}`, value[subKey])}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderDynamicConfigField = (
+    key: string,
+    value: { [key: string]: PossibleConfigValueTypes },
+    configInfo: any,
+  ) => {
+    const discriminatorField = configInfo.discriminator_field;
+    const currentType = String(value[discriminatorField] || configInfo.type_options[0]);
+    const typeSchemas = configInfo.type_schemas || {};
+    const currentSchema = typeSchemas[currentType] || {};
+
+    const handleTypeChange = (newType: string) => {
+      // When type changes, we need to rebuild the entire object with new schema
+      const newSchema = typeSchemas[newType] || {};
+      const newValue: any = { [discriminatorField]: newType };
+      
+      // Initialize with default values based on schema
+      Object.keys(newSchema).forEach((fieldKey) => {
+        if (fieldKey === discriminatorField) return;
+        const fieldSchema = newSchema[fieldKey];
+        
+        // Set default values based on type
+        if (fieldSchema.check_name !== undefined) {
+          newValue[fieldKey] = false;
+        } else if (fieldSchema.allowed) {
+          newValue[fieldKey] = fieldSchema.allowed[0] || '';
+        } else if (fieldSchema.immutable !== undefined) {
+          newValue[fieldKey] = [];
+        } else {
+          newValue[fieldKey] = 0;
+        }
+      });
+      
+      handleInputChange(key, newValue);
+    };
+
+    return (
+      <div className='flex flex-col w-full gap-2'>
+        {/* Type selector */}
+        <div className='flex flex-row items-center w-full'>
+          <span className='text-secondary font-bold mr-2'>Type:</span>
+          <DropDown
+            value={currentType}
+            allowedValues={configInfo.type_options}
+            handleInputChange={handleTypeChange}
+          />
         </div>
-      ))}
-    </div>
-  );
+
+        {/* Dynamic fields based on selected type */}
+        <div className='flex flex-col w-full gap-2 pl-4'>
+          {Object.keys(currentSchema).map((fieldKey) => {
+            if (fieldKey === discriminatorField) return null;
+            
+            const fieldValue = value[fieldKey];
+            const fieldSchema = currentSchema[fieldKey];
+            
+            return (
+              <div key={fieldKey} className='flex flex-col w-full'>
+                <span className='text-neutral text-sm mb-1'>{fieldKey}:</span>
+                {renderDynamicFieldInput(`${key}.${fieldKey}`, fieldValue, fieldSchema)}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  const renderDynamicFieldInput = (key: string, value: any, fieldSchema: any) => {
+    // Handle different field types based on schema
+    if (fieldSchema.allowed) {
+      // ChooseType
+      return (
+        <DropDown
+          value={String(value)}
+          allowedValues={fieldSchema.allowed.map(String)}
+          handleInputChange={(newValue) => handleInputChange(key, newValue)}
+        />
+      );
+    } else if (fieldSchema.check_name !== undefined) {
+      // BoolType
+      return (
+        <CheckBox
+          value={Boolean(value)}
+          checkName={fieldSchema.check_name}
+          handleInputChange={(newValue) => handleInputChange(key, newValue)}
+        />
+      );
+    } else if (fieldSchema.immutable !== undefined || Array.isArray(value)) {
+      // ListType
+      return renderListField(key, Array.isArray(value) ? value : []);
+    } else if (typeof value === 'number') {
+      // IntType or FloatType
+      return (
+        <NumberInput
+          value={value}
+          prefix={fieldSchema.prefix}
+          suffix={fieldSchema.suffix}
+          handleInputChange={(newValue) => handleInputChange(key, newValue)}
+        />
+      );
+    } else {
+      // StringType or fallback
+      return (
+        <TextInput
+          value={String(value)}
+          prefix={fieldSchema.prefix}
+          suffix={fieldSchema.suffix}
+          handleInputChange={(newValue) => handleInputChange(key, newValue)}
+        />
+      );
+    }
+  };
 
   const renderColorField = (key: string, value: string) => {
     return <ColorSelect value={value} handleInputChange={(newValue) => handleInputChange(key, newValue)} />;

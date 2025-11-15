@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Callable, Literal, Union
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import (
@@ -12,6 +12,7 @@ from src.config.config_types import (
     ConfigClass,
     ConfigInterface,
     DictType,
+    DynamicConfigType,
     FloatType,
     IntType,
     ListType,
@@ -146,6 +147,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             field = self._build_list_field(layout, config_name, current_value, config_setting)
         elif isinstance(config_setting, ChooseType):
             field = self._build_selection_filed(layout, current_value, config_setting.allowed)
+        elif isinstance(config_setting, DynamicConfigType):
+            field = self._build_dynamic_config_field(layout, config_name, current_value, config_setting)
         elif isinstance(config_setting, DictType):
             field = self._build_dict_field(layout, config_name, current_value, config_setting)
         else:
@@ -276,6 +279,111 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         recursive_delete(element)
         getter_fn_list.remove(getter_fn)
         element.deleteLater()
+
+    def _build_dynamic_config_field(
+        self,
+        layout: QBoxLayout,
+        config_name: str,
+        current_value: ConfigClass | Literal[""],
+        config_setting: DynamicConfigType,
+    ) -> Callable[[], dict]:
+        """Build a dynamic config field that changes based on discriminator value.
+        
+        This creates a type selector dropdown and dynamically shows/hides fields
+        based on the selected type.
+        """
+        v_container = QVBoxLayout()
+        
+        # Get current discriminator value
+        if current_value == "":
+            # New item - use first available type
+            current_type = config_setting.get_discriminator_options()[0]
+            current_dict = {config_setting.discriminator_field: current_type}
+        else:
+            current_dict = current_value.to_config()
+            current_type = current_dict.get(config_setting.discriminator_field, config_setting.get_discriminator_options()[0])
+        
+        # Build type selector
+        type_selector_layout = QHBoxLayout()
+        type_label = create_label("Type:", MEDIUM_FONT, bold=True)
+        type_selector_layout.addWidget(type_label)
+        
+        type_selector = QComboBox()
+        type_selector.addItems(config_setting.get_discriminator_options())
+        adjust_font(type_selector, MEDIUM_FONT)
+        type_selector.setProperty("cssClass", "secondary")
+        index = type_selector.findText(current_type, Qt.MatchFixedString)  # type: ignore
+        type_selector.setCurrentIndex(index)
+        type_selector_layout.addWidget(type_selector)
+        v_container.addLayout(type_selector_layout)
+        
+        # Container for dynamic fields (will be swapped when type changes)
+        fields_container = QVBoxLayout()
+        v_container.addLayout(fields_container)
+        
+        # Store getter functions for each type variant
+        type_getters: dict[str, dict[str, Callable]] = {}
+        type_widgets: dict[str, list[QWidget]] = {}
+        
+        # Build fields for each type
+        for type_value in config_setting.get_discriminator_options():
+            schema = config_setting.get_schema_for_type(type_value)
+            if schema is None:
+                continue
+                
+            getter_fn_dict: dict[str, Callable] = {}
+            widgets_list: list[QWidget] = []
+            
+            # Build fields for this type
+            for key, value_setting in schema.items():
+                if key == config_setting.discriminator_field:
+                    # Skip discriminator field - handled by selector
+                    continue
+                    
+                field_layout = QHBoxLayout()
+                field_label = create_label(f"{key}:", MEDIUM_FONT)
+                field_layout.addWidget(field_label)
+                widgets_list.append(field_label)
+                
+                # Get current value for this field
+                field_value = current_dict.get(key, "")
+                getter_fn = self._build_input_field(config_name, value_setting, field_value, field_layout)
+                getter_fn_dict[key] = getter_fn
+                
+                # Create widget to hold this field layout
+                field_widget = QWidget()
+                field_widget.setLayout(field_layout)
+                widgets_list.append(field_widget)
+                fields_container.addWidget(field_widget)
+                
+                # Hide if not current type
+                if type_value != current_type:
+                    field_widget.setVisible(False)
+                    
+            type_getters[type_value] = getter_fn_dict
+            type_widgets[type_value] = widgets_list
+        
+        # Function to switch visible fields based on type
+        def on_type_changed(new_type: str) -> None:
+            for type_val, widgets in type_widgets.items():
+                visible = (type_val == new_type)
+                for widget in widgets:
+                    widget.setVisible(visible)
+        
+        type_selector.currentTextChanged.connect(on_type_changed)  # type: ignore
+        
+        layout.addLayout(v_container)
+        
+        # Return getter that builds dict with discriminator and current type's fields
+        def get_dynamic_value() -> dict:
+            selected_type = type_selector.currentText()
+            result = {config_setting.discriminator_field: selected_type}
+            if selected_type in type_getters:
+                for key, getter in type_getters[selected_type].items():
+                    result[key] = getter()
+            return result
+        
+        return get_dynamic_value
 
     def _build_dict_field(
         self,
