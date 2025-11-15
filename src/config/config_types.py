@@ -163,7 +163,7 @@ class ListType(ConfigType):
 
     def __init__(
         self,
-        list_type: ConfigType,
+        list_type: ConfigInterface,
         min_length: int | Callable[[], int],
         validator_functions: Iterable[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
@@ -229,7 +229,7 @@ class DictType(ConfigType, Generic[ConfigClassT]):
 
     def __init__(
         self,
-        dict_types: Mapping[str, ConfigType],
+        dict_types: Mapping[str, ConfigInterface],
         config_class: type[ConfigClassT],
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
