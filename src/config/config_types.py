@@ -107,7 +107,7 @@ class StringType(_ConfigType[str]):
 
     def __init__(
         self,
-        validator_functions: Iterable[Callable[[str, Any], None]] = [],
+        validator_functions: Iterable[Callable[[str, str], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
     ) -> None:
@@ -119,7 +119,7 @@ class IntType(_ConfigType[int]):
 
     def __init__(
         self,
-        validator_functions: Iterable[Callable[[str, Any], None]] = [],
+        validator_functions: Iterable[Callable[[str, int], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
     ) -> None:
@@ -131,7 +131,7 @@ class FloatType(_ConfigType[float]):
 
     def __init__(
         self,
-        validator_functions: Iterable[Callable[[str, Any], None]] = [],
+        validator_functions: Iterable[Callable[[str, int | float], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
     ) -> None:
@@ -156,7 +156,7 @@ class BoolType(_ConfigType[bool]):
 
     def __init__(
         self,
-        validator_functions: Iterable[Callable[[str, Any], None]] = [],
+        validator_functions: Iterable[Callable[[str, bool], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
         check_name: str = "on",
@@ -239,12 +239,15 @@ class PumpConfig(ConfigClass):
         return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
 
 
-class DictType(_ConfigType, Generic[ConfigClassT]):
-    """Dict configuration type."""
+class DictType(_ConfigType[ConfigClassT]):
+    """Dict configuration type.
+
+    Generic over the ConfigClass type that it wraps.
+    """
 
     def __init__(
         self,
-        dict_types: Mapping[str, ConfigInterface],
+        dict_types: Mapping[str, ConfigInterface[Any]],
         config_class: type[ConfigClassT],
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
