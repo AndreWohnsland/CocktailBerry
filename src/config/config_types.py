@@ -340,8 +340,7 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
     """Dynamic configuration type with type discriminator.
 
     This type allows a single config to represent multiple different schemas based on a
-    discriminator field. Each discriminator value maps to a specific DictType schema and
-    ConfigClass implementation.
+    discriminator field. Each discriminator value maps to a specific DictType instance.
 
     Example:
         LED configuration can be either "normal" or "ws281x" type, each with different fields.
@@ -350,7 +349,7 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
     def __init__(
         self,
         discriminator_field: str,
-        type_mapping: Mapping[str, tuple[Mapping[str, ConfigInterface[Any]], type[ConfigClassT]]],
+        type_mapping: Mapping[str, DictType[ConfigClassT]],
         validator_functions: list[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
@@ -359,7 +358,7 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
 
         Args:
             discriminator_field: The field name that determines which schema to use (e.g., "led_type")
-            type_mapping: Maps discriminator values to (dict_types, config_class) tuples
+            type_mapping: Maps discriminator values to DictType instances
             validator_functions: Additional validation functions
             prefix: Optional prefix for UI display
             suffix: Optional suffix for UI display
@@ -367,10 +366,6 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
         super().__init__(dict, validator_functions, prefix, suffix)
         self.discriminator_field = discriminator_field
         self.type_mapping = type_mapping
-        # Create internal DictType instances for each variant
-        self._dict_types: dict[str, DictType] = {}
-        for type_value, (dict_types, config_class) in type_mapping.items():
-            self._dict_types[type_value] = DictType(dict_types, config_class)
 
     def validate(self, configname: str, config_dict: dict[str, Any]) -> None:
         """Validate the given value."""
@@ -392,17 +387,17 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
             )
 
         # Validate using the appropriate DictType
-        dict_type = self._dict_types[type_value]
+        dict_type = self.type_mapping[type_value]
         dict_type.validate(configname, config_dict)
 
     def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:
         """Deserialize the given value."""
         type_value = config_dict.get(self.discriminator_field)
-        if type_value is None or type_value not in self._dict_types:
+        if type_value is None or type_value not in self.type_mapping:
             # Fallback to first available type if discriminator is missing
             type_value = list(self.type_mapping.keys())[0]
 
-        dict_type = self._dict_types[type_value]
+        dict_type = self.type_mapping[type_value]
         return dict_type.from_config(config_dict)
 
     def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:
@@ -416,5 +411,5 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
     def get_schema_for_type(self, type_value: str) -> Mapping[str, ConfigInterface[Any]] | None:
         """Get the schema (dict_types) for a specific discriminator value."""
         if type_value in self.type_mapping:
-            return self.type_mapping[type_value][0]
+            return self.type_mapping[type_value].dict_types
         return None

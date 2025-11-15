@@ -7,6 +7,7 @@ import pytest
 from src.config.config_types import (
     BoolType,
     ChooseType,
+    DictType,
     DynamicConfigType,
     IntType,
     ListType,
@@ -131,7 +132,7 @@ class TestDynamicConfigType:
         return DynamicConfigType(
             discriminator_field="led_type",
             type_mapping={
-                "normal": (
+                "normal": DictType(
                     {
                         "led_type": ChooseType(allowed=["normal", "ws281x"]),
                         "pins": ListType(IntType(), 0),
@@ -141,7 +142,7 @@ class TestDynamicConfigType:
                     },
                     NormalLedConfig,
                 ),
-                "ws281x": (
+                "ws281x": DictType(
                     {
                         "led_type": ChooseType(allowed=["normal", "ws281x"]),
                         "pins": ListType(IntType(), 0),

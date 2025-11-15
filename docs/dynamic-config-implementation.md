@@ -25,14 +25,14 @@ A configuration type that supports multiple schemas based on a discriminator fie
 DynamicConfigType(
     discriminator_field="led_type",  # Field that determines the type
     type_mapping={
-        "normal": (schema_dict, ConfigClass),
-        "ws281x": (schema_dict, ConfigClass),
+        "normal": DictType(schema_dict, NormalLedConfig),
+        "ws281x": DictType(schema_dict, WS281xLedConfig),
     }
 )
 ```
 
 **Key Methods**:
-- `validate()`: Validates config dict using the appropriate schema
+- `validate()`: Validates config dict using the appropriate DictType
 - `from_config()`: Deserializes dict to the appropriate ConfigClass
 - `to_config()`: Serializes ConfigClass to dict
 - `get_discriminator_options()`: Returns list of valid type values
@@ -296,7 +296,7 @@ The `DynamicConfigType` can be used for any configuration that needs type varian
 DynamicConfigType(
     discriminator_field="pump_type",
     type_mapping={
-        "peristaltic": (
+        "peristaltic": DictType(
             {
                 "pump_type": ChooseType(allowed=["peristaltic", "gear"]),
                 "pin": IntType(),
@@ -305,7 +305,7 @@ DynamicConfigType(
             },
             PeristalticPumpConfig,
         ),
-        "gear": (
+        "gear": DictType(
             {
                 "pump_type": ChooseType(allowed=["peristaltic", "gear"]),
                 "pin": IntType(),

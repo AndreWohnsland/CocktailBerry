@@ -213,7 +213,7 @@ class ConfigManager:
                 DynamicConfigType(
                     discriminator_field="led_type",
                     type_mapping={
-                        "normal": (
+                        "normal": DictType(
                             {
                                 "led_type": ChooseType(allowed=["normal", "ws281x"]),
                                 "pins": ListType(IntType([build_number_limiter(0, 200)]), 0),
@@ -223,7 +223,7 @@ class ConfigManager:
                             },
                             NormalLedConfig,
                         ),
-                        "ws281x": (
+                        "ws281x": DictType(
                             {
                                 "led_type": ChooseType(allowed=["normal", "ws281x"]),
                                 "pins": ListType(IntType([build_number_limiter(0, 200)]), 0),
