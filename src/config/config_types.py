@@ -6,7 +6,7 @@ Simply separating by build in types is not enough for dict or list types.
 
 from __future__ import annotations
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, Protocol, TypeVar, get_args
@@ -21,8 +21,10 @@ SUPPORTED_THEMES = list(get_args(SupportedThemesType))
 SUPPORTED_RFID = list(get_args(SupportedRfidType))
 SUPPORTED_LED_STATES = list(get_args(SupportedLedStatesType))
 
+T = TypeVar("T")
 
-class ConfigInterface(Protocol):
+
+class ConfigInterface(Protocol[T]):
     """Interface for config values."""
 
     prefix: str | None = None
@@ -39,17 +41,17 @@ class ConfigInterface(Protocol):
         """Return the type for the UI."""
         raise NotImplementedError
 
-    def from_config(self, value: Any) -> Any:
+    def from_config(self, value: Any) -> T:
         """Serialize the given value."""
         return value
 
-    def to_config(self, value: Any) -> Any:
+    def to_config(self, value: T) -> Any:
         """Deserialize the given value."""
         return value
 
 
 @dataclass
-class _ConfigType(ConfigInterface):
+class _ConfigType(ConfigInterface[T]):
     """Base class for configuration types holding type validation and iteratively executing validators.
 
     Used internally for reusing the same logic for different types.
@@ -76,7 +78,7 @@ class _ConfigType(ConfigInterface):
 # NOTE: This is the only "special" class not using ConfigType as base class,
 # since it does not fit into the type/validator scheme of the other types.
 @dataclass
-class ChooseType(ConfigInterface):
+class ChooseType(ConfigInterface[str]):
     """Base Class for auto generated single select drop down."""
 
     allowed: list[str] = field(default_factory=list)
@@ -100,7 +102,7 @@ class ChooseOptions:
     leds = ChooseType(allowed=SUPPORTED_LED_STATES)
 
 
-class StringType(_ConfigType):
+class StringType(_ConfigType[str]):
     """String configuration type."""
 
     def __init__(
@@ -112,7 +114,7 @@ class StringType(_ConfigType):
         super().__init__(str, validator_functions, prefix, suffix)
 
 
-class IntType(_ConfigType):
+class IntType(_ConfigType[int]):
     """Integer configuration type."""
 
     def __init__(
@@ -124,7 +126,7 @@ class IntType(_ConfigType):
         super().__init__(int, validator_functions, prefix, suffix)
 
 
-class FloatType(_ConfigType):
+class FloatType(_ConfigType[float]):
     """Float configuration type."""
 
     def __init__(
@@ -149,7 +151,7 @@ class FloatType(_ConfigType):
         return float(value)
 
 
-class BoolType(_ConfigType):
+class BoolType(_ConfigType[bool]):
     """Boolean configuration type."""
 
     def __init__(
@@ -163,12 +165,15 @@ class BoolType(_ConfigType):
         self.check_name = check_name
 
 
-class ListType(_ConfigType):
+ListItemT = TypeVar("ListItemT")  # Type variable for items in a list
+
+
+class ListType(_ConfigType[list[ListItemT]], Generic[ListItemT]):
     """List configuration type."""
 
     def __init__(
         self,
-        list_type: ConfigInterface,
+        list_type: ConfigInterface[ListItemT],
         min_length: int | Callable[[], int],
         validator_functions: Iterable[Callable[[str, Any], None]] = [],
         prefix: str | None = None,
@@ -193,24 +198,30 @@ class ListType(_ConfigType):
             config_text = f"{configname} at position {i}"
             self.list_type.validate(config_text, item)
 
-    def from_config(self, value: Any) -> Any:
+    def from_config(self, value: Any) -> list[ListItemT]:
         return [self.list_type.from_config(item) for item in value]
 
-    def to_config(self, value: Any) -> Any:
+    def to_config(self, value: list[ListItemT]) -> list[Any]:
         return [self.list_type.to_config(item) for item in value]
 
 
 ConfigClassT = TypeVar("ConfigClassT", bound="ConfigClass")
 
 
-class ConfigClass:
+class ConfigClass(ABC):
+    """Base class for configuration objects.
+
+    Subclasses must implement the to_config() method to serialize their data.
+    """
+
     # keep method to show that child implementation have at least one attribute for initialization
     def __init__(self, **kwargs: Any) -> None:
         pass
 
+    @abstractmethod
     def to_config(self) -> dict[str, Any]:
         """Serialize the given value."""
-        return {}
+        ...
 
     @classmethod
     def from_config(cls, config: dict) -> Self:
