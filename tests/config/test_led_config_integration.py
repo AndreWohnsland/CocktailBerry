@@ -232,6 +232,13 @@ class TestLedConfigIntegration:
         assert set(led_config_info["type_options"]) == {"normal", "ws281x"}
         assert "type_schemas" in led_config_info
         
+        # Check that default value is included
+        assert "default" in led_config_info
+        default_value = led_config_info["default"]
+        assert isinstance(default_value, dict)
+        assert "led_type" in default_value
+        assert default_value["led_type"] in ["normal", "ws281x"]
+        
         # Check normal schema
         assert "normal" in led_config_info["type_schemas"]
         normal_schema = led_config_info["type_schemas"]["normal"]
@@ -241,11 +248,22 @@ class TestLedConfigIntegration:
         assert "default_on" in normal_schema
         assert "preparation_state" in normal_schema
         
+        # Verify each field has a default value
+        assert "default" in normal_schema["led_type"]
+        assert "default" in normal_schema["pins"]
+        assert "default" in normal_schema["brightness"]
+        assert "default" in normal_schema["default_on"]
+        assert "default" in normal_schema["preparation_state"]
+        
         # Check ws281x schema
         assert "ws281x" in led_config_info["type_schemas"]
         ws281x_schema = led_config_info["type_schemas"]["ws281x"]
         assert "count" in ws281x_schema
         assert "number_rings" in ws281x_schema
+        
+        # Verify ws281x fields have default values
+        assert "default" in ws281x_schema["count"]
+        assert "default" in ws281x_schema["number_rings"]
 
 
 class TestLegacyLedConfigMigration:

@@ -41,6 +41,11 @@ class ConfigInterface(Protocol[T]):
         """Return the type for the UI."""
         raise NotImplementedError
 
+    @abstractmethod
+    def get_default(self) -> Any:
+        """Get the default value for this config type."""
+        raise NotImplementedError
+
     def from_config(self, value: Any) -> T:
         """Serialize the given value."""
         return value
@@ -74,6 +79,23 @@ class _ConfigType(ConfigInterface[T]):
         """Return the type for the UI."""
         return self.config_type
 
+    def get_default(self) -> Any:
+        """Get the default value for this config type."""
+        # Base implementation - specific types should override if needed
+        if self.config_type == str:
+            return ""
+        elif self.config_type == int:
+            return 0
+        elif self.config_type == float:
+            return 0.0
+        elif self.config_type == bool:
+            return False
+        elif self.config_type == list:
+            return []
+        elif self.config_type == dict:
+            return {}
+        return None
+
 
 # NOTE: This is the only "special" class not using ConfigType as base class,
 # since it does not fit into the type/validator scheme of the other types.
@@ -93,6 +115,10 @@ class ChooseType(ConfigInterface[str]):
     @property
     def ui_type(self) -> type[ChooseType]:
         return type(self)
+
+    def get_default(self) -> str:
+        """Get the default value - first allowed option."""
+        return self.allowed[0] if self.allowed else ""
 
 
 class ChooseOptions:
@@ -203,6 +229,14 @@ class ListType(_ConfigType[list[ListItemT]], Generic[ListItemT]):
 
     def to_config(self, value: list[ListItemT]) -> list[Any]:
         return [self.list_type.to_config(item) for item in value]
+
+    def get_default(self) -> list[Any]:
+        """Get the default value - empty list or list with min_length defaults."""
+        min_len = self.min_length if isinstance(self.min_length, int) else 0
+        if min_len > 0:
+            # For immutable lists, fill with defaults
+            return [self.list_type.get_default() for _ in range(min_len)]
+        return []
 
 
 ConfigClassT = TypeVar("ConfigClassT", bound="ConfigClass")
@@ -335,6 +369,10 @@ class DictType(_ConfigType[ConfigClassT]):
         """Serialize the given value."""
         return config_class.to_config()
 
+    def get_default(self) -> dict[str, Any]:
+        """Get the default value - dict with default values for all fields."""
+        return {key: value_type.get_default() for key, value_type in self.dict_types.items()}
+
 
 class DynamicConfigType(_ConfigType[ConfigClassT]):
     """Dynamic configuration type with type discriminator.
@@ -413,3 +451,8 @@ class DynamicConfigType(_ConfigType[ConfigClassT]):
         if type_value in self.type_mapping:
             return self.type_mapping[type_value].dict_types
         return None
+
+    def get_default(self) -> dict[str, Any]:
+        """Get the default value - use first type's default."""
+        first_type = list(self.type_mapping.keys())[0]
+        return self.type_mapping[first_type].get_default()

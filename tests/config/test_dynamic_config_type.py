@@ -368,3 +368,24 @@ class TestDynamicConfigType:
         roundtrip_dict = led_dynamic_type.to_config(config)
         
         assert original_dict == roundtrip_dict
+
+    def test_get_default(self, led_dynamic_type: DynamicConfigType) -> None:
+        """Test get_default returns proper default for first type."""
+        default = led_dynamic_type.get_default()
+        
+        assert isinstance(default, dict)
+        # Should use first type (normal or ws281x, whichever comes first in dict)
+        assert "led_type" in default
+        assert default["led_type"] in ["normal", "ws281x"]
+        
+        # Should have all required fields
+        assert "pins" in default
+        assert "brightness" in default
+        assert "default_on" in default
+        assert "preparation_state" in default
+        
+        # Check default values are correct types
+        assert isinstance(default["pins"], list)
+        assert isinstance(default["brightness"], int)
+        assert isinstance(default["default_on"], bool)
+        assert isinstance(default["preparation_state"], str)

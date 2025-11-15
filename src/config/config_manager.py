@@ -360,6 +360,7 @@ class ConfigManager:
     def _enhance_config_specific_information(self, config: dict[str, Any], setting: ConfigInterface) -> None:
         config["prefix"] = setting.prefix
         config["suffix"] = setting.suffix
+        config["default"] = setting.get_default()
         if isinstance(setting, ChooseType):
             config["allowed"] = setting.allowed
         if isinstance(setting, BoolType):
