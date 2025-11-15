@@ -49,6 +49,33 @@ class ConfigInterface(Protocol):
 
 
 @dataclass
+class _ConfigType(ConfigInterface):
+    """Base class for configuration types holding type validation and iteratively executing validators.
+
+    Used internally for reusing the same logic for different types.
+    """
+
+    config_type: type[str | int | float | bool | list | dict]
+    validator_functions: Iterable[Callable[[str, Any], None]] = field(default_factory=list)
+    prefix: str | None = None
+    suffix: str | None = None
+
+    def validate(self, configname: str, value: Any) -> None:
+        """Validate the given value."""
+        if not isinstance(value, self.config_type):
+            raise ConfigError(f"The value <{value}> for '{configname}' is not of type {self.config_type}")
+        for validator in self.validator_functions:
+            validator(configname, value)
+
+    @property
+    def ui_type(self) -> type[str | int | float | bool | list | dict]:
+        """Return the type for the UI."""
+        return self.config_type
+
+
+# NOTE: This is the only "special" class not using ConfigType as base class,
+# since it does not fit into the type/validator scheme of the other types.
+@dataclass
 class ChooseType(ConfigInterface):
     """Base Class for auto generated single select drop down."""
 
@@ -73,29 +100,7 @@ class ChooseOptions:
     leds = ChooseType(allowed=SUPPORTED_LED_STATES)
 
 
-@dataclass
-class ConfigType(ConfigInterface):
-    """Base class for configuration types."""
-
-    config_type: type[str | int | float | bool]
-    validator_functions: Iterable[Callable[[str, Any], None]] = field(default_factory=list)
-    prefix: str | None = None
-    suffix: str | None = None
-
-    def validate(self, configname: str, value: Any) -> None:
-        """Validate the given value."""
-        if not isinstance(value, self.config_type):
-            raise ConfigError(f"The value <{value}> for '{configname}' is not of type {self.config_type}")
-        for validator in self.validator_functions:
-            validator(configname, value)
-
-    @property
-    def ui_type(self) -> type[str | int | float | bool]:
-        """Return the type for the UI."""
-        return self.config_type
-
-
-class StringType(ConfigType):
+class StringType(_ConfigType):
     """String configuration type."""
 
     def __init__(
@@ -107,7 +112,7 @@ class StringType(ConfigType):
         super().__init__(str, validator_functions, prefix, suffix)
 
 
-class IntType(ConfigType):
+class IntType(_ConfigType):
     """Integer configuration type."""
 
     def __init__(
@@ -119,7 +124,7 @@ class IntType(ConfigType):
         super().__init__(int, validator_functions, prefix, suffix)
 
 
-class FloatType(ConfigType):
+class FloatType(_ConfigType):
     """Float configuration type."""
 
     def __init__(
@@ -144,7 +149,7 @@ class FloatType(ConfigType):
         return float(value)
 
 
-class BoolType(ConfigType):
+class BoolType(_ConfigType):
     """Boolean configuration type."""
 
     def __init__(
@@ -158,7 +163,7 @@ class BoolType(ConfigType):
         self.check_name = check_name
 
 
-class ListType(ConfigType):
+class ListType(_ConfigType):
     """List configuration type."""
 
     def __init__(
@@ -170,8 +175,7 @@ class ListType(ConfigType):
         suffix: str | None = None,
         immutable: bool = False,
     ) -> None:
-        # ignore type here, since parent class should only expose other types not child types
-        super().__init__(list, validator_functions, prefix, suffix)  # type: ignore
+        super().__init__(list, validator_functions, prefix, suffix)
         self.list_type = list_type
         # might be a callable to allow dynamic min length, if dependent on other config values
         self.min_length = min_length
@@ -224,7 +228,7 @@ class PumpConfig(ConfigClass):
         return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
 
 
-class DictType(ConfigType, Generic[ConfigClassT]):
+class DictType(_ConfigType, Generic[ConfigClassT]):
     """Dict configuration type."""
 
     def __init__(
@@ -235,8 +239,7 @@ class DictType(ConfigType, Generic[ConfigClassT]):
         prefix: str | None = None,
         suffix: str | None = None,
     ) -> None:
-        # ignore type here, since parent class should only expose other types not child types
-        super().__init__(dict, validator_functions, prefix, suffix)  # type: ignore
+        super().__init__(dict, validator_functions, prefix, suffix)
         self.dict_types = dict_types
         self.config_class = config_class
 
