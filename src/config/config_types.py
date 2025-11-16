@@ -119,7 +119,8 @@ class ChooseType(ConfigInterface[str]):
 
     def get_default(self) -> str:
         """Get the default value - first allowed option."""
-        return self.default if self.default is not None else (self.allowed[0] if self.allowed else "")
+        first_element_with_fallback = self.allowed[0] if self.allowed else ""
+        return self.default if self.default is not None else first_element_with_fallback
 
 
 class ChooseOptions:
