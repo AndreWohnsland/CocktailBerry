@@ -179,7 +179,7 @@ class ConfigManager:
             ),
             "MAKER_NAME": StringType([validate_max_length]),
             "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, 999)]),
-            "MAKER_PREPARE_VOLUME": ListType(IntType([build_number_limiter(25, 1000)], suffix="ml"), 1),
+            "MAKER_PREPARE_VOLUME": ListType(IntType([build_number_limiter(25, 1000)], suffix="ml", default=100), 1),
             "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, 999)]),
             "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
             "MAKER_ALCOHOL_FACTOR": IntType([build_number_limiter(10, 200)], suffix="%"),
@@ -261,6 +261,7 @@ class ConfigManager:
     def _enhance_config_specific_information(self, config: dict[str, Any], setting: ConfigInterface) -> None:
         config["prefix"] = setting.prefix
         config["suffix"] = setting.suffix
+        config["default"] = setting.get_default()
         if isinstance(setting, ChooseType):
             config["allowed"] = setting.allowed
         if isinstance(setting, BoolType):

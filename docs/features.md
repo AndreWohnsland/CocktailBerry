@@ -46,6 +46,7 @@ Usually, updating to the lastest version is always a good idea.
 | **v2.4.0**  | Resource tracker visualization                                                                                       |
 | **v2.5.0**  | Improved LED control                                                                                                 |
 | **v2.6.0**  | More update management for addons                                                                                    |
+| **v2.7.0**  | Option to control LED behavior during preparation                                                                    |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.

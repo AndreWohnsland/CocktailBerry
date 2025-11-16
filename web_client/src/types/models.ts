@@ -173,12 +173,13 @@ export interface CustomColors {
 // }
 export interface ConfigDataWithUiInfo {
   [key: string]: PossibleUiInformation & {
-    [additionalKey: string]: PossibleUiInformation | undefined;
+    [additionalKeyForNestedAttributes: string]: PossibleUiInformation | undefined;
   };
 }
 
 type PossibleUiInformation = {
   value: PossibleConfigValue;
+  default: PossibleConfigValue;
   description: string;
   prefix?: string;
   suffix?: string;

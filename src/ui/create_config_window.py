@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Literal, Union
+from typing import TYPE_CHECKING, Any, Callable, Union
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
@@ -220,8 +220,20 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         # adds a button for adding new list entries if it is not immutable
         if not config_setting.immutable:
             add_button = create_button("+ add", font_size=MEDIUM_FONT, min_h=0, bold=True, css_class="neutral")
+            # since we use the class for for dict types, but value for simple types, we need to check here
+            list_value = config_setting.list_type
+            if isinstance(list_value, DictType):
+                default_value = list_value.get_default_config_class()
+            else:
+                default_value = list_value.get_default()
             add_button.clicked.connect(  # type: ignore[attr-defined]
-                lambda: self._add_ui_element_to_list("", getter_fn_list, config_name, config_input, config_setting)
+                lambda: self._add_ui_element_to_list(
+                    default_value,
+                    getter_fn_list,
+                    config_name,
+                    config_input,
+                    config_setting,
+                )
             )
 
             v_container.addWidget(add_button)
@@ -281,15 +293,13 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self,
         layout: QBoxLayout,
         config_name: str,
-        current_value: ConfigClass | Literal[""],
+        current_value: ConfigClass,
         config_setting: DictType,
     ) -> Callable[[], dict]:
         """Build a dict of fields for a dict input."""
         h_container = QHBoxLayout()
         getter_fn_dict: dict[str, Callable] = {}
-        # if used with the list constructor, we will get a empty string, if a new value is added to the list.
-        # in this case extract the dict keys from the config setting and use empty strings as values
-        dict_values = dict.fromkeys(config_setting.dict_types, "") if current_value == "" else current_value.to_config()
+        dict_values = current_value.to_config()
         for key, value in dict_values.items():
             value_setting = config_setting.dict_types.get(key)
             if value_setting is None:

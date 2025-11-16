@@ -29,6 +29,7 @@ class ConfigInterface(Protocol[T]):
 
     prefix: str | None = None
     suffix: str | None = None
+    default: T | None = None
 
     @abstractmethod
     def validate(self, configname: str, value: Any) -> None:
@@ -49,6 +50,11 @@ class ConfigInterface(Protocol[T]):
         """Deserialize the given value."""
         return value
 
+    @abstractmethod
+    def get_default(self) -> Any:
+        """Get the default value for this config type."""
+        raise NotImplementedError
+
 
 @dataclass
 class _ConfigType(ConfigInterface[T]):
@@ -61,6 +67,7 @@ class _ConfigType(ConfigInterface[T]):
     validator_functions: Iterable[Callable[[str, Any], None]] = field(default_factory=list)
     prefix: str | None = None
     suffix: str | None = None
+    default: T | None = None
 
     def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
@@ -74,6 +81,21 @@ class _ConfigType(ConfigInterface[T]):
         """Return the type for the UI."""
         return self.config_type
 
+    def get_default(self) -> Any:
+        """Get the default value for this config type."""
+        if self.default is not None:
+            return self.default
+
+        defaults = {
+            str: "",
+            int: 0,
+            float: 0.0,
+            bool: False,
+            list: [],
+            dict: {},
+        }
+        return defaults.get(self.config_type)
+
 
 # NOTE: This is the only "special" class not using ConfigType as base class,
 # since it does not fit into the type/validator scheme of the other types.
@@ -83,6 +105,7 @@ class ChooseType(ConfigInterface[str]):
 
     allowed: list[str] = field(default_factory=list)
     validator_functions: Iterable[Callable[[str, Any], None]] = field(default_factory=list)
+    default: str | None = None
 
     def validate(self, configname: str, value: Any) -> None:
         if value not in self.allowed:
@@ -93,6 +116,11 @@ class ChooseType(ConfigInterface[str]):
     @property
     def ui_type(self) -> type[ChooseType]:
         return type(self)
+
+    def get_default(self) -> str:
+        """Get the default value - first allowed option."""
+        first_element_with_fallback = self.allowed[0] if self.allowed else ""
+        return self.default if self.default is not None else first_element_with_fallback
 
 
 class ChooseOptions:
@@ -110,8 +138,9 @@ class StringType(_ConfigType[str]):
         validator_functions: Iterable[Callable[[str, str], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
+        default: str = "",
     ) -> None:
-        super().__init__(str, validator_functions, prefix, suffix)
+        super().__init__(str, validator_functions, prefix, suffix, default)
 
 
 class IntType(_ConfigType[int]):
@@ -122,8 +151,9 @@ class IntType(_ConfigType[int]):
         validator_functions: Iterable[Callable[[str, int], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
+        default: int = 0,
     ) -> None:
-        super().__init__(int, validator_functions, prefix, suffix)
+        super().__init__(int, validator_functions, prefix, suffix, default)
 
 
 class FloatType(_ConfigType[float]):
@@ -134,8 +164,9 @@ class FloatType(_ConfigType[float]):
         validator_functions: Iterable[Callable[[str, int | float], None]] = [],
         prefix: str | None = None,
         suffix: str | None = None,
+        default: float = 0.0,
     ) -> None:
-        super().__init__(float, validator_functions, prefix, suffix)
+        super().__init__(float, validator_functions, prefix, suffix, default)
 
     def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
@@ -160,8 +191,9 @@ class BoolType(_ConfigType[bool]):
         prefix: str | None = None,
         suffix: str | None = None,
         check_name: str = "on",
+        default: bool = False,
     ) -> None:
-        super().__init__(bool, validator_functions, prefix, suffix)
+        super().__init__(bool, validator_functions, prefix, suffix, default)
         self.check_name = check_name
 
 
@@ -179,8 +211,9 @@ class ListType(_ConfigType[list[ListItemT]], Generic[ListItemT]):
         prefix: str | None = None,
         suffix: str | None = None,
         immutable: bool = False,
+        default: list[ListItemT] = [],
     ) -> None:
-        super().__init__(list, validator_functions, prefix, suffix)
+        super().__init__(list, validator_functions, prefix, suffix, default)
         self.list_type = list_type
         # might be a callable to allow dynamic min length, if dependent on other config values
         self.min_length = min_length
@@ -229,16 +262,6 @@ class ConfigClass(ABC):
         return cls(**config)
 
 
-class PumpConfig(ConfigClass):
-    def __init__(self, pin: int, volume_flow: float, tube_volume: int) -> None:
-        self.pin = pin
-        self.volume_flow = volume_flow
-        self.tube_volume = tube_volume
-
-    def to_config(self) -> dict[str, int | float]:
-        return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
-
-
 class DictType(_ConfigType[ConfigClassT]):
     """Dict configuration type.
 
@@ -274,3 +297,78 @@ class DictType(_ConfigType[ConfigClassT]):
     def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:
         """Serialize the given value."""
         return config_class.to_config()
+
+    def get_default(self) -> dict[str, Any]:
+        """Get the default value - dict with default values for all fields."""
+        return {key: value_type.get_default() for key, value_type in self.dict_types.items()}
+
+    def get_default_config_class(self) -> ConfigClassT:
+        """Get the default config class instance."""
+        return self.from_config(self.get_default())
+
+
+### -------------------- Specific Config Classes -------------------- ###
+
+
+class PumpConfig(ConfigClass):
+    def __init__(self, pin: int, volume_flow: float, tube_volume: int) -> None:
+        self.pin = pin
+        self.volume_flow = volume_flow
+        self.tube_volume = tube_volume
+
+    def to_config(self) -> dict[str, int | float]:
+        return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
+
+
+class NormalLedConfig(ConfigClass):
+    """Configuration for normal (non-WS281x) LEDs."""
+
+    def __init__(
+        self,
+        pin: int,
+        brightness: int,
+        default_on: bool,
+        preparation_state: SupportedLedStatesType,
+    ) -> None:
+        self.pin = pin
+        self.brightness = brightness
+        self.default_on = default_on
+        self.preparation_state = preparation_state
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "pin": self.pin,
+            "brightness": self.brightness,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
+        }
+
+
+class WS281xLedConfig(ConfigClass):
+    """Configuration for WS281x (controllable) LEDs."""
+
+    def __init__(
+        self,
+        pin: int,
+        brightness: int,
+        count: int,
+        number_rings: int,
+        default_on: bool,
+        preparation_state: SupportedLedStatesType,
+    ) -> None:
+        self.pin = pin
+        self.brightness = brightness
+        self.count = count
+        self.number_rings = number_rings
+        self.default_on = default_on
+        self.preparation_state = preparation_state
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "pin": self.pin,
+            "brightness": self.brightness,
+            "count": self.count,
+            "number_rings": self.number_rings,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
+        }
