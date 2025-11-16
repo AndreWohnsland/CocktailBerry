@@ -317,3 +317,57 @@ class PumpConfig(ConfigClass):
 
     def to_config(self) -> dict[str, int | float]:
         return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
+
+
+class NormalLedConfig(ConfigClass):
+    """Configuration for normal (non-WS281x) LEDs."""
+
+    def __init__(
+        self,
+        pin: int,
+        brightness: int,
+        default_on: bool,
+        preparation_state: SupportedLedStatesType,
+    ) -> None:
+        self.pin = pin
+        self.brightness = brightness
+        self.default_on = default_on
+        self.preparation_state = preparation_state
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "pin": self.pin,
+            "brightness": self.brightness,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
+        }
+
+
+class WS281xLedConfig(ConfigClass):
+    """Configuration for WS281x (controllable) LEDs."""
+
+    def __init__(
+        self,
+        pin: int,
+        brightness: int,
+        count: int,
+        number_rings: int,
+        default_on: bool,
+        preparation_state: SupportedLedStatesType,
+    ) -> None:
+        self.pin = pin
+        self.brightness = brightness
+        self.count = count
+        self.number_rings = number_rings
+        self.default_on = default_on
+        self.preparation_state = preparation_state
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "pin": self.pin,
+            "brightness": self.brightness,
+            "count": self.count,
+            "number_rings": self.number_rings,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
+        }
