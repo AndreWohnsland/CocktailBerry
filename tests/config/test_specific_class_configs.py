@@ -52,12 +52,10 @@ class TestNormalLedConfig:
         """Test NormalLedConfig initialization."""
         led = NormalLedConfig(
             pin=17,
-            brightness=255,
             default_on=True,
             preparation_state="On",
         )
         assert led.pin == 17
-        assert led.brightness == 255
         assert led.default_on is True
         assert led.preparation_state == "On"
 
@@ -65,13 +63,11 @@ class TestNormalLedConfig:
         """Test NormalLedConfig serialization to dict."""
         led = NormalLedConfig(
             pin=17,
-            brightness=200,
             default_on=False,
             preparation_state="Off",
         )
         result = led.to_config()
         assert result["pin"] == 17
-        assert result["brightness"] == 200
         assert result["default_on"] is False
         assert result["preparation_state"] == "Off"
         assert isinstance(result, dict)
@@ -80,14 +76,12 @@ class TestNormalLedConfig:
         """Test NormalLedConfig deserialization from dict."""
         config_dict = {
             "pin": 17,
-            "brightness": 200,
             "default_on": False,
             "preparation_state": "Off",
         }
         led = NormalLedConfig.from_config(config_dict)
         assert isinstance(led, NormalLedConfig)
         assert led.pin == 17
-        assert led.brightness == 200
         assert led.default_on is False
         assert led.preparation_state == "Off"
 
@@ -98,14 +92,12 @@ class TestNormalLedConfig:
         """
         original = NormalLedConfig(
             pin=27,
-            brightness=150,
             default_on=True,
             preparation_state="Effect",
         )
         config_dict = original.to_config()
         restored = NormalLedConfig.from_config(config_dict)
         assert original.pin == restored.pin
-        assert original.brightness == restored.brightness
         assert original.default_on == restored.default_on
         assert original.preparation_state == restored.preparation_state
 

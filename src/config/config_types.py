@@ -326,19 +326,16 @@ class NormalLedConfig(ConfigClass):
     def __init__(
         self,
         pin: int,
-        brightness: int,
         default_on: bool,
         preparation_state: SupportedLedStatesType,
     ) -> None:
         self.pin = pin
-        self.brightness = brightness
         self.default_on = default_on
         self.preparation_state = preparation_state
 
     def to_config(self) -> dict[str, Any]:
         return {
             "pin": self.pin,
-            "brightness": self.brightness,
             "default_on": self.default_on,
             "preparation_state": self.preparation_state,
         }
