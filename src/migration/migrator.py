@@ -154,15 +154,10 @@ class Migrator:
                 clear_resource_log_file,
                 add_resource_usage_table,
             ],
-            "2.6.0": [
-                _add_maker_lock_value,
-            ],
-            "2.6.1": [
-                add_virgin_counters_to_recipes,
-            ],
-            "2.6.2": [
-                lambda: self._install_pip_package("pulp", "2.6.2"),
-            ],
+            "2.6.0": [_add_maker_lock_value],
+            "2.6.1": [add_virgin_counters_to_recipes],
+            "2.6.2": [lambda: self._install_pip_package("pulp", "2.6.2")],
+            "2.8.0": [_combine_led_setting_into_one_config],
         }
 
         for version, actions in version_actions.items():
@@ -394,10 +389,68 @@ def _check_and_replace_qt_launcher_script() -> None:
         roll_back_to_qt_script()
 
 
+def _combine_led_setting_into_one_config() -> None:
+    """Combine the LED settings into two separate configs based on LED type.
+
+    Old settings (LED_PINS, LED_BRIGHTNESS, etc.) are migrated into either
+    LED_NORMAL (for standard LEDs) or LED_WSLED (for WS281x LEDs).
+    One config entry is created for each pin.
+    """
+    configuration = _get_local_config("convert LED settings")
+    if configuration is None:
+        return
+
+    # Get the value from the config, if not exists fall back to default
+    led_pins = configuration.get("LED_PINS", [])
+    led_brightness = configuration.get("LED_BRIGHTNESS", 100)
+    led_count = configuration.get("LED_COUNT", 24)
+    led_number_rings = configuration.get("LED_NUMBER_RINGS", 1)
+    led_default_on = configuration.get("LED_DEFAULT_ON", False)
+    led_preparation_state = configuration.get("LED_PREPARATION_STATE", "Effect")
+    led_is_ws = configuration.get("LED_IS_WS", True)
+
+    _logger.info(
+        f"Using for LED migration: {led_pins=}, {led_brightness=}, {led_count=}, "
+        f"{led_number_rings=}, {led_default_on=}, {led_preparation_state=}, {led_is_ws=}"
+    )
+
+    # Create the appropriate config list based on LED type
+    # Note: we keep dicts here since we just read in the plain dicts, not the classes
+    if led_is_ws:
+        # WS281x (addressable) LEDs
+        led_wsled_config: list[dict] = []
+        for pin in led_pins:
+            led_wsled_config.append(
+                {
+                    "pin": pin,
+                    "brightness": min(int(led_brightness / 255 * 100), 100),  # convert to percentage, old max was 255
+                    "count": led_count,
+                    "number_rings": led_number_rings,
+                    "default_on": led_default_on,
+                    "preparation_state": led_preparation_state,
+                }
+            )
+        configuration["LED_WSLED"] = led_wsled_config
+    else:
+        # Normal (non-addressable) LEDs
+        led_normal_config: list[dict] = []
+        for pin in led_pins:
+            led_normal_config.append(
+                {
+                    "pin": pin,
+                    "default_on": led_default_on,
+                    "preparation_state": led_preparation_state,
+                }
+            )
+        configuration["LED_NORMAL"] = led_normal_config
+
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+
+
 class CouldNotMigrateException(Exception):
     """Raised when there was an error with the migration."""
 
     def __init__(self, version: str) -> None:
         self.message = f"Error while migration to version: {version}"
-        super().__init__(self.message)
         super().__init__(self.message)
