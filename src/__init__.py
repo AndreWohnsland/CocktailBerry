@@ -1,11 +1,11 @@
 from typing import Literal
 
-__version__ = "2.7.0"
+__version__ = "2.8.0"
 PROJECT_NAME = "CocktailBerry"
 MAX_SUPPORTED_BOTTLES = 24
 SupportedLanguagesType = Literal["en", "de"]
 SupportedThemesType = Literal["default", "bavaria", "alien", "berry", "tropical", "purple", "custom"]
 SupportedRfidType = Literal["No", "MFRC522", "PiicoDev"]
-SupportedLedStatesType = Literal["Off", "On", "Effect"]
+SupportedLedStatesType = Literal["Effect", "On", "Off"]
 NEEDED_PYTHON_VERSION = (3, 9)
 FUTURE_PYTHON_VERSION = (3, 11)
