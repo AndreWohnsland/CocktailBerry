@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Callable, Union
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
 
 from src.config.config_manager import CONFIG as cfg
@@ -161,6 +161,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
+        config_input.setMinimumSize(QSize(10, 10))
         config_input.clicked.connect(
             lambda: NumpadWidget(  # type: ignore
                 self, config_input, 300, 20, config_name, header_is_entered_number=True
