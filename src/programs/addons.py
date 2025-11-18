@@ -5,6 +5,7 @@ import contextlib
 import importlib
 import json
 import re
+import sys
 import threading
 import time
 from dataclasses import fields
@@ -287,7 +288,13 @@ class AddOnManager:
         if addon.name in self.addon_thread_ids:
             del self.addon_thread_ids[addon.name]
         addon_file = ADDON_FOLDER / addon.file_name
+
         addon_file.unlink(missing_ok=True)
+
+        # Remove the module from sys.modules to allow fresh import
+        module_name = f"addons.{addon_file.stem}"
+        if module_name in sys.modules:
+            del sys.modules[module_name]
         importlib.invalidate_caches()
 
     def reload_addon(self, addon_data: AddonData) -> None:
