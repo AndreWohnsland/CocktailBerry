@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  safelist: [
+    {
+      pattern: /^(bg|text|border|ring|shadow)-(primary|secondary|neutral|background|danger)$/,
+    },
+  ],
   theme: {
     extend: {
       colors: {
