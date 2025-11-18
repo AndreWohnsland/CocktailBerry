@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.11']
+        python-version: ["3.11", "3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
@@ -29,8 +29,8 @@ jobs:
           ./scripts/setup.sh cicd
       - name: Start API
         run: |
-          uv run api.py &
-          sleep 5
+          uv sync
+          uv run api.py & sleep 5
       - name: Test API
         run: |
           for i in {1..6}; do
