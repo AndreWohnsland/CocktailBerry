@@ -27,7 +27,6 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         self.mainscreen = parent
         # connects all the buttons
         self.button_back.clicked.connect(self.close)
-        self._installed_addons = ADDONS.addons
         self._addon_information = ADDONS.get_addon_data()
         self._fill_addon_list()
 
