@@ -112,40 +112,44 @@ from src.programs.addons import AddonInterface # (1)!
 ADDON_NAME = "Your Displayed Name"
 
 class Addon(AddonInterface): # (2)!
-    def setup(self): # (3)!
+    def define_configuration(self): # (3)!
         pass
 
-    def cleanup(self): # (4)!
+    def setup(self): # (4)!
         pass
 
-    def before_cocktail(self, data: dict): # (5)!
+    def cleanup(self): # (5)!
         pass
 
-    def after_cocktail(self, data: dict): # (6)!
+    def before_cocktail(self, data: dict): # (6)!
+        pass
+
+    def after_cocktail(self, data: dict): # (7)!
         pass
 
     def cocktail_trigger(
         self,
         prepare: Callable[[Cocktail], tuple[bool, str]]
-    ): # (7)!
+    ): # (8)!
         pass
 
     def build_gui(
         self,
         container,
         button_generator
-    ) -> bool: # (8)!
+    ) -> bool: # (9)!
         return False
 ```
 
-1. Using the `AddonInterface` will give you intellisense for the existing functions available. 
+1. Using the `AddonInterface` will give you intellisense for the existing functions available.
 2. Your class needs to have the name Addon and should inherit from the AddonInterface.
-3. Initializes the addon, executed at program start.
-4. Method for cleanup, executed a program end just before the program closes.
-5. Executed right before the cocktail preparation. In case of a RuntimeError, the cocktail will not be prepared and the message will be shown to the user instead.
-6. Executed right after the cocktail preparation, before other services are connected or DB is updated.
-7. This function will be run in a thread on a continuous loop. You can use the `prepare` function to trigger a cocktail preparation. It will return a boolean if the cocktail was prepared successfully and a message string holding more information. There is currently no GUI indication that this cocktail preparation was triggered.
-8. Will be used if the user navigates to the addon window and selects your addon. The container is a PyQt5 Layout widget you can (but not must) use to define custom GUI elements and connect them to functions. If you just want to have buttons executing functions, you can use the button generator function. Return False, if not implemented.
+3. Define additional configuration values for your addon here, executed before setup.
+4. Initializes the addon, executed at program start.
+5. Method for cleanup, executed a program end just before the program closes.
+6. Executed right before the cocktail preparation. In case of a RuntimeError, the cocktail will not be prepared and the message will be shown to the user instead.
+7. Executed right after the cocktail preparation, before other services are connected or DB is updated.
+8. This function will be run in a thread on a continuous loop. You can use the `prepare` function to trigger a cocktail preparation. It will return a boolean if the cocktail was prepared successfully and a message string holding more information. There is currently no GUI indication that this cocktail preparation was triggered.
+9. Will be used if the user navigates to the addon window and selects your addon. The container is a PyQt5 Layout widget you can (but not must) use to define custom GUI elements and connect them to functions. If you just want to have buttons executing functions, you can use the button generator function. Return False, if not implemented.
 
 Now that you know the skeleton, you can fill it with your program logic.
 
@@ -157,6 +161,7 @@ But this approach is not robust against code changes (new versions of addon), an
 Therefore, the addon provider can use the CocktailBerry configuration.
 To do so, the user needs to inject the config name, type and validation function into the config.
 There is also the option to provided a description, as well as according translations.
+It is important that you use the `define_configuration()` function for this, as it is executed before the setup of the addon and loading in local set config values.
 You can find each direction in the subsections below.
 
 #### Add Config Values
@@ -174,8 +179,11 @@ You can have a look at the other values as a reference.
 ```python
 from src.config.config_manager import CONFIG as cfg # (1)!
 
-def setup(self):
-    cfg.add_config("ADDON_CONFIG", "DefaultValue") # (2)!
+def define_configuration(self):
+    cfg.add_config(
+        config_name="ADDON_CONFIG",
+        default_value="DefaultValue"
+    ) # (2)!
 ```
 
 1. Needs to import the `CONFIG` object from CocktailBerry.
@@ -216,12 +224,12 @@ def _check_function(configname: str, configvalue: str): # (2)!
             f"The value {configvalue} for {configname} is not allowed."
         )
 
-def setup(self):
+def define_configuration(self):
     cfg.add_config(
-        "ADDON_CONFIG",
-        "DefaultValue",
-        [_check_function]
-    ) # (5)!
+        config_name="ADDON_CONFIG",
+        default_value="DefaultValue",
+        validation_function=[_check_function] # (5)!
+    )
 ```
 
 1. Please use the `ConfigError` class from CocktailBerry.
@@ -246,12 +254,12 @@ def _less_than_10(configname: str, configvalue: int): # (1)!
             f"The value for {configname} needs to be less than 10."
         )
 
-def setup(self):
+def define_configuration(self):
     cfg.add_config( # (2)!
-        "ADDON_LIST",
-        [1, 2, 3],
-        [], # (3)!
-        [_less_than_10] # (4)!
+        config_name="ADDON_LIST",
+        default_value=[1, 2, 3],
+        validation_function=[], # (3)!
+        list_validation_function=[_less_than_10] # (4)!
     ) 
 ```
 
@@ -269,19 +277,18 @@ The GUI will then display a drop down, only showing the allowed values.
 Please take note, if you want types other than string, you need to convert them after you retrieve the value from the config.
 The dropdown element only support string values.
 
-
 ```python
-def setup(self):
+def define_configuration(self):
     options = ["List", "of", "allowed", "values"] # (1)!
     cfg.add_selection_config(
-        "ADDON_SELECTION",
-        options,
-        options[1], # (2)!
+        config_name="ADDON_SELECTION",
+        options=options,
+        default_value=options[1], # (2)!
     )
 
     cfg.add_selection_config(
-        "ADDON_SELECTION_INT",
-        ["10", "25", "50"] # (3)!
+        config_name="ADDON_SELECTION_INT",
+        options=["10", "25", "50"] # (3)!
     )
     none_string_value = int(cfg.ADDON_SELECTION_INT) # (4)!
 
@@ -305,7 +312,7 @@ But it is encouraged to do so to improve user experience.
 ```python
 from src.dialog_handler import UI_LANGUAGE as uil # (1)!
 
-def setup(self):
+def define_configuration(self):
     ...
     desc = {
         "en": "English description",

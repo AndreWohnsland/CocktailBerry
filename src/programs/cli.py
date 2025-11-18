@@ -11,6 +11,7 @@ from src.config.config_manager import shared, show_start_message, version_callba
 from src.config.errors import ConfigError
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
+from src.machine.controller import MachineController
 from src.programs.addons import ADDONS
 from src.programs.calibration import run_calibration
 from src.programs.cocktailberry import run_cocktailberry
@@ -44,7 +45,7 @@ def main(
     if not quiet:
         show_start_message(displayed_name)
     start_resource_tracker()
-    ADDONS.setup_addons()
+    ADDONS.define_addon_configuration()
     # Load the config file and check for errors, update the config (sync new values if not present)
     try:
         cfg.read_local_config(update_config=True)
@@ -61,6 +62,9 @@ def main(
         time_print("Using debug mode")
     shared.is_v1 = True
     generate_custom_style_file()
+    mc = MachineController()
+    mc.init_machine()
+    ADDONS.setup_addons()
     if calibration:
         run_calibration()
         return

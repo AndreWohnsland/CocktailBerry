@@ -32,7 +32,7 @@ from src.utils import time_print
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     start_resource_tracker()
-    ADDONS.setup_addons()
+    ADDONS.define_addon_configuration()
     try:
         cfg.read_local_config(update_config=True)
     except ConfigError as e:
@@ -47,7 +47,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         shared.startup_python_deprecated.set_issue()
     mc = MachineController()
     mc.init_machine()
-    mc.default_led()
+    ADDONS.setup_addons()
     if cfg.MAKER_SEARCH_UPDATES:
         update_available, _ = can_update()
         if update_available:

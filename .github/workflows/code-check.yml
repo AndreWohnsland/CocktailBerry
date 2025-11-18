@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.11']
+        python-version: ["3.11", "3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.11']
+        python-version: ["3.11", "3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.11']
+        python-version: ["3.11", "3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4

@@ -27,7 +27,14 @@ with contextlib.suppress(ModuleNotFoundError):
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
-_SupportedActions = Literal["setup", "cleanup", "before_cocktail", "after_cocktail", "cocktail_trigger"]
+_SupportedActions = Literal[
+    "define_configuration",
+    "setup",
+    "cleanup",
+    "before_cocktail",
+    "after_cocktail",
+    "cocktail_trigger",
+]
 _logger = LoggerHandler("AddonManager")
 _check_addon = "please check addon or contact provider"
 _GITHUB_ADDON_SOURCE = "https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Addons/main/addon_data_v2.json"
@@ -42,6 +49,9 @@ class AddonInterface(Protocol):
     def version(self) -> str:
         """Return the version of the addon."""
         return getattr(self, "ADDON_VERSION", "1.0.0")
+
+    def define_configuration(self) -> None:
+        """Define configuration for the addon."""
 
     def setup(self) -> None:
         """Init the addon."""
@@ -106,6 +116,11 @@ class AddOnManager:
         addon_instance = addon()
         self.addons[name] = addon_instance
         return name, addon_instance
+
+    def define_addon_configuration(self) -> None:
+        """Define configuration for all addons."""
+        for addon in self.addons.values():
+            self._try_function_for_addon(addon, "define_configuration")
 
     def setup_addons(self) -> None:
         """Execute all the setup function of the addons."""

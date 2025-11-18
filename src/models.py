@@ -3,6 +3,7 @@ from dataclasses import field
 from enum import Enum
 from typing import Optional
 
+from pydantic import computed_field
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from src import __version__
@@ -216,7 +217,6 @@ class AddonData:
     file_name: str = ""
     installed: bool = False
     official: bool = True
-    can_update: bool = False
 
     def __post_init__(self) -> None:
         if not self.file_name:
@@ -227,12 +227,14 @@ class AddonData:
         if self.disabled_since != "":
             self.disabled = current_version >= Version(self.disabled_since)
         self.is_installable = self.satisfy_min_version and not self.disabled
-        if self.local_version is not None:
-            self.can_update = (
-                Version(self.local_version) < Version(self.version) and self.is_installable and self.official
-            )
-        else:
-            self.can_update = False
+
+    @computed_field  # type: ignore[misc]
+    @property
+    def can_update(self) -> bool:
+        """Check if addon can be updated based on local and remote versions."""
+        if self.local_version is None:
+            return False
+        return Version(self.local_version) < Version(self.version) and self.is_installable and self.official
 
 
 @pydantic_dataclass

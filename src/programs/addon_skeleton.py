@@ -30,23 +30,26 @@ _logger = LoggerHandler("ADDON: ADDON_NAME_HOLDER")
 class Addon(AddonInterface):
     ADDON_VERSION = "1.0.0"
     
-    def setup(self):
+    def define_configuration(self) -> None:
+        """Add configuration for the addon over the config_manager."""
+    
+    def setup(self) -> None:
         """Init the addon, executed at program start."""
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Clean up the addon, executed a program end."""
 
-    def before_cocktail(self, data: dict[str, Any]):
+    def before_cocktail(self, data: dict[str, Any]) -> None:
         """Run this method before the cocktail preparation.
 
         In case of a RuntimeError, the cocktail will not be prepared
         and the message will be shown to the user.
         """
 
-    def after_cocktail(self, data: dict[str, Any]):
+    def after_cocktail(self, data: dict[str, Any]) -> None:
         """Run this method after the cocktail preparation."""
 
-    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]):
+    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]) -> None:
         """Will be executed in the background loop and can trigger a cocktail preparation.
 
         Use the prepare function to start a cocktail preparation with prepare(cocktail).

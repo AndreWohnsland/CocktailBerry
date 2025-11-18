@@ -3,7 +3,7 @@ name = "microservice"
 version = "1.0.0"
 description = "Microservice for CocktailBerry"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.115.5",
     "python-dotenv>=1.0.1",
