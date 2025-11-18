@@ -53,6 +53,8 @@ class MachineController:
         self.led_controller = LedController(self.pin_controller)
         self.reverter = Reverter(self.pin_controller, cfg.MAKER_PUMP_REVERSION, cfg.MAKER_REVERSION_PIN)
         self.set_up_pumps()
+        self.default_led()
+        atexit.register(self.cleanup)
 
     def _chose_controller(self) -> PinController:
         """Select the controller class for the Pin."""
@@ -212,7 +214,6 @@ class MachineController:
         time_print(f"<i> Initializing Pins: {active_pins}")
         self.pin_controller.initialize_pin_list(active_pins)
         self.reverter.initialize_pin()
-        atexit.register(self.cleanup)
 
     def _start_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and opens all given pins."""
