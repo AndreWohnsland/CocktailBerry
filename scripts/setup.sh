@@ -53,7 +53,7 @@ sudo chmod +x /usr/share/applications/cocktail.desktop
 
 # Making write permission for all to wpa
 # We need this if we want to change wifi settings within CocktailBerry
-if [ -f "/etc/wpa_supplicant/wpa_supplicant.conf" ]; then
+if [[ -f "/etc/wpa_supplicant/wpa_supplicant.conf" ]]; then
     echo "> Giving write permission to /etc/wpa_supplicant/wpa_supplicant.conf"
     sudo chmod a+w /etc/wpa_supplicant/wpa_supplicant.conf
 else
