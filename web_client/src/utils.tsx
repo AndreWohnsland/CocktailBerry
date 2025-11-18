@@ -32,7 +32,7 @@ export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
 };
 
 export const confirmAndExecute = async (message: string, executable: () => Promise<any>): Promise<boolean> => {
-  const confirmation = window.confirm(message);
+  const confirmation = globalThis.window.confirm(message);
   if (confirmation) {
     return executeAndShow(executable);
   } else {
