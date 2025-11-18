@@ -7,5 +7,5 @@ SupportedLanguagesType = Literal["en", "de"]
 SupportedThemesType = Literal["default", "bavaria", "alien", "berry", "tropical", "purple", "custom"]
 SupportedRfidType = Literal["No", "MFRC522", "PiicoDev"]
 SupportedLedStatesType = Literal["Effect", "On", "Off"]
-NEEDED_PYTHON_VERSION = (3, 9)
+NEEDED_PYTHON_VERSION = (3, 11)
 FUTURE_PYTHON_VERSION = (3, 11)
