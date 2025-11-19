@@ -60,15 +60,15 @@ else
     echo "> Using NetworkManager for WiFi configuration (wpa_supplicant not found)"
 fi
 
-if [ "$1" != "cicd" ]; then
+if [[ "$1" != "cicd" ]]; then
   cd ~/CocktailBerry/ || exit
 fi
 # creating project venv with uv
 echo "> Creating project venv with uv"
-uv venv --system-site-packages --python "$(python -V | awk '{print $2}')" || echo "ERROR: Could not create venv with uv, is uv installed?"
+uv venv --system-site-packages --python "$(python -V | awk '{print $2}')" || echo "ERROR: Could not create venv with uv, is uv installed?" >&2
 
 # Making necessary steps for the according program
-if [ "$1" = "dashboard" ]; then
+if [[ "$1" = "dashboard" ]]; then
   echo "> Setting up Dashboard"
   cd dashboard/ || exit
   # Letting user choose the frontend type (WebApp or Qt)
@@ -79,11 +79,11 @@ if [ "$1" = "dashboard" ]; then
   # new dashboard
   if echo "$answer" | grep -iq "^y"; then
     export UI_LANGUAGE=$language
-    docker compose -f docker-compose.both.yaml up --build -d || echo "ERROR: Could not install dashboard over docker-compose, is docker installed?"
+    docker compose -f docker-compose.both.yaml up --build -d || echo "ERROR: Could not install dashboard over docker-compose, is docker installed?" >&2
     echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
   # qt app
   else
-    docker compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?"
+    docker compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?" >&2
     {
       echo "export UI_LANGUAGE=$language"
       echo "source ~/CocktailBerry/.venv/bin/activate"
@@ -98,7 +98,7 @@ else
   sudo cp ~/CocktailBerry/scripts/v1-launcher.sh ~/launcher.sh
   sudo chmod +x ~/launcher.sh
   echo "> Installing PyQt"
-  sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5"
+  sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5" >&2
   echo "> Installing needed Python libraries, including qtsass, this may take a while depending on your OS, so it is time for a coffee break :)"
   uv sync --python "$(python -V | awk '{print $2}')" --all-extras
   if is_raspberry_pi5; then
