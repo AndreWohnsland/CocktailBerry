@@ -20,7 +20,7 @@ pip install -q lastversion
 # COMPOSE_VERSION=$(lastversion docker/compose)
 # but its more robust to get the whole asset URL
 
-if [ "$(getconf LONG_BIT)" = "64" ]; then
+if [[ "$(getconf LONG_BIT)" = "64" ]]; then
   echo "> Detected 64 bit system, using aarch64 compose image"
   DOWNLOAD_URL=$(lastversion --assets --filter '\-linux-aarch64$' docker/compose)
 else

@@ -25,7 +25,7 @@ sudo apt-get update && sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o D
 echo "~~ Check if git is installed ~~"
 git --version >/dev/null 2>&1
 GIT_IS_AVAILABLE=$?
-if [ $GIT_IS_AVAILABLE -ne 0 ]; then
+if [[ $GIT_IS_AVAILABLE -ne 0 ]]; then
   echo "Git was not found, installing it ..."
   sudo apt install git
 else
@@ -59,7 +59,7 @@ VENV_IS_AVAILABLE=$?
 python3 -c "import ensurepip" >/dev/null 2>&1
 ENSUREPIP_IS_AVAILABLE=$?
 
-if [ $VENV_IS_AVAILABLE -ne 0 ] || [ $ENSUREPIP_IS_AVAILABLE -ne 0 ]; then
+if [[ $VENV_IS_AVAILABLE -ne 0 ]] || [[ $ENSUREPIP_IS_AVAILABLE -ne 0 ]]; then
   echo "Python3 venv or ensurepip was not found, installing python3-venv ..."
   PYTHON_VERSION=$(python3 -V | cut -d' ' -f2 | cut -d'.' -f1,2) # Extracts version in format X.Y
   sudo apt install python"${PYTHON_VERSION}"-venv
@@ -71,7 +71,7 @@ fi
 echo "~~ Check if pip is installed ~~"
 pip --version >/dev/null 2>&1
 PIP_IS_AVAILABLE=$?
-if [ $PIP_IS_AVAILABLE -ne 0 ]; then
+if [[ $PIP_IS_AVAILABLE -ne 0 ]]; then
   echo "Pip was not found, installing it ..."
   sudo apt install python3-pip
 else
@@ -99,7 +99,7 @@ fi
 echo "~~ Check if lxterminal is installed ~~"
 lxterminal --version >/dev/null 2>&1
 LXTERMINAL_IS_AVAILABLE=$?
-if [ $LXTERMINAL_IS_AVAILABLE -ne 0 ]; then
+if [[ $LXTERMINAL_IS_AVAILABLE -ne 0 ]]; then
   echo "Lxterminal was not found, installing it ..."
   sudo apt install lxterminal
 else
@@ -112,7 +112,7 @@ echo "It will be located at ~/CocktailBerry"
 # shellcheck disable=SC2164
 cd ~
 # if folder exist, backup the "custom_config.yaml" within it to ~/custom_config.yaml.bck
-if [ -d ~/CocktailBerry ]; then
+if [[ -d ~/CocktailBerry ]]; then
   echo "CocktailBerry folder already exists. Backup existing custom_config.yaml to ~/old_custom_config.yaml"
   cp ~/CocktailBerry/custom_config.yaml ~/old_custom_config.yaml
   echo "Removing old CocktailBerry folder if it exists ..."
@@ -138,7 +138,7 @@ bash scripts/setup.sh
 
 echo "~~ Register successful installation: ~~"
 OS_INFO=$(sed -nr 's/^PRETTY_NAME="(.+)"/\1/p' /etc/os-release)
-if [ -z "$OS_INFO" ]; then
+if [[ -z "$OS_INFO" ]]; then
   OS_INFO="not provided"
 fi
 curl -X 'POST' 'https://api.cocktailberry.org/api/v1/public/installation' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"os_version": "'"$OS_INFO"'"}'

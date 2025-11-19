@@ -14,6 +14,7 @@ create_or_update_venv() {
   else
     echo "Virtual environment is up-to-date."
   fi
+  return 0
 }
 
 export QT_SCALE_FACTOR=1
