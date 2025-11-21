@@ -2,36 +2,40 @@
 
 You can also run the interface on any non RPi hardware, but you won't be able to control the pins without a device supporting this.
 To build a functional machine, I provided a list of my used hardware.
-This is merely a suggestion.
+You can tweak and customize this to your liking, but it offers a good starting point what you might need.
 How exactly you will build your CocktailBerry is completely up to you.
 
-## Showcase Machine
+## Example Machine
 
-The following components were used within the showcase for the Machine:
+The following components were used within the showcase for the Machine (CocktailBerry v2/v3):
 
-- 1x [Raspberry Pi 3b+](http://www.amazon.de/dp/B00LPESRUK/) (or newer like [Model 4](https://www.amazon.de/gp/product/B07TD42S27))
-- 1x [5-inch Touch Screen](http://www.amazon.de/dp/B071XT9Z7H/) or [7-inch Touch Screen](https://www.amazon.de/dp/B07H79XMLT) for the Raspberry Pi
-- 1x Micro SD-Card (16 Gb is enough)
-- 1x 5V Power supply for the Raspberry Pi
-- 1x or 2x [Relay-Boards](https://www.amazon.de/gp/product/B07MJF9Z4K) depending on pump count (important to have 5V input control)
-- 6-10x Pumps, depending on your setup (you can use a [peristaltic pump](https://www.amazon.de/gp/product/B07YWGSH3C/) or a [membrane pump](http://www.amazon.de/dp/B07L1FB18S/), it should be food save)
-- 1x Power supply for the pumps (a 12V/5A Laptop charger in my case, needs to match pump voltage)
-- Food safe hose/tubes for the pumps
-- Female to Female jumper wires
-- Some wires
+- 1x [Raspberry Pi 3b+](https://amzn.to/48bhCBc) (or newer [Model 4](https://amzn.to/4pqSH3v))
+- 1x [5-inch Touch Screen](https://amzn.to/3K6Ntei) or [7-inch Touch Screen](https://amzn.to/49sKlnn) for the Raspberry Pi
+- Official [Touch Screen](https://amzn.to/4pnDPmj) also works
+- 1x Micro [SD-Card](https://amzn.to/3JY3Dqn) (16-32 Gb is enough, depending what else you want to store)
+- 1x 5V Power supply for the [Raspberry Pi 3](https://amzn.to/3XbImwj) or [Raspberry Pi 4](https://amzn.to/48axtjp)
+- 1-2x [8 Channel](https://amzn.to/49ya120) or [16 Channel](https://amzn.to/49xgxGe) Relay-Boards depending on pump count (important to have 5V input control)
+- 6-24x Pumps, it should be food save examples are:
+- [peristaltic pump](https://amzn.to/3LSyTrh)
+- [membrane pump](https://amzn.to/4ocmw6S) or [this one](https://amzn.to/4a6PfXl)
+- 1x [Power supply](https://amzn.to/49w0fgP) for the pumps
+- [Food safe hose/tubes](https://amzn.to/4ppufj3) for the pumps
+- Female to Female [jumper wires](https://amzn.to/47TY7yc)
+- Some wires, [Hex-Standoffs](https://amzn.to/4oRQBd0), Screws and other small parts for mounting
 - Your custom build machine casing
-- *Optional*: Female to Male HDMI and USB extension cable
+- *Optional*: [HDMI](https://amzn.to/4ra7Wzo) and [USB](https://amzn.to/48n4NF7) cable for small space builds
 - *Optional*: A good! [converter](https://www.amazon.de/dp/B086W6B9H1) (using usb ones may result in too high voltage loss) if you only want one power source
+- *Optional*: [USB C](https://amzn.to/3X9I7lw) or [Micro USB](https://amzn.to/4oQDCIu) open cable
 
-## Showcase Teams Dashboard
+## Teams Dashboard
 
 The following components were used within the showcase for the Teams Dashboard:
 
-- 1x [Raspberry Pi 3b+](http://www.amazon.de/dp/B00LPESRUK/) (or newer, like [Model 4](https://www.amazon.de/gp/product/B07TD42S27))
-- 1x [7-inch Touch Screen](http://www.amazon.de/dp/B014WKCFR4/)
-- 1x [Display Casing](http://www.amazon.de/dp/B01GQFUWIC/)
-- 1x Micro SD-Card (16 Gb is enough)
-- 1x 5V Power supply for the Raspberry Pi
+- 1x [Raspberry Pi 3b+](https://amzn.to/48bhCBc) (or newer [Model 4](https://amzn.to/4pqSH3v), [Model 5](https://amzn.to/4i9h2IG))
+- 1x [7-inch Touch Screen](https://amzn.to/47SVAnN)
+- 1x [Display Casing](https://amzn.to/49sLPOt)
+- 1x Micro [SD-Card](https://amzn.to/3JY3Dqn)
+- 1x 5V Power supply for the [Raspberry Pi 3](https://amzn.to/3XbImwj), [Pi 4](https://amzn.to/48axtjp) or [Pi 5](https://amzn.to/4885zEN)
 
 ## Possible Basic Circuit
 

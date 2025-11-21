@@ -27,6 +27,7 @@ This is a good place to start, since you need little knowledge about the base co
 Either help implementing new base features, fix issues or improve the existing code base.
 This requires some working into the existing base code, but delivers a great opportunity to shape CocktailBerry.
 
-#### Buy me a coffee
+#### Buy me a coffee and other support options
 
 And of course, you can always [buy me a coffee](https://www.buymeacoffee.com/AndreWohnsland) - because, who doesn't love coffee.
+Besides that, there are also other support options available on the GitHub project page, or some affiliate links in the documentation.
