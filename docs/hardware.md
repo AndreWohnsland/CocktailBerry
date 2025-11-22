@@ -15,7 +15,7 @@ The following components were used within the showcase for the Machine (Cocktail
 - 1x Micro [SD-Card](https://amzn.to/3JY3Dqn) (16-32 Gb is enough, depending what else you want to store)
 - 1x 5V Power supply for the [Raspberry Pi 3](https://amzn.to/3XbImwj) or [Raspberry Pi 4](https://amzn.to/48axtjp)
 - 1-2x [8 Channel](https://amzn.to/49ya120) or [16 Channel](https://amzn.to/49xgxGe) Relay-Boards depending on pump count (important to have 5V input control)
-- 6-24x Pumps, it should be food save examples are:
+- 6-24x Pumps, it should be food safe, examples are:
 - [peristaltic pump](https://amzn.to/3LSyTrh)
 - [membrane pump](https://amzn.to/4ocmw6S) or [this one](https://amzn.to/4a6PfXl)
 - 1x [Power supply](https://amzn.to/49w0fgP) for the pumps
