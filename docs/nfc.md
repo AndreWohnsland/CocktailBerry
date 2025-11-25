@@ -22,6 +22,28 @@ If the UID is valid and the user has sufficient balance, the order will be proce
 The Service will take care of deducting the cocktail price from the user's balance.
 Also, managing user balances and age restrictions will be handled by the Manager Service.
 
+```mermaid
+sequenceDiagram
+    opt Optional preseleciton allowed cocktails to display
+    Frontend->>+Backend: Request Access
+    Backend->>+NFC Reader: Activate
+    NFC Reader->>-Backend: Card ID
+    Backend->>+Payment Service: Request User Information
+    Payment Service->>-Backend: User Information
+    Backend->>-Frontend: Allowed Cocktails
+    end
+    Frontend->>+Backend: Request Cocktail
+    Backend->>+NFC Reader: Activate
+    NFC Reader->>-Backend: Card ID
+    Backend->>+Payment Service: Request User Information
+    Payment Service->>-Backend: User Information
+    Backend-->>Frontend: Reject/Accept
+    Frontend->>+Frontend: Refresh Progress
+    Backend->>-Frontend: Cocktail Done
+    Backend->>+Payment Service: Send Cocktail Data + Card ID
+
+```
+
 ## Configuration
 
 You can manage the settings like all other settings over the CocktailBerry Interface.
