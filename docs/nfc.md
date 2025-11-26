@@ -22,27 +22,37 @@ If the UID is valid and the user has sufficient balance, the order will be proce
 The Service will take care of deducting the cocktail price from the user's balance.
 Also, managing user balances and age restrictions will be handled by the Manager Service.
 
+Basic NFC flow to get user information:
+
 ```mermaid
 sequenceDiagram
-    opt Optional preseleciton allowed cocktails to display
-    Frontend->>+Backend: Request Access
     Backend->>+NFC Reader: Activate
     NFC Reader->>-Backend: Card ID
     Backend->>+Payment Service: Request User Information
+    Payment Service-->>Backend: No information Found
     Payment Service->>-Backend: User Information
+```
+
+This flow is then used when ordering a cocktail:
+
+```mermaid
+sequenceDiagram
+    opt Optional pre-selection allowed cocktails to display
+    Frontend->>+Backend: Request Access
+    Backend->>Backend: Get User Data
     Backend->>-Frontend: Allowed Cocktails
     end
     Frontend->>+Backend: Request Cocktail
-    Backend->>+NFC Reader: Activate
-    NFC Reader->>-Backend: Card ID
-    Backend->>+Payment Service: Request User Information
-    Payment Service->>-Backend: User Information
+    Backend->>Backend: Get User Data
     Backend-->>Frontend: Reject/Accept
     Frontend->>+Frontend: Refresh Progress
     Backend->>-Frontend: Cocktail Done
     Backend->>+Payment Service: Send Cocktail Data + Card ID
-
+    Payment Service-->>-Backend: Response (OK)
 ```
+
+While it can be optional to scan a tag to view allowed cocktails, scanning a tag is mandatory to order a cocktail.
+This pre-selection of allowed cocktails can be used to hide alcoholic cocktails for underage users or similar cases.
 
 ## Configuration
 
