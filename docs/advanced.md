@@ -1,6 +1,6 @@
 # Advanced Topics
 
-!!! success "First Of All"
+!!! info "First Of All"
     Take note that none of this section is required to run the base program.
     These are just some fun additions, which you can optionally use.
     If you are not interested in them, just skip this section.
