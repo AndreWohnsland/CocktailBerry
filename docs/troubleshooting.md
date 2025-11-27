@@ -127,10 +127,11 @@ If you use any other non controllable LED connected over the relay, you can use 
 
 Setting up a RFID reader and integrate it into the program is an intermediate task.
 So I would not recommend it for complete beginners, and it may include some tinkering.
-Currently you can use two different types of reader:
+Currently you can use those different types of reader:
 
-- Basic MFRC522 ([like this](https://www.amazon.de/dp/B074S8MRQ7), SPI Protocol)
+- Basic MFRC522 ([like this](https://amzn.to/4puhW4T), SPI Protocol)
 - PiicoDev RFID ([only this](https://core-electronics.com.au/piicodev-rfid-module.html), I2C Protocol)
+- USB RFID Reader (like [this](https://amzn.to/4p75hVZ), only reading UID supported)
 
 !!! bug "Please Read"
     Reading / Writing RFIDs while still having a interactive GUI may cause a lot of troubles.
@@ -143,13 +144,15 @@ Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspb
 You only need the wiring and the installation of the libraries.
 The according code is integrated into CocktailBerry.
 After that, you select the according option in the settings dropdown for the reader.
-When using the teams function, you can then also use a rfid chip, which inserts the information (name of person) for the leaderboard.
+When using the teams function, you can then also use a RFID chip, which inserts the information (name of person) for the leaderboard.
 In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
 
 Take care that you don't use any of the connected pins of the RFID reader in the CocktailBerry config for a pump or a LED.
 If you do so, remove them or replace them with another pin.
 Otherwise, the RFID will not work.
 Best is to restart the Pi afterwards and then check if the RFID is working as intended.
+While the USB NFC reader does not occupy any GPIO pins, it has some challenges on its own.
+You currently cant write data to the card, only read the UID is supported.
 
 ## Ui Seems Wrong on none RaspOS System
 
