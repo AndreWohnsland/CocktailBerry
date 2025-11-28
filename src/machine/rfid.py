@@ -190,7 +190,7 @@ class _UsbReader(RFIDController):
             # Timeout or other error — no card detected in given interval
             return None, None
         if (sw1, sw2) == (0x90, 0x00):
-            return "", toHexString(response)
+            return "", toHexString(response).replace(" ", "")
         return None, None
 
     def write_card(self, text: str) -> bool:
