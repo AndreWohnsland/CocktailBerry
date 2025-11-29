@@ -67,7 +67,7 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
             name=ingredient_name,
             alcohol=0,
             amount=volume,
-            price=ingredient.cost,
+            price_per_100_ml=ingredient.cost,
             enabled=True,
             virgin_available=True,
             ingredients=[ingredient],

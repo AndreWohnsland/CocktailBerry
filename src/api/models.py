@@ -45,7 +45,7 @@ class Cocktail(BaseModel):
     name: str
     alcohol: int
     amount: int
-    price: float
+    price_per_100_ml: float
     enabled: bool
     virgin_available: bool
     only_virgin: bool
@@ -82,7 +82,7 @@ class CocktailIngredientInput(BaseModel):
 class CocktailInput(BaseModel):
     name: str
     enabled: bool
-    price: float = Field(..., ge=0)
+    price_per_100_ml: float = Field(..., ge=0)
     virgin_available: bool
     ingredients: Annotated[list[CocktailIngredientInput], Len(min_length=1)]
 

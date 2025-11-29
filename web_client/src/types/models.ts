@@ -13,7 +13,7 @@ export interface Cocktail {
   name: string;
   alcohol: number;
   amount: number;
-  price: number;
+  price_per_100_ml: number;
   enabled: boolean;
   virgin_available: boolean;
   only_virgin: boolean;
@@ -53,7 +53,7 @@ export interface CocktailInput {
   name: string;
   enabled: boolean;
   virgin_available: boolean;
-  price: number;
+  price_per_100_ml: number;
   ingredients: CocktailIngredientInput[];
   image: string;
   default_image: string;
@@ -136,6 +136,11 @@ export interface DefinedConfigData {
   TEAMS_ACTIVE: boolean;
   TEAM_BUTTON_NAMES: string[];
   TEAM_API_URL: string;
+  PAYMENT_ACTIVE: boolean;
+  PAYMENT_PRICE_ROUNDING: number;
+  PAYMENT_SERVICE_URL: string;
+  PAYMENT_SECRET_KEY: string;
+  PAYMENT_AUTO_LOGOUT_TIME_S: number;
   CUSTOM_COLOR_PRIMARY: string;
   CUSTOM_COLOR_SECONDARY: string;
   CUSTOM_COLOR_NEUTRAL: string;

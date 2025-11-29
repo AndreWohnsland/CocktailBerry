@@ -35,7 +35,7 @@ def handle_enter_recipe(w: MainScreen) -> None:
     ingredient_names = recipe_input.ingredient_names
     ingredient_volumes = recipe_input.ingredient_volumes
     ingredient_order = recipe_input.ingredient_order
-    str_price = recipe_input.price
+    str_price = recipe_input.price_per_100_ml
     enabled = recipe_input.enabled
     virgin = recipe_input.virgin
 

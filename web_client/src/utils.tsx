@@ -79,7 +79,7 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<bo
   return success;
 };
 
-export const OPTIONTABS = ['UI', 'MAKER', 'HARDWARE', 'SOFTWARE', 'OTHER'];
+export const OPTIONTABS = ['UI', 'MAKER', 'HARDWARE', 'SOFTWARE', 'PAYMENT', 'OTHER'];
 
 const exactSorting: { [key: string]: string[] } = {
   UI: [
@@ -98,6 +98,7 @@ const tabConfig: { [key: string]: string[] } = {
   MAKER: ['MAKER'],
   HARDWARE: ['PUMP', 'LED', 'RFID'],
   SOFTWARE: ['MICROSERVICE', 'TEAM'],
+  PAYMENT: ['PAYMENT'],
 };
 
 const skipConfig = ['EXP_DEMO_MODE'];

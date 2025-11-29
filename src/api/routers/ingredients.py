@@ -140,7 +140,7 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
         name=ingredient.name,
         alcohol=0,
         amount=amount,
-        price=ingredient.cost,
+        price_per_100_ml=ingredient.cost,
         enabled=True,
         virgin_available=True,
         ingredients=[ingredient],

@@ -363,6 +363,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 "MICROSERVICE",
                 "TEAM",
             ),
+            self.vbox_payment: ("PAYMENT",),
         }
         # go over each key, if one of the values in the list is part of the config name
         # return the key

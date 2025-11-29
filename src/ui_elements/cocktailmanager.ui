@@ -1215,7 +1215,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>€ </string>
+                   <string>€/100ml </string>
                   </property>
                  </widget>
                 </item>
