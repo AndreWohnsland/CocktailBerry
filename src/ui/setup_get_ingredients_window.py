@@ -62,7 +62,16 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
         # need to set amount, otherwise it will be 0
         ingredient.amount = volume
 
-        cocktail = Cocktail(0, ingredient_name, 0, volume, True, True, [ingredient])
+        cocktail = Cocktail(
+            id=0,
+            name=ingredient_name,
+            alcohol=0,
+            amount=volume,
+            price=ingredient.cost,
+            enabled=True,
+            virgin_available=True,
+            ingredients=[ingredient],
+        )
         result, message, _ = maker.validate_cocktail(cocktail)
         self.close()
 

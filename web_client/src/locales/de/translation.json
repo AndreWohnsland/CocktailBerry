@@ -55,6 +55,7 @@
     "name": "Name",
     "enabled": "Aktiviert",
     "virginAvailable": "Virgin verfügbar",
+    "price": "Preis",
     "addIngredient": "Zutat hinzufügen",
     "selectIngredient": "Zutat auswählen",
     "enableAllRecipes": "Möchtest du alle Rezepte aktivieren?",

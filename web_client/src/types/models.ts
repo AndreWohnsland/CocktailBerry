@@ -13,6 +13,7 @@ export interface Cocktail {
   name: string;
   alcohol: number;
   amount: number;
+  price: number;
   enabled: boolean;
   virgin_available: boolean;
   only_virgin: boolean;
@@ -52,6 +53,7 @@ export interface CocktailInput {
   name: string;
   enabled: boolean;
   virgin_available: boolean;
+  price: number;
   ingredients: CocktailIngredientInput[];
   image: string;
   default_image: string;

@@ -304,3 +304,13 @@ def clear_resource_log_file() -> None:
     if resource_log.exists():
         with contextlib.suppress(OSError):
             resource_log.unlink()
+
+
+def add_price_column_to_recipes() -> None:
+    """Add the price column to the Recipes table."""
+    _logger.log_event("INFO", "Adding price column to Recipes DB")
+    try:
+        execute_raw_sql("ALTER TABLE Recipes ADD COLUMN Price REAL DEFAULT 0.0;")
+        execute_raw_sql("UPDATE Recipes SET Price = 0.0 WHERE Price IS NULL;")
+    except OperationalError:
+        _logger.log_event("ERROR", "Could not add price column to DB, this may because it already exists")
