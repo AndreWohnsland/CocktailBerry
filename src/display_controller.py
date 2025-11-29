@@ -53,7 +53,7 @@ class RecipeInput:
     ingredient_volumes: list[str]
     ingredient_order: list[str]
     enabled: bool
-    price: str
+    price_per_100_ml: str
     virgin: bool
 
 
@@ -153,7 +153,7 @@ class DisplayController(DialogHandler):
             ingredient_volumes=self.get_lineedit_text(self.get_lineedits_recipe(w)),
             ingredient_order=self.get_lineedit_text(self.get_lineedits_recipe_order(w)),
             enabled=w.CHBenabled.isChecked(),
-            price=w.line_edit_cocktail_price.text().strip(),
+            price_per_100_ml=w.line_edit_cocktail_price.text().strip(),
             virgin=w.offervirgin_checkbox.isChecked(),
         )
 
@@ -551,7 +551,7 @@ class DisplayController(DialogHandler):
         self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(volumes)], volumes)
         self.fill_multiple_lineedit(self.get_lineedits_recipe_order(w)[: len(order)], order)
         w.LECocktail.setText(cocktail.name)
-        w.line_edit_cocktail_price.setText(str(cocktail.price))
+        w.line_edit_cocktail_price.setText(str(cocktail.price_per_100_ml))
 
     def update_maker_view(self, w: MainScreen) -> None:
         """Refresh the maker view, sets tab also to maker and not selection."""

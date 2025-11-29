@@ -135,7 +135,7 @@ class DatabaseCommander:
             name=recipe.name,
             alcohol=recipe.alcohol,
             amount=recipe.amount,
-            price=recipe.price,
+            price_per_100_ml=recipe.price,
             enabled=recipe.enabled,
             virgin_available=recipe.virgin,
             ingredients=[self._map_cocktail_ingredient(x) for x in recipe.ingredient_associations],

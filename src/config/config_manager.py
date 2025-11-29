@@ -127,6 +127,11 @@ class ConfigManager:
     TEAMS_ACTIVE: bool = False
     TEAM_BUTTON_NAMES: ClassVar[list[str]] = ["Team 1", "Team 2"]
     TEAM_API_URL: str = "http://127.0.0.1:8080"
+    PAYMENT_ACTIVE: bool = False
+    PAYMENT_PRICE_ROUNDING: int = 1
+    PAYMENT_SERVICE_URL: str = "http://127.0.0.1:8080"
+    PAYMENT_SECRET_KEY: str = "changeMe"
+    PAYMENT_AUTO_LOGOUT_TIME_S: int = 60
     # Custom theme settings
     CUSTOM_COLOR_PRIMARY: str = "#007bff"
     CUSTOM_COLOR_SECONDARY: str = "#ef9700"
@@ -215,6 +220,11 @@ class ConfigManager:
             "TEAMS_ACTIVE": BoolType(check_name="Teams Active"),
             "TEAM_BUTTON_NAMES": ListType(StringType(), 2),
             "TEAM_API_URL": StringType(),
+            "PAYMENT_ACTIVE": BoolType(check_name="Payment Active"),
+            "PAYMENT_PRICE_ROUNDING": IntType([build_number_limiter(0, 3)]),
+            "PAYMENT_SERVICE_URL": StringType(),
+            "PAYMENT_SECRET_KEY": StringType(),
+            "PAYMENT_AUTO_LOGOUT_TIME_S": IntType([build_number_limiter(0, 1000000000)], suffix="s"),
             "CUSTOM_COLOR_PRIMARY": StringType(),
             "CUSTOM_COLOR_SECONDARY": StringType(),
             "CUSTOM_COLOR_NEUTRAL": StringType(),

@@ -1,4 +1,5 @@
 import copy
+import math
 from dataclasses import field
 from enum import Enum
 from typing import Optional
@@ -70,7 +71,7 @@ class Cocktail:
     alcohol: int
     amount: int
     enabled: bool
-    price: float
+    price_per_100_ml: float
     virgin_available: bool
     ingredients: list[Ingredient]
     only_virgin: bool = False
@@ -111,6 +112,11 @@ class Cocktail:
     def is_virgin(self) -> bool:
         """Returns if the cocktail is virgin."""
         return self.adjusted_alcohol == 0
+
+    def current_price(self, rounding: int) -> float:
+        """Return the price of the cocktail ceiled to given decimal places."""
+        multiplier = 10**rounding
+        return math.ceil(self.price_per_100_ml / 100 * self.adjusted_amount * multiplier) / multiplier
 
     def is_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Return if the recipe is possible with given additional hand add ingredients."""

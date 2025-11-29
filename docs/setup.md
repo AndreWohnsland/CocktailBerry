@@ -86,6 +86,17 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | `TEAM_BUTTON_NAMES`     | List of format ["Team1", "Team2"]                          |
     | `TEAM_API_URL`          | Endpoint of teams API, default used port by API is 8080    |
 
+??? info "Payment Related Config Values"
+    Payment config values are used to configure the payment system and its behavior.
+
+    | Value Name                   | Description                                                 |
+    | :--------------------------- | :---------------------------------------------------------- |
+    | `PAYMENT_ACTIVE`             | Enable payment feature                                      |
+    | `PAYMENT_PRICE_ROUNDING`     | Number of decimal places to round up the cocktail price to  |
+    | `PAYMENT_SERVICE_URL`        | URL of the payment service API                              |
+    | `PAYMENT_SECRET_KEY`         | Secret key for authentication with the payment service      |
+    | `PAYMENT_AUTO_LOGOUT_TIME_S` | Time in seconds until automatic logout of user from payment |
+
 ??? info "List Other Config Values"
     Here are some other config values, which are not fitting in the other categories.
     Addon data will be added here as well.
