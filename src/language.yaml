@@ -448,6 +448,9 @@ ui:
     number:
       en: 'Enter number!'
       de: 'Nummer eingeben!'
+    price:
+      en: 'Enter price!'
+      de: 'Preis eingeben!'
 
   ##### OPTION WINDOW #####
   # all values for option window

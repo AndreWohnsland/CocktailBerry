@@ -160,10 +160,17 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         y_pos: int = 0,
         header_text: str = "Password",
         overwrite_number: bool = False,
+        use_float: bool = False,
     ) -> None:
         """Open up the NumpadWidget connected to the lineedit offset from the left upper side."""
         self.numpad_window = NumpadWidget(
-            self, le_to_write, x_pos, y_pos, header_text, overwrite_number=overwrite_number
+            self,
+            le_to_write,
+            x_pos,
+            y_pos,
+            header_text,
+            overwrite_number=overwrite_number,
+            use_float=use_float,
         )
 
     def open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 30) -> None:
@@ -241,6 +248,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.option_button.clicked.connect(self.open_option_window)
         alcohol = UI_LANGUAGE.generate_numpad_header("alcohol")
         self.LEGehaltRezept.clicked.connect(lambda: self.open_numpad(self.LEGehaltRezept, 50, 50, alcohol))
+        price = UI_LANGUAGE.generate_numpad_header("price")
+        self.line_edit_cocktail_price.clicked.connect(
+            lambda: self.open_numpad(self.line_edit_cocktail_price, 400, 50, price, use_float=True)
+        )
         self.line_edit_ingredient_name.clicked.connect(
             lambda: self.open_keyboard(self.line_edit_ingredient_name, max_char_len=20)
         )

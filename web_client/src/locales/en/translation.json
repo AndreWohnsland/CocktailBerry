@@ -55,6 +55,7 @@
     "name": "Name",
     "enabled": "Enabled",
     "virginAvailable": "Virgin Available",
+    "price": "Price",
     "addIngredient": "Add Ingredient",
     "selectIngredient": "Select Ingredient",
     "enableAllRecipes": "Do you want to enable all Recipes?",

@@ -86,6 +86,7 @@ class DbRecipe(Base):
     name: Mapped[str] = mapped_column(unique=True, nullable=False, name="Name")
     alcohol: Mapped[int] = mapped_column(nullable=False, name="Alcohol")
     amount: Mapped[int] = mapped_column(nullable=False, name="Amount")
+    price: Mapped[float] = mapped_column(nullable=False, name="Price", default=0.0)
     counter_lifetime: Mapped[int] = mapped_column(default=0, name="Counter_lifetime")
     counter_lifetime_virgin: Mapped[int] = mapped_column(default=0, name="Counter_lifetime_virgin")
     counter: Mapped[int] = mapped_column(default=0, name="Counter")
@@ -102,6 +103,7 @@ class DbRecipe(Base):
         name: str,
         alcohol: int,
         amount: int,
+        price: float,
         counter_lifetime: int = 0,
         counter_lifetime_virgin: int = 0,
         counter: int = 0,
@@ -112,6 +114,7 @@ class DbRecipe(Base):
         self.name = name
         self.alcohol = alcohol
         self.amount = amount
+        self.price = price
         self.counter_lifetime = counter_lifetime
         self.counter_lifetime_virgin = counter_lifetime_virgin
         self.counter = counter

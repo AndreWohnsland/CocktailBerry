@@ -36,6 +36,7 @@ from src.migration.update_data import (
     add_foreign_keys,
     add_more_bottles_to_db,
     add_order_column_to_ingredient_data,
+    add_price_column_to_recipes,
     add_resource_usage_table,
     add_slower_ingredient_flag_to_db,
     add_team_buffer_to_database,
@@ -158,6 +159,7 @@ class Migrator:
             "2.6.1": [add_virgin_counters_to_recipes],
             "2.6.2": [lambda: self._install_pip_package("pulp", "2.6.2")],
             "2.8.0": [_combine_led_setting_into_one_config],
+            "2.10.0": [add_price_column_to_recipes],
         }
 
         for version, actions in version_actions.items():

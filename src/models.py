@@ -70,6 +70,7 @@ class Cocktail:
     alcohol: int
     amount: int
     enabled: bool
+    price: float
     virgin_available: bool
     ingredients: list[Ingredient]
     only_virgin: bool = False

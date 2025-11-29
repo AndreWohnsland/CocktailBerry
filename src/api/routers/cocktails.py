@@ -150,7 +150,13 @@ async def create_cocktail(cocktail: CocktailInput) -> ApiMessageWithData[Cocktai
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
     ingredient_data = [(i.id, i.amount, i.recipe_order) for i in cocktail.ingredients]
     db_cocktail = DBC.insert_new_recipe(
-        cocktail.name, recipe_alcohol_level, recipe_volume, cocktail.enabled, cocktail.virgin_available, ingredient_data
+        name=cocktail.name,
+        alcohol_level=recipe_alcohol_level,
+        volume=recipe_volume,
+        price=cocktail.price,
+        enabled=cocktail.enabled,
+        virgin=cocktail.virgin_available,
+        ingredient_data=ingredient_data,
     )
     return ApiMessageWithData(
         message=DH.get_translation("recipe_added", recipe_name=db_cocktail.name),
@@ -164,13 +170,14 @@ async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> ApiMessa
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
     ingredient_data = [(i.id, i.amount, i.recipe_order) for i in cocktail.ingredients]
     db_cocktail: DbCocktail = DBC.set_recipe(
-        cocktail_id,
-        cocktail.name,
-        recipe_alcohol_level,
-        recipe_volume,
-        cocktail.enabled,
-        cocktail.virgin_available,
-        ingredient_data,
+        recipe_id=cocktail_id,
+        name=cocktail.name,
+        alcohol_level=recipe_alcohol_level,
+        volume=recipe_volume,
+        price=cocktail.price,
+        enabled=cocktail.enabled,
+        virgin=cocktail.virgin_available,
+        ingredient_data=ingredient_data,
     )
     return ApiMessageWithData(
         message=DH.get_translation("recipe_updated", old_name=cocktail_id, new_name=db_cocktail.name),

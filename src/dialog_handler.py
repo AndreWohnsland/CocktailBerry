@@ -719,10 +719,10 @@ class UiLanguage:
         window = "team_window"
         w.LHeader.setText(self._choose_language("header", window))
 
-    def generate_numpad_header(self, header_type: Literal["amount", "alcohol", "number"] = "amount") -> str:
+    def generate_numpad_header(self, header_type: Literal["amount", "alcohol", "number", "price"] = "amount") -> str:
         """Select the header of the password window.
 
-        header_type: 'password', 'amount', 'alcohol'.
+        header_type: 'password', 'amount', 'alcohol', 'price'.
         """
         window = "numpad_window"
         return self._choose_language(header_type, window)

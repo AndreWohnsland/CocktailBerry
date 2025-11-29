@@ -135,6 +135,7 @@ class DatabaseCommander:
             name=recipe.name,
             alcohol=recipe.alcohol,
             amount=recipe.amount,
+            price=recipe.price,
             enabled=recipe.enabled,
             virgin_available=recipe.virgin,
             ingredients=[self._map_cocktail_ingredient(x) for x in recipe.ingredient_associations],
@@ -456,6 +457,7 @@ class DatabaseCommander:
         name: str,
         alcohol_level: int,
         volume: int,
+        price: float,
         enabled: bool,
         virgin: bool,
         ingredient_data: list[tuple[int, int, int]],
@@ -472,6 +474,7 @@ class DatabaseCommander:
             recipe.amount = volume
             recipe.enabled = enabled
             recipe.virgin = virgin
+            recipe.price = price
 
             for _id, amount, order in ingredient_data:
                 self.insert_recipe_data(recipe_id, _id, amount, order)
@@ -525,6 +528,7 @@ class DatabaseCommander:
         name: str,
         alcohol_level: int,
         volume: int,
+        price: float,
         enabled: bool,
         virgin: bool,
         ingredient_data: list[tuple[int, int, int]],
@@ -534,6 +538,7 @@ class DatabaseCommander:
             name=name,
             alcohol=alcohol_level,
             amount=volume,
+            price=price,
             counter_lifetime=0,
             counter=0,
             enabled=enabled,
