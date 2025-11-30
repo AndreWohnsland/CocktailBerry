@@ -113,10 +113,12 @@ class Cocktail:
         """Returns if the cocktail is virgin."""
         return self.adjusted_alcohol == 0
 
-    def current_price(self, rounding: int) -> float:
+    def current_price(self, rounding: int, amount: int | None = None) -> float:
         """Return the price of the cocktail ceiled to given decimal places."""
+        if amount is None:
+            amount = self.adjusted_amount
         multiplier = 10**rounding
-        return math.ceil(self.price_per_100_ml / 100 * self.adjusted_amount * multiplier) / multiplier
+        return math.ceil(self.price_per_100_ml / 100 * amount * multiplier) / multiplier
 
     def is_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Return if the recipe is possible with given additional hand add ingredients."""

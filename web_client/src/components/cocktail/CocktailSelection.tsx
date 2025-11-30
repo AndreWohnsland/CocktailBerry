@@ -133,6 +133,13 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
     return start + idx;
   };
 
+  const calculateDisplayPrice = (amount: number, pricePer100: number): string => {
+    if (!config.PAYMENT_ACTIVE) return '';
+    const multiplier = 10 ** config.PAYMENT_PRICE_ROUNDING;
+    const price = Math.ceil(((amount * pricePer100) / 100) * multiplier) / multiplier;
+    return `: ${price}€`;
+  };
+
   return (
     <>
       <div className='flex flex-col sm:flex-row items-center md:items-start justify-center w-full h-full'>
@@ -223,7 +230,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
               .sort((a, b) => a - b)
               .map((amount, index) => (
                 <Button
-                  label={amount}
+                  label={amount + calculateDisplayPrice(amount, displayCocktail.price_per_100_ml)}
                   filled
                   key={amount}
                   onClick={() => prepareCocktailClick(amount)}

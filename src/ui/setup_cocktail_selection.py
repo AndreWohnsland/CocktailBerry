@@ -269,8 +269,13 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # Then create a button for each volume
         for volume, icon_name in zip(volume_list, icon_list):
             volume_converted = self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)
+            label = f"{volume_converted}"
+            if cfg.PAYMENT_ACTIVE:
+                price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume)
+                price_str = f"{price:.1f}".rstrip(".0")
+                label += f": {price_str}€"
             button = create_button(
-                f"{volume_converted}",  # \n  {cfg.EXP_MAKER_UNIT}
+                label,
                 self,
                 css_class="btn-inverted ml round",
                 min_h=60,
