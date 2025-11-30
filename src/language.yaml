@@ -686,8 +686,8 @@ ui:
       en: 'Activate the payment function over NFC/RFID'
       de: 'Aktiviert die Zahlungsfunktion über NFC/RFID'
     PAYMENT_PRICE_ROUNDING:
-      en: 'Rounding for payment prices, round up to next given digit, e.g. 1 will round 1.33 to 1.3, 0 will round 5.34 to 6.'
-      de: 'Rundung für Zahlungsbeträge, runde auf die nächste gegebene Ziffer auf, z.B. 1 rundet 1,34 auf 1,3, 0 rundet 5,34 auf 6.'
+      en: 'Rounding for payment prices, round up to given digit, e.g. 1 will round 1.33 to 1.3, 0 will round 5.34 to 6.'
+      de: 'Rundung für Zahlungsbeträge, runde auf die nächste gegebene Kommastelle auf, z.B. 1 rundet 1,34 auf 1,3, 0 rundet 5,34 auf 6.'
     PAYMENT_SERVICE_URL:
       en: 'URL address for payment service API'
       de: 'URL Adresse der Zahlungsservice API'
