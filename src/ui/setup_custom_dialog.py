@@ -39,13 +39,20 @@ class CustomDialog(QMainWindow, Ui_CustomDialog):
             self.close_callback()
         self.close()
 
-    def exec(self) -> bool:
+    def _start_close_timer(self) -> None:
         if self.close_time is not None:
             self._timer = QTimer(self)
             self._timer.setSingleShot(True)
             self._timer.timeout.connect(self.close)
             self._timer.start(int(self.close_time * 1000))
 
+    def show_non_blocking(self) -> None:
+        self._start_close_timer()
+        self.showFullScreen()
+        DP_CONTROLLER.set_display_settings(self)
+
+    def exec(self) -> bool:
+        self._start_close_timer()
         loop = QEventLoop()
         self.destroyed.connect(loop.quit)
         self.showFullScreen()
