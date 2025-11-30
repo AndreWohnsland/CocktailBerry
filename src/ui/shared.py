@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import contextlib
+import time
 from typing import TYPE_CHECKING
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab
 from src.display_controller import DP_CONTROLLER
 from src.models import Cocktail, PrepareResult
+from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService
 from src.tabs import bottles, maker
 
 if TYPE_CHECKING:
@@ -35,6 +38,14 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
     if cfg.TEAMS_ACTIVE:
         w.open_team_window()
 
+    booking = qt_payment_flow(cocktail)
+    if booking.result not in [
+        CocktailBooking.Result.SUCCESS,
+        CocktailBooking.Result.INACTIVE,
+    ]:
+        DP_CONTROLLER.standard_box(booking.message, close_time=60)
+        return False, booking.message
+
     result, message = maker.prepare_cocktail(cocktail, w)
     # show dialog in case of cancel or if there are handadds
     if result == PrepareResult.CANCELED:
@@ -49,3 +60,26 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
     DP_CONTROLLER.reset_alcohol_factor()
     w.container_maker.setCurrentWidget(w.cocktail_view)
     return True, message
+
+
+def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
+    """Run the payment flow in QT UI."""
+    if not cfg.PAYMENT_ACTIVE:
+        return CocktailBooking.inactive()
+    payment_service = NFCPaymentService()
+    booking = payment_service.book_cocktail_for_current_user(cocktail)
+    success = booking.success
+    polling_time = 20
+    start_time = time.time()
+    dialog = None
+    if not success:
+        dialog = DP_CONTROLLER.standard_box(booking.message, close_time=60, blocking=False)
+    while not success and (time.time() - start_time < polling_time):
+        time.sleep(1)
+        booking = payment_service.book_cocktail_for_current_user(cocktail)
+        success = booking.success
+    if dialog is not None:
+        with contextlib.suppress(Exception):
+            dialog.close()
+
+    return booking

@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, overload
 
 import yaml
 
@@ -23,6 +23,7 @@ from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data
 
 if TYPE_CHECKING:
+    from src.ui.setup_custom_dialog import CustomDialog
     from src.ui_elements import (
         Ui_addingredient,
         Ui_AddonManager,
@@ -160,7 +161,34 @@ class DialogHandler:
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
-    def standard_box(self, message: str, title: str = "", use_ok: bool = False, close_time: int | None = None) -> bool:
+    @overload
+    def standard_box(
+        self,
+        message: str,
+        title: str = ...,
+        use_ok: bool = ...,
+        close_time: int | None = ...,
+        blocking: Literal[True] = ...,
+    ) -> bool: ...
+
+    @overload
+    def standard_box(
+        self,
+        message: str,
+        title: str = ...,
+        use_ok: bool = ...,
+        close_time: int | None = ...,
+        blocking: Literal[False] = ...,
+    ) -> CustomDialog: ...
+
+    def standard_box(
+        self,
+        message: str,
+        title: str = "",
+        use_ok: bool = False,
+        close_time: int | None = None,
+        blocking: bool = True,
+    ) -> bool | CustomDialog:
         """Display the messagebox for the Maker. Blocks until closed."""
         from src.ui.setup_custom_dialog import CustomDialog
 
@@ -168,7 +196,11 @@ class DialogHandler:
             title = self._choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
-        return CustomDialog(fancy_message, title, use_ok, close_time=close_time).exec()
+        dialog = CustomDialog(fancy_message, title, use_ok, close_time=close_time)
+        if blocking:
+            return dialog.exec()
+        dialog.show_non_blocking()
+        return dialog
 
     def user_okay(self, text: str) -> bool:
         """Prompts the user for the given message and asks for confirmation."""
