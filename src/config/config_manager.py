@@ -129,6 +129,8 @@ class ConfigManager:
     TEAM_API_URL: str = "http://127.0.0.1:8080"
     PAYMENT_ACTIVE: bool = False
     PAYMENT_PRICE_ROUNDING: int = 1
+    PAYMENT_SHOW_NOT_POSSIBLE: bool = True
+    PAYMENT_VIRGIN_MULTIPLIER: int = 80
     PAYMENT_SERVICE_URL: str = "http://127.0.0.1:8080"
     PAYMENT_SECRET_KEY: str = "changeMe"
     PAYMENT_AUTO_LOGOUT_TIME_S: int = 60
@@ -222,6 +224,8 @@ class ConfigManager:
             "TEAM_API_URL": StringType(),
             "PAYMENT_ACTIVE": BoolType(check_name="Payment Active"),
             "PAYMENT_PRICE_ROUNDING": IntType([build_number_limiter(0, 3)]),
+            "PAYMENT_VIRGIN_MULTIPLIER": IntType([build_number_limiter(0, 200)], suffix="%"),
+            "PAYMENT_SHOW_NOT_POSSIBLE": BoolType(check_name="Show Not Possible Cocktails"),
             "PAYMENT_SERVICE_URL": StringType(),
             "PAYMENT_SECRET_KEY": StringType(),
             "PAYMENT_AUTO_LOGOUT_TIME_S": IntType([build_number_limiter(0, 1000000000)], suffix="s"),

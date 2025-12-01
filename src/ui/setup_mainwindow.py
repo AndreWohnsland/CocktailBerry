@@ -140,7 +140,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 platform.python_version(), f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
             )
 
-    def open_cocktail_selection(self, cocktail: Cocktail) -> None:
+    def open_cocktail_detail(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
         if self.cocktail_selection is not None:
             # Clean up all internal layouts and widgets recursively
@@ -150,13 +150,19 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             # Schedule for deletion and remove reference
             self.cocktail_selection.deleteLater()
             self.cocktail_selection = None
-        self.cocktail_selection = CocktailSelection(
-            self, cocktail, lambda: self.container_maker.setCurrentWidget(self.cocktail_view)
-        )
+        self.cocktail_selection = CocktailSelection(self, cocktail, self.switch_to_cocktail_list)
         self.container_maker.addWidget(self.cocktail_selection)
         self.cocktail_selection.set_cocktail(cocktail)
         self.cocktail_selection.update_cocktail_data()
+        self.switch_to_cocktail_detail()
+
+    def switch_to_cocktail_detail(self) -> None:
+        if self.cocktail_selection is None:
+            return
         self.container_maker.setCurrentWidget(self.cocktail_selection)
+
+    def switch_to_cocktail_list(self) -> None:
+        self.container_maker.setCurrentWidget(self.cocktail_view)
 
     def open_numpad(
         self,
@@ -388,5 +394,5 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         cocktail = DB_COMMANDER.get_cocktail(search)
         if cocktail is None:
             return
-        self.open_cocktail_selection(cocktail)
+        self.open_cocktail_detail(cocktail)
         DP_CONTROLLER.set_tabwidget_tab(self, "maker")
