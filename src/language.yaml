@@ -691,6 +691,12 @@ ui:
     PAYMENT_PRICE_ROUNDING:
       en: 'Rounding for payment prices, round up to given digit, e.g. 1 will round 1.33 to 1.3, 0 will round 5.34 to 6.'
       de: 'Rundung für Zahlungsbeträge, runde auf die nächste gegebene Kommastelle auf, z.B. 1 rundet 1,34 auf 1,3, 0 rundet 5,34 auf 6.'
+    PAYMENT_VIRGIN_MULTIPLIER:
+      en: 'Multiplier percentage to apply to virgin cocktail prices'
+      de: 'Multiplikator Prozentsatz, der auf Preise für alkoholfreie Cocktails angewendet wird'
+    PAYMENT_SHOW_NOT_POSSIBLE:
+      en: 'Show cocktails that are not possible to the user (missing balance, no alcohol allowed, etc.)'
+      de: 'Zeige Cocktails an, die für den Benutzer nicht möglich sind (zu wenig Guthaben, kein Alkohol erlaubt, etc.)'
     PAYMENT_SERVICE_URL:
       en: 'URL address for payment service API'
       de: 'URL Adresse der Zahlungsservice API'

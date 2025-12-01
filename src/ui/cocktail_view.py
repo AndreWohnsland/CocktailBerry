@@ -13,6 +13,7 @@ from src.display_controller import DP_CONTROLLER
 from src.filepath import DEFAULT_COCKTAIL_IMAGE
 from src.image_utils import find_cocktail_image
 from src.models import Cocktail
+from src.payment_utils import filter_cocktails_by_user
 from src.programs.nfc_payment_service import NFCPaymentService
 from src.ui.creation_utils import create_button, create_label
 from src.ui.icons import IconSetter, PresetIcon
@@ -79,8 +80,10 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
     layout.addWidget(label)
     if cocktail is not None:
         # take care of the button overload thingy, otherwise the first element will be a bool
-        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_selection(c))  # type: ignore[attr-defined]
-        label.clicked.connect(lambda c=cocktail: mainscreen.open_cocktail_selection(c))
+        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_detail(c))  # type: ignore[attr-defined]
+        label.clicked.connect(lambda c=cocktail: mainscreen.open_cocktail_detail(c))
+        button.setEnabled(cocktail.is_allowed)
+        label.setEnabled(cocktail.is_allowed)
     else:
         button.clicked.connect(mainscreen.open_ingredient_window)  # type: ignore[attr-defined]
         label.clicked.connect(mainscreen.open_ingredient_window)
@@ -164,6 +167,7 @@ class CocktailView(QWidget):
         time_print(f"NFC user state changed to {current_user} from {self._last_known_user}")
         self._last_known_user = current_user
         self._render_view()
+        self.mainscreen.switch_to_cocktail_list()
 
     def _show_nfc_scan_message(self) -> None:
         """Show the NFC scan message and hide the cocktails grid."""
@@ -180,6 +184,12 @@ class CocktailView(QWidget):
         n_columns = _n_columns()
         DP_CONTROLLER.delete_items_of_layout(self.grid)
         cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
+        # filter cocktails based on user criteria if payment is active
+        if cfg.PAYMENT_ACTIVE:
+            cocktails = filter_cocktails_by_user(NFCPaymentService().current_user, cocktails)
+            # remove if machine owner do not want to show not possible cocktails
+            if not cfg.PAYMENT_SHOW_NOT_POSSIBLE:
+                cocktails = [c for c in cocktails if c.is_allowed]
         # sort cocktails by name
         cocktails.sort(key=lambda x: x.name.lower())
         # fill the grid with n_columns columns, then go to another row
@@ -190,7 +200,7 @@ class CocktailView(QWidget):
                 block = generate_image_block(cocktails[i + j], self.mainscreen)
                 self.grid.addLayout(block, i // n_columns, j)
         # Optionally add the single ingredient block after all cocktails
-        if cfg.MAKER_ADD_SINGLE_INGREDIENT:
+        if cfg.MAKER_ADD_SINGLE_INGREDIENT and not cfg.PAYMENT_ACTIVE:
             total = len(cocktails)
             row = total // n_columns
             col = total % n_columns

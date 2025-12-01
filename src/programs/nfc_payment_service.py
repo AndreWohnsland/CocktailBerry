@@ -101,7 +101,7 @@ class NFCPaymentService:
             cls.clear_thread: Thread | None = None
             cls._clear_event: Event | None = None
             cls.user_db: dict[str, User] = {
-                "CAD3B515": User(uid="CAD3B515", balance=1.0, can_get_alcohol=True),
+                "CAD3B515": User(uid="CAD3B515", balance=5.0, can_get_alcohol=False),
                 "33DFE41D": User(uid="33DFE41D", balance=10.0, can_get_alcohol=True),
             }
         return cls._instance

@@ -138,6 +138,8 @@ export interface DefinedConfigData {
   TEAM_API_URL: string;
   PAYMENT_ACTIVE: boolean;
   PAYMENT_PRICE_ROUNDING: number;
+  PAYMENT_VIRGIN_MULTIPLIER: number;
+  PAYMENT_SHOW_NOT_POSSIBLE: boolean;
   PAYMENT_SERVICE_URL: string;
   PAYMENT_SECRET_KEY: string;
   PAYMENT_AUTO_LOGOUT_TIME_S: number;

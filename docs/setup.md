@@ -93,6 +93,8 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | :--------------------------- | :---------------------------------------------------------- |
     | `PAYMENT_ACTIVE`             | Enable payment feature                                      |
     | `PAYMENT_PRICE_ROUNDING`     | Number of decimal places to round up the cocktail price to  |
+    | `PAYMENT_SHOW_NOT_POSSIBLE`  | Show cocktails that are not possible to the user            |
+    | `PAYMENT_VIRGIN_MULTIPLIER`  | Multiplier percentage to apply to virgin cocktail prices    |
     | `PAYMENT_SERVICE_URL`        | URL of the payment service API                              |
     | `PAYMENT_SECRET_KEY`         | Secret key for authentication with the payment service      |
     | `PAYMENT_AUTO_LOGOUT_TIME_S` | Time in seconds until automatic logout of user from payment |
