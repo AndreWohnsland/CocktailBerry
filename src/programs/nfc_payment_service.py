@@ -2,7 +2,6 @@ import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import StrEnum
-from threading import Event, Thread
 
 from src.config.config_manager import CONFIG as cfg
 from src.machine.rfid import RFIDReader
@@ -98,9 +97,7 @@ class NFCPaymentService:
             cls._instance = object.__new__(cls)
             cls.uid: str | None = None
             cls.rfid_reader = RFIDReader()
-            cls.clear_thread: Thread | None = None
-            cls._clear_event: Event | None = None
-            cls._user_callback: Callable[[User | None, str], None] | None = None
+            cls._user_callbacks: list[Callable[[User | None, str], None]] = []
             cls._is_polling: bool = False
             cls.user_db: dict[str, User] = {
                 "CAD3B515": User(uid="CAD3B515", balance=5.0, can_get_alcohol=False),
@@ -112,27 +109,40 @@ class NFCPaymentService:
         time_print("Cleaning up NFCService...")
         self.stop_polling()
 
-    def start_polling(self, user_callback: Callable[[User | None, str], None] | None = None) -> None:
-        """Start polling for NFC tags with an optional callback.
+    def start_polling(self, user_callbacks: list[Callable[[User | None, str], None]] | Callable[[User | None, str], None] | None = None) -> None:
+        """Start polling for NFC tags with optional callbacks.
         
         Args:
-            user_callback: Optional callback that receives (user: User | None, uid: str) when a user is detected
+            user_callbacks: Optional callback(s) that receive (user: User | None, uid: str) when a user is detected.
+                           Can be a single callback or a list of callbacks.
         """
-        if self._is_polling:
-            time_print("NFC polling already active.")
-            return
-        time_print("Starting NFC polling.")
-        self._user_callback = user_callback
-        self._is_polling = True
-        self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
+        # Add new callbacks to the list
+        if user_callbacks is not None:
+            if callable(user_callbacks):
+                # Single callback provided
+                if user_callbacks not in self._user_callbacks:
+                    self._user_callbacks.append(user_callbacks)
+                    time_print(f"Added callback. Total callbacks: {len(self._user_callbacks)}")
+            else:
+                # List of callbacks provided
+                for callback in user_callbacks:
+                    if callback not in self._user_callbacks:
+                        self._user_callbacks.append(callback)
+                time_print(f"Added callbacks. Total callbacks: {len(self._user_callbacks)}")
+        
+        # Start polling if not already active
+        if not self._is_polling:
+            time_print("Starting NFC polling.")
+            self._is_polling = True
+            self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
 
     def stop_polling(self) -> None:
-        """Stop polling for NFC tags."""
+        """Stop polling for NFC tags and clear all callbacks."""
         if not self._is_polling:
             return
         time_print("Stopping NFC polling.")
         self._is_polling = False
-        self._cancel_clear_thread()
+        self._user_callbacks.clear()
         self.rfid_reader.cancel_reading()
 
     def get_user_for_id(self, nfc_id: str) -> User | None:
@@ -143,50 +153,17 @@ class NFCPaymentService:
     def _handle_nfc_read(self, _: str, _id: str) -> None:
         """Handle NFC read events."""
         time_print(f"NFC ID read: {_id}")
-        self._cancel_clear_thread()
         user = self.get_user_for_id(_id)
         if user is None:
             time_print("No user found for this NFC ID.")
             self.uid = None
-            if self._user_callback is not None:
-                self._user_callback(None, _id)
-            return
-        time_print(f"User found: {user} for NFC ID: {_id}\n")
-        self.uid = _id
-        
-        # Invoke the callback if provided
-        if self._user_callback is not None:
-            self._user_callback(user, _id)
-        
-        # Start auto-logout timer
-        self._clear_event = Event()
-        self.clear_thread = Thread(
-            target=self.clear_data_after,
-            args=(cfg.PAYMENT_AUTO_LOGOUT_TIME_S, self._clear_event),
-            daemon=True,
-        )
-        self.clear_thread.start()
-
-    def clear_data_after(self, seconds: int, cancel_event: Event | None = None) -> None:
-        """Clear the UID after x seconds."""
-        if cancel_event is not None:
-            canceled = cancel_event.wait(timeout=seconds)
-            if canceled:
-                time_print("Clearing UID canceled.")
-                return
         else:
-            time.sleep(seconds)
-        time_print("Clearing Data.")
-        self.uid = None
-        # Notify via callback that user has been logged out
-        if self._user_callback is not None:
-            self._user_callback(None, "")
-
-    def _cancel_clear_thread(self) -> None:
-        """Cancel the pending clear thread if it is running."""
-        if self._clear_event is not None:
-            self._clear_event.set()
-            self._clear_event = None
+            time_print(f"User found: {user} for NFC ID: {_id}\n")
+            self.uid = _id
+        
+        # Invoke all registered callbacks
+        for callback in self._user_callbacks:
+            callback(user, _id)
 
     def book_cocktail_for_user(self, user: User | None, cocktail: Cocktail) -> CocktailBooking:
         """Book a cocktail for the given user if they have enough balance."""

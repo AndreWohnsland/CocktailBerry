@@ -60,33 +60,58 @@ class TestNFCPaymentServicePolling:
         nfc_service.start_polling(callback)
         
         assert nfc_service._is_polling is True
-        assert nfc_service._user_callback == callback
+        assert callback in nfc_service._user_callbacks
 
     def test_start_polling_without_callback(self, nfc_service: NFCPaymentService) -> None:
         """Test that start_polling works without a callback."""
         nfc_service.start_polling()
         
         assert nfc_service._is_polling is True
-        assert nfc_service._user_callback is None
+        assert len(nfc_service._user_callbacks) == 0
 
-    def test_start_polling_idempotent(self, nfc_service: NFCPaymentService) -> None:
-        """Test that calling start_polling multiple times doesn't cause issues."""
+    def test_start_polling_with_multiple_callbacks(self, nfc_service: NFCPaymentService) -> None:
+        """Test that calling start_polling multiple times adds callbacks."""
         callback1 = MagicMock()
         callback2 = MagicMock()
         
         nfc_service.start_polling(callback1)
         nfc_service.start_polling(callback2)
         
-        # Should still be polling and callback should not be changed
+        # Should be polling and both callbacks should be added
         assert nfc_service._is_polling is True
-        assert nfc_service._user_callback == callback1
+        assert callback1 in nfc_service._user_callbacks
+        assert callback2 in nfc_service._user_callbacks
+        assert len(nfc_service._user_callbacks) == 2
+
+    def test_start_polling_with_list_of_callbacks(self, nfc_service: NFCPaymentService) -> None:
+        """Test that start_polling can accept a list of callbacks."""
+        callback1 = MagicMock()
+        callback2 = MagicMock()
+        
+        nfc_service.start_polling([callback1, callback2])
+        
+        assert nfc_service._is_polling is True
+        assert callback1 in nfc_service._user_callbacks
+        assert callback2 in nfc_service._user_callbacks
+        assert len(nfc_service._user_callbacks) == 2
+
+    def test_start_polling_prevents_duplicate_callbacks(self, nfc_service: NFCPaymentService) -> None:
+        """Test that the same callback is not added twice."""
+        callback = MagicMock()
+        
+        nfc_service.start_polling(callback)
+        nfc_service.start_polling(callback)
+        
+        # Should only have one instance of the callback
+        assert len(nfc_service._user_callbacks) == 1
 
     def test_stop_polling_clears_state(self, nfc_service: NFCPaymentService) -> None:
-        """Test that stop_polling clears polling state."""
+        """Test that stop_polling clears polling state and callbacks."""
         nfc_service.start_polling(MagicMock())
         nfc_service.stop_polling()
         
         assert nfc_service._is_polling is False
+        assert len(nfc_service._user_callbacks) == 0
 
     def test_stop_polling_when_not_polling(self, nfc_service: NFCPaymentService) -> None:
         """Test that stop_polling is safe when not polling."""
@@ -101,7 +126,7 @@ class TestNFCPaymentServiceUserDetection:
     def test_handle_nfc_read_with_valid_user(self, nfc_service: NFCPaymentService) -> None:
         """Test that valid NFC read invokes callback with user."""
         callback = MagicMock()
-        nfc_service._user_callback = callback
+        nfc_service._user_callbacks = [callback]
         
         # Simulate NFC read
         nfc_service._handle_nfc_read("", "CAD3B515")
@@ -116,7 +141,7 @@ class TestNFCPaymentServiceUserDetection:
     def test_handle_nfc_read_with_invalid_user(self, nfc_service: NFCPaymentService) -> None:
         """Test that invalid NFC read invokes callback with None user."""
         callback = MagicMock()
-        nfc_service._user_callback = callback
+        nfc_service._user_callbacks = [callback]
         
         # Simulate NFC read with unknown ID
         nfc_service._handle_nfc_read("", "UNKNOWN_ID")
@@ -127,27 +152,26 @@ class TestNFCPaymentServiceUserDetection:
         assert args[0] is None  # user
         assert args[1] == "UNKNOWN_ID"  # uid
 
+    def test_handle_nfc_read_with_multiple_callbacks(self, nfc_service: NFCPaymentService) -> None:
+        """Test that NFC read invokes all registered callbacks."""
+        callback1 = MagicMock()
+        callback2 = MagicMock()
+        nfc_service._user_callbacks = [callback1, callback2]
+        
+        # Simulate NFC read
+        nfc_service._handle_nfc_read("", "CAD3B515")
+        
+        # Both callbacks should be invoked
+        callback1.assert_called_once()
+        callback2.assert_called_once()
+
     def test_handle_nfc_read_without_callback(self, nfc_service: NFCPaymentService) -> None:
         """Test that NFC read without callback doesn't crash."""
-        nfc_service._user_callback = None
+        nfc_service._user_callbacks = []
         
         # Should not raise any exception
         nfc_service._handle_nfc_read("", "CAD3B515")
         assert nfc_service.uid == "CAD3B515"
-
-    def test_auto_logout_invokes_callback(self, nfc_service: NFCPaymentService) -> None:
-        """Test that auto-logout invokes callback with None user."""
-        callback = MagicMock()
-        nfc_service._user_callback = callback
-        
-        # Clear data should invoke callback
-        nfc_service.clear_data_after(0)  # 0 seconds for immediate clearing
-        
-        # Callback should be invoked with None user
-        callback.assert_called_once()
-        args = callback.call_args[0]
-        assert args[0] is None  # user
-        assert args[1] == ""  # empty uid
 
 
 class TestNFCPaymentServiceBooking:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSize, Qt, QMetaObject, Q_ARG
+from PyQt5.QtCore import QSize, Qt, QMetaObject, Q_ARG, QTimer
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFrame, QGridLayout, QSizePolicy, QVBoxLayout, QWidget
 
@@ -127,9 +127,10 @@ class CocktailView(QWidget):
 
         self.mainscreen = mainscreen
 
-        # NFC polling timer for PyQt-safe threading
-        self._nfc_poll_timer: QTimer | None = None
+        # Store the last known user for detecting changes
         self._last_known_user: User | None = None
+        # Auto-logout timer for clearing user after timeout
+        self._auto_logout_timer: QTimer | None = None
         self.destroyed.connect(self._stop_nfc_polling)
 
     def _needs_nfc_user_protection(self) -> bool:
@@ -174,6 +175,26 @@ class CocktailView(QWidget):
             return
         time_print(f"NFC user state changed to {user} from {self._last_known_user}")
         self._last_known_user = user
+        
+        # Cancel existing auto-logout timer if any
+        if self._auto_logout_timer is not None:
+            self._auto_logout_timer.stop()
+            self._auto_logout_timer = None
+        
+        # Start auto-logout timer if user is logged in
+        if user is not None:
+            self._auto_logout_timer = QTimer(self)
+            self._auto_logout_timer.setSingleShot(True)
+            self._auto_logout_timer.timeout.connect(self._auto_logout)
+            self._auto_logout_timer.start(cfg.PAYMENT_AUTO_LOGOUT_TIME_S * 1000)  # Convert to milliseconds
+        
+        self._render_view()
+        self.mainscreen.switch_to_cocktail_list()
+    
+    def _auto_logout(self) -> None:
+        """Handle auto-logout when timer expires."""
+        time_print("Auto-logout timer expired.")
+        self._last_known_user = None
         self._render_view()
         self.mainscreen.switch_to_cocktail_list()
 
