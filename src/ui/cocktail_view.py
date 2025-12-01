@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSize, Qt, QTimer
+from PyQt5.QtCore import QSize, Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFrame, QGridLayout, QSizePolicy, QVBoxLayout, QWidget
 
@@ -91,6 +91,9 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
 
 
 class CocktailView(QWidget):
+    # Signal for thread-safe user change notifications
+    user_changed = pyqtSignal(object, str)
+
     def __init__(self, mainscreen: MainScreen) -> None:
         super().__init__()
         self.scroll_area = TouchScrollArea()
@@ -127,47 +130,47 @@ class CocktailView(QWidget):
 
         self.mainscreen = mainscreen
 
-        # NFC polling timer for PyQt-safe threading
-        self._nfc_poll_timer: QTimer | None = None
         self._last_known_user: User | None = None
-        self.destroyed.connect(self._stop_nfc_polling)
+        self._auto_logout_timer: QTimer | None = None
 
-    def _needs_nfc_user_protection(self) -> bool:
-        """Check if NFC user protection is needed."""
-        if not cfg.PAYMENT_ACTIVE:
-            return False
-        return NFCPaymentService().current_user is None
+        self.user_changed.connect(self._on_user_change_impl)
+        self.destroyed.connect(NFCPaymentService().stop_polling)
 
-    def _get_current_nfc_user(self) -> User | None:
-        """Get the current NFC user from the payment service."""
-        if not cfg.PAYMENT_ACTIVE:
-            return None
-        return NFCPaymentService().current_user
+    def _on_user_change(self, user: User | None, uid: str) -> None:
+        """Handle NFC user state changes."""
+        self.user_changed.emit(user, uid)
 
-    def _start_nfc_polling(self) -> None:
-        """Start polling for NFC user login using a QTimer."""
-        if self._nfc_poll_timer is not None:
-            return  # Already polling
-        self._nfc_poll_timer = QTimer(self)
-        self._nfc_poll_timer.timeout.connect(self._check_nfc_user)
-        self._nfc_poll_timer.start(500)
-
-    def _stop_nfc_polling(self) -> None:
-        """Stop the NFC polling timer."""
-        if self._nfc_poll_timer is not None:
-            self._nfc_poll_timer.stop()
-            self._nfc_poll_timer.deleteLater()
-            self._nfc_poll_timer = None
-
-    def _check_nfc_user(self) -> None:
-        """Check if the NFC user state has changed and update the view accordingly."""
-        current_user = self._get_current_nfc_user()
-        if current_user == self._last_known_user:
+    def _on_user_change_impl(self, user: User | None, uid: str) -> None:
+        """Implement user change handling (runs on main thread)."""
+        if user == self._last_known_user:
+            time_print("NFC user state unchanged.")
             return
-        time_print(f"NFC user state changed to {current_user} from {self._last_known_user}")
-        self._last_known_user = current_user
+        time_print(f"NFC user state changed to {user} from {self._last_known_user}")
+        self._last_known_user = user
+
+        # # Cancel existing auto-logout timer if any
+        # if self._auto_logout_timer is not None:
+        #     time_print("Cancelling existing auto-logout timer.")
+        #     self._auto_logout_timer.stop()
+        #     self._auto_logout_timer = None
+
+        # # Start auto-logout timer if user is logged in
+        # if user is not None and cfg.PAYMENT_AUTO_LOGOUT_TIME_S > 0:
+        #     time_print("Starting auto-logout timer.")
+        #     self._auto_logout_timer = QTimer(self)
+        #     self._auto_logout_timer.setSingleShot(True)
+        #     self._auto_logout_timer.timeout.connect(self._auto_logout)
+        #     self._auto_logout_timer.start(cfg.PAYMENT_AUTO_LOGOUT_TIME_S * 1000)  # Convert to milliseconds
+
         self._render_view()
         self.mainscreen.switch_to_cocktail_list()
+
+    # def _auto_logout(self) -> None:
+    #     """Handle auto-logout when timer expires."""
+    #     time_print("Auto-logout timer expired.")
+    #     self._last_known_user = None
+    #     self._render_view()
+    #     self.mainscreen.switch_to_cocktail_list()
 
     def _show_nfc_scan_message(self) -> None:
         """Show the NFC scan message and hide the cocktails grid."""
@@ -175,6 +178,32 @@ class CocktailView(QWidget):
         message = UI_LANGUAGE.get_translation("nfc_scan_to_proceed", "main_window")
         self.info_label.setText(message)
         self.info_label.show()
+
+    def _needs_nfc_user_protection(self) -> bool:
+        """Check if NFC user protection is needed."""
+        if not cfg.PAYMENT_ACTIVE:
+            return False
+        if not cfg.PAYMENT_LOCK_SCREEN_NO_USER:
+            return False
+        return self._last_known_user is None
+
+    def _render_view(self) -> None:
+        """Render the appropriate view based on current NFC user state."""
+        if self._needs_nfc_user_protection():
+            self._show_nfc_scan_message()
+        else:
+            self._populate_cocktails_grid()
+
+    def populate_cocktails(self) -> None:
+        """Add the given cocktails to the grid.
+
+        If payment service is active and no user is logged in,
+        shows a "Scan NFC to proceed" message instead of cocktails.
+        Starts continuous polling to detect user login/logout/changes.
+        """
+        self._render_view()
+        if cfg.PAYMENT_ACTIVE:
+            NFCPaymentService().start_polling(self._on_user_change)
 
     def _populate_cocktails_grid(self) -> None:
         """Populate the cocktails grid (internal method)."""
@@ -186,7 +215,7 @@ class CocktailView(QWidget):
         cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
         # filter cocktails based on user criteria if payment is active
         if cfg.PAYMENT_ACTIVE:
-            cocktails = filter_cocktails_by_user(NFCPaymentService().current_user, cocktails)
+            cocktails = filter_cocktails_by_user(self._last_known_user, cocktails)
             # remove if machine owner do not want to show not possible cocktails
             if not cfg.PAYMENT_SHOW_NOT_POSSIBLE:
                 cocktails = [c for c in cocktails if c.is_allowed]
@@ -206,22 +235,3 @@ class CocktailView(QWidget):
             col = total % n_columns
             block = generate_image_block(None, self.mainscreen)
             self.grid.addLayout(block, row, col)
-
-    def _render_view(self) -> None:
-        """Render the appropriate view based on current NFC user state."""
-        if self._needs_nfc_user_protection():
-            self._show_nfc_scan_message()
-        else:
-            self._populate_cocktails_grid()
-
-    def populate_cocktails(self) -> None:
-        """Add the given cocktails to the grid.
-
-        If payment service is active and no user is logged in,
-        shows a "Scan NFC to proceed" message instead of cocktails.
-        Starts continuous polling to detect user login/logout/changes.
-        """
-        self._last_known_user = self._get_current_nfc_user()
-        self._render_view()
-        if cfg.PAYMENT_ACTIVE:
-            self._start_nfc_polling()

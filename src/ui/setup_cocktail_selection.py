@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtWidgets import QDialog, QLabel, QSizePolicy
@@ -24,11 +24,10 @@ if TYPE_CHECKING:
 class CocktailSelection(QDialog, Ui_CocktailSelection):
     """Class for the Cocktail selection view."""
 
-    def __init__(self, mainscreen: MainScreen, cocktail: Cocktail, maker_screen_activate: Callable) -> None:
+    def __init__(self, mainscreen: MainScreen, cocktail: Cocktail) -> None:
         super().__init__(parent=mainscreen)
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
-        self.maker_screen_activate = maker_screen_activate
         self.cocktail = cocktail
         self.mainscreen = mainscreen
         # build the image
@@ -48,9 +47,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         DP_CONTROLLER.set_display_settings(self, False)
         self._connect_elements()
 
-    def _back(self) -> None:
-        self.maker_screen_activate()
-
     def _set_image(self) -> None:
         """Set the image of the cocktail."""
         image_path = find_cocktail_image(self.cocktail)
@@ -59,7 +55,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def _connect_elements(self) -> None:
         """Init all the needed buttons."""
-        self.button_back.clicked.connect(self._back)
+        self.button_back.clicked.connect(self.mainscreen.switch_to_cocktail_list)
         self.increase_alcohol.clicked.connect(self._higher_alcohol)
         self.decrease_alcohol.clicked.connect(self._lower_alcohol)
         self.virgin_checkbox.stateChanged.connect(self.update_cocktail_data)

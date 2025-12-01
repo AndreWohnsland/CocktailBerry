@@ -26,7 +26,6 @@ from PyQt5.QtWidgets import (
 
 from src import MAX_SUPPORTED_BOTTLES
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE, DialogHandler
 from src.filepath import APP_ICON_FILE, STYLE_FOLDER
@@ -302,10 +301,6 @@ class DisplayController(DialogHandler):
         """
         tabs = {"search": 0, "maker": 1, "ingredients": 2, "recipes": 3, "bottles": 4}
         w.tabWidget.setCurrentIndex(tabs.get(tab, 1))
-
-    def reset_alcohol_factor(self) -> None:
-        """Set the alcohol slider to default (100%) value."""
-        shared.alcohol_factor = 1.0
 
     # LineEdit
     def clean_multiple_lineedit(self, lineedit_list: list[QLineEdit]) -> None:

@@ -76,10 +76,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
         self.cocktail_selection: Optional[CocktailSelection] = None
-        self.nfc_payment_service: Optional[NFCPaymentService] = None
-        if cfg.PAYMENT_ACTIVE:
-            self.nfc_payment_service = NFCPaymentService()
-            self.nfc_payment_service.continuous_sense_nfc_id()
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
 
@@ -150,7 +146,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             # Schedule for deletion and remove reference
             self.cocktail_selection.deleteLater()
             self.cocktail_selection = None
-        self.cocktail_selection = CocktailSelection(self, cocktail, self.switch_to_cocktail_list)
+        self.cocktail_selection = CocktailSelection(self, cocktail)
         self.container_maker.addWidget(self.cocktail_selection)
         self.cocktail_selection.set_cocktail(cocktail)
         self.cocktail_selection.update_cocktail_data()
@@ -159,10 +155,14 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def switch_to_cocktail_detail(self) -> None:
         if self.cocktail_selection is None:
             return
+        if cfg.PAYMENT_ACTIVE:
+            NFCPaymentService().stop_polling()
         self.container_maker.setCurrentWidget(self.cocktail_selection)
 
     def switch_to_cocktail_list(self) -> None:
         self.container_maker.setCurrentWidget(self.cocktail_view)
+        if cfg.PAYMENT_ACTIVE:
+            NFCPaymentService().start_polling()
 
     def open_numpad(
         self,
