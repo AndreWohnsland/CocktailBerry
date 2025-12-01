@@ -1,4 +1,5 @@
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import StrEnum
 from threading import Event, Thread
@@ -99,7 +100,7 @@ class NFCPaymentService:
             cls.rfid_reader = RFIDReader()
             cls.clear_thread: Thread | None = None
             cls._clear_event: Event | None = None
-            cls._user_callback: callable | None = None
+            cls._user_callback: Callable[[User | None, str], None] | None = None
             cls._is_polling: bool = False
             cls.user_db: dict[str, User] = {
                 "CAD3B515": User(uid="CAD3B515", balance=5.0, can_get_alcohol=False),
@@ -111,7 +112,7 @@ class NFCPaymentService:
         time_print("Cleaning up NFCService...")
         self.stop_polling()
 
-    def start_polling(self, user_callback: callable | None = None) -> None:
+    def start_polling(self, user_callback: Callable[[User | None, str], None] | None = None) -> None:
         """Start polling for NFC tags with an optional callback.
         
         Args:
