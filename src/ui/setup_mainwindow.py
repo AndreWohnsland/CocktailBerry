@@ -76,6 +76,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
         self.cocktail_selection: Optional[CocktailSelection] = None
+        self.nfc_payment_service: Optional[NFCPaymentService] = None
+        if cfg.PAYMENT_ACTIVE:
+            self.nfc_payment_service = NFCPaymentService()
+            self.nfc_payment_service.continuous_sense_nfc_id()
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
 
@@ -104,10 +108,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.update_check()
         self._deprecation_check()
         self._connection_check()
-        self.nfc_payment_service: Optional[NFCPaymentService] = None
-        if cfg.PAYMENT_ACTIVE:
-            self.nfc_payment_service = NFCPaymentService()
-            self.nfc_payment_service.continuous_sense_nfc_id()
         ADDONS.start_trigger_loop(self)
 
     def update_check(self) -> None:
