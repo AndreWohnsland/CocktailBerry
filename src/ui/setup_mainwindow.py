@@ -79,7 +79,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.nfc_payment_service: Optional[NFCPaymentService] = None
         if cfg.PAYMENT_ACTIVE:
             self.nfc_payment_service = NFCPaymentService()
-            self.nfc_payment_service.continuous_sense_nfc_id()
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
 
@@ -163,6 +162,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def switch_to_cocktail_list(self) -> None:
         self.container_maker.setCurrentWidget(self.cocktail_view)
+        # Restart NFC polling with callback when returning to cocktail list
+        if cfg.PAYMENT_ACTIVE:
+            self.cocktail_view._start_nfc_polling()
 
     def open_numpad(
         self,

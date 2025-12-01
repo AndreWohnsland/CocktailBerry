@@ -96,10 +96,11 @@ class NFCPaymentService:
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
             cls.uid: str | None = None
-            cls.current_user: User | None = None
             cls.rfid_reader = RFIDReader()
             cls.clear_thread: Thread | None = None
             cls._clear_event: Event | None = None
+            cls._user_callback: callable | None = None
+            cls._is_polling: bool = False
             cls.user_db: dict[str, User] = {
                 "CAD3B515": User(uid="CAD3B515", balance=5.0, can_get_alcohol=False),
                 "33DFE41D": User(uid="33DFE41D", balance=10.0, can_get_alcohol=True),
@@ -108,30 +109,55 @@ class NFCPaymentService:
 
     def __del__(self) -> None:
         time_print("Cleaning up NFCService...")
+        self.stop_polling()
+
+    def start_polling(self, user_callback: callable | None = None) -> None:
+        """Start polling for NFC tags with an optional callback.
+        
+        Args:
+            user_callback: Optional callback that receives (user: User | None, uid: str) when a user is detected
+        """
+        if self._is_polling:
+            time_print("NFC polling already active.")
+            return
+        time_print("Starting NFC polling.")
+        self._user_callback = user_callback
+        self._is_polling = True
+        self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
+
+    def stop_polling(self) -> None:
+        """Stop polling for NFC tags."""
+        if not self._is_polling:
+            return
+        time_print("Stopping NFC polling.")
+        self._is_polling = False
         self._cancel_clear_thread()
         self.rfid_reader.cancel_reading()
-
-    def continuous_sense_nfc_id(self) -> None:
-        """Continuously sense NFC ID tags."""
-        time_print("Starting NFC ID sensing.")
-        self.rfid_reader.read_rfid(self.set_uid, read_delay_s=1.0)
 
     def get_user_for_id(self, nfc_id: str) -> User | None:
         """Get the user associated with the given NFC ID."""
         # TODO: will call user instead from api
         return self.user_db.get(nfc_id, None)
 
-    def set_uid(self, _: str, _id: str) -> None:
-        """Set the UID when read."""
+    def _handle_nfc_read(self, _: str, _id: str) -> None:
+        """Handle NFC read events."""
         time_print(f"NFC ID read: {_id}")
         self._cancel_clear_thread()
-        self.current_user = self.get_user_for_id(_id)
-        if self.current_user is None:
+        user = self.get_user_for_id(_id)
+        if user is None:
             time_print("No user found for this NFC ID.")
             self.uid = None
+            if self._user_callback is not None:
+                self._user_callback(None, _id)
             return
-        time_print(f"User found: {self.current_user} for NFC ID: {_id}\n")
+        time_print(f"User found: {user} for NFC ID: {_id}\n")
         self.uid = _id
+        
+        # Invoke the callback if provided
+        if self._user_callback is not None:
+            self._user_callback(user, _id)
+        
+        # Start auto-logout timer
         self._clear_event = Event()
         self.clear_thread = Thread(
             target=self.clear_data_after,
@@ -151,7 +177,9 @@ class NFCPaymentService:
             time.sleep(seconds)
         time_print("Clearing Data.")
         self.uid = None
-        self.current_user = None
+        # Notify via callback that user has been logged out
+        if self._user_callback is not None:
+            self._user_callback(None, "")
 
     def _cancel_clear_thread(self) -> None:
         """Cancel the pending clear thread if it is running."""
@@ -159,9 +187,8 @@ class NFCPaymentService:
             self._clear_event.set()
             self._clear_event = None
 
-    def book_cocktail_for_current_user(self, cocktail: Cocktail) -> CocktailBooking:
-        """Book a cocktail for the current user if they have enough balance."""
-        user = self.current_user
+    def book_cocktail_for_user(self, user: User, cocktail: Cocktail) -> CocktailBooking:
+        """Book a cocktail for the given user if they have enough balance."""
         if user is None:
             return CocktailBooking.no_user_logged_in()
         if not user.can_get_alcohol:

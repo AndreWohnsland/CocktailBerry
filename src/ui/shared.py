@@ -4,13 +4,14 @@ import contextlib
 import time
 from typing import TYPE_CHECKING
 
+from PyQt5.QtCore import QMetaObject, Qt
 from PyQt5.QtWidgets import QApplication
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab
 from src.display_controller import DP_CONTROLLER
 from src.models import Cocktail, PrepareResult
-from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService
+from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService, User
 from src.tabs import bottles, maker
 
 if TYPE_CHECKING:
@@ -68,21 +69,34 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
     """Run the payment flow in QT UI."""
     if not cfg.PAYMENT_ACTIVE:
         return CocktailBooking.inactive()
+    
     payment_service = NFCPaymentService()
-    booking = payment_service.book_cocktail_for_current_user(cocktail)
     polling_time = 20
     start_time = time.time()
     dialog = None
     canceled = False
+    detected_user: User | None = None
 
     def on_cancel() -> None:
         nonlocal canceled
         canceled = True
 
+    def on_user_detected(user: User | None, uid: str) -> None:
+        """Callback when a user is detected."""
+        nonlocal detected_user
+        detected_user = user
+
+    # Start polling with callback
+    payment_service.start_polling(on_user_detected)
+    
+    # Try to book immediately if we have a user
+    booking = payment_service.book_cocktail_for_user(detected_user, cocktail) if detected_user else CocktailBooking.no_user_logged_in()
+    
     if booking.result == CocktailBooking.Result.NO_USER:
         dialog = DP_CONTROLLER.standard_box_non_blocking(
             booking.message, close_time=polling_time, close_callback=on_cancel
         )
+    
     while (
         (booking.result == CocktailBooking.Result.NO_USER)
         and (time.time() - start_time < polling_time)
@@ -90,7 +104,9 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
     ):
         QApplication.processEvents()
         time.sleep(0.2)
-        booking = payment_service.book_cocktail_for_current_user(cocktail)
+        if detected_user is not None:
+            booking = payment_service.book_cocktail_for_user(detected_user, cocktail)
+    
     if dialog is not None:
         with contextlib.suppress(Exception):
             dialog.close()

@@ -47,8 +47,14 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.reset_alcohol_factor()
         DP_CONTROLLER.set_display_settings(self, False)
         self._connect_elements()
+        
+        # Stop NFC polling when entering detail view
+        if cfg.PAYMENT_ACTIVE:
+            from src.programs.nfc_payment_service import NFCPaymentService
+            NFCPaymentService().stop_polling()
 
     def _back(self) -> None:
+        # The mainscreen's switch_to_cocktail_list will handle restarting NFC polling
         self.maker_screen_activate()
 
     def _set_image(self) -> None:

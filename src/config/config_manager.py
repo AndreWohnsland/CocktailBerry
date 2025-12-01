@@ -134,6 +134,7 @@ class ConfigManager:
     PAYMENT_SERVICE_URL: str = "http://127.0.0.1:8080"
     PAYMENT_SECRET_KEY: str = "changeMe"
     PAYMENT_AUTO_LOGOUT_TIME_S: int = 60
+    PAYMENT_LOCK_SCREEN_NO_USER: bool = True
     # Custom theme settings
     CUSTOM_COLOR_PRIMARY: str = "#007bff"
     CUSTOM_COLOR_SECONDARY: str = "#ef9700"
@@ -229,6 +230,7 @@ class ConfigManager:
             "PAYMENT_SERVICE_URL": StringType(),
             "PAYMENT_SECRET_KEY": StringType(),
             "PAYMENT_AUTO_LOGOUT_TIME_S": IntType([build_number_limiter(0, 1000000000)], suffix="s"),
+            "PAYMENT_LOCK_SCREEN_NO_USER": BoolType(check_name="Lock Screen When No User"),
             "CUSTOM_COLOR_PRIMARY": StringType(),
             "CUSTOM_COLOR_SECONDARY": StringType(),
             "CUSTOM_COLOR_NEUTRAL": StringType(),
