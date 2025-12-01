@@ -366,6 +366,9 @@ ui:
     label_single_ingredient:
       en: 'Single Ingredient'
       de: 'Einzelne Zutat'
+    nfc_scan_to_proceed:
+      en: 'Scan NFC to proceed'
+      de: 'NFC scannen um fortzufahren'
 
   cocktail_selection:
     # best is to use some space before to get a padding for icon
