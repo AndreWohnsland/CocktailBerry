@@ -53,15 +53,18 @@ except (AttributeError, ModuleNotFoundError):
 class RFIDReader:
     _instance = None
 
-    def __init__(self) -> None:
-        """Initialize the RFID reader."""
-        self.is_active = False
-        err = _ERROR[cfg.RFID_READER]
-        if err is not None:
-            _logger.log_event("ERROR", err)
-        self.rfid = self._select_rfid()
+    def __new__(cls) -> "RFIDReader":
+        if not isinstance(cls._instance, cls):
+            cls._instance = object.__new__(cls)
+            cls.is_active = False
+            err = _ERROR[cfg.RFID_READER]
+            if err is not None:
+                _logger.log_event("ERROR", err)
+            cls.rfid = cls._select_rfid()
+        return cls._instance
 
-    def _select_rfid(self) -> Optional[RFIDController]:
+    @classmethod
+    def _select_rfid(cls) -> Optional[RFIDController]:
         """Select the controller defined in config."""
         no_module = _NO_MODULE.get(cfg.RFID_READER, True)
         if no_module:
@@ -73,11 +76,6 @@ class RFIDReader:
             "MFRC522": _BasicMFRC522,
         }
         return reader.get(cfg.RFID_READER, lambda: None)()
-
-    def __new__(cls) -> "RFIDReader":
-        if not isinstance(cls._instance, cls):
-            cls._instance = object.__new__(cls)
-        return cls._instance
 
     def read_rfid(self, side_effect: Callable[[str, str], None], read_delay_s: float = 0.5) -> None:
         """Start the rfid reader, calls an side effect with the read value and id."""

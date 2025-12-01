@@ -18,7 +18,6 @@ class User:
 
 @dataclass
 class CocktailBooking:
-    success: bool
     message: str
     result: "Result"
 
@@ -31,12 +30,12 @@ class CocktailBooking:
         NOT_ALLOWED_ALCOHOL = "not_allowed_alcohol"
         NO_USER = "no_user"
         API_NOT_REACHABLE = "api_not_reachable"
+        CANCELED = "canceled"
 
     @classmethod
     def inactive(cls) -> "CocktailBooking":
         """Create an inactive booking instance."""
         return cls(
-            success=False,
             message="Cocktail booking is currently inactive.",
             result=cls.Result.INACTIVE,
         )
@@ -45,7 +44,6 @@ class CocktailBooking:
     def successful_booking(cls) -> "CocktailBooking":
         """Create a successful booking instance."""
         return cls(
-            success=True,
             message="Cocktail booked successfully.",
             result=cls.Result.SUCCESS,
         )
@@ -54,7 +52,6 @@ class CocktailBooking:
     def insufficient_balance(cls) -> "CocktailBooking":
         """Create an insufficient balance booking instance."""
         return cls(
-            success=False,
             message="Insufficient balance to book cocktail.",
             result=cls.Result.INSUFFICIENT_BALANCE,
         )
@@ -63,7 +60,6 @@ class CocktailBooking:
     def too_young(cls) -> "CocktailBooking":
         """Create a too young booking instance."""
         return cls(
-            success=False,
             message="User is not allowed to get alcohol.",
             result=cls.Result.NOT_ALLOWED_ALCOHOL,
         )
@@ -72,8 +68,7 @@ class CocktailBooking:
     def no_user_logged_in(cls) -> "CocktailBooking":
         """Create a no user logged in booking instance."""
         return cls(
-            success=False,
-            message="No user is currently logged in.",
+            message="Please scan a NFC tag.",
             result=cls.Result.NO_USER,
         )
 
@@ -81,33 +76,36 @@ class CocktailBooking:
     def api_not_reachable(cls) -> "CocktailBooking":
         """Create an API not reachable booking instance."""
         return cls(
-            success=False,
             message="API not reachable.",
             result=cls.Result.API_NOT_REACHABLE,
+        )
+
+    @classmethod
+    def canceled(cls) -> "CocktailBooking":
+        """Create a canceled booking instance."""
+        return cls(
+            message="Payment canceled by user.",
+            result=cls.Result.CANCELED,
         )
 
 
 class NFCPaymentService:
     _instance = None
+    _initialized = False
 
     def __new__(cls) -> "NFCPaymentService":
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
+            cls.uid: str | None = None
+            cls.current_user: User | None = None
+            cls.rfid_reader = RFIDReader()
+            cls.clear_thread: Thread | None = None
+            cls._clear_event: Event | None = None
+            cls.user_db: dict[str, User] = {
+                "CAD3B515": User(uid="CAD3B515", balance=1.0, can_get_alcohol=True),
+                "33DFE41D": User(uid="33DFE41D", balance=10.0, can_get_alcohol=True),
+            }
         return cls._instance
-
-    def __init__(self) -> None:
-        self.rfid_reader = RFIDReader()
-        # TODO: do we really need uid if we only use this for user?
-        self.uid: str | None = None
-        self.clear_thread: Thread | None = None
-        self._clear_event: Event | None = None
-        self.current_user: User | None = None
-        # Simulated user database
-        # TODO: will call user instead from api
-        self.user_db: dict[str, User] = {
-            "CAD3B515": User(uid="CAD3B515", balance=1.0, can_get_alcohol=True),
-            "33DFE41D": User(uid="33DFE41D", balance=10.0, can_get_alcohol=True),
-        }
 
     def __del__(self) -> None:
         time_print("Cleaning up NFCService...")

@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal, overload
+from typing import TYPE_CHECKING, Any, Callable, Literal
 
 import yaml
 
@@ -12,7 +12,7 @@ import yaml
 try:
     from PyQt5.QtCore import Qt
     from PyQt5.QtGui import QIcon
-    from PyQt5.QtWidgets import QDialog, QFileDialog
+    from PyQt5.QtWidgets import QApplication, QDialog, QFileDialog
 except ModuleNotFoundError:
     pass
 
@@ -161,34 +161,13 @@ class DialogHandler:
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
-    @overload
-    def standard_box(
-        self,
-        message: str,
-        title: str = ...,
-        use_ok: bool = ...,
-        close_time: int | None = ...,
-        blocking: Literal[True] = ...,
-    ) -> bool: ...
-
-    @overload
-    def standard_box(
-        self,
-        message: str,
-        title: str = ...,
-        use_ok: bool = ...,
-        close_time: int | None = ...,
-        blocking: Literal[False] = ...,
-    ) -> CustomDialog: ...
-
     def standard_box(
         self,
         message: str,
         title: str = "",
         use_ok: bool = False,
         close_time: int | None = None,
-        blocking: bool = True,
-    ) -> bool | CustomDialog:
+    ) -> bool:
         """Display the messagebox for the Maker. Blocks until closed."""
         from src.ui.setup_custom_dialog import CustomDialog
 
@@ -197,9 +176,26 @@ class DialogHandler:
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
         dialog = CustomDialog(fancy_message, title, use_ok, close_time=close_time)
-        if blocking:
-            return dialog.exec()
+        return dialog.exec()
+
+    def standard_box_non_blocking(
+        self,
+        message: str,
+        title: str = "",
+        use_ok: bool = False,
+        close_time: int | None = None,
+        close_callback: Callable[[], None] | None = None,
+    ) -> CustomDialog:
+        """Display the messagebox for the Maker. Does not block."""
+        from src.ui.setup_custom_dialog import CustomDialog
+
+        if not title:
+            title = self._choose_language("box_title")
+        fill_string = "-" * 70
+        fancy_message = f"{fill_string}\n{message}\n{fill_string}"
+        dialog = CustomDialog(fancy_message, title, use_ok, close_callback=close_callback, close_time=close_time)
         dialog.show_non_blocking()
+        QApplication.processEvents()
         return dialog
 
     def user_okay(self, text: str) -> bool:
