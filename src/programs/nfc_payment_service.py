@@ -188,7 +188,7 @@ class NFCPaymentService:
             self._clear_event.set()
             self._clear_event = None
 
-    def book_cocktail_for_user(self, user: User, cocktail: Cocktail) -> CocktailBooking:
+    def book_cocktail_for_user(self, user: User | None, cocktail: Cocktail) -> CocktailBooking:
         """Book a cocktail for the given user if they have enough balance."""
         if user is None:
             return CocktailBooking.no_user_logged_in()

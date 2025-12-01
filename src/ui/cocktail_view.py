@@ -159,6 +159,7 @@ class CocktailView(QWidget):
         QMetaObject.invokeMethod to ensure UI updates happen on the main thread.
         """
         # Use Qt's thread-safe mechanism to invoke the update on the main thread
+        # Note: Q_ARG uses 'object' type as it's the correct Python type for Qt's marshalling
         QMetaObject.invokeMethod(
             self,
             "_on_user_change_impl",
