@@ -104,8 +104,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.update_check()
         self._deprecation_check()
         self._connection_check()
+        self.nfc_payment_service: Optional[NFCPaymentService] = None
         if cfg.PAYMENT_ACTIVE:
-            NFCPaymentService().continuous_sense_nfc_id()
+            self.nfc_payment_service = NFCPaymentService()
+            self.nfc_payment_service.continuous_sense_nfc_id()
         ADDONS.start_trigger_loop(self)
 
     def update_check(self) -> None:

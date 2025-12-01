@@ -4,6 +4,8 @@ import contextlib
 import time
 from typing import TYPE_CHECKING
 
+from PyQt5.QtWidgets import QApplication
+
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab
 from src.display_controller import DP_CONTROLLER
@@ -68,18 +70,31 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
         return CocktailBooking.inactive()
     payment_service = NFCPaymentService()
     booking = payment_service.book_cocktail_for_current_user(cocktail)
-    success = booking.success
     polling_time = 20
     start_time = time.time()
     dialog = None
-    if not success:
-        dialog = DP_CONTROLLER.standard_box(booking.message, close_time=60, blocking=False)
-    while not success and (time.time() - start_time < polling_time):
-        time.sleep(1)
+    canceled = False
+
+    def on_cancel() -> None:
+        nonlocal canceled
+        canceled = True
+
+    if booking.result == CocktailBooking.Result.NO_USER:
+        dialog = DP_CONTROLLER.standard_box_non_blocking(
+            booking.message, close_time=polling_time, close_callback=on_cancel
+        )
+    while (
+        (booking.result == CocktailBooking.Result.NO_USER)
+        and (time.time() - start_time < polling_time)
+        and not canceled
+    ):
+        QApplication.processEvents()
+        time.sleep(0.2)
         booking = payment_service.book_cocktail_for_current_user(cocktail)
-        success = booking.success
     if dialog is not None:
         with contextlib.suppress(Exception):
             dialog.close()
 
+    if canceled:
+        return CocktailBooking.canceled()
     return booking
