@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSize, Qt, QMetaObject, Q_ARG, QTimer
+from PyQt5.QtCore import QSize, Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFrame, QGridLayout, QSizePolicy, QVBoxLayout, QWidget
 
@@ -91,6 +91,9 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
 
 
 class CocktailView(QWidget):
+    # Signal for thread-safe user change notifications
+    user_changed = pyqtSignal(object, str)
+    
     def __init__(self, mainscreen: MainScreen) -> None:
         super().__init__()
         self.scroll_area = TouchScrollArea()
@@ -131,6 +134,10 @@ class CocktailView(QWidget):
         self._last_known_user: User | None = None
         # Auto-logout timer for clearing user after timeout
         self._auto_logout_timer: QTimer | None = None
+        
+        # Connect the signal to the handler
+        self.user_changed.connect(self._on_user_change_impl)
+        
         self.destroyed.connect(self._stop_nfc_polling)
 
     def _needs_nfc_user_protection(self) -> bool:
@@ -156,21 +163,14 @@ class CocktailView(QWidget):
     def _on_user_change(self, user: User | None, uid: str) -> None:
         """Callback when NFC user state changes.
         
-        This callback may be invoked from a background thread, so we use
-        QMetaObject.invokeMethod to ensure UI updates happen on the main thread.
+        This callback may be invoked from a background thread, so we emit
+        a signal to ensure UI updates happen on the main thread.
         """
-        # Use Qt's thread-safe mechanism to invoke the update on the main thread
-        # Note: Q_ARG uses 'object' type as it's the correct Python type for Qt's marshalling
-        QMetaObject.invokeMethod(
-            self,
-            "_on_user_change_impl",
-            Qt.QueuedConnection,  # type: ignore
-            Q_ARG(object, user),
-            Q_ARG(str, uid),
-        )
+        # Emit signal to handle on main thread
+        self.user_changed.emit(user, uid)
     
     def _on_user_change_impl(self, user: User | None, uid: str) -> None:
-        """Implementation of user change handling (runs on main thread)."""
+        """Implementation of user change handling (runs on main thread via signal)."""
         if user == self._last_known_user:
             return
         time_print(f"NFC user state changed to {user} from {self._last_known_user}")
