@@ -21,6 +21,10 @@ from src.ui_elements.touch_scroll_area import TouchScrollArea
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
+# Constants for NFC scan message display
+_NFC_SCAN_FONT_SIZE = 24
+_NFC_POLL_INTERVAL_MS = 500
+
 
 def _n_columns() -> int:
     """Return calculated number of columns for the cocktail view."""
@@ -108,7 +112,7 @@ class CocktailView(QWidget):
         self.nfc_scan_label = QLabel()
         self.nfc_scan_label.setAlignment(Qt.AlignCenter)  # type: ignore
         font = QFont()
-        font.setPointSize(24)
+        font.setPointSize(_NFC_SCAN_FONT_SIZE)
         font.setBold(True)
         self.nfc_scan_label.setFont(font)
         self.nfc_scan_label.hide()
@@ -139,8 +143,7 @@ class CocktailView(QWidget):
             return  # Already polling
         self._nfc_poll_timer = QTimer(self)
         self._nfc_poll_timer.timeout.connect(self._check_nfc_user)
-        # Poll every 500ms for user login
-        self._nfc_poll_timer.start(500)
+        self._nfc_poll_timer.start(_NFC_POLL_INTERVAL_MS)
 
     def _stop_nfc_polling(self) -> None:
         """Stop the NFC polling timer."""
