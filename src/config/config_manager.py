@@ -130,6 +130,7 @@ class ConfigManager:
     PAYMENT_ACTIVE: bool = False
     PAYMENT_PRICE_ROUNDING: int = 1
     PAYMENT_SHOW_NOT_POSSIBLE: bool = True
+    PAYMENT_LOCK_SCREEN_NO_USER: bool = True
     PAYMENT_VIRGIN_MULTIPLIER: int = 80
     PAYMENT_SERVICE_URL: str = "http://127.0.0.1:8080"
     PAYMENT_SECRET_KEY: str = "changeMe"
@@ -226,6 +227,7 @@ class ConfigManager:
             "PAYMENT_PRICE_ROUNDING": IntType([build_number_limiter(0, 3)]),
             "PAYMENT_VIRGIN_MULTIPLIER": IntType([build_number_limiter(0, 200)], suffix="%"),
             "PAYMENT_SHOW_NOT_POSSIBLE": BoolType(check_name="Show Not Possible Cocktails"),
+            "PAYMENT_LOCK_SCREEN_NO_USER": BoolType(check_name="Lock Screen When No User"),
             "PAYMENT_SERVICE_URL": StringType(),
             "PAYMENT_SECRET_KEY": StringType(),
             "PAYMENT_AUTO_LOGOUT_TIME_S": IntType([build_number_limiter(0, 1000000000)], suffix="s"),

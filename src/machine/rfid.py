@@ -79,6 +79,8 @@ class RFIDReader:
 
     def read_rfid(self, side_effect: Callable[[str, str], None], read_delay_s: float = 0.5) -> None:
         """Start the rfid reader, calls an side effect with the read value and id."""
+        if self.is_active:
+            return
         rfid_thread = Thread(target=self._read_thread, args=(side_effect, read_delay_s), daemon=True)
         rfid_thread.start()
 
@@ -97,6 +99,8 @@ class RFIDReader:
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None) -> None:
         """Write the value to the RFID."""
+        if self.is_active:
+            return
         rfid_thread = Thread(
             target=self._write_thread,
             args=(
