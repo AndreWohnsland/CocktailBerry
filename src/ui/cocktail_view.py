@@ -19,6 +19,7 @@ from src.ui_elements.clickable_label import ClickableLabel
 from src.ui_elements.touch_scroll_area import TouchScrollArea
 
 if TYPE_CHECKING:
+    from src.programs.nfc_payment_service import User
     from src.ui.setup_mainwindow import MainScreen
 
 # Constants for NFC scan message display
@@ -124,6 +125,11 @@ class CocktailView(QWidget):
 
         # NFC polling timer for PyQt-safe threading
         self._nfc_poll_timer: QTimer | None = None
+        # Track last known user to detect changes
+        self._last_known_user: User | None = None
+
+        # Clean up timer when widget is destroyed
+        self.destroyed.connect(self._stop_nfc_polling)
 
     def _needs_nfc_user_protection(self) -> bool:
         """Check if NFC user protection is needed.
@@ -136,6 +142,13 @@ class CocktailView(QWidget):
         if nfc_service is None:
             return False
         return nfc_service.current_user is None
+
+    def _get_current_nfc_user(self) -> User | None:
+        """Get the current NFC user from the payment service."""
+        nfc_service = self.mainscreen.nfc_payment_service
+        if nfc_service is None:
+            return None
+        return nfc_service.current_user
 
     def _start_nfc_polling(self) -> None:
         """Start polling for NFC user login using a QTimer."""
@@ -153,10 +166,22 @@ class CocktailView(QWidget):
             self._nfc_poll_timer = None
 
     def _check_nfc_user(self) -> None:
-        """Check if a user has logged in via NFC and populate cocktails if so."""
-        if not self._needs_nfc_user_protection():
-            self._stop_nfc_polling()
-            self._populate_cocktails_grid()
+        """Check if the NFC user state has changed and update the view accordingly.
+
+        Handles:
+        - User login (None -> User): Show cocktails
+        - User logout (User -> None): Show NFC scan message
+        - User change (User A -> User B): Only update tracked user, no re-render needed
+        """
+        current_user = self._get_current_nfc_user()
+        if current_user != self._last_known_user:
+            # Check if we're transitioning between logged-in/logged-out states
+            was_logged_in = self._last_known_user is not None
+            is_logged_in = current_user is not None
+            self._last_known_user = current_user
+            # Only re-render when login state changes, not when switching users
+            if was_logged_in != is_logged_in:
+                self._render_view()
 
     def _show_nfc_scan_message(self) -> None:
         """Show the NFC scan message and hide the cocktails grid."""
@@ -164,11 +189,9 @@ class CocktailView(QWidget):
         message = UI_LANGUAGE.get_translation("nfc_scan_to_proceed", "main_window")
         self.nfc_scan_label.setText(message)
         self.nfc_scan_label.show()
-        self._start_nfc_polling()
 
     def _populate_cocktails_grid(self) -> None:
         """Populate the cocktails grid (internal method)."""
-        self._stop_nfc_polling()
         self.nfc_scan_label.hide()
         self.scroll_area.show()
 
@@ -192,13 +215,24 @@ class CocktailView(QWidget):
             block = generate_image_block(None, self.mainscreen)
             self.grid.addLayout(block, row, col)
 
+    def _render_view(self) -> None:
+        """Render the appropriate view based on current NFC user state."""
+        if self._needs_nfc_user_protection():
+            self._show_nfc_scan_message()
+        else:
+            self._populate_cocktails_grid()
+
     def populate_cocktails(self) -> None:
         """Add the given cocktails to the grid.
 
         If payment service is active and no user is logged in,
         shows a "Scan NFC to proceed" message instead of cocktails.
+        Starts continuous polling to detect user login/logout/changes.
         """
-        if self._needs_nfc_user_protection():
-            self._show_nfc_scan_message()
-        else:
-            self._populate_cocktails_grid()
+        # Initialize the last known user state
+        self._last_known_user = self._get_current_nfc_user()
+        # Render the view
+        self._render_view()
+        # Start continuous polling if payment is active
+        if cfg.PAYMENT_ACTIVE:
+            self._start_nfc_polling()
