@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QSize, Qt, QTimer
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFrame, QGridLayout, QSizePolicy, QVBoxLayout, QWidget
 
@@ -13,12 +13,15 @@ from src.display_controller import DP_CONTROLLER
 from src.filepath import DEFAULT_COCKTAIL_IMAGE
 from src.image_utils import find_cocktail_image
 from src.models import Cocktail
-from src.ui.creation_utils import create_button
+from src.programs.nfc_payment_service import NFCPaymentService
+from src.ui.creation_utils import create_button, create_label
 from src.ui.icons import IconSetter, PresetIcon
 from src.ui_elements.clickable_label import ClickableLabel
 from src.ui_elements.touch_scroll_area import TouchScrollArea
+from src.utils import time_print
 
 if TYPE_CHECKING:
+    from src.programs.nfc_payment_service import User
     from src.ui.setup_mainwindow import MainScreen
 
 
@@ -103,12 +106,77 @@ class CocktailView(QWidget):
 
         self.vertical_layout = QVBoxLayout()
         self.vertical_layout.addWidget(self.scroll_area)
+
+        # Create NFC scan message label (hidden by default)
+        self.info_label = create_label(
+            text="",
+            font_size=64,
+            bold=True,
+            centered=True,
+            max_h=600,
+            css_class="secondary",
+            word_wrap=True,
+        )
+        self.info_label.hide()
+        self.vertical_layout.addWidget(self.info_label)
+
         self.setLayout(self.vertical_layout)
 
         self.mainscreen = mainscreen
 
-    def populate_cocktails(self) -> None:
-        """Add the given cocktails to the grid."""
+        # NFC polling timer for PyQt-safe threading
+        self._nfc_poll_timer: QTimer | None = None
+        self._last_known_user: User | None = None
+        self.destroyed.connect(self._stop_nfc_polling)
+
+    def _needs_nfc_user_protection(self) -> bool:
+        """Check if NFC user protection is needed."""
+        if not cfg.PAYMENT_ACTIVE:
+            return False
+        return NFCPaymentService().current_user is None
+
+    def _get_current_nfc_user(self) -> User | None:
+        """Get the current NFC user from the payment service."""
+        if not cfg.PAYMENT_ACTIVE:
+            return None
+        return NFCPaymentService().current_user
+
+    def _start_nfc_polling(self) -> None:
+        """Start polling for NFC user login using a QTimer."""
+        if self._nfc_poll_timer is not None:
+            return  # Already polling
+        self._nfc_poll_timer = QTimer(self)
+        self._nfc_poll_timer.timeout.connect(self._check_nfc_user)
+        self._nfc_poll_timer.start(500)
+
+    def _stop_nfc_polling(self) -> None:
+        """Stop the NFC polling timer."""
+        if self._nfc_poll_timer is not None:
+            self._nfc_poll_timer.stop()
+            self._nfc_poll_timer.deleteLater()
+            self._nfc_poll_timer = None
+
+    def _check_nfc_user(self) -> None:
+        """Check if the NFC user state has changed and update the view accordingly."""
+        current_user = self._get_current_nfc_user()
+        if current_user == self._last_known_user:
+            return
+        time_print(f"NFC user state changed to {current_user} from {self._last_known_user}")
+        self._last_known_user = current_user
+        self._render_view()
+
+    def _show_nfc_scan_message(self) -> None:
+        """Show the NFC scan message and hide the cocktails grid."""
+        self.scroll_area.hide()
+        message = UI_LANGUAGE.get_translation("nfc_scan_to_proceed", "main_window")
+        self.info_label.setText(message)
+        self.info_label.show()
+
+    def _populate_cocktails_grid(self) -> None:
+        """Populate the cocktails grid (internal method)."""
+        self.info_label.hide()
+        self.scroll_area.show()
+
         n_columns = _n_columns()
         DP_CONTROLLER.delete_items_of_layout(self.grid)
         cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
@@ -128,3 +196,22 @@ class CocktailView(QWidget):
             col = total % n_columns
             block = generate_image_block(None, self.mainscreen)
             self.grid.addLayout(block, row, col)
+
+    def _render_view(self) -> None:
+        """Render the appropriate view based on current NFC user state."""
+        if self._needs_nfc_user_protection():
+            self._show_nfc_scan_message()
+        else:
+            self._populate_cocktails_grid()
+
+    def populate_cocktails(self) -> None:
+        """Add the given cocktails to the grid.
+
+        If payment service is active and no user is logged in,
+        shows a "Scan NFC to proceed" message instead of cocktails.
+        Starts continuous polling to detect user login/logout/changes.
+        """
+        self._last_known_user = self._get_current_nfc_user()
+        self._render_view()
+        if cfg.PAYMENT_ACTIVE:
+            self._start_nfc_polling()

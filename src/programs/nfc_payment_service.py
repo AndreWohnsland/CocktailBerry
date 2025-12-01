@@ -91,7 +91,6 @@ class CocktailBooking:
 
 class NFCPaymentService:
     _instance = None
-    _initialized = False
 
     def __new__(cls) -> "NFCPaymentService":
         if not isinstance(cls._instance, cls):
