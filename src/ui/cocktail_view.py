@@ -149,16 +149,14 @@ class CocktailView(QWidget):
         return self._last_known_user is None
 
     def _start_nfc_polling(self) -> None:
-        """Start polling for NFC user login."""
+        """Add callback for NFC user login."""
         nfc_service = NFCPaymentService()
-        # Stop any existing polling first, then start with our callback
-        nfc_service.stop_polling()
-        nfc_service.start_polling(self._on_user_change)
+        nfc_service.add_callback(self._on_user_change)
 
     def _stop_nfc_polling(self) -> None:
-        """Stop the NFC polling."""
+        """Remove callback for NFC polling."""
         nfc_service = NFCPaymentService()
-        nfc_service.stop_polling()
+        nfc_service.remove_callback(self._on_user_change)
 
     def _on_user_change(self, user: User | None, uid: str) -> None:
         """Callback when NFC user state changes.

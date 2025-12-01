@@ -47,77 +47,58 @@ def nfc_service():
     with patch("src.programs.nfc_payment_service.RFIDReader"):
         service = NFCPaymentService()
         yield service
-        # Clean up after test
-        service.stop_polling()
+        # Clean up after test - clear callbacks
+        service._user_callbacks.clear()
 
 
-class TestNFCPaymentServicePolling:
-    """Tests for NFC payment service polling functionality."""
+class TestNFCPaymentServiceCallbacks:
+    """Tests for NFC payment service callback functionality."""
 
-    def test_start_polling_initializes_correctly(self, nfc_service: NFCPaymentService) -> None:
-        """Test that start_polling initializes polling state."""
+    def test_add_callback(self, nfc_service: NFCPaymentService) -> None:
+        """Test that add_callback adds a callback."""
         callback = MagicMock()
-        nfc_service.start_polling(callback)
+        nfc_service.add_callback(callback)
         
-        assert nfc_service._is_polling is True
         assert callback in nfc_service._user_callbacks
+        assert len(nfc_service._user_callbacks) == 1
 
-    def test_start_polling_without_callback(self, nfc_service: NFCPaymentService) -> None:
-        """Test that start_polling works without a callback."""
-        nfc_service.start_polling()
-        
-        assert nfc_service._is_polling is True
-        assert len(nfc_service._user_callbacks) == 0
-
-    def test_start_polling_with_multiple_callbacks(self, nfc_service: NFCPaymentService) -> None:
-        """Test that calling start_polling multiple times adds callbacks."""
+    def test_add_multiple_callbacks(self, nfc_service: NFCPaymentService) -> None:
+        """Test that multiple callbacks can be added."""
         callback1 = MagicMock()
         callback2 = MagicMock()
         
-        nfc_service.start_polling(callback1)
-        nfc_service.start_polling(callback2)
+        nfc_service.add_callback(callback1)
+        nfc_service.add_callback(callback2)
         
-        # Should be polling and both callbacks should be added
-        assert nfc_service._is_polling is True
         assert callback1 in nfc_service._user_callbacks
         assert callback2 in nfc_service._user_callbacks
         assert len(nfc_service._user_callbacks) == 2
 
-    def test_start_polling_with_list_of_callbacks(self, nfc_service: NFCPaymentService) -> None:
-        """Test that start_polling can accept a list of callbacks."""
-        callback1 = MagicMock()
-        callback2 = MagicMock()
-        
-        nfc_service.start_polling([callback1, callback2])
-        
-        assert nfc_service._is_polling is True
-        assert callback1 in nfc_service._user_callbacks
-        assert callback2 in nfc_service._user_callbacks
-        assert len(nfc_service._user_callbacks) == 2
-
-    def test_start_polling_prevents_duplicate_callbacks(self, nfc_service: NFCPaymentService) -> None:
+    def test_add_callback_prevents_duplicates(self, nfc_service: NFCPaymentService) -> None:
         """Test that the same callback is not added twice."""
         callback = MagicMock()
         
-        nfc_service.start_polling(callback)
-        nfc_service.start_polling(callback)
+        nfc_service.add_callback(callback)
+        nfc_service.add_callback(callback)
         
         # Should only have one instance of the callback
         assert len(nfc_service._user_callbacks) == 1
 
-    def test_stop_polling_clears_state(self, nfc_service: NFCPaymentService) -> None:
-        """Test that stop_polling clears polling state and callbacks."""
-        nfc_service.start_polling(MagicMock())
-        nfc_service.stop_polling()
+    def test_remove_callback(self, nfc_service: NFCPaymentService) -> None:
+        """Test that remove_callback removes a callback."""
+        callback = MagicMock()
+        nfc_service.add_callback(callback)
+        nfc_service.remove_callback(callback)
         
-        assert nfc_service._is_polling is False
+        assert callback not in nfc_service._user_callbacks
         assert len(nfc_service._user_callbacks) == 0
 
-    def test_stop_polling_when_not_polling(self, nfc_service: NFCPaymentService) -> None:
-        """Test that stop_polling is safe when not polling."""
+    def test_remove_callback_that_doesnt_exist(self, nfc_service: NFCPaymentService) -> None:
+        """Test that removing a non-existent callback is safe."""
+        callback = MagicMock()
         # Should not raise any exception
-        nfc_service.stop_polling()
-        assert nfc_service._is_polling is False
+        nfc_service.remove_callback(callback)
+        assert len(nfc_service._user_callbacks) == 0
 
 
 class TestNFCPaymentServiceUserDetection:

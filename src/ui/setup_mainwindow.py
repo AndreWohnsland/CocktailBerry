@@ -79,6 +79,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.nfc_payment_service: Optional[NFCPaymentService] = None
         if cfg.PAYMENT_ACTIVE:
             self.nfc_payment_service = NFCPaymentService()
+            # Start continuous NFC sensing - callbacks will be added/removed as needed
+            self.nfc_payment_service.start_continuous_sensing()
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
 
@@ -141,6 +143,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def open_cocktail_detail(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
+        # Remove NFC callback when entering detail view
+        if cfg.PAYMENT_ACTIVE:
+            self.cocktail_view._stop_nfc_polling()
+        
         if self.cocktail_selection is not None:
             # Clean up all internal layouts and widgets recursively
             DP_CONTROLLER.delete_items_of_layout(self.cocktail_selection.layout())

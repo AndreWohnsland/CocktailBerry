@@ -98,7 +98,6 @@ class NFCPaymentService:
             cls.uid: str | None = None
             cls.rfid_reader = RFIDReader()
             cls._user_callbacks: list[Callable[[User | None, str], None]] = []
-            cls._is_polling: bool = False
             cls.user_db: dict[str, User] = {
                 "CAD3B515": User(uid="CAD3B515", balance=5.0, can_get_alcohol=False),
                 "33DFE41D": User(uid="33DFE41D", balance=10.0, can_get_alcohol=True),
@@ -107,43 +106,36 @@ class NFCPaymentService:
 
     def __del__(self) -> None:
         time_print("Cleaning up NFCService...")
-        self.stop_polling()
+        self.rfid_reader.cancel_reading()
 
-    def start_polling(self, user_callbacks: list[Callable[[User | None, str], None]] | Callable[[User | None, str], None] | None = None) -> None:
-        """Start polling for NFC tags with optional callbacks.
+    def start_continuous_sensing(self) -> None:
+        """Start continuous NFC sensing in the background.
+        
+        This should be called once at program start and runs continuously.
+        Callbacks can be added/removed dynamically without stopping the sensing.
+        """
+        time_print("Starting continuous NFC sensing.")
+        self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
+
+    def add_callback(self, callback: Callable[[User | None, str], None]) -> None:
+        """Add a callback to be invoked when a user is detected.
         
         Args:
-            user_callbacks: Optional callback(s) that receive (user: User | None, uid: str) when a user is detected.
-                           Can be a single callback or a list of callbacks.
+            callback: Callback that receives (user: User | None, uid: str) when a user is detected.
         """
-        # Add new callbacks to the list
-        if user_callbacks is not None:
-            if callable(user_callbacks):
-                # Single callback provided
-                if user_callbacks not in self._user_callbacks:
-                    self._user_callbacks.append(user_callbacks)
-                    time_print(f"Added callback. Total callbacks: {len(self._user_callbacks)}")
-            else:
-                # List of callbacks provided
-                for callback in user_callbacks:
-                    if callback not in self._user_callbacks:
-                        self._user_callbacks.append(callback)
-                time_print(f"Added callbacks. Total callbacks: {len(self._user_callbacks)}")
-        
-        # Start polling if not already active
-        if not self._is_polling:
-            time_print("Starting NFC polling.")
-            self._is_polling = True
-            self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
+        if callback not in self._user_callbacks:
+            self._user_callbacks.append(callback)
+            time_print(f"Added callback. Total callbacks: {len(self._user_callbacks)}")
 
-    def stop_polling(self) -> None:
-        """Stop polling for NFC tags and clear all callbacks."""
-        if not self._is_polling:
-            return
-        time_print("Stopping NFC polling.")
-        self._is_polling = False
-        self._user_callbacks.clear()
-        self.rfid_reader.cancel_reading()
+    def remove_callback(self, callback: Callable[[User | None, str], None]) -> None:
+        """Remove a callback from the list.
+        
+        Args:
+            callback: Callback to remove.
+        """
+        if callback in self._user_callbacks:
+            self._user_callbacks.remove(callback)
+            time_print(f"Removed callback. Total callbacks: {len(self._user_callbacks)}")
 
     def get_user_for_id(self, nfc_id: str) -> User | None:
         """Get the user associated with the given NFC ID."""
@@ -162,7 +154,7 @@ class NFCPaymentService:
             self.uid = _id
         
         # Invoke all registered callbacks
-        for callback in self._user_callbacks:
+        for callback in self._user_callbacks[:]:  # Use a copy to avoid modification during iteration
             callback(user, _id)
 
     def book_cocktail_for_user(self, user: User | None, cocktail: Cocktail) -> CocktailBooking:
