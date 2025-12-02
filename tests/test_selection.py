@@ -24,7 +24,9 @@ class TestSelectOptimalILP:
         - Rum Cola Curacao (1,2,4)  [inserted here]
         """
         # Insert a cocktail that forces a unique best solution when n=3
-        db_commander.insert_new_recipe("Rum Cola Curacao", 10, 300, True, False, [(1, 60, 1), (2, 200, 2), (4, 20, 3)])
+        db_commander.insert_new_recipe(
+            "Rum Cola Curacao", 10, 300, 5.5, True, False, [(1, 60, 1), (2, 200, 2), (4, 20, 3)]
+        )
 
         # Ensure data_utils uses our in-memory DB commander
         monkeypatch.setattr("src.data_utils.DatabaseCommander", lambda: db_commander)

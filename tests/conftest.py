@@ -29,15 +29,15 @@ def db_commander() -> Generator[DatabaseCommander, Any, None]:
     # Create cocktails
     # we have 2 that can be made, 3 that would be possible (1 disabled) and 1 that is not possible
     # has all ingredients available added all via machine
-    db_commander.insert_new_recipe("Cuba Libre", 11, 290, True, False, [(1, 80, 1), (2, 210, 2)])  # id 1
+    db_commander.insert_new_recipe("Cuba Libre", 11, 290, 5.0, True, False, [(1, 80, 1), (2, 210, 2)])  # id 1
     # has all ingredients available, but is disabled
-    db_commander.insert_new_recipe("Tequila Sunrise", 15, 250, False, False, [(5, 50, 1), (3, 200, 2)])  # id 2
+    db_commander.insert_new_recipe("Tequila Sunrise", 15, 250, 6.5, False, False, [(5, 50, 1), (3, 200, 2)])  # id 2
     # has one available ingredient added via handadd
-    db_commander.insert_new_recipe("With Handadd", 20, 250, True, False, [(1, 50, 1), (4, 200, 2)])  # id 3
+    db_commander.insert_new_recipe("With Handadd", 20, 250, 7.0, True, False, [(1, 50, 1), (4, 200, 2)])  # id 3
     # not all ingredients are available
-    db_commander.insert_new_recipe("Not Available", 10, 250, True, False, [(4, 50, 1), (6, 200, 2)])  # id 4
+    db_commander.insert_new_recipe("Not Available", 10, 250, 4.5, True, False, [(4, 50, 1), (6, 200, 2)])  # id 4
     # This one should be possible only in its virgin form
-    db_commander.insert_new_recipe("Virgin Only Possible", 12, 300, True, True, [(7, 100, 1), (2, 200, 2)])  # id 5
+    db_commander.insert_new_recipe("Virgin Only Possible", 12, 300, 3.0, True, True, [(7, 100, 1), (2, 200, 2)])  # id 5
 
     # Assign ingredients to bottles
     db_commander.set_bottle_at_slot("White Rum", 1)

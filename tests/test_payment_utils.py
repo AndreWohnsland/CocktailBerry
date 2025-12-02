@@ -71,21 +71,21 @@ class TestFilterCocktailsNoUser:
     """Tests for filter_cocktails_by_user when no user is logged in."""
 
     def test_returns_empty_list_when_user_is_none(self, patch_cfg: PatchCfgType) -> None:
-        """When user is None, should return an empty list."""
+        """When user is None, should return input."""
         cocktails = [create_test_cocktail()]
         with patch_cfg():
             result = filter_cocktails_by_user(None, cocktails)
-        assert result == []
+        assert result == cocktails
 
     def test_returns_empty_list_for_multiple_cocktails_when_user_is_none(self, patch_cfg: PatchCfgType) -> None:
-        """When user is None, should return empty list regardless of cocktails."""
+        """When user is None, should return input regardless of cocktails."""
         cocktails = [
             create_test_cocktail(cocktail_id=1, name="Cocktail 1"),
             create_test_cocktail(cocktail_id=2, name="Cocktail 2"),
         ]
         with patch_cfg():
             result = filter_cocktails_by_user(None, cocktails)
-        assert result == []
+        assert result == cocktails
 
 
 class TestFilterCocktailsAlcoholPermission:
