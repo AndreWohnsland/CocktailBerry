@@ -27,6 +27,15 @@ The following components were used within the showcase for the Machine (Cocktail
 - *Optional*: A good! [converter](https://www.amazon.de/dp/B086W6B9H1) (using usb ones may result in too high voltage loss) if you only want one power source
 - *Optional*: [USB C](https://amzn.to/3X9I7lw) or [Micro USB](https://amzn.to/4oQDCIu) open cable
 
+## Payment Service
+
+If you want to use the NFC-Reader functionality with the payment service, you will need at least two additional NFC-Reader and another Pi setup:
+
+- 2x [USB RFID Reader](https://amzn.to/4p75hVZ), other ones might not work out of the box
+- Compatible NFC tags (e.g., [MIFARE Classic](https://amzn.to/43ZPcsC) or [in Blue](https://amzn.to/43ZPcsC))
+- 1x [Raspberry Pi 3b+](https://amzn.to/48bhCBc) (or newer [Model 4](https://amzn.to/4pqSH3v))
+- Additional monitor + mouse + keyboard or another touchscreen see above
+
 ## Teams Dashboard
 
 The following components were used within the showcase for the Teams Dashboard:
