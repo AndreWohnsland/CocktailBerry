@@ -87,7 +87,7 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
         detected_user = user
 
     # Start polling with callback
-    payment_service.start_polling(on_user_detected)
+    payment_service.add_callback(on_user_detected)
 
     # Try to book immediately if we have a user
     booking = (
@@ -111,6 +111,7 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
         if detected_user is not None:
             booking = payment_service.book_cocktail_for_user(detected_user, cocktail)
 
+    payment_service.clear_callback()
     if dialog is not None:
         with contextlib.suppress(Exception):
             dialog.close()

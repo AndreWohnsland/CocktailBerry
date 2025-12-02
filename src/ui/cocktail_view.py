@@ -133,19 +133,18 @@ class CocktailView(QWidget):
         self._last_known_user: User | None = None
         self._auto_logout_timer: QTimer | None = None
 
-        self.user_changed.connect(self._on_user_change_impl)
-        self.destroyed.connect(NFCPaymentService().stop_polling)
+        self.user_changed.connect(self.react_on_user_change)
+        self.destroyed.connect(NFCPaymentService().clear_callback)
 
-    def _on_user_change(self, user: User | None, uid: str) -> None:
-        """Handle NFC user state changes."""
+    def emit_user_change(self, user: User | None, uid: str) -> None:
+        """Emit user change signal (thread-safe) for pyqt."""
         self.user_changed.emit(user, uid)
 
-    def _on_user_change_impl(self, user: User | None, uid: str) -> None:
+    def react_on_user_change(self, user: User | None, uid: str) -> None:
         """Implement user change handling (runs on main thread)."""
         if user == self._last_known_user:
             time_print("NFC user state unchanged.")
             return
-        time_print(f"NFC user state changed to {user} from {self._last_known_user}")
         self._last_known_user = user
 
         # # Cancel existing auto-logout timer if any
@@ -181,11 +180,7 @@ class CocktailView(QWidget):
 
     def _needs_nfc_user_protection(self) -> bool:
         """Check if NFC user protection is needed."""
-        if not cfg.PAYMENT_ACTIVE:
-            return False
-        if not cfg.PAYMENT_LOCK_SCREEN_NO_USER:
-            return False
-        return self._last_known_user is None
+        return cfg.PAYMENT_ACTIVE and cfg.PAYMENT_LOCK_SCREEN_NO_USER and self._last_known_user is None
 
     def _render_view(self) -> None:
         """Render the appropriate view based on current NFC user state."""
@@ -203,7 +198,7 @@ class CocktailView(QWidget):
         """
         self._render_view()
         if cfg.PAYMENT_ACTIVE:
-            NFCPaymentService().start_polling(self._on_user_change)
+            NFCPaymentService().add_callback(self.emit_user_change)
 
     def _populate_cocktails_grid(self) -> None:
         """Populate the cocktails grid (internal method)."""
