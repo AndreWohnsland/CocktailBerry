@@ -551,7 +551,7 @@ class DisplayController(DialogHandler):
     def update_maker_view(self, w: MainScreen) -> None:
         """Refresh the maker view, sets tab also to maker and not selection."""
         w.cocktail_view.populate_cocktails()
-        w.container_maker.setCurrentWidget(w.cocktail_view)
+        w.switch_to_cocktail_list()
 
     # Some more "specific" function, not using generic but specified field sets
     def set_label_bottles(self, w: Ui_MainWindow, label_names: list[str]) -> None:

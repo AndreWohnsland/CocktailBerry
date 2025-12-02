@@ -106,29 +106,24 @@ class NFCPaymentService:
 
     def __del__(self) -> None:
         time_print("Cleaning up NFCService...")
-        self.stop_polling()
+        self.rfid_reader.cancel_reading()
 
-    def start_polling(
-        self,
-        user_callback: Callable[[User | None, str], None] | None = None,
-    ) -> None:
-        """Start polling for NFC tags with optional callbacks."""
-        if self._is_polling:
-            # time_print("WARNING: NFC polling already active.")
-            return
-        self._user_callback = user_callback
-        time_print("Starting NFC polling.")
-        self._is_polling = True
+    def start_continuous_sensing(self) -> None:
+        """Start continuous NFC sensing in the background.
+
+        This should be called once at program start and runs continuously.
+        Callbacks can be added/removed dynamically without stopping the sensing.
+        """
+        time_print("Starting continuous NFC sensing.")
         self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
 
-    def stop_polling(self) -> None:
-        """Stop polling for NFC tags and clear all callbacks."""
-        if not self._is_polling:
-            return
-        time_print("Stopping NFC polling.")
-        self._is_polling = False
+    def add_callback(self, callback: Callable[[User | None, str], None]) -> None:
+        """Add a callback to be invoked when a user is detected."""
+        self._user_callback = callback
+
+    def clear_callback(self) -> None:
+        """Remove the current user callback."""
         self._user_callback = None
-        self.rfid_reader.cancel_reading()
 
     def get_user_for_id(self, nfc_id: str) -> User | None:
         """Get the user associated with the given NFC ID."""
@@ -146,7 +141,6 @@ class NFCPaymentService:
             time_print(f"User found: for NFC ID: {_id}")
             self.uid = _id
 
-        # Invoke the registered callback if any
         if self._user_callback is not None:
             self._user_callback(user, _id)
 

@@ -76,6 +76,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
         self.cocktail_selection: Optional[CocktailSelection] = None
+        if cfg.PAYMENT_ACTIVE:
+            NFCPaymentService().start_continuous_sensing()
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
 
@@ -156,13 +158,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self.cocktail_selection is None:
             return
         if cfg.PAYMENT_ACTIVE:
-            NFCPaymentService().stop_polling()
+            NFCPaymentService().clear_callback()
         self.container_maker.setCurrentWidget(self.cocktail_selection)
 
     def switch_to_cocktail_list(self) -> None:
         self.container_maker.setCurrentWidget(self.cocktail_view)
         if cfg.PAYMENT_ACTIVE:
-            NFCPaymentService().start_polling()
+            NFCPaymentService().add_callback(self.cocktail_view.emit_user_change)
 
     def open_numpad(
         self,
