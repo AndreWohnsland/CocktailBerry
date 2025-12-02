@@ -6,8 +6,10 @@ from src.programs.nfc_payment_service import User
 
 
 def filter_cocktails_by_user(user: User | None, cocktails: list[Cocktail]) -> list[Cocktail]:
-    if user is None:  # should not happen due to prior checks
-        return []
+    # if operator wants to have implicit filtering, they should use lock screen
+    # since this will enforce a user at cocktail view
+    if user is None:
+        return cocktails
     filtered = []
     lowest_amount = cfg.MAKER_PREPARE_VOLUME[0] if cfg.MAKER_PREPARE_VOLUME else None
     for cocktail in cocktails:
