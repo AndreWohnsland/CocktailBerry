@@ -256,6 +256,28 @@ dialog:
   options_updated_and_restart:
     en: 'Options updated! Backend will be restarted.'
     de: 'Optionen aktualisiert! Backend wird neu gestartet.'
+  # Payment state messages
+  payment_inactive:
+    en: 'Payment service is not active.'
+    de: 'Zahlungsservice ist nicht aktiv.'
+  payment_no_user:
+    en: 'Please scan a NFC tag.'
+    de: 'Bitte NFC Tag scannen.'
+  payment_insufficient_balance:
+    en: 'Insufficient balance, please top up your account.'
+    de: 'Nicht genug Guthaben, bitte Konto aufladen.'
+  payment_too_young:
+    en: 'User is not allowed to get alcohol.'
+    de: 'Benutzer kann kein Alkohol bekommen.'
+  payment_successful:
+    en: 'Payment successful.'
+    de: 'Zahlung erfolgreich.'
+  payment_api_not_reachable:
+    en: 'Payment service is not reachable. If this persists, contact the owner.'
+    de: 'Zahlungsservice ist nicht erreichbar. Wenn dies andauert, kontaktiere den Besitzer.'
+  payment_canceled:
+    en: 'Payment was canceled by user or timeout'
+    de: 'Zahlung wurde durch Benutzer oder wegen Zeitüberschreitung abgebrochen.'
 
 # Change of language in UI elements
 ui:
@@ -363,6 +385,9 @@ ui:
     label_ingredient_unit:
       en: 'Unit'
       de: 'Einheit'
+    label_cocktail_price:
+      en: 'Price'
+      de: 'Preis'
     label_single_ingredient:
       en: 'Single Ingredient'
       de: 'Einzelne Zutat'
@@ -695,17 +720,29 @@ ui:
       en: 'Multiplier percentage to apply to virgin cocktail prices'
       de: 'Multiplikator Prozentsatz, der auf Preise für alkoholfreie Cocktails angewendet wird'
     PAYMENT_SHOW_NOT_POSSIBLE:
-      en: 'Show cocktails that are not possible to the user (missing balance, no alcohol allowed, etc.)'
-      de: 'Zeige Cocktails an, die für den Benutzer nicht möglich sind (zu wenig Guthaben, kein Alkohol erlaubt, etc.)'
+      en: 'Show cocktails that are not possible to the user (missing balance, no alcohol allowed, etc.) in a disabled style'
+      de: 'Zeige Cocktails an, die für den Benutzer nicht möglich sind (zu wenig Guthaben, kein Alkohol erlaubt, etc.) in deaktiviertem Stil'
+    PAYMENT_LOCK_SCREEN_NO_USER:
+      en: 'Show lock screen if no user is detected on payment NFC/RFID scan'
+      de: 'Zeige Sperrbildschirm an, wenn kein Benutzer bei Zahlung per NFC/RFID erkannt wird'
     PAYMENT_SERVICE_URL:
       en: 'URL address for payment service API'
       de: 'URL Adresse der Zahlungsservice API'
     PAYMENT_SECRET_KEY:
       en: 'Secret key for payment service API'
       de: 'Geheimer Schlüssel für Zahlungsservice API'
+    PAYMENT_TIMEOUT_S:
+      en: 'Timeout in seconds before reader cancels payment NFC/RFID scan'
+      de: 'Timeout in Sekunden bevor der Leser den NFC/RFID Zahlungs-Scan abbricht'
     PAYMENT_AUTO_LOGOUT_TIME_S:
-      en: 'Auto logout time in seconds for payment sessions (scanned NFC/RFID)'
-      de: 'Automatische Abmeldezeit in Sekunden für Zahlungssitzungen (gescannte NFC/RFID)'
+      en: 'Auto logout time in seconds for user information (scanned NFC/RFID), use 0 to disable'
+      de: 'Automatische Abmeldezeit in Sekunden für Benutzerinformationen (gescannte NFC/RFID), verwende 0 zum Deaktivieren'
+    PAYMENT_LOGOUT_AFTER_PREPARATION:
+      en: 'Remove user information (used for cocktail display filter) after cocktail preparation, lock screen if enabled'
+      de: 'Entferne Benutzerinformationen (für Cocktail Anzeigefilter verwendet) nach der Cocktail Zubereitung, Sperrbildschirm wenn aktiviert'
+    PAYMENT_ONLY_MAKER_TAB:
+      en: 'Disable all other tabs than the maker one; You will only be prompted at program start if you want to go to config window with master password'
+      de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
     CUSTOM_COLOR_PRIMARY:
       en: 'Custom primary (most elements) color if custom theme is selected'
       de: 'Eigene primäre (meisten Elemente) Farbe, wenn custom Theme ausgewählt ist'
