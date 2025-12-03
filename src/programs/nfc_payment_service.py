@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 
 from src.config.config_manager import CONFIG as cfg
+from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.rfid import RFIDReader
 from src.models import Cocktail
 from src.utils import time_print
@@ -35,7 +36,7 @@ class CocktailBooking:
     def inactive(cls) -> "CocktailBooking":
         """Create an inactive booking instance."""
         return cls(
-            message="Cocktail booking is currently inactive.",
+            message=DH.get_translation("payment_inactive"),
             result=cls.Result.INACTIVE,
         )
 
@@ -43,7 +44,7 @@ class CocktailBooking:
     def successful_booking(cls) -> "CocktailBooking":
         """Create a successful booking instance."""
         return cls(
-            message="Cocktail booked successfully.",
+            message=DH.get_translation("payment_successful"),
             result=cls.Result.SUCCESS,
         )
 
@@ -51,7 +52,7 @@ class CocktailBooking:
     def insufficient_balance(cls) -> "CocktailBooking":
         """Create an insufficient balance booking instance."""
         return cls(
-            message="Insufficient balance to book cocktail.",
+            message=DH.get_translation("payment_insufficient_balance"),
             result=cls.Result.INSUFFICIENT_BALANCE,
         )
 
@@ -59,7 +60,7 @@ class CocktailBooking:
     def too_young(cls) -> "CocktailBooking":
         """Create a too young booking instance."""
         return cls(
-            message="User is not allowed to get alcohol.",
+            message=DH.get_translation("payment_too_young"),
             result=cls.Result.NOT_ALLOWED_ALCOHOL,
         )
 
@@ -67,7 +68,7 @@ class CocktailBooking:
     def no_user_logged_in(cls) -> "CocktailBooking":
         """Create a no user logged in booking instance."""
         return cls(
-            message="Please scan a NFC tag.",
+            message=DH.get_translation("payment_no_user"),
             result=cls.Result.NO_USER,
         )
 
@@ -75,7 +76,7 @@ class CocktailBooking:
     def api_not_reachable(cls) -> "CocktailBooking":
         """Create an API not reachable booking instance."""
         return cls(
-            message="API not reachable.",
+            message=DH.get_translation("payment_api_not_reachable"),
             result=cls.Result.API_NOT_REACHABLE,
         )
 
@@ -83,7 +84,7 @@ class CocktailBooking:
     def canceled(cls) -> "CocktailBooking":
         """Create a canceled booking instance."""
         return cls(
-            message="Payment canceled by user.",
+            message=DH.get_translation("payment_canceled"),
             result=cls.Result.CANCELED,
         )
 
@@ -105,7 +106,6 @@ class NFCPaymentService:
         return cls._instance
 
     def __del__(self) -> None:
-        time_print("Cleaning up NFCService...")
         self.rfid_reader.cancel_reading()
 
     def start_continuous_sensing(self) -> None:
@@ -114,7 +114,7 @@ class NFCPaymentService:
         This should be called once at program start and runs continuously.
         Callbacks can be added/removed dynamically without stopping the sensing.
         """
-        time_print("Starting continuous NFC sensing.")
+        time_print("Starting continuous NFC sensing for NFCPaymentService.")
         self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
 
     def add_callback(self, callback: Callable[[User | None, str], None]) -> None:
@@ -150,7 +150,8 @@ class NFCPaymentService:
             return CocktailBooking.no_user_logged_in()
         if not user.can_get_alcohol and not cocktail.is_virgin:
             return CocktailBooking.too_young()
-        price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING)
+        multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0
+        price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
         if user.balance < price:
             return CocktailBooking.insufficient_balance()
         try:

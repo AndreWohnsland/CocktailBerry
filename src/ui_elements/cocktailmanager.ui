@@ -1148,7 +1148,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout">
                 <item>
-                 <widget class="QLabel" name="label_price">
+                 <widget class="QLabel" name="label_cocktail_price">
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
@@ -2229,7 +2229,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>741</width>
+             <width>620</width>
              <height>1108</height>
             </rect>
            </property>

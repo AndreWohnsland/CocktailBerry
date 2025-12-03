@@ -116,6 +116,13 @@ allowed_keys = Literal[
     "not_enough_ingredient_volume",
     "options_updated",
     "options_updated_and_restart",
+    "payment_api_not_reachable",
+    "payment_canceled",
+    "payment_inactive",
+    "payment_insufficient_balance",
+    "payment_no_user",
+    "payment_successful",
+    "payment_too_young",
     "preparation_cancelled",
     "python_deprecated",
     "qtsass_not_successful",
@@ -692,6 +699,7 @@ class UiLanguage:
             (w.label_search_title, "header_search"),
             (w.button_enter_to_maker, "enter_to_maker"),
             (w.label_ingredient_unit, "label_ingredient_unit"),
+            (w.label_cocktail_price, "label_cocktail_price"),
         ]:
             ui_element.setText(self._choose_language(text_name, window))
 
