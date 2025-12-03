@@ -89,15 +89,19 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 ??? info "Payment Related Config Values"
     Payment config values are used to configure the payment system and its behavior.
 
-    | Value Name                   | Description                                                 |
-    | :--------------------------- | :---------------------------------------------------------- |
-    | `PAYMENT_ACTIVE`             | Enable payment feature                                      |
-    | `PAYMENT_PRICE_ROUNDING`     | Number of decimal places to round up the cocktail price to  |
-    | `PAYMENT_SHOW_NOT_POSSIBLE`  | Show cocktails that are not possible to the user            |
-    | `PAYMENT_VIRGIN_MULTIPLIER`  | Multiplier percentage to apply to virgin cocktail prices    |
-    | `PAYMENT_SERVICE_URL`        | URL of the payment service API                              |
-    | `PAYMENT_SECRET_KEY`         | Secret key for authentication with the payment service      |
-    | `PAYMENT_AUTO_LOGOUT_TIME_S` | Time in seconds until automatic logout of user from payment |
+    | Value Name                         | Description                                                    |
+    | :--------------------------------- | :------------------------------------------------------------- |
+    | `PAYMENT_ACTIVE`                   | Enable payment feature                                         |
+    | `PAYMENT_PRICE_ROUNDING`           | Number of decimal places to round up the cocktail price to     |
+    | `PAYMENT_SHOW_NOT_POSSIBLE`        | Show cocktails that are not possible to the user               |
+    | `PAYMENT_LOCK_SCREEN_NO_USER`      | Lock the screen when no user is logged in                      |
+    | `PAYMENT_VIRGIN_MULTIPLIER`        | Multiplier percentage to apply to virgin cocktail prices       |
+    | `PAYMENT_SERVICE_URL`              | URL of the payment service API                                 |
+    | `PAYMENT_SECRET_KEY`               | Secret key for authentication with the payment service         |
+    | `PAYMENT_TIMEOUT_S`                | Timeout in seconds before reader cancels payment NFC/RFID scan |
+    | `PAYMENT_AUTO_LOGOUT_TIME_S`       | Time in seconds until automatic logout of user from payment    |
+    | `PAYMENT_LOGOUT_AFTER_PREPARATION` | Remove user for filtering cocktail view after preparation      |
+    | `PAYMENT_ONLY_MAKER_TAB`           | Only allow access to the maker tab when payment is active      |
 
 ??? info "List Other Config Values"
     Here are some other config values, which are not fitting in the other categories.
