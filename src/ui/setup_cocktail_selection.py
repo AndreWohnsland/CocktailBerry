@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtGui import QFont, QPixmap
-from PyQt5.QtWidgets import QDialog, QLabel, QSizePolicy
+from PyQt5.QtWidgets import QDialog, QLabel, QPushButton, QSizePolicy
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
@@ -30,6 +30,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         DP_CONTROLLER.initialize_window_object(self)
         self.cocktail = cocktail
         self.mainscreen = mainscreen
+        # Store references for dynamic button label updates
+        self._volume_buttons: list[tuple[int, QPushButton]] = []  # list of (volume, button) tuples
         # build the image
         self.image_container.setScaledContents(True)
         self.image_container.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)  # type: ignore
@@ -154,6 +156,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # Styles does not work on strikeout, so we use internal qt things
         # To be precise, they do work at start, but does not support dynamic changes
         set_strike_through(self.virgin_checkbox, not can_change_virgin)
+        # Update button labels if payment is active (price may change with virgin mode)
+        self._update_volume_button_labels()
 
     def _decide_rounding(self, val: float, threshold: int = 8) -> int | float:
         """Return the right rounding for numbers displayed to the user."""
@@ -262,16 +266,13 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         )
         self.container_prepare_button.addWidget(volume_label)
 
+        # Clear stored button references
+        self._volume_buttons = []
+
         # Then create a button for each volume
         for volume, icon_name in zip(volume_list, icon_list):
-            volume_converted = self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)
-            label = f"{volume_converted}"
-            if cfg.PAYMENT_ACTIVE:
-                price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume)
-                price_str = f"{price:.1f}".rstrip(".0")
-                label += f": {price_str}€"
             button = create_button(
-                label,
+                "",  # Label will be set by _update_volume_button_labels
                 self,
                 css_class="btn-inverted ml round",
                 min_h=60,
@@ -281,6 +282,23 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             icon = self.icons.generate_icon(icon_name, self.icons.color.background)
             self.icons.set_icon(button, icon, False)
             self.container_prepare_button.addWidget(button)
+            # Store reference for later label updates
+            self._volume_buttons.append((volume, button))
+
+        # Set initial button labels
+        self._update_volume_button_labels()
+
+    def _update_volume_button_labels(self) -> None:
+        """Update the labels of volume buttons, recalculating prices if payment is active."""
+        for volume, button in self._volume_buttons:
+            volume_converted = self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)
+            label = f"{volume_converted}"
+            if cfg.PAYMENT_ACTIVE:
+                multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.virgin_checkbox.isChecked() else 1.0
+                price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume, price_multiplier=multiplier)
+                price_str = f"{price}".rstrip("0").rstrip(".")
+                label += f": {price_str}€"
+            button.setText(label)
 
 
 def _generate_needed_cocktail_icons(icon_setter: IconSetter, amount: int) -> list[str]:
