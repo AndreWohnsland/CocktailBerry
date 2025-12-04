@@ -15,6 +15,7 @@ from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService,
 from src.tabs import bottles, maker
 
 if TYPE_CHECKING:
+    from src.ui.setup_custom_dialog import CustomDialog
     from src.ui.setup_mainwindow import MainScreen
 
 
@@ -62,6 +63,8 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
     bottles.set_fill_level_bars(w)
     global_shared.alcohol_factor = 1.0
     w.switch_to_cocktail_list()
+    if cfg.PAYMENT_LOGOUT_AFTER_PREPARATION:
+        w.cocktail_view.logout_user()
     return True, message
 
 
@@ -71,9 +74,9 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
         return CocktailBooking.inactive()
 
     payment_service = NFCPaymentService()
-    polling_time = 20
+    polling_time = cfg.PAYMENT_TIMEOUT_S
     start_time = time.time()
-    dialog = None
+    dialog: CustomDialog | None = None
     canceled = False
     detected_user: User | None = None
 
@@ -86,15 +89,9 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
         nonlocal detected_user
         detected_user = user
 
-    # Start polling with callback
     payment_service.add_callback(on_user_detected)
-
     # Try to book immediately if we have a user
-    booking = (
-        payment_service.book_cocktail_for_user(detected_user, cocktail)
-        if detected_user
-        else CocktailBooking.no_user_logged_in()
-    )
+    booking = payment_service.book_cocktail_for_user(detected_user, cocktail)
 
     if booking.result == CocktailBooking.Result.NO_USER:
         dialog = DP_CONTROLLER.standard_box_non_blocking(

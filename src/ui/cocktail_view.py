@@ -147,29 +147,28 @@ class CocktailView(QWidget):
             return
         self._last_known_user = user
 
-        # # Cancel existing auto-logout timer if any
-        # if self._auto_logout_timer is not None:
-        #     time_print("Cancelling existing auto-logout timer.")
-        #     self._auto_logout_timer.stop()
-        #     self._auto_logout_timer = None
+        # Cancel existing auto-logout timer if any
+        if self._auto_logout_timer is not None:
+            self._auto_logout_timer.stop()
+            self._auto_logout_timer = None
 
-        # # Start auto-logout timer if user is logged in
-        # if user is not None and cfg.PAYMENT_AUTO_LOGOUT_TIME_S > 0:
-        #     time_print("Starting auto-logout timer.")
-        #     self._auto_logout_timer = QTimer(self)
-        #     self._auto_logout_timer.setSingleShot(True)
-        #     self._auto_logout_timer.timeout.connect(self._auto_logout)
-        #     self._auto_logout_timer.start(cfg.PAYMENT_AUTO_LOGOUT_TIME_S * 1000)  # Convert to milliseconds
+        # Start auto-logout timer if user is logged in
+        if user is not None and cfg.PAYMENT_AUTO_LOGOUT_TIME_S > 0:
+            time_print("Starting auto-logout timer.")
+            self._auto_logout_timer = QTimer(self)
+            self._auto_logout_timer.setSingleShot(True)
+            self._auto_logout_timer.timeout.connect(self.logout_user)
+            self._auto_logout_timer.start(cfg.PAYMENT_AUTO_LOGOUT_TIME_S * 1000)  # Convert to milliseconds
 
         self._render_view()
         self.mainscreen.switch_to_cocktail_list()
 
-    # def _auto_logout(self) -> None:
-    #     """Handle auto-logout when timer expires."""
-    #     time_print("Auto-logout timer expired.")
-    #     self._last_known_user = None
-    #     self._render_view()
-    #     self.mainscreen.switch_to_cocktail_list()
+    def logout_user(self) -> None:
+        """Handle auto-logout when timer expires."""
+        time_print("Auto-logout timer expired.")
+        self._last_known_user = None
+        self._render_view()
+        self.mainscreen.switch_to_cocktail_list()
 
     def _show_nfc_scan_message(self) -> None:
         """Show the NFC scan message and hide the cocktails grid."""
