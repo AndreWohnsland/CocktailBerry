@@ -1,7 +1,6 @@
 """NFC payment integration for V2 API."""
 
 import asyncio
-from typing import Any
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared

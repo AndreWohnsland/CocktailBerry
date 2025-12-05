@@ -199,4 +199,4 @@ addons/*
 !addons/__init__.py
 
 # LLM things
-GEMINI.md
+GEMINI.mdweb_client/package-lock.json
