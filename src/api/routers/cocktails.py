@@ -3,7 +3,7 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile, WebSocket
 
-from src.api.internal.nfc_payment import get_nfc_payment_handler
+from src.api.internal.nfc_payment import NFCPaymentHandler, get_nfc_payment_handler
 from src.api.internal.utils import (
     calculate_cocktail_volume_and_concentration,
     map_cocktail,
@@ -21,6 +21,7 @@ from src.api.models import (
     CocktailStatus,
     ErrorDetail,
     PrepareCocktailRequest,
+    UserAuth,
 )
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab, shared
@@ -86,6 +87,7 @@ async def prepare_cocktail(
     cocktail_id: int,
     request: PrepareCocktailRequest,
     background_tasks: BackgroundTasks,
+    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)],
 ) -> CocktailStatus:
     DBC = DatabaseCommander()
     factor = request.alcohol_factor if not request.is_virgin else 0
@@ -111,7 +113,6 @@ async def prepare_cocktail(
         shared.team_member_name = request.team_member_name
     if cfg.PAYMENT_ACTIVE:
         # Start payment flow - NFC scanning will happen first, then cocktail preparation
-        payment_handler = get_nfc_payment_handler()
         background_tasks.add_task(payment_handler.start_payment_flow, cocktail)
         return CocktailStatus(status=PrepareResult.WAITING_FOR_NFC)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
@@ -153,12 +154,37 @@ async def stop_cocktail() -> ApiMessage:
 @protected_maker_router.post(
     "/prepare/payment/cancel", tags=["preparation", "payment"], summary="Cancel the current payment flow"
 )
-async def cancel_payment() -> ApiMessage:
-    payment_handler = get_nfc_payment_handler()
+async def cancel_payment(
+    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)],
+) -> ApiMessage:
     payment_handler.cancel_payment()
     shared.cocktail_status.status = PrepareResult.CANCELED
     time_print("Canceling the payment!")
     return ApiMessage(message=DH.get_translation("payment_canceled"))
+
+
+@router.get("/auth/user", tags=["payment", "authentication"], summary="Get current authenticated user")
+async def get_authenticated_user(
+    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)],
+) -> UserAuth:
+    """Get the currently authenticated NFC user.
+
+    This endpoint is used for screen locking when PAYMENT_LOCK_SCREEN_NO_USER is enabled.
+    The frontend polls this endpoint until a valid user is returned.
+    """
+    if not cfg.PAYMENT_ACTIVE:
+        return UserAuth(is_authenticated=False)
+
+    user = payment_handler.get_current_user()
+    if user is None:
+        return UserAuth(is_authenticated=False)
+
+    return UserAuth(
+        uid=user.uid,
+        balance=user.balance,
+        can_get_alcohol=user.can_get_alcohol,
+        is_authenticated=True,
+    )
 
 
 @protected_recipes_router.post("", summary="Create a new cocktail", dependencies=[not_on_demo])

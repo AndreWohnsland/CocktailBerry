@@ -131,3 +131,10 @@ class ApiMessage(BaseModel):
 class ApiMessageWithData(BaseModel, Generic[T]):
     message: str
     data: T
+
+
+class UserAuth(BaseModel):
+    uid: str | None = None
+    balance: float | None = None
+    can_get_alcohol: bool = False
+    is_authenticated: bool = False

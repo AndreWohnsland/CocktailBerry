@@ -1,5 +1,5 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import { Cocktail, CocktailInput, CocktailStatus, Ingredient } from '../types/models';
+import { Cocktail, CocktailInput, CocktailStatus, Ingredient, UserAuth } from '../types/models';
 import { axiosInstance } from './common';
 
 const cocktail_url = '/cocktails';
@@ -79,6 +79,21 @@ export const cancelPayment = async (): Promise<void> => {
     .then((res) => res.data)
     .catch((error) => {
       console.error('Error cancelling payment:', error);
+    });
+};
+
+export const getAuthenticatedUser = async (): Promise<UserAuth> => {
+  return axiosInstance
+    .get<UserAuth>(`${cocktail_url}/auth/user`)
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error('Error fetching authenticated user:', error);
+      return {
+        uid: null,
+        balance: null,
+        can_get_alcohol: false,
+        is_authenticated: false,
+      };
     });
 };
 

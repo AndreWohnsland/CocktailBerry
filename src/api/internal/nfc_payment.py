@@ -1,6 +1,7 @@
 """NFC payment integration for V2 API."""
 
 import asyncio
+from functools import lru_cache
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
@@ -93,14 +94,15 @@ class NFCPaymentHandler:
         self._payment_cancelled = True
         self.nfc_service.clear_callback()
 
+    def get_current_user(self) -> User | None:
+        """Get the currently logged in user from NFC service."""
+        uid = self.nfc_service.uid
+        if uid is None:
+            return None
+        return self.nfc_service.get_user_for_id(uid)
 
-# Global instance
-_nfc_payment_handler: NFCPaymentHandler | None = None
 
-
+@lru_cache(maxsize=1)
 def get_nfc_payment_handler() -> NFCPaymentHandler:
-    """Get or create the global NFC payment handler instance."""
-    global _nfc_payment_handler
-    if _nfc_payment_handler is None:
-        _nfc_payment_handler = NFCPaymentHandler()
-    return _nfc_payment_handler
+    """Get or create the global NFC payment handler instance (cached)."""
+    return NFCPaymentHandler()

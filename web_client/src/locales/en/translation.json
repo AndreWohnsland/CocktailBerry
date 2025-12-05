@@ -40,7 +40,9 @@
   },
   "payment": {
     "scanNFC": "Please Scan Your NFC Card",
-    "holdCard": "Hold your NFC card or tag near the reader to complete the payment"
+    "holdCard": "Hold your NFC card or tag near the reader to complete the payment",
+    "scanToUnlock": "Scan NFC Card to Access",
+    "scanNFCToAccess": "Please scan your NFC card to access cocktails"
   },
   "ingredients": {
     "newIngredient": "New Ingredient",

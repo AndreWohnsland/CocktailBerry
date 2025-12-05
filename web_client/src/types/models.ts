@@ -82,6 +82,13 @@ export interface CocktailStatus {
   status: PrepareResult;
 }
 
+export interface UserAuth {
+  uid: string | null;
+  balance: number | null;
+  can_get_alcohol: boolean;
+  is_authenticated: boolean;
+}
+
 export interface ApiError {
   detail: string;
   status?: PrepareResult;
@@ -141,6 +148,7 @@ export interface DefinedConfigData {
   PAYMENT_PRICE_ROUNDING: number;
   PAYMENT_VIRGIN_MULTIPLIER: number;
   PAYMENT_SHOW_NOT_POSSIBLE: boolean;
+  PAYMENT_LOCK_SCREEN_NO_USER: boolean;
   PAYMENT_SERVICE_URL: string;
   PAYMENT_SECRET_KEY: string;
   PAYMENT_TIMEOUT_S: number;

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
-import { useCocktails } from '../../api/cocktails';
+import { getAuthenticatedUser, useCocktails } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
 import { useConfig } from '../../providers/ConfigProvider';
 import { Cocktail } from '../../types/models';
@@ -19,10 +19,51 @@ const CocktailList: React.FC = () => {
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
   const [search, setSearch] = useState<string | null>(null);
   const [showOnlyVirginPossible, setShowOnlyVirginPossible] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !config.PAYMENT_ACTIVE || !config.PAYMENT_LOCK_SCREEN_NO_USER,
+  );
   const { t } = useTranslation();
+
+  // Poll for user authentication when payment locking is active
+  useEffect(() => {
+    if (!config.PAYMENT_ACTIVE || !config.PAYMENT_LOCK_SCREEN_NO_USER) {
+      return;
+    }
+
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+
+    const checkAuthentication = async () => {
+      const userAuth = await getAuthenticatedUser();
+      setIsAuthenticated(userAuth.is_authenticated);
+    };
+
+    // Initial check
+    checkAuthentication();
+
+    // Poll every 500ms when not authenticated
+    intervalId = setInterval(checkAuthentication, 500);
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [config.PAYMENT_ACTIVE, config.PAYMENT_LOCK_SCREEN_NO_USER]);
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
+
+  // Show NFC scan prompt when payment locking is active and user is not authenticated
+  if (config.PAYMENT_ACTIVE && config.PAYMENT_LOCK_SCREEN_NO_USER && !isAuthenticated) {
+    return (
+      <div className='centered max-w-7xl'>
+        <div className='flex flex-col items-center justify-center min-h-[60vh] gap-8 text-center'>
+          <h1 className='text-4xl font-bold text-primary'>{t('payment.scanToUnlock')}</h1>
+          <p className='text-xl text-neutral'>{t('payment.scanNFCToAccess')}</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleCloseModal = () => {
     setSelectedCocktail(null);

@@ -40,7 +40,9 @@
   },
   "payment": {
     "scanNFC": "Bitte scannen Sie Ihre NFC-Karte",
-    "holdCard": "Halten Sie Ihre NFC-Karte oder Ihren Tag an das Lesegerät, um die Zahlung abzuschließen"
+    "holdCard": "Halten Sie Ihre NFC-Karte oder Ihren Tag an das Lesegerät, um die Zahlung abzuschließen",
+    "scanToUnlock": "NFC-Karte zum Entsperren scannen",
+    "scanNFCToAccess": "Bitte scannen Sie Ihre NFC-Karte, um auf Cocktails zuzugreifen"
   },
   "ingredients": {
     "newIngredient": "Neue Zutat",
