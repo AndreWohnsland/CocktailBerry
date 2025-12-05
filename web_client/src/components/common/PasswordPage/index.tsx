@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { errorToast } from '../../utils';
-import Button from './Button';
-import TextHeader from './TextHeader';
-import TextInput from './TextInput';
+import { errorToast } from '../../../utils';
+import Button from '../Button';
+import TextHeader from '../TextHeader';
+import TextInput from '../TextInput';
 
-interface PasswordPageProps {
+export interface PasswordPageProps {
   passwordName: string;
   setAuthenticated: (password: number) => void;
   authMethod: (password: number) => Promise<{ message: string }>;
