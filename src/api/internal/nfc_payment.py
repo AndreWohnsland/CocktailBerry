@@ -77,7 +77,9 @@ class NFCPaymentHandler:
 
             # Payment successful, prepare cocktail
             time_print("Payment successful, starting cocktail preparation")
-            await asyncio.to_thread(maker.prepare_cocktail, cocktail)
+            result, message = await asyncio.to_thread(maker.prepare_cocktail, cocktail)
+            # The cocktail status is already set by prepare_cocktail
+            time_print(f"Cocktail preparation completed with result: {result}, message: {message}")
 
         except Exception as e:
             time_print(f"Error in payment flow: {e}")
