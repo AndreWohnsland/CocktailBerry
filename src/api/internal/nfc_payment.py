@@ -33,15 +33,13 @@ class NFCPaymentHandler:
 
         # Set up callback for NFC read
         payment_result: CocktailBooking | None = None
-        user_found: User | None = None
 
         def nfc_callback(user: User | None, nfc_id: str) -> None:
-            nonlocal payment_result, user_found
+            nonlocal payment_result
             time_print(f"NFC callback triggered with user: {user}, id: {nfc_id}")
             if user is None:
                 payment_result = CocktailBooking.no_user_logged_in()
                 return
-            user_found = user
             payment_result = self.nfc_service.book_cocktail_for_user(user, cocktail)
 
         self.nfc_service.add_callback(nfc_callback)
