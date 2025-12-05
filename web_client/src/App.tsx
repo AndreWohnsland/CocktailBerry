@@ -6,7 +6,7 @@ import { useIssues } from './api/options.ts';
 import AvailableBottles from './components/bottle/AvailableBottles.tsx';
 import BottleList from './components/bottle/BottleList.tsx';
 import CocktailList from './components/cocktail/CocktailList.tsx';
-import GettingConfiguration from './components/common/GettingConfiguration.tsx';
+import GettingConfiguration from './components/common/GettingConfiguration';
 import { MakerPasswordProtected, MasterPasswordProtected } from './components/common/ProtectedRoute.tsx';
 import Header from './components/Header.tsx';
 import IngredientList from './components/ingredient/IngredientList.tsx';

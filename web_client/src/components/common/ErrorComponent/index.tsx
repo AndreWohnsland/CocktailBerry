@@ -2,7 +2,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaExclamationTriangle } from 'react-icons/fa';
 
-const ErrorComponent: React.FC<{ text?: string }> = ({ text }) => {
+export interface ErrorComponentProps {
+  text?: string;
+}
+
+const ErrorComponent: React.FC<ErrorComponentProps> = ({ text }) => {
   const { t } = useTranslation();
   return (
     <div className='h-full w-full max-w-md flex items-center justify-center flex-col'>
