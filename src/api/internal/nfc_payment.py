@@ -14,7 +14,6 @@ class NFCPaymentHandler:
     """Handler for NFC payment operations."""
 
     def __init__(self) -> None:
-        self._payment_task: asyncio.Task[None] | None = None
         self._payment_cancelled = False
         self.nfc_service = NFCPaymentService()
 
