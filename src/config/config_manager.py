@@ -129,7 +129,7 @@ class ConfigManager:
     TEAM_API_URL: str = "http://127.0.0.1:8080"
     # Payment related configurations
     PAYMENT_ACTIVE: bool = False
-    PAYMENT_PRICE_ROUNDING: int = 1
+    PAYMENT_PRICE_ROUNDING: float = 0.25
     PAYMENT_SHOW_NOT_POSSIBLE: bool = True
     PAYMENT_LOCK_SCREEN_NO_USER: bool = True
     PAYMENT_VIRGIN_MULTIPLIER: int = 80
@@ -228,7 +228,9 @@ class ConfigManager:
             "TEAM_BUTTON_NAMES": ListType(StringType(), 2),
             "TEAM_API_URL": StringType(),
             "PAYMENT_ACTIVE": BoolType(check_name="Payment Active"),
-            "PAYMENT_PRICE_ROUNDING": IntType([build_number_limiter(0, 3)]),
+            "PAYMENT_PRICE_ROUNDING": FloatType(
+                [build_number_limiter(0, 5)], prefix="round up to", suffix="next multiple of"
+            ),
             "PAYMENT_VIRGIN_MULTIPLIER": IntType([build_number_limiter(0, 200)], suffix="%"),
             "PAYMENT_SHOW_NOT_POSSIBLE": BoolType(check_name="Show Not Possible Cocktails"),
             "PAYMENT_LOCK_SCREEN_NO_USER": BoolType(check_name="Lock Screen When No User"),

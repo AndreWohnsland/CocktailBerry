@@ -92,7 +92,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | Value Name                         | Description                                                    |
     | :--------------------------------- | :------------------------------------------------------------- |
     | `PAYMENT_ACTIVE`                   | Enable payment feature                                         |
-    | `PAYMENT_PRICE_ROUNDING`           | Number of decimal places to round up the cocktail price to     |
+    | `PAYMENT_PRICE_ROUNDING`           | Next multiple of this number to round up to                    |
     | `PAYMENT_SHOW_NOT_POSSIBLE`        | Show cocktails that are not possible to the user               |
     | `PAYMENT_LOCK_SCREEN_NO_USER`      | Lock the screen when no user is logged in                      |
     | `PAYMENT_VIRGIN_MULTIPLIER`        | Multiplier percentage to apply to virgin cocktail prices       |
