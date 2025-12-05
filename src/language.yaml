@@ -714,8 +714,8 @@ ui:
       en: 'Activate the payment function over NFC/RFID'
       de: 'Aktiviert die Zahlungsfunktion über NFC/RFID'
     PAYMENT_PRICE_ROUNDING:
-      en: 'Rounding for payment prices, round up to given digit, e.g. 1 will round 1.33 to 1.3, 0 will round 5.34 to 6.'
-      de: 'Rundung für Zahlungsbeträge, runde auf die nächste gegebene Kommastelle auf, z.B. 1 rundet 1,34 auf 1,3, 0 rundet 5,34 auf 6.'
+      en: 'Rounding for payment prices, round up to next multiple of number, e.g. 0.25 will round 3.60 to 3.75; 1.00 will round 3.33 to 4.00.'
+      de: 'Rundung für Zahlungsbeträge, runde auf das nächste Vielfache der Zahl auf, z.B. 0,25 rundet 3,60 auf 3,75; 1,00 rundet 3,33 auf 4,00.'
     PAYMENT_VIRGIN_MULTIPLIER:
       en: 'Multiplier percentage to apply to virgin cocktail prices'
       de: 'Multiplikator Prozentsatz, der auf Preise für alkoholfreie Cocktails angewendet wird'

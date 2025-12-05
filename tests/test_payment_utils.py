@@ -325,25 +325,46 @@ class TestFilterCocktailsVolumeConfig:
 class TestFilterCocktailsPriceRounding:
     """Tests for price rounding behavior."""
 
-    def test_price_rounding_zero_decimals(self, patch_cfg: PatchCfgType) -> None:
-        """Price rounding with 0 decimals should round up to nearest integer."""
+    def test_price_rounding_to_nearest_integer(self, patch_cfg: PatchCfgType) -> None:
+        """Price rounding with step 1 should round up to nearest integer."""
         # price = 3.33 / 100 * 300 = 9.99, rounded up to 10
         user = create_test_user(balance=10.0, can_get_alcohol=True)
         cocktails = [create_test_cocktail(price_per_100_ml=3.33, amount=300)]
-        with patch_cfg(PAYMENT_PRICE_ROUNDING=0):
+        with patch_cfg(PAYMENT_PRICE_ROUNDING=1):
             result = filter_cocktails_by_user(user, cocktails)
         assert len(result) == 1
         assert result[0].is_allowed is True
 
-    def test_price_rounding_two_decimals(self, patch_cfg: PatchCfgType) -> None:
-        """Price rounding with 2 decimals should round to nearest cent."""
-        # price = 3.333 / 100 * 300 = 9.999, rounded up to 10.00
-        user = create_test_user(balance=10.0, can_get_alcohol=True)
-        cocktails = [create_test_cocktail(price_per_100_ml=3.333, amount=300)]
-        with patch_cfg(PAYMENT_PRICE_ROUNDING=2):
+    def test_price_rounding_to_quarter(self, patch_cfg: PatchCfgType) -> None:
+        """Price rounding with step 0.25 should round up to nearest quarter."""
+        # price = 4.0 / 100 * 300 = 12.0, no rounding needed
+        # price = 4.1 / 100 * 300 = 12.3, rounded up to 12.5
+        user = create_test_user(balance=12.5, can_get_alcohol=True)
+        cocktails = [create_test_cocktail(price_per_100_ml=4.1, amount=300)]
+        with patch_cfg(PAYMENT_PRICE_ROUNDING=0.25):
             result = filter_cocktails_by_user(user, cocktails)
         assert len(result) == 1
         assert result[0].is_allowed is True
+
+    def test_price_rounding_to_half(self, patch_cfg: PatchCfgType) -> None:
+        """Price rounding with step 0.5 should round up to nearest half."""
+        # price = 2.9 / 100 * 300 = 8.7, rounded up to 9.0
+        user = create_test_user(balance=9.0, can_get_alcohol=True)
+        cocktails = [create_test_cocktail(price_per_100_ml=2.9, amount=300)]
+        with patch_cfg(PAYMENT_PRICE_ROUNDING=0.5):
+            result = filter_cocktails_by_user(user, cocktails)
+        assert len(result) == 1
+        assert result[0].is_allowed is True
+
+    def test_price_rounding_user_cannot_afford_rounded_price(self, patch_cfg: PatchCfgType) -> None:
+        """User cannot afford price after rounding up."""
+        # price = 2.9 / 100 * 300 = 8.7, rounded up to 9.0
+        user = create_test_user(balance=8.7, can_get_alcohol=True)
+        cocktails = [create_test_cocktail(price_per_100_ml=2.9, amount=300)]
+        with patch_cfg(PAYMENT_PRICE_ROUNDING=0.5):
+            result = filter_cocktails_by_user(user, cocktails)
+        assert len(result) == 1
+        assert result[0].is_allowed is False
 
 
 class TestFilterCocktailsEdgeCases:
