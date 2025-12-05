@@ -108,6 +108,10 @@ async def prepare_cocktail(
     if request.selected_team is not None:
         shared.selected_team = request.selected_team
         shared.team_member_name = request.team_member_name
+    if cfg.PAYMENT_ACTIVE:
+        print("TODO: Payment handling not yet implemented in API cocktail preparation")
+        # flow -> start background task for scanning, which then at some point (might) trigger cocktail preparation
+        # return CocktailStatus(status=PrepareResult.WAITING_FOR_NFC)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
