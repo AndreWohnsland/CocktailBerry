@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { getCocktailStatus, stopCocktail } from '../../api/cocktails';
+import NFCPaymentPrompt from './NFCPaymentPrompt';
 import TextHeader from '../common/TextHeader';
 
 interface ProgressModalProps {
@@ -48,7 +49,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         const cocktailStatus = await getCocktailStatus();
         setCurrentStatus(cocktailStatus.status);
         setCurrentProgress(cocktailStatus.progress);
-        if (cocktailStatus.status === 'IN_PROGRESS') {
+        if (cocktailStatus.status === 'IN_PROGRESS' || cocktailStatus.status === 'WAITING_FOR_NFC') {
           return;
         }
         cancelInterval();
@@ -65,6 +66,18 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       cancelInterval();
     };
   }, [isOpen, closeWindow]);
+
+  // Show NFC payment prompt when waiting for NFC
+  if (currentStatus === 'WAITING_FOR_NFC') {
+    return (
+      <NFCPaymentPrompt
+        isOpen={isOpen}
+        onRequestClose={onRequestClose}
+        displayName={displayName}
+        triggerOnClose={triggerOnClose}
+      />
+    );
+  }
 
   return (
     <Modal

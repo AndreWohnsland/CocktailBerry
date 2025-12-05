@@ -38,6 +38,10 @@
     "spend": "Ausgeben",
     "selectTeam": "Team Auswählen"
   },
+  "payment": {
+    "scanNFC": "Bitte scannen Sie Ihre NFC-Karte",
+    "holdCard": "Halten Sie Ihre NFC-Karte oder Ihren Tag an das Lesegerät, um die Zahlung abzuschließen"
+  },
   "ingredients": {
     "newIngredient": "Neue Zutat",
     "name": "Name",

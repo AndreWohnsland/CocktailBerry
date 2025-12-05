@@ -38,6 +38,10 @@
     "spend": "Spend",
     "selectTeam": "Select Team"
   },
+  "payment": {
+    "scanNFC": "Please Scan Your NFC Card",
+    "holdCard": "Hold your NFC card or tag near the reader to complete the payment"
+  },
   "ingredients": {
     "newIngredient": "New Ingredient",
     "name": "Name",
