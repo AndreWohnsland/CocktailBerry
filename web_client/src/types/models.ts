@@ -72,6 +72,7 @@ export type PrepareResult =
   | 'NOT_ENOUGH_INGREDIENTS'
   | 'COCKTAIL_NOT_FOUND'
   | 'ADDON_ERROR'
+  | 'WAITING_FOR_NFC'
   | 'UNDEFINED';
 
 export interface CocktailStatus {
@@ -140,8 +141,10 @@ export interface DefinedConfigData {
   PAYMENT_PRICE_ROUNDING: number;
   PAYMENT_VIRGIN_MULTIPLIER: number;
   PAYMENT_SHOW_NOT_POSSIBLE: boolean;
+PAYMENT_LOCK_SCREEN_NO_USER: boolean;
   PAYMENT_SERVICE_URL: string;
   PAYMENT_SECRET_KEY: string;
+PAYMENT_TIMEOUT_S: number;
   PAYMENT_AUTO_LOGOUT_TIME_S: number;
   CUSTOM_COLOR_PRIMARY: string;
   CUSTOM_COLOR_SECONDARY: string;
