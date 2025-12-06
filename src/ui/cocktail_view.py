@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSize, Qt, QTimer, pyqtSignal
+from PyQt5.QtCore import QSize, Qt, pyqtSignal
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFrame, QGridLayout, QSizePolicy, QVBoxLayout, QWidget
 
@@ -131,7 +131,6 @@ class CocktailView(QWidget):
         self.mainscreen = mainscreen
 
         self._last_known_user: User | None = None
-        self._auto_logout_timer: QTimer | None = None
 
         self.user_changed.connect(self.react_on_user_change)
         self.destroyed.connect(NFCPaymentService().clear_callback)
@@ -143,30 +142,9 @@ class CocktailView(QWidget):
     def react_on_user_change(self, user: User | None, uid: str) -> None:
         """Implement user change handling (runs on main thread)."""
         if user == self._last_known_user:
-            time_print("NFC user state unchanged.")
+            time_print("NFC user state unchanged, skipping re-render.")
             return
         self._last_known_user = user
-
-        # Cancel existing auto-logout timer if any
-        if self._auto_logout_timer is not None:
-            self._auto_logout_timer.stop()
-            self._auto_logout_timer = None
-
-        # Start auto-logout timer if user is logged in
-        if user is not None and cfg.PAYMENT_AUTO_LOGOUT_TIME_S > 0:
-            time_print("Starting auto-logout timer.")
-            self._auto_logout_timer = QTimer(self)
-            self._auto_logout_timer.setSingleShot(True)
-            self._auto_logout_timer.timeout.connect(self.logout_user)
-            self._auto_logout_timer.start(cfg.PAYMENT_AUTO_LOGOUT_TIME_S * 1000)  # Convert to milliseconds
-
-        self._render_view()
-        self.mainscreen.switch_to_cocktail_list()
-
-    def logout_user(self) -> None:
-        """Handle auto-logout when timer expires."""
-        time_print("Auto-logout timer expired.")
-        self._last_known_user = None
         self._render_view()
         self.mainscreen.switch_to_cocktail_list()
 

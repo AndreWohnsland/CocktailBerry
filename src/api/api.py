@@ -23,6 +23,7 @@ from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FO
 from src.machine.controller import MachineController
 from src.migration.setup_web import download_latest_web_client
 from src.programs.addons import ADDONS, CouldNotInstallAddonError
+from src.programs.nfc_payment_service import NFCPaymentService
 from src.resource_stats import start_resource_tracker
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.updater import Updater
@@ -57,6 +58,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
             updater = Updater()
             updater.update()
     ADDONS.start_trigger_loop()
+    if cfg.PAYMENT_ACTIVE:
+        NFCPaymentService().start_continuous_sensing()
     yield
     mc.cleanup()
 
