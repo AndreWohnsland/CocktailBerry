@@ -321,20 +321,8 @@ async def websocket_payment_user(
     payment_handler = get_nfc_payment_handler()
     DBC = DatabaseCommander()
 
-    # Track previous user to detect changes
-    prev_user_uid: str | None = None
-
     async def send_user_update(user: User | None, _nfc_id: str) -> None:
         """Send user and filtered cocktails to websocket."""
-        nonlocal prev_user_uid
-
-        # Prevent duplicate sends for the same user UID
-        current_uid = user.uid if user else None
-        if current_uid == prev_user_uid:
-            return
-
-        prev_user_uid = current_uid
-
         try:
             # Get all possible cocktails
             cocktails = DBC.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
@@ -346,16 +334,18 @@ async def websocket_payment_user(
             mapped_cocktails = [map_cocktail(c, True) for c in filtered_cocktails]
             mapped_cocktails = [c for c in mapped_cocktails if c is not None]
 
-            # Prepare user data
-            user_data = PaymentUserData(
-                uid=user.uid if user else None,
-                balance=user.balance if user else None,
-                can_get_alcohol=user.can_get_alcohol if user else None,
-            )
+            # Prepare user data - null if no user
+            user_data = None
+            if user:
+                user_data = PaymentUserData(
+                    uid=user.uid,
+                    balance=user.balance,
+                    can_get_alcohol=user.can_get_alcohol,
+                )
 
             # Send combined data
             await websocket.send_json({
-                "user": user_data.model_dump(),
+                "user": user_data.model_dump() if user_data else None,
                 "cocktails": [c.model_dump() for c in mapped_cocktails],
             })
         except Exception as e:

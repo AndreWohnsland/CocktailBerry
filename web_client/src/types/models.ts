@@ -278,6 +278,6 @@ export interface PaymentUserData {
 }
 
 export interface PaymentUserUpdate {
-  user: PaymentUserData;
+  user: PaymentUserData | null;
   cocktails: Cocktail[];
 }
