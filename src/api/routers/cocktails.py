@@ -328,7 +328,7 @@ async def websocket_payment_user(
         """Send user and filtered cocktails to websocket."""
         nonlocal prev_user_uid
 
-        # Only send if user actually changed
+        # Prevent duplicate sends for the same user UID
         current_uid = user.uid if user else None
         if current_uid == prev_user_uid:
             return
