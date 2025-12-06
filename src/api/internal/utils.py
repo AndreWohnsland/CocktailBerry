@@ -34,6 +34,7 @@ def map_cocktail(cocktail: Optional[DBCocktail], scale: bool = True) -> Optional
         enabled=cocktail.enabled,
         virgin_available=cocktail.virgin_available,
         only_virgin=cocktail.only_virgin,
+        is_allowed=getattr(cocktail, 'is_allowed', True),
         # ingredient hand is if it is currently not on a bottle
         ingredients=[
             CocktailIngredient(

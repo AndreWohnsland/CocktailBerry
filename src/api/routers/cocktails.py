@@ -1,7 +1,7 @@
 import asyncio
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile, WebSocket
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile, WebSocket, WebSocketDisconnect
 
 from src.api.internal.nfc_payment import NFCPaymentHandler, get_nfc_payment_handler
 from src.api.internal.utils import (
@@ -20,6 +20,7 @@ from src.api.models import (
     CocktailsAndIngredients,
     CocktailStatus,
     ErrorDetail,
+    PaymentUserData,
     PrepareCocktailRequest,
 )
 from src.config.config_manager import CONFIG as cfg
@@ -30,6 +31,8 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
 from src.models import Cocktail as DbCocktail
 from src.models import PrepareResult
+from src.payment_utils import filter_cocktails_by_user
+from src.programs.nfc_payment_service import User
 from src.tabs import maker
 from src.utils import time_print
 
@@ -52,11 +55,28 @@ protected_recipes_router = APIRouter(
 
 
 @router.get("", summary="Get all cocktails, limited to possible cocktails by default")
-async def get_cocktails(only_possible: bool = True, max_hand_add: int = 3, scale: bool = True) -> list[Cocktail]:
+async def get_cocktails(
+    only_possible: bool = True,
+    max_hand_add: int = 3,
+    scale: bool = True,
+    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)] | None = None,
+) -> list[Cocktail]:
     DBC = DatabaseCommander()
     cocktails = DBC.get_possible_cocktails(max_hand_add) if only_possible else DBC.get_all_cocktails()
-    mapped_cocktails = [map_cocktail(c, scale) for c in cocktails]
-    return [c for c in mapped_cocktails if c is not None]
+    mapped_cocktails = [map_cocktail(c, scale) for c in cocktails if map_cocktail(c, scale) is not None]
+    
+    # Apply payment filtering if payment is active
+    if cfg.PAYMENT_ACTIVE and payment_handler is not None:
+        user = payment_handler.get_current_user()
+        # Convert API Cocktail models back to DB Cocktail models for filtering
+        db_cocktails = [DBC.get_cocktail(c.id) for c in mapped_cocktails]
+        db_cocktails = [c for c in db_cocktails if c is not None]
+        filtered_cocktails = filter_cocktails_by_user(user, db_cocktails)
+        # Map filtered cocktails back to API models
+        mapped_filtered = [map_cocktail(c, scale) for c in filtered_cocktails]
+        return [c for c in mapped_filtered if c is not None]
+    
+    return mapped_cocktails
 
 
 @router.get("/{cocktail_id:int}", summary="Get a cocktail by ID")
@@ -270,3 +290,91 @@ async def calculate_optimal_ingredient_selection(
         ingredients=[map_ingredient(i) for i in ingredients],
         cocktails=[map_cocktail(c, False) for c in cocktails],
     )
+
+
+@router.websocket("/ws/payment/user")
+async def websocket_payment_user(
+    websocket: WebSocket,
+) -> None:
+    """WebSocket endpoint for user changes in payment system.
+    
+    Pushes user data and filtered cocktails when user changes.
+    Only pushes data if payment is active.
+    """
+    await websocket.accept()
+    
+    if not cfg.PAYMENT_ACTIVE:
+        await websocket.close()
+        return
+    
+    payment_handler = get_nfc_payment_handler()
+    DBC = DatabaseCommander()
+    
+    # Track previous user to detect changes
+    prev_user_uid: str | None = None
+    
+    async def send_user_update(user: User | None, _nfc_id: str) -> None:
+        """Send user and filtered cocktails to websocket."""
+        nonlocal prev_user_uid
+        
+        # Only send if user actually changed
+        current_uid = user.uid if user else None
+        if current_uid == prev_user_uid:
+            return
+        
+        prev_user_uid = current_uid
+        
+        try:
+            # Get all possible cocktails
+            cocktails = DBC.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
+            
+            # Filter by user
+            filtered_cocktails = filter_cocktails_by_user(user, cocktails)
+            
+            # Map to API models
+            mapped_cocktails = [map_cocktail(c, True) for c in filtered_cocktails]
+            mapped_cocktails = [c for c in mapped_cocktails if c is not None]
+            
+            # Prepare user data
+            user_data = PaymentUserData(
+                uid=user.uid if user else None,
+                balance=user.balance if user else None,
+                can_get_alcohol=user.can_get_alcohol if user else None,
+            )
+            
+            # Send combined data
+            await websocket.send_json({
+                "user": user_data.model_dump(),
+                "cocktails": [c.model_dump() for c in mapped_cocktails],
+            })
+        except Exception as e:
+            time_print(f"Error sending user update via websocket: {e}")
+    
+    # Register callback with NFC service
+    callback_name = f"websocket_{id(websocket)}"
+    
+    def nfc_callback(user: User | None, nfc_id: str) -> None:
+        """Wrapper to schedule async send_user_update."""
+        asyncio.create_task(send_user_update(user, nfc_id))
+    
+    payment_handler.nfc_service.add_callback(callback_name, nfc_callback)
+    
+    # Send initial state
+    current_user = payment_handler.get_current_user()
+    await send_user_update(current_user, current_user.uid if current_user else "")
+    
+    try:
+        # Keep connection alive and listen for close
+        while True:
+            try:
+                await websocket.receive_text()
+            except WebSocketDisconnect:
+                break
+    finally:
+        # Clean up callback when websocket closes
+        payment_handler.nfc_service.remove_callback(callback_name)
+        try:
+            await websocket.close()
+        except Exception:
+            pass
+

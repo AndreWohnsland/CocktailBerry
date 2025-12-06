@@ -99,7 +99,7 @@ class NFCPaymentService:
             cls.uid: str | None = None
             cls.user: User | None = None
             cls.rfid_reader = RFIDReader()
-            cls._user_callback: Callable[[User | None, str], None] | None = None
+            cls._user_callbacks: dict[str, Callable[[User | None, str], None]] = {}
             cls._is_polling: bool = False
             cls._auto_logout_timer: Timer | None = None
             cls.user_db: dict[str, User] = {
@@ -135,8 +135,8 @@ class NFCPaymentService:
         self._auto_logout_timer = None
         self.user = None
         self.uid = None
-        if self._user_callback is not None:
-            self._user_callback(None, "")
+        for callback in self._user_callbacks.values():
+            callback(None, "")
 
     def start_continuous_sensing(self) -> None:
         """Start continuous NFC sensing in the background.
@@ -147,13 +147,26 @@ class NFCPaymentService:
         time_print("Starting continuous NFC sensing for NFCPaymentService.")
         self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
 
-    def add_callback(self, callback: Callable[[User | None, str], None]) -> None:
-        """Add a callback to be invoked when a user is detected."""
-        self._user_callback = callback
+    def add_callback(self, name: str, callback: Callable[[User | None, str], None]) -> None:
+        """Add a named callback to be invoked when a user is detected.
 
-    def clear_callback(self) -> None:
-        """Remove the current user callback."""
-        self._user_callback = None
+        Args:
+            name: Unique name for the callback, used for removal
+            callback: Function to call with (User | None, nfc_id)
+        """
+        self._user_callbacks[name] = callback
+
+    def remove_callback(self, name: str) -> None:
+        """Remove a specific callback by name.
+
+        Args:
+            name: Name of the callback to remove
+        """
+        self._user_callbacks.pop(name, None)
+
+    def remove_all_callbacks(self) -> None:
+        """Remove all registered callbacks."""
+        self._user_callbacks.clear()
 
     def get_user_for_id(self, nfc_id: str) -> User | None:
         """Get the user associated with the given NFC ID."""
@@ -163,6 +176,7 @@ class NFCPaymentService:
     def _handle_nfc_read(self, _: str, _id: str) -> None:
         """Handle NFC read events."""
         time_print(f"NFC ID read: {_id}")
+        prev_user = self.user
         self.user = self.get_user_for_id(_id)
         self._cancel_auto_logout_timer()
 
@@ -174,8 +188,11 @@ class NFCPaymentService:
             self.uid = _id
 
         self._start_auto_logout_timer()
-        if self._user_callback is not None:
-            self._user_callback(self.user, _id)
+        
+        # Only trigger callbacks if user actually changed
+        if prev_user != self.user or (prev_user is None and self.user is None and _id):
+            for callback in self._user_callbacks.values():
+                callback(self.user, _id)
 
     def book_cocktail_for_user(self, user: User | None, cocktail: Cocktail) -> CocktailBooking:
         """Book a cocktail for the given user if they have enough balance."""

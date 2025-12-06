@@ -49,6 +49,7 @@ class Cocktail(BaseModel):
     enabled: bool
     virgin_available: bool
     only_virgin: bool
+    is_allowed: bool = True
     ingredients: list[CocktailIngredient]
     image: str
     default_image: str
@@ -131,3 +132,9 @@ class ApiMessage(BaseModel):
 class ApiMessageWithData(BaseModel, Generic[T]):
     message: str
     data: T
+
+
+class PaymentUserData(BaseModel):
+    uid: str | None
+    balance: float | None
+    can_get_alcohol: bool | None

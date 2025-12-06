@@ -37,7 +37,7 @@ class NFCPaymentHandler:
             time_print(f"NFC callback triggered with user: {user}, id: {nfc_id}")
             booking = self.nfc_service.book_cocktail_for_user(user, cocktail)
 
-        self.nfc_service.add_callback(nfc_callback)
+        self.nfc_service.add_callback("payment_flow", nfc_callback)
 
         timeout = cfg.PAYMENT_TIMEOUT_S
         elapsed = 0.0
@@ -52,7 +52,7 @@ class NFCPaymentHandler:
                 await asyncio.sleep(check_interval)
                 elapsed += check_interval
 
-            self.nfc_service.clear_callback()
+            self.nfc_service.remove_callback("payment_flow")
 
             if self._payment_cancelled:
                 booking = CocktailBooking.canceled()
@@ -75,13 +75,13 @@ class NFCPaymentHandler:
             shared.cocktail_status.status = PrepareResult.CANCELED
             shared.cocktail_status.message = f"Payment error: {e!s}"
         finally:
-            self.nfc_service.clear_callback()
+            self.nfc_service.remove_callback("payment_flow")
 
     def cancel_payment(self) -> CocktailBooking:
         """Cancel the ongoing payment flow."""
         time_print("Cancelling NFC payment flow")
         self._payment_cancelled = True
-        self.nfc_service.clear_callback()
+        self.nfc_service.remove_callback("payment_flow")
         return CocktailBooking.canceled()
 
     def get_current_user(self) -> User | None:

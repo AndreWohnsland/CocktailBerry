@@ -17,6 +17,7 @@ export interface Cocktail {
   enabled: boolean;
   virgin_available: boolean;
   only_virgin: boolean;
+  is_allowed: boolean;
   ingredients: CocktailIngredient[];
   image: string;
   default_image: string;
@@ -268,4 +269,15 @@ export interface ResourceStats {
   samples: number;
   raw_cpu: number[];
   raw_ram: number[];
+}
+
+export interface PaymentUserData {
+  uid: string | null;
+  balance: number | null;
+  can_get_alcohol: boolean | null;
+}
+
+export interface PaymentUserUpdate {
+  user: PaymentUserData;
+  cocktails: Cocktail[];
 }
