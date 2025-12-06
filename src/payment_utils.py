@@ -11,7 +11,7 @@ def filter_cocktails_by_user(user: User | None, cocktails: list[Cocktail]) -> li
     if user is None:
         return cocktails
     filtered = []
-    lowest_amount = cfg.MAKER_PREPARE_VOLUME[0] if cfg.MAKER_PREPARE_VOLUME else None
+    lowest_amount = min(cfg.MAKER_PREPARE_VOLUME) if cfg.MAKER_PREPARE_VOLUME else None
     for cocktail in cocktails:
         cocktail_amount = cocktail.amount
         if not cfg.MAKER_USE_RECIPE_VOLUME and lowest_amount is not None:
