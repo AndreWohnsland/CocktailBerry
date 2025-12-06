@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import StrEnum
+from threading import Timer
 
 from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import DIALOG_HANDLER as DH
@@ -96,9 +97,11 @@ class NFCPaymentService:
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
             cls.uid: str | None = None
+            cls.user: User | None = None
             cls.rfid_reader = RFIDReader()
             cls._user_callback: Callable[[User | None, str], None] | None = None
             cls._is_polling: bool = False
+            cls._auto_logout_timer: Timer | None = None
             cls.user_db: dict[str, User] = {
                 "CAD3B515": User(uid="CAD3B515", balance=5.0, can_get_alcohol=False),
                 "33DFE41D": User(uid="33DFE41D", balance=10.0, can_get_alcohol=True),
@@ -106,7 +109,34 @@ class NFCPaymentService:
         return cls._instance
 
     def __del__(self) -> None:
+        self._cancel_auto_logout_timer()
         self.rfid_reader.cancel_reading()
+
+    def _cancel_auto_logout_timer(self) -> None:
+        """Cancel the auto-logout timer if it exists."""
+        if self._auto_logout_timer is not None:
+            time_print("Cancelling auto-logout timer.")
+            self._auto_logout_timer.cancel()
+            self._auto_logout_timer = None
+
+    def _start_auto_logout_timer(self) -> None:
+        """Start the auto-logout timer if configured."""
+        if cfg.PAYMENT_AUTO_LOGOUT_TIME_S > 0:
+            time_print("Starting auto-logout timer.")
+            self._auto_logout_timer = Timer(cfg.PAYMENT_AUTO_LOGOUT_TIME_S, self.logout_user)
+            self._auto_logout_timer.daemon = True
+            self._auto_logout_timer.start()
+
+    def logout_user(self) -> None:
+        """Handle auto-logout when timer expires."""
+        time_print("Logging out the current user.")
+        if self._auto_logout_timer is not None:
+            self._auto_logout_timer.cancel()
+        self._auto_logout_timer = None
+        self.user = None
+        self.uid = None
+        if self._user_callback is not None:
+            self._user_callback(None, "")
 
     def start_continuous_sensing(self) -> None:
         """Start continuous NFC sensing in the background.
@@ -133,16 +163,19 @@ class NFCPaymentService:
     def _handle_nfc_read(self, _: str, _id: str) -> None:
         """Handle NFC read events."""
         time_print(f"NFC ID read: {_id}")
-        user = self.get_user_for_id(_id)
-        if user is None:
+        self.user = self.get_user_for_id(_id)
+        self._cancel_auto_logout_timer()
+
+        if self.user is None:
             time_print("No user found for this NFC ID.")
             self.uid = None
         else:
             time_print(f"User found: for NFC ID: {_id}")
             self.uid = _id
 
+        self._start_auto_logout_timer()
         if self._user_callback is not None:
-            self._user_callback(user, _id)
+            self._user_callback(self.user, _id)
 
     def book_cocktail_for_user(self, user: User | None, cocktail: Cocktail) -> CocktailBooking:
         """Book a cocktail for the given user if they have enough balance."""

@@ -64,7 +64,7 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
     global_shared.alcohol_factor = 1.0
     w.switch_to_cocktail_list()
     if cfg.PAYMENT_LOGOUT_AFTER_PREPARATION:
-        w.cocktail_view.logout_user()
+        NFCPaymentService().logout_user()
     return True, message
 
 

@@ -57,6 +57,10 @@ TAGS_METADATA = [
         "description": "Options for the machine.",
     },
     {
+        "name": "payment",
+        "description": "Operation related to the payment service.",
+    },
+    {
         "name": "maker protected",
         "description": "Need x-maker-key header with the maker password, if this section is set to protected and password is set.",  # noqa: E501
     },

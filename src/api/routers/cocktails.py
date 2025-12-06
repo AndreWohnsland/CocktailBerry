@@ -3,6 +3,7 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile, WebSocket
 
+from src.api.internal.nfc_payment import NFCPaymentHandler, get_nfc_payment_handler
 from src.api.internal.utils import (
     calculate_cocktail_volume_and_concentration,
     map_cocktail,
@@ -85,6 +86,7 @@ async def prepare_cocktail(
     cocktail_id: int,
     request: PrepareCocktailRequest,
     background_tasks: BackgroundTasks,
+    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)],
 ) -> CocktailStatus:
     DBC = DatabaseCommander()
     factor = request.alcohol_factor if not request.is_virgin else 0
@@ -109,9 +111,9 @@ async def prepare_cocktail(
         shared.selected_team = request.selected_team
         shared.team_member_name = request.team_member_name
     if cfg.PAYMENT_ACTIVE:
-        print("TODO: Payment handling not yet implemented in API cocktail preparation")
-        # flow -> start background task for scanning, which then at some point (might) trigger cocktail preparation
-        # return CocktailStatus(status=PrepareResult.WAITING_FOR_NFC)
+        # Start payment flow - NFC scanning will happen first, then cocktail preparation
+        background_tasks.add_task(payment_handler.start_payment_flow, cocktail)
+        return CocktailStatus(status=PrepareResult.WAITING_FOR_NFC)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
@@ -146,6 +148,21 @@ async def stop_cocktail() -> ApiMessage:
     shared.cocktail_status.status = PrepareResult.CANCELED
     time_print("Canceling the cocktail!")
     return ApiMessage(message=DH.get_translation("preparation_cancelled"))
+
+
+@protected_maker_router.post(
+    "/prepare/payment/cancel",
+    tags=["preparation", "payment"],
+    summary="Cancel the current payment flow",
+)
+async def cancel_payment(
+    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)],
+) -> ApiMessage:
+    booking = payment_handler.cancel_payment()
+    shared.cocktail_status.status = PrepareResult.CANCELED
+    shared.cocktail_status.message = booking.message
+    time_print("Canceling the payment!")
+    return ApiMessage(message=DH.get_translation("payment_canceled"))
 
 
 @protected_recipes_router.post("", summary="Create a new cocktail", dependencies=[not_on_demo])
