@@ -9,10 +9,14 @@ export const usePaymentWebSocket = (enabled: boolean) => {
 
   useEffect(() => {
     if (!enabled) {
+      // Reset state when disabled - this runs as a side effect, not during render
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(null);
+       
       setCocktails([]);
+       
       setIsConnected(false);
-      return;
+      return undefined;
     }
 
     // Create WebSocket URL (convert http to ws)

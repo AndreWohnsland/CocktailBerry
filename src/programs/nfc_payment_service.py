@@ -153,6 +153,7 @@ class NFCPaymentService:
         Args:
             name: Unique name for the callback, used for removal
             callback: Function to call with (User | None, nfc_id)
+
         """
         self._user_callbacks[name] = callback
 
@@ -161,6 +162,7 @@ class NFCPaymentService:
 
         Args:
             name: Name of the callback to remove
+
         """
         self._user_callbacks.pop(name, None)
 
@@ -188,7 +190,7 @@ class NFCPaymentService:
             self.uid = _id
 
         self._start_auto_logout_timer()
-        
+
         # Only trigger callbacks if user actually changed
         if prev_user != self.user or (prev_user is None and self.user is None and _id):
             for callback in self._user_callbacks.values():
