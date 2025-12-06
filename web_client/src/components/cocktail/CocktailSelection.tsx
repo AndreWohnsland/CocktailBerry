@@ -135,9 +135,14 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
 
   const calculateDisplayPrice = (amount: number, pricePer100: number): string => {
     if (!config.PAYMENT_ACTIVE) return '';
-    const multiplier = 10 ** config.PAYMENT_PRICE_ROUNDING;
-    const price = Math.ceil(((amount * pricePer100) / 100) * multiplier) / multiplier;
-    return `: ${price}€`;
+    const virginMultiplier = alcohol === 'virgin' ? config.PAYMENT_VIRGIN_MULTIPLIER / 100 : 1;
+    const rawPrice = ((amount * pricePer100) / 100) * virginMultiplier;
+    const roundTo = config.PAYMENT_PRICE_ROUNDING;
+    const price = roundTo > 0 ? Math.ceil(rawPrice / roundTo) * roundTo : rawPrice;
+    // Determine decimal places from roundTo
+    const decimalPlaces = (roundTo.toString().split('.')[1] || '').length;
+    const formatted = price.toFixed(decimalPlaces).replace(/\.?0+$/, '');
+    return `: ${formatted}€`;
   };
 
   return (
