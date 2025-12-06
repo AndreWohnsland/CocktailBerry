@@ -321,6 +321,20 @@ class TestFilterCocktailsVolumeConfig:
         assert len(result) == 1
         assert result[0].is_allowed is True
 
+    def test_unordered_prepare_volume_uses_smallest(self, patch_cfg: PatchCfgType) -> None:
+        """When MAKER_PREPARE_VOLUME is unordered, should still use smallest volume."""
+        # With smallest volume 200: price = 5.0 / 100 * 200 = 10.0
+        # With first element 300: price = 5.0 / 100 * 300 = 15.0
+        # User balance 10.0 should only afford the 200ml price
+        user = create_test_user(balance=10.0, can_get_alcohol=True)
+        cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=400)]
+        # MAKER_PREPARE_VOLUME is unordered with 300 as first element
+        with patch_cfg(MAKER_USE_RECIPE_VOLUME=False, MAKER_PREPARE_VOLUME=[300, 200]):
+            result = filter_cocktails_by_user(user, cocktails)
+        assert len(result) == 1
+        # Should be allowed because smallest volume (200) gives price 10.0 == balance
+        assert result[0].is_allowed is True
+
 
 class TestFilterCocktailsPriceRounding:
     """Tests for price rounding behavior."""
