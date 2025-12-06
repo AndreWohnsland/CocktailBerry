@@ -73,6 +73,15 @@ export const stopCocktail = async (): Promise<void> => {
     });
 };
 
+export const cancelPayment = async (): Promise<void> => {
+  return axiosInstance
+    .post<void>(`${cocktail_url}/prepare/payment/cancel`)
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error('Error cancelling payment:', error);
+    });
+};
+
 export const deleteCocktail = async (id: number): Promise<{ message: string }> => {
   return axiosInstance.delete<{ message: string }>(`${cocktail_url}/${id}`).then((res) => res.data);
 };

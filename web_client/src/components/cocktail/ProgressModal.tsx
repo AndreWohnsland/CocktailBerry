@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { getCocktailStatus, stopCocktail } from '../../api/cocktails';
+import { useConfig } from '../../providers/ConfigProvider';
 import TextHeader from '../common/TextHeader';
+import NFCPaymentPrompt from './NFCPaymentPrompt';
 
 interface ProgressModalProps {
   isOpen: boolean;
@@ -19,8 +21,9 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
   displayName,
   triggerOnClose,
 }) => {
+  const { config } = useConfig();
   const [currentProgress, setCurrentProgress] = useState(progress);
-  const [currentStatus, setCurrentStatus] = useState<string>('IN_PROGRESS');
+  const [currentStatus, setCurrentStatus] = useState<string>(config.PAYMENT_ACTIVE ? 'WAITING_FOR_NFC' : 'IN_PROGRESS');
   const [message, setMessage] = useState<string | null>(null);
   const { t } = useTranslation();
 
@@ -48,7 +51,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         const cocktailStatus = await getCocktailStatus();
         setCurrentStatus(cocktailStatus.status);
         setCurrentProgress(cocktailStatus.progress);
-        if (cocktailStatus.status === 'IN_PROGRESS') {
+        if (cocktailStatus.status === 'IN_PROGRESS' || cocktailStatus.status === 'WAITING_FOR_NFC') {
           return;
         }
         cancelInterval();
@@ -65,6 +68,17 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       cancelInterval();
     };
   }, [isOpen, closeWindow]);
+
+  if (currentStatus === 'WAITING_FOR_NFC') {
+    return (
+      <NFCPaymentPrompt
+        isOpen={isOpen}
+        onRequestClose={onRequestClose}
+        displayName={displayName}
+        triggerOnClose={triggerOnClose}
+      />
+    );
+  }
 
   return (
     <Modal
