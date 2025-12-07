@@ -158,13 +158,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self.cocktail_selection is None:
             return
         if cfg.PAYMENT_ACTIVE:
-            NFCPaymentService().clear_callback()
+            NFCPaymentService().remove_callback("cocktail_list")
         self.container_maker.setCurrentWidget(self.cocktail_selection)
 
     def switch_to_cocktail_list(self) -> None:
         self.container_maker.setCurrentWidget(self.cocktail_view)
         if cfg.PAYMENT_ACTIVE:
-            NFCPaymentService().add_callback(self.cocktail_view.emit_user_change)
+            NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
 
     def open_numpad(
         self,

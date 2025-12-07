@@ -133,7 +133,7 @@ class CocktailView(QWidget):
         self._last_known_user: User | None = None
 
         self.user_changed.connect(self.react_on_user_change)
-        self.destroyed.connect(NFCPaymentService().clear_callback)
+        self.destroyed.connect(lambda _: NFCPaymentService().remove_callback("cocktail_list"))
 
     def emit_user_change(self, user: User | None, uid: str) -> None:
         """Emit user change signal (thread-safe) for pyqt."""
@@ -175,7 +175,7 @@ class CocktailView(QWidget):
         """
         self._render_view()
         if cfg.PAYMENT_ACTIVE:
-            NFCPaymentService().add_callback(self.emit_user_change)
+            NFCPaymentService().add_callback("cocktail_list", self.emit_user_change)
 
     def _populate_cocktails_grid(self) -> None:
         """Populate the cocktails grid (internal method)."""
