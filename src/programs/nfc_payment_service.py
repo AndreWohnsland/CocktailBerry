@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from enum import StrEnum
 from threading import Timer
 
+from pydantic.dataclasses import dataclass as api_dataclass
+
 from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.rfid import RFIDReader
@@ -10,7 +12,7 @@ from src.models import Cocktail
 from src.utils import time_print
 
 
-@dataclass
+@api_dataclass
 class User:
     uid: str
     balance: float
@@ -99,7 +101,7 @@ class NFCPaymentService:
             cls.uid: str | None = None
             cls.user: User | None = None
             cls.rfid_reader = RFIDReader()
-            cls._user_callback: Callable[[User | None, str], None] | None = None
+            cls._user_callbacks: dict[str, Callable[[User | None, str], None]] = {}
             cls._is_polling: bool = False
             cls._auto_logout_timer: Timer | None = None
             cls.user_db: dict[str, User] = {
@@ -111,6 +113,11 @@ class NFCPaymentService:
     def __del__(self) -> None:
         self._cancel_auto_logout_timer()
         self.rfid_reader.cancel_reading()
+
+    def _run_callbacks(self, user: User | None, nfc_id: str) -> None:
+        """Run all registered user callbacks."""
+        for callback in self._user_callbacks.values():
+            callback(user, nfc_id)
 
     def _cancel_auto_logout_timer(self) -> None:
         """Cancel the auto-logout timer if it exists."""
@@ -135,8 +142,7 @@ class NFCPaymentService:
         self._auto_logout_timer = None
         self.user = None
         self.uid = None
-        if self._user_callback is not None:
-            self._user_callback(None, "")
+        self._run_callbacks(None, "")
 
     def start_continuous_sensing(self) -> None:
         """Start continuous NFC sensing in the background.
@@ -147,13 +153,17 @@ class NFCPaymentService:
         time_print("Starting continuous NFC sensing for NFCPaymentService.")
         self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
 
-    def add_callback(self, callback: Callable[[User | None, str], None]) -> None:
-        """Add a callback to be invoked when a user is detected."""
-        self._user_callback = callback
+    def add_callback(self, name: str, callback: Callable[[User | None, str], None]) -> None:
+        """Add a named callback to be invoked when a user is detected."""
+        self._user_callbacks[name] = callback
 
-    def clear_callback(self) -> None:
-        """Remove the current user callback."""
-        self._user_callback = None
+    def remove_callback(self, name: str) -> None:
+        """Remove a specific callback by name."""
+        self._user_callbacks.pop(name, None)
+
+    def remove_all_callbacks(self) -> None:
+        """Remove all registered callbacks."""
+        self._user_callbacks.clear()
 
     def get_user_for_id(self, nfc_id: str) -> User | None:
         """Get the user associated with the given NFC ID."""
@@ -174,8 +184,7 @@ class NFCPaymentService:
             self.uid = _id
 
         self._start_auto_logout_timer()
-        if self._user_callback is not None:
-            self._user_callback(self.user, _id)
+        self._run_callbacks(self.user, _id)
 
     def book_cocktail_for_user(self, user: User | None, cocktail: Cocktail) -> CocktailBooking:
         """Book a cocktail for the given user if they have enough balance."""
