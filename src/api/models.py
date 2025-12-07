@@ -47,6 +47,7 @@ class Cocktail(BaseModel):
     amount: int
     price_per_100_ml: float
     enabled: bool
+    is_allowed: bool
     virgin_available: bool
     only_virgin: bool
     ingredients: list[CocktailIngredient]
