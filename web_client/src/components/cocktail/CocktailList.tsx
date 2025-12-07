@@ -4,12 +4,14 @@ import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
 import { useCocktails } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
+import { usePaymentWebSocket } from '../../api/payment';
 import { useConfig } from '../../providers/ConfigProvider';
 import { Cocktail } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import SearchBar from '../common/SearchBar';
 import CocktailSelection from './CocktailSelection';
+import PaymentLockScreen from './PaymentLockScreen';
 import SingleIngredientSelection from './SingleIngredientSelection';
 
 const CocktailList: React.FC = () => {
@@ -21,14 +23,24 @@ const CocktailList: React.FC = () => {
   const [showOnlyVirginPossible, setShowOnlyVirginPossible] = useState(false);
   const { t } = useTranslation();
 
+  // Use payment websocket if payment is active
+  const { user, cocktails: paymentCocktails, isConnected } = usePaymentWebSocket(config.PAYMENT_ACTIVE ?? false);
+
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
+
+  // Show lock screen if payment is active, lock screen is enabled, and no user is logged in
+  if (config.PAYMENT_ACTIVE && config.PAYMENT_LOCK_SCREEN_NO_USER && !user?.uid) {
+    return <PaymentLockScreen />;
+  }
 
   const handleCloseModal = () => {
     setSelectedCocktail(null);
   };
 
-  let displayedCocktails = cocktails;
+  // Use payment cocktails if payment is active and connected, otherwise use regular cocktails
+  let displayedCocktails = config.PAYMENT_ACTIVE && isConnected ? paymentCocktails : cocktails;
+
   if (search) {
     displayedCocktails = displayedCocktails?.filter(
       (cocktail) =>
@@ -60,28 +72,43 @@ const CocktailList: React.FC = () => {
       <div className='flex flex-wrap gap-3 justify-center items-center w-full mb-4'>
         {displayedCocktails
           ?.sort((a, b) => a.name.localeCompare(b.name))
-          .map((cocktail) => (
-            <div
-              key={cocktail.id}
-              className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
-              onClick={() => setSelectedCocktail(cocktail)}
-              role='button'
-            >
-              <p className='text-center py-1 flex items-center justify-center'>
-                {cocktail.virgin_available && (
-                  <MdNoDrinks className={`mr-2 ${cocktail.only_virgin && 'border-2 border-background rounded-full'}`} />
-                )}
-                {cocktail.name}
-              </p>
-              <div className='relative w-full' style={{ paddingTop: '100%' }}>
-                <img
-                  src={`${API_URL}${cocktail.image}`}
-                  alt={cocktail.name}
-                  className='absolute top-0 left-0 w-full h-full object-cover'
-                />
+          .map((cocktail) => {
+            const isNotAllowed = config.PAYMENT_ACTIVE && !cocktail.is_allowed;
+            const shouldHide = config.PAYMENT_ACTIVE && !config.PAYMENT_SHOW_NOT_POSSIBLE && isNotAllowed;
+
+            if (shouldHide) {
+              return null;
+            }
+
+            return (
+              <div
+                key={cocktail.id}
+                className={`border-2 rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold ${
+                  isNotAllowed
+                    ? 'border-neutral bg-neutral text-background opacity-50 cursor-not-allowed'
+                    : 'border-primary active:border-secondary bg-primary active:bg-secondary text-background cursor-pointer'
+                }`}
+                onClick={() => !isNotAllowed && setSelectedCocktail(cocktail)}
+                role='button'
+              >
+                <p className='text-center py-1 flex items-center justify-center'>
+                  {cocktail.virgin_available && (
+                    <MdNoDrinks
+                      className={`mr-2 ${cocktail.only_virgin && 'border-2 border-background rounded-full'}`}
+                    />
+                  )}
+                  {cocktail.name}
+                </p>
+                <div className='relative w-full' style={{ paddingTop: '100%' }}>
+                  <img
+                    src={`${API_URL}${cocktail.image}`}
+                    alt={cocktail.name}
+                    className='absolute top-0 left-0 w-full h-full object-cover'
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         {config.MAKER_ADD_SINGLE_INGREDIENT && (
           <div
             className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
