@@ -1,7 +1,18 @@
 import asyncio
+import contextlib
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile, WebSocket
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    HTTPException,
+    Query,
+    UploadFile,
+    WebSocket,
+    WebSocketDisconnect,
+)
 
 from src.api.internal.nfc_payment import NFCPaymentHandler, get_nfc_payment_handler
 from src.api.internal.utils import (
@@ -30,6 +41,8 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
 from src.models import Cocktail as DbCocktail
 from src.models import PrepareResult
+from src.payment_utils import filter_cocktails_by_user
+from src.programs.nfc_payment_service import User
 from src.tabs import maker
 from src.utils import time_print
 
@@ -52,9 +65,19 @@ protected_recipes_router = APIRouter(
 
 
 @router.get("", summary="Get all cocktails, limited to possible cocktails by default")
-async def get_cocktails(only_possible: bool = True, max_hand_add: int = 3, scale: bool = True) -> list[Cocktail]:
+async def get_cocktails(
+    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)],
+    only_possible: bool = True,
+    max_hand_add: int = 3,
+    scale: bool = True,
+) -> list[Cocktail]:
     DBC = DatabaseCommander()
     cocktails = DBC.get_possible_cocktails(max_hand_add) if only_possible else DBC.get_all_cocktails()
+
+    if cfg.PAYMENT_ACTIVE:
+        user = payment_handler.get_current_user()
+        cocktails = filter_cocktails_by_user(user, cocktails)
+
     mapped_cocktails = [map_cocktail(c, scale) for c in cocktails]
     return [c for c in mapped_cocktails if c is not None]
 
@@ -270,3 +293,65 @@ async def calculate_optimal_ingredient_selection(
         ingredients=[map_ingredient(i) for i in ingredients],
         cocktails=[map_cocktail(c, False) for c in cocktails],
     )
+
+
+@router.websocket("/ws/payment/user")
+async def websocket_payment_user(
+    websocket: WebSocket,
+) -> None:
+    """WebSocket endpoint for user changes in payment system.
+
+    Pushes user data and filtered cocktails when user changes.
+    Only pushes data if payment is active.
+    """
+    await websocket.accept()
+
+    if not cfg.PAYMENT_ACTIVE:
+        await websocket.close()
+        return
+
+    async def send_user_update(user: User | None, _nfc_id: str) -> None:
+        """Send user and filtered cocktails to websocket."""
+        try:
+            cocktails = filter_cocktails_by_user(
+                user, DatabaseCommander().get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
+            )
+            mapped_cocktails = [map_cocktail(c, True) for c in cocktails]
+            mapped_cocktails = [c for c in mapped_cocktails if c is not None]
+
+            await websocket.send_json(
+                {
+                    "user": user.__dict__ if user else None,
+                    "cocktails": [c.model_dump() for c in mapped_cocktails],
+                }
+            )
+        except Exception as e:
+            time_print(f"Error sending user update via websocket: {e}")
+
+    callback_name = f"websocket_{id(websocket)}"
+    # Keep track of tasks to prevent them from being garbage collected
+    tasks: set = set()
+
+    def nfc_callback(user: User | None, nfc_id: str) -> None:
+        """Schedule async send_user_update."""
+        task = asyncio.create_task(send_user_update(user, nfc_id))
+        tasks.add(task)
+        task.add_done_callback(tasks.discard)
+
+    payment_handler = get_nfc_payment_handler()
+    payment_handler.nfc_service.add_callback(callback_name, nfc_callback)
+
+    # Send initial state
+    current_user = payment_handler.get_current_user()
+    await send_user_update(current_user, current_user.uid if current_user else "")
+
+    try:
+        while True:
+            try:
+                await websocket.receive_text()
+            except WebSocketDisconnect:
+                break
+    finally:
+        payment_handler.nfc_service.remove_callback(callback_name)
+        with contextlib.suppress(Exception):
+            await websocket.close()

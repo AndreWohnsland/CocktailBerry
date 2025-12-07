@@ -14,6 +14,7 @@ export interface Cocktail {
   alcohol: number;
   amount: number;
   price_per_100_ml: number;
+  is_allowed: boolean;
   enabled: boolean;
   virgin_available: boolean;
   only_virgin: boolean;
@@ -74,6 +75,13 @@ export type PrepareResult =
   | 'ADDON_ERROR'
   | 'WAITING_FOR_NFC'
   | 'UNDEFINED';
+
+export interface UserAuth {
+  uid: string | null;
+  balance: number | null;
+  can_get_alcohol: boolean;
+  is_authenticated: boolean;
+}
 
 export interface CocktailStatus {
   progress: number;
@@ -141,10 +149,10 @@ export interface DefinedConfigData {
   PAYMENT_PRICE_ROUNDING: number;
   PAYMENT_VIRGIN_MULTIPLIER: number;
   PAYMENT_SHOW_NOT_POSSIBLE: boolean;
-PAYMENT_LOCK_SCREEN_NO_USER: boolean;
+  PAYMENT_LOCK_SCREEN_NO_USER: boolean;
   PAYMENT_SERVICE_URL: string;
   PAYMENT_SECRET_KEY: string;
-PAYMENT_TIMEOUT_S: number;
+  PAYMENT_TIMEOUT_S: number;
   PAYMENT_AUTO_LOGOUT_TIME_S: number;
   CUSTOM_COLOR_PRIMARY: string;
   CUSTOM_COLOR_SECONDARY: string;
@@ -268,4 +276,15 @@ export interface ResourceStats {
   samples: number;
   raw_cpu: number[];
   raw_ram: number[];
+}
+
+export interface PaymentUserData {
+  uid: string | null;
+  balance: number | null;
+  can_get_alcohol: boolean | null;
+}
+
+export interface PaymentUserUpdate {
+  user: PaymentUserData | null;
+  cocktails: Cocktail[];
 }
