@@ -24,9 +24,12 @@ export const usePaymentWebSocket = (enabled: boolean) => {
     // Create WebSocket URL (convert http to ws)
     const wsUrl = API_URL.replace(/^http/, 'ws') + '/cocktails/ws/payment/user';
     const ws = new WebSocket(wsUrl);
+    // Track if connection was ever established (to suppress StrictMode double-mount noise)
+    let wasConnected = false;
 
     ws.onopen = () => {
       console.log('Payment WebSocket connected');
+      wasConnected = true;
       setIsConnected(true);
     };
 
@@ -47,11 +50,17 @@ export const usePaymentWebSocket = (enabled: boolean) => {
     };
 
     ws.onerror = (error) => {
-      console.error('Payment WebSocket error:', error);
+      // Only log errors if connection was established (avoid React StrictMode noise)
+      if (wasConnected) {
+        console.error('Payment WebSocket error:', error);
+      }
     };
 
     ws.onclose = () => {
-      console.log('Payment WebSocket closed');
+      // Only log if connection was established (avoid React StrictMode noise)
+      if (wasConnected) {
+        console.log('Payment WebSocket closed');
+      }
       setIsConnected(false);
     };
 
