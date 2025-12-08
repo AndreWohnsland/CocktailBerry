@@ -9,9 +9,9 @@ import { useConfig } from '../../providers/ConfigProvider';
 import { Cocktail } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import LockScreen from '../common/LockScreen';
 import SearchBar from '../common/SearchBar';
 import CocktailSelection from './CocktailSelection';
-import PaymentLockScreen from './PaymentLockScreen';
 import SingleIngredientSelection from './SingleIngredientSelection';
 
 const CocktailList: React.FC = () => {
@@ -31,7 +31,7 @@ const CocktailList: React.FC = () => {
 
   // Show lock screen if payment is active, lock screen is enabled, and no user is logged in
   if (config.PAYMENT_ACTIVE && config.PAYMENT_LOCK_SCREEN_NO_USER && !user?.uid) {
-    return <PaymentLockScreen />;
+    return <LockScreen title={t('lockScreen.paymentTitle')} message={t('lockScreen.paymentMessage')} />;
   }
 
   const handleCloseModal = () => {
@@ -109,7 +109,7 @@ const CocktailList: React.FC = () => {
               </div>
             );
           })}
-        {config.MAKER_ADD_SINGLE_INGREDIENT && (
+        {config.MAKER_ADD_SINGLE_INGREDIENT && !config.PAYMENT_ACTIVE && (
           <div
             className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
             onClick={() => setSingleIngredientOpen(true)}
