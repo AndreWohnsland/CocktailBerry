@@ -38,6 +38,11 @@
     "spend": "Ausgeben",
     "selectTeam": "Team Auswählen"
   },
+  "lockScreen": {
+    "defaultTitle": "Gesperrt",
+    "paymentTitle": "Karte oder Chip Scan Erforderlich",
+    "paymentMessage": "Bitte halte die Karte/Chip and den Scanner, um auf Cocktails zuzugreifen."
+  },
   "payment": {
     "scanNFC": "Bitte scannen Sie Ihre NFC-Karte",
     "holdCard": "Halten Sie Ihre NFC-Karte oder Ihren Tag an das Lesegerät, um die Zahlung abzuschließen",
