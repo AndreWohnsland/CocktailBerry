@@ -310,6 +310,9 @@ async def websocket_payment_user(
         await websocket.close()
         return
 
+    # Capture the event loop for thread-safe scheduling
+    loop = asyncio.get_running_loop()
+
     async def send_user_update(user: User | None, _nfc_id: str) -> None:
         """Send user and filtered cocktails to websocket."""
         try:
@@ -329,14 +332,11 @@ async def websocket_payment_user(
             time_print(f"Error sending user update via websocket: {e}")
 
     callback_name = f"websocket_{id(websocket)}"
-    # Keep track of tasks to prevent them from being garbage collected
-    tasks: set = set()
 
     def nfc_callback(user: User | None, nfc_id: str) -> None:
-        """Schedule async send_user_update."""
-        task = asyncio.create_task(send_user_update(user, nfc_id))
-        tasks.add(task)
-        task.add_done_callback(tasks.discard)
+        """Schedule async send_user_update from another thread."""
+        # Use run_coroutine_threadsafe since this callback is called from the NFC reader thread
+        asyncio.run_coroutine_threadsafe(send_user_update(user, nfc_id), loop)
 
     payment_handler = get_nfc_payment_handler()
     payment_handler.nfc_service.add_callback(callback_name, nfc_callback)
