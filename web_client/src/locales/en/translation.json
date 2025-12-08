@@ -38,6 +38,11 @@
     "spend": "Spend",
     "selectTeam": "Select Team"
   },
+  "lockScreen": {
+    "defaultTitle": "Locked",
+    "paymentTitle": "Card or Chip Scan Required",
+    "paymentMessage": "Please put your card/chip to the scanner to access cocktails."
+  },
   "payment": {
     "scanNFC": "Please Scan Your NFC Card",
     "holdCard": "Hold your NFC card or tag near the reader to complete the payment",
