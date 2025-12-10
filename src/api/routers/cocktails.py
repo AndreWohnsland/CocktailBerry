@@ -29,7 +29,6 @@ from src.api.models import (
     Cocktail,
     CocktailInput,
     CocktailsAndIngredients,
-    CocktailStatus,
     ErrorDetail,
     PrepareCocktailRequest,
 )
@@ -40,7 +39,7 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
 from src.models import Cocktail as DbCocktail
-from src.models import PrepareResult
+from src.models import CocktailStatus, PrepareResult
 from src.payment_utils import filter_cocktails_by_user
 from src.programs.nfc_payment_service import User
 from src.tabs import maker
@@ -143,10 +142,7 @@ async def prepare_cocktail(
 
 @router.get("/prepare/status", tags=["preparation"], summary="Get the current cocktail preparation status")
 async def get_cocktail_status() -> CocktailStatus:
-    status = shared.cocktail_status
-    return CocktailStatus(
-        progress=status.progress, completed=status.completed, message=status.message, status=status.status
-    )
+    return shared.cocktail_status
 
 
 @router.websocket("/ws/prepare/status")
@@ -157,7 +153,6 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         await websocket.send_json(
             {
                 "progress": status.progress,
-                "completed": status.completed,
                 "message": status.message,
                 "status": status.status,
             }

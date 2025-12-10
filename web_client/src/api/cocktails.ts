@@ -57,7 +57,6 @@ export const getCocktailStatus = async (): Promise<CocktailStatus> => {
       console.error('Error fetching cocktail status:', error);
       return {
         progress: 0,
-        completed: false,
         error: undefined,
         status: 'UNDEFINED',
       };

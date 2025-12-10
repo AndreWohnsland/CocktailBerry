@@ -85,7 +85,6 @@ export interface UserAuth {
 
 export interface CocktailStatus {
   progress: number;
-  completed: boolean;
   message?: string;
   status: PrepareResult;
 }

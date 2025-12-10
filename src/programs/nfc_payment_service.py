@@ -1,4 +1,5 @@
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from enum import StrEnum
 from threading import Timer
@@ -104,6 +105,7 @@ class NFCPaymentService:
             cls._user_callbacks: dict[str, Callable[[User | None, str], None]] = {}
             cls._is_polling: bool = False
             cls._auto_logout_timer: Timer | None = None
+            cls._pause_callbacks: bool = False
             cls.user_db: dict[str, User] = {
                 "CAD3B515": User(uid="CAD3B515", balance=5.0, can_get_alcohol=False),
                 "33DFE41D": User(uid="33DFE41D", balance=10.0, can_get_alcohol=True),
@@ -116,6 +118,9 @@ class NFCPaymentService:
 
     def _run_callbacks(self, user: User | None, nfc_id: str) -> None:
         """Run all registered user callbacks."""
+        if self._pause_callbacks:
+            time_print("Callbacks are paused; not running any callbacks.")
+            return
         for callback in self._user_callbacks.values():
             callback(user, nfc_id)
 
@@ -155,15 +160,27 @@ class NFCPaymentService:
 
     def add_callback(self, name: str, callback: Callable[[User | None, str], None]) -> None:
         """Add a named callback to be invoked when a user is detected."""
+        time_print(f"Adding callback: {name}")
         self._user_callbacks[name] = callback
 
     def remove_callback(self, name: str) -> None:
         """Remove a specific callback by name."""
+        time_print(f"Removing callback: {name}")
         self._user_callbacks.pop(name, None)
 
     def remove_all_callbacks(self) -> None:
         """Remove all registered callbacks."""
+        time_print("Removing all user callbacks.")
         self._user_callbacks.clear()
+
+    @contextmanager
+    def paused_callbacks(self) -> Iterator[None]:
+        """Context manager to temporarily pause callbacks."""
+        self._pause_callbacks = True
+        try:
+            yield
+        finally:
+            self._pause_callbacks = False
 
     def get_user_for_id(self, nfc_id: str) -> User | None:
         """Get the user associated with the given NFC ID."""

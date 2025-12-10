@@ -81,7 +81,6 @@ class MachineController:
         _header_print("Done Cleaning")
         if w is not None:
             w.close_progression_window()
-        shared.cocktail_status.completed = True
         shared.cocktail_status.status = PrepareResult.FINISHED
 
     def make_cocktail(

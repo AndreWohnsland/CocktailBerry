@@ -18,13 +18,6 @@ class ErrorDetail(BaseModel):
         use_enum_values = True
 
 
-class CocktailStatus(BaseModel):
-    progress: int = 0
-    completed: bool = False
-    message: Optional[str] = None
-    status: PrepareResult = PrepareResult.FINISHED
-
-
 class CocktailIngredient(BaseModel):
     id: int
     name: str
