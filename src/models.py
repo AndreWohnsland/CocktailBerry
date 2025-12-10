@@ -29,7 +29,6 @@ class PrepareResult(Enum):
 @pydantic_dataclass
 class CocktailStatus:
     progress: int = 0
-    completed: bool = False
     message: Optional[str] = None
     status: PrepareResult = PrepareResult.FINISHED
 
