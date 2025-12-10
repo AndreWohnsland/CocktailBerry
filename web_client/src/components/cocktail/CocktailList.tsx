@@ -30,7 +30,8 @@ const CocktailList: React.FC = () => {
   if (error) return <ErrorComponent text={error.message} />;
 
   // Show lock screen if payment is active, lock screen is enabled, and no user is logged in
-  if (config.PAYMENT_ACTIVE && config.PAYMENT_LOCK_SCREEN_NO_USER && !user?.uid) {
+  // additionally if a cocktail is selected, we cannot show this because otherwise directly after preparation, this is shown again
+  if (config.PAYMENT_ACTIVE && config.PAYMENT_LOCK_SCREEN_NO_USER && !user?.uid && selectedCocktail === null) {
     return <LockScreen title={t('lockScreen.paymentTitle')} message={t('lockScreen.paymentMessage')} />;
   }
 
@@ -38,8 +39,12 @@ const CocktailList: React.FC = () => {
     setSelectedCocktail(null);
   };
 
-  // Use payment cocktails if payment is active and connected, otherwise use regular cocktails
-  let displayedCocktails = config.PAYMENT_ACTIVE && isConnected ? paymentCocktails : cocktails;
+  // Use payment cocktails if payment is active, connected, and has data
+  // Otherwise fall back to regular cocktails
+  let displayedCocktails = cocktails;
+  if (config.PAYMENT_ACTIVE && isConnected && paymentCocktails && paymentCocktails.length > 0) {
+    displayedCocktails = paymentCocktails;
+  }
 
   if (search) {
     displayedCocktails = displayedCocktails?.filter(
