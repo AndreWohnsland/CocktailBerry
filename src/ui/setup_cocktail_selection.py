@@ -60,6 +60,9 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.button_back.clicked.connect(self.mainscreen.switch_to_cocktail_list)
         self.increase_alcohol.clicked.connect(self._higher_alcohol)
         self.decrease_alcohol.clicked.connect(self._lower_alcohol)
+        if cfg.PAYMENT_ACTIVE:
+            self.decrease_alcohol.hide()
+            self.increase_alcohol.hide()
         self.virgin_checkbox.stateChanged.connect(self.update_cocktail_data)
         self.adjust_maker_label_size_cocktaildata()
 
@@ -149,8 +152,9 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def _apply_virgin_setting(self) -> None:
         # hide the strong/weak buttons, since they are not needed
-        self.increase_alcohol.setVisible(not self.cocktail.only_virgin)
-        self.decrease_alcohol.setVisible(not self.cocktail.only_virgin)
+        show_alcohol_buttons = not self.cocktail.only_virgin and not cfg.PAYMENT_ACTIVE
+        self.increase_alcohol.setVisible(show_alcohol_buttons)
+        self.decrease_alcohol.setVisible(show_alcohol_buttons)
         can_change_virgin = self.cocktail.virgin_available and not self.cocktail.only_virgin
         self.virgin_checkbox.setEnabled(can_change_virgin)
         # Styles does not work on strikeout, so we use internal qt things
