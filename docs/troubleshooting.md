@@ -13,7 +13,7 @@ When submitting an error, please also provide the `logs/debuglog.log` file.
 
 ## Icons are Missing
 
-If some of the icons (check / cross on the checkbox, up / down arrow on the list view) are missing, make sure you run the script within the folder (e.g. `python runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`).
+If some of the icons (check / cross on the checkbox, up / down arrow on the list view) are missing, make sure you run the script within the folder (e.g. `uv run runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`).
 This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
 
 Another reason may be, if you are using a custom style sheet with colors using rgb.
@@ -27,7 +27,7 @@ This feature is purely cosmetic and for the user of the maker tab when making co
 
 ## Restoring Database
 
-Some of the migrations create a backup of the database before doing the mutation steps, like adding new recipes.
+The migrations create a backup of the database before doing the modifying steps.
 If you rather don't want to have the new recipes, you can overwrite the local `Cocktail_database.db` with the `Cocktail_database_backup.db` file.
 
 ```bash
@@ -37,7 +37,6 @@ cp Cocktail_database_backup-{your-date-string}.db Cocktail_database.db
 This will restore the state of the backup previous this migration step.
 Please take a look into the production_log file, if a backup was created.
 Otherwise, you may up ending using an older one.
-A backup is usually only done in migration steps which are optional, like adding new recipes.
 
 ## Using a High Resolution Screen
 
@@ -125,8 +124,9 @@ If you use any other non controllable LED connected over the relay, you can use 
 
 ## Set Up RFID Reader
 
-Setting up a RFID reader and integrate it into the program is an intermediate task.
-So I would not recommend it for complete beginners, and it may include some tinkering.
+Setting up a GPIO RFID reader and integrate it into the program is an intermediate task.
+It is not recommended for complete beginners, and it may include some tinkering.
+As long as you use the recommended usb reader, you should be fine.
 Currently you can use those different types of reader:
 
 - Basic MFRC522 ([like this](https://amzn.to/4puhW4T), SPI Protocol)
@@ -141,7 +141,7 @@ Currently you can use those different types of reader:
     If you have experience with the reader + python feel free to contact me, so we can improve this feature.
 
 Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/) and [here for the PiicoDev](https://core-electronics.com.au/guides/piicodev-rfid-module-guide-for-raspberry-pi/).
-You only need the wiring and the installation of the libraries.
+You only need the wiring and the installation of the libraries (usually they are already installed).
 The according code is integrated into CocktailBerry.
 After that, you select the according option in the settings dropdown for the reader.
 When using the teams function, you can then also use a RFID chip, which inserts the information (name of person) for the leaderboard.
@@ -177,7 +177,6 @@ Unchecking this box usually fixes this problem.
 In case you want to reset the configuration, it is the best way to just delete the custom_config.yaml in the main folder.
 This file holds your configuration and will be created with the defaults if it does not exists.
 
-If some setting is not working and prevents a program start, you can also edit the config file manually.
 There are also backups of the config file before migration, located at `~/cb_backup/` with the version number before this specific migration.
 The config file is located at `~/CocktailBerry/custom_config.yaml`.
 You can open it with any text editor.
@@ -226,7 +225,7 @@ There is also a default picture for cocktails without a picture, like newly user
 You can upload your own pictures over the according button the recipe tab.
 Your picture will then replace the default provided picture.
 
-The user pictures are stored in the `CocktailBerry/display_images_user` folder.
+The user pictures are stored in the `~/CocktailBerry/display_images_user` folder.
 The picture will be saved with the cocktail id as name and jpg format.
 You can also provide the cocktail name in lowercase and underscore instead spaces as picture name in jpg format (e.g. `cuba_libre.jpg` for "Cuba Libre"), if you prefer to upload the pictures via hand in that folder instead of the GUI.
 
@@ -235,7 +234,7 @@ This is due to the database using incrementing integers as primary key for the c
 This is historically and can't be changed easily in running installations.
 If thats the case, please use the GUI option to replace wrong pictures with your desired ones.
 If you feel that the default pictures are switched, you can also use the default ones as replacement.
-They are located at `CocktailBerry/default_cocktail_images`.
+They are located at `~/CocktailBerry/default_cocktail_images`.
 
 Here is an extensive list of all default cocktails and their according image.
 If you think your cocktail have the wrong picture, you can use the according picture name from the list below to replace it.
@@ -315,7 +314,7 @@ If really nothing else works, try `sudo pip3 install -U numpy`, then you will pr
 
 ### How to get the GUI Running on Startup
 
-I found the easiest thing is to use RPis Autostart.
+The easiest thing is to use RPis Autostart.
 Create a .desktop file with `sudo nano /etc/xdg/autostart/cocktail.desktop` and the `launcher.sh` in your `/home/pi` folder:
 
 ```text
@@ -331,7 +330,7 @@ Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh
 # code to start the application, see v1-launcher.sh
 ```
 
-If your setup is equal to mine (Raspberry Pi, CocktailBerry GitHub cloned to the home folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
+If your setup is equal to the docs (Raspberry Pi, CocktailBerry GitHub cloned to the home folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
 
 ```bash
 cp ~/CocktailBerry/scripts/v1-launcher.sh ~/
@@ -355,10 +354,3 @@ I've noticed when running as root (sudo python) and running as the pi user (pyth
 Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
 Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
 Using the users environment with `sudo -E python runme.py` should also do the trick.
-
-### Some Python Things do not Work
-
-Older Raspberry Pi OS version (older than _November 2021_) still deliver Python 2.
-Since Raspberry Pi OS Bullseye version (based on Debian 11) Python 3 is the default version if you type `python` or `pip`.
-Typing `python --version` or `pip --version` will show your version of Python.
-If it's still Python 2, consider upgrading your OS or check `python3 --version` and use the `pip3` as well as the `python3` command instead the usual ones.

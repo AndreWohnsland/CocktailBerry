@@ -1,17 +1,17 @@
 # CLI Commands
 
 In this section, there is an overview and description of the Command Line Interface (CLI) commands of the program.
-Within the CocktailBerry folder, you can execute them with the schema `python runme.py [command] [options]`.
+Within the CocktailBerry folder, you can execute them with the schema `uv run runme/api.py [command] [options]`.
 There is also a `--help` flag to get information on the program, or it's sub-commands.
 You can use this to get information on the commands when running locally.
 
 !!! info "Used Auto Setup?"
     If you installed over the setup script, the program will usually started over the `~/launcher.sh` file.
     When you want to use other than the default options, change the `~/launcher.sh` file accordingly.
-    Just add the flags or their according values to the `python runme.py` command.
+    Just add the flags or their according values to the `uv run runme.py` command.
 
-!!! info "V1 or V2?"
-    If you are already running the API (V2) version, you need to use the command `api.py` instead of `runme.py`.
+!!! info "v1 or v2?"
+    If you are already running the API (v2) version, you need to use the command `api.py` instead of `runme.py`.
     Everything else (like the options) is the same.
     Also, if you are on the latest version, you should use `uv run ...` instead of `python ...`.
 
@@ -22,7 +22,7 @@ The main program starts the CocktailBerry interface.
 You can run it with:
 
 ```bash
-python runme.py [OPTIONS]
+uv run runme.py [OPTIONS]
 
 # Options:
 #   -n, --name TEXT    Name to display at start.  [default: CocktailBerry]
@@ -47,11 +47,11 @@ In case you want to hide the terminal completely, see [this section](faq.md#how-
 
 ## CocktailBerry Web
 
-Run the FastAPI web server.
+Run the FastAPI web server (for v2).
 Can be used as an alternative way to control the machine, for example over an external program or a web ui. The FastAPI server will be started at the given port.
 
 ```bash
-python runme.py api [OPTIONS]
+uv run api.py [OPTIONS]
 
 # Options:
 #   -p, --port INTEGER  Port for the FastAPI server [default: 8000]
@@ -69,14 +69,14 @@ This is the limitation sending files over the network, which is not possible wit
 If SSL is enabled, since this is a self-signed certificate, you will get a warning in the browser, which user can ignore.
 
 ```bash
-python runme.py setup-web
+uv run runme.py setup-web
 
 # Options:
 #   --ssl   -s        Use SSL for the Nginx configuration    
 #   --help            Show help
 ```
 
-## Switch to old Main Program
+## Switch to old Main Program (v1)
 
 In case you activated the web interface as the default interface, you can switch back to the old main program.
 This command will switch back to the old main program.
@@ -84,7 +84,7 @@ This will no longer start the web interface, but the main program.
 The main program will then be started as usual as an full windowed app.
 
 ```bash
-python runme.py switch-back
+uv run runme.py switch-back
 ```
 
 ## Clearing Local Database
@@ -93,7 +93,7 @@ There may be CocktailBerry owners, who want to create a complete new database.
 To clean the local database, run:
 
 ```bash
-python runme.py clear-database [OPTIONS]
+uv run runme.py clear-database [OPTIONS]
 
 # Options:
 #   --help  Show help
@@ -110,7 +110,7 @@ You can now provide a `.txt` or similar text file to quickly insert a lot of new
 To use this functionality, just use the CLI, similar to running CocktailBerry:
 
 ```bash
-python runme.py data-import [OPTIONS] PATH
+uv run runme.py data-import [OPTIONS] PATH
 
 # Arguments:
 #   PATH  [required]
@@ -160,7 +160,7 @@ If the recipe use another unit than ml, please provide the according conversion 
 Use this command to get starting developing your own addon!
 
 ```bash
-python runme.py create-addon [OPTIONS] ADDON_NAME
+uv run runme.py create-addon [OPTIONS] ADDON_NAME
 
 # Arguments:
 #   ADDON_NAME  [required]
@@ -181,7 +181,7 @@ With the microservice, also [watchtower](https://containrrr.dev/watchtower/) wil
 Watchtower will check periodically if there is a new microservice image and install it in the background.
 
 ```bash
-python runme.py setup-microservice [OPTIONS]
+uv run runme.py setup-microservice [OPTIONS]
 
 # Options:
 #   -a, --api-key TEXT        API key for dashboard
@@ -211,7 +211,7 @@ With the dashboard, also [watchtower](https://containrrr.dev/watchtower/) will b
 Watchtower will check periodically if there is a new dashboard image and install it in the background.
 
 ```bash
-python runme.py setup-teams-service [OPTIONS]
+uv run runme.py setup-teams-service [OPTIONS]
 
 # Options:
 #   -l, --language [en|de]  language for the teams service  [default: en]
@@ -229,7 +229,7 @@ So you can still use the wlan0 interface for your normal network connection.
 This requires that you can have a virtual interface on your chip, for example the Raspberry Pi 3B+.
 
 ```bash
-python runme.py setup-ap [OPTIONS]
+uv run runme.py setup-ap [OPTIONS]
 
 # Options:
 #   --ssid      SSID Name of the AP [default: CocktailBerry]
@@ -242,7 +242,7 @@ python runme.py setup-ap [OPTIONS]
 If you want to remove the access point, you can use this.
 
 ```bash
-python runme.py remove-ap [OPTIONS]
+uv run runme.py remove-ap [OPTIONS]
 
 # Options:
 #   --ssid      SSID Name of the AP [default: CocktailBerry]

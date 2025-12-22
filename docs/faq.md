@@ -13,12 +13,14 @@ Any pumps being food save and having a volume flow between 10-50 ml/s are optima
 Higher or lower values are also possible, but may lead either to longer cocktail preparation time or not perfectly dosed cocktails.
 Best pumps to look out for are peristaltic pumps or membrane pumps.
 Also take note that currently all pumps run in parallel so check that your power supply is able to power at least 6 pumps at once.
+You can see at the [hardware section](hardware.md) for some recommended pumps.
 
 ### Which Raspberry Pi is Recommended
 
 My machines still run on the 1GB RAM 3b+ version.
 I know of other machines running on a 1/2 GB RAM 4 Version without any problems.
 Anything older or with less RAM may work, but is not supported.
+We officially support also the Raspberry Pi 5, but i strongly recommend using the 4 instead.
 
 ### Will CocktailBerry Work Without Internet
 
@@ -34,7 +36,8 @@ Checkout [this section](hardware.md#possible-basic-circuit), this explains a bas
 
 It depends on how you build your machine, but you will most likely want some sort of touchscreen which can be connected to the Raspberry Pi.
 Even an 5-inch 800x480 will work, but in my opinion a 7-inch 1024x600 is quite good.
-Higher resolution screen can be used, for high-res screens I recommend [this setting](troubleshooting.md#using-a-high-resolution-screen) for the best user experience.
+You can see at the [hardware section](hardware.md) for some recommended displays.
+Higher resolution screen can be used, for high-res screens (at least v1) I recommend [this setting](troubleshooting.md#using-a-high-resolution-screen) for the best user experience.
 
 ### Can I use another Board / SBC
 
@@ -42,20 +45,17 @@ You probably can use a wide variety of Single Board Computers (SBCs) beside the 
 The software should work on any system, but there are still some considerations.
 Especially if you are unexperienced with programming and Linux, I strongly suggest to stick to the recommended Pi setup.
 If you are experienced with Linux, you can probably get almost any SBC to work properly.
-I recommend using a LXDE/XFCE based desktop variant, for example a Debian Linux for the OS.
+I recommend using a wayland based desktop variant, for example a Debian Linux for the OS.
 The autorun / installation may differ a bit from the Pi.
 You also probably need to run the python package installation and program as sudo.
-You can switch the board config variable to Generic, this will use the [python-periphery](https://github.com/vsergeev/python-periphery) library.
-This library supports a broad variety of SBCs, but the Python process usually needs root permission to access the GPIOs.
 In case of any issues related to the GUI (like window positioning, overlap), please take note that officially only the RPi is supported and tested.
 
 ## Software
 
 ### Which Raspberry Pi OS to Use
 
-Please use the latest Raspberry Pi Desktop OS, currently this is Raspberry Pi OS with desktop in 64 bit, also known as Debian 11 or Bullseye.
-These OS run Python 3.9, which is the current mandatory Version of Python to run CocktailBerry.
-The 32 bit version should also work fine, just ensure it's the latest Raspberry Pi OS (Debian 11 / Bullseye) as well.
+Please use the latest Raspberry Pi Desktop OS, currently this is Raspberry Pi OS with desktop in 64 bit, also known as Debian 13 or Trixie.
+These OS run Python 3.11/3.13, which is the current mandatory Version of Python to run CocktailBerry.
 Older OS may work, but are not supported.
 
 ### Will Older Python Version Work
@@ -63,18 +63,19 @@ Older OS may work, but are not supported.
 Not with the current Version of CocktailBerry.
 Best is to use the specified Python version (or newer).
 Older version may work, but are not supported.
-If you want to run on Python 3.7, use CocktailBerry v1.12 or older.
-Please keep in mind that maintenance support of Python 3.7 ends at 2023-06-27.
+Generally, it is always recommended to use a fresh setup raspberry for the best experience.
 
 ### How to get Updates
 
 Simply have an internet connection and turn on the check updates option.
 If there is an update, CocktailBerry will inform you at startup.
+You can also explicitly check for updates under the options menu.
 
 ### How to Change Settings
 
-Under the 4th tab (bottles), you will find a gear icon, click on it.
-Enter the password (default is 1234 on older versions or none at latest), enter, click on configuration.
+Under the bottles tab (v1), you will find a gear icon, click on it.
+In v2, you will find the options in the header.
+Enter the master password (if set), click on configuration.
 There, you will be able to change all possible settings.
 See [Setup](setup.md#setting-up-the-machine-modifying-other-values) for a detailed explanation of the configuration options.
 The values will also be validated before a change is applies.
@@ -110,20 +111,13 @@ A little tip here: Ingredients connected to the pump are automatically added by 
 Ingredients not connected but available will be the ones prompted to be added by hand.
 So you can switch from machine to hand or the other way in your setup and CocktailBerry will recognize which is hand and which is machine.
 
-### What is the Password
-
-The default password is 1234 on older versions or none at latest.
-A password is at some steps used to prevent unwanted modification of the maker.
-Depending on your users, this might be more or less useful but a safety measure.
-You can change the password under the settings.
-
 ### How many Pumps are Supported
 
-Currently, CocktailBerry supports up to 16 pumps.
+Currently, CocktailBerry supports up to 24 pumps in v1 and how many you like in v2.
 This should usually be more than enough and goes well hand in hand with the hardware.
 Relays-arrays can have up to 8 switches controlled with one 5V input.
 The usual size is 8 (or 16 with an build in converter) relays for a relay board.
-In theory, the RPi could control up to 26 pumps when using all possible GPIOs, but that overkill IMHO.
+In theory, the RPi could control up to 26 pumps when using all possible GPIOs, but thats overkill IMHO.
 
 ### What is the Inverted Option
 
@@ -138,6 +132,7 @@ No, docker is optional.
 If you don't understand what docker is or what it does, don't worry.
 CocktailBerry will perfectly run without Docker installed.
 It's for some optional advanced features you can add anytime you are interested or ready for them.
+If you use the installer script, docker and its dependencies will be installed automatically.
 
 ### How to Exit the Program
 
@@ -149,7 +144,7 @@ You will then be on your desktop.
 ### I don't Need a Password
 
 Just set the password empty / delete all numbers.
-If the password setting ist empty, actions requiring a password will automatically succeed without prompting a password.
+If the password setting ist empty or zero, actions requiring a password will automatically succeed without prompting a password.
 
 ### How to Minimize Start Terminal
 

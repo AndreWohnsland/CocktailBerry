@@ -46,6 +46,7 @@ Both versions have the full feature set listed below.
 CocktailBerry can do:
 
 - Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
+- Let customers pay over NFC chips/cards
 - Add new ingredients and recipes with needed information over the UI
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
 - Define connected ingredients to the machine and existing additional ingredients over the UI
