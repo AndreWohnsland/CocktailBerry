@@ -12,9 +12,9 @@
 [![Support CocktailBerry](https://img.shields.io/badge/Support%20CocktailBerry-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
 Welcome to the CocktailBerry documentation.
-CocktailBerry is a Python and Qt (or React for v2) based app for a cocktail machine on the Raspberry Pi.
-Here you will find everything to get started!
+CocktailBerry is a Python and Qt (or React for v2) based software for a cocktail machine on the Raspberry Pi.
 It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
+Here you will find everything to get started!
 
 <div class="mid-flex">
 <a href="https://demo.cocktailberry.org/" class="cta-btn primary-btn"> v2 Demo </a>
@@ -34,9 +34,10 @@ The v1 is the stable version which ships the QT app as a single application.
 [v2](https://docs.cocktailberry.org/web/) is the new version with a separate API and UI, which offers more flexibility, but might have some issues on build in touchscreens.
 Both versions have the full feature set listed below.
 
-CocktailBerry can do:
+CocktailBerry offers the following features:
 
 - Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
+- Let customers pay over NFC chips/cards
 - Add new ingredients and recipes with needed information over the UI
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
 - Define connected ingredients to the machine and existing additional ingredients over the UI

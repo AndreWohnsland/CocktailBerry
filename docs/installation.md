@@ -6,9 +6,9 @@ Here you can find all the requirements and installation steps.
 
 These are the minimal tools needed to get started:
 
-- [Python 3.9](https://www.python.org/downloads/) or newer
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Python 3.11+](https://www.python.org/downloads/)
 - [Git](https://git-scm.com/downloads)
-- recommended: **latest** [Raspberry Pi OS, 64 bit](https://www.raspberrypi.com/software/) (Desktop, Bullseye)
+- recommended: **latest** [Raspberry Pi OS, 64 bit](https://www.raspberrypi.com/software/) (Desktop, Trixie)
 
 The desktop version of Raspberry Pi OS is recommended, but if you just want to have a peak into the project, any OS having Python and Git will work just fine.
 The RPi is needed to control the Pumps in a real machine, but the program will work fine even without any physical machine.
@@ -51,10 +51,10 @@ sh scripts/install_compose.sh
 cd ~/CocktailBerry
 sh scripts/setup.sh
 # now we are good to go
-python runme.py # (1)!
+uv run runme.py # (1)!
 ```
 
-1. If your system is still using python2 as python command, it is time for an upgrade
+1. you can also use python3 runme.py if you don't have uv installed, but uv is recommended.
 
 !!! note "This Should be All"
     As long as you are on the recommended Raspberry Pi + OS, this should be all you need to execute for a complete setup.
@@ -63,22 +63,19 @@ python runme.py # (1)!
 
 ## Installing Requirements
 
-On none Pi systems, the best way is to use the provided `requirements.txt` file.
+On none Pi systems, the best way is to use [uv](https://docs.astral.sh/uv/getting-started/installation/).
 You just need to clone the project and navigate into the folder.
-If Python is installed, just run: 
+If uv is installed, just run:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 to get all requirements.
-Optionally, you can install the single needed dependencies:
-
-- PyQt5, requests, pyyaml, GitPython, typer, pyfiglet, qtawesome, piicodev, qtsass, pyqtspinner
 
 ## Install PyQt5 on RaspberryPi
 
-The PyQt5 installation of pip will probably fail on your RaspberryPi. To install PyQt5 on your Pi run:
+The PyQt5 installation will probably fail on your RaspberryPi. To install PyQt5 on your Pi run:
 
 ```bash
 sudo apt-get update
@@ -96,7 +93,7 @@ This file will be created at the first program start.
 
 ## Touchscreen settings
 
-It's worth mentioning that I optimized the UI for a touch display with a 800x480 or a 1024x800 resolution.
+It's worth mentioning that the UI is optimized for a touch display with a 800x480 or a 1024x600 resolution.
 By default, the full screen is also limited to 800x480.
 So usually, you won't have any problems with the usual HD or uHD screens.
 You can change the application size with the according config settings, if you want to use a different screen size.
