@@ -156,6 +156,11 @@ if [ "$V2_FLAG" = true ]; then
   echo "- !!! When CocktailBerry is running, you can open the web interface at http://localhost in the web or over the CocktailBerry Web icon."
 fi
 
+# shellcheck disable=SC2164
+cd ~/CocktailBerry
+echo "~~ Setting up NFC USB Reader configuration ~~"
+bash scripts/setup_usb_nfc.sh
+
 echo "~~ Everything should be set now! Have fun with CocktailBerry :) ~~"
 echo "Made by Andre Wohnsland and contributors with <3"
 echo "Documentation is found at: https://docs.cocktailberry.org/"
