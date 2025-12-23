@@ -45,10 +45,10 @@ class CocktailBooking:
         )
 
     @classmethod
-    def successful_booking(cls) -> "CocktailBooking":
+    def successful_booking(cls, current_balance: float) -> "CocktailBooking":
         """Create a successful booking instance."""
         return cls(
-            message=DH.get_translation("payment_successful"),
+            message=DH.get_translation("payment_successful", current_balance=current_balance),
             result=cls.Result.SUCCESS,
         )
 
@@ -81,6 +81,14 @@ class CocktailBooking:
         """Create an API not reachable booking instance."""
         return cls(
             message=DH.get_translation("payment_api_not_reachable"),
+            result=cls.Result.API_NOT_REACHABLE,
+        )
+
+    @classmethod
+    def api_interface_conflict(cls) -> "CocktailBooking":
+        """Create a machine issue booking instance."""
+        return cls(
+            message=DH.get_translation("api_interface_conflict"),
             result=cls.Result.API_NOT_REACHABLE,
         )
 
@@ -221,4 +229,4 @@ class NFCPaymentService:
             time_print(f"API not reachable: {e}")
             return CocktailBooking.api_not_reachable()
         time_print(f"Cocktail {cocktail.name} booked. New balance: {user.balance}")
-        return CocktailBooking.successful_booking()
+        return CocktailBooking.successful_booking(current_balance=user.balance)

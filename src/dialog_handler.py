@@ -53,6 +53,7 @@ if TYPE_CHECKING:
 _logger = LoggerHandler("dialog_handler")
 
 allowed_keys = Literal[
+    "api_interface_conflict",
     "alcohol_level_max_limit",
     "all_data_exported",
     "all_recipes_enabled",
