@@ -270,11 +270,14 @@ dialog:
     en: 'User is not allowed to get alcohol.'
     de: 'Benutzer kann kein Alkohol bekommen.'
   payment_successful:
-    en: 'Payment successful.'
-    de: 'Zahlung erfolgreich.'
+    en: 'Payment successful. New balance: {current_balance:.2f}'
+    de: 'Zahlung erfolgreich. Neues Guthaben: {current_balance:.2f}'
   payment_api_not_reachable:
     en: 'Payment service is not reachable. If this persists, contact the owner.'
     de: 'Zahlungsservice ist nicht erreichbar. Wenn dies andauert, kontaktiere den Besitzer.'
+  api_interface_conflict:
+    en: 'API interface conflict detected. Please contact the system administrator.'
+    de: 'API-Schnittstellenkonflikt erkannt. Bitte kontaktieren Sie den Systemadministrator.'
   payment_canceled:
     en: 'Payment was canceled by user or timeout'
     de: 'Zahlung wurde durch Benutzer oder wegen Zeitüberschreitung abgebrochen.'
