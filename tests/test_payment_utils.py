@@ -42,7 +42,7 @@ def create_test_user(
     can_get_alcohol: bool = True,
 ) -> User:
     """Create a test user with specified attributes."""
-    return User(uid=uid, balance=balance, can_get_alcohol=can_get_alcohol)
+    return User(nfc_id=uid, balance=balance, is_adult=can_get_alcohol)
 
 
 @pytest.fixture

@@ -107,6 +107,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self._deprecation_check()
         self._connection_check()
         ADDONS.start_trigger_loop(self)
+        # start at the cocktail list view
+        self.switch_to_cocktail_list()
+        NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
 
     def update_check(self) -> None:
         """Check if there is an update and asks to update, if exists."""
@@ -162,9 +165,16 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.container_maker.setCurrentWidget(self.cocktail_selection)
 
     def switch_to_cocktail_list(self) -> None:
+        # if already in this, do nothing
+        if self.container_maker.currentWidget() == self.cocktail_view:
+            return
         self.container_maker.setCurrentWidget(self.cocktail_view)
-        if cfg.PAYMENT_ACTIVE:
-            NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
+        if not cfg.PAYMENT_ACTIVE:
+            return
+        # need to emit this, in case we switch back from detail view and auto logout happened when user was there
+        # this is because we pause the cocktail_list callback when we are in detail view
+        self.cocktail_view.emit_user_change(NFCPaymentService().user, "")
+        NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
 
     def open_numpad(
         self,
