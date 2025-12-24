@@ -338,7 +338,7 @@ async def websocket_payment_user(
 
     # Send initial state
     current_user = payment_handler.get_current_user()
-    await send_user_update(current_user, current_user.uid if current_user else "")
+    await send_user_update(current_user, current_user.nfc_id if current_user else "")
 
     try:
         while True:

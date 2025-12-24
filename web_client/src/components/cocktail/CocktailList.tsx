@@ -31,7 +31,7 @@ const CocktailList: React.FC = () => {
 
   // Show lock screen if payment is active, lock screen is enabled, and no user is logged in
   // additionally if a cocktail is selected, we cannot show this because otherwise directly after preparation, this is shown again
-  if (config.PAYMENT_ACTIVE && config.PAYMENT_LOCK_SCREEN_NO_USER && !user?.uid && selectedCocktail === null) {
+  if (config.PAYMENT_ACTIVE && config.PAYMENT_LOCK_SCREEN_NO_USER && !user?.nfc_id && selectedCocktail === null) {
     return <LockScreen title={t('lockScreen.paymentTitle')} message={t('lockScreen.paymentMessage')} />;
   }
 

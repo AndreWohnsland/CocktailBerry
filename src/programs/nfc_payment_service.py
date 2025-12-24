@@ -4,20 +4,24 @@ from dataclasses import dataclass
 from enum import StrEnum
 from threading import Timer
 
+import requests
 from pydantic.dataclasses import dataclass as api_dataclass
 
 from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import DIALOG_HANDLER as DH
+from src.logger_handler import LoggerHandler
 from src.machine.rfid import RFIDReader
 from src.models import Cocktail
 from src.utils import time_print
 
+_logger = LoggerHandler("NFCPaymentService")
+
 
 @api_dataclass
 class User:
-    uid: str
+    nfc_id: str
     balance: float
-    can_get_alcohol: bool
+    is_adult: bool
 
 
 @dataclass
@@ -114,9 +118,16 @@ class NFCPaymentService:
             cls._is_polling: bool = False
             cls._auto_logout_timer: Timer | None = None
             cls._pause_callbacks: bool = False
-            cls.user_db: dict[str, User] = {
-                "CAD3B515": User(uid="CAD3B515", balance=5.0, can_get_alcohol=False),
-                "33DFE41D": User(uid="33DFE41D", balance=10.0, can_get_alcohol=True),
+            cls.api_client = requests.Session()
+            cls.api_client.headers.update({"x-api-key": cfg.PAYMENT_SECRET_KEY})
+            cls.api_base_url = f"{cfg.PAYMENT_SERVICE_URL}/api"
+            cls.response_code_errors: dict[int, CocktailBooking] = {
+                401: CocktailBooking.api_interface_conflict(),  # no key or invalid key
+                402: CocktailBooking.insufficient_balance(),
+                403: CocktailBooking.too_young(),
+                404: CocktailBooking.no_user_logged_in(),
+                422: CocktailBooking.api_interface_conflict(),
+                500: CocktailBooking.api_not_reachable(),
             }
         return cls._instance
 
@@ -168,6 +179,9 @@ class NFCPaymentService:
 
     def add_callback(self, name: str, callback: Callable[[User | None, str], None]) -> None:
         """Add a named callback to be invoked when a user is detected."""
+        # skip noisy logs: it is not planned to "update" callbacks since name should point to unique function
+        if name in self._user_callbacks:
+            return
         time_print(f"Adding callback: {name}")
         self._user_callbacks[name] = callback
 
@@ -192,8 +206,16 @@ class NFCPaymentService:
 
     def get_user_for_id(self, nfc_id: str) -> User | None:
         """Get the user associated with the given NFC ID."""
-        # TODO: will call user instead from api
-        return self.user_db.get(nfc_id, None)
+        try:
+            resp = self.api_client.get(f"{self.api_base_url}/users/{nfc_id}")
+            if resp.status_code == 401:  # noqa: PLR2004
+                msg = "Wrong api key when fetching user data. Check PAYMENT_SECRET_KEY."
+                time_print(msg)
+                _logger.warning(msg)
+            resp.raise_for_status()
+            return User(**resp.json())
+        except Exception:
+            return None
 
     def _handle_nfc_read(self, _: str, _id: str) -> None:
         """Handle NFC read events."""
@@ -215,16 +237,30 @@ class NFCPaymentService:
         """Book a cocktail for the given user if they have enough balance."""
         if user is None:
             return CocktailBooking.no_user_logged_in()
-        if not user.can_get_alcohol and not cocktail.is_virgin:
+        # TODO: if we use uid then do not check age and balance here (it is in payment checked)
+        if not user.is_adult and not cocktail.is_virgin:
             return CocktailBooking.too_young()
         multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0
         price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
         if user.balance < price:
             return CocktailBooking.insufficient_balance()
         try:
-            # TODO: API call to book the cocktail
-            user.balance -= price
-            # TODO: API might also return not enough balance or not allowed alcohol (edge case)
+            resp = self.api_client.post(
+                f"{self.api_base_url}/users/{user.nfc_id}/cocktails/book",
+                json={
+                    "name": cocktail.name,
+                    "cocktail_id": cocktail.id,
+                    "amount": cocktail.adjusted_amount,
+                    "price_per_100_ml": cocktail.price_per_100_ml,
+                    "price": price,
+                    "is_alcoholic": not cocktail.is_virgin,
+                },
+            )
+            if resp.status_code in self.response_code_errors:
+                return self.response_code_errors[resp.status_code]
+            # make sure we do not forget errors here
+            resp.raise_for_status()
+            user = User(**resp.json())
         except Exception as e:
             time_print(f"API not reachable: {e}")
             return CocktailBooking.api_not_reachable()

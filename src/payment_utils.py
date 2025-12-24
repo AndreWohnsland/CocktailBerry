@@ -20,12 +20,12 @@ def filter_cocktails_by_user(user: User | None, cocktails: list[Cocktail]) -> li
         # otherwise disallow the cocktail
         # for other users, just use the regular price calculation
         cocktail.is_allowed = True
-        if not user.can_get_alcohol and not cocktail.virgin_available:
+        if not user.is_adult and not cocktail.virgin_available:
             cocktail.is_allowed = False
             filtered.append(copy.deepcopy(cocktail))
             continue
         price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, cocktail_amount)
-        if not user.can_get_alcohol and cocktail.virgin_available:
+        if not user.is_adult and cocktail.virgin_available:
             cocktail.only_virgin = True
             price = cocktail.current_price(
                 cfg.PAYMENT_PRICE_ROUNDING, cocktail_amount, price_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100

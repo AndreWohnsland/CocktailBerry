@@ -278,9 +278,9 @@ export interface ResourceStats {
 }
 
 export interface PaymentUserData {
-  uid: string | null;
+  nfc_id: string | null;
   balance: number | null;
-  can_get_alcohol: boolean | null;
+  is_adult: boolean | null;
 }
 
 export interface PaymentUserUpdate {

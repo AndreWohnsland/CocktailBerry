@@ -38,7 +38,7 @@ export const usePaymentWebSocket = (enabled: boolean) => {
         const data: PaymentUserUpdate = JSON.parse(event.data);
 
         // Only update if user actually changed
-        const currentUid = data.user?.uid ?? null;
+        const currentUid = data.user?.nfc_id ?? null;
         if (currentUid !== prevUserUidRef.current) {
           prevUserUidRef.current = currentUid;
           setUser(data.user);
