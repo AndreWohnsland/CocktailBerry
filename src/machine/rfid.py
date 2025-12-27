@@ -94,7 +94,10 @@ class RFIDReader:
             text, _id = self.rfid.read_card()
             if text is not None and _id is not None:
                 side_effect(text, _id)
-            time.sleep(read_delay_s)
+                time.sleep(read_delay_s)
+            else:
+                # do a small sleep in case reader have no internal sensing
+                time.sleep(0.1)
         self.is_active = False
 
     def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None) -> None:
