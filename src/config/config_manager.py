@@ -133,8 +133,8 @@ class ConfigManager:
     PAYMENT_SHOW_NOT_POSSIBLE: bool = True
     PAYMENT_LOCK_SCREEN_NO_USER: bool = True
     PAYMENT_VIRGIN_MULTIPLIER: int = 80
-    PAYMENT_SERVICE_URL: str = "http://127.0.0.1:8080"
-    PAYMENT_SECRET_KEY: str = "changeMe"
+    PAYMENT_SERVICE_URL: str = "http://127.0.0.1:9876"
+    PAYMENT_SECRET_KEY: str = "CocktailBerry-Secret-Change-Me"
     PAYMENT_TIMEOUT_S: int = 20
     PAYMENT_AUTO_LOGOUT_TIME_S: int = 60
     PAYMENT_LOGOUT_AFTER_PREPARATION: bool = True
