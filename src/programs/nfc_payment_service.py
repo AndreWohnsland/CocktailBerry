@@ -214,7 +214,11 @@ class NFCPaymentService:
                 _logger.warning(msg)
             resp.raise_for_status()
             return User(**resp.json())
-        except Exception:
+        except requests.exceptions.ConnectionError as e:
+            time_print(f"API not reachable when fetching user for NFC ID: {nfc_id}, error: {e}")
+            return None
+        except Exception as e:
+            time_print(f"Failed to get user for NFC ID: {nfc_id}, error: {e}")
             return None
 
     def _handle_nfc_read(self, _: str, _id: str) -> None:
@@ -237,7 +241,6 @@ class NFCPaymentService:
         """Book a cocktail for the given user if they have enough balance."""
         if user is None:
             return CocktailBooking.no_user_logged_in()
-        # TODO: if we use uid then do not check age and balance here (it is in payment checked)
         if not user.is_adult and not cocktail.is_virgin:
             return CocktailBooking.too_young()
         multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0

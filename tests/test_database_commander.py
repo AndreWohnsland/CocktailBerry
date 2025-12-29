@@ -109,7 +109,7 @@ class TestCocktail:
         cocktail = db_commander.get_cocktail(1)
         assert cocktail is not None
         assert cocktail.name == "Cuba Libre 2"
-        assert cocktail.price_per_100_ml == 1.0
+        assert cocktail.price_per_100_ml == pytest.approx(1.0)
 
     def test_insert_new_recipe(self, db_commander: DatabaseCommander):
         """Test the insert_new_recipe method."""
@@ -117,7 +117,7 @@ class TestCocktail:
         cocktail = db_commander.get_cocktail("New Recipe")
         assert cocktail is not None
         assert cocktail.name == "New Recipe"
-        assert cocktail.price_per_100_ml == 8.5
+        assert cocktail.price_per_100_ml == pytest.approx(8.5)
 
     def test_insert_recipe_data(self, db_commander: DatabaseCommander):
         """Test the insert_recipe_data method."""

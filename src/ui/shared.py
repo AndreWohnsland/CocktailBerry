@@ -105,8 +105,7 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
     ):
         QApplication.processEvents()
         time.sleep(0.2)
-        if detected_user is not None:
-            booking = payment_service.book_cocktail_for_user(detected_user, cocktail)
+        booking = payment_service.book_cocktail_for_user(detected_user, cocktail)
 
     payment_service.remove_callback("payment_flow")
     if dialog is not None:
