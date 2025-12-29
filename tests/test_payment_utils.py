@@ -155,8 +155,8 @@ class TestFilterCocktailsBalance:
 
     def test_user_can_afford_cocktail(self, patch_cfg: PatchCfgType) -> None:
         """User with sufficient balance should have cocktail marked as allowed."""
-        # price = 5.0 / 100 * 300 = 15.0
         user = create_test_user(balance=20.0, can_get_alcohol=True)
+        # 5.0 / 100 * 300 = 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg():
             result = filter_cocktails_by_user(user, cocktails)
@@ -165,8 +165,8 @@ class TestFilterCocktailsBalance:
 
     def test_user_cannot_afford_cocktail(self, patch_cfg: PatchCfgType) -> None:
         """User with insufficient balance should have cocktail marked as not allowed."""
-        # price = 5.0 / 100 * 300 = 15.0
         user = create_test_user(balance=10.0, can_get_alcohol=True)
+        # 5.0 / 100 * 300 = 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg():
             result = filter_cocktails_by_user(user, cocktails)
@@ -175,8 +175,8 @@ class TestFilterCocktailsBalance:
 
     def test_user_balance_exactly_matches_price(self, patch_cfg: PatchCfgType) -> None:
         """User with balance exactly matching price should have cocktail allowed."""
-        # price = 5.0 / 100 * 300 = 15.0, rounded up to 15.0
         user = create_test_user(balance=15.0, can_get_alcohol=True)
+        # 5.0 / 100 * 300 = 15.0, rounded up to 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg():
             result = filter_cocktails_by_user(user, cocktails)
@@ -185,8 +185,8 @@ class TestFilterCocktailsBalance:
 
     def test_user_balance_just_below_price(self, patch_cfg: PatchCfgType) -> None:
         """User with balance just below price should have cocktail not allowed."""
-        # price = 5.0 / 100 * 300 = 15.0
         user = create_test_user(balance=14.9, can_get_alcohol=True)
+        # 5.0 / 100 * 300 = 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg():
             result = filter_cocktails_by_user(user, cocktails)
@@ -197,8 +197,8 @@ class TestFilterCocktailsBalance:
         """Should mark unaffordable cocktails as not allowed."""
         user = create_test_user(balance=10.0, can_get_alcohol=True)
         cocktails = [
-            create_test_cocktail(cocktail_id=1, name="Cheap", price_per_100_ml=2.0, amount=300),  # price = 6.0
-            create_test_cocktail(cocktail_id=2, name="Expensive", price_per_100_ml=10.0, amount=300),  # price = 30.0
+            create_test_cocktail(cocktail_id=1, name="Cheap", price_per_100_ml=2.0, amount=300),  # 6.0
+            create_test_cocktail(cocktail_id=2, name="Expensive", price_per_100_ml=10.0, amount=300),  # 30.0
         ]
         with patch_cfg():
             result = filter_cocktails_by_user(user, cocktails)
@@ -273,8 +273,8 @@ class TestFilterCocktailsVolumeConfig:
 
     def test_uses_recipe_volume_when_configured(self, patch_cfg: PatchCfgType) -> None:
         """When MAKER_USE_RECIPE_VOLUME is True, should use cocktail's own amount."""
-        # price = 5.0 / 100 * 300 = 15.0
         user = create_test_user(balance=20.0, can_get_alcohol=True)
+        # 5.0 / 100 * 300 = 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg(MAKER_USE_RECIPE_VOLUME=True, MAKER_PREPARE_VOLUME=[150]):
             result = filter_cocktails_by_user(user, cocktails)

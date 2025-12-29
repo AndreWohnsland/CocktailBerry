@@ -64,7 +64,7 @@ const RecipeList: React.FC = () => {
       name: '',
       enabled: true,
       virgin_available: false,
-      price_per_100_ml: 0.0,
+      price_per_100_ml: 0,
       image: '',
       default_image: '',
       ingredients: [],

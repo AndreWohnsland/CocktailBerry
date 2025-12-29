@@ -80,6 +80,28 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     };
   }, [isOpen, closeWindow]);
 
+  const chooseButton = (status: string) => {
+    if (status === 'WAITING_FOR_NFC') {
+      return (
+        <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={handleCancelPayment}>
+          {t('cancel')}
+        </button>
+      );
+    } else if (status === 'IN_PROGRESS') {
+      return (
+        <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={stopCocktail}>
+          {t('cancel')}
+        </button>
+      );
+    } else {
+      return (
+        <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={closeWindow}>
+          {t('close')}
+        </button>
+      );
+    }
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -106,21 +128,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         ) : (
           <ProgressBar className='w-full min-h-20' fillPercent={currentProgress} />
         )}
-        <div className='text-center mt-8'>
-          {currentStatus === 'WAITING_FOR_NFC' ? (
-            <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={handleCancelPayment}>
-              {t('cancel')}
-            </button>
-          ) : currentStatus === 'IN_PROGRESS' ? (
-            <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={stopCocktail}>
-              {t('cancel')}
-            </button>
-          ) : (
-            <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={closeWindow}>
-              {t('close')}
-            </button>
-          )}
-        </div>
+        <div className='text-center mt-8'>{chooseButton(currentStatus)}</div>
       </div>
     </Modal>
   );
