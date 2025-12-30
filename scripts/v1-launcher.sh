@@ -18,6 +18,6 @@ create_or_update_venv() {
 }
 
 export QT_SCALE_FACTOR=1
-cd ~/CocktailBerry/ || echo "Did not find ~/CocktailBerry/"
+cd "$HOME/CocktailBerry/" || echo "Did not find ~/CocktailBerry/"
 create_or_update_venv
-uv run --python "$(python -V | awk '{print $2}')" --all-extras runme.py
+uv run --python "$(python -V | awk '{print $2}')" --extra v1 --extra nfc runme.py

@@ -30,7 +30,7 @@ git clone https://github.com/AndreWohnsland/CocktailBerry.git
 cd CocktailBerry
 # you could use pip install -r requirements.txt, but using uv is recommended
 uv venv --system-site-packages
-uv sync --all-extras
+uv sync --extra v1
 # you can get help with python runme.py --help
 uv run runme.py
 ```

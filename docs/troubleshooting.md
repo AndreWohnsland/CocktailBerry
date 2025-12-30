@@ -95,9 +95,9 @@ A better way would be to add the user to the gpio/other needed groups, so you ca
 
 ```bash
 # for v1: change this line
-# uv run --python "$(python -V | awk '{print $2}')" --all-extras runme.py
+# uv run --python "$(python -V | awk '{print $2}')" --extra v1 runme.py
 # into:
-uv sync --python "$(python -V | awk '{print $2}')" --all-extras
+uv sync --python "$(python -V | awk '{print $2}')" --extra v1
 sudo -E .venv/bin/python runme.py
 # for v2: change this line
 # uv run api.py
