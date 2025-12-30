@@ -1,6 +1,12 @@
 #!/bin/bash
 
 echo "> Installing Compose"
+# check if compose is already installed, if so skip installation
+if docker compose version &>/dev/null; then
+  echo "> Docker Compose is already installed, skipping installation"
+  exit 0
+fi
+
 DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
 mkdir -p "$DOCKER_CONFIG/cli-plugins"
 # in the future, sudo apt install docker-compose-plugin should work
