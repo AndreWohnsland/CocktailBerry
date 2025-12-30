@@ -167,7 +167,11 @@ bash scripts/setup_usb_nfc.sh || true
 # shellcheck disable=SC2164
 cd ~/CocktailBerry
 echo "~~ Setting up and installing CocktailBerry ~~"
-bash scripts/setup.sh ${V2_FLAG:+v2}
+if [ "$V2_FLAG" = true ]; then
+  bash scripts/setup.sh v2
+else
+  bash scripts/setup.sh
+fi
 
 echo "~~ Register successful installation: ~~"
 OS_INFO=$(sed -nr 's/^PRETTY_NAME="(.+)"/\1/p' /etc/os-release)
