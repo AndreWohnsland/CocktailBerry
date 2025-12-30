@@ -47,7 +47,7 @@ Existing installations should update to at least version v2.0.0 to have this com
 ```bash
 cd ~/CocktailBerry
 # optional with --ssl to enable https
-uv run --python "$(python -V | awk '{print $2}')" --all-extras setup-web
+uv run --python "$(python -V | awk '{print $2}')" --extra v1 setup-web
 ```
 
 This will set up the web interface as the default interface and start it instead of the old main program.

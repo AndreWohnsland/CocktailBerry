@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: 🔍 Lint with ruff
-        run: uv run --all-extras ruff check src
+        run: uv run ruff check src
 
   mypy:
     runs-on: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install additional PyQt5 dependency
-        run: uv export --all-extras --no-hashes --format requirements-txt > mypy_requirements.txt
+        run: uv export --extra v1 --no-hashes --format requirements-txt > mypy_requirements.txt
       - name: 🔍 Lint with MyPy
         run: |
           pip install -r mypy_requirements.txt
