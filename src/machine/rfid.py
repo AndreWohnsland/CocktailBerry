@@ -18,7 +18,7 @@ _ERROR_SELECTION_NOT_POSSIBLE = {
     "USB": _BASE_NOT_POSSIBLE.format("pyscard"),
 }
 
-_RFID_TYPES: tuple[str, ...] = ("PiicoDev", "MFRC522", "USB")
+_RFID_TYPES: tuple[str, ...] = ("No", "PiicoDev", "MFRC522", "USB")
 _NO_MODULE: dict[str, bool] = dict.fromkeys(_RFID_TYPES, True)
 _ERROR: dict[str, Optional[str]] = dict.fromkeys(_RFID_TYPES)
 
@@ -57,7 +57,7 @@ class RFIDReader:
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
             cls.is_active = False
-            err = _ERROR[cfg.RFID_READER]
+            err = _ERROR.get(cfg.RFID_READER, None)
             if err is not None:
                 _logger.log_event("ERROR", err)
             cls.rfid = cls._select_rfid()
