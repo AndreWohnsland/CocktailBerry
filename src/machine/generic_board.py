@@ -37,6 +37,12 @@ class GenericController(PinController):
                 f"<i> Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}"
             )
             self.dev_displayed = True
+            if self.devenvironment:
+                logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
+                logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
+
+        if self.devenvironment:
+            return
 
         # high is also output, but other default value
         init_value = "high" if self.inverted else "out"
@@ -46,13 +52,10 @@ class GenericController(PinController):
         if is_input:
             init_value = "in"
             add_args["bias"] = "pull_down" if pull_down else "pull_up"
+
         try:
-            if not self.devenvironment:
-                for pin in pin_list:
-                    self.gpios[pin] = GPIO(pin, init_value, **add_args)
-            else:
-                logger.log_event("WARNING", "Could not import periphery.GPIO. Will not be able to control pins")
-                logger.log_event("WARNING", "Try to install python-periphery and run program as root.")
+            for pin in pin_list:
+                self.gpios[pin] = GPIO(pin, init_value, **add_args)
         except GPIOError as e:
             self.devenvironment = True
             time_print("<i> Could not set up GPIOs, cannot control Pumps! Will set devenvironment on.")
