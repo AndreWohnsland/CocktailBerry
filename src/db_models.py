@@ -202,7 +202,7 @@ class DbResourceUsage(Base):
     )
     cpu_usage: Mapped[float] = mapped_column(nullable=False, name="CPU_Usage")
     ram_usage: Mapped[float] = mapped_column(nullable=False, name="RAM_Usage")
-    session: Mapped[int] = mapped_column(nullable=False, name="Session")
+    session: Mapped[int] = mapped_column(nullable=False, name="Session", index=True)
 
     def __init__(
         self,
