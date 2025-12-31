@@ -11,6 +11,7 @@ import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import LockScreen from '../common/LockScreen';
 import SearchBar from '../common/SearchBar';
+import UserDisplay from '../common/UserDisplay';
 import CocktailSelection from './CocktailSelection';
 import SingleIngredientSelection from './SingleIngredientSelection';
 
@@ -63,7 +64,7 @@ const CocktailList: React.FC = () => {
   const virginToggleButton = (
     <button
       onClick={() => setShowOnlyVirginPossible(!showOnlyVirginPossible)}
-      className={`flex items-center justify-center p-2 !border pointer-events-auto ${
+      className={`h-10 w-10 flex items-center justify-center p-2 !border pointer-events-auto ${
         showOnlyVirginPossible ? 'button-secondary' : 'button-primary'
       }`}
     >
@@ -73,6 +74,7 @@ const CocktailList: React.FC = () => {
 
   return (
     <div className='px-2 centered max-w-7xl'>
+      {(config.PAYMENT_ACTIVE ?? false) && <UserDisplay user={user} />}
       <SearchBar search={search} setSearch={setSearch} afterInput={virginToggleButton} />
       <div className='flex flex-wrap gap-3 justify-center items-center w-full mb-4'>
         {displayedCocktails

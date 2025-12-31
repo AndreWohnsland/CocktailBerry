@@ -65,7 +65,7 @@ export const WithAfterInput: Story = {
         <SearchBar
           search={search}
           setSearch={setSearch}
-          afterInput={<button className='button-secondary p-2'>Filter</button>}
+          afterInput={<button className='button-secondary px-2 h-10'>Filter</button>}
           initiallyOpen={args.initiallyOpen}
         />
       </div>
