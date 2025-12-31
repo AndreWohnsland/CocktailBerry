@@ -68,7 +68,7 @@ class NFCPaymentHandler:
         time_print("Payment successful, starting cocktail preparation")
         # we will get blocking api call behavior if the callbacks are still fired during preparation
         with self.nfc_service.paused_callbacks():
-            await asyncio.to_thread(maker.prepare_cocktail, cocktail)
+            await asyncio.to_thread(maker.prepare_cocktail, cocktail=cocktail, additional_message=booking.message)
 
         if cfg.PAYMENT_LOGOUT_AFTER_PREPARATION:
             self.nfc_service.logout_user()
