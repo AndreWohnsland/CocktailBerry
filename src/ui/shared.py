@@ -50,11 +50,12 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
         DP_CONTROLLER.standard_box(booking.message, close_time=60)
         return False, booking.message
 
-    result, message = maker.prepare_cocktail(cocktail, w)
+    additional_message = "" if booking.result == CocktailBooking.Result.INACTIVE else booking.message
+    result, message = maker.prepare_cocktail(cocktail, w, additional_message)
     # show dialog in case of cancel or if there are handadds
     if result == PrepareResult.CANCELED:
         DP_CONTROLLER.say_cocktail_canceled()
-    elif len(cocktail.handadds) > 0:
+    elif len(message) > 0:
         DP_CONTROLLER.standard_box(message, close_time=60)
 
     # Otherwise clean up the rest
