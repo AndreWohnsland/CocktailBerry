@@ -179,5 +179,9 @@
     "numberIngredients": "Anzahl Zutaten:",
     "optimize": "Optimieren",
     "confirmCalculation": "Bei großen Datenbanken kann dies etwas dauern. Fortfahren?"
+  },
+  "userDisplay": {
+    "noUser": "Kein NFC",
+    "userBalance": "Guthaben: {{balance}} €"
   }
 }
