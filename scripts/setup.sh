@@ -92,7 +92,7 @@ else
   rm "$HOME/launcher.sh"
   # script source will be v1-launcher.sh or v2-launcher.sh depending on the flag
   script_source="v1-launcher.sh"
-  if [ "$V2_FLAG" = true ]; then
+  if [[ "$V2_FLAG" = true ]]; then
     script_source="v2-launcher.sh"
   fi
   echo "> (Re-)Generating launcher script at: ~/launcher.sh, will use $script_source"
@@ -101,7 +101,7 @@ else
 
   echo "> Installing needed Python libraries, this may take a while depending on your OS (especially in v1), so it is time for a coffee break :)"
   # v1 needs to sync with system python (for pyqt)
-  if [ "$V2_FLAG" = true ]; then
+  if [[ "$V2_FLAG" = true ]]; then
     uv sync --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
   else
     echo "> Installing PyQt"

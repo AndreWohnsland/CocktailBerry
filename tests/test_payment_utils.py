@@ -156,7 +156,6 @@ class TestFilterCocktailsBalance:
     def test_user_can_afford_cocktail(self, patch_cfg: PatchCfgType) -> None:
         """User with sufficient balance should have cocktail marked as allowed."""
         user = create_test_user(balance=20.0, can_get_alcohol=True)
-        # 5.0 / 100 * 300 = 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg():
             result = filter_cocktails_by_user(user, cocktails)
@@ -166,7 +165,6 @@ class TestFilterCocktailsBalance:
     def test_user_cannot_afford_cocktail(self, patch_cfg: PatchCfgType) -> None:
         """User with insufficient balance should have cocktail marked as not allowed."""
         user = create_test_user(balance=10.0, can_get_alcohol=True)
-        # 5.0 / 100 * 300 = 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg():
             result = filter_cocktails_by_user(user, cocktails)
@@ -176,7 +174,6 @@ class TestFilterCocktailsBalance:
     def test_user_balance_exactly_matches_price(self, patch_cfg: PatchCfgType) -> None:
         """User with balance exactly matching price should have cocktail allowed."""
         user = create_test_user(balance=15.0, can_get_alcohol=True)
-        # 5.0 / 100 * 300 = 15.0, rounded up to 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg():
             result = filter_cocktails_by_user(user, cocktails)
@@ -186,7 +183,6 @@ class TestFilterCocktailsBalance:
     def test_user_balance_just_below_price(self, patch_cfg: PatchCfgType) -> None:
         """User with balance just below price should have cocktail not allowed."""
         user = create_test_user(balance=14.9, can_get_alcohol=True)
-        # 5.0 / 100 * 300 = 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg():
             result = filter_cocktails_by_user(user, cocktails)
@@ -313,7 +309,6 @@ class TestFilterCocktailsVolumeConfig:
 
     def test_empty_prepare_volume_uses_recipe_amount(self, patch_cfg: PatchCfgType) -> None:
         """When MAKER_PREPARE_VOLUME is empty, should use recipe amount."""
-        # price = 5.0 / 100 * 300 = 15.0
         user = create_test_user(balance=20.0, can_get_alcohol=True)
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg(MAKER_USE_RECIPE_VOLUME=False, MAKER_PREPARE_VOLUME=[]):

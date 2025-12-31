@@ -24,7 +24,7 @@ done
 # Welcome and system updates
 echo "~~~~~~~ CocktailBerry All In One Installation Script ~~~~~~~~"
 echo "> Source taken from: https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh"
-if [ "$V2_FLAG" = true ]; then
+if [[ "$V2_FLAG" = true ]]; then
   echo "> You are installing the v2 (Web) version of CocktailBerry"
 else
   echo "> You are installing the v1 (Qt) version of CocktailBerry"
@@ -133,7 +133,7 @@ if [[ -d ~/CocktailBerry ]]; then
   mkdir -p "$target_backup_folder"
   for file in Cocktail_database.db custom_config.yaml; do
     src=~/CocktailBerry/"$file"
-    if [ -e "$src" ]; then
+    if [[ -e "$src" ]]; then
       cp -p "$src" "$target_backup_folder/$file"
     fi
   done
@@ -145,7 +145,7 @@ git clone https://github.com/AndreWohnsland/CocktailBerry.git
 # shellcheck disable=SC2164
 cd ~/CocktailBerry
 # if in dev mode, checkout the dev branch
-if [ "$DEV_FLAG" = true ]; then
+if [[ "$DEV_FLAG" = true ]]; then
   echo "~~ [INFO] DEV flag is set, checking out the dev branch ~~"
   git checkout dev
 fi
@@ -167,7 +167,7 @@ bash scripts/setup_usb_nfc.sh || true
 # shellcheck disable=SC2164
 cd ~/CocktailBerry
 echo "~~ Setting up and installing CocktailBerry ~~"
-if [ "$V2_FLAG" = true ]; then
+if [[ "$V2_FLAG" = true ]]; then
   bash scripts/setup.sh v2
 else
   bash scripts/setup.sh
@@ -181,7 +181,7 @@ fi
 curl -X 'POST' 'https://api.cocktailberry.org/api/v1/public/installation' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"os_version": "'"$OS_INFO"'"}'
 echo ""
 
-if [ "$V2_FLAG" = true ]; then
+if [[ "$V2_FLAG" = true ]]; then
   echo "~~ Finalizing Web Setup ~~"
   # shellcheck disable=SC2164
   cd ~/CocktailBerry
