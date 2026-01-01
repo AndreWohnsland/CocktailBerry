@@ -26,7 +26,7 @@ try:
     from PiicoDev_RFID import PiicoDev_RFID
 
     _NO_MODULE["PiicoDev"] = False
-except (AttributeError, ModuleNotFoundError):
+except (AttributeError, ModuleNotFoundError, RuntimeError):
     _ERROR["PiicoDev"] = _ERROR_SELECTION_NOT_POSSIBLE["PiicoDev"]
 
 try:
@@ -34,7 +34,7 @@ try:
     from mfrc522 import SimpleMFRC522  # type: ignore
 
     _NO_MODULE["MFRC522"] = False
-except (AttributeError, ModuleNotFoundError):
+except (AttributeError, ModuleNotFoundError, RuntimeError):
     _ERROR["MFRC522"] = _ERROR_SELECTION_NOT_POSSIBLE["MFRC522"]
 
 try:
@@ -46,7 +46,7 @@ try:
     from smartcard.util import toHexString
 
     _NO_MODULE["USB"] = False
-except (AttributeError, ModuleNotFoundError):
+except (AttributeError, ModuleNotFoundError, RuntimeError):
     _ERROR["USB"] = _ERROR_SELECTION_NOT_POSSIBLE["USB"]
 
 
