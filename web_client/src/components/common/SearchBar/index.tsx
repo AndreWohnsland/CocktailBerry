@@ -31,6 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput, in
       <div className='flex-grow'></div>
       <input
         type='text'
+        name='searchInput'
         placeholder={t('search')}
         value={search ?? ''}
         onChange={(e) => setSearch(e.target.value)}

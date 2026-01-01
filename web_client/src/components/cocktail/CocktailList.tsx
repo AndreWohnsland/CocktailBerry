@@ -74,8 +74,12 @@ const CocktailList: React.FC = () => {
 
   return (
     <div className='px-2 centered max-w-7xl'>
-      {(config.PAYMENT_ACTIVE ?? false) && <UserDisplay user={user} />}
-      <SearchBar search={search} setSearch={setSearch} afterInput={virginToggleButton} />
+      <div className='relative w-full h-10 sticky-top mb-2'>
+        {(config.PAYMENT_ACTIVE ?? false) && <UserDisplay user={user} />}
+        <div className='absolute right-0 top-0 w-full'>
+          <SearchBar search={search} setSearch={setSearch} afterInput={virginToggleButton} />
+        </div>
+      </div>
       <div className='flex flex-wrap gap-3 justify-center items-center w-full mb-4'>
         {displayedCocktails
           ?.sort((a, b) => a.name.localeCompare(b.name))
