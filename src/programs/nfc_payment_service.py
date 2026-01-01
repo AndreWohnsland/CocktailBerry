@@ -174,6 +174,13 @@ class NFCPaymentService:
         This should be called once at program start and runs continuously.
         Callbacks can be added/removed dynamically without stopping the sensing.
         """
+        # need to check that the right nfc reader is connected only USB is supported
+        if cfg.RFID_READER == "No":
+            msg = "No NFC reader type specified. Disabling payment service."
+            time_print(msg)
+            _logger.error(msg)
+            cfg.PAYMENT_ACTIVE = False
+            return
         time_print("Starting continuous NFC sensing for NFCPaymentService.")
         self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
 
