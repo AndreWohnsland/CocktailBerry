@@ -182,6 +182,6 @@
   },
   "userDisplay": {
     "noUser": "Kein NFC",
-    "userBalance": "Guthaben: {{balance}} €"
+    "userBalance": "{{balance}} €"
   }
 }
