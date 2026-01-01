@@ -109,7 +109,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         ADDONS.start_trigger_loop(self)
         # start at the cocktail list view
         self.switch_to_cocktail_list()
-        NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
+        if cfg.PAYMENT_ACTIVE:
+            NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
 
     def update_check(self) -> None:
         """Check if there is an update and asks to update, if exists."""
