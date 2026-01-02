@@ -1,10 +1,14 @@
+import os
 import time
+from collections.abc import Iterator
+from itertools import cycle
 from threading import Thread
 from typing import Callable, ClassVar, Optional
 
 from src.config.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.machine.interface import RFIDController
+from src.utils import time_print
 
 _logger = LoggerHandler("RFIDReader")
 
@@ -66,6 +70,9 @@ class RFIDReader:
     @classmethod
     def _select_rfid(cls) -> Optional[RFIDController]:
         """Select the controller defined in config."""
+        if "MOCK_RFID" in os.environ:
+            time_print("[WARNING]: Using mock RFID reader.")
+            return _MockReader()
         no_module = _NO_MODULE.get(cfg.RFID_READER, True)
         if no_module:
             return None
@@ -200,4 +207,27 @@ class _UsbReader(RFIDController):
 
     def write_card(self, text: str) -> bool:
         _logger.log_event("WARNING", "Writing to USB RFID is not supported.")
+        return False
+
+
+class _MockReader(RFIDController):
+    """Mock RFID reader for testing purposes."""
+
+    def __init__(self) -> None:
+        self.mocked_ids: Iterator[str] = cycle(["33DFE41A", "9A853011"])
+        self.current_id: Optional[str] = None
+        self.last_changed: float = 0
+
+    def read_card(self) -> tuple[Optional[str], Optional[str]]:
+        text = "Mocked RFID Data"  # we will not use this usually
+        # change the id every 1 minute
+        time_window_sec = 60
+        time.sleep(5)
+        if time.time() - self.last_changed > time_window_sec:
+            self.current_id = next(self.mocked_ids)
+            self.last_changed = time.time()
+        return text, self.current_id
+
+    # Do not support writing in mock (writing is almost not used in application)
+    def write_card(self, text: str) -> bool:
         return False

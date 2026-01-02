@@ -1,8 +1,11 @@
+import os
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from enum import StrEnum
+from itertools import cycle
 from threading import Timer
+from typing import Protocol
 
 import requests
 from pydantic.dataclasses import dataclass as api_dataclass
@@ -118,17 +121,7 @@ class NFCPaymentService:
             cls._is_polling: bool = False
             cls._auto_logout_timer: Timer | None = None
             cls._pause_callbacks: bool = False
-            cls.api_client = requests.Session()
-            cls.api_client.headers.update({"x-api-key": cfg.PAYMENT_SECRET_KEY})
-            cls.api_base_url = f"{cfg.PAYMENT_SERVICE_URL}/api"
-            cls.response_code_errors: dict[int, CocktailBooking] = {
-                401: CocktailBooking.api_interface_conflict(),  # no key or invalid key
-                402: CocktailBooking.insufficient_balance(),
-                403: CocktailBooking.too_young(),
-                404: CocktailBooking.no_user_logged_in(),
-                422: CocktailBooking.api_interface_conflict(),
-                500: CocktailBooking.api_not_reachable(),
-            }
+            cls._api_client = _choose_payment_service_client()
         return cls._instance
 
     def __del__(self) -> None:
@@ -213,20 +206,7 @@ class NFCPaymentService:
 
     def get_user_for_id(self, nfc_id: str) -> User | None:
         """Get the user associated with the given NFC ID."""
-        try:
-            resp = self.api_client.get(f"{self.api_base_url}/users/{nfc_id}")
-            if resp.status_code == 401:  # noqa: PLR2004
-                msg = "Wrong api key when fetching user data. Check PAYMENT_SECRET_KEY."
-                time_print(msg)
-                _logger.warning(msg)
-            resp.raise_for_status()
-            return User(**resp.json())
-        except requests.exceptions.ConnectionError as e:
-            time_print(f"API not reachable when fetching user for NFC ID: {nfc_id}, error: {e}")
-            return None
-        except Exception as e:
-            time_print(f"Failed to get user for NFC ID: {nfc_id}, error: {e}")
-            return None
+        return self._api_client.get_user_for_id(nfc_id)
 
     def _handle_nfc_read(self, _: str, _id: str) -> None:
         """Handle NFC read events."""
@@ -254,6 +234,64 @@ class NFCPaymentService:
         price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
         if user.balance < price:
             return CocktailBooking.insufficient_balance()
+        return self._api_client.book_cocktail_for_user(user, cocktail, price)
+
+
+class _ExternalServiceClient(Protocol):
+    def get_user_for_id(self, nfc_id: str) -> User | None: ...
+
+    def book_cocktail_for_user(self, user: User, cocktail: Cocktail, price: float) -> CocktailBooking: ...
+
+
+class _MockPaymentService:
+    def __init__(self) -> None:
+        self.users: dict[str, User] = {}
+        self._adult_iterator = cycle([True, False])
+
+    def get_user_for_id(self, nfc_id: str) -> User | None:
+        user = self.users.get(nfc_id)
+        if user is None:
+            user = User(nfc_id=nfc_id, balance=20.0, is_adult=next(self._adult_iterator))
+        self.users[nfc_id] = user
+        return user
+
+    def book_cocktail_for_user(self, user: User, cocktail: Cocktail, price: float) -> CocktailBooking:
+        user.balance -= price
+        time_print(f"Cocktail {cocktail.name} booked. New balance: {user.balance}")
+        return CocktailBooking.successful_booking(current_balance=user.balance)
+
+
+class _ApiPaymentService:
+    def __init__(self) -> None:
+        self.api_client = requests.Session()
+        self.api_client.headers.update({"x-api-key": cfg.PAYMENT_SECRET_KEY})
+        self.api_base_url = f"{cfg.PAYMENT_SERVICE_URL}/api"
+        self.response_code_errors: dict[int, CocktailBooking] = {
+            401: CocktailBooking.api_interface_conflict(),  # no key or invalid key
+            402: CocktailBooking.insufficient_balance(),
+            403: CocktailBooking.too_young(),
+            404: CocktailBooking.no_user_logged_in(),
+            422: CocktailBooking.api_interface_conflict(),
+            500: CocktailBooking.api_not_reachable(),
+        }
+
+    def get_user_for_id(self, nfc_id: str) -> User | None:
+        try:
+            resp = self.api_client.get(f"{self.api_base_url}/users/{nfc_id}")
+            if resp.status_code == 401:  # noqa: PLR2004
+                msg = "Wrong api key when fetching user data. Check PAYMENT_SECRET_KEY."
+                time_print(msg)
+                _logger.warning(msg)
+            resp.raise_for_status()
+            return User(**resp.json())
+        except requests.exceptions.ConnectionError as e:
+            time_print(f"API not reachable when fetching user for NFC ID: {nfc_id}, error: {e}")
+            return None
+        except Exception as e:
+            time_print(f"Failed to get user for NFC ID: {nfc_id}, error: {e}")
+            return None
+
+    def book_cocktail_for_user(self, user: User, cocktail: Cocktail, price: float) -> CocktailBooking:
         try:
             resp = self.api_client.post(
                 f"{self.api_base_url}/users/{user.nfc_id}/cocktails/book",
@@ -276,3 +314,10 @@ class NFCPaymentService:
             return CocktailBooking.api_not_reachable()
         time_print(f"Cocktail {cocktail.name} booked. New balance: {user.balance}")
         return CocktailBooking.successful_booking(current_balance=user.balance)
+
+
+def _choose_payment_service_client() -> _ExternalServiceClient:
+    if "MOCK_PAYMENT_SERVICE" in os.environ:
+        time_print("[WARNING]: Using mock payment service.")
+        return _MockPaymentService()
+    return _ApiPaymentService()
