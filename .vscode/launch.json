@@ -2,28 +2,12 @@
   "version": "2.0.0",
   "configurations": [
     {
-      "name": "Ruff Linting",
-      "type": "shell",
-      "request": "launch",
-      "script": "uv run ruff check src",
-      "cwd": "${cwd}"
-    },
-    {
       "name": "Python: Current file",
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
       "justMyCode": true
-    },
-    {
-      "name": "Calibration program over CLI",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/runme.py",
-      "console": "integratedTerminal",
-      "justMyCode": true,
-      "args": ["-c"]
     },
     {
       "name": "Main program in debug mode over CLI",
@@ -35,12 +19,37 @@
       "args": ["-d"]
     },
     {
+      "name": "[MOCKED] Main program in debug mode over CLI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/runme.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["-d"],
+      "env": {
+        "MOCK_RFID": "1",
+        "MOCK_PAYMENT_SERVICE": "1"
+      }
+    },
+    {
       "name": "Run Backend over CLI",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/api.py",
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "[MOCKED] Run Backend over CLI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/api.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "MOCK_RFID": "1",
+        "MOCK_PAYMENT_SERVICE": "1"
+      }
     },
     {
       "name": "Debug FastApi (Backend) over uvicorn",
