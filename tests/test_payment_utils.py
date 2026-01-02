@@ -270,7 +270,6 @@ class TestFilterCocktailsVolumeConfig:
     def test_uses_recipe_volume_when_configured(self, patch_cfg: PatchCfgType) -> None:
         """When MAKER_USE_RECIPE_VOLUME is True, should use cocktail's own amount."""
         user = create_test_user(balance=20.0, can_get_alcohol=True)
-        # 5.0 / 100 * 300 = 15.0
         cocktails = [create_test_cocktail(price_per_100_ml=5.0, amount=300)]
         with patch_cfg(MAKER_USE_RECIPE_VOLUME=True, MAKER_PREPARE_VOLUME=[150]):
             result = filter_cocktails_by_user(user, cocktails)
