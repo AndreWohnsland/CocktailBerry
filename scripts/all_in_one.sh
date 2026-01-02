@@ -29,6 +29,11 @@ if [[ "$V2_FLAG" = true ]]; then
 else
   echo "> You are installing the v1 (Qt) version of CocktailBerry"
 fi
+
+# It otherwise might be that the blue window blocks everything and user needs to cancel it
+echo "~~ Setting needrestart to auto-restart services (at /etc/needrestart/needrestart.conf) ~~"
+sudo sed -i 's/#\$nrconf{restart} = .*/$nrconf{restart} = "a";/' /etc/needrestart/needrestart.conf || true
+
 echo "~~ Updating system to latest version, depending on your system age, this may take some time ... ~~"
 sudo apt-get update && sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
