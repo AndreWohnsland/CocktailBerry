@@ -43,7 +43,7 @@ const OptionWindow = () => {
     const { data, fileName } = await createBackup();
     const blob = new Blob([data], { type: 'application/octet-stream' });
 
-    if (window.showSaveFilePicker && window.isSecureContext) {
+    if (globalThis.window.isSecureContext) {
       const options = {
         suggestedName: fileName,
         types: [
@@ -54,7 +54,7 @@ const OptionWindow = () => {
         ],
       };
 
-      const fileHandle = await window.showSaveFilePicker(options);
+      const fileHandle = await globalThis.window.showSaveFilePicker(options);
       const writable = await fileHandle.createWritable();
       await writable.write(blob);
       await writable.close();
@@ -69,15 +69,15 @@ const OptionWindow = () => {
     a.download = fileName;
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    a.remove();
     URL.revokeObjectURL(url);
 
     return t('options.backupSavedSuccessfully', { fileName });
   };
 
   const uploadBackupClick = async () => {
-    if (window.showOpenFilePicker && window.isSecureContext) {
-      const [fileHandle] = await window.showOpenFilePicker();
+    if (globalThis.window.isSecureContext) {
+      const [fileHandle] = await globalThis.window.showOpenFilePicker();
       const file = await fileHandle.getFile();
       return uploadBackup(file);
     }
