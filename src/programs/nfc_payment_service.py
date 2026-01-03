@@ -180,17 +180,17 @@ class NFCPaymentService:
         # skip noisy logs: it is not planned to "update" callbacks since name should point to unique function
         if name in self._user_callbacks:
             return
-        time_print(f"Adding callback: {name}")
-        self._user_callbacks[name] = callback
+        _logger.debug(f"Adding callback: {name}")
+        self._user_callbacks[name]= callback
 
     def remove_callback(self, name: str) -> None:
         """Remove a specific callback by name."""
-        time_print(f"Removing callback: {name}")
+        _logger.debug(f"Removing callback: {name}")
         self._user_callbacks.pop(name, None)
 
     def remove_all_callbacks(self) -> None:
         """Remove all registered callbacks."""
-        time_print("Removing all user callbacks.")
+        _logger.debug("Removing all user callbacks.")
         self._user_callbacks.clear()
 
     @contextmanager
@@ -208,15 +208,15 @@ class NFCPaymentService:
 
     def _handle_nfc_read(self, _: str, _id: str) -> None:
         """Handle NFC read events."""
-        time_print(f"NFC ID read: {_id}")
+        _logger.debug(f"NFC ID read: {_id}")
         self.user = self.get_user_for_id(_id)
         self._cancel_auto_logout_timer()
 
         if self.user is None:
-            time_print("No user found for this NFC ID.")
+            _logger.debug("No user found for this NFC ID.")
             self.uid = None
         else:
-            time_print(f"User found: for NFC ID: {_id}")
+            _logger.debug(f"User found: for NFC ID: {_id}")
             self.uid = _id
 
         self._start_auto_logout_timer()
@@ -255,7 +255,7 @@ class _MockPaymentService:
 
     def book_cocktail_for_user(self, user: User, cocktail: Cocktail, price: float) -> CocktailBooking:
         user.balance -= price
-        time_print(f"Cocktail {cocktail.name} booked. New balance: {user.balance}")
+        _logger.info(f"Cocktail {cocktail.name} booked. New balance: {user.balance}")
         return CocktailBooking.successful_booking(current_balance=user.balance)
 
 
@@ -278,15 +278,14 @@ class _ApiPaymentService:
             resp = self.api_client.get(f"{self.api_base_url}/users/{nfc_id}")
             if resp.status_code == 401:  # noqa: PLR2004
                 msg = "Wrong api key when fetching user data. Check PAYMENT_SECRET_KEY."
-                time_print(msg)
                 _logger.warning(msg)
             resp.raise_for_status()
             return User(**resp.json())
         except requests.exceptions.ConnectionError as e:
-            time_print(f"API not reachable when fetching user for NFC ID: {nfc_id}, error: {e}")
+            _logger.warning(f"API not reachable when fetching user for NFC ID: {nfc_id}, error: {e}")
             return None
         except Exception as e:
-            time_print(f"Failed to get user for NFC ID: {nfc_id}, error: {e}")
+            _logger.error(f"Failed to get user for NFC ID: {nfc_id}, error: {e}")
             return None
 
     def book_cocktail_for_user(self, user: User, cocktail: Cocktail, price: float) -> CocktailBooking:
@@ -308,14 +307,14 @@ class _ApiPaymentService:
             resp.raise_for_status()
             user = User(**resp.json())
         except Exception as e:
-            time_print(f"API not reachable: {e}")
+            _logger.warning(f"API not reachable: {e}")
             return CocktailBooking.api_not_reachable()
-        time_print(f"Cocktail {cocktail.name} booked. New balance: {user.balance}")
+        _logger.info(f"Cocktail {cocktail.name} booked. New balance: {user.balance}")
         return CocktailBooking.successful_booking(current_balance=user.balance)
 
 
 def _choose_payment_service_client() -> _ExternalServiceClient:
     if "MOCK_PAYMENT_SERVICE" in os.environ:
-        time_print("[WARNING]: Using mock payment service.")
+        _logger.warning("Using mock payment service.")
         return _MockPaymentService()
     return _ApiPaymentService()

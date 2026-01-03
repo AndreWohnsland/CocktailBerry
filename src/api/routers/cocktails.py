@@ -43,10 +43,11 @@ from src.models import CocktailStatus, PrepareResult
 from src.payment_utils import filter_cocktails_by_user
 from src.programs.nfc_payment_service import User
 from src.tabs import maker
-from src.utils import time_print
+from src.logger_handler import LoggerHandler
 
 _prefix = "/cocktails"
 router = APIRouter(tags=["cocktails"], prefix=_prefix)
+_logger = LoggerHandler("cocktails_router")
 protected_maker_router = APIRouter(
     tags=["cocktails", "maker protected"],
     prefix=_prefix,
@@ -164,7 +165,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 @protected_maker_router.post("/prepare/stop", tags=["preparation"], summary="Stop the current cocktail preparation")
 async def stop_cocktail() -> ApiMessage:
     shared.cocktail_status.status = PrepareResult.CANCELED
-    time_print("Canceling the cocktail!")
+    _logger.info("Canceling the cocktail!")
     return ApiMessage(message=DH.get_translation("preparation_cancelled"))
 
 
@@ -179,7 +180,7 @@ async def cancel_payment(
     booking = payment_handler.cancel_payment()
     shared.cocktail_status.status = PrepareResult.CANCELED
     shared.cocktail_status.message = booking.message
-    time_print("Canceling the payment!")
+    _logger.info("Canceling the payment!")
     return ApiMessage(message=DH.get_translation("payment_canceled"))
 
 
@@ -324,7 +325,7 @@ async def websocket_payment_user(
                 }
             )
         except Exception as e:
-            time_print(f"Error sending user update via websocket: {e}")
+            _logger.error(f"Error sending user update via websocket: {e}")
 
     callback_name = f"websocket_{id(websocket)}"
 

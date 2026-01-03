@@ -5,10 +5,12 @@ from functools import lru_cache
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
+from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
 from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService, User
 from src.tabs import maker
-from src.utils import time_print
+
+_logger = LoggerHandler("nfc_payment_handler")
 
 
 class NFCPaymentHandler:
@@ -27,7 +29,7 @@ class NFCPaymentHandler:
         3. Processing payment on successful NFC scan
         4. Starting cocktail preparation on successful payment
         """
-        time_print("Starting NFC payment flow")
+        _logger.info("Starting NFC payment flow")
         booking = CocktailBooking.no_user_logged_in()
         shared.cocktail_status.message = booking.message
         shared.cocktail_status.status = PrepareResult.WAITING_FOR_NFC
@@ -35,7 +37,7 @@ class NFCPaymentHandler:
 
         def nfc_callback(user: User | None, nfc_id: str) -> None:
             nonlocal booking
-            time_print(f"NFC callback triggered with user: {user}, id: {nfc_id}")
+            _logger.debug(f"NFC callback triggered with user: {user}, id: {nfc_id}")
             booking = self.nfc_service.book_cocktail_for_user(user, cocktail)
 
         self.nfc_service.add_callback("payment_flow", nfc_callback)
@@ -54,18 +56,18 @@ class NFCPaymentHandler:
 
         if self._payment_cancelled or (elapsed >= timeout):
             booking = CocktailBooking.canceled()
-            time_print("Payment cancelled by user")
+            _logger.info("Payment cancelled by user")
             shared.cocktail_status.message = booking.message
             shared.cocktail_status.status = PrepareResult.CANCELED
             return
 
         if booking.result != CocktailBooking.Result.SUCCESS:
-            time_print(f"Payment failed: {booking.message}")
+            _logger.info(f"Payment failed: {booking.message}")
             shared.cocktail_status.status = PrepareResult.CANCELED
             shared.cocktail_status.message = booking.message
             return
 
-        time_print("Payment successful, starting cocktail preparation")
+        _logger.info("Payment successful, starting cocktail preparation")
         # we will get blocking api call behavior if the callbacks are still fired during preparation
         with self.nfc_service.paused_callbacks():
             await asyncio.to_thread(maker.prepare_cocktail, cocktail=cocktail, additional_message=booking.message)
@@ -75,7 +77,7 @@ class NFCPaymentHandler:
 
     def cancel_payment(self) -> CocktailBooking:
         """Cancel the ongoing payment flow."""
-        time_print("Cancelling NFC payment flow")
+        _logger.info("Cancelling NFC payment flow")
         self._payment_cancelled = True
         self.nfc_service.remove_callback("payment_flow")
         return CocktailBooking.canceled()
