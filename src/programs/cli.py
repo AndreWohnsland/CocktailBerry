@@ -18,7 +18,7 @@ from src.programs.cocktailberry import run_cocktailberry
 from src.programs.common_cli import register_common_commands
 from src.programs.config_window import run_config_window
 from src.resource_stats import start_resource_tracker
-from src.utils import generate_custom_style_file, time_print
+from src.utils import generate_custom_style_file
 
 _logger = LoggerHandler("cocktailberry")
 cli = typer.Typer(add_completion=False)
@@ -52,14 +52,14 @@ def main(
     except ConfigError as e:
         _logger.error(f"Config Error: {e}")
         _logger.log_exception(e)
-        time_print(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
-        time_print("Opening the config window to correct the error.")
+        _logger.error(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
+        _logger.info("Opening the config window to correct the error.")
         # just read in the config without validation
         cfg.read_local_config(validate=False)
         run_config_window(message=f"Config Error: {e}, please adjust this config!")
     if debug:
         os.environ.setdefault("DEBUG_MS", "True")
-        time_print("Using debug mode")
+        _logger.info("Using debug mode")
     shared.is_v1 = True
     generate_custom_style_file()
     mc = MachineController()

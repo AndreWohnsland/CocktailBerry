@@ -100,7 +100,7 @@ class AddOnManager:
         except ImportError as e:
             message = f"Could not import addon: {filename} due to <{e}>, {_check_addon}."
             _logger.log_event("ERROR", message)
-            time_print(message)
+            _logger.error(message)
             return None
         name = getattr(module, "ADDON_NAME", filename)
         # Check if the module implemented the addon class, otherwise log error and skip module
@@ -127,7 +127,7 @@ class AddOnManager:
         """Execute all the setup function of the addons."""
         if self.addons:
             addon_string = ", ".join(list(self.addons.keys()))
-            time_print(f"Used Addons: {addon_string}")
+            _logger.info(f"Used Addons: {addon_string}")
         for addon in self.addons.values():
             self._try_function_for_addon(addon, "setup")
         atexit.register(self.cleanup_addons)
@@ -267,7 +267,7 @@ class AddOnManager:
         if addon_init is None:
             return
         name, addon_instance = addon_init
-        time_print(f"Setting up newly added addon {name}")
+        _logger.info(f"Setting up newly added addon {name}")
         self._try_function_for_addon(addon_instance, "setup")
 
         # Do not support V1 for now
@@ -284,7 +284,7 @@ class AddOnManager:
             addon_instance = self.addons[addon.name]
             self._try_function_for_addon(addon_instance, "cleanup")
             del self.addons[addon.name]
-            time_print(f"Removed addon {addon.name}")
+            _logger.info(f"Removed addon {addon.name}")
         if addon.name in self.addon_thread_ids:
             del self.addon_thread_ids[addon.name]
         addon_file = ADDON_FOLDER / addon.file_name

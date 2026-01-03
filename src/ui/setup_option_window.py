@@ -27,7 +27,7 @@ from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.updater import UpdateInfo, Updater
-from src.utils import get_platform_data, has_connection, time_print, update_os
+from src.utils import get_platform_data, has_connection, update_os
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -246,5 +246,5 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """
         is_win = _platform_data.system == "Windows"
         if is_win:
-            time_print("Cannot do that on windows")
+            _logger.debug("Cannot do that on windows")
         return is_win

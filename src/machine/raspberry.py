@@ -6,7 +6,6 @@ from typing import Literal
 
 from src.logger_handler import LoggerHandler
 from src.machine.interface import GPIOController, PinController
-from src.utils import time_print
 
 logger = LoggerHandler("RpiController")
 
@@ -66,7 +65,7 @@ class RpiController(PinController):
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         """Set up the given pin list."""
         if not self.dev_displayed:
-            time_print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
+            logger.debug(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
         if not self.devenvironment:
             # if it is an input, we need to set the pull up down to down or up
@@ -126,7 +125,7 @@ class Rpi5Controller(PinController):
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         """Set up the given pin list using gpiozero with error handling."""
         if not self.dev_displayed:
-            time_print(f"Devenvironment on the RPi5 module is {'on' if self.devenvironment else 'off'}")
+            logger.debug(f"Devenvironment on the RPi5 module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
 
         if self.devenvironment:

@@ -1,5 +1,7 @@
+from src.logger_handler import LoggerHandler
 from src.machine.interface import PinController
-from src.utils import time_print
+
+_logger = LoggerHandler("reverter")
 
 
 class Reverter:
@@ -11,7 +13,7 @@ class Reverter:
 
     def initialize_pin(self) -> None:
         if self.use_reversion:
-            time_print(f"Initializing Reversion Pin: {self.revert_pin}")
+            _logger.debug(f"Initializing Reversion Pin: {self.revert_pin}")
             self._pin_controller.initialize_pin_list([self.revert_pin])
 
     def revert_on(self) -> None:

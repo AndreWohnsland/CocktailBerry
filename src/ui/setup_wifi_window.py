@@ -11,12 +11,14 @@ from src.display_controller import DP_CONTROLLER
 from src.ui.icons import IconSetter
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_WiFiWindow
-from src.utils import get_platform_data, setup_wifi, time_print
+from src.utils import get_platform_data, setup_wifi
+from src.logger_handler import LoggerHandler
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 _platform_data = get_platform_data()
+_logger = LoggerHandler("wifi_window")
 
 
 class WiFiWindow(QMainWindow, Ui_WiFiWindow):
@@ -68,7 +70,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
     def _enter_wifi(self) -> None:
         """Enter the wifi data into the system and check if the connection was successful."""
         if _platform_data.system == "Windows":
-            time_print("Cannot do that on windows")
+            _logger.debug("Cannot do that on windows")
             return
 
         ssid = self.input_ssid.text()

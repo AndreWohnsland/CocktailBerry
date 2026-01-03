@@ -15,7 +15,6 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.rfid import RFIDReader
 from src.models import Cocktail
-from src.utils import time_print
 
 _logger = LoggerHandler("NFCPaymentService")
 
@@ -131,7 +130,7 @@ class NFCPaymentService:
     def _run_callbacks(self, user: User | None, nfc_id: str) -> None:
         """Run all registered user callbacks."""
         if self._pause_callbacks:
-            time_print("Callbacks are paused; not running any callbacks.")
+            _logger.debug("Callbacks are paused; not running any callbacks.")
             return
         for callback in self._user_callbacks.values():
             callback(user, nfc_id)
@@ -139,21 +138,21 @@ class NFCPaymentService:
     def _cancel_auto_logout_timer(self) -> None:
         """Cancel the auto-logout timer if it exists."""
         if self._auto_logout_timer is not None:
-            time_print("Cancelling auto-logout timer.")
+            _logger.debug("Cancelling auto-logout timer.")
             self._auto_logout_timer.cancel()
             self._auto_logout_timer = None
 
     def _start_auto_logout_timer(self) -> None:
         """Start the auto-logout timer if configured."""
         if cfg.PAYMENT_AUTO_LOGOUT_TIME_S > 0:
-            time_print("Starting auto-logout timer.")
+            _logger.debug("Starting auto-logout timer.")
             self._auto_logout_timer = Timer(cfg.PAYMENT_AUTO_LOGOUT_TIME_S, self.logout_user)
             self._auto_logout_timer.daemon = True
             self._auto_logout_timer.start()
 
     def logout_user(self) -> None:
         """Handle auto-logout when timer expires."""
-        time_print("Logging out the current user.")
+        _logger.info("Logging out the current user.")
         if self._auto_logout_timer is not None:
             self._auto_logout_timer.cancel()
         self._auto_logout_timer = None
@@ -170,11 +169,10 @@ class NFCPaymentService:
         # need to check that the right nfc reader is connected only USB is supported
         if cfg.RFID_READER == "No":
             msg = "No NFC reader type specified. Disabling payment service."
-            time_print(msg)
             _logger.error(msg)
             cfg.PAYMENT_ACTIVE = False
             return
-        time_print("Starting continuous NFC sensing for NFCPaymentService.")
+        _logger.info("Starting continuous NFC sensing for NFCPaymentService.")
         self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
 
     def add_callback(self, name: str, callback: Callable[[User | None, str], None]) -> None:

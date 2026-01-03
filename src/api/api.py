@@ -27,7 +27,6 @@ from src.programs.nfc_payment_service import NFCPaymentService
 from src.resource_stats import start_resource_tracker
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.updater import UpdateInfo, Updater
-from src.utils import time_print
 
 
 @asynccontextmanager
@@ -38,7 +37,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         cfg.read_local_config(update_config=True)
     except ConfigError as e:
         logger.error(f"Config Error: {e}")
-        time_print(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
+        logger.error(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
         shared.startup_config_issue.set_issue(message=str(e))
         # only read in valid config and use default for faulty ones
         cfg.read_local_config(validate=False)
@@ -51,7 +50,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     ADDONS.setup_addons()
     update_info = can_update()
     if update_info.status == UpdateInfo.Status.UPDATE_AVAILABLE:
-        time_print("Update available, performing update...")
+        logger.info("Update available, performing update...")
         # need to get also latest web build
         download_latest_web_client()
         updater = Updater()

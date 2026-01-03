@@ -8,7 +8,6 @@ from typing import Callable, ClassVar, Optional
 from src.config.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
 from src.machine.interface import RFIDController
-from src.utils import time_print
 
 _logger = LoggerHandler("RFIDReader")
 
@@ -71,7 +70,7 @@ class RFIDReader:
     def _select_rfid(cls) -> Optional[RFIDController]:
         """Select the controller defined in config."""
         if "MOCK_RFID" in os.environ:
-            time_print("[WARNING]: Using mock RFID reader.")
+            _logger.warning("Using mock RFID reader.")
             return _MockReader()
         no_module = _NO_MODULE.get(cfg.RFID_READER, True)
         if no_module:
