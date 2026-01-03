@@ -20,7 +20,6 @@ from src import __version__
 from src.filepath import ADDON_FOLDER, ADDON_SKELTON
 from src.logger_handler import LoggerHandler
 from src.models import AddonData, Cocktail
-from src.utils import time_print
 
 with contextlib.suppress(ModuleNotFoundError):
     from PyQt5.QtWidgets import QVBoxLayout

@@ -67,5 +67,3 @@ def test_logger_without_env_var():
     # Should work with default settings
     logger.info("Testing without env var")
     logger.debug("Debug message")
-
-

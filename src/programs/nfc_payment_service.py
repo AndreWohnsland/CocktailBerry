@@ -181,7 +181,7 @@ class NFCPaymentService:
         if name in self._user_callbacks:
             return
         _logger.debug(f"Adding callback: {name}")
-        self._user_callbacks[name]= callback
+        self._user_callbacks[name] = callback
 
     def remove_callback(self, name: str) -> None:
         """Remove a specific callback by name."""
