@@ -1,4 +1,6 @@
 import logging
+import os
+import sys
 from typing import Literal, Union
 
 from src.filepath import LOG_FOLDER
@@ -22,14 +24,31 @@ class LoggerHandler:
         self.logger_name = logger_name
         self.path = LoggerHandler.log_folder / f"{filename}.log"
 
+        requested_log_level = os.getenv("COCKTAILBERRY_LOG_LEVEL", "INFO").upper()
+        level_map = {
+            "DEBUG": logging.DEBUG,
+            "INFO": logging.INFO,
+            "WARNING": logging.WARNING,
+            "ERROR": logging.ERROR,
+            "CRITICAL": logging.CRITICAL,
+        }
+        used_log_level = level_map.get(requested_log_level, logging.INFO)
         logger = logging.getLogger(logger_name)
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(used_log_level)
         if not logger.hasHandlers():
+            # Add file handler
             file_handler = logging.FileHandler(self.path)
-            file_handler.setLevel(logging.DEBUG)
-            formatter = logging.Formatter("%(asctime)s | %(levelname)-8s | %(message)s [%(name)s]", "%Y-%m-%d %H:%M")
+            file_handler.setLevel(used_log_level)
+            formatter = logging.Formatter("%(asctime)s | %(levelname)-8s | %(message)s [%(name)s]", "%Y-%m-%d %H:%M:%S")
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
+
+            # Add console handler
+            console_handler = logging.StreamHandler(sys.stdout)
+            console_handler.setLevel(used_log_level)
+            console_formatter = logging.Formatter("%(asctime)s | %(levelname)-8s | %(message)s", "%H:%M:%S")
+            console_handler.setFormatter(console_formatter)
+            logger.addHandler(console_handler)
 
         self.logger = logging.getLogger(logger_name)
         self.template = "{:-^80}"

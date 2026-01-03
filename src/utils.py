@@ -19,7 +19,7 @@ from src.logger_handler import LoggerHandler
 
 EXECUTABLE_V1 = ROOT_PATH / "runme.py"
 EXECUTABLE_V2 = ROOT_PATH / "api.py"
-logger = LoggerHandler("utils")
+_logger = LoggerHandler("utils")
 _DEBUG_FILE = "debuglog.log"
 
 
@@ -65,9 +65,9 @@ def set_system_datetime(datetime_string: str) -> None:
     p_data = get_platform_data()
     # checking system, currently only setting on Linux (RPi), bc. its only one supported
     supported_os = ["Linux"]
-    logger.log_event("INFO", f"Setting time to: {datetime_string}")
+    _logger.log_event("INFO", f"Setting time to: {datetime_string}")
     if p_data.system not in supported_os:
-        logger.log_event(
+        _logger.log_event(
             "WARNING", f"Could not set time, your OS is: {p_data.system}. Currently supported OS are: {supported_os}"
         )
         return
@@ -81,13 +81,13 @@ def set_system_datetime(datetime_string: str) -> None:
         # Use subprocess.run to capture the command's output and error
         for time_command in time_commands:
             subprocess.run(time_command, shell=True, check=True, capture_output=True, text=True)
-        logger.log_event("INFO", "Time set successfully")
+        _logger.log_event("INFO", "Time set successfully")
 
     except subprocess.CalledProcessError as err:
         # Log any exceptions that occurred during command execution
         err_msg = err.stderr.replace("\n", " ")
-        logger.log_event("ERROR", f"Could not set time, error: {err_msg}")
-        logger.log_exception(err)
+        _logger.log_event("ERROR", f"Could not set time, error: {err_msg}")
+        _logger.log_exception(err)
 
 
 def _common_restart() -> tuple[list[str], str, str | None]:
@@ -129,7 +129,7 @@ def restart_v2() -> None:
     # skip out if this is the dev program (will not work restart here)
     # This is because we run it with fastapi dev instead the python runme.py ...
     if len(arguments) != 0 and arguments[0] == "dev":
-        time_print("Will not restart because of dev program.")
+        _logger.debug("Will not restart because of dev program.")
         return
     cmd = [uv_executable, "run"] if uv_executable else [python]
     if "SUDO_USER" in os.environ:
@@ -174,15 +174,15 @@ def update_os() -> None:
     elif distribution in ["arch"]:
         command = "sudo pacman -Syu --noconfirm"
     else:
-        logger.error(f"Unsupported Linux distribution: {distribution}")
+        _logger.error(f"Unsupported Linux distribution: {distribution}")
         return
 
     try:
         subprocess.run(command, shell=True, check=True)
-        logger.info("System updated successfully.")
+        _logger.info("System updated successfully.")
     except subprocess.CalledProcessError as e:
-        logger.error("Could not update system, see debug log for more information.")
-        logger.log_exception(e)
+        _logger.error("Could not update system, see debug log for more information.")
+        _logger.log_exception(e)
 
 
 def get_log_files() -> list[str]:
@@ -249,8 +249,8 @@ def setup_wifi(ssid: str, password: str) -> bool:
         subprocess.run(["nmcli", "dev", "wifi", "connect", ssid, "password", password], check=True)
         return True
     except subprocess.CalledProcessError as e:
-        logger.error(f"Failed to connect to WiFi network: {ssid}: {e}")
-        logger.log_exception(e)
+        _logger.error(f"Failed to connect to WiFi network: {ssid}: {e}")
+        _logger.log_exception(e)
         return False
 
 
@@ -262,8 +262,8 @@ def list_available_ssids() -> list[str]:
         )
         return [line.strip() for line in result.stdout.splitlines() if line.strip()]
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        logger.error(f"Failed to list available WiFi networks: {e}")
-        logger.log_exception(e)
+        _logger.error(f"Failed to list available WiFi networks: {e}")
+        _logger.log_exception(e)
         return []
 
 

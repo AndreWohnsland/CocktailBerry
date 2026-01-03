@@ -28,7 +28,6 @@ from src.dialog_handler import DialogHandler
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, HOME_PATH
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, ConsumeData, Ingredient, ResourceInfo, ResourceStats
-from src.utils import time_print
 
 if TYPE_CHECKING:
     from src.dialog_handler import allowed_keys
@@ -74,7 +73,7 @@ class DatabaseCommander:
 
     def __init__(self, use_default: bool = False, db_url: str | None = None) -> None:
         if not self.database_path.exists():
-            time_print("Copying default database for maker usage")
+            _logger.info("Copying default database for maker usage")
             self.copy_default_database()
         if db_url is None:
             self.db_url = f"sqlite:///{self.database_path_default if use_default else self.database_path}"

@@ -16,7 +16,6 @@ from src.machine.controller import MachineController
 from src.models import Cocktail, CocktailStatus, Ingredient, PrepareResult
 from src.programs.addons import ADDONS
 from src.service_handler import SERVICE_HANDLER
-from src.utils import time_print
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -68,7 +67,7 @@ def prepare_cocktail(
 
     # Now make the cocktail
     display_name = f"{cocktail.name} (Virgin)" if cocktail.is_virgin else cocktail.name
-    time_print(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
+    _logger.info(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
     comment = _build_comment_maker(cocktail)
     # only use separator if we got both messages
     separator = "\n" if additional_message and comment else ""
@@ -113,7 +112,7 @@ def prepare_cocktail(
 def interrupt_cocktail() -> None:
     """Interrupts the cocktail preparation."""
     shared.cocktail_status.status = PrepareResult.CANCELED
-    time_print("Canceling the cocktail!")
+    _logger.info("Canceling the cocktail over GUI!")
 
 
 def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredient | None]:
@@ -172,7 +171,7 @@ def calibrate(bottle_number: int, amount: int) -> None:
 def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> None:
     """Prepare an ingredient."""
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
-    time_print(f"Spending {ingredient.amount} ml {ingredient.name}")
+    _logger.info(f"Spending {ingredient.amount} ml {ingredient.name}")
     mc = MachineController()
     made_volume, _, _ = mc.make_cocktail(w, [ingredient], ingredient.name, False)
     consumed_volume = made_volume[0]

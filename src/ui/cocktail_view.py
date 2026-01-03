@@ -12,17 +12,19 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.filepath import DEFAULT_COCKTAIL_IMAGE
 from src.image_utils import find_cocktail_image
+from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.payment_utils import filter_cocktails_by_user
 from src.ui.creation_utils import create_button, create_label
 from src.ui.icons import IconSetter, PresetIcon
 from src.ui_elements.clickable_label import ClickableLabel
 from src.ui_elements.touch_scroll_area import TouchScrollArea
-from src.utils import time_print
 
 if TYPE_CHECKING:
     from src.programs.nfc_payment_service import User
     from src.ui.setup_mainwindow import MainScreen
+
+_logger = LoggerHandler("cocktail_view")
 
 
 def _n_columns() -> int:
@@ -137,7 +139,7 @@ class CocktailView(QWidget):
     def react_on_user_change(self, user: User | None, uid: str) -> None:
         """Implement user change handling (runs on main thread)."""
         if user == self._last_known_user:
-            time_print("NFC user state unchanged, skipping re-render.")
+            _logger.debug("NFC user state unchanged, skipping re-render.")
             return
         self._last_known_user = user
         self.populate_cocktails()

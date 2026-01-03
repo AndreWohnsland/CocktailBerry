@@ -38,12 +38,14 @@ from src.data_utils import select_optimal
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
+from src.logger_handler import LoggerHandler
 from src.models import Cocktail as DbCocktail
 from src.models import CocktailStatus, PrepareResult
 from src.payment_utils import filter_cocktails_by_user
 from src.programs.nfc_payment_service import User
 from src.tabs import maker
-from src.utils import time_print
+
+_logger = LoggerHandler("cocktails_router")
 
 _prefix = "/cocktails"
 router = APIRouter(tags=["cocktails"], prefix=_prefix)
@@ -164,7 +166,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 @protected_maker_router.post("/prepare/stop", tags=["preparation"], summary="Stop the current cocktail preparation")
 async def stop_cocktail() -> ApiMessage:
     shared.cocktail_status.status = PrepareResult.CANCELED
-    time_print("Canceling the cocktail!")
+    _logger.info("Cocktail Canceled over the API!")
     return ApiMessage(message=DH.get_translation("preparation_cancelled"))
 
 
@@ -179,7 +181,7 @@ async def cancel_payment(
     booking = payment_handler.cancel_payment()
     shared.cocktail_status.status = PrepareResult.CANCELED
     shared.cocktail_status.message = booking.message
-    time_print("Canceling the payment!")
+    _logger.info("Payment canceled over the API!")
     return ApiMessage(message=DH.get_translation("payment_canceled"))
 
 
@@ -324,7 +326,7 @@ async def websocket_payment_user(
                 }
             )
         except Exception as e:
-            time_print(f"Error sending user update via websocket: {e}")
+            _logger.debug(f"Error sending user update via websocket: {e}")
 
     callback_name = f"websocket_{id(websocket)}"
 

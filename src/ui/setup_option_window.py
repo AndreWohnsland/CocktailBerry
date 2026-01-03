@@ -27,7 +27,7 @@ from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.updater import UpdateInfo, Updater
-from src.utils import get_platform_data, has_connection, time_print, update_os
+from src.utils import get_platform_data, has_connection, update_os
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -112,7 +112,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Reboots the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_reboot():
             return
-        if self._is_windows():
+        if self._is_windows("reboot"):
             return
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo reboot")
@@ -122,7 +122,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Shutdown the system if the user confirms the action."""
         if not DP_CONTROLLER.ask_to_shutdown():
             return
-        if self._is_windows():
+        if self._is_windows("shutdown"):
             return
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo shutdown now")
@@ -210,7 +210,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Make a system update and upgrade."""
         if not DP_CONTROLLER.ask_to_update_system():
             return
-        if self._is_windows():
+        if self._is_windows("update system"):
             return
 
         self._worker = _Worker()  # pylint: disable=attribute-defined-outside-init
@@ -239,12 +239,12 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo reboot")
 
-    def _is_windows(self) -> bool:
+    def _is_windows(self, action: str) -> bool:
         """Linux things cannot be done on windows.
 
         Print a msg and return true if win.
         """
         is_win = _platform_data.system == "Windows"
         if is_win:
-            time_print("Cannot do that on windows")
+            _logger.info(f"Cannot do {action} on windows")
         return is_win

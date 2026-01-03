@@ -50,16 +50,15 @@ def main(
     try:
         cfg.read_local_config(update_config=True)
     except ConfigError as e:
-        _logger.error(f"Config Error: {e}")
+        _logger.error(f"Config Error: {e}, check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
         _logger.log_exception(e)
-        time_print(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
         time_print("Opening the config window to correct the error.")
         # just read in the config without validation
         cfg.read_local_config(validate=False)
         run_config_window(message=f"Config Error: {e}, please adjust this config!")
     if debug:
         os.environ.setdefault("DEBUG_MS", "True")
-        time_print("Using debug mode")
+        _logger.info("Using debug mode")
     shared.is_v1 = True
     generate_custom_style_file()
     mc = MachineController()

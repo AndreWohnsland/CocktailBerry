@@ -7,7 +7,10 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "justMyCode": true
+      "justMyCode": true,
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "Main program in debug mode over CLI",
@@ -16,7 +19,10 @@
       "program": "${workspaceFolder}/runme.py",
       "console": "integratedTerminal",
       "justMyCode": true,
-      "args": ["-d"]
+      "args": ["-d"],
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "[MOCKED] Main program in debug mode over CLI",
@@ -28,7 +34,8 @@
       "args": ["-d"],
       "env": {
         "MOCK_RFID": "1",
-        "MOCK_PAYMENT_SERVICE": "1"
+        "MOCK_PAYMENT_SERVICE": "1",
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
       }
     },
     {
@@ -37,7 +44,10 @@
       "request": "launch",
       "program": "${workspaceFolder}/api.py",
       "console": "integratedTerminal",
-      "justMyCode": true
+      "justMyCode": true,
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "[MOCKED] Run Backend over CLI",
@@ -48,7 +58,8 @@
       "justMyCode": true,
       "env": {
         "MOCK_RFID": "1",
-        "MOCK_PAYMENT_SERVICE": "1"
+        "MOCK_PAYMENT_SERVICE": "1",
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
       }
     },
     {
@@ -56,7 +67,10 @@
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["src.api.api:app", "--reload"]
+      "args": ["src.api.api:app", "--reload"],
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "Debug FastApi (Backend) over fastapi CLI",
@@ -64,7 +78,10 @@
       "request": "launch",
       "module": "fastapi",
       "cwd": "${workspaceFolder}/src/api/",
-      "args": ["dev", "./api.py"]
+      "args": ["dev", "./api.py"],
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "Node: Run Frontend",
