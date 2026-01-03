@@ -26,7 +26,7 @@ from src.programs.addons import ADDONS, CouldNotInstallAddonError
 from src.programs.nfc_payment_service import NFCPaymentService
 from src.resource_stats import start_resource_tracker
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
-from src.updater import Updater
+from src.updater import UpdateInfo, Updater
 from src.utils import time_print
 
 
@@ -49,14 +49,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     mc = MachineController()
     mc.init_machine()
     ADDONS.setup_addons()
-    if cfg.MAKER_SEARCH_UPDATES:
-        update_available, _ = can_update()
-        if update_available:
-            time_print("Update available, performing update...")
-            # need to get also latest web build
-            download_latest_web_client()
-            updater = Updater()
-            updater.update()
+    update_info = can_update()
+    if update_info.status == UpdateInfo.Status.UPDATE_AVAILABLE:
+        time_print("Update available, performing update...")
+        # need to get also latest web build
+        download_latest_web_client()
+        updater = Updater()
+        updater.update()
     ADDONS.start_trigger_loop()
     if cfg.PAYMENT_ACTIVE:
         NFCPaymentService().start_continuous_sensing()

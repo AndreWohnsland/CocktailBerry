@@ -38,7 +38,7 @@ from src.ui.setup_progress_screen import ProgressScreen
 from src.ui.setup_refill_dialog import RefillDialog
 from src.ui.setup_team_window import TeamScreen
 from src.ui_elements import Ui_MainWindow
-from src.updater import Updater
+from src.updater import UpdateInfo, Updater
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -114,10 +114,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def update_check(self) -> None:
         """Check if there is an update and asks to update, if exists."""
-        update_available, info = can_update()
-        if not update_available:
+        info = can_update()
+        if info.status != UpdateInfo.Status.UPDATE_AVAILABLE:
             return
-        if not DP_CONTROLLER.ask_to_update(info):
+        if not DP_CONTROLLER.ask_to_update(info.message):
             return
         updater = Updater()
         success = updater.update()

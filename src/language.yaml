@@ -118,6 +118,9 @@ dialog:
   update_available:
     en: 'There is a new update available. Do you want to pull it from GitHub? The program will be restarted afterwards.'
     de: 'Es ist ein neues Update verfügbar. Update von GitHub pullen? Das Programm wird danach neu gestartet.'
+  update_available_major_warning:
+    en: 'WARNING: This is a major update and have probably breaking changes.\nPlease check the changelog before updating.\nSee https://github.com/AndreWohnsland/CocktailBerry/releases for more information.'
+    de: 'WARNUNG: Dies ist ein Major Update und hat wahrscheinlich Breaking Changes.\nBitte schaue dir das Changelog vor dem Update an.\nSiehe https://github.com/AndreWohnsland/CocktailBerry/releases für mehr Informationen.'
   restart_config:
     en: 'Restart the program to apply new configuration?'
     de: 'Programm neu starten, um die geänderten Einstellungen zu laden?'

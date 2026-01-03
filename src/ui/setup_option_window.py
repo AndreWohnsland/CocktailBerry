@@ -26,7 +26,7 @@ from src.ui.setup_resource_window import ResourceWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
-from src.updater import Updater
+from src.updater import UpdateInfo, Updater
 from src.utils import get_platform_data, has_connection, time_print, update_os
 
 if TYPE_CHECKING:
@@ -221,18 +221,17 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _update_software(self) -> None:
         """First asks and then updates the software."""
         updater = Updater()
-        update_available, info = updater.check_for_updates()
-        # If there is no update available, but there is info, show it
-        # this is usually only if there is an error or something
-        if not update_available and not info:
+        info = updater.check_for_updates()
+        if info.status == UpdateInfo.Status.UP_TO_DATE:
             DP_CONTROLLER.say_cocktailberry_up_to_date()
             return
-        # else inform the user about that he is up to date
-        if not update_available and info:
-            DP_CONTROLLER.standard_box(info)
+        if info.status == UpdateInfo.Status.ERROR:
+            DP_CONTROLLER.standard_box(info.message)
             return
-        # if there is an update available, ask the user if he wants to update
-        if DP_CONTROLLER.ask_to_update(info):
+        if DP_CONTROLLER.ask_to_update(
+            release_information=info.message,
+            major_update=info.status == UpdateInfo.Status.MAJOR_UPDATE,
+        ):
             updater.update()
 
     def _finish_update_worker(self) -> None:

@@ -70,6 +70,11 @@ class Migrator:
         """Check if the current version is below the given version."""
         return Version(version) > self.local_version
 
+    def is_major_update(self, version: str) -> bool:
+        """Check if the update to the given version is a major update."""
+        new_version = Version(version)
+        return new_version.major > self.local_version.major
+
     def older_than_version_with_logging(self, version: str) -> bool:
         """Check if the current version is below the given version."""
         is_older = Version(version) > self.local_version

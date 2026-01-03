@@ -29,7 +29,7 @@ from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BAC
 from src.models import AddonData, ConsumeData, ResourceInfo, ResourceStats
 from src.programs.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
-from src.updater import Updater
+from src.updater import UpdateInfo, Updater
 from src.utils import (
     get_log_files,
     get_platform_data,
@@ -306,11 +306,11 @@ async def update_system(background_tasks: BackgroundTasks) -> ApiMessage:
 @protected_router.post("/update/software", summary="Update CocktailBerry software", dependencies=[not_on_demo])
 async def update_software() -> ApiMessage:
     updater = Updater()
-    update_available, info = updater.check_for_updates()
-    if not update_available and not info:
+    info = updater.check_for_updates()
+    if info.status == UpdateInfo.Status.UP_TO_DATE:
         return ApiMessage(message=DH.get_translation("cocktailberry_up_to_date"))
-    if not update_available and info:
-        return ApiMessage(message=info)
+    if info.status == UpdateInfo.Status.ERROR:
+        return ApiMessage(message=info.message or "Error: could not check for updates")
     success = updater.update()
     if not success:
         raise HTTPException(400, detail=DH.get_translation("update_failed"))

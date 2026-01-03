@@ -517,10 +517,13 @@ class DialogHandler:
     # Methods for prompting ####
     ############################
 
-    def ask_to_update(self, release_information: str) -> bool:
+    def ask_to_update(self, release_information: str, major_update: bool = False) -> bool:
         """Asks the user if he wants to get the latest update."""
         message = self._choose_language("update_available")
         message = f"{message}\n\n{release_information}"
+        if major_update:
+            major_warning = self._choose_language("update_available_major_warning")
+            message = f"{major_warning}\n\n{message}"
         return self.user_okay(message)
 
     def ask_to_start_cleaning(self) -> bool:
