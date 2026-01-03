@@ -1,4 +1,6 @@
 import logging
+import os
+import sys
 from typing import Literal, Union
 
 from src.filepath import LOG_FOLDER
@@ -25,11 +27,29 @@ class LoggerHandler:
         logger = logging.getLogger(logger_name)
         logger.setLevel(logging.DEBUG)
         if not logger.hasHandlers():
+            # Add file handler
             file_handler = logging.FileHandler(self.path)
             file_handler.setLevel(logging.DEBUG)
             formatter = logging.Formatter("%(asctime)s | %(levelname)-8s | %(message)s [%(name)s]", "%Y-%m-%d %H:%M")
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
+
+            # Add console handler with environment variable support
+            console_handler = logging.StreamHandler(sys.stdout)
+            console_log_level = os.getenv("COCKTAILBERRY_LOG_LEVEL", "INFO").upper()
+            # Map string to logging level, default to INFO if invalid
+            level_map = {
+                "DEBUG": logging.DEBUG,
+                "INFO": logging.INFO,
+                "WARNING": logging.WARNING,
+                "ERROR": logging.ERROR,
+                "CRITICAL": logging.CRITICAL,
+            }
+            console_handler.setLevel(level_map.get(console_log_level, logging.INFO))
+            # Use a simpler format for console output
+            console_formatter = logging.Formatter("%(asctime)s | %(levelname)-8s | %(message)s", "%H:%M:%S")
+            console_handler.setFormatter(console_formatter)
+            logger.addHandler(console_handler)
 
         self.logger = logging.getLogger(logger_name)
         self.template = "{:-^80}"

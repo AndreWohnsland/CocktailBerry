@@ -12,7 +12,7 @@ from src.filepath import ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.migration.migrator import Migrator
 from src.migration.version import Version
-from src.utils import restart_v1, restart_v2, time_print
+from src.utils import restart_v1, restart_v2
 
 _logger = LoggerHandler("updater_module")
 _GITHUB_RELEASE_URL = "https://api.github.com/repos/andrewohnsland/cocktailberry/releases"
@@ -57,7 +57,7 @@ class Updater:
             _logger.log_exception(err)
             return False
         # restart the program, this will not work if executed over IDE
-        time_print("Restarting the application!")
+        _logger.info("Restarting the application!")
         _logger.log_event("INFO", "Restarting program to reload updated code")
         if shared.is_v1:
             restart_v1()

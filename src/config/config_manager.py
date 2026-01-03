@@ -37,7 +37,7 @@ from src.config.validators import build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.models import CocktailStatus
-from src.utils import get_platform_data, time_print
+from src.utils import get_platform_data
 
 _logger = LoggerHandler("config_manager")
 
@@ -475,8 +475,8 @@ def show_start_message(machine_name: str = PROJECT_NAME) -> None:
     figlet = Figlet()
     start_message = f"{machine_name} Version {__version__}"
     print(figlet.renderText(start_message))
-    time_print(start_message)
-    time_print(str(get_platform_data()))
+    _logger.info(start_message)
+    _logger.info(str(get_platform_data()))
 
 
 shared = Shared()

@@ -12,6 +12,7 @@ with contextlib.suppress(ModuleNotFoundError):
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
+from src.logger_handler import LoggerHandler
 from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.leds import LedController
@@ -22,6 +23,8 @@ from src.utils import time_print
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
+
+_logger = LoggerHandler("machine_controller")
 
 
 @dataclass
@@ -122,7 +125,7 @@ class MachineController:
         if is_cocktail:
             self.led_controller.preparation_end()
         consumption = [round(x.consumption) for x in prep_data]
-        time_print(f"Total calculated consumption: {consumption}")
+        _logger.debug(f"Total calculated consumption: {consumption}")
         _header_print(f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
@@ -210,7 +213,7 @@ class MachineController:
         """Get all used pins, prints pins and uses controller class to set up."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
         active_pins = [x.pin for x in used_config]
-        time_print(f"<i> Initializing Pins: {active_pins}")
+        _logger.debug(f"Initializing Pins: {active_pins}")
         self.pin_controller.initialize_pin_list(active_pins)
         self.reverter.initialize_pin()
 

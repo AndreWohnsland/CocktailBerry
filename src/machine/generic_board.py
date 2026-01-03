@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from src.logger_handler import LoggerHandler
 from src.machine.interface import GPIOController, PinController
-from src.utils import time_print
 
 logger = LoggerHandler("GenericController")
 
@@ -33,8 +32,8 @@ class GenericController(PinController):
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         """Set up the given pin list."""
         if not self.dev_displayed:
-            time_print(
-                f"<i> Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}"
+            logger.debug(
+                f"Devenvironment on the Generic Pin Control module is {'on' if self.devenvironment else 'off'}"
             )
             self.dev_displayed = True
             if self.devenvironment:
@@ -58,7 +57,7 @@ class GenericController(PinController):
                 self.gpios[pin] = GPIO(pin, init_value, **add_args)
         except GPIOError as e:
             self.devenvironment = True
-            time_print("<i> Could not set up GPIOs, cannot control Pumps! Will set devenvironment on.")
+            logger.error("Could not set up GPIOs, cannot control Pumps! Will set devenvironment on.")
             logger.log_exception(e)
             logger.log_event("ERROR", "Could not set up GPIOs, please have a look into the error logs")
 

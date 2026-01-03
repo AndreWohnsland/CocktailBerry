@@ -129,7 +129,7 @@ def restart_v2() -> None:
     # skip out if this is the dev program (will not work restart here)
     # This is because we run it with fastapi dev instead the python runme.py ...
     if len(arguments) != 0 and arguments[0] == "dev":
-        time_print("Will not restart because of dev program.")
+        logger.info("Will not restart because of dev program.")
         return
     cmd = [uv_executable, "run"] if uv_executable else [python]
     if "SUDO_USER" in os.environ:
@@ -149,7 +149,12 @@ def generate_custom_style_file() -> None:
 
 
 def time_print(msg: str) -> None:
-    """Print the given string with a timestamp in the 'HH:MM:SS: ' prefix."""
+    """Print the given string with a timestamp in the 'HH:MM:SS: ' prefix.
+    
+    This function is only used for console-only output in cases where we don't want file logs,
+    such as verbose preparation progress updates that would clutter the log files.
+    For regular debug/info messages, use the logger.debug() or logger.info() methods instead.
+    """
     now = datetime.datetime.now()
     print(f"{now.strftime('%H:%M:%S')}:  {msg}")
 
