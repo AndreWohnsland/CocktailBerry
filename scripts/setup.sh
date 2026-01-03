@@ -89,7 +89,7 @@ else
   echo "> Setting up CocktailBerry"
   # Generating launcher script, we use symlinks so when project is updated we can sneak in that change too
   # this might prevent breaking changes on updates
-  rm "$HOME/launcher.sh"
+  rm "$HOME/launcher.sh" 2>/dev/null || true
   # script source will be v1-launcher.sh or v2-launcher.sh depending on the flag
   script_source="v1-launcher.sh"
   if [[ "$V2_FLAG" = true ]]; then
