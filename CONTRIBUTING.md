@@ -21,8 +21,9 @@ Pull requests are the best way to propose changes to the codebase:
 3. If you've changed APIs, update the documentation.
 4. Ensure the test suite passes.
 5. Run & Check UI changes to make sure everything works and looks good.
-6. Make sure your code lints (mypy & ruff).
-7. Issue that pull request!
+6. Use pyqt ui files where possible (see [dev notes](./docs/.devnotes.md#qt-template-files))
+7. Make sure your code lints (mypy & ruff).
+8. Issue that pull request!
 
 ## You can use AI tools BUT
 
