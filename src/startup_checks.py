@@ -2,14 +2,14 @@ import sys
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import CONFIG as cfg
-from src.updater import Updater
+from src.updater import UpdateInfo, Updater
 from src.utils import has_connection
 
 
-def can_update() -> tuple[bool, str]:
+def can_update() -> UpdateInfo:
     """Check if there is an update and it is possible."""
     if not cfg.MAKER_SEARCH_UPDATES:
-        return False, "Update search is disabled."
+        return UpdateInfo(UpdateInfo.Status.DISABLED, "Automatic update search is disabled.")
     updater = Updater()
     return updater.check_for_updates()
 
