@@ -1,12 +1,11 @@
 # Setting up CocktailBerry
 
-CocktailBerry will work after installing all requirements, but you can make your own adjustments.
+CocktailBerry will work directly after using the installer, but you can make your own adjustments to make it even better.
 
 ## Adding new Recipes or Ingredients
 
-There are only limited ingredients and recipes. But you can add your own data to the program as well.
-This app uses a sqlite3 database coupled to the UI.
-So, it's quite easy to implement new ingredients or even recipes.
+CocktailBerry comes with a limited set of recipes and ingredients.
+You can use the program to add your own ingredients or recipes, or rename and change existing ones.
 Just use the implemented UI for the procedure under the according tabs (**Ingredients** or **Recipes**).
 All entered values are checked for reason and if something is wrong, an error message will inform the user what is wrong with the data input.
 
@@ -17,14 +16,14 @@ All entered values are checked for reason and if something is wrong, an error me
 ## Setting up the Machine / Modifying other Values
 
 You can manage your config within CocktailBerry.
-Just go to the bottles tab, click the gear icon and enter the password (default: 1234 on older versions or none at latest).
+Just go to the bottles tab (v1), click the gear icon or to the according option tab (v2) and enter your password.
 You can then use the UI to change the configuration.
 The configuration is also divided into own tabs, containing similar categories in one tab.
 
 These values are stored under the local `custom_config.yaml` file.
 This file will be created at the first machine run and inherit all default values.
-Depending on your pumps and connection to the Pi, these can differ from mine and can be changed.
-If any of the values got a wrong data type, a ConfigError will be thrown with the message which one is wrong.
+Depending on your pumps and connection to the Pi, these can differ from the default and can be changed.
+If any of the values got a wrong data type, a message with the issue will be shown.
 Names starting with `EXP` are experimental and may be changed in the future.
 They can be used at own risk of CocktailBerry not working 100% properly.
 
@@ -86,6 +85,23 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | `TEAM_BUTTON_NAMES`     | List of format ["Team1", "Team2"]                          |
     | `TEAM_API_URL`          | Endpoint of teams API, default used port by API is 8080    |
 
+??? info "Payment Related Config Values"
+    Payment config values are used to configure the payment system and its behavior.
+
+    | Value Name                         | Description                                                    |
+    | :--------------------------------- | :------------------------------------------------------------- |
+    | `PAYMENT_ACTIVE`                   | Enable payment feature                                         |
+    | `PAYMENT_PRICE_ROUNDING`           | Next multiple of this number to round up to                    |
+    | `PAYMENT_SHOW_NOT_POSSIBLE`        | Show cocktails that are not possible to the user               |
+    | `PAYMENT_LOCK_SCREEN_NO_USER`      | Lock the screen when no user is logged in                      |
+    | `PAYMENT_VIRGIN_MULTIPLIER`        | Multiplier percentage to apply to virgin cocktail prices       |
+    | `PAYMENT_SERVICE_URL`              | URL of the payment service API                                 |
+    | `PAYMENT_SECRET_KEY`               | Secret key for authentication with the payment service         |
+    | `PAYMENT_TIMEOUT_S`                | Timeout in seconds before reader cancels payment NFC/RFID scan |
+    | `PAYMENT_AUTO_LOGOUT_TIME_S`       | Time in seconds until automatic logout of user from payment    |
+    | `PAYMENT_LOGOUT_AFTER_PREPARATION` | Remove user for filtering cocktail view after preparation      |
+    | `PAYMENT_ONLY_MAKER_TAB`           | Only allow access to the maker tab when payment is active      |
+
 ??? info "List Other Config Values"
     Here are some other config values, which are not fitting in the other categories.
     Addon data will be added here as well.
@@ -106,10 +122,10 @@ Customizing and using your own setting will make your CocktailBerry unique.
 
 The choice is up to you what you want to connect.
 See [here](#possible-ingredient-choice) for a possible ingredient setting.
-Select under **Bottles** your assigned ingredients for each pump over the dropdown boxes.
-In addition, you can define ingredients which are also there, but are not connected to the machine (under **Bottles** >  _available_).
-You can define ingredients (with _only add self by hand_) which should be later added via hand.
+Select under **Bottles** your assigned ingredients for each pump.
+In addition, you can define ingredients which are available, but are not connected to the machine (under **Bottles** >  _available_).
 This can be ingredients, which would not be optimal for your pump (sticky), or are only very rarely used in cocktails.
+At the ingredient properties, you can set this ingredient only addable by hand.
 These ingredients are not shown in the bottle dropdown but only at the available window.
 Choose this option for ingredients you won't connect to the machine, to reduce the amount of options displayed at the dropdown.
 
@@ -119,7 +135,7 @@ See also [this FAQ](faq.md#what-is-the-available-button) for more information on
 
 ## Configuring the Pins or used Board
 
-Most boards should work with cocktailberry, the according controller will be automatically selected.
+Most boards should work with CocktailBerry, the according controller will be automatically selected.
 Currently supported options (boards) are:
 
 - **RPI (Raspberry Pi)**: Using GPIO according to [GPIO-Numbers](https://pinout.xyz/) for Pins.
@@ -137,6 +153,8 @@ Currently, there are following themes:
 - **bavaria**: The somewhat light mode of the app. Blue, Black and White as main colors.
 - **berry**: Pink mixed with dark blue and dark background.
 - **alien**: Different shades of green and dark background.
+- **tropical**: Bright colors with yellow and light blue.
+- **purple**: It's purple and light blue.
 - **custom**: Starts by the default theme, but you can set each color to your liking.
 
 ## Calibration of the Pumps
@@ -147,9 +165,7 @@ Or you can start the calibration program instead of CocktailBerry.
 You simply add the `--calibration` or `-c` flag to the python run command:
 
 ```bash
-python runme.py --calibration 
-# or just 
-python runme.py -c
+python runme.py --c # or --calibration
 ```
 
 You can use water and a weight scale for the process.
@@ -158,7 +174,7 @@ In the end, you can adjust each pump volume flow by the factor:
 
 $$ \dot{V}_{new} = \dot{V}_{old} \cdot \dfrac{V_{output}}{V_{expectation}} $$
 
-I usually do a mix of the different volumes, add them together and check if the scale shows the same amount at each pump.
+Do a mix of the different volumes, add them together and check if the scale shows the same amount at each pump.
 
 ## Cleaning the Machine
 
@@ -166,8 +182,6 @@ CocktailBerry has a build in cleaning function for cleaning at the end of a part
 You will find the feature at the option gear under the **Bottles** tab.
 CocktailBerry will then go to cleaning mode for the defined time within the config (default is 20 seconds).
 A message prompt will inform the user to provide enough water for the cleaning process.
-I usually use a big bowl of warm water to cycle the pumps through one time before changing to fresh water.
-Then running twice times again the cleaning program to fully clean all pumps from remaining fluid.
 
 !!! question "When to Clean"
     Depending on the build specification of your machine, it is a good practice to execute the cleaning of the machine before and after usage.
@@ -192,7 +206,7 @@ You don't need to use all ten slots, but the more you use, the more recipes will
 - _optional_ Tequila
 - _optional_ Grapefruit Juice
 
-In addition, there are some ingredients I would recommend not adding via CocktailBerry but by hand, the most important additional ingredients will be:
+In addition, there are some ingredients recommend adding by hand, the most important additional ingredients will be:
 
 - Soft drinks (Cola, Fanta, Sprite)
 - Grenadine syrup
@@ -204,8 +218,8 @@ With this as your base set up, even if not using the optional ingredients, your 
 
 !!! tip "Data Insights"
     You can export the CocktailBerry data to a CSV file over the interface.
+    Use the CocktailBerry UI in the options page to get a neat local overview of the data.
     With this information you may identify popular drinks and ingredients.
-    You can also use the CocktailBerry UI in the options page to get a neat local overview of the data.
 
 ## Updates
 
@@ -213,11 +227,11 @@ There is the option to enable the automatic search for updates at program start.
 The `MAKER_SEARCH_UPDATES` config can enable this feature.
 CocktailBerry will then check the GitHub repository for new releases and informs the user about it.
 If accepted, CocktailBerry will pull the latest version and restart the program afterwards.
-The migrator will also do any necessary steps to adjust local files, like the database to the latest release.
+The migrator will do any necessary steps to adjust local files, like the database to the latest release.
 
 ## Backups
 
 You can backup your local data (local database, config-file) to a desired folder or external device.
-You can later use this backup to restore the data, or recover the progress and recipes after doing a OS reinstall.
+Use this backup to restore the data, or recover the progress and recipes after doing a OS reinstall.
 Just go to the **Bottles** tab, click on the gear icon and enter your master password to get to the options window.
 There you will find both options for backup and restoring your data.

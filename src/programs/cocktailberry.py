@@ -4,8 +4,10 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
 from src.error_handler import logerror
+from src.logger_handler import LoggerHandler
 from src.ui.setup_mainwindow import MainScreen
-from src.utils import time_print
+
+_logger = LoggerHandler("cocktailberry")
 
 
 @logerror
@@ -15,5 +17,5 @@ def run_cocktailberry() -> None:
     app = QApplication([])
     MainScreen()
     qt_code = app.exec()
-    time_print(f"CocktailBerry exited with code {qt_code}.")
+    _logger.info(f"CocktailBerry exited with code {qt_code}.")
     sys.exit(qt_code)

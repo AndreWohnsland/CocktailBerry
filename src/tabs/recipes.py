@@ -35,6 +35,7 @@ def handle_enter_recipe(w: MainScreen) -> None:
     ingredient_names = recipe_input.ingredient_names
     ingredient_volumes = recipe_input.ingredient_volumes
     ingredient_order = recipe_input.ingredient_order
+    str_price = recipe_input.price_per_100_ml
     enabled = recipe_input.enabled
     virgin = recipe_input.virgin
 
@@ -53,8 +54,21 @@ def handle_enter_recipe(w: MainScreen) -> None:
 
     recipe_volume, ingredient_data, recipe_alcohol_level = _build_recipe_data(names, volumes, order)
 
+    # Cast price to float, use 0.0 if empty or invalid
+    try:
+        price = float(str_price) if str_price else 0.0
+    except ValueError:
+        price = 0.0
+
     cocktail = _enter_or_update_recipe(
-        recipe_id, recipe_name, recipe_volume, recipe_alcohol_level, enabled, virgin, ingredient_data
+        _id=recipe_id,
+        name=recipe_name,
+        volume=recipe_volume,
+        alcohol_level=recipe_alcohol_level,
+        price=price,
+        enabled=enabled,
+        virgin=virgin,
+        ingredient_data=ingredient_data,
     )
 
     DP_CONTROLLER.remove_recipe_from_list_widget(w, selected_name)
@@ -149,22 +163,36 @@ def _build_recipe_data(names: list[str], volumes: list[int], orders: list[int]) 
 
 
 def _enter_or_update_recipe(
-    recipe_id: int,
-    recipe_name: str,
-    recipe_volume: int,
-    recipe_alcohol_level: int,
+    _id: int,
+    name: str,
+    volume: int,
+    alcohol_level: int,
+    price: float,
     enabled: bool,
     virgin: bool,
     ingredient_data: list[Ingredient],
 ) -> Cocktail:
     """Logic to insert/update data into DB."""
     ingredient_list_data = [(x.id, x.amount, x.recipe_order) for x in ingredient_data]
-    if recipe_id:
+    if _id:
         return DB_COMMANDER.set_recipe(
-            recipe_id, recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin, ingredient_list_data
+            recipe_id=_id,
+            name=name,
+            alcohol_level=alcohol_level,
+            volume=volume,
+            price=price,
+            enabled=enabled,
+            virgin=virgin,
+            ingredient_data=ingredient_list_data,
         )
     return DB_COMMANDER.insert_new_recipe(
-        recipe_name, recipe_alcohol_level, recipe_volume, enabled, virgin, ingredient_list_data
+        name=name,
+        alcohol_level=alcohol_level,
+        volume=volume,
+        price=price,
+        enabled=enabled,
+        virgin=virgin,
+        ingredient_data=ingredient_list_data,
     )
 
 

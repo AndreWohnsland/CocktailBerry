@@ -41,27 +41,61 @@ const OptionWindow = () => {
 
   const getBackupClick = async () => {
     const { data, fileName } = await createBackup();
-    const options = {
-      suggestedName: fileName,
-      types: [
-        {
-          description: 'Backup Files',
-          accept: { 'application/octet-stream': ['.zip'] },
-        },
-      ],
-    };
-    const fileHandle = await globalThis.window.showSaveFilePicker(options);
-    const writable = await fileHandle.createWritable();
-    await writable.write(new Blob([data], { type: 'application/octet-stream' }));
-    await writable.close();
-    return t('options.backupSavedSuccessfully', { fileName: fileHandle.name });
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+
+    if (globalThis.window.isSecureContext) {
+      const options = {
+        suggestedName: fileName,
+        types: [
+          {
+            description: 'Backup Files',
+            accept: { 'application/octet-stream': ['.zip'] },
+          },
+        ],
+      };
+
+      const fileHandle = await globalThis.window.showSaveFilePicker(options);
+      const writable = await fileHandle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+
+      return t('options.backupSavedSuccessfully', { fileName: fileHandle.name });
+    }
+
+    // Fallback: force browser download
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    return t('options.backupSavedSuccessfully', { fileName });
   };
 
   const uploadBackupClick = async () => {
-    let file = undefined;
-    const [fileHandle] = await globalThis.window.showOpenFilePicker();
-    file = await fileHandle.getFile();
-    return uploadBackup(file);
+    if (globalThis.window.isSecureContext) {
+      const [fileHandle] = await globalThis.window.showOpenFilePicker();
+      const file = await fileHandle.getFile();
+      return uploadBackup(file);
+    }
+
+    // Fallback
+    return new Promise((resolve) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.onchange = () => {
+        const files = input.files;
+        if (!files || files.length === 0) {
+          resolve(undefined);
+          return;
+        }
+        resolve(uploadBackup(files[0]));
+      };
+      input.click();
+    });
   };
 
   const themeSelect = async (theme: string) => {

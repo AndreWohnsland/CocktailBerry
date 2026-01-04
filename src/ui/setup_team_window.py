@@ -10,14 +10,17 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.logger_handler import LoggerHandler
 from src.machine.rfid import RFIDReader
 from src.service_handler import SERVICE_HANDLER
 from src.ui.creation_utils import create_button
 from src.ui_elements.teamselection import Ui_Teamselection
-from src.utils import time_print
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
+
+
+_logger = LoggerHandler("team_window")
 
 
 class TeamScreen(QMainWindow, Ui_Teamselection):
@@ -69,7 +72,7 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         self.person_label.setText(text)
 
     def set_team(self, team: str) -> None:
-        time_print(f"Team {team} selected")
+        _logger.debug(f"Team {team} selected")
         shared.selected_team = team
         if self._rfid_reader is not None:
             self._rfid_reader.cancel_reading()

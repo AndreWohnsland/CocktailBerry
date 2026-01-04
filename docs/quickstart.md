@@ -1,7 +1,7 @@
 # Quickstart
 
 Here are some simple steps to get CocktailBerry running.
-You need to have [**Python 3.9**](https://www.python.org/downloads/) or newer and [**git**](https://git-scm.com/downloads) installed.
+You need to have [uv](https://docs.astral.sh/uv/getting-started/installation/) (or Python 3.11+) and [**git**](https://git-scm.com/downloads) installed.
 
 ## Raspberry Pi
 
@@ -28,9 +28,11 @@ For a peak into the project run:
 cd ~
 git clone https://github.com/AndreWohnsland/CocktailBerry.git
 cd CocktailBerry
-pip install -r requirements.txt
+# you could use pip install -r requirements.txt, but using uv is recommended
+uv venv --system-site-packages
+uv sync --extra v1
 # you can get help with python runme.py --help
-python runme.py
+uv run runme.py
 ```
 
 This will start the CocktailBerry program.

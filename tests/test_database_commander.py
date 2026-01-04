@@ -105,22 +105,24 @@ class TestCocktail:
 
     def test_set_recipe(self, db_commander: DatabaseCommander):
         """Test the set_recipe method."""
-        db_commander.set_recipe(1, "Cuba Libre", 11, 290, True, False, [(1, 80, 1), (2, 210, 2)])
+        db_commander.set_recipe(1, "Cuba Libre 2", 11, 290, 1.0, True, False, [(1, 80, 1), (2, 210, 2)])
         cocktail = db_commander.get_cocktail(1)
         assert cocktail is not None
-        assert cocktail.name == "Cuba Libre"
+        assert cocktail.name == "Cuba Libre 2"
+        assert cocktail.price_per_100_ml == pytest.approx(1.0)
 
     def test_insert_new_recipe(self, db_commander: DatabaseCommander):
         """Test the insert_new_recipe method."""
-        db_commander.insert_new_recipe("New Recipe", 0, 1000, True, False, [(1, 80, 1)])
+        db_commander.insert_new_recipe("New Recipe", 0, 1000, 8.5, True, False, [(1, 80, 1)])
         cocktail = db_commander.get_cocktail("New Recipe")
         assert cocktail is not None
         assert cocktail.name == "New Recipe"
+        assert cocktail.price_per_100_ml == pytest.approx(8.5)
 
     def test_insert_recipe_data(self, db_commander: DatabaseCommander):
         """Test the insert_recipe_data method."""
         ingredient_data = [(1, 80, 1), (2, 100, 2), (3, 50, 3)]
-        cocktail = db_commander.insert_new_recipe("New Recipe", 0, 250, True, False, ingredient_data)
+        cocktail = db_commander.insert_new_recipe("New Recipe", 0, 250, 4.0, True, False, ingredient_data)
         assert cocktail is not None
         cocktail = db_commander.get_cocktail(cocktail.id)  # type: ignore
         assert cocktail is not None
@@ -154,7 +156,7 @@ class TestCocktail:
     def test_insert_duplicate_recipe(self, db_commander: DatabaseCommander):
         """Test inserting a recipe with a duplicate name."""
         with pytest.raises(ElementAlreadyExistsError):
-            db_commander.insert_new_recipe("Cuba Libre", 11, 290, True, False, [(1, 80, 1), (2, 210, 2)])
+            db_commander.insert_new_recipe("Cuba Libre", 11, 290, 5.0, True, False, [(1, 80, 1), (2, 210, 2)])
 
     def test_delete_nonexistent_recipe(self, db_commander: DatabaseCommander):
         """Test deleting a recipe that does not exist."""
@@ -164,7 +166,7 @@ class TestCocktail:
     def test_set_nonexistent_recipe(self, db_commander: DatabaseCommander):
         """Test setting a recipe that does not exist."""
         with pytest.raises(ElementNotFoundError):
-            db_commander.set_recipe(999, "Nonexistent", 0, 0, False, False, [])
+            db_commander.set_recipe(999, "Nonexistent", 0, 0, 1.0, False, False, [])
 
     def test_increment_nonexistent_recipe_counter(self, db_commander: DatabaseCommander):
         """Test incrementing the counter of a recipe that does not exist."""
@@ -173,7 +175,7 @@ class TestCocktail:
 
     def test_delete_recipe_still_in_use(self, db_commander: DatabaseCommander):
         """Test deleting a recipe that is still in use."""
-        db_commander.insert_new_recipe("Test Recipe", 0, 100, True, False, [(1, 50, 1)])
+        db_commander.insert_new_recipe("Test Recipe", 0, 100, 2.5, True, False, [(1, 50, 1)])
         with pytest.raises(DatabaseTransactionError):
             db_commander.delete_ingredient(1)
 
@@ -186,7 +188,7 @@ class TestCocktail:
     def test_optimal_ingredient_selection(self, db_commander: DatabaseCommander):
         """Test the optimal_ingredient_selection method."""
         for i in range(5):
-            db_commander.insert_new_recipe(f"rumAndCola {i}", 10, 250, True, False, [(1, 50, 1), (2, 200, 2)])
+            db_commander.insert_new_recipe(f"rumAndCola {i}", 10, 250, 5.0, True, False, [(1, 50, 1), (2, 200, 2)])
         top_ing_ids = db_commander.get_most_used_ingredient_ids(k=2)
         assert top_ing_ids == {1, 2}
 

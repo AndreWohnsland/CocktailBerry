@@ -18,13 +18,6 @@ class ErrorDetail(BaseModel):
         use_enum_values = True
 
 
-class CocktailStatus(BaseModel):
-    progress: int = 0
-    completed: bool = False
-    message: Optional[str] = None
-    status: PrepareResult = PrepareResult.FINISHED
-
-
 class CocktailIngredient(BaseModel):
     id: int
     name: str
@@ -45,7 +38,9 @@ class Cocktail(BaseModel):
     name: str
     alcohol: int
     amount: int
+    price_per_100_ml: float
     enabled: bool
+    is_allowed: bool
     virgin_available: bool
     only_virgin: bool
     ingredients: list[CocktailIngredient]
@@ -81,6 +76,7 @@ class CocktailIngredientInput(BaseModel):
 class CocktailInput(BaseModel):
     name: str
     enabled: bool
+    price_per_100_ml: float = Field(..., ge=0)
     virgin_available: bool
     ingredients: Annotated[list[CocktailIngredientInput], Len(min_length=1)]
 

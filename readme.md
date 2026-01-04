@@ -46,6 +46,7 @@ Both versions have the full feature set listed below.
 CocktailBerry can do:
 
 - Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
+- Let customers pay over NFC chips/cards
 - Add new ingredients and recipes with needed information over the UI
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
 - Define connected ingredients to the machine and existing additional ingredients over the UI
@@ -87,7 +88,7 @@ cd ~
 git clone https://github.com/AndreWohnsland/CocktailBerry.git
 cd CocktailBerry
 uv venv --system-site-packages
-uv sync --all-extras
+uv sync --extra v1 --extra nfc # <- use the nfc extra only if you want nfc support
 uv run runme.py
 ```
 
@@ -127,16 +128,17 @@ The Bottle GUI:
 
 # Pull Requests and Issues
 
-If you want to support this project, feel free to fork it and create your own pull request.  
+If you want to support this project, feel free to fork it and create your own pull request.
+To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md).
 Encounter a problem? Open a ticket or issue to let us know.  
 Have an idea for an important feature? Submit a feature request—it may be implemented in the future.
 
-# Contributing Possibilities
+## Contributing Possibilities
 
-To get started, have a quick look into the [Guidelines for contributing](./CONTRIBUTING.md).
 Here is a general list of features or refactoring things, I may do in the future.
 With your help, these things come even faster!
 If your idea is not on the list, feel free to open a feature request!
+Generally, it is recommended to first open an issue or an discussion to talk about your idea before directly implementing it.
 
 - `easy`: Translate all dialogs / UI to your native language
 - `easy`: Submit a feature request or issue
@@ -144,8 +146,8 @@ If your idea is not on the list, feel free to open a feature request!
 
 # Development
 
-This project uses [uv](https://docs.astral.sh/uv/) to manage all its dependencies.
-To get started, you need to install uv and then install the dependencies.
+This project uses [uv](https://docs.astral.sh/uv/), [node.js](https://nodejs.org/en) and [yarn](https://yarnpkg.com/getting-started/install) to manage all its python dependencies.
+To get started, you need to install the tools and then install the dependencies.
 See also at the [dev notes](./docs/.devnotes.md) section for a complete run down as well as extra information.
 
 ```bash
@@ -170,4 +172,32 @@ If you want to develop the api, you can also run it with
 
 ```bash
 uv run fastapi dev ./src/api/api.py
+```
+
+and run the web ui over:
+
+```bash
+cd web_app/
+yarn install
+yarn dev
+```
+
+## Mocking RFID/NFC Reader and Services
+
+You can set the `MOCK_RFID` and `MOCK_PAYMENT_SERVICE` environment variables to use the mock implementations of the RFID reader and payment service respectively.
+This is useful if you want to develop this features without having the actual hardware or service available.
+
+The mocked NFC reader will cycle through two predefined IDs every minute, it will return each 5 seconds a read card id for testing purposes.
+If you want to test specific behavior, it is recommended not to mock but use the real hardware.
+
+The mocked payment service will simulate successful payments without actually connecting to any external service.
+It will create not existing ids with a default balance of 20.
+The adult flag will circle between true and false for each new id.
+
+## Building Documentation
+
+You can build the documentation locally using:
+
+```bash
+uv run mkdocs serve
 ```

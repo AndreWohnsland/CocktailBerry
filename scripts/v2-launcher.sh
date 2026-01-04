@@ -1,3 +1,3 @@
 #!/bin/bash
-cd ~/CocktailBerry/ || echo "Did not find ~/CocktailBerry/"
-uv run api.py
+cd "$HOME/CocktailBerry/" || echo "Did not find ~/CocktailBerry/"
+uv run --extra nfc api.py

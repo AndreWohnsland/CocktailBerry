@@ -1,4 +1,5 @@
 import copy
+import math
 from dataclasses import field
 from enum import Enum
 from typing import Optional
@@ -22,12 +23,12 @@ class PrepareResult(Enum):
     NOT_ENOUGH_INGREDIENTS = "NOT_ENOUGH_INGREDIENTS"
     COCKTAIL_NOT_FOUND = "COCKTAIL_NOT_FOUND"
     ADDON_ERROR = "ADDON_ERROR"
+    WAITING_FOR_NFC = "WAITING_FOR_NFC"
 
 
 @pydantic_dataclass
 class CocktailStatus:
     progress: int = 0
-    completed: bool = False
     message: Optional[str] = None
     status: PrepareResult = PrepareResult.FINISHED
 
@@ -70,8 +71,10 @@ class Cocktail:
     alcohol: int
     amount: int
     enabled: bool
+    price_per_100_ml: float
     virgin_available: bool
     ingredients: list[Ingredient]
+    is_allowed: bool = True
     only_virgin: bool = False
     adjusted_alcohol: float = 0
     adjusted_amount: int = 0
@@ -110,6 +113,20 @@ class Cocktail:
     def is_virgin(self) -> bool:
         """Returns if the cocktail is virgin."""
         return self.adjusted_alcohol == 0
+
+    def current_price(
+        self,
+        round_to_next: float,
+        amount: int | None = None,
+        price_multiplier: float = 1.0,
+    ) -> float:
+        """Return the price of the cocktail matched to next multiple of round_to_next."""
+        if amount is None:
+            amount = self.adjusted_amount
+        raw_price = self.price_per_100_ml / 100 * amount * price_multiplier
+        if round_to_next <= 0:
+            return raw_price
+        return math.ceil(raw_price / round_to_next) * round_to_next
 
     def is_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Return if the recipe is possible with given additional hand add ingredients."""

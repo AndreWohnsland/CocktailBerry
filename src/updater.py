@@ -1,4 +1,6 @@
 import sys
+from dataclasses import dataclass
+from enum import StrEnum
 
 import requests
 from git import GitCommandError, Repo, TagReference  # type: ignore
@@ -10,10 +12,27 @@ from src.filepath import ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.migration.migrator import Migrator
 from src.migration.version import Version
-from src.utils import restart_v1, restart_v2, time_print
+from src.utils import restart_v1, restart_v2
 
 _logger = LoggerHandler("updater_module")
 _GITHUB_RELEASE_URL = "https://api.github.com/repos/andrewohnsland/cocktailberry/releases"
+
+
+@dataclass
+class UpdateInfo:
+    """Data class to hold update information."""
+
+    status: "Status"
+    message: str
+
+    class Status(StrEnum):
+        """Enumeration for update status."""
+
+        UP_TO_DATE = "up_to_date"
+        UPDATE_AVAILABLE = "update_available"
+        ERROR = "error"
+        MAJOR_UPDATE = "major_update"
+        DISABLED = "disabled"
 
 
 class Updater:
@@ -38,7 +57,7 @@ class Updater:
             _logger.log_exception(err)
             return False
         # restart the program, this will not work if executed over IDE
-        time_print("Restarting the application!")
+        _logger.info("Restarting the application!")
         _logger.log_event("INFO", "Restarting program to reload updated code")
         if shared.is_v1:
             restart_v1()
@@ -47,7 +66,7 @@ class Updater:
         # technically, this will not be reached, but makes mypy happy and is easier for the logic
         return True
 
-    def check_for_updates(self) -> tuple[bool, str]:
+    def check_for_updates(self) -> UpdateInfo:
         """Check if there is a new version available."""
         # if not on master (e.g. dev) return false
         update_problem = ""
@@ -57,11 +76,11 @@ class Updater:
             update_problem = f"Cannot update: {err}"
             _logger.log_event("ERROR", update_problem)
             _logger.log_exception(err)
-            return False, update_problem
+            return UpdateInfo(UpdateInfo.Status.ERROR, update_problem)
         if branch_name != "master":
             update_problem = "Not on master branch, not checking for updates"
             _logger.log_event("WARNING", update_problem)
-            return False, update_problem
+            return UpdateInfo(UpdateInfo.Status.ERROR, update_problem)
         # Also do not make updates if current version does
         # not satisfy the future version requirement
         if sys.version_info < FUTURE_PYTHON_VERSION:
@@ -69,7 +88,7 @@ class Updater:
                 f"Python version is too old, not checking for updates. You need at least {FUTURE_PYTHON_VERSION}"
             )
             _logger.log_event("WARNING", update_problem)
-            return False, update_problem
+            return UpdateInfo(UpdateInfo.Status.ERROR, update_problem)
         # First fetch the origin latest data
         try:
             self.repo.remotes.origin.fetch()
@@ -78,7 +97,7 @@ class Updater:
             update_problem = "Something went wrong while fetching the repo data, see debug logs for more information"
             _logger.log_event("ERROR", update_problem)
             _logger.log_exception(err)
-            return False, update_problem + f"\n{err}"
+            return UpdateInfo(UpdateInfo.Status.ERROR, update_problem + f"\n{err}")
         # Get the latest tag an compare the diff with the current branch
         # Usually this should work since the default is master branch and "normal" users shouldn't be changing files
         # Not using diff but local and remote tags to compare, since some problems exists comparing by diff
@@ -87,13 +106,18 @@ class Updater:
         # Currently using local version tag, this will prob work best,
         # if the programmer does not forget to update the version in the migrator
         migrator = Migrator()
-        update_available = migrator.older_than_version(latest_tag.name.replace("v", ""))
+        status = UpdateInfo.Status.UP_TO_DATE
         info = ""
-        if update_available:
+        if migrator.older_than_version(latest_tag.name.replace("v", "")):
             _logger.log_event("INFO", f"Update {latest_tag.name} is available")
             release_data = requests.get(f"{_GITHUB_RELEASE_URL}?per_page=5", timeout=5000)
             info = self._parse_release_data(release_data)
-        return update_available, info
+            if migrator.is_major_update(latest_tag.name.replace("v", "")):
+                status = UpdateInfo.Status.MAJOR_UPDATE
+                _logger.log_event("INFO", "Update available is a major update")
+            else:
+                status = UpdateInfo.Status.UPDATE_AVAILABLE
+        return UpdateInfo(status, info)
 
     def _get_latest_tag(self) -> TagReference:
         """Extract the latest version number from the tags."""

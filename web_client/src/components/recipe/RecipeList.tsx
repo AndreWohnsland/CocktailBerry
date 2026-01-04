@@ -47,6 +47,7 @@ const RecipeList: React.FC = () => {
       name: cocktail.name,
       enabled: cocktail.enabled,
       virgin_available: cocktail.virgin_available,
+      price_per_100_ml: cocktail.price_per_100_ml,
       image: cocktail.image,
       default_image: cocktail.default_image,
       ingredients: cocktail.ingredients.map((ingredient) => ({
@@ -63,6 +64,7 @@ const RecipeList: React.FC = () => {
       name: '',
       enabled: true,
       virgin_available: false,
+      price_per_100_ml: 0,
       image: '',
       default_image: '',
       ingredients: [],
@@ -297,6 +299,18 @@ const RecipeList: React.FC = () => {
                 <FaPlus className='mr-2' />
                 {t('recipes.addIngredient')}
               </button>
+              <label className='flex justify-center items-center'>
+                <p className='pr-2'>{t('recipes.price')}:</p>
+                <input
+                  type='number'
+                  name='price_per_100_ml'
+                  step='0.1'
+                  value={selectedCocktail.price_per_100_ml}
+                  onChange={handleChange}
+                  className='input-base w-full p-2'
+                />
+                <p className='px-2'>€/100ml</p>
+              </label>
               <div className='flex items-center pt-1'>
                 <button
                   type='button'

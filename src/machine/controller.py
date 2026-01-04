@@ -6,6 +6,8 @@ import time
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
+from src.logger_handler import LoggerHandler
+
 # Only needed in v1
 with contextlib.suppress(ModuleNotFoundError):
     from PyQt5.QtWidgets import qApp
@@ -18,10 +20,11 @@ from src.machine.leds import LedController
 from src.machine.raspberry import choose_pi_controller, is_rpi
 from src.machine.reverter import Reverter
 from src.models import CocktailStatus, Ingredient, PrepareResult
-from src.utils import time_print
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
+
+_logger = LoggerHandler("MachineController")
 
 
 @dataclass
@@ -81,7 +84,6 @@ class MachineController:
         _header_print("Done Cleaning")
         if w is not None:
             w.close_progression_window()
-        shared.cocktail_status.completed = True
         shared.cocktail_status.status = PrepareResult.FINISHED
 
     def make_cocktail(
@@ -123,7 +125,7 @@ class MachineController:
         if is_cocktail:
             self.led_controller.preparation_end()
         consumption = [round(x.consumption) for x in prep_data]
-        time_print(f"Total calculated consumption: {consumption}")
+        _logger.info(f"Total calculated consumption: {consumption}")
         _header_print(f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
@@ -211,13 +213,13 @@ class MachineController:
         """Get all used pins, prints pins and uses controller class to set up."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
         active_pins = [x.pin for x in used_config]
-        time_print(f"<i> Initializing Pins: {active_pins}")
+        _logger.info(f"<i> Initializing Pins: {active_pins}")
         self.pin_controller.initialize_pin_list(active_pins)
         self.reverter.initialize_pin()
 
     def _start_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and opens all given pins."""
-        time_print(f"{print_prefix}<o> Opening Pins: {pin_list}")
+        _logger.debug(f"{print_prefix}<o> Opening Pins: {pin_list}")
         self.pin_controller.activate_pin_list(pin_list)
 
     def close_all_pumps(self) -> None:
@@ -234,7 +236,7 @@ class MachineController:
 
     def _stop_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and closes all given pins."""
-        time_print(f"{print_prefix}<x> Closing Pins: {pin_list}")
+        _logger.debug(f"{print_prefix}<x> Closing Pins: {pin_list}")
         self.pin_controller.close_pin_list(pin_list)
 
     def default_led(self) -> None:
@@ -253,7 +255,7 @@ class MachineController:
             self._print_time += interval
             pretty_consumption = [round(x) for x in consumption]
             progress = _generate_progress(current_time, max_time)
-            time_print(f"{progress}Volumes: {pretty_consumption}")
+            _logger.debug(f"{progress}Volumes: {pretty_consumption}")
 
 
 def _build_preparation_data(
@@ -295,7 +297,7 @@ def _generate_progress(current_time: float, total_time: float) -> str:
 
 def _header_print(msg: str) -> None:
     """Format the message with dashes around."""
-    time_print(f"{' ' + msg + ' ':-^80}")
+    _logger.info(f"{' ' + msg + ' ':-^80}")
 
 
 MACHINE = MachineController()

@@ -118,6 +118,9 @@ dialog:
   update_available:
     en: 'There is a new update available. Do you want to pull it from GitHub? The program will be restarted afterwards.'
     de: 'Es ist ein neues Update verfügbar. Update von GitHub pullen? Das Programm wird danach neu gestartet.'
+  update_available_major_warning:
+    en: 'WARNING: This is a major update and have probably breaking changes.\nPlease check the changelog before updating.\nSee https://github.com/AndreWohnsland/CocktailBerry/releases for more information.'
+    de: 'WARNUNG: Dies ist ein Major Update und hat wahrscheinlich Breaking Changes.\nBitte schaue dir das Changelog vor dem Update an.\nSiehe https://github.com/AndreWohnsland/CocktailBerry/releases für mehr Informationen.'
   restart_config:
     en: 'Restart the program to apply new configuration?'
     de: 'Programm neu starten, um die geänderten Einstellungen zu laden?'
@@ -256,6 +259,31 @@ dialog:
   options_updated_and_restart:
     en: 'Options updated! Backend will be restarted.'
     de: 'Optionen aktualisiert! Backend wird neu gestartet.'
+  # Payment state messages
+  payment_inactive:
+    en: 'Payment service is not active.'
+    de: 'Zahlungsservice ist nicht aktiv.'
+  payment_no_user:
+    en: 'Please scan a NFC tag.'
+    de: 'Bitte NFC Tag scannen.'
+  payment_insufficient_balance:
+    en: 'Insufficient balance, please top up your account.'
+    de: 'Nicht genug Guthaben, bitte Konto aufladen.'
+  payment_too_young:
+    en: 'User is not allowed to get alcohol.'
+    de: 'Benutzer kann kein Alkohol bekommen.'
+  payment_successful:
+    en: 'Payment successful. New balance: {current_balance:.2f}'
+    de: 'Zahlung erfolgreich. Neues Guthaben: {current_balance:.2f}'
+  payment_api_not_reachable:
+    en: 'Payment service is not reachable. If this persists, contact the owner.'
+    de: 'Zahlungsservice ist nicht erreichbar. Wenn dies andauert, kontaktiere den Besitzer.'
+  api_interface_conflict:
+    en: 'API interface conflict detected. Please contact the system administrator.'
+    de: 'API-Schnittstellenkonflikt erkannt. Bitte kontaktieren Sie den Systemadministrator.'
+  payment_canceled:
+    en: 'Payment was canceled by user or timeout'
+    de: 'Zahlung wurde durch Benutzer oder wegen Zeitüberschreitung abgebrochen.'
 
 # Change of language in UI elements
 ui:
@@ -363,9 +391,15 @@ ui:
     label_ingredient_unit:
       en: 'Unit'
       de: 'Einheit'
+    label_cocktail_price:
+      en: 'Price'
+      de: 'Preis'
     label_single_ingredient:
       en: 'Single Ingredient'
       de: 'Einzelne Zutat'
+    nfc_scan_to_proceed:
+      en: 'Scan NFC to proceed'
+      de: 'NFC scannen um fortzufahren'
 
   cocktail_selection:
     # best is to use some space before to get a padding for icon
@@ -448,6 +482,9 @@ ui:
     number:
       en: 'Enter number!'
       de: 'Nummer eingeben!'
+    price:
+      en: 'Enter price!'
+      de: 'Preis eingeben!'
 
   ##### OPTION WINDOW #####
   # all values for option window
@@ -662,8 +699,8 @@ ui:
       en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects)'
       de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
     RFID_READER:
-      en: 'Using a RFID Reader: PiicoDev (I2C) or basic MFRC522 (SPI)'
-      de: 'Wird ein RFID Reader verwendet: PiicoDev (I2C) oder standard MFRC522 (SPI)'
+      en: 'Using a RFID Reader: PiicoDev (I2C), basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
+      de: 'Wird ein RFID Reader verwendet: PiicoDev (I2C), standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'
     MICROSERVICE_ACTIVE:
       en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'
@@ -679,6 +716,39 @@ ui:
     TEAM_API_URL:
       en: 'URL address for teams API'
       de: 'URL Adresse der Teams API'
+    PAYMENT_ACTIVE:
+      en: 'Activate the payment function over NFC/RFID'
+      de: 'Aktiviert die Zahlungsfunktion über NFC/RFID'
+    PAYMENT_PRICE_ROUNDING:
+      en: 'Rounding for payment prices, round up to next multiple of number, e.g. 0.25 will round 3.60 to 3.75; 1.00 will round 3.33 to 4.00.'
+      de: 'Rundung für Zahlungsbeträge, runde auf das nächste Vielfache der Zahl auf, z.B. 0,25 rundet 3,60 auf 3,75; 1,00 rundet 3,33 auf 4,00.'
+    PAYMENT_VIRGIN_MULTIPLIER:
+      en: 'Multiplier percentage to apply to virgin cocktail prices'
+      de: 'Multiplikator Prozentsatz, der auf Preise für alkoholfreie Cocktails angewendet wird'
+    PAYMENT_SHOW_NOT_POSSIBLE:
+      en: 'Show cocktails that are not possible to the user (missing balance, no alcohol allowed, etc.) in a disabled style'
+      de: 'Zeige Cocktails an, die für den Benutzer nicht möglich sind (zu wenig Guthaben, kein Alkohol erlaubt, etc.) in deaktiviertem Stil'
+    PAYMENT_LOCK_SCREEN_NO_USER:
+      en: 'Show lock screen if no user is detected on payment NFC/RFID scan'
+      de: 'Zeige Sperrbildschirm an, wenn kein Benutzer bei Zahlung per NFC/RFID erkannt wird'
+    PAYMENT_SERVICE_URL:
+      en: 'URL address for payment service API'
+      de: 'URL Adresse der Zahlungsservice API'
+    PAYMENT_SECRET_KEY:
+      en: 'Secret key for payment service API'
+      de: 'Geheimer Schlüssel für Zahlungsservice API'
+    PAYMENT_TIMEOUT_S:
+      en: 'Timeout in seconds before reader cancels payment NFC/RFID scan'
+      de: 'Timeout in Sekunden bevor der Leser den NFC/RFID Zahlungs-Scan abbricht'
+    PAYMENT_AUTO_LOGOUT_TIME_S:
+      en: 'Auto logout time in seconds for user information (scanned NFC/RFID), use 0 to disable'
+      de: 'Automatische Abmeldezeit in Sekunden für Benutzerinformationen (gescannte NFC/RFID), verwende 0 zum Deaktivieren'
+    PAYMENT_LOGOUT_AFTER_PREPARATION:
+      en: 'Remove user information (used for cocktail display filter) after cocktail preparation, lock screen if enabled'
+      de: 'Entferne Benutzerinformationen (für Cocktail Anzeigefilter verwendet) nach der Cocktail Zubereitung, Sperrbildschirm wenn aktiviert'
+    PAYMENT_ONLY_MAKER_TAB:
+      en: 'Disable all other tabs than the maker one; You will only be prompted at program start if you want to go to config window with master password'
+      de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
     CUSTOM_COLOR_PRIMARY:
       en: 'Custom primary (most elements) color if custom theme is selected'
       de: 'Eigene primäre (meisten Elemente) Farbe, wenn custom Theme ausgewählt ist'

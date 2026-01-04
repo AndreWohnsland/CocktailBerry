@@ -34,6 +34,7 @@ System_Boundary(c1, "CocktailBerry") {
   ' }
 
 }
+System(define_configuration, "define_configuration", "Executed before program start")
 System(setup, "setup", "Executed at program start")
 System(build_addon_gui, "build_addon_gui", "When User want to do addition things")
 System(cleanup, "cleanup", "Executed at program end")
@@ -44,7 +45,8 @@ Rel_D(cocktail, end, "")
 
 Rel_D(before_cocktail, cocktail, "Can interrup")
 Rel_L(cocktail, after_cocktail, "Triggers")
-Rel_L(setup, main, "Add Settings")
+Rel(define_configuration, main, "Add Settings")
+Rel_L(setup, main, "Initialize State")
 Rel_R(end, cleanup, "Triggers")
 Rel_R(gui, build_addon_gui, "Triggers")
 

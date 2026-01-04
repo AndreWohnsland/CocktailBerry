@@ -28,7 +28,6 @@ from src.dialog_handler import DialogHandler
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, HOME_PATH
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, ConsumeData, Ingredient, ResourceInfo, ResourceStats
-from src.utils import time_print
 
 if TYPE_CHECKING:
     from src.dialog_handler import allowed_keys
@@ -74,7 +73,7 @@ class DatabaseCommander:
 
     def __init__(self, use_default: bool = False, db_url: str | None = None) -> None:
         if not self.database_path.exists():
-            time_print("Copying default database for maker usage")
+            _logger.info("Copying default database for maker usage")
             self.copy_default_database()
         if db_url is None:
             self.db_url = f"sqlite:///{self.database_path_default if use_default else self.database_path}"
@@ -135,6 +134,7 @@ class DatabaseCommander:
             name=recipe.name,
             alcohol=recipe.alcohol,
             amount=recipe.amount,
+            price_per_100_ml=recipe.price,
             enabled=recipe.enabled,
             virgin_available=recipe.virgin,
             ingredients=[self._map_cocktail_ingredient(x) for x in recipe.ingredient_associations],
@@ -456,6 +456,7 @@ class DatabaseCommander:
         name: str,
         alcohol_level: int,
         volume: int,
+        price: float,
         enabled: bool,
         virgin: bool,
         ingredient_data: list[tuple[int, int, int]],
@@ -472,6 +473,7 @@ class DatabaseCommander:
             recipe.amount = volume
             recipe.enabled = enabled
             recipe.virgin = virgin
+            recipe.price = price
 
             for _id, amount, order in ingredient_data:
                 self.insert_recipe_data(recipe_id, _id, amount, order)
@@ -525,6 +527,7 @@ class DatabaseCommander:
         name: str,
         alcohol_level: int,
         volume: int,
+        price: float,
         enabled: bool,
         virgin: bool,
         ingredient_data: list[tuple[int, int, int]],
@@ -534,6 +537,7 @@ class DatabaseCommander:
             name=name,
             alcohol=alcohol_level,
             amount=volume,
+            price=price,
             counter_lifetime=0,
             counter=0,
             enabled=enabled,

@@ -30,7 +30,9 @@ def map_cocktail(cocktail: Optional[DBCocktail], scale: bool = True) -> Optional
         name=cocktail.name,
         alcohol=int(cocktail.adjusted_alcohol),
         amount=cocktail.adjusted_amount,
+        price_per_100_ml=cocktail.price_per_100_ml,
         enabled=cocktail.enabled,
+        is_allowed=cocktail.is_allowed,
         virgin_available=cocktail.virgin_available,
         only_virgin=cocktail.only_virgin,
         # ingredient hand is if it is currently not on a bottle

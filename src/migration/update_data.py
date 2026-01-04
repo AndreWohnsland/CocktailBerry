@@ -21,49 +21,6 @@ def execute_raw_sql(query: str, params: tuple = ()) -> None:
         connection.commit()
 
 
-def rename_database_to_english() -> None:
-    """Rename all German columns to English ones."""
-    _logger.log_event("INFO", "Renaming German column names to English ones")
-    commands = [
-        # Rename all bottle things
-        "ALTER TABLE Belegung RENAME TO Bottles",
-        "ALTER TABLE Bottles RENAME COLUMN Flasche TO Bottle",
-        "ALTER TABLE Bottles DROP COLUMN Mengenlevel",
-        # Rename all recipe things
-        "ALTER TABLE Rezepte RENAME TO Recipes",
-        "ALTER TABLE Recipes RENAME COLUMN Alkoholgehalt TO Alcohol",
-        "ALTER TABLE Recipes RENAME COLUMN Menge TO Amount",
-        "ALTER TABLE Recipes RENAME COLUMN Kommentar TO Comment",
-        "ALTER TABLE Recipes RENAME COLUMN Anzahl TO Counter",
-        "ALTER TABLE Recipes RENAME COLUMN Anzahl_Lifetime TO Counter_lifetime",
-        # Rename all available things
-        "ALTER TABLE Vorhanden RENAME TO Available",
-        # Rename all recipe data things
-        "ALTER TABLE Zusammen RENAME TO RecipeData",
-        "ALTER TABLE RecipeData RENAME COLUMN Rezept_ID TO Recipe_ID",
-        "ALTER TABLE RecipeData RENAME COLUMN Zutaten_ID TO Ingredient_ID",
-        "ALTER TABLE RecipeData RENAME COLUMN Menge TO Amount",
-        "ALTER TABLE RecipeData RENAME COLUMN Alkoholisch TO Is_alcoholic",
-        # Rename all ingredient things
-        "ALTER TABLE Zutaten RENAME TO Ingredients",
-        "ALTER TABLE Ingredients RENAME COLUMN Alkoholgehalt TO Alcohol",
-        "ALTER TABLE Ingredients RENAME COLUMN Flaschenvolumen TO Volume",
-        "ALTER TABLE Ingredients RENAME COLUMN Verbrauchsmenge TO Consumption_lifetime",
-        "ALTER TABLE Ingredients RENAME COLUMN Verbrauch TO Consumption",
-        "ALTER TABLE Ingredients RENAME COLUMN Mengenlevel TO Fill_level",
-    ]
-    _try_execute_db_commands(commands)
-
-
-def remove_old_recipe_columns() -> None:
-    _logger.log_event("INFO", "Remove Comment from Recipes and Hand from RecipeData table")
-    commands = [
-        "ALTER TABLE Recipes DROP COLUMN Comment",
-        "ALTER TABLE RecipeData DROP COLUMN Hand",
-    ]
-    _try_execute_db_commands(commands)
-
-
 def _try_execute_db_commands(commands: list[str]) -> None:
     """Try to execute each command, pass if OperationalError."""
     for command in commands:
@@ -72,98 +29,11 @@ def _try_execute_db_commands(commands: list[str]) -> None:
             execute_raw_sql(command)
 
 
-def add_more_bottles_to_db() -> None:
-    """Update the bottles to support up to 16 bottles."""
-    _logger.log_event("INFO", "Adding bottle numbers 11 to 16 to DB")
-    # Adding constraint if still missing
-    execute_raw_sql("CREATE UNIQUE INDEX IF NOT EXISTS idx_bottle ON Bottles(Bottle)")
-    for bottle_count in range(11, 17):
-        execute_raw_sql("INSERT OR IGNORE INTO Bottles(Bottle) VALUES (?)", (bottle_count,))
-
-
-def add_team_buffer_to_database() -> None:
-    """Add an additional table for buffering not send team data."""
-    _logger.log_event("INFO", "Adding team buffer table to database")
-    execute_raw_sql(
-        """CREATE TABLE IF NOT EXISTS Teamdata(
-            ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            Payload TEXT NOT NULL);"""
-    )
-
-
-def add_virgin_flag_to_db() -> None:
-    """Add the virgin flag column to the DB."""
-    _logger.log_event("INFO", "Adding virgin flag column to Recipes DB")
-    try:
-        execute_raw_sql("ALTER TABLE Recipes ADD COLUMN Virgin INTEGER DEFAULT 0;")
-        execute_raw_sql("Update Recipes SET Virgin = 0;")
-    except OperationalError:
-        _logger.log_event("ERROR", "Could not add virgin flag column to DB, this may because it already exists")
-
-
-def add_slower_ingredient_flag_to_db() -> None:
-    """Add the slower ingredient flag column to the DB."""
-    _logger.log_event("INFO", "Adding Slow flag column to Ingredients DB")
-    try:
-        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Slow INTEGER DEFAULT 0;")
-        execute_raw_sql("Update Ingredients SET Slow = 0;")
-    except OperationalError:
-        _logger.log_event("ERROR", "Could not add Slow flag column to DB, this may because it already exists")
-
-
-def remove_is_alcoholic_column() -> None:
-    """Remove the is_alcoholic column from the DB."""
-    _logger.log_event("INFO", "Removing is_alcoholic column from DB")
-    try:
-        execute_raw_sql("ALTER TABLE RecipeData DROP COLUMN Is_alcoholic;")
-    except OperationalError:
-        _logger.log_event("ERROR", "Could not remove is_alcoholic column from DB, this may because it does not exist")
-
-
-def add_cost_column_to_ingredients() -> None:
-    """Add the cost column to the ingredients table."""
-    _logger.log_event("INFO", "Adding cost column to Ingredients DB")
-    try:
-        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Cost INTEGER DEFAULT 0;")
-    except OperationalError:
-        _logger.log_event("ERROR", "Could not add cost column to DB, this may because it already exists")
-
-
-def add_order_column_to_ingredient_data() -> None:
-    """Add the order column to the RecipeData table."""
-    _logger.log_event("INFO", "Adding Recipe_Order column to RecipeData DB")
-    try:
-        execute_raw_sql("ALTER TABLE RecipeData ADD COLUMN Recipe_Order INTEGER DEFAULT 1;")
-    except OperationalError:
-        _logger.log_event("ERROR", "Could not add order column to DB, this may because it already exists")
-
-
-def add_unit_column_to_ingredients() -> None:
-    """Add the unit column to the Ingredients table."""
-    _logger.log_event("INFO", "Adding unit column to Ingredients DB")
-    try:
-        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Unit TEXT DEFAULT 'ml';")
-    except OperationalError:
-        _logger.log_event("ERROR", "Could not add unit column to DB, this may because it already exists")
-
-
-def change_slower_flag_to_pump_speed(slow_factor: float) -> None:
-    """Add the pump speed column to the Ingredients table.
-
-    Removes the slow flag column from the Ingredients table.
-    """
-    pump_speed = int(100 * slow_factor)
-    _logger.log_event(
-        "INFO", f"Converting Slow flag to Pump Speed column in Ingredients DB, using slow factor {slow_factor}"
-    )
-    try:
-        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Pump_speed INTEGER DEFAULT 100;")
-        execute_raw_sql("UPDATE Ingredients SET Pump_speed = ? WHERE Slow = 1;", (pump_speed,))
-        execute_raw_sql("ALTER TABLE Ingredients DROP COLUMN Slow;")
-    except OperationalError:
-        _logger.log_event(
-            "ERROR", "Could not convert slow flag to pump speed column in DB, this may because it was already done"
-        )
+def _create_db_backup() -> None:
+    """Create a backup of the current database."""
+    backup_path = BACKUP_FOLDER / f"database_backup_{datetime.now().strftime('%Y%m%d%H%M%S')}.db"
+    shutil.copy(DATABASE_PATH, backup_path)
+    _logger.log_event("INFO", f"Created backup of database at {backup_path}")
 
 
 def fix_amount_in_recipe() -> None:
@@ -186,7 +56,7 @@ def remove_hand_from_recipe_data() -> None:
     try:
         execute_raw_sql("ALTER TABLE RecipeData DROP COLUMN Hand;")
     except OperationalError:
-        _logger.log_event("ERROR", "Could not remove hand columns from DB, this may because they do not exist")
+        _logger.log_event("INFO", "Could not remove hand columns from DB, this may because they do not exist")
 
 
 def add_foreign_keys() -> None:
@@ -196,10 +66,7 @@ def add_foreign_keys() -> None:
     We will need to create a new table with the keys, copy the data and then rename the table.
     """
     # copy the database into a date-time.backup file
-
-    backup_path = BACKUP_FOLDER / f"database_backup_{datetime.now().strftime('%Y%m%d%H%M%S')}.db"
-    shutil.copy(DATABASE_PATH, backup_path)
-    _logger.log_event("INFO", f"Created backup of database at {backup_path}")
+    _create_db_backup()
     _logger.log_event("INFO", "Adding foreign keys to the database")
     execute_raw_sql("PRAGMA foreign_keys=off;")
     execute_raw_sql("""
@@ -265,7 +132,7 @@ def add_cost_consumption_column_to_ingredients() -> None:
             """
         )
     except OperationalError:
-        _logger.log_event("ERROR", "Could not add cost consumption column to DB, this may because it already exists")
+        _logger.log_event("INFO", "Could not add cost consumption column to DB, this may because it already exists")
 
 
 def add_resource_usage_table() -> None:
@@ -283,7 +150,7 @@ def add_resource_usage_table() -> None:
         """)
         execute_raw_sql("CREATE INDEX IF NOT EXISTS idx_resource_usage_session ON ResourceUsage (Session);")
     except OperationalError:
-        _logger.log_event("ERROR", "Could not add ResourceUsage table to DB, this may because it already exists")
+        _logger.log_event("INFO", "Could not add ResourceUsage table to DB, this may because it already exists")
 
 
 def add_virgin_counters_to_recipes() -> None:
@@ -294,7 +161,7 @@ def add_virgin_counters_to_recipes() -> None:
         execute_raw_sql("ALTER TABLE Recipes ADD COLUMN Counter_lifetime_virgin INTEGER DEFAULT 0;")
         execute_raw_sql("ALTER TABLE CocktailExport ADD COLUMN Counter_virgin INTEGER DEFAULT 0;")
     except OperationalError:
-        _logger.log_event("ERROR", "Could not add virgin counters to DB, this may because they already exist")
+        _logger.log_event("INFO", "Could not add virgin counters to DB, this may because they already exist")
 
 
 def clear_resource_log_file() -> None:
@@ -304,3 +171,13 @@ def clear_resource_log_file() -> None:
     if resource_log.exists():
         with contextlib.suppress(OSError):
             resource_log.unlink()
+
+
+def add_price_column_to_recipes() -> None:
+    """Add the price column to the Recipes table."""
+    _logger.log_event("INFO", "Adding price column to Recipes DB")
+    try:
+        execute_raw_sql("ALTER TABLE Recipes ADD COLUMN Price REAL DEFAULT 0.0;")
+        execute_raw_sql("UPDATE Recipes SET Price = 0.0 WHERE Price IS NULL;")
+    except OperationalError:
+        _logger.log_event("INFO", "Could not add price column to DB, this may because it already exists")

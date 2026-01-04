@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Callable, Literal
 
 import yaml
 
@@ -12,7 +12,7 @@ import yaml
 try:
     from PyQt5.QtCore import Qt
     from PyQt5.QtGui import QIcon
-    from PyQt5.QtWidgets import QDialog, QFileDialog
+    from PyQt5.QtWidgets import QApplication, QDialog, QFileDialog
 except ModuleNotFoundError:
     pass
 
@@ -23,6 +23,7 @@ from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data
 
 if TYPE_CHECKING:
+    from src.ui.setup_custom_dialog import CustomDialog
     from src.ui_elements import (
         Ui_addingredient,
         Ui_AddonManager,
@@ -52,6 +53,7 @@ if TYPE_CHECKING:
 _logger = LoggerHandler("dialog_handler")
 
 allowed_keys = Literal[
+    "api_interface_conflict",
     "alcohol_level_max_limit",
     "all_data_exported",
     "all_recipes_enabled",
@@ -115,6 +117,13 @@ allowed_keys = Literal[
     "not_enough_ingredient_volume",
     "options_updated",
     "options_updated_and_restart",
+    "payment_api_not_reachable",
+    "payment_canceled",
+    "payment_inactive",
+    "payment_insufficient_balance",
+    "payment_no_user",
+    "payment_successful",
+    "payment_too_young",
     "preparation_cancelled",
     "python_deprecated",
     "qtsass_not_successful",
@@ -160,7 +169,13 @@ class DialogHandler:
         tmpl = element.get(language, element["en"])
         return tmpl.format(**kwargs)
 
-    def standard_box(self, message: str, title: str = "", use_ok: bool = False, close_time: int | None = None) -> bool:
+    def standard_box(
+        self,
+        message: str,
+        title: str = "",
+        use_ok: bool = False,
+        close_time: int | None = None,
+    ) -> bool:
         """Display the messagebox for the Maker. Blocks until closed."""
         from src.ui.setup_custom_dialog import CustomDialog
 
@@ -168,7 +183,28 @@ class DialogHandler:
             title = self._choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
-        return CustomDialog(fancy_message, title, use_ok, close_time=close_time).exec()
+        dialog = CustomDialog(fancy_message, title, use_ok, close_time=close_time)
+        return dialog.exec()
+
+    def standard_box_non_blocking(
+        self,
+        message: str,
+        title: str = "",
+        use_ok: bool = False,
+        close_time: int | None = None,
+        close_callback: Callable[[], None] | None = None,
+    ) -> CustomDialog:
+        """Display the messagebox for the Maker. Does not block."""
+        from src.ui.setup_custom_dialog import CustomDialog
+
+        if not title:
+            title = self._choose_language("box_title")
+        fill_string = "-" * 70
+        fancy_message = f"{fill_string}\n{message}\n{fill_string}"
+        dialog = CustomDialog(fancy_message, title, use_ok, close_callback=close_callback, close_time=close_time)
+        dialog.show_non_blocking()
+        QApplication.processEvents()
+        return dialog
 
     def user_okay(self, text: str) -> bool:
         """Prompts the user for the given message and asks for confirmation."""
@@ -481,10 +517,13 @@ class DialogHandler:
     # Methods for prompting ####
     ############################
 
-    def ask_to_update(self, release_information: str) -> bool:
+    def ask_to_update(self, release_information: str, major_update: bool = False) -> bool:
         """Asks the user if he wants to get the latest update."""
         message = self._choose_language("update_available")
         message = f"{message}\n\n{release_information}"
+        if major_update:
+            major_warning = self._choose_language("update_available_major_warning")
+            message = f"{major_warning}\n\n{message}"
         return self.user_okay(message)
 
     def ask_to_start_cleaning(self) -> bool:
@@ -664,6 +703,7 @@ class UiLanguage:
             (w.label_search_title, "header_search"),
             (w.button_enter_to_maker, "enter_to_maker"),
             (w.label_ingredient_unit, "label_ingredient_unit"),
+            (w.label_cocktail_price, "label_cocktail_price"),
         ]:
             ui_element.setText(self._choose_language(text_name, window))
 
@@ -719,10 +759,10 @@ class UiLanguage:
         window = "team_window"
         w.LHeader.setText(self._choose_language("header", window))
 
-    def generate_numpad_header(self, header_type: Literal["amount", "alcohol", "number"] = "amount") -> str:
+    def generate_numpad_header(self, header_type: Literal["amount", "alcohol", "number", "price"] = "amount") -> str:
         """Select the header of the password window.
 
-        header_type: 'password', 'amount', 'alcohol'.
+        header_type: 'password', 'amount', 'alcohol', 'price'.
         """
         window = "numpad_window"
         return self._choose_language(header_type, window)

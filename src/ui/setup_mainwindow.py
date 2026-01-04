@@ -20,6 +20,7 @@ from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.programs.addons import ADDONS
+from src.programs.nfc_payment_service import NFCPaymentService
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
@@ -37,7 +38,7 @@ from src.ui.setup_progress_screen import ProgressScreen
 from src.ui.setup_refill_dialog import RefillDialog
 from src.ui.setup_team_window import TeamScreen
 from src.ui_elements import Ui_MainWindow
-from src.updater import Updater
+from src.updater import UpdateInfo, Updater
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -75,6 +76,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
         self.cocktail_selection: Optional[CocktailSelection] = None
+        if cfg.PAYMENT_ACTIVE:
+            NFCPaymentService().start_continuous_sensing()
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
 
@@ -104,13 +107,17 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self._deprecation_check()
         self._connection_check()
         ADDONS.start_trigger_loop(self)
+        # start at the cocktail list view
+        self.switch_to_cocktail_list()
+        if cfg.PAYMENT_ACTIVE:
+            NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
 
     def update_check(self) -> None:
         """Check if there is an update and asks to update, if exists."""
-        update_available, info = can_update()
-        if not update_available:
+        info = can_update()
+        if info.status != UpdateInfo.Status.UPDATE_AVAILABLE:
             return
-        if not DP_CONTROLLER.ask_to_update(info):
+        if not DP_CONTROLLER.ask_to_update(info.message):
             return
         updater = Updater()
         success = updater.update()
@@ -135,7 +142,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 platform.python_version(), f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
             )
 
-    def open_cocktail_selection(self, cocktail: Cocktail) -> None:
+    def open_cocktail_detail(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
         if self.cocktail_selection is not None:
             # Clean up all internal layouts and widgets recursively
@@ -145,13 +152,30 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             # Schedule for deletion and remove reference
             self.cocktail_selection.deleteLater()
             self.cocktail_selection = None
-        self.cocktail_selection = CocktailSelection(
-            self, cocktail, lambda: self.container_maker.setCurrentWidget(self.cocktail_view)
-        )
+        self.cocktail_selection = CocktailSelection(self, cocktail)
         self.container_maker.addWidget(self.cocktail_selection)
         self.cocktail_selection.set_cocktail(cocktail)
         self.cocktail_selection.update_cocktail_data()
+        self.switch_to_cocktail_detail()
+
+    def switch_to_cocktail_detail(self) -> None:
+        if self.cocktail_selection is None:
+            return
+        if cfg.PAYMENT_ACTIVE:
+            NFCPaymentService().remove_callback("cocktail_list")
         self.container_maker.setCurrentWidget(self.cocktail_selection)
+
+    def switch_to_cocktail_list(self) -> None:
+        # if already in this, do nothing
+        if self.container_maker.currentWidget() == self.cocktail_view:
+            return
+        self.container_maker.setCurrentWidget(self.cocktail_view)
+        if not cfg.PAYMENT_ACTIVE:
+            return
+        # need to emit this, in case we switch back from detail view and auto logout happened when user was there
+        # this is because we pause the cocktail_list callback when we are in detail view
+        self.cocktail_view.emit_user_change(NFCPaymentService().user, "")
+        NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
 
     def open_numpad(
         self,
@@ -160,10 +184,17 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         y_pos: int = 0,
         header_text: str = "Password",
         overwrite_number: bool = False,
+        use_float: bool = False,
     ) -> None:
         """Open up the NumpadWidget connected to the lineedit offset from the left upper side."""
         self.numpad_window = NumpadWidget(
-            self, le_to_write, x_pos, y_pos, header_text, overwrite_number=overwrite_number
+            self,
+            le_to_write,
+            x_pos,
+            y_pos,
+            header_text,
+            overwrite_number=overwrite_number,
+            use_float=use_float,
         )
 
     def open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 30) -> None:
@@ -241,6 +272,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.option_button.clicked.connect(self.open_option_window)
         alcohol = UI_LANGUAGE.generate_numpad_header("alcohol")
         self.LEGehaltRezept.clicked.connect(lambda: self.open_numpad(self.LEGehaltRezept, 50, 50, alcohol))
+        price = UI_LANGUAGE.generate_numpad_header("price")
+        self.line_edit_cocktail_price.clicked.connect(
+            lambda: self.open_numpad(self.line_edit_cocktail_price, 400, 50, price, use_float=True)
+        )
         self.line_edit_ingredient_name.clicked.connect(
             lambda: self.open_keyboard(self.line_edit_ingredient_name, max_char_len=20)
         )
@@ -372,5 +407,5 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         cocktail = DB_COMMANDER.get_cocktail(search)
         if cocktail is None:
             return
-        self.open_cocktail_selection(cocktail)
+        self.open_cocktail_detail(cocktail)
         DP_CONTROLLER.set_tabwidget_tab(self, "maker")

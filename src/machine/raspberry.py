@@ -6,9 +6,8 @@ from typing import Literal
 
 from src.logger_handler import LoggerHandler
 from src.machine.interface import GPIOController, PinController
-from src.utils import time_print
 
-logger = LoggerHandler("RpiController")
+_logger = LoggerHandler("RpiController")
 
 try:
     # pylint: disable=import-error
@@ -66,7 +65,7 @@ class RpiController(PinController):
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         """Set up the given pin list."""
         if not self.dev_displayed:
-            time_print(f"Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
+            _logger.info(f"<i> Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
         if not self.devenvironment:
             # if it is an input, we need to set the pull up down to down or up
@@ -78,7 +77,7 @@ class RpiController(PinController):
             else:
                 GPIO.setup(pin_list, GPIO.OUT, initial=self.low)
         else:
-            logger.log_event("WARNING", f"Could not import RPi.GPIO. Will not be able to control pins: {pin_list}")
+            _logger.warning(f"Could not import RPi.GPIO. Will not be able to control pins: {pin_list}")
 
     def activate_pin_list(self, pin_list: list[int]) -> None:
         """Activates the given pin list."""
@@ -126,11 +125,11 @@ class Rpi5Controller(PinController):
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         """Set up the given pin list using gpiozero with error handling."""
         if not self.dev_displayed:
-            time_print(f"Devenvironment on the RPi5 module is {'on' if self.devenvironment else 'off'}")
+            _logger.info(f"<i> Devenvironment on the RPi5 module is {'on' if self.devenvironment else 'off'}")
             self.dev_displayed = True
 
         if self.devenvironment:
-            logger.log_event("WARNING", f"Could not import gpiozero. Will not be able to control pins: {pin_list}")
+            _logger.warning(f"Could not import gpiozero. Will not be able to control pins: {pin_list}")
             return
         for pin in pin_list:
             try:
@@ -143,7 +142,7 @@ class Rpi5Controller(PinController):
                     self.gpios[pin] = OutputDevice(pin, initial_value=False, active_high=self.active_high)
             except Exception as e:
                 # Catch any error and continue, printing the pin and error message
-                logger.log_event("WARNING", f"Error: Could not initialize GPIO pin {pin}. Reason: {e!s}")
+                _logger.warning(f"Error: Could not initialize GPIO pin {pin}. Reason: {e!s}")
 
     def activate_pin_list(self, pin_list: list[int]) -> None:
         """Activates the given pin list (sets to high)."""
@@ -153,9 +152,7 @@ class Rpi5Controller(PinController):
             if pin in self.gpios and isinstance(self.gpios[pin], OutputDevice):
                 self.gpios[pin].on()
             else:
-                logger.log_event(
-                    "WARNING", f"Could not activate GPIO pin {pin}. Reason: Pin not activated or not an OutputDevice."
-                )
+                _logger.warning(f"Could not activate GPIO pin {pin}. Reason: Pin not activated or not an OutputDevice.")
 
     def close_pin_list(self, pin_list: list[int]) -> None:
         """Close (deactivate) the given pin_list (sets to low)."""
@@ -182,7 +179,7 @@ class Rpi5Controller(PinController):
         """Return the state of the given pin (True if high, False if low)."""
         if pin in self.gpios and isinstance(self.gpios[pin], InputDevice):
             return self.gpios[pin].is_active  # True if high, False if low
-        logger.log_event("WARNING", f"Could not read GPIO pin {pin}. Reason: Pin not found or not an InputDevice.")
+        _logger.warning(f"Could not read GPIO pin {pin}. Reason: Pin not found or not an InputDevice.")
         return False
 
 

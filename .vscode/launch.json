@@ -2,28 +2,15 @@
   "version": "2.0.0",
   "configurations": [
     {
-      "name": "Ruff Linting",
-      "type": "shell",
-      "request": "launch",
-      "script": "uv run ruff check src",
-      "cwd": "${cwd}"
-    },
-    {
       "name": "Python: Current file",
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "justMyCode": true
-    },
-    {
-      "name": "Calibration program over CLI",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/runme.py",
-      "console": "integratedTerminal",
       "justMyCode": true,
-      "args": ["-c"]
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "Main program in debug mode over CLI",
@@ -32,7 +19,24 @@
       "program": "${workspaceFolder}/runme.py",
       "console": "integratedTerminal",
       "justMyCode": true,
-      "args": ["-d"]
+      "args": ["-d"],
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "[MOCKED] Main program in debug mode over CLI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/runme.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["-d"],
+      "env": {
+        "MOCK_RFID": "1",
+        "MOCK_PAYMENT_SERVICE": "1",
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "Run Backend over CLI",
@@ -40,14 +44,33 @@
       "request": "launch",
       "program": "${workspaceFolder}/api.py",
       "console": "integratedTerminal",
-      "justMyCode": true
+      "justMyCode": true,
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "[MOCKED] Run Backend over CLI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/api.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "MOCK_RFID": "1",
+        "MOCK_PAYMENT_SERVICE": "1",
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "Debug FastApi (Backend) over uvicorn",
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["src.api.api:app", "--reload"]
+      "args": ["src.api.api:app", "--reload"],
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "Debug FastApi (Backend) over fastapi CLI",
@@ -55,7 +78,10 @@
       "request": "launch",
       "module": "fastapi",
       "cwd": "${workspaceFolder}/src/api/",
-      "args": ["dev", "./api.py"]
+      "args": ["dev", "./api.py"],
+      "env": {
+        "COCKTAILBERRY_LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "Node: Run Frontend",

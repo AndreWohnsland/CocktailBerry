@@ -31,16 +31,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput, in
       <div className='flex-grow'></div>
       <input
         type='text'
+        name='searchInput'
         placeholder={t('search')}
         value={search ?? ''}
         onChange={(e) => setSearch(e.target.value)}
-        className='input-base mr-1 w-full p-3 max-w-sm'
+        className='h-10 input-base mr-1 w-full p-3 max-w-sm'
         hidden={!showSearch}
       />
       <div className={`flex ${showSearch ? '' : 'hidden'}`}>
         <button
           onClick={() => setSearch('')}
-          className='button-neutral flex items-center justify-center p-2 mr-1 !border'
+          className='h-10 w-10 button-neutral flex items-center justify-center p-2 mr-1 !border'
         >
           <FaEraser size={20} />
         </button>
@@ -48,7 +49,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput, in
       {afterInput && <div className={`mr-1 ${showSearch ? '' : 'hidden'}`}>{afterInput}</div>}
       <button
         onClick={handleHideToggle}
-        className='button-primary flex items-center justify-center p-2 !border pointer-events-auto'
+        className='h-10 w-10 button-primary flex items-center justify-center p-2 !border pointer-events-auto'
       >
         <FaSearch size={20} />
       </button>

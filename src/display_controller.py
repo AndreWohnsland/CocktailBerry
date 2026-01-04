@@ -26,7 +26,6 @@ from PyQt5.QtWidgets import (
 
 from src import MAX_SUPPORTED_BOTTLES
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE, DialogHandler
 from src.filepath import APP_ICON_FILE, STYLE_FOLDER
@@ -53,6 +52,7 @@ class RecipeInput:
     ingredient_volumes: list[str]
     ingredient_order: list[str]
     enabled: bool
+    price_per_100_ml: str
     virgin: bool
 
 
@@ -144,23 +144,16 @@ class DisplayController(DialogHandler):
         )
 
     def get_recipe_field_data(self, w: Ui_MainWindow) -> RecipeInput:
-        """Return [name, selected, [ingredients], [volumes], enabled, virgin]."""
-        recipe_name: str = w.LECocktail.text().strip()
-        selected_recipe = self.get_list_widget_selection(w.LWRezepte)
-        # this is also a str, because user may type non int char into box
-        ingredient_volumes = self.get_lineedit_text(self.get_lineedits_recipe(w))
-        ingredient_names = self.get_current_combobox_items(self.get_comboboxes_recipes(w))
-        ingredient_order = self.get_lineedit_text(self.get_lineedits_recipe_order(w))
-        enabled = w.CHBenabled.isChecked()
-        virgin = w.offervirgin_checkbox.isChecked()
+        """Return user input from the recipe fields."""
         return RecipeInput(
-            recipe_name,
-            selected_recipe,
-            ingredient_names,
-            ingredient_volumes,
-            ingredient_order,
-            enabled,
-            virgin,
+            recipe_name=w.LECocktail.text().strip(),
+            selected_recipe=self.get_list_widget_selection(w.LWRezepte),
+            ingredient_names=self.get_current_combobox_items(self.get_comboboxes_recipes(w)),
+            ingredient_volumes=self.get_lineedit_text(self.get_lineedits_recipe(w)),
+            ingredient_order=self.get_lineedit_text(self.get_lineedits_recipe_order(w)),
+            enabled=w.CHBenabled.isChecked(),
+            price_per_100_ml=w.line_edit_cocktail_price.text().strip(),
+            virgin=w.offervirgin_checkbox.isChecked(),
         )
 
     def remove_recipe_from_list_widget(self, w: Ui_MainWindow, recipe_name: str) -> None:
@@ -308,10 +301,6 @@ class DisplayController(DialogHandler):
         """
         tabs = {"search": 0, "maker": 1, "ingredients": 2, "recipes": 3, "bottles": 4}
         w.tabWidget.setCurrentIndex(tabs.get(tab, 1))
-
-    def reset_alcohol_factor(self) -> None:
-        """Set the alcohol slider to default (100%) value."""
-        shared.alcohol_factor = 1.0
 
     # LineEdit
     def clean_multiple_lineedit(self, lineedit_list: list[QLineEdit]) -> None:
@@ -537,6 +526,7 @@ class DisplayController(DialogHandler):
         """Clear the recipe data in recipe view, only clears selection if no other item was selected."""
         w.LECocktail.clear()
         w.offervirgin_checkbox.setChecked(False)
+        w.line_edit_cocktail_price.setText("0.0")
         if not select_other_item:
             w.LWRezepte.clearSelection()
         self.set_multiple_combobox_to_top_item(self.get_comboboxes_recipes(w))
@@ -556,11 +546,12 @@ class DisplayController(DialogHandler):
         self.fill_multiple_lineedit(self.get_lineedits_recipe(w)[: len(volumes)], volumes)
         self.fill_multiple_lineedit(self.get_lineedits_recipe_order(w)[: len(order)], order)
         w.LECocktail.setText(cocktail.name)
+        w.line_edit_cocktail_price.setText(str(cocktail.price_per_100_ml))
 
     def update_maker_view(self, w: MainScreen) -> None:
         """Refresh the maker view, sets tab also to maker and not selection."""
         w.cocktail_view.populate_cocktails()
-        w.container_maker.setCurrentWidget(w.cocktail_view)
+        w.switch_to_cocktail_list()
 
     # Some more "specific" function, not using generic but specified field sets
     def set_label_bottles(self, w: Ui_MainWindow, label_names: list[str]) -> None:

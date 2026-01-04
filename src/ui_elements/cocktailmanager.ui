@@ -134,6 +134,8 @@
           <property name="font">
            <font>
             <pointsize>18</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
           <property name="text">
@@ -164,6 +166,8 @@
           <property name="font">
            <font>
             <pointsize>28</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
           <property name="alignment">
@@ -736,6 +740,8 @@
               <property name="font">
                <font>
                 <pointsize>14</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
                </font>
               </property>
               <property name="text">
@@ -1134,6 +1140,82 @@
                   </property>
                   <property name="cssClass" stdset="0">
                    <string>bold mr mt mb</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QLabel" name="label_cocktail_price">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Price:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="ClickableLineEdit" name="line_edit_cocktail_price">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>0.0</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="cssClass" stdset="0">
+                   <string>secondary bold</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_price_2">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>€/100ml </string>
                   </property>
                  </widget>
                 </item>
@@ -2147,7 +2229,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>741</width>
+             <width>620</width>
              <height>1108</height>
             </rect>
            </property>

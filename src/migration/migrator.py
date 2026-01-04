@@ -31,24 +31,14 @@ from src.logger_handler import LoggerHandler
 from src.migration.export_data import add_export_tables_to_db, migrate_csv_export_data_to_db
 from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
 from src.migration.update_data import (
-    add_cost_column_to_ingredients,
     add_cost_consumption_column_to_ingredients,
     add_foreign_keys,
-    add_more_bottles_to_db,
-    add_order_column_to_ingredient_data,
+    add_price_column_to_recipes,
     add_resource_usage_table,
-    add_slower_ingredient_flag_to_db,
-    add_team_buffer_to_database,
-    add_unit_column_to_ingredients,
     add_virgin_counters_to_recipes,
-    add_virgin_flag_to_db,
-    change_slower_flag_to_pump_speed,
     clear_resource_log_file,
     fix_amount_in_recipe,
     remove_hand_from_recipe_data,
-    remove_is_alcoholic_column,
-    remove_old_recipe_columns,
-    rename_database_to_english,
 )
 from src.migration.web_migrator import replace_backend_script
 
@@ -62,6 +52,10 @@ class Migrator:
     def __init__(self) -> None:
         self.program_version = Version(__version__)
         self.config = configparser.ConfigParser()
+        # if no file is found - assume we just installed (true for 99% of cases) - write latest version
+        if not VERSION_FILE.exists():
+            _logger.log_event("INFO", "No version file found, assuming fresh install, writing latest version")
+            self._write_latest_to_local_version()
         self.config.read(VERSION_FILE)
         self.local_version = Version(self._get_local_version())
 
@@ -76,6 +70,11 @@ class Migrator:
         """Check if the current version is below the given version."""
         return Version(version) > self.local_version
 
+    def is_major_update(self, version: str) -> bool:
+        """Check if the update to the given version is a major update."""
+        new_version = Version(version)
+        return new_version.major > self.local_version.major
+
     def older_than_version_with_logging(self, version: str) -> bool:
         """Check if the current version is below the given version."""
         is_older = Version(version) > self.local_version
@@ -83,9 +82,8 @@ class Migrator:
             self._migration_log(version)
         return is_older
 
-    def _write_local_version(self) -> None:
+    def _write_latest_to_local_version(self) -> None:
         """Write the latest version to the local version."""
-        _logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
         self.config["DEFAULT"]["LOCALVERSION"] = str(self.program_version.version)
         with VERSION_FILE.open("w", encoding="utf-8") as config_file:
             self.config.write(config_file)
@@ -97,41 +95,6 @@ class Migrator:
 
         # define a version and the according list of actions to take
         version_actions = {
-            "1.5.0": [
-                rename_database_to_english,
-                add_team_buffer_to_database,
-                lambda: self._install_pip_package("GitPython", "1.5.0"),
-            ],
-            "1.5.3": [lambda: self._install_pip_package("typer", "1.5.3")],
-            "1.6.0": [
-                self._change_git_repo,
-                lambda: self._install_pip_package("pyfiglet", "1.6.0"),
-            ],
-            "1.6.1": [add_more_bottles_to_db],
-            "1.9.0": [
-                add_virgin_flag_to_db,
-                remove_is_alcoholic_column,
-                lambda: self._install_pip_package("typing_extensions", "1.9.0"),
-            ],
-            "1.11.0": [lambda: self._install_pip_package("qtawesome", "1.11.0")],
-            "1.17.0": [lambda: self._install_pip_package("pyqtspinner", "1.17.0")],
-            "1.18.0": [remove_old_recipe_columns],
-            "1.19.3": [lambda: _update_config_value_type("UI_MASTERPASSWORD", int, 0)],
-            "1.22.0": [add_slower_ingredient_flag_to_db],
-            "1.23.1": [lambda: _update_config_value_type("PUMP_SLOW_FACTOR", float, 1.0)],
-            "1.26.1": [lambda: _update_config_value_type("PUMP_VOLUMEFLOW", float, 1.0)],
-            "1.29.0": [add_cost_column_to_ingredients],
-            "1.30.0": [
-                add_order_column_to_ingredient_data,
-                lambda: self._install_pip_package("pillow", "1.30.0"),
-            ],
-            "1.30.1": [add_unit_column_to_ingredients],
-            "1.33.0": [_move_slow_factor_to_db],
-            "1.35.0": [lambda: self._install_pip_package("psutil", "1.35.0")],
-            "1.36.0": [
-                _combine_pump_setting_into_one_config,
-                lambda: self._install_pip_package("distro", "1.36.0"),
-            ],
             "2.0.0": [
                 lambda: self._install_pip_package("fastapi[standard]", "2.0.0"),
                 lambda: self._install_pip_package("uvicorn", "2.0.0"),
@@ -158,6 +121,7 @@ class Migrator:
             "2.6.1": [add_virgin_counters_to_recipes],
             "2.6.2": [lambda: self._install_pip_package("pulp", "2.6.2")],
             "2.8.0": [_combine_led_setting_into_one_config],
+            "3.0.0": [add_price_column_to_recipes],
         }
 
         for version, actions in version_actions.items():
@@ -166,7 +130,7 @@ class Migrator:
                 for action in actions:
                     action()
 
-        self._check_local_version_data()
+        self._update_local_version_data()
 
     def _backup_config_file(self, suffix: str) -> None:
         """Save the config file at ~/cb_backup/custom_config_pre_{suffix}.yaml."""
@@ -190,11 +154,12 @@ class Migrator:
                 "WARNING", f"Your used Python ({sys_format}) is deprecated, please upgrade to {future_format} or higher"
             )
 
-    def _check_local_version_data(self) -> None:
+    def _update_local_version_data(self) -> None:
         """Check to update the local version data."""
         if self.older_than_version(self.program_version.version):
+            _logger.log_event("INFO", f"Local data migrated from {self.local_version} to {self.program_version}")
             self._update_custom_theme()
-            self._write_local_version()
+            self._write_latest_to_local_version()
         else:
             _logger.log_event("INFO", "Nothing to migrate")
 
@@ -208,20 +173,6 @@ class Migrator:
         import qtsass  # pylint:disable=import-outside-toplevel
 
         qtsass.compile_filename(CUSTOM_STYLE_SCSS, CUSTOM_STYLE_FILE)
-
-    def _change_git_repo(self) -> None:
-        """Set the git source to the new named repo."""
-        _logger.log_event("INFO", "Changing git origin to new repo name")
-        try:
-            subprocess.check_call(
-                ["git", "remote", "set-url", "origin", "https://github.com/AndreWohnsland/CocktailBerry.git"]
-            )
-        except subprocess.CalledProcessError as err:
-            err_msg = "Could not change origin. Check if you made any local file changes / use 'git restore .'!"
-            err_msg += " See also debug logs for more information"
-            _logger.log_event("ERROR", err_msg)
-            _logger.log_exception(err)
-            raise CouldNotMigrateException("1.6.0") from err
 
     def _install_pip_package(self, package_name: str, version_to_migrate: str) -> None:
         """Try to install a python package over pip."""
@@ -282,50 +233,6 @@ def _get_local_config(config_name: str) -> dict[str, Any] | None:
         return None
     with CUSTOM_CONFIG_FILE.open(encoding="UTF-8") as stream:
         return yaml.safe_load(stream)
-
-
-def _combine_pump_setting_into_one_config() -> None:
-    """Combine the pump settings into one config.
-
-    The pump settings were split into two different configs, now they will be combined.
-    """
-    configuration = _get_local_config("convert pum settings")
-    if configuration is None:
-        return
-    # get the value from the config, if not exists fall back to default
-    pump_pins = configuration.get("PUMP_PINS")
-    if pump_pins is None:
-        pump_pins = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
-        _logger.info("No pump pins found in config, using fallback pins")
-    pump_volume_flow = configuration.get("PUMP_VOLUMEFLOW")
-    if pump_volume_flow is None:
-        pump_volume_flow = [30.0] * len(pump_pins)
-        _logger.info("No pump volume flow found in config, using fallback volume flow")
-    tube_volume = configuration.get("MAKER_TUBE_VOLUME", 0)
-    _logger.info(f"Using for migration: {tube_volume=}, {pump_pins=}, {pump_volume_flow=}")
-    pump_config: list[dict] = []
-    # we just read in the plain dict but not the classes in the migrator, so keep this in mind.
-    for pin, volume_flow in zip(pump_pins, pump_volume_flow):
-        pump_config.append({"pin": pin, "volume_flow": volume_flow, "tube_volume": tube_volume})
-    configuration["PUMP_CONFIG"] = pump_config
-    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
-        yaml.dump(configuration, stream, default_flow_style=False)
-
-
-def _move_slow_factor_to_db() -> None:
-    """Convert the slow factor from the config to the database.
-
-    Will use the slow flag and the config value to calculate the pump speed,
-    others will be 100%.
-    """
-    if not CUSTOM_CONFIG_FILE.exists():
-        slow_factor = 1.0
-    else:
-        configuration: dict[str, Any] = {}
-        with CUSTOM_CONFIG_FILE.open(encoding="UTF-8") as stream:
-            configuration = yaml.safe_load(stream)
-        slow_factor = configuration.get("PUMP_SLOW_FACTOR", 1.0)
-    change_slower_flag_to_pump_speed(slow_factor)
 
 
 def _add_maker_lock_value() -> None:

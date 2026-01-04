@@ -1,34 +1,23 @@
 # Advanced Topics
 
-!!! success "First Of All"
+!!! info "First Of All"
     Take note that none of this section is required to run the base program.
     These are just some fun additions, which you can optionally use.
     If you are not interested in them, just skip this section.
 
 !!! example "Use the CLI"
-    The **latest and easiest** way to install the CocktailBerry microservice is over the [CLI](commands.md#setup-the-microservice).
+    The **easiest** way to install the CocktailBerry microservice is over the [CLI](commands.md#setup-the-microservice).
     Just run:
     ```bash
-    python runme.py setup-microservice
+    uv run runme.py setup-microservice
     ```
     for the interactive mode to change the env variables and build the service including automated updates.
-    **This is also now the recommended way!**
-
-    If you still use the old setup, you can check your secrets, remove the old container and use them with the new setup:
-    ```bash
-    docker stop cocktail-microservice
-    docker rm cocktail-microservice
-    cat ~/CocktailBerry/microservice/.env
-    ```
-    The old setup is deprecated and should no longer be used, since the new one is more robust and easier.
-    Long time users of the teams feature may also noticed the streamlined process, in the sections below.
 
 !!! tip "Try the Pre-build Image"
-    There is now also the option to install directly from Docker Hub, a GitHub action should build a new tag every release.
+    There is the option to install directly from Docker Hub, a new tag is built every release.
     This is for more advanced users, since you need to set the files/settings yourself.
 
-    Just visit [Docker Hub](https://hub.docker.com/search?q=andrewo92) and pull the according images over docker or compose and follow the instruction on Docker Hub.
-    Best is to create the according `docker-compose.yaml` file on your desktop, or anywhere outside the project, since you enter your personal credentials there.
+    Visit [Docker Hub](https://hub.docker.com/search?q=andrewo92) and pull the according images and follow the instruction on Docker Hub.
 
 ## Installation of Services
 
@@ -36,8 +25,8 @@ Simply have `docker compose` installed and run either the CLI command or the doc
 You will also find more information below for the specific services.
 
 ```bash
-python runme.py setup-microservice # (1)!
-python runme.py setup-teams-service -l de # (2)!
+uv run runme.py setup-microservice # (1)!
+uv run runme.py setup-teams-service -l de # (2)!
 docker compose up --build -d # (3)!
 ```
 
@@ -62,7 +51,7 @@ Cocktail data currently includes cocktail name, produced volume, ingredients, cu
 Since the service runs along with CocktailBerry, you can just use the CLI for the setup:
 
 ```bash
-python runme.py setup-microservice
+uv run runme.py setup-microservice
 ```
 
 The terminal will interactively ask you for the required information.
@@ -134,7 +123,7 @@ sh scripts/setup.sh dashboard
 If you want to run the teams service on the same device as CocktailBerry, you can use the CocktailBerry CLI (needs CocktailBerry to be installed):
 
 ```bash
-python runme.py setup-teams-service -l de # (1)!
+uv run runme.py setup-teams-service -l de # (1)!
 ```
 
 1. Use one of the supported languages here

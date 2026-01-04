@@ -83,6 +83,7 @@ def create_label(
     min_w: int = 0,
     min_h: int = 20,
     css_class: Optional[str] = None,
+    word_wrap: bool = False,
 ) -> QLabel:
     """Create a label with given text and properties."""
     label = QLabel(text)
@@ -93,6 +94,8 @@ def create_label(
         label.setAlignment(Qt.AlignCenter)  # type: ignore
     if css_class is not None:
         label.setProperty("cssClass", css_class)
+    if word_wrap:
+        label.setWordWrap(True)
     return label
 
 

@@ -57,7 +57,6 @@ export const getCocktailStatus = async (): Promise<CocktailStatus> => {
       console.error('Error fetching cocktail status:', error);
       return {
         progress: 0,
-        completed: false,
         error: undefined,
         status: 'UNDEFINED',
       };
@@ -70,6 +69,15 @@ export const stopCocktail = async (): Promise<void> => {
     .then((res) => res.data)
     .catch((error) => {
       console.error('Error stopping cocktail preparation:', error);
+    });
+};
+
+export const cancelPayment = async (): Promise<void> => {
+  return axiosInstance
+    .post<void>(`${cocktail_url}/prepare/payment/cancel`)
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error('Error cancelling payment:', error);
     });
 };
 

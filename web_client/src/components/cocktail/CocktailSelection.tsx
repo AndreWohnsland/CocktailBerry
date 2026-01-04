@@ -133,6 +133,18 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
     return start + idx;
   };
 
+  const calculateDisplayPrice = (amount: number, pricePer100: number): string => {
+    if (!config.PAYMENT_ACTIVE) return '';
+    const virginMultiplier = alcohol === 'virgin' ? config.PAYMENT_VIRGIN_MULTIPLIER / 100 : 1;
+    const rawPrice = ((amount * pricePer100) / 100) * virginMultiplier;
+    const roundTo = config.PAYMENT_PRICE_ROUNDING;
+    const price = roundTo > 0 ? Math.ceil(rawPrice / roundTo) * roundTo : rawPrice;
+    // Determine decimal places from roundTo
+    const decimalPlaces = (roundTo.toString().split('.')[1] || '').length;
+    const formatted = price.toFixed(decimalPlaces).replace(/\.?0+$/, '');
+    return `: ${formatted}€`;
+  };
+
   return (
     <>
       <div className='flex flex-col sm:flex-row items-center md:items-start justify-center w-full h-full'>
@@ -161,24 +173,28 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
           <div className='flex items-center justify-between mb-2 shrink w-full'>
             <span className='ml-4 text-secondary font-bold w-6 text-xl'>{displayCocktail.alcohol}%</span>
             <div className='flex space-x-2'>
-              <button
-                onClick={() => handleAlcoholState('high')}
-                className={`w-8 p-2 rounded-full ${alcohol === 'high' ? 'bg-secondary' : 'bg-primary'} ${
-                  selectedCocktail.only_virgin && 'disabled'
-                }`}
-                disabled={selectedCocktail.only_virgin}
-              >
-                <FaSkullCrossbones className='text-background' />
-              </button>
-              <button
-                onClick={() => handleAlcoholState('low')}
-                className={`w-8 p-2 rounded-full ${alcohol === 'low' ? 'bg-secondary' : 'bg-primary'} ${
-                  selectedCocktail.only_virgin && 'disabled'
-                }`}
-                disabled={selectedCocktail.only_virgin}
-              >
-                <IoIosHappy className='text-background' />
-              </button>
+              {!config.PAYMENT_ACTIVE && (
+                <>
+                  <button
+                    onClick={() => handleAlcoholState('high')}
+                    className={`w-8 p-2 rounded-full ${alcohol === 'high' ? 'bg-secondary' : 'bg-primary'} ${
+                      selectedCocktail.only_virgin && 'disabled'
+                    }`}
+                    disabled={selectedCocktail.only_virgin}
+                  >
+                    <FaSkullCrossbones className='text-background' />
+                  </button>
+                  <button
+                    onClick={() => handleAlcoholState('low')}
+                    className={`w-8 p-2 rounded-full ${alcohol === 'low' ? 'bg-secondary' : 'bg-primary'} ${
+                      selectedCocktail.only_virgin && 'disabled'
+                    }`}
+                    disabled={selectedCocktail.only_virgin}
+                  >
+                    <IoIosHappy className='text-background' />
+                  </button>
+                </>
+              )}
               {selectedCocktail.virgin_available && (
                 <button
                   onClick={() => handleAlcoholState('virgin')}
@@ -223,7 +239,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
               .sort((a, b) => a - b)
               .map((amount, index) => (
                 <Button
-                  label={amount}
+                  label={amount + calculateDisplayPrice(amount, displayCocktail.price_per_100_ml)}
                   filled
                   key={amount}
                   onClick={() => prepareCocktailClick(amount)}

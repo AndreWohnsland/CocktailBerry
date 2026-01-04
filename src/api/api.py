@@ -4,7 +4,6 @@ from typing import Any
 
 import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.logger import logger
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -20,13 +19,16 @@ from src.config.config_manager import shared
 from src.config.errors import ConfigError
 from src.database_commander import DatabaseTransactionError
 from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
+from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.setup_web import download_latest_web_client
 from src.programs.addons import ADDONS, CouldNotInstallAddonError
+from src.programs.nfc_payment_service import NFCPaymentService
 from src.resource_stats import start_resource_tracker
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
-from src.updater import Updater
-from src.utils import time_print
+from src.updater import UpdateInfo, Updater
+
+_logger = LoggerHandler("CocktailBerry_API")
 
 
 @asynccontextmanager
@@ -36,8 +38,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     try:
         cfg.read_local_config(update_config=True)
     except ConfigError as e:
-        logger.error(f"Config Error: {e}")
-        time_print(f"Config Error: {e}, please check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
+        _logger.error(f"Config Error: {e}, check the config file. You can edit the file at: {CUSTOM_CONFIG_FILE}.")
         shared.startup_config_issue.set_issue(message=str(e))
         # only read in valid config and use default for faulty ones
         cfg.read_local_config(validate=False)
@@ -48,15 +49,16 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     mc = MachineController()
     mc.init_machine()
     ADDONS.setup_addons()
-    if cfg.MAKER_SEARCH_UPDATES:
-        update_available, _ = can_update()
-        if update_available:
-            time_print("Update available, performing update...")
-            # need to get also latest web build
-            download_latest_web_client()
-            updater = Updater()
-            updater.update()
+    update_info = can_update()
+    if update_info.status == UpdateInfo.Status.UPDATE_AVAILABLE:
+        _logger.info("Update available, performing update...")
+        # need to get also latest web build
+        download_latest_web_client()
+        updater = Updater()
+        updater.update()
     ADDONS.start_trigger_loop()
+    if cfg.PAYMENT_ACTIVE:
+        NFCPaymentService().start_continuous_sensing()
     yield
     mc.cleanup()
 

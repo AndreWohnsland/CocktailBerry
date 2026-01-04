@@ -77,7 +77,7 @@
         <string>tabs-padded</string>
        </property>
        <attribute name="title">
-        <string>    UI    </string>
+        <string>   UI   </string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <property name="leftMargin">
@@ -112,7 +112,7 @@
              <x>0</x>
              <y>0</y>
              <width>794</width>
-             <height>413</height>
+             <height>403</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -158,7 +158,7 @@
         <string>tabs-padded</string>
        </property>
        <attribute name="title">
-        <string>    Maker    </string>
+        <string>  Maker  </string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <property name="leftMargin">
@@ -192,8 +192,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>794</width>
-             <height>423</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -236,7 +236,7 @@
         <string>tabs-padded</string>
        </property>
        <attribute name="title">
-        <string>    Hardware    </string>
+        <string>  Hardware  </string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <property name="leftMargin">
@@ -270,8 +270,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>794</width>
-             <height>423</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -314,7 +314,7 @@
         <string>tabs-padded</string>
        </property>
        <attribute name="title">
-        <string>    Software    </string>
+        <string>  Software  </string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_10">
         <property name="leftMargin">
@@ -348,8 +348,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>794</width>
-             <height>423</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -387,12 +387,75 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_payment">
+       <attribute name="title">
+        <string> Payment </string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QScrollArea" name="scrollArea_payment">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="lineWidth">
+           <number>1</number>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_6">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>100</width>
+             <height>30</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_13">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <layout class="QVBoxLayout" name="vbox_payment">
+              <property name="leftMargin">
+               <number>9</number>
+              </property>
+              <property name="topMargin">
+               <number>3</number>
+              </property>
+              <property name="rightMargin">
+               <number>6</number>
+              </property>
+              <property name="bottomMargin">
+               <number>15</number>
+              </property>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_other">
        <property name="cssClass" stdset="0">
         <string>tabs-padded</string>
        </property>
        <attribute name="title">
-        <string>    Other    </string>
+        <string>  Other  </string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_12">
         <property name="leftMargin">
@@ -427,7 +490,7 @@
              <x>0</x>
              <y>0</y>
              <width>794</width>
-             <height>423</height>
+             <height>403</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -444,7 +507,7 @@
              <number>0</number>
             </property>
             <item>
-             <layout class="QVBoxLayout" name="vbox_other" stretch="">
+             <layout class="QVBoxLayout" name="vbox_other">
               <property name="leftMargin">
                <number>9</number>
               </property>
@@ -533,8 +596,6 @@
      </layout>
     </item>
    </layout>
-   <zorder>tabs_option</zorder>
-   <zorder>horizontalLayoutWidget</zorder>
   </widget>
  </widget>
  <resources/>

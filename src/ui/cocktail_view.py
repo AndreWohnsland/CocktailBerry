@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QSize, Qt, pyqtSignal
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFrame, QGridLayout, QSizePolicy, QVBoxLayout, QWidget
 
@@ -12,14 +12,19 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.filepath import DEFAULT_COCKTAIL_IMAGE
 from src.image_utils import find_cocktail_image
+from src.logger_handler import LoggerHandler
 from src.models import Cocktail
-from src.ui.creation_utils import create_button
+from src.payment_utils import filter_cocktails_by_user
+from src.ui.creation_utils import create_button, create_label
 from src.ui.icons import IconSetter, PresetIcon
 from src.ui_elements.clickable_label import ClickableLabel
 from src.ui_elements.touch_scroll_area import TouchScrollArea
 
 if TYPE_CHECKING:
+    from src.programs.nfc_payment_service import User
     from src.ui.setup_mainwindow import MainScreen
+
+_logger = LoggerHandler("cocktail_view")
 
 
 def _n_columns() -> int:
@@ -76,8 +81,10 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
     layout.addWidget(label)
     if cocktail is not None:
         # take care of the button overload thingy, otherwise the first element will be a bool
-        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_selection(c))  # type: ignore[attr-defined]
-        label.clicked.connect(lambda c=cocktail: mainscreen.open_cocktail_selection(c))
+        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_detail(c))  # type: ignore[attr-defined]
+        label.clicked.connect(lambda c=cocktail: mainscreen.open_cocktail_detail(c))
+        button.setEnabled(cocktail.is_allowed)
+        label.setEnabled(cocktail.is_allowed)
     else:
         button.clicked.connect(mainscreen.open_ingredient_window)  # type: ignore[attr-defined]
         label.clicked.connect(mainscreen.open_ingredient_window)
@@ -85,6 +92,9 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
 
 
 class CocktailView(QWidget):
+    # Signal for thread-safe user change notifications
+    user_changed = pyqtSignal(object, str)
+
     def __init__(self, mainscreen: MainScreen) -> None:
         super().__init__()
         self.scroll_area = TouchScrollArea()
@@ -103,15 +113,74 @@ class CocktailView(QWidget):
 
         self.vertical_layout = QVBoxLayout()
         self.vertical_layout.addWidget(self.scroll_area)
+
+        # Create NFC scan message label (hidden by default)
+        self.info_label = create_label(
+            text="",
+            font_size=64,
+            bold=True,
+            centered=True,
+            max_h=600,
+            css_class="secondary",
+            word_wrap=True,
+        )
+        self.info_label.hide()
+        self.vertical_layout.addWidget(self.info_label)
         self.setLayout(self.vertical_layout)
 
         self.mainscreen = mainscreen
+        self._last_known_user: User | None = None
+        self.user_changed.connect(self.react_on_user_change)
+
+    def emit_user_change(self, user: User | None, uid: str) -> None:
+        """Emit user change signal (thread-safe) for pyqt."""
+        self.user_changed.emit(user, uid)
+
+    def react_on_user_change(self, user: User | None, uid: str) -> None:
+        """Implement user change handling (runs on main thread)."""
+        if user == self._last_known_user:
+            _logger.debug("NFC user state unchanged, skipping re-render.")
+            return
+        self._last_known_user = user
+        self.populate_cocktails()
+        self.mainscreen.switch_to_cocktail_list()
+
+    def _show_nfc_scan_message(self) -> None:
+        """Show the NFC scan message and hide the cocktails grid."""
+        self.scroll_area.hide()
+        message = UI_LANGUAGE.get_translation("nfc_scan_to_proceed", "main_window")
+        self.info_label.setText(message)
+        self.info_label.show()
 
     def populate_cocktails(self) -> None:
-        """Add the given cocktails to the grid."""
+        """Add the given cocktails to the grid.
+
+        If payment service is active and no user is logged in,
+        shows a "Scan NFC to proceed" message instead of cocktails.
+        Starts continuous polling to detect user login/logout/changes.
+        """
+        needs_nfc_user_protection = (
+            cfg.PAYMENT_ACTIVE and cfg.PAYMENT_LOCK_SCREEN_NO_USER and self._last_known_user is None
+        )
+        if needs_nfc_user_protection:
+            self._show_nfc_scan_message()
+        else:
+            self._populate_cocktails_grid()
+
+    def _populate_cocktails_grid(self) -> None:
+        """Populate the cocktails grid (internal method)."""
+        self.info_label.hide()
+        self.scroll_area.show()
+
         n_columns = _n_columns()
         DP_CONTROLLER.delete_items_of_layout(self.grid)
         cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
+        # filter cocktails based on user criteria if payment is active
+        if cfg.PAYMENT_ACTIVE:
+            cocktails = filter_cocktails_by_user(self._last_known_user, cocktails)
+            # remove if machine owner do not want to show not possible cocktails
+            if not cfg.PAYMENT_SHOW_NOT_POSSIBLE:
+                cocktails = [c for c in cocktails if c.is_allowed]
         # sort cocktails by name
         cocktails.sort(key=lambda x: x.name.lower())
         # fill the grid with n_columns columns, then go to another row
@@ -122,7 +191,7 @@ class CocktailView(QWidget):
                 block = generate_image_block(cocktails[i + j], self.mainscreen)
                 self.grid.addLayout(block, i // n_columns, j)
         # Optionally add the single ingredient block after all cocktails
-        if cfg.MAKER_ADD_SINGLE_INGREDIENT:
+        if cfg.MAKER_ADD_SINGLE_INGREDIENT and not cfg.PAYMENT_ACTIVE:
             total = len(cocktails)
             row = total // n_columns
             col = total % n_columns

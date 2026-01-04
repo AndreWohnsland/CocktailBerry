@@ -4,6 +4,23 @@
 # Options:
 # dashboard: set up dashboard, otherwise will set up CocktailBerry
 # cicd: skip some things for cicd
+# v2: set up v2 version
+
+# Parse arguments
+V2_FLAG=false
+for arg in "$@"; do
+  case $arg in
+  v2)
+    V2_FLAG=true
+    shift
+    ;;
+  *)
+    # Assume positional arguments like cicd or dashboard
+    break
+    ;;
+  esac
+done
+
 is_raspberry_pi() {
   if grep -q "Raspberry Pi" /proc/device-tree/model 2>/dev/null; then
     return 0
@@ -31,12 +48,6 @@ fi
 echo "> Installing nmcli, this is needed for wifi setup"
 sudo apt install network-manager
 
-# Generating launcher script
-echo "> (Re-)Generating launcher script at: ~/launcher.sh"
-rm ~/launcher.sh
-touch ~/launcher.sh
-sudo chmod +x ~/launcher.sh
-
 # using desktop file for autostart
 echo "> Copying desktop file to: /etc/xdg/autostart/cocktail.desktop"
 sudo cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
@@ -63,44 +74,42 @@ fi
 if [[ "$1" != "cicd" ]]; then
   cd ~/CocktailBerry/ || exit
 fi
-# creating project venv with uv
-echo "> Creating project venv with uv"
-uv venv --system-site-packages --python "$(python -V | awk '{print $2}')" || echo "ERROR: Could not create venv with uv, is uv installed?" >&2
 
 # Making necessary steps for the according program
 if [[ "$1" = "dashboard" ]]; then
   echo "> Setting up Dashboard"
   cd dashboard/ || exit
-  # Letting user choose the frontend type (WebApp or Qt)
-  echo -n "Use new dashboard? This is strongly recommended! Otherwise will use old Qt App, but this will only work on a standalone device and has no remote access option (y/n) "
-  read -r answer
   echo -n "Enter your display language (en, de): "
   read -r language
-  # new dashboard
-  if echo "$answer" | grep -iq "^y"; then
-    export UI_LANGUAGE=$language
-    docker compose -f docker-compose.both.yaml up --build -d || echo "ERROR: Could not install dashboard over docker-compose, is docker installed?" >&2
-    echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
-  # qt app
-  else
-    docker compose up --build -d || echo "ERROR: Could not install backend over docker-compose, is docker installed?" >&2
-    {
-      echo "export UI_LANGUAGE=$language"
-      echo "source ~/CocktailBerry/.venv/bin/activate"
-      echo "cd ~/CocktailBerry/dashboard/qt-app/"
-      echo "python main.py"
-    } >>~/launcher.sh
-    cd qt-app/ || exit
-    pip install -r requirements.txt
-  fi
+  # use always new dashboard (qt code is still here, but we wont be using it anymore)
+  export UI_LANGUAGE=$language
+  docker compose -f docker-compose.both.yaml up --build -d || echo "ERROR: Could not install dashboard over docker-compose, is docker installed?" >&2
+  echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
 else
   echo "> Setting up CocktailBerry"
-  sudo cp ~/CocktailBerry/scripts/v1-launcher.sh ~/launcher.sh
-  sudo chmod +x ~/launcher.sh
-  echo "> Installing PyQt"
-  sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5" >&2
-  echo "> Installing needed Python libraries, including qtsass, this may take a while depending on your OS, so it is time for a coffee break :)"
-  uv sync --python "$(python -V | awk '{print $2}')" --all-extras
+  # Generating launcher script, we use symlinks so when project is updated we can sneak in that change too
+  # this might prevent breaking changes on updates
+  rm "$HOME/launcher.sh" 2>/dev/null || true
+  # script source will be v1-launcher.sh or v2-launcher.sh depending on the flag
+  script_source="v1-launcher.sh"
+  if [[ "$V2_FLAG" = true ]]; then
+    script_source="v2-launcher.sh"
+  fi
+  echo "> (Re-)Generating launcher script at: ~/launcher.sh, will use $script_source"
+  ln -sf "$HOME/CocktailBerry/scripts/$script_source" "$HOME/launcher.sh"
+  chmod +x "$HOME/CocktailBerry/scripts/$script_source"
+
+  echo "> Installing needed Python libraries, this may take a while depending on your OS (especially in v1), so it is time for a coffee break :)"
+  # v1 needs to sync with system python (for pyqt)
+  if [[ "$V2_FLAG" = true ]]; then
+    uv sync --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
+  else
+    echo "> Installing PyQt"
+    system_python_version=$(python -V | awk '{print $2}')
+    uv venv --system-site-packages --python "$system_python_version"
+    sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5" >&2
+    uv sync --python "$system_python_version" --extra v1 --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
+  fi
   if is_raspberry_pi5; then
     sudo usermod -aG gpio "$(whoami)"
     newgrp gpio
@@ -109,7 +118,5 @@ else
   if ! is_raspberry_pi; then
     bash scripts/setup_non_rpi.sh
   fi
-  # still cp the file, but do not inform the user anymore, since this is not the default anymore
-  cp microservice/.env.example microservice/.env
 fi
 echo "Done with the setup"
