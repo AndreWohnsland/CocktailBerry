@@ -84,10 +84,18 @@ class I2CController(PinController):
             for addr in self.i2c_addresses:
                 self.bus.write_byte(addr, self.device_states[addr])
             _logger.info(f"<i> Initialized I2C devices at addresses: {[hex(addr) for addr in self.i2c_addresses]}")
-        except Exception as e:
+        except FileNotFoundError as e:
             self.devenvironment = True
             _logger.log_exception(e)
-            _logger.error("Could not set up I2C devices, please check I2C configuration and wiring")
+            _logger.error("I2C device not found. Make sure I2C is enabled: sudo raspi-config")
+        except (IOError, OSError) as e:
+            self.devenvironment = True
+            _logger.log_exception(e)
+            _logger.error("I2C communication error. Check device addresses and wiring")
+        except PermissionError as e:
+            self.devenvironment = True
+            _logger.log_exception(e)
+            _logger.error("Permission denied. Run as root or add user to i2c group: sudo usermod -a -G i2c $USER")
 
     def activate_pin_list(self, pin_list: list[int]) -> None:
         """Activates the given pin list (turns on relays).
@@ -115,7 +123,7 @@ class I2CController(PinController):
 
             try:
                 self.bus.write_byte(addr, self.device_states[addr])
-            except Exception as e:
+            except (IOError, OSError) as e:
                 _logger.error(f"Failed to activate pin {pin} on I2C device {hex(addr)}: {e}")
 
     def close_pin_list(self, pin_list: list[int]) -> None:
@@ -144,7 +152,7 @@ class I2CController(PinController):
 
             try:
                 self.bus.write_byte(addr, self.device_states[addr])
-            except Exception as e:
+            except (IOError, OSError) as e:
                 _logger.error(f"Failed to close pin {pin} on I2C device {hex(addr)}: {e}")
 
     def cleanup_pin_list(self, pin_list: list[int] | None = None) -> None:
@@ -161,8 +169,11 @@ class I2CController(PinController):
         try:
             # Turn off all relays before cleanup
             for addr in self.i2c_addresses:
-                self.bus.write_byte(addr, self.low)
-                self.device_states[addr] = self.low
+                try:
+                    self.bus.write_byte(addr, self.low)
+                    self.device_states[addr] = self.low
+                except (IOError, OSError) as e:
+                    _logger.error(f"Error turning off device {hex(addr)} during cleanup: {e}")
             self.bus.close()
             self.bus = None
         except Exception as e:
