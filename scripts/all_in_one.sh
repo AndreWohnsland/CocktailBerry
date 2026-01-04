@@ -101,7 +101,7 @@ source "$HOME"/.local/bin/env
 
 # Warning if debian is not at least v12. Still go on because some users may use none debian
 # Check if /etc/debian_version exists
-if [ -f /etc/debian_version ]; then
+if [[ -f /etc/debian_version ]]; then
   # Extract the major version number of Debian
   DEBIAN_VERSION=$(sed 's/\..*//' /etc/debian_version)
   if [[ "$DEBIAN_VERSION" -lt "12" ]]; then

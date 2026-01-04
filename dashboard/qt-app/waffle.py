@@ -2,7 +2,7 @@ import json
 import math
 import os
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Any
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -17,13 +17,13 @@ load_dotenv(DIRPATH / ".env")
 # Getting the language file as dict
 LANGUAGE_FILE = DIRPATH / "language.yaml"
 with open(LANGUAGE_FILE, encoding="UTF-8") as stream:
-    LANGUAGE_DATA: Dict = yaml.safe_load(stream)
+    LANGUAGE_DATA: dict = yaml.safe_load(stream)
 
 # Setting some plotting props
 matplotlib.rcParams.update({"text.color": "white", "axes.labelcolor": "white"})
 
 
-def _choose_language(element: dict, **kwargs) -> Union[str, List[str]]:
+def _choose_language(element: dict, **kwargs: Any) -> str | list[str]:
     """Choose either the given language if exists, or english if not piping additional info into template."""
     language = os.getenv("UI_LANGUAGE")
     tmpl = element.get(language, element["en"])
