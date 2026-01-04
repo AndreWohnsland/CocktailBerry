@@ -25,6 +25,7 @@ from src.config.config_types import (
     ConfigInterface,
     DictType,
     FloatType,
+    I2CConfig,
     IntType,
     ListType,
     NormalLedConfig,
@@ -112,6 +113,12 @@ class ConfigManager:
     MAKER_USE_RECIPE_VOLUME: bool = False
     # Option to add the single ingredient option to the maker pane
     MAKER_ADD_SINGLE_INGREDIENT: bool = False
+    # Enable I2C relay control instead of GPIO pins
+    I2C_ENABLE: bool = False
+    # I2C bus number (usually 1 for Raspberry Pi)
+    I2C_BUS_NUMBER: int = 1
+    # List of I2C device addresses for relay control (e.g., [0x20, 0x21] for two PCF8574)
+    I2C_DEVICES: ClassVar[list[I2CConfig]] = []
     # List of normal (non-addressable) LED configurations
     LED_NORMAL: ClassVar[list[NormalLedConfig]] = []
     # List of WS281x (addressable) LED configurations
@@ -196,6 +203,17 @@ class ConfigManager:
             "MAKER_CHECK_INTERNET": BoolType(check_name="Check Internet"),
             "MAKER_USE_RECIPE_VOLUME": BoolType(check_name="Use Recipe Volume"),
             "MAKER_ADD_SINGLE_INGREDIENT": BoolType(check_name="Can Spend Single Ingredient"),
+            "I2C_ENABLE": BoolType(check_name="Enable I2C Relay Control"),
+            "I2C_BUS_NUMBER": IntType([build_number_limiter(0, 10)]),
+            "I2C_DEVICES": ListType(
+                DictType(
+                    {
+                        "address": IntType([build_number_limiter(0, 127)], prefix="0x"),
+                    },
+                    I2CConfig,
+                ),
+                0,
+            ),
             "LED_NORMAL": ListType(
                 DictType(
                     {

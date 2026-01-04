@@ -15,6 +15,7 @@ with contextlib.suppress(ModuleNotFoundError):
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.machine.generic_board import GenericController
+from src.machine.i2c_board import I2CController
 from src.machine.interface import PinController
 from src.machine.leds import LedController
 from src.machine.raspberry import choose_pi_controller, is_rpi
@@ -61,6 +62,10 @@ class MachineController:
 
     def _chose_controller(self) -> PinController:
         """Select the controller class for the Pin."""
+        # Check if I2C mode is enabled
+        if cfg.I2C_ENABLE:
+            i2c_addresses = [device.address for device in cfg.I2C_DEVICES]
+            return I2CController(cfg.MAKER_PINS_INVERTED, i2c_addresses, cfg.I2C_BUS_NUMBER)
         if is_rpi():
             return choose_pi_controller(cfg.MAKER_PINS_INVERTED)
         # In case none is found, fall back to generic using python-periphery

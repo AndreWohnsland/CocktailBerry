@@ -369,3 +369,20 @@ class WS281xLedConfig(ConfigClass):
             "default_on": self.default_on,
             "preparation_state": self.preparation_state,
         }
+
+
+class I2CConfig(ConfigClass):
+    """Configuration for I2C relay control."""
+
+    def __init__(self, address: int) -> None:
+        """Initialize I2C configuration.
+
+        Args:
+        ----
+            address: I2C device address (e.g., 0x20 for PCF8574)
+
+        """
+        self.address = address
+
+    def to_config(self) -> dict[str, int]:
+        return {"address": self.address}
