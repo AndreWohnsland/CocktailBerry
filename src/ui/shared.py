@@ -113,6 +113,6 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
         with contextlib.suppress(Exception):
             dialog.close()
 
-    if canceled:
+    if canceled or booking.result == CocktailBooking.Result.NO_USER:
         return CocktailBooking.canceled()
     return booking
