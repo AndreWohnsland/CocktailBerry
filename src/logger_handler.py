@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from typing import Literal, Union
+from typing import Literal
 
 from src.filepath import LOG_FOLDER
 
@@ -77,7 +77,7 @@ class LoggerHandler:
         """Log the start of the program, optionally can define program type."""
         self.log_header("INFO", f"Starting the {program_type} program")
 
-    def log_exception(self, message: Union[str, object]) -> None:
+    def log_exception(self, message: str | object) -> None:
         """Log an exception with the given message."""
         if self._debug_logger is None:
             self.logger.exception(message)
