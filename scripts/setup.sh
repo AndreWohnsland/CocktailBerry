@@ -38,7 +38,7 @@ is_raspberry_pi5() {
   fi
 }
 
-if [ "$1" = "cicd" ]; then
+if [[ "$1" = "cicd" ]]; then
   echo "> Skipping update process"
 else
   echo "> Updating system, this may take a while..."

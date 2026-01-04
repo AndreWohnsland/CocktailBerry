@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Union
+from typing import Any
 
 import yaml
 from dotenv import load_dotenv
@@ -24,7 +24,7 @@ class Language:
         self.AMOUNT_ALL = self._choose_language(LANGUAGE_DATA["amount_all"])
         self.VOLUME_ALL = self._choose_language(LANGUAGE_DATA["volume_all"])
 
-    def _choose_language(self, element: dict, **kwargs) -> Union[str, list[str]]:
+    def _choose_language(self, element: dict, **kwargs: Any) -> str | list[str]:
         """Choose either the given language if exists, or english if not piping additional info into template."""
         language = os.getenv("UI_LANGUAGE")
         tmpl = element.get(language, element["en"])
