@@ -7,7 +7,7 @@ Usually, updating to the lastest version is always a good idea.
 
 | Version     | Feature Description                                                                                                  |
 | :---------- | :------------------------------------------------------------------------------------------------------------------- |
-| **v2.10.0** | Integration of the CocktailBerry Payment Service                                                                     |
+| **v3.0.0**  | Integration of the CocktailBerry Payment Service                                                                     |
 | **v2.7.0**  | Option to control LED behavior during preparation                                                                    |
 | **v2.6.0**  | More update management for addons                                                                                    |
 | **v2.5.0**  | Improved LED control                                                                                                 |

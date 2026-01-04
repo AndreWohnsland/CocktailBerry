@@ -23,7 +23,22 @@ To use NFC payments with CocktailBerry, you will need the following:
 - NFC reader compatible with the list of supported readers, [ACR1252U](https://amzn.to/4irVt6h) is recommended
 - Compatible NFC tags (e.g., [MIFARE Classic](https://amzn.to/43ZPcsC) or [in Blue](https://amzn.to/43ZPcsC))
 - The [CocktailBerry Payment](https://github.com/AndreWohnsland/CocktailBerry-Payment) Service reachable over network by your CocktailBerry device
-- CocktailBerry version 2.10 or higher
+- CocktailBerry version 3.0 or higher
+
+!!! danger "Updating from older Versions?"
+    If you are updating from an older version of CocktailBerry, you might need to run some additional setup steps.
+    It is recommended to backup your current settings and do a clean install over the setup script instead.
+    Then use the backup to restore your settings.
+
+If you want to update your existing installation, do the usual update process.
+If CocktailBerry cannot start after the update run:
+
+```bash
+cd ~/CocktailBerry
+bash scripts/setup_usb_nfc.sh
+```
+
+After that, CocktailBerry should start normally again.
 
 ## Concept
 
@@ -150,3 +165,14 @@ You might need to restart your device after the installation is done, depending 
 
 You can manage the settings like all other settings over the CocktailBerry Interface.
 See also the [Configuration documentation](setup.md) for more details.
+
+In general, the options were made so you can tweak them as you needed.
+You might experiment with different settings to find the best fit for your use case.
+
+Some important options are:
+
+- **Opt In**: Enable or disable the payment service integration.
+- **Auto Logout**: Automatically log out users after a specified time, only enable this if you are sure this time is more than enough for a user to order a cocktail.
+- **Logout after Order**: Log out the user after each order, useful if users usually just order one Cocktail and you use the lock screen.
+- **Lock Screen**: User needs to scan his NFC to unlock the cocktail selection. Use this if you want to enforce first time scanning to filter/show only possible cocktails.
+- **Show not possible cocktails**: Show all cocktails (not possible in another style), even if the user is not allowed to order them. Might be not the best if you use age restrictions, since they will never be able to order them.
