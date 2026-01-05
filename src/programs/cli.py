@@ -13,7 +13,6 @@ from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.programs.addons import ADDONS
-from src.programs.calibration import run_calibration
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.common_cli import register_common_commands
 from src.programs.config_window import run_config_window
@@ -28,14 +27,13 @@ cli = typer.Typer(add_completion=False)
 def main(
     ctx: typer.Context,
     displayed_name: str = typer.Option(PROJECT_NAME, "--name", "-n", help="Name to display at start."),
-    calibration: bool = typer.Option(False, "--calibration", "-c", help="Run the calibration program."),
     quiet: bool = typer.Option(False, "--quiet", "-q", help="Hide machine name, version and platform data."),
     debug: bool = typer.Option(False, "--debug", "-d", help="Using debug instead of normal Endpoints."),
     version: Optional[bool] = typer.Option(
         None, "--version", "-V", callback=version_callback, help="Show current version."
     ),
 ) -> None:
-    """Start the cocktail program. Optional, can start the calibration program.
+    """Start the cocktail program.
 
     If you want to debug your microservice, you can use the --debug flag.
     For more information visit https://docs.cocktailberry.org/ or https://github.com/AndreWohnsland/CocktailBerry.
@@ -64,9 +62,6 @@ def main(
     mc = MachineController()
     mc.init_machine()
     ADDONS.setup_addons()
-    if calibration:
-        run_calibration()
-        return
     run_cocktailberry()
 
 
