@@ -32,7 +32,7 @@ class GenericController(PinController):
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
         """Set up the given pin list."""
         if not self.dev_displayed:
-            debug = {"on" if self.devenvironment else "off"}
+            debug = "on" if self.devenvironment else "off"
             _logger.info(f"<i> Devenvironment on the Generic Pin Control module is {debug}")
             self.dev_displayed = True
             if self.devenvironment:
