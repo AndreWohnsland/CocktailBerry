@@ -15,7 +15,7 @@ from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, NEEDED_BACKUP_FILES
-from src.programs.calibration import run_calibration
+from src.programs.calibration import CalibrationScreen
 from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
 from src.ui.creation_utils import setup_worker_thread
@@ -86,6 +86,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.data_window: DataWindow | None = None
         self.backup_restore_window: BackupRestoreWindow | None = None
         self.resource_window: ResourceWindow | None = None
+        self.calibration_screen: CalibrationScreen | None = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -138,8 +139,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def _open_calibration(self) -> None:
         """Open the calibration window."""
-        self.close()
-        run_calibration(standalone=False)
+        self.calibration_screen = CalibrationScreen()
 
     def _create_backup(self) -> None:
         """Prompt the user for a folder path to save the backup to.

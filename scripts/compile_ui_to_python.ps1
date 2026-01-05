@@ -2,7 +2,7 @@ cd .\src\ui_elements\
 
 $files = @(
   "available", "bonusingredient", "bottlewindow",
-  "cocktailmanager", "calibration", "customdialog",
+  "cocktailmanager", "calibration", "calibration_real", "calibration_target", "customdialog",
   "datepicker", "keyboard",
   "optionwindow", "numpad", "progressbarwindow",
   "teamselection", "passworddialog", "customprompt",

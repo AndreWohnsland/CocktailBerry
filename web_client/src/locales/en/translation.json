@@ -107,7 +107,16 @@
   "calibration": {
     "pumpCalibrationProgram": "Pump Calibration Program",
     "pump": "Pump",
-    "amount": "Amount"
+    "amount": "Amount",
+    "targetAmount": "Target Amount: {{amount}} ml",
+    "measuredAmount": "Measured Amount",
+    "enterMeasuredAmount": "Enter Measured Amount",
+    "newVolumeFlow": "New Volume Flow: {{flow}} ml/s",
+    "deviationTooLarge": "Deviation too large, please check",
+    "apply": "Apply",
+    "reset": "Reset",
+    "continuePumping": "Continue Pumping",
+    "next": "Next"
   },
   "data": {
     "data": "Data",

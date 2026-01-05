@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QDialog, QLineEdit
+from PyQt5.QtWidgets import QDialog, QLineEdit, QWidget
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.numpad import Ui_NumpadWindow
@@ -15,7 +15,7 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
 
     def __init__(
         self,
-        parent: "MainScreen | ConfigWindow",
+        parent: "MainScreen | ConfigWindow | QWidget",
         le_to_write: QLineEdit,
         x_pos: int = 0,
         y_pos: int = 0,
