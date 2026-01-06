@@ -149,6 +149,9 @@ allowed_keys = Literal[
     "yes_button",
 ]
 
+SUPPORTED_IMAGE_EXTENSIONS = ("*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.webp")
+IMAGE_FILTER = f"Images ({' '.join(SUPPORTED_IMAGE_EXTENSIONS)})"
+
 
 class DialogHandler:
     """Class to hold all the dialogues for the popups and language settings."""
@@ -565,7 +568,7 @@ class DialogHandler:
     def ask_for_image_location(self) -> Path | None:
         """Asks the user where to get or store the backup output."""
         message = self._choose_language("ask_for_image_location")
-        return self.get_file_location(message, "Images (*.jpg *.png)")
+        return self.get_file_location(message, IMAGE_FILTER)
 
     def ask_backup_overwrite(self, backup_files: str) -> bool:
         """Asks the user if he wants to use backup."""
