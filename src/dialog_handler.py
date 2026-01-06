@@ -30,6 +30,9 @@ if TYPE_CHECKING:
         Ui_Addonwindow,
         Ui_available,
         Ui_Bottlewindow,
+        Ui_CalibrationRealWidget,
+        Ui_CalibrationTargetWidget,
+        Ui_CalibrationWindow,
         Ui_CocktailSelection,
         Ui_ColorWindow,
         Ui_ConfigWindow,
@@ -513,6 +516,14 @@ class DialogHandler:
         """Informs that the ingredient must be handadd if unit is not ml."""
         self.__output_language_dialog("ingredient_must_be_handadd")
 
+    def say_volume_flow_adjusted(self, pump_number: int, new_flow: float) -> None:
+        """Informs the user that the volume flow for a pump has been adjusted."""
+        self.__output_language_dialog("pumpt_volume_flow_adjusted", pump_number=pump_number, new_flow=new_flow)
+
+    def say_ingredient_speed_adjusted(self, ingredient_name: str, new_speed: int) -> None:
+        """Informs the user that the ingredient speed factor has been adjusted."""
+        self.__output_language_dialog("new_ingredient_speed", ingredient_name=ingredient_name, new_speed=new_speed)
+
     ############################
     # Methods for prompting ####
     ############################
@@ -900,6 +911,26 @@ class UiLanguage:
     def adjust_resource_window(self, w: Ui_ResourceWindow) -> None:
         """Translate the elements of the data window."""
         w.button_back.setText(self._choose_language("back"))
+
+    def adjust_calibration_window(self, w: Ui_CalibrationWindow) -> None:
+        """Translate the elements from the calibration window."""
+        window = "calibration_window"
+        w.button_reset.setText(self._choose_language("reset"))
+        w.label_header.setText(self._choose_language("header", window))
+
+    def adjust_calibration_target(self, w: Ui_CalibrationTargetWidget) -> None:
+        """Translate the elements from the calibration target widget."""
+        window = "calibration_window"
+        w.label_pump_number.setText(self._choose_language("pump_number", window))
+        w.label_amount.setText(self._choose_language("amount", window))
+        w.button_next.setText(self._choose_language("next"))
+        w.button_start.setText(self._choose_language("spend", window))
+
+    def adjust_calibration_real(self, w: Ui_CalibrationRealWidget) -> None:
+        """Translate the elements from the calibration real widget."""
+        window = "calibration_window"
+        w.label_measured.setText(self._choose_language("measured_amount", window))
+        w.button_apply.setText(self._choose_language("apply"))
 
 
 UI_LANGUAGE = UiLanguage()

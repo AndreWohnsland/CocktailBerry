@@ -161,13 +161,6 @@ Currently, there are following themes:
 
 You can either use the CocktailBerry program to get to the calibration - it's located under your settings (option gear).
 This will start the calibration overlay.
-Or you can start the calibration program instead of CocktailBerry.
-You simply add the `--calibration` or `-c` flag to the python run command:
-
-```bash
-python runme.py --c # or --calibration
-```
-
 You can use water and a weight scale for the process.
 Use different volumes (for example 10, 20, 50, 100 ml) and compare the weight with the output from the pumps.
 In the end, you can adjust each pump volume flow by the factor:

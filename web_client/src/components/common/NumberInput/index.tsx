@@ -7,8 +7,8 @@ interface NumberInputProps {
 
 const NumberInput = ({ value, prefix, suffix, handleInputChange }: NumberInputProps) => {
   return (
-    <>
-      {prefix && <span className='text-neutral mx-1'>{prefix}</span>}
+    <div className='flex items-center whitespace-nowrap w-full'>
+      {prefix && <span className='text-neutral mx-1 whitespace-nowrap'>{prefix}</span>}
       <input
         type='number'
         value={value.toString()}
@@ -18,8 +18,8 @@ const NumberInput = ({ value, prefix, suffix, handleInputChange }: NumberInputPr
         }}
         className='input-base'
       />
-      {suffix && <span className='text-neutral mx-1'>{suffix}</span>}
-    </>
+      {suffix && <span className='text-neutral mx-1 whitespace-nowrap'>{suffix}</span>}
+    </div>
   );
 };
 

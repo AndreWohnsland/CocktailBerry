@@ -26,15 +26,12 @@ uv run runme.py [OPTIONS]
 
 # Options:
 #   -n, --name TEXT    Name to display at start.  [default: CocktailBerry]
-#   -c, --calibration  Run the calibration program.
 #   -q, --quiet        Hide machine name, version and platform data.
 #   -d, --debug        Using debug instead of normal Endpoints.
 #   -V, --version      Show current version.
 #   --help             Show help
 ```
 
-You can run the calibration interface instead the usual main program when using the `-c` flag.
-The calibration can also be accessed over the CocktailBerry interface (settings window).
 If you want to debug your microservice, you ca activate the debug `-d` flag.
 When debug is active, the data will be send to the **/debug** endpoint.
 This endpoint will only log the payload (request.json), but not send it anywhere.

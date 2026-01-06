@@ -2,6 +2,8 @@ from src.ui_elements.available import Ui_available
 from src.ui_elements.bonusingredient import Ui_addingredient
 from src.ui_elements.bottlewindow import Ui_Bottlewindow
 from src.ui_elements.calibration import Ui_CalibrationWindow
+from src.ui_elements.calibration_real import Ui_CalibrationRealWidget
+from src.ui_elements.calibration_target import Ui_CalibrationTargetWidget
 from src.ui_elements.cocktailmanager import Ui_MainWindow
 from src.ui_elements.customdialog import Ui_CustomDialog
 from src.ui_elements.customprompt import Ui_CustomPrompt
@@ -31,6 +33,8 @@ __all__ = [
     "Ui_Addonwindow",
     "Ui_Bottlewindow",
     "Ui_CalibrationWindow",
+    "Ui_CalibrationRealWidget",
+    "Ui_CalibrationTargetWidget",
     "Ui_CocktailSelection",
     "Ui_ColorWindow",
     "Ui_ConfigWindow",

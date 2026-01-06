@@ -107,7 +107,19 @@
   "calibration": {
     "pumpCalibrationProgram": "Pumpen Kalibrieren",
     "pump": "Pumpe",
-    "amount": "Menge"
+    "amount": "Menge",
+    "targetAmount": "Zielmenge: {{amount}} ml",
+    "measuredAmount": "Gemessene Menge",
+    "enterMeasuredAmount": "Bitte gemessene Menge eingeben",
+    "newVolumeFlow": "Neuer Volumenstrom: {{flow}} ml/s",
+    "newPumpSpeed": "Neuer Zutaten-Faktor: {{speed}}%",
+    "ingredientCalibration": "Zutaten Kalibrierung",
+    "ingredientCalibrationTooltip": "Dies ändert nicht die Pumpeneinstellungen, sondern passt den Faktor an, mit dem der Volumenstrom für diese Zutat bei einem Cocktail multipliziert wird.",
+    "deviationTooLarge": "Abweichung zu groß, bitte prüfen",
+    "apply": "Anwenden",
+    "reset": "Zurücksetzen",
+    "continuePumping": "Weiter Pumpen",
+    "next": "Weiter"
   },
   "data": {
     "data": "Daten",

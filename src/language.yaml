@@ -284,6 +284,12 @@ dialog:
   payment_canceled:
     en: 'Payment was canceled by user or timeout'
     de: 'Zahlung wurde durch Benutzer oder wegen Zeitüberschreitung abgebrochen.'
+  pumpt_volume_flow_adjusted:
+    en: 'Pump {pump_number} volume flow adjusted to {new_flow} ml/s.'
+    de: 'Pumpen {pump_number} Volumenstrom auf {new_flow} ml/s angepasst.'
+  new_ingredient_speed:
+    en: 'Ingredient {ingredient_name} speed factor adjusted to {new_speed} %.'
+    de: 'Zutaten {ingredient_name} Geschwindigkeitsfaktor auf {new_speed} % angepasst.'
 
 # Change of language in UI elements
 ui:
@@ -322,6 +328,12 @@ ui:
     done:
       en: 'Done!'
       de: 'Fertig!'
+    reset:
+      en: 'Reset'
+      de: 'Zurücksetzen'
+    next:
+      en: 'Next >'
+      de: 'Weiter >'
   # dynamic values for maker tab
   maker:
     add_self:
@@ -843,3 +855,37 @@ ui:
     to_bottles:
       en: 'Go to Bottles'
       de: 'Zu den Flaschen'
+
+  ##### CALIBRATION WINDOW #####
+  # all values for settings in calibration window
+  calibration_window:
+    header:
+      en: 'Pump Calibration'
+      de: 'Pumpen Kalibrieren'
+    pump_number:
+      en: 'Pump'
+      de: 'Pumpe'
+    amount:
+      en: 'Amount'
+      de: 'Menge'
+    measured_amount:
+      en: 'ml measured'
+      de: 'ml gemessen'
+    spend:
+      en: 'Spend'
+      de: 'Ausgeben'
+    enter_measured_amount:
+      en: 'Enter Measured Amount'
+      de: 'Bitte gemessene Menge eingeben'
+    target_amount:
+      en: 'Target Amount: {amount} ml'
+      de: 'Zielmenge: {amount} ml'
+    new_volume_flow:
+      en: 'New Volume Flow: {flow} ml/s'
+      de: 'Neuer Volumenstrom: {flow} ml/s'
+    new_ingredient_speed:
+      en: 'New Ingredient Factor: {speed} %'
+      de: 'Neuer Zutaten-Faktor: {speed} %'
+    deviation_too_large:
+      en: 'Deviation too large, please check'
+      de: 'Abweichung zu groß, bitte prüfen'

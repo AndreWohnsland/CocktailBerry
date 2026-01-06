@@ -105,9 +105,21 @@
     "wifi": "WiFi"
   },
   "calibration": {
-    "pumpCalibrationProgram": "Pump Calibration Program",
+    "pumpCalibrationProgram": "Pump Calibration",
     "pump": "Pump",
-    "amount": "Amount"
+    "amount": "Amount",
+    "targetAmount": "Target Amount: {{amount}} ml",
+    "measuredAmount": "Measured Amount",
+    "enterMeasuredAmount": "Enter Measured Amount",
+    "newVolumeFlow": "New Volume Flow: {{flow}} ml/s",
+    "newPumpSpeed": "New Ingredient Factor: {{speed}}%",
+    "ingredientCalibration": "Ingredient Calibration",
+    "ingredientCalibrationTooltip": "This will not change the pump settings, but multiply the volume flow at which the ingredient will be pumped during preparation.",
+    "deviationTooLarge": "Deviation too large, please check",
+    "apply": "Apply",
+    "reset": "Reset",
+    "continuePumping": "Continue Pumping",
+    "next": "Next"
   },
   "data": {
     "data": "Data",
