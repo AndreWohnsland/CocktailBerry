@@ -21,11 +21,17 @@ const isDropDownOptionArray = (values: unknown[]): values is DropDownOption[] =>
 };
 
 const DropDown = ({ value, allowedValues, handleInputChange, className }: DropDownProps) => {
-  const options = Array.isArray(allowedValues)
-    ? isDropDownOptionArray(allowedValues)
-      ? allowedValues
-      : allowedValues.map((v) => ({ value: v, label: v }))
-    : Object.entries(allowedValues).map(([val, label]) => ({ value: val, label }));
+  let options: DropDownOption[];
+
+  if (Array.isArray(allowedValues)) {
+    if (isDropDownOptionArray(allowedValues)) {
+      options = allowedValues;
+    } else {
+      options = allowedValues.map((v) => ({ value: v, label: v }));
+    }
+  } else {
+    options = Object.entries(allowedValues).map(([val, label]) => ({ value: val, label }));
+  }
 
   return (
     <select value={value} onChange={(e) => handleInputChange(e.target.value)} className={`select-base ${className}`}>
