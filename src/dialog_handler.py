@@ -520,6 +520,10 @@ class DialogHandler:
         """Informs the user that the volume flow for a pump has been adjusted."""
         self.__output_language_dialog("pumpt_volume_flow_adjusted", pump_number=pump_number, new_flow=new_flow)
 
+    def say_ingredient_speed_adjusted(self, ingredient_name: str, new_speed: int) -> None:
+        """Informs the user that the ingredient speed factor has been adjusted."""
+        self.__output_language_dialog("new_ingredient_speed", ingredient_name=ingredient_name, new_speed=new_speed)
+
     ############################
     # Methods for prompting ####
     ############################

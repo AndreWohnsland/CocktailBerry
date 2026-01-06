@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QWidget
 
 from src.config.config_manager import CONFIG as cfg
+from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -26,6 +26,13 @@ class CalibrationData:
         """Reset all calibration data."""
         self.target_volume = 0.0
         self.measured_volume = 0.0
+
+    @property
+    def factor(self) -> float:
+        """Get the calibration factor."""
+        if self.target_volume <= 0 or self.measured_volume <= 0:
+            return 0.0
+        return self.measured_volume / self.target_volume
 
 
 class _CalibrationTargetWidget(QWidget, Ui_CalibrationTargetWidget):
@@ -68,6 +75,8 @@ class _CalibrationRealWidget(QWidget, Ui_CalibrationRealWidget):
         super().__init__()
         self.setupUi(self)
         self.calibration_data = calibration_data
+        self.populate_ingredient_dropdown()
+        self.prompt_for_measured_amount()
 
         self.input_measured_amount.clicked.connect(
             lambda: NumpadWidget(
@@ -81,59 +90,83 @@ class _CalibrationRealWidget(QWidget, Ui_CalibrationRealWidget):
             )
         )
         self.input_measured_amount.textChanged.connect(self.on_entered_measured_amount)
+        self.input_ingredient.currentTextChanged.connect(self.on_ingredient_changed)
+
+    def prompt_for_measured_amount(self) -> None:
+        enter_amount_translation = UI_LANGUAGE._choose_language("enter_measured_amount", "calibration_window")
+        self.label_new_flow.setText(enter_amount_translation)
+        self.button_apply.setEnabled(False)
+
+    def on_ingredient_changed(self, _: str) -> None:
+        # just propagate the change since the calculation is the same
+        self.on_entered_measured_amount(self.input_measured_amount.text())
 
     def on_entered_measured_amount(self, value: str) -> None:
         """Change the label if the entered amount is changed."""
-        enter_amount_translation = UI_LANGUAGE._choose_language("enter_measured_amount", "calibration_window")
         if not value or value == "":
-            self.label_new_flow.setText(enter_amount_translation)
-            self.button_apply.setEnabled(False)
+            self.prompt_for_measured_amount()
             return
         try:
             measured_value = float(value)
         except ValueError:
-            self.label_new_flow.setText(enter_amount_translation)
-            self.button_apply.setEnabled(False)
+            self.prompt_for_measured_amount()
             return
 
         if measured_value <= 0 or self.calibration_data.target_volume <= 0:
-            self.label_new_flow.setText(enter_amount_translation)
-            self.button_apply.setEnabled(False)
+            self.prompt_for_measured_amount()
             return
 
         # Get current flow from config for the selected channel
         channel_idx = self.calibration_data.pump_number - 1
         current_flow = cfg.PUMP_CONFIG[channel_idx].volume_flow
-
-        # Calculate the deviation factor
-        deviation_factor = self.calibration_data.target_volume / measured_value
+        self.calibration_data.measured_volume = measured_value
 
         # Check if deviation is within acceptable bounds (factor of 20)
-        if deviation_factor > MAX_DEVIATION_FACTOR or deviation_factor < 1 / MAX_DEVIATION_FACTOR:
+        if 1 / MAX_DEVIATION_FACTOR > self.calibration_data.factor > MAX_DEVIATION_FACTOR:
             self.label_new_flow.setText(UI_LANGUAGE._choose_language("deviation_too_large", "calibration_window"))
             self.button_apply.setEnabled(False)
             return
 
-        new_flow = round(current_flow * deviation_factor, 1)
+        self.button_apply.setEnabled(True)
 
-        self.calibration_data.measured_volume = measured_value
+        # in case of selected ingredient, show ingredient speed instead of volume flow
+        if self.is_ingredient_selected:
+            self.label_new_flow.setText(
+                UI_LANGUAGE._choose_language(
+                    "new_ingredient_speed", "calibration_window", speed=int(self.calibration_data.factor * 100)
+                )
+            )
+            return
+
+        new_flow = round(current_flow * self.calibration_data.factor, 1)
         self.label_new_flow.setText(
             UI_LANGUAGE._choose_language("new_volume_flow", "calibration_window", flow=new_flow)
         )
-        self.button_apply.setEnabled(True)
 
     def reset(self) -> None:
         """Reset the calibration data."""
         self.input_measured_amount.setText("")
         self.label_new_flow.setText(UI_LANGUAGE._choose_language("enter_measured_amount", "calibration_window"))
         self.button_apply.setEnabled(False)
+        self.populate_ingredient_dropdown()
+
+    def populate_ingredient_dropdown(self) -> None:
+        """Populate the ingredient dropdown with available ingredients."""
+        DBC = DatabaseCommander()
+        ingredients = DBC.get_all_ingredients(get_hand=False)
+        DP_CONTROLLER.fill_single_combobox(self.input_ingredient, [i.name for i in ingredients], clear_first=True)
+
+    @property
+    def is_ingredient_selected(self) -> bool:
+        """Check if an ingredient is selected."""
+        return self.input_ingredient.currentText() != ""
 
 
 class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)  # type: ignore
+        DP_CONTROLLER.initialize_window_object(self)
 
         self.button_exit.clicked.connect(self.close)
         self.button_reset.clicked.connect(self.reset)
@@ -159,7 +192,6 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         UI_LANGUAGE.adjust_calibration_real(self.page_real)
 
         self.showFullScreen()
-        DP_CONTROLLER.inject_stylesheet(self)
         DP_CONTROLLER.set_display_settings(self)
 
     def show_real_page(self) -> None:
@@ -186,9 +218,31 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
             return
         channel_idx = self.calibration_data.pump_number - 1
         current_flow = cfg.PUMP_CONFIG[channel_idx].volume_flow
-        new_flow = round(
-            current_flow * (self.calibration_data.target_volume / self.calibration_data.measured_volume), 1
-        )
+
+        if self.page_real.is_ingredient_selected:
+            # adjust ingredient speed instead of volume flow
+            new_speed = int(100 * self.calibration_data.factor)
+            DBC = DatabaseCommander()
+            ingredient_name = self.page_real.input_ingredient.currentText()
+            ingredient = DBC.get_ingredient(ingredient_name)
+            if ingredient is None:
+                return
+            DBC.set_ingredient_data(
+                ingredient_name=ingredient.name,
+                alcohol_level=ingredient.alcohol,
+                volume=ingredient.bottle_volume,
+                new_level=ingredient.fill_level,
+                only_hand=ingredient.hand,
+                pump_speed=new_speed,
+                ingredient_id=ingredient.id,
+                cost=ingredient.cost,
+                unit=ingredient.unit,
+            )
+            DH.say_ingredient_speed_adjusted(ingredient.name, new_speed)
+            self.reset()
+            return
+
+        new_flow = round(current_flow * self.calibration_data.factor, 1)
         cfg.PUMP_CONFIG[channel_idx].volume_flow = new_flow
         cfg.sync_config_to_file()
         self.reset()

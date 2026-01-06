@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaMinus, FaPlus } from 'react-icons/fa';
+import { FaInfoCircle, FaMinus, FaPlus } from 'react-icons/fa';
 import { calibrateBottle } from '../../api/bottles';
+import { updateIngredient, useIngredients } from '../../api/ingredients';
 import { updateOptions } from '../../api/options';
 import { useConfig } from '../../providers/ConfigProvider';
+import { Ingredient } from '../../types/models';
 import { executeAndShow } from '../../utils';
+import DropDown from '../common/DropDown';
 import NumberInput from '../common/NumberInput';
 import TextHeader from '../common/TextHeader';
 
@@ -18,26 +21,53 @@ const CalibrationWindow = () => {
   const [amount, setAmount] = useState(10);
   const [targetVolume, setTargetVolume] = useState(0);
   const [measuredVolume, setMeasuredVolume] = useState(0);
+  const [selectedIngredientId, setSelectedIngredientId] = useState<string>('');
   const { config, refetchConfig } = useConfig();
+  const { data: ingredients = [], refetch: refetchIngredients } = useIngredients(false);
   const { t } = useTranslation();
 
   const currentFlow = config?.PUMP_CONFIG?.[channel - 1]?.volume_flow || 0;
+  const selectedIngredient: Ingredient | null =
+    ingredients.find((i) => i.id.toString() === selectedIngredientId) ?? null;
 
-  const calculateNewFlow = (): number | null => {
+  const calculateDeviationFactor = (): number | null => {
     const measured = measuredVolume;
     if (!measured || measured <= 0 || targetVolume <= 0) {
       return null;
     }
 
-    const deviationFactor = targetVolume / measured;
+    const deviationFactor = measured / targetVolume;
     if (deviationFactor > MAX_DEVIATION_FACTOR || deviationFactor < 1 / MAX_DEVIATION_FACTOR) {
       return null;
     }
 
-    return Math.round(currentFlow * deviationFactor * 10) / 10;
+    return deviationFactor;
   };
 
-  const newFlow = calculateNewFlow();
+  const deviationFactor = calculateDeviationFactor();
+  const newFlow = deviationFactor ? Math.round(currentFlow * deviationFactor * 10) / 10 : null;
+  const newPumpSpeed = deviationFactor ? Math.round(100 * deviationFactor) : null;
+
+  const isIngredientCalibration = selectedIngredientId !== '';
+  const hasValidCalibration = isIngredientCalibration ? newPumpSpeed !== null : newFlow !== null;
+
+  const getCalibrationMessage = () => {
+    if (isIngredientCalibration) {
+      if (newPumpSpeed) return t('calibration.newPumpSpeed', { speed: newPumpSpeed });
+      if (measuredVolume) return t('calibration.deviationTooLarge');
+      return t('calibration.enterMeasuredAmount');
+    }
+    if (newFlow) return t('calibration.newVolumeFlow', { flow: newFlow });
+    if (measuredVolume) return t('calibration.deviationTooLarge');
+    return t('calibration.enterMeasuredAmount');
+  };
+
+  const ingredientDropdownOptions = [
+    { value: '', label: '-' },
+    ...[...ingredients]
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((i) => ({ value: i.id.toString(), label: i.name })),
+  ];
 
   const handleStartPumping = async () => {
     const success = await executeAndShow(() => calibrateBottle(channel, amount));
@@ -66,10 +96,39 @@ const CalibrationWindow = () => {
     handleReset();
   };
 
+  const handleApplyIngredientPumpSpeed = async () => {
+    if (newPumpSpeed === null || !selectedIngredient) return;
+
+    await executeAndShow(() =>
+      updateIngredient({
+        id: selectedIngredient.id,
+        name: selectedIngredient.name,
+        alcohol: selectedIngredient.alcohol,
+        bottle_volume: selectedIngredient.bottle_volume,
+        fill_level: selectedIngredient.fill_level,
+        cost: selectedIngredient.cost,
+        pump_speed: newPumpSpeed,
+        hand: selectedIngredient.hand,
+        unit: selectedIngredient.unit,
+      }),
+    );
+    await refetchIngredients();
+    handleReset();
+  };
+
+  const handleApplyCalibration = async () => {
+    if (isIngredientCalibration) {
+      await handleApplyIngredientPumpSpeed();
+    } else {
+      await handleApplyNewFlow();
+    }
+  };
+
   const handleReset = () => {
     setStep('target');
     setTargetVolume(0);
     setMeasuredVolume(0);
+    setSelectedIngredientId('');
   };
 
   return (
@@ -152,13 +211,22 @@ const CalibrationWindow = () => {
               <NumberInput value={measuredVolume} handleInputChange={(v) => setMeasuredVolume(v)} suffix='ml' />
             </div>
 
-            <div className='text-center text-lg font-semibold text-neutral min-h-[2rem]'>
-              {newFlow !== null
-                ? t('calibration.newVolumeFlow', { flow: newFlow })
-                : measuredVolume
-                ? t('calibration.deviationTooLarge')
-                : t('calibration.enterMeasuredAmount')}
+            <div className='space-y-2'>
+              <label className='flex items-center justify-center gap-2 text-lg font-semibold text-neutral'>
+                {t('calibration.ingredientCalibration')}
+                <FaInfoCircle
+                  className='text-neutral cursor-help'
+                  title={t('calibration.ingredientCalibrationTooltip')}
+                />
+              </label>
+              <DropDown
+                value={selectedIngredientId}
+                allowedValues={ingredientDropdownOptions}
+                handleInputChange={(v) => setSelectedIngredientId(v)}
+              />
             </div>
+
+            <div className='text-center text-lg font-semibold text-neutral min-h-[2rem]'>{getCalibrationMessage()}</div>
           </div>
 
           <div className='flex-grow py-2'></div>
@@ -169,8 +237,8 @@ const CalibrationWindow = () => {
             </button>
             <button
               className='button-primary-filled text-lg p-4 w-full'
-              onClick={handleApplyNewFlow}
-              disabled={newFlow === null}
+              onClick={handleApplyCalibration}
+              disabled={!hasValidCalibration}
             >
               {t('calibration.apply')}
             </button>

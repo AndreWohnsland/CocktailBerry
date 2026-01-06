@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>804</width>
-    <height>449</height>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,34 +16,57 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="2" rowspan="2">
-      <widget class="QLabel" name="label_measured">
+     <item row="4" column="2">
+      <widget class="QLabel" name="label_ingredient">
        <property name="font">
         <font>
-         <pointsize>30</pointsize>
+         <pointsize>20</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ml Measured&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>  Ingredient Calibration</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
        </property>
        <property name="cssClass" stdset="0">
         <string>bold</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0" colspan="3">
+     <item row="2" column="2" rowspan="2">
+      <widget class="QLabel" name="label_measured">
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>  ml Measured</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="cssClass" stdset="0">
+        <string>bold</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0" colspan="3">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QPushButton" name="button_apply">
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>150</height>
+           <height>120</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -69,13 +92,65 @@
        </item>
       </layout>
      </item>
-     <item row="3" column="0" colspan="3">
+     <item row="0" column="1" colspan="2">
+      <widget class="QLabel" name="label_spend_volume">
+       <property name="font">
+        <font>
+         <pointsize>30</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Spend: XX ml</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="margin">
+        <number>10</number>
+       </property>
+       <property name="cssClass" stdset="0">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="input_ingredient">
+       <property name="minimumSize">
+        <size>
+         <width>105</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>600</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="maxVisibleItems">
+        <number>11</number>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" colspan="3">
       <widget class="QLabel" name="label_new_flow">
        <property name="font">
         <font>
          <pointsize>30</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -84,12 +159,31 @@
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
+       <property name="margin">
+        <number>20</number>
+       </property>
        <property name="cssClass" stdset="0">
-        <string>bold</string>
+        <string>neutral</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" rowspan="2">
+     <item row="5" column="1" colspan="2">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="2" column="1" rowspan="2">
       <widget class="ClickableLineEdit" name="input_measured_amount">
        <property name="minimumSize">
         <size>
@@ -100,7 +194,7 @@
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>500</height>
+         <height>60</height>
         </size>
        </property>
        <property name="font">
@@ -118,25 +212,21 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QLabel" name="label_spend_volume">
-       <property name="font">
-        <font>
-         <pointsize>30</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
+     <item row="1" column="1" colspan="2">
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
-       <property name="text">
-        <string>Spend: XX ml</string>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
        </property>
-       <property name="cssClass" stdset="0">
-        <string>bold</string>
-       </property>
-      </widget>
+      </spacer>
      </item>
     </layout>
    </item>

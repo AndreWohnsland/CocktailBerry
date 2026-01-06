@@ -287,6 +287,9 @@ dialog:
   pumpt_volume_flow_adjusted:
     en: 'Pump {pump_number} volume flow adjusted to {new_flow} ml/s.'
     de: 'Pumpen {pump_number} Volumenstrom auf {new_flow} ml/s angepasst.'
+  new_ingredient_speed:
+    en: 'Ingredient {ingredient_name} speed factor adjusted to {new_speed} %.'
+    de: 'Zutaten {ingredient_name} Geschwindigkeitsfaktor auf {new_speed} % angepasst.'
 
 # Change of language in UI elements
 ui:
@@ -858,7 +861,7 @@ ui:
   calibration_window:
     header:
       en: 'Pump Calibration'
-      de: 'Pumpen Kalibrierung'
+      de: 'Pumpen Kalibrieren'
     pump_number:
       en: 'Pump'
       de: 'Pumpe'
@@ -880,6 +883,9 @@ ui:
     new_volume_flow:
       en: 'New Volume Flow: {flow} ml/s'
       de: 'Neuer Volumenstrom: {flow} ml/s'
+    new_ingredient_speed:
+      en: 'New Ingredient Factor: {speed} %'
+      de: 'Neuer Zutaten-Faktor: {speed} %'
     deviation_too_large:
       en: 'Deviation too large, please check'
       de: 'Abweichung zu groß, bitte prüfen'
