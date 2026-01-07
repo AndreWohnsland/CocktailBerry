@@ -41,6 +41,11 @@ from src.ui.setup_team_window import TeamScreen
 from src.ui_elements import Ui_MainWindow
 from src.updater import UpdateInfo, Updater
 
+# Constants for tab indices
+# Search tab is at index 0, followed by tabs in Tab enum order (offset by 1)
+SEARCH_TAB_INDEX = 0
+MAKER_TAB_INDEX = Tab.MAKER + 1  # Maker is at index 1 (Tab.MAKER=0 + 1)
+
 
 class MainScreen(QMainWindow, Ui_MainWindow):
     """Creates the Mainscreen."""
@@ -153,13 +158,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def _apply_restricted_mode(self) -> None:
         """Apply restricted mode by hiding all tabs except search and maker."""
-        # Keep only search (tab 0) and maker (Tab.MAKER + 1), disable all others
+        # Keep only search (SEARCH_TAB_INDEX) and maker (MAKER_TAB_INDEX), disable all others
         # The tab indices are: 0=Search, 1=Maker, 2=Ingredients, 3=Recipes, 4=Bottles
-        # Search is at index 0, Maker is at Tab.MAKER + 1 (since search is added first)
-        for i in range(Tab.MAKER + 2, self.tabWidget.count()):
+        for i in range(MAKER_TAB_INDEX + 1, self.tabWidget.count()):
             self.tabWidget.setTabEnabled(i, False)
-        # Ensure we're on the maker tab (Tab.MAKER + 1 to account for search at 0)
-        self.tabWidget.setCurrentIndex(Tab.MAKER + 1)
+        # Ensure we're on the maker tab
+        self.tabWidget.setCurrentIndex(MAKER_TAB_INDEX)
 
     def open_cocktail_detail(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
@@ -386,16 +390,15 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """Protects tabs other than maker tab with a password."""
         old_index = self.previous_tab_index
         
-        # In restricted mode, only allow search (0) and maker (Tab.MAKER + 1) tabs
-        # Search is at index 0, maker is at Tab.MAKER + 1 (accounting for search being first)
-        if shared.restricted_mode_active and index > Tab.MAKER + 1:
+        # In restricted mode, only allow search and maker tabs
+        if shared.restricted_mode_active and index > MAKER_TAB_INDEX:
             self.tabWidget.setCurrentIndex(old_index)
             return
         
-        unprotected_tabs = [0] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 1) if not x]
+        unprotected_tabs = [SEARCH_TAB_INDEX] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 1) if not x]
         # since the search window lives in the main window now,
         # switching to it needs to get the current available cocktails
-        if index == 0:
+        if index == SEARCH_TAB_INDEX:
             self.available_cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
             self._apply_search_to_list()
         if index in unprotected_tabs:
