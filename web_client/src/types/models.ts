@@ -153,6 +153,8 @@ export interface DefinedConfigData {
   PAYMENT_SECRET_KEY: string;
   PAYMENT_TIMEOUT_S: number;
   PAYMENT_AUTO_LOGOUT_TIME_S: number;
+  PAYMENT_LOGOUT_AFTER_PREPARATION: boolean;
+  PAYMENT_ONLY_MAKER_TAB: boolean;
   CUSTOM_COLOR_PRIMARY: string;
   CUSTOM_COLOR_SECONDARY: string;
   CUSTOM_COLOR_NEUTRAL: string;

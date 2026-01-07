@@ -629,7 +629,6 @@ class DialogHandler:
         """Asks the user if they want to enable restricted mode (only maker tab accessible)."""
         message = self._choose_language("ask_restricted_mode")
         return self.user_okay(message)
-        return self.user_okay(message)
 
 
 class UiLanguage:
