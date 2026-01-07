@@ -75,6 +75,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_update_system.clicked.connect(self._update_system)
         self.button_update_software.clicked.connect(self._update_software)
         self.button_resources.clicked.connect(self._resource_insights)
+        self.button_about.clicked.connect(DP_CONTROLLER.say_welcome_message)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 

@@ -206,6 +206,11 @@ input[type='time']::-webkit-calendar-picker-indicator {
   }
 }
 
+.modal.medium {
+  max-height: 400px;
+  max-width: 600px;
+}
+
 .modal.slim {
   max-height: 300px;
   max-width: 600px;

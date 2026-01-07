@@ -287,3 +287,10 @@ export interface PaymentUserUpdate {
   user: PaymentUserData | null;
   cocktails: Cocktail[];
 }
+
+export interface AboutInfo {
+  python_version: string;
+  platform: string;
+  project_name: string;
+  version: string;
+}

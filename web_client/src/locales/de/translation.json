@@ -80,6 +80,9 @@
     "adjustHeader": "Füllstand der Flasche anpassen, Maximum ist {{maximum}}"
   },
   "options": {
+    "about": "Info CocktailBerry",
+    "documentation": "Dokumentation:",
+    "aboutText": "CocktailBerry Software Version {{version}} von Andre Wohnsland.\n{{platform}}.\nVerwendete Python Version: {{pythonVersion}} mit Web UI.",
     "addons": "Addons",
     "adjustTime": "Zeit Anpassen",
     "backup": "Sicherung",

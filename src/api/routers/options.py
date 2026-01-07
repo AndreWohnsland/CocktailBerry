@@ -14,6 +14,7 @@ from typing import Annotated, Any, Literal, Union
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 
+from src.api.api_config import Tags
 from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
 from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import master_protected_dependency
@@ -45,9 +46,9 @@ from src.utils import (
 _logger = LoggerHandler("options_router")
 _platform_data = get_platform_data()
 
-router = APIRouter(tags=["options"], prefix="/options")
+router = APIRouter(tags=[Tags.OPTIONS], prefix="/options")
 protected_router = APIRouter(
-    tags=["options", "master protected"],
+    tags=[Tags.OPTIONS, Tags.MASTER_PROTECTED],
     prefix="/options",
     dependencies=[
         Depends(master_protected_dependency),
@@ -89,7 +90,7 @@ async def update_options(options: dict, background_tasks: BackgroundTasks) -> Ap
     return ApiMessage(message=DH.get_translation("options_updated"))
 
 
-@protected_router.post("/clean", tags=["preparation"], summary="Start the machine cleaning")
+@protected_router.post("/clean", tags=[Tags.PREPARATION], summary="Start the machine cleaning")
 async def clean_machine(background_tasks: BackgroundTasks) -> ApiMessage:
     raise_when_cocktail_is_in_progress()
     _logger.log_header("INFO", "Cleaning the Pumps")

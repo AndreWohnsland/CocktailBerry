@@ -1,3 +1,5 @@
+from enum import StrEnum
+
 DESCRIPTION = """
 An endpoint for [CocktailBerry](https://github.com/AndreWohnsland/CocktailBerry) to control the machine over an API.
 
@@ -35,41 +37,54 @@ Different options, like settings and OS control. User mainly by the operator.
 For testing purposes, usually not used in production.
 """
 
+
+class Tags(StrEnum):
+    BOTTLES = "bottles"
+    COCKTAILS = "cocktails"
+    PREPARATION = "preparation"
+    INGREDIENTS = "ingredients"
+    OPTIONS = "options"
+    PAYMENT = "payment"
+    MAKER_PROTECTED = "maker protected"
+    MASTER_PROTECTED = "master protected"
+    TESTING = "testing"
+
+
 TAGS_METADATA = [
     {
-        "name": "bottles",
+        "name": Tags.BOTTLES,
         "description": "Manage or change bottles.",
     },
     {
-        "name": "cocktails",
+        "name": Tags.COCKTAILS,
         "description": "Operations with cocktails/recipes.",
     },
     {
-        "name": "preparation",
+        "name": Tags.PREPARATION,
         "description": "Operation for cocktail preparation.",
     },
     {
-        "name": "ingredients",
+        "name": Tags.INGREDIENTS,
         "description": "Operations with ingredients.",
     },
     {
-        "name": "options",
+        "name": Tags.OPTIONS,
         "description": "Options for the machine.",
     },
     {
-        "name": "payment",
+        "name": Tags.PAYMENT,
         "description": "Operation related to the payment service.",
     },
     {
-        "name": "maker protected",
+        "name": Tags.MAKER_PROTECTED,
         "description": "Need x-maker-key header with the maker password, if this section is set to protected and password is set.",  # noqa: E501
     },
     {
-        "name": "master protected",
+        "name": Tags.MASTER_PROTECTED,
         "description": "Need x-master-key header with the master password if password is set.",
     },
     {
-        "name": "testing",
+        "name": Tags.TESTING,
         "description": "For testing purposes.",
     },
 ]

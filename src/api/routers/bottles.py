@@ -2,6 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
+from src.api.api_config import Tags
 from src.api.internal.utils import map_bottles
 from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import maker_protected
@@ -13,9 +14,9 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import MachineController
 from src.tabs import maker
 
-router = APIRouter(tags=["bottles"], prefix="/bottles")
+router = APIRouter(tags=[Tags.BOTTLES], prefix="/bottles")
 protected_router = APIRouter(
-    tags=["bottles", "maker protected"],
+    tags=[Tags.BOTTLES, Tags.MAKER_PROTECTED],
     prefix="/bottles",
     dependencies=[
         Depends(maker_protected(Tab.BOTTLES)),
@@ -78,7 +79,7 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
     )
 
 
-@protected_router.post("/{bottle_id}/calibrate", tags=["preparation"], summary="Calibrate bottle with given amount.")
+@protected_router.post("/{bottle_id}/calibrate", tags=[Tags.PREPARATION], summary="Calibrate bottle with given amount.")
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks) -> ApiMessage:
     raise_when_cocktail_is_in_progress()
     background_tasks.add_task(maker.calibrate, bottle_id, amount)

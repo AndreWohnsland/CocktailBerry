@@ -4,6 +4,7 @@ Also defines the Mode for controls.
 """
 
 # pylint: disable=unnecessary-lambda
+import os
 import platform
 from typing import Any, Optional
 
@@ -102,7 +103,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         DP_CONTROLLER.set_tab_width(self)
         icons = IconSetter()
         icons.set_mainwindow_icons(self)
-        DP_CONTROLLER.say_welcome_message()
+        if "COCKTAILBERRY_NO_WELCOME_MESSAGE" not in os.environ:
+            DP_CONTROLLER.say_welcome_message()
         self.update_check()
         self._deprecation_check()
         self._connection_check()
