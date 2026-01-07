@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import platform
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Literal
 
@@ -467,7 +468,12 @@ class DialogHandler:
 
     def say_welcome_message(self) -> None:
         """Display the welcome dialog, show version and platform info."""
-        self.__output_language_dialog("welcome_dialog", version=__version__, platform=get_platform_data())
+        self.__output_language_dialog(
+            "welcome_dialog",
+            version=__version__,
+            platform=get_platform_data(),
+            python_version=platform.python_version(),
+        )
 
     def say_wifi_entered(self, success: bool, ssid: str, password: str) -> None:
         """Informs the user about the wifi enter process."""
@@ -796,6 +802,7 @@ class UiLanguage:
             (w.button_export, "data"),
             (w.button_rfid, "rfid"),
             (w.button_check_internet, "check_internet"),
+            (w.button_about, "about"),
         ]:
             ui_element.setText(self._choose_language(text_name, window))
 

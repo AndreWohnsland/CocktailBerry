@@ -125,3 +125,10 @@ class ApiMessage(BaseModel):
 class ApiMessageWithData(BaseModel, Generic[T]):
     message: str
     data: T
+
+
+class AboutInfo(BaseModel):
+    python_version: str
+    platform: str
+    project_name: str
+    version: str

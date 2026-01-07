@@ -14,6 +14,7 @@ from fastapi import (
     WebSocketDisconnect,
 )
 
+from src.api.api_config import Tags
 from src.api.internal.nfc_payment import NFCPaymentHandler, get_nfc_payment_handler
 from src.api.internal.utils import (
     calculate_cocktail_volume_and_concentration,
@@ -48,16 +49,16 @@ from src.tabs import maker
 _logger = LoggerHandler("cocktails_router")
 
 _prefix = "/cocktails"
-router = APIRouter(tags=["cocktails"], prefix=_prefix)
+router = APIRouter(tags=[Tags.COCKTAILS], prefix=_prefix)
 protected_maker_router = APIRouter(
-    tags=["cocktails", "maker protected"],
+    tags=[Tags.COCKTAILS, Tags.MAKER_PROTECTED],
     prefix=_prefix,
     dependencies=[
         Depends(maker_protected(Tab.MAKER)),
     ],
 )
 protected_recipes_router = APIRouter(
-    tags=["cocktails", "maker protected"],
+    tags=[Tags.COCKTAILS, Tags.MAKER_PROTECTED],
     prefix=_prefix,
     dependencies=[
         Depends(maker_protected(Tab.RECIPES)),
@@ -95,7 +96,7 @@ async def get_cocktail(cocktail_id: int) -> Cocktail:
 
 @protected_maker_router.post(
     "/prepare/{cocktail_id:int}",
-    tags=["preparation"],
+    tags=[Tags.PREPARATION],
     responses={
         200: {"description": "Cocktail preparation started", "model": CocktailStatus},
         400: {"description": "Validation error", "model": ErrorDetail},

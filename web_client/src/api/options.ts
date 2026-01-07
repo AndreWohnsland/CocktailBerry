@@ -1,5 +1,6 @@
 import { type UseQueryResult, useQuery } from 'react-query';
 import type {
+  AboutInfo,
   AddonData,
   ConfigData,
   ConfigDataWithUiInfo,
@@ -198,4 +199,13 @@ export const getResourceStats = async (sessionNumber: number): Promise<ResourceS
 
 export const useResourceStats = (sessionNumber: number): UseQueryResult<ResourceStats, Error> => {
   return useQuery<ResourceStats, Error>(['resourceStats', sessionNumber], () => getResourceStats(sessionNumber));
+};
+
+// About info
+export const getAboutInfo = async (): Promise<AboutInfo> => {
+  return axiosInstance.get<AboutInfo>('/info').then((res) => res.data);
+};
+
+export const useAboutInfo = (): UseQueryResult<AboutInfo, Error> => {
+  return useQuery<AboutInfo, Error>('aboutInfo', getAboutInfo);
 };

@@ -80,6 +80,9 @@
     "adjustHeader": "Adjust the fill level of the bottle, maximum is {{maximum}}"
   },
   "options": {
+    "about": "About CocktailBerry",
+    "documentation": "Documentation:",
+    "aboutText": "CocktailBerry Software Version {{version}} by Andre Wohnsland.\n{{platform}}.\nUsing python version: {{pythonVersion}} with Web UI.",
     "addons": "Addons",
     "adjustTime": "Adjust Time",
     "backup": "Backup",

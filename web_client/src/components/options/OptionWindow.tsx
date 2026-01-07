@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { BsBootstrapReboot } from 'react-icons/bs';
+import { BsBootstrapReboot, BsInfoCircleFill } from 'react-icons/bs';
 import { FaCocktail, FaExclamationTriangle, FaInfoCircle, FaRegClock } from 'react-icons/fa';
 import { FaCalculator, FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
 import { GrUpdate } from 'react-icons/gr';
@@ -19,17 +19,21 @@ import {
   updateSoftware,
   updateSystem,
   uploadBackup,
+  useAboutInfo,
 } from '../../api/options';
 import { useConfig } from '../../providers/ConfigProvider';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import ProgressModal from '../cocktail/ProgressModal';
 import DropDown from '../common/DropDown';
 import TileButton from '../common/TileButton';
+import AboutModal from './AboutModal';
 
 const OptionWindow = () => {
   const { theme, changeTheme } = useConfig();
   const navigate = useNavigate();
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const { data: aboutInfo } = useAboutInfo();
   const themes = ['default', 'berry', 'bavaria', 'alien', 'tropical', 'purple', 'custom'];
   const { t } = useTranslation();
 
@@ -188,8 +192,15 @@ const OptionWindow = () => {
             icon={FaCalculator}
             onClick={() => navigate('/manage/recipes/calculation')}
           />
+          <TileButton
+            label={t('options.about')}
+            icon={BsInfoCircleFill}
+            className='md:col-span-2'
+            onClick={() => setIsAboutModalOpen(true)}
+          />
         </div>
       </div>
+      <AboutModal isOpen={isAboutModalOpen} onClose={() => setIsAboutModalOpen(false)} aboutInfo={aboutInfo} />
     </>
   );
 };

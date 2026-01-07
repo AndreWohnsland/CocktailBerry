@@ -1,5 +1,6 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
+from src.api.api_config import Tags
 from src.api.internal.utils import map_ingredient, not_on_demo
 from src.api.internal.validation import raise_on_validation_not_okay
 from src.api.middleware import maker_protected
@@ -10,9 +11,9 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.models import Cocktail, CocktailStatus, PrepareResult
 from src.tabs import maker
 
-router = APIRouter(tags=["ingredients"], prefix="/ingredients")
+router = APIRouter(tags=[Tags.INGREDIENTS], prefix="/ingredients")
 protected_router = APIRouter(
-    tags=["ingredients", "maker protected"],
+    tags=[Tags.INGREDIENTS, Tags.MAKER_PROTECTED],
     prefix="/ingredients",
     dependencies=[
         Depends(maker_protected(Tab.INGREDIENTS)),
@@ -106,7 +107,7 @@ async def post_available_ingredients(available: list[int]) -> ApiMessage:
 
 @router.post(
     "/{ingredient_id:int}/prepare",
-    tags=["preparation", "maker protected"],
+    tags=[Tags.PREPARATION, Tags.MAKER_PROTECTED],
     responses={
         200: {"description": "Ingredient preparation started", "model": CocktailStatus},
         400: {"description": "Validation error", "model": ErrorDetail},

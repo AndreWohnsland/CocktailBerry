@@ -1,3 +1,4 @@
+import platform
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any
@@ -8,11 +9,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from src import __version__
-from src.api.api_config import DESCRIPTION, TAGS_METADATA
+from src import PROJECT_NAME, __version__
+from src.api.api_config import DESCRIPTION, TAGS_METADATA, Tags
 from src.api.internal.log_config import log_config
 from src.api.internal.validation import ValidationError
-from src.api.models import ApiMessage
+from src.api.models import AboutInfo, ApiMessage
 from src.api.routers import bottles, cocktails, ingredients, options
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
@@ -27,6 +28,7 @@ from src.programs.nfc_payment_service import NFCPaymentService
 from src.resource_stats import start_resource_tracker
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.updater import UpdateInfo, Updater
+from src.utils import get_platform_data
 
 _logger = LoggerHandler("CocktailBerry_API")
 
@@ -130,9 +132,19 @@ app.include_router(ingredients.router)
 app.include_router(ingredients.protected_router)
 
 
-@app.get("/", tags=["testing"], summary="Test endpoint, check if api works")
+@app.get("/", tags=[Tags.TESTING], summary="Test endpoint, check if api works")
 async def root() -> ApiMessage:
     return ApiMessage(message="Welcome to CocktailBerry, this API works!")
+
+
+@app.get("/info", tags=[Tags.OPTIONS], summary="Get basic info about the API")
+async def info() -> AboutInfo:
+    return AboutInfo(
+        python_version=platform.python_version(),
+        platform=str(get_platform_data()),
+        project_name=PROJECT_NAME,
+        version=__version__,
+    )
 
 
 def run_api(port: int = 8000) -> None:
