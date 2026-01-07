@@ -54,10 +54,14 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     update_info = can_update()
     if update_info.status == UpdateInfo.Status.UPDATE_AVAILABLE:
         _logger.info("Update available, performing update...")
-        # need to get also latest web build
-        download_latest_web_client()
-        updater = Updater()
-        updater.update()
+        try:
+            # need to get also latest web build
+            download_latest_web_client()
+            updater = Updater()
+            updater.update()
+        except Exception as e:
+            _logger.error(f"Update failed: {e}")
+            _logger.log_exception(e)
     ADDONS.start_trigger_loop()
     if cfg.PAYMENT_ACTIVE:
         NFCPaymentService().start_continuous_sensing()

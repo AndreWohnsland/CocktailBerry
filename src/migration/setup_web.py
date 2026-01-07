@@ -1,7 +1,6 @@
 # flake8: noqa: E501
 
 import argparse
-import shutil
 import socket
 import subprocess
 from pathlib import Path
@@ -99,13 +98,10 @@ def download_latest_web_client() -> None:
     tmp_path = Path("/tmp/cocktailberry_web_client.tar.gz")
     url = "https://github.com/AndreWohnsland/CocktailBerry/releases/latest/download/cocktailberry_web_client.tar.gz"
     subprocess.run(["sudo", "curl", "-L", "-o", str(tmp_path), url], check=True)
-    for file in web_root.glob("*"):
-        if file.is_file():
-            file.unlink()
-        elif file.is_dir():
-            shutil.rmtree(file)
+    # Clean up existing files with sudo since they may be owned by root
+    subprocess.run(f"sudo rm -rf {web_root}/*", shell=True, check=False)
     subprocess.run(["sudo", "tar", "-xzf", str(tmp_path), "-C", str(web_root)], check=True)
-    tmp_path.unlink()
+    subprocess.run(["sudo", "rm", "-f", str(tmp_path)], check=True)
 
 
 def setup_nginx(use_ssl: bool) -> None:
