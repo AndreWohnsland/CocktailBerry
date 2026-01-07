@@ -169,6 +169,9 @@ dialog:
   ask_to_remove_picture:
     en: 'Do you want to remove the user picture? This cannot be reverted.'
     de: 'Soll das User Bild entfernt werden? Dies kann nicht rückgängig gemacht werden.'
+  ask_restricted_mode:
+    en: 'Do you want to enable restricted mode? Only the cocktail maker will be accessible. You can still access configuration with the master password.'
+    de: 'Möchten Sie den eingeschränkten Modus aktivieren? Nur der Cocktail-Maker wird zugänglich sein. Sie können weiterhin mit dem Master-Passwort auf die Konfiguration zugreifen.'
   backup_created:
     en: 'Backup has been created at: {folder}.'
     de: 'Backup wurde unter {folder} gespeichert.'
@@ -555,12 +558,6 @@ ui:
     header_maker_password:
       en: 'Enter maker password:'
       de: 'Maker Passwort eingeben:'
-  
-  ##### RESTRICTED MODE #####
-  # all values for restricted mode prompt
-  ask_restricted_mode:
-    en: 'Do you want to enable restricted mode? Only the cocktail maker will be accessible. You can still access configuration with the master password.'
-    de: 'Möchten Sie den eingeschränkten Modus aktivieren? Nur der Cocktail-Maker wird zugänglich sein. Sie können weiterhin mit dem Master-Passwort auf die Konfiguration zugreifen.'
 
   rfid_writer:
     write:
