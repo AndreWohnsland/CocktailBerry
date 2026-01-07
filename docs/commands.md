@@ -40,6 +40,14 @@ In addition, you may want to display another name than CocktailBerry, which is t
 Use the `-n` option, like `-n "YourName"`, to set a custom name.
 If you want omit the machine name, version and platform data, use the `-q` flag.
 
+There are some additional environment variables you can set to alter the program behavior, without user be able to change it via settings:
+
+- **COCKTAILBERRY_NO_WELCOME_MESSAGE**: If this variable is set to any value, the welcome message at program start will be omitted (v1).
+- **COCKTAILBERRY_LOG_LEVEL**: Set the log level of the program. Possible values are: DEBUG, INFO, WARNING, ERROR, CRITICAL.
+Default is INFO. If you run into issues, set this to DEBUG to get more information.
+- **MOCK_RFID**: If this variable is set to any value, the RFID/NFC reader will be mocked. **Do not use for production!**
+- **MOCK_PAYMENT_SERVICE**: If this variable is set to any value, the payment service will be mocked. **Do not use for production!**
+
 In case you want to hide the terminal completely, see [this section](faq.md#how-to-minimize-start-terminal).
 
 ## CocktailBerry Web
