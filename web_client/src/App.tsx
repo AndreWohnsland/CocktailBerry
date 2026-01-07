@@ -11,6 +11,7 @@ import { MakerPasswordProtected, MasterPasswordProtected } from './components/co
 import Header from './components/Header.tsx';
 import IngredientList from './components/ingredient/IngredientList.tsx';
 import IssuePage from './components/IssuePage.tsx';
+import RestrictedModePrompt from './components/RestrictedModePrompt.tsx';
 import AddonManager from './components/options/AddonManager.tsx';
 import CalibrationWindow from './components/options/CalibrationWindow.tsx';
 import ConfigWindow from './components/options/ConfigWindow.tsx';
@@ -25,12 +26,14 @@ import ResourceWindow from './components/resources/ResourceWindow.tsx';
 import { Tabs } from './constants/tabs.ts';
 import useAxiosInterceptors from './hooks/useAxiosInterceptors.ts';
 import { useConfig } from './providers/ConfigProvider.tsx';
+import { useRestrictedMode } from './providers/RestrictedModeProvider.tsx';
 import { hastNotIgnoredStartupIssues } from './utils.tsx';
 
 Modal.setAppElement('#root');
 
 function App() {
   const { config } = useConfig();
+  const { restrictedModeActive } = useRestrictedMode();
   useAxiosInterceptors();
   const navigate = useNavigate();
   const { data: issues } = useIssues();
@@ -43,8 +46,9 @@ function App() {
 
   return (
     <div className='min-h-screen flex w-full h-full'>
+      <RestrictedModePrompt />
       <Header />
-      <div className='min-h-screen pt-12 flex flex-col w-full justify-center items-center'>
+      <div className={`min-h-screen ${restrictedModeActive ? 'pt-0' : 'pt-12'} flex flex-col w-full justify-center items-center`}>
         <ToastContainer position='top-center' />
         {/* do not show routes when config is empty */}
         {Object.keys(config).length === 0 ? (

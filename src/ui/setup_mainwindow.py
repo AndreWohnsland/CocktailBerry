@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import QLineEdit, QMainWindow
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import Tab
+from src.config.config_manager import Tab, shared
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER, ItemDelegate
@@ -103,6 +103,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         DP_CONTROLLER.set_tab_width(self)
         icons = IconSetter()
         icons.set_mainwindow_icons(self)
+        
+        # Check for restricted mode if PAYMENT_ONLY_MAKER_TAB is enabled
+        if cfg.PAYMENT_ONLY_MAKER_TAB:
+            shared.restricted_mode_active = UI_LANGUAGE.ask_restricted_mode()
+            if shared.restricted_mode_active:
+                self._apply_restricted_mode()
+        
         if "COCKTAILBERRY_NO_WELCOME_MESSAGE" not in os.environ:
             DP_CONTROLLER.say_welcome_message()
         self.update_check()
@@ -143,6 +150,16 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             DP_CONTROLLER.say_python_deprecated(
                 platform.python_version(), f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
             )
+
+    def _apply_restricted_mode(self) -> None:
+        """Apply restricted mode by hiding all tabs except search and maker."""
+        # Keep only search (tab 0) and maker (tab 1), hide all others
+        # Qt doesn't have a simple "hide" for tabs, so we disable them
+        # Tabs: 0=Search, 1=Maker, 2=Ingredients, 3=Recipes, 4=Bottles
+        for i in range(2, self.tabWidget.count()):
+            self.tabWidget.setTabEnabled(i, False)
+        # Ensure we're on the maker tab
+        self.tabWidget.setCurrentIndex(1)
 
     def open_cocktail_detail(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
@@ -368,6 +385,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def handle_tab_bar_clicked(self, index: int) -> None:
         """Protects tabs other than maker tab with a password."""
         old_index = self.previous_tab_index
+        
+        # In restricted mode, only allow search (0) and maker (1) tabs
+        if shared.restricted_mode_active and index > 1:
+            self.tabWidget.setCurrentIndex(old_index)
+            return
+        
         unprotected_tabs = [0] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 1) if not x]
         # since the search window lives in the main window now,
         # switching to it needs to get the current available cocktails

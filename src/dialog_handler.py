@@ -67,6 +67,7 @@ allowed_keys = Literal[
     "ask_export_data",
     "ask_for_backup_location",
     "ask_for_image_location",
+    "ask_restricted_mode",
     "ask_to_clean",
     "ask_to_delete_x",
     "ask_to_install_qtsass",
@@ -622,6 +623,12 @@ class DialogHandler:
     def ask_to_remove_picture(self) -> bool:
         """Asks the user if he wants to remove the picture."""
         message = self._choose_language("ask_to_remove_picture")
+        return self.user_okay(message)
+
+    def ask_restricted_mode(self) -> bool:
+        """Asks the user if they want to enable restricted mode (only maker tab accessible)."""
+        message = self._choose_language("ask_restricted_mode")
+        return self.user_okay(message)
         return self.user_okay(message)
 
 
