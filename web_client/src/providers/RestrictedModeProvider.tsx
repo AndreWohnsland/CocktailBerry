@@ -21,10 +21,10 @@ export const RestrictedModeProvider = ({ children }: { children: React.ReactNode
   );
 
   // Check if we need to prompt based on config
-  const shouldPrompt = (config.PAYMENT_ONLY_MAKER_TAB ?? false) && !hasPrompted;
+  const shouldPrompt = (config?.PAYMENT_ONLY_MAKER_TAB ?? false) && !hasPrompted;
 
   useEffect(() => {
-    // Always sync prompted state to sessionStorage
+    // Always sync prompted state to sessionStorage to ensure consistency
     sessionStorage.setItem(STORE_PROMPTED, hasPrompted.toString());
   }, [hasPrompted]);
 

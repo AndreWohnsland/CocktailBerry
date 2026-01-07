@@ -157,9 +157,12 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             )
 
     def _apply_restricted_mode(self) -> None:
-        """Apply restricted mode by hiding all tabs except search and maker."""
+        """Apply restricted mode by hiding all tabs except search and maker.
+        
+        Disables all tabs that come after the maker tab in the tab widget.
+        This relies on the tab order: Search (0), then tabs from Tab enum offset by 1.
+        """
         # Keep only search (SEARCH_TAB_INDEX) and maker (MAKER_TAB_INDEX), disable all others
-        # The tab indices are: 0=Search, 1=Maker, 2=Ingredients, 3=Recipes, 4=Bottles
         for i in range(MAKER_TAB_INDEX + 1, self.tabWidget.count()):
             self.tabWidget.setTabEnabled(i, False)
         # Ensure we're on the maker tab
