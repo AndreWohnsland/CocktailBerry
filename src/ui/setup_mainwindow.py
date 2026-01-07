@@ -153,13 +153,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def _apply_restricted_mode(self) -> None:
         """Apply restricted mode by hiding all tabs except search and maker."""
-        # Keep only search (tab 0) and maker (tab 1), hide all others
-        # Qt doesn't have a simple "hide" for tabs, so we disable them
-        # Tabs: 0=Search, 1=Maker, 2=Ingredients, 3=Recipes, 4=Bottles
-        for i in range(2, self.tabWidget.count()):
+        # Keep only search (tab 0) and maker (Tab.MAKER + 1), disable all others
+        # The tab indices are: 0=Search, 1=Maker, 2=Ingredients, 3=Recipes, 4=Bottles
+        # Search is at index 0, Maker is at Tab.MAKER + 1 (since search is added first)
+        for i in range(Tab.MAKER + 2, self.tabWidget.count()):
             self.tabWidget.setTabEnabled(i, False)
-        # Ensure we're on the maker tab
-        self.tabWidget.setCurrentIndex(1)
+        # Ensure we're on the maker tab (Tab.MAKER + 1 to account for search at 0)
+        self.tabWidget.setCurrentIndex(Tab.MAKER + 1)
 
     def open_cocktail_detail(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
@@ -386,8 +386,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """Protects tabs other than maker tab with a password."""
         old_index = self.previous_tab_index
         
-        # In restricted mode, only allow search (0) and maker (1) tabs
-        if shared.restricted_mode_active and index > 1:
+        # In restricted mode, only allow search (0) and maker (Tab.MAKER + 1) tabs
+        # Search is at index 0, maker is at Tab.MAKER + 1 (accounting for search being first)
+        if shared.restricted_mode_active and index > Tab.MAKER + 1:
             self.tabWidget.setCurrentIndex(old_index)
             return
         
