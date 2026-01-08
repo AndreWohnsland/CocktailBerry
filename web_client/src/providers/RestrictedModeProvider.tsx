@@ -14,23 +14,42 @@ const RestrictedModeContext = createContext({} as IRestrictedMode);
 export const RestrictedModeProvider = ({ children }: { children: React.ReactNode }) => {
   const { config } = useConfig();
   const [hasPrompted, setHasPrompted] = useState<boolean>(
-    sessionStorage.getItem(STORE_PROMPTED) === 'true'
+    localStorage.getItem(STORE_PROMPTED) === 'true'
   );
   const [restrictedModeActive, setRestrictedModeActive] = useState<boolean>(
-    sessionStorage.getItem(STORE_RESTRICTED) === 'true'
+    localStorage.getItem(STORE_RESTRICTED) === 'true'
   );
+
+  // React to config changes - if feature is disabled, reset restricted mode
+  useEffect(() => {
+    const featureEnabled = config?.PAYMENT_ONLY_MAKER_TAB ?? false;
+    
+    if (!featureEnabled) {
+      // Config disabled - clear restricted mode and reset prompts
+      setRestrictedModeActive(false);
+      setHasPrompted(false);
+      localStorage.removeItem(STORE_PROMPTED);
+      localStorage.removeItem(STORE_RESTRICTED);
+    }
+  }, [config?.PAYMENT_ONLY_MAKER_TAB]);
 
   // Check if we need to prompt based on config
   const shouldPrompt = (config?.PAYMENT_ONLY_MAKER_TAB ?? false) && !hasPrompted;
 
   useEffect(() => {
-    // Always sync prompted state to sessionStorage to ensure consistency
-    sessionStorage.setItem(STORE_PROMPTED, hasPrompted.toString());
+    // Sync prompted state to localStorage
+    if (hasPrompted) {
+      localStorage.setItem(STORE_PROMPTED, hasPrompted.toString());
+    }
   }, [hasPrompted]);
 
   useEffect(() => {
-    // Store restricted mode state in sessionStorage
-    sessionStorage.setItem(STORE_RESTRICTED, restrictedModeActive.toString());
+    // Store restricted mode state in localStorage
+    if (restrictedModeActive) {
+      localStorage.setItem(STORE_RESTRICTED, restrictedModeActive.toString());
+    } else {
+      localStorage.removeItem(STORE_RESTRICTED);
+    }
   }, [restrictedModeActive]);
 
   const handleSetRestrictedMode = (active: boolean) => {
