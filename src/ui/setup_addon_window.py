@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Callable, Optional
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QMainWindow
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QLabel, QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -25,7 +25,7 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
         self.mainscreen = parent
         self.addon_manager: Optional[AddonManager] = None
         # connects all the buttons
-        self.button_back.clicked.connect(self.close)
+        self.button_back.clicked.connect(self.close)  # pyright: ignore[reportArgumentType]
         self.button_manage.clicked.connect(self._open_manager)
         self.selection_addon.activated.connect(self._set_up_addon_gui)
         DP_CONTROLLER.fill_single_combobox(self.selection_addon, list(ADDONS.addons.keys()), first_empty=False)
@@ -54,12 +54,12 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
             info = UI_LANGUAGE.get_no_addon_gui_info()
             label = QLabel(info, self)
             adjust_font(label, MEDIUM_FONT)
-            label.setAlignment(Qt.AlignCenter)  # type: ignore
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.addon_container.addWidget(label)
 
     def _button_generator(self, label: str, func: Callable[[], None]) -> None:
         button = create_button(label, self)
-        button.clicked.connect(func)  # type: ignore[attr-defined]
+        button.clicked.connect(func)
         self.addon_container.addWidget(button)
 
     def _open_manager(self) -> None:

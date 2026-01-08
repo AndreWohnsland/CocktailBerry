@@ -18,7 +18,7 @@ jobs:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
       - name: Install the latest version of uv using Python ${{ matrix.python-version }}
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: 🔍 Lint with ruff
@@ -33,16 +33,12 @@ jobs:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
       - name: Install the latest version of uv using Python ${{ matrix.python-version }}
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install additional PyQt5 dependency
-        run: uv export --extra v1 --no-hashes --format requirements-txt > mypy_requirements.txt
       - name: 🔍 Lint with MyPy
-        run: |
-          pip install -r mypy_requirements.txt
-          pip install pyqt5==5.15.7 pyqt5-qt5==5.15.2
-          mypy src
+        run: uv run --extra v1 mypy src
+
   pytest:
     runs-on: ubuntu-latest
     strategy:
@@ -52,7 +48,7 @@ jobs:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
       - name: Install the latest version of uv using Python ${{ matrix.python-version }}
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: 🔍 Run PyTest

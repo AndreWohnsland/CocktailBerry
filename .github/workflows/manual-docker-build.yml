@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version of the image'
+        description: "Version of the image"
         required: true
-        default: 'latest'
+        default: "latest"
       service:
-        description: 'Service to build'
+        description: "Service to build"
         required: true
         type: choice
         options:
@@ -41,8 +41,8 @@ jobs:
       - name: 🍸 Build and push Docker image CocktailBerry
         uses: docker/build-push-action@v5
         with:
-          context: ${{ contains(github.event.inputs.service, 'service') && './microservice' || contains(github.event.inputs.service, 'backend') && './dashboard/backend' || './dashboard/frontend' }}
-          file: ${{ contains(github.event.inputs.service, 'service') && './microservice/Dockerfile' || contains(github.event.inputs.service, 'backend') && './dashboard/backend/Dockerfile' || './dashboard/frontend/Dockerfile' }}
+          context: ${{ contains(github.event.inputs.service, 'service') && './microservice' || './dashboard' }}
+          file: ${{ contains(github.event.inputs.service, 'service') && './microservice/Dockerfile' || contains(github.event.inputs.service, 'backend') && './dashboard/Dockerfile.backend' || './dashboard/Dockerfile.frontend' }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ contains(github.event.inputs.service, 'service') && 'andrewo92/cocktailberry-microservice' || contains(github.event.inputs.service, 'backend') && 'andrewo92/cocktailberry-dashboard-be' || 'andrewo92/cocktailberry-dashboard-fe' }}:latest,${{ contains(github.event.inputs.service, 'service') && 'andrewo92/cocktailberry-microservice' || contains(github.event.inputs.service, 'backend') && 'andrewo92/cocktailberry-dashboard-be' || 'andrewo92/cocktailberry-dashboard-fe' }}:${{ github.event.inputs.version }}

@@ -1,0 +1,12 @@
+services:
+  microservice:
+    container_name: cocktailberry-microservice
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"

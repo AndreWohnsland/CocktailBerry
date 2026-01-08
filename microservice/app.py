@@ -2,6 +2,7 @@ import datetime
 import json
 import os
 from threading import Thread
+from typing import Annotated
 
 import requests
 import uvicorn
@@ -21,13 +22,13 @@ app = FastAPI()
 
 
 @app.get("/")
-async def welcome():
+async def welcome() -> JSONResponse:
     return JSONResponse(content={"status": "api working"})
 
 
 @app.post("/hookhandler/cocktail")
-async def post_cocktail_hook(cocktail: Cocktail):
-    def post_to_hook(url: str, payload: str, headers: dict, send_query: bool):
+async def post_cocktail_hook(cocktail: Cocktail) -> JSONResponse:
+    def post_to_hook(url: str, payload: str, headers: dict, send_query: bool) -> None:
         try:
             req = requests.post(url, data=payload, headers=headers, timeout=10)
             logger.info("%s: Posted to %s with payload: %s", req.status_code, url, payload)
@@ -68,7 +69,7 @@ async def post_cocktail_hook(cocktail: Cocktail):
 
 
 @app.post("/data-export")
-async def post_file_with_mail(upload_file: UploadFile = File(...)):
+async def post_file_with_mail(upload_file: Annotated[UploadFile, File(...)]) -> JSONResponse:
     text = f"Not implemented sending data. Datatype is {type(upload_file)}"
     logger.info(text)
     return JSONResponse(content={"text": text}, status_code=200)
@@ -77,7 +78,7 @@ async def post_file_with_mail(upload_file: UploadFile = File(...)):
 @app.post("/debug")
 @app.get("/debug")
 @app.put("/debug")
-async def debug_ep(cocktail: dict | None = None):
+async def debug_ep(cocktail: dict | None = None) -> JSONResponse:
     logger.info(cocktail)
     return JSONResponse(content={"text": "debug"}, status_code=200)
 

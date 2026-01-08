@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Callable, Union
 
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import (
@@ -72,7 +72,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             self._choose_display_style(key, config_setting)
 
         self.button_save.clicked.connect(self._save_config)
-        self.button_back.clicked.connect(self.close)
+        self.button_back.clicked.connect(self.close)  # pyright: ignore[reportArgumentType]
         # other window may have little elements and spacing is bad,
         # so add a spacer to the end
         self.vbox_other.addItem(create_spacer(1, expand=True))
@@ -279,6 +279,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             """Recursively delete all children of the given widget."""
             for i in reversed(range(widget.count())):
                 found_element = widget.itemAt(i)
+                if found_element is None:
+                    continue
                 found_widget = found_element.widget()
                 if found_widget is not None:
                     found_widget.setParent(None)  # type: ignore
@@ -319,15 +321,13 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         layout.addWidget(config_input)
         return config_input.text
 
-    def _build_selection_filed(
-        self, layout: QBoxLayout, current_value: bool, selection: list[str]
-    ) -> Callable[[], str]:
+    def _build_selection_filed(self, layout: QBoxLayout, current_value: str, selection: list[str]) -> Callable[[], str]:
         """Build a field for selection of values with a dropdown / combobox."""
         config_input = QComboBox()
         config_input.addItems(selection)
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        index = config_input.findText(current_value, Qt.MatchFixedString)  # type: ignore
+        index = config_input.findText(current_value, Qt.MatchFlag.MatchFixedString)
         config_input.setCurrentIndex(index)
         layout.addWidget(config_input)
         return config_input.currentText

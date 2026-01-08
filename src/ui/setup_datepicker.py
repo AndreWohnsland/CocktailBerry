@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QDate, QTime
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtCore import QDate, QTime
+from PyQt6.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER

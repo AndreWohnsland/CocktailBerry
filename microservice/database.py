@@ -1,16 +1,15 @@
 import json
-from pathlib import Path
 import sqlite3
-from typing import Dict, List, Tuple
+from pathlib import Path
 
 DATABASE_NAME = "failed_data"
 DIRPATH = Path(__file__).parent.absolute()
 
 
 class DatabaseHandler:
-    """Handler Class for Connecting and querring Databases"""
+    """Handler Class for Connecting and querring Databases."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.database_path = DIRPATH / f"{DATABASE_NAME}.db"
         if not self.database_path.exists():
             print("creating Database")
@@ -20,20 +19,20 @@ class DatabaseHandler:
         self.__add_url_to_db()
         self.__add_header_to_db()
 
-    def save_failed_post(self, payload: str, url: str, headers: Dict):
+    def save_failed_post(self, payload: str, url: str, headers: dict) -> None:
         sql = "INSERT INTO Querry(Payload, Url, Headers) VALUES(?,?,?)"
         self.query_database(sql, (payload, url, json.dumps(headers)))
 
-    def get_failed_data(self) -> List[Tuple[int, str, str, str]]:
+    def get_failed_data(self) -> list[tuple[int, str, str, str]]:
         sql = "SELECT * FROM Querry ORDER BY ID ASC"
         return self.query_database(sql)
 
-    def delete_failed_by_id(self, data_id: int):
+    def delete_failed_by_id(self, data_id: int) -> None:
         sql = "DELETE FROM Querry WHERE ID = ?"
         self.query_database(sql, (data_id,))
 
-    def query_database(self, sql: str, serach_tuple=()):
-        self.cursor.execute(sql, serach_tuple)
+    def query_database(self, sql: str, search_tuple: tuple = ()) -> list[tuple]:
+        self.cursor.execute(sql, search_tuple)
         if sql[0:6].lower() == "select":
             result = self.cursor.fetchall()
         else:
@@ -41,7 +40,7 @@ class DatabaseHandler:
             result = []
         return result
 
-    def create_tables(self):
+    def create_tables(self) -> None:
         self.database = sqlite3.connect(self.database_path)
         self.cursor = self.database.cursor()
         self.cursor.execute(
@@ -53,8 +52,8 @@ class DatabaseHandler:
         self.database.commit()
         self.database.close()
 
-    def __add_url_to_db(self):
-        """Adds the new column to the db"""
+    def __add_url_to_db(self) -> None:
+        """Add the new column to the db."""
         try:
             self.cursor.execute("ALTER TABLE Querry ADD Url TEXT;")
             self.cursor.execute("DELETE FROM Querry WHERE Url IS NULL")
@@ -62,7 +61,7 @@ class DatabaseHandler:
         except sqlite3.OperationalError:
             pass
 
-    def __add_header_to_db(self):
+    def __add_header_to_db(self) -> None:
         try:
             self.cursor.execute("ALTER TABLE Querry ADD Headers TEXT;")
             self.cursor.execute("DELETE FROM Querry WHERE Headers IS NULL")

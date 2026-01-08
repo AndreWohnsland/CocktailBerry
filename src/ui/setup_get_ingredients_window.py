@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QMainWindow
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab

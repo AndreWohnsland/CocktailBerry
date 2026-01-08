@@ -3,7 +3,7 @@ from __future__ import annotations
 import string
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QLineEdit, QMainWindow
+from PyQt6.QtWidgets import QLineEdit, QMainWindow
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.keyboard import Ui_Keyboard

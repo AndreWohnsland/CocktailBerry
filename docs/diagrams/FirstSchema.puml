@@ -40,7 +40,7 @@ Person_Ext(user, "User", "Person who wants the exported data from the DB", "user
 System(email, "GMail", "Gmail account / service used as sender over smtp for the data", "send_o")
 
 Container(dashapi, "Dashboard API", "python", "FastAPI to get team Data for the leaderboard", "docker")
-Container(dashfrontend, "Dashboard", "Streamlit/PyQt", "Python Streamlit Page or Qt-App to show leaderboard", "html5")
+Container(dashfrontend, "Dashboard", "Streamlit/PyQt", "Python Streamlit Page to show leaderboard", "html5")
 
 
 Rel(dbhandler, db, "Reads/Writes")

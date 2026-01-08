@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtGui import QFont, QPixmap
-from PyQt5.QtWidgets import QDialog, QLabel, QPushButton, QSizePolicy
+from PyQt6.QtGui import QFont, QPixmap
+from PyQt6.QtWidgets import QDialog, QLabel, QPushButton, QSizePolicy
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
@@ -34,7 +34,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self._volume_buttons: list[tuple[int, QPushButton]] = []  # list of (volume, button) tuples
         # build the image
         self.image_container.setScaledContents(True)
-        self.image_container.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)  # type: ignore
+        self.image_container.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
         picture_size = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.60))
         self.image_container.setMinimumSize(picture_size, picture_size)
         self.image_container.setMaximumSize(picture_size, picture_size)
@@ -282,7 +282,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 min_h=60,
                 max_h=80,
             )
-            button.clicked.connect(lambda _, v=volume: self._prepare_cocktail(v))  # type: ignore[attr-defined]
+            button.clicked.connect(lambda _, v=volume: self._prepare_cocktail(v))
             icon = self.icons.generate_icon(icon_name, self.icons.color.background)
             self.icons.set_icon(button, icon, False)
             self.container_prepare_button.addWidget(button)

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSize, Qt, pyqtSignal
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QFrame, QGridLayout, QSizePolicy, QVBoxLayout, QWidget
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QFrame, QGridLayout, QSizePolicy, QVBoxLayout, QWidget
 
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
@@ -72,7 +72,7 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
     pixmap = QPixmap(str(cocktail_image))
     label.setPixmap(pixmap)
     label.setScaledContents(True)
-    label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)  # type: ignore
+    label.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
     label.setMinimumSize(square_size, square_size)
     label.setMaximumSize(square_size, square_size)
     layout = QVBoxLayout()
@@ -100,10 +100,10 @@ class CocktailView(QWidget):
         self.scroll_area = TouchScrollArea()
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
-        self.scroll_area.setFrameShape(QFrame.NoFrame)  # type: ignore
-        self.scroll_area.setFrameShadow(QFrame.Plain)  # type: ignore
+        self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        self.scroll_area.setFrameShadow(QFrame.Shadow.Plain)
         # no horizontal scroll bar
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # type: ignore
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
         self.grid = QGridLayout()
         self.grid.setVerticalSpacing(15)

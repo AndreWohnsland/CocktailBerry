@@ -1,5 +1,5 @@
-from PyQt5.QtCore import pyqtSignal, QPoint
-from PyQt5.QtWidgets import QLabel
+from PyQt6.QtCore import QPoint, pyqtSignal
+from PyQt6.QtWidgets import QLabel
 
 # threshold that scroll over a label is not considered a click
 # if the distance is too large

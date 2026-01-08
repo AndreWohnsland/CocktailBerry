@@ -4,10 +4,10 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Literal
 
 import qtawesome as qta
-from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QColor, QIcon
-from PyQt5.QtWidgets import QPushButton, QWidget
-from pyqtspinner import WaitingSpinner
+from PyQt6.QtCore import QSize
+from PyQt6.QtGui import QColor, QIcon
+from PyQt6.QtWidgets import QPushButton, QWidget
+from pyqtwaitingspinner import SpinnerParameters, WaitingSpinner
 
 from src import SupportedThemesType
 from src.config.config_manager import CONFIG as cfg
@@ -195,7 +195,7 @@ class IconSetter:
         # add "padding" in front of button
         button.setText(f" {button.text()}")
         button.setIconSize(BUTTON_SIZE)
-        button.setIcon(used_icon)  # type: ignore
+        button.setIcon(used_icon)
 
     def remove_icon(self, button: QPushButton) -> None:
         """Remove the spinner from the button."""
@@ -205,17 +205,19 @@ class IconSetter:
 
     def start_spinner(self, parent_widget: QWidget) -> None:
         """Start a spinner above the parent widget, locks parent."""
-        self._spinner = WaitingSpinner(
-            parent_widget,
+        params = SpinnerParameters(
             disable_parent_when_spinning=True,
             roundness=99.9,
-            fade=90.0,
-            radius=50,
-            lines=8,
+            trail_fade_percentage=90.0,
+            inner_radius=50,
+            number_of_lines=8,
             line_length=80,
             line_width=60,
-            speed=1.0,
             color=QColor(self.color.primary),
+        )
+        self._spinner = WaitingSpinner(
+            parent_widget,
+            spinner_parameters=params,
         )
         self._spinner.start()
 

@@ -1,14 +1,8 @@
 from abc import abstractmethod
-from typing import Any, Optional
-
-# Grace period, will be switched once Python 3.8+ is mandatory
-try:
-    from typing import Protocol
-except ImportError:
-    from typing_extensions import Protocol  # type: ignore[assignment]
+from typing import Any, Optional, Protocol
 
 
-class PinController(Protocol):  # type: ignore
+class PinController(Protocol):
     """Interface to control the pins."""
 
     @abstractmethod

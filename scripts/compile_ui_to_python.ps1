@@ -14,7 +14,7 @@ $files = @(
 )
 
 foreach ($f in $files) {
-  pyuic5 -x .\$f.ui -o .\$f.py
+  pyuic6 -x .\$f.ui -o .\$f.py
 }
 
 cd ..\..

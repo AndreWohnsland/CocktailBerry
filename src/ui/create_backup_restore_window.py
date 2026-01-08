@@ -2,8 +2,8 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import (
     QCheckBox,
     QFrame,
     QHBoxLayout,
@@ -44,14 +44,14 @@ class BackupRestoreWindow(QMainWindow):
         self.layout_container = QVBoxLayout(self.central_widget)
         # adds a scroll area with props, and its contents
         self.scroll_area = QScrollArea(self.central_widget)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # type: ignore
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setFrameShape(QFrame.NoFrame)  # type: ignore
-        self.scroll_area.setFrameShadow(QFrame.Plain)  # type: ignore
+        self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        self.scroll_area.setFrameShadow(QFrame.Shadow.Plain)
         self.scroll_area_widget_contents = QWidget()
         # this is the layout inside the scroll area
         self.vbox = QVBoxLayout(self.scroll_area_widget_contents)
-        # self.vbox.setAlignment(Qt.AlignCenter)  # type: ignore
+        # self.vbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # header with the expander
         self.header = create_label(
@@ -71,10 +71,10 @@ class BackupRestoreWindow(QMainWindow):
 
         # adds the back button
         self.button_back = create_button(UI_LANGUAGE.get_translation("back"), max_h=100)
-        self.button_back.clicked.connect(self.close)  # type: ignore[attr-defined]
+        self.button_back.clicked.connect(self.close)  # type: ignore[arg-type]
         # adds the save button
         self.button_save = create_button(UI_LANGUAGE.get_translation("apply"), max_h=100, css_class="btn-inverted")
-        self.button_save.clicked.connect(self._upload_backup)  # type: ignore[attr-defined]
+        self.button_save.clicked.connect(self._upload_backup)
         # places them side by side in a container
         self.hbox = QHBoxLayout()
         self.hbox.addWidget(self.button_back)
@@ -125,9 +125,9 @@ class BackupRestoreWindow(QMainWindow):
             self.config_objects[backup_type] = checkbox
             # use box the center the checkbox, since you cant just do it with the checkbox by center
             container = QHBoxLayout()
-            container.addItem(QSpacerItem(100, 40, QSizePolicy.Expanding, QSizePolicy.Fixed))  # type: ignore
+            container.addItem(QSpacerItem(100, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed))
             container.addWidget(checkbox)
-            container.addItem(QSpacerItem(100, 40, QSizePolicy.Expanding, QSizePolicy.Fixed))  # type: ignore
+            container.addItem(QSpacerItem(100, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed))
             self.vbox.addLayout(container)
 
     def _get_needed_backup_paths_and_description(self) -> tuple[list[Path], list[str]]:

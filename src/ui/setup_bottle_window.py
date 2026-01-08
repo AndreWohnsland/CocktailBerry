@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QLabel, QMainWindow
+from PyQt6.QtWidgets import QLabel, QMainWindow
 
 from src import MAX_SUPPORTED_BOTTLES
 from src.config.config_manager import CONFIG as cfg

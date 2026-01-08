@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from PyQt5.QtWidgets import QGridLayout, QMainWindow
+from PyQt6.QtWidgets import QGridLayout, QMainWindow
 
 from src.data_utils import ALL_TIME, SINCE_RESET, generate_consume_data
 from src.database_commander import DB_COMMANDER as DBC
@@ -116,6 +116,9 @@ class DataWindow(QMainWindow, Ui_DataWindow):
         if self.grid is None:
             return
         for i in reversed(range(self.grid.count())):
-            widget = self.grid.itemAt(i).widget()
+            item = self.grid.itemAt(i)
+            if item is None:
+                continue
+            widget = item.widget()
             self.grid.removeWidget(widget)
         self.grid.deleteLater()

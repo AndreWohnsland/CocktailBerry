@@ -6,9 +6,9 @@ import re
 from dataclasses import fields
 from typing import TYPE_CHECKING, get_args
 
-from PyQt5.QtCore import QObject, QSize, Qt, pyqtSignal
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QColorDialog, QLabel, QLineEdit, QMainWindow
+from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QColor
+from PyQt6.QtWidgets import QColorDialog, QLabel, QLineEdit, QMainWindow
 
 from src import SupportedThemesType
 from src.dialog_handler import UI_LANGUAGE
@@ -63,7 +63,7 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         self.inputs_colors: dict[str, ClickableLineEdit] = {}
         self.custom_colors = parse_colors("custom")
         # Connect all the buttons, generates a list of the numbers an object names to do that
-        self.button_back.clicked.connect(self.close)
+        self.button_back.clicked.connect(self.close)  # pyright: ignore[reportArgumentType]
         self.button_use_template.clicked.connect(self._set_selected_template)
         self.button_apply.clicked.connect(self._apply_settings)
 
@@ -139,10 +139,13 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
         self.color_picker.setCurrentColor(QColor(current_color))
         # self.color_picker.showFullScreen()
         self.color_picker.setWindowFlags(
-            Qt.Dialog | Qt.FramelessWindowHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint  # type: ignore
+            Qt.WindowType.Dialog
+            | Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.CustomizeWindowHint
+            | Qt.WindowType.WindowStaysOnTopHint
         )
 
-        if self.color_picker.exec_():
+        if self.color_picker.exec():
             selected_color = self.color_picker.currentColor().name()
             line_edit_to_write.setText(selected_color)
             line_edit_to_write.setStyleSheet(self._generate_style(selected_color))

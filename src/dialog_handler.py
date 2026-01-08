@@ -11,9 +11,9 @@ import yaml
 
 # We do not need those in v2, so its okay to fail there
 try:
-    from PyQt5.QtCore import Qt
-    from PyQt5.QtGui import QIcon
-    from PyQt5.QtWidgets import QApplication, QDialog, QFileDialog
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtGui import QIcon
+    from PyQt6.QtWidgets import QApplication, QDialog, QFileDialog
 except ModuleNotFoundError:
     pass
 
@@ -254,18 +254,18 @@ class DialogHandler:
         with (STYLE_FOLDER / style_file).open(encoding="utf-8") as file_handler:
             file_dialog.setStyleSheet(file_handler.read())
         file_dialog.setWindowIcon(QIcon(self.icon_path))
-        file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # type: ignore
+        file_dialog.setOption(QFileDialog.Option.DontUseNativeDialog, True)
         file_dialog.setWindowTitle(message)
         file_dialog.setWindowFlags(
-            Qt.Dialog  # type: ignore
-            | Qt.FramelessWindowHint  # type: ignore
-            | Qt.CustomizeWindowHint  # type: ignore
-            | Qt.WindowStaysOnTopHint  # type: ignore
-            | Qt.X11BypassWindowManagerHint  # type: ignore
+            Qt.WindowType.Dialog
+            | Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.CustomizeWindowHint
+            | Qt.WindowType.WindowStaysOnTopHint
+            | Qt.WindowType.X11BypassWindowManagerHint
         )
         if not cfg.UI_DEVENVIRONMENT:
-            file_dialog.setCursor(Qt.BlankCursor)  # type: ignore
-        file_dialog.setViewMode(QFileDialog.List)  # type: ignore
+            file_dialog.setCursor(Qt.CursorShape.BlankCursor)
+        file_dialog.setViewMode(QFileDialog.ViewMode.List)
         file_dialog.showFullScreen()
         file_dialog.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
         file_dialog.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
@@ -275,7 +275,7 @@ class DialogHandler:
 
     def _parse_file_dialog(self, file_dialog: QFileDialog) -> Path | None:
         """Extract the selected file/folder from the file dialog."""
-        if file_dialog.exec_() == QDialog.Accepted:  # type: ignore
+        if file_dialog.exec() == QDialog.DialogCode.Accepted:
             file_name = file_dialog.selectedFiles()[0]  # get the selected file
             # Qt will return empty string if user cancels the dialog
             if file_name:
@@ -285,14 +285,14 @@ class DialogHandler:
     def _get_folder_location(self, message: str) -> Path | None:
         """Return the selected folder."""
         file_dialog = self._generate_file_dialog(message)
-        file_dialog.setFileMode(QFileDialog.Directory)  # type: ignore
-        file_dialog.setOption(QFileDialog.ShowDirsOnly, True)  # type: ignore
+        file_dialog.setFileMode(QFileDialog.FileMode.Directory)
+        file_dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
         return self._parse_file_dialog(file_dialog)
 
     def get_file_location(self, message: str, filter_str: str) -> Path | None:
         """Return the selected file."""
         file_dialog = self._generate_file_dialog(message)
-        file_dialog.setFileMode(QFileDialog.ExistingFile)  # type: ignore
+        file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
         file_dialog.setNameFilter(filter_str)
         return self._parse_file_dialog(file_dialog)
 

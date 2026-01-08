@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import time
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable, Literal
+from typing import TYPE_CHECKING, Callable, Literal, cast
 
-from PyQt5.QtCore import QModelIndex, Qt
-from PyQt5.QtGui import QIcon, QPainter
-from PyQt5.QtWidgets import (
+from PyQt6.QtCore import QModelIndex, Qt
+from PyQt6.QtGui import QFont, QIcon, QPainter
+from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
     QComboBox,
@@ -39,8 +39,8 @@ if TYPE_CHECKING:
 
 
 class ItemDelegate(QStyledItemDelegate):
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
-        option.decorationPosition = QStyleOptionViewItem.Right
+    def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, index: QModelIndex) -> None:
+        option.decorationPosition = QStyleOptionViewItem.Position.Right
         super().paint(painter, option, index)
 
 
@@ -94,7 +94,7 @@ class DisplayController(DialogHandler):
         # use selected items because currentItem is sometimes still last and not the current one ...
         # The widget got only single select, so there is always (if there is a selection) one item
         first_selected = selected[0]
-        user_data: Cocktail | None = first_selected.data(Qt.UserRole)
+        user_data: Cocktail | None = first_selected.data(Qt.ItemDataRole.UserRole)
         if user_data:
             # If the user data is a cocktail object, return the name, else the user data
             # Usually the data should be a cocktail object, but fallback if it may set differently
@@ -108,7 +108,9 @@ class DisplayController(DialogHandler):
         list_widget_data: list[str] | list[Cocktail] = []
         for i in range(list_widget.count()):
             item = list_widget.item(i)
-            data: Cocktail | None = item.data(Qt.UserRole)  # type: ignore
+            if item is None:
+                continue
+            data: Cocktail | None = item.data(Qt.ItemDataRole.UserRole)
             if data:
                 list_widget_data.append(data)  # type: ignore
             else:
@@ -242,7 +244,7 @@ class DisplayController(DialogHandler):
     def set_display_settings(self, window_object: QWidget, resize: bool = True) -> None:
         """Check dev environment, adjust cursor and resize accordingly, if resize is wished."""
         if not cfg.UI_DEVENVIRONMENT:
-            window_object.setCursor(Qt.BlankCursor)
+            window_object.setCursor(Qt.CursorShape.BlankCursor)
         if resize:
             window_object.setFixedSize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
             window_object.resize(cfg.UI_WIDTH, cfg.UI_HEIGHT)
@@ -257,14 +259,15 @@ class DisplayController(DialogHandler):
         """Initialize the window, set according flags, sets icon and stylesheet."""
         # Respect the widget type so dialogs keep their expected modality behavior.
         if isinstance(window_object, QDialog):
-            flags = Qt.Dialog | Qt.FramelessWindowHint | Qt.CustomizeWindowHint
+            flags = Qt.WindowType.Dialog | Qt.WindowType.FramelessWindowHint | Qt.WindowType.CustomizeWindowHint
         else:
-            flags = Qt.Window | Qt.FramelessWindowHint | Qt.CustomizeWindowHint
+            flags = Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint | Qt.WindowType.CustomizeWindowHint
         if stay_on_top:
-            flags |= Qt.WindowStaysOnTopHint
+            flags |= Qt.WindowType.WindowStaysOnTopHint
         window_object.setWindowFlags(flags)
-        window_object.setAttribute(Qt.WA_DeleteOnClose)
+        window_object.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.inject_stylesheet(window_object)
+        self.force_bold_fonts(window_object)
         icon_path = str(APP_ICON_FILE)
         window_object.setWindowIcon(QIcon(icon_path))
         window_object.move(x_pos, y_pos)
@@ -274,6 +277,15 @@ class DisplayController(DialogHandler):
         style_file = f"{cfg.MAKER_THEME}.css"
         with (STYLE_FOLDER / style_file).open(encoding="utf-8") as file_handler:
             window_object.setStyleSheet(file_handler.read())
+
+    def force_bold_fonts(self, widget: QWidget) -> None:
+        font = widget.font()
+        if font.bold():
+            font.setWeight(QFont.Weight.Bold)
+            widget.setFont(font)
+        children = cast(Iterable[QWidget], widget.findChildren(QWidget))
+        for child in children:
+            self.force_bold_fonts(child)
 
     def set_tab_width(self, mainscreen: MainScreen) -> None:
         """Hack to set tabs to full screen width, inheritance, change the with to approximately match full width."""
@@ -329,7 +341,9 @@ class DisplayController(DialogHandler):
             combobox.addItem("")
         combobox.addItems(item_list)
         if sort_items:
-            combobox.model().sort(0)
+            model = combobox.model()
+            if model is not None:
+                model.sort(0)
 
     def fill_multiple_combobox(
         self,
@@ -357,7 +371,7 @@ class DisplayController(DialogHandler):
 
     def delete_single_combobox_item(self, combobox: QComboBox, item: str) -> None:
         """Delete the given item from a combobox."""
-        index = combobox.findText(item, Qt.MatchFixedString)
+        index = combobox.findText(item, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             combobox.removeItem(index)
 
@@ -384,24 +398,28 @@ class DisplayController(DialogHandler):
 
     def set_combobox_item(self, combobox: QComboBox, item: str) -> None:
         """Set the combobox to the given item."""
-        index = combobox.findText(item, Qt.MatchFixedString)
+        index = combobox.findText(item, Qt.MatchFlag.MatchFixedString)
         combobox.setCurrentIndex(index)
 
     def adjust_bottle_comboboxes(self, combobox_list: list[QComboBox], old_item: str, new_item: str) -> None:
         """Remove the old item name and add new one in given comboboxes, sorting afterwards."""
         for combobox in combobox_list:
-            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFixedString) < 0):
+            if (old_item != "") and (combobox.findText(old_item, Qt.MatchFlag.MatchFixedString) < 0):
                 combobox.addItem(old_item)
             if (new_item != "") and (new_item != combobox.currentText()):
                 self.delete_single_combobox_item(combobox, new_item)
-            combobox.model().sort(0)
+            model = combobox.model()
+            if model is not None:
+                model.sort(0)
 
     def rename_single_combobox(self, combobox: QComboBox, old_item: str, new_item: str) -> None:
         """Rename the old item to new one in given box."""
-        index = combobox.findText(old_item, Qt.MatchFixedString)
+        index = combobox.findText(old_item, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             combobox.setItemText(index, new_item)
-            combobox.model().sort(0)
+            model = combobox.model()
+            if model is not None:
+                model.sort(0)
 
     def rename_multiple_combobox(self, combobox_list: list[QComboBox], old_item: str, new_item: str) -> None:
         """Rename an item in multiple comboboxes."""
@@ -434,7 +452,9 @@ class DisplayController(DialogHandler):
             to_select = to_select.name
         for i in range(list_widget.count()):
             item = list_widget.item(i)
-            data = item.data(Qt.UserRole)  # type: ignore
+            if item is None:
+                continue
+            data = item.data(Qt.ItemDataRole.UserRole)
             item_text = item.text() if item else ""
             current_name = data.name if data else item_text
             if current_name == to_select:
@@ -443,7 +463,7 @@ class DisplayController(DialogHandler):
 
     def delete_list_widget_item(self, list_widget: QListWidget, item: str) -> None:
         """Delete an item in the list widget."""
-        index_to_delete = list_widget.findItems(item, Qt.MatchExactly)
+        index_to_delete = list_widget.findItems(item, Qt.MatchFlag.MatchExactly)
         if len(index_to_delete) > 0:
             for index in index_to_delete:
                 list_widget.takeItem(list_widget.row(index))
@@ -468,7 +488,7 @@ class DisplayController(DialogHandler):
 
         else:
             lw_item = QListWidgetItem(item_data)
-        lw_item.setData(Qt.UserRole, item_data)
+        lw_item.setData(Qt.ItemDataRole.UserRole, item_data)
         return lw_item
 
     def clear_list_widget(self, list_widget: QListWidget) -> None:
@@ -498,9 +518,11 @@ class DisplayController(DialogHandler):
         if layout is not None:
             while layout.count():
                 item = layout.takeAt(0)
+                if item is None:
+                    continue
                 widget = item.widget()
                 if widget is not None:
-                    widget.setParent(None)  # type: ignore
+                    widget.setParent(None)
                 else:
                     self.delete_items_of_layout(item.layout())
 

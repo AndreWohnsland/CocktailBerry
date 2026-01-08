@@ -3,8 +3,8 @@ from __future__ import annotations
 from itertools import cycle
 from typing import TYPE_CHECKING, Callable
 
-from PyQt5.QtCore import QObject, QThread, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtCore import QObject, QThread, pyqtSignal
+from PyQt6.QtWidgets import QMainWindow
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared

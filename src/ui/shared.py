@@ -4,7 +4,7 @@ import contextlib
 import time
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab

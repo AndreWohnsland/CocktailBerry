@@ -4,7 +4,7 @@ import subprocess
 import time
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QLineEdit, QMainWindow, qApp
+from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -35,7 +35,7 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         self.keyboard_window: KeyboardWidget | None = None
         self.button_enter.setDisabled(True)
         # Connecting elements
-        self.button_back.clicked.connect(self.close)
+        self.button_back.clicked.connect(self.close)  # pyright: ignore[reportArgumentType]
         self.button_enter.clicked.connect(self._wifi_enter_process)
         self.input_ssid.clicked.connect(lambda: self._open_keyboard(self.input_ssid))
         self.input_ssid.textChanged.connect(self._check_valid_inputs)
@@ -62,10 +62,10 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
         """Start to enter wifi, uses a spinner during progress."""
         icons = IconSetter()
         icons.set_wait_icon(self.button_enter)
-        qApp.processEvents()
+        QApplication.processEvents()
         self._enter_wifi()
         icons.remove_icon(self.button_enter)
-        qApp.processEvents()
+        QApplication.processEvents()
 
     def _enter_wifi(self) -> None:
         """Enter the wifi data into the system and check if the connection was successful."""

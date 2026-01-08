@@ -54,7 +54,7 @@ sh scripts/setup.sh
 uv run runme.py # (1)!
 ```
 
-1. you can also use python3 runme.py if you don't have uv installed, but uv is recommended.
+1. add `--extra v1` or `--extra nfc` to the `uv run` command, if you want to have v1 support or NFC support.
 
 !!! note "This Should be All"
     As long as you are on the recommended Raspberry Pi + OS, this should be all you need to execute for a complete setup.
@@ -68,21 +68,20 @@ You just need to clone the project and navigate into the folder.
 If uv is installed, just run:
 
 ```bash
-uv sync
+uv sync # add --extra v1 for v1 requirements or --extra nfc for nfc support
 ```
 
 to get all requirements.
 
-## Install PyQt5 on RaspberryPi
+## Install PyQt6 on RaspberryPi
 
-The PyQt5 installation will probably fail on your RaspberryPi. To install PyQt5 on your Pi run:
+Latest Raspberry Pi OS versions (Trixie and later) should have no issue installing PyQt6 over uv or pip
+If you still have issues try:
 
 ```bash
-sudo apt-get update
-sudo apt-get install qt5-default pyqt5-dev pyqt5-dev-tools
+sudo apt update
+sudo apt install python3-pyqt6
 ```
-
-More information can be found at [riverbank](https://riverbankcomputing.com/software/pyqt/intro).
 
 ## Development on Non-Pi Hardware
 

@@ -1,0 +1,33 @@
+services:
+  frontend:
+    container_name: cocktail-dashboard-frontend
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - 8050:80
+    depends_on:
+      - backend
+    volumes:
+      - db-data:/app/storage
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    environment:
+      - EXECUTOR=docker
+      - UI_LANGUAGE=${UI_LANGUAGE}
+  backend:
+    container_name: cocktail-dashboard-backend
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - 8080:8080
+    volumes:
+      - db-data:/app/storage
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
+volumes:
+  db-data:

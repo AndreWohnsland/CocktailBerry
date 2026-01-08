@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QDialog, QLineEdit, QWidget
+from PyQt6.QtWidgets import QDialog, QLineEdit, QWidget
 
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements.numpad import Ui_NumpadWindow

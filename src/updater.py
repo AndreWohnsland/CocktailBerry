@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 
 import requests
-from git import GitCommandError, Repo, TagReference  # type: ignore
+from git import GitCommandError, Repo, TagReference
 from requests import Response
 
 from src import FUTURE_PYTHON_VERSION
