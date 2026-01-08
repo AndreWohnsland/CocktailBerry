@@ -121,7 +121,10 @@ class Migrator:
             "2.6.1": [add_virgin_counters_to_recipes],
             "2.6.2": [lambda: self._install_pip_package("pulp", "2.6.2")],
             "2.8.0": [_combine_led_setting_into_one_config],
-            "3.0.0": [add_price_column_to_recipes],
+            "3.0.0": [
+                add_price_column_to_recipes,
+                _install_pyqt6_over_apt,  # user running bookworm need this
+            ],
         }
 
         for version, actions in version_actions.items():
@@ -353,6 +356,22 @@ def _combine_led_setting_into_one_config() -> None:
 
     with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
+
+
+def _install_pyqt6_over_apt() -> None:
+    """Check if apt is available and installs pyqt6 over apt."""
+    apt_executable = shutil.which("apt")
+    if not apt_executable:
+        _logger.info("apt not found, skipping pyqt6 installation over apt")
+        return
+    _logger.info("Installing pyqt6 over apt")
+    try:
+        subprocess.run(["sudo", apt_executable, "update"], check=True)
+        subprocess.run(["sudo", apt_executable, "install", "-y", "python3-pyqt6"], check=True)
+        _logger.info("Successfully installed pyqt6 over apt")
+    except subprocess.CalledProcessError as err:
+        _logger.error("Could not install pyqt6 using apt. Please install it manually!")
+        _logger.log_exception(err)
 
 
 class CouldNotMigrateException(Exception):

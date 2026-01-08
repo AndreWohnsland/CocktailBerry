@@ -11,20 +11,25 @@ Usually, this changes cannot be automatically migrated and need some manual step
 Other cases might need the latest OS version or python version, which you might or might not have.
 See below for migration steps for the related versions.
 
+The recommended way will always be to backup your data and do a fresh install of the latest Raspberry Pi OS.
+Install CocktailBerry from scratch and restore your backup.
+This way, you ensure that everything is working as intended and you don't run into any issues.
+
 ### V3 Update
 
 V3 introduces the NFC Payment service integration as well as the update from PyQt5 to PyQt6.
-While the NFC changes need some shell commands, the PyQt6 library needs the latest Raspberry Pi OS to work properly.
-Please ensure that you are running the Trixie version (2025) of the Raspberry Pi OS.
+While the NFC changes "just" need some shell commands, the PyQt6 library needs the latest Raspberry Pi OS to work properly out of the box.
+There is a good chance that your current setup will work due to the migrator doing it magic and you have PyQt6 after that.
+It is however not guaranteed, so if you run into any issues, please ensure that you are on the latest OS (Trixie) first.
 
-To add the nfc, please run the following commands in your terminal:
+To add the NFC, please run the following commands in your terminal:
 
 ```bash
 cd ~/CocktailBerry
 bash scripts/setup_usb_nfc.sh
 ```
 
-If you are not on the latest Raspberry Pi OS, please update your system first.
+If you are not on the latest Raspberry Pi OS, please consider updating your system first.
 The best way is to backup your data and do a fresh install of the OS.
 I personally cannot recommend upgrading an existing OS, except you know what you are doing and how to fix issues.
 
