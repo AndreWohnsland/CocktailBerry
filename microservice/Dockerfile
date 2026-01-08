@@ -1,14 +1,13 @@
 FROM python:3.13-slim-trixie
+COPY --from=ghcr.io/astral-sh/uv:0.9.22 /uv /uvx /bin/
 
-RUN mkdir /usr/src/app/
-WORKDIR /usr/src/app/
 
-COPY ./requirements.txt /usr/src/app/
-RUN pip config --user set global.extra-index-url https://www.piwheels.org/simple \
-  && python -m pip install --upgrade pip \
-  && pip install -r requirements.txt
+WORKDIR /app
+COPY pyproject.toml ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --no-install-project
 
-COPY . /usr/src/app/
+COPY . /app/
 
 EXPOSE 5000
-CMD ["python", "app.py"]
+CMD ["uv", "run", "app.py"]

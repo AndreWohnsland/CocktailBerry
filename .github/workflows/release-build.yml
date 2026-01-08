@@ -63,12 +63,12 @@ jobs:
           - dockerfile: ./microservice/Dockerfile
             image: andrewo92/cocktailberry-microservice
             context: ./microservice
-          - dockerfile: ./dashboard/backend/Dockerfile
+          - dockerfile: ./dashboard/Dockerfile.backend
             image: andrewo92/cocktailberry-dashboard-be
-            context: ./dashboard/backend
-          - dockerfile: ./dashboard/frontend/Dockerfile
+            context: ./dashboard
+          - dockerfile: ./dashboard/Dockerfile.frontend
             image: andrewo92/cocktailberry-dashboard-fe
-            context: ./dashboard/frontend
+            context: ./dashboard
     permissions:
       contents: read
       packages: write
