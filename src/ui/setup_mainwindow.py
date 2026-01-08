@@ -45,6 +45,18 @@ from src.updater import UpdateInfo, Updater
 # Search tab is at index 0, followed by tabs in Tab enum order (offset by 1)
 SEARCH_TAB_INDEX = 0
 MAKER_TAB_INDEX = Tab.MAKER + 1  # Maker is at index 1 (Tab.MAKER=0 + 1)
+INGREDIENTS_TAB_INDEX = Tab.INGREDIENTS + 1  # Ingredients is at index 2
+RECIPES_TAB_INDEX = Tab.RECIPES + 1  # Recipes is at index 3
+BOTTLES_TAB_INDEX = Tab.BOTTLES + 1  # Bottles is at index 4
+
+# Secret sequence to unlock bottle tab in restricted mode
+# Format: list of tab indices that must be clicked in order
+# Default: 2x ingredients, 2x recipes, 5x bottles
+RESTRICTED_MODE_UNLOCK_SEQUENCE = [
+    INGREDIENTS_TAB_INDEX, INGREDIENTS_TAB_INDEX,
+    RECIPES_TAB_INDEX, RECIPES_TAB_INDEX,
+    BOTTLES_TAB_INDEX, BOTTLES_TAB_INDEX, BOTTLES_TAB_INDEX, BOTTLES_TAB_INDEX, BOTTLES_TAB_INDEX
+]
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -93,6 +105,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # keep track of previous index for index changed signal,
         # we need this because the signal does not emit the previous index
         self.previous_tab_index = self.tabWidget.currentIndex()
+        # Track tab click sequence for restricted mode unlock
+        self.restricted_mode_click_sequence: list[int] = []
         # also keep a list of available cocktails for search in cocktails
         self.available_cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
         self._apply_search_to_list()
@@ -393,10 +407,36 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """Protects tabs other than maker tab with a password."""
         old_index = self.previous_tab_index
         
-        # In restricted mode, only allow search and maker tabs
+        # In restricted mode, track click sequence for secret unlock
         if shared.restricted_mode_active and index > MAKER_TAB_INDEX:
-            self.tabWidget.setCurrentIndex(old_index)
-            return
+            # Add this click to the sequence
+            self.restricted_mode_click_sequence.append(index)
+            
+            # Check if current sequence matches the beginning of unlock sequence
+            seq_len = len(self.restricted_mode_click_sequence)
+            unlock_len = len(RESTRICTED_MODE_UNLOCK_SEQUENCE)
+            
+            if seq_len <= unlock_len and self.restricted_mode_click_sequence == RESTRICTED_MODE_UNLOCK_SEQUENCE[:seq_len]:
+                # Sequence is still valid, check if complete
+                if seq_len == unlock_len:
+                    # Unlock sequence complete! Disable restricted mode
+                    shared.restricted_mode_active = False
+                    self.logger.info("Restricted mode unlocked via secret sequence")
+                    # Re-enable all tabs
+                    for i in range(self.tabWidget.count()):
+                        self.tabWidget.setTabEnabled(i, True)
+                    # Clear the sequence
+                    self.restricted_mode_click_sequence.clear()
+                    # Allow the tab switch to proceed by not returning
+                else:
+                    # Sequence in progress, prevent tab switch but don't clear
+                    self.tabWidget.setCurrentIndex(old_index)
+                    return
+            else:
+                # Wrong sequence, reset
+                self.restricted_mode_click_sequence.clear()
+                self.tabWidget.setCurrentIndex(old_index)
+                return
         
         unprotected_tabs = [SEARCH_TAB_INDEX] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 1) if not x]
         # since the search window lives in the main window now,
