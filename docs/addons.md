@@ -149,7 +149,7 @@ class Addon(AddonInterface): # (2)!
 6. Executed right before the cocktail preparation. In case of a RuntimeError, the cocktail will not be prepared and the message will be shown to the user instead.
 7. Executed right after the cocktail preparation, before other services are connected or DB is updated.
 8. This function will be run in a thread on a continuous loop. You can use the `prepare` function to trigger a cocktail preparation. It will return a boolean if the cocktail was prepared successfully and a message string holding more information. There is currently no GUI indication that this cocktail preparation was triggered.
-9. Will be used if the user navigates to the addon window and selects your addon. The container is a PyQt5 Layout widget you can (but not must) use to define custom GUI elements and connect them to functions. If you just want to have buttons executing functions, you can use the button generator function. Return False, if not implemented.
+9. Will be used if the user navigates to the addon window and selects your addon. The container is a PyQt6 Layout widget you can (but not must) use to define custom GUI elements and connect them to functions. If you just want to have buttons executing functions, you can use the button generator function. Return False, if not implemented. Currently only works in v1 of the GUI.
 
 Now that you know the skeleton, you can fill it with your program logic.
 
@@ -452,7 +452,7 @@ def build_gui(
 A more sophisticated example here uses the container object to add some text and a line edit to the GUI.
 
 ```python
-from PyQt5.QtWidgets import QVBoxLayout, QLineEdit, QLabel
+from PyQt6.QtWidgets import QVBoxLayout, QLineEdit, QLabel
 
 def build_gui(
     self,

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Self
+
 
 class Version:
     """Class to compare semantic version numbers."""
@@ -24,14 +26,16 @@ class Version:
         self.minor = minor
         self.patch = patch
 
-    def __gt__(self, __o: object, /) -> bool:
-        return (self.major, self.minor, self.patch) > (__o.major, __o.minor, __o.patch)  # type: ignore
+    def __gt__(self, __o: Self, /) -> bool:
+        return (self.major, self.minor, self.patch) > (__o.major, __o.minor, __o.patch)
 
-    def __ge__(self, __o: object, /) -> bool:
-        return (self.major, self.minor, self.patch) >= (__o.major, __o.minor, __o.patch)  # type: ignore
+    def __ge__(self, __o: Self, /) -> bool:
+        return (self.major, self.minor, self.patch) >= (__o.major, __o.minor, __o.patch)
 
     def __eq__(self, __o: object, /) -> bool:
-        return self.version == __o.version  # type: ignore
+        if not isinstance(__o, Version):
+            return False
+        return self.version == __o.version
 
     def __str__(self) -> str:
         if self.version is None:

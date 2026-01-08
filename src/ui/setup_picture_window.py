@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import Callable
 
 from PIL import Image
-from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtGui import QImage, QPixmap
+from PyQt6.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER

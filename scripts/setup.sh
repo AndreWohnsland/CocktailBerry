@@ -81,7 +81,6 @@ if [[ "$1" = "dashboard" ]]; then
   cd dashboard/ || exit
   echo -n "Enter your display language (en, de): "
   read -r language
-  # use always new dashboard (qt code is still here, but we wont be using it anymore)
   export UI_LANGUAGE=$language
   docker compose -f docker-compose.both.yaml up --build -d || echo "ERROR: Could not install dashboard over docker-compose, is docker installed?" >&2
   echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
@@ -105,10 +104,8 @@ else
     uv sync --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
   else
     echo "> Installing PyQt"
-    system_python_version=$(python -V | awk '{print $2}')
-    uv venv --system-site-packages --python "$system_python_version"
-    sudo apt-get -y install qt5-default pyqt5-dev pyqt5-dev-tools || sudo apt-get -y install python3-pyqt5 || echo "ERROR: Could not install PyQt5" >&2
-    uv sync --python "$system_python_version" --extra v1 --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
+    sudo apt-get -y install python3-pyqt6 || echo "ERROR: Could not install PyQt6" >&2
+    uv sync --extra v1 --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
   fi
   if is_raspberry_pi5; then
     sudo usermod -aG gpio "$(whoami)"

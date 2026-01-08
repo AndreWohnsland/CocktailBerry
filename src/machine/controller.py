@@ -10,7 +10,7 @@ from src.logger_handler import LoggerHandler
 
 # Only needed in v1
 with contextlib.suppress(ModuleNotFoundError):
-    from PyQt5.QtWidgets import qApp
+    from PyQt6.QtWidgets import QApplication
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
@@ -170,7 +170,7 @@ class MachineController:
                 shared.cocktail_status.progress = progress
                 if w is not None:
                     w.change_progression_window(progress)
-                    qApp.processEvents()
+                    QApplication.processEvents()
 
             progress_string = _generate_progress(current_time, max_time)
             self._stop_pumps(pins, progress_string)

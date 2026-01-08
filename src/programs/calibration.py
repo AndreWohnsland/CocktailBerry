@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from PyQt5.QtWidgets import QMainWindow, QWidget
+from PyQt6.QtWidgets import QMainWindow, QWidget
 
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DatabaseCommander

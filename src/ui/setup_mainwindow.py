@@ -8,9 +8,9 @@ import os
 import platform
 from typing import Any, Optional
 
-from PyQt5.QtCore import QEventLoop
-from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QLineEdit, QMainWindow
+from PyQt6.QtCore import QEventLoop
+from PyQt6.QtGui import QIntValidator
+from PyQt6.QtWidgets import QLineEdit, QMainWindow
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import CONFIG as cfg
@@ -231,7 +231,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # this is needed to block the further execution until the selection is done
         # otherwise, the cocktail will be done before the team is selected
         self.team_window.selection_done.connect(wait_for_selection)
-        loop.exec_()
+        loop.exec()
 
     def open_option_window(self) -> None:
         """Open up the options."""

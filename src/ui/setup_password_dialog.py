@@ -1,7 +1,7 @@
 from typing import Literal
 
-from PyQt5.QtCore import QEventLoop
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtCore import QEventLoop
+from PyQt6.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -65,5 +65,5 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
         self._loop = QEventLoop()
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
-        self._loop.exec_()
+        self._loop.exec()
         return self._result

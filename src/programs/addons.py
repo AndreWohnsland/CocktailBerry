@@ -22,7 +22,7 @@ from src.logger_handler import LoggerHandler
 from src.models import AddonData, Cocktail
 
 with contextlib.suppress(ModuleNotFoundError):
-    from PyQt5.QtWidgets import QVBoxLayout
+    from PyQt6.QtWidgets import QVBoxLayout
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen

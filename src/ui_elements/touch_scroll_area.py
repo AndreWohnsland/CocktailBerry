@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QScrollArea
-from PyQt5.QtGui import QMouseEvent
+from PyQt6.QtGui import QMouseEvent
+from PyQt6.QtWidgets import QScrollArea
+
 from .clickable_label import MAX_SCROLL_DISTANCE
 
 # Adjust scrolling speed here

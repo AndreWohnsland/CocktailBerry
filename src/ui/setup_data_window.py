@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from PyQt5.QtWidgets import QGridLayout, QMainWindow
+from PyQt6.QtWidgets import QGridLayout, QMainWindow
 
 from src.data_utils import ALL_TIME, SINCE_RESET, generate_consume_data
 from src.database_commander import DB_COMMANDER as DBC

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER

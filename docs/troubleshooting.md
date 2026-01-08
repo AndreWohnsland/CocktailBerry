@@ -4,6 +4,30 @@ If you run into any problems, check here first for a solution.
 Please ensure that you are running the latest 64 bit Raspberry Pi OS and CocktailBerry version.
 If you don't find any solution here, you can [open a ticket](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose).
 
+## Major Version Updates
+
+If a breaking change is introduced, a major version update is released (e.g. v2.9.0 to v3.0.0).
+Usually, this changes cannot be automatically migrated and need some manual steps.
+Other cases might need the latest OS version or python version, which you might or might not have.
+See below for migration steps for the related versions.
+
+### V3 Update
+
+V3 introduces the NFC Payment service integration as well as the update from PyQt5 to PyQt6.
+While the NFC changes need some shell commands, the PyQt6 library needs the latest Raspberry Pi OS to work properly.
+Please ensure that you are running the Trixie version (2025) of the Raspberry Pi OS.
+
+To add the nfc, please run the following commands in your terminal:
+
+```bash
+cd ~/CocktailBerry
+bash scripts/setup_usb_nfc.sh
+```
+
+If you are not on the latest Raspberry Pi OS, please update your system first.
+The best way is to backup your data and do a fresh install of the OS.
+I personally cannot recommend upgrading an existing OS, except you know what you are doing and how to fix issues.
+
 ## Problems while Running the Program
 
 All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled, and an info message should be displayed.
@@ -304,13 +328,8 @@ The Raspberry Pi can sometimes differ from other machines in terms of installati
 
 ### PyQt can't be Installed
 
-You probably need to run `sudo apt install python3-pyqt5` instead of `pip install pyqt5` on the Pi.
-
-### Numpy Import Error at Matplotlib Import
-
-Try first running `pip3 install -U numpy` and `sudo apt install libatlas3-base`.
-If it is still not fixed, try uninstalling and installing numpy / matplotlib again.
-If really nothing else works, try `sudo pip3 install -U numpy`, then you will probably need to run the python file with root privilege as well, which may result in another GUI style used by the system.
+You probably need to run `sudo apt install python3-pyqt6` on the Pi.
+This should usually not be an issue anymore when using uv and Trixie Raspberry Pi OS or later.
 
 ### How to get the GUI Running on Startup
 

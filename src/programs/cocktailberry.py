@@ -1,7 +1,7 @@
 import sys
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication
 
 from src.error_handler import logerror
 from src.logger_handler import LoggerHandler
@@ -13,7 +13,7 @@ _logger = LoggerHandler("cocktailberry")
 @logerror
 def run_cocktailberry() -> None:
     """Execute the cocktail program."""
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)  # type: ignore
+    QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QApplication([])
     MainScreen()
     qt_code = app.exec()

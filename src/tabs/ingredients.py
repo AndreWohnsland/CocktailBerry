@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QListWidget
+from PyQt6.QtWidgets import QListWidget
 
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER, DatabaseTransactionError

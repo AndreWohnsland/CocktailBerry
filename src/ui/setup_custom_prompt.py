@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QEventLoop
-from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtCore import QEventLoop
+from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -41,7 +41,7 @@ class CustomPrompt(QMainWindow, Ui_CustomPrompt):
         self.destroyed.connect(self._loop.quit)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
-        self._loop.exec_()
+        self._loop.exec()
         return self._result
 
     def closeEvent(self, event: QCloseEvent) -> None:

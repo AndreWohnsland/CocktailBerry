@@ -1,8 +1,8 @@
 from typing import Callable, Optional
 
-from PyQt5.QtCore import QObject, QSize, Qt, QThread
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QGridLayout, QLabel, QProgressBar, QPushButton, QSizePolicy, QSpacerItem, QWidget
+from PyQt6.QtCore import QObject, QSize, Qt, QThread
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QGridLayout, QLabel, QProgressBar, QPushButton, QSizePolicy, QSpacerItem, QWidget
 
 from src.ui.icons import IconSetter
 
@@ -28,7 +28,7 @@ def adjust_font(element: QWidget, font_size: int, bold: bool = False) -> None:
     font = QFont()
     font.setPointSize(font_size)
     font.setBold(bold)
-    weight = 75 if bold else 50
+    weight = font.Weight.Bold if bold else font.Weight.Normal
     font.setWeight(weight)
     element.setFont(font)
 
@@ -49,8 +49,8 @@ def set_strike_through(element: QWidget, strike_through: bool) -> None:
 
 def create_spacer(height: int, width: int = 20, expand: bool = False) -> QSpacerItem:
     """Create a spacer of given height and optional width."""
-    policy = QSizePolicy.Expanding if expand else QSizePolicy.Fixed  # type: ignore
-    return QSpacerItem(width, height, QSizePolicy.Minimum, policy)  # type: ignore
+    policy = QSizePolicy.Policy.Expanding if expand else QSizePolicy.Policy.Fixed
+    return QSpacerItem(width, height, QSizePolicy.Policy.Minimum, policy)
 
 
 def create_button(
@@ -91,7 +91,7 @@ def create_label(
     label.setMinimumSize(QSize(min_w, min_h))
     adjust_font(label, font_size, bold)
     if centered:
-        label.setAlignment(Qt.AlignCenter)  # type: ignore
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
     if css_class is not None:
         label.setProperty("cssClass", css_class)
     if word_wrap:
@@ -114,12 +114,12 @@ def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable
     _thread.started.connect(worker.run)  # type: ignore
     worker.done.connect(_thread.quit)  # type: ignore
     worker.done.connect(worker.deleteLater)  # type: ignore
-    _thread.finished.connect(_thread.deleteLater)  # type: ignore[attr-defined]
+    _thread.finished.connect(_thread.deleteLater)
 
     # Start the thread, connect to the finish function
     _thread.start()
-    _thread.finished.connect(after_finish)  # type: ignore[attr-defined]
-    _thread.finished.connect(icons.stop_spinner)  # type: ignore[attr-defined]
+    _thread.finished.connect(after_finish)
+    _thread.finished.connect(icons.stop_spinner)
 
     return _thread
 

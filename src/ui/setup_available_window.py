@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QListWidget, QMainWindow
+from PyQt6.QtWidgets import QListWidget, QMainWindow
 
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE

@@ -103,7 +103,7 @@ Now you can [Set Up](https://cocktailberry.readthedocs.io/setup/#setting-up-the-
 
 # Interface
 
-The interface was programmed with PyQt5 (v1) for the users to easily interact with CocktailBerry and enter new ingredients/recipes.
+The interface was programmed with PyQt6 (v1) for the users to easily interact with CocktailBerry and enter new ingredients/recipes.
 There are different views for the tasks.
 
 The Maker GUI:

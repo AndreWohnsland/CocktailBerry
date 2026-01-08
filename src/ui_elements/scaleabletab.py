@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QTabWidget, QTabBar
+from PyQt6.QtCore import QSize
+from PyQt6.QtWidgets import QTabBar, QTabWidget
 
 
 class ScaleableTabBar(QTabBar):
