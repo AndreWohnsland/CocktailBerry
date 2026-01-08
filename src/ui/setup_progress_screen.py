@@ -30,6 +30,6 @@ class ProgressScreen(QMainWindow, Ui_Progressbarwindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def closeEvent(self, event: QCloseEvent) -> None:
+    def closeEvent(self, event: QCloseEvent | None) -> None:
         interrupt_cocktail()
         super().closeEvent(event)

@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
 
 class ItemDelegate(QStyledItemDelegate):
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
+    def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, index: QModelIndex) -> None:
         option.decorationPosition = QStyleOptionViewItem.Position.Right
         super().paint(painter, option, index)
 
@@ -108,6 +108,8 @@ class DisplayController(DialogHandler):
         list_widget_data: list[str] | list[Cocktail] = []
         for i in range(list_widget.count()):
             item = list_widget.item(i)
+            if item is None:
+                continue
             data: Cocktail | None = item.data(Qt.ItemDataRole.UserRole)
             if data:
                 list_widget_data.append(data)  # type: ignore
@@ -339,7 +341,9 @@ class DisplayController(DialogHandler):
             combobox.addItem("")
         combobox.addItems(item_list)
         if sort_items:
-            combobox.model().sort(0)
+            model = combobox.model()
+            if model is not None:
+                model.sort(0)
 
     def fill_multiple_combobox(
         self,
@@ -404,14 +408,18 @@ class DisplayController(DialogHandler):
                 combobox.addItem(old_item)
             if (new_item != "") and (new_item != combobox.currentText()):
                 self.delete_single_combobox_item(combobox, new_item)
-            combobox.model().sort(0)
+            model = combobox.model()
+            if model is not None:
+                model.sort(0)
 
     def rename_single_combobox(self, combobox: QComboBox, old_item: str, new_item: str) -> None:
         """Rename the old item to new one in given box."""
         index = combobox.findText(old_item, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             combobox.setItemText(index, new_item)
-            combobox.model().sort(0)
+            model = combobox.model()
+            if model is not None:
+                model.sort(0)
 
     def rename_multiple_combobox(self, combobox_list: list[QComboBox], old_item: str, new_item: str) -> None:
         """Rename an item in multiple comboboxes."""
@@ -444,6 +452,8 @@ class DisplayController(DialogHandler):
             to_select = to_select.name
         for i in range(list_widget.count()):
             item = list_widget.item(i)
+            if item is None:
+                continue
             data = item.data(Qt.ItemDataRole.UserRole)
             item_text = item.text() if item else ""
             current_name = data.name if data else item_text
@@ -508,9 +518,11 @@ class DisplayController(DialogHandler):
         if layout is not None:
             while layout.count():
                 item = layout.takeAt(0)
+                if item is None:
+                    continue
                 widget = item.widget()
                 if widget is not None:
-                    widget.setParent(None)  # type: ignore
+                    widget.setParent(None)
                 else:
                     self.delete_items_of_layout(item.layout())
 

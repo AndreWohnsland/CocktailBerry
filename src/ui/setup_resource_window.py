@@ -90,6 +90,9 @@ class ResourceWindow(QMainWindow, Ui_ResourceWindow):
         if self.grid is None:
             return
         for i in reversed(range(self.grid.count())):
-            widget = self.grid.itemAt(i).widget()
+            item = self.grid.itemAt(i)
+            if item is None:
+                continue
+            widget = item.widget()
             self.grid.removeWidget(widget)
         self.grid.deleteLater()

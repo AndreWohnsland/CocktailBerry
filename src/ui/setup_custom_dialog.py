@@ -60,7 +60,7 @@ class CustomDialog(QMainWindow, Ui_CustomDialog):
         loop.exec()
         return True
 
-    def closeEvent(self, event: QCloseEvent) -> None:
+    def closeEvent(self, event: QCloseEvent | None) -> None:
         if self._timer and self._timer.isActive():
             self._timer.stop()
         super().closeEvent(event)

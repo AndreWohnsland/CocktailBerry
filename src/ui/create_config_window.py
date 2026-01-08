@@ -279,6 +279,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             """Recursively delete all children of the given widget."""
             for i in reversed(range(widget.count())):
                 found_element = widget.itemAt(i)
+                if found_element is None:
+                    continue
                 found_widget = found_element.widget()
                 if found_widget is not None:
                     found_widget.setParent(None)  # type: ignore
