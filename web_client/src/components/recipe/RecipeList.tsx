@@ -13,6 +13,7 @@ import {
   useCocktails,
 } from '../../api/cocktails';
 import { useIngredients } from '../../api/ingredients';
+import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
 import { Cocktail, CocktailInput } from '../../types/models';
 import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
 import CloseButton from '../common/CloseButton';
@@ -28,6 +29,7 @@ const RecipeList: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState<string | null>(null);
   const { t } = useTranslation();
+  const { restrictedModeActive } = useRestrictedMode();
 
   if (isLoading || ingredientsLoading) return <LoadingData />;
   if (error || ingredientsError) return <ErrorComponent text={error?.message ?? ingredientsError?.message} />;
@@ -181,7 +183,7 @@ const RecipeList: React.FC = () => {
 
   return (
     <div className='p-2 pt-0 w-full max-w-3xl'>
-      <SearchBar search={search} setSearch={setSearch}></SearchBar>
+      <SearchBar search={search} tabBarVisible={!restrictedModeActive} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full flex flex-row gap-4'>
           <TileButton

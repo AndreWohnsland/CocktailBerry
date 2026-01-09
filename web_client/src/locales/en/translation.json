@@ -198,5 +198,11 @@
   "userDisplay": {
     "noUser": "No NFC",
     "userBalance": "{{balance}} €"
+  },
+  "restrictedMode": {
+    "title": "Restricted Mode",
+    "message": "Do you want to enable restricted mode? Only the cocktail maker will be accessible. You can still access configuration with the master password.",
+    "accept": "Enable Restricted Mode",
+    "decline": "Use Full Access"
   }
 }

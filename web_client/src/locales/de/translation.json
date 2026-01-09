@@ -198,5 +198,11 @@
   "userDisplay": {
     "noUser": "Kein NFC",
     "userBalance": "{{balance}} €"
+  },
+  "restrictedMode": {
+    "title": "Eingeschränkter Modus",
+    "message": "Möchten Sie den eingeschränkten Modus aktivieren? Nur der Cocktail-Maker wird zugänglich sein. Sie können weiterhin mit dem Master-Passwort auf die Konfiguration zugreifen.",
+    "accept": "Eingeschränkten Modus aktivieren",
+    "decline": "Vollzugriff verwenden"
   }
 }

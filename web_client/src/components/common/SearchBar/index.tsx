@@ -5,12 +5,19 @@ import { FaEraser, FaSearch } from 'react-icons/fa';
 interface SearchBarProps {
   search: string | null;
   setSearch: (value: string | null) => void;
+  tabBarVisible: boolean;
   afterInput?: React.ReactNode;
   initiallyOpen?: boolean;
 }
 // note: the internal search should never be null, but we communicate to external component with null
 // if the search is hidden. This is to know externally if the search is shown or not, and should be applied.
-const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput, initiallyOpen = false }) => {
+const SearchBar: React.FC<SearchBarProps> = ({
+  search,
+  setSearch,
+  tabBarVisible,
+  afterInput,
+  initiallyOpen = false,
+}) => {
   const [savedSearch, setSavedSearch] = React.useState<string>(search ?? '');
   const [showSearch, setShowSearch] = React.useState(initiallyOpen);
   const { t } = useTranslation();
@@ -27,7 +34,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch, afterInput, in
   };
 
   return (
-    <div className='sticky-top mb-2 flex flex-row'>
+    <div className={`z-10 sticky mb-2 flex flex-row ${tabBarVisible ? 'top-10' : 'top-1'}`}>
       <div className='flex-grow'></div>
       <input
         type='text'

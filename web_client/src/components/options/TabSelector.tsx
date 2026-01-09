@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
 import { OPTIONTABS } from '../../utils';
 
 interface TabSelectorProps {
@@ -13,8 +14,14 @@ const createClass = (isActive: boolean) => {
 };
 
 const TabSelector: React.FC<TabSelectorProps> = ({ selectedTab, onSelectTab }) => {
+  const { restrictedModeActive } = useRestrictedMode();
+
   return (
-    <div className='flex flex-row fixed top-9 py-2 bg-background z-9 w-full items-center justify-center overflow-auto'>
+    <div
+      className={`flex flex-row fixed py-2 bg-background z-9 w-full items-center justify-center overflow-auto ${
+        restrictedModeActive ? 'top-0' : 'top-9'
+      }`}
+    >
       {OPTIONTABS.map((tab) => (
         <button key={tab} onClick={() => onSelectTab(tab)} className={createClass(selectedTab === tab)}>
           {tab}

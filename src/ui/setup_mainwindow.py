@@ -8,13 +8,14 @@ import os
 import platform
 from typing import Any, Optional
 
-from PyQt6.QtCore import QEventLoop
-from PyQt6.QtGui import QIntValidator
+from PyQt6.QtCore import QEvent, QEventLoop, QObject
+from PyQt6.QtGui import QIntValidator, QMouseEvent
 from PyQt6.QtWidgets import QLineEdit, QMainWindow
+from zmq import IntEnum
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import Tab
+from src.config.config_manager import Tab, shared
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER, ItemDelegate
@@ -42,10 +43,33 @@ from src.ui_elements import Ui_MainWindow
 from src.updater import UpdateInfo, Updater
 
 
+class TabIndex(IntEnum):
+    """Enum for the tab indices."""
+
+    SEARCH = 0
+    MAKER = 1
+    INGREDIENTS = 2
+    RECIPES = 3
+    BOTTLES = 4
+
+
+RESTRICTED_MODE_UNLOCK_SEQUENCE = [
+    TabIndex.INGREDIENTS,
+    TabIndex.INGREDIENTS,
+    TabIndex.RECIPES,
+    TabIndex.RECIPES,
+    TabIndex.BOTTLES,
+    TabIndex.BOTTLES,
+    TabIndex.BOTTLES,
+    TabIndex.BOTTLES,
+    TabIndex.BOTTLES,
+]
+
+
 class MainScreen(QMainWindow, Ui_MainWindow):
     """Creates the Mainscreen."""
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:  # noqa: PLR0915
         """Init the main window. Many of the button and List connects are in pass_setup."""
         super().__init__()
         self.setupUi(self)
@@ -108,6 +132,16 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.update_check()
         self._deprecation_check()
         self._connection_check()
+
+        # Check for restricted mode if UI_ONLY_MAKER_TAB is enabled
+        self.restricted_mode_click_sequence: list[int] = []
+        if cfg.UI_ONLY_MAKER_TAB:
+            shared.restricted_mode_active = DP_CONTROLLER.ask_restricted_mode()
+            if shared.restricted_mode_active:
+                self._apply_restricted_mode()
+                # Install event filter on tab bar to detect clicks on disabled tabs
+                self.tabWidget.tabBar().installEventFilter(self)  # pyright: ignore[reportOptionalMemberAccess]
+
         ADDONS.start_trigger_loop(self)
         # start at the cocktail list view
         self.switch_to_cocktail_list()
@@ -143,6 +177,48 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             DP_CONTROLLER.say_python_deprecated(
                 platform.python_version(), f"{FUTURE_PYTHON_VERSION[0]}.{FUTURE_PYTHON_VERSION[1]}"
             )
+
+    def _apply_restricted_mode(self) -> None:
+        """Apply restricted mode by hiding all tabs except search and maker."""
+        for i in [TabIndex.SEARCH, TabIndex.INGREDIENTS, TabIndex.RECIPES, TabIndex.BOTTLES]:
+            self.tabWidget.setTabEnabled(i, False)
+        self.tabWidget.setCurrentIndex(TabIndex.MAKER)
+
+    def eventFilter(self, obj: QObject | None, event: QEvent | None) -> bool:
+        """Event filter to detect clicks on disabled tabs for restricted mode unlock."""
+        # Early exit for non-mouse events (most common case)
+        if event is None or event.type() != QEvent.Type.MouseButtonPress:
+            return super().eventFilter(obj, event)
+        if not shared.restricted_mode_active or obj != self.tabWidget.tabBar():
+            return super().eventFilter(obj, event)
+        mouse_event: QMouseEvent = event  # type: ignore
+        tab_index = self.tabWidget.tabBar().tabAt(mouse_event.pos())  # pyright: ignore[reportOptionalMemberAccess]
+        if tab_index < 0:
+            return super().eventFilter(obj, event)
+        self._handle_restricted_mode_click(tab_index)
+        return super().eventFilter(obj, event)
+
+    def _handle_restricted_mode_click(self, index: int) -> None:
+        """Handle click on disabled tab for restricted mode unlock sequence."""
+        self.restricted_mode_click_sequence.append(index)
+        is_valid_prefix = (
+            self.restricted_mode_click_sequence
+            == RESTRICTED_MODE_UNLOCK_SEQUENCE[: len(self.restricted_mode_click_sequence)]
+        )
+        if not is_valid_prefix:
+            self.restricted_mode_click_sequence.clear()
+            return
+        if self.restricted_mode_click_sequence != RESTRICTED_MODE_UNLOCK_SEQUENCE:
+            return
+        # Unlock sequence completed - disable restricted mode
+        self.logger.info("Restricted mode unlocked via secret sequence")
+        self.restricted_mode_click_sequence.clear()
+        shared.restricted_mode_active = False
+        # Re-enable all tabs
+        for i in range(self.tabWidget.count()):
+            self.tabWidget.setTabEnabled(i, True)
+        # Remove the event filter since it's no longer needed
+        self.tabWidget.tabBar().removeEventFilter(self)  # pyright: ignore[reportOptionalMemberAccess]
 
     def open_cocktail_detail(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
@@ -368,10 +444,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def handle_tab_bar_clicked(self, index: int) -> None:
         """Protects tabs other than maker tab with a password."""
         old_index = self.previous_tab_index
-        unprotected_tabs = [0] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 1) if not x]
+        unprotected_tabs = [TabIndex.SEARCH] + [i for i, x in enumerate(cfg.UI_LOCKED_TABS, 1) if not x]
         # since the search window lives in the main window now,
         # switching to it needs to get the current available cocktails
-        if index == 0:
+        if index == TabIndex.SEARCH:
             self.available_cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
             self._apply_search_to_list()
         if index in unprotected_tabs:

@@ -41,6 +41,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | `UI_WIDTH`          | Desired interface width, default is 800                               |
     | `UI_HEIGHT`         | Desired interface height, default is 480                              |
     | `UI_PICTURE_SIZE`   | Approximate displayed picture size                                    |
+    | `UI_ONLY_MAKER_TAB` | Only allow access to the maker tab                                    |
     | `MAKER_THEME`       | Choose which [theme](#themes) to use                                  |
 
 ??? info "List Maker Config Values"
@@ -100,7 +101,6 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | `PAYMENT_TIMEOUT_S`                | Timeout in seconds before reader cancels payment NFC/RFID scan |
     | `PAYMENT_AUTO_LOGOUT_TIME_S`       | Time in seconds until automatic logout of user from payment    |
     | `PAYMENT_LOGOUT_AFTER_PREPARATION` | Remove user for filtering cocktail view after preparation      |
-    | `PAYMENT_ONLY_MAKER_TAB`           | Only allow access to the maker tab when payment is active      |
 
 ??? info "List Other Config Values"
     Here are some other config values, which are not fitting in the other categories.
