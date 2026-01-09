@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: Some functions are quite generic wrapper and take almost anything */
 import { toast } from 'react-toastify';
 import type { Cocktail, IssueData } from './types/models';
 
@@ -31,7 +30,7 @@ export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
   return { ...cocktail, alcohol: Math.round(newAlcoholPercent), ingredients };
 };
 
-export const confirmAndExecute = async (message: string, executable: () => Promise<any>): Promise<boolean> => {
+export const confirmAndExecute = async (message: string, executable: () => Promise<unknown>): Promise<boolean> => {
   const confirmation = globalThis.window.confirm(message);
   if (confirmation) {
     return executeAndShow(executable);
@@ -40,15 +39,16 @@ export const confirmAndExecute = async (message: string, executable: () => Promi
   }
 };
 
-const extractErrorMessage = (error: any): string => {
-  let errorMessage = error?.response?.data?.detail ?? error?.detail ?? error.message ?? error ?? 'An error occurred';
+const extractErrorMessage = (error: unknown): string => {
+  const err = error as { response?: { data?: { detail?: string } }; detail?: string; message?: string };
+  let errorMessage = err?.response?.data?.detail ?? err?.detail ?? err?.message ?? error ?? 'An error occurred';
   if (typeof errorMessage === 'object') {
     errorMessage = JSON.stringify(errorMessage);
   }
-  return errorMessage;
+  return String(errorMessage);
 };
 
-export const errorToast = (error: any, prefix?: string) => {
+export const errorToast = (error: unknown, prefix?: string) => {
   const errorMessage = extractErrorMessage(error);
   const randomNumber = Math.floor(100000 + Math.random() * 900000);
   const prefixMessage = prefix ? `${prefix}: ` : '';
@@ -58,7 +58,7 @@ export const errorToast = (error: any, prefix?: string) => {
   });
 };
 
-export const executeAndShow = async (executable: () => Promise<any>): Promise<boolean> => {
+export const executeAndShow = async (executable: () => Promise<unknown>): Promise<boolean> => {
   let info = '';
   const toastId = 'execute-show-info';
   let success = false;
@@ -66,7 +66,8 @@ export const executeAndShow = async (executable: () => Promise<any>): Promise<bo
   const randomNumber = Math.floor(100000 + Math.random() * 900000);
   await executable()
     .then((result) => {
-      info = result?.message ?? result;
+      const res = result as { message?: string };
+      info = res?.message ?? String(result);
       success = true;
     })
     .catch((error) => {

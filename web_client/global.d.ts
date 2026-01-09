@@ -9,7 +9,7 @@ interface FilePickerOptions {
   types?: FilePickerAcceptType[];
 }
 
-interface OpenFilePickerOptions extends FilePickerOptions {}
+type OpenFilePickerOptions = FilePickerOptions;
 
 interface SaveFilePickerOptions extends FilePickerOptions {
   suggestedName?: string;

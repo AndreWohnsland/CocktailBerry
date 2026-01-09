@@ -34,6 +34,7 @@ const ConfigWindow: React.FC = () => {
   const { refetchConfig, changeTheme } = useConfigProvider();
   const { t } = useTranslation();
 
+  // Sync configData when data from API changes - this is intentional external state sync
   useEffect(() => {
     if (data) {
       // need to extract ConfigDataWithUiInfo to ConfigData (extract key: {value: value} to key: value)
@@ -44,6 +45,7 @@ const ConfigWindow: React.FC = () => {
         }
         extractedData[key] = data[key].value;
       });
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: syncing local editable state with fetched API data
       setConfigData(extractedData);
     }
   }, [data]);
@@ -230,8 +232,7 @@ const ConfigWindow: React.FC = () => {
   const handleRemoveItem = (key: string, index: number) => {
     setConfigData((prevData) => {
       const updatedArray = Array.isArray(prevData[key])
-        ? // biome-ignore lint/suspicious/noExplicitAny: config is special, we can have many types here
-          prevData[key].filter((_: any, i: number) => i !== index)
+        ? (prevData[key] as PossibleConfigValueTypes[]).filter((_, i: number) => i !== index)
         : prevData[key];
       return {
         ...prevData,

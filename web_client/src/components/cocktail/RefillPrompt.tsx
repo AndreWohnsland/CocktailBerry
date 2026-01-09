@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaWineBottle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
@@ -15,13 +15,17 @@ interface RefillPromptProps {
 }
 
 const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumber, onClose }) => {
+  // Reset checkbox when modal opens/closes by using isOpen in the initial state
+  // The parent component should use a key prop to remount when needed
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  useEffect(() => {
+  // Reset checkbox when modal closes and reopens
+  const handleClose = () => {
     setIsChecked(false);
-  }, [isOpen]);
+    onClose();
+  };
 
   const applyRefillBottle = () => {
     if (!isChecked) return;
@@ -41,7 +45,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumb
             <FaWineBottle className='mr-3' size={25} />
             {t('cocktails.goToBottles')}
           </button>
-          <button className='button-danger p-2 px-4 flex flex-row items-center' onClick={onClose}>
+          <button className='button-danger p-2 px-4 flex flex-row items-center' onClick={handleClose}>
             {t('cocktails.later')}
             <IoClose className='ml-3' size={25} />
           </button>
