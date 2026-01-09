@@ -5,6 +5,7 @@ import { FaPen, FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { IoHandLeft } from 'react-icons/io5';
 import Modal from 'react-modal';
 import { deleteIngredient, postIngredient, updateIngredient, useIngredients } from '../../api/ingredients';
+import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
 import { Ingredient, IngredientInput } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import CloseButton from '../common/CloseButton';
@@ -18,6 +19,7 @@ const IngredientList: React.FC = () => {
   const [selectedIngredient, setSelectedIngredient] = useState<IngredientInput | null>(null);
   const [search, setSearch] = useState<string | null>(null);
   const { t } = useTranslation();
+  const { restrictedModeActive } = useRestrictedMode();
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
@@ -106,7 +108,7 @@ const IngredientList: React.FC = () => {
 
   return (
     <div className='p-2 pt-0 w-full max-w-3xl'>
-      <SearchBar search={search} setSearch={setSearch}></SearchBar>
+      <SearchBar search={search} tabBarVisible={!restrictedModeActive} setSearch={setSearch}></SearchBar>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <div className='col-span-2 md:col-span-3 w-full'>
           <TileButton

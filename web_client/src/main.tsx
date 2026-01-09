@@ -9,6 +9,7 @@ import './index.css';
 import { AuthProvider } from './providers/AuthProvider.tsx';
 import { ConfigProvider } from './providers/ConfigProvider.tsx';
 import { CustomColorProvider } from './providers/CustomColorProvider.tsx';
+import { RestrictedModeProvider } from './providers/RestrictedModeProvider.tsx';
 
 const queryClient = new QueryClient();
 
@@ -18,9 +19,11 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ConfigProvider>
           <CustomColorProvider>
-            <AuthProvider>
-              <App />
-            </AuthProvider>
+            <RestrictedModeProvider>
+              <AuthProvider>
+                <App />
+              </AuthProvider>
+            </RestrictedModeProvider>
           </CustomColorProvider>
         </ConfigProvider>
         {import.meta.env.VITE_APP_DEV === 'true' && <ReactQueryDevtools initialIsOpen={false} />}

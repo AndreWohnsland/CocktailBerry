@@ -77,6 +77,7 @@ class ConfigManager:
     UI_WIDTH: int = 800
     UI_HEIGHT: int = 480
     UI_PICTURE_SIZE: int = 240
+    UI_ONLY_MAKER_TAB: bool = False
     PUMP_CONFIG: ClassVar[list[PumpConfig]] = [
         PumpConfig(pin, flow, 0) for pin, flow in zip(_default_pins, _default_volume_flow)
     ]
@@ -138,7 +139,6 @@ class ConfigManager:
     PAYMENT_TIMEOUT_S: int = 20
     PAYMENT_AUTO_LOGOUT_TIME_S: int = 60
     PAYMENT_LOGOUT_AFTER_PREPARATION: bool = True
-    PAYMENT_ONLY_MAKER_TAB: bool = False
     # Custom theme settings
     CUSTOM_COLOR_PRIMARY: str = "#007bff"
     CUSTOM_COLOR_SECONDARY: str = "#ef9700"
@@ -169,6 +169,7 @@ class ConfigManager:
             "UI_WIDTH": IntType([build_number_limiter(1, 10000)]),
             "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": IntType([build_number_limiter(100, 1000)]),
+            "UI_ONLY_MAKER_TAB": BoolType(check_name="Only Maker Tab Accessible"),
             "PUMP_CONFIG": ListType(
                 DictType(
                     {
@@ -239,7 +240,6 @@ class ConfigManager:
             "PAYMENT_TIMEOUT_S": IntType([build_number_limiter(0, 100)], suffix="s"),
             "PAYMENT_AUTO_LOGOUT_TIME_S": IntType([build_number_limiter(0, 1000000000)], suffix="s"),
             "PAYMENT_LOGOUT_AFTER_PREPARATION": BoolType(check_name="Logout After Preparation"),
-            "PAYMENT_ONLY_MAKER_TAB": BoolType(check_name="Only Maker Tab Accessible"),
             "CUSTOM_COLOR_PRIMARY": StringType(),
             "CUSTOM_COLOR_SECONDARY": StringType(),
             "CUSTOM_COLOR_NEUTRAL": StringType(),
@@ -453,6 +453,7 @@ class Shared:
         self.team_member_name: str | None = None
         self.alcohol_factor: float = 1.0
         self.is_v1 = False
+        self.restricted_mode_active = False
         self.cocktail_status = CocktailStatus()
         # those are used to display once the message after startup if there are some issues
         self.startup_need_time_adjustment = StartupIssue()

@@ -177,7 +177,6 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 .sticky-top {
   position: sticky;
-  top: 2.5rem;
   z-index: 10;
 }
 

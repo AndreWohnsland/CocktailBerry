@@ -1,14 +1,20 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
+import { useRestrictedMode } from '../providers/RestrictedModeProvider';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
+  const { restrictedModeActive } = useRestrictedMode();
   const getNavLinkClass = (isActive: boolean) => {
     const baseClass = 'nav-link px-2 flex items-center border-2 font-semibold';
     const activeClass = 'text-background bg-secondary border-secondary rounded-full';
     return isActive ? `${baseClass} ${activeClass}` : `${baseClass} border-transparent`;
   };
+
+  if (restrictedModeActive) {
+    return null;
+  }
 
   return (
     <header className='fixed top-0 left-0 right-0 bg-background shadow-sm shadow-neutral z-10'>

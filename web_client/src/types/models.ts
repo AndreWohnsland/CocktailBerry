@@ -115,6 +115,7 @@ export interface DefinedConfigData {
   UI_WIDTH: number;
   UI_HEIGHT: number;
   UI_PICTURE_SIZE: number;
+  UI_ONLY_MAKER_TAB: boolean;
   PUMP_CONFIG: PumpConfig[];
   MAKER_NAME: string;
   MAKER_NUMBER_BOTTLES: number;
@@ -153,6 +154,7 @@ export interface DefinedConfigData {
   PAYMENT_SECRET_KEY: string;
   PAYMENT_TIMEOUT_S: number;
   PAYMENT_AUTO_LOGOUT_TIME_S: number;
+  PAYMENT_LOGOUT_AFTER_PREPARATION: boolean;
   CUSTOM_COLOR_PRIMARY: string;
   CUSTOM_COLOR_SECONDARY: string;
   CUSTOM_COLOR_NEUTRAL: string;

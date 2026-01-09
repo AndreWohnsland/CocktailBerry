@@ -6,6 +6,7 @@ import { useCocktails } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
 import { usePaymentWebSocket } from '../../api/payment';
 import { useConfig } from '../../providers/ConfigProvider';
+import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
 import { Cocktail } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
@@ -17,6 +18,7 @@ import SingleIngredientSelection from './SingleIngredientSelection';
 
 const CocktailList: React.FC = () => {
   const { config } = useConfig();
+  const { restrictedModeActive } = useRestrictedMode();
   const { data: cocktails, error, isLoading } = useCocktails(true, config.MAKER_MAX_HAND_INGREDIENTS ?? 0);
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
@@ -74,10 +76,15 @@ const CocktailList: React.FC = () => {
 
   return (
     <div className='px-2 centered max-w-7xl'>
-      <div className='relative w-full h-10 sticky-top mb-2'>
+      <div className={`w-full h-10 mb-2 sticky z-10 ${restrictedModeActive ? 'top-1' : 'top-10'}`}>
         {(config.PAYMENT_ACTIVE ?? false) && <UserDisplay user={user} />}
         <div className='absolute right-0 top-0 w-full'>
-          <SearchBar search={search} setSearch={setSearch} afterInput={virginToggleButton} />
+          <SearchBar
+            search={search}
+            tabBarVisible={!restrictedModeActive}
+            setSearch={setSearch}
+            afterInput={virginToggleButton}
+          />
         </div>
       </div>
       <div className='flex flex-wrap gap-3 justify-center items-center w-full mb-4'>
