@@ -3,7 +3,7 @@ name: Build Demo App on GitHub Pages
 on:
   release:
     types: [published]
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -13,7 +13,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           # only checkout the client folder
           sparse-checkout: web_client
@@ -28,9 +28,9 @@ jobs:
           ls -lah
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Run install
         uses: borales/actions-yarn@v5
@@ -41,7 +41,7 @@ jobs:
         uses: borales/actions-yarn@v5
         with:
           cmd: build-demo
-          
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
