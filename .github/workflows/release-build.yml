@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
-          ref: ${{ github.ref_name }}  # This refers to the branch/tag associated with the release
-          fetch-depth: 0  # Fetch full history to allow branch operations
+          ref: ${{ github.ref_name }} # This refers to the branch/tag associated with the release
+          fetch-depth: 0 # Fetch full history to allow branch operations
 
       - name: Extract version from release tag
         id: get_version
@@ -75,7 +75,7 @@ jobs:
 
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🐳 Set up QEMU
         uses: docker/setup-qemu-action@v3

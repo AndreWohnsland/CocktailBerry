@@ -12,41 +12,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v6
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
 
-    - name: Install Dependencies
-      uses: borales/actions-yarn@v5
-      with:
-        cmd: install
-        dir: ./web_client
+      - name: Install Dependencies
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: install
+          dir: ./web_client
 
-    - name: Build React App
-      uses: borales/actions-yarn@v5
-      with:
-        cmd: build
-        dir: ./web_client
+      - name: Build React App
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: build
+          dir: ./web_client
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: cocktailberry_web_client
-        path: ./web_client/dist
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cocktailberry_web_client
+          path: ./web_client/dist
 
-    - name: Compress Build Folder
-      if: github.event_name == 'release'
-      run: tar -czvf cocktailberry_web_client.tar.gz -C ./web_client/dist .
+      - name: Compress Build Folder
+        if: github.event_name == 'release'
+        run: tar -czvf cocktailberry_web_client.tar.gz -C ./web_client/dist .
 
-    - name: Upload binaries to release
-      if: github.event_name == 'release'
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: cocktailberry_web_client.tar.gz
-        asset_name: cocktailberry_web_client.tar.gz
-        tag: ${{ github.event.release.tag_name }}
+      - name: Upload binaries to release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: cocktailberry_web_client.tar.gz
+          asset_name: cocktailberry_web_client.tar.gz
+          tag: ${{ github.event.release.tag_name }}

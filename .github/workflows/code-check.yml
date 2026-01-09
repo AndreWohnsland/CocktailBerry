@@ -16,7 +16,7 @@ jobs:
         python-version: ["3.11", "3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install the latest version of uv using Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v7
         with:
@@ -31,7 +31,7 @@ jobs:
         python-version: ["3.11", "3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install the latest version of uv using Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v7
         with:
@@ -46,10 +46,49 @@ jobs:
         python-version: ["3.11", "3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install the latest version of uv using Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: 🔍 Run PyTest
         run: uv run pytest
+
+  check-web-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v6
+
+      - name: 🔍 Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 # v47
+        with:
+          files: web_client/**
+
+      - name: Setup Node
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Run install
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: install
+          dir: web_client
+
+      # - name: Run lint
+      #   if: steps.changed-files.outputs.any_changed == 'true'
+      #   uses: borales/actions-yarn@v5
+      #   with:
+      #     cmd: lint
+      #     dir: web_client
+
+      - name: verify build succeeds
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: build
+          dir: web_client

@@ -227,26 +227,6 @@ const ConfigWindow: React.FC = () => {
     });
   };
 
-  const getDefaultValue = (value: PossibleConfigValue) => {
-    if (typeof value === 'boolean') {
-      return false;
-    } else if (typeof value === 'number') {
-      return 0;
-    } else if (typeof value === 'string') {
-      return '';
-    } else if (Array.isArray(value)) {
-      return [];
-    } else if (typeof value === 'object') {
-      return Object.keys(value).reduce((acc, key) => {
-        acc[key] = getDefaultValue(value[key]);
-        return acc;
-        // biome-ignore lint/suspicious/noExplicitAny: config is special, we can have many types here
-      }, {} as any);
-    }
-    console.log('Unknown type');
-    return null;
-  };
-
   const handleRemoveItem = (key: string, index: number) => {
     setConfigData((prevData) => {
       const updatedArray = Array.isArray(prevData[key])
