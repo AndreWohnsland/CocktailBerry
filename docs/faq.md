@@ -98,6 +98,25 @@ There are different ways to auto start an application on the Raspberry Pi.
 The installer script automatically sets up a way, that the program starts after the system is booted.
 So after the installation, you just need to turn on your Pi!
 
+### What is the Restricted Mode
+
+When you enable the `UI_ONLY_MAKER_TAB` option in the configuration, the user will only can access the maker tab.
+At program start, you will have to choose if you want to enter the restricted mode or the full mode.
+If the restricted mode is chosen, only the maker tab is shown or clickable.
+Take note that you will still be able to access the urls in the web version, so enabling password protection is recommended if you want to restrict access.
+
+In the Qt version (v1) the tabs are still shown, but disabled.
+To remove restricted mode you will have to click a specific combination on of the different tabs.
+Click the following tabs in this order to exit restricted mode:
+
+- 2x Ingredients tab
+- 2x Recipes tab
+- 5x Bottles tab
+
+Do not click too fast, since this might not work properly.
+A recommended delay of 0.5s should be sufficient.
+If clicked another tab in between, the counter will reset.
+
 ### What is the Available Button
 
 If you click the available button under bottles, you get to another window, were you can select ingredients.
