@@ -415,6 +415,12 @@ ui:
     nfc_scan_to_proceed:
       en: 'Scan NFC to proceed'
       de: 'NFC scannen um fortzufahren'
+    payment_user_not_found:
+      en: 'This NFC card is not registered. Please contact the owner.'
+      de: 'Diese NFC-Karte ist nicht registriert. Bitte kontaktiere den Besitzer.'
+    payment_service_unavailable:
+      en: 'Payment service is currently unavailable. Please try again later.'
+      de: 'Zahlungsdienst ist derzeit nicht verfügbar. Bitte später erneut versuchen.'
 
   cocktail_selection:
     # best is to use some space before to get a padding for icon

@@ -15,6 +15,7 @@ from src.image_utils import find_cocktail_image
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.payment_utils import filter_cocktails_by_user
+from src.programs.nfc_payment_service import UserLookup, UserLookupResult
 from src.ui.creation_utils import create_button, create_label
 from src.ui.icons import IconSetter, PresetIcon
 from src.ui_elements.clickable_label import ClickableLabel
@@ -93,7 +94,7 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
 
 class CocktailView(QWidget):
     # Signal for thread-safe user change notifications
-    user_changed = pyqtSignal(object, str)
+    user_changed = pyqtSignal(object)
 
     def __init__(self, mainscreen: MainScreen) -> None:
         super().__init__()
@@ -132,16 +133,29 @@ class CocktailView(QWidget):
         self._last_known_user: User | None = None
         self.user_changed.connect(self.react_on_user_change)
 
-    def emit_user_change(self, user: User | None, uid: str) -> None:
+    def emit_user_change(self, lookup: UserLookup) -> None:
         """Emit user change signal (thread-safe) for pyqt."""
-        self.user_changed.emit(user, uid)
+        self.user_changed.emit(lookup)
 
-    def react_on_user_change(self, user: User | None, uid: str) -> None:
+    def react_on_user_change(self, lookup: UserLookup) -> None:
         """Implement user change handling (runs on main thread)."""
-        if user == self._last_known_user:
+        # For UserNotFound or ServiceUnavailable, show a message but don't change the user state
+        if lookup.result == UserLookupResult.USER_NOT_FOUND:
+            _logger.debug("NFC card not registered in payment service.")
+            message = UI_LANGUAGE.get_translation("payment_user_not_found", "main_window")
+            DP_CONTROLLER.standard_box(message, close_time=5)
+            return
+        if lookup.result == UserLookupResult.SERVICE_UNAVAILABLE:
+            _logger.debug("Payment service unavailable.")
+            message = UI_LANGUAGE.get_translation("payment_service_unavailable", "main_window")
+            DP_CONTROLLER.standard_box(message, close_time=5)
+            return
+
+        # For UserFound or UserRemoved, update the user state
+        if lookup.user == self._last_known_user:
             _logger.debug("NFC user state unchanged, skipping re-render.")
             return
-        self._last_known_user = user
+        self._last_known_user = lookup.user
         self.populate_cocktails()
         self.mainscreen.switch_to_cocktail_list()
 

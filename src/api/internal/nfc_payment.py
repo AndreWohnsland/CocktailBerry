@@ -7,7 +7,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
-from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService, User
+from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService, User, UserLookup
 from src.tabs import maker
 
 _logger = LoggerHandler("nfc_payment")
@@ -35,10 +35,10 @@ class NFCPaymentHandler:
         shared.cocktail_status.status = PrepareResult.WAITING_FOR_NFC
         self._payment_cancelled = False
 
-        def nfc_callback(user: User | None, nfc_id: str) -> None:
+        def nfc_callback(lookup: UserLookup) -> None:
             nonlocal booking
-            _logger.debug(f"NFC callback triggered with user: {user}, id: {nfc_id}")
-            booking = self.nfc_service.book_cocktail_for_user(user, cocktail)
+            _logger.debug(f"NFC callback triggered with user: {lookup.user}, result: {lookup.result}")
+            booking = self.nfc_service.book_cocktail_for_user(lookup.user, cocktail)
 
         self.nfc_service.add_callback("payment_flow", nfc_callback)
 
