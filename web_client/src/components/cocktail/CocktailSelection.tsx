@@ -60,6 +60,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
 
   useEffect(() => {
     const initialAlcoholState = selectedCocktail.only_virgin ? 'virgin' : 'normal';
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAlcohol(initialAlcoholState);
     setDisplayCocktail(initialAlcoholState === 'virgin' ? scaleCocktail(selectedCocktail, 0) : selectedCocktail);
   }, [selectedCocktail]);
