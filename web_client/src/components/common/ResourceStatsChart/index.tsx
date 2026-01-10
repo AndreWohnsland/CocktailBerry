@@ -18,14 +18,14 @@ export interface ResourceStatsChartProps {
 const MAX_POINTS = 100;
 
 // Helper to read themed color from CSS variables with fallback
-export const getThemeColor = (key: string, fallback: string) => {
+const getThemeColor = (key: string, fallback: string) => {
   if (globalThis.window === undefined || document === undefined) return fallback;
   const cssVar = getComputedStyle(document.documentElement).getPropertyValue(`--${key}-color`);
   return cssVar?.trim() || fallback;
 };
 
 // Aggregate raw data into at most maxPoints using averaging bins
-export const aggregateData = (raw: number[], maxPoints: number): number[] => {
+const aggregateData = (raw: number[], maxPoints: number): number[] => {
   if (!raw) return [];
   if (raw.length <= maxPoints) return raw;
   const binSize = Math.ceil(raw.length / maxPoints);

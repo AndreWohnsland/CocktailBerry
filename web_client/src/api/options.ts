@@ -69,8 +69,7 @@ export const createBackup = async (): Promise<{ data: Blob; fileName: string }> 
       if (match?.[1]) fileName = match[1];
     }
     return { data: response.data, fileName };
-    // biome-ignore lint/suspicious/noExplicitAny: we really want to catch all errors here
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof Blob) {
       const text = await error.text();
       const json = JSON.parse(text);

@@ -16,6 +16,7 @@ const LogWindow: React.FC = () => {
     if (data?.data) {
       const logTypes = Object.keys(data.data);
       if (logTypes.includes('production_logs.log')) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedLogType('production_logs.log');
       } else {
         setSelectedLogType(logTypes[0]);

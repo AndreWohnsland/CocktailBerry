@@ -79,12 +79,12 @@ jobs:
           cmd: install
           dir: web_client
 
-      # - name: Run lint
-      #   if: steps.changed-files.outputs.any_changed == 'true'
-      #   uses: borales/actions-yarn@v5
-      #   with:
-      #     cmd: lint
-      #     dir: web_client
+      - name: Run lint
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: lint
+          dir: web_client
 
       - name: verify build succeeds
         if: steps.changed-files.outputs.any_changed == 'true'

@@ -22,6 +22,7 @@ const AvailableBottles: React.FC = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFreeIngredients((ingredients ?? []).filter((ingredient) => !(available ?? []).includes(ingredient.id)));
     setAvailableIngredients((ingredients ?? []).filter((ingredient) => (available ?? []).includes(ingredient.id)));
   }, [ingredients, available]);

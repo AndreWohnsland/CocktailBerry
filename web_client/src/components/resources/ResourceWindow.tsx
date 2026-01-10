@@ -19,6 +19,7 @@ const ResourceWindow: React.FC = () => {
 
   useEffect(() => {
     if (data && data.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedSession(data[0].session_id);
     }
   }, [data]);

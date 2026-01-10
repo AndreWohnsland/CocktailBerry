@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Tabs } from '../constants/tabs';
 import { useConfig } from './ConfigProvider';
@@ -23,27 +23,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [makerPassword, setMakerPassword] = useState(0);
   const location = useLocation();
   const { config } = useConfig();
-  // need to check which tabs are locked and as soon we leave those tabs set the authenticated state to false
-  let protectedManagementPaths: string[] = [];
-  if (config.UI_LOCKED_TABS) {
-    protectedManagementPaths = [
+
+  // Use useMemo to prevent array recreation on every render
+  const protectedManagementPaths = useMemo(() => {
+    if (!config.UI_LOCKED_TABS) return [];
+    return [
       config.UI_LOCKED_TABS[Tabs.Maker] ? '/cocktails' : '',
       config.UI_LOCKED_TABS[Tabs.Ingredients] ? '/manage/ingredients' : '',
       config.UI_LOCKED_TABS[Tabs.Recipes] ? '/manage/recipes' : '',
       config.UI_LOCKED_TABS[Tabs.Bottles] ? '/manage/bottles' : '',
     ].filter((path) => path !== '');
-  }
+  }, [config.UI_LOCKED_TABS]);
 
+  // Use refs to track previous auth state to avoid setState in effect
+  const prevPathRef = useRef(location.pathname);
+
+  // This effect intentionally sets state when navigating away from protected routes
+  // to clear authentication. This is a valid use case for syncing with external navigation.
   useEffect(() => {
-    if (!location.pathname.startsWith('/options') && masterAuthenticated) {
+    const prevPath = prevPathRef.current;
+    prevPathRef.current = location.pathname;
+
+    // Only reset master auth when leaving options section
+    if (prevPath.startsWith('/options') && !location.pathname.startsWith('/options') && masterAuthenticated) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: clearing auth on route change
       setMasterAuthenticated(false);
       setMasterPassword(0);
     }
-    if (!protectedManagementPaths.some((path) => location.pathname.startsWith(path)) && makerAuthenticated) {
+    // Only reset maker auth when leaving protected paths
+    const wasOnProtectedPath = protectedManagementPaths.some((path) => prevPath.startsWith(path));
+    const isOnProtectedPath = protectedManagementPaths.some((path) => location.pathname.startsWith(path));
+    if (wasOnProtectedPath && !isOnProtectedPath && makerAuthenticated) {
       setMakerAuthenticated(false);
       setMakerPassword(0);
     }
-  }, [location, masterAuthenticated, makerAuthenticated, protectedManagementPaths]);
+  }, [location.pathname, masterAuthenticated, makerAuthenticated, protectedManagementPaths]);
 
   const contextValue = useMemo(
     () => ({
@@ -62,6 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

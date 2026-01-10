@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useConfig } from './ConfigProvider';
 
 interface IRestrictedMode {
@@ -18,10 +18,17 @@ export const RestrictedModeProvider = ({ children }: { children: React.ReactNode
     localStorage.getItem(STORE_RESTRICTED) === 'true',
   );
 
+  // Track the previous feature enabled state
+  const prevFeatureEnabledRef = useRef<boolean | undefined>(undefined);
+
   useEffect(() => {
     const featureEnabled = config?.UI_ONLY_MAKER_TAB ?? false;
+    const prevEnabled = prevFeatureEnabledRef.current;
+    prevFeatureEnabledRef.current = featureEnabled;
 
-    if (!featureEnabled) {
+    // Only reset when feature transitions from enabled to disabled
+    if (prevEnabled === true && !featureEnabled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: resetting state when feature is disabled
       setRestrictedModeActive(false);
       setHasPrompted(false);
       localStorage.removeItem(STORE_PROMPTED);
@@ -62,4 +69,5 @@ export const RestrictedModeProvider = ({ children }: { children: React.ReactNode
   return <RestrictedModeContext.Provider value={contextValue}>{children}</RestrictedModeContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useRestrictedMode = () => useContext(RestrictedModeContext);

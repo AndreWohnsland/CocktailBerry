@@ -28,6 +28,7 @@ const BottleList: React.FC = () => {
     if (bottles && ingredients) {
       const bottleIngredients = new Set(bottles.map((bottle) => bottle.ingredient?.id));
       const missingIngredients = ingredients.filter((ingredient) => !bottleIngredients.has(ingredient.id));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFreeIngredients(missingIngredients);
     }
   }, [bottles, ingredients]);

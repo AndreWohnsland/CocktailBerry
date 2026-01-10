@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconType } from 'react-icons';
+import type { IconType } from 'react-icons';
 import { FaCocktail, FaUndo } from 'react-icons/fa';
 import { FaCoins, FaLemon } from 'react-icons/fa6';
 import { resetDataInsights, useConsumeData } from '../../api/options';
@@ -46,14 +46,9 @@ const ConsumeBarChart: React.FC<{
 
 const ConsumeWindow: React.FC = () => {
   const { data, isLoading, error, refetch } = useConsumeData();
+  // Initialize with 'AT RESET' which is the default selection
   const [selectedDataType, setSelectedDataType] = useState<string>('AT RESET');
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (data) {
-      setSelectedDataType('AT RESET');
-    }
-  }, [data]);
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
