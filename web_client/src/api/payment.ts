@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { Cocktail, PaymentUserData, PaymentUserUpdate } from '../types/models';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { Cocktail, PaymentUserData, PaymentUserUpdate, UserLookupResult } from '../types/models';
 import { API_URL } from './common';
 
 export const usePaymentWebSocket = (enabled: boolean) => {
   const [user, setUser] = useState<PaymentUserData | null>(null);
   const [cocktails, setCocktails] = useState<Cocktail[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const { t } = useTranslation();
 
   // Track previous user UID to detect changes
   const prevUserUidRef = useRef<string | null>(null);
@@ -27,6 +30,23 @@ export const usePaymentWebSocket = (enabled: boolean) => {
     // Track if connection was ever established (to suppress StrictMode double-mount noise)
     let wasConnected = false;
 
+    const showErrorToast = (lookupResult: UserLookupResult) => {
+      const randomNumber = Math.floor(100000 + Math.random() * 900000);
+      if (lookupResult === 'user_not_found') {
+        toast(t('payment.userNotFound'), {
+          toastId: `payment-error-${randomNumber}`,
+          pauseOnHover: false,
+          autoClose: 5000,
+        });
+      } else if (lookupResult === 'service_unavailable') {
+        toast(t('payment.serviceUnavailable'), {
+          toastId: `payment-error-${randomNumber}`,
+          pauseOnHover: false,
+          autoClose: 5000,
+        });
+      }
+    };
+
     ws.onopen = () => {
       console.log('Payment WebSocket connected');
       wasConnected = true;
@@ -36,8 +56,15 @@ export const usePaymentWebSocket = (enabled: boolean) => {
     ws.onmessage = (event) => {
       try {
         const data: PaymentUserUpdate = JSON.parse(event.data);
+        const lookupResult = data.lookup_result;
 
-        // Only update if user actually changed
+        // Handle error states - show toast but don't change user state
+        if (lookupResult === 'user_not_found' || lookupResult === 'service_unavailable') {
+          showErrorToast(lookupResult);
+          return;
+        }
+
+        // For user_found or user_removed, update state if user actually changed
         const currentUid = data.user?.nfc_id ?? null;
         if (currentUid !== prevUserUidRef.current) {
           prevUserUidRef.current = currentUid;
@@ -67,7 +94,7 @@ export const usePaymentWebSocket = (enabled: boolean) => {
     return () => {
       ws.close();
     };
-  }, [enabled]);
+  }, [enabled, t]);
 
   return { user, cocktails, isConnected };
 };

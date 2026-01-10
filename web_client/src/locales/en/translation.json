@@ -47,7 +47,9 @@
     "scanNFC": "Please Scan Your NFC Card",
     "holdCard": "Hold your NFC card or tag near the reader to complete the payment",
     "scanToUnlock": "Scan NFC Card to Access",
-    "scanNFCToAccess": "Please scan your NFC card to access cocktails"
+    "scanNFCToAccess": "Please scan your NFC card to access cocktails",
+    "userNotFound": "This NFC card is not registered. Please contact the owner.",
+    "serviceUnavailable": "Payment service is currently unavailable. Please try again later."
   },
   "ingredients": {
     "newIngredient": "New Ingredient",

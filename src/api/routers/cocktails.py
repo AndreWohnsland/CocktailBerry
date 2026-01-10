@@ -43,7 +43,7 @@ from src.logger_handler import LoggerHandler
 from src.models import Cocktail as DbCocktail
 from src.models import CocktailStatus, PrepareResult
 from src.payment_utils import filter_cocktails_by_user
-from src.programs.nfc_payment_service import User, UserLookup
+from src.programs.nfc_payment_service import User, UserLookup, UserLookupResult
 from src.tabs import maker
 
 _logger = LoggerHandler("cocktails_router")
@@ -311,7 +311,7 @@ async def websocket_payment_user(
     # Capture the event loop for thread-safe scheduling
     loop = asyncio.get_running_loop()
 
-    async def send_user_update(user: User | None) -> None:
+    async def send_user_update(user: User | None, lookup_result: UserLookupResult) -> None:
         """Send user and filtered cocktails to websocket."""
         try:
             cocktails = filter_cocktails_by_user(
@@ -324,6 +324,7 @@ async def websocket_payment_user(
                 {
                     "user": user.__dict__ if user else None,
                     "cocktails": [c.model_dump() for c in mapped_cocktails],
+                    "lookup_result": lookup_result.value,
                 }
             )
         except Exception as e:
@@ -334,14 +335,15 @@ async def websocket_payment_user(
     def nfc_callback(lookup: UserLookup) -> None:
         """Schedule async send_user_update from another thread."""
         # Use run_coroutine_threadsafe since this callback is called from the NFC reader thread
-        asyncio.run_coroutine_threadsafe(send_user_update(lookup.user), loop)
+        asyncio.run_coroutine_threadsafe(send_user_update(lookup.user, lookup.result), loop)
 
     payment_handler = get_nfc_payment_handler()
     payment_handler.nfc_service.add_callback(callback_name, nfc_callback)
 
-    # Send initial state
+    # Send initial state - use USER_FOUND if user exists, USER_REMOVED if not
     current_user = payment_handler.get_current_user()
-    await send_user_update(current_user)
+    initial_result = UserLookupResult.USER_FOUND if current_user else UserLookupResult.USER_REMOVED
+    await send_user_update(current_user, initial_result)
 
     try:
         while True:
