@@ -287,6 +287,9 @@ dialog:
   payment_canceled:
     en: 'Payment was canceled by user or timeout'
     de: 'Zahlung wurde durch Benutzer oder wegen Zeitüberschreitung abgebrochen.'
+  payment_user_not_found:
+    en: 'This NFC/card is not registered. Please register or contact owner.'
+    de: 'Diese NFC/Karte ist nicht registriert. Bitte registrieren oder kontaktiere den Besitzer.'
   pumpt_volume_flow_adjusted:
     en: 'Pump {pump_number} volume flow adjusted to {new_flow} ml/s.'
     de: 'Pumpen {pump_number} Volumenstrom auf {new_flow} ml/s angepasst.'

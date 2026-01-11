@@ -285,9 +285,12 @@ export interface PaymentUserData {
   is_adult: boolean | null;
 }
 
+export type UserLookupResult = 'USER_FOUND' | 'USER_NOT_FOUND' | 'SERVICE_UNAVAILABLE' | 'USER_REMOVED';
+
 export interface PaymentUserUpdate {
   user: PaymentUserData | null;
   cocktails: Cocktail[];
+  changeReason: UserLookupResult;
 }
 
 export interface AboutInfo {

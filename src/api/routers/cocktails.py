@@ -43,7 +43,7 @@ from src.logger_handler import LoggerHandler
 from src.models import Cocktail as DbCocktail
 from src.models import CocktailStatus, PrepareResult
 from src.payment_utils import filter_cocktails_by_user
-from src.programs.nfc_payment_service import User
+from src.programs.nfc_payment_service import UserLookup
 from src.tabs import maker
 
 _logger = LoggerHandler("cocktails_router")
@@ -78,7 +78,7 @@ async def get_cocktails(
 
     if cfg.PAYMENT_ACTIVE:
         user = payment_handler.get_current_user()
-        cocktails = filter_cocktails_by_user(user, cocktails)
+        cocktails = filter_cocktails_by_user(user.user, cocktails)
 
     mapped_cocktails = [map_cocktail(c, scale) for c in cocktails]
     return [c for c in mapped_cocktails if c is not None]
@@ -311,8 +311,9 @@ async def websocket_payment_user(
     # Capture the event loop for thread-safe scheduling
     loop = asyncio.get_running_loop()
 
-    async def send_user_update(user: User | None, _nfc_id: str) -> None:
+    async def send_user_update(user_lookup: UserLookup) -> None:
         """Send user and filtered cocktails to websocket."""
+        user = user_lookup.user
         try:
             cocktails = filter_cocktails_by_user(
                 user, DatabaseCommander().get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
@@ -323,6 +324,7 @@ async def websocket_payment_user(
             await websocket.send_json(
                 {
                     "user": user.__dict__ if user else None,
+                    "changeReason": user_lookup.result.name,
                     "cocktails": [c.model_dump() for c in mapped_cocktails],
                 }
             )
@@ -331,17 +333,17 @@ async def websocket_payment_user(
 
     callback_name = f"websocket_{id(websocket)}"
 
-    def nfc_callback(user: User | None, nfc_id: str) -> None:
+    def nfc_callback(lookup: UserLookup) -> None:
         """Schedule async send_user_update from another thread."""
         # Use run_coroutine_threadsafe since this callback is called from the NFC reader thread
-        asyncio.run_coroutine_threadsafe(send_user_update(user, nfc_id), loop)
+        asyncio.run_coroutine_threadsafe(send_user_update(lookup), loop)
 
     payment_handler = get_nfc_payment_handler()
     payment_handler.nfc_service.add_callback(callback_name, nfc_callback)
 
     # Send initial state
-    current_user = payment_handler.get_current_user()
-    await send_user_update(current_user, current_user.nfc_id if current_user else "")
+    user = payment_handler.get_current_user().user
+    await send_user_update(UserLookup.found(user) if user else UserLookup.removed())
 
     try:
         while True:

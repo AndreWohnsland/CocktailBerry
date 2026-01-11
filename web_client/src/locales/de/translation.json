@@ -47,7 +47,9 @@
     "scanNFC": "Bitte scannen Sie Ihre NFC-Karte",
     "holdCard": "Halten Sie Ihre NFC-Karte oder Ihren Tag an das Lesegerät, um die Zahlung abzuschließen",
     "scanToUnlock": "NFC-Karte zum Entsperren scannen",
-    "scanNFCToAccess": "Bitte scannen Sie Ihre NFC-Karte, um auf Cocktails zuzugreifen"
+    "scanNFCToAccess": "Bitte scannen Sie Ihre NFC-Karte, um auf Cocktails zuzugreifen",
+    "userNotFound": "Dieser NFC oder Karte ist nicht registriert. Bitte registrieren oder Besitzer kontaktieren.",
+    "serviceUnavailable": "Zahlungsdienst ist derzeit nicht verfügbar. Bitte kontaktiere den Besitzer."
   },
   "ingredients": {
     "newIngredient": "Neue Zutat",
