@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Cocktail, PaymentUserData, PaymentUserUpdate } from '../types/models';
+import { errorToast } from '../utils';
 import { API_URL } from './common';
 
 export const usePaymentWebSocket = (enabled: boolean) => {
   const [user, setUser] = useState<PaymentUserData | null>(null);
   const [cocktails, setCocktails] = useState<Cocktail[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const { t } = useTranslation();
 
   // Track previous user UID to detect changes
   const prevUserUidRef = useRef<string | null>(null);
@@ -37,6 +40,17 @@ export const usePaymentWebSocket = (enabled: boolean) => {
       try {
         const data: PaymentUserUpdate = JSON.parse(event.data);
 
+        // Handle error states - show toast but don't change user state
+        const lookupResult = data.changeReason;
+        if (lookupResult === 'USER_NOT_FOUND') {
+          errorToast(t('payment.userNotFound'));
+          return;
+        }
+        if (lookupResult === 'SERVICE_UNAVAILABLE') {
+          errorToast(t('payment.serviceUnavailable'));
+          return;
+        }
+
         // Only update if user actually changed
         const currentUid = data.user?.nfc_id ?? null;
         if (currentUid !== prevUserUidRef.current) {
@@ -67,7 +81,7 @@ export const usePaymentWebSocket = (enabled: boolean) => {
     return () => {
       ws.close();
     };
-  }, [enabled]);
+  }, [enabled, t]);
 
   return { user, cocktails, isConnected };
 };

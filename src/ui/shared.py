@@ -11,7 +11,7 @@ from src.config.config_manager import Tab
 from src.config.config_manager import shared as global_shared
 from src.display_controller import DP_CONTROLLER
 from src.models import Cocktail, PrepareResult
-from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService, User
+from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService, UserLookup
 from src.tabs import bottles, maker
 
 if TYPE_CHECKING:
@@ -79,16 +79,16 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
     start_time = time.time()
     dialog: CustomDialog | None = None
     canceled = False
-    detected_user: User | None = None
+    detected_user: UserLookup = UserLookup.removed()
 
     def on_cancel() -> None:
         nonlocal canceled
         canceled = True
 
-    def on_user_detected(user: User | None, uid: str) -> None:
+    def on_user_detected(lookup: UserLookup) -> None:
         """Handle user detection."""
         nonlocal detected_user
-        detected_user = user
+        detected_user = lookup
 
     payment_service.add_callback("payment_flow", on_user_detected)
     # Try to book immediately if we have a user

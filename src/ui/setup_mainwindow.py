@@ -22,7 +22,7 @@ from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.programs.addons import ADDONS
-from src.programs.nfc_payment_service import NFCPaymentService
+from src.programs.nfc_payment_service import NFCPaymentService, UserLookup
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
@@ -252,7 +252,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         # need to emit this, in case we switch back from detail view and auto logout happened when user was there
         # this is because we pause the cocktail_list callback when we are in detail view
-        self.cocktail_view.emit_user_change(NFCPaymentService().user, "")
+        user = NFCPaymentService().user_lookup.user
+        # do not propagate errors here
+        self.cocktail_view.emit_user_change(UserLookup.found(user) if user else UserLookup.removed())
         NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
 
     def open_numpad(

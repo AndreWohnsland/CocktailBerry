@@ -26,6 +26,43 @@ class User:
     is_adult: bool
 
 
+class UserLookupResult(StrEnum):
+    """Enumeration of possible user lookup results."""
+
+    USER_FOUND = "USER_FOUND"
+    USER_NOT_FOUND = "USER_NOT_FOUND"
+    SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
+    USER_REMOVED = "USER_REMOVED"
+
+
+@dataclass
+class UserLookup:
+    """Result of a user lookup operation."""
+
+    user: User | None
+    result: UserLookupResult
+
+    @classmethod
+    def found(cls, user: User) -> "UserLookup":
+        """Create a successful lookup instance."""
+        return cls(user=user, result=UserLookupResult.USER_FOUND)
+
+    @classmethod
+    def not_found(cls) -> "UserLookup":
+        """Create a user not found lookup instance."""
+        return cls(user=None, result=UserLookupResult.USER_NOT_FOUND)
+
+    @classmethod
+    def service_unavailable(cls) -> "UserLookup":
+        """Create a service unavailable lookup instance."""
+        return cls(user=None, result=UserLookupResult.SERVICE_UNAVAILABLE)
+
+    @classmethod
+    def removed(cls) -> "UserLookup":
+        """Create a user removed lookup instance."""
+        return cls(user=None, result=UserLookupResult.USER_REMOVED)
+
+
 @dataclass
 class CocktailBooking:
     message: str
@@ -34,13 +71,14 @@ class CocktailBooking:
     class Result(StrEnum):
         """Enumeration of possible cocktail booking results."""
 
-        SUCCESS = "success"
-        INACTIVE = "inactive"
-        INSUFFICIENT_BALANCE = "insufficient_balance"
-        NOT_ALLOWED_ALCOHOL = "not_allowed_alcohol"
-        NO_USER = "no_user"
-        API_NOT_REACHABLE = "api_not_reachable"
-        CANCELED = "canceled"
+        SUCCESS = "SUCCESS"
+        INACTIVE = "INACTIVE"
+        INSUFFICIENT_BALANCE = "INSUFFICIENT_BALANCE"
+        NOT_ALLOWED_ALCOHOL = "NOT_ALLOWED_ALCOHOL"
+        NO_USER = "NO_USER"
+        USER_NOT_KNOWN = "USER_NOT_KNOWN"
+        API_NOT_REACHABLE = "API_NOT_REACHABLE"
+        CANCELED = "CANCELED"
 
     @classmethod
     def inactive(cls) -> "CocktailBooking":
@@ -91,6 +129,14 @@ class CocktailBooking:
         )
 
     @classmethod
+    def user_not_known(cls) -> "CocktailBooking":
+        """Create a user not known booking instance."""
+        return cls(
+            message=DH.get_translation("payment_user_not_found"),
+            result=cls.Result.USER_NOT_KNOWN,
+        )
+
+    @classmethod
     def api_interface_conflict(cls) -> "CocktailBooking":
         """Create a machine issue booking instance."""
         return cls(
@@ -113,10 +159,9 @@ class NFCPaymentService:
     def __new__(cls) -> "NFCPaymentService":
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
-            cls.uid: str | None = None
-            cls.user: User | None = None
+            cls.user_lookup: UserLookup = UserLookup.removed()
             cls.rfid_reader = RFIDReader()
-            cls._user_callbacks: dict[str, Callable[[User | None, str], None]] = {}
+            cls._user_callbacks: dict[str, Callable[[UserLookup], None]] = {}
             cls._is_polling: bool = False
             cls._auto_logout_timer: Timer | None = None
             cls._pause_callbacks: bool = False
@@ -127,13 +172,13 @@ class NFCPaymentService:
         self._cancel_auto_logout_timer()
         self.rfid_reader.cancel_reading()
 
-    def _run_callbacks(self, user: User | None, nfc_id: str) -> None:
+    def _run_callbacks(self, lookup: UserLookup) -> None:
         """Run all registered user callbacks."""
         if self._pause_callbacks:
             _logger.debug("Callbacks are paused; not running any callbacks.")
             return
         for callback in self._user_callbacks.values():
-            callback(user, nfc_id)
+            callback(lookup)
 
     def _cancel_auto_logout_timer(self) -> None:
         """Cancel the auto-logout timer if it exists."""
@@ -156,9 +201,8 @@ class NFCPaymentService:
         if self._auto_logout_timer is not None:
             self._auto_logout_timer.cancel()
         self._auto_logout_timer = None
-        self.user = None
-        self.uid = None
-        self._run_callbacks(None, "")
+        self.user_lookup = UserLookup.removed()
+        self._run_callbacks(self.user_lookup)
 
     def start_continuous_sensing(self) -> None:
         """Start continuous NFC sensing in the background.
@@ -174,7 +218,7 @@ class NFCPaymentService:
         _logger.info("Starting continuous NFC sensing for NFCPaymentService.")
         self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
 
-    def add_callback(self, name: str, callback: Callable[[User | None, str], None]) -> None:
+    def add_callback(self, name: str, callback: Callable[[UserLookup], None]) -> None:
         """Add a named callback to be invoked when a user is detected."""
         # skip noisy logs: it is not planned to "update" callbacks since name should point to unique function
         if name in self._user_callbacks:
@@ -201,28 +245,32 @@ class NFCPaymentService:
         finally:
             self._pause_callbacks = False
 
-    def get_user_for_id(self, nfc_id: str) -> User | None:
+    def get_user_for_id(self, nfc_id: str) -> UserLookup:
         """Get the user associated with the given NFC ID."""
         return self._api_client.get_user_for_id(nfc_id)
 
     def _handle_nfc_read(self, _: str, _id: str) -> None:
         """Handle NFC read events."""
         _logger.debug(f"NFC ID read: {_id}")
-        self.user = self.get_user_for_id(_id)
+        self.user_lookup = self.get_user_for_id(_id)
         self._cancel_auto_logout_timer()
 
-        if self.user is None:
-            _logger.debug("No user found for this NFC ID.")
-            self.uid = None
+        if self.user_lookup.user is None:
+            _logger.debug(f"No user found for this NFC ID. Reason: {self.user_lookup.result}")
         else:
             _logger.debug(f"User found for NFC ID: {_id}")
-            self.uid = _id
 
-        self._start_auto_logout_timer()
-        self._run_callbacks(self.user, _id)
+        if self.user_lookup.result == UserLookupResult.USER_FOUND:
+            self._start_auto_logout_timer()
+        self._run_callbacks(self.user_lookup)
 
-    def book_cocktail_for_user(self, user: User | None, cocktail: Cocktail) -> CocktailBooking:
+    def book_cocktail_for_user(self, user_lookup: UserLookup, cocktail: Cocktail) -> CocktailBooking:
         """Book a cocktail for the given user if they have enough balance."""
+        if user_lookup.result == UserLookupResult.USER_NOT_FOUND:
+            return CocktailBooking.user_not_known()
+        if user_lookup.result == UserLookupResult.SERVICE_UNAVAILABLE:
+            return CocktailBooking.api_not_reachable()
+        user = user_lookup.user
         if user is None:
             return CocktailBooking.no_user_logged_in()
         if not user.is_adult and not cocktail.is_virgin:
@@ -235,7 +283,7 @@ class NFCPaymentService:
 
 
 class _ExternalServiceClient(Protocol):
-    def get_user_for_id(self, nfc_id: str) -> User | None: ...
+    def get_user_for_id(self, nfc_id: str) -> UserLookup: ...
 
     def book_cocktail_for_user(self, user: User, cocktail: Cocktail, price: float) -> CocktailBooking: ...
 
@@ -245,12 +293,12 @@ class _MockPaymentService:
         self.users: dict[str, User] = {}
         self._adult_iterator = cycle([True, False])
 
-    def get_user_for_id(self, nfc_id: str) -> User | None:
+    def get_user_for_id(self, nfc_id: str) -> UserLookup:
         user = self.users.get(nfc_id)
         if user is None:
             user = User(nfc_id=nfc_id, balance=20.0, is_adult=next(self._adult_iterator))
         self.users[nfc_id] = user
-        return user
+        return UserLookup.found(user)
 
     def book_cocktail_for_user(self, user: User, cocktail: Cocktail, price: float) -> CocktailBooking:
         user.balance -= price
@@ -272,19 +320,22 @@ class _ApiPaymentService:
             500: CocktailBooking.api_not_reachable(),
         }
 
-    def get_user_for_id(self, nfc_id: str) -> User | None:
+    def get_user_for_id(self, nfc_id: str) -> UserLookup:
         try:
             resp = self.api_client.get(f"{self.api_base_url}/users/{nfc_id}")
             if resp.status_code == 401:  # noqa: PLR2004
                 _logger.warning("Wrong api key when fetching user data. Check PAYMENT_SECRET_KEY.")
+            if resp.status_code == 404:  # noqa: PLR2004
+                _logger.debug(f"User not found in payment service for NFC ID: {nfc_id}")
+                return UserLookup.not_found()
             resp.raise_for_status()
-            return User(**resp.json())
+            return UserLookup.found(User(**resp.json()))
         except requests.exceptions.ConnectionError as e:
             _logger.error(f"API not reachable when fetching user for NFC ID: {nfc_id}, error: {e}")
-            return None
+            return UserLookup.service_unavailable()
         except Exception as e:
             _logger.error(f"Failed to get user for NFC ID: {nfc_id}, error: {e}")
-            return None
+            return UserLookup.service_unavailable()
 
     def book_cocktail_for_user(self, user: User, cocktail: Cocktail, price: float) -> CocktailBooking:
         try:

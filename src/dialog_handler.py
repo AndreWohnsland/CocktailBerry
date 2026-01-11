@@ -57,10 +57,10 @@ if TYPE_CHECKING:
 _logger = LoggerHandler("dialog_handler")
 
 allowed_keys = Literal[
-    "api_interface_conflict",
     "alcohol_level_max_limit",
     "all_data_exported",
     "all_recipes_enabled",
+    "api_interface_conflict",
     "ask_adjust_time",
     "ask_backup_overwrite",
     "ask_enable_all_recipes",
@@ -119,8 +119,8 @@ allowed_keys = Literal[
     "no_ingredient_selected",
     "no_recipe_selected",
     "not_enough_ingredient_volume",
-    "options_updated",
     "options_updated_and_restart",
+    "options_updated",
     "payment_api_not_reachable",
     "payment_canceled",
     "payment_inactive",
@@ -128,6 +128,7 @@ allowed_keys = Literal[
     "payment_no_user",
     "payment_successful",
     "payment_too_young",
+    "payment_user_not_found",
     "preparation_cancelled",
     "python_deprecated",
     "qtsass_not_successful",
@@ -532,6 +533,14 @@ class DialogHandler:
     def say_ingredient_speed_adjusted(self, ingredient_name: str, new_speed: int) -> None:
         """Informs the user that the ingredient speed factor has been adjusted."""
         self.__output_language_dialog("new_ingredient_speed", ingredient_name=ingredient_name, new_speed=new_speed)
+
+    def say_no_nfc_user_found(self) -> None:
+        """Informs the user that no NFC user was found."""
+        self.__output_language_dialog("payment_user_not_found", close_time=5)
+
+    def say_payment_service_unavailable(self) -> None:
+        """Informs the user that the payment service is unavailable."""
+        self.__output_language_dialog("payment_api_not_reachable", close_time=5)
 
     ############################
     # Methods for prompting ####
