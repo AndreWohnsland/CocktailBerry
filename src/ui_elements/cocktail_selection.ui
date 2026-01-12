@@ -47,7 +47,6 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -92,7 +91,6 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -121,15 +119,14 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>LMZutat2</string>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -144,7 +141,6 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -173,15 +169,14 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>LMZutat5</string>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -196,15 +191,14 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>LMZutat4</string>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -219,15 +213,14 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>LMZutat7</string>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -242,7 +235,6 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -271,7 +263,6 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -300,7 +291,6 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -329,7 +319,6 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -358,15 +347,14 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>LMZutat6</string>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -381,15 +369,14 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>LMZutat3</string>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -404,15 +391,14 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>LMZutat8</string>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -427,15 +413,15 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <bold>true</bold>
+           <kerning>false</kerning>
           </font>
          </property>
          <property name="text">
           <string>LMZutat1</string>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -458,7 +444,6 @@
            <property name="font">
             <font>
              <pointsize>16</pointsize>
-             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -492,7 +477,6 @@
              <property name="font">
               <font>
                <pointsize>20</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -524,7 +508,6 @@
              <property name="font">
               <font>
                <pointsize>20</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -561,7 +544,6 @@
            <property name="font">
             <font>
              <pointsize>16</pointsize>
-             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -589,7 +571,6 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -618,7 +599,6 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -647,15 +627,14 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>LMZutat9</string>
          </property>
          <property name="cssClass" stdset="0">
-          <string>secondary</string>
+          <string>secondary bold</string>
          </property>
         </widget>
        </item>
@@ -670,7 +649,6 @@
          <property name="font">
           <font>
            <pointsize>22</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -717,7 +695,6 @@
        <property name="font">
         <font>
          <pointsize>18</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -748,7 +725,6 @@
          <property name="font">
           <font>
            <pointsize>14</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
            <strikeout>true</strikeout>
           </font>
@@ -817,7 +793,6 @@
          <property name="font">
           <font>
            <pointsize>18</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
