@@ -273,9 +273,12 @@ QLineEdit {
   border-radius: 5; }
 
 QListWidget {
+  background: transparent;
   border: 2px solid #0b0e41;
-  border-bottom-right-radius: 21px;
-  border-top-right-radius: 21px; }
+  border-bottom-right-radius: 22px;
+  border-top-right-radius: 22px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px; }
   QListWidget QScrollBar:vertical {
     border-right: 0px solid #0b0e41; }
   QListWidget QScrollBar:horizontal {
