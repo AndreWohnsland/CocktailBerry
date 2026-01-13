@@ -5,7 +5,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from src.api.api_config import Tags
 from src.api.internal.utils import map_bottles
 from src.api.internal.validation import raise_when_cocktail_is_in_progress
-from src.api.middleware import maker_protected
+from src.api.middleware import maker_protected, master_protected_dependency
 from src.api.models import ApiMessage, Bottle
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab
@@ -79,7 +79,15 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int
     )
 
 
-@protected_router.post("/{bottle_id}/calibrate", tags=[Tags.PREPARATION], summary="Calibrate bottle with given amount.")
+# need to use master protection here instead of maker protection
+@router.post(
+    "/{bottle_id}/calibrate",
+    tags=[Tags.PREPARATION],
+    summary="Calibrate bottle with given amount.",
+    dependencies=[
+        Depends(master_protected_dependency),
+    ],
+)
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks) -> ApiMessage:
     raise_when_cocktail_is_in_progress()
     background_tasks.add_task(maker.calibrate, bottle_id, amount)

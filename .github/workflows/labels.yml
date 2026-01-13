@@ -11,6 +11,8 @@ on:
 
 jobs:
   labels:
+    permissions:
+      pull-requests: write
     name: ♻️ Sync labels
     runs-on: ubuntu-latest
     steps:
