@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import Metric, { MetricProps } from '.';
+import Metric, { type MetricProps } from '.';
 
 const meta: Meta<typeof Metric> = {
   title: 'Elements/Metric',

@@ -1,4 +1,4 @@
-import { CustomColors } from '../types/models';
+import type { CustomColors } from '../types/models';
 
 const defaultColor: CustomColors = {
   primary: '#007bff',

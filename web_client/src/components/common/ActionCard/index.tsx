@@ -1,4 +1,4 @@
-import { IconType } from 'react-icons';
+import type { IconType } from 'react-icons';
 import TextHeader from '../TextHeader';
 
 interface ActionCardProps {
@@ -22,12 +22,14 @@ const ActionCard = ({
     <div className='w-full mt-4 border rounded-lg border-neutral items-center justify-center flex flex-col p-2'>
       {header && <TextHeader text={header} subheader space={2} />}
       {sections.map((section, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: Controlled here
         <p key={index} className='text-center text-primary'>
           {section}
         </p>
       ))}
       {onActionClick && (
         <button
+          type='button'
           onClick={onActionClick}
           className={`button-${actionStyle}-filled p-2 mt-2 w-full items-center justify-center flex`}
         >

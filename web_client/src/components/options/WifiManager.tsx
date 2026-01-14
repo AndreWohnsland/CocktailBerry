@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateWifiData, useAvailableSsids } from '../../api/options';
 import { confirmAndExecute } from '../../utils';
@@ -41,11 +42,12 @@ const WifiManager: React.FC = () => {
         <button type='button' onClick={toggleInputMode} className='col-span-1 md:col-span-2 button-secondary p-2 my-4'>
           {isInputMode ? t('wifi.switchToSelect') : t('wifi.switchToInput')}
         </button>
-        <label className='text-neutral text-center'>
+        <label className='text-neutral text-center' htmlFor='wifi-input'>
           {'SSID:'}
           {isInputMode ? (
             <input
               type='text'
+              id='wifi-input'
               value={selectedSsid}
               onChange={(e) => setSelectedSsid(e.target.value)}
               required
@@ -53,6 +55,7 @@ const WifiManager: React.FC = () => {
             />
           ) : (
             <select
+              id='wifi-input'
               value={selectedSsid}
               onChange={(e) => setSelectedSsid(e.target.value)}
               required
@@ -69,10 +72,11 @@ const WifiManager: React.FC = () => {
             </select>
           )}
         </label>
-        <label className='text-neutral text-center'>
+        <label className='text-neutral text-center' htmlFor='wifi-password'>
           {t('wifi.password')}:
           <input
             type='password'
+            id='wifi-password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

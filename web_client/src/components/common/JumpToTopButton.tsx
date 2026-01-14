@@ -7,6 +7,7 @@ export const JumpToTopButton: React.FC = () => {
   return (
     <div className='sticky-bottom'>
       <button
+        type='button'
         onClick={scrollToTop}
         className='button-primary max-w-20 flex items-center justify-center p-3 m-1 ml-auto pointer-events-auto'
       >

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaCog } from 'react-icons/fa';
 import InfoScreen from '../InfoScreen';

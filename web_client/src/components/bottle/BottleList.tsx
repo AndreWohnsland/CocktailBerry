@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { refillBottle, useBottles } from '../../api/bottles';
 import { useIngredients } from '../../api/ingredients';
-import { Ingredient } from '../../types/models';
+import type { Ingredient } from '../../types/models';
 import { executeAndShow } from '../../utils';
 import Button from '../common/Button';
 import ErrorComponent from '../common/ErrorComponent';

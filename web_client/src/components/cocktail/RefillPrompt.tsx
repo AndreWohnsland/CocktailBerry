@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaWineBottle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
@@ -39,13 +40,14 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumb
       <div className='flex flex-col items-center justify-center w-full h-full'>
         <div className='flex justify-between w-full mb-2'>
           <button
+            type='button'
             className='button-primary-filled p-2 px-4 flex flex-row items-center'
             onClick={() => navigate('/manage/bottles')}
           >
             <FaWineBottle className='mr-3' size={25} />
             {t('cocktails.goToBottles')}
           </button>
-          <button className='button-danger p-2 px-4 flex flex-row items-center' onClick={handleClose}>
+          <button type='button' className='button-danger p-2 px-4 flex flex-row items-center' onClick={handleClose}>
             {t('cocktails.later')}
             <IoClose className='ml-3' size={25} />
           </button>
@@ -68,6 +70,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumb
         </div>
         <div className='flex-grow'></div>
         <button
+          type='button'
           className={`${!isChecked && 'disabled'} button-primary-filled px-4 py-2 w-full`}
           onClick={applyRefillBottle}
           disabled={!isChecked}

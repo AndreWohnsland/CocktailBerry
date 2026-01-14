@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { FaGlassMartiniAlt, FaSkullCrossbones, FaWineGlassAlt } from 'react-icons/fa';
 import { GrFormNextLink, GrFormPreviousLink } from 'react-icons/gr';
 import { ImMug } from 'react-icons/im';
@@ -10,7 +11,7 @@ import { prepareCocktail } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
 import { Tabs } from '../../constants/tabs';
 import { useConfig } from '../../providers/ConfigProvider';
-import { Cocktail, PrepareResult } from '../../types/models';
+import type { Cocktail, PrepareResult } from '../../types/models';
 import { errorToast, scaleCocktail } from '../../utils';
 import Button from '../common/Button';
 import CloseButton from '../common/CloseButton';
@@ -56,7 +57,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   const { config } = useConfig();
   const possibleServingSizes = config.MAKER_USE_RECIPE_VOLUME
     ? [displayCocktail.amount]
-    : config.MAKER_PREPARE_VOLUME ?? fallbackServingSize;
+    : (config.MAKER_PREPARE_VOLUME ?? fallbackServingSize);
 
   useEffect(() => {
     const initialAlcoholState = selectedCocktail.only_virgin ? 'virgin' : 'normal';
@@ -156,6 +157,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
             className='w-full h-full object-cover border-2 border-neutral rounded-lg overflow-hidden'
           />
           <button
+            type='button'
             onClick={() => changeCocktailBy(-1)}
             className='absolute left-2 top-1/2 -translate-y-1/2 bg-background opacity-80 rounded-full'
             aria-label='previous'
@@ -163,6 +165,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
             <GrFormPreviousLink className='text-primary' size={80} />
           </button>
           <button
+            type='button'
             onClick={() => changeCocktailBy(1)}
             className='absolute right-2 top-1/2 -translate-y-1/2 bg-background opacity-80 rounded-full'
             aria-label='next'
@@ -177,6 +180,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
               {!config.PAYMENT_ACTIVE && (
                 <>
                   <button
+                    type='button'
                     onClick={() => handleAlcoholState('high')}
                     className={`w-8 p-2 rounded-full ${alcohol === 'high' ? 'bg-secondary' : 'bg-primary'} ${
                       selectedCocktail.only_virgin && 'disabled'
@@ -186,6 +190,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
                     <FaSkullCrossbones className='text-background' />
                   </button>
                   <button
+                    type='button'
                     onClick={() => handleAlcoholState('low')}
                     className={`w-8 p-2 rounded-full ${alcohol === 'low' ? 'bg-secondary' : 'bg-primary'} ${
                       selectedCocktail.only_virgin && 'disabled'
@@ -198,6 +203,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
               )}
               {selectedCocktail.virgin_available && (
                 <button
+                  type='button'
                   onClick={() => handleAlcoholState('virgin')}
                   className={`w-8 p-2 rounded-full ${alcohol === 'virgin' ? 'bg-secondary' : 'bg-primary'}`}
                   disabled={selectedCocktail.only_virgin}
@@ -268,7 +274,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
       />
       <TeamSelection
         isOpen={isTeamOpen}
-        amount={selectedAmount!}
+        amount={selectedAmount || 0}
         prepareCocktail={handlePrepareCocktail}
         onClose={() => setIsTeamOpen(false)}
       />

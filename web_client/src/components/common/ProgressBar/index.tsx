@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 interface ProgressBarProps {
   fillPercent: number;
@@ -8,6 +8,7 @@ interface ProgressBarProps {
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ fillPercent, className, onClick }) => {
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: special case
     <div
       className={
         'border-2 border-neutral bg-neutral text-background font-bold rounded-full text-center overflow-hidden flex items-center justify-center' +

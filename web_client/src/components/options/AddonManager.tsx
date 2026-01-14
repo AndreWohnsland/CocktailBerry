@@ -1,8 +1,8 @@
-import React from 'react';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { addAddon, deleteAddon, updateAddon, useAddonData } from '../../api/options';
-import { AddonData } from '../../types/models';
+import type { AddonData } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
@@ -57,7 +57,11 @@ const AddonManager: React.FC = () => {
   const createAddonButton = (addon: AddonData) => {
     if (addon.is_installable && addon.official && !addon.installed) {
       return (
-        <button onClick={() => handleInstall(addon)} className='button-primary-filled flex items-center p-2 px-4'>
+        <button
+          type='button'
+          onClick={() => handleInstall(addon)}
+          className='button-primary-filled flex items-center p-2 px-4'
+        >
           <FaPlus className='mr-2' />
           {t('add')} ({addon.version})
         </button>
@@ -74,7 +78,11 @@ const AddonManager: React.FC = () => {
       return <div className='button-neutral !border !font-normal p-2 px-4'>{t('addons.notOfficial')}</div>;
     } else {
       return (
-        <button onClick={() => handleDelete(addon)} className='button-danger-filled flex items-center p-2 px-4'>
+        <button
+          type='button'
+          onClick={() => handleDelete(addon)}
+          className='button-danger-filled flex items-center p-2 px-4'
+        >
           <FaTrashAlt className='mr-2' /> {t('delete')}
         </button>
       );
@@ -99,7 +107,11 @@ const AddonManager: React.FC = () => {
             </div>
             <p>{addon.description}</p>
             {addon.can_update && (
-              <button onClick={() => handleUpdate(addon)} className='button-primary-filled p-2 px-4 mt-6 w-full'>
+              <button
+                type='button'
+                onClick={() => handleUpdate(addon)}
+                className='button-primary-filled p-2 px-4 mt-6 w-full'
+              >
                 {t('addons.update', { version: addon.version })}
               </button>
             )}

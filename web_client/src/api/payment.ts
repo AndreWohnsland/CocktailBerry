@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Cocktail, PaymentUserData, PaymentUserUpdate } from '../types/models';
+import type { Cocktail, PaymentUserData, PaymentUserUpdate } from '../types/models';
 import { errorToast } from '../utils';
 import { API_URL } from './common';
 
@@ -25,7 +25,7 @@ export const usePaymentWebSocket = (enabled: boolean) => {
     }
 
     // Create WebSocket URL (convert http to ws)
-    const wsUrl = API_URL.replace(/^http/, 'ws') + '/cocktails/ws/payment/user';
+    const wsUrl = `${API_URL.replace(/^http/, 'ws')}/cocktails/ws/payment/user`;
     const ws = new WebSocket(wsUrl);
     // Track if connection was ever established (to suppress StrictMode double-mount noise)
     let wasConnected = false;

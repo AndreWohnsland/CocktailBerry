@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { IconType } from 'react-icons';
 import { FaCocktail, FaUndo } from 'react-icons/fa';
@@ -114,6 +115,7 @@ const ConsumeWindow: React.FC = () => {
             {selectedData.cost && <ConsumeBarChart title={t('data.cost')} data={selectedData.cost} icon={FaCoins} />}
             {consumeData['AT RESET'].recipes && Object.keys(consumeData['AT RESET'].recipes).length > 0 && (
               <button
+                type='button'
                 className='button-danger p-2 w-full flex items-center justify-center max-w-lg'
                 onClick={resetData}
               >

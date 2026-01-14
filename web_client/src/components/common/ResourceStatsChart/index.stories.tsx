@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import ResourceStatsChart, { ResourceStatsChartProps } from '.';
+import ResourceStatsChart, { type ResourceStatsChartProps } from '.';
 
 const baseRaw = Array.from({ length: 100 }, (_, i) => 40 + Math.sin(i / 5) * 10 + (i % 7));
 

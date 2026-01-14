@@ -47,6 +47,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       />
       <div className={`flex ${showSearch ? '' : 'hidden'}`}>
         <button
+          type='button'
           onClick={() => setSearch('')}
           className='h-10 w-10 button-neutral flex items-center justify-center p-2 mr-1 !border'
         >
@@ -55,6 +56,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       </div>
       {afterInput && <div className={`mr-1 ${showSearch ? '' : 'hidden'}`}>{afterInput}</div>}
       <button
+        type='button'
         onClick={handleHideToggle}
         className='h-10 w-10 button-primary flex items-center justify-center p-2 !border pointer-events-auto'
       >

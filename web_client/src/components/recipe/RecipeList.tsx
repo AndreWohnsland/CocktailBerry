@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import type React from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaPen, FaPlus, FaTrashAlt, FaUpload } from 'react-icons/fa';
 import { MdNoDrinks } from 'react-icons/md';
@@ -14,7 +15,7 @@ import {
 } from '../../api/cocktails';
 import { useIngredients } from '../../api/ingredients';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
-import { Cocktail, CocktailInput } from '../../types/models';
+import type { Cocktail, CocktailInput } from '../../types/models';
 import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
 import CloseButton from '../common/CloseButton';
 import ErrorComponent from '../common/ErrorComponent';
@@ -109,6 +110,7 @@ const RecipeList: React.FC = () => {
       errorToast('Please select a file before uploading.');
       return;
     }
+    // biome-ignore lint/style/noNonNullAssertion: will always be defined here
     const success = await executeAndShow(() => uploadCocktailImage(selectedCocktail.id!, file));
     if (success) {
       refetch();
@@ -118,6 +120,7 @@ const RecipeList: React.FC = () => {
   const handleDeleteImage = async () => {
     if (!selectedCocktail?.id) return;
     const success = await confirmAndExecute(t('recipes.deleteExistingImage'), () =>
+      // biome-ignore lint/style/noNonNullAssertion: will always be defined here
       deleteCocktailImage(selectedCocktail.id!),
     );
     if (success) {
@@ -256,7 +259,7 @@ const RecipeList: React.FC = () => {
                 </label>
               </div>
               {selectedCocktail.ingredients.map((ingredient, index) => (
-                <div key={index} className='flex items-center'>
+                <div key={ingredient.id} className='flex items-center'>
                   <select
                     value={ingredient.id}
                     onChange={(e) => handleIngredientChange(index, e)}

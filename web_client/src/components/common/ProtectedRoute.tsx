@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { validateMakerPassword, validateMasterPassword } from '../../api/options';
 import { useAuth } from '../../providers/AuthProvider';
 import { useConfig } from '../../providers/ConfigProvider';

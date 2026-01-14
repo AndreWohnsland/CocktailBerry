@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
 import { OPTIONTABS } from '../../utils';
 
@@ -23,7 +23,7 @@ const TabSelector: React.FC<TabSelectorProps> = ({ selectedTab, onSelectTab }) =
       }`}
     >
       {OPTIONTABS.map((tab) => (
-        <button key={tab} onClick={() => onSelectTab(tab)} className={createClass(selectedTab === tab)}>
+        <button type='button' key={tab} onClick={() => onSelectTab(tab)} className={createClass(selectedTab === tab)}>
           {tab}
         </button>
       ))}
