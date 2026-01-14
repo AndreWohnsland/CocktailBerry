@@ -1,5 +1,5 @@
 import { FaPlus } from 'react-icons/fa';
-import { PossibleConfigValue } from '../../../types/models';
+import type { PossibleConfigValue } from '../../../types/models';
 import CloseButton from '../CloseButton';
 
 interface ListDisplayProps<T = PossibleConfigValue> {

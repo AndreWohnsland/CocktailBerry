@@ -9,7 +9,7 @@
 /* The story root inside the preview area */
 .sbdocs-preview .docs-story,
 .sbdocs-preview [data-story-root],
-.sbdocs-preview [id^='story--'] {
+.sbdocs-preview [id^="story--"] {
   background-color: var(--background-color) !important;
   color: var(--primary-color) !important;
 }

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import type React from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useConfig } from './ConfigProvider';
 
 interface IRestrictedMode {
@@ -57,6 +58,7 @@ export const RestrictedModeProvider = ({ children }: { children: React.ReactNode
     setHasPrompted(true);
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: handleSetRestrictedMode ignored here
   const contextValue = useMemo(
     () => ({
       restrictedModeActive,

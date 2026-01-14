@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { FaRegClock } from 'react-icons/fa';

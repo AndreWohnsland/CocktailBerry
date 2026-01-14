@@ -1,4 +1,5 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import type React from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getConfigValues } from '../api/options';
 import type { DefinedConfigData } from '../types/models';
@@ -51,6 +52,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     setTheme(newTheme);
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: ignore handleThemeChange
   const contextValue = useMemo(
     () => ({
       config,

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
@@ -28,12 +28,14 @@ const RestrictedModePrompt: React.FC = () => {
         <p className='mb-8'>{t('restrictedMode.message')}</p>
         <div className='flex space-x-4 justify-between'>
           <button
+            type='button'
             onClick={handleDecline}
             className='px-4 py-2 bg-neutral text-background rounded hover:bg-opacity-80 transition-colors'
           >
             {t('restrictedMode.decline')}
           </button>
           <button
+            type='button'
             onClick={handleAccept}
             className='px-4 py-2 bg-primary text-background rounded hover:bg-opacity-80 transition-colors'
           >

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { useConfig } from '../../providers/ConfigProvider';
@@ -31,6 +31,7 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ isOpen, amount, prepareCo
             const buttonClass = buttonClasses[index % buttonClasses.length];
             return (
               <button
+                type='button'
                 key={teamName}
                 className={`${buttonClass} p-2 w-full h-full text-xl`}
                 onClick={() => handleTeamSelection(teamName)}

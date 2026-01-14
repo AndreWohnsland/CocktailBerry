@@ -1,12 +1,13 @@
 // components/IngredientList.tsx
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaPen, FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { IoHandLeft } from 'react-icons/io5';
 import Modal from 'react-modal';
 import { deleteIngredient, postIngredient, updateIngredient, useIngredients } from '../../api/ingredients';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
-import { Ingredient, IngredientInput } from '../../types/models';
+import type { Ingredient, IngredientInput } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import CloseButton from '../common/CloseButton';
 import ErrorComponent from '../common/ErrorComponent';

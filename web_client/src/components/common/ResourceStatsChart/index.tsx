@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import defaultColor from '../../../defaults/defaultColor';
 import Metric from '../Metric';

@@ -66,7 +66,11 @@ export const WithAfterInput: Story = {
           search={search}
           tabBarVisible
           setSearch={setSearch}
-          afterInput={<button className='button-secondary px-2 h-10'>Filter</button>}
+          afterInput={
+            <button type='button' className='button-secondary px-2 h-10'>
+              Filter
+            </button>
+          }
           initiallyOpen={args.initiallyOpen}
         />
       </div>

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { prepareIngredient, useIngredients } from '../../api/ingredients';
-import { Ingredient } from '../../types/models';
+import type { Ingredient } from '../../types/models';
 import { errorToast } from '../../utils';
 import CloseButton from '../common/CloseButton';
 import ProgressModal from './ProgressModal';
@@ -66,11 +67,16 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
             </select>
 
             <div className='flex items-center space-x-8 mb-8'>
-              <button className='button-primary p-4 flex justify-center items-center' onClick={handleDecrement}>
+              <button
+                type='button'
+                className='button-primary p-4 flex justify-center items-center'
+                onClick={handleDecrement}
+              >
                 <FaMinus size={30} />
               </button>
               <span className='text-secondary text-3xl'>{amount}</span>
               <button
+                type='button'
                 className='button-primary button-primary p-4 flex justify-center items-center'
                 onClick={handleIncrement}
               >
@@ -79,6 +85,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
             </div>
 
             <button
+              type='button'
               className={`${selectedId ? 'button-primary-filled' : 'button-neutral'} p-2 w-full text-xl`}
               onClick={handleSpend}
               disabled={!selectedId}

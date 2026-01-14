@@ -1,5 +1,5 @@
-import { useQuery, UseQueryResult } from 'react-query';
-import { Cocktail, CocktailInput, CocktailStatus, Ingredient } from '../types/models';
+import { useQuery, type UseQueryResult } from 'react-query';
+import type { Cocktail, CocktailInput, CocktailStatus, Ingredient } from '../types/models';
 import { axiosInstance } from './common';
 
 const cocktail_url = '/cocktails';

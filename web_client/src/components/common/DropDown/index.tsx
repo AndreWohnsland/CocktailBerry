@@ -8,6 +8,7 @@ interface DropDownProps {
   allowedValues: string[] | Record<string, string> | DropDownOption[];
   handleInputChange: (value: string) => void;
   className?: string;
+  id?: string;
 }
 
 const isDropDownOptionArray = (values: unknown[]): values is DropDownOption[] => {
@@ -20,7 +21,7 @@ const isDropDownOptionArray = (values: unknown[]): values is DropDownOption[] =>
   );
 };
 
-const DropDown = ({ value, allowedValues, handleInputChange, className }: DropDownProps) => {
+const DropDown = ({ value, allowedValues, handleInputChange, className, id }: DropDownProps) => {
   let options: DropDownOption[];
 
   if (Array.isArray(allowedValues)) {
@@ -34,7 +35,12 @@ const DropDown = ({ value, allowedValues, handleInputChange, className }: DropDo
   }
 
   return (
-    <select value={value} onChange={(e) => handleInputChange(e.target.value)} className={`select-base ${className}`}>
+    <select
+      id={id}
+      value={value}
+      onChange={(e) => handleInputChange(e.target.value)}
+      className={`select-base ${className}`}
+    >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>
           {opt.label}

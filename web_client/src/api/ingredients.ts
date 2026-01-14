@@ -1,5 +1,5 @@
-import { useQuery, UseQueryResult } from 'react-query';
-import { Ingredient, IngredientInput } from '../types/models';
+import { useQuery, type UseQueryResult } from 'react-query';
+import type { Ingredient, IngredientInput } from '../types/models';
 import { axiosInstance } from './common';
 
 const ingredient_url = '/ingredients';

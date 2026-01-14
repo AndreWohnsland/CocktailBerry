@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useLogs } from '../../api/options';
 import ErrorComponent from '../common/ErrorComponent';
 import { JumpToTopButton } from '../common/JumpToTopButton';
@@ -30,12 +31,12 @@ const LogWindow: React.FC = () => {
   const setStyle = (log: string): string => {
     let style = 'px-1 break-all';
     if (selectedLogType === 'debuglog.log') {
-      return style + ' mb-6';
+      return `${style} mb-6`;
     }
     if (log.toLowerCase().includes('warning')) {
-      style = style + ' text-danger';
+      style = `${style} text-danger`;
     } else if (log.toLowerCase().includes('error')) {
-      style = style + ' text-background bg-danger rounded-sm my-1';
+      style = `${style} text-background bg-danger rounded-sm my-1`;
     }
     return style;
   };
@@ -59,6 +60,7 @@ const LogWindow: React.FC = () => {
       </div>
       <div className='flex-grow p-2'>
         {logData?.[selectedLogType]?.map((log: string, index: number) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: ordered from backend
           <div key={index} className={setStyle(log)}>
             {log}
           </div>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
@@ -7,7 +8,7 @@ import { API_URL } from '../../api/common';
 import { usePaymentWebSocket } from '../../api/payment';
 import { useConfig } from '../../providers/ConfigProvider';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
-import { Cocktail } from '../../types/models';
+import type { Cocktail } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import LockScreen from '../common/LockScreen';
@@ -65,6 +66,7 @@ const CocktailList: React.FC = () => {
 
   const virginToggleButton = (
     <button
+      type='button'
       onClick={() => setShowOnlyVirginPossible(!showOnlyVirginPossible)}
       className={`h-10 w-10 flex items-center justify-center p-2 !border pointer-events-auto ${
         showOnlyVirginPossible ? 'button-secondary' : 'button-primary'
@@ -99,7 +101,7 @@ const CocktailList: React.FC = () => {
             }
 
             return (
-              <div
+              <button
                 key={cocktail.id}
                 className={`border-2 rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold ${
                   isNotAllowed
@@ -107,7 +109,7 @@ const CocktailList: React.FC = () => {
                     : 'border-primary active:border-secondary bg-primary active:bg-secondary text-background cursor-pointer'
                 }`}
                 onClick={() => !isNotAllowed && setSelectedCocktail(cocktail)}
-                role='button'
+                type='button'
               >
                 <p className='text-center py-1 flex items-center justify-center'>
                   {cocktail.virgin_available && (
@@ -124,14 +126,14 @@ const CocktailList: React.FC = () => {
                     className='absolute top-0 left-0 w-full h-full object-cover'
                   />
                 </div>
-              </div>
+              </button>
             );
           })}
         {config.MAKER_ADD_SINGLE_INGREDIENT && !config.PAYMENT_ACTIVE && (
-          <div
+          <button
             className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
             onClick={() => setSingleIngredientOpen(true)}
-            role='button'
+            type='button'
           >
             <p className='text-center py-1 flex items-center justify-center'>{t('cocktails.singleIngredient')}</p>
             <div className='relative w-full' style={{ paddingTop: '100%' }}>
@@ -141,7 +143,7 @@ const CocktailList: React.FC = () => {
                 className='absolute top-0 left-0 w-full h-full object-cover'
               />
             </div>
-          </div>
+          </button>
         )}
       </div>
 

@@ -24,7 +24,6 @@ const ListView: React.FC<ListViewProps> = ({ ingredientList, setSelected, select
     <div className='h-full overflow-y-auto border-2 border-neutral rounded-md px-2 py-1'>
       {sortedIngredients.map((ingredient) => (
         // biome-ignore lint/a11y/useFocusableInteractive: will use div for now
-        // biome-ignore lint/a11y/useKeyWithClickEvents: will use div for now
         // biome-ignore lint/a11y/useSemanticElements: will use div for now
         <div
           key={ingredient.id}

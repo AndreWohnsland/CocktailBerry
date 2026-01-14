@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
 import Modal from 'react-modal';
 import { updateBottle } from '../../api/bottles';
-import { Bottle, Ingredient } from '../../types/models';
+import type { Bottle, Ingredient } from '../../types/models';
 import { errorToast, executeAndShow } from '../../utils';
 import CloseButton from '../common/CloseButton';
 import ProgressBar from '../common/ProgressBar';
@@ -75,7 +76,7 @@ const BottleComponent: React.FC<BottleProps> = ({
   const handleSelectionChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newIngredientId = Number.parseInt(event.target.value, 10);
     let possibleIngredients = freeIngredients;
-    let newIngredient = undefined;
+    let newIngredient: Ingredient | undefined;
 
     // Find the new ingredient only if the selected ID is not 0
     if (newIngredientId !== 0) {
@@ -127,7 +128,7 @@ const BottleComponent: React.FC<BottleProps> = ({
                 </option>
               ))}
           </select>
-          <button onClick={onToggle} className={getClass()}>
+          <button type='button' onClick={onToggle} className={getClass()}>
             {t('new')}
           </button>
         </div>
@@ -151,17 +152,18 @@ const BottleComponent: React.FC<BottleProps> = ({
             </p>
             <div className='flex-grow'></div>
             <div className='flex justify-center items-center mb-4 gap-2'>
-              <button className='button-primary p-2 h-full' onClick={() => setFillLevel(0)}>
+              <button type='button' className='button-primary p-2 h-full' onClick={() => setFillLevel(0)}>
                 Min
               </button>
-              <button onClick={() => adjustFillLevel(-50)} className='button-primary p-2'>
+              <button type='button' onClick={() => adjustFillLevel(-50)} className='button-primary p-2'>
                 <FaMinus size={25} />
               </button>
               <input type='number' value={tempFillLevel} readOnly className='input-base h-full' />
-              <button onClick={() => adjustFillLevel(50)} className='button-primary p-2'>
+              <button type='button' onClick={() => adjustFillLevel(50)} className='button-primary p-2'>
                 <FaPlus size={25} />
               </button>
               <button
+                type='button'
                 className='button-primary p-2 h-full'
                 onClick={() => setFillLevel(selectedIngredient?.bottle_volume ?? 0)}
               >
@@ -171,7 +173,7 @@ const BottleComponent: React.FC<BottleProps> = ({
             <div className='flex-grow'></div>
             <div className='flex justify-between'></div>
             <div className='mt-4 w-full'>
-              <button onClick={handleAdjustment} className='button-primary-filled w-full p-2 mb-2'>
+              <button type='button' onClick={handleAdjustment} className='button-primary-filled w-full p-2 mb-2'>
                 {t('save')}
               </button>
             </div>

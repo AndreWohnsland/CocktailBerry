@@ -137,7 +137,7 @@ const CalibrationWindow = () => {
 
       <div className='text-center text-lg font-semibold text-neutral mt-2'>
         <span className='mr-4'>{t('calibration.targetAmount', { amount: targetVolume })}</span>
-        <button className='button-primary text-sm px-3 py-1' onClick={handleReset}>
+        <button type='button' className='button-primary text-sm px-3 py-1' onClick={handleReset}>
           {t('calibration.reset')}
         </button>
       </div>
@@ -152,6 +152,7 @@ const CalibrationWindow = () => {
             </div>
             <div className='flex flex-col space-y-2'>
               <button
+                type='button'
                 className='button-primary p-2 flex justify-center items-center'
                 onClick={() => setChannel(Math.min(channel + 1, config.MAKER_NUMBER_BOTTLES))}
                 disabled={targetVolume > 0}
@@ -159,6 +160,7 @@ const CalibrationWindow = () => {
                 <FaPlus size={30} />
               </button>
               <button
+                type='button'
                 className='button-primary p-2 flex justify-center items-center'
                 onClick={() => setChannel(Math.max(1, channel - 1))}
                 disabled={targetVolume > 0}
@@ -173,12 +175,14 @@ const CalibrationWindow = () => {
             </div>
             <div className='flex flex-col space-y-2'>
               <button
+                type='button'
                 className='button-primary p-2 flex justify-center items-center'
                 onClick={() => setAmount(amount + 10)}
               >
                 <FaPlus size={30} />
               </button>
               <button
+                type='button'
                 className='button-primary p-2 flex justify-center items-center'
                 onClick={() => setAmount(Math.max(10, amount - 10))}
               >
@@ -190,11 +194,11 @@ const CalibrationWindow = () => {
           <div className='flex-grow py-2'></div>
           <div className='w-full space-y-3'>
             {targetVolume > 0 && (
-              <button className='button-primary text-lg p-4 w-full' onClick={handleNext}>
+              <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleNext}>
                 {t('calibration.next')}
               </button>
             )}
-            <button className='button-primary-filled text-lg p-4 w-full' onClick={handleStartPumping}>
+            <button type='button' className='button-primary-filled text-lg p-4 w-full' onClick={handleStartPumping}>
               {t('start')}
             </button>
           </div>
@@ -205,14 +209,22 @@ const CalibrationWindow = () => {
         <>
           <div className='w-full max-w-sm space-y-6'>
             <div className='space-y-2'>
-              <label className='block text-center text-lg font-semibold text-neutral'>
+              <label className='block text-center text-lg font-semibold text-neutral' htmlFor='measured-volume'>
                 {t('calibration.measuredAmount')}
               </label>
-              <NumberInput value={measuredVolume} handleInputChange={(v) => setMeasuredVolume(v)} suffix='ml' />
+              <NumberInput
+                id='measured-volume'
+                value={measuredVolume}
+                handleInputChange={(v) => setMeasuredVolume(v)}
+                suffix='ml'
+              />
             </div>
 
             <div className='space-y-2'>
-              <label className='flex items-center justify-center gap-2 text-lg font-semibold text-neutral'>
+              <label
+                className='flex items-center justify-center gap-2 text-lg font-semibold text-neutral'
+                htmlFor='ingredient-calibration'
+              >
                 {t('calibration.ingredientCalibration')}
                 <FaInfoCircle
                   className='text-neutral cursor-help'
@@ -220,6 +232,7 @@ const CalibrationWindow = () => {
                 />
               </label>
               <DropDown
+                id='ingredient-calibration'
                 value={selectedIngredientId}
                 allowedValues={ingredientDropdownOptions}
                 handleInputChange={(v) => setSelectedIngredientId(v)}
@@ -232,10 +245,11 @@ const CalibrationWindow = () => {
           <div className='flex-grow py-2'></div>
 
           <div className='w-full space-y-3'>
-            <button className='button-primary text-lg p-4 w-full' onClick={handleContinuePumping}>
+            <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleContinuePumping}>
               {t('calibration.continuePumping')}
             </button>
             <button
+              type='button'
               className='button-primary-filled text-lg p-4 w-full'
               onClick={handleApplyCalibration}
               disabled={!hasValidCalibration}

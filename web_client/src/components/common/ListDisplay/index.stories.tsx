@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-
-import ListDisplay from '.';
 import NumberInput from '../NumberInput';
+import ListDisplay from '.';
 
 const meta: Meta<typeof ListDisplay> = {
   title: 'Elements/ListDisplay',
@@ -54,6 +53,7 @@ export const Immutable: Story = {
 export const WithManyItems: Story = {
   args: {
     children: Array.from({ length: 10 }, (_, i) => (
+      // biome-ignore lint/suspicious/noArrayIndexKey: Testing
       <NumberInput key={i} value={i * 100} handleInputChange={(value) => console.log(value)} suffix='ml' />
     )),
     immutable: false,
