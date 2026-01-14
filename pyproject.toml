@@ -51,6 +51,12 @@ nfc = [
   "pyscard>=2.3.1",
 ]
 
+[tool.uv]
+override-dependencies = [
+    "pyqt6-qt6; sys_platform != 'linux' or python_version >= '3.12'",
+    "pyqt6; sys_platform != 'linux' or python_version >= '3.12'"
+]
+
 [tool.uv.pip]
 extra-index-url = [
     "https://pypi.python.org/simple",
