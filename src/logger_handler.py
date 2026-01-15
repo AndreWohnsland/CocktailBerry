@@ -51,7 +51,7 @@ class LoggerHandler:
             logger.addHandler(console_handler)
 
         self.logger = logging.getLogger(logger_name)
-        self.template = "{:-^80}"
+        self.template = "{:-^70}"
 
         # build internal debug logger if its not the debug logger itself
         # this is used to not log the exception in to the debug log

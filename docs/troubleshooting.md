@@ -32,6 +32,12 @@ bash scripts/setup_usb_nfc.sh
 If you are not on the latest Raspberry Pi OS, please consider updating your system first.
 The best way is to backup your data and do a fresh install of the OS.
 I personally cannot recommend upgrading an existing OS, except you know what you are doing and how to fix issues.
+Otherwise, you can run:
+
+```bash
+sudo apt update
+sudo apt install python3-pyqt6
+```
 
 ## Problems while Running the Program
 
