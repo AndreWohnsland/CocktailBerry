@@ -2,7 +2,7 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AndreWohnsland/CocktailBerry)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AndreWohnsland/CocktailBerry)
-![Python Version](https://img.shields.io/badge/python-%3E%3D%203.11-blue)
+![Python Version](https://img.shields.io/badge/python-%3E%3D%203.13-blue)
 ![GitHub](https://img.shields.io/github/license/AndreWohnsland/CocktailBerry)
 ![GitHub issues](https://img.shields.io/github/issues-raw/AndreWohnsland/CocktailBerry)
 [![Documentation Status](https://readthedocs.org/projects/cocktailberry/badge/?version=latest)](https://cocktailberry.readthedocs.io)
