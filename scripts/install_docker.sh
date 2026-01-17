@@ -24,7 +24,7 @@ while getopts ':n' 'OPTKEY'; do
 done
 
 echo "Installing Docker"
-sudo apt-get update && sudo apt-get -y upgrade
+sudo apt-get update
 sudo apt install docker.io -y
 docker --version || echo "Docker installation failed :("
 echo "Adds current user to docker permissions"
