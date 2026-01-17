@@ -32,7 +32,12 @@ fi
 
 # It otherwise might be that the blue window blocks everything and user needs to cancel it
 echo "~~ Setting needrestart to auto-restart services (at /etc/needrestart/needrestart.conf) ~~"
-sudo sed -i 's/#\$nrconf{restart} = .*/$nrconf{restart} = "a";/' /etc/needrestart/needrestart.conf || true
+sudo sed -i -E 's|^[# ]*\$nrconf\{restart\}\s*=.*|\$nrconf{restart} = "a";|' /etc/needrestart/needrestart.conf || echo "> Could not set needrestart to auto-restart services, but continuing ..."
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+
+echo "~~ Disabling needrestart kernel hints ~~"
+sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf || echo "> Could not disable needrestart kernel hints, but continuing ..."
 
 echo "~~ Updating system to latest version, depending on your system age, this may take some time ... ~~"
 sudo apt-get update && sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
