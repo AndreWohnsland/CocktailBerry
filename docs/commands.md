@@ -69,8 +69,6 @@ This command will set up the web interface as the default interface.
 Take care, this wil no longer start the main program, but the web interface.
 The web interface will then be accessible over a web browser, which will be opened in Kiosk mode on the machine.
 If you want to access the web interface from another device, you can open the browser and navigate to `http://<ip>` or locally on `http://localhost`.
-You can also set up SSL, this is only necessary if you want to manage backups over another device and not directly on the machine.
-This is the limitation sending files over the network, which is not possible without SSL.
 If SSL is enabled, since this is a self-signed certificate, you will get a warning in the browser, which user can ignore.
 
 ```bash

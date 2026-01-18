@@ -13,6 +13,16 @@ Machines without a display (e.g. Headless) are no longer a dream, you can build 
 In addition, the API (backend) is no longer tightly coupled to the frontend.
 Advanced users can use the API for their own use, like writing their own frontend or automating tasks over home automation.
 
+## Quick Install
+
+You can also directly install it over the all in one installer script by specifying `v2` as version.
+
+```bash
+wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash -s v2
+```
+
+This will do the similar setup steps as in v1, but directly install the web interface version.
+
 ## Requirements
 
 It is not recommended to use this on Raspberry Pi 3 series or older, as the performance might not be sufficient.
@@ -23,6 +33,7 @@ You do not need a touch screen, just a device being able to connect to the same 
 However, a touchscreen can be used to control the app directly on the Raspberry Pi.
 
 As a word of caution: Currently it is difficult to propagate events to open the keyboard on kiosk mode (full screen).
+This is only an issue if you are using a touchscreen directly connected to the Raspberry Pi, not over phone or tablet.
 You might start with a none full screen web browser for now, but we are working on a solution.
 
 ## Limitations
@@ -35,8 +46,9 @@ Installing maliit keyboard might also be an alternative.
 
 ## Installation
 
-The easiest way to use the new interface is to use the CocktailBerry CLI [setup-web command](commands.md#switch-to-cocktailberry-web), once you installed CocktailBerry the usual way.
+The easiest way to use the new interface is to use the CocktailBerry CLI [setup-web command](commands.md#switch-to-cocktailberry-web), if you installed CocktailBerry the usual way.
 Existing installations should update to at least version v2.0.0 to have this command available.
+Or you can use the v2 flag in the all in one installer script [as shown above](#quick-install).
 
 !!! warning "Before starting"
     Before you start the update, make sure to backup your data.
@@ -47,12 +59,13 @@ Existing installations should update to at least version v2.0.0 to have this com
 ```bash
 cd ~/CocktailBerry
 # optional with --ssl to enable https
-uv run --python "$(python -V | awk '{print $2}')" --extra v1 setup-web
+uv run runme.py setup-web
 ```
 
 This will set up the web interface as the default interface and start it instead of the old main program.
 You can now access the the website by opening your browser and navigating to `http://<ip>` or locally on `http://localhost`.
-You will need SSL setup if you want to manage backups remotely, see also [setup-web command](commands.md#switch-to-cocktailberry-web).
+
+Note: In the following section we use `uv run api.py` instead of `uv run runme.py` to start the web interface.
 
 ## Enable the Virtual Keyboard
 
@@ -62,7 +75,7 @@ If it should not show up when clicking on an input field, you can try to enable 
 
 ```bash
 cd ~/CocktailBerry
-uv run runme.py add-virtual-keyboard
+uv run api.py add-virtual-keyboard
 ```
 
 ## Disable the Virtual Keyboard
@@ -71,7 +84,7 @@ If you enabled it via the command above and want to disable it again, you can do
 
 ```bash
 cd ~/CocktailBerry
-uv run runme.py remove-virtual-keyboard
+uv run api.py remove-virtual-keyboard
 ```
 
 In case you have not enabled it via the command above, you can also disable it by removing over raspi-config.
@@ -88,5 +101,5 @@ If you want to go back to the old interface, you can do so by running the follow
 
 ```bash
 cd ~/CocktailBerry
-uv run switch-back
+uv run api.py switch-back
 ```

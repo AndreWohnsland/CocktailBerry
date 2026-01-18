@@ -292,10 +292,7 @@ def _check_and_replace_qt_launcher_script() -> None:
         uv_executable = shutil.which("uv")
         platform_name = platform.system().lower()
         if not VENV_FOLDER.exists() and uv_executable and platform_name == "linux":
-            subprocess.run(
-                [uv_executable, "uv", "venv", "--system-site-packages", "--python", "$(python -V | awk '{print $2}')"],
-                check=True,
-            )
+            subprocess.run([uv_executable, "uv", "venv"], check=True)
         roll_back_to_qt_script()
 
 

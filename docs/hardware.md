@@ -24,7 +24,7 @@ The following components were used within the showcase for the Machines (Cocktai
 - Some wires, [Hex-Standoffs](https://amzn.to/4oRQBd0), Screws and other small parts for mounting
 - Your custom build machine casing
 - *Optional*: [HDMI](https://amzn.to/4ra7Wzo) and [USB](https://amzn.to/48n4NF7) cable for small space builds
-- *Optional*: A good! [converter](https://www.amazon.de/dp/B086W6B9H1) (using usb ones may result in too high voltage loss) if you only want one power source
+- *Optional*: A good! [converter](https://amzn.to/4qT18oW) (using usb ones may result in too high voltage loss) if you only want one power source
 - *Optional*: [USB C](https://amzn.to/3X9I7lw) or [Micro USB](https://amzn.to/4oQDCIu) open cable
 
 ## Payment Service

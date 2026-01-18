@@ -2,6 +2,12 @@ version = 1
 revision = 3
 requires-python = ">=3.11"
 
+[manifest]
+overrides = [
+    { name = "pyqt6", marker = "python_full_version >= '3.12' or sys_platform != 'linux'" },
+    { name = "pyqt6-qt6", marker = "python_full_version >= '3.12' or sys_platform != 'linux'" },
+]
+
 [[package]]
 name = "alembic"
 version = "1.14.1"
@@ -225,7 +231,7 @@ nfc = [
     { name = "pyscard" },
 ]
 v1 = [
-    { name = "pyqt6" },
+    { name = "pyqt6", marker = "python_full_version >= '3.12' or sys_platform != 'linux'" },
     { name = "pyqtwaitingspinner" },
     { name = "qtawesome" },
     { name = "qtsass" },
@@ -1380,7 +1386,7 @@ name = "pyqt6"
 version = "6.10.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyqt6-qt6" },
+    { name = "pyqt6-qt6", marker = "python_full_version >= '3.12' or sys_platform != 'linux'" },
     { name = "pyqt6-sip" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5c/f5/530b553ea1e239704c5ba86e9e6dd09e4b6240c5b4ee0567d7a135e8466a/pyqt6-6.10.1.tar.gz", hash = "sha256:d733a6c712c0b7a7b99e4ad59b211ea25a5d1b9d1131e47a1f50b5e524266e57", size = 1085250, upload-time = "2025-12-06T09:56:00.439Z" }
@@ -1438,7 +1444,7 @@ name = "pyqtwaitingspinner"
 version = "1.2.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyqt6" },
+    { name = "pyqt6", marker = "python_full_version >= '3.12' or sys_platform != 'linux'" },
     { name = "pyyaml" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a6/3a/1c45c936b38abdea67df63b39bab8b0a64164c8b5f5115f6197a7c4123b3/pyqtwaitingspinner-1.2.6.tar.gz", hash = "sha256:d72d2f09ff781130002ce6334e19d6fe76b3dc10fa382608e7de81a32fed2501", size = 17040, upload-time = "2024-07-18T22:48:23.879Z" }

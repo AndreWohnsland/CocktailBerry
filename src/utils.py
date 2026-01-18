@@ -104,12 +104,11 @@ def restart_v1() -> None:
     """Restart the v1 Application.
 
     Cases we have:
-    - Standard: uv run --python <version> --extra v1 --extra nfc runme.py [arguments]
-    - Root privilege: uv sync --python <version> --extra v1 --extra nfc && sudo -E path/env/python runme.py [arguments]
+    - Standard: uv run --extra v1 --extra nfc runme.py [arguments]
+    - Root privilege: uv sync --extra v1 --extra nfc && sudo -E path/env/python runme.py [arguments]
     """
     arguments, python, uv_executable = _common_restart()
-    py_version = subprocess.check_output([python, "-V"], text=True).strip().split()[1]
-    uv_args = ["--python", py_version, "--extra", "v1", "--extra", "nfc"]
+    uv_args = ["--extra", "v1", "--extra", "nfc"]
     cmd = [uv_executable, "run", *uv_args] if uv_executable else [python]
     if "SUDO_USER" in os.environ:
         cmd = ["sudo", "-E", python]
