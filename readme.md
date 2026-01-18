@@ -87,7 +87,6 @@ Otherwise, you can manually install it using [uv](https://docs.astral.sh/uv/gett
 cd ~
 git clone https://github.com/AndreWohnsland/CocktailBerry.git
 cd CocktailBerry
-uv venv --system-site-packages
 uv sync --extra v1 --extra nfc # <- use the nfc extra only if you want nfc support
 uv run runme.py
 ```

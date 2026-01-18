@@ -130,14 +130,14 @@ A better way would be to add the user to the gpio/other needed groups, so you ca
 
 ```bash
 # for v1: change this line
-# uv run --python "$(python -V | awk '{print $2}')" --extra v1 runme.py
+# uv run --extra v1 --extra nfc runme.py
 # into:
-uv sync --python "$(python -V | awk '{print $2}')" --extra v1
+uv sync --extra v1 --extra nfc
 sudo -E .venv/bin/python runme.py
 # for v2: change this line
-# uv run api.py
+# uv run --extra nfc api.py
 # into:
-uv sync
+uv sync --extra nfc
 sudo -E .venv/bin/python api.py
 ```
 
