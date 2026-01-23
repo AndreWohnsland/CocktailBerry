@@ -57,22 +57,6 @@ fi
 echo "~~ linking python to python3 if not already done ~~"
 sudo apt install python-is-python3
 
-# steps for python >= 3.11
-echo "~~ Check that Python version is at least 3.11 ~~"
-version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
-parsedVersion="${version//./}"
-echo "> Detected version: $version"
-if [[ "$parsedVersion" -lt "3110" ]]; then
-  echo "> Python must be at least 3.11. Please upgrade your Python or the system to use CocktailBerry."
-  echo "> You can check your local Python version with 'python -V'"
-  echo "> If you have an older system, python3 -V may use the python 3, you should set up python that the python command uses python 3"
-  echo "> For a tutorial, you can look at https://alluaravind1313.medium.com/make-python3-as-default-in-ubuntu-machine-572431b69094"
-  echo "> 'apt install python-is-python3' may also fix this, but should already be installed previous this step"
-  exit 1
-else
-  echo "> You got a valid Python version."
-fi
-
 # might also need to install python-venv
 echo "~~ Check if python3-venv and ensurepip are available ~~"
 python3 -m venv --help >/dev/null 2>&1

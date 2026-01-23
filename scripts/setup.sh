@@ -46,7 +46,7 @@ else
 fi
 
 echo "> Installing nmcli, this is needed for wifi setup"
-sudo apt install network-manager
+sudo apt install network-manager liblgpio-dev
 
 # using desktop file for autostart
 echo "> Copying desktop file to: /etc/xdg/autostart/cocktail.desktop"
@@ -101,15 +101,16 @@ else
   echo "> Installing needed Python libraries, this may take a while depending on your OS (especially in v1), so it is time for a coffee break :)"
   # v1 needs to sync with system python (for pyqt)
   if [[ "$V2_FLAG" = true ]]; then
-    uv sync --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
+    uv sync --inexact --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
   else
     echo "> Installing PyQt"
     sudo apt-get -y install python3-pyqt6 || echo "ERROR: Could not install PyQt6" >&2
-    uv sync --extra v1 --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
+    uv sync --inexact --extra v1 --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
   fi
   if is_raspberry_pi5; then
     sudo usermod -aG gpio "$(whoami)"
     newgrp gpio
+    uv pip install lgpio
   fi
   # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
   if ! is_raspberry_pi; then

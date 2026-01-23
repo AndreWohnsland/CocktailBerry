@@ -132,12 +132,12 @@ A better way would be to add the user to the gpio/other needed groups, so you ca
 # for v1: change this line
 # uv run --extra v1 --extra nfc runme.py
 # into:
-uv sync --extra v1 --extra nfc
+uv sync --inexact --extra v1 --extra nfc
 sudo -E .venv/bin/python runme.py
 # for v2: change this line
 # uv run --extra nfc api.py
 # into:
-uv sync --extra nfc
+uv sync --inexact --extra nfc
 sudo -E .venv/bin/python api.py
 ```
 

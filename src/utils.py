@@ -113,7 +113,7 @@ def restart_v1() -> None:
     if "SUDO_USER" in os.environ:
         cmd = ["sudo", "-E", python]
         if uv_executable:
-            subprocess.run([uv_executable, "sync", *uv_args], check=True)
+            subprocess.run([uv_executable, "sync", "--inexact", *uv_args], check=True)
     os.execvp(cmd[0], [*cmd, str(EXECUTABLE_V1), *arguments])
 
 
@@ -134,7 +134,7 @@ def restart_v2() -> None:
     if "SUDO_USER" in os.environ:
         cmd = ["sudo", "-E", python]
         if uv_executable:
-            subprocess.run([uv_executable, "sync"], check=True)
+            subprocess.run([uv_executable, "sync", "--inexact"], check=True)
     os.execvp(cmd[0], [*cmd, str(EXECUTABLE_V2), *arguments])
 
 
