@@ -37,7 +37,7 @@ export DEBIAN_FRONTEND=noninteractive
 export NEEDRESTART_MODE=a
 
 echo "~~ Disabling needrestart kernel hints ~~"
-sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf || echo "> Could not disable needrestart kernel hints, but continuing ..."
+sudo sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf || echo "> Could not disable needrestart kernel hints, but continuing ..."
 
 echo "~~ Updating system to latest version, depending on your system age, this may take some time ... ~~"
 sudo apt-get update && sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
