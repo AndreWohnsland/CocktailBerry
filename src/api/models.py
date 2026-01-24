@@ -132,3 +132,11 @@ class AboutInfo(BaseModel):
     platform: str
     project_name: str
     version: str
+
+
+class NewsResponse(BaseModel):
+    """Response model for news endpoint containing translation keys and their translations."""
+
+    news: dict[str, str] = Field(
+        ..., description="Dictionary mapping news keys to their translated text content"
+    )

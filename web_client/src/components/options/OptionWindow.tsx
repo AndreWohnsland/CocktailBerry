@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { BsBootstrapReboot, BsInfoCircleFill } from 'react-icons/bs';
-import { FaCocktail, FaExclamationTriangle, FaInfoCircle, FaRegClock } from 'react-icons/fa';
+import { FaCocktail, FaExclamationTriangle, FaInfoCircle, FaNewspaper, FaRegClock } from 'react-icons/fa';
 import { FaCalculator, FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
 import { GrUpdate } from 'react-icons/gr';
 import { MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
@@ -152,6 +152,7 @@ const OptionWindow = () => {
             onClick={() => confirmAndExecute(t('options.shutdownTheSystem'), shutdownSystem)}
           />
           <TileButton label={t('options.logs')} icon={FaInfoCircle} onClick={() => navigate('logs')} />
+          <TileButton label={t('options.news')} filled icon={FaNewspaper} onClick={() => navigate('news')} />
           <TileButton
             label={t('options.updateSystem')}
             filled

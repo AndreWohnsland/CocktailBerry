@@ -18,7 +18,15 @@ from src.api.api_config import Tags
 from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
 from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import master_protected_dependency
-from src.api.models import ApiMessage, DataResponse, DateTimeInput, IssueData, PasswordInput, WifiData
+from src.api.models import (
+    ApiMessage,
+    DataResponse,
+    DateTimeInput,
+    IssueData,
+    NewsResponse,
+    PasswordInput,
+    WifiData,
+)
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import generate_consume_data
@@ -381,3 +389,34 @@ async def get_resource_stats_endpoint(session_number: int) -> ResourceStats:
 async def get_resource_stats_all_sessions_endpoint() -> list[ResourceInfo]:
     """Get system resource usage statistics and timeline for all sessions."""
     return DatabaseCommander().get_resource_session_numbers()
+
+
+@router.get("/news", summary="Get all unacknowledged news items")
+async def get_news() -> NewsResponse:
+    """Get all news items that haven't been acknowledged yet.
+    
+    Returns a dictionary mapping news keys to their translated content.
+    """
+    from src.ui.setup_news_window import _NEWS_KEYS
+    
+    db_commander = DatabaseCommander()
+    unacknowledged_keys = db_commander.get_unacknowledged_news_keys(_NEWS_KEYS)
+    
+    # Build dictionary of key -> translated content
+    news_dict = {}
+    for key in unacknowledged_keys:
+        news_dict[key] = DH.get_translation(f"news_window.{key}")
+    
+    return NewsResponse(news=news_dict)
+
+
+@protected_router.post("/news/{news_key}", summary="Acknowledge a specific news item")
+async def acknowledge_news(news_key: str) -> ApiMessage:
+    """Mark a news item as acknowledged so it won't be shown again.
+    
+    Args:
+        news_key: The key of the news item to acknowledge
+    """
+    db_commander = DatabaseCommander()
+    db_commander.acknowledge_news(news_key)
+    return ApiMessage(message="News acknowledged successfully")

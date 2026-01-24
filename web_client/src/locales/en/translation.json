@@ -97,6 +97,7 @@
     "internetCheck": "Internet Check",
     "issues": "Issues",
     "logs": "Logs",
+    "news": "News",
     "reboot": "Reboot",
     "rebootTheSystem": "Do you want to reboot the System?",
     "restore": "Restore",
@@ -108,6 +109,10 @@
     "updateSystem": "Update System",
     "updateTheSystem": "Do you want to update the System?",
     "wifi": "WiFi"
+  },
+  "news": {
+    "noNews": "No news available",
+    "acknowledge": "OK"
   },
   "calibration": {
     "pumpCalibrationProgram": "Pump Calibration",

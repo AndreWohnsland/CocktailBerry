@@ -97,6 +97,7 @@
     "internetCheck": "Internetprüfung",
     "issues": "Probleme",
     "logs": "Logs",
+    "news": "Neuigkeiten",
     "reboot": "Neustart",
     "rebootTheSystem": "Möchtest du das System neu starten?",
     "restore": "Wiederherstellen",
@@ -108,6 +109,10 @@
     "updateSystem": "System aktualisieren",
     "updateTheSystem": "Möchtest du das System aktualisieren?",
     "wifi": "WLAN"
+  },
+  "news": {
+    "noNews": "Keine Neuigkeiten verfügbar",
+    "acknowledge": "OK"
   },
   "calibration": {
     "pumpCalibrationProgram": "Pumpen Kalibrieren",

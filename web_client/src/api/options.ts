@@ -208,3 +208,16 @@ export const getAboutInfo = async (): Promise<AboutInfo> => {
 export const useAboutInfo = (): UseQueryResult<AboutInfo, Error> => {
   return useQuery<AboutInfo, Error>('aboutInfo', getAboutInfo);
 };
+
+// News
+export const getNews = async (): Promise<Record<string, string>> => {
+  return axiosInstance.get<{ news: Record<string, string> }>(`${optionsUrl}/news`).then((res) => res.data.news);
+};
+
+export const useNews = (): UseQueryResult<Record<string, string>, Error> => {
+  return useQuery<Record<string, string>, Error>('news', getNews);
+};
+
+export const acknowledgeNews = async (newsKey: string): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${optionsUrl}/news/${newsKey}`).then((res) => res.data);
+};
