@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtWidgets import QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui_elements import Ui_NewsWindow
@@ -24,7 +24,6 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
         super().__init__()
         self.setupUi(self)
         self.mainscreen = mainscreen
-        self.db_commander = DatabaseCommander()
         DP_CONTROLLER.initialize_window_object(self)
         self.button_back.clicked.connect(self.close)
 
@@ -36,7 +35,7 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
     def _render_news(self) -> None:
         """Render not removed/acknowledged news items."""
         # Get unacknowledged news from database
-        unacknowledged_keys = self.db_commander.get_unacknowledged_news_keys(_NEWS_KEYS)
+        unacknowledged_keys = DB_COMMANDER.get_unacknowledged_news_keys(_NEWS_KEYS)
         
         if not unacknowledged_keys:
             # Show placeholder when there are no news
@@ -68,7 +67,7 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
         # Acknowledge button
         acknowledge_btn = QPushButton(UI_LANGUAGE.get_translation("news_window.acknowledge"))
         acknowledge_btn.setProperty("cssClass", "btn-primary")
-        acknowledge_btn.clicked.connect(lambda: self._acknowledge_news(news_key, widget))
+        acknowledge_btn.clicked.connect(lambda key=news_key, w=widget: self._acknowledge_news(key, w))
         layout.addWidget(acknowledge_btn)
         
         widget.setLayout(layout)
@@ -78,7 +77,7 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
     def _acknowledge_news(self, news_key: str, widget: QWidget) -> None:
         """Acknowledge a news item so it won't be shown again."""
         # Update database
-        self.db_commander.acknowledge_news(news_key)
+        DB_COMMANDER.acknowledge_news(news_key)
         
         # Remove widget from layout
         self.data_container.removeWidget(widget)

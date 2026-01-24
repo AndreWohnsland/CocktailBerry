@@ -825,16 +825,19 @@ class DatabaseCommander:
             List of news keys that haven't been seen/acknowledged
         """
         with self.session_scope() as session:
-            # Get or create news entries for all keys
-            for key in all_news_keys:
-                existing = session.query(DbNews).filter_by(key=key).first()
-                if not existing:
-                    session.add(DbNews(key=key, seen=False))
-            session.commit()
+            # Get existing news keys in a single query
+            existing_news = session.query(DbNews.key).all()
+            existing_keys = {row[0] for row in existing_news}
             
-            # Get all unseen news
-            unseen_news = session.query(DbNews).filter_by(seen=False).all()
-            return [news.key for news in unseen_news]
+            # Determine missing keys and add them in bulk
+            missing_keys = [key for key in all_news_keys if key not in existing_keys]
+            if missing_keys:
+                session.bulk_save_objects([DbNews(key=key, seen=False) for key in missing_keys])
+                session.commit()
+            
+            # Get all unseen news in a single query
+            unseen_news = session.query(DbNews.key).filter_by(seen=False).all()
+            return [row[0] for row in unseen_news]
 
     def acknowledge_news(self, news_key: str) -> None:
         """Mark a news item as seen/acknowledged.
