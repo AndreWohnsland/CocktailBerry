@@ -852,10 +852,6 @@ class UiLanguage:
         """Translate the elements from the logs window."""
         w.button_back.setText(self._choose_language("back"))
 
-    def adjust_news_window(self, w: Ui_NewsWindow) -> None:
-        """Translate the elements from the news window."""
-        w.button_back.setText(self._choose_language("back"))
-
     def adjust_rfid_reader_window(self, w: Ui_RFIDWriterWindow) -> None:
         """Translate the elements on the RFID reader window."""
         window = "rfid_writer"
@@ -962,7 +958,7 @@ class UiLanguage:
         w.button_apply.setText(self._choose_language("apply"))
 
     def adjust_news_window(self, w: Ui_NewsWindow) -> None:
-        """Adjusts the texts of the news window for UI language."""
+        """Adjust the texts of the news window for UI language."""
         w.setWindowTitle(self._choose_language("news_window.title"))
         w.button_back.setText(self._choose_language("news_window.back"))
         w.button_back.setProperty("cssClass", "btn-inverted")

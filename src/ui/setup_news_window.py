@@ -36,7 +36,7 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
         """Render not removed/acknowledged news items."""
         # Get unacknowledged news from database
         unacknowledged_keys = DB_COMMANDER.get_unacknowledged_news_keys(_NEWS_KEYS)
-        
+
         if not unacknowledged_keys:
             # Show placeholder when there are no news
             no_news_label = QLabel(UI_LANGUAGE.get_translation("news_window.no_news"))
@@ -44,7 +44,7 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
             no_news_label.setProperty("cssClass", "text-lg")
             self.data_container.addWidget(no_news_label)
             return
-        
+
         # Render each news item
         for news_key in unacknowledged_keys:
             news_widget = self._create_news_widget(news_key)
@@ -56,20 +56,20 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
         layout = QVBoxLayout()
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
-        
+
         # News content label
         news_text = UI_LANGUAGE.get_translation(f"news_window.{news_key}")
         news_label = QLabel(news_text)
         news_label.setWordWrap(True)
         news_label.setProperty("cssClass", "text-base")
         layout.addWidget(news_label)
-        
+
         # Acknowledge button
         acknowledge_btn = QPushButton(UI_LANGUAGE.get_translation("news_window.acknowledge"))
         acknowledge_btn.setProperty("cssClass", "btn-primary")
         acknowledge_btn.clicked.connect(lambda key=news_key, w=widget: self._acknowledge_news(key, w))
         layout.addWidget(acknowledge_btn)
-        
+
         widget.setLayout(layout)
         widget.setProperty("cssClass", "card")
         return widget
@@ -78,11 +78,11 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
         """Acknowledge a news item so it won't be shown again."""
         # Update database
         DB_COMMANDER.acknowledge_news(news_key)
-        
+
         # Remove widget from layout
         self.data_container.removeWidget(widget)
         widget.deleteLater()
-        
+
         # If no more news, show placeholder
         if self.data_container.count() == 0:
             no_news_label = QLabel(UI_LANGUAGE.get_translation("news_window.no_news"))
