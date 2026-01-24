@@ -20,6 +20,7 @@ from src.db_models import (
     DbCocktailIngredient,
     DbIngredient,
     DbIngredientExport,
+    DbNews,
     DbRecipe,
     DbResourceUsage,
     DbTeamdata,
@@ -813,6 +814,39 @@ class DatabaseCommander:
             top_ing_ids: list[int] = [row[0] for row in top_pairs]
 
         return set(top_ing_ids)
+
+    def get_unacknowledged_news_keys(self, all_news_keys: list[str]) -> list[str]:
+        """Get all news keys that have not been acknowledged yet.
+        
+        Args:
+            all_news_keys: List of all available news translation keys
+            
+        Returns:
+            List of news keys that haven't been seen/acknowledged
+        """
+        with self.session_scope() as session:
+            # Get or create news entries for all keys
+            for key in all_news_keys:
+                existing = session.query(DbNews).filter_by(key=key).first()
+                if not existing:
+                    session.add(DbNews(key=key, seen=False))
+            session.commit()
+            
+            # Get all unseen news
+            unseen_news = session.query(DbNews).filter_by(seen=False).all()
+            return [news.key for news in unseen_news]
+
+    def acknowledge_news(self, news_key: str) -> None:
+        """Mark a news item as seen/acknowledged.
+        
+        Args:
+            news_key: The translation key of the news to acknowledge
+        """
+        with self.session_scope() as session:
+            news = session.query(DbNews).filter_by(key=news_key).first()
+            if news:
+                news.seen = True
+                session.commit()
 
 
 DB_COMMANDER = DatabaseCommander()

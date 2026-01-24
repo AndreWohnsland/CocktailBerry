@@ -898,3 +898,22 @@ ui:
     deviation_too_large:
       en: 'Deviation too large, please check'
       de: 'Abweichung zu groß, bitte prüfen'
+
+  ##### NEWS WINDOW #####
+  # all values for news window
+  news_window:
+    title:
+      en: 'News'
+      de: 'Neuigkeiten'
+    back:
+      en: '< Back'
+      de: '< Zurück'
+    no_news:
+      en: 'No news available'
+      de: 'Keine Neuigkeiten verfügbar'
+    acknowledge:
+      en: 'OK'
+      de: 'OK'
+    news_v2_available:
+      en: 'The new web interface (v2) is now available! Access it from any device on your network. Check out the documentation for more information.'
+      de: 'Das neue Web-Interface (v2) ist jetzt verfügbar! Greife darauf von jedem Gerät in deinem Netzwerk zu. Weitere Informationen findest du in der Dokumentation.'

@@ -215,3 +215,13 @@ class DbResourceUsage(Base):
         self.ram_usage = ram_usage
         self.session = session
         self.timestamp = timestamp or datetime.datetime.now()
+
+
+class DbNews(Base):
+    __tablename__ = "News"
+    key: Mapped[str] = mapped_column(primary_key=True, nullable=False, name="Key")
+    seen: Mapped[bool] = mapped_column(nullable=False, default=False, name="Seen")
+
+    def __init__(self, key: str, seen: bool = False) -> None:
+        self.key = key
+        self.seen = seen

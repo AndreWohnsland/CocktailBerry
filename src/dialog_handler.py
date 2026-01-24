@@ -961,6 +961,12 @@ class UiLanguage:
         w.label_measured.setText(self._choose_language("measured_amount", window))
         w.button_apply.setText(self._choose_language("apply"))
 
+    def adjust_news_window(self, w: Ui_NewsWindow) -> None:
+        """Adjusts the texts of the news window for UI language."""
+        w.setWindowTitle(self._choose_language("news_window.title"))
+        w.button_back.setText(self._choose_language("news_window.back"))
+        w.button_back.setProperty("cssClass", "btn-inverted")
+
 
 UI_LANGUAGE = UiLanguage()
 DIALOG_HANDLER = DialogHandler()
