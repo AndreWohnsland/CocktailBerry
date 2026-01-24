@@ -22,6 +22,7 @@ from src.ui.creation_utils import setup_worker_thread
 from src.ui.setup_addon_window import AddonWindow
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_log_window import LogWindow
+from src.ui.setup_news_window import NewsWindow
 from src.ui.setup_resource_window import ResourceWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_wifi_window import WiFiWindow
@@ -76,6 +77,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_update_software.clicked.connect(self._update_software)
         self.button_resources.clicked.connect(self._resource_insights)
         self.button_about.clicked.connect(DP_CONTROLLER.say_welcome_message)
+        self.button_news.clicked.connect(self._open_news_window)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
 
@@ -94,7 +96,6 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def _open_config(self) -> None:
         """Open the config window."""
-        # self.close()
         self.config_window = ConfigWindow(self.mainscreen)
 
     def _init_clean_machine(self) -> None:
@@ -184,7 +185,6 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def _show_logs(self) -> None:
         """Open the logs window."""
-        # self.close()
         self.log_window = LogWindow()
 
     def _open_rfid_writer(self) -> None:
@@ -194,13 +194,15 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def _open_wifi_window(self) -> None:
         """Open a window to configure wifi."""
-        # self.close()
         self.wifi_window = WiFiWindow(self.mainscreen)
 
     def _open_addon_window(self) -> None:
         """Open a window to configure wifi."""
-        # self.close()
         self.addon_window = AddonWindow(self.mainscreen)
+
+    def _open_news_window(self) -> None:
+        """Open the news window."""
+        self.news_window = NewsWindow(self.mainscreen)
 
     def _check_internet_connection(self) -> None:
         """Check if there is a active internet connection."""
