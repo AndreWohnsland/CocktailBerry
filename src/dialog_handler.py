@@ -43,6 +43,7 @@ if TYPE_CHECKING:
         Ui_Datepicker,
         Ui_LogWindow,
         Ui_MainWindow,
+        Ui_NewsWindow,
         Ui_Optionwindow,
         Ui_PasswordDialog,
         Ui_PictureWindow,
@@ -849,6 +850,10 @@ class UiLanguage:
 
     def adjust_log_window(self, w: Ui_LogWindow) -> None:
         """Translate the elements from the logs window."""
+        w.button_back.setText(self._choose_language("back"))
+
+    def adjust_news_window(self, w: Ui_NewsWindow) -> None:
+        """Translate the elements from the news window."""
         w.button_back.setText(self._choose_language("back"))
 
     def adjust_rfid_reader_window(self, w: Ui_RFIDWriterWindow) -> None:
