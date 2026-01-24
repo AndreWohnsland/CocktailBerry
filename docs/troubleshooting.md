@@ -384,3 +384,17 @@ I've noticed when running as root (sudo python) and running as the pi user (pyth
 Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
 Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
 Using the users environment with `sudo -E python runme.py` should also do the trick.
+
+### Raspberry Pi 5 GPIO Issues
+
+If you are using a Raspberry Pi 5, you may run into issues with the lgpio library for GPIO access.
+The latest installer should already address this issue.
+But if you are running an old installation and did a kernel update, some things might have changed.
+To fix possible issues with lgpio on the Raspberry Pi 5, please run the following commands:
+
+```bash
+cd "$HOME/CocktailBerry/"
+sudo apt install liblgpio-dev
+uv pip install lgpio
+uv run --extra v1 --extra nfc runme.py
+```
