@@ -29,7 +29,7 @@ const NewsWindow: React.FC = () => {
   }
 
   if (error) {
-    return <ErrorComponent error={error} />;
+    return <ErrorComponent text={error.message} />;
   }
 
   const newsEntries = Object.entries(data || {});
