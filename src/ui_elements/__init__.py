@@ -24,6 +24,7 @@ from .cocktail_selection import Ui_CocktailSelection
 from .config_window import Ui_ConfigWindow
 from .customcolor import Ui_ColorWindow
 from .datawindow import Ui_DataWindow
+from .news_window import Ui_NewsWindow
 from .picture_window import Ui_PictureWindow
 from .refill_prompt import Ui_RefillPrompt
 from .resource_window import Ui_ResourceWindow
@@ -45,6 +46,7 @@ __all__ = [
     "Ui_Keyboard",
     "Ui_LogWindow",
     "Ui_MainWindow",
+    "Ui_NewsWindow",
     "Ui_NumpadWindow",
     "Ui_Optionwindow",
     "Ui_PasswordDialog",

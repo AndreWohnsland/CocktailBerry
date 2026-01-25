@@ -1,3 +1,4 @@
+from enum import IntEnum
 from typing import Callable, Optional
 
 from PyQt6.QtCore import QObject, QSize, Qt, QThread
@@ -12,10 +13,11 @@ LARGE_FONT = 18
 HEADER_FONT = 22
 
 
-class FontSize:
+class FontSize(IntEnum):
     SMALL = SMALL_FONT
     MEDIUM = MEDIUM_FONT
     LARGE = LARGE_FONT
+    HEADER = HEADER_FONT
 
 
 class RowCounter:

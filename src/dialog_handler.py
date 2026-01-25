@@ -43,6 +43,7 @@ if TYPE_CHECKING:
         Ui_Datepicker,
         Ui_LogWindow,
         Ui_MainWindow,
+        Ui_NewsWindow,
         Ui_Optionwindow,
         Ui_PasswordDialog,
         Ui_PictureWindow,
@@ -115,6 +116,8 @@ allowed_keys = Literal[
     "name_already_exists",
     "needs_to_be_int_specific",
     "needs_to_be_int",
+    "news_acknowledged",
+    "news_v2_available",
     "no_button",
     "no_ingredient_selected",
     "no_recipe_selected",
@@ -849,6 +852,10 @@ class UiLanguage:
 
     def adjust_log_window(self, w: Ui_LogWindow) -> None:
         """Translate the elements from the logs window."""
+        w.button_back.setText(self._choose_language("back"))
+
+    def adjust_news_window(self, w: Ui_NewsWindow) -> None:
+        """Translate the elements from the news window."""
         w.button_back.setText(self._choose_language("back"))
 
     def adjust_rfid_reader_window(self, w: Ui_RFIDWriterWindow) -> None:

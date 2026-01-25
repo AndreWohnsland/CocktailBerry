@@ -30,6 +30,7 @@ from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BAC
 from src.models import AddonData, ConsumeData, ResourceInfo, ResourceStats
 from src.programs.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
+from src.shared import NEWS_KEYS
 from src.updater import UpdateInfo, Updater
 from src.utils import (
     get_log_files,
@@ -381,3 +382,27 @@ async def get_resource_stats_endpoint(session_number: int) -> ResourceStats:
 async def get_resource_stats_all_sessions_endpoint() -> list[ResourceInfo]:
     """Get system resource usage statistics and timeline for all sessions."""
     return DatabaseCommander().get_resource_session_numbers()
+
+
+@router.get("/news", summary="Get all unacknowledged news items")
+async def get_news() -> DataResponse[dict[str, str]]:
+    """Get all news items that haven't been acknowledged yet.
+
+    Returns a dictionary mapping news keys to their translated content.
+    """
+    db_commander = DatabaseCommander()
+    unacknowledged_keys = db_commander.get_unacknowledged_news_keys(NEWS_KEYS)
+
+    news_dict = {}
+    for key in unacknowledged_keys:
+        news_dict[key] = DH.get_translation(key)  # type: ignore[arg-type]
+
+    return DataResponse(data=news_dict)
+
+
+@protected_router.post("/news/{news_key}", summary="Acknowledge a specific news item", dependencies=[not_on_demo])
+async def acknowledge_news(news_key: str) -> ApiMessage:
+    """Mark a news item as acknowledged so it won't be shown again."""
+    db_commander = DatabaseCommander()
+    db_commander.acknowledge_news(news_key)
+    return ApiMessage(message=DH.get_translation("news_acknowledged"))

@@ -17,6 +17,7 @@ import CalibrationWindow from './components/options/CalibrationWindow.tsx';
 import ConfigWindow from './components/options/ConfigWindow.tsx';
 import DataWindow from './components/options/DataWindow.tsx';
 import LogWindow from './components/options/LogWindow.tsx';
+import NewsWindow from './components/options/NewsWindow.tsx';
 import OptionWindow from './components/options/OptionWindow.tsx';
 import TimeManager from './components/options/TimeManager.tsx';
 import WifiManager from './components/options/WifiManager.tsx';
@@ -136,6 +137,14 @@ function App() {
               element={
                 <MasterPasswordProtected>
                   <LogWindow />
+                </MasterPasswordProtected>
+              }
+            />
+            <Route
+              path='options/news'
+              element={
+                <MasterPasswordProtected>
+                  <NewsWindow />
                 </MasterPasswordProtected>
               }
             />

@@ -296,6 +296,15 @@ dialog:
   new_ingredient_speed:
     en: 'Ingredient {ingredient_name} speed factor adjusted to {new_speed} %.'
     de: 'Zutaten {ingredient_name} Geschwindigkeitsfaktor auf {new_speed} % angepasst.'
+  news_default_message:
+    en: 'Welcome to CocktailBerry! Check out the documentation at https://docs.cocktailberry.org to get started and learn more about the features. If you like this project, consider supporting it on GitHub or the other platforms.'
+    de: 'Willkommen bei CocktailBerry! Schaue dir die Dokumentation unter https://docs.cocktailberry.org an, um loszulegen und mehr über die Funktionen zu erfahren. Wenn dir dieses Projekt gefällt, unterstütze es auf GitHub oder den anderen Plattformen.'
+  news_v2_available:
+    en: 'The new web interface (v2) is now available! Access it from any device on your network. Check out the documentation for more information.'
+    de: 'Das neue Web-Interface (v2) ist jetzt verfügbar! Greife darauf von jedem Gerät in deinem Netzwerk zu. Weitere Informationen findest du in der Dokumentation.'
+  news_acknowledged:
+    en: 'News acknowledged successfully'
+    de: 'Nachricht erfolgreich bestätigt'
 
 # Change of language in UI elements
 ui:
@@ -898,3 +907,13 @@ ui:
     deviation_too_large:
       en: 'Deviation too large, please check'
       de: 'Abweichung zu groß, bitte prüfen'
+
+  ##### NEWS WINDOW #####
+  # all values for news window
+  news_window:
+    no_news:
+      en: 'You are up to date!'
+      de: 'Du bist auf dem neuesten Stand!'
+    acknowledge:
+      en: 'Do not show again'
+      de: 'Nicht mehr anzeigen'
