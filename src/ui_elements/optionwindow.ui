@@ -100,6 +100,9 @@
             <property name="text">
              <string>Change Config</string>
             </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
+            </property>
            </widget>
           </item>
           <item row="6" column="0" colspan="2">
@@ -124,6 +127,9 @@
             </property>
             <property name="text">
              <string>Update CocktailBerry Software</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
             </property>
            </widget>
           </item>
@@ -202,6 +208,9 @@
             </property>
             <property name="text">
              <string>Calibration</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
             </property>
            </widget>
           </item>
@@ -302,6 +311,9 @@
             </property>
             <property name="text">
              <string>Cleaning</string>
+            </property>
+            <property name="cssClass" stdset="0">
+             <string>btn-inverted</string>
             </property>
            </widget>
           </item>

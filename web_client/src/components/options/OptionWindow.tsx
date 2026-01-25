@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { BsBootstrapReboot, BsInfoCircleFill } from 'react-icons/bs';
-import { FaCocktail, FaExclamationTriangle, FaInfoCircle, FaRegClock } from 'react-icons/fa';
+import { FaCocktail, FaExclamationTriangle, FaInfoCircle, FaNewspaper, FaRegClock } from 'react-icons/fa';
 import { FaCalculator, FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
 import { GrUpdate } from 'react-icons/gr';
 import { MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
@@ -129,6 +129,7 @@ const OptionWindow = () => {
           <TileButton label={t('options.cleaning')} filled icon={MdWaterDrop} iconSize={22} onClick={cleanClick} />
           <TileButton
             label={t('options.calibration')}
+            filled
             icon={FaScaleUnbalanced}
             onClick={() => navigate('calibration')}
           />
@@ -192,12 +193,8 @@ const OptionWindow = () => {
             icon={FaCalculator}
             onClick={() => navigate('/manage/recipes/calculation')}
           />
-          <TileButton
-            label={t('options.about')}
-            icon={BsInfoCircleFill}
-            className='md:col-span-2'
-            onClick={() => setIsAboutModalOpen(true)}
-          />
+          <TileButton label={t('options.news')} icon={FaNewspaper} onClick={() => navigate('news')} />
+          <TileButton label={t('options.about')} icon={BsInfoCircleFill} onClick={() => setIsAboutModalOpen(true)} />
         </div>
       </div>
       <AboutModal isOpen={isAboutModalOpen} onClose={() => setIsAboutModalOpen(false)} aboutInfo={aboutInfo} />

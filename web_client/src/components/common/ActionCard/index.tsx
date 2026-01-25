@@ -31,7 +31,7 @@ const ActionCard = ({
         <button
           type='button'
           onClick={onActionClick}
-          className={`button-${actionStyle}-filled p-2 mt-2 w-full items-center justify-center flex`}
+          className={`button-${actionStyle}-filled p-2 mt-4 w-full items-center justify-center flex`}
         >
           {Icon && <span className='mr-3'>{<Icon size={22} />}</span>}
           {actionText}

@@ -116,6 +116,8 @@ allowed_keys = Literal[
     "name_already_exists",
     "needs_to_be_int_specific",
     "needs_to_be_int",
+    "news_acknowledged",
+    "news_v2_available",
     "no_button",
     "no_ingredient_selected",
     "no_recipe_selected",
