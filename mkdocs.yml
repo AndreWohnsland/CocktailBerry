@@ -14,7 +14,7 @@ nav:
   - CocktailBerry Web: web.md
   - Supported Languages: languages.md
   - CLI commands: commands.md
-  - Payment Service: payment.md
+  - Payment Feature: payment.md
   - Advanced Topics: advanced.md
   - Addons: addons.md
   - Troubleshooting: troubleshooting.md

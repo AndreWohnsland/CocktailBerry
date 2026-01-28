@@ -1,4 +1,4 @@
-# Setting Up and Using the Payment
+# Setting Up and Using the Payment Feature
 
 !!! info "First Of All"
     Take note that none of this section is required to run the base program.
@@ -44,8 +44,8 @@ To use payments with CocktailBerry, you will need the following:
     - CocktailBerry version 3.0 or higher
 
 === "SumUp"
-    - A SumUp Solo Terminal
-    - A SumUp Account fully set up and you merchant code
+    - A [SumUp Solo Terminal](https://store.sumup.com/de-DE/website/product-selection/card_reader.solo_bundle_cradle)
+    - A [SumUp Account](https://www.sumup.com/) fully set up and you merchant code
     - API key generated for your account
     - CocktailBerry version 3.1 or higher
 
@@ -131,7 +131,28 @@ Overall Process:
     User will then pay the cocktails over NFC cards, while service personal can manage the users and top up balances via the GUI separately.
 
 === "SumUp"
-    TODO: Add sequence diagram for SumUp
+    ```mermaid
+    sequenceDiagram
+        actor c as Customer
+        participant t as SumUp Terminal
+        participant cb as CocktailBerry
+        participant p as SumUp API
+        c->>cb: Order Cocktail
+        cb->>+p: Request Payment
+        p->>t: Start Payment
+        c->>t: Pay Over Terminal
+        t->>p: Sends Transaction Data
+        p->>-cb: Receives Data
+        cb->>c: Spend Cocktail
+    ```
+
+    The customer orders a cocktail from the CocktailBerry machine.
+    CocktailBerry requests a payment from the SumUp API.
+    The SumUp API communicates with the SumUp Terminal to start the payment process.
+    The customer pays using the terminal over Card or other supported methods.
+    The transaction data is sent back to the SumUp API, which then is polled by CocktailBerry about the successful payment.
+    Since this is done over the cloud API, CocktailBerry and the Terminal both need to be connected to the internet.
+    Once the payment is confirmed, CocktailBerry processes the order and dispenses the cocktail.
 
 ## Setup
 
@@ -157,9 +178,14 @@ The recommended way for a "basic" hardware setup is:
     MacOS might work as well, but is not officially supported.
 
 === "SumUp"
-    - A CocktailBerry machine + SumUp Solo Terminal
+    - A CocktailBerry machine + [SumUp Solo Terminal](https://store.sumup.com/de-DE/website/product-selection/card_reader.solo_bundle_cradle)
 
-    TODO: Add setup instructions for SumUp
+    You will need a setup [sumup](https://www.sumup.com/) account for this to work.
+    Once created, you will be asked multiple things during the account setup.
+    When you are done, see at your account settings, where you should see your Merchant Code (a string starting with "MCM").
+    In addition, you will need to [create an API key](https://me.sumup.com/settings/api-keys) for your account.
+    Keep this safe, you will need it in the CocktailBerry settings.
+    
 
 ### Installation Steps
 
@@ -209,7 +235,21 @@ The recommended way for a "basic" hardware setup is:
     You might need to restart your device after the installation is done, depending on the options you selected and your OS.
 
 === "SumUp"
-    TODO: something about account, api key and maybe connect terminal + get merchant code
+    First, you will need to provide both, the SumUp API key as well as the merchant code to CocktailBerry.
+    You can enter both over the GUI, or edit the `custom_config.yaml` directly in the CocktailBerry folder, since the copying the key is better.
+    Look for the `PAYMENT_SUMUP_API_KEY` and `PAYMENT_SUMUP_MERCHANT_CODE` entries and set them accordingly.
+    In addition, you will need to select the SumUp payment option in the GUI or set `PAYMENT_OPTION` to `SumUp` in the config file.
+
+    After that, you will need to connect your terminal to the internet following the steps on it.
+    Then select Cloud API mode on the terminal.
+    It will display a code, you will need this in CocktailBerry to link the terminal to your account.
+    Go to options -> SumUp, there you can give you Terminal a name and enter the code.
+    After submitting, you should see a successful message and the terminal should be displayed and selected in the list of connected Terminals.
+    In case you own multiple machines and registered terminals, you can also select or change the terminal over the dropdown.
+    Take note that only one terminal per machine is supported.
+    The terminal identifier will be stored in the config file as `PAYMENT_SUMUP_TERMINAL_ID`.
+
+    Since you will store the API key in you settings, which is accessible over the options GUI, make sure to set a good master password to protect your settings.
 
 ## Configuration
 
@@ -230,3 +270,4 @@ Some important options are:
 
 === "SumUp"
     - **Opt In**: Enable and select the SumUp payment integration.
+    - **Account Info**: API key, Merchant code and Terminal ID.
