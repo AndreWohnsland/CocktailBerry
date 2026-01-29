@@ -63,7 +63,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
             _logger.error(f"Update failed: {e}")
             _logger.log_exception(e)
     ADDONS.start_trigger_loop()
-    if cfg.PAYMENT_ACTIVE:
+    if cfg.cocktailberry_payment:
         NFCPaymentService().start_continuous_sensing()
     yield
     mc.cleanup()

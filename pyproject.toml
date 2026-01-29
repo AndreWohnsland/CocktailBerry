@@ -70,7 +70,7 @@ allow-direct-references = true
 # don't check import order in the migration script
 line-length = 120
 exclude = ["ui_elements", "addon_skeleton.py"]
-target-version = "py39"
+target-version = "py311"
 
 [tool.ruff.lint]
 extend-safe-fixes = [

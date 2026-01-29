@@ -7,19 +7,24 @@ Simply separating by build in types is not enough for dict or list types.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections.abc import Iterable, Mapping
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Callable, Generic, Protocol, TypeVar, get_args
+from typing import Any, Generic, Protocol, Self, TypeVar, get_args
 
-from typing_extensions import Self
-
-from src import SupportedLanguagesType, SupportedLedStatesType, SupportedRfidType, SupportedThemesType
+from src import (
+    SupportedLanguagesType,
+    SupportedLedStatesType,
+    SupportedPaymentOptions,
+    SupportedRfidType,
+    SupportedThemesType,
+)
 from src.config.errors import ConfigError
 
 SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
 SUPPORTED_THEMES = list(get_args(SupportedThemesType))
 SUPPORTED_RFID = list(get_args(SupportedRfidType))
 SUPPORTED_LED_STATES = list(get_args(SupportedLedStatesType))
+SUPPORTED_PAYMENT = list(get_args(SupportedPaymentOptions))
 
 T = TypeVar("T")
 
@@ -128,6 +133,7 @@ class ChooseOptions:
     rfid = ChooseType(allowed=SUPPORTED_RFID)
     theme = ChooseType(allowed=SUPPORTED_THEMES)
     leds = ChooseType(allowed=SUPPORTED_LED_STATES)
+    payment = ChooseType(allowed=SUPPORTED_PAYMENT)
 
 
 class StringType(_ConfigType[str]):
@@ -171,7 +177,7 @@ class FloatType(_ConfigType[float]):
     def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
         # also accepts integers since they are basically floats
-        if not (isinstance(value, (int, float))):
+        if not (isinstance(value, int | float)):
             raise ConfigError(f"The value <{value}> for '{configname}' is not of type {self.config_type}")
         for validator in self.validator_functions:
             validator(configname, value)

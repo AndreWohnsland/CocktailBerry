@@ -25,7 +25,9 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
 }) => {
   const { config } = useConfig();
   const [currentProgress, setCurrentProgress] = useState(progress);
-  const [currentStatus, setCurrentStatus] = useState<string>(config.PAYMENT_ACTIVE ? 'WAITING_FOR_NFC' : 'IN_PROGRESS');
+  const [currentStatus, setCurrentStatus] = useState<string>(
+    config.PAYMENT_TYPE !== 'Disabled' ? 'WAITING_FOR_PAYMENT' : 'IN_PROGRESS',
+  );
   const [message, setMessage] = useState<string | null>(null);
   const { t } = useTranslation();
 
@@ -62,7 +64,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         const cocktailStatus = await getCocktailStatus();
         setCurrentStatus(cocktailStatus.status);
         setCurrentProgress(cocktailStatus.progress);
-        if (cocktailStatus.status === 'IN_PROGRESS' || cocktailStatus.status === 'WAITING_FOR_NFC') {
+        if (cocktailStatus.status === 'IN_PROGRESS' || cocktailStatus.status === 'WAITING_FOR_PAYMENT') {
           return;
         }
         cancelInterval();
@@ -81,7 +83,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
   }, [isOpen, closeWindow]);
 
   const chooseButton = (status: string) => {
-    if (status === 'WAITING_FOR_NFC') {
+    if (status === 'WAITING_FOR_PAYMENT') {
       return (
         <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={handleCancelPayment}>
           {t('cancel')}
@@ -114,7 +116,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     >
       <div className='progress-modal h-full flex flex-col justify-between'>
         <TextHeader text={displayName} huge />
-        {currentStatus === 'WAITING_FOR_NFC' ? (
+        {currentStatus === 'WAITING_FOR_PAYMENT' ? (
           <div className='flex flex-col items-center justify-center flex-grow gap-8'>
             <FaCreditCard className='text-primary animate-pulse' size={120} />
             <div className='text-center'>

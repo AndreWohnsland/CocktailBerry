@@ -71,9 +71,23 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
 
 def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
     """Run the payment flow in QT UI."""
-    if not cfg.PAYMENT_ACTIVE:
-        return CocktailBooking.inactive()
+    match cfg.PAYMENT_TYPE:
+        case "Disabled":
+            return CocktailBooking.inactive()
+        case "SumUp":
+            return sumup_payment_flow(cocktail)
+        case "CocktailBerry":
+            return cocktailberry_payment_flow(cocktail)
 
+
+def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:
+    """Run the SumUp payment flow for qt."""
+    # TODO: implement SumUp payment flow
+    return CocktailBooking.inactive()
+
+
+def cocktailberry_payment_flow(cocktail: Cocktail) -> CocktailBooking:
+    """Run the cocktailberry payment flow for qt."""
     payment_service = NFCPaymentService()
     polling_time = cfg.PAYMENT_TIMEOUT_S
     start_time = time.time()

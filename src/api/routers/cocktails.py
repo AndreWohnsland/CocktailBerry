@@ -76,7 +76,7 @@ async def get_cocktails(
     DBC = DatabaseCommander()
     cocktails = DBC.get_possible_cocktails(max_hand_add) if only_possible else DBC.get_all_cocktails()
 
-    if cfg.PAYMENT_ACTIVE:
+    if cfg.cocktailberry_payment:
         user = payment_handler.get_current_user()
         cocktails = filter_cocktails_by_user(user.user, cocktails)
 
@@ -135,10 +135,11 @@ async def prepare_cocktail(
     if request.selected_team is not None:
         shared.selected_team = request.selected_team
         shared.team_member_name = request.team_member_name
-    if cfg.PAYMENT_ACTIVE:
+    # TODO: implement sumup flow here
+    if cfg.cocktailberry_payment:
         # Start payment flow - NFC scanning will happen first, then cocktail preparation
         background_tasks.add_task(payment_handler.start_payment_flow, cocktail)
-        return CocktailStatus(status=PrepareResult.WAITING_FOR_NFC)
+        return CocktailStatus(status=PrepareResult.WAITING_FOR_PAYMENT)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
@@ -304,7 +305,7 @@ async def websocket_payment_user(
     """
     await websocket.accept()
 
-    if not cfg.PAYMENT_ACTIVE:
+    if not cfg.cocktailberry_payment:
         await websocket.close()
         return
 

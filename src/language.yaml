@@ -749,12 +749,12 @@ ui:
     TEAM_API_URL:
       en: 'URL address for teams API'
       de: 'URL Adresse der Teams API'
-    PAYMENT_ACTIVE:
-      en: 'Activate the payment function over NFC/RFID'
-      de: 'Aktiviert die Zahlungsfunktion über NFC/RFID'
+    PAYMENT_TYPE:
+      en: 'Type of payment integration to use; official CocktailBerry Payment service (NFC) or SumUp'
+      de: 'Art der Zahlungsintegration, die verwendet werden soll; offizieller CocktailBerry Zahlungsservice (NFC) oder SumUp'
     PAYMENT_PRICE_ROUNDING:
-      en: 'Rounding for payment prices, round up to next multiple of number, e.g. 0.25 will round 3.60 to 3.75; 1.00 will round 3.33 to 4.00.'
-      de: 'Rundung für Zahlungsbeträge, runde auf das nächste Vielfache der Zahl auf, z.B. 0,25 rundet 3,60 auf 3,75; 1,00 rundet 3,33 auf 4,00.'
+      en: 'Rounding for payment prices, round up to next multiple of number, e.g. 0.25 will round 3.60 to 3.75; 1.00 will round 3.33 to 4.00'
+      de: 'Rundung für Zahlungsbeträge, runde auf das nächste Vielfache der Zahl auf, z.B. 0,25 rundet 3,60 auf 3,75; 1,00 rundet 3,33 auf 4,00'
     PAYMENT_VIRGIN_MULTIPLIER:
       en: 'Multiplier percentage to apply to virgin cocktail prices'
       de: 'Multiplikator Prozentsatz, der auf Preise für alkoholfreie Cocktails angewendet wird'
@@ -770,6 +770,15 @@ ui:
     PAYMENT_SECRET_KEY:
       en: 'Secret key for payment service API'
       de: 'Geheimer Schlüssel für Zahlungsservice API'
+    PAYMENT_SUMUP_API_KEY:
+      en: 'API key for SumUp payment integration'
+      de: 'API Schlüssel für SumUp Zahlungsintegration'
+    PAYMENT_SUMUP_MERCHANT_CODE:
+      en: 'Merchant code for SumUp payment integration'
+      de: 'Händlercode für SumUp Zahlungsintegration'
+    PAYMENT_SUMUP_TERMINAL_ID:
+      en: 'Terminal ID for SumUp payment integration (usually auto-managed over setup UI)'
+      de: 'Terminal ID für SumUp Zahlungsintegration (üblicherweise automatisch über Setup UI verwaltet)'
     PAYMENT_TIMEOUT_S:
       en: 'Timeout in seconds before reader cancels payment NFC/RFID scan'
       de: 'Timeout in Sekunden bevor der Leser den NFC/RFID Zahlungs-Scan abbricht'

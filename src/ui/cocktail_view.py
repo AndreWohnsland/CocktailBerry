@@ -170,7 +170,7 @@ class CocktailView(QWidget):
         Starts continuous polling to detect user login/logout/changes.
         """
         needs_nfc_user_protection = (
-            cfg.PAYMENT_ACTIVE and cfg.PAYMENT_LOCK_SCREEN_NO_USER and self._last_known_user is None
+            cfg.cocktailberry_payment and cfg.PAYMENT_LOCK_SCREEN_NO_USER and self._last_known_user is None
         )
         if needs_nfc_user_protection:
             self._show_nfc_scan_message()
@@ -186,7 +186,7 @@ class CocktailView(QWidget):
         DP_CONTROLLER.delete_items_of_layout(self.grid)
         cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
         # filter cocktails based on user criteria if payment is active
-        if cfg.PAYMENT_ACTIVE:
+        if cfg.cocktailberry_payment:
             cocktails = filter_cocktails_by_user(self._last_known_user, cocktails)
             # remove if machine owner do not want to show not possible cocktails
             if not cfg.PAYMENT_SHOW_NOT_POSSIBLE:
@@ -201,7 +201,7 @@ class CocktailView(QWidget):
                 block = generate_image_block(cocktails[i + j], self.mainscreen)
                 self.grid.addLayout(block, i // n_columns, j)
         # Optionally add the single ingredient block after all cocktails
-        if cfg.MAKER_ADD_SINGLE_INGREDIENT and not cfg.PAYMENT_ACTIVE:
+        if cfg.MAKER_ADD_SINGLE_INGREDIENT and not cfg.cocktailberry_payment:
             total = len(cocktails)
             row = total // n_columns
             col = total % n_columns

@@ -213,7 +213,7 @@ class NFCPaymentService:
         # need to check that the right nfc reader is connected only USB is supported
         if cfg.RFID_READER == "No":
             _logger.error("No NFC reader type specified. Disabling payment service.")
-            cfg.PAYMENT_ACTIVE = False
+            cfg.PAYMENT_TYPE = "Disabled"
             return
         _logger.info("Starting continuous NFC sensing for NFCPaymentService.")
         self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)

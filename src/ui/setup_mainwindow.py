@@ -6,7 +6,7 @@ Also defines the Mode for controls.
 # pylint: disable=unnecessary-lambda
 import os
 import platform
-from typing import Any, Optional
+from typing import Any
 
 from PyQt6.QtCore import QEvent, QEventLoop, QObject
 from PyQt6.QtGui import QIntValidator, QMouseEvent
@@ -86,22 +86,22 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         DP_CONTROLLER.adjust_bottle_number_displayed(self)
 
         # init the empty further screens
-        self.numpad_window: Optional[NumpadWidget] = None
-        self.keyboard_window: Optional[KeyboardWidget] = None
-        self.progress_window: Optional[ProgressScreen] = None
-        self.bottle_window: Optional[BottleWindow] = None
-        self.ingredient_window: Optional[GetIngredientWindow] = None
-        self.available_window: Optional[AvailableWindow] = None
-        self.team_window: Optional[TeamScreen] = None
-        self.option_window: Optional[OptionWindow] = None
-        self.datepicker: Optional[DatePicker] = None
-        self.picture_window: Optional[PictureWindow] = None
-        self.refill_dialog: Optional[RefillDialog] = None
+        self.numpad_window: NumpadWidget | None = None
+        self.keyboard_window: KeyboardWidget | None = None
+        self.progress_window: ProgressScreen | None = None
+        self.bottle_window: BottleWindow | None = None
+        self.ingredient_window: GetIngredientWindow | None = None
+        self.available_window: AvailableWindow | None = None
+        self.team_window: TeamScreen | None = None
+        self.option_window: OptionWindow | None = None
+        self.datepicker: DatePicker | None = None
+        self.picture_window: PictureWindow | None = None
+        self.refill_dialog: RefillDialog | None = None
         self.cocktail_view = CocktailView(self)
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
-        self.cocktail_selection: Optional[CocktailSelection] = None
-        if cfg.PAYMENT_ACTIVE:
+        self.cocktail_selection: CocktailSelection | None = None
+        if cfg.cocktailberry_payment:
             NFCPaymentService().start_continuous_sensing()
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
@@ -145,7 +145,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         ADDONS.start_trigger_loop(self)
         # start at the cocktail list view
         self.switch_to_cocktail_list()
-        if cfg.PAYMENT_ACTIVE:
+        if cfg.cocktailberry_payment:
             NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
 
     def update_check(self) -> None:
@@ -239,7 +239,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def switch_to_cocktail_detail(self) -> None:
         if self.cocktail_selection is None:
             return
-        if cfg.PAYMENT_ACTIVE:
+        if cfg.cocktailberry_payment:
             NFCPaymentService().remove_callback("cocktail_list")
         self.container_maker.setCurrentWidget(self.cocktail_selection)
 
@@ -248,7 +248,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self.container_maker.currentWidget() == self.cocktail_view:
             return
         self.container_maker.setCurrentWidget(self.cocktail_view)
-        if not cfg.PAYMENT_ACTIVE:
+        if not cfg.cocktailberry_payment:
             return
         # need to emit this, in case we switch back from detail view and auto logout happened when user was there
         # this is because we pause the cocktail_list callback when we are in detail view

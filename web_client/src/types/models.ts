@@ -71,9 +71,8 @@ export type PrepareResult =
   | 'FINISHED'
   | 'CANCELED'
   | 'NOT_ENOUGH_INGREDIENTS'
-  | 'COCKTAIL_NOT_FOUND'
   | 'ADDON_ERROR'
-  | 'WAITING_FOR_NFC'
+  | 'WAITING_FOR_PAYMENT'
   | 'UNDEFINED';
 
 export interface UserAuth {
@@ -145,13 +144,16 @@ export interface DefinedConfigData {
   TEAMS_ACTIVE: boolean;
   TEAM_BUTTON_NAMES: string[];
   TEAM_API_URL: string;
-  PAYMENT_ACTIVE: boolean;
+  PAYMENT_TYPE: 'Disabled' | 'CocktailBerry' | 'SumUp';
   PAYMENT_PRICE_ROUNDING: number;
   PAYMENT_VIRGIN_MULTIPLIER: number;
   PAYMENT_SHOW_NOT_POSSIBLE: boolean;
   PAYMENT_LOCK_SCREEN_NO_USER: boolean;
   PAYMENT_SERVICE_URL: string;
   PAYMENT_SECRET_KEY: string;
+  PAYMENT_SUMUP_API_KEY: string;
+  PAYMENT_SUMUP_MERCHANT_CODE: string;
+  PAYMENT_SUMUP_TERMINAL_ID: string;
   PAYMENT_TIMEOUT_S: number;
   PAYMENT_AUTO_LOGOUT_TIME_S: number;
   PAYMENT_LOGOUT_AFTER_PREPARATION: boolean;

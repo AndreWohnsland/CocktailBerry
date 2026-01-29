@@ -24,7 +24,7 @@ class NFCPaymentHandler:
         """Start the NFC payment flow for a cocktail.
 
         This method handles:
-        1. Setting cocktail status to WAITING_FOR_NFC
+        1. Setting cocktail status to WAITING_FOR_PAYMENT
         2. Starting NFC polling with timeout
         3. Processing payment on successful NFC scan
         4. Starting cocktail preparation on successful payment
@@ -32,7 +32,7 @@ class NFCPaymentHandler:
         _logger.info("Starting NFC payment flow")
         booking = CocktailBooking.no_user_logged_in()
         shared.cocktail_status.message = booking.message
-        shared.cocktail_status.status = PrepareResult.WAITING_FOR_NFC
+        shared.cocktail_status.status = PrepareResult.WAITING_FOR_PAYMENT
         self._payment_cancelled = False
 
         def nfc_callback(lookup: UserLookup) -> None:
@@ -90,4 +90,5 @@ class NFCPaymentHandler:
 @lru_cache
 def get_nfc_payment_handler() -> NFCPaymentHandler:
     """Get or create the global NFC payment handler instance (cached)."""
+    return NFCPaymentHandler()
     return NFCPaymentHandler()
