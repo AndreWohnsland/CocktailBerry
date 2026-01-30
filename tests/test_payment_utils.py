@@ -9,7 +9,7 @@ import pytest
 
 from src.models import Cocktail
 from src.payment_utils import filter_cocktails_by_user
-from src.programs.nfc_payment_service import User
+from src.service.nfc_payment_service import User
 
 # Type alias for the patch_cfg fixture return type
 PatchCfgType = Callable[..., AbstractContextManager[dict[str, Any]]]

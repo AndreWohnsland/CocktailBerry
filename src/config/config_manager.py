@@ -268,6 +268,11 @@ class ConfigManager:
         """Check if CocktailBerry internal payment option is selected."""
         return self.PAYMENT_TYPE == "CocktailBerry"
 
+    @property
+    def payment_enabled(self) -> bool:
+        """Check if any payment option is selected."""
+        return self.PAYMENT_TYPE != "Disabled"
+
     def read_local_config(self, update_config: bool = False, validate: bool = True) -> None:
         """Read the local config file and set the values if they are valid.
 

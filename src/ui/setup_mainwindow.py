@@ -22,7 +22,7 @@ from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.programs.addons import ADDONS
-from src.programs.nfc_payment_service import NFCPaymentService, UserLookup
+from src.service.nfc_payment_service import NFCPaymentService, UserLookup
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView

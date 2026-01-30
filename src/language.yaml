@@ -290,6 +290,22 @@ dialog:
   payment_user_not_found:
     en: 'This NFC/card is not registered. Please register or contact owner.'
     de: 'Diese NFC/Karte ist nicht registriert. Bitte registrieren oder kontaktiere den Besitzer.'
+  # SumUp payment state messages
+  sumup_payment_successful:
+    en: 'Payment successful via SumUp terminal.'
+    de: 'Zahlung erfolgreich über SumUp Terminal.'
+  sumup_waiting_for_payment:
+    en: 'Please complete payment on the terminal.'
+    de: 'Bitte Zahlung am Terminal abschließen.'
+  sumup_payment_declined:
+    en: 'Payment was declined or failed.'
+    de: 'Zahlung wurde abgelehnt oder fehlgeschlagen.'
+  sumup_no_terminal:
+    en: 'No SumUp terminal configured. Please set up the terminal in settings.'
+    de: 'Kein SumUp Terminal konfiguriert. Bitte Terminal in den Einstellungen einrichten.'
+  sumup_checkout_failed:
+    en: 'Failed to initiate checkout. Please check the terminal connection.'
+    de: 'Checkout konnte nicht gestartet werden. Bitte Terminal-Verbindung prüfen.'
   pumpt_volume_flow_adjusted:
     en: 'Pump {pump_number} volume flow adjusted to {new_flow} ml/s.'
     de: 'Pumpen {pump_number} Volumenstrom auf {new_flow} ml/s angepasst.'

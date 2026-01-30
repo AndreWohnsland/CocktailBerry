@@ -4,8 +4,9 @@
 from __future__ import annotations
 
 import platform
+from collections.abc import Callable
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import yaml
 
@@ -143,6 +144,11 @@ allowed_keys = Literal[
     "restart_config",
     "some_value_missing_specific",
     "some_value_missing",
+    "sumup_checkout_failed",
+    "sumup_no_terminal",
+    "sumup_payment_declined",
+    "sumup_payment_successful",
+    "sumup_waiting_for_payment",
     "update_available",
     "update_failed",
     "welcome_dialog",

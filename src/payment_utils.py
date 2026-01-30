@@ -2,7 +2,7 @@ import copy
 
 from src.config.config_manager import CONFIG as cfg
 from src.models import Cocktail
-from src.programs.nfc_payment_service import User
+from src.service.nfc_payment_service import User
 
 
 def filter_cocktails_by_user(user: User | None, cocktails: list[Cocktail]) -> list[Cocktail]:

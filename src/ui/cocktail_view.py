@@ -15,14 +15,14 @@ from src.image_utils import find_cocktail_image
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.payment_utils import filter_cocktails_by_user
-from src.programs.nfc_payment_service import UserLookup, UserLookupResult
+from src.service.nfc_payment_service import UserLookup, UserLookupResult
 from src.ui.creation_utils import create_button, create_label
 from src.ui.icons import IconSetter, PresetIcon
 from src.ui_elements.clickable_label import ClickableLabel
 from src.ui_elements.touch_scroll_area import TouchScrollArea
 
 if TYPE_CHECKING:
-    from src.programs.nfc_payment_service import User
+    from src.service.nfc_payment_service import User
     from src.ui.setup_mainwindow import MainScreen
 
 _logger = LoggerHandler("cocktail_view")

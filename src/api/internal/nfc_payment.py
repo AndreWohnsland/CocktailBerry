@@ -7,7 +7,8 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
-from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService, UserLookup
+from src.service.booking import CocktailBooking
+from src.service.nfc_payment_service import NFCPaymentService, UserLookup
 from src.tabs import maker
 
 _logger = LoggerHandler("nfc_payment")
@@ -90,5 +91,4 @@ class NFCPaymentHandler:
 @lru_cache
 def get_nfc_payment_handler() -> NFCPaymentHandler:
     """Get or create the global NFC payment handler instance (cached)."""
-    return NFCPaymentHandler()
     return NFCPaymentHandler()

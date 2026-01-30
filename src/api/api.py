@@ -24,8 +24,8 @@ from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.setup_web import download_latest_web_client
 from src.programs.addons import ADDONS, CouldNotInstallAddonError
-from src.programs.nfc_payment_service import NFCPaymentService
 from src.resource_stats import start_resource_tracker
+from src.service.nfc_payment_service import NFCPaymentService
 from src.startup_checks import can_update, connection_okay, is_python_deprecated
 from src.updater import UpdateInfo, Updater
 from src.utils import get_platform_data
