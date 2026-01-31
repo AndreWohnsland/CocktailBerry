@@ -6,7 +6,6 @@ import os
 import shutil
 from typing import TYPE_CHECKING
 
-from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMainWindow
 
 from src.config.config_manager import CONFIG as cfg
@@ -18,7 +17,7 @@ from src.migration.backup import BACKUP_FILES, NEEDED_BACKUP_FILES
 from src.programs.calibration import CalibrationScreen
 from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
-from src.ui.creation_utils import setup_worker_thread
+from src.ui.qt_worker import CallableWorker, run_with_spinner
 from src.ui.setup_addon_window import AddonWindow
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_log_window import LogWindow
@@ -36,19 +35,6 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("option_window")
 _platform_data = get_platform_data()
-
-
-class _Worker(QObject):
-    """Worker to get full system update on a thread."""
-
-    done = pyqtSignal()
-
-    def __init__(self, parent: None | QObject = None) -> None:
-        super().__init__(parent)
-
-    def run(self) -> None:
-        update_os()
-        self.done.emit()
 
 
 class OptionWindow(QMainWindow, Ui_Optionwindow):
@@ -224,9 +210,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if self._is_windows("update system"):
             return
 
-        self._worker = _Worker()  # pylint: disable=attribute-defined-outside-init
-        self._thread = setup_worker_thread(  # pylint: disable=attribute-defined-outside-init
-            self._worker, self, self._finish_update_worker
+        self._worker: CallableWorker[None] = run_with_spinner(
+            update_os,
+            parent=self,
+            on_finish=lambda _: self._finish_update_worker(),
         )
 
     def _update_software(self) -> None:

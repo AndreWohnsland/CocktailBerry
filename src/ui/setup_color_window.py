@@ -6,7 +6,7 @@ import re
 from dataclasses import fields
 from typing import TYPE_CHECKING, get_args
 
-from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QColorDialog, QLabel, QLineEdit, QMainWindow
 
@@ -15,8 +15,9 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS
 from src.migration.migrator import CouldNotMigrateException, Migrator
-from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_font, create_spacer, setup_worker_thread
+from src.ui.creation_utils import LARGE_FONT, MEDIUM_FONT, SMALL_FONT, adjust_font, create_spacer
 from src.ui.icons import parse_colors
+from src.ui.qt_worker import CallableWorker, run_with_spinner
 from src.ui_elements import Ui_ColorWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.utils import restart_v1
@@ -35,19 +36,11 @@ if TYPE_CHECKING:
 THEMES = list(get_args(SupportedThemesType))
 
 
-class _Worker(QObject):
-    """Worker to install qtsass on a thread."""
-
-    done = pyqtSignal()
-
-    def __init__(self, parent: None | QObject = None) -> None:
-        super().__init__(parent)
-
-    def run(self) -> None:
-        migrator = Migrator()
-        with contextlib.suppress(CouldNotMigrateException):
-            migrator._install_pip_package("qtsass", "1.17.0")
-        self.done.emit()
+def _install_qtsass() -> None:
+    """Install qtsass package."""
+    migrator = Migrator()
+    with contextlib.suppress(CouldNotMigrateException):
+        migrator._install_pip_package("qtsass", "1.17.0")
 
 
 class ColorWindow(QMainWindow, Ui_ColorWindow):
@@ -83,9 +76,10 @@ class ColorWindow(QMainWindow, Ui_ColorWindow):
             return
         self.button_apply.setDisabled(True)
         if DP_CONTROLLER.ask_to_install_qtsass():
-            self._worker = _Worker()
-            self._thread = setup_worker_thread(  # pylint: disable=attribute-defined-outside-init
-                self._worker, self, self._finish_installer_worker
+            self._worker: CallableWorker[None] = run_with_spinner(
+                _install_qtsass,
+                parent=self,
+                on_finish=lambda _: self._finish_installer_worker(),
             )
 
     def _set_selected_template(self) -> None:
