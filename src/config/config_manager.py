@@ -133,6 +133,7 @@ class ConfigManager:
     # Payment related configurations
     PAYMENT_TYPE: SupportedPaymentOptions = "Disabled"
     PAYMENT_PRICE_ROUNDING: float = 0.25
+    PAYMENT_TIMEOUT_S: int = 20
     PAYMENT_SHOW_NOT_POSSIBLE: bool = True
     PAYMENT_LOCK_SCREEN_NO_USER: bool = True
     PAYMENT_VIRGIN_MULTIPLIER: int = 80
@@ -141,7 +142,6 @@ class ConfigManager:
     PAYMENT_SUMUP_API_KEY: str = ""
     PAYMENT_SUMUP_MERCHANT_CODE: str = ""
     PAYMENT_SUMUP_TERMINAL_ID: str = ""
-    PAYMENT_TIMEOUT_S: int = 20
     PAYMENT_AUTO_LOGOUT_TIME_S: int = 60
     PAYMENT_LOGOUT_AFTER_PREPARATION: bool = True
     # Custom theme settings
@@ -238,6 +238,7 @@ class ConfigManager:
                 [build_number_limiter(0, 5)], prefix="round up to", suffix="next multiple of"
             ),
             "PAYMENT_VIRGIN_MULTIPLIER": IntType([build_number_limiter(0, 200)], suffix="%"),
+            "PAYMENT_TIMEOUT_S": IntType([build_number_limiter(0, 100)], suffix="s"),
             "PAYMENT_SHOW_NOT_POSSIBLE": BoolType(check_name="Show Not Possible Cocktails"),
             "PAYMENT_LOCK_SCREEN_NO_USER": BoolType(check_name="Lock Screen When No User"),
             "PAYMENT_SERVICE_URL": StringType(),
@@ -245,7 +246,6 @@ class ConfigManager:
             "PAYMENT_SUMUP_API_KEY": StringType(),
             "PAYMENT_SUMUP_MERCHANT_CODE": StringType(),
             "PAYMENT_SUMUP_TERMINAL_ID": StringType(),
-            "PAYMENT_TIMEOUT_S": IntType([build_number_limiter(0, 100)], suffix="s"),
             "PAYMENT_AUTO_LOGOUT_TIME_S": IntType([build_number_limiter(0, 1000000000)], suffix="s"),
             "PAYMENT_LOGOUT_AFTER_PREPARATION": BoolType(check_name="Logout After Preparation"),
             "CUSTOM_COLOR_PRIMARY": StringType(),

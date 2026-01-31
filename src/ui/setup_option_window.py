@@ -25,6 +25,7 @@ from src.ui.setup_log_window import LogWindow
 from src.ui.setup_news_window import NewsWindow
 from src.ui.setup_resource_window import ResourceWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
+from src.ui.setup_sumup_window import SumupWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.updater import UpdateInfo, Updater
@@ -78,8 +79,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_resources.clicked.connect(self._resource_insights)
         self.button_about.clicked.connect(DP_CONTROLLER.say_welcome_message)
         self.button_news.clicked.connect(self._open_news_window)
+        self.button_sumup.clicked.connect(self._open_sumup_window)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
+        self.button_sumup.setEnabled(cfg.sumup_payment)
 
         self.config_window: ConfigWindow | None = None
         self.log_window: LogWindow | None = None
@@ -90,6 +93,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.backup_restore_window: BackupRestoreWindow | None = None
         self.resource_window: ResourceWindow | None = None
         self.calibration_screen: CalibrationScreen | None = None
+        self.sumup_window: SumupWindow | None = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -203,6 +207,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _open_news_window(self) -> None:
         """Open the news window."""
         self.news_window = NewsWindow(self.mainscreen)
+
+    def _open_sumup_window(self) -> None:
+        """Open the SumUp configuration window."""
+        self.sumup_window = SumupWindow(self.mainscreen)
 
     def _check_internet_connection(self) -> None:
         """Check if there is a active internet connection."""

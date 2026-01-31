@@ -52,6 +52,7 @@ if TYPE_CHECKING:
         Ui_RefillPrompt,
         Ui_ResourceWindow,
         Ui_RFIDWriterWindow,
+        Ui_SumupWindow,
         Ui_Teamselection,
         Ui_WiFiWindow,
     )
@@ -863,6 +864,14 @@ class UiLanguage:
     def adjust_news_window(self, w: Ui_NewsWindow) -> None:
         """Translate the elements from the news window."""
         w.button_back.setText(self._choose_language("back"))
+
+    def adjust_sumup_window(self, w: Ui_SumupWindow) -> None:
+        """Translate the elements from the sumup window."""
+        w.button_back.setText(self._choose_language("back"))
+        window = "sumup_window"
+        w.label_code.setText(self._choose_language("code_label", window))
+        w.label_name.setText(self._choose_language("name_label", window))
+        w.label_reader.setText(self._choose_language("reader_label", window))
 
     def adjust_rfid_reader_window(self, w: Ui_RFIDWriterWindow) -> None:
         """Translate the elements on the RFID reader window."""

@@ -28,14 +28,17 @@ from .news_window import Ui_NewsWindow
 from .picture_window import Ui_PictureWindow
 from .refill_prompt import Ui_RefillPrompt
 from .resource_window import Ui_ResourceWindow
+from .sumup_reader_window import Ui_SumupWindow
 
 __all__ = [
+    "Ui_addingredient",
     "Ui_AddonManager",
     "Ui_Addonwindow",
+    "Ui_available",
     "Ui_Bottlewindow",
-    "Ui_CalibrationWindow",
     "Ui_CalibrationRealWidget",
     "Ui_CalibrationTargetWidget",
+    "Ui_CalibrationWindow",
     "Ui_CocktailSelection",
     "Ui_ColorWindow",
     "Ui_ConfigWindow",
@@ -52,11 +55,10 @@ __all__ = [
     "Ui_PasswordDialog",
     "Ui_PictureWindow",
     "Ui_Progressbarwindow",
-    "Ui_RFIDWriterWindow",
     "Ui_RefillPrompt",
     "Ui_ResourceWindow",
+    "Ui_RFIDWriterWindow",
+    "Ui_SumupWindow",
     "Ui_Teamselection",
     "Ui_WiFiWindow",
-    "Ui_addingredient",
-    "Ui_available",
 ]

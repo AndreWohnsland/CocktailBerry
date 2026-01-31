@@ -774,6 +774,9 @@ ui:
     PAYMENT_VIRGIN_MULTIPLIER:
       en: 'Multiplier percentage to apply to virgin cocktail prices'
       de: 'Multiplikator Prozentsatz, der auf Preise für alkoholfreie Cocktails angewendet wird'
+    PAYMENT_TIMEOUT_S:
+      en: 'Timeout in seconds before reader cancels the payment scan'
+      de: 'Timeout in Sekunden bevor der Leser den Zahlungs-Scan abbricht'
     PAYMENT_SHOW_NOT_POSSIBLE:
       en: 'Show cocktails that are not possible to the user (missing balance, no alcohol allowed, etc.) in a disabled style'
       de: 'Zeige Cocktails an, die für den Benutzer nicht möglich sind (zu wenig Guthaben, kein Alkohol erlaubt, etc.) in deaktiviertem Stil'
@@ -781,11 +784,11 @@ ui:
       en: 'Show lock screen if no user is detected on payment NFC/RFID scan'
       de: 'Zeige Sperrbildschirm an, wenn kein Benutzer bei Zahlung per NFC/RFID erkannt wird'
     PAYMENT_SERVICE_URL:
-      en: 'URL address for payment service API'
-      de: 'URL Adresse der Zahlungsservice API'
+      en: 'URL address for the CocktailBerry payment service API'
+      de: 'URL Adresse der CocktailBerry Zahlungsservice API'
     PAYMENT_SECRET_KEY:
-      en: 'Secret key for payment service API'
-      de: 'Geheimer Schlüssel für Zahlungsservice API'
+      en: 'Secret key for the CocktailBerry payment service API'
+      de: 'Geheimer Schlüssel für die CocktailBerry Zahlungsservice API'
     PAYMENT_SUMUP_API_KEY:
       en: 'API key for SumUp payment integration'
       de: 'API Schlüssel für SumUp Zahlungsintegration'
@@ -795,9 +798,6 @@ ui:
     PAYMENT_SUMUP_TERMINAL_ID:
       en: 'Terminal ID for SumUp payment integration (usually auto-managed over setup UI)'
       de: 'Terminal ID für SumUp Zahlungsintegration (üblicherweise automatisch über Setup UI verwaltet)'
-    PAYMENT_TIMEOUT_S:
-      en: 'Timeout in seconds before reader cancels payment NFC/RFID scan'
-      de: 'Timeout in Sekunden bevor der Leser den NFC/RFID Zahlungs-Scan abbricht'
     PAYMENT_AUTO_LOGOUT_TIME_S:
       en: 'Auto logout time in seconds for user information (scanned NFC/RFID), use 0 to disable'
       de: 'Automatische Abmeldezeit in Sekunden für Benutzerinformationen (gescannte NFC/RFID), verwende 0 zum Deaktivieren'
@@ -942,3 +942,16 @@ ui:
     acknowledge:
       en: 'Do not show again'
       de: 'Nicht mehr anzeigen'
+
+  ##### SUMUP WINDOW #####
+  # all values for sumup window
+  sumup_window:
+    code_label:
+      en: 'Pairing Code: '
+      de: 'Pairing Code: '
+    name_label:
+      en: 'Shown Name: '
+      de: 'Anzeigename: '
+    reader_label:
+      en: 'Connected Terminal: '
+      de: 'Verbundenes Lesegerät: '

@@ -11,7 +11,7 @@ $files = @(
   "datawindow", "cocktail_selection",
   "picture_window", "refill_prompt",
   "config_window", "resource_window",
-  "news_window"
+  "news_window", "sumup_reader_window"
 )
 
 foreach ($f in $files) {
