@@ -65,7 +65,6 @@ const ResourceWindow: React.FC = () => {
               min={stats.min_ram}
               max={stats.max_ram}
               mean={stats.mean_ram}
-              median={stats.median_ram}
               raw={stats.raw_ram}
             />
             <ResourceStatsChart
@@ -73,7 +72,6 @@ const ResourceWindow: React.FC = () => {
               min={stats.min_cpu}
               max={stats.max_cpu}
               mean={stats.mean_cpu}
-              median={stats.median_cpu}
               raw={stats.raw_cpu}
             />
           </>

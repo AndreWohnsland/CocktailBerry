@@ -28,6 +28,8 @@ def _resource_logger_thread(log_interval: int, session_number: int) -> None:
 
 def start_resource_tracker() -> None:
     """Start a thread that tracks the system resources."""
-    session_number = DatabaseCommander().get_highest_session_number() + 1
-    log_thread = threading.Thread(target=_resource_logger_thread, args=(15, session_number), daemon=True)
+    dbc = DatabaseCommander()
+    dbc.cleanup_resource_stats(keep_sessions=50)
+    session_number = dbc.get_highest_session_number() + 1
+    log_thread = threading.Thread(target=_resource_logger_thread, args=(30, session_number), daemon=True)
     log_thread.start()

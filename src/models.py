@@ -257,11 +257,9 @@ class ResourceStats:
     min_cpu: float
     max_cpu: float
     mean_cpu: float
-    median_cpu: float
     min_ram: float
     max_ram: float
     mean_ram: float
-    median_ram: float
     samples: int
     raw_cpu: list[float]
     raw_ram: list[float]

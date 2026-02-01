@@ -271,11 +271,9 @@ export interface ResourceStats {
   min_cpu: number;
   max_cpu: number;
   mean_cpu: number;
-  median_cpu: number;
   min_ram: number;
   max_ram: number;
   mean_ram: number;
-  median_ram: number;
   samples: number;
   raw_cpu: number[];
   raw_ram: number[];
