@@ -71,6 +71,7 @@ allowed_keys = Literal[
     "ask_for_backup_location",
     "ask_restricted_mode",
     "ask_to_clean",
+    "ask_to_delete_reader",
     "ask_to_delete_x",
     "ask_to_install_qtsass",
     "ask_to_reboot",
@@ -626,6 +627,11 @@ class DialogHandler:
     def ask_to_delete_x(self, x: str) -> bool:
         """Ask the user if he wants to delete the given object name."""
         message = self._choose_language("ask_to_delete_x", x=x)
+        return self.user_okay(message)
+
+    def ask_to_delete_reader(self, reader_name: str) -> bool:
+        """Ask the user if he wants to delete the given reader."""
+        message = self._choose_language("ask_to_delete_reader", reader_name=reader_name)
         return self.user_okay(message)
 
     def ask_to_update_system(self) -> bool:

@@ -166,6 +166,9 @@ dialog:
   ask_to_delete_x:
     en: 'Do you want to delete {x}? This cannot be reverted.'
     de: 'Soll {x} gelöscht werden? Dies kann nicht rückgängig gemacht werden.'
+  ask_to_delete_reader:
+    en: 'Do you want to delete the reader "{reader_name}"? This cannot be reverted.'
+    de: 'Soll der Reader "{reader_name}" gelöscht werden? Dies kann nicht rückgängig gemacht werden.'
   ask_to_remove_picture:
     en: 'Do you want to remove the user picture? This cannot be reverted.'
     de: 'Soll das User Bild entfernt werden? Dies kann nicht rückgängig gemacht werden.'
@@ -194,8 +197,8 @@ dialog:
     en: 'Should the pump flow be reverted? This will activated the reversion pin and change the flow direction.'
     de: 'Soll die Pumpenrichtung geändert werden? Dies wird den Umkehrpin aktivieren und die Pumpenrichtung ändern.'
   welcome_dialog:
-    en: "CocktailBerry Software Version {version} by Andre Wohnsland.\n{platform}.\nUsing python version: {python_version} with PyQt app.\n\nCheck https://docs.cocktailberry.org for more information.\n\nThere is an alternative v2 Web UI available, have a look in the documentation for more info"
-    de: "CocktailBerry Software Version {version} von Andre Wohnsland.\n{platform}.\nVerwendete Python Version: {python_version} mit PyQt App.\n\nMehr Informationen unter https://docs.cocktailberry.org.\n\nEs gibt eine neue v2 Web Ui, schau in der Dokumentation für mehr Informationen."
+    en: "CocktailBerry Software Version {version} by Andre Wohnsland.\nSystem: {platform}.\nUsing python version: {python_version} with PyQt app.\n\nCheck https://docs.cocktailberry.org for more information.\n\nThere is an alternative v2 Web UI available, have a look in the documentation for more info"
+    de: "CocktailBerry Software Version {version} von Andre Wohnsland.\nSystem: {platform}.\nVerwendete Python Version: {python_version} mit PyQt App.\n\nMehr Informationen unter https://docs.cocktailberry.org.\n\nEs gibt eine neue v2 Web Ui, schau in der Dokumentation für mehr Informationen."
   wifi_setup_failed:
     en: 'There was an error setting up WiFi. Please check the logs for further information.'
     de: 'Es ist ein Fehler beim Einrichten des WiFi aufgetreten. Schaue in die Logs für mehr Informationen.'
@@ -304,8 +307,8 @@ dialog:
     en: 'No SumUp terminal configured. Please set up the terminal in settings.'
     de: 'Kein SumUp Terminal konfiguriert. Bitte Terminal in den Einstellungen einrichten.'
   sumup_checkout_failed:
-    en: 'Failed to initiate checkout. Please check the terminal connection.'
-    de: 'Checkout konnte nicht gestartet werden. Bitte Terminal-Verbindung prüfen.'
+    en: 'Failed to initiate checkout or there were intermittent connection issues. Please check the terminal connection.'
+    de: 'Checkout konnte nicht gestartet werden oder es gab zwischendurch Verbindungsprobleme. Bitte Terminal-Verbindung prüfen.'
   pumpt_volume_flow_adjusted:
     en: 'Pump {pump_number} volume flow adjusted to {new_flow} ml/s.'
     de: 'Pumpen {pump_number} Volumenstrom auf {new_flow} ml/s angepasst.'
