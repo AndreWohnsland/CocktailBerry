@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import cache
 from typing import TYPE_CHECKING, Any, Literal
 
 import qtawesome as qta
@@ -81,6 +82,7 @@ class ColorInformation:
         return getattr(self, item)
 
 
+@cache
 def parse_colors(theme: SupportedThemesType | None = None) -> ColorInformation:
     """Get the color out of the theme file."""
     # extract all the fields as list from the dataclass
