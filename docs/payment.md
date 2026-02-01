@@ -184,7 +184,10 @@ The recommended way for a "basic" hardware setup is:
     Once created, you will be asked multiple things during the account setup.
     When you are done, see at your account settings, where you should see your Merchant Code (a string starting with "MCM").
     In addition, you will need to [create an API key](https://me.sumup.com/settings/api-keys) for your account.
+    More information can also be found in the [SumUp Developer Documentation](https://developer.sumup.com/tools/authorization/authorization#create-api-key).
     Keep this safe, you will need it in the CocktailBerry settings.
+
+    For more information, you can also see the [official SumUp FAQ](https://developer.sumup.com/help).
     
 
 ### Installation Steps

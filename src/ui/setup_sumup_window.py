@@ -7,6 +7,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.service.sumup_payment_service import Err, Result, SumupPaymentService
+from src.ui.icons import IconSetter
 from src.ui.qt_worker import CallableWorker, run_with_spinner
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_SumupWindow
@@ -31,6 +32,7 @@ class SumupWindow(QMainWindow, Ui_SumupWindow):
         self.button_back.clicked.connect(self.close)
         self.button_create.clicked.connect(self._create_reader)
         self.button_use.clicked.connect(self._use_selected_reader)
+        self.button_delete.clicked.connect(self._delete_reader)
 
         self.input_code.clicked.connect(lambda: KeyboardWidget(self.mainscreen, self.input_code, 10))
         self.input_name.clicked.connect(lambda: KeyboardWidget(self.mainscreen, self.input_name, 100))
@@ -38,6 +40,13 @@ class SumupWindow(QMainWindow, Ui_SumupWindow):
         # Disable buttons until readers are loaded
         self.button_use.setEnabled(False)
         self.button_create.setEnabled(False)
+
+        icons = IconSetter()
+        icons.set_icon(
+            self.button_delete,
+            icons.generate_icon(icons.presets.delete, icons.color.background),
+            True,
+        )
 
         UI_LANGUAGE.adjust_sumup_window(self)
         self.showFullScreen()
@@ -154,3 +163,37 @@ class SumupWindow(QMainWindow, Ui_SumupWindow):
             DP_CONTROLLER.standard_box(f"Reader '{reader.name}' created successfully!")
 
         self._use_selected_reader()
+
+    def _delete_reader(self) -> None:
+        """Delete the currently selected reader."""
+        service = self._get_service()
+        if service is None:
+            return
+
+        if self.input_reader.count() == 0:
+            DP_CONTROLLER.standard_box("No readers available to delete.")
+            return
+
+        reader_id = self.input_reader.currentData()
+        reader_name = self.input_reader.currentText()
+
+        if not reader_id:
+            DP_CONTROLLER.standard_box("No reader selected.")
+            return
+
+        if not DP_CONTROLLER.ask_to_delete_reader(reader_name):
+            return
+
+        result = service.delete_reader(reader_id)
+
+        if isinstance(result, Err):
+            DP_CONTROLLER.standard_box(f"Failed to delete reader: {result.error}")
+            return
+
+        # If the deleted reader was the configured one, clear the config
+        if reader_id == cfg.PAYMENT_SUMUP_TERMINAL_ID:
+            cfg.PAYMENT_SUMUP_TERMINAL_ID = ""
+            cfg.sync_config_to_file()
+
+        DP_CONTROLLER.standard_box(f"Reader '{reader_name}' deleted successfully!")
+        self._load_readers()
