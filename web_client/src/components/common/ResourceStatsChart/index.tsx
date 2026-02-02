@@ -9,11 +9,9 @@ export interface ResourceStatsChartProps {
   min: number;
   max: number;
   mean: number;
-  median: number;
   raw: number[];
   unit?: string;
-  threshold?: number;
-}
+  threshold?: number;}
 
 const MAX_POINTS = 100;
 
@@ -44,7 +42,6 @@ const ResourceStatsChart: React.FC<ResourceStatsChartProps> = ({
   min,
   max,
   mean,
-  median,
   raw,
   unit = '%',
   threshold = 90,
@@ -55,11 +52,10 @@ const ResourceStatsChart: React.FC<ResourceStatsChartProps> = ({
   return (
     <div className='mb-6 w-full'>
       <TextHeader text={title} subheader />
-      <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2'>
+      <div className='grid grid-cols-3 gap-2'>
         <Metric name='Min' value={min} unit={unit} threshold={threshold} />
         <Metric name='Max' value={max} unit={unit} threshold={threshold} />
         <Metric name='Mean' value={mean} unit={unit} threshold={threshold} />
-        <Metric name='Median' value={median} unit={unit} threshold={threshold} />
       </div>
       {raw.length > 0 && (
         <div className='w-full h-64 mt-6 mb-2'>
