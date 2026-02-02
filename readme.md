@@ -153,6 +153,14 @@ See also at the [dev notes](./docs/.devnotes.md) section for a complete run down
 uv sync --all-extras
 ```
 
+## Just Commands
+
+This project uses [just](https://just.systems/) as a command runner for common development tasks. To see all available commands, run:
+
+```bash
+just --list
+```
+
 We also use pre-commits to check the code style and run some tests before every commit.
 You can install them with:
 

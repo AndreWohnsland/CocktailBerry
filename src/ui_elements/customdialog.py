@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file '.\customdialog.ui'
+# Form implementation generated from reading ui file 'customdialog.ui'
 #
 # Created by: PyQt6 UI code generator 6.10.1
 #
