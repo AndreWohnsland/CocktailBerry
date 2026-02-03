@@ -26,6 +26,10 @@ Currently, two types are supported: NFC based payments and SumUp Terminal paymen
 
 === "SumUp"
 
+    !!! bug "Still in Beta"
+        The SumUp payment integration is still in beta.
+        It should work fine, but might be rough around the edges.
+
     For SumUp Terminal payments, a physical SumUp card terminal (Solo) is used to process payments.
     CocktailBerry as well as the terminal need to be connected to the internet for this to work.
     When a user wants to order a cocktail, CocktailBerry will request a payment from the SumUp Terminal.
