@@ -1,9 +1,9 @@
 import os
 import time
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from itertools import cycle
 from threading import Thread
-from typing import Callable, ClassVar, Optional
+from typing import ClassVar
 
 from src.config.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
@@ -23,6 +23,13 @@ _ERROR_SELECTION_NOT_POSSIBLE = {
 _RFID_TYPES: tuple[str, ...] = ("No", "MFRC522", "USB")
 _NO_MODULE: dict[str, bool] = dict.fromkeys(_RFID_TYPES, True)
 _ERROR: dict[str, Optional[str]] = dict.fromkeys(_RFID_TYPES)
+
+try:
+    from PiicoDev_RFID import PiicoDev_RFID
+
+    _NO_MODULE["PiicoDev"] = False
+except (AttributeError, ModuleNotFoundError, RuntimeError):
+    _ERROR["PiicoDev"] = _ERROR_SELECTION_NOT_POSSIBLE["PiicoDev"]
 
 try:
     # pylint: disable=import-error
@@ -59,7 +66,7 @@ class RFIDReader:
         return cls._instance
 
     @classmethod
-    def _select_rfid(cls) -> Optional[RFIDController]:
+    def _select_rfid(cls) -> RFIDController | None:
         """Select the controller defined in config."""
         if "MOCK_RFID" in os.environ:
             _logger.warning("Using mock RFID reader.")
@@ -67,7 +74,7 @@ class RFIDReader:
         no_module = _NO_MODULE.get(cfg.RFID_READER, True)
         if no_module:
             return None
-        reader: dict[str, Callable[[], Optional[RFIDController]]] = {
+        reader: dict[str, Callable[[], RFIDController | None]] = {
             "No": lambda: None,
             "USB": _UsbReader,
             "MFRC522": _BasicMFRC522,
@@ -97,7 +104,7 @@ class RFIDReader:
                 time.sleep(0.1)
         self.is_active = False
 
-    def write_rfid(self, value: str, side_effect: Optional[Callable[[str], None]] = None) -> None:
+    def write_rfid(self, value: str, side_effect: Callable[[str], None] | None = None) -> None:
         """Write the value to the RFID."""
         if self.is_active:
             return
@@ -111,7 +118,7 @@ class RFIDReader:
         )
         rfid_thread.start()
 
-    def _write_thread(self, text: str, side_effect: Optional[Callable[[str], None]] = None) -> None:
+    def _write_thread(self, text: str, side_effect: Callable[[str], None] | None = None) -> None:
         """Execute the writing until successful or canceled."""
         if self.rfid is None or self.is_active:
             return
@@ -136,7 +143,7 @@ class _BasicMFRC522(RFIDController):
     def __init__(self) -> None:
         self.rfid = SimpleMFRC522()  # pylint: disable=E0601
 
-    def read_card(self) -> tuple[Optional[str], Optional[str]]:
+    def read_card(self) -> tuple[str | None, str | None]:
         _id, text = self.rfid.read_no_block()
         if text is not None:
             text = text.strip()
@@ -159,7 +166,7 @@ class _UsbReader(RFIDController):
             raise RuntimeError("No PC/SC reader found")
         self.reader_name = available[0]
 
-    def read_card(self) -> tuple[Optional[str], Optional[str]]:
+    def read_card(self) -> tuple[str | None, str | None]:
         card_request = CardRequest(cardType=AnyCardType(), timeout=5)
         try:
             service = card_request.waitforcard()
@@ -185,10 +192,10 @@ class _MockReader(RFIDController):
 
     def __init__(self) -> None:
         self.mocked_ids: Iterator[str] = cycle(["33DFE41A", "9A853011"])
-        self.current_id: Optional[str] = None
+        self.current_id: str | None = None
         self.last_changed: float = 0
 
-    def read_card(self) -> tuple[Optional[str], Optional[str]]:
+    def read_card(self) -> tuple[str | None, str | None]:
         text = "Mocked RFID Data"  # we will not use this usually
         # change the id every 1 minute
         time_window_sec = 60

@@ -14,7 +14,8 @@ import platform
 import shutil
 import subprocess
 import sys
-from typing import Any, Callable, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 import yaml
 

@@ -3,8 +3,9 @@
 import re
 import sys
 import traceback
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 from src.logger_handler import LogFiles, LoggerHandler
 from src.machine.controller import MachineController

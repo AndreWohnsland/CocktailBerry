@@ -8,9 +8,10 @@ import re
 import sys
 import threading
 import time
+from collections.abc import Callable
 from dataclasses import fields
 from importlib import import_module
-from typing import TYPE_CHECKING, Any, Callable, Literal, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Literal, Protocol, runtime_checkable
 
 import requests
 import typer

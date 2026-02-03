@@ -3,7 +3,6 @@ import socket
 import subprocess
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -22,9 +21,9 @@ _SKIP_DIALOG = "Keep empty to skip (just press enter), enter 'd' to set back to 
 
 
 def setup_service(
-    api_key: Optional[str] = None,
-    hook_endpoint: Optional[str] = None,
-    hook_header: Optional[str] = None,
+    api_key: str | None = None,
+    hook_endpoint: str | None = None,
+    hook_header: str | None = None,
     use_v1: bool = False,
 ) -> None:
     """Set up the microservice if any of args is given skip input.

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Union
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
@@ -38,7 +39,7 @@ from src.utils import restart_v1
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
-CONFIG_TYPES_POSSIBLE = Union[str, int, float, bool, list[Any], dict[str, Any]]
+CONFIG_TYPES_POSSIBLE = str | int | float | bool | list[Any] | dict[str, Any]
 # Those are only for the v2 program
 CONFIG_TO_SKIP = (
     "CUSTOM_COLOR_PRIMARY",

@@ -1,5 +1,3 @@
-from typing import Optional
-
 import typer
 
 from src.api.api import run_api
@@ -13,7 +11,7 @@ cli = typer.Typer(add_completion=False)
 def api(
     ctx: typer.Context,
     port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAPI server"),
-    version: Optional[bool] = typer.Option(
+    version: bool | None = typer.Option(
         None, "--version", "-V", callback=version_callback, help="Show current version."
     ),
 ) -> None:

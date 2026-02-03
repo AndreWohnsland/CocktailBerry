@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from itertools import cycle
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
 from PyQt6.QtWidgets import QMainWindow

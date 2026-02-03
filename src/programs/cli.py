@@ -1,6 +1,5 @@
 # pylint: disable=unused-argument
 import os
-from typing import Optional
 
 import typer
 
@@ -29,7 +28,7 @@ def main(
     displayed_name: str = typer.Option(PROJECT_NAME, "--name", "-n", help="Name to display at start."),
     quiet: bool = typer.Option(False, "--quiet", "-q", help="Hide machine name, version and platform data."),
     debug: bool = typer.Option(False, "--debug", "-d", help="Using debug instead of normal Endpoints."),
-    version: Optional[bool] = typer.Option(
+    version: bool | None = typer.Option(
         None, "--version", "-V", callback=version_callback, help="Show current version."
     ),
 ) -> None:

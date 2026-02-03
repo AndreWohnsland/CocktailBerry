@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import time
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable, Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 from PyQt6.QtCore import QModelIndex, Qt
 from PyQt6.QtGui import QFont, QIcon, QPainter

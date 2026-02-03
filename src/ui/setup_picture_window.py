@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 from PIL import Image
 from PyQt6.QtGui import QImage, QPixmap

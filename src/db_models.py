@@ -126,13 +126,11 @@ class DbRecipe(Base):
 class DbBottle(Base):
     __tablename__ = "Bottles"
     number: Mapped[int] = mapped_column(primary_key=True, nullable=False, name="Bottle")
-    id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("Ingredients.ID", ondelete="RESTRICT"), nullable=True, name="ID"
-    )
+    id: Mapped[int | None] = mapped_column(ForeignKey("Ingredients.ID", ondelete="RESTRICT"), nullable=True, name="ID")
 
     ingredient: Mapped[Optional["DbIngredient"]] = relationship("DbIngredient", back_populates="bottle")
 
-    def __init__(self, number: int, _id: Optional[int] = None) -> None:
+    def __init__(self, number: int, _id: int | None = None) -> None:
         self.number = number
         self.id = _id
 
@@ -165,7 +163,7 @@ class DbCocktailExport(Base):
     counter_virgin: Mapped[int] = mapped_column(nullable=False, name="Counter_virgin")
 
     def __init__(
-        self, recipe_name: str, counter: int, counter_virgin: int, export_date: Optional[datetime.date] = None
+        self, recipe_name: str, counter: int, counter_virgin: int, export_date: datetime.date | None = None
     ) -> None:
         self.recipe_name = recipe_name
         self.counter = counter
@@ -186,7 +184,7 @@ class DbIngredientExport(Base):
         ingredient_name: str,
         consumption: int,
         cost_consumption: int,
-        export_date: Optional[datetime.date] = None,
+        export_date: datetime.date | None = None,
     ) -> None:
         self.ingredient_name = ingredient_name
         self.consumption = consumption
@@ -209,7 +207,7 @@ class DbResourceUsage(Base):
         cpu_usage: float,
         ram_usage: float,
         session: int,
-        timestamp: Optional[datetime.datetime] = None,
+        timestamp: datetime.datetime | None = None,
     ) -> None:
         self.cpu_usage = cpu_usage
         self.ram_usage = ram_usage
