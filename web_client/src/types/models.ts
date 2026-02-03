@@ -98,6 +98,16 @@ export interface LogData {
   data: { [key: string]: string[] };
 }
 
+export interface SumupReader {
+  id: string;
+  name: string;
+}
+
+export interface SumupReaderCreate {
+  name: string;
+  pairing_code: string;
+}
+
 // generic interface for the config data
 export interface ConfigData {
   [key: string]: PossibleConfigValue;

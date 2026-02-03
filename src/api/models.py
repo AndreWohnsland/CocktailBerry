@@ -1,4 +1,4 @@
-from typing import Annotated, Generic, Optional, TypeVar
+from typing import Annotated, TypeVar
 
 from annotated_types import Len
 from pydantic import BaseModel, Field
@@ -12,7 +12,7 @@ T = TypeVar("T")
 class ErrorDetail(BaseModel):
     status: PrepareResult
     detail: str
-    bottle: Optional[int] = None
+    bottle: int | None = None
 
     class Config:  # noqa: D106
         use_enum_values = True
@@ -53,7 +53,7 @@ class Ingredient(CocktailIngredient):
     fill_level: int
     pump_speed: int
     cost: int = 0
-    bottle: Optional[int] = None
+    bottle: int | None = None
 
 
 class IngredientInput(BaseModel):
@@ -83,15 +83,15 @@ class CocktailInput(BaseModel):
 
 class Bottle(BaseModel):
     number: int
-    ingredient: Optional[Ingredient]
+    ingredient: Ingredient | None
 
 
 class PrepareCocktailRequest(BaseModel):
     volume: int = Field(..., gt=0)
     alcohol_factor: float = Field(..., ge=0)
     is_virgin: bool = False
-    selected_team: Optional[str] = None
-    team_member_name: Optional[str] = None
+    selected_team: str | None = None
+    team_member_name: str | None = None
 
 
 class WifiData(BaseModel):
@@ -99,7 +99,7 @@ class WifiData(BaseModel):
     password: str
 
 
-class DataResponse(BaseModel, Generic[T]):
+class DataResponse[T](BaseModel):
     data: T
 
 
@@ -122,7 +122,7 @@ class ApiMessage(BaseModel):
     message: str
 
 
-class ApiMessageWithData(BaseModel, Generic[T]):
+class ApiMessageWithData[T](BaseModel):
     message: str
     data: T
 
@@ -132,3 +132,13 @@ class AboutInfo(BaseModel):
     platform: str
     project_name: str
     version: str
+
+
+class SumupReaderResponse(BaseModel):
+    id: str
+    name: str
+
+
+class SumupReaderCreate(BaseModel):
+    name: str
+    pairing_code: str
