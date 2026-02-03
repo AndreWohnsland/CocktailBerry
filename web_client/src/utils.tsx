@@ -67,7 +67,13 @@ export const executeAndShow = async (executable: () => Promise<unknown>): Promis
   await executable()
     .then((result) => {
       const res = result as { message?: string };
-      info = res?.message ?? String(result);
+      if (res?.message) {
+        info = res.message;
+      } else if (typeof result === 'object' && result !== null) {
+        info = JSON.stringify(result);
+      } else {
+        info = String(result);
+      }
       success = true;
     })
     .catch((error) => {
