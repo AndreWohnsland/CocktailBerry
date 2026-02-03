@@ -46,7 +46,7 @@ class PlatformData:
     release: str  # eg. 10
 
     def __str__(self) -> str:
-        return f"Running on {self.system}, {self.architecture[0]} rel. {self.release}, machine: {self.machine} ({self.platform})"  # noqa
+        return f"{self.system}, {self.architecture[0]} rel. {self.release}, machine: {self.machine} ({self.platform})"
 
 
 def get_platform_data() -> PlatformData:
