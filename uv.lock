@@ -211,7 +211,6 @@ dependencies = [
     { name = "gitpython" },
     { name = "gpiozero", marker = "sys_platform == 'linux'" },
     { name = "mfrc522", marker = "sys_platform == 'linux'" },
-    { name = "piicodev" },
     { name = "pillow" },
     { name = "psutil" },
     { name = "pulp" },
@@ -259,7 +258,6 @@ requires-dist = [
     { name = "gitpython", specifier = ">=3.1.43" },
     { name = "gpiozero", marker = "sys_platform == 'linux'", specifier = ">=2.0.1" },
     { name = "mfrc522", marker = "sys_platform == 'linux'", specifier = ">=0.0.7" },
-    { name = "piicodev", specifier = ">=1.10.0" },
     { name = "pillow", specifier = ">=10.4.0" },
     { name = "psutil", specifier = ">=6.0.0" },
     { name = "pulp", specifier = ">=3.2.2" },
@@ -1125,18 +1123,6 @@ wheels = [
 ]
 
 [[package]]
-name = "piicodev"
-version = "1.10.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "smbus2" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f8/64/06d50be1d1b2b5d0e1fedd9d659e25c0a4f79ce23aade5bbfe4082158568/piicodev-1.10.3.tar.gz", hash = "sha256:5bce8c4f12902395813c87560eb56ffdd3d5d97f044b0b27faab77198f449c33", size = 45881, upload-time = "2024-08-30T07:20:20.889Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/04/6e/3ae8005fb549cddb12dfac5512c379e3c66c0445443336230daef0bc5b43/piicodev-1.10.3-py3-none-any.whl", hash = "sha256:311a1a0b4966251f1c7ea3e1fc33b3052f10c6dc8c4d40ef86fa9a62e5d38849", size = 57021, upload-time = "2024-08-30T07:20:19.684Z" },
-]
-
-[[package]]
 name = "pillow"
 version = "11.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1985,15 +1971,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/71/39/171f1c67cd00715f190ba0b100d606d440a28c93c7714febeca8b79af85e/six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926", size = 34041, upload-time = "2021-05-05T14:18:18.379Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254", size = 11053, upload-time = "2021-05-05T14:18:17.237Z" },
-]
-
-[[package]]
-name = "smbus2"
-version = "0.5.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/10/c9/6d85aa809e107adf85303010a59b340be109c8f815cbedc5c08c73bcffef/smbus2-0.5.0.tar.gz", hash = "sha256:4a5946fd82277870c2878befdb1a29bb28d15cda14ea4d8d2d54cf3d4bdcb035", size = 16950, upload-time = "2024-10-19T09:20:56.746Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/9f/2235ba9001e3c29fc342eeb222104420bcb7bac51555f0c034376a744075/smbus2-0.5.0-py2.py3-none-any.whl", hash = "sha256:1a15c3b9fa69357beb038cc0b5d37939702f8bfde1ddc89ca9f17d8461dbe949", size = 11527, upload-time = "2024-10-19T09:20:55.202Z" },
 ]
 
 [[package]]

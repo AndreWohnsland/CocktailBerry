@@ -16,21 +16,13 @@ _BASE_NOT_POSSIBLE = "Could not import {}, either it's not installed or it is no
 
 _ERROR_SELECTION_NOT_POSSIBLE = {
     "No": "Please select RFID type other than 'No' to use RFID",
-    "PiicoDev": _BASE_NOT_POSSIBLE.format("PiicoDev_RFID"),
     "MFRC522": _BASE_NOT_POSSIBLE.format("mfrc522"),
     "USB": _BASE_NOT_POSSIBLE.format("pyscard"),
 }
 
-_RFID_TYPES: tuple[str, ...] = ("No", "PiicoDev", "MFRC522", "USB")
+_RFID_TYPES: tuple[str, ...] = ("No", "MFRC522", "USB")
 _NO_MODULE: dict[str, bool] = dict.fromkeys(_RFID_TYPES, True)
 _ERROR: dict[str, Optional[str]] = dict.fromkeys(_RFID_TYPES)
-
-try:
-    from PiicoDev_RFID import PiicoDev_RFID
-
-    _NO_MODULE["PiicoDev"] = False
-except (AttributeError, ModuleNotFoundError, RuntimeError):
-    _ERROR["PiicoDev"] = _ERROR_SELECTION_NOT_POSSIBLE["PiicoDev"]
 
 try:
     # pylint: disable=import-error
@@ -78,7 +70,6 @@ class RFIDReader:
         reader: dict[str, Callable[[], Optional[RFIDController]]] = {
             "No": lambda: None,
             "USB": _UsbReader,
-            "PiicoDev": _PiicoDevReader,
             "MFRC522": _BasicMFRC522,
         }
         return reader.get(cfg.RFID_READER, lambda: None)()
@@ -137,26 +128,6 @@ class RFIDReader:
     def cancel_reading(self) -> None:
         """Cancel the reading loop."""
         self.is_active = False
-
-
-class _PiicoDevReader(RFIDController):
-    """Reader for the PiicoDev RFID Module."""
-
-    def __init__(self) -> None:
-        self.rfid = PiicoDev_RFID()  # pylint: disable=E0601
-
-    def read_card(self) -> tuple[Optional[str], Optional[str]]:
-        text = None
-        _id = None
-        if self.rfid.tagPresent():
-            text = self.rfid.readText()
-            _id: Optional[str] = self.rfid.readID()  # type: ignore
-            if text is not None:
-                text = text.strip()
-        return text, _id
-
-    def write_card(self, text: str) -> bool:
-        return self.rfid.writeText(text)
 
 
 class _BasicMFRC522(RFIDController):
