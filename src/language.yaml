@@ -666,9 +666,6 @@ ui:
     UI_DEVENVIRONMENT:
       en: 'Activates the development setting'
       de: 'Schaltet die Entwicklungseinstellung ein'
-    UI_PARTYMODE:
-      en: 'Protects other tabs than maker with password'
-      de: 'Schützt alle Tabs außer Maker Tab mit Passwort'
     UI_MASTERPASSWORD:
       en: 'Password for critical actions and to get to settings, use 0 for no password'
       de: 'Passwort für kritische Aktionen und um zu den Einstellungen zu kommen, verwende 0 um kein Passwort zu verwenden'
@@ -751,8 +748,8 @@ ui:
       en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects)'
       de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
     RFID_READER:
-      en: 'Using a RFID Reader: PiicoDev (I2C), basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
-      de: 'Wird ein RFID Reader verwendet: PiicoDev (I2C), standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'
+      en: 'Using a RFID Reader: Basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
+      de: 'Wird ein RFID Reader verwendet: Standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'
     MICROSERVICE_ACTIVE:
       en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'

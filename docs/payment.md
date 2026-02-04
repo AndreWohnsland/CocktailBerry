@@ -203,7 +203,7 @@ The recommended way for a "basic" hardware setup is:
     Just run:
 
     ```bash
-    wget -O https://github.com/AndreWohnsland/CocktailBerry-Payment/blob/main/scripts/unix_installer.sh
+    wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Payment/main/scripts/unix_installer.sh | bash
     ```
 
     Then follow the services installation steps below.

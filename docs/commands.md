@@ -251,3 +251,7 @@ uv run runme.py remove-ap [OPTIONS]
 #   --ssid      SSID Name of the AP [default: CocktailBerry]
 #   --help      Show help
 ```
+
+## Virtual Keyboard Commands
+
+For managing the virtual keyboard on the Raspberry Pi when using the web interface (v2), see the [web documentation](web.md#enable-the-virtual-keyboard) for the `add-virtual-keyboard` and `remove-virtual-keyboard` commands.

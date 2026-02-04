@@ -75,8 +75,8 @@ to get all requirements.
 
 ## Install PyQt6 on RaspberryPi
 
-Latest Raspberry Pi OS versions (Trixie and later) should have no issue installing PyQt6 over uv or pip
-If you still have issues try:
+On the latest Raspberry Pi OS (Trixie), PyQt6 installs automatically via uv when you run `uv sync --extra v1`.
+If you encounter issues, you can install the system package as fallback:
 
 ```bash
 sudo apt update
