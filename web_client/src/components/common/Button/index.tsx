@@ -10,6 +10,7 @@ interface ButtonProps {
   className?: string;
   passive?: boolean;
   onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
 }
 const Button = ({
   label,
@@ -20,6 +21,7 @@ const Button = ({
   textSize = 'sm',
   passive = false,
   filled = false,
+  type = 'button',
   ...props
 }: ButtonProps) => {
   const textMapping = {
