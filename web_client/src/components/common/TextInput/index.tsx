@@ -4,10 +4,11 @@ interface TextInputProps {
   suffix?: string;
   placeholder?: string;
   type?: 'text' | 'password';
+  large?: boolean;
   handleInputChange: (value: string) => void;
 }
 
-const TextInput = ({ value, prefix, suffix, placeholder, type, handleInputChange }: TextInputProps) => {
+const TextInput = ({ value, prefix, suffix, placeholder, type, large = false, handleInputChange }: TextInputProps) => {
   return (
     <>
       {prefix && <span className='text-neutral mr-1'>{prefix}</span>}
@@ -15,7 +16,7 @@ const TextInput = ({ value, prefix, suffix, placeholder, type, handleInputChange
         type={type || 'text'}
         value={value}
         onChange={(e) => handleInputChange(e.target.value)}
-        className='input-base'
+        className={large ? 'input-base-large' : 'input-base'}
         placeholder={placeholder}
       />
       {suffix && <span className='text-neutral ml-1'>{suffix}</span>}

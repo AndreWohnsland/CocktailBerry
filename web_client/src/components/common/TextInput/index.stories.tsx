@@ -70,3 +70,11 @@ export const PasswordInput: Story = {
     handleInputChange: () => {},
   },
 };
+
+export const LargeInput: Story = {
+  args: {
+    value: 'Large input',
+    large: true,
+    handleInputChange: () => {},
+  },
+};
