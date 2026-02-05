@@ -104,6 +104,7 @@
     "shutdown": "Herunterfahren",
     "shutdownTheSystem": "Möchtest du das System herunterfahren?",
     "startCleaningProgram": "Möchtest du das Reinigungsprogramm starten?",
+    "sumup": "SumUp",
     "systemResourceUsage": "System Ressourcen Auslastung",
     "updateCocktailBerry": "CocktailBerry Software aktualisieren",
     "updateSystem": "System aktualisieren",
@@ -211,5 +212,20 @@
     "message": "Möchten Sie den eingeschränkten Modus aktivieren? Nur der Cocktail-Maker wird zugänglich sein. Sie können weiterhin mit dem Master-Passwort auf die Konfiguration zugreifen.",
     "accept": "Eingeschränkten Modus aktivieren",
     "decline": "Vollzugriff verwenden"
+  },
+  "sumup": {
+    "manageSumup": "SumUp Leser verwalten",
+    "createReader": "Neuen Leser erstellen",
+    "readerName": "Leser Name",
+    "readerNamePlaceholder": "Leser Name eingeben",
+    "pairingCode": "Pairing Code",
+    "pairingCodePlaceholder": "Pairing Code vom Gerät eingeben",
+    "create": "Leser erstellen",
+    "creating": "Wird erstellt...",
+    "noReaders": "Keine Leser konfiguriert. Erstelle einen um zu starten.",
+    "activeReader": "Derzeit aktiv",
+    "use": "Verwenden",
+    "deleteReader": "Möchtest du den Leser '{{name}}' löschen?",
+    "readerCreated": "Leser '{{name}}' wurde erfolgreich erstellt"
   }
 }

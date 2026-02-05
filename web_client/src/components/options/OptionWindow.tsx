@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { BsBootstrapReboot, BsInfoCircleFill } from 'react-icons/bs';
-import { FaCocktail, FaExclamationTriangle, FaInfoCircle, FaNewspaper, FaRegClock } from 'react-icons/fa';
+import { FaCocktail, FaCreditCard, FaExclamationTriangle, FaInfoCircle, FaNewspaper, FaRegClock } from 'react-icons/fa';
 import { FaCalculator, FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
 import { GrUpdate } from 'react-icons/gr';
 import { MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
@@ -29,7 +29,7 @@ import TileButton from '../common/TileButton';
 import AboutModal from './AboutModal';
 
 const OptionWindow = () => {
-  const { theme, changeTheme } = useConfig();
+  const { theme, changeTheme, config } = useConfig();
   const navigate = useNavigate();
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
@@ -194,6 +194,9 @@ const OptionWindow = () => {
             onClick={() => navigate('/manage/recipes/calculation')}
           />
           <TileButton label={t('options.news')} icon={FaNewspaper} onClick={() => navigate('news')} />
+          {config.PAYMENT_TYPE === 'SumUp' && (
+            <TileButton label={t('options.sumup')} icon={FaCreditCard} onClick={() => navigate('sumup')} />
+          )}
           <TileButton label={t('options.about')} icon={BsInfoCircleFill} onClick={() => setIsAboutModalOpen(true)} />
         </div>
       </div>
