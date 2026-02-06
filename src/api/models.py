@@ -83,7 +83,7 @@ class CocktailInput(BaseModel):
 
 class Bottle(BaseModel):
     number: int
-    ingredient: Ingredient | None
+    ingredient: Ingredient | None = None
 
 
 class PrepareCocktailRequest(BaseModel):
