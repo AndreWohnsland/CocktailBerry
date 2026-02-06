@@ -15,6 +15,7 @@ from src import (
     SupportedLanguagesType,
     SupportedLedStatesType,
     SupportedPaymentOptions,
+    SupportedPinTypes,
     SupportedRfidType,
     SupportedThemesType,
 )
@@ -25,6 +26,7 @@ SUPPORTED_THEMES = list(get_args(SupportedThemesType))
 SUPPORTED_RFID = list(get_args(SupportedRfidType))
 SUPPORTED_LED_STATES = list(get_args(SupportedLedStatesType))
 SUPPORTED_PAYMENT = list(get_args(SupportedPaymentOptions))
+SUPPORTED_PIN_TYPES = list(get_args(SupportedPinTypes))
 
 T = TypeVar("T")
 
@@ -134,6 +136,7 @@ class ChooseOptions:
     theme = ChooseType(allowed=SUPPORTED_THEMES)
     leds = ChooseType(allowed=SUPPORTED_LED_STATES)
     payment = ChooseType(allowed=SUPPORTED_PAYMENT)
+    pin_types = ChooseType(allowed=SUPPORTED_PIN_TYPES)
 
 
 class StringType(_ConfigType[str]):
@@ -317,13 +320,30 @@ class DictType(_ConfigType[ConfigClassT]):
 
 
 class PumpConfig(ConfigClass):
-    def __init__(self, pin: int, volume_flow: float, tube_volume: int) -> None:
+    def __init__(
+        self,
+        pin: int,
+        volume_flow: float,
+        tube_volume: int,
+        pin_type: str = "GPIO",
+        i2c_address: int | None = None,
+    ) -> None:
         self.pin = pin
         self.volume_flow = volume_flow
         self.tube_volume = tube_volume
+        self.pin_type = pin_type  # "GPIO", "MCP23017", or "PCF8574"
+        self.i2c_address = i2c_address  # I2C address (e.g., 0x20) for I2C devices
 
-    def to_config(self) -> dict[str, int | float]:
-        return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
+    def to_config(self) -> dict[str, int | float | str | None]:
+        config: dict[str, int | float | str | None] = {
+            "pin": self.pin,
+            "volume_flow": self.volume_flow,
+            "tube_volume": self.tube_volume,
+            "pin_type": self.pin_type,
+        }
+        if self.i2c_address is not None:
+            config["i2c_address"] = self.i2c_address
+        return config
 
 
 class NormalLedConfig(ConfigClass):

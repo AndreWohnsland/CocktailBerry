@@ -61,10 +61,25 @@ class MachineController:
 
     def _chose_controller(self) -> PinController:
         """Select the controller class for the Pin."""
-        if is_rpi():
-            return choose_pi_controller(cfg.MAKER_PINS_INVERTED)
-        # In case none is found, fall back to generic using python-periphery
-        return GenericController(cfg.MAKER_PINS_INVERTED)
+        from src.machine.gpio_factory import GPIOFactory
+        from src.machine.hybrid_controller import HybridPinController
+
+        # Create GPIO factory for hybrid controller
+        gpio_factory = GPIOFactory(cfg.MAKER_PINS_INVERTED)
+
+        # Determine board type
+        board_type = "RPI" if is_rpi() else "GENERIC"
+
+        # Create hybrid controller
+        hybrid_controller = HybridPinController(cfg.MAKER_PINS_INVERTED, gpio_factory, board_type)
+
+        # Register all pump pins from configuration
+        for i, pump_config in enumerate(cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]):
+            # Use bottle number (1-indexed) as pin_id for clarity
+            pin_id = i + 1
+            hybrid_controller.register_pin_from_config(pin_id, pump_config)
+
+        return hybrid_controller
 
     def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False) -> None:
         """Clean the pumps for the defined time in the config.
@@ -212,9 +227,10 @@ class MachineController:
     def set_up_pumps(self) -> None:
         """Get all used pins, prints pins and uses controller class to set up."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
-        active_pins = [x.pin for x in used_config]
-        _logger.info(f"<i> Initializing Pins: {active_pins}")
-        self.pin_controller.initialize_pin_list(active_pins)
+        # Use bottle numbers (1-indexed) as pin_ids
+        active_pin_ids = list(range(1, len(used_config) + 1))
+        _logger.info(f"<i> Initializing {len(active_pin_ids)} pump pins")
+        self.pin_controller.initialize_pin_list(active_pin_ids)
         self.reverter.initialize_pin()
 
     def _start_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
@@ -225,8 +241,9 @@ class MachineController:
     def close_all_pumps(self) -> None:
         """Close all pins connected to the pumps."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
-        active_pins = [x.pin for x in used_config]
-        self._stop_pumps(active_pins)
+        # Use bottle numbers (1-indexed) as pin_ids
+        active_pin_ids = list(range(1, len(used_config) + 1))
+        self._stop_pumps(active_pin_ids)
 
     def cleanup(self) -> None:
         """Cleanup for shutdown the machine."""
@@ -268,9 +285,10 @@ def _build_preparation_data(
         if ing.bottle is None:  # bottle should never be None at this point
             continue
         volume_flow = cfg.PUMP_CONFIG[ing.bottle - 1].volume_flow * ing.pump_speed / 100
+        # Use bottle number as pin_id (already 1-indexed)
         prep_data.append(
             _PreparationData(
-                cfg.PUMP_CONFIG[ing.bottle - 1].pin,
+                ing.bottle,  # pin_id is the bottle number
                 volume_flow,
                 round(ing.amount / volume_flow, 1),
                 recipe_order=ing.recipe_order,
@@ -282,11 +300,12 @@ def _build_preparation_data(
 def _build_clean_data() -> list[_PreparationData]:
     """Build a list of needed cleaning data objects."""
     used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
-    active_pins = [x.pin for x in used_config]
+    # Use bottle numbers (1-indexed) as pin_ids
+    active_pin_ids = list(range(1, len(used_config) + 1))
     volume_flow = [x.volume_flow for x in used_config]
     prep_data = []
-    for pin, flow in zip(active_pins, volume_flow):
-        prep_data.append(_PreparationData(pin, flow, cfg.MAKER_CLEAN_TIME))
+    for pin_id, flow in zip(active_pin_ids, volume_flow):
+        prep_data.append(_PreparationData(pin_id, flow, cfg.MAKER_CLEAN_TIME))
     return prep_data
 
 

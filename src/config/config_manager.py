@@ -181,6 +181,8 @@ class ConfigManager:
                         "pin": IntType([build_number_limiter(0, 1000)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
                         "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
+                        "pin_type": ChooseOptions.pin_types,
+                        "i2c_address": IntType([build_number_limiter(0x00, 0x7F)], prefix="0x", default=0x20),
                     },
                     PumpConfig,
                 ),
