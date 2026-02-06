@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Literal
 
 from src.logger_handler import LoggerHandler
-from src.machine.interface import GPIOController, PinController
+from src.machine.interface import GPIOController, PinController, SinglePin
 
 _logger = LoggerHandler("RpiController")
 
@@ -200,3 +200,96 @@ class RaspberryGPIO(GPIOController):
 
     def cleanup(self) -> None:
         GPIO.cleanup(self.pin)
+
+
+class RpiSinglePin(SinglePin):
+    """SinglePin implementation for Raspberry Pi GPIO using RPi.GPIO library."""
+
+    def __init__(self, pin: int, inverted: bool = False) -> None:
+        self.pin = pin
+        self.inverted = inverted
+        self._devenvironment = DEV
+        self.low: Literal[0, 1] = GPIO.LOW if not DEV else 0
+        self.high: Literal[0, 1] = GPIO.HIGH if not DEV else 1
+        if inverted:
+            self.low, self.high = self.high, self.low
+
+    def initialize(self, is_input: bool = False, pull_down: bool = True) -> None:
+        """Initialize the GPIO pin."""
+        if self._devenvironment:
+            return
+        if is_input:
+            pull_up_down = GPIO.PUD_DOWN if pull_down else GPIO.PUD_UP
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=pull_up_down)
+        else:
+            GPIO.setup(self.pin, GPIO.OUT, initial=self.low)
+
+    def activate(self) -> None:
+        """Set the pin high (or low if inverted)."""
+        if not self._devenvironment:
+            GPIO.output(self.pin, self.high)
+
+    def close(self) -> None:
+        """Set the pin low (or high if inverted)."""
+        if not self._devenvironment:
+            GPIO.output(self.pin, self.low)
+
+    def cleanup(self) -> None:
+        """Cleanup the GPIO pin."""
+        if not self._devenvironment:
+            GPIO.cleanup(self.pin)
+
+    def read(self) -> bool:
+        """Read the pin state."""
+        if not self._devenvironment:
+            return GPIO.input(self.pin) == GPIO.HIGH
+        return False
+
+
+class Rpi5SinglePin(SinglePin):
+    """SinglePin implementation for Raspberry Pi 5 using gpiozero library."""
+
+    def __init__(self, pin: int, inverted: bool = False) -> None:
+        self.pin = pin
+        self.inverted = inverted
+        self._devenvironment = ZERO_DEV
+        self._device: InputDevice | OutputDevice | None = None
+
+    def initialize(self, is_input: bool = False, pull_down: bool = True) -> None:
+        """Initialize the GPIO pin using gpiozero."""
+        if self._devenvironment:
+            return
+        try:
+            if is_input:
+                pull_up = not pull_down
+                self._device = InputDevice(self.pin, pull_up=pull_up)
+            else:
+                self._device = OutputDevice(
+                    self.pin,
+                    initial_value=False,
+                    active_high=not self.inverted,
+                )
+        except Exception as e:
+            _logger.warning(f"Could not initialize GPIO pin {self.pin}: {e}")
+
+    def activate(self) -> None:
+        """Set the pin high (or low if inverted)."""
+        if self._device is not None and isinstance(self._device, OutputDevice):
+            self._device.on()
+
+    def close(self) -> None:
+        """Set the pin low (or high if inverted)."""
+        if self._device is not None and isinstance(self._device, OutputDevice):
+            self._device.off()
+
+    def cleanup(self) -> None:
+        """Cleanup the gpiozero device."""
+        if self._device is not None:
+            self._device.close()
+            self._device = None
+
+    def read(self) -> bool:
+        """Read the pin state."""
+        if self._device is not None and isinstance(self._device, InputDevice):
+            return self._device.is_active
+        return False

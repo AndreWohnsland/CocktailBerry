@@ -15,6 +15,7 @@ from src import (
     SupportedLanguagesType,
     SupportedLedStatesType,
     SupportedPaymentOptions,
+    SupportedPinType,
     SupportedRfidType,
     SupportedThemesType,
 )
@@ -287,11 +288,19 @@ class DictType(_ConfigType[ConfigClassT]):
         self.config_class = config_class
 
     def validate(self, configname: str, config_dict: dict[str, Any]) -> None:  # ty:ignore[invalid-method-override]
-        """Validate the given value."""
+        """Validate the given value.
+
+        ChooseType keys with an explicit default are considered optional and can be missing.
+        This enables backward compatibility when adding new optional fields like pin_type.
+        """
         super().validate(configname, config_dict)
         for key_name, key_type in self.dict_types.items():
             key_value = config_dict.get(key_name)
             if key_value is None:
+                # Allow missing keys only if it's a ChooseType with an explicit default
+                # This enables backward compatibility when adding new optional fields
+                if isinstance(key_type, ChooseType) and key_type.default is not None:
+                    continue
                 raise ConfigError(f"Config value for '{key_name}' is missing in '{configname}'")
             key_text = f"{configname} key {key_name}"
             key_type.validate(key_text, key_value)
@@ -317,13 +326,76 @@ class DictType(_ConfigType[ConfigClassT]):
 
 
 class PumpConfig(ConfigClass):
-    def __init__(self, pin: int, volume_flow: float, tube_volume: int) -> None:
+    """Configuration for a single pump.
+
+    Args:
+        pin: GPIO pin number (for GPIO type) or expander pin (0-15 for MCP23017, 0-7 for PCF8574).
+        volume_flow: Volume flow rate in ml/s.
+        tube_volume: Volume of the tube to the pump in ml.
+        pin_type: Type of pin controller - "GPIO", "MCP23017", or "PCF8574".
+
+    """
+
+    def __init__(
+        self,
+        pin: int,
+        volume_flow: float,
+        tube_volume: int,
+        pin_type: SupportedPinType = "GPIO",
+    ) -> None:
         self.pin = pin
         self.volume_flow = volume_flow
         self.tube_volume = tube_volume
+        self.pin_type = pin_type
 
-    def to_config(self) -> dict[str, int | float]:
-        return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
+    def to_config(self) -> dict[str, int | float | str]:
+        return {
+            "pin": self.pin,
+            "volume_flow": self.volume_flow,
+            "tube_volume": self.tube_volume,
+            "pin_type": self.pin_type,
+        }
+
+    @classmethod
+    def from_config(cls, config: dict) -> Self:
+        """Deserialize from config dict, with backward compatibility for configs without pin_type."""
+        pin_type = config.get("pin_type", "GPIO")
+        return cls(
+            pin=config["pin"],
+            volume_flow=config["volume_flow"],
+            tube_volume=config["tube_volume"],
+            pin_type=pin_type,
+        )
+
+
+class MCP23017ConfigClass(ConfigClass):
+    """Configuration for MCP23017 I2C GPIO expander.
+
+    The MCP23017 provides 16 GPIO pins (0-15) and communicates over I2C.
+    Default I2C address is 0x20, configurable to 0x20-0x27.
+    """
+
+    def __init__(self, enabled: bool, address: int) -> None:
+        self.enabled = enabled
+        self.address = address
+
+    def to_config(self) -> dict[str, bool | int]:
+        return {"enabled": self.enabled, "address": self.address}
+
+
+class PCF8574ConfigClass(ConfigClass):
+    """Configuration for PCF8574 I2C GPIO expander.
+
+    The PCF8574 provides 8 GPIO pins (0-7) and communicates over I2C.
+    Default I2C address is 0x20, configurable to 0x20-0x27.
+    """
+
+    def __init__(self, enabled: bool, address: int) -> None:
+        self.enabled = enabled
+        self.address = address
+
+    def to_config(self) -> dict[str, bool | int]:
+        return {"enabled": self.enabled, "address": self.address}
 
 
 class NormalLedConfig(ConfigClass):

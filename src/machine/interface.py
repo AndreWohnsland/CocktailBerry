@@ -2,6 +2,52 @@ from abc import abstractmethod
 from typing import Any, Protocol
 
 
+class SinglePin(Protocol):
+    """Interface for individual pin control.
+
+    This protocol defines the interface that all single-pin implementations must follow,
+    regardless of the underlying hardware (GPIO, MCP23017, PCF8574).
+    """
+
+    pin: int
+
+    @abstractmethod
+    def initialize(self, is_input: bool = False, pull_down: bool = True) -> None:
+        """Initialize the pin for input or output.
+
+        Args:
+            is_input: True for input pin, False for output pin.
+            pull_down: True for pull-down resistor, False for pull-up (for input pins).
+
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def activate(self) -> None:
+        """Activate the pin (set high for output)."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def close(self) -> None:
+        """Deactivate the pin (set low for output)."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def cleanup(self) -> None:
+        """Cleanup resources associated with the pin."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def read(self) -> bool:
+        """Read the pin state (for input pins).
+
+        Returns:
+            True if pin is high, False if low.
+
+        """
+        raise NotImplementedError
+
+
 class PinController(Protocol):
     """Interface to control the pins."""
 

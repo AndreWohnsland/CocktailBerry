@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from src.logger_handler import LoggerHandler
-from src.machine.interface import GPIOController, PinController
+from src.machine.interface import GPIOController, PinController, SinglePin
 
 _logger = LoggerHandler("GenericController")
 
@@ -114,3 +114,58 @@ class GenericGPIO(GPIOController):
         if self.gpio is None:
             return
         self.gpio.close()
+
+
+class GenericSinglePin(SinglePin):
+    """SinglePin implementation for generic boards using python-periphery."""
+
+    def __init__(self, pin: int, inverted: bool = False) -> None:
+        self.pin = pin
+        self.inverted = inverted
+        self._devenvironment = DEV
+        self.low = False
+        self.high = True
+        if inverted:
+            self.low, self.high = self.high, self.low
+        self._gpio: GPIO | None = None
+
+    def initialize(self, is_input: bool = False, pull_down: bool = True) -> None:
+        """Initialize the GPIO pin using python-periphery."""
+        if self._devenvironment:
+            return
+
+        # Determine initialization value
+        if is_input:
+            init_value = "in"
+            add_args = {"bias": "pull_down" if pull_down else "pull_up"}
+        else:
+            init_value = "high" if self.inverted else "out"
+            add_args = {}
+
+        try:
+            self._gpio = GPIO(self.pin, init_value, **add_args)
+        except Exception as e:
+            _logger.error(f"Could not initialize GPIO pin {self.pin}: {e}")
+            self._devenvironment = True
+
+    def activate(self) -> None:
+        """Set the pin high (or low if inverted)."""
+        if self._gpio is not None:
+            self._gpio.write(self.high)
+
+    def close(self) -> None:
+        """Set the pin low (or high if inverted)."""
+        if self._gpio is not None:
+            self._gpio.write(self.low)
+
+    def cleanup(self) -> None:
+        """Cleanup the GPIO pin."""
+        if self._gpio is not None:
+            self._gpio.close()
+            self._gpio = None
+
+    def read(self) -> bool:
+        """Read the pin state."""
+        if self._gpio is not None:
+            return self._gpio.read()
+        return False

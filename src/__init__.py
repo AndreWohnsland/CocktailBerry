@@ -8,5 +8,6 @@ SupportedThemesType = Literal["default", "bavaria", "alien", "berry", "tropical"
 SupportedRfidType = Literal["No", "MFRC522", "USB"]
 SupportedPaymentOptions = Literal["Disabled", "CocktailBerry", "SumUp"]
 SupportedLedStatesType = Literal["Effect", "On", "Off"]
+SupportedPinType = Literal["GPIO", "MCP23017", "PCF8574"]
 NEEDED_PYTHON_VERSION = (3, 11)
 FUTURE_PYTHON_VERSION = (3, 13)

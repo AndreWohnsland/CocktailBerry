@@ -29,7 +29,9 @@ from src.config.config_types import (
     FloatType,
     IntType,
     ListType,
+    MCP23017ConfigClass,
     NormalLedConfig,
+    PCF8574ConfigClass,
     PumpConfig,
     StringType,
     WS281xLedConfig,
@@ -119,6 +121,10 @@ class ConfigManager:
     LED_NORMAL: ClassVar[list[NormalLedConfig]] = []
     # List of WS281x (addressable) LED configurations
     LED_WSLED: ClassVar[list[WS281xLedConfig]] = []
+    # MCP23017 I2C GPIO expander configuration (16 pins, address 0x20-0x27)
+    MCP23017_CONFIG: MCP23017ConfigClass = MCP23017ConfigClass(enabled=False, address=0x20)
+    # PCF8574 I2C GPIO expander configuration (8 pins, address 0x20-0x27)
+    PCF8574_CONFIG: PCF8574ConfigClass = PCF8574ConfigClass(enabled=False, address=0x20)
     # if a RFID reader exists
     RFID_READER: SupportedRfidType = "No"
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
@@ -181,6 +187,7 @@ class ConfigManager:
                         "pin": IntType([build_number_limiter(0, 1000)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
                         "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
+                        "pin_type": ChooseType(allowed=["GPIO", "MCP23017", "PCF8574"], default="GPIO"),
                     },
                     PumpConfig,
                 ),
@@ -226,6 +233,20 @@ class ConfigManager:
                     WS281xLedConfig,
                 ),
                 0,
+            ),
+            "MCP23017_CONFIG": DictType(
+                {
+                    "enabled": BoolType(check_name="MCP23017 Enabled"),
+                    "address": IntType([build_number_limiter(0x20, 0x27)], prefix="0x", default=0x20),
+                },
+                MCP23017ConfigClass,
+            ),
+            "PCF8574_CONFIG": DictType(
+                {
+                    "enabled": BoolType(check_name="PCF8574 Enabled"),
+                    "address": IntType([build_number_limiter(0x20, 0x27)], prefix="0x", default=0x20),
+                },
+                PCF8574ConfigClass,
             ),
             "RFID_READER": ChooseOptions.rfid,
             "MICROSERVICE_ACTIVE": BoolType(check_name="Microservice Active"),

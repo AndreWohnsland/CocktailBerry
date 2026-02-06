@@ -691,8 +691,8 @@ ui:
       en: 'Disable all other tabs than the maker one; You will only be prompted at program start if you want to go to config window with master password'
       de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
     PUMP_CONFIG:
-      en: 'Setting for each pump: Pin connected to the pump, volume flow in ml/s, tube volume to the pump in ml (used to pump given volume after a bottle change)'
-      de: 'Einstellung für jede Pumpe: Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen zur Pumpe in ml (wird verwendet, um das gegebene Volumen nach einem Flaschenwechsel zu pumpen)'
+      en: 'Setting for each pump: Pin number (GPIO pin or expander pin 0-15/0-7), volume flow in ml/s, tube volume in ml, pin type (GPIO, MCP23017, or PCF8574)'
+      de: 'Einstellung für jede Pumpe: Pin-Nummer (GPIO-Pin oder Expander-Pin 0-15/0-7), Volumenstrom in ml/s, Schlauchvolumen in ml, Pin-Typ (GPIO, MCP23017 oder PCF8574)'
     MAKER_NAME:
       en: 'Name of your CocktailBerry machine'
       de: 'Name von deiner CocktailBerry Maschine'
@@ -747,6 +747,12 @@ ui:
     LED_WSLED:
       en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects)'
       de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
+    MCP23017_CONFIG:
+      en: 'MCP23017 I2C GPIO expander configuration (16 pins, 0-15). Enable if using MCP23017 for pump control. Set the I2C address (default 0x20, range 0x20-0x27).'
+      de: 'MCP23017 I2C GPIO-Expander Konfiguration (16 Pins, 0-15). Aktivieren wenn MCP23017 für Pumpensteuerung verwendet wird. I2C-Adresse setzen (Standard 0x20, Bereich 0x20-0x27).'
+    PCF8574_CONFIG:
+      en: 'PCF8574 I2C GPIO expander configuration (8 pins, 0-7). Enable if using PCF8574 for pump control. Set the I2C address (default 0x20, range 0x20-0x27).'
+      de: 'PCF8574 I2C GPIO-Expander Konfiguration (8 Pins, 0-7). Aktivieren wenn PCF8574 für Pumpensteuerung verwendet wird. I2C-Adresse setzen (Standard 0x20, Bereich 0x20-0x27).'
     RFID_READER:
       en: 'Using a RFID Reader: Basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
       de: 'Wird ein RFID Reader verwendet: Standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'

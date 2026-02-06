@@ -60,7 +60,27 @@ class MachineController:
         atexit.register(self.cleanup)
 
     def _chose_controller(self) -> PinController:
-        """Select the controller class for the Pin."""
+        """Select the controller class for the Pin.
+
+        Returns HybridPinController if any I2C expander is enabled or any pump
+        uses I2C pin types. Otherwise falls back to standard controllers.
+        """
+        # Check if any I2C expander is enabled
+        uses_i2c = cfg.MCP23017_CONFIG.enabled or cfg.PCF8574_CONFIG.enabled
+
+        # Also check if any pump config uses I2C pin types
+        if not uses_i2c:
+            for pump in cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]:
+                if pump.pin_type in ("MCP23017", "PCF8574"):
+                    uses_i2c = True
+                    break
+
+        if uses_i2c:
+            from src.machine.hybrid_controller import HybridPinController
+
+            return HybridPinController(cfg.MAKER_PINS_INVERTED)
+
+        # Fall back to existing behavior
         if is_rpi():
             return choose_pi_controller(cfg.MAKER_PINS_INVERTED)
         # In case none is found, fall back to generic using python-periphery
