@@ -11,7 +11,7 @@ _logger = LoggerHandler("RpiController")
 
 try:
     # pylint: disable=import-error
-    from RPi import GPIO  # type: ignore
+    from RPi import GPIO  # pyright: ignore[reportMissingModuleSource]
 
     GPIO.setmode(GPIO.BCM)
     DEV = False
@@ -20,7 +20,7 @@ except (ModuleNotFoundError, RuntimeError):
 
 try:
     # pylint: disable=import-error
-    from gpiozero import InputDevice, OutputDevice  # type: ignore
+    from gpiozero import InputDevice, OutputDevice  # pyright: ignore[reportMissingImports, reportMissingModuleSource]
 
     ZERO_DEV = False
 except (ModuleNotFoundError, RuntimeError):

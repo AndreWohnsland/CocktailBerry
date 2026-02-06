@@ -4,7 +4,7 @@ import atexit
 import contextlib
 import time
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 from src.logger_handler import LoggerHandler
 
@@ -40,9 +40,9 @@ class _PreparationData:
 class MachineController:
     """Controller Class for all Machine related Pin routines."""
 
-    _instance: MachineController | None = None
+    _instance = None
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> "MachineController":  # noqa: UP037
+    def __new__(cls, *args: Any, **kwargs: Any) -> Self:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance

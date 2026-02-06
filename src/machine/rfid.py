@@ -1,3 +1,4 @@
+# pyright: reportMissingImports=false
 import os
 import time
 from collections.abc import Callable, Iterator
@@ -25,8 +26,7 @@ _NO_MODULE: dict[str, bool] = dict.fromkeys(_RFID_TYPES, True)
 _ERROR: dict[str, str | None] = dict.fromkeys(_RFID_TYPES)
 
 try:
-    # pylint: disable=import-error
-    from mfrc522 import SimpleMFRC522  # type: ignore
+    from mfrc522 import SimpleMFRC522
 
     _NO_MODULE["MFRC522"] = False
 except (AttributeError, ModuleNotFoundError, RuntimeError):
@@ -57,7 +57,7 @@ class RFIDReader:
         if getattr(self, "_initialized", False):
             return
         self.is_active = False
-        err = _ERROR.get(cfg.RFID_READER, None)
+        err = _ERROR.get(cfg.RFID_READER)
         if err is not None:
             _logger.log_event("ERROR", err)
         self.rfid = self._select_rfid()

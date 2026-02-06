@@ -1,7 +1,7 @@
 import re
 import socket
 import subprocess
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 
 import typer
@@ -105,7 +105,7 @@ def _user_prompt(current_value: str, default_value: str, display_name: str) -> s
     return user_input
 
 
-class LanguageChoice(str, Enum):
+class LanguageChoice(StrEnum):
     """Enum for the language choice."""
 
     ENGLISH = "en"

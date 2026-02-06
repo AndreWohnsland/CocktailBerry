@@ -31,7 +31,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "ruff>=0.9.1",
   "mkdocs-material>=9.5.49",
   "mkdocs>=1.6.1",
   "ipykernel>=6.29.5",
@@ -39,6 +38,7 @@ dev = [
   "pytest-cov>=6.0.0",
   "pre-commit>=4.2.0",
   "ty>=0.0.15",
+  "ruff>=0.15.0",
 ]
 
 [project.optional-dependencies]
@@ -118,3 +118,15 @@ ignore = [
   "PLR0913", # Too many arguments
   "PLC0415", # `import` should be at the top-level of a file
 ]
+
+[[tool.ty.overrides]]
+include  = ["src.ui_elements.*"]
+rules = { unresolved-import = "ignore" }
+
+[[tool.ty.overrides]]
+include = [
+  "src/machine/rfid.py",
+  "src/machine/raspberry.py",
+  "src/machine/leds.py",
+]
+rules = { unresolved-import = "ignore", invalid-type-form = "ignore", unresolved-attribute = "ignore", possibly-missing-attribute = "ignore" }
