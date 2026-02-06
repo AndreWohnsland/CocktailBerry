@@ -14,10 +14,9 @@ with contextlib.suppress(ModuleNotFoundError):
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.machine.generic_board import GenericController
 from src.machine.interface import PinController
 from src.machine.leds import LedController
-from src.machine.raspberry import choose_pi_controller, is_rpi
+from src.machine.raspberry import is_rpi
 from src.machine.reverter import Reverter
 from src.models import CocktailStatus, Ingredient, PrepareResult
 

@@ -3,7 +3,7 @@
 from enum import Enum
 
 
-class PinType(str, Enum):
+class PinType(Enum):
     """Types of pin controllers supported by the system."""
 
     GPIO = "GPIO"

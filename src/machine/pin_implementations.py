@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from src.logger_handler import LoggerHandler
 from src.machine.i2c_expanders import MCP23017Device, PCF8574Device
-from src.machine.pin_interface import PinInterface
 
 _logger = LoggerHandler("PinImplementations")
 

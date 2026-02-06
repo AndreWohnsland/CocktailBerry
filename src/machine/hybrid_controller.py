@@ -89,8 +89,7 @@ class HybridPinController(PinController):
         )
         self.pin_descriptors[pin_id] = descriptor
         _logger.debug(
-            f"Registered pin {pin_id}: type={pin_type.value}, "
-            f"pin={pin_number}, i2c_addr={pump_config.i2c_address}"
+            f"Registered pin {pin_id}: type={pin_type.value}, pin={pin_number}, i2c_addr={pump_config.i2c_address}"
         )
 
     def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
@@ -118,9 +117,7 @@ class HybridPinController(PinController):
                 _logger.log_exception(e)
                 _logger.error(f"Failed to initialize pin {pin_id}: {e}")
 
-    def _create_pin_implementation(
-        self, descriptor: PinDescriptor
-    ) -> GpioPin | I2cMcp23017Pin | I2cPcf8574Pin:
+    def _create_pin_implementation(self, descriptor: PinDescriptor) -> GpioPin | I2cMcp23017Pin | I2cPcf8574Pin:
         """Create the appropriate pin implementation based on pin type.
 
         Args:
