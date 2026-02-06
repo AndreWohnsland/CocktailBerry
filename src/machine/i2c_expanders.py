@@ -99,15 +99,15 @@ class MCP23017Device:
         self.bus_number = bus_number
         self.device = None
         self.pins: dict[int, MCP23017Pin] = {}
-        self.devenvironment = not I2C_AVAILABLE
+        self.i2c_unavailable = not I2C_AVAILABLE
 
-        if not self.devenvironment:
+        if not self.i2c_unavailable:
             try:
                 i2c = busio.I2C(board.SCL, board.SDA)
                 self.device = MCP23017(i2c, address=i2c_address)
                 _logger.info(f"MCP23017 initialized at address 0x{i2c_address:02X}")
             except Exception as e:
-                self.devenvironment = True
+                self.i2c_unavailable = True
                 _logger.log_exception(e)
                 _logger.warning(f"Could not initialize MCP23017 at 0x{i2c_address:02X}")
 
@@ -151,7 +151,7 @@ class MCP23017Pin:
         self.pin = None
         self.inverted = False
 
-        if not device.devenvironment and device.device is not None:
+        if not device.i2c_unavailable and device.device is not None:
             self.pin = device.device.get_pin(pin_number)
 
     def set_direction(self, is_input: bool, inverted: bool = False) -> None:
@@ -220,15 +220,15 @@ class PCF8574Device:
         self.bus_number = bus_number
         self.device = None
         self.pins: dict[int, PCF8574Pin] = {}
-        self.devenvironment = not I2C_AVAILABLE
+        self.i2c_unavailable = not I2C_AVAILABLE
 
-        if not self.devenvironment:
+        if not self.i2c_unavailable:
             try:
                 i2c = busio.I2C(board.SCL, board.SDA)
                 self.device = PCF8574(i2c, address=i2c_address)
                 _logger.info(f"PCF8574 initialized at address 0x{i2c_address:02X}")
             except Exception as e:
-                self.devenvironment = True
+                self.i2c_unavailable = True
                 _logger.log_exception(e)
                 _logger.warning(f"Could not initialize PCF8574 at 0x{i2c_address:02X}")
 
@@ -272,7 +272,7 @@ class PCF8574Pin:
         self.pin = None
         self.inverted = False
 
-        if not device.devenvironment and device.device is not None:
+        if not device.i2c_unavailable and device.device is not None:
             self.pin = device.device.get_pin(pin_number)
 
     def set_direction(self, is_input: bool, inverted: bool = False) -> None:

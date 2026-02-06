@@ -51,10 +51,15 @@ class GpioPin:
         -------
             bool: True if pin is HIGH, False if LOW
 
+        Raises
+        ------
+            NotImplementedError: GPIO controller wrapper does not support reading
+
         """
-        # GPIO controllers don't have a read method on the individual controller
-        # This would need to be implemented via the main PinController
-        return False
+        # GPIO controllers in the factory pattern don't expose read functionality
+        # Reading pins should be done through the main PinController.read_pin() method
+        msg = "GPIO pin reading not supported through this wrapper. Use PinController.read_pin() instead."
+        raise NotImplementedError(msg)
 
 
 class I2cMcp23017Pin:

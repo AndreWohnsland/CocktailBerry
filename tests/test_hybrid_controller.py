@@ -1,12 +1,13 @@
 """Tests for hybrid pin controller and I2C support."""
 
+# Setup path relative to this file
 import sys
-from unittest.mock import MagicMock, Mock, patch
+from pathlib import Path
+from unittest.mock import Mock, patch
 
 import pytest
 
-# Setup path before imports
-sys.path.insert(0, "/home/runner/work/CocktailBerry/CocktailBerry")
+sys.path.insert(0, str(Path(__file__).parents[1]))
 
 from src.config.config_types import PumpConfig
 from src.machine.hybrid_controller import HybridPinController, PinDescriptor
