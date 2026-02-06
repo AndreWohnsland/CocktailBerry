@@ -9,7 +9,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Generic, Protocol, Self, TypeVar, get_args
+from typing import Any, Protocol, Self, TypeVar, get_args
 
 from src import (
     SupportedLanguagesType,
@@ -206,7 +206,7 @@ class BoolType(_ConfigType[bool]):
 ListItemT = TypeVar("ListItemT")  # Type variable for items in a list
 
 
-class ListType(_ConfigType[list[ListItemT]], Generic[ListItemT]):
+class ListType[ListItemT](_ConfigType[list[ListItemT]]):
     """List configuration type."""
 
     def __init__(
@@ -286,7 +286,7 @@ class DictType(_ConfigType[ConfigClassT]):
         self.dict_types = dict_types
         self.config_class = config_class
 
-    def validate(self, configname: str, config_dict: dict[str, Any]) -> None:
+    def validate(self, configname: str, config_dict: dict[str, Any]) -> None:  # ty:ignore[invalid-method-override]
         """Validate the given value."""
         super().validate(configname, config_dict)
         for key_name, key_type in self.dict_types.items():
@@ -296,11 +296,11 @@ class DictType(_ConfigType[ConfigClassT]):
             key_text = f"{configname} key {key_name}"
             key_type.validate(key_text, key_value)
 
-    def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:
+    def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:  # ty:ignore[invalid-method-override]
         """Deserialize the given value."""
         return self.config_class.from_config(config_dict)
 
-    def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:
+    def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:  # ty:ignore[invalid-method-override]
         """Serialize the given value."""
         return config_class.to_config()
 

@@ -3,7 +3,7 @@ import time
 from collections.abc import Callable, Iterator
 from itertools import cycle
 from threading import Thread
-from typing import ClassVar
+from typing import ClassVar, Self
 
 from src.config.config_manager import CONFIG as cfg
 from src.logger_handler import LoggerHandler
@@ -22,14 +22,7 @@ _ERROR_SELECTION_NOT_POSSIBLE = {
 
 _RFID_TYPES: tuple[str, ...] = ("No", "MFRC522", "USB")
 _NO_MODULE: dict[str, bool] = dict.fromkeys(_RFID_TYPES, True)
-_ERROR: dict[str, Optional[str]] = dict.fromkeys(_RFID_TYPES)
-
-try:
-    from PiicoDev_RFID import PiicoDev_RFID
-
-    _NO_MODULE["PiicoDev"] = False
-except (AttributeError, ModuleNotFoundError, RuntimeError):
-    _ERROR["PiicoDev"] = _ERROR_SELECTION_NOT_POSSIBLE["PiicoDev"]
+_ERROR: dict[str, str | None] = dict.fromkeys(_RFID_TYPES)
 
 try:
     # pylint: disable=import-error
@@ -53,17 +46,22 @@ except (AttributeError, ModuleNotFoundError, RuntimeError):
 
 
 class RFIDReader:
-    _instance = None
+    _instance: Self | None = None
 
-    def __new__(cls) -> "RFIDReader":
+    def __new__(cls) -> Self:
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
-            cls.is_active = False
-            err = _ERROR.get(cfg.RFID_READER, None)
-            if err is not None:
-                _logger.log_event("ERROR", err)
-            cls.rfid = cls._select_rfid()
         return cls._instance
+
+    def __init__(self) -> None:
+        if getattr(self, "_initialized", False):
+            return
+        self.is_active = False
+        err = _ERROR.get(cfg.RFID_READER, None)
+        if err is not None:
+            _logger.log_event("ERROR", err)
+        self.rfid = self._select_rfid()
+        self._initialized = True
 
     @classmethod
     def _select_rfid(cls) -> RFIDController | None:
@@ -172,7 +170,7 @@ class _UsbReader(RFIDController):
             service = card_request.waitforcard()
             if not isinstance(service, PassThruCardService):
                 return None, None
-            conn = service.connection  # type: ignore
+            conn = service.connection  # pyright: ignore[reportOptionalMemberAccess]
             conn.connect()
             response, sw1, sw2 = conn.transmit(self.GET_UID)
         except Exception:

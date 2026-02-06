@@ -4,7 +4,7 @@ version = "3.0.0"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
 authors = [{ name= "Andre Wohnsland" , email =  "cocktailmakeraw@gmail.com" }]
 readme = "readme.md"
-requires-python = ">= 3.11"
+requires-python = ">= 3.13"
 
 dependencies = [
     "gitpython>=3.1.43",
@@ -34,11 +34,11 @@ dev = [
   "ruff>=0.9.1",
   "mkdocs-material>=9.5.49",
   "mkdocs>=1.6.1",
-  "mypy>=1.15.0",
   "ipykernel>=6.29.5",
   "pytest>=8.3.4",
   "pytest-cov>=6.0.0",
   "pre-commit>=4.2.0",
+  "ty>=0.0.15",
 ]
 
 [project.optional-dependencies]
@@ -118,25 +118,3 @@ ignore = [
   "PLR0913", # Too many arguments
   "PLC0415", # `import` should be at the top-level of a file
 ]
-
-[tool.mypy]
-disable_error_code = ["annotation-unchecked", "import-untyped", "import-not-found"]
-
-[[tool.mypy.overrides]]
-module = "src.ui_elements.*"
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = [
-    "smartcard",
-    "smartcard.*",
-]
-ignore_missing_imports = true
-
-[tool.pylint]
-disable = ["C0301", "C0114", "C0115", "C0116", "R0912"]
-max-line-length = 120
-
-[tool.autopep8]
-max-line-length = 120
-ignore = ["E402"]

@@ -327,9 +327,9 @@ class ConfigManager:
             config["immutable"] = setting.immutable
             list_type = setting.list_type
             # in case of list we need to go into the object, all list object types are the same
-            self._enhance_config_specific_information(config, list_type)
+            self._enhance_config_specific_information(config, list_type)  # ty:ignore[invalid-argument-type]
         if isinstance(setting, DictType):
-            for key, value in setting.dict_types.items():
+            for key, value in setting.dict_types.items():  # ty:ignore[unresolved-attribute]
                 config[key] = {}
                 self._enhance_config_specific_information(config[key], value)
 

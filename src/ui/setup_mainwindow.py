@@ -140,7 +140,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             if shared.restricted_mode_active:
                 self._apply_restricted_mode()
                 # Install event filter on tab bar to detect clicks on disabled tabs
-                self.tabWidget.tabBar().installEventFilter(self)  # pyright: ignore[reportOptionalMemberAccess]
+                bar = self.tabWidget.tabBar()
+                if bar is not None:
+                    bar.installEventFilter(self)
 
         ADDONS.start_trigger_loop(self)
         # start at the cocktail list view
@@ -184,19 +186,19 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             self.tabWidget.setTabEnabled(i, False)
         self.tabWidget.setCurrentIndex(TabIndex.MAKER)
 
-    def eventFilter(self, obj: QObject | None, event: QEvent | None) -> bool:
+    def eventFilter(self, a0: QObject | None, a1: QEvent | None) -> bool:
         """Event filter to detect clicks on disabled tabs for restricted mode unlock."""
         # Early exit for non-mouse events (most common case)
-        if event is None or event.type() != QEvent.Type.MouseButtonPress:
-            return super().eventFilter(obj, event)
-        if not shared.restricted_mode_active or obj != self.tabWidget.tabBar():
-            return super().eventFilter(obj, event)
-        mouse_event: QMouseEvent = event  # type: ignore
-        tab_index = self.tabWidget.tabBar().tabAt(mouse_event.pos())  # pyright: ignore[reportOptionalMemberAccess]
+        if a1 is None or a1.type() != QEvent.Type.MouseButtonPress:
+            return super().eventFilter(a0, a1)
+        if not shared.restricted_mode_active or a0 != self.tabWidget.tabBar():
+            return super().eventFilter(a0, a1)
+        mouse_event: QMouseEvent = a1  # type: ignore
+        tab_index = self.tabWidget.tabBar().tabAt(mouse_event.pos())  # type: ignore
         if tab_index < 0:
-            return super().eventFilter(obj, event)
+            return super().eventFilter(a0, a1)
         self._handle_restricted_mode_click(tab_index)
-        return super().eventFilter(obj, event)
+        return super().eventFilter(a0, a1)
 
     def _handle_restricted_mode_click(self, index: int) -> None:
         """Handle click on disabled tab for restricted mode unlock sequence."""
@@ -218,7 +220,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         for i in range(self.tabWidget.count()):
             self.tabWidget.setTabEnabled(i, True)
         # Remove the event filter since it's no longer needed
-        self.tabWidget.tabBar().removeEventFilter(self)  # pyright: ignore[reportOptionalMemberAccess]
+        self.tabWidget.tabBar().removeEventFilter(self)  # type: ignore
 
     def open_cocktail_detail(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
@@ -441,7 +443,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         bottles.set_fill_level_bars(self)
 
         for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
-            combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))  # type: ignore[attr-defined]
+            combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
 
     def handle_tab_bar_clicked(self, index: int) -> None:
         """Protects tabs other than maker tab with a password."""

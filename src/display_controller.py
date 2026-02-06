@@ -112,9 +112,9 @@ class DisplayController(DialogHandler):
                 continue
             data: Cocktail | None = item.data(Qt.ItemDataRole.UserRole)
             if data:
-                list_widget_data.append(data)  # type: ignore
+                list_widget_data.append(data)
             else:
-                list_widget_data.append(item.text())  # type: ignore
+                list_widget_data.append(item.text())  # pyright: ignore[reportArgumentType]
         return list_widget_data
 
     def get_ingredient_data(self, w: Ui_MainWindow) -> Ingredient:

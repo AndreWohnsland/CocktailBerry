@@ -352,7 +352,7 @@ class DatabaseCommander:
     def set_bottle_order(self, ingredient_names: list[str] | list[int]) -> None:
         """Set bottles to the given list of bottles, need all bottles."""
         for bottle, ingredient in enumerate(ingredient_names, start=1):
-            self.set_bottle_at_slot(ingredient, bottle)  # type: ignore[arg-type]
+            self.set_bottle_at_slot(ingredient, bottle)
 
     def set_bottle_at_slot(self, ingredient: str | int, bottle_number: int) -> None:
         """Set the bottle at the given slot."""
@@ -573,12 +573,13 @@ class DatabaseCommander:
         """Insert the IDS of the given ingredient list into the available table."""
         if not ingredient_list:
             return
+        ingredient_id: list[int]
         with self.session_scope() as session:
             if isinstance(ingredient_list[0], str):
                 data = session.query(DbIngredient.id).filter(DbIngredient.name.in_(ingredient_list)).all()
-                ingredient_id: list[int] = [x[0] for x in data]
+                ingredient_id = [x[0] for x in data]
             else:
-                ingredient_id = ingredient_list  # type: ignore
+                ingredient_id = ingredient_list  # pyright: ignore[reportAssignmentType] # ty:ignore[invalid-assignment]
             for _id in ingredient_id:
                 session.add(DbAvailable(_id=_id))
 

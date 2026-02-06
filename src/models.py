@@ -198,7 +198,7 @@ class Cocktail:
         # scale alcoholic ingredients with factor
         for ing in self.adjusted_ingredients:
             factor = alcohol_factor if bool(ing.alcohol) else 1
-            ing.amount *= factor  # type: ignore
+            ing.amount *= factor  # pyright: ignore[reportAttributeAccessIssue]
             scaled_amount += ing.amount
             concentration += ing.amount * ing.alcohol
         self.adjusted_alcohol = round(concentration / scaled_amount, 1)
@@ -243,7 +243,7 @@ class AddonData:
             self.disabled = current_version >= Version(self.disabled_since)
         self.is_installable = self.satisfy_min_version and not self.disabled
 
-    @computed_field  # type: ignore[misc]
+    @computed_field
     @property
     def can_update(self) -> bool:
         """Check if addon can be updated based on local and remote versions."""

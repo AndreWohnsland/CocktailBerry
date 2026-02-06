@@ -15,12 +15,12 @@ class ClickableLabel(QLabel):
         self.isPressed = False
         self.pressPos = QPoint()
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event):  # ty:ignore[invalid-method-override]
         self.isPressed = True
         self.pressPos = event.pos()
         QLabel.mousePressEvent(self, event)
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, event):  # ty:ignore[invalid-method-override]
         if self.isPressed and self.rect().contains(event.pos()):
             releasePos = event.pos()
             if (releasePos - self.pressPos).manhattanLength() < MAX_SCROLL_DISTANCE:

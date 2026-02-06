@@ -30,7 +30,7 @@ def logerror(func: Callable) -> Callable:
             fname = stack[-1][2]
             row = stack[-1][3]
             module = re.split(r"[\\/]", stack[-1][0])[-1]
-            msg = f"The function {func.__name__} did run into an error at module: {module} function {fname} in row: {row}!"  # noqa
+            msg = f"The function {func.__name__} did run into an error at module: {module} function {fname} in row: {row}!"  # noqa  # ty:ignore[unresolved-attribute]
             _logger.log_exception(msg)
             try:
                 mc = MachineController()

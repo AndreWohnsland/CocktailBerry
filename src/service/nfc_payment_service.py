@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from itertools import cycle
 from threading import Timer
-from typing import Protocol
+from typing import Protocol, Self
 
 import requests
 from pydantic.dataclasses import dataclass as api_dataclass
@@ -64,19 +64,24 @@ class UserLookup:
 
 
 class NFCPaymentService:
-    _instance = None
+    _instance: Self | None = None
 
-    def __new__(cls) -> "NFCPaymentService":
+    def __new__(cls) -> Self:
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
-            cls.user_lookup: UserLookup = UserLookup.removed()
-            cls.rfid_reader = RFIDReader()
-            cls._user_callbacks: dict[str, Callable[[UserLookup], None]] = {}
-            cls._is_polling: bool = False
-            cls._auto_logout_timer: Timer | None = None
-            cls._pause_callbacks: bool = False
-            cls._api_client = _choose_payment_service_client()
         return cls._instance
+
+    def __init__(self) -> None:
+        if getattr(self, "_initialized", False):
+            return
+        self.user_lookup: UserLookup = UserLookup.removed()
+        self.rfid_reader = RFIDReader()
+        self._user_callbacks: dict[str, Callable[[UserLookup], None]] = {}
+        self._is_polling: bool = False
+        self._auto_logout_timer: Timer | None = None
+        self._pause_callbacks: bool = False
+        self._api_client = _choose_payment_service_client()
+        self._initialized = True
 
     def __del__(self) -> None:
         self._cancel_auto_logout_timer()

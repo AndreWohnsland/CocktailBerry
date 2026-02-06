@@ -2,7 +2,7 @@ import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from functools import wraps
-from typing import Literal
+from typing import Literal, Self
 
 import stamina
 from stamina.instrumentation import RetryDetails, set_on_retry_hooks
@@ -135,16 +135,21 @@ class _SumupSdkClient:
 
 
 class SumupPaymentService:
-    _instance = None
+    _instance: Self | None = None
 
-    def __new__(cls, api_key: str | None = None, merchant_code: str | None = None) -> "SumupPaymentService":
+    def __new__(cls, *args: object, **kwargs: object) -> Self:
         if not isinstance(cls._instance, cls):
-            if not api_key or not merchant_code:
-                raise ValueError("api_key and merchant_code are required for first initialization")
             cls._instance = object.__new__(cls)
-            cls._client = _SumupSdkClient(api_key=api_key, merchant_code=merchant_code)
-            _logger.info("SumupPaymentService initialized")
         return cls._instance
+
+    def __init__(self, api_key: str | None = None, merchant_code: str | None = None) -> None:
+        if getattr(self, "_initialized", False):
+            return
+        if not api_key or not merchant_code:
+            raise ValueError("api_key and merchant_code are required for first initialization")
+        self._client: _SumupSdkClient = _SumupSdkClient(api_key=api_key, merchant_code=merchant_code)
+        self._initialized = True
+        _logger.info("SumupPaymentService initialized")
 
     def get_all_readers(self) -> list[Reader]:
         result = self._client.list_readers()

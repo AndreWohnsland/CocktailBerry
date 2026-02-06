@@ -82,12 +82,12 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
     layout.addWidget(label)
     if cocktail is not None:
         # take care of the button overload thingy, otherwise the first element will be a bool
-        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_detail(c))  # type: ignore[attr-defined]
+        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_detail(c))
         label.clicked.connect(lambda c=cocktail: mainscreen.open_cocktail_detail(c))
         button.setEnabled(cocktail.is_allowed)
         label.setEnabled(cocktail.is_allowed)
     else:
-        button.clicked.connect(mainscreen.open_ingredient_window)  # type: ignore[attr-defined]
+        button.clicked.connect(mainscreen.open_ingredient_window)
         label.clicked.connect(mainscreen.open_ingredient_window)
     return layout
 

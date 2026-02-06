@@ -131,15 +131,15 @@ web-preview:
 # Run all Python code quality checks (lint, format, typecheck)
 [group('Code Quality')]
 python-check:
-    uv run ruff check .
-    uv run ruff format . --check
-    uv run mypy .
+    uv run ruff check ./src
+    uv run ruff format ./src --check
+    uv run ty check ./src
 
 # Fix all auto-fixable Python issues (lint + format)
 [group('Code Quality')]
 python-fix:
-    uv run ruff check . --fix
-    uv run ruff format .
+    uv run ruff check ./src --fix
+    uv run ruff format ./src
 
 # Run tests with coverage report
 [group('Testing')]

@@ -41,7 +41,10 @@ class AvailableWindow(QMainWindow, Ui_available):
     def _accepted_clicked(self) -> None:
         """Write the new availability into the DB."""
         DB_COMMANDER.delete_existing_handadd_ingredient()
-        ingredient_names = [self.LWVorhanden.item(i).text() for i in range(self.LWVorhanden.count())]
+        ingredient_names = [
+            self.LWVorhanden.item(i).text()  # ty:ignore[possibly-missing-attribute] # pyright: ignore[reportOptionalMemberAccess]
+            for i in range(self.LWVorhanden.count())
+        ]
         # only add ingredients if there are any
         if ingredient_names:
             DB_COMMANDER.insert_multiple_existing_handadd_ingredients(ingredient_names)
