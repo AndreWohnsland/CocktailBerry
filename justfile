@@ -23,20 +23,21 @@ install-nfc:
     uv sync --extra nfc
 
 # Install web client dependencies
+[working-directory: 'web_client']
 [group('Python Environment & Dependencies')]
 install-web:
-    cd web_client && yarn install
+    yarn install
 
 # Install dashboard dependencies
+[working-directory: 'dashboard']
 [group('Python Environment & Dependencies')]
 install-dashboard:
-    cd dashboard && uv sync
+    uv sync
 
 # Install all project dependencies (Python with all extras, web, dashboard)
 [group('Python Environment & Dependencies')]
-install-all:
+install-all: install-web
     uv sync --all-extras
-    cd web_client && yarn install
 
 # Run the main CocktailBerry Qt application (v1)
 [group('Running Applications')]
@@ -49,19 +50,22 @@ api:
     uv run fastapi dev ./src/api/api.py
 
 # Run the web client development server
+[working-directory: 'web_client']
 [group('Running Applications')]
 web:
-    cd web_client && yarn dev
+    yarn dev
 
 # Run the dashboard backend
+[working-directory: 'dashboard/backend']
 [group('Running Applications')]
 dashboard-backend:
-    cd dashboard/backend && uv run main.py
+    uv run main.py
 
 # Run the dashboard frontend
+[working-directory: 'dashboard/frontend']
 [group('Running Applications')]
 dashboard-frontend:
-    cd dashboard/frontend && uv run index.py
+    uv run index.py
 
 # Compile all Qt UI files to Python
 [unix, group('Qt UI Development')]
@@ -89,44 +93,52 @@ qt-styles:
     uv run qtsass ./src/ui/styles/ -o ./src/ui/styles/
 
 # Build the web client for production
+[working-directory: 'web_client']
 [group('Web Client')]
 web-build:
-    cd web_client && yarn build
+    yarn build
 
 # Build the web client for demo
+[working-directory: 'web_client']
 [group('Web Client')]
 web-build-demo:
-    cd web_client && yarn build-demo
+    yarn build-demo
 
 # Fix web client linting issues
+[working-directory: 'web_client']
 [group('Web Client')]
 web-lint:
-    cd web_client && yarn lint:fix
+    yarn lint:fix
 
 # Fix web client formatting issues
+[working-directory: 'web_client']
 [group('Web Client')]
 web-format:
-    cd web_client && yarn format:fix
+    yarn format:fix
 
 # Fix all web client issues
+[working-directory: 'web_client']
 [group('Web Client')]
 web-check:
-    cd web_client && yarn check:fix
+    yarn check:fix
 
 # Run Storybook for component development
+[working-directory: 'web_client']
 [group('Web Client')]
 web-storybook:
-    cd web_client && yarn storybook
+    yarn storybook
 
 # Build Storybook
+[working-directory: 'web_client']
 [group('Web Client')]
 web-storybook-build:
-    cd web_client && yarn build-storybook
+    yarn build-storybook
 
 # Preview the built web client
+[working-directory: 'web_client']
 [group('Web Client')]
 web-preview:
-    cd web_client && yarn preview
+    yarn preview
 
 # Run all Python code quality checks (lint, format, typecheck)
 [group('Code Quality')]
@@ -191,21 +203,25 @@ docker-down:
     docker compose down
 
 # Build and start microservice
+[working-directory: 'microservice']
 [group('Docker')]
 microservice-up:
-    cd microservice && docker compose -f docker-compose.local.yaml up --build --detach
+    docker compose -f docker-compose.local.yaml up --build --detach
 
 # Stop microservice
+[working-directory: 'microservice']
 [group('Docker')]
 microservice-down:
-    cd microservice && docker compose -f docker-compose.local.yaml down
+    docker compose -f docker-compose.local.yaml down
 
 # Build and start dashboard services
+[working-directory: 'dashboard']
 [group('Docker')]
 dashboard-up:
-    cd dashboard && docker compose -f docker-compose.both.yaml up --build --detach
+    docker compose -f docker-compose.both.yaml up --build --detach
 
 # Stop dashboard services
+[working-directory: 'dashboard']
 [group('Docker')]
 dashboard-down:
-    cd dashboard && docker compose -f docker-compose.both.yaml down
+    docker compose -f docker-compose.both.yaml down
