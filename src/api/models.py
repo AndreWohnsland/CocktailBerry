@@ -111,6 +111,7 @@ class IssueData(BaseModel):
     deprecated: StartupIssue
     internet: StartupIssue
     config: StartupIssue
+    payment: StartupIssue
 
 
 class DateTimeInput(BaseModel):

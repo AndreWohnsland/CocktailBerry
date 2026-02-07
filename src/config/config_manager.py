@@ -482,6 +482,7 @@ class Shared:
         self.startup_need_time_adjustment = StartupIssue()
         self.startup_python_deprecated = StartupIssue()
         self.startup_config_issue = StartupIssue()
+        self.startup_payment_issue = StartupIssue()
 
 
 def version_callback(value: bool) -> None:

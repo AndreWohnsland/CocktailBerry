@@ -180,6 +180,8 @@
     "configIssue": "Configurations Fehler",
     "configSetToDefault": "Die fehlerhafte Konfiguration wurde auf den Standardwert gesetzt, bitte passe diese an:",
     "goToConfig": "Gehe zur Configuration",
+    "paymentIssue": "Zahlungsproblem",
+    "paymentDisabled": "Der Zahlungsservice wurde aufgrund eines Startproblems deaktiviert. Bitte überprüfe die Konfiguration:",
     "noIssues": "Das System funktioniert einwandfrei.",
     "reset": "Nicht mehr Erinnern"
   },

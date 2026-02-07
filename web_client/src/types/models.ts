@@ -270,6 +270,7 @@ export interface IssueData {
   deprecated: StartupIssue;
   internet: StartupIssue;
   config: StartupIssue;
+  payment: StartupIssue;
 }
 
 export interface ResourceInfo {

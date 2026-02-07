@@ -478,6 +478,10 @@ class DialogHandler:
         """Inform that the given system python is older than the recommended python for the program."""
         self.__output_language_dialog("python_deprecated", sys_python=sys_python, program_python=program_python)
 
+    def say_payment_disabled(self, reason: str) -> None:
+        """Inform the user that the payment service was disabled at startup."""
+        self.__output_language_dialog("payment_disabled", reason=reason)
+
     def say_welcome_message(self) -> None:
         """Display the welcome dialog, show version and platform info."""
         self.__output_language_dialog(

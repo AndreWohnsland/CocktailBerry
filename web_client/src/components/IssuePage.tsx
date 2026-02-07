@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { FaRegClock } from 'react-icons/fa';
 import { FaGear } from 'react-icons/fa6';
+import { MdPayment } from 'react-icons/md';
 import { useNavigate } from 'react-router';
 import { ignoreIssues, useIssues } from '../api/options';
 import { executeAndShow, hasStartupIssues } from '../utils';
@@ -71,6 +72,15 @@ const IssuePage: React.FC = () => {
           actionText={t('issues.goToConfig')}
           onActionClick={goToConfig}
           actionIcon={FaGear}
+        />
+      )}
+      {issues?.payment.has_issue && (
+        <ActionCard
+          header={t('issues.paymentIssue')}
+          sections={[t('issues.paymentDisabled'), issues.payment.message]}
+          actionText={t('issues.goToConfig')}
+          onActionClick={goToConfig}
+          actionIcon={MdPayment}
         />
       )}
       {!hasIssues && (

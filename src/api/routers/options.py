@@ -350,6 +350,7 @@ async def check_issues() -> IssueData:
         deprecated=shared.startup_python_deprecated,
         internet=shared.startup_need_time_adjustment,
         config=shared.startup_config_issue,
+        payment=shared.startup_payment_issue,
     )
 
 
@@ -358,6 +359,7 @@ async def ignore_issues() -> ApiMessage:
     shared.startup_python_deprecated.set_ignored()
     shared.startup_need_time_adjustment.set_ignored()
     shared.startup_config_issue.set_ignored()
+    shared.startup_payment_issue.set_ignored()
     return ApiMessage(message="Issues ignored")
 
 

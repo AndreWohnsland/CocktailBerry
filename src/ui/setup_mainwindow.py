@@ -23,7 +23,7 @@ from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.programs.addons import ADDONS
 from src.service.nfc_payment_service import NFCPaymentService, UserLookup
-from src.startup_checks import can_update, connection_okay, is_python_deprecated
+from src.startup_checks import can_update, check_payment_service, connection_okay, is_python_deprecated
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
 from src.ui.icons import BUTTON_SIZE, IconSetter
@@ -101,6 +101,10 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
         self.cocktail_selection: CocktailSelection | None = None
+        # Run payment check before starting NFC so payment gets disabled if needed
+        payment_result = check_payment_service()
+        if not payment_result.ok:
+            cfg.PAYMENT_TYPE = "Disabled"
         if cfg.cocktailberry_payment:
             NFCPaymentService().start_continuous_sensing()
         self.cocktail_view.populate_cocktails()
@@ -129,6 +133,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         icons.set_mainwindow_icons(self)
         if "COCKTAILBERRY_NO_WELCOME_MESSAGE" not in os.environ:
             DP_CONTROLLER.say_welcome_message()
+        if not payment_result.ok:
+            DP_CONTROLLER.say_payment_disabled(payment_result.reason)
         self.update_check()
         self._deprecation_check()
         self._connection_check()

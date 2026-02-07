@@ -236,7 +236,7 @@ class MachineController:
 
     def _stop_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and closes all given pins."""
-        _logger.debug(f"{print_prefix}<x> Closing Pins: {pin_list}")
+        _logger.info(f"{print_prefix}<x> Closing Pins: {pin_list}")
         self.pin_controller.close_pin_list(pin_list)
 
     def default_led(self) -> None:

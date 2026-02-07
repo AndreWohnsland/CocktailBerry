@@ -23,7 +23,7 @@ const ActionCard = ({
       {header && <TextHeader text={header} subheader space={2} />}
       {sections.map((section, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: Controlled here
-        <p key={index} className='text-center text-primary'>
+        <p key={index} className='text-center text-primary break-words'>
           {section}
         </p>
       ))}

@@ -26,7 +26,7 @@ from src.migration.setup_web import download_latest_web_client
 from src.programs.addons import ADDONS, CouldNotInstallAddonError
 from src.resource_stats import start_resource_tracker
 from src.service.nfc_payment_service import NFCPaymentService
-from src.startup_checks import can_update, connection_okay, is_python_deprecated
+from src.startup_checks import can_update, check_payment_service, connection_okay, is_python_deprecated
 from src.updater import UpdateInfo, Updater
 from src.utils import get_platform_data
 
@@ -48,6 +48,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         shared.startup_need_time_adjustment.set_issue()
     if is_python_deprecated():
         shared.startup_python_deprecated.set_issue()
+    payment_check = check_payment_service()
+    if not payment_check.ok:
+        _logger.warning(f"Payment service check failed: {payment_check.reason}. Disabling payment.")
+        cfg.PAYMENT_TYPE = "Disabled"
+        shared.startup_payment_issue.set_issue(message=payment_check.reason)
     mc = MachineController()
     mc.init_machine()
     ADDONS.setup_addons()

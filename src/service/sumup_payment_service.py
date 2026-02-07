@@ -1,3 +1,5 @@
+import ast
+import json
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -62,9 +64,38 @@ def run_catching[**P, T](
             if isinstance(exc, APIError):
                 reason = str(exc.body)
                 code = exc.status
-            return Err(error=reason, code=code)
+            return Err(error=_format_sumup_error(reason), code=code)
 
     return wrapper
+
+
+def _format_sumup_error(error: str) -> str:
+    """Normalize SumUp error strings for readability."""
+    parsed = _parse_sumup_error_payload(error)
+    if parsed is None:
+        return error
+    try:
+        return json.dumps(parsed)
+    except (TypeError, ValueError):
+        return error
+
+
+def _parse_sumup_error_payload(error: str) -> dict | list | None:
+    if not error:
+        return None
+    try:
+        parsed = json.loads(error)
+        if isinstance(parsed, (dict, list)):
+            return parsed
+    except json.JSONDecodeError:
+        pass
+    try:
+        parsed = ast.literal_eval(error)
+        if isinstance(parsed, (dict, list)):
+            return parsed
+    except (SyntaxError, ValueError):
+        return None
+    return None
 
 
 class _SumupSdkClient:
@@ -146,7 +177,7 @@ class SumupPaymentService:
         if getattr(self, "_initialized", False):
             return
         if not api_key or not merchant_code:
-            raise ValueError("api_key and merchant_code are required for first initialization")
+            raise ValueError("Sumup api_key and merchant_code are required for this payment service")
         self._client: _SumupSdkClient = _SumupSdkClient(api_key=api_key, merchant_code=merchant_code)
         self._initialized = True
         _logger.info("SumupPaymentService initialized")
@@ -157,6 +188,9 @@ class SumupPaymentService:
             _logger.error(f"Failed to list readers: {result.error} (code: {result.code})")
             return []
         return result.data
+
+    def get_all_readers_result(self) -> Result[list[Reader]]:
+        return self._client.list_readers()
 
     def create_reader(self, name: str, pairing_code: str) -> Result[Reader]:
         return self._client.create_reader(name, pairing_code)

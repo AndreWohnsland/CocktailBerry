@@ -180,6 +180,8 @@
     "configIssue": "Config Issue",
     "configSetToDefault": "The faulty config was set the the default, please adjust it:",
     "goToConfig": "Go to Config",
+    "paymentIssue": "Payment Issue",
+    "paymentDisabled": "The payment service was disabled because of a startup issue. Please check your configuration:",
     "noIssues": "Your system is functioning properly.",
     "reset": "Do not show again"
   },
