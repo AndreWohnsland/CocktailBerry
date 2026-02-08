@@ -71,7 +71,7 @@ In addition, there is the possibility to use and set up a second device as a das
 
 # Quickstart
 
-Here are some simple steps to get CocktailBerry running. You need to have **Python 3.11** or newer and **git** installed.
+Here are some simple steps to get CocktailBerry running. You need to have **Python 3.13** or newer and **git** installed.
 If you are using a Raspberry Pi and a current OS, you should be good to go.
 
 On the RPi, you can try the new [all in one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh).

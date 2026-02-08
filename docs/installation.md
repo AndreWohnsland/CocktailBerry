@@ -6,7 +6,7 @@ Here you can find all the requirements and installation steps.
 
 These are the minimal tools needed to get started:
 
-- [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Python 3.11+](https://www.python.org/downloads/)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Python 3.13+](https://www.python.org/downloads/)
 - [Git](https://git-scm.com/downloads)
 - recommended: **latest** [Raspberry Pi OS, 64 bit](https://www.raspberrypi.com/software/) (Desktop, Trixie)
 

@@ -1,7 +1,7 @@
 # Quickstart
 
 Here are some simple steps to get CocktailBerry running.
-You need to have [uv](https://docs.astral.sh/uv/getting-started/installation/) (or Python 3.11+) and [**git**](https://git-scm.com/downloads) installed.
+You need to have [uv](https://docs.astral.sh/uv/getting-started/installation/) (or Python 3.13+) and [**git**](https://git-scm.com/downloads) installed.
 If you want to use v2 in a manual installation, you also need to have [Node.js](https://nodejs.org/en/download/) and [Yarn](https://yarnpkg.com/getting-started/install) installed.
 
 ## Raspberry Pi
