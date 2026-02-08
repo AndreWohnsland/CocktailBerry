@@ -4,6 +4,7 @@ import contextlib
 import time
 from typing import TYPE_CHECKING
 
+from PyQt6.QtCore import QEventLoop
 from PyQt6.QtWidgets import QApplication
 
 from src.config.config_manager import CONFIG as cfg
@@ -11,8 +12,11 @@ from src.config.config_manager import Tab
 from src.config.config_manager import shared as global_shared
 from src.display_controller import DP_CONTROLLER
 from src.models import Cocktail, PrepareResult
-from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService, UserLookup
+from src.service.booking import CocktailBooking
+from src.service.nfc_payment_service import NFCPaymentService, UserLookup
+from src.service.sumup_payment_service import Err, SumupPaymentService
 from src.tabs import bottles, maker
+from src.ui.qt_worker import run_with_spinner
 
 if TYPE_CHECKING:
     from src.ui.setup_custom_dialog import CustomDialog
@@ -64,16 +68,104 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
     bottles.set_fill_level_bars(w)
     global_shared.alcohol_factor = 1.0
     w.switch_to_cocktail_list()
-    if cfg.PAYMENT_LOGOUT_AFTER_PREPARATION:
+    if cfg.cocktailberry_payment and cfg.PAYMENT_LOGOUT_AFTER_PREPARATION:
         NFCPaymentService().logout_user()
     return True, message
 
 
 def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
     """Run the payment flow in QT UI."""
-    if not cfg.PAYMENT_ACTIVE:
-        return CocktailBooking.inactive()
+    match cfg.PAYMENT_TYPE:
+        case "Disabled":
+            return CocktailBooking.inactive()
+        case "SumUp":
+            return sumup_payment_flow(cocktail)
+        case "CocktailBerry":
+            return cocktailberry_payment_flow(cocktail)
 
+
+def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:
+    """Run the SumUp payment flow for qt."""
+    sumup_service = SumupPaymentService(
+        api_key=cfg.PAYMENT_SUMUP_API_KEY,
+        merchant_code=cfg.PAYMENT_SUMUP_MERCHANT_CODE,
+    )
+
+    reader_id = cfg.PAYMENT_SUMUP_TERMINAL_ID
+    if not reader_id:
+        return CocktailBooking.sumup_no_terminal()
+
+    # Calculate price
+    multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0
+    price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
+    value_in_cents = int(price * 100)
+
+    # Trigger checkout on terminal
+    checkout_result = sumup_service.trigger_checkout(
+        reader_id=reader_id,
+        value=value_in_cents,
+        description=f"CocktailBerry: {cocktail.name}",
+    )
+
+    if isinstance(checkout_result, Err):
+        return CocktailBooking.sumup_checkout_failed()
+
+    client_transaction_id = checkout_result.data
+    canceled = False
+    dialog: CustomDialog | None = None
+    event_loop = QEventLoop()
+
+    def on_cancel() -> None:
+        nonlocal canceled
+        canceled = True
+        sumup_service.terminate_checkout(reader_id)
+        event_loop.quit()
+
+    def on_wait_complete(_result: object) -> None:
+        """Quit event loop when worker finishes."""
+        event_loop.quit()
+
+    # Show waiting dialog
+    dialog = DP_CONTROLLER.standard_box_non_blocking(
+        CocktailBooking.sumup_waiting_for_payment().message,
+        close_callback=on_cancel,
+    )
+
+    # Create worker with spinner (non-blocking parent so cancel button works)
+    worker = run_with_spinner(
+        lambda: sumup_service.wait_for_complete(
+            reader_id,
+            poll_interval_s=1.0,
+            timeout_s=cfg.PAYMENT_TIMEOUT_S,
+        ),
+        parent=dialog,
+        on_finish=on_wait_complete,
+        disable_parent=False,
+    )
+
+    # Process Qt events while waiting for worker to finish
+    event_loop.exec()
+    # Ensure worker is finished before continuing
+    worker.wait()
+
+    if canceled:
+        _close_dialog_safe(dialog)
+        return CocktailBooking.canceled()
+
+    # Check transaction result
+    transaction_result = sumup_service.get_transaction(client_transaction_id)
+    _close_dialog_safe(dialog)
+    if isinstance(transaction_result, Err):
+        return CocktailBooking.sumup_checkout_failed()
+
+    if transaction_result.data.status != "SUCCESSFUL":
+        return CocktailBooking.sumup_payment_declined()
+
+    return CocktailBooking.sumup_successful()
+
+
+def cocktailberry_payment_flow(cocktail: Cocktail) -> CocktailBooking:
+    """Run the cocktailberry payment flow for qt."""
     payment_service = NFCPaymentService()
     polling_time = cfg.PAYMENT_TIMEOUT_S
     start_time = time.time()
@@ -109,10 +201,15 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
         booking = payment_service.book_cocktail_for_user(detected_user, cocktail)
 
     payment_service.remove_callback("payment_flow")
-    if dialog is not None:
-        with contextlib.suppress(Exception):
-            dialog.close()
+    _close_dialog_safe(dialog)
 
     if canceled or booking.result == CocktailBooking.Result.NO_USER:
         return CocktailBooking.canceled()
     return booking
+
+
+def _close_dialog_safe(dialog: CustomDialog | None) -> None:
+    """Close a dialog safely, ignoring exceptions."""
+    if dialog is not None:
+        with contextlib.suppress(Exception):
+            dialog.close()

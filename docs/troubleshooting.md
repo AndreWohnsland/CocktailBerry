@@ -143,15 +143,6 @@ sudo -E .venv/bin/python api.py
 
 If the GUI looks different than when you run it without sudo, try the `-E` flag, this should use your environment for Qt.
 
-!!! danger "Only older installations"
-    If you ran the program as non root, you will need to install the required python packages for the main program with sudo pip install.
-    Also, install the rpi_ws281x python package with:
-
-    ```bash
-    sudo pip install rpi_ws281x
-    sudo pip install requests pyyaml GitPython typer pyfiglet qtawesome piicodev mfrc522 qtsass pyqtspinner
-    ```
-
 See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.
 I had success using the 12 and 18 PWM0 pin, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.
 Other described pins may also work, but are untested, so I recommend to stick to the both one that should work.
@@ -165,7 +156,6 @@ As long as you use the recommended usb reader, you should be fine.
 Currently you can use those different types of reader:
 
 - Basic MFRC522 ([like this](https://amzn.to/4puhW4T), SPI Protocol)
-- PiicoDev RFID ([only this](https://core-electronics.com.au/piicodev-rfid-module.html), I2C Protocol)
 - USB RFID Reader (like [this](https://amzn.to/4p75hVZ), only reading UID supported)
 
 !!! bug "Please Read"
@@ -175,7 +165,7 @@ Currently you can use those different types of reader:
     Therefore, the best is if you trigger a write, finish the write.
     If you have experience with the reader + python feel free to contact me, so we can improve this feature.
 
-Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/) and [here for the PiicoDev](https://core-electronics.com.au/guides/piicodev-rfid-module-guide-for-raspberry-pi/).
+Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/).
 You only need the wiring and the installation of the libraries (usually they are already installed).
 The according code is integrated into CocktailBerry.
 After that, you select the according option in the settings dropdown for the reader.
@@ -383,7 +373,7 @@ sudo chmod 755 ~/launcher.sh
 I've noticed when running as root (sudo python) and running as the pi user (python) by default the pi will use different GUI resources.
 Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
 Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
-Using the users environment with `sudo -E python runme.py` should also do the trick.
+Using the users environment with `sudo -E .venv/bin/python runme.py` should also do the trick.
 
 ### Raspberry Pi 5 GPIO Issues
 

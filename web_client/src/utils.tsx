@@ -67,7 +67,13 @@ export const executeAndShow = async (executable: () => Promise<unknown>): Promis
   await executable()
     .then((result) => {
       const res = result as { message?: string };
-      info = res?.message ?? String(result);
+      if (res?.message) {
+        info = res.message;
+      } else if (typeof result === 'object' && result !== null) {
+        info = JSON.stringify(result);
+      } else {
+        info = String(result);
+      }
       success = true;
     })
     .catch((error) => {
@@ -102,6 +108,24 @@ const tabConfig: { [key: string]: string[] } = {
   PAYMENT: ['PAYMENT'],
 };
 
+export const subTabConfig: {
+  [key: string]: {
+    [key: string]: string[];
+  };
+} = {
+  PAYMENT: {
+    CocktailBerry: [
+      'PAYMENT_SHOW_NOT_POSSIBLE',
+      'PAYMENT_LOCK_SCREEN_NO_USER',
+      'PAYMENT_SERVICE_URL',
+      'PAYMENT_SECRET_KEY',
+      'PAYMENT_AUTO_LOGOUT_TIME_S',
+      'PAYMENT_LOGOUT_AFTER_PREPARATION',
+    ],
+    SumUp: ['PAYMENT_SUMUP_API_KEY', 'PAYMENT_SUMUP_MERCHANT_CODE', 'PAYMENT_SUMUP_TERMINAL_ID'],
+  },
+};
+
 const skipConfig = ['EXP_DEMO_MODE'];
 
 /**
@@ -112,6 +136,12 @@ const skipConfig = ['EXP_DEMO_MODE'];
  */
 export const isInCurrentTab = (configName: string, tab: string): boolean => {
   if (skipConfig.includes(configName)) {
+    return false;
+  }
+
+  // Exclude configs that belong to a subTab
+  const isInSubTab = Object.values(subTabConfig[tab] ?? {}).some((names) => names.includes(configName));
+  if (isInSubTab) {
     return false;
   }
 
@@ -135,6 +165,17 @@ export const isInCurrentTab = (configName: string, tab: string): boolean => {
   }
 
   return false;
+};
+
+/**
+ * Determines if a given config belongs to a specific sub-tab within a tab.
+ * @param configName - The configuration name.
+ * @param tab - The parent tab.
+ * @param subTab - The sub-tab to check.
+ * @returns True if the config belongs to the sub-tab, false otherwise.
+ */
+export const isInCurrentSubTab = (configName: string, tab: string, subTab: string): boolean => {
+  return subTabConfig[tab]?.[subTab]?.includes(configName) ?? false;
 };
 
 export const hasStartupIssues = (issueData: IssueData | undefined): boolean => {

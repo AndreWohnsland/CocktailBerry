@@ -7,8 +7,8 @@ _logger = LoggerHandler("GenericController")
 
 try:
     # pylint: disable=import-error
-    from periphery import GPIO  # type: ignore
-    from periphery.gpio import GPIOError  # type: ignore
+    from periphery import GPIO
+    from periphery.gpio import GPIOError
 
     DEV = False
 except ModuleNotFoundError:

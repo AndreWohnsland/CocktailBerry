@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Any, Optional, Protocol
+from typing import Any, Protocol
 
 
 class PinController(Protocol):
@@ -18,7 +18,7 @@ class PinController(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    def cleanup_pin_list(self, pin_list: Optional[list[int]] = None) -> None:
+    def cleanup_pin_list(self, pin_list: list[int] | None = None) -> None:
         pass
 
     @abstractmethod
@@ -56,7 +56,7 @@ class RFIDController(Protocol):
     """Interface for the RFID reader."""
 
     @abstractmethod
-    def read_card(self) -> tuple[Optional[str], Optional[str]]:
+    def read_card(self) -> tuple[str | None, str | None]:
         raise NotImplementedError
 
     @abstractmethod

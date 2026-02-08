@@ -19,6 +19,7 @@ import DataWindow from './components/options/DataWindow.tsx';
 import LogWindow from './components/options/LogWindow.tsx';
 import NewsWindow from './components/options/NewsWindow.tsx';
 import OptionWindow from './components/options/OptionWindow.tsx';
+import SumupManager from './components/options/SumupManager.tsx';
 import TimeManager from './components/options/TimeManager.tsx';
 import WifiManager from './components/options/WifiManager.tsx';
 import RecipeCalculator from './components/recipe/RecipeCalculator.tsx';
@@ -185,6 +186,14 @@ function App() {
               element={
                 <MasterPasswordProtected>
                   <ResourceWindow />
+                </MasterPasswordProtected>
+              }
+            />
+            <Route
+              path='options/sumup'
+              element={
+                <MasterPasswordProtected>
+                  <SumupManager />
                 </MasterPasswordProtected>
               }
             />

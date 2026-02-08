@@ -8,7 +8,7 @@ from src.db_models import DbBottle
 
 
 @pytest.fixture
-def db_commander() -> Generator[DatabaseCommander, Any, None]:
+def db_commander() -> Generator[DatabaseCommander, Any]:
     """Fixture to create an in-memory SQLite database and populate it with test data."""
     db_commander = DatabaseCommander(db_url="sqlite:///:memory:")
     # Create ingredients

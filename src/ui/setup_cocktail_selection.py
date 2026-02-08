@@ -60,7 +60,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.button_back.clicked.connect(self.mainscreen.switch_to_cocktail_list)
         self.increase_alcohol.clicked.connect(self._higher_alcohol)
         self.decrease_alcohol.clicked.connect(self._lower_alcohol)
-        if cfg.PAYMENT_ACTIVE:
+        if cfg.payment_enabled:
             self.decrease_alcohol.hide()
             self.increase_alcohol.hide()
         self.virgin_checkbox.stateChanged.connect(self.update_cocktail_data)
@@ -152,7 +152,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def _apply_virgin_setting(self) -> None:
         # hide the strong/weak buttons, since they are not needed
-        show_alcohol_buttons = not self.cocktail.only_virgin and not cfg.PAYMENT_ACTIVE
+        show_alcohol_buttons = not self.cocktail.only_virgin and cfg.payment_enabled
         self.increase_alcohol.setVisible(show_alcohol_buttons)
         self.decrease_alcohol.setVisible(show_alcohol_buttons)
         can_change_virgin = self.cocktail.virgin_available and not self.cocktail.only_virgin
@@ -297,7 +297,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         for volume, button in self._volume_buttons:
             volume_converted = self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)
             label = f"{volume_converted}"
-            if cfg.PAYMENT_ACTIVE:
+            if cfg.payment_enabled:
                 multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.virgin_checkbox.isChecked() else 1.0
                 price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume, price_multiplier=multiplier)
                 price_str = f"{price}".rstrip("0").rstrip(".")

@@ -6,7 +6,6 @@ import os
 import shutil
 from typing import TYPE_CHECKING
 
-from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMainWindow
 
 from src.config.config_manager import CONFIG as cfg
@@ -18,13 +17,14 @@ from src.migration.backup import BACKUP_FILES, NEEDED_BACKUP_FILES
 from src.programs.calibration import CalibrationScreen
 from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
-from src.ui.creation_utils import setup_worker_thread
+from src.ui.qt_worker import CallableWorker, run_with_spinner
 from src.ui.setup_addon_window import AddonWindow
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_log_window import LogWindow
 from src.ui.setup_news_window import NewsWindow
 from src.ui.setup_resource_window import ResourceWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
+from src.ui.setup_sumup_window import SumupWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.updater import UpdateInfo, Updater
@@ -35,19 +35,6 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("option_window")
 _platform_data = get_platform_data()
-
-
-class _Worker(QObject):
-    """Worker to get full system update on a thread."""
-
-    done = pyqtSignal()
-
-    def __init__(self, parent: None | QObject = None) -> None:
-        super().__init__(parent)
-
-    def run(self) -> None:
-        update_os()
-        self.done.emit()
 
 
 class OptionWindow(QMainWindow, Ui_Optionwindow):
@@ -78,8 +65,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_resources.clicked.connect(self._resource_insights)
         self.button_about.clicked.connect(DP_CONTROLLER.say_welcome_message)
         self.button_news.clicked.connect(self._open_news_window)
+        self.button_sumup.clicked.connect(self._open_sumup_window)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
+        self.button_sumup.setEnabled(cfg.sumup_payment)
 
         self.config_window: ConfigWindow | None = None
         self.log_window: LogWindow | None = None
@@ -90,6 +79,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.backup_restore_window: BackupRestoreWindow | None = None
         self.resource_window: ResourceWindow | None = None
         self.calibration_screen: CalibrationScreen | None = None
+        self.sumup_window: SumupWindow | None = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -204,6 +194,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Open the news window."""
         self.news_window = NewsWindow(self.mainscreen)
 
+    def _open_sumup_window(self) -> None:
+        """Open the SumUp configuration window."""
+        self.sumup_window = SumupWindow(self.mainscreen)
+
     def _check_internet_connection(self) -> None:
         """Check if there is a active internet connection."""
         is_connected = has_connection()
@@ -216,9 +210,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if self._is_windows("update system"):
             return
 
-        self._worker = _Worker()  # pylint: disable=attribute-defined-outside-init
-        self._thread = setup_worker_thread(  # pylint: disable=attribute-defined-outside-init
-            self._worker, self, self._finish_update_worker
+        self._worker: CallableWorker[None] = run_with_spinner(
+            update_os,
+            parent=self,
+            on_finish=lambda _: self._finish_update_worker(),
         )
 
     def _update_software(self) -> None:

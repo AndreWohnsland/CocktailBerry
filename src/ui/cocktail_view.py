@@ -15,14 +15,14 @@ from src.image_utils import find_cocktail_image
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.payment_utils import filter_cocktails_by_user
-from src.programs.nfc_payment_service import UserLookup, UserLookupResult
+from src.service.nfc_payment_service import UserLookup, UserLookupResult
 from src.ui.creation_utils import create_button, create_label
 from src.ui.icons import IconSetter, PresetIcon
 from src.ui_elements.clickable_label import ClickableLabel
 from src.ui_elements.touch_scroll_area import TouchScrollArea
 
 if TYPE_CHECKING:
-    from src.programs.nfc_payment_service import User
+    from src.service.nfc_payment_service import User
     from src.ui.setup_mainwindow import MainScreen
 
 _logger = LoggerHandler("cocktail_view")
@@ -82,12 +82,12 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
     layout.addWidget(label)
     if cocktail is not None:
         # take care of the button overload thingy, otherwise the first element will be a bool
-        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_detail(c))  # type: ignore[attr-defined]
+        button.clicked.connect(lambda _, c=cocktail: mainscreen.open_cocktail_detail(c))
         label.clicked.connect(lambda c=cocktail: mainscreen.open_cocktail_detail(c))
         button.setEnabled(cocktail.is_allowed)
         label.setEnabled(cocktail.is_allowed)
     else:
-        button.clicked.connect(mainscreen.open_ingredient_window)  # type: ignore[attr-defined]
+        button.clicked.connect(mainscreen.open_ingredient_window)
         label.clicked.connect(mainscreen.open_ingredient_window)
     return layout
 
@@ -170,7 +170,7 @@ class CocktailView(QWidget):
         Starts continuous polling to detect user login/logout/changes.
         """
         needs_nfc_user_protection = (
-            cfg.PAYMENT_ACTIVE and cfg.PAYMENT_LOCK_SCREEN_NO_USER and self._last_known_user is None
+            cfg.cocktailberry_payment and cfg.PAYMENT_LOCK_SCREEN_NO_USER and self._last_known_user is None
         )
         if needs_nfc_user_protection:
             self._show_nfc_scan_message()
@@ -186,7 +186,7 @@ class CocktailView(QWidget):
         DP_CONTROLLER.delete_items_of_layout(self.grid)
         cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
         # filter cocktails based on user criteria if payment is active
-        if cfg.PAYMENT_ACTIVE:
+        if cfg.cocktailberry_payment:
             cocktails = filter_cocktails_by_user(self._last_known_user, cocktails)
             # remove if machine owner do not want to show not possible cocktails
             if not cfg.PAYMENT_SHOW_NOT_POSSIBLE:
@@ -201,7 +201,7 @@ class CocktailView(QWidget):
                 block = generate_image_block(cocktails[i + j], self.mainscreen)
                 self.grid.addLayout(block, i // n_columns, j)
         # Optionally add the single ingredient block after all cocktails
-        if cfg.MAKER_ADD_SINGLE_INGREDIENT and not cfg.PAYMENT_ACTIVE:
+        if cfg.MAKER_ADD_SINGLE_INGREDIENT and not cfg.cocktailberry_payment:
             total = len(cocktails)
             row = total // n_columns
             col = total % n_columns

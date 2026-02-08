@@ -15,10 +15,20 @@ from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Qu
 from fastapi.responses import FileResponse
 
 from src.api.api_config import Tags
+from src.api.internal.dependencies import SumupServiceDep
 from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
 from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import master_protected_dependency
-from src.api.models import ApiMessage, DataResponse, DateTimeInput, IssueData, PasswordInput, WifiData
+from src.api.models import (
+    ApiMessage,
+    DataResponse,
+    DateTimeInput,
+    IssueData,
+    PasswordInput,
+    SumupReaderCreate,
+    SumupReaderResponse,
+    WifiData,
+)
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.data_utils import generate_consume_data
@@ -30,6 +40,7 @@ from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BAC
 from src.models import AddonData, ConsumeData, ResourceInfo, ResourceStats
 from src.programs.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
+from src.service.sumup_payment_service import Err
 from src.shared import NEWS_KEYS
 from src.updater import UpdateInfo, Updater
 from src.utils import (
@@ -339,6 +350,7 @@ async def check_issues() -> IssueData:
         deprecated=shared.startup_python_deprecated,
         internet=shared.startup_need_time_adjustment,
         config=shared.startup_config_issue,
+        payment=shared.startup_payment_issue,
     )
 
 
@@ -347,6 +359,7 @@ async def ignore_issues() -> ApiMessage:
     shared.startup_python_deprecated.set_ignored()
     shared.startup_need_time_adjustment.set_ignored()
     shared.startup_config_issue.set_ignored()
+    shared.startup_payment_issue.set_ignored()
     return ApiMessage(message="Issues ignored")
 
 
@@ -406,3 +419,49 @@ async def acknowledge_news(news_key: str) -> ApiMessage:
     db_commander = DatabaseCommander()
     db_commander.acknowledge_news(news_key)
     return ApiMessage(message=DH.get_translation("news_acknowledged"))
+
+
+# SumUp Reader Management
+@protected_router.get("/sumup/readers", summary="Get all SumUp readers")
+async def get_sumup_readers(service: SumupServiceDep) -> list[SumupReaderResponse]:
+    """Get all configured SumUp readers."""
+    readers = service.get_all_readers()
+    return [SumupReaderResponse(id=r.id, name=r.name) for r in readers]
+
+
+@protected_router.post("/sumup/readers", summary="Create a new SumUp reader", dependencies=[not_on_demo])
+async def create_sumup_reader(
+    reader_data: SumupReaderCreate,
+    service: SumupServiceDep,
+) -> SumupReaderResponse:
+    """Create a new SumUp reader with the given name and pairing code."""
+    result = service.create_reader(reader_data.name, reader_data.pairing_code)
+    if isinstance(result, Err):
+        raise HTTPException(status_code=result.code or 400, detail=result.error)
+    return SumupReaderResponse(id=result.data.id, name=result.data.name)
+
+
+@protected_router.delete("/sumup/readers/{reader_id}", summary="Delete a SumUp reader", dependencies=[not_on_demo])
+async def delete_sumup_reader(
+    reader_id: str,
+    service: SumupServiceDep,
+) -> ApiMessage:
+    """Delete a SumUp reader by ID."""
+    result = service.delete_reader(reader_id)
+    if isinstance(result, Err):
+        raise HTTPException(status_code=result.code or 400, detail=result.error)
+    # Clear the terminal ID from config if it matches the deleted reader
+    if reader_id == cfg.PAYMENT_SUMUP_TERMINAL_ID:
+        cfg.PAYMENT_SUMUP_TERMINAL_ID = ""
+        cfg.sync_config_to_file()
+    return ApiMessage(message="Reader deleted successfully")
+
+
+@protected_router.post(
+    "/sumup/readers/{reader_id}/use", summary="Set a SumUp reader as active", dependencies=[not_on_demo]
+)
+async def use_sumup_reader(reader_id: str) -> ApiMessage:
+    """Set a SumUp reader as the active terminal."""
+    cfg.PAYMENT_SUMUP_TERMINAL_ID = reader_id
+    cfg.sync_config_to_file()
+    return ApiMessage(message="Reader is now active")

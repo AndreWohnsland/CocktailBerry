@@ -6,7 +6,7 @@ default_install_hook_types:
 exclude: ^(.*(\.?venv.*)/)
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.10
+    rev: v0.15.0
     hooks:
       - id: ruff-format
         name: ☕️ Use Ruff to format code
@@ -14,12 +14,12 @@ repos:
         name: ☕️ Use Ruff to lint code
         args: [--fix]
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-json
         name: ☕️ Check for JSON syntax errors
   - repo: https://github.com/koalaman/shellcheck-precommit
-    rev: v0.10.0
+    rev: v0.11.0
     hooks:
       - id: shellcheck
         name: ☕️ Ensure Shell Scripts are good with ShellCheck

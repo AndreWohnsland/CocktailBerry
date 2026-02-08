@@ -1,11 +1,8 @@
 from enum import IntEnum
-from typing import Callable, Optional
 
-from PyQt6.QtCore import QObject, QSize, Qt, QThread
+from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QGridLayout, QLabel, QProgressBar, QPushButton, QSizePolicy, QSpacerItem, QWidget
-
-from src.ui.icons import IconSetter
 
 SMALL_FONT = 14
 MEDIUM_FONT = 16
@@ -57,14 +54,14 @@ def create_spacer(height: int, width: int = 20, expand: bool = False) -> QSpacer
 
 def create_button(
     label: str,
-    parent: Optional[QWidget] = None,
+    parent: QWidget | None = None,
     font_size: int = LARGE_FONT,
     max_w: int = 16777215,
     max_h: int = 200,
     min_w: int = 0,
     min_h: int = 70,
     bold: bool = True,
-    css_class: Optional[str] = None,
+    css_class: str | None = None,
 ) -> QPushButton:
     btn = QPushButton(label, parent)
     btn.setMaximumSize(QSize(max_w, max_h))
@@ -84,7 +81,7 @@ def create_label(
     max_h: int = 200,
     min_w: int = 0,
     min_h: int = 20,
-    css_class: Optional[str] = None,
+    css_class: str | None = None,
     word_wrap: bool = False,
 ) -> QLabel:
     """Create a label with given text and properties."""
@@ -99,31 +96,6 @@ def create_label(
     if word_wrap:
         label.setWordWrap(True)
     return label
-
-
-def setup_worker_thread(worker: QObject, parent: QWidget, after_finish: Callable) -> QThread:
-    """Move worker the thread and set necessary things (spinner, eg) up.
-
-    Worker needs done = pyqtSignal() and emit that at the end of run function.
-    """
-    icons = IconSetter()
-    icons.start_spinner(parent)
-    # Create a  thread object. move worker to thread
-    _thread = QThread()  # pylint: disable=attribute-defined-outside-init
-    worker.moveToThread(_thread)
-
-    # Connect signals and slots
-    _thread.started.connect(worker.run)  # type: ignore
-    worker.done.connect(_thread.quit)  # type: ignore
-    worker.done.connect(worker.deleteLater)  # type: ignore
-    _thread.finished.connect(_thread.deleteLater)
-
-    # Start the thread, connect to the finish function
-    _thread.start()
-    _thread.finished.connect(after_finish)
-    _thread.finished.connect(icons.stop_spinner)
-
-    return _thread
 
 
 def add_grid_spacer(grid: QGridLayout, row_counter: RowCounter) -> None:

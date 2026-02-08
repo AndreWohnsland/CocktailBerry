@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file '.\calibration.ui'
+# Form implementation generated from reading ui file 'calibration.ui'
 #
 # Created by: PyQt6 UI code generator 6.10.1
 #

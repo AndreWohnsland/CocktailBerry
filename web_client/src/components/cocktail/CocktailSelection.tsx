@@ -136,7 +136,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   };
 
   const calculateDisplayPrice = (amount: number, pricePer100: number): string => {
-    if (!config.PAYMENT_ACTIVE) return '';
+    if (config.PAYMENT_TYPE === 'Disabled') return '';
     const virginMultiplier = alcohol === 'virgin' ? config.PAYMENT_VIRGIN_MULTIPLIER / 100 : 1;
     const rawPrice = ((amount * pricePer100) / 100) * virginMultiplier;
     const roundTo = config.PAYMENT_PRICE_ROUNDING;
@@ -177,7 +177,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
           <div className='flex items-center justify-between mb-2 shrink w-full'>
             <span className='ml-4 text-secondary font-bold w-6 text-xl'>{displayCocktail.alcohol}%</span>
             <div className='flex space-x-2'>
-              {!config.PAYMENT_ACTIVE && (
+              {config.PAYMENT_TYPE === 'Disabled' && (
                 <>
                   <button
                     type='button'

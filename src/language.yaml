@@ -166,6 +166,9 @@ dialog:
   ask_to_delete_x:
     en: 'Do you want to delete {x}? This cannot be reverted.'
     de: 'Soll {x} gelöscht werden? Dies kann nicht rückgängig gemacht werden.'
+  ask_to_delete_reader:
+    en: 'Do you want to delete the reader "{reader_name}"? This cannot be reverted.'
+    de: 'Soll der Reader "{reader_name}" gelöscht werden? Dies kann nicht rückgängig gemacht werden.'
   ask_to_remove_picture:
     en: 'Do you want to remove the user picture? This cannot be reverted.'
     de: 'Soll das User Bild entfernt werden? Dies kann nicht rückgängig gemacht werden.'
@@ -181,6 +184,9 @@ dialog:
   python_deprecated:
     en: 'Your system Python is {sys_python}. In the future, {program_python} is required. Please upgrade, otherwise a future CocktailBerry update will break your program. Also, the auto update function will not show new updates until then.'
     de: 'Die Python Version des Systems is {sys_python}. In Zukunft wird {program_python} benötigt. Bitte upgrade diese bald, sonst wird mit einem kommenden Update CocktailBerry nicht mehr funktionieren. Die Autoupdate Funktion wird solange keine neuen Updates anzeigen.'
+  payment_disabled:
+    en: "The payment service was disabled because of a startup issue:\n\n{reason}\n\nPlease check your configuration."
+    de: "Der Zahlungsservice wurde aufgrund eines Startproblems deaktiviert:\n\n{reason}\n\nBitte überprüfe die Konfiguration."
   ask_export_data:
     en: 'Export cocktail and ingredient data, as well reset possible values?'
     de: 'Cocktail und Zutaten Daten exportieren und mögliche Werte zurücksetzen?'
@@ -194,8 +200,8 @@ dialog:
     en: 'Should the pump flow be reverted? This will activated the reversion pin and change the flow direction.'
     de: 'Soll die Pumpenrichtung geändert werden? Dies wird den Umkehrpin aktivieren und die Pumpenrichtung ändern.'
   welcome_dialog:
-    en: "CocktailBerry Software Version {version} by Andre Wohnsland.\n{platform}.\nUsing python version: {python_version} with PyQt app.\n\nCheck https://docs.cocktailberry.org for more information.\n\nThere is an alternative v2 Web UI available, have a look in the documentation for more info"
-    de: "CocktailBerry Software Version {version} von Andre Wohnsland.\n{platform}.\nVerwendete Python Version: {python_version} mit PyQt App.\n\nMehr Informationen unter https://docs.cocktailberry.org.\n\nEs gibt eine neue v2 Web Ui, schau in der Dokumentation für mehr Informationen."
+    en: "CocktailBerry Software Version {version} by Andre Wohnsland.\nSystem: {platform}.\nUsing python version: {python_version} with PyQt app.\n\nCheck https://docs.cocktailberry.org for more information.\n\nThere is an alternative v2 Web UI available, have a look in the documentation for more info"
+    de: "CocktailBerry Software Version {version} von Andre Wohnsland.\nSystem: {platform}.\nVerwendete Python Version: {python_version} mit PyQt App.\n\nMehr Informationen unter https://docs.cocktailberry.org.\n\nEs gibt eine neue v2 Web Ui, schau in der Dokumentation für mehr Informationen."
   wifi_setup_failed:
     en: 'There was an error setting up WiFi. Please check the logs for further information.'
     de: 'Es ist ein Fehler beim Einrichten des WiFi aufgetreten. Schaue in die Logs für mehr Informationen.'
@@ -290,6 +296,22 @@ dialog:
   payment_user_not_found:
     en: 'This NFC/card is not registered. Please register or contact owner.'
     de: 'Diese NFC/Karte ist nicht registriert. Bitte registrieren oder kontaktiere den Besitzer.'
+  # SumUp payment state messages
+  sumup_payment_successful:
+    en: 'Payment successful via SumUp terminal.'
+    de: 'Zahlung erfolgreich über SumUp Terminal.'
+  sumup_waiting_for_payment:
+    en: 'Please complete payment on the terminal.'
+    de: 'Bitte Zahlung am Terminal abschließen.'
+  sumup_payment_declined:
+    en: 'Payment was declined or failed.'
+    de: 'Zahlung wurde abgelehnt oder fehlgeschlagen.'
+  sumup_no_terminal:
+    en: 'No SumUp terminal configured. Please set up the terminal in settings.'
+    de: 'Kein SumUp Terminal konfiguriert. Bitte Terminal in den Einstellungen einrichten.'
+  sumup_checkout_failed:
+    en: 'Failed to initiate checkout or there were intermittent connection issues. Please check the terminal connection.'
+    de: 'Checkout konnte nicht gestartet werden oder es gab zwischendurch Verbindungsprobleme. Bitte Terminal-Verbindung prüfen.'
   pumpt_volume_flow_adjusted:
     en: 'Pump {pump_number} volume flow adjusted to {new_flow} ml/s.'
     de: 'Pumpen {pump_number} Volumenstrom auf {new_flow} ml/s angepasst.'
@@ -647,9 +669,6 @@ ui:
     UI_DEVENVIRONMENT:
       en: 'Activates the development setting'
       de: 'Schaltet die Entwicklungseinstellung ein'
-    UI_PARTYMODE:
-      en: 'Protects other tabs than maker with password'
-      de: 'Schützt alle Tabs außer Maker Tab mit Passwort'
     UI_MASTERPASSWORD:
       en: 'Password for critical actions and to get to settings, use 0 for no password'
       de: 'Passwort für kritische Aktionen und um zu den Einstellungen zu kommen, verwende 0 um kein Passwort zu verwenden'
@@ -732,8 +751,8 @@ ui:
       en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects)'
       de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
     RFID_READER:
-      en: 'Using a RFID Reader: PiicoDev (I2C), basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
-      de: 'Wird ein RFID Reader verwendet: PiicoDev (I2C), standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'
+      en: 'Using a RFID Reader: Basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
+      de: 'Wird ein RFID Reader verwendet: Standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'
     MICROSERVICE_ACTIVE:
       en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'
@@ -749,15 +768,18 @@ ui:
     TEAM_API_URL:
       en: 'URL address for teams API'
       de: 'URL Adresse der Teams API'
-    PAYMENT_ACTIVE:
-      en: 'Activate the payment function over NFC/RFID'
-      de: 'Aktiviert die Zahlungsfunktion über NFC/RFID'
+    PAYMENT_TYPE:
+      en: 'Type of payment integration to use; official CocktailBerry Payment service (NFC) or SumUp'
+      de: 'Art der Zahlungsintegration, die verwendet werden soll; offizieller CocktailBerry Zahlungsservice (NFC) oder SumUp'
     PAYMENT_PRICE_ROUNDING:
-      en: 'Rounding for payment prices, round up to next multiple of number, e.g. 0.25 will round 3.60 to 3.75; 1.00 will round 3.33 to 4.00.'
-      de: 'Rundung für Zahlungsbeträge, runde auf das nächste Vielfache der Zahl auf, z.B. 0,25 rundet 3,60 auf 3,75; 1,00 rundet 3,33 auf 4,00.'
+      en: 'Rounding for payment prices, round up to next multiple of number, e.g. 0.25 will round 3.60 to 3.75; 1.00 will round 3.33 to 4.00'
+      de: 'Rundung für Zahlungsbeträge, runde auf das nächste Vielfache der Zahl auf, z.B. 0,25 rundet 3,60 auf 3,75; 1,00 rundet 3,33 auf 4,00'
     PAYMENT_VIRGIN_MULTIPLIER:
       en: 'Multiplier percentage to apply to virgin cocktail prices'
       de: 'Multiplikator Prozentsatz, der auf Preise für alkoholfreie Cocktails angewendet wird'
+    PAYMENT_TIMEOUT_S:
+      en: 'Timeout in seconds before reader cancels the payment scan'
+      de: 'Timeout in Sekunden bevor der Leser den Zahlungs-Scan abbricht'
     PAYMENT_SHOW_NOT_POSSIBLE:
       en: 'Show cocktails that are not possible to the user (missing balance, no alcohol allowed, etc.) in a disabled style'
       de: 'Zeige Cocktails an, die für den Benutzer nicht möglich sind (zu wenig Guthaben, kein Alkohol erlaubt, etc.) in deaktiviertem Stil'
@@ -765,14 +787,20 @@ ui:
       en: 'Show lock screen if no user is detected on payment NFC/RFID scan'
       de: 'Zeige Sperrbildschirm an, wenn kein Benutzer bei Zahlung per NFC/RFID erkannt wird'
     PAYMENT_SERVICE_URL:
-      en: 'URL address for payment service API'
-      de: 'URL Adresse der Zahlungsservice API'
+      en: 'URL address for the CocktailBerry payment service API'
+      de: 'URL Adresse der CocktailBerry Zahlungsservice API'
     PAYMENT_SECRET_KEY:
-      en: 'Secret key for payment service API'
-      de: 'Geheimer Schlüssel für Zahlungsservice API'
-    PAYMENT_TIMEOUT_S:
-      en: 'Timeout in seconds before reader cancels payment NFC/RFID scan'
-      de: 'Timeout in Sekunden bevor der Leser den NFC/RFID Zahlungs-Scan abbricht'
+      en: 'Secret key for the CocktailBerry payment service API'
+      de: 'Geheimer Schlüssel für die CocktailBerry Zahlungsservice API'
+    PAYMENT_SUMUP_API_KEY:
+      en: 'API key for SumUp payment integration'
+      de: 'API Schlüssel für SumUp Zahlungsintegration'
+    PAYMENT_SUMUP_MERCHANT_CODE:
+      en: 'Merchant code for SumUp payment integration'
+      de: 'Händlercode für SumUp Zahlungsintegration'
+    PAYMENT_SUMUP_TERMINAL_ID:
+      en: 'Terminal ID for SumUp payment integration (usually auto-managed over setup UI)'
+      de: 'Terminal ID für SumUp Zahlungsintegration (üblicherweise automatisch über Setup UI verwaltet)'
     PAYMENT_AUTO_LOGOUT_TIME_S:
       en: 'Auto logout time in seconds for user information (scanned NFC/RFID), use 0 to disable'
       de: 'Automatische Abmeldezeit in Sekunden für Benutzerinformationen (gescannte NFC/RFID), verwende 0 zum Deaktivieren'
@@ -917,3 +945,16 @@ ui:
     acknowledge:
       en: 'Do not show again'
       de: 'Nicht mehr anzeigen'
+
+  ##### SUMUP WINDOW #####
+  # all values for sumup window
+  sumup_window:
+    code_label:
+      en: 'Pairing Code: '
+      de: 'Pairing Code: '
+    name_label:
+      en: 'Shown Name: '
+      de: 'Anzeigename: '
+    reader_label:
+      en: 'Connected Terminal: '
+      de: 'Verbundenes Lesegerät: '

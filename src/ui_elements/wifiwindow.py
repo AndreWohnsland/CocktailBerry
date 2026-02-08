@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file '.\wifiwindow.ui'
+# Form implementation generated from reading ui file 'wifiwindow.ui'
 #
 # Created by: PyQt6 UI code generator 6.10.1
 #

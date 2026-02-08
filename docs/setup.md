@@ -33,7 +33,6 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | Value Name          | Description                                                           |
     | :------------------ | :-------------------------------------------------------------------- |
     | `UI_DEVENVIRONMENT` | Enables some development features, like a cursor                      |
-    | `UI_PARTYMODE`      | Protects other tabs than maker tab with a password, deprecated        |
     | `UI_MASTERPASSWORD` | Number Password for System/Program Level                              |
     | `UI_MAKER_PASSWORD` | Number Password for party operation                                   |
     | `UI_LOCKED_TABS`    | Specify, which tab to lock with maker password                        |
@@ -89,18 +88,34 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 ??? info "Payment Related Config Values"
     Payment config values are used to configure the payment system and its behavior.
 
-    | Value Name                         | Description                                                    |
-    | :--------------------------------- | :------------------------------------------------------------- |
-    | `PAYMENT_ACTIVE`                   | Enable payment feature                                         |
-    | `PAYMENT_PRICE_ROUNDING`           | Next multiple of this number to round up to                    |
-    | `PAYMENT_SHOW_NOT_POSSIBLE`        | Show cocktails that are not possible to the user               |
-    | `PAYMENT_LOCK_SCREEN_NO_USER`      | Lock the screen when no user is logged in                      |
-    | `PAYMENT_VIRGIN_MULTIPLIER`        | Multiplier percentage to apply to virgin cocktail prices       |
-    | `PAYMENT_SERVICE_URL`              | URL of the payment service API                                 |
-    | `PAYMENT_SECRET_KEY`               | Secret key for authentication with the payment service         |
-    | `PAYMENT_TIMEOUT_S`                | Timeout in seconds before reader cancels payment NFC/RFID scan |
-    | `PAYMENT_AUTO_LOGOUT_TIME_S`       | Time in seconds until automatic logout of user from payment    |
-    | `PAYMENT_LOGOUT_AFTER_PREPARATION` | Remove user for filtering cocktail view after preparation      |
+    General Payment Config:
+
+    | Value Name                  | Description                                                    |
+    | :-------------------------- | :------------------------------------------------------------- |
+    | `PAYMENT_TYPE`              | Type of payment integration to use                             |
+    | `PAYMENT_PRICE_ROUNDING`    | Next multiple of this number to round up to                    |
+    | `PAYMENT_VIRGIN_MULTIPLIER` | Multiplier percentage to apply to virgin cocktail prices       |
+    | `PAYMENT_TIMEOUT_S`         | Timeout in seconds before reader cancels payment NFC/RFID scan |
+
+
+    CocktailBerry Payment Service Config:
+
+    | Value Name                         | Description                                                 |
+    | :--------------------------------- | :---------------------------------------------------------- |
+    | `PAYMENT_SHOW_NOT_POSSIBLE`        | Show cocktails that are not possible to the user            |
+    | `PAYMENT_LOCK_SCREEN_NO_USER`      | Lock the screen when no user is logged in                   |
+    | `PAYMENT_SERVICE_URL`              | URL of the payment service API                              |
+    | `PAYMENT_SECRET_KEY`               | Secret key for authentication with the payment service      |
+    | `PAYMENT_AUTO_LOGOUT_TIME_S`       | Time in seconds until automatic logout of user from payment |
+    | `PAYMENT_LOGOUT_AFTER_PREPARATION` | Remove user for filtering cocktail view after preparation   |
+
+    SumUp Specific Config:
+
+    | Value Name                    | Description                                               |
+    | :---------------------------- | :-------------------------------------------------------- |
+    | `PAYMENT_SUMUP_API_KEY`       | Secret key for authentication with the payment service    |
+    | `PAYMENT_SUMUP_MERCHANT_CODE` | Merchant code for authentication with the payment service |
+    | `PAYMENT_SUMUP_TERMINAL_ID`   | Terminal ID for authentication with the payment service   |
 
 ??? info "List Other Config Values"
     Here are some other config values, which are not fitting in the other categories.

@@ -4,8 +4,9 @@
 from __future__ import annotations
 
 import platform
+from collections.abc import Callable
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import yaml
 
@@ -51,6 +52,7 @@ if TYPE_CHECKING:
         Ui_RefillPrompt,
         Ui_ResourceWindow,
         Ui_RFIDWriterWindow,
+        Ui_SumupWindow,
         Ui_Teamselection,
         Ui_WiFiWindow,
     )
@@ -69,6 +71,7 @@ allowed_keys = Literal[
     "ask_for_backup_location",
     "ask_restricted_mode",
     "ask_to_clean",
+    "ask_to_delete_reader",
     "ask_to_delete_x",
     "ask_to_install_qtsass",
     "ask_to_reboot",
@@ -143,6 +146,11 @@ allowed_keys = Literal[
     "restart_config",
     "some_value_missing_specific",
     "some_value_missing",
+    "sumup_checkout_failed",
+    "sumup_no_terminal",
+    "sumup_payment_declined",
+    "sumup_payment_successful",
+    "sumup_waiting_for_payment",
     "update_available",
     "update_failed",
     "welcome_dialog",
@@ -470,6 +478,10 @@ class DialogHandler:
         """Inform that the given system python is older than the recommended python for the program."""
         self.__output_language_dialog("python_deprecated", sys_python=sys_python, program_python=program_python)
 
+    def say_payment_disabled(self, reason: str) -> None:
+        """Inform the user that the payment service was disabled at startup."""
+        self.__output_language_dialog("payment_disabled", reason=reason)
+
     def say_welcome_message(self) -> None:
         """Display the welcome dialog, show version and platform info."""
         self.__output_language_dialog(
@@ -619,6 +631,11 @@ class DialogHandler:
     def ask_to_delete_x(self, x: str) -> bool:
         """Ask the user if he wants to delete the given object name."""
         message = self._choose_language("ask_to_delete_x", x=x)
+        return self.user_okay(message)
+
+    def ask_to_delete_reader(self, reader_name: str) -> bool:
+        """Ask the user if he wants to delete the given reader."""
+        message = self._choose_language("ask_to_delete_reader", reader_name=reader_name)
         return self.user_okay(message)
 
     def ask_to_update_system(self) -> bool:
@@ -857,6 +874,14 @@ class UiLanguage:
     def adjust_news_window(self, w: Ui_NewsWindow) -> None:
         """Translate the elements from the news window."""
         w.button_back.setText(self._choose_language("back"))
+
+    def adjust_sumup_window(self, w: Ui_SumupWindow) -> None:
+        """Translate the elements from the sumup window."""
+        w.button_back.setText(self._choose_language("back"))
+        window = "sumup_window"
+        w.label_code.setText(self._choose_language("code_label", window))
+        w.label_name.setText(self._choose_language("name_label", window))
+        w.label_reader.setText(self._choose_language("reader_label", window))
 
     def adjust_rfid_reader_window(self, w: Ui_RFIDWriterWindow) -> None:
         """Translate the elements on the RFID reader window."""

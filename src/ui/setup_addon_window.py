@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QMainWindow
@@ -23,7 +24,7 @@ class AddonWindow(QMainWindow, Ui_Addonwindow):
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
-        self.addon_manager: Optional[AddonManager] = None
+        self.addon_manager: AddonManager | None = None
         # connects all the buttons
         self.button_back.clicked.connect(self.close)  # pyright: ignore[reportArgumentType]
         self.button_manage.clicked.connect(self._open_manager)

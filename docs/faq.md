@@ -55,15 +55,14 @@ In case of any issues related to the GUI (like window positioning, overlap), ple
 ### Which Raspberry Pi OS to Use
 
 Please use the latest Raspberry Pi Desktop OS, currently this is Raspberry Pi OS with desktop in 64 bit, also known as Debian 13 or Trixie.
-These OS run Python 3.11/3.13, which is the current mandatory Version of Python to run CocktailBerry.
+CocktailBerry requires **Python 3.13 or newer** (Trixie ships with Python 3.13).
 Older OS may work, but are not supported.
 
 ### Will Older Python Version Work
 
-Not with the current Version of CocktailBerry.
-Best is to use the specified Python version (or newer).
-Older version may work, but are not supported.
-Generally, it is always recommended to use a fresh setup raspberry for the best experience.
+CocktailBerry requires **Python 3.13 or newer**.
+Older versions are not supported.
+Generally, it is always recommended to use a fresh Raspberry Pi OS setup for the best experience.
 
 ### How to get Updates
 

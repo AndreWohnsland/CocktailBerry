@@ -6,7 +6,7 @@ Also defines the Mode for controls.
 # pylint: disable=unnecessary-lambda
 import os
 import platform
-from typing import Any, Optional
+from typing import Any
 
 from PyQt6.QtCore import QEvent, QEventLoop, QObject
 from PyQt6.QtGui import QIntValidator, QMouseEvent
@@ -22,8 +22,8 @@ from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.programs.addons import ADDONS
-from src.programs.nfc_payment_service import NFCPaymentService, UserLookup
-from src.startup_checks import can_update, connection_okay, is_python_deprecated
+from src.service.nfc_payment_service import NFCPaymentService, UserLookup
+from src.startup_checks import can_update, check_payment_service, connection_okay, is_python_deprecated
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
 from src.ui.icons import BUTTON_SIZE, IconSetter
@@ -86,22 +86,26 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         DP_CONTROLLER.adjust_bottle_number_displayed(self)
 
         # init the empty further screens
-        self.numpad_window: Optional[NumpadWidget] = None
-        self.keyboard_window: Optional[KeyboardWidget] = None
-        self.progress_window: Optional[ProgressScreen] = None
-        self.bottle_window: Optional[BottleWindow] = None
-        self.ingredient_window: Optional[GetIngredientWindow] = None
-        self.available_window: Optional[AvailableWindow] = None
-        self.team_window: Optional[TeamScreen] = None
-        self.option_window: Optional[OptionWindow] = None
-        self.datepicker: Optional[DatePicker] = None
-        self.picture_window: Optional[PictureWindow] = None
-        self.refill_dialog: Optional[RefillDialog] = None
+        self.numpad_window: NumpadWidget | None = None
+        self.keyboard_window: KeyboardWidget | None = None
+        self.progress_window: ProgressScreen | None = None
+        self.bottle_window: BottleWindow | None = None
+        self.ingredient_window: GetIngredientWindow | None = None
+        self.available_window: AvailableWindow | None = None
+        self.team_window: TeamScreen | None = None
+        self.option_window: OptionWindow | None = None
+        self.datepicker: DatePicker | None = None
+        self.picture_window: PictureWindow | None = None
+        self.refill_dialog: RefillDialog | None = None
         self.cocktail_view = CocktailView(self)
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
-        self.cocktail_selection: Optional[CocktailSelection] = None
-        if cfg.PAYMENT_ACTIVE:
+        self.cocktail_selection: CocktailSelection | None = None
+        # Run payment check before starting NFC so payment gets disabled if needed
+        payment_result = check_payment_service()
+        if not payment_result.ok:
+            cfg.PAYMENT_TYPE = "Disabled"
+        if cfg.cocktailberry_payment:
             NFCPaymentService().start_continuous_sensing()
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
@@ -129,6 +133,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         icons.set_mainwindow_icons(self)
         if "COCKTAILBERRY_NO_WELCOME_MESSAGE" not in os.environ:
             DP_CONTROLLER.say_welcome_message()
+        if not payment_result.ok:
+            DP_CONTROLLER.say_payment_disabled(payment_result.reason)
         self.update_check()
         self._deprecation_check()
         self._connection_check()
@@ -140,12 +146,14 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             if shared.restricted_mode_active:
                 self._apply_restricted_mode()
                 # Install event filter on tab bar to detect clicks on disabled tabs
-                self.tabWidget.tabBar().installEventFilter(self)  # pyright: ignore[reportOptionalMemberAccess]
+                bar = self.tabWidget.tabBar()
+                if bar is not None:
+                    bar.installEventFilter(self)
 
         ADDONS.start_trigger_loop(self)
         # start at the cocktail list view
         self.switch_to_cocktail_list()
-        if cfg.PAYMENT_ACTIVE:
+        if cfg.cocktailberry_payment:
             NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
 
     def update_check(self) -> None:
@@ -184,19 +192,19 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             self.tabWidget.setTabEnabled(i, False)
         self.tabWidget.setCurrentIndex(TabIndex.MAKER)
 
-    def eventFilter(self, obj: QObject | None, event: QEvent | None) -> bool:
+    def eventFilter(self, a0: QObject | None, a1: QEvent | None) -> bool:
         """Event filter to detect clicks on disabled tabs for restricted mode unlock."""
         # Early exit for non-mouse events (most common case)
-        if event is None or event.type() != QEvent.Type.MouseButtonPress:
-            return super().eventFilter(obj, event)
-        if not shared.restricted_mode_active or obj != self.tabWidget.tabBar():
-            return super().eventFilter(obj, event)
-        mouse_event: QMouseEvent = event  # type: ignore
-        tab_index = self.tabWidget.tabBar().tabAt(mouse_event.pos())  # pyright: ignore[reportOptionalMemberAccess]
+        if a1 is None or a1.type() != QEvent.Type.MouseButtonPress:
+            return super().eventFilter(a0, a1)
+        if not shared.restricted_mode_active or a0 != self.tabWidget.tabBar():
+            return super().eventFilter(a0, a1)
+        mouse_event: QMouseEvent = a1  # type: ignore
+        tab_index = self.tabWidget.tabBar().tabAt(mouse_event.pos())  # type: ignore
         if tab_index < 0:
-            return super().eventFilter(obj, event)
+            return super().eventFilter(a0, a1)
         self._handle_restricted_mode_click(tab_index)
-        return super().eventFilter(obj, event)
+        return super().eventFilter(a0, a1)
 
     def _handle_restricted_mode_click(self, index: int) -> None:
         """Handle click on disabled tab for restricted mode unlock sequence."""
@@ -218,7 +226,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         for i in range(self.tabWidget.count()):
             self.tabWidget.setTabEnabled(i, True)
         # Remove the event filter since it's no longer needed
-        self.tabWidget.tabBar().removeEventFilter(self)  # pyright: ignore[reportOptionalMemberAccess]
+        self.tabWidget.tabBar().removeEventFilter(self)  # type: ignore
 
     def open_cocktail_detail(self, cocktail: Cocktail) -> None:
         """Open the cocktail selection screen."""
@@ -239,7 +247,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
     def switch_to_cocktail_detail(self) -> None:
         if self.cocktail_selection is None:
             return
-        if cfg.PAYMENT_ACTIVE:
+        if cfg.cocktailberry_payment:
             NFCPaymentService().remove_callback("cocktail_list")
         self.container_maker.setCurrentWidget(self.cocktail_selection)
 
@@ -248,7 +256,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self.container_maker.currentWidget() == self.cocktail_view:
             return
         self.container_maker.setCurrentWidget(self.cocktail_view)
-        if not cfg.PAYMENT_ACTIVE:
+        if not cfg.cocktailberry_payment:
             return
         # need to emit this, in case we switch back from detail view and auto logout happened when user was there
         # this is because we pause the cocktail_list callback when we are in detail view
@@ -441,7 +449,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         bottles.set_fill_level_bars(self)
 
         for combobox in DP_CONTROLLER.get_comboboxes_bottles(self):
-            combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))  # type: ignore[attr-defined]
+            combobox.activated.connect(lambda _, window=self: bottles.refresh_bottle_cb(w=window))
 
     def handle_tab_bar_clicked(self, index: int) -> None:
         """Protects tabs other than maker tab with a password."""

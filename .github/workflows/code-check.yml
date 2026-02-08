@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.13"]
+        python-version: ["3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v6
@@ -24,11 +24,11 @@ jobs:
       - name: 🔍 Lint with ruff
         run: uv run ruff check src
 
-  mypy:
+  ty:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.13"]
+        python-version: ["3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v6
@@ -36,14 +36,14 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - name: 🔍 Lint with MyPy
-        run: uv run --extra v1 mypy src
+      - name: 🔍 Type Checking with ty
+        run: uv run --extra v1 ty check src
 
   pytest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.13"]
+        python-version: ["3.13"]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v6

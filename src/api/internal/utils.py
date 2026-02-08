@@ -1,4 +1,4 @@
-from typing import Optional, overload
+from typing import overload
 
 from fastapi import Depends, HTTPException, Request
 
@@ -16,7 +16,7 @@ from src.models import Ingredient as DBIngredient
 def map_cocktail(cocktail: None, scale: bool = True) -> None: ...
 @overload
 def map_cocktail(cocktail: DBCocktail, scale: bool = True) -> Cocktail: ...
-def map_cocktail(cocktail: Optional[DBCocktail], scale: bool = True) -> Optional[Cocktail]:
+def map_cocktail(cocktail: DBCocktail | None, scale: bool = True) -> Cocktail | None:
     if cocktail is None:
         return None
     # scale by the middle of the cocktail amount data, apply user specified alcohol factor
@@ -57,7 +57,7 @@ def map_cocktail(cocktail: Optional[DBCocktail], scale: bool = True) -> Optional
 def map_ingredient(ingredient: None) -> None: ...
 @overload
 def map_ingredient(ingredient: DBIngredient) -> Ingredient: ...
-def map_ingredient(ingredient: Optional[DBIngredient]) -> Optional[Ingredient]:
+def map_ingredient(ingredient: DBIngredient | None) -> Ingredient | None:
     if ingredient is None:
         return None
     return Ingredient(

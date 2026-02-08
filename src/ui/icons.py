@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import cache
 from typing import TYPE_CHECKING, Any, Literal
 
 import qtawesome as qta
@@ -81,6 +82,7 @@ class ColorInformation:
         return getattr(self, item)
 
 
+@cache
 def parse_colors(theme: SupportedThemesType | None = None) -> ColorInformation:
     """Get the color out of the theme file."""
     # extract all the fields as list from the dataclass
@@ -203,10 +205,10 @@ class IconSetter:
         button.setText(button.text().strip())
         button.setIcon(QIcon())
 
-    def start_spinner(self, parent_widget: QWidget) -> None:
+    def start_spinner(self, parent_widget: QWidget, disable_parent: bool = True) -> None:
         """Start a spinner above the parent widget, locks parent."""
         params = SpinnerParameters(
-            disable_parent_when_spinning=True,
+            disable_parent_when_spinning=disable_parent,
             roundness=99.9,
             trail_fade_percentage=90.0,
             inner_radius=50,

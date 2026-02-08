@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 from PyQt6.QtCore import QEventLoop, QTimer
 from PyQt6.QtGui import QCloseEvent
@@ -43,7 +43,7 @@ class CustomDialog(QMainWindow, Ui_CustomDialog):
         if self.close_time is not None:
             self._timer = QTimer(self)
             self._timer.setSingleShot(True)
-            self._timer.timeout.connect(self.close)  # type: ignore[arg-type]
+            self._timer.timeout.connect(self.close)
             self._timer.start(int(self.close_time * 1000))
 
     def show_non_blocking(self) -> None:
@@ -60,7 +60,7 @@ class CustomDialog(QMainWindow, Ui_CustomDialog):
         loop.exec()
         return True
 
-    def closeEvent(self, event: QCloseEvent | None) -> None:
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
         if self._timer and self._timer.isActive():
             self._timer.stop()
-        super().closeEvent(event)
+        super().closeEvent(a0)

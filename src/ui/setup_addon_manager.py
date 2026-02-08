@@ -38,7 +38,7 @@ class AddonManager(QMainWindow, Ui_AddonManager):
         """Fill the gridLayout_2 with all the addon data, using action buttons and text."""
         while self.gridLayout_2.count():
             item = self.gridLayout_2.takeAt(0)
-            widget = item.widget()
+            widget = item.widget()  # pyright: ignore[reportOptionalMemberAccess] # ty:ignore[possibly-missing-attribute]
             if widget:
                 widget.deleteLater()
 

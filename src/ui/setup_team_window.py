@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from itertools import cycle
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
 from PyQt6.QtWidgets import QMainWindow
@@ -37,7 +38,7 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         team_colors = cycle(["btn-teamone", "btn-teamtwo"])
         for team_name in cfg.TEAM_BUTTON_NAMES:
             team_button = create_button(team_name, font_size=40, max_h=300, min_h=100, css_class=next(team_colors))
-            team_button.clicked.connect(lambda _, t=team_name: self.set_team(t))  # type: ignore[attr-defined]
+            team_button.clicked.connect(lambda _, t=team_name: self.set_team(t))
             self.button_container.addWidget(team_button)
             setattr(self, f"button_{team_name}", team_button)
         self.mainscreen = parent
@@ -54,10 +55,10 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         self._thread = QThread()
         self._worker.moveToThread(self._thread)
         # Connect signals and slots
-        self._thread.started.connect(self._worker.run)  # type: ignore[attr-defined]
+        self._thread.started.connect(self._worker.run)
         self._worker.done.connect(self._thread.quit)
         self._worker.done.connect(self._worker.deleteLater)
-        self._thread.finished.connect(self._thread.deleteLater)  # type: ignore[attr-defined]
+        self._thread.finished.connect(self._thread.deleteLater)
         self._thread.start()
 
         if cfg.RFID_READER != "No":

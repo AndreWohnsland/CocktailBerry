@@ -63,7 +63,7 @@ class Updater:
             restart_v1()
         else:
             restart_v2()
-        # technically, this will not be reached, but makes mypy happy and is easier for the logic
+        # technically, this will not be reached, but makes type checker happy and is easier for the logic
         return True
 
     def check_for_updates(self) -> UpdateInfo:

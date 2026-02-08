@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
 from src.api.api_config import Tags
@@ -59,7 +57,7 @@ async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundT
 
 
 @protected_router.put("/{bottle_id}", summary="Update bottle to ingredient and fill level.")
-async def update_bottle(bottle_id: int, ingredient_id: int, amount: Optional[int] = None) -> ApiMessage:
+async def update_bottle(bottle_id: int, ingredient_id: int, amount: int | None = None) -> ApiMessage:
     DBC = DatabaseCommander()
     ingredients = DBC.get_ingredients_at_bottles()[: cfg.MAKER_NUMBER_BOTTLES]
     # cannot assign the same ingredient to multiple bottles

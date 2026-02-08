@@ -7,7 +7,8 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
-from src.programs.nfc_payment_service import CocktailBooking, NFCPaymentService, UserLookup
+from src.service.booking import CocktailBooking
+from src.service.nfc_payment_service import NFCPaymentService, UserLookup
 from src.tabs import maker
 
 _logger = LoggerHandler("nfc_payment")
@@ -24,7 +25,7 @@ class NFCPaymentHandler:
         """Start the NFC payment flow for a cocktail.
 
         This method handles:
-        1. Setting cocktail status to WAITING_FOR_NFC
+        1. Setting cocktail status to WAITING_FOR_PAYMENT
         2. Starting NFC polling with timeout
         3. Processing payment on successful NFC scan
         4. Starting cocktail preparation on successful payment
@@ -32,7 +33,7 @@ class NFCPaymentHandler:
         _logger.info("Starting NFC payment flow")
         booking = CocktailBooking.no_user_logged_in()
         shared.cocktail_status.message = booking.message
-        shared.cocktail_status.status = PrepareResult.WAITING_FOR_NFC
+        shared.cocktail_status.status = PrepareResult.WAITING_FOR_PAYMENT
         self._payment_cancelled = False
 
         def nfc_callback(lookup: UserLookup) -> None:

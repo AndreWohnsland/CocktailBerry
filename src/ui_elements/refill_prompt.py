@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file '.\refill_prompt.ui'
+# Form implementation generated from reading ui file 'refill_prompt.ui'
 #
 # Created by: PyQt6 UI code generator 6.10.1
 #

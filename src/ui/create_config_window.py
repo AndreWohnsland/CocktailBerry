@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Union
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
@@ -38,7 +39,7 @@ from src.utils import restart_v1
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
-CONFIG_TYPES_POSSIBLE = Union[str, int, float, bool, list[Any], dict[str, Any]]
+CONFIG_TYPES_POSSIBLE = str | int | float | bool | list[Any] | dict[str, Any]
 # Those are only for the v2 program
 CONFIG_TO_SKIP = (
     "CUSTOM_COLOR_PRIMARY",
@@ -76,6 +77,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         # other window may have little elements and spacing is bad,
         # so add a spacer to the end
         self.vbox_other.addItem(create_spacer(1, expand=True))
+        # same for the sumup payment tab
+        self.vbox_payment_sumup.addItem(create_spacer(1, expand=True))
 
     def _save_config(self) -> None:
         try:
@@ -115,8 +118,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.button_custom_color = create_button(
             "Define Custom Color", min_w=0, max_w=16777215, max_h=200, min_h=50, font_size=LARGE_FONT, bold=True
         )
-        self.button_custom_color.clicked.connect(self._open_color_window)  # type: ignore
-        vbox.addWidget(self.button_custom_color)  # type: ignore[arg-type]
+        self.button_custom_color.clicked.connect(self._open_color_window)
+        vbox.addWidget(self.button_custom_color)
 
     def _open_color_window(self) -> None:
         self.color_window = ColorWindow(self.mainscreen)
@@ -163,9 +166,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         config_input.setProperty("cssClass", "secondary")
         config_input.setMinimumSize(QSize(10, 10))
         config_input.clicked.connect(
-            lambda: NumpadWidget(  # type: ignore
-                self, config_input, 300, 20, config_name, header_is_entered_number=True
-            )
+            lambda: NumpadWidget(self, config_input, 300, 20, config_name, header_is_entered_number=True)
         )
         layout.addWidget(config_input)
         return lambda: int(config_input.text() or 0)
@@ -176,9 +177,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(
-            lambda: NumpadWidget(  # type: ignore
-                self, config_input, 300, 20, config_name, True, header_is_entered_number=True
-            )
+            lambda: NumpadWidget(self, config_input, 300, 20, config_name, True, header_is_entered_number=True)
         )
         layout.addWidget(config_input)
         return lambda: float(config_input.text() or 0.0)
@@ -227,9 +226,9 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 default_value = list_value.get_default_config_class()
             else:
                 default_value = list_value.get_default()
-            add_button.clicked.connect(  # type: ignore[attr-defined]
+            add_button.clicked.connect(
                 lambda: self._add_ui_element_to_list(
-                    default_value,
+                    default_value,  # ty:ignore[invalid-argument-type]
                     getter_fn_list,
                     config_name,
                     config_input,
@@ -263,7 +262,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 " x ", font_size=MEDIUM_FONT, max_w=40, min_h=0, bold=True, css_class="destructive"
             )
             # the first argument in lambda is needed since the object reference within the loop
-            remove_button.clicked.connect(  # type: ignore[attr-defined]
+            remove_button.clicked.connect(
                 lambda _, x=h_container: self._remove_ui_element_from_list(x, getter_fn, getter_fn_list)
             )
             h_container.addWidget(remove_button)
@@ -283,7 +282,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                     continue
                 found_widget = found_element.widget()
                 if found_widget is not None:
-                    found_widget.setParent(None)  # type: ignore
+                    found_widget.setParent(None)
                     found_widget.deleteLater()
                 if isinstance(found_element, QBoxLayout):
                     recursive_delete(found_element)
@@ -317,7 +316,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
-        config_input.clicked.connect(lambda: KeyboardWidget(self, config_input, 200))  # type: ignore
+        config_input.clicked.connect(lambda: KeyboardWidget(self, config_input, 200))
         layout.addWidget(config_input)
         return config_input.text
 
@@ -344,6 +343,19 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 "MAKER_PUMP_REVERSION",
                 "MAKER_REVERSION_PIN",
                 "MAKER_PINS_INVERTED",
+            ),
+            self.vbox_payment_cocktailberry: (
+                "PAYMENT_SHOW_NOT_POSSIBLE",
+                "PAYMENT_LOCK_SCREEN_NO_USER",
+                "PAYMENT_SERVICE_URL",
+                "PAYMENT_SECRET_KEY",
+                "PAYMENT_AUTO_LOGOUT_TIME_S",
+                "PAYMENT_LOGOUT_AFTER_PREPARATION",
+            ),
+            self.vbox_payment_sumup: (
+                "PAYMENT_SUMUP_API_KEY",
+                "PAYMENT_SUMUP_MERCHANT_CODE",
+                "PAYMENT_SUMUP_TERMINAL_ID",
             ),
         }
         for key, value in exact_sorting.items():

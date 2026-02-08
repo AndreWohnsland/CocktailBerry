@@ -104,6 +104,7 @@
     "shutdown": "Shutdown",
     "shutdownTheSystem": "Do you want to shutdown the System?",
     "startCleaningProgram": "Do you want to start the Cleaning Program?",
+    "sumup": "SumUp",
     "systemResourceUsage": "System Resource Usage",
     "updateCocktailBerry": "Update CocktailBerry Software",
     "updateSystem": "Update System",
@@ -179,6 +180,8 @@
     "configIssue": "Config Issue",
     "configSetToDefault": "The faulty config was set the the default, please adjust it:",
     "goToConfig": "Go to Config",
+    "paymentIssue": "Payment Issue",
+    "paymentDisabled": "The payment service was disabled because of a startup issue. Please check your configuration:",
     "noIssues": "Your system is functioning properly.",
     "reset": "Do not show again"
   },
@@ -211,5 +214,20 @@
     "message": "Do you want to enable restricted mode? Only the cocktail maker will be accessible. You can still access configuration with the master password.",
     "accept": "Enable Restricted Mode",
     "decline": "Use Full Access"
+  },
+  "sumup": {
+    "manageSumup": "Manage SumUp Readers",
+    "createReader": "Create New Reader",
+    "readerName": "Reader Name",
+    "readerNamePlaceholder": "Enter Reader Name",
+    "pairingCode": "Pairing Code",
+    "pairingCodePlaceholder": "Enter pairing code from device",
+    "create": "Create Reader",
+    "creating": "Creating...",
+    "noReaders": "No readers configured. Create one to get started.",
+    "activeReader": "Currently active",
+    "use": "Use",
+    "deleteReader": "Do you want to delete the reader '{{name}}'",
+    "readerCreated": "Reader '{{name}}' was created successfully"
   }
 }

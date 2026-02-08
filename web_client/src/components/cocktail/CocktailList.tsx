@@ -28,14 +28,23 @@ const CocktailList: React.FC = () => {
   const { t } = useTranslation();
 
   // Use payment websocket if payment is active
-  const { user, cocktails: paymentCocktails, isConnected } = usePaymentWebSocket(config.PAYMENT_ACTIVE ?? false);
+  const {
+    user,
+    cocktails: paymentCocktails,
+    isConnected,
+  } = usePaymentWebSocket(config.PAYMENT_TYPE === 'CocktailBerry');
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
 
   // Show lock screen if payment is active, lock screen is enabled, and no user is logged in
   // additionally if a cocktail is selected, we cannot show this because otherwise directly after preparation, this is shown again
-  if (config.PAYMENT_ACTIVE && config.PAYMENT_LOCK_SCREEN_NO_USER && !user?.nfc_id && selectedCocktail === null) {
+  if (
+    config.PAYMENT_TYPE === 'CocktailBerry' &&
+    config.PAYMENT_LOCK_SCREEN_NO_USER &&
+    !user?.nfc_id &&
+    selectedCocktail === null
+  ) {
     return <LockScreen title={t('lockScreen.paymentTitle')} message={t('lockScreen.paymentMessage')} />;
   }
 
@@ -46,7 +55,7 @@ const CocktailList: React.FC = () => {
   // Use payment cocktails if payment is active, connected, and has data
   // Otherwise fall back to regular cocktails
   let displayedCocktails = cocktails;
-  if (config.PAYMENT_ACTIVE && isConnected && paymentCocktails && paymentCocktails.length > 0) {
+  if (config.PAYMENT_TYPE === 'CocktailBerry' && isConnected && paymentCocktails && paymentCocktails.length > 0) {
     displayedCocktails = paymentCocktails;
   }
 
@@ -79,7 +88,7 @@ const CocktailList: React.FC = () => {
   return (
     <div className='px-2 centered max-w-7xl'>
       <div className={`w-full h-10 mb-2 sticky z-10 ${restrictedModeActive ? 'top-1' : 'top-10'}`}>
-        {(config.PAYMENT_ACTIVE ?? false) && <UserDisplay user={user} />}
+        {config.PAYMENT_TYPE === 'CocktailBerry' && <UserDisplay user={user} />}
         <div className='absolute right-0 top-0 w-full'>
           <SearchBar
             search={search}
@@ -93,8 +102,8 @@ const CocktailList: React.FC = () => {
         {displayedCocktails
           ?.sort((a, b) => a.name.localeCompare(b.name))
           .map((cocktail) => {
-            const isNotAllowed = config.PAYMENT_ACTIVE && !cocktail.is_allowed;
-            const shouldHide = config.PAYMENT_ACTIVE && !config.PAYMENT_SHOW_NOT_POSSIBLE && isNotAllowed;
+            const isNotAllowed = config.PAYMENT_TYPE === 'CocktailBerry' && !cocktail.is_allowed;
+            const shouldHide = isNotAllowed && !config.PAYMENT_SHOW_NOT_POSSIBLE;
 
             if (shouldHide) {
               return null;
@@ -129,7 +138,7 @@ const CocktailList: React.FC = () => {
               </button>
             );
           })}
-        {config.MAKER_ADD_SINGLE_INGREDIENT && !config.PAYMENT_ACTIVE && (
+        {config.MAKER_ADD_SINGLE_INGREDIENT && config.PAYMENT_TYPE === 'Disabled' && (
           <button
             className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
             onClick={() => setSingleIngredientOpen(true)}

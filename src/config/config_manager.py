@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import contextlib
 import random
+from collections.abc import Callable
 from enum import IntEnum
-from typing import Any, Callable, ClassVar
+from typing import Any, ClassVar
 
 import typer
 import yaml
@@ -14,6 +15,7 @@ from src import (
     MAX_SUPPORTED_BOTTLES,
     PROJECT_NAME,
     SupportedLanguagesType,
+    SupportedPaymentOptions,
     SupportedRfidType,
     SupportedThemesType,
     __version__,
@@ -129,14 +131,17 @@ class ConfigManager:
     TEAM_BUTTON_NAMES: ClassVar[list[str]] = ["Team 1", "Team 2"]
     TEAM_API_URL: str = "http://127.0.0.1:8080"
     # Payment related configurations
-    PAYMENT_ACTIVE: bool = False
+    PAYMENT_TYPE: SupportedPaymentOptions = "Disabled"
     PAYMENT_PRICE_ROUNDING: float = 0.25
+    PAYMENT_VIRGIN_MULTIPLIER: int = 80
+    PAYMENT_TIMEOUT_S: int = 20
     PAYMENT_SHOW_NOT_POSSIBLE: bool = True
     PAYMENT_LOCK_SCREEN_NO_USER: bool = True
-    PAYMENT_VIRGIN_MULTIPLIER: int = 80
     PAYMENT_SERVICE_URL: str = "http://127.0.0.1:9876"
     PAYMENT_SECRET_KEY: str = "CocktailBerry-Secret-Change-Me"
-    PAYMENT_TIMEOUT_S: int = 20
+    PAYMENT_SUMUP_API_KEY: str = ""
+    PAYMENT_SUMUP_MERCHANT_CODE: str = ""
+    PAYMENT_SUMUP_TERMINAL_ID: str = ""
     PAYMENT_AUTO_LOGOUT_TIME_S: int = 60
     PAYMENT_LOGOUT_AFTER_PREPARATION: bool = True
     # Custom theme settings
@@ -228,16 +233,19 @@ class ConfigManager:
             "TEAMS_ACTIVE": BoolType(check_name="Teams Active"),
             "TEAM_BUTTON_NAMES": ListType(StringType(), 2),
             "TEAM_API_URL": StringType(),
-            "PAYMENT_ACTIVE": BoolType(check_name="Payment Active"),
+            "PAYMENT_TYPE": ChooseOptions.payment,
             "PAYMENT_PRICE_ROUNDING": FloatType(
                 [build_number_limiter(0, 5)], prefix="round up to", suffix="next multiple of"
             ),
             "PAYMENT_VIRGIN_MULTIPLIER": IntType([build_number_limiter(0, 200)], suffix="%"),
+            "PAYMENT_TIMEOUT_S": IntType([build_number_limiter(0, 100)], suffix="s"),
             "PAYMENT_SHOW_NOT_POSSIBLE": BoolType(check_name="Show Not Possible Cocktails"),
             "PAYMENT_LOCK_SCREEN_NO_USER": BoolType(check_name="Lock Screen When No User"),
             "PAYMENT_SERVICE_URL": StringType(),
             "PAYMENT_SECRET_KEY": StringType(),
-            "PAYMENT_TIMEOUT_S": IntType([build_number_limiter(0, 100)], suffix="s"),
+            "PAYMENT_SUMUP_API_KEY": StringType(),
+            "PAYMENT_SUMUP_MERCHANT_CODE": StringType(),
+            "PAYMENT_SUMUP_TERMINAL_ID": StringType(),
             "PAYMENT_AUTO_LOGOUT_TIME_S": IntType([build_number_limiter(0, 1000000000)], suffix="s"),
             "PAYMENT_LOGOUT_AFTER_PREPARATION": BoolType(check_name="Logout After Preparation"),
             "CUSTOM_COLOR_PRIMARY": StringType(),
@@ -249,6 +257,21 @@ class ConfigManager:
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
             "EXP_DEMO_MODE": BoolType(check_name="Activate Demo Mode"),
         }
+
+    @property
+    def sumup_payment(self) -> bool:
+        """Check if SumUp payment option is selected."""
+        return self.PAYMENT_TYPE == "SumUp"
+
+    @property
+    def cocktailberry_payment(self) -> bool:
+        """Check if CocktailBerry internal payment option is selected."""
+        return self.PAYMENT_TYPE == "CocktailBerry"
+
+    @property
+    def payment_enabled(self) -> bool:
+        """Check if any payment option is selected."""
+        return self.PAYMENT_TYPE != "Disabled"
 
     def read_local_config(self, update_config: bool = False, validate: bool = True) -> None:
         """Read the local config file and set the values if they are valid.
@@ -304,9 +327,9 @@ class ConfigManager:
             config["immutable"] = setting.immutable
             list_type = setting.list_type
             # in case of list we need to go into the object, all list object types are the same
-            self._enhance_config_specific_information(config, list_type)
+            self._enhance_config_specific_information(config, list_type)  # ty:ignore[invalid-argument-type]
         if isinstance(setting, DictType):
-            for key, value in setting.dict_types.items():
+            for key, value in setting.dict_types.items():  # ty:ignore[unresolved-attribute]
                 config[key] = {}
                 self._enhance_config_specific_information(config[key], value)
 
@@ -314,9 +337,9 @@ class ConfigManager:
         """Validate the config and set new values."""
         # Some lists may depend on other config variables like number of bottles
         # Therefore, by default, split list types from the rest and check them afterwards
-        no_list_or_dict = {k: value for k, value in configuration.items() if not isinstance(value, (list, dict))}
+        no_list_or_dict = {k: value for k, value in configuration.items() if not isinstance(value, list | dict)}
         self._set_config(no_list_or_dict, validate)
-        list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, (list, dict))}
+        list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, list | dict)}
         self._set_config(list_or_dict, validate)
 
     def _set_config(self, configuration: dict, validate: bool) -> None:
@@ -459,6 +482,7 @@ class Shared:
         self.startup_need_time_adjustment = StartupIssue()
         self.startup_python_deprecated = StartupIssue()
         self.startup_config_issue = StartupIssue()
+        self.startup_payment_issue = StartupIssue()
 
 
 def version_callback(value: bool) -> None:

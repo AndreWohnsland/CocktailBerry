@@ -5,16 +5,16 @@ from dataclasses import dataclass
 from enum import StrEnum
 from itertools import cycle
 from threading import Timer
-from typing import Protocol
+from typing import Protocol, Self
 
 import requests
 from pydantic.dataclasses import dataclass as api_dataclass
 
 from src.config.config_manager import CONFIG as cfg
-from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.rfid import RFIDReader
 from src.models import Cocktail
+from src.service.booking import CocktailBooking
 
 _logger = LoggerHandler("NFCPaymentService")
 
@@ -63,110 +63,25 @@ class UserLookup:
         return cls(user=None, result=UserLookupResult.USER_REMOVED)
 
 
-@dataclass
-class CocktailBooking:
-    message: str
-    result: "Result"
-
-    class Result(StrEnum):
-        """Enumeration of possible cocktail booking results."""
-
-        SUCCESS = "SUCCESS"
-        INACTIVE = "INACTIVE"
-        INSUFFICIENT_BALANCE = "INSUFFICIENT_BALANCE"
-        NOT_ALLOWED_ALCOHOL = "NOT_ALLOWED_ALCOHOL"
-        NO_USER = "NO_USER"
-        USER_NOT_KNOWN = "USER_NOT_KNOWN"
-        API_NOT_REACHABLE = "API_NOT_REACHABLE"
-        CANCELED = "CANCELED"
-
-    @classmethod
-    def inactive(cls) -> "CocktailBooking":
-        """Create an inactive booking instance."""
-        return cls(
-            message=DH.get_translation("payment_inactive"),
-            result=cls.Result.INACTIVE,
-        )
-
-    @classmethod
-    def successful_booking(cls, current_balance: float) -> "CocktailBooking":
-        """Create a successful booking instance."""
-        return cls(
-            message=DH.get_translation("payment_successful", current_balance=current_balance),
-            result=cls.Result.SUCCESS,
-        )
-
-    @classmethod
-    def insufficient_balance(cls) -> "CocktailBooking":
-        """Create an insufficient balance booking instance."""
-        return cls(
-            message=DH.get_translation("payment_insufficient_balance"),
-            result=cls.Result.INSUFFICIENT_BALANCE,
-        )
-
-    @classmethod
-    def too_young(cls) -> "CocktailBooking":
-        """Create a too young booking instance."""
-        return cls(
-            message=DH.get_translation("payment_too_young"),
-            result=cls.Result.NOT_ALLOWED_ALCOHOL,
-        )
-
-    @classmethod
-    def no_user_logged_in(cls) -> "CocktailBooking":
-        """Create a no user logged in booking instance."""
-        return cls(
-            message=DH.get_translation("payment_no_user"),
-            result=cls.Result.NO_USER,
-        )
-
-    @classmethod
-    def api_not_reachable(cls) -> "CocktailBooking":
-        """Create an API not reachable booking instance."""
-        return cls(
-            message=DH.get_translation("payment_api_not_reachable"),
-            result=cls.Result.API_NOT_REACHABLE,
-        )
-
-    @classmethod
-    def user_not_known(cls) -> "CocktailBooking":
-        """Create a user not known booking instance."""
-        return cls(
-            message=DH.get_translation("payment_user_not_found"),
-            result=cls.Result.USER_NOT_KNOWN,
-        )
-
-    @classmethod
-    def api_interface_conflict(cls) -> "CocktailBooking":
-        """Create a machine issue booking instance."""
-        return cls(
-            message=DH.get_translation("api_interface_conflict"),
-            result=cls.Result.API_NOT_REACHABLE,
-        )
-
-    @classmethod
-    def canceled(cls) -> "CocktailBooking":
-        """Create a canceled booking instance."""
-        return cls(
-            message=DH.get_translation("payment_canceled"),
-            result=cls.Result.CANCELED,
-        )
-
-
 class NFCPaymentService:
-    _instance = None
+    _instance: Self | None = None
 
-    def __new__(cls) -> "NFCPaymentService":
+    def __new__(cls) -> Self:
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
-            cls.user_lookup: UserLookup = UserLookup.removed()
-            cls.rfid_reader = RFIDReader()
-            cls._user_callbacks: dict[str, Callable[[UserLookup], None]] = {}
-            cls._is_polling: bool = False
-            cls._auto_logout_timer: Timer | None = None
-            cls._pause_callbacks: bool = False
-            cls._api_client = _choose_payment_service_client()
         return cls._instance
+
+    def __init__(self) -> None:
+        if getattr(self, "_initialized", False):
+            return
+        self.user_lookup: UserLookup = UserLookup.removed()
+        self.rfid_reader = RFIDReader()
+        self._user_callbacks: dict[str, Callable[[UserLookup], None]] = {}
+        self._is_polling: bool = False
+        self._auto_logout_timer: Timer | None = None
+        self._pause_callbacks: bool = False
+        self._api_client = _choose_payment_service_client()
+        self._initialized = True
 
     def __del__(self) -> None:
         self._cancel_auto_logout_timer()
@@ -213,7 +128,7 @@ class NFCPaymentService:
         # need to check that the right nfc reader is connected only USB is supported
         if cfg.RFID_READER == "No":
             _logger.error("No NFC reader type specified. Disabling payment service.")
-            cfg.PAYMENT_ACTIVE = False
+            cfg.PAYMENT_TYPE = "Disabled"
             return
         _logger.info("Starting continuous NFC sensing for NFCPaymentService.")
         self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)

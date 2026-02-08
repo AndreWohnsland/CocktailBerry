@@ -5,7 +5,6 @@ import shutil
 import sqlite3
 from collections.abc import Generator
 from contextlib import contextmanager
-from statistics import mean, median
 from typing import TYPE_CHECKING, Any, Literal
 
 import sqlalchemy
@@ -90,7 +89,7 @@ class DatabaseCommander:
         self.engine.dispose()
 
     @contextmanager
-    def session_scope(self) -> Generator[Session, None, None]:
+    def session_scope(self) -> Generator[Session]:
         """Provide a transactional scope around a series of operations."""
         session = self.Session()
         try:
@@ -353,7 +352,7 @@ class DatabaseCommander:
     def set_bottle_order(self, ingredient_names: list[str] | list[int]) -> None:
         """Set bottles to the given list of bottles, need all bottles."""
         for bottle, ingredient in enumerate(ingredient_names, start=1):
-            self.set_bottle_at_slot(ingredient, bottle)  # type: ignore[arg-type]
+            self.set_bottle_at_slot(ingredient, bottle)
 
     def set_bottle_at_slot(self, ingredient: str | int, bottle_number: int) -> None:
         """Set the bottle at the given slot."""
@@ -519,7 +518,7 @@ class DatabaseCommander:
                 session.commit()
             except Exception as e:
                 session.rollback()
-                if isinstance(e, (sqlite3.IntegrityError, sqlalchemy.exc.IntegrityError)):  # type: ignore
+                if isinstance(e, sqlite3.IntegrityError | sqlalchemy.exc.IntegrityError):  # type: ignore
                     raise ElementAlreadyExistsError(ingredient_name)
                 raise e
 
@@ -550,7 +549,7 @@ class DatabaseCommander:
                 session.commit()
             except Exception as e:
                 session.rollback()
-                if isinstance(e, (sqlite3.IntegrityError, sqlalchemy.exc.IntegrityError)):  # type: ignore
+                if isinstance(e, sqlite3.IntegrityError | sqlalchemy.exc.IntegrityError):  # type: ignore
                     raise ElementAlreadyExistsError(name)
                 raise e
 
@@ -574,12 +573,13 @@ class DatabaseCommander:
         """Insert the IDS of the given ingredient list into the available table."""
         if not ingredient_list:
             return
+        ingredient_id: list[int]
         with self.session_scope() as session:
             if isinstance(ingredient_list[0], str):
                 data = session.query(DbIngredient.id).filter(DbIngredient.name.in_(ingredient_list)).all()
-                ingredient_id: list[int] = [x[0] for x in data]
+                ingredient_id = [x[0] for x in data]
             else:
-                ingredient_id = ingredient_list  # type: ignore
+                ingredient_id = ingredient_list  # pyright: ignore[reportAssignmentType] # ty:ignore[invalid-assignment]
             for _id in ingredient_id:
                 session.add(DbAvailable(_id=_id))
 
@@ -753,29 +753,70 @@ class DatabaseCommander:
             session.add(usage)
             session.commit()
 
-    def get_resource_stats(self, session_number: int) -> ResourceStats:
-        """Get the resource usage for a specific session."""
+    def get_resource_stats(self, session_number: int, max_raw_points: int = 500) -> ResourceStats:
+        """Get the resource usage for a specific session.
+
+        Aggregated stats (min, max, mean) are computed in SQL to avoid memory issues.
+        Raw data points are sampled if they exceed max_raw_points.
+        """
         with self.session_scope() as session_scope:
-            query = (
-                session_scope.query(DbResourceUsage)
-                .filter(DbResourceUsage.session == session_number)
-                .order_by(DbResourceUsage.timestamp)
-            )
-            data = query.all()
-            if not data:
-                return ResourceStats(0, 0, 0, 0, 0, 0, 0, 0, 0, [], [])
+            # Compute aggregated stats directly in SQL - memory efficient
+            agg_query = session_scope.query(
+                func.count(DbResourceUsage.id).label("total"),
+                func.min(DbResourceUsage.id).label("min_id"),
+                func.max(DbResourceUsage.id).label("max_id"),
+                func.min(DbResourceUsage.cpu_usage).label("min_cpu"),
+                func.max(DbResourceUsage.cpu_usage).label("max_cpu"),
+                func.avg(DbResourceUsage.cpu_usage).label("avg_cpu"),
+                func.min(DbResourceUsage.ram_usage).label("min_ram"),
+                func.max(DbResourceUsage.ram_usage).label("max_ram"),
+                func.avg(DbResourceUsage.ram_usage).label("avg_ram"),
+            ).filter(DbResourceUsage.session == session_number)
+            agg_result = agg_query.one()
+
+            total_count: int = agg_result.total
+            if total_count == 0:
+                return ResourceStats(0, 0, 0, 0, 0, 0, 0, [], [])
+
+            # Fetch raw data points, sampling if necessary
+            if total_count <= max_raw_points:
+                # Small enough to fetch all
+                data = (
+                    session_scope.query(DbResourceUsage.cpu_usage, DbResourceUsage.ram_usage)
+                    .filter(DbResourceUsage.session == session_number)
+                    .order_by(DbResourceUsage.id)
+                    .all()
+                )
+            else:
+                # Sample data points evenly by selecting evenly spaced IDs
+                min_id: int = agg_result.min_id
+                max_id: int = agg_result.max_id
+                id_range = max_id - min_id
+                step = id_range / (max_raw_points - 1) if max_raw_points > 1 else id_range
+                sampled_ids = [int(min_id + i * step) for i in range(max_raw_points)]
+
+                # Single query to fetch all sampled points
+                data = (
+                    session_scope.query(DbResourceUsage.cpu_usage, DbResourceUsage.ram_usage)
+                    .filter(
+                        DbResourceUsage.session == session_number,
+                        DbResourceUsage.id.in_(sampled_ids),
+                    )
+                    .order_by(DbResourceUsage.id)
+                    .all()
+                )
+
             cpu_values = [d.cpu_usage for d in data]
             ram_values = [d.ram_usage for d in data]
+
             return ResourceStats(
-                min_cpu=min(cpu_values),
-                max_cpu=max(cpu_values),
-                mean_cpu=round(mean(cpu_values), 1),
-                median_cpu=median(cpu_values),
-                min_ram=min(ram_values),
-                max_ram=max(ram_values),
-                mean_ram=round(mean(ram_values), 1),
-                median_ram=median(ram_values),
-                samples=len(data),
+                min_cpu=agg_result.min_cpu,
+                max_cpu=agg_result.max_cpu,
+                mean_cpu=round(agg_result.avg_cpu, 1),
+                min_ram=agg_result.min_ram,
+                max_ram=agg_result.max_ram,
+                mean_ram=round(agg_result.avg_ram, 1),
+                samples=total_count,
                 raw_cpu=cpu_values,
                 raw_ram=ram_values,
             )
@@ -798,6 +839,27 @@ class DatabaseCommander:
         with self.session_scope() as session:
             data = session.query(DbResourceUsage.session).order_by(DbResourceUsage.session.desc()).first()
             return data[0] if data else 0
+
+    def cleanup_resource_stats(self, keep_sessions: int = 50) -> int:
+        """Remove old resource usage sessions, keeping only the latest N sessions.
+
+        Returns the number of deleted records.
+        """
+        with self.session_scope() as session:
+            all_sessions = (
+                session.query(DbResourceUsage.session).distinct().order_by(DbResourceUsage.session.desc()).all()
+            )
+            session_numbers = [row[0] for row in all_sessions]
+
+            if len(session_numbers) <= keep_sessions:
+                return 0
+
+            sessions_to_delete = session_numbers[keep_sessions:]
+            return (
+                session.query(DbResourceUsage)
+                .filter(DbResourceUsage.session.in_(sessions_to_delete))
+                .delete(synchronize_session="fetch")
+            )
 
     def get_most_used_ingredient_ids(self, k: int | None = None) -> set[int]:
         with self.session_scope() as session:

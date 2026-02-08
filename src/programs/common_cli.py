@@ -1,6 +1,5 @@
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -108,9 +107,9 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
 
     @cli.command()
     def setup_microservice(
-        api_key: Optional[str] = typer.Option(None, "--api-key", "-a", help="API key for dashboard"),
-        hook_endpoint: Optional[str] = typer.Option(None, "--hook-endpoint", "-e", help="Custom hook endpoint"),
-        hook_header: Optional[str] = typer.Option(None, "--hook-header", "-h", help="Custom hook headers"),
+        api_key: str | None = typer.Option(None, "--api-key", "-a", help="API key for dashboard"),
+        hook_endpoint: str | None = typer.Option(None, "--hook-endpoint", "-e", help="Custom hook endpoint"),
+        hook_header: str | None = typer.Option(None, "--hook-header", "-h", help="Custom hook headers"),
         use_v1: bool = typer.Option(False, "--old-compose", "-o", help="Use compose v1"),
     ) -> None:
         """Set up the microservice.

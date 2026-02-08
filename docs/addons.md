@@ -80,16 +80,16 @@ Here you will find the ressources to get started.
 ### Set Up
 
 First, you should clone the latest version of CocktailBerry in your development environment.
-Install all needed dependencies, either over pip or with poetry (recommended).
+Install all needed dependencies with `uv sync` (add `--extra v1` for the Qt version).
 Usually **one** Python file is used per addon, placed in the `addons` folder in the CocktailBerry project.
 Files within this folder will not be tracked by git.
 
 !!! tip "Use the CLI"
     It's super easy to create a skeleton addon file with the [CLI command](commands.md#creating-addon-base-file)!
     Just run:
-    
+
     ```bash
-    python runme.py create-addon "Your Addon Name"
+    uv run runme.py create-addon "Your Addon Name"
     ```
 
     This will create a file with the needed structure in the addons folder.

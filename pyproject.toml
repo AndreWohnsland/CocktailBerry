@@ -4,15 +4,15 @@ version = "3.0.0"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
 authors = [{ name= "Andre Wohnsland" , email =  "cocktailmakeraw@gmail.com" }]
 readme = "readme.md"
-requires-python = ">= 3.11"
+requires-python = ">= 3.13"
 
 dependencies = [
     "gitpython>=3.1.43",
     "requests>=2.32.3",
+    "sumup>=0.0.22",
     "pyyaml>=6.0.1",
     "typer>=0.12.3",
     "pyfiglet>=1.0.2",
-    "piicodev>=1.10.0",
     "pillow>=10.4.0",
     "psutil>=6.0.0",
     "distro>=1.9.0",
@@ -26,18 +26,19 @@ dependencies = [
     "sqlalchemy>=2.0.40",
     "alembic>=1.14.1",
     "pulp>=3.2.2",
+    "stamina>=25.2.0",
 ]
 
 [dependency-groups]
 dev = [
-  "ruff>=0.9.1",
   "mkdocs-material>=9.5.49",
   "mkdocs>=1.6.1",
-  "mypy>=1.15.0",
   "ipykernel>=6.29.5",
   "pytest>=8.3.4",
   "pytest-cov>=6.0.0",
   "pre-commit>=4.2.0",
+  "ty>=0.0.15",
+  "ruff>=0.15.0",
 ]
 
 [project.optional-dependencies]
@@ -70,7 +71,7 @@ allow-direct-references = true
 # don't check import order in the migration script
 line-length = 120
 exclude = ["ui_elements", "addon_skeleton.py"]
-target-version = "py39"
+target-version = "py313"
 
 [tool.ruff.lint]
 extend-safe-fixes = [
@@ -118,24 +119,14 @@ ignore = [
   "PLC0415", # `import` should be at the top-level of a file
 ]
 
-[tool.mypy]
-disable_error_code = ["annotation-unchecked", "import-untyped", "import-not-found"]
+[[tool.ty.overrides]]
+include  = ["src.ui_elements.*"]
+rules = { unresolved-import = "ignore" }
 
-[[tool.mypy.overrides]]
-module = "src.ui_elements.*"
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = [
-    "smartcard",
-    "smartcard.*",
+[[tool.ty.overrides]]
+include = [
+  "src/machine/rfid.py",
+  "src/machine/raspberry.py",
+  "src/machine/leds.py",
 ]
-ignore_missing_imports = true
-
-[tool.pylint]
-disable = ["C0301", "C0114", "C0115", "C0116", "R0912"]
-max-line-length = 120
-
-[tool.autopep8]
-max-line-length = 120
-ignore = ["E402"]
+rules = { unresolved-import = "ignore", invalid-type-form = "ignore", unresolved-attribute = "ignore", possibly-missing-attribute = "ignore" }

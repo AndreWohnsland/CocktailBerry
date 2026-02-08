@@ -44,15 +44,6 @@ def _build_comment_maker(cocktail: Cocktail) -> str:
     return comment
 
 
-def _log_cocktail(cocktail_volume: int, real_volume: int, cocktail_name: str, taken_time: float) -> None:
-    """Enter a log entry for the made cocktail."""
-    volume_string = f"{cocktail_volume} ml"
-    cancel_log_addition = ""
-    if shared.cocktail_status.status == PrepareResult.CANCELED:
-        cancel_log_addition = f" - Recipe canceled at {round(taken_time, 1)} s - {real_volume} ml"
-    _logger.log_event("INFO", f"{volume_string:6} - {cocktail_name}{cancel_log_addition}")
-
-
 def prepare_cocktail(
     cocktail: Cocktail,
     w: MainScreen | None = None,
@@ -82,7 +73,6 @@ def prepare_cocktail(
 
     percentage_made = taken_time / max_time
     real_volume = round(cocktail.adjusted_amount * percentage_made)
-    _log_cocktail(cocktail.adjusted_amount, real_volume, display_name, taken_time)
 
     # run Addons after cocktail preparation
     addon_data["consumption"] = consumption
@@ -177,5 +167,3 @@ def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> N
     consumed_volume = made_volume[0]
     DBC = DatabaseCommander()
     DBC.increment_ingredient_consumption(ingredient.name, consumed_volume)
-    volume_string = f"{consumed_volume} ml"
-    _logger.log_event("INFO", f"{volume_string:6} | {ingredient.name}")

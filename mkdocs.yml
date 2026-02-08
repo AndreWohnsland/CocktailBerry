@@ -14,7 +14,7 @@ nav:
   - CocktailBerry Web: web.md
   - Supported Languages: languages.md
   - CLI commands: commands.md
-  - Payment Service: payment.md
+  - Payment Feature: payment.md
   - Advanced Topics: advanced.md
   - Addons: addons.md
   - Troubleshooting: troubleshooting.md
@@ -43,12 +43,19 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
 theme:
   features:
     - navigation.footer
     - content.code.copy
     - content.code.annotate
     - announce.dismiss
+    - content.tabs.link
   name: material
   custom_dir: docs/overrides
   logo: img/berry.svg

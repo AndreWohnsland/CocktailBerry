@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import time
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable, Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 from PyQt6.QtCore import QModelIndex, Qt
 from PyQt6.QtGui import QFont, QIcon, QPainter
@@ -112,9 +112,9 @@ class DisplayController(DialogHandler):
                 continue
             data: Cocktail | None = item.data(Qt.ItemDataRole.UserRole)
             if data:
-                list_widget_data.append(data)  # type: ignore
+                list_widget_data.append(data)
             else:
-                list_widget_data.append(item.text())  # type: ignore
+                list_widget_data.append(item.text())  # pyright: ignore[reportArgumentType]
         return list_widget_data
 
     def get_ingredient_data(self, w: Ui_MainWindow) -> Ingredient:

@@ -15,7 +15,7 @@ _logger = LoggerHandler("LedController")
 
 try:
     # pylint: disable=import-error
-    from rpi_ws281x import Adafruit_NeoPixel, Color  # type: ignore
+    from rpi_ws281x import Adafruit_NeoPixel, Color  # pyright: ignore[reportMissingImports]
 
     MODULE_AVAILABLE = True
 except ModuleNotFoundError:

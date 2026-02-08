@@ -15,7 +15,8 @@ from fastapi import (
 )
 
 from src.api.api_config import Tags
-from src.api.internal.nfc_payment import NFCPaymentHandler, get_nfc_payment_handler
+from src.api.internal.nfc_payment import get_nfc_payment_handler
+from src.api.internal.payment import PaymentHandler, get_payment_handler
 from src.api.internal.utils import (
     calculate_cocktail_volume_and_concentration,
     map_cocktail,
@@ -43,7 +44,7 @@ from src.logger_handler import LoggerHandler
 from src.models import Cocktail as DbCocktail
 from src.models import CocktailStatus, PrepareResult
 from src.payment_utils import filter_cocktails_by_user
-from src.programs.nfc_payment_service import UserLookup
+from src.service.nfc_payment_service import UserLookup
 from src.tabs import maker
 
 _logger = LoggerHandler("cocktails_router")
@@ -68,7 +69,6 @@ protected_recipes_router = APIRouter(
 
 @router.get("", summary="Get all cocktails, limited to possible cocktails by default")
 async def get_cocktails(
-    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)],
     only_possible: bool = True,
     max_hand_add: int = 3,
     scale: bool = True,
@@ -76,8 +76,9 @@ async def get_cocktails(
     DBC = DatabaseCommander()
     cocktails = DBC.get_possible_cocktails(max_hand_add) if only_possible else DBC.get_all_cocktails()
 
-    if cfg.PAYMENT_ACTIVE:
-        user = payment_handler.get_current_user()
+    if cfg.cocktailberry_payment:
+        nfc_handler = get_nfc_payment_handler()
+        user = nfc_handler.get_current_user()
         cocktails = filter_cocktails_by_user(user.user, cocktails)
 
     mapped_cocktails = [map_cocktail(c, scale) for c in cocktails]
@@ -111,7 +112,7 @@ async def prepare_cocktail(
     cocktail_id: int,
     request: PrepareCocktailRequest,
     background_tasks: BackgroundTasks,
-    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)],
+    payment_handler: Annotated[PaymentHandler, Depends(get_payment_handler)],
 ) -> CocktailStatus:
     DBC = DatabaseCommander()
     factor = request.alcohol_factor if not request.is_virgin else 0
@@ -135,10 +136,9 @@ async def prepare_cocktail(
     if request.selected_team is not None:
         shared.selected_team = request.selected_team
         shared.team_member_name = request.team_member_name
-    if cfg.PAYMENT_ACTIVE:
-        # Start payment flow - NFC scanning will happen first, then cocktail preparation
+    if cfg.payment_enabled:
         background_tasks.add_task(payment_handler.start_payment_flow, cocktail)
-        return CocktailStatus(status=PrepareResult.WAITING_FOR_NFC)
+        return CocktailStatus(status=PrepareResult.WAITING_FOR_PAYMENT)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
@@ -177,7 +177,7 @@ async def stop_cocktail() -> ApiMessage:
     summary="Cancel the current payment flow",
 )
 async def cancel_payment(
-    payment_handler: Annotated[NFCPaymentHandler, Depends(get_nfc_payment_handler)],
+    payment_handler: Annotated[PaymentHandler, Depends(get_payment_handler)],
 ) -> ApiMessage:
     booking = payment_handler.cancel_payment()
     shared.cocktail_status.status = PrepareResult.CANCELED
@@ -304,7 +304,7 @@ async def websocket_payment_user(
     """
     await websocket.accept()
 
-    if not cfg.PAYMENT_ACTIVE:
+    if not cfg.cocktailberry_payment:
         await websocket.close()
         return
 

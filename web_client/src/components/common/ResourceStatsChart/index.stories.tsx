@@ -40,7 +40,6 @@ const meta: Meta<typeof ResourceStatsChart> = {
     min: 42.1,
     max: 88.3,
     mean: 65.4,
-    median: 64.9,
     raw: baseRaw,
     unit: '%',
     threshold: 90,
@@ -59,7 +58,6 @@ export const CustomUnit: Story = {
     min: 22.3,
     max: 61.2,
     mean: 41,
-    median: 40.5,
     raw: baseRaw.map((v) => (v / 100) * 60),
     threshold: 55,
   },
@@ -70,7 +68,6 @@ export const CustomThreshold: Story = {
     threshold: 70,
     max: 92.4,
     mean: 71.5,
-    median: 70.1,
     raw: baseRaw.map((v) => v + 10),
   },
 };
@@ -81,7 +78,6 @@ export const LargeDataset: Story = {
     min: 32.2,
     max: 98.7,
     mean: 67.8,
-    median: 66.9,
   },
 };
 
@@ -91,7 +87,6 @@ export const EmptyData: Story = {
     min: 0,
     max: 0,
     mean: 0,
-    median: 0,
     title: 'No Data',
   },
 };
@@ -104,7 +99,6 @@ export const LargeValues: Story = {
     min: 820,
     max: 4250,
     mean: 2120,
-    median: 2050,
     threshold: 3500,
   },
 };

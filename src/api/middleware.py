@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from fastapi import HTTPException, Security
 from fastapi.security import APIKeyHeader
@@ -10,7 +10,7 @@ master_password_header = APIKeyHeader(name="x-master-key", scheme_name="Master P
 maker_password_header = APIKeyHeader(name="x-maker-key", scheme_name="Maker Password", auto_error=False)
 
 
-def _parse_password(password: Optional[str]) -> int:
+def _parse_password(password: str | None) -> int:
     if password is None:
         raise HTTPException(status_code=403, detail="Missing Password")
     try:
@@ -19,7 +19,7 @@ def _parse_password(password: Optional[str]) -> int:
         raise HTTPException(status_code=403, detail="Invalid Password")
 
 
-def master_protected_dependency(master_password: Optional[str] = Security(master_password_header)) -> None:
+def master_protected_dependency(master_password: str | None = Security(master_password_header)) -> None:
     if cfg.UI_MASTERPASSWORD == 0:
         return
     password = _parse_password(master_password)
@@ -28,7 +28,7 @@ def master_protected_dependency(master_password: Optional[str] = Security(master
 
 
 def maker_protected(tab: Tab) -> Callable[[str], None]:
-    def dependency(maker_password: Optional[str] = Security(maker_password_header)) -> None:
+    def dependency(maker_password: str | None = Security(maker_password_header)) -> None:
         if cfg.UI_MAKER_PASSWORD == 0:
             return
         if not cfg.UI_LOCKED_TABS[tab]:

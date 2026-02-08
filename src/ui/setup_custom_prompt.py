@@ -44,7 +44,7 @@ class CustomPrompt(QMainWindow, Ui_CustomPrompt):
         self._loop.exec()
         return self._result
 
-    def closeEvent(self, event: QCloseEvent | None) -> None:
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
         if self._loop is not None and self._loop.isRunning():
             self._finish(False)
-        super().closeEvent(event)
+        super().closeEvent(a0)

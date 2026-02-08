@@ -71,7 +71,7 @@ class BackupRestoreWindow(QMainWindow):
 
         # adds the back button
         self.button_back = create_button(UI_LANGUAGE.get_translation("back"), max_h=100)
-        self.button_back.clicked.connect(self.close)  # type: ignore[arg-type]
+        self.button_back.clicked.connect(self.close)
         # adds the save button
         self.button_save = create_button(UI_LANGUAGE.get_translation("apply"), max_h=100, css_class="btn-inverted")
         self.button_save.clicked.connect(self._upload_backup)

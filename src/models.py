@@ -2,7 +2,6 @@ import copy
 import math
 from dataclasses import field
 from enum import Enum
-from typing import Optional
 
 from pydantic import computed_field
 from pydantic.dataclasses import dataclass as pydantic_dataclass
@@ -21,15 +20,14 @@ class PrepareResult(Enum):
     FINISHED = "FINISHED"
     CANCELED = "CANCELED"
     NOT_ENOUGH_INGREDIENTS = "NOT_ENOUGH_INGREDIENTS"
-    COCKTAIL_NOT_FOUND = "COCKTAIL_NOT_FOUND"
     ADDON_ERROR = "ADDON_ERROR"
-    WAITING_FOR_NFC = "WAITING_FOR_NFC"
+    WAITING_FOR_PAYMENT = "WAITING_FOR_PAYMENT"
 
 
 @pydantic_dataclass
 class CocktailStatus:
     progress: int = 0
-    message: Optional[str] = None
+    message: str | None = None
     status: PrepareResult = PrepareResult.FINISHED
 
 
@@ -45,8 +43,8 @@ class Ingredient:
     hand: bool
     pump_speed: int
     amount: int = 0
-    bottle: Optional[int] = None
-    selected: Optional[str] = None
+    bottle: int | None = None
+    selected: str | None = None
     cost: int = 0
     recipe_order: int = 2
     unit: str = "ml"
@@ -177,7 +175,7 @@ class Cocktail:
             self.virgin_handadds,
         )
 
-    def enough_fill_level(self) -> Optional[Ingredient]:
+    def enough_fill_level(self) -> Ingredient | None:
         """Check if the needed volume is there.
 
         Accepts if there is at least 80% of needed volume
@@ -200,7 +198,7 @@ class Cocktail:
         # scale alcoholic ingredients with factor
         for ing in self.adjusted_ingredients:
             factor = alcohol_factor if bool(ing.alcohol) else 1
-            ing.amount *= factor  # type: ignore
+            ing.amount *= factor  # pyright: ignore[reportAttributeAccessIssue]
             scaled_amount += ing.amount
             concentration += ing.amount * ing.alcohol
         self.adjusted_alcohol = round(concentration / scaled_amount, 1)
@@ -216,7 +214,7 @@ class Cocktail:
 class ConsumeData:
     recipes: dict[str, int]
     ingredients: dict[str, int]
-    cost: Optional[dict[str, int]]
+    cost: dict[str, int] | None
 
 
 @pydantic_dataclass
@@ -230,7 +228,7 @@ class AddonData:
     satisfy_min_version: bool = False
     minimal_version: str = ""
     version: str = "1.0.0"
-    local_version: Optional[str] = None
+    local_version: str | None = None
     file_name: str = ""
     installed: bool = False
     official: bool = True
@@ -245,7 +243,7 @@ class AddonData:
             self.disabled = current_version >= Version(self.disabled_since)
         self.is_installable = self.satisfy_min_version and not self.disabled
 
-    @computed_field  # type: ignore[misc]
+    @computed_field
     @property
     def can_update(self) -> bool:
         """Check if addon can be updated based on local and remote versions."""
@@ -259,11 +257,9 @@ class ResourceStats:
     min_cpu: float
     max_cpu: float
     mean_cpu: float
-    median_cpu: float
     min_ram: float
     max_ram: float
     mean_ram: float
-    median_ram: float
     samples: int
     raw_cpu: list[float]
     raw_ram: list[float]

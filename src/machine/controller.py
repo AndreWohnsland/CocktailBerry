@@ -4,7 +4,7 @@ import atexit
 import contextlib
 import time
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 from src.logger_handler import LoggerHandler
 
@@ -40,9 +40,9 @@ class _PreparationData:
 class MachineController:
     """Controller Class for all Machine related Pin routines."""
 
-    _instance: MachineController | None = None
+    _instance = None
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> "MachineController":  # noqa: UP037
+    def __new__(cls, *args: Any, **kwargs: Any) -> Self:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -236,7 +236,7 @@ class MachineController:
 
     def _stop_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
         """Informs and closes all given pins."""
-        _logger.debug(f"{print_prefix}<x> Closing Pins: {pin_list}")
+        _logger.info(f"{print_prefix}<x> Closing Pins: {pin_list}")
         self.pin_controller.close_pin_list(pin_list)
 
     def default_led(self) -> None:

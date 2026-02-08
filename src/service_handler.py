@@ -1,7 +1,7 @@
 import json
 import os
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 import requests
 
@@ -61,7 +61,7 @@ class ServiceHandler:
             return _service_disabled()
         return self._try_to_send(endpoint, PostType.FILE, files=files)
 
-    def post_team_data(self, team_name: str, cocktail_volume: int, person: Optional[str] = None) -> dict:
+    def post_team_data(self, team_name: str, cocktail_volume: int, person: str | None = None) -> dict:
         """Post the given team name to the team api if activated."""
         if not cfg.TEAMS_ACTIVE:
             return _team_disabled()
@@ -98,7 +98,7 @@ class ServiceHandler:
         return endpoint
 
     def _try_to_send(
-        self, endpoint: str, post_type: PostType, payload: Optional[str] = None, files: Optional[dict] = None
+        self, endpoint: str, post_type: PostType, payload: str | None = None, files: dict | None = None
     ) -> dict:
         """Try to send the data to the given endpoint.
 

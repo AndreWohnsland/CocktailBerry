@@ -14,23 +14,27 @@ class TouchScrollArea(QScrollArea):
         self.mousePressPos = None
         self.pressed_scroll_bar_value = 0
 
-    def mousePressEvent(self, event: QMouseEvent):
+    def mousePressEvent(self, event: QMouseEvent):  # ty:ignore[invalid-method-override]
         self.mousePressPos = event.pos()
-        self.pressed_scroll_bar_value = int(self.verticalScrollBar().value())
+        bar = self.verticalScrollBar()
+        value = bar.value() if bar else 0
+        self.pressed_scroll_bar_value = int(value)
         super().mousePressEvent(event)
 
-    def mouseMoveEvent(self, event: QMouseEvent):
+    def mouseMoveEvent(self, event: QMouseEvent):  # ty:ignore[invalid-method-override]
         if self.mousePressPos is None:
             return
         curPos = event.pos()
-        moved = curPos - self.mousePressPos  # type: ignore
-        self.verticalScrollBar().setValue(int(self.pressed_scroll_bar_value - moved.y() * SCROLL_SPEED))
+        moved = curPos - self.mousePressPos
+        bar = self.verticalScrollBar()
+        if bar:
+            bar.setValue(int(self.pressed_scroll_bar_value - moved.y() * SCROLL_SPEED))
         super().mouseMoveEvent(event)
 
-    def mouseReleaseEvent(self, event: QMouseEvent):
+    def mouseReleaseEvent(self, event: QMouseEvent):  # ty:ignore[invalid-method-override]
         if self.mousePressPos is None:
             return
-        moved = event.pos() - self.mousePressPos  # type: ignore
+        moved = event.pos() - self.mousePressPos
         self.mouserPressPos = None
         if moved.manhattanLength() > MAX_SCROLL_DISTANCE:
             event.accept()

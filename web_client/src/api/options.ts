@@ -10,6 +10,8 @@ import type {
   LogData,
   ResourceInfo,
   ResourceStats,
+  SumupReader,
+  SumupReaderCreate,
   WifiData,
 } from '../types/models';
 import { axiosInstance } from './common';
@@ -220,4 +222,25 @@ export const useNews = (): UseQueryResult<Record<string, string>, Error> => {
 
 export const acknowledgeNews = async (newsKey: string): Promise<{ message: string }> => {
   return axiosInstance.post<{ message: string }>(`${optionsUrl}/news/${newsKey}`).then((res) => res.data);
+};
+
+// SumUp Reader Management
+export const getSumupReaders = async (): Promise<SumupReader[]> => {
+  return axiosInstance.get<SumupReader[]>(`${optionsUrl}/sumup/readers`).then((res) => res.data);
+};
+
+export const useSumupReaders = (): UseQueryResult<SumupReader[], Error> => {
+  return useQuery<SumupReader[], Error>('sumupReaders', getSumupReaders);
+};
+
+export const createSumupReader = async (data: SumupReaderCreate): Promise<SumupReader> => {
+  return axiosInstance.post<SumupReader>(`${optionsUrl}/sumup/readers`, data).then((res) => res.data);
+};
+
+export const deleteSumupReader = async (readerId: string): Promise<{ message: string }> => {
+  return axiosInstance.delete<{ message: string }>(`${optionsUrl}/sumup/readers/${readerId}`).then((res) => res.data);
+};
+
+export const setActiveSumupReader = async (readerId: string): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${optionsUrl}/sumup/readers/${readerId}/use`).then((res) => res.data);
 };
