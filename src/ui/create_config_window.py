@@ -77,6 +77,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         # other window may have little elements and spacing is bad,
         # so add a spacer to the end
         self.vbox_other.addItem(create_spacer(1, expand=True))
+        # same for the sumup payment tab
+        self.vbox_payment_sumup.addItem(create_spacer(1, expand=True))
 
     def _save_config(self) -> None:
         try:
@@ -341,6 +343,19 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 "MAKER_PUMP_REVERSION",
                 "MAKER_REVERSION_PIN",
                 "MAKER_PINS_INVERTED",
+            ),
+            self.vbox_payment_cocktailberry: (
+                "PAYMENT_SHOW_NOT_POSSIBLE",
+                "PAYMENT_LOCK_SCREEN_NO_USER",
+                "PAYMENT_SERVICE_URL",
+                "PAYMENT_SECRET_KEY",
+                "PAYMENT_AUTO_LOGOUT_TIME_S",
+                "PAYMENT_LOGOUT_AFTER_PREPARATION",
+            ),
+            self.vbox_payment_sumup: (
+                "PAYMENT_SUMUP_API_KEY",
+                "PAYMENT_SUMUP_MERCHANT_CODE",
+                "PAYMENT_SUMUP_TERMINAL_ID",
             ),
         }
         for key, value in exact_sorting.items():

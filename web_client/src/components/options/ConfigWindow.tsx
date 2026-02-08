@@ -5,7 +5,8 @@ import { FaSave } from 'react-icons/fa';
 import { updateOptions, useConfig } from '../../api/options';
 import { useConfig as useConfigProvider } from '../../providers/ConfigProvider';
 import type { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
-import { executeAndShow, isInCurrentTab } from '../../utils';
+import { executeAndShow, isInCurrentTab, isInCurrentSubTab, subTabConfig, OPTIONTABS } from '../../utils';
+import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
 import CheckBox from '../common/CheckBox';
 import ColorSelect from '../common/ColorSelect';
 import DropDown from '../common/DropDown';
@@ -14,7 +15,7 @@ import ListDisplay from '../common/ListDisplay';
 import LoadingData from '../common/LoadingData';
 import NumberInput from '../common/NumberInput';
 import TextInput from '../common/TextInput';
-import TabSelector from './TabSelector';
+import TabSelector from '../common/TabSelector';
 
 // some of the config are "old" meaning they are only used in the QT but not React UI
 // we will define them here and skip the values for those (e.g. not generate input fields)
@@ -31,7 +32,9 @@ const ConfigWindow: React.FC = () => {
   const { data, isLoading, error } = useConfig();
   const [configData, setConfigData] = useState<ConfigData>({});
   const [selectedTab, setSelectedTab] = useState('UI');
+  const [selectedSubTab, setSelectedSubTab] = useState<string | null>(null);
   const { refetchConfig, changeTheme } = useConfigProvider();
+  const { restrictedModeActive } = useRestrictedMode();
   const { t } = useTranslation();
 
   // Sync configData when data from API changes - this is intentional external state sync
@@ -250,23 +253,53 @@ const ConfigWindow: React.FC = () => {
     });
   };
 
+  const renderConfigEntry = (key: string) => (
+    <div key={key} className='mb-4 flex flex-col items-center'>
+      <h3 className='text-secondary text-lg font-bold mb-1'>{key}</h3>
+      {data && <p className='text-neutral mb-2 text-center'>{data[key].description}</p>}
+      {renderInputField(key, configData[key])}
+    </div>
+  );
+
+  const subTabs = subTabConfig[selectedTab] ? Object.keys(subTabConfig[selectedTab]) : [];
+
+  const handleSelectTab = (tab: string) => {
+    setSelectedTab(tab);
+    const newSubTabs = subTabConfig[tab] ? Object.keys(subTabConfig[tab]) : [];
+    setSelectedSubTab(newSubTabs.length > 0 ? newSubTabs[0] : null);
+  };
+
   return (
     <>
-      <TabSelector selectedTab={selectedTab} onSelectTab={setSelectedTab} />
+      <TabSelector
+        tabs={OPTIONTABS}
+        selectedTab={selectedTab}
+        onSelectTab={handleSelectTab}
+        className={`fixed bg-background z-9 ${restrictedModeActive ? 'top-0' : 'top-9'}`}
+      />
       <div className='flex flex-col w-full max-w-3xl items-center justify-center mt-8'>
         <div className='flex-grow p-2 w-full'>
           {Object.keys(configData).map(
-            (key) =>
-              isInCurrentTab(key, selectedTab) && (
-                <div key={key} className='mb-4 flex flex-col items-center'>
-                  <h3 className='text-secondary text-lg font-bold mb-1'>{key}</h3>
-                  {data && <p className='text-neutral mb-2 text-center'>{data[key].description}</p>}
-                  {renderInputField(key, configData[key])}
-                </div>
-              ),
+            (key) => isInCurrentTab(key, selectedTab) && renderConfigEntry(key),
           )}
         </div>
         <div className='flex flex-col items-center justify-center w-full px-2'>
+          {subTabs.length > 0 && (
+            <>
+              <TabSelector
+                tabs={subTabs}
+                selectedTab={selectedSubTab ?? ''}
+                onSelectTab={setSelectedSubTab}
+              />
+              {selectedSubTab && (
+                <div className='flex-grow p-2 w-full'>
+                  {Object.keys(configData).map(
+                    (key) => isInCurrentSubTab(key, selectedTab, selectedSubTab) && renderConfigEntry(key),
+                  )}
+                </div>
+              )}
+            </>
+          )}
           <button
             type='button'
             onClick={postConfig}

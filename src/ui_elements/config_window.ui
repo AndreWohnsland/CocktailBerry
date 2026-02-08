@@ -59,7 +59,6 @@
       <property name="font">
        <font>
         <pointsize>14</pointsize>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -112,7 +111,7 @@
              <x>0</x>
              <y>0</y>
              <width>793</width>
-             <height>398</height>
+             <height>395</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -192,8 +191,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>793</width>
+             <height>395</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -270,8 +269,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>793</width>
+             <height>395</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -348,8 +347,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>793</width>
+             <height>395</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -411,8 +410,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>775</width>
+             <height>377</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -429,19 +428,133 @@
              <number>0</number>
             </property>
             <item>
-             <layout class="QVBoxLayout" name="vbox_payment">
+             <layout class="QVBoxLayout" name="vbox_payment_parent">
               <property name="leftMargin">
-               <number>9</number>
+               <number>1</number>
               </property>
               <property name="topMargin">
-               <number>3</number>
+               <number>1</number>
               </property>
               <property name="rightMargin">
-               <number>6</number>
+               <number>1</number>
               </property>
               <property name="bottomMargin">
-               <number>15</number>
+               <number>0</number>
               </property>
+              <item>
+               <layout class="QVBoxLayout" name="vbox_payment">
+                <property name="leftMargin">
+                 <number>9</number>
+                </property>
+                <property name="topMargin">
+                 <number>3</number>
+                </property>
+                <property name="rightMargin">
+                 <number>6</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>15</number>
+                </property>
+               </layout>
+              </item>
+              <item>
+               <widget class="QTabWidget" name="tabs_payment_option">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="currentIndex">
+                 <number>0</number>
+                </property>
+                <property name="documentMode">
+                 <bool>false</bool>
+                </property>
+                <property name="cssClass" stdset="0">
+                 <string>tabs-padded</string>
+                </property>
+                <widget class="QWidget" name="tab_payment_cocktailberry">
+                 <property name="cssClass" stdset="0">
+                  <string>tabs-padded</string>
+                 </property>
+                 <attribute name="title">
+                  <string>   CocktailBerry   </string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="verticalLayout_14">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <layout class="QVBoxLayout" name="vbox_payment_cocktailberry">
+                    <property name="spacing">
+                     <number>6</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>9</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>3</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>6</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>15</number>
+                    </property>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="tab_payment_sumup">
+                 <property name="cssClass" stdset="0">
+                  <string>tabs-padded</string>
+                 </property>
+                 <attribute name="title">
+                  <string>  SumUp  </string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="verticalLayout_16">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <layout class="QVBoxLayout" name="vbox_payment_sumup">
+                    <property name="leftMargin">
+                     <number>9</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>3</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>6</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>15</number>
+                    </property>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
              </layout>
             </item>
            </layout>
@@ -489,8 +602,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>793</width>
+             <height>395</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -552,7 +665,6 @@
         <property name="font">
          <font>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -581,7 +693,6 @@
         <property name="font">
          <font>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>

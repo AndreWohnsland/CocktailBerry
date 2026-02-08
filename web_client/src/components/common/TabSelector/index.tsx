@@ -1,10 +1,10 @@
 import type React from 'react';
-import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
-import { OPTIONTABS } from '../../utils';
 
 interface TabSelectorProps {
+  tabs: string[];
   selectedTab: string;
   onSelectTab: (tab: string) => void;
+  className?: string;
 }
 
 const createClass = (isActive: boolean) => {
@@ -13,16 +13,10 @@ const createClass = (isActive: boolean) => {
   return isActive ? `${baseClass} ${activeClass}` : `${baseClass} border-transparent`;
 };
 
-const TabSelector: React.FC<TabSelectorProps> = ({ selectedTab, onSelectTab }) => {
-  const { restrictedModeActive } = useRestrictedMode();
-
+const TabSelector: React.FC<TabSelectorProps> = ({ tabs, selectedTab, onSelectTab, className }) => {
   return (
-    <div
-      className={`flex flex-row fixed py-2 bg-background z-9 w-full items-center justify-center overflow-auto ${
-        restrictedModeActive ? 'top-0' : 'top-9'
-      }`}
-    >
-      {OPTIONTABS.map((tab) => (
+    <div className={`flex flex-row py-2 w-full items-center justify-center overflow-auto ${className ?? ''}`}>
+      {tabs.map((tab) => (
         <button type='button' key={tab} onClick={() => onSelectTab(tab)} className={createClass(selectedTab === tab)}>
           {tab}
         </button>
