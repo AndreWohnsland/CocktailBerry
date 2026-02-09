@@ -9,7 +9,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Protocol, Self, TypeVar, get_args
+from typing import Any, Protocol, Self, get_args
 
 from src import (
     SupportedLanguagesType,
@@ -26,10 +26,8 @@ SUPPORTED_RFID = list(get_args(SupportedRfidType))
 SUPPORTED_LED_STATES = list(get_args(SupportedLedStatesType))
 SUPPORTED_PAYMENT = list(get_args(SupportedPaymentOptions))
 
-T = TypeVar("T")
 
-
-class ConfigInterface(Protocol[T]):
+class ConfigInterface[T](Protocol):
     """Interface for config values."""
 
     prefix: str | None = None
@@ -62,7 +60,7 @@ class ConfigInterface(Protocol[T]):
 
 
 @dataclass
-class _ConfigType(ConfigInterface[T]):
+class _ConfigType[T](ConfigInterface[T]):
     """Base class for configuration types holding type validation and iteratively executing validators.
 
     Used internally for reusing the same logic for different types.
@@ -203,9 +201,6 @@ class BoolType(_ConfigType[bool]):
         self.check_name = check_name
 
 
-ListItemT = TypeVar("ListItemT")  # Type variable for items in a list
-
-
 class ListType[ListItemT](_ConfigType[list[ListItemT]]):
     """List configuration type."""
 
@@ -244,9 +239,6 @@ class ListType[ListItemT](_ConfigType[list[ListItemT]]):
         return [self.list_type.to_config(item) for item in value]
 
 
-ConfigClassT = TypeVar("ConfigClassT", bound="ConfigClass")
-
-
 class ConfigClass(ABC):
     """Base class for configuration objects.
 
@@ -268,7 +260,7 @@ class ConfigClass(ABC):
         return cls(**config)
 
 
-class DictType(_ConfigType[ConfigClassT]):
+class DictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
     """Dict configuration type.
 
     Generic over the ConfigClass type that it wraps.
