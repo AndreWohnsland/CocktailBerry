@@ -27,6 +27,8 @@ dependencies = [
     "alembic>=1.14.1",
     "pulp>=3.2.2",
     "stamina>=25.2.0",
+    "adafruit-circuitpython-mcp230xx>=2.5.19",
+    "adafruit-circuitpython-pcf8574>=1.0.15",
 ]
 
 [dependency-groups]
