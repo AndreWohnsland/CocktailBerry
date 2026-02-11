@@ -29,8 +29,11 @@ from src.config.config_types import (
     FloatType,
     IntType,
     ListType,
+    MCP23017ConfigClass,
     NormalLedConfig,
+    PCF8574ConfigClass,
     PumpConfig,
+    ReversionConfig,
     StringType,
     WS281xLedConfig,
 )
@@ -81,8 +84,14 @@ class ConfigManager:
     UI_PICTURE_SIZE: int = 240
     UI_ONLY_MAKER_TAB: bool = False
     PUMP_CONFIG: ClassVar[list[PumpConfig]] = [
-        PumpConfig(pin, flow, 0) for pin, flow in zip(_default_pins, _default_volume_flow)
+        PumpConfig(pin, flow, 0, "GPIO") for pin, flow in zip(_default_pins, _default_volume_flow)
     ]
+    # Inverts the pin signal (on is low, off is high)
+    MAKER_PINS_INVERTED: bool = True
+    # MCP23017 I2C GPIO expander configuration (16 pins, address 0x20-0x27)
+    MCP23017_CONFIG = MCP23017ConfigClass(enabled=False, address_int=20, inverted=False)
+    # PCF8574 I2C GPIO expander configuration (8 pins, address 0x20-0x27)
+    PCF8574_CONFIG = PCF8574ConfigClass(enabled=False, address_int=20, inverted=False)
     # Custom name of the Maker
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
@@ -95,16 +104,12 @@ class ConfigManager:
     MAKER_CLEAN_TIME: int = 20
     # Base multiplier for alcohol in the recipe
     MAKER_ALCOHOL_FACTOR: int = 100
-    # Option to invert pump direction
-    MAKER_PUMP_REVERSION: bool = False
-    # Pin used for the pump direction
-    MAKER_REVERSION_PIN: int = 0
+    # Reversion for cleaning
+    MAKER_PUMP_REVERSION_CONFIG = ReversionConfig(use_reversion=False, pin=0, pin_type="GPIO", inverted=False)
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES: bool = True
     # If the maker should check if there is enough in the bottle before making a cocktail
     MAKER_CHECK_BOTTLE: bool = True
-    # Inverts the pin signal (on is low, off is high)
-    MAKER_PINS_INVERTED: bool = True
     # Theme Setting to load according qss file
     MAKER_THEME: SupportedThemesType = "default"
     # How many ingredients are allowed to be added by hand to be available cocktail
@@ -175,10 +180,12 @@ class ConfigManager:
             "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": IntType([build_number_limiter(100, 1000)]),
             "UI_ONLY_MAKER_TAB": BoolType(check_name="Only Maker Tab Accessible"),
+            "MAKER_PINS_INVERTED": BoolType(check_name="Inverted"),
             "PUMP_CONFIG": ListType(
                 DictType(
                     {
-                        "pin": IntType([build_number_limiter(0, 1000)], prefix="Pin:"),
+                        "pin_type": ChooseOptions.pin,
+                        "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
                         "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
                     },
@@ -186,17 +193,39 @@ class ConfigManager:
                 ),
                 lambda: self.choose_bottle_number(ignore_limits=True),
             ),
+            "MCP23017_CONFIG": DictType(
+                {
+                    "enabled": BoolType(check_name="MCP23017 Enabled"),
+                    "address_int": IntType(prefix="0x", default=20),
+                    "inverted": BoolType(check_name="Inverted"),
+                },
+                MCP23017ConfigClass,
+            ),
+            "PCF8574_CONFIG": DictType(
+                {
+                    "enabled": BoolType(check_name="PCF8574 Enabled"),
+                    "address_int": IntType(prefix="0x", default=20),
+                    "inverted": BoolType(check_name="Inverted"),
+                },
+                PCF8574ConfigClass,
+            ),
             "MAKER_NAME": StringType([validate_max_length]),
             "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, 999)]),
             "MAKER_PREPARE_VOLUME": ListType(IntType([build_number_limiter(25, 1000)], suffix="ml", default=100), 1),
             "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, 999)]),
             "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
             "MAKER_ALCOHOL_FACTOR": IntType([build_number_limiter(10, 200)], suffix="%"),
-            "MAKER_PUMP_REVERSION": BoolType(check_name="Pump can be Reversed"),
-            "MAKER_REVERSION_PIN": IntType([build_number_limiter(0, 1000)]),
+            "MAKER_PUMP_REVERSION_CONFIG": DictType(
+                {
+                    "use_reversion": BoolType(check_name="active", default=False),
+                    "pin": IntType([build_number_limiter(0)], default=0, prefix="Pin:"),
+                    "pin_type": ChooseOptions.pin,
+                    "inverted": BoolType(check_name="Inverted", default=False),
+                },
+                ReversionConfig,
+            ),
             "MAKER_SEARCH_UPDATES": BoolType(check_name="Search for Updates"),
             "MAKER_CHECK_BOTTLE": BoolType(check_name="Check Bottle Volume"),
-            "MAKER_PINS_INVERTED": BoolType(check_name="Inverted"),
             "MAKER_THEME": ChooseOptions.theme,
             "MAKER_MAX_HAND_INGREDIENTS": IntType([build_number_limiter(0, 10)]),
             "MAKER_CHECK_INTERNET": BoolType(check_name="Check Internet"),
@@ -205,7 +234,8 @@ class ConfigManager:
             "LED_NORMAL": ListType(
                 DictType(
                     {
-                        "pin": IntType([build_number_limiter(0, 200)], prefix="Pin:"),
+                        "pin_type": ChooseOptions.pin,
+                        "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                         "default_on": BoolType(check_name="Default On"),
                         "preparation_state": ChooseOptions.leds,
                     },
@@ -216,7 +246,7 @@ class ConfigManager:
             "LED_WSLED": ListType(
                 DictType(
                     {
-                        "pin": IntType([build_number_limiter(0, 200)], prefix="Pin:"),
+                        "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                         "brightness": IntType([build_number_limiter(1, 100)], suffix="%", default=100),
                         "count": IntType([build_number_limiter(1, 500)], suffix="LEDs", default=24),
                         "number_rings": IntType([build_number_limiter(1, 10)], suffix="X", default=1),

@@ -58,6 +58,7 @@ class TestNormalLedConfig:
         assert led.pin == 17
         assert led.default_on is True
         assert led.preparation_state == "On"
+        assert led.pin_type == "GPIO"
 
     def test_to_config(self) -> None:
         """Test NormalLedConfig serialization to dict."""
@@ -70,6 +71,7 @@ class TestNormalLedConfig:
         assert result["pin"] == 17
         assert result["default_on"] is False
         assert result["preparation_state"] == "Off"
+        assert result["pin_type"] == "GPIO"
         assert isinstance(result, dict)
 
     def test_from_config(self) -> None:
@@ -100,6 +102,7 @@ class TestNormalLedConfig:
         assert original.pin == restored.pin
         assert original.default_on == restored.default_on
         assert original.preparation_state == restored.preparation_state
+        assert original.pin_type == restored.pin_type
 
 
 class TestWS281xLedConfig:

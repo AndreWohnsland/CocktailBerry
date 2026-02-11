@@ -9,13 +9,16 @@ from typing import Protocol
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import NormalLedConfig, WS281xLedConfig
 from src.logger_handler import LoggerHandler
-from src.machine.interface import PinController
+from src.machine.pin_controller import PinController
 
 _logger = LoggerHandler("LedController")
 
 try:
     # pylint: disable=import-error
-    from rpi_ws281x import Adafruit_NeoPixel, Color  # pyright: ignore[reportMissingImports]
+    from rpi_ws281x import (  # pyright: ignore[reportMissingImports]
+        Adafruit_NeoPixel,
+        Color,
+    )
 
     MODULE_AVAILABLE = True
 except ModuleNotFoundError:
@@ -23,20 +26,18 @@ except ModuleNotFoundError:
 
 
 class LedController:
-    def __init__(self, pin_controller: PinController) -> None:
-        self._pin_controller = pin_controller
+    def __init__(self) -> None:
         self.led_list: list[_LED] = []
 
         # Initialize normal LEDs
         for led_config in cfg.LED_NORMAL:
-            normal_led: _normalLED = _normalLED(led_config, self._pin_controller)
+            normal_led: _normalLED = _normalLED(led_config)
             self.led_list.append(normal_led)
 
         # Initialize WS281x LEDs
         if len(cfg.LED_WSLED) > 0:
             if not MODULE_AVAILABLE:
-                _logger.log_event(
-                    "ERROR",
+                _logger.error(
                     "Could not import rpi_ws281x. Will not be able to control the WS281x, please install the library.",
                 )
                 return
@@ -46,7 +47,7 @@ class LedController:
                     self.led_list.append(controllable_led)
             # Will be thrown if ws281x module init (.begin()) as none root
             except RuntimeError:
-                _logger.log_event("ERROR", "Could not set up the WS281x, is the program running as root?")
+                _logger.error("Could not set up the WS281x, is the program running as root?")
 
     def preparation_start(self) -> None:
         for led in self.led_list:
@@ -88,23 +89,24 @@ class _LED(Protocol):
 
 
 class _normalLED(_LED):
-    def __init__(self, config: NormalLedConfig, _pin_controller: PinController) -> None:
-        self.pin = config.pin
+    def __init__(self, config: NormalLedConfig) -> None:
+        self.pin_id = config.pin_id
         self.default_on = config.default_on
         self.preparation_state = config.preparation_state
-        self._pin_controller = _pin_controller
-        self._pin_controller.initialize_pin_list([self.pin])
+        self._pin_controller = PinController()
+        _logger.info(f"<i> Initializing normal LED on pin {self.pin_id}")
+        self._pin_controller.initialize_pin(self.pin_id)
 
     def __del__(self) -> None:
-        self._pin_controller.cleanup_pin_list([self.pin])
+        self._pin_controller.cleanup_pin(self.pin_id)
 
     def turn_on(self) -> None:
         """Turn the LEDs on."""
-        self._pin_controller.activate_pin_list([self.pin])
+        self._pin_controller.activate_pin(self.pin_id)
 
     def turn_off(self) -> None:
         """Turn the LEDs off."""
-        self._pin_controller.close_pin_list([self.pin])
+        self._pin_controller.close_pin(self.pin_id)
 
     def preparation_start(self) -> None:
         """Turn the LED on during preparation."""

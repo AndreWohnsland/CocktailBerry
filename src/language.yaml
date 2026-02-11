@@ -696,6 +696,12 @@ ui:
     PUMP_CONFIG:
       en: 'Setting for each pump: Pin connected to the pump, volume flow in ml/s, tube volume to the pump in ml (used to pump given volume after a bottle change)'
       de: 'Einstellung für jede Pumpe: Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen zur Pumpe in ml (wird verwendet, um das gegebene Volumen nach einem Flaschenwechsel zu pumpen)'
+    MCP23017_CONFIG:
+      en: 'MCP23017 I2C GPIO expander configuration (16 pins, 0-15). Enable if using MCP23017 for pump control. Set the I2C address (default 0x20, range 0x20-0x27).'
+      de: 'MCP23017 I2C GPIO-Expander Konfiguration (16 Pins, 0-15). Aktivieren wenn MCP23017 für Pumpensteuerung verwendet wird. I2C-Adresse setzen (Standard 0x20, Bereich 0x20-0x27).'
+    PCF8574_CONFIG:
+      en: 'PCF8574 I2C GPIO expander configuration (8 pins, 0-7). Enable if using PCF8574 for pump control. Set the I2C address (default 0x20, range 0x20-0x27).'
+      de: 'PCF8574 I2C GPIO-Expander Konfiguration (8 Pins, 0-7). Aktivieren wenn PCF8574 für Pumpensteuerung verwendet wird. I2C-Adresse setzen (Standard 0x20, Bereich 0x20-0x27).'
     MAKER_NAME:
       en: 'Name of your CocktailBerry machine'
       de: 'Name von deiner CocktailBerry Maschine'
@@ -714,12 +720,9 @@ ui:
     MAKER_ALCOHOL_FACTOR:
       en: 'Value to scale alcoholic ingredients in each recipe. Use this to decrease/increase the alcohol level of all cocktails. Default is 100%'
       de: 'Skalierungsfaktor für alkoholische Zutaten in jedem Rezept. Verwende diesen, um den Alkoholgehalt aller Cocktails zu verringern/erhöhen. Standard ist 100%'
-    MAKER_PUMP_REVERSION:
-      en: 'Enable the reversion of the pump direction, needs according hardware for reversion, usually a relay'
-      de: 'Ermöglicht die Pumpenrichtung zu ändern, benötigt entsprechende Hardware, meist ein Relais'
-    MAKER_REVERSION_PIN:
-      en: 'Pin number of the reversion hardware, will be activated when reverting the pump direction'
-      de: 'Pin Nummer der Pumpenrichtung Hardware, wird aktiviert, wenn die Pumpenrichtung geändert wird'
+    MAKER_PUMP_REVERSION_CONFIG:
+      en: 'Configuration for pump reversion, needed for some setups to be able to revert the pump direction.'
+      de: 'Konfiguration für Pumpen Umkehrung, benötigt von einigen Setups, um die Pumpenrichtung ändern zu können.'
     MAKER_SEARCH_UPDATES:
       en: 'Search for updates, if available internet connection'
       de: 'Sucht nach Updates, wenn Internetverbindung besteht'
@@ -727,8 +730,8 @@ ui:
       en: 'Checks before each cocktail if there is enough volume in the needed bottles. Aborts with a warning if there is not. Disable to ignore fill level.'
       de: 'Prüft vor dem Cocktail ob genug in den benötigten Flasche ist, bricht mit Warnung ab falls nicht. Ausschalten ignoriert Füllstand.'
     MAKER_PINS_INVERTED:
-      en: 'Inverts the pin signal (on is low, off is high), needed for most relays'
-      de: 'Vertauscht das Pin Signal (an ist low, aus ist high), benötigt von vielen Relays'
+      en: 'Inverts the pin signal fo the GPIOs (on is low, off is high), needed for most relays, not used for I2C'
+      de: 'Vertauscht das Pin Signal für die GPIOs (an ist low, aus ist high), benötigt von vielen Relays, nicht verwendet bei I2C'
     MAKER_THEME:
       en: 'Color theme of the application, use custom to select your own color'
       de: 'Farbeinstellung des Programms, wähle custom aus, um es selbst zu stylen'
@@ -748,8 +751,8 @@ ui:
       en: 'List with config for each normal (non-addressable) LED: pin, default on state, preparation state (on/off/effects)'
       de: 'Liste mit Einstellung für jeden normalen (nicht ansteuerbaren) LED: Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
     LED_WSLED:
-      en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects)'
-      de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
+      en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects). Only supports GPIO.'
+      de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). Unterstützt nur GPIO.'
     RFID_READER:
       en: 'Using a RFID Reader: Basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
       de: 'Wird ein RFID Reader verwendet: Standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'

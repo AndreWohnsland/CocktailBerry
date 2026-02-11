@@ -14,10 +14,9 @@ with contextlib.suppress(ModuleNotFoundError):
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.machine.generic_board import GenericController
-from src.machine.interface import PinController
+from src.config.config_types import PinId
 from src.machine.leds import LedController
-from src.machine.raspberry import choose_pi_controller, is_rpi
+from src.machine.pin_controller import PinController
 from src.machine.reverter import Reverter
 from src.models import CocktailStatus, Ingredient, PrepareResult
 
@@ -29,7 +28,7 @@ _logger = LoggerHandler("MachineController")
 
 @dataclass
 class _PreparationData:
-    pin: int
+    pin: PinId
     volume_flow: int | float
     flow_time: float
     consumption: float = 0.0
@@ -52,19 +51,12 @@ class MachineController:
         self._print_time = 0.0
 
     def init_machine(self) -> None:
-        self.pin_controller = self._chose_controller()
-        self.led_controller = LedController(self.pin_controller)
-        self.reverter = Reverter(self.pin_controller, cfg.MAKER_PUMP_REVERSION, cfg.MAKER_REVERSION_PIN)
+        self.pin_controller = PinController()
+        self.led_controller = LedController()
+        self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()
         self.default_led()
         atexit.register(self.cleanup)
-
-    def _chose_controller(self) -> PinController:
-        """Select the controller class for the Pin."""
-        if is_rpi():
-            return choose_pi_controller(cfg.MAKER_PINS_INVERTED)
-        # In case none is found, fall back to generic using python-periphery
-        return GenericController(cfg.MAKER_PINS_INVERTED)
 
     def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False) -> None:
         """Clean the pumps for the defined time in the config.
@@ -212,12 +204,12 @@ class MachineController:
     def set_up_pumps(self) -> None:
         """Get all used pins, prints pins and uses controller class to set up."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
-        active_pins = [x.pin for x in used_config]
+        active_pins = [x.pin_id for x in used_config]
         _logger.info(f"<i> Initializing Pins: {active_pins}")
         self.pin_controller.initialize_pin_list(active_pins)
         self.reverter.initialize_pin()
 
-    def _start_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
+    def _start_pumps(self, pin_list: list[PinId], print_prefix: str = "") -> None:
         """Informs and opens all given pins."""
         _logger.debug(f"{print_prefix}<o> Opening Pins: {pin_list}")
         self.pin_controller.activate_pin_list(pin_list)
@@ -225,16 +217,16 @@ class MachineController:
     def close_all_pumps(self) -> None:
         """Close all pins connected to the pumps."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
-        active_pins = [x.pin for x in used_config]
+        active_pins = [x.pin_id for x in used_config]
         self._stop_pumps(active_pins)
 
     def cleanup(self) -> None:
         """Cleanup for shutdown the machine."""
         self.close_all_pumps()
-        self.pin_controller.cleanup_pin_list()
         self.led_controller.turn_off()
+        self.pin_controller.cleanup_pin_list()
 
-    def _stop_pumps(self, pin_list: list[int], print_prefix: str = "") -> None:
+    def _stop_pumps(self, pin_list: list[PinId], print_prefix: str = "") -> None:
         """Informs and closes all given pins."""
         _logger.info(f"{print_prefix}<x> Closing Pins: {pin_list}")
         self.pin_controller.close_pin_list(pin_list)
@@ -267,10 +259,11 @@ def _build_preparation_data(
     for ing in ingredient_list:
         if ing.bottle is None:  # bottle should never be None at this point
             continue
-        volume_flow = cfg.PUMP_CONFIG[ing.bottle - 1].volume_flow * ing.pump_speed / 100
+        pump_cfg = cfg.PUMP_CONFIG[ing.bottle - 1]
+        volume_flow = pump_cfg.volume_flow * ing.pump_speed / 100
         prep_data.append(
             _PreparationData(
-                cfg.PUMP_CONFIG[ing.bottle - 1].pin,
+                pump_cfg.pin_id,
                 volume_flow,
                 round(ing.amount / volume_flow, 1),
                 recipe_order=ing.recipe_order,
@@ -282,11 +275,9 @@ def _build_preparation_data(
 def _build_clean_data() -> list[_PreparationData]:
     """Build a list of needed cleaning data objects."""
     used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
-    active_pins = [x.pin for x in used_config]
-    volume_flow = [x.volume_flow for x in used_config]
     prep_data = []
-    for pin, flow in zip(active_pins, volume_flow):
-        prep_data.append(_PreparationData(pin, flow, cfg.MAKER_CLEAN_TIME))
+    for pump_cfg in used_config:
+        prep_data.append(_PreparationData(pump_cfg.pin_id, pump_cfg.volume_flow, cfg.MAKER_CLEAN_TIME))
     return prep_data
 
 

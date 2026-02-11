@@ -1,42 +1,12 @@
+from __future__ import annotations
+
 from abc import abstractmethod
-from typing import Any, Protocol
+from typing import Protocol
 
 
-class PinController(Protocol):
-    """Interface to control the pins."""
-
+class SinglePinController(Protocol):
     @abstractmethod
-    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def activate_pin_list(self, pin_list: list[int]) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def close_pin_list(self, pin_list: list[int]) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def cleanup_pin_list(self, pin_list: list[int] | None = None) -> None:
-        pass
-
-    @abstractmethod
-    def read_pin(self, pin: int) -> bool:
-        pass
-
-
-class GPIOController:
-    def __init__(self, high: Any, low: Any, inverted: bool, pin: int) -> None:
-        self.high = high
-        self.low = low
-        self.inverted = inverted
-        self.pin = pin
-        if self.inverted:
-            self.high, self.low = self.low, self.high
-
-    @abstractmethod
-    def initialize(self) -> None:
+    def initialize(self, is_input: bool = False, pull_down: bool = True) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -49,6 +19,10 @@ class GPIOController:
 
     @abstractmethod
     def cleanup(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def read(self) -> bool:
         raise NotImplementedError
 
 

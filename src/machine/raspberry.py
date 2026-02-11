@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Literal
 
 from src.logger_handler import LoggerHandler
-from src.machine.interface import GPIOController, PinController
+from src.machine.interface import SinglePinController
 
 _logger = LoggerHandler("RpiController")
 
@@ -20,7 +20,10 @@ except (ModuleNotFoundError, RuntimeError):
 
 try:
     # pylint: disable=import-error
-    from gpiozero import InputDevice, OutputDevice  # pyright: ignore[reportMissingImports, reportMissingModuleSource]
+    from gpiozero import (  # pyright: ignore[reportMissingImports, reportMissingModuleSource]
+        InputDevice,
+        OutputDevice,
+    )
 
     ZERO_DEV = False
 except (ModuleNotFoundError, RuntimeError):
@@ -42,161 +45,85 @@ def is_rpi() -> bool:
     return "raspberry pi" in model.lower()
 
 
-def choose_pi_controller(inverted: bool) -> PinController:
-    """Need to choose another controller for Raspberry Pi 5."""
-    if is_rpi5():
-        return Rpi5Controller(inverted)
-    return RpiController(inverted)
-
-
-class RpiController(PinController):
-    """Controller class to control Raspberry Pi pins."""
-
-    def __init__(self, inverted: bool) -> None:
-        super().__init__()
+class RaspberryGPIO(SinglePinController):
+    def __init__(self, pin: int, inverted: bool) -> None:
+        self.low: Literal[0, 1] = 0
+        self.high: Literal[0, 1] = 1
+        self.pin = pin
         self.inverted = inverted
         self.devenvironment = DEV
-        self.low: Literal[0, 1] = GPIO.LOW if not DEV else 0
-        self.high: Literal[0, 1] = GPIO.HIGH if not DEV else 1
         if inverted:
             self.low, self.high = self.high, self.low
-        self.dev_displayed = False
 
-    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
-        """Set up the given pin list."""
-        if not self.dev_displayed:
-            _logger.info(f"<i> Devenvironment on the RPi module is {'on' if self.devenvironment else 'off'}")
-            self.dev_displayed = True
-        if not self.devenvironment:
-            # if it is an input, we need to set the pull up down to down or up
-            # depending on how the input sensor works
-            # otherwise the jitter may emit false signals
-            if is_input:
-                pull_up_down = GPIO.PUD_DOWN if pull_down else GPIO.PUD_UP
-                GPIO.setup(pin_list, GPIO.IN, pull_up_down=pull_up_down)
-            else:
-                GPIO.setup(pin_list, GPIO.OUT, initial=self.low)
+    def initialize(self, is_input: bool = False, pull_down: bool = True) -> None:
+        if self.devenvironment:
+            _logger.warning(f"Could not import RPi.GPIO. Will not be able to control pin: GPIO-{self.pin}")
+            return
+        if is_input:
+            pull_up_down = GPIO.PUD_DOWN if pull_down else GPIO.PUD_UP
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=pull_up_down)
         else:
-            _logger.warning(f"Could not import RPi.GPIO. Will not be able to control pins: {pin_list}")
-
-    def activate_pin_list(self, pin_list: list[int]) -> None:
-        """Activates the given pin list."""
-        if not self.devenvironment:
-            GPIO.output(pin_list, self.high)
-
-    def close_pin_list(self, pin_list: list[int]) -> None:
-        """Close the given pin_list."""
-        if not self.devenvironment:
-            GPIO.output(pin_list, self.low)
-
-    def cleanup_pin_list(self, pin_list: list[int] | None = None) -> None:
-        """Clean up the given pin list, or all pins if none is given."""
-        if self.devenvironment:
-            return
-        if pin_list is None:
-            GPIO.cleanup()
-        else:
-            GPIO.cleanup(pin_list)
-
-    def read_pin(self, pin: int) -> bool:
-        """Return the state of the given pin."""
-        if not self.devenvironment:
-            return GPIO.input(pin) == GPIO.HIGH
-        return False
-
-
-class Rpi5Controller(PinController):
-    """Controller class to control Raspberry Pi pins using gpiozero."""
-
-    def __init__(self, inverted: bool) -> None:
-        super().__init__()
-        self.inverted = inverted
-        self.devenvironment = ZERO_DEV
-        self.low: bool = False
-        self.high: bool = True
-        if inverted:
-            self.low, self.high = self.high, self.low
-        self.active_high = not inverted  # Control active_high based on the inverted parameter
-        self.gpios: dict[
-            int, InputDevice | OutputDevice
-        ] = {}  # Dictionary to store GPIO pin objects (InputDevice/OutputDevice)
-        self.dev_displayed = False
-
-    def initialize_pin_list(self, pin_list: list[int], is_input: bool = False, pull_down: bool = True) -> None:
-        """Set up the given pin list using gpiozero with error handling."""
-        if not self.dev_displayed:
-            _logger.info(f"<i> Devenvironment on the RPi5 module is {'on' if self.devenvironment else 'off'}")
-            self.dev_displayed = True
-
-        if self.devenvironment:
-            _logger.warning(f"Could not import gpiozero. Will not be able to control pins: {pin_list}")
-            return
-        for pin in pin_list:
-            try:
-                if is_input:
-                    # Set pull-up/down configuration via InputDevice
-                    pull_up = not pull_down
-                    self.gpios[pin] = InputDevice(pin, pull_up=pull_up)
-                else:
-                    # Initialize OutputDevice with active_high based on the inverted flag
-                    self.gpios[pin] = OutputDevice(pin, initial_value=False, active_high=self.active_high)
-            except Exception as e:
-                # Catch any error and continue, printing the pin and error message
-                _logger.warning(f"Error: Could not initialize GPIO pin {pin}. Reason: {e!s}")
-
-    def activate_pin_list(self, pin_list: list[int]) -> None:
-        """Activates the given pin list (sets to high)."""
-        if self.devenvironment:
-            return
-        for pin in pin_list:
-            if pin in self.gpios and isinstance(self.gpios[pin], OutputDevice):
-                self.gpios[pin].on()
-            else:
-                _logger.warning(f"Could not activate GPIO pin {pin}. Reason: Pin not activated or not an OutputDevice.")
-
-    def close_pin_list(self, pin_list: list[int]) -> None:
-        """Close (deactivate) the given pin_list (sets to low)."""
-        if self.devenvironment:
-            return
-        for pin in pin_list:
-            if pin in self.gpios and isinstance(self.gpios[pin], OutputDevice):
-                self.gpios[pin].off()
-
-    def cleanup_pin_list(self, pin_list: list[int] | None = None) -> None:
-        """Clean up the given pin list, or all pins if none is given."""
-        if pin_list is None:
-            # Clean up all pins
-            for pin, device in self.gpios.items():
-                device.close()
-            self.gpios.clear()
-        else:
-            for pin in pin_list:
-                if pin in self.gpios:
-                    self.gpios[pin].close()
-                    del self.gpios[pin]
-
-    def read_pin(self, pin: int) -> bool:
-        """Return the state of the given pin (True if high, False if low)."""
-        if pin in self.gpios and isinstance(self.gpios[pin], InputDevice):
-            return self.gpios[pin].is_active  # True if high, False if low
-        _logger.warning(f"Could not read GPIO pin {pin}. Reason: Pin not found or not an InputDevice.")
-        return False
-
-
-class RaspberryGPIO(GPIOController):
-    def __init__(self, inverted: bool, pin: int) -> None:
-        low = GPIO.LOW if not DEV else 0
-        high = GPIO.HIGH if not DEV else 1
-        super().__init__(high, low, inverted, pin)
-
-    def initialize(self) -> None:
-        GPIO.setup(self.pin, GPIO.OUT, initial=self.low)
+            GPIO.setup(self.pin, GPIO.OUT, initial=self.low)
 
     def activate(self) -> None:
-        GPIO.output(self.pin, self.high)
+        if not self.devenvironment:
+            GPIO.output(self.pin, self.high)
 
     def close(self) -> None:
-        GPIO.output(self.pin, self.low)
+        if not self.devenvironment:
+            GPIO.output(self.pin, self.low)
 
     def cleanup(self) -> None:
-        GPIO.cleanup(self.pin)
+        if not self.devenvironment:
+            GPIO.cleanup(self.pin)
+
+    def read(self) -> bool:
+        if not self.devenvironment:
+            return GPIO.input(self.pin) == GPIO.HIGH
+        return False
+
+
+class Rpi5GPIO(SinglePinController):
+    def __init__(self, pin: int, inverted: bool) -> None:
+        self.pin = pin
+        self.inverted = inverted
+        self.devenvironment = ZERO_DEV
+        self.active_high = not inverted
+        self._output: OutputDevice | None = None
+        self._input: InputDevice | None = None
+
+    def initialize(self, is_input: bool = False, pull_down: bool = True) -> None:
+        if self.devenvironment:
+            _logger.warning(f"Could not import gpiozero. Will not be able to control pin: GPIO-{self.pin}")
+            return
+        try:
+            if is_input:
+                pull_up = not pull_down
+                self._input = InputDevice(self.pin, pull_up=pull_up)
+            else:
+                self._output = OutputDevice(self.pin, initial_value=False, active_high=self.active_high)
+        except Exception as e:
+            _logger.warning(f"Error: Could not initialize pin GPIO-{self.pin}. Reason: {e!s}")
+
+    def activate(self) -> None:
+        if self._output is None:
+            return
+        self._output.on()
+
+    def close(self) -> None:
+        if self._output is None:
+            return
+        self._output.off()
+
+    def cleanup(self) -> None:
+        if self._output is not None:
+            self._output.close()
+            self._output = None
+        if self._input is not None:
+            self._input.close()
+            self._input = None
+
+    def read(self) -> bool:
+        if self._input is None:
+            return False
+        return self._input.is_active
