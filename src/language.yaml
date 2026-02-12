@@ -696,12 +696,9 @@ ui:
     PUMP_CONFIG:
       en: 'Setting for each pump: Pin connected to the pump, volume flow in ml/s, tube volume to the pump in ml (used to pump given volume after a bottle change)'
       de: 'Einstellung für jede Pumpe: Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen zur Pumpe in ml (wird verwendet, um das gegebene Volumen nach einem Flaschenwechsel zu pumpen)'
-    MCP23017_CONFIG:
-      en: 'MCP23017 I2C GPIO expander configuration (16 pins, 0-15). Enable if using MCP23017 for pump control. Set the I2C address (default 0x20, range 0x20-0x27).'
-      de: 'MCP23017 I2C GPIO-Expander Konfiguration (16 Pins, 0-15). Aktivieren wenn MCP23017 für Pumpensteuerung verwendet wird. I2C-Adresse setzen (Standard 0x20, Bereich 0x20-0x27).'
-    PCF8574_CONFIG:
-      en: 'PCF8574 I2C GPIO expander configuration (8 pins, 0-7). Enable if using PCF8574 for pump control. Set the I2C address (default 0x20, range 0x20-0x27).'
-      de: 'PCF8574 I2C GPIO-Expander Konfiguration (8 Pins, 0-7). Aktivieren wenn PCF8574 für Pumpensteuerung verwendet wird. I2C-Adresse setzen (Standard 0x20, Bereich 0x20-0x27).'
+    I2C_CONFIG:
+      en: 'I2C GPIO expander configuration. Enable if using I2C Relais for pump control. Set the I2C address (default 0x20, range 0x20-0x27). See supported boards over dropdown.'
+      de: 'I2C GPIO-Expander Konfiguration. Aktivieren wenn I2C Relais für Pumpensteuerung verwendet wird. I2C-Adresse setzen (Standard 0x20, Bereich 0x20-0x27). Unterstützte Boards über Dropdown auswählen.'
     MAKER_NAME:
       en: 'Name of your CocktailBerry machine'
       de: 'Name von deiner CocktailBerry Maschine'

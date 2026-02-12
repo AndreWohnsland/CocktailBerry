@@ -342,8 +342,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             self.vbox_hardware: (
                 "MAKER_PUMP_REVERSION_CONFIG",
                 "MAKER_PINS_INVERTED",
-                "MCP23017_CONFIG",
-                "PCF8574_CONFIG",
+                "I2C_CONFIG",
             ),
             self.vbox_payment_cocktailberry: (
                 "PAYMENT_SHOW_NOT_POSSIBLE",

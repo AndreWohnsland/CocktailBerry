@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from typing import Any, Protocol, Self, get_args
 
 from src import (
+    I2CExpanderType,
     SupportedLanguagesType,
     SupportedLedStatesType,
     SupportedPaymentOptions,
@@ -27,6 +28,7 @@ SUPPORTED_RFID = list(get_args(SupportedRfidType))
 SUPPORTED_LED_STATES = list(get_args(SupportedLedStatesType))
 SUPPORTED_PAYMENT = list(get_args(SupportedPaymentOptions))
 SUPPORTED_PIN_CONTROL = list(get_args(SupportedPinControlType))
+SUPPORTED_I2C_EXPANDERS = list(get_args(I2CExpanderType))
 
 
 class ConfigInterface[T](Protocol):
@@ -135,6 +137,7 @@ class ChooseOptions:
     leds = ChooseType(allowed=SUPPORTED_LED_STATES)
     payment = ChooseType(allowed=SUPPORTED_PAYMENT)
     pin = ChooseType(allowed=SUPPORTED_PIN_CONTROL, default="GPIO")
+    i2c = ChooseType(allowed=SUPPORTED_I2C_EXPANDERS, default="PCF8574")
 
 
 class StringType(_ConfigType[str]):
@@ -359,11 +362,20 @@ class PumpConfig(ConfigClass):
 class I2CExpanderConfig(ConfigClass):
     """Base configuration for I2C GPIO expander devices.
 
-    Shared by MCP23017 (16 pins, 0-15) and PCF8574 (8 pins, 0-7).
+    Shared by MCP23017 (16 pins, 0-15), PCF8574 (8 pins, 0-7), and PCA9535 (16 pins, 0-15).
     Default I2C address is 0x20, configurable to 0x20-0x27.
     """
 
-    def __init__(self, enabled: bool, address_int: int, inverted: bool) -> None:
+    device_type: I2CExpanderType
+
+    def __init__(
+        self,
+        device_type: I2CExpanderType,
+        enabled: bool,
+        address_int: int,
+        inverted: bool,
+    ) -> None:
+        self.device_type = device_type
         self.enabled = enabled
         self.address_int = address_int
         self.inverted = inverted
@@ -372,16 +384,13 @@ class I2CExpanderConfig(ConfigClass):
     def address_hex(self) -> int:
         return int(str(self.address_int), 16)
 
-    def to_config(self) -> dict[str, bool | int]:
-        return {"enabled": self.enabled, "address_int": self.address_int, "inverted": self.inverted}
-
-
-class MCP23017ConfigClass(I2CExpanderConfig):
-    """Configuration for MCP23017 I2C GPIO expander (16 pins, 0-15)."""
-
-
-class PCF8574ConfigClass(I2CExpanderConfig):
-    """Configuration for PCF8574 I2C GPIO expander (8 pins, 0-7)."""
+    def to_config(self) -> dict[str, bool | int | str]:
+        return {
+            "device_type": self.device_type,
+            "enabled": self.enabled,
+            "address_int": self.address_int,
+            "inverted": self.inverted,
+        }
 
 
 class ReversionConfig(ConfigClass):

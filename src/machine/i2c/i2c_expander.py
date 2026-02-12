@@ -1,23 +1,28 @@
 from __future__ import annotations
 
+from collections.abc import Callable
+from typing import TYPE_CHECKING
+
+from src.config.config_types import I2CExpanderConfig
+from src.machine.interface import SinglePinController
+
 try:
     import board
     import busio
-    from adafruit_mcp230xx.digital_inout import DigitalInOut as MCP23017DigitalInOut
-    from adafruit_mcp230xx.mcp23017 import MCP23017
-    from adafruit_pcf8574 import PCF8574
-    from adafruit_pcf8574 import DigitalInOut as PCF8574DigitalInOut
     from digitalio import Pull
 
     MODULE_AVAILABLE = True
 except (ModuleNotFoundError, RuntimeError):
     MODULE_AVAILABLE = False
 
-from collections.abc import Callable
+if TYPE_CHECKING:
+    import busio
+    from adafruit_mcp230xx.digital_inout import DigitalInOut as MCP23017DigitalInOut
+    from adafruit_mcp230xx.mcp23017 import MCP23017
+    from adafruit_pcf8574 import PCF8574
+    from adafruit_pcf8574 import DigitalInOut as PCF8574DigitalInOut
 
-from src.config.config_types import I2CExpanderConfig, MCP23017ConfigClass, PCF8574ConfigClass
 from src.logger_handler import LoggerHandler
-from src.machine.interface import SinglePinController
 
 _logger = LoggerHandler("I2CExpander")
 
@@ -25,7 +30,7 @@ _logger = LoggerHandler("I2CExpander")
 class I2CExpanderGPIO(SinglePinController):
     """Generic GPIO controller for I2C expander devices.
 
-    Works with any device implementing the DigitalInOut interface
+    Works with any device implementing the DigitalInOut interface (usually adafruit)
     (e.g. MCP23017, PCF8574). Both use an identical pin interface
     (get_pin -> DigitalInOut with .value, .switch_to_input, .switch_to_output).
     """
@@ -49,9 +54,7 @@ class I2CExpanderGPIO(SinglePinController):
     def initialize(self, is_input: bool = False, pull_down: bool = True) -> None:
         """Initialize the I2C expander pin."""
         if self._device is None:
-            _logger.warning(
-                f"Could not import I2C dependencies. Will not be able to control pin: {self._device_name}-{self.pin}"
-            )
+            _logger.warning(f"No device found. Will not be able to control pin: {self._device_name}-{self.pin}")
             return
 
         try:
@@ -87,34 +90,7 @@ class I2CExpanderGPIO(SinglePinController):
         return self._controller.value
 
 
-def MCP23017GPIO(pin: int, inverted: bool, device: MCP23017 | None) -> I2CExpanderGPIO:
-    """Create an I2CExpanderGPIO for an MCP23017 device."""
-    return I2CExpanderGPIO(pin, inverted, device, "MCP23017")
-
-
-def PCF8574GPIO(pin: int, inverted: bool, device: PCF8574 | None) -> I2CExpanderGPIO:
-    """Create an I2CExpanderGPIO for a PCF8574 device."""
-    return I2CExpanderGPIO(pin, inverted, device, "PCF8574")
-
-
-def get_i2c() -> busio.I2C | None:
-    """Get or create the I2C bus.
-
-    Returns:
-        The I2C bus instance, or None if initialization fails.
-
-    """
-    if not MODULE_AVAILABLE:
-        _logger.warning("I2C dependencies not available. Cannot control I2C (MCP23017, PCF8574) expanders.")
-        return None
-    try:
-        return busio.I2C(board.SCL, board.SDA)  # ty:ignore[possibly-missing-attribute]
-    except Exception as e:
-        _logger.error(f"Could not initialize I2C bus: {e}")
-        return None
-
-
-def _get_i2c_device[T](
+def get_i2c_device[T](
     config: I2CExpanderConfig,
     i2c: busio.I2C | None,
     constructor: Callable[..., T],
@@ -134,15 +110,20 @@ def _get_i2c_device[T](
     return device
 
 
-def get_mcp23017(config: MCP23017ConfigClass, i2c: busio.I2C | None) -> MCP23017 | None:
-    """Get or create an MCP23017 device at the given address."""
-    if not MODULE_AVAILABLE:
-        return None
-    return _get_i2c_device(config, i2c, MCP23017, "MCP23017")
+def get_i2c() -> busio.I2C | None:
+    """Get or create the I2C bus.
 
+    Returns:
+        The I2C bus instance, or None if initialization fails.
 
-def get_pcf8574(config: PCF8574ConfigClass, i2c: busio.I2C | None) -> PCF8574 | None:
-    """Get or create a PCF8574 device at the given address."""
+    """
     if not MODULE_AVAILABLE:
+        _logger.warning(
+            "I2C dependencies not available. Cannot control I2C (MCP23017, PCF8574, PCA9535) expanders/devices."
+        )
         return None
-    return _get_i2c_device(config, i2c, PCF8574, "PCF8574")
+    try:
+        return busio.I2C(board.SCL, board.SDA)  # ty:ignore[possibly-missing-attribute]
+    except Exception as e:
+        _logger.error(f"Could not initialize I2C bus: {e}")
+        return None

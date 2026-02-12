@@ -27,11 +27,10 @@ from src.config.config_types import (
     ConfigInterface,
     DictType,
     FloatType,
+    I2CExpanderConfig,
     IntType,
     ListType,
-    MCP23017ConfigClass,
     NormalLedConfig,
-    PCF8574ConfigClass,
     PumpConfig,
     ReversionConfig,
     StringType,
@@ -89,9 +88,7 @@ class ConfigManager:
     # Inverts the pin signal (on is low, off is high)
     MAKER_PINS_INVERTED: bool = True
     # MCP23017 I2C GPIO expander configuration (16 pins, address 0x20-0x27)
-    MCP23017_CONFIG = MCP23017ConfigClass(enabled=False, address_int=20, inverted=False)
-    # PCF8574 I2C GPIO expander configuration (8 pins, address 0x20-0x27)
-    PCF8574_CONFIG = PCF8574ConfigClass(enabled=False, address_int=20, inverted=False)
+    I2C_CONFIG: ClassVar[list[I2CExpanderConfig]] = []
     # Custom name of the Maker
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
@@ -193,21 +190,17 @@ class ConfigManager:
                 ),
                 lambda: self.choose_bottle_number(ignore_limits=True),
             ),
-            "MCP23017_CONFIG": DictType(
-                {
-                    "enabled": BoolType(check_name="MCP23017 Enabled"),
-                    "address_int": IntType(prefix="0x", default=20),
-                    "inverted": BoolType(check_name="Inverted"),
-                },
-                MCP23017ConfigClass,
-            ),
-            "PCF8574_CONFIG": DictType(
-                {
-                    "enabled": BoolType(check_name="PCF8574 Enabled"),
-                    "address_int": IntType(prefix="0x", default=20),
-                    "inverted": BoolType(check_name="Inverted"),
-                },
-                PCF8574ConfigClass,
+            "I2C_CONFIG": ListType(
+                DictType(
+                    {
+                        "device_type": ChooseOptions.i2c,
+                        "enabled": BoolType(check_name="Enabled"),
+                        "address_int": IntType(prefix="0x", default=20),
+                        "inverted": BoolType(check_name="Inverted"),
+                    },
+                    I2CExpanderConfig,
+                ),
+                0,
             ),
             "MAKER_NAME": StringType([validate_max_length]),
             "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, 999)]),

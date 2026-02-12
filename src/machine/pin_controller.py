@@ -6,10 +6,10 @@ from typing import Self
 
 from src import SupportedPinControlType
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_types import MCP23017ConfigClass, PCF8574ConfigClass, PinId
+from src.config.config_types import I2CExpanderConfig, PinId
 from src.logger_handler import LoggerHandler
 from src.machine.generic_board import GenericGPIO
-from src.machine.i2c_expander import MCP23017GPIO, PCF8574GPIO, get_i2c, get_mcp23017, get_pcf8574
+from src.machine.i2c.i2c_expander_factory import I2CExpanderFactory
 from src.machine.interface import SinglePinController
 from src.machine.raspberry import RaspberryGPIO, Rpi5GPIO, is_rpi, is_rpi5
 
@@ -17,12 +17,8 @@ _logger = LoggerHandler("PinControllerFactory")
 
 
 class SinglePinControllerFactory:
-    def __init__(self, mcp_config: MCP23017ConfigClass, pcf_config: PCF8574ConfigClass) -> None:
-        self._i2c = None
-        if mcp_config.enabled or pcf_config.enabled:
-            self._i2c = get_i2c()
-        self.mcp23017 = get_mcp23017(mcp_config, self._i2c)
-        self.pcf8574 = get_pcf8574(pcf_config, self._i2c)
+    def __init__(self, i2c_configs: list[I2CExpanderConfig]) -> None:
+        self._i2c_factory = I2CExpanderFactory(i2c_configs)
 
     def generate_single_pin_controller(
         self,
@@ -36,18 +32,8 @@ class SinglePinControllerFactory:
         """
         gpio_inverted = cfg.MAKER_PINS_INVERTED if invert_override is None else invert_override
         match pin_type:
-            case "MCP23017":
-                return MCP23017GPIO(
-                    pin,
-                    cfg.MCP23017_CONFIG.inverted if invert_override is None else invert_override,
-                    self.mcp23017,
-                )
-            case "PCF8574":
-                return PCF8574GPIO(
-                    pin,
-                    cfg.PCF8574_CONFIG.inverted if invert_override is None else invert_override,
-                    self.pcf8574,
-                )
+            case "MCP23017" | "PCF8574" | "PCA9535":
+                return self._i2c_factory.create_i2c_gpio(pin_type, pin, invert_override)
             case "GPIO":
                 if is_rpi5():
                     return Rpi5GPIO(pin, gpio_inverted)
@@ -71,7 +57,8 @@ class PinController:
     def __init__(self) -> None:
         if getattr(self, "_initialized", False):
             return
-        self._factory = SinglePinControllerFactory(cfg.MCP23017_CONFIG, cfg.PCF8574_CONFIG)
+        # Build I2C config list from individual configs (backward compatible)
+        self._factory = SinglePinControllerFactory(cfg.I2C_CONFIG)
         self._pins: dict[PinId, SinglePinController] = {}
         self._initialized = True
 
