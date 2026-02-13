@@ -278,6 +278,7 @@ name = "cocktailberry"
 version = "3.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "adafruit-circuitpython-busdevice" },
     { name = "adafruit-circuitpython-mcp230xx" },
     { name = "adafruit-circuitpython-pcf8574" },
     { name = "alembic" },
@@ -293,6 +294,7 @@ dependencies = [
     { name = "python-periphery" },
     { name = "pyyaml" },
     { name = "requests" },
+    { name = "rpi-gpio", marker = "sys_platform == 'linux'" },
     { name = "rpi-ws281x", marker = "sys_platform == 'linux'" },
     { name = "sqlalchemy" },
     { name = "sse-starlette" },
@@ -327,6 +329,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "adafruit-circuitpython-busdevice", specifier = ">=5.2.15" },
     { name = "adafruit-circuitpython-mcp230xx", specifier = ">=2.5.19" },
     { name = "adafruit-circuitpython-pcf8574", specifier = ">=1.0.15" },
     { name = "alembic", specifier = ">=1.14.1" },
@@ -347,6 +350,7 @@ requires-dist = [
     { name = "qtawesome", marker = "extra == 'v1'", specifier = ">=1.4.0" },
     { name = "qtsass", marker = "extra == 'v1'", specifier = ">=0.4.0" },
     { name = "requests", specifier = ">=2.32.3" },
+    { name = "rpi-gpio", marker = "sys_platform == 'linux'", specifier = ">=0.7.1" },
     { name = "rpi-ws281x", marker = "sys_platform == 'linux'", specifier = ">=5.0.0" },
     { name = "sqlalchemy", specifier = ">=2.0.40" },
     { name = "sse-starlette", specifier = ">=2.1.3" },

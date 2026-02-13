@@ -68,8 +68,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
     | :---------------------------- | :---------------------------------------------------------------------------------------------- |
     | `MAKER_PINS_INVERTED`         | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)                     |
     | `PUMP_CONFIG`                 | List with config for each pump: pin, volume flow, tube volume to pump up                        |
-    | `MCP23017_CONFIG`             | Config for MCP23017 I2C GPIO expander (16 pins, 0-15)                                           |
-    | `PCF8574_CONFIG`              | Config for PCF8574 I2C GPIO expander (8 pins, 0-7)                                              |
+    | `I2C_CONFIG`                  | Config for I2C GPIO expander (16 pins, 0-15)                                                    |
     | `LED_NORMAL`                  | List of normal (non-addressable) LED configs: pin, default on, prep state                       |
     | `LED_WSLED`                   | List of WS281x (addressable) LED configs: pin, brightness, count, rings, default on, prep state |
     | `RFID_READER`                 | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)               |

@@ -16,7 +16,6 @@ except (ModuleNotFoundError, RuntimeError):
     MODULE_AVAILABLE = False
 
 if TYPE_CHECKING:
-    import busio
     from adafruit_mcp230xx.digital_inout import DigitalInOut as MCP23017DigitalInOut
     from adafruit_mcp230xx.mcp23017 import MCP23017
     from adafruit_pcf8574 import PCF8574

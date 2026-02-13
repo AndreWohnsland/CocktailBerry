@@ -37,7 +37,7 @@ from src.config.config_types import (
     WS281xLedConfig,
 )
 from src.config.errors import ConfigError
-from src.config.validators import build_number_limiter, validate_max_length
+from src.config.validators import build_number_limiter, validate_max_length, valide_no_identical_active_i2c_devices
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.models import CocktailStatus
@@ -194,13 +194,14 @@ class ConfigManager:
                 DictType(
                     {
                         "device_type": ChooseOptions.i2c,
-                        "enabled": BoolType(check_name="Enabled"),
+                        "enabled": BoolType(check_name="Enabled", default=True),
                         "address_int": IntType(prefix="0x", default=20),
                         "inverted": BoolType(check_name="Inverted"),
                     },
                     I2CExpanderConfig,
                 ),
                 0,
+                [valide_no_identical_active_i2c_devices],
             ),
             "MAKER_NAME": StringType([validate_max_length]),
             "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, 999)]),
@@ -364,6 +365,8 @@ class ConfigManager:
         self._set_config(no_list_or_dict, validate)
         list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, list | dict)}
         self._set_config(list_or_dict, validate)
+        # Cross-config validation for dependencies between configs
+        self._validate_cross_config(validate)
 
     def _set_config(self, configuration: dict, validate: bool) -> None:
         for config_name, config_value in configuration.items():
@@ -381,13 +384,31 @@ class ConfigManager:
                 if validate:
                     raise e
 
-    def _validate_config_type(self, configname: str, configvalue: Any) -> None:
-        """Validate the configvalue if its fit the type / conditions."""
-        config_setting = self.config_type.get(configname)
-        # old or user added configs will not be validated
-        if config_setting is None:
-            return
-        config_setting.validate(configname, configvalue)
+    def _validate_cross_config(self, validate: bool) -> None:
+        """Validate cross-config dependencies.
+
+        Currently implemented:
+        - Checks that I2C pin types used in PUMP_CONFIG have corresponding enabled devices in I2C_CONFIG.
+        """
+        # Collect all I2C pin types used in PUMP_CONFIG (excluding GPIO)
+        required_i2c_types: set[str] = set()
+        for pump in self.PUMP_CONFIG:
+            if pump.pin_type != "GPIO":
+                required_i2c_types.add(pump.pin_type)
+
+        # Get enabled I2C device types from I2C_CONFIG
+        enabled_i2c_types = {cfg.device_type for cfg in self.I2C_CONFIG if cfg.enabled}
+
+        # Check that all required I2C types have enabled devices
+        missing_types = required_i2c_types - enabled_i2c_types
+        if missing_types:
+            error_msg = (
+                f"PUMP_CONFIG uses I2C pin types {', '.join(missing_types)} but I2C_CONFIG "
+                "has no enabled devices of these types. Add enabled entries to I2C_CONFIG."
+            )
+            _logger.error(f"Config Error: {error_msg}")
+            if validate:
+                raise ConfigError(error_msg)
 
     def choose_bottle_number(self, get_all: bool = False, ignore_limits: bool = False) -> int:
         """Select the number of Bottles, limits by max supported count."""

@@ -30,6 +30,7 @@ dependencies = [
     "stamina>=25.2.0",
     "adafruit-circuitpython-mcp230xx>=2.5.19",
     "adafruit-circuitpython-pcf8574>=1.0.15",
+    "adafruit-circuitpython-busdevice>=5.2.15",
 ]
 
 [dependency-groups]

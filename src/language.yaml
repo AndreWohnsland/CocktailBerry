@@ -694,11 +694,11 @@ ui:
       en: 'Disable all other tabs than the maker one; You will only be prompted at program start if you want to go to config window with master password'
       de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
     PUMP_CONFIG:
-      en: 'Setting for each pump: Pin connected to the pump, volume flow in ml/s, tube volume to the pump in ml (used to pump given volume after a bottle change)'
-      de: 'Einstellung für jede Pumpe: Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen zur Pumpe in ml (wird verwendet, um das gegebene Volumen nach einem Flaschenwechsel zu pumpen)'
+      en: 'Setting for each pump: Pin connected to the pump, volume flow in ml/s, tube volume to the pump in ml (used to pump given volume after a bottle change). I2C start at 0-7 or 0-15. If using I2C, the pin is the pin on the I2C relais (0-7 or 0-15) and not the GPIO pin.'
+      de: 'Einstellung für jede Pumpe: Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen zur Pumpe in ml (wird verwendet, um das gegebene Volumen nach einem Flaschenwechsel zu pumpen). I2C beginnt bei 0-7 oder 0-15. Bei Verwendung von I2C ist der Pin der Pin auf dem I2C-Relais (0-7 oder 0-15) und nicht der GPIO-Pin.'
     I2C_CONFIG:
-      en: 'I2C GPIO expander configuration. Enable if using I2C Relais for pump control. Set the I2C address (default 0x20, range 0x20-0x27). See supported boards over dropdown.'
-      de: 'I2C GPIO-Expander Konfiguration. Aktivieren wenn I2C Relais für Pumpensteuerung verwendet wird. I2C-Adresse setzen (Standard 0x20, Bereich 0x20-0x27). Unterstützte Boards über Dropdown auswählen.'
+      en: 'I2C GPIO expander configuration. Enable if using I2C Relais for pump control. Set the I2C address (default 0x20). See supported boards over dropdown.'
+      de: 'I2C GPIO-Expander Konfiguration. Aktivieren wenn I2C Relais für Pumpensteuerung verwendet wird. I2C-Adresse setzen (Standard 0x20). Unterstützte Boards über Dropdown auswählen.'
     MAKER_NAME:
       en: 'Name of your CocktailBerry machine'
       de: 'Name von deiner CocktailBerry Maschine'
