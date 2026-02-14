@@ -94,7 +94,8 @@ class I2CExpanderFactory:
 
         """
         config = self.get_config_for_type(device_type)
-        inverted = invert_override if invert_override is not None else (config.inverted if config else False)
+        default_inverted = config.inverted if config else False
+        inverted = invert_override if invert_override is not None else default_inverted
 
         if config is None:
             _logger.error(f"No enabled config found for device type {device_type}, please check your configuration.")

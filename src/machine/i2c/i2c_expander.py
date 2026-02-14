@@ -79,9 +79,7 @@ class I2CExpanderGPIO(SinglePinController):
         self._controller.value = self.low
 
     def cleanup(self) -> None:
-        if self._controller is None:
-            return
-        self._controller.value = self.low
+        self.close()
 
     def read(self) -> bool:
         if self._controller is None:

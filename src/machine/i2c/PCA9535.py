@@ -118,9 +118,7 @@ class PCA9535GPIO(SinglePinController):
         self._device.set_pin_value(self.pin, self.low)
 
     def cleanup(self) -> None:
-        if self._device is None:
-            return
-        self._device.set_pin_value(self.pin, self.low)
+        self.close()
 
     def read(self) -> bool:
         if self._device is None:
