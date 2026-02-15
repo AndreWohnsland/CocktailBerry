@@ -95,7 +95,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         # bottles.clean_machine(self.mainscreen)
         _logger.log_header("INFO", "Cleaning the Pumps")
         revert_pumps = False
-        if cfg.MAKER_PUMP_REVERSION:
+        if cfg.MAKER_PUMP_REVERSION_CONFIG.use_reversion:
             revert_pumps = DP_CONTROLLER.ask_to_use_reverted_pump()
         mc = MachineController()
         mc.clean_pumps(self.mainscreen, revert_pumps)

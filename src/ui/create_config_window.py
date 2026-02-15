@@ -340,9 +340,9 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         exact_sorting = {
             self.vbox_ui: ("MAKER_THEME",),
             self.vbox_hardware: (
-                "MAKER_PUMP_REVERSION",
-                "MAKER_REVERSION_PIN",
+                "MAKER_PUMP_REVERSION_CONFIG",
                 "MAKER_PINS_INVERTED",
+                "I2C_CONFIG",
             ),
             self.vbox_payment_cocktailberry: (
                 "PAYMENT_SHOW_NOT_POSSIBLE",

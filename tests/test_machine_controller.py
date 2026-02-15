@@ -3,7 +3,7 @@ from unittest.mock import ANY, MagicMock, patch
 import pytest
 
 from src.config.config_manager import CONFIG
-from src.config.config_types import PumpConfig
+from src.config.config_types import PinId, PumpConfig
 from src.machine.controller import MachineController, _build_preparation_data, _PreparationData
 from src.models import Ingredient
 
@@ -64,12 +64,12 @@ class TestController:
 
             # Verify results
             assert len(prep_data) == 2
-            assert prep_data[0].pin == 1
+            assert prep_data[0].pin == PinId("GPIO", 1)
             assert prep_data[0].volume_flow == pytest.approx(10.0)
             assert prep_data[0].flow_time == pytest.approx(10.0)  # 100ml / 10ml/s
             assert prep_data[0].recipe_order == 1
 
-            assert prep_data[1].pin == 2
+            assert prep_data[1].pin == PinId("GPIO", 2)
             assert prep_data[1].volume_flow == pytest.approx(10.0)  # 20.0 * 0.5 (pump_speed 50%)
             assert prep_data[1].flow_time == pytest.approx(20.0)  # 200ml / 10ml/s
             assert prep_data[1].recipe_order == 2
@@ -89,10 +89,10 @@ class TestController:
 
             # Create test data
             prep_data = [
-                _PreparationData(pin=1, volume_flow=10, flow_time=5, recipe_order=1),
-                _PreparationData(pin=2, volume_flow=10, flow_time=5, recipe_order=1),
-                _PreparationData(pin=3, volume_flow=10, flow_time=5, recipe_order=1),
-                _PreparationData(pin=4, volume_flow=10, flow_time=5, recipe_order=2),
+                _PreparationData(pin=PinId("GPIO", 1), volume_flow=10, flow_time=5, recipe_order=1),
+                _PreparationData(pin=PinId("GPIO", 2), volume_flow=10, flow_time=5, recipe_order=1),
+                _PreparationData(pin=PinId("GPIO", 3), volume_flow=10, flow_time=5, recipe_order=1),
+                _PreparationData(pin=PinId("GPIO", 4), volume_flow=10, flow_time=5, recipe_order=2),
             ]
 
             mc = MachineController()
@@ -112,8 +112,8 @@ class TestController:
     def test_process_preparation_section(self):
         # Create test section data
         section = [
-            _PreparationData(pin=1, volume_flow=10, flow_time=5),
-            _PreparationData(pin=2, volume_flow=20, flow_time=3),
+            _PreparationData(pin=PinId("GPIO", 1), volume_flow=10, flow_time=5),
+            _PreparationData(pin=PinId("GPIO", 2), volume_flow=20, flow_time=3),
         ]
 
         mc = MachineController()
@@ -132,13 +132,13 @@ class TestController:
         mc._process_preparation_section(0, 10, section, section_time=4)
         assert section[0].consumption == 40  # 10 ml/s * 4s
         assert section[1].closed
-        mc._stop_pumps.assert_called_once_with([2], ANY)
+        mc._stop_pumps.assert_called_once_with([PinId("GPIO", 2)], ANY)
 
         # Third call: section_time > flow_time for pin=1
         mc._process_preparation_section(0, 10, section, section_time=6)
         assert section[0].closed
         assert mc._stop_pumps.call_count == 2
-        mc._stop_pumps.assert_any_call([1], ANY)
+        mc._stop_pumps.assert_any_call([PinId("GPIO", 1)], ANY)
 
     @patch("time.perf_counter")
     def test_start_preparation(self, mock_time: MagicMock):
@@ -154,8 +154,8 @@ class TestController:
 
         # Create test data with two ingredients with different recipe orders
         prep_data = [
-            _PreparationData(pin=1, volume_flow=10, flow_time=1.0, recipe_order=1),
-            _PreparationData(pin=2, volume_flow=10, flow_time=1.0, recipe_order=2),
+            _PreparationData(pin=PinId("GPIO", 1), volume_flow=10, flow_time=1.0, recipe_order=1),
+            _PreparationData(pin=PinId("GPIO", 2), volume_flow=10, flow_time=1.0, recipe_order=2),
         ]
 
         mc = MachineController()
@@ -173,13 +173,13 @@ class TestController:
 
         # Verify _start_pumps was called for both chunks with correct pins
         assert mc._start_pumps.call_count == 2
-        mc._start_pumps.assert_any_call([1], ANY)  # First ingredient
-        mc._start_pumps.assert_any_call([2], ANY)  # Second ingredient
+        mc._start_pumps.assert_any_call([PinId("GPIO", 1)], ANY)  # First ingredient
+        mc._start_pumps.assert_any_call([PinId("GPIO", 2)], ANY)  # Second ingredient
 
         # Verify _stop_pumps was called for both chunks with correct pins
         assert mc._stop_pumps.call_count == 2
-        mc._stop_pumps.assert_any_call([1], ANY)  # First ingredient
-        mc._stop_pumps.assert_any_call([2], ANY)  # Second ingredient
+        mc._stop_pumps.assert_any_call([PinId("GPIO", 1)], ANY)  # First ingredient
+        mc._stop_pumps.assert_any_call([PinId("GPIO", 2)], ANY)  # Second ingredient
 
         # Verify _process_preparation_section was called multiple times for each chunk
         assert mc._process_preparation_section.call_count >= 2

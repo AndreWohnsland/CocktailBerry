@@ -197,35 +197,35 @@ The recommended way for a "basic" hardware setup is:
 ### Installation Steps
 
 === "NFC Based"
-    **Linux Systems**
 
-    Linux is the most easy way, since most of the things can be done over a script.
-    Just run:
+    Follow the according steps for your OS to set up the payment service and GUI.
 
-    ```bash
-    wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Payment/main/scripts/unix_installer.sh | bash
-    ```
+    === "Linux Systems"
 
-    Then follow the services installation steps below.
+        Linux is the most easy way, since most of the things can be done over a script.
+        Just run:
 
-    **Windows Systems**
+        ```bash
+        wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Payment/main/scripts/unix_installer.sh | bash
+        ```
 
-    Windows can be quite restrictive when it comes to executing scripts and similar tasks.
-    Make sure the user is able to execute PowerShell as well as Python scripts and can install applications.
-    If you want to use docker on windows, make sure you [install it](https://docs.docker.com/desktop/setup/install/windows-install/) and set it to auto start with windows.
+    === "Windows Systems"
 
-    Then just open a PowerShell terminal as Administrator and run the following command to download and execute the installation script:
+        Windows can be quite restrictive when it comes to executing scripts and similar tasks.
+        Make sure the user is able to execute PowerShell as well as Python scripts and can install applications.
+        If you want to use docker on windows, make sure you [install it](https://docs.docker.com/desktop/setup/install/windows-install/) and set it to auto start with windows.
 
-    ```powershell
-    powershell -ExecutionPolicy ByPass -c "irm https://github.com/AndreWohnsland/CocktailBerry-Payment/blob/main/scripts/windows_installer.ps1 | iex"
-    ```
+        Then open a PowerShell terminal as Administrator and run the following command to download and execute the installation script:
 
-    <!-- TODO: LINK -->
-    <!-- Alternatively, there is also a pre-built executable available for the GUI, which you can download from the release page. -->
-    <!-- You might not be able to set all options tough when using this directly, so even when using this, going over this preparation and service installation steps is recommended. -->
+        ```powershell
+        powershell -ExecutionPolicy ByPass -c "irm https://github.com/AndreWohnsland/CocktailBerry-Payment/blob/main/scripts/windows_installer.ps1 | iex"
+        ```
 
-    If [uv](https://docs.astral.sh/uv/getting-started/installation) or [git](https://git-scm.com/install/windows) fails to install, you might need to install them manually first.
-    Then follow the services installation steps below.
+        <!-- TODO: LINK -->
+        <!-- Alternatively, there is also a pre-built executable available for the GUI, which you can download from the release page. -->
+        <!-- You might not be able to set all options tough when using this directly, so even when using this, going over this preparation and service installation steps is recommended. -->
+
+        If [uv](https://docs.astral.sh/uv/getting-started/installation) or [git](https://git-scm.com/install/windows) fails to install, you might need to install them manually first.
 
     **Service installation**
 

@@ -113,7 +113,9 @@ else
     uv pip install lgpio
   fi
   # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
-  if ! is_raspberry_pi; then
+  if is_raspberry_pi; then
+    sudo raspi-config nonint do_i2c 0
+  else
     bash scripts/setup_non_rpi.sh
   fi
 fi

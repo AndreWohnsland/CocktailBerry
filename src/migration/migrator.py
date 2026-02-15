@@ -15,7 +15,7 @@ import shutil
 import subprocess
 import sys
 from collections.abc import Callable
-from typing import Any, TypeVar
+from typing import Any
 
 import yaml
 
@@ -44,7 +44,6 @@ from src.migration.update_data import (
 from src.migration.web_migrator import replace_backend_script
 
 _logger = LoggerHandler("migrator_module")
-T = TypeVar("T")
 
 
 class Migrator:
@@ -206,7 +205,7 @@ class Migrator:
             raise CouldNotMigrateException(version_to_migrate) from err
 
 
-def _update_config_value_type(config_name: str, new_type: Callable[[Any], T], default_value: T) -> None:
+def _update_config_value_type[T](config_name: str, new_type: Callable[[Any], T], default_value: T) -> None:
     """Update the local config file, use the new given type.
 
     Uses the default if fails to convert.
@@ -253,7 +252,7 @@ def _add_maker_lock_value() -> None:
         yaml.dump(configuration, stream, default_flow_style=False)
 
 
-def _get_converted_value(new_type: Callable[[Any], T], default_value: T, local_config: Any) -> T:
+def _get_converted_value[T](new_type: Callable[[Any], T], default_value: T, local_config: Any) -> T:
     try:
         new_value = new_type(local_config)
     except (ValueError, TypeError):

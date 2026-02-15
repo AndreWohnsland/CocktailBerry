@@ -106,7 +106,7 @@ async def update_options(options: dict, background_tasks: BackgroundTasks) -> Ap
 async def clean_machine(background_tasks: BackgroundTasks) -> ApiMessage:
     raise_when_cocktail_is_in_progress()
     _logger.log_header("INFO", "Cleaning the Pumps")
-    revert_pumps = cfg.MAKER_PUMP_REVERSION
+    revert_pumps = cfg.MAKER_PUMP_REVERSION_CONFIG.use_reversion
     mc = MachineController()
     background_tasks.add_task(mc.clean_pumps, None, revert_pumps)
     return ApiMessage(message=DH.get_translation("cleaning_started"))

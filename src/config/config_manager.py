@@ -27,15 +27,17 @@ from src.config.config_types import (
     ConfigInterface,
     DictType,
     FloatType,
+    I2CExpanderConfig,
     IntType,
     ListType,
     NormalLedConfig,
     PumpConfig,
+    ReversionConfig,
     StringType,
     WS281xLedConfig,
 )
 from src.config.errors import ConfigError
-from src.config.validators import build_number_limiter, validate_max_length
+from src.config.validators import build_number_limiter, validate_max_length, valide_no_identical_active_i2c_devices
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.models import CocktailStatus
@@ -81,8 +83,12 @@ class ConfigManager:
     UI_PICTURE_SIZE: int = 240
     UI_ONLY_MAKER_TAB: bool = False
     PUMP_CONFIG: ClassVar[list[PumpConfig]] = [
-        PumpConfig(pin, flow, 0) for pin, flow in zip(_default_pins, _default_volume_flow)
+        PumpConfig(pin, flow, 0, "GPIO") for pin, flow in zip(_default_pins, _default_volume_flow)
     ]
+    # Inverts the pin signal (on is low, off is high)
+    MAKER_PINS_INVERTED: bool = True
+    # MCP23017 I2C GPIO expander configuration (16 pins, address 0x20-0x27)
+    I2C_CONFIG: ClassVar[list[I2CExpanderConfig]] = []
     # Custom name of the Maker
     MAKER_NAME: str = f"CocktailBerry (#{random.randint(0, 1000000):07})"
     # Number of bottles possible at the machine
@@ -95,16 +101,12 @@ class ConfigManager:
     MAKER_CLEAN_TIME: int = 20
     # Base multiplier for alcohol in the recipe
     MAKER_ALCOHOL_FACTOR: int = 100
-    # Option to invert pump direction
-    MAKER_PUMP_REVERSION: bool = False
-    # Pin used for the pump direction
-    MAKER_REVERSION_PIN: int = 0
+    # Reversion for cleaning
+    MAKER_PUMP_REVERSION_CONFIG = ReversionConfig(use_reversion=False, pin=0, pin_type="GPIO", inverted=False)
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES: bool = True
     # If the maker should check if there is enough in the bottle before making a cocktail
     MAKER_CHECK_BOTTLE: bool = True
-    # Inverts the pin signal (on is low, off is high)
-    MAKER_PINS_INVERTED: bool = True
     # Theme Setting to load according qss file
     MAKER_THEME: SupportedThemesType = "default"
     # How many ingredients are allowed to be added by hand to be available cocktail
@@ -175,10 +177,12 @@ class ConfigManager:
             "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": IntType([build_number_limiter(100, 1000)]),
             "UI_ONLY_MAKER_TAB": BoolType(check_name="Only Maker Tab Accessible"),
+            "MAKER_PINS_INVERTED": BoolType(check_name="Inverted"),
             "PUMP_CONFIG": ListType(
                 DictType(
                     {
-                        "pin": IntType([build_number_limiter(0, 1000)], prefix="Pin:"),
+                        "pin_type": ChooseOptions.pin,
+                        "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
                         "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
                     },
@@ -186,17 +190,36 @@ class ConfigManager:
                 ),
                 lambda: self.choose_bottle_number(ignore_limits=True),
             ),
+            "I2C_CONFIG": ListType(
+                DictType(
+                    {
+                        "device_type": ChooseOptions.i2c,
+                        "enabled": BoolType(check_name="Enabled", default=True),
+                        "address_int": IntType(prefix="0x", default=20),
+                        "inverted": BoolType(check_name="Inverted"),
+                    },
+                    I2CExpanderConfig,
+                ),
+                0,
+                [valide_no_identical_active_i2c_devices],
+            ),
             "MAKER_NAME": StringType([validate_max_length]),
             "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, 999)]),
             "MAKER_PREPARE_VOLUME": ListType(IntType([build_number_limiter(25, 1000)], suffix="ml", default=100), 1),
             "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, 999)]),
             "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
             "MAKER_ALCOHOL_FACTOR": IntType([build_number_limiter(10, 200)], suffix="%"),
-            "MAKER_PUMP_REVERSION": BoolType(check_name="Pump can be Reversed"),
-            "MAKER_REVERSION_PIN": IntType([build_number_limiter(0, 1000)]),
+            "MAKER_PUMP_REVERSION_CONFIG": DictType(
+                {
+                    "use_reversion": BoolType(check_name="active", default=False),
+                    "pin": IntType([build_number_limiter(0)], default=0, prefix="Pin:"),
+                    "pin_type": ChooseOptions.pin,
+                    "inverted": BoolType(check_name="Inverted", default=False),
+                },
+                ReversionConfig,
+            ),
             "MAKER_SEARCH_UPDATES": BoolType(check_name="Search for Updates"),
             "MAKER_CHECK_BOTTLE": BoolType(check_name="Check Bottle Volume"),
-            "MAKER_PINS_INVERTED": BoolType(check_name="Inverted"),
             "MAKER_THEME": ChooseOptions.theme,
             "MAKER_MAX_HAND_INGREDIENTS": IntType([build_number_limiter(0, 10)]),
             "MAKER_CHECK_INTERNET": BoolType(check_name="Check Internet"),
@@ -205,7 +228,8 @@ class ConfigManager:
             "LED_NORMAL": ListType(
                 DictType(
                     {
-                        "pin": IntType([build_number_limiter(0, 200)], prefix="Pin:"),
+                        "pin_type": ChooseOptions.pin,
+                        "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                         "default_on": BoolType(check_name="Default On"),
                         "preparation_state": ChooseOptions.leds,
                     },
@@ -216,7 +240,7 @@ class ConfigManager:
             "LED_WSLED": ListType(
                 DictType(
                     {
-                        "pin": IntType([build_number_limiter(0, 200)], prefix="Pin:"),
+                        "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                         "brightness": IntType([build_number_limiter(1, 100)], suffix="%", default=100),
                         "count": IntType([build_number_limiter(1, 500)], suffix="LEDs", default=24),
                         "number_rings": IntType([build_number_limiter(1, 10)], suffix="X", default=1),
@@ -341,6 +365,8 @@ class ConfigManager:
         self._set_config(no_list_or_dict, validate)
         list_or_dict = {k: value for k, value in configuration.items() if isinstance(value, list | dict)}
         self._set_config(list_or_dict, validate)
+        # Cross-config validation for dependencies between configs
+        self._validate_cross_config(validate)
 
     def _set_config(self, configuration: dict, validate: bool) -> None:
         for config_name, config_value in configuration.items():
@@ -358,13 +384,31 @@ class ConfigManager:
                 if validate:
                     raise e
 
-    def _validate_config_type(self, configname: str, configvalue: Any) -> None:
-        """Validate the configvalue if its fit the type / conditions."""
-        config_setting = self.config_type.get(configname)
-        # old or user added configs will not be validated
-        if config_setting is None:
-            return
-        config_setting.validate(configname, configvalue)
+    def _validate_cross_config(self, validate: bool) -> None:
+        """Validate cross-config dependencies.
+
+        Currently implemented:
+        - Checks that I2C pin types used in PUMP_CONFIG have corresponding enabled devices in I2C_CONFIG.
+        """
+        # Collect all I2C pin types used in PUMP_CONFIG (excluding GPIO)
+        required_i2c_types: set[str] = set()
+        for pump in self.PUMP_CONFIG:
+            if pump.pin_type != "GPIO":
+                required_i2c_types.add(pump.pin_type)
+
+        # Get enabled I2C device types from I2C_CONFIG
+        enabled_i2c_types = {cfg.device_type for cfg in self.I2C_CONFIG if cfg.enabled}
+
+        # Check that all required I2C types have enabled devices
+        missing_types = required_i2c_types - enabled_i2c_types
+        if missing_types:
+            error_msg = (
+                f"PUMP_CONFIG uses I2C pin types {', '.join(missing_types)} but I2C_CONFIG "
+                "has no enabled devices of these types. Add enabled entries to I2C_CONFIG."
+            )
+            _logger.error(f"Config Error: {error_msg}")
+            if validate:
+                raise ConfigError(error_msg)
 
     def choose_bottle_number(self, get_all: bool = False, ignore_limits: bool = False) -> int:
         """Select the number of Bottles, limits by max supported count."""

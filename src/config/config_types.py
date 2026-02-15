@@ -9,12 +9,14 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Protocol, Self, TypeVar, get_args
+from typing import Any, Protocol, Self, get_args
 
 from src import (
+    I2CExpanderType,
     SupportedLanguagesType,
     SupportedLedStatesType,
     SupportedPaymentOptions,
+    SupportedPinControlType,
     SupportedRfidType,
     SupportedThemesType,
 )
@@ -25,11 +27,11 @@ SUPPORTED_THEMES = list(get_args(SupportedThemesType))
 SUPPORTED_RFID = list(get_args(SupportedRfidType))
 SUPPORTED_LED_STATES = list(get_args(SupportedLedStatesType))
 SUPPORTED_PAYMENT = list(get_args(SupportedPaymentOptions))
+SUPPORTED_PIN_CONTROL = list(get_args(SupportedPinControlType))
+SUPPORTED_I2C_EXPANDERS = list(get_args(I2CExpanderType))
 
-T = TypeVar("T")
 
-
-class ConfigInterface(Protocol[T]):
+class ConfigInterface[T](Protocol):
     """Interface for config values."""
 
     prefix: str | None = None
@@ -62,7 +64,7 @@ class ConfigInterface(Protocol[T]):
 
 
 @dataclass
-class _ConfigType(ConfigInterface[T]):
+class _ConfigType[T](ConfigInterface[T]):
     """Base class for configuration types holding type validation and iteratively executing validators.
 
     Used internally for reusing the same logic for different types.
@@ -134,6 +136,8 @@ class ChooseOptions:
     theme = ChooseType(allowed=SUPPORTED_THEMES)
     leds = ChooseType(allowed=SUPPORTED_LED_STATES)
     payment = ChooseType(allowed=SUPPORTED_PAYMENT)
+    pin = ChooseType(allowed=SUPPORTED_PIN_CONTROL, default="GPIO")
+    i2c = ChooseType(allowed=SUPPORTED_I2C_EXPANDERS, default="PCF8574")
 
 
 class StringType(_ConfigType[str]):
@@ -203,9 +207,6 @@ class BoolType(_ConfigType[bool]):
         self.check_name = check_name
 
 
-ListItemT = TypeVar("ListItemT")  # Type variable for items in a list
-
-
 class ListType[ListItemT](_ConfigType[list[ListItemT]]):
     """List configuration type."""
 
@@ -244,9 +245,6 @@ class ListType[ListItemT](_ConfigType[list[ListItemT]]):
         return [self.list_type.to_config(item) for item in value]
 
 
-ConfigClassT = TypeVar("ConfigClassT", bound="ConfigClass")
-
-
 class ConfigClass(ABC):
     """Base class for configuration objects.
 
@@ -268,7 +266,7 @@ class ConfigClass(ABC):
         return cls(**config)
 
 
-class DictType(_ConfigType[ConfigClassT]):
+class DictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
     """Dict configuration type.
 
     Generic over the ConfigClass type that it wraps.
@@ -291,6 +289,8 @@ class DictType(_ConfigType[ConfigClassT]):
         super().validate(configname, config_dict)
         for key_name, key_type in self.dict_types.items():
             key_value = config_dict.get(key_name)
+            if key_type.default is not None and key_value is None:
+                key_value = key_type.default
             if key_value is None:
                 raise ConfigError(f"Config value for '{key_name}' is missing in '{configname}'")
             key_text = f"{configname} key {key_name}"
@@ -316,31 +316,139 @@ class DictType(_ConfigType[ConfigClassT]):
 ### -------------------- Specific Config Classes -------------------- ###
 
 
+@dataclass(frozen=True)
+class PinId:
+    """Unique identifier for a pin, combining the pin type and pin number."""
+
+    pin_type: SupportedPinControlType
+    pin: int
+
+    def __str__(self) -> str:
+        return f"{self.pin_type}-{self.pin}"
+
+    def __repr__(self) -> str:
+        return f"{self.pin_type}-{self.pin}"
+
+
 class PumpConfig(ConfigClass):
-    def __init__(self, pin: int, volume_flow: float, tube_volume: int) -> None:
+    pin_type: SupportedPinControlType
+
+    def __init__(
+        self,
+        pin: int,
+        volume_flow: float,
+        tube_volume: int,
+        pin_type: SupportedPinControlType = "GPIO",
+    ) -> None:
+        self.pin_type = pin_type
         self.pin = pin
         self.volume_flow = volume_flow
         self.tube_volume = tube_volume
 
-    def to_config(self) -> dict[str, int | float]:
-        return {"pin": self.pin, "volume_flow": self.volume_flow, "tube_volume": self.tube_volume}
+    @property
+    def pin_id(self) -> PinId:
+        """Build PinId from this config's pin_type and pin."""
+        return PinId(self.pin_type, self.pin)
+
+    def to_config(self) -> dict[str, int | float | SupportedPinControlType]:
+        return {
+            "pin_type": self.pin_type,
+            "pin": self.pin,
+            "volume_flow": self.volume_flow,
+            "tube_volume": self.tube_volume,
+        }
+
+
+class I2CExpanderConfig(ConfigClass):
+    """Base configuration for I2C GPIO expander devices.
+
+    Shared by MCP23017 (16 pins, 0-15), PCF8574 (8 pins, 0-7), and PCA9535 (16 pins, 0-15).
+    Default I2C address is 0x20, configurable to 0x20-0x27.
+    """
+
+    device_type: I2CExpanderType
+
+    def __init__(
+        self,
+        device_type: I2CExpanderType,
+        enabled: bool,
+        address_int: int,
+        inverted: bool,
+    ) -> None:
+        self.device_type = device_type
+        self.enabled = enabled
+        self.address_int = address_int
+        self.inverted = inverted
+
+    @property
+    def address_hex(self) -> int:
+        return int(str(self.address_int), 16)
+
+    def to_config(self) -> dict[str, bool | int | str]:
+        return {
+            "device_type": self.device_type,
+            "enabled": self.enabled,
+            "address_int": self.address_int,
+            "inverted": self.inverted,
+        }
+
+
+class ReversionConfig(ConfigClass):
+    """Configuration for pump reversion."""
+
+    pin_type: SupportedPinControlType
+
+    def __init__(
+        self,
+        use_reversion: bool,
+        pin: int,
+        inverted: bool,
+        pin_type: SupportedPinControlType = "GPIO",
+    ) -> None:
+        self.use_reversion = use_reversion
+        self.pin = pin
+        self.pin_type = pin_type
+        self.inverted = inverted
+
+    @property
+    def pin_id(self) -> PinId:
+        """Build PinId from this config's pin_type and pin."""
+        return PinId(self.pin_type, self.pin)
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "pin_type": self.pin_type,
+            "pin": self.pin,
+            "use_reversion": self.use_reversion,
+            "inverted": self.inverted,
+        }
 
 
 class NormalLedConfig(ConfigClass):
     """Configuration for normal (non-WS281x) LEDs."""
+
+    pin_type: SupportedPinControlType
 
     def __init__(
         self,
         pin: int,
         default_on: bool,
         preparation_state: SupportedLedStatesType,
+        pin_type: SupportedPinControlType = "GPIO",
     ) -> None:
         self.pin = pin
         self.default_on = default_on
         self.preparation_state = preparation_state
+        self.pin_type = pin_type
+
+    @property
+    def pin_id(self) -> PinId:
+        """Build PinId from this config's pin_type and pin."""
+        return PinId(self.pin_type, self.pin)
 
     def to_config(self) -> dict[str, Any]:
         return {
+            "pin_type": self.pin_type,
             "pin": self.pin,
             "default_on": self.default_on,
             "preparation_state": self.preparation_state,
@@ -365,6 +473,11 @@ class WS281xLedConfig(ConfigClass):
         self.number_rings = number_rings
         self.default_on = default_on
         self.preparation_state = preparation_state
+
+    @property
+    def pin_id(self) -> PinId:
+        """Build PinId from this config's pin_type and pin."""
+        return PinId("GPIO", self.pin)
 
     def to_config(self) -> dict[str, Any]:
         return {

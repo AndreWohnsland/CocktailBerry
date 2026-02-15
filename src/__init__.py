@@ -8,5 +8,7 @@ SupportedThemesType = Literal["default", "bavaria", "alien", "berry", "tropical"
 SupportedRfidType = Literal["No", "MFRC522", "USB"]
 SupportedPaymentOptions = Literal["Disabled", "CocktailBerry", "SumUp"]
 SupportedLedStatesType = Literal["Effect", "On", "Off"]
+I2CExpanderType = Literal["MCP23017", "PCF8574", "PCA9535"]
+SupportedPinControlType = Literal["GPIO", "MCP23017", "PCF8574", "PCA9535"]
 NEEDED_PYTHON_VERSION = (3, 11)
 FUTURE_PYTHON_VERSION = (3, 13)

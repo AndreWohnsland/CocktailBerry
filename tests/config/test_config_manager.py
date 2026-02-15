@@ -143,6 +143,103 @@ class TestConfigManagerSetConfig:
                 validate=True,
             )
 
+    def test_set_config_i2c_pump_requires_i2c_config(self) -> None:
+        """Test that using I2C pin type in PUMP_CONFIG requires enabled I2C_CONFIG entry."""
+        config = ConfigManager()
+        # Use MCP23017 pin type without I2C_CONFIG - should fail
+        with pytest.raises(ConfigError):
+            config.set_config(
+                {
+                    "MAKER_NUMBER_BOTTLES": 1,
+                    "PUMP_CONFIG": [{"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017"}],
+                    "I2C_CONFIG": [],
+                },
+                validate=True,
+            )
+
+    def test_set_config_i2c_pump_with_matching_i2c_config_succeeds(self) -> None:
+        """Test that I2C pin type with matching enabled I2C_CONFIG succeeds."""
+        config = ConfigManager()
+        config.set_config(
+            {
+                "MAKER_NUMBER_BOTTLES": 1,
+                "PUMP_CONFIG": [{"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017"}],
+                "I2C_CONFIG": [{"device_type": "MCP23017", "enabled": True, "address_int": 20, "inverted": False}],
+            },
+            validate=True,
+        )
+        assert len(config.PUMP_CONFIG) == 1
+        assert config.PUMP_CONFIG[0].pin_type == "MCP23017"
+
+    def test_set_config_i2c_pump_with_disabled_i2c_config_fails(self) -> None:
+        """Test that I2C pin type fails if matching I2C_CONFIG is disabled."""
+        config = ConfigManager()
+        with pytest.raises(ConfigError):
+            config.set_config(
+                {
+                    "MAKER_NUMBER_BOTTLES": 1,
+                    "PUMP_CONFIG": [{"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "PCA9535"}],
+                    "I2C_CONFIG": [{"device_type": "PCA9535", "enabled": False, "address_int": 20, "inverted": False}],
+                },
+                validate=True,
+            )
+
+    def test_set_config_gpio_pump_does_not_require_i2c_config(self) -> None:
+        """Test that GPIO pin type does not require I2C_CONFIG."""
+        config = ConfigManager()
+        config.set_config(
+            {
+                "MAKER_NUMBER_BOTTLES": 1,
+                "PUMP_CONFIG": [{"pin": 14, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "GPIO"}],
+                "I2C_CONFIG": [],
+            },
+            validate=True,
+        )
+        assert len(config.PUMP_CONFIG) == 1
+        assert config.PUMP_CONFIG[0].pin_type == "GPIO"
+
+    def test_set_config_i2c_config_rejects_duplicate_enabled_device_types(self) -> None:
+        """Test that I2C_CONFIG rejects duplicate enabled device types."""
+        config = ConfigManager()
+        with pytest.raises(ConfigError, match="duplicate enabled device types"):
+            config.set_config(
+                {
+                    "I2C_CONFIG": [
+                        {"device_type": "MCP23017", "enabled": True, "address_int": 20, "inverted": False},
+                        {"device_type": "MCP23017", "enabled": True, "address_int": 21, "inverted": False},
+                    ],
+                },
+                validate=True,
+            )
+
+    def test_set_config_i2c_config_allows_duplicate_disabled_device_types(self) -> None:
+        """Test that I2C_CONFIG allows duplicate disabled device types."""
+        config = ConfigManager()
+        config.set_config(
+            {
+                "I2C_CONFIG": [
+                    {"device_type": "MCP23017", "enabled": True, "address_int": 20, "inverted": False},
+                    {"device_type": "MCP23017", "enabled": False, "address_int": 21, "inverted": False},
+                ],
+            },
+            validate=True,
+        )
+        assert len(config.I2C_CONFIG) == 2
+
+    def test_set_config_i2c_config_allows_different_enabled_device_types(self) -> None:
+        """Test that I2C_CONFIG allows different enabled device types."""
+        config = ConfigManager()
+        config.set_config(
+            {
+                "I2C_CONFIG": [
+                    {"device_type": "MCP23017", "enabled": True, "address_int": 20, "inverted": False},
+                    {"device_type": "PCA9535", "enabled": True, "address_int": 21, "inverted": False},
+                ],
+            },
+            validate=True,
+        )
+        assert len(config.I2C_CONFIG) == 2
+
 
 class TestConfigManagerReadLocalConfig:
     """Tests for ConfigManager.read_local_config() method."""

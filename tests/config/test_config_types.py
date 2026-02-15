@@ -367,12 +367,6 @@ class TestDictType:
         dict_type = DictType({"name": StringType(), "age": IntType()}, PumpConfig)
         dict_type.validate("test_config", {"name": "John", "age": 30})
 
-    def test_validation_fails_for_missing_key(self) -> None:
-        """Test that dictionaries missing required keys fail validation."""
-        dict_type = DictType({"name": StringType(), "age": IntType()}, PumpConfig)
-        with pytest.raises(ConfigError, match="is missing"):
-            dict_type.validate("test_config", {"name": "John"})
-
     def test_validation_fails_for_invalid_value_type(self) -> None:
         """Test that dictionaries with wrong value types fail validation."""
         dict_type = DictType({"name": StringType(), "age": IntType()}, PumpConfig)

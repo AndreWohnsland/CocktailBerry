@@ -22,11 +22,15 @@ dependencies = [
     "mfrc522>=0.0.7 ; sys_platform == 'linux'",
     "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
     "gpiozero>=2.0.1 ; sys_platform == 'linux'",
+    "rpi-gpio>=0.7.1 ; sys_platform == 'linux'",
     "python-periphery>=2.4.1",
     "sqlalchemy>=2.0.40",
     "alembic>=1.14.1",
     "pulp>=3.2.2",
     "stamina>=25.2.0",
+    "adafruit-circuitpython-mcp230xx>=2.5.19",
+    "adafruit-circuitpython-pcf8574>=1.0.15",
+    "adafruit-circuitpython-busdevice>=5.2.15",
 ]
 
 [dependency-groups]

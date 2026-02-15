@@ -64,15 +64,15 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 ??? info "List Hardware Config Values"
     Hardware config values are used to configure and enable the connected hardware.
 
-    | Value Name             | Description                                                                                     |
-    | :--------------------- | :---------------------------------------------------------------------------------------------- |
-    | `PUMP_CONFIG`          | List with config for each pump: pin, volume flow, tube volume to pump up                        |
-    | `LED_NORMAL`           | List of normal (non-addressable) LED configs: pin, default on, prep state                       |
-    | `LED_WSLED`            | List of WS281x (addressable) LED configs: pin, brightness, count, rings, default on, prep state |
-    | `RFID_READER`          | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)               |
-    | `MAKER_PINS_INVERTED`  | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)                     |
-    | `MAKER_PUMP_REVERSION` | Enables reversion (direction) of pump                                                           |
-    | `MAKER_REVERSION_PIN`  | [Pin](#configuring-the-pins-or-used-board) which triggers reversion                             |
+    | Value Name                    | Description                                                                                     |
+    | :---------------------------- | :---------------------------------------------------------------------------------------------- |
+    | `MAKER_PINS_INVERTED`         | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)                     |
+    | `PUMP_CONFIG`                 | List with config for each pump: pin, volume flow, tube volume to pump up                        |
+    | `I2C_CONFIG`                  | Config for I2C GPIO expander (16 pins, 0-15)                                                    |
+    | `LED_NORMAL`                  | List of normal (non-addressable) LED configs: pin, default on, prep state                       |
+    | `LED_WSLED`                   | List of WS281x (addressable) LED configs: pin, brightness, count, rings, default on, prep state |
+    | `RFID_READER`                 | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)               |
+    | `MAKER_PUMP_REVERSION_CONFIG` | Enables reversion (direction) of pump during cleaning                                           |
 
 ??? info "List Software Config Values"
     Software config values are used to configure additional connected software and its behavior.
