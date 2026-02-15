@@ -97,13 +97,13 @@ const exactSorting: { [key: string]: string[] } = {
     'CUSTOM_COLOR_BACKGROUND',
     'CUSTOM_COLOR_DANGER',
   ],
-  HARDWARE: ['MAKER_PUMP_REVERSION', 'MAKER_REVERSION_PIN', 'MAKER_PINS_INVERTED'],
+  HARDWARE: ['MAKER_PUMP_REVERSION_CONFIG', 'MAKER_PINS_INVERTED'],
 };
 
 const tabConfig: { [key: string]: string[] } = {
   UI: ['UI'],
   MAKER: ['MAKER'],
-  HARDWARE: ['PUMP', 'LED', 'RFID'],
+  HARDWARE: ['PUMP', 'LED', 'RFID', 'I2C'],
   SOFTWARE: ['MICROSERVICE', 'TEAM'],
   PAYMENT: ['PAYMENT'],
 };

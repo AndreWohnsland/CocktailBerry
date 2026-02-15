@@ -126,14 +126,14 @@ export interface DefinedConfigData {
   UI_PICTURE_SIZE: number;
   UI_ONLY_MAKER_TAB: boolean;
   PUMP_CONFIG: PumpConfig[];
+  I2C_CONFIG: I2CConfig[];
   MAKER_NAME: string;
   MAKER_NUMBER_BOTTLES: number;
   MAKER_PREPARE_VOLUME: number[];
   MAKER_SIMULTANEOUSLY_PUMPS: number;
   MAKER_CLEAN_TIME: number;
   MAKER_ALCOHOL_FACTOR: number;
-  MAKER_PUMP_REVERSION: boolean;
-  MAKER_REVERSION_PIN: number;
+  MAKER_PUMP_REVERSION_CONFIG: ReversionConfig;
   MAKER_SEARCH_UPDATES: boolean;
   MAKER_CHECK_BOTTLE: boolean;
   MAKER_PINS_INVERTED: boolean;
@@ -188,6 +188,19 @@ export interface CustomColors {
   background: string;
   neutral: string;
   danger: string;
+}
+
+export interface ReversionConfig {
+  use_reversion: boolean;
+  pin: number;
+  pin_type: string;
+  inverted: boolean;
+}
+
+export interface I2CConfig {
+  enabled: boolean;
+  address_int: number;
+  inverted: boolean;
 }
 
 // generic interface for the config data with ui information
