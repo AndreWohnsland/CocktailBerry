@@ -64,6 +64,7 @@ def run_catching[**P, T](
             if isinstance(exc, APIError):
                 reason = str(exc.body)
                 code = exc.status
+            _logger.debug(f"SumUp API error: {reason} (code: {code})")
             return Err(error=_format_sumup_error(reason), code=code)
 
     return wrapper
@@ -240,7 +241,9 @@ class SumupPaymentService:
             if isinstance(status, Err):
                 _logger.error(f"Failed to get status for reader {reader_id}: {status.error} (code: {status.code})")
             else:
-                state = status.data.data.state or "UNKNOWN"
+                reader_state = status.data.data.state
+                _logger.debug(f"Polled status for reader {reader_id}: {reader_state}")
+                state = reader_state or "UNKNOWN"
             if state == "IDLE":
                 break
             if time.time() - start >= timeout_s:
