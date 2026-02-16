@@ -4,7 +4,7 @@ from annotated_types import Len
 from pydantic import BaseModel, Field
 
 from src.config.config_manager import StartupIssue
-from src.models import PrepareResult
+from src.models import Event, PrepareResult
 
 T = TypeVar("T")
 
@@ -97,6 +97,11 @@ class PrepareCocktailRequest(BaseModel):
 class WifiData(BaseModel):
     ssid: str
     password: str
+
+
+class EventsData(BaseModel):
+    events: list[Event]
+    event_keys: list[str]
 
 
 class DataResponse[T](BaseModel):

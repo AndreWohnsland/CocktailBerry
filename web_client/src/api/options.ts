@@ -5,6 +5,7 @@ import type {
   ConfigData,
   ConfigDataWithUiInfo,
   ConsumeData,
+  EventData,
   DefinedConfigData,
   IssueData,
   LogData,
@@ -101,6 +102,14 @@ export const getLogs = async (): Promise<LogData> => {
 
 export const useLogs = (): UseQueryResult<LogData, Error> => {
   return useQuery<LogData, Error>('logs', getLogs);
+};
+
+export const getEvents = async (): Promise<EventData> => {
+  return axiosInstance.get<EventData>(`${optionsUrl}/events`).then((res) => res.data);
+};
+
+export const useEvents = (): UseQueryResult<EventData, Error> => {
+  return useQuery<EventData, Error>('events', getEvents);
 };
 
 export const getConsumeData = async (): Promise<ConsumeData> => {

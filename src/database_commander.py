@@ -17,6 +17,7 @@ from src.db_models import (
     DbBottle,
     DbCocktailExport,
     DbCocktailIngredient,
+    DbEvent,
     DbIngredient,
     DbIngredientExport,
     DbNews,
@@ -27,7 +28,7 @@ from src.db_models import (
 from src.dialog_handler import DialogHandler
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, HOME_PATH
 from src.logger_handler import LoggerHandler
-from src.models import Cocktail, ConsumeData, Ingredient, ResourceInfo, ResourceStats
+from src.models import Cocktail, ConsumeData, Event, EventType, Ingredient, ResourceInfo, ResourceStats
 
 if TYPE_CHECKING:
     from src.dialog_handler import allowed_keys
@@ -899,6 +900,48 @@ class DatabaseCommander:
                 raise ElementNotFoundError(news_key)
             news.seen = True
             session.commit()
+
+    def save_event(
+        self,
+        event_type: EventType,
+        additional_info: str | None = None,
+    ) -> None:
+        """Save a system event to the database."""
+        with self.session_scope() as session:
+            event = DbEvent(
+                event_type=event_type.value,
+                additional_info=additional_info,
+            )
+            session.add(event)
+            session.commit()
+
+    def get_events(
+        self,
+        event_types: list[EventType] | None = None,
+        start_date: datetime.datetime | None = None,
+        end_date: datetime.datetime | None = None,
+    ) -> list[Event]:
+        """Get events from the database with optional filtering."""
+        with self.session_scope() as session:
+            query = session.query(DbEvent)
+            if event_types:
+                type_values = [et.value for et in event_types]
+                query = query.filter(DbEvent.event_type.in_(type_values))
+            if start_date:
+                query = query.filter(DbEvent.timestamp >= start_date)
+            if end_date:
+                query = query.filter(DbEvent.timestamp <= end_date)
+            query = query.order_by(DbEvent.timestamp.desc())
+            db_events = query.all()
+            return [
+                Event(
+                    id=e.id,
+                    event_type=EventType.from_stored_value(e.event_type),
+                    timestamp=e.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                    additional_info=e.additional_info,
+                )
+                for e in db_events
+            ]
 
 
 DB_COMMANDER = DatabaseCommander()

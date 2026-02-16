@@ -98,6 +98,19 @@ export interface LogData {
   data: { [key: string]: string[] };
 }
 
+export interface EventEntry {
+  timestamp: string;
+  event_type: string;
+  additional_info: string | null;
+}
+
+export interface EventData {
+  data: {
+    events: EventEntry[];
+    event_keys: string[];
+  };
+}
+
 export interface SumupReader {
   id: string;
   name: string;

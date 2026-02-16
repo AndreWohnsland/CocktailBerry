@@ -16,6 +16,7 @@ import distro
 
 from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, LOG_FOLDER, ROOT_PATH, STYLE_FOLDER
 from src.logger_handler import LoggerHandler
+from src.models import EventType
 
 EXECUTABLE_V1 = ROOT_PATH / "runme.py"
 EXECUTABLE_V2 = ROOT_PATH / "api.py"
@@ -179,6 +180,10 @@ def update_os() -> None:
     try:
         subprocess.run(command, shell=True, check=True)
         _logger.info("System updated successfully.")
+        # Import here to avoid circular import
+        from src.database_commander import DatabaseCommander
+
+        DatabaseCommander().save_event(EventType.OS_UPDATE)
     except subprocess.CalledProcessError as e:
         _logger.error("Could not update system, see debug log for more information.")
         _logger.log_exception(e)

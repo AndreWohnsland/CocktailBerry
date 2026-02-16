@@ -23,6 +23,7 @@ from src.api.models import (
     ApiMessage,
     DataResponse,
     DateTimeInput,
+    EventsData,
     IssueData,
     PasswordInput,
     SumupReaderCreate,
@@ -37,7 +38,7 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
-from src.models import AddonData, ConsumeData, ResourceInfo, ResourceStats
+from src.models import AddonData, ConsumeData, EventType, ResourceInfo, ResourceStats
 from src.programs.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
 from src.service.sumup_payment_service import Err
@@ -116,6 +117,7 @@ async def clean_machine(background_tasks: BackgroundTasks) -> ApiMessage:
 async def reboot_system() -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot reboot on Windows")
+    DatabaseCommander().save_event(EventType.REBOOT)
     atexit._run_exitfuncs()  # pylint: disable=protected-access
     os.system("sudo reboot")
     return ApiMessage(message="System rebooting")
@@ -125,6 +127,7 @@ async def reboot_system() -> ApiMessage:
 async def shutdown_system() -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot shutdown on Windows")
+    DatabaseCommander().save_event(EventType.SHUTDOWN)
     atexit._run_exitfuncs()  # pylint: disable=protected-access
     os.system("sudo shutdown now")
     return ApiMessage(message="System shutting down")
@@ -237,6 +240,16 @@ async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, l
     for _file in get_log_files():
         log_data[_file] = read_log_file(_file, warning_and_higher)
     return DataResponse(data=log_data)
+
+
+@protected_router.get("/events", summary="Get system events")
+async def get_events() -> DataResponse[EventsData]:
+    return DataResponse(
+        data=EventsData(
+            events=DatabaseCommander().get_events(),
+            event_keys=[event_type.value for event_type in EventType],
+        )
+    )
 
 
 @protected_router.post("/rfid/scan", summary="Scan RFID card")

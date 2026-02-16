@@ -42,6 +42,7 @@ if TYPE_CHECKING:
         Ui_CustomPrompt,
         Ui_DataWindow,
         Ui_Datepicker,
+        Ui_EventWindow,
         Ui_LogWindow,
         Ui_MainWindow,
         Ui_NewsWindow,
@@ -826,17 +827,24 @@ class UiLanguage:
         window = "option_window"
         for ui_element, text_name in [
             (w.button_clean, "cleaning"),
-            (w.button_config, "config"),
             (w.button_calibration, "calibration"),
-            (w.button_reboot, "reboot"),
-            (w.button_shutdown, "shutdown"),
-            (w.button_back, "back"),
+            (w.button_config, "config"),
+            (w.button_export, "data"),
             (w.button_backup, "backup"),
             (w.button_restore, "restore"),
-            (w.button_export, "data"),
-            (w.button_rfid, "rfid"),
+            (w.button_reboot, "reboot"),
+            (w.button_shutdown, "shutdown"),
+            (w.button_logs, "logs"),
+            (w.button_update_system, "update_system"),
+            (w.button_events, "events"),
+            (w.button_wifi, "wifi"),
             (w.button_check_internet, "check_internet"),
+            (w.button_addons, "addons"),
+            (w.button_rfid, "rfid"),
+            (w.button_news, "news"),
+            (w.button_sumup, "sumup"),
             (w.button_about, "about"),
+            (w.button_back, "back"),
         ]:
             ui_element.setText(self._choose_language(text_name, window))
 
@@ -987,6 +995,10 @@ class UiLanguage:
         window = "calibration_window"
         w.label_measured.setText(self._choose_language("measured_amount", window))
         w.button_apply.setText(self._choose_language("apply"))
+
+    def adjust_event_window(self, w: Ui_EventWindow) -> None:
+        """Translate the elements from the event window."""
+        w.button_back.setText(self._choose_language("back"))
 
 
 UI_LANGUAGE = UiLanguage()

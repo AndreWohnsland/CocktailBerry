@@ -223,3 +223,23 @@ class DbNews(Base):
     def __init__(self, key: str, seen: bool = False) -> None:
         self.key = key
         self.seen = seen
+
+
+class DbEvent(Base):
+    __tablename__ = "Events"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
+    event_type: Mapped[str] = mapped_column(nullable=False, name="Event_Type", index=True)
+    timestamp: Mapped[datetime.datetime] = mapped_column(
+        nullable=False, name="Timestamp", default=datetime.datetime.now
+    )
+    additional_info: Mapped[str | None] = mapped_column(nullable=True, name="Additional_Info")
+
+    def __init__(
+        self,
+        event_type: str,
+        timestamp: datetime.datetime | None = None,
+        additional_info: str | None = None,
+    ) -> None:
+        self.event_type = event_type
+        self.timestamp = timestamp or datetime.datetime.now()
+        self.additional_info = additional_info
