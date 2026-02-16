@@ -11,6 +11,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab
 from src.config.config_manager import shared as global_shared
 from src.display_controller import DP_CONTROLLER
+from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
 from src.service.booking import CocktailBooking
 from src.service.nfc_payment_service import NFCPaymentService, UserLookup
@@ -21,6 +22,8 @@ from src.ui.qt_worker import run_with_spinner
 if TYPE_CHECKING:
     from src.ui.setup_custom_dialog import CustomDialog
     from src.ui.setup_mainwindow import MainScreen
+
+_logger = LoggerHandler("QtPrepareFlow")
 
 
 def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
@@ -108,6 +111,7 @@ def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:
     )
 
     if isinstance(checkout_result, Err):
+        _logger.error(f"Failed to trigger checkout: {checkout_result.error}")
         return CocktailBooking.sumup_checkout_failed()
 
     client_transaction_id = checkout_result.data
@@ -156,6 +160,7 @@ def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:
     transaction_result = sumup_service.get_transaction(client_transaction_id)
     _close_dialog_safe(dialog)
     if isinstance(transaction_result, Err):
+        _logger.error(f"Error fetching transaction result: {transaction_result.error}")
         return CocktailBooking.sumup_checkout_failed()
 
     if transaction_result.data.status != "SUCCESSFUL":
