@@ -310,8 +310,8 @@ dialog:
     en: 'No SumUp terminal configured. Please set up the terminal in settings.'
     de: 'Kein SumUp Terminal konfiguriert. Bitte Terminal in den Einstellungen einrichten.'
   sumup_checkout_failed:
-    en: 'Failed to initiate checkout or there were intermittent connection issues. Please check the terminal connection.'
-    de: 'Checkout konnte nicht gestartet werden oder es gab zwischendurch Verbindungsprobleme. Bitte Terminal-Verbindung prüfen.'
+    en: 'Failed to initiate checkout or there were intermittent connection issues. Please check the terminal connection, it might be offline.'
+    de: 'Checkout konnte nicht gestartet werden oder es gab zwischendurch Verbindungsprobleme. Bitte Terminal-Verbindung prüfen, es könnte offline sein.'
   pumpt_volume_flow_adjusted:
     en: 'Pump {pump_number} volume flow adjusted to {new_flow} ml/s.'
     de: 'Pumpen {pump_number} Volumenstrom auf {new_flow} ml/s angepasst.'
@@ -547,33 +547,54 @@ ui:
     calibration:
       en: 'Calibration'
       de: 'Kalibrierung'
-    reboot:
-      en: 'Reboot'
-      de: 'Reboot'
-    shutdown:
-      en: 'Shutdown'
-      de: 'Shutdown'
-    back:
-      en: '< Back'
-      de: '< Zurück'
+    data:
+      en: 'Data'
+      de: 'Daten'
     backup:
       en: 'Backup'
       de: 'Backup'
     restore:
       en: 'Restore'
       de: 'Wiederherstellen'
+    reboot:
+      en: 'Reboot'
+      de: 'Neustart'
+    shutdown:
+      en: 'Shutdown'
+      de: 'Herunterfahren'
+    logs:
+      en: 'Logs'
+      de: 'Logs'
+    update_system:
+      en: 'System Update'
+      de: 'System Update'
+    events:
+      en: 'Events'
+      de: 'Ereignisse'
+    wifi:
+      en: 'WiFi Setup'
+      de: 'WiFi Einrichtung'
+    addons:
+      en: 'Addons'
+      de: 'Addons'
     rfid:
       en: 'Write RFID'
       de: 'RFID Schreiben'
     check_internet:
       en: 'Internet Check'
       de: 'Internet Check'
-    data:
-      en: 'Data'
-      de: 'Daten'
+    news:
+      en: 'News'
+      de: 'Neuigkeiten'
+    sumup:
+      en: 'SumUp Set Up'
+      de: 'SumUp Einrichtung'
     about:
       en: 'About CocktailBerry'
       de: 'Info CocktailBerry'
+    back:
+      en: '< Back'
+      de: '< Zurück'
 
   ##### DATE PICKER WINDOW #####
   # all values for date picker window

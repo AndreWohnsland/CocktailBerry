@@ -5,7 +5,7 @@ import { BsBootstrapReboot, BsInfoCircleFill } from 'react-icons/bs';
 import { FaCocktail, FaCreditCard, FaExclamationTriangle, FaInfoCircle, FaNewspaper, FaRegClock } from 'react-icons/fa';
 import { FaCalculator, FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
 import { GrUpdate } from 'react-icons/gr';
-import { MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
+import { MdEventNote, MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
 import { RiShutDownLine } from 'react-icons/ri';
 import { TiDocumentAdd } from 'react-icons/ti';
 import { useNavigate } from 'react-router-dom';
@@ -154,17 +154,17 @@ const OptionWindow = () => {
           />
           <TileButton label={t('options.logs')} icon={FaInfoCircle} onClick={() => navigate('logs')} />
           <TileButton
+            label={t('options.systemResourceUsage')}
+            icon={AiOutlineLoading3Quarters}
+            iconSize={22}
+            onClick={() => navigate('resources')}
+          />
+          <TileButton label={t('options.events')} icon={MdEventNote} iconSize={24} onClick={() => navigate('events')} />
+          <TileButton
             label={t('options.updateSystem')}
             filled
             icon={GrUpdate}
             onClick={() => confirmAndExecute(t('options.updateTheSystem'), updateSystem)}
-          />
-          <TileButton
-            label={t('options.systemResourceUsage')}
-            icon={AiOutlineLoading3Quarters}
-            iconSize={22}
-            className='md:col-span-2'
-            onClick={() => navigate('resources')}
           />
           <TileButton
             label={t('options.updateCocktailBerry')}

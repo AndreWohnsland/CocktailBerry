@@ -5,7 +5,7 @@
 set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 
 # Global variables
-qt_ui_files := "available bonusingredient bottlewindow cocktailmanager calibration calibration_real calibration_target customdialog datepicker keyboard optionwindow numpad progressbarwindow teamselection passworddialog customprompt logwindow rfidwriter wifiwindow customcolor addonwindow addonmanager datawindow cocktail_selection picture_window refill_prompt config_window resource_window news_window sumup_reader_window"
+qt_ui_files := "available bonusingredient bottlewindow cocktailmanager calibration calibration_real calibration_target customdialog datepicker keyboard optionwindow numpad progressbarwindow teamselection passworddialog customprompt logwindow rfidwriter wifiwindow customcolor addonwindow addonmanager datawindow cocktail_selection picture_window refill_prompt config_window resource_window news_window sumup_reader_window event_window"
 
 # Install all Python dependencies (main + dev)
 [group('Python Environment & Dependencies')]

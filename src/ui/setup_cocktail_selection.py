@@ -152,7 +152,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def _apply_virgin_setting(self) -> None:
         # hide the strong/weak buttons, since they are not needed
-        show_alcohol_buttons = not self.cocktail.only_virgin and cfg.payment_enabled
+        show_alcohol_buttons = not self.cocktail.only_virgin and not cfg.payment_enabled
         self.increase_alcohol.setVisible(show_alcohol_buttons)
         self.decrease_alcohol.setVisible(show_alcohol_buttons)
         can_change_virgin = self.cocktail.virgin_available and not self.cocktail.only_virgin

@@ -8,10 +8,12 @@ from requests import Response
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import shared
+from src.database_commander import DatabaseCommander
 from src.filepath import ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.migration.migrator import Migrator
 from src.migration.version import Version
+from src.models import EventType
 from src.utils import restart_v1, restart_v2
 
 _logger = LoggerHandler("updater_module")
@@ -56,6 +58,8 @@ class Updater:
             )
             _logger.log_exception(err)
             return False
+        # Save the software update event
+        DatabaseCommander().save_event(EventType.SOFTWARE_UPDATE, latest_tag.name)
         # restart the program, this will not work if executed over IDE
         _logger.info("Restarting the application!")
         _logger.log_event("INFO", "Restarting program to reload updated code")

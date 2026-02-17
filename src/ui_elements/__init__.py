@@ -24,6 +24,7 @@ from .cocktail_selection import Ui_CocktailSelection
 from .config_window import Ui_ConfigWindow
 from .customcolor import Ui_ColorWindow
 from .datawindow import Ui_DataWindow
+from .event_window import Ui_EventWindow
 from .news_window import Ui_NewsWindow
 from .picture_window import Ui_PictureWindow
 from .refill_prompt import Ui_RefillPrompt
@@ -46,6 +47,7 @@ __all__ = [
     "Ui_CustomPrompt",
     "Ui_DataWindow",
     "Ui_Datepicker",
+    "Ui_EventWindow",
     "Ui_Keyboard",
     "Ui_LogWindow",
     "Ui_MainWindow",

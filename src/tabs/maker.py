@@ -13,7 +13,7 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
-from src.models import Cocktail, CocktailStatus, Ingredient, PrepareResult
+from src.models import Cocktail, CocktailStatus, EventType, Ingredient, PrepareResult
 from src.programs.addons import ADDONS
 from src.service_handler import SERVICE_HANDLER
 
@@ -89,12 +89,14 @@ def prepare_cocktail(
         consumption_names = [x.name for x in cocktail.machineadds]
         consumption_amount = consumption
         DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
+        DBC.save_event(EventType.COCKTAIL_CANCELED, f"{display_name}")
         return PrepareResult.CANCELED, canceled_message
 
     shared.cocktail_status.status = PrepareResult.FINISHED
     consumption_names = [x.name for x in cocktail.adjusted_ingredients]
     consumption_amount = [x.amount for x in cocktail.adjusted_ingredients]
     DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
+    DBC.save_event(EventType.COCKTAIL_PREPARATION, f"{display_name}")
 
     return PrepareResult.FINISHED, add_message
 

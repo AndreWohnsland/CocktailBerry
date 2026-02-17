@@ -15,10 +15,11 @@ with contextlib.suppress(ModuleNotFoundError):
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.config.config_types import PinId
+from src.database_commander import DatabaseCommander
 from src.machine.leds import LedController
 from src.machine.pin_controller import PinController
 from src.machine.reverter import Reverter
-from src.models import CocktailStatus, Ingredient, PrepareResult
+from src.models import CocktailStatus, EventType, Ingredient, PrepareResult
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -77,6 +78,7 @@ class MachineController:
         if w is not None:
             w.close_progression_window()
         shared.cocktail_status.status = PrepareResult.FINISHED
+        DatabaseCommander().save_event(EventType.CLEANING)
 
     def make_cocktail(
         self,
@@ -211,7 +213,7 @@ class MachineController:
 
     def _start_pumps(self, pin_list: list[PinId], print_prefix: str = "") -> None:
         """Informs and opens all given pins."""
-        _logger.debug(f"{print_prefix}<o> Opening Pins: {pin_list}")
+        _logger.info(f"{print_prefix}<o> Opening Pins: {pin_list}")
         self.pin_controller.activate_pin_list(pin_list)
 
     def close_all_pumps(self) -> None:

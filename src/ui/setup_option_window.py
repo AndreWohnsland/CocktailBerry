@@ -9,17 +9,20 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QMainWindow
 
 from src.config.config_manager import CONFIG as cfg
+from src.database_commander import DatabaseCommander
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, NEEDED_BACKUP_FILES
+from src.models import EventType
 from src.programs.calibration import CalibrationScreen
 from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
 from src.ui.qt_worker import CallableWorker, run_with_spinner
 from src.ui.setup_addon_window import AddonWindow
 from src.ui.setup_data_window import DataWindow
+from src.ui.setup_event_window import EventWindow
 from src.ui.setup_log_window import LogWindow
 from src.ui.setup_news_window import NewsWindow
 from src.ui.setup_resource_window import ResourceWindow
@@ -66,6 +69,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_about.clicked.connect(DP_CONTROLLER.say_welcome_message)
         self.button_news.clicked.connect(self._open_news_window)
         self.button_sumup.clicked.connect(self._open_sumup_window)
+        self.button_events.clicked.connect(self._open_event_window)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
         self.button_sumup.setEnabled(cfg.sumup_payment)
@@ -80,6 +84,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.resource_window: ResourceWindow | None = None
         self.calibration_screen: CalibrationScreen | None = None
         self.sumup_window: SumupWindow | None = None
+        self.event_window: EventWindow | None = None
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
@@ -107,6 +112,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         if self._is_windows("reboot"):
             return
+        DatabaseCommander().save_event(EventType.REBOOT)
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo reboot")
         self.close()
@@ -117,6 +123,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         if self._is_windows("shutdown"):
             return
+        DatabaseCommander().save_event(EventType.SHUTDOWN)
         atexit._run_exitfuncs()  # pylint: disable=protected-access
         os.system("sudo shutdown now")
         self.close()
@@ -197,6 +204,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _open_sumup_window(self) -> None:
         """Open the SumUp configuration window."""
         self.sumup_window = SumupWindow(self.mainscreen)
+
+    def _open_event_window(self) -> None:
+        """Open the events window."""
+        self.event_window = EventWindow()
 
     def _check_internet_connection(self) -> None:
         """Check if there is a active internet connection."""

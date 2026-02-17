@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { useLogs } from '../../api/options';
+import DropDown from '../common/DropDown';
 import ErrorComponent from '../common/ErrorComponent';
 import { JumpToTopButton } from '../common/JumpToTopButton';
 import LoadingData from '../common/LoadingData';
@@ -9,8 +10,8 @@ const LogWindow: React.FC = () => {
   const { data, isLoading, error } = useLogs();
   const [selectedLogType, setSelectedLogType] = useState<string>('INFO');
 
-  const handleLogTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLogType(event.target.value);
+  const handleLogTypeChange = (value: string) => {
+    setSelectedLogType(value);
   };
 
   useEffect(() => {
@@ -45,17 +46,15 @@ const LogWindow: React.FC = () => {
 
   return (
     <div className='flex flex-col w-full max-w-7xl'>
-      <div className='flex flex-col items-center justify-center flex-shrink-0'>
+      <div className='flex flex-col items-center justify-center flex-shrink-0 mb-2'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
           <p className='text-2xl font-bold text-secondary mr-4'>Logs:</p>
-          <select value={selectedLogType} onChange={handleLogTypeChange} className='mt-2 p-2 select-base'>
-            {logData &&
-              Object.keys(logData).map((logType) => (
-                <option key={logType} value={logType}>
-                  {logType}
-                </option>
-              ))}
-          </select>
+          <DropDown
+            value={selectedLogType}
+            allowedValues={logData ? Object.keys(logData) : []}
+            handleInputChange={handleLogTypeChange}
+            className='mt-2 p-2'
+          />
         </div>
       </div>
       <div className='flex-grow p-2'>

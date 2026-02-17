@@ -201,7 +201,7 @@ class CocktailView(QWidget):
                 block = generate_image_block(cocktails[i + j], self.mainscreen)
                 self.grid.addLayout(block, i // n_columns, j)
         # Optionally add the single ingredient block after all cocktails
-        if cfg.MAKER_ADD_SINGLE_INGREDIENT and not cfg.cocktailberry_payment:
+        if cfg.MAKER_ADD_SINGLE_INGREDIENT and not cfg.payment_enabled:
             total = len(cocktails)
             row = total // n_columns
             col = total % n_columns

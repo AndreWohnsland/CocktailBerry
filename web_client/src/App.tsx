@@ -16,6 +16,7 @@ import AddonManager from './components/options/AddonManager.tsx';
 import CalibrationWindow from './components/options/CalibrationWindow.tsx';
 import ConfigWindow from './components/options/ConfigWindow.tsx';
 import DataWindow from './components/options/DataWindow.tsx';
+import EventWindow from './components/options/EventWindow.tsx';
 import LogWindow from './components/options/LogWindow.tsx';
 import NewsWindow from './components/options/NewsWindow.tsx';
 import OptionWindow from './components/options/OptionWindow.tsx';
@@ -130,6 +131,14 @@ function App() {
               element={
                 <MasterPasswordProtected>
                   <DataWindow />
+                </MasterPasswordProtected>
+              }
+            />
+            <Route
+              path='options/events'
+              element={
+                <MasterPasswordProtected>
+                  <EventWindow />
                 </MasterPasswordProtected>
               }
             />

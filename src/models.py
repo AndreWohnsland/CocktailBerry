@@ -1,7 +1,7 @@
 import copy
 import math
 from dataclasses import field
-from enum import Enum
+from enum import Enum, StrEnum
 
 from pydantic import computed_field
 from pydantic.dataclasses import dataclass as pydantic_dataclass
@@ -22,6 +22,33 @@ class PrepareResult(Enum):
     NOT_ENOUGH_INGREDIENTS = "NOT_ENOUGH_INGREDIENTS"
     ADDON_ERROR = "ADDON_ERROR"
     WAITING_FOR_PAYMENT = "WAITING_FOR_PAYMENT"
+
+
+class EventType(StrEnum):
+    """Types of events that can be tracked in the system."""
+
+    CLEANING = "CLEANING"
+    COCKTAIL_PREPARATION = "COCKTAIL_PREPARATION"
+    COCKTAIL_CANCELED = "COCKTAIL_CANCELED"
+    SHUTDOWN = "SHUTDOWN"
+    REBOOT = "REBOOT"
+    SOFTWARE_UPDATE = "SOFTWARE_UPDATE"
+    OS_UPDATE = "OS_UPDATE"
+    UNKNOWN = "UNKNOWN"
+
+    @classmethod
+    def from_stored_value(cls, value: str) -> "EventType":
+        """Resolve persisted event values, including renamed/removed legacy entries."""
+        normalized = EVENT_TYPE_LEGACY_ALIASES.get(value, value)
+        try:
+            return cls(normalized)
+        except ValueError:
+            return cls.UNKNOWN
+
+
+EVENT_TYPE_LEGACY_ALIASES: dict[str, str] = {
+    "COCKTAIL_CANCELLATION": EventType.COCKTAIL_CANCELED.value,
+}
 
 
 @pydantic_dataclass
@@ -269,3 +296,17 @@ class ResourceStats:
 class ResourceInfo:
     session_id: int
     start_time: str
+
+
+@pydantic_dataclass
+class Event:
+    """Class representing a tracked system event."""
+
+    id: int
+    event_type: EventType
+    timestamp: str
+    additional_info: str | None = None
+
+    def __str__(self) -> str:
+        additional_info = f" | {self.additional_info}" if self.additional_info else ""
+        return f"{self.timestamp} | {self.event_type.value}{additional_info}"
