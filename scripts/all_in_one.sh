@@ -30,6 +30,22 @@ else
   echo "> You are installing the v1 (Qt) version of CocktailBerry"
 fi
 
+# Ask for the language setting early so we can configure the database and config later
+SUPPORTED_LANGUAGES=("en" "de")
+LANG_OPTIONS=$(IFS=', '; echo "${SUPPORTED_LANGUAGES[*]}")
+echo ""
+while true; do
+  echo -n ">> Enter your display language ($LANG_OPTIONS) [en]: "
+  read -r CB_LANGUAGE
+  CB_LANGUAGE=${CB_LANGUAGE:-en}
+  # shellcheck disable=SC2076
+  if [[ " ${SUPPORTED_LANGUAGES[*]} " =~ " $CB_LANGUAGE " ]]; then
+    break
+  fi
+  echo "> Invalid language '$CB_LANGUAGE', please enter one of: $LANG_OPTIONS"
+done
+echo "> Language set to: $CB_LANGUAGE"
+
 # It otherwise might be that the blue window blocks everything and user needs to cancel it
 echo "~~ Setting needrestart to auto-restart services (at /etc/needrestart/needrestart.conf) ~~"
 sudo sed -i -E 's|^[# ]*\$nrconf\{restart\}\s*=.*|\$nrconf{restart} = "a";|' /etc/needrestart/needrestart.conf || echo "> Could not set needrestart to auto-restart services, but continuing ..."
@@ -143,6 +159,14 @@ if [[ "$DEV_FLAG" = true ]]; then
   echo "~~ [INFO] DEV flag is set, checking out the dev branch ~~"
   git checkout dev
 fi
+
+# Copy the language-specific default database to the working database
+echo "~~ Setting up database for language: $CB_LANGUAGE ~~"
+cp ~/CocktailBerry/cocktail_data_"$CB_LANGUAGE".db ~/CocktailBerry/Cocktail_database.db || echo "> WARNING: Could not copy default database"
+
+# Create a custom config with the selected language
+echo "~~ Creating custom config with language setting ~~"
+echo "UI_LANGUAGE: $CB_LANGUAGE" > ~/CocktailBerry/custom_config.yaml
 
 # Do Docker related steps
 echo "~~ Setting things up for Docker and Compose ~~"
