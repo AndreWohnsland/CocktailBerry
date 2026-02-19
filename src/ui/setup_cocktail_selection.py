@@ -6,13 +6,12 @@ from PyQt6.QtGui import QFont, QPixmap
 from PyQt6.QtWidgets import QDialog, QLabel, QPushButton, QSizePolicy
 
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.image_utils import find_cocktail_image
 from src.models import Cocktail, Ingredient
-from src.ui.creation_utils import LARGE_FONT, create_button, create_label, set_strike_through, set_underline
+from src.ui.creation_utils import LARGE_FONT, create_button, create_label, set_underline
 from src.ui.icons import IconSetter
 from src.ui.shared import qt_prepare_flow
 from src.ui_elements import Ui_CocktailSelection
@@ -44,10 +43,27 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
         UI_LANGUAGE.adjust_cocktail_selection_screen(self)
         self.clear_recipe_data_maker()
-        # Also resets the alcohol factor
-        self.reset_alcohol_factor()
         DP_CONTROLLER.set_display_settings(self, False)
         self._connect_elements()
+
+    @property
+    def can_change_virgin(self) -> bool:
+        """Return if the cocktail can have a virgin option."""
+        return self.cocktail.virgin_available and not self.cocktail.only_virgin
+
+    @property
+    def alcohol_factor(self) -> float:
+        if self.virgin_toggle.isChecked():
+            return 0.0
+        if self.increase_alcohol.isChecked():
+            return 1.3
+        if self.decrease_alcohol.isChecked():
+            return 0.7
+        return 1.0
+
+    @property
+    def is_virgin(self) -> bool:
+        return self.virgin_toggle.isChecked()
 
     def _set_image(self) -> None:
         """Set the image of the cocktail."""
@@ -60,10 +76,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.button_back.clicked.connect(self.mainscreen.switch_to_cocktail_list)
         self.increase_alcohol.clicked.connect(self._higher_alcohol)
         self.decrease_alcohol.clicked.connect(self._lower_alcohol)
-        if cfg.payment_enabled:
-            self.decrease_alcohol.hide()
-            self.increase_alcohol.hide()
-        self.virgin_checkbox.stateChanged.connect(self.update_cocktail_data)
+        self.virgin_toggle.clicked.connect(self._toggle_virgin)
+        self._apply_button_visibility()
         self.adjust_maker_label_size_cocktaildata()
 
     def set_cocktail(self, cocktail: Cocktail) -> None:
@@ -98,11 +112,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # overwrite the amount if the cocktail has a fixed volume
         if cfg.MAKER_USE_RECIPE_VOLUME:
             amount = self.cocktail.amount
-        factor = shared.alcohol_factor * (cfg.MAKER_ALCOHOL_FACTOR / 100)  # remember this is percent
-        is_virgin = self.virgin_checkbox.isChecked()
-        if is_virgin:
-            factor = 0
-        self.cocktail.scale_cocktail(amount, factor)
+        self.cocktail.scale_cocktail(amount, self.alcohol_factor * (cfg.MAKER_ALCOHOL_FACTOR / 100))
 
     def update_cocktail_data(self) -> None:
         """Update the cocktail data in the selection view."""
@@ -112,14 +122,15 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.prepare_button.setText(
             UI_LANGUAGE.get_translation("prepare_button", "cocktail_selection", amount=amount, unit=cfg.EXP_MAKER_UNIT)
         )
-        virgin_prefix = "Virgin " if self.cocktail.is_virgin else ""
+        virgin_prefix = "Virgin " if self.is_virgin else ""
         self.LAlkoholname.setText(f"{virgin_prefix}{self.cocktail.name}")
         display_volume = self._decide_rounding(amount * cfg.EXP_MAKER_FACTOR, 20)
         self.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")
         self.LAlkoholgehalt.setText(f"{self.cocktail.adjusted_alcohol:.1f}%")
         display_data = self.cocktail.machineadds
         hand = self.cocktail.handadds
-        self._apply_virgin_setting()
+        self._apply_button_visibility()
+        self._update_volume_button_labels()
         if hand:
             display_data.extend([Ingredient(-1, "", 0, 0, 0, False, 100, 100), *hand])
         fields_ingredient = self.get_labels_maker_ingredients()
@@ -150,18 +161,18 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 ingredient_name = ing.name
             field_ingredient.setText(f"{ingredient_name} ")
 
-    def _apply_virgin_setting(self) -> None:
-        # hide the strong/weak buttons, since they are not needed
-        show_alcohol_buttons = not self.cocktail.only_virgin and not cfg.payment_enabled
+    def _apply_button_visibility(self) -> None:
+        """Hide or show the toggle buttons for alcohol and virgin mode, depending on the cocktail and config."""
+        is_single_ingredient_recipe = len(self.cocktail.ingredients) == 1
+        # hide the strong/weak buttons, when they are not needed or possible
+        show_alcohol_buttons = (
+            not is_single_ingredient_recipe and not self.cocktail.only_virgin and not cfg.payment_enabled
+        )
         self.increase_alcohol.setVisible(show_alcohol_buttons)
         self.decrease_alcohol.setVisible(show_alcohol_buttons)
-        can_change_virgin = self.cocktail.virgin_available and not self.cocktail.only_virgin
-        self.virgin_checkbox.setEnabled(can_change_virgin)
-        # Styles does not work on strikeout, so we use internal qt things
-        # To be precise, they do work at start, but does not support dynamic changes
-        set_strike_through(self.virgin_checkbox, not can_change_virgin)
+        self.LAlkoholgehalt.setVisible(not is_single_ingredient_recipe)
+        self.virgin_toggle.setVisible(self.can_change_virgin)
         # Update button labels if payment is active (price may change with virgin mode)
-        self._update_volume_button_labels()
 
     def _decide_rounding(self, val: float, threshold: int = 8) -> int | float:
         """Return the right rounding for numbers displayed to the user."""
@@ -175,17 +186,10 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.LAlkoholgehalt.setText("")
         self.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
         self.LMenge.setText("")
-        self.virgin_checkbox.setChecked(self.cocktail.only_virgin)
+        self.virgin_toggle.setChecked(self.cocktail.only_virgin)
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(), self.get_labels_maker_volume()):
             field_ingredient.setText("")
             field_volume.setText("")
-
-    def reset_alcohol_factor(self) -> None:
-        """Set the alcohol slider to default (100%) value."""
-        if self.cocktail.only_virgin:
-            shared.alcohol_factor = 0.0
-        else:
-            shared.alcohol_factor = 1.0
 
     def adjust_maker_label_size_cocktaildata(self) -> None:
         """Adjust the font size for larger screens."""
@@ -225,25 +229,22 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Return all maker label objects for ingredient name."""
         return [getattr(self, f"LZutat{x}") for x in range(1, 10)]
 
-    def _higher_alcohol(self, checked: bool) -> None:
+    def _higher_alcohol(self, _: bool) -> None:
         """Increases the alcohol factor."""
         self.decrease_alcohol.setChecked(False)
-        if checked:
-            self.adjust_alcohol(1.3)
-        else:
-            self.adjust_alcohol(1.0)
+        self.virgin_toggle.setChecked(False)
+        self.update_cocktail_data()
 
-    def _lower_alcohol(self, checked: bool) -> None:
+    def _lower_alcohol(self, _: bool) -> None:
         """Decreases the alcohol factor."""
         self.increase_alcohol.setChecked(False)
-        if checked:
-            self.adjust_alcohol(0.7)
-        else:
-            self.adjust_alcohol(1.0)
+        self.virgin_toggle.setChecked(False)
+        self.update_cocktail_data()
 
-    def adjust_alcohol(self, amount: float) -> None:
-        """Change the alcohol factor to the given value."""
-        shared.alcohol_factor = amount
+    def _toggle_virgin(self, _: bool) -> None:
+        """Toggle the virgin option."""
+        self.decrease_alcohol.setChecked(False)
+        self.increase_alcohol.setChecked(False)
         self.update_cocktail_data()
 
     def _adjust_preparation_buttons(self) -> None:
@@ -298,7 +299,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             volume_converted = self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)
             label = f"{volume_converted}"
             if cfg.payment_enabled:
-                multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.virgin_checkbox.isChecked() else 1.0
+                multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.is_virgin else 1.0
                 price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume, price_multiplier=multiplier)
                 price_str = f"{price}".rstrip("0").rstrip(".")
                 label += f": {price_str}€"

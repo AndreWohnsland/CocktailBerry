@@ -145,6 +145,7 @@ class IconSetter:
             (w.prepare_button, _COCKTAIL_ICON, False),
             (w.increase_alcohol, _SKULL, True),
             (w.decrease_alcohol, _EASY, True),
+            (w.virgin_toggle, _VIRGIN_ICON, True),
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self.set_icon(ui_element, fa_icon, no_text)

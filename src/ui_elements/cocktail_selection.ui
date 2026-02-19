@@ -461,6 +461,37 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
+            <widget class="QPushButton" name="virgin_toggle">
+             <property name="minimumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>20</pointsize>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>V</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="cssClass" stdset="0">
+              <string>bold btn-inverted round-sm</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="decrease_alcohol">
              <property name="minimumSize">
               <size>
@@ -708,48 +739,6 @@
         <string>mr ml round</string>
        </property>
       </widget>
-     </item>
-     <item row="2" column="0">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QCheckBox" name="virgin_checkbox">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
-           <height>60</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-           <bold>true</bold>
-           <strikeout>true</strikeout>
-          </font>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Virgin (No Alkohol)</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>50</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="tristate">
-          <bool>false</bool>
-         </property>
-         <property name="cssClass" stdset="0">
-          <string>bold</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item row="1" column="0">
       <layout class="QVBoxLayout" name="verticalLayout_3">

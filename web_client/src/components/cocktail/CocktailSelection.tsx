@@ -111,6 +111,8 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   };
 
   const ingredientsWithAmount = displayCocktail.ingredients.filter((ingredient) => ingredient.amount > 0);
+  const showAlcoholControls =
+    selectedCocktail.ingredients.length > 1 && config.PAYMENT_TYPE === 'Disabled' && !selectedCocktail.only_virgin;
   const machineIngredients = ingredientsWithAmount
     .filter((ingredient) => !ingredient.hand)
     .sort((a, b) => b.amount - a.amount);
@@ -175,20 +177,22 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
         </div>
         <div className='flex flex-col justify-between items-center w-full flex-1 self-stretch'>
           <div className='flex items-center justify-between mb-2 shrink w-full'>
-            <span className='ml-4 text-secondary font-bold w-6 text-xl'>{displayCocktail.alcohol}%</span>
+            {selectedCocktail.ingredients.length > 1 && (
+              <span className='ml-4 text-secondary font-bold w-6 text-xl'>{displayCocktail.alcohol}%</span>
+            )}
             <div className='flex space-x-2'>
-              {config.PAYMENT_TYPE === 'Disabled' && (
+              {selectedCocktail.virgin_available && !selectedCocktail.only_virgin && (
+                <button
+                  type='button'
+                  onClick={() => handleAlcoholState('virgin')}
+                  className={`w-8 p-2 rounded-full ${alcohol === 'virgin' ? 'bg-secondary' : 'bg-primary'}`}
+                  disabled={selectedCocktail.only_virgin}
+                >
+                  <MdNoDrinks className='text-background' />
+                </button>
+              )}
+              {showAlcoholControls && (
                 <>
-                  <button
-                    type='button'
-                    onClick={() => handleAlcoholState('high')}
-                    className={`w-8 p-2 rounded-full ${alcohol === 'high' ? 'bg-secondary' : 'bg-primary'} ${
-                      selectedCocktail.only_virgin && 'disabled'
-                    }`}
-                    disabled={selectedCocktail.only_virgin}
-                  >
-                    <FaSkullCrossbones className='text-background' />
-                  </button>
                   <button
                     type='button'
                     onClick={() => handleAlcoholState('low')}
@@ -199,17 +203,17 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
                   >
                     <IoIosHappy className='text-background' />
                   </button>
+                  <button
+                    type='button'
+                    onClick={() => handleAlcoholState('high')}
+                    className={`w-8 p-2 rounded-full ${alcohol === 'high' ? 'bg-secondary' : 'bg-primary'} ${
+                      selectedCocktail.only_virgin && 'disabled'
+                    }`}
+                    disabled={selectedCocktail.only_virgin}
+                  >
+                    <FaSkullCrossbones className='text-background' />
+                  </button>
                 </>
-              )}
-              {selectedCocktail.virgin_available && (
-                <button
-                  type='button'
-                  onClick={() => handleAlcoholState('virgin')}
-                  className={`w-8 p-2 rounded-full ${alcohol === 'virgin' ? 'bg-secondary' : 'bg-primary'}`}
-                  disabled={selectedCocktail.only_virgin}
-                >
-                  <MdNoDrinks className='text-background' />
-                </button>
               )}
             </div>
             <CloseButton onClick={handleCloseModal} />

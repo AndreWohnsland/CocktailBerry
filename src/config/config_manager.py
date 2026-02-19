@@ -518,7 +518,6 @@ class Shared:
         self.old_ingredient: list[str] = []
         self.selected_team = "No Team"
         self.team_member_name: str | None = None
-        self.alcohol_factor: float = 1.0
         self.is_v1 = False
         self.restricted_mode_active = False
         self.cocktail_status = CocktailStatus()
