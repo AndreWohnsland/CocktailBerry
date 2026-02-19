@@ -154,7 +154,7 @@ const RecipeList: React.FC = () => {
     if (!selectedCocktail) return false;
     const { name, ingredients } = selectedCocktail;
     if (!name.trim()) return false;
-    if (ingredients.length <= 1) return false;
+    if (ingredients.length <= 0) return false;
     if (ingredients.some((ingredient) => !ingredient.id || !ingredient.amount || !ingredient.recipe_order))
       return false;
     return true;

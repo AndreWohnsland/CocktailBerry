@@ -770,8 +770,6 @@ class UiLanguage:
             ui_element.setText(self._choose_language(text_name))
 
     def adjust_cocktail_selection_screen(self, w: Ui_CocktailSelection) -> None:
-        window = "cocktail_selection"
-        w.virgin_checkbox.setText(self._choose_language("activate_virgin", window))
         w.button_back.setText(self._choose_language("back"))
 
     def adjust_available_windows(self, w: Ui_available) -> None:

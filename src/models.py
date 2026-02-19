@@ -137,7 +137,8 @@ class Cocktail:
     @property
     def is_virgin(self) -> bool:
         """Returns if the cocktail is virgin."""
-        return self.adjusted_alcohol == 0
+        # single ingredient cocktails will not be considered virgin, because they are an ingredient (wrapper)
+        return self.adjusted_alcohol == 0 and len(self.ingredients) > 1
 
     def current_price(
         self,

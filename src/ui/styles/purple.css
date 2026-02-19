@@ -53,7 +53,6 @@
 #informationLabel {
   padding: 5px 25px 5px 25px; }
 
-#virgin_checkbox.QCheckBox::indicator,
 *[cssClass~='big-checkbox'].QCheckBox::indicator {
   width: 30px;
   height: 30px;

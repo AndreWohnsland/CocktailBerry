@@ -9,7 +9,6 @@ from PyQt6.QtWidgets import QApplication
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab
-from src.config.config_manager import shared as global_shared
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
@@ -66,10 +65,7 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
         DP_CONTROLLER.standard_box(message, close_time=60)
 
     # Otherwise clean up the rest
-    if w.cocktail_selection:
-        w.cocktail_selection.virgin_checkbox.setChecked(False)
     bottles.set_fill_level_bars(w)
-    global_shared.alcohol_factor = 1.0
     w.switch_to_cocktail_list()
     if cfg.cocktailberry_payment and cfg.PAYMENT_LOGOUT_AFTER_PREPARATION:
         NFCPaymentService().logout_user()

@@ -455,9 +455,6 @@ ui:
     prepare_button:
       en: '  Prepare {amount} {unit}'
       de: '  {amount} {unit} Zubereiten'
-    activate_virgin:
-      en: 'Virgin (no alcohol)'
-      de: 'Virgin (kein Alkohol)'
 
   ##### AVAILABLE WINDOW #####
   # all values for available window
