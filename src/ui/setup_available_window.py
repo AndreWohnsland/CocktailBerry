@@ -42,7 +42,7 @@ class AvailableWindow(QMainWindow, Ui_available):
         """Write the new availability into the DB."""
         DB_COMMANDER.delete_existing_handadd_ingredient()
         ingredient_names = [
-            self.LWVorhanden.item(i).text()  # ty:ignore[possibly-missing-attribute] # pyright: ignore[reportOptionalMemberAccess]
+            self.LWVorhanden.item(i).text()  # pyright: ignore[reportOptionalMemberAccess]  # ty:ignore[possibly-missing-attribute]
             for i in range(self.LWVorhanden.count())
         ]
         # only add ingredients if there are any
