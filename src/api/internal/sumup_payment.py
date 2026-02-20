@@ -14,6 +14,18 @@ from src.tabs import maker
 _logger = LoggerHandler("sumup_payment")
 
 
+def requires_sumup_payment(cocktail: Cocktail) -> bool:
+    """Check if cocktail price requires a SumUp checkout."""
+    return _get_price_in_cents(cocktail) > 0
+
+
+def _get_price_in_cents(cocktail: Cocktail) -> int:
+    """Calculate the cocktail price in cents for SumUp."""
+    multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0
+    price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
+    return int(price * 100)
+
+
 class SumupPaymentHandler:
     """Handler for SumUp payment operations."""
 
@@ -38,11 +50,7 @@ class SumupPaymentHandler:
         shared.cocktail_status.status = PrepareResult.WAITING_FOR_PAYMENT
         self._payment_cancelled = False
 
-        # Calculate price
-        multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0
-        price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
-        # SumUp uses minor units (cents), so multiply by 100
-        value_in_cents = int(price * 100)
+        price_in_cents = _get_price_in_cents(cocktail)
 
         reader_id = cfg.PAYMENT_SUMUP_TERMINAL_ID
         if not reader_id:
@@ -54,7 +62,7 @@ class SumupPaymentHandler:
         # Trigger checkout on terminal
         checkout_result = self.sumup_service.trigger_checkout(
             reader_id=reader_id,
-            value=value_in_cents,
+            value=price_in_cents,
             description=f"CocktailBerry: {cocktail.name}",
         )
 

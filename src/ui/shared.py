@@ -83,21 +83,23 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
             return cocktailberry_payment_flow(cocktail)
 
 
-def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:
+def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:  # noqa: PLR0911
     """Run the SumUp payment flow for qt."""
-    sumup_service = SumupPaymentService(
-        api_key=cfg.PAYMENT_SUMUP_API_KEY,
-        merchant_code=cfg.PAYMENT_SUMUP_MERCHANT_CODE,
-    )
+    multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0
+    price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
+    value_in_cents = int(price * 100)
+    if value_in_cents <= 0:
+        _logger.info(f"Skipping SumUp checkout for free cocktail '{cocktail.name}'")
+        return CocktailBooking.inactive()
 
     reader_id = cfg.PAYMENT_SUMUP_TERMINAL_ID
     if not reader_id:
         return CocktailBooking.sumup_no_terminal()
 
-    # Calculate price
-    multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0
-    price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
-    value_in_cents = int(price * 100)
+    sumup_service = SumupPaymentService(
+        api_key=cfg.PAYMENT_SUMUP_API_KEY,
+        merchant_code=cfg.PAYMENT_SUMUP_MERCHANT_CODE,
+    )
 
     # Trigger checkout on terminal
     checkout_result = sumup_service.trigger_checkout(
