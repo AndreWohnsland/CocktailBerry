@@ -17,6 +17,7 @@ from fastapi import (
 from src.api.api_config import Tags
 from src.api.internal.nfc_payment import get_nfc_payment_handler
 from src.api.internal.payment import PaymentHandler, get_payment_handler
+from src.api.internal.sumup_payment import requires_sumup_payment
 from src.api.internal.utils import (
     calculate_cocktail_volume_and_concentration,
     map_cocktail,
@@ -137,6 +138,10 @@ async def prepare_cocktail(
         shared.selected_team = request.selected_team
         shared.team_member_name = request.team_member_name
     if cfg.payment_enabled:
+        # SumUp cannot be called with 0 price
+        if cfg.sumup_payment and not requires_sumup_payment(cocktail):
+            background_tasks.add_task(maker.prepare_cocktail, cocktail)
+            return CocktailStatus(status=PrepareResult.IN_PROGRESS)
         background_tasks.add_task(payment_handler.start_payment_flow, cocktail)
         return CocktailStatus(status=PrepareResult.WAITING_FOR_PAYMENT)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
