@@ -121,7 +121,7 @@ def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:  # noqa: PLR0911
         nonlocal canceled
         canceled = True
         sumup_service.terminate_checkout(reader_id)
-        event_loop.quit()
+        _logger.debug("Payment flow canceled by user")
 
     def on_wait_complete(_result: object) -> None:
         """Quit event loop when worker finishes."""
@@ -131,6 +131,8 @@ def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:  # noqa: PLR0911
     dialog = DP_CONTROLLER.standard_box_non_blocking(
         CocktailBooking.sumup_waiting_for_payment().message,
         close_callback=on_cancel,
+        button="cancel",
+        button_closes_dialog=False,
     )
 
     # Create worker with spinner (non-blocking parent so cancel button works)
