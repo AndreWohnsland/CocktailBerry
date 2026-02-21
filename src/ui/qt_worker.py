@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from collections.abc import Callable
 
 from PyQt6.QtCore import QThread, pyqtSignal
@@ -101,9 +102,11 @@ def run_with_spinner[T](
     worker: CallableWorker[T] = CallableWorker(func)
 
     def on_worker_finished(result: T) -> None:
-        icons.stop_spinner()
         if on_finish is not None:
             on_finish(result)
+        # spinner might already be destroyed if parent is gone
+        with contextlib.suppress(Exception):
+            icons.stop_spinner()
 
     worker.finished.connect(on_worker_finished)
     worker.start()
