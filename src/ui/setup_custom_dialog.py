@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from typing import Literal
 
 from PyQt6.QtCore import QEventLoop, QTimer
 from PyQt6.QtGui import QCloseEvent
@@ -18,9 +19,10 @@ class CustomDialog(QMainWindow, Ui_CustomDialog):
         self,
         message: str,
         title: str = "Information",
-        use_ok: bool = False,
+        button: Literal["ok", "close", "cancel"] = "close",
         close_callback: Callable | None = None,
         close_time: int | None = None,
+        button_closes_dialog: bool = True,
     ) -> None:
         super().__init__()
         self.setupUi(self)
@@ -30,14 +32,16 @@ class CustomDialog(QMainWindow, Ui_CustomDialog):
         self.closeButton.clicked.connect(self.close_clicked)
         self.close_callback = close_callback
         self.close_time = close_time
+        self.button_closes_dialog = button_closes_dialog
         self._timer: QTimer | None = None
 
-        UI_LANGUAGE.adjust_custom_dialog(self, use_ok)
+        UI_LANGUAGE.adjust_custom_dialog(self, button)
 
     def close_clicked(self) -> None:
         if self.close_callback is not None:
             self.close_callback()
-        self.close()
+        if self.button_closes_dialog:
+            self.close()
 
     def _start_close_timer(self) -> None:
         if self.close_time is not None:

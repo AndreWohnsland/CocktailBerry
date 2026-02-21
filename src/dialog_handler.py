@@ -193,8 +193,9 @@ class DialogHandler:
         self,
         message: str,
         title: str = "",
-        use_ok: bool = False,
+        button: Literal["ok", "close", "cancel"] = "close",
         close_time: int | None = None,
+        button_closes_dialog: bool = True,
     ) -> bool:
         """Display the messagebox for the Maker. Blocks until closed."""
         from src.ui.setup_custom_dialog import CustomDialog
@@ -203,16 +204,23 @@ class DialogHandler:
             title = self._choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
-        dialog = CustomDialog(fancy_message, title, use_ok, close_time=close_time)
+        dialog = CustomDialog(
+            fancy_message,
+            title,
+            button,
+            close_time=close_time,
+            button_closes_dialog=button_closes_dialog,
+        )
         return dialog.exec()
 
     def standard_box_non_blocking(
         self,
         message: str,
         title: str = "",
-        use_ok: bool = False,
+        button: Literal["ok", "close", "cancel"] = "close",
         close_time: int | None = None,
         close_callback: Callable[[], None] | None = None,
+        button_closes_dialog: bool = True,
     ) -> CustomDialog:
         """Display the messagebox for the Maker. Does not block."""
         from src.ui.setup_custom_dialog import CustomDialog
@@ -221,7 +229,14 @@ class DialogHandler:
             title = self._choose_language("box_title")
         fill_string = "-" * 70
         fancy_message = f"{fill_string}\n{message}\n{fill_string}"
-        dialog = CustomDialog(fancy_message, title, use_ok, close_callback=close_callback, close_time=close_time)
+        dialog = CustomDialog(
+            fancy_message,
+            title,
+            button,
+            close_callback=close_callback,
+            close_time=close_time,
+            button_closes_dialog=button_closes_dialog,
+        )
         dialog.show_non_blocking()
         QApplication.processEvents()
         return dialog
@@ -253,12 +268,12 @@ class DialogHandler:
     def __output_language_dialog(
         self,
         dialog_name: str,
-        use_ok: bool = False,
+        button: Literal["ok", "close", "cancel"] = "close",
         close_time: int | None = None,
         **kwargs: Any,
     ) -> None:
         msg = self._choose_language(dialog_name, **kwargs)
-        self.standard_box(msg, use_ok=use_ok, close_time=close_time)
+        self.standard_box(msg, button=button, close_time=close_time)
 
     def _generate_file_dialog(self, message: str = "") -> QFileDialog:
         """Create the base file dialog and shows it with the full screen settings."""
@@ -846,10 +861,10 @@ class UiLanguage:
         ]:
             ui_element.setText(self._choose_language(text_name, window))
 
-    def adjust_custom_dialog(self, w: Ui_CustomDialog, use_ok: bool) -> None:
+    def adjust_custom_dialog(self, w: Ui_CustomDialog, button: Literal["ok", "close", "cancel"]) -> None:
         """Translate all the labels from the datepicker window."""
-        button = "ok_button" if use_ok else "close_button"
-        label = self._choose_language(button)
+        button_name = f"{button}_button"
+        label = self._choose_language(button_name)
         w.closeButton.setText(label)
 
     def adjust_datepicker_window(self, w: Ui_Datepicker) -> None:
