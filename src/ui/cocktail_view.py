@@ -45,6 +45,37 @@ def _square_size() -> int:
     return int(cfg.UI_WIDTH / (n_columns * 1.17))
 
 
+def generate_random_image_block(cocktails: list[Cocktail], mainscreen: MainScreen) -> QVBoxLayout:
+    """Generate an image block for the random cocktail tile."""
+    square_size = _square_size()
+    header_font_size = round(square_size / 15.8)
+    header_height = round(square_size / 6.3)
+    random_label = UI_LANGUAGE.get_translation("random_cocktail_label", "main_window")
+    button = create_button(
+        random_label,
+        font_size=header_font_size,
+        min_h=0,
+        max_h=header_height,
+        max_w=square_size,
+        css_class="btn-inverted btn-half-top",
+    )
+    label = ClickableLabel(random_label)
+    label.setProperty("cssClass", "cocktail-picture-view")
+    pixmap = QPixmap(str(DEFAULT_COCKTAIL_IMAGE))
+    label.setPixmap(pixmap)
+    label.setScaledContents(True)
+    label.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
+    label.setMinimumSize(square_size, square_size)
+    label.setMaximumSize(square_size, square_size)
+    layout = QVBoxLayout()
+    layout.setSpacing(0)
+    layout.addWidget(button)
+    layout.addWidget(label)
+    button.clicked.connect(lambda _, c=cocktails: mainscreen.open_random_cocktail_detail(c))
+    label.clicked.connect(lambda c=cocktails: mainscreen.open_random_cocktail_detail(c))
+    return layout
+
+
 def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> QVBoxLayout:
     """Generate a image block for the given cocktail."""
     # those factors are taken from calculations based on the old static values
@@ -193,16 +224,22 @@ class CocktailView(QWidget):
                 cocktails = [c for c in cocktails if c.is_allowed]
         # sort cocktails by name
         cocktails.sort(key=lambda x: x.name.lower())
+        # optionally prepend the random cocktail tile
+        offset = 0
+        if cfg.MAKER_RANDOM_COCKTAIL and cocktails:
+            block = generate_random_image_block(cocktails, self.mainscreen)
+            self.grid.addLayout(block, 0, 0)
+            offset = 1
         # fill the grid with n_columns columns, then go to another row
-        for i in range(0, len(cocktails), n_columns):
-            for j in range(n_columns):
-                if i + j >= len(cocktails):
-                    break
-                block = generate_image_block(cocktails[i + j], self.mainscreen)
-                self.grid.addLayout(block, i // n_columns, j)
+        for idx, cocktail in enumerate(cocktails):
+            pos = idx + offset
+            row = pos // n_columns
+            col = pos % n_columns
+            block = generate_image_block(cocktail, self.mainscreen)
+            self.grid.addLayout(block, row, col)
         # Optionally add the single ingredient block after all cocktails
         if cfg.MAKER_ADD_SINGLE_INGREDIENT and not cfg.payment_enabled:
-            total = len(cocktails)
+            total = len(cocktails) + offset
             row = total // n_columns
             col = total % n_columns
             block = generate_image_block(None, self.mainscreen)

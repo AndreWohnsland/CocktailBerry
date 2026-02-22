@@ -228,20 +228,32 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # Remove the event filter since it's no longer needed
         self.tabWidget.tabBar().removeEventFilter(self)  # type: ignore
 
-    def open_cocktail_detail(self, cocktail: Cocktail) -> None:
-        """Open the cocktail selection screen."""
+    def _cleanup_cocktail_selection(self) -> None:
+        """Clean up any existing cocktail selection widget."""
         if self.cocktail_selection is not None:
-            # Clean up all internal layouts and widgets recursively
             DP_CONTROLLER.delete_items_of_layout(self.cocktail_selection.layout())
-            # Remove from stacked widget
             self.container_maker.removeWidget(self.cocktail_selection)
-            # Schedule for deletion and remove reference
             self.cocktail_selection.deleteLater()
             self.cocktail_selection = None
+
+    def open_cocktail_detail(self, cocktail: Cocktail) -> None:
+        """Open the cocktail selection screen."""
+        self._cleanup_cocktail_selection()
         self.cocktail_selection = CocktailSelection(self, cocktail)
         self.container_maker.addWidget(self.cocktail_selection)
         self.cocktail_selection.set_cocktail(cocktail)
         self.cocktail_selection.update_cocktail_data()
+        self.switch_to_cocktail_detail()
+
+    def open_random_cocktail_detail(self, cocktails: list[Cocktail]) -> None:
+        """Open the cocktail selection screen in random mode."""
+        if not cocktails:
+            return
+        self._cleanup_cocktail_selection()
+        # Use the first cocktail as a placeholder; actual cocktail is chosen at prepare time
+        self.cocktail_selection = CocktailSelection(self, cocktails[0], random_mode=True, random_pool=cocktails)
+        self.container_maker.addWidget(self.cocktail_selection)
+        self.cocktail_selection.update_random_display()
         self.switch_to_cocktail_detail()
 
     def switch_to_cocktail_detail(self) -> None:

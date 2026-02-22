@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 from typing import TYPE_CHECKING
 
 from PyQt6.QtGui import QFont, QPixmap
@@ -9,6 +10,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.filepath import DEFAULT_COCKTAIL_IMAGE
 from src.image_utils import find_cocktail_image
 from src.models import Cocktail, Ingredient
 from src.ui.creation_utils import LARGE_FONT, create_button, create_label, set_underline
@@ -23,12 +25,20 @@ if TYPE_CHECKING:
 class CocktailSelection(QDialog, Ui_CocktailSelection):
     """Class for the Cocktail selection view."""
 
-    def __init__(self, mainscreen: MainScreen, cocktail: Cocktail) -> None:
+    def __init__(
+        self,
+        mainscreen: MainScreen,
+        cocktail: Cocktail,
+        random_mode: bool = False,
+        random_pool: list[Cocktail] | None = None,
+    ) -> None:
         super().__init__(parent=mainscreen)
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.cocktail = cocktail
         self.mainscreen = mainscreen
+        self.random_mode = random_mode
+        self.random_pool = random_pool or []
         # Store references for dynamic button label updates
         self._volume_buttons: list[tuple[int, QPushButton]] = []  # list of (volume, button) tuples
         # build the image
@@ -94,8 +104,53 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.cocktail = cocktail
         self._set_image()
 
+    def update_random_display(self) -> None:
+        """Update the display for random cocktail mode."""
+        pixmap = QPixmap(str(DEFAULT_COCKTAIL_IMAGE))
+        self.image_container.setPixmap(pixmap)
+        random_label = UI_LANGUAGE.get_translation("random_cocktail_label", "main_window")
+        surprise_label = UI_LANGUAGE.get_translation("random_be_surprised", "main_window")
+        self.LAlkoholname.setText(random_label)
+        self.LAlkoholgehalt.setText("?")
+        self.LMenge.setText("")
+        # hide alcohol low/high buttons
+        self.increase_alcohol.setVisible(False)
+        self.decrease_alcohol.setVisible(False)
+        # show virgin toggle only if any cocktail in pool has virgin_available
+        has_virgin = any(c.virgin_available for c in self.random_pool)
+        self.virgin_toggle.setVisible(has_virgin)
+        self.virgin_toggle.setChecked(False)
+        # show surprise message in first ingredient label, clear rest
+        fields_ingredient = self.get_labels_maker_ingredients()
+        fields_volume = self.get_labels_maker_volume()
+        for field_ingredient, field_volume in zip(fields_ingredient, fields_volume):
+            field_ingredient.setText("")
+            field_volume.setText("")
+        if fields_ingredient:
+            fields_ingredient[0].setText(surprise_label)
+
+    def _prepare_random_cocktail(self, amount: int) -> None:
+        """Pick a random cocktail from the pool and prepare it."""
+        if self.is_virgin:
+            pool = [c for c in self.random_pool if c.virgin_available]
+        else:
+            pool = [c for c in self.random_pool if not c.only_virgin]
+        if not pool:
+            return
+        chosen = random.choice(pool)
+        # Re-fetch from DB for up-to-date data
+        db_cocktail = DB_COMMANDER.get_cocktail(chosen.id)
+        if db_cocktail is not None:
+            chosen = db_cocktail
+        self.cocktail = chosen
+        self._scale_cocktail(amount)
+        qt_prepare_flow(self.mainscreen, self.cocktail)
+
     def _prepare_cocktail(self, amount: int) -> None:
         """Prepare the cocktail and switches to the maker screen, if successful."""
+        if self.random_mode:
+            self._prepare_random_cocktail(amount)
+            return
         # same applies here, need to refetch the cocktail from db
         db_cocktail = DB_COMMANDER.get_cocktail(self.cocktail.id)
         if db_cocktail is not None:
@@ -245,7 +300,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Toggle the virgin option."""
         self.decrease_alcohol.setChecked(False)
         self.increase_alcohol.setChecked(False)
-        self.update_cocktail_data()
+        if not self.random_mode:
+            self.update_cocktail_data()
 
     def _adjust_preparation_buttons(self) -> None:
         """Decide if to use a single or multiple buttons and adjusts the text accordingly.

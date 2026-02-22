@@ -36,7 +36,9 @@
     "singleIngredient": "Single Ingredient",
     "selectIngredient": "Select Ingredient",
     "spend": "Spend",
-    "selectTeam": "Select Team"
+    "selectTeam": "Select Team",
+    "randomCocktail": "Random Cocktail",
+    "beSurprised": "Be Surprised!"
   },
   "lockScreen": {
     "defaultTitle": "Locked",

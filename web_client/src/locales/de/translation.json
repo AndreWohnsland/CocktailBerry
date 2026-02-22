@@ -36,7 +36,9 @@
     "singleIngredient": "Einzelne Zutat",
     "selectIngredient": "Zutat auswählen",
     "spend": "Ausgeben",
-    "selectTeam": "Team Auswählen"
+    "selectTeam": "Team Auswählen",
+    "randomCocktail": "Zufalls-Cocktail",
+    "beSurprised": "Lass dich überraschen!"
   },
   "lockScreen": {
     "defaultTitle": "Gesperrt",

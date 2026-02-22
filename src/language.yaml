@@ -449,6 +449,12 @@ ui:
     nfc_scan_to_proceed:
       en: 'Scan NFC to proceed'
       de: 'NFC scannen um fortzufahren'
+    random_cocktail_label:
+      en: 'Random Cocktail'
+      de: 'Zufalls-Cocktail'
+    random_be_surprised:
+      en: 'Be Surprised!'
+      de: 'Lass dich überraschen!'
 
   cocktail_selection:
     # best is to use some space before to get a padding for icon
@@ -762,6 +768,9 @@ ui:
     MAKER_ADD_SINGLE_INGREDIENT:
       en: 'Adds the option to also spend a single ingredient to the cocktails in the maker tab'
       de: 'Fügt eine Option zu den Cocktails in dem Maker Tab hinzu, auch einzelne Zutaten ausgeben zu können'
+    MAKER_RANDOM_COCKTAIL:
+      en: 'Adds a random cocktail tile to the maker tab that picks a surprise cocktail on prepare'
+      de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
     LED_NORMAL:
       en: 'List with config for each normal (non-addressable) LED: pin, default on state, preparation state (on/off/effects)'
       de: 'Liste mit Einstellung für jeden normalen (nicht ansteuerbaren) LED: Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
