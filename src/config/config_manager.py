@@ -117,6 +117,8 @@ class ConfigManager:
     MAKER_USE_RECIPE_VOLUME: bool = False
     # Option to add the single ingredient option to the maker pane
     MAKER_ADD_SINGLE_INGREDIENT: bool = False
+    # Option to show a random cocktail tile in the maker tab
+    MAKER_RANDOM_COCKTAIL: bool = False
     # List of normal (non-addressable) LED configurations
     LED_NORMAL: ClassVar[list[NormalLedConfig]] = []
     # List of WS281x (addressable) LED configurations
@@ -225,6 +227,7 @@ class ConfigManager:
             "MAKER_CHECK_INTERNET": BoolType(check_name="Check Internet"),
             "MAKER_USE_RECIPE_VOLUME": BoolType(check_name="Use Recipe Volume"),
             "MAKER_ADD_SINGLE_INGREDIENT": BoolType(check_name="Can Spend Single Ingredient"),
+            "MAKER_RANDOM_COCKTAIL": BoolType(check_name="Random Cocktail Option"),
             "LED_NORMAL": ListType(
                 DictType(
                     {

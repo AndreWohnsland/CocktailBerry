@@ -1,12 +1,9 @@
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { FaGlassMartiniAlt, FaSkullCrossbones, FaWineGlassAlt } from 'react-icons/fa';
+import { FaSkullCrossbones } from 'react-icons/fa';
 import { GrFormNextLink, GrFormPreviousLink } from 'react-icons/gr';
-import { ImMug } from 'react-icons/im';
 import { IoIosHappy } from 'react-icons/io';
 import { MdNoDrinks } from 'react-icons/md';
-import { PiPintGlassFill } from 'react-icons/pi';
-import { TbGlassChampagne } from 'react-icons/tb';
 import { prepareCocktail } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
 import { Tabs } from '../../constants/tabs';
@@ -18,6 +15,7 @@ import CloseButton from '../common/CloseButton';
 import ProgressModal from './ProgressModal';
 import RefillPrompt from './RefillPrompt';
 import TeamSelection from './TeamSelection';
+import { FALLBACK_SERVING_SIZES, getServingSizeIconIndex, servingSizeIcons } from './utils';
 
 interface CocktailModalProps {
   selectedCocktail: Cocktail;
@@ -28,8 +26,6 @@ interface CocktailModalProps {
 
 type alcoholState = 'high' | 'low' | 'normal' | 'virgin';
 
-const fallbackServingSize = [200, 250, 300];
-const icons = [TbGlassChampagne, FaWineGlassAlt, FaGlassMartiniAlt, PiPintGlassFill, ImMug];
 const alcoholFactor = {
   high: 1.25,
   low: 0.75,
@@ -57,7 +53,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   const { config } = useConfig();
   const possibleServingSizes = config.MAKER_USE_RECIPE_VOLUME
     ? [displayCocktail.amount]
-    : (config.MAKER_PREPARE_VOLUME ?? fallbackServingSize);
+    : (config.MAKER_PREPARE_VOLUME ?? FALLBACK_SERVING_SIZES);
 
   useEffect(() => {
     const initialAlcoholState = selectedCocktail.only_virgin ? 'virgin' : 'normal';
@@ -119,23 +115,6 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   const handIngredients = ingredientsWithAmount
     .filter((ingredient) => ingredient.hand)
     .sort((a, b) => b.amount - a.amount);
-
-  const getIconIndex = (idx: number) => {
-    const totalIcons = icons.length;
-    const needed = Math.min(possibleServingSizes.length, totalIcons);
-    const center = Math.floor(totalIcons / 2);
-
-    // Choose a centered contiguous window; for even sizes bias to the right.
-    let start = needed % 2 === 1 ? center - Math.floor(needed / 2) : center - needed / 2 + 1;
-
-    if (start < 0) start = 0;
-    if (start + needed > totalIcons) start = totalIcons - needed;
-
-    // If more buttons than icons, clamp to last icon.
-    if (idx >= needed) return totalIcons - 1;
-
-    return start + idx;
-  };
 
   const calculateDisplayPrice = (amount: number, pricePer100: number): string => {
     if (config.PAYMENT_TYPE === 'Disabled') return '';
@@ -256,7 +235,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
                   onClick={() => prepareCocktailClick(amount)}
                   textSize='lg'
                   className='w-full'
-                  icon={icons[getIconIndex(index)]}
+                  icon={servingSizeIcons[getServingSizeIconIndex(index, possibleServingSizes.length)]}
                   iconSize={25}
                 />
               ))}

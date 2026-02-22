@@ -155,6 +155,7 @@ export interface DefinedConfigData {
   MAKER_CHECK_INTERNET: boolean;
   MAKER_USE_RECIPE_VOLUME: boolean;
   MAKER_ADD_SINGLE_INGREDIENT: boolean;
+  MAKER_RANDOM_COCKTAIL: boolean;
   LED_PINS: number[];
   LED_BRIGHTNESS: number;
   LED_COUNT: number;

@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FaQuestion } from 'react-icons/fa';
 import { MdNoDrinks } from 'react-icons/md';
 import Modal from 'react-modal';
 import { useCocktails } from '../../api/cocktails';
@@ -15,6 +16,7 @@ import LockScreen from '../common/LockScreen';
 import SearchBar from '../common/SearchBar';
 import UserDisplay from '../common/UserDisplay';
 import CocktailSelection from './CocktailSelection';
+import RandomCocktailSelection from './RandomCocktailSelection';
 import SingleIngredientSelection from './SingleIngredientSelection';
 
 const CocktailList: React.FC = () => {
@@ -23,6 +25,7 @@ const CocktailList: React.FC = () => {
   const { data: cocktails, error, isLoading } = useCocktails(true, config.MAKER_MAX_HAND_INGREDIENTS ?? 0);
   const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
   const [singleIngredientOpen, setSingleIngredientOpen] = useState(false);
+  const [randomCocktailOpen, setRandomCocktailOpen] = useState(false);
   const [search, setSearch] = useState<string | null>(null);
   const [showOnlyVirginPossible, setShowOnlyVirginPossible] = useState(false);
   const { t } = useTranslation();
@@ -99,6 +102,25 @@ const CocktailList: React.FC = () => {
         </div>
       </div>
       <div className='flex flex-wrap gap-3 justify-center items-center w-full mb-4'>
+        {config.MAKER_RANDOM_COCKTAIL && displayedCocktails && displayedCocktails.length > 0 && !search && (
+          <button
+            className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
+            onClick={() => setRandomCocktailOpen(true)}
+            type='button'
+          >
+            <p className='text-center py-1 flex items-center justify-center'>
+              <FaQuestion className='mr-2' />
+              {t('cocktails.randomCocktail')}
+            </p>
+            <div className='relative w-full' style={{ paddingTop: '100%' }}>
+              <img
+                src={`${API_URL}/static/default/default.jpg`}
+                alt={t('cocktails.randomCocktail')}
+                className='absolute top-0 left-0 w-full h-full object-cover'
+              />
+            </div>
+          </button>
+        )}
         {displayedCocktails
           ?.sort((a, b) => a.name.localeCompare(b.name))
           .map((cocktail) => {
@@ -175,6 +197,19 @@ const CocktailList: React.FC = () => {
       </Modal>
       <Modal isOpen={singleIngredientOpen} className='modal slim' overlayClassName='overlay z-20' preventScroll={true}>
         <SingleIngredientSelection onClose={() => setSingleIngredientOpen(false)} />
+      </Modal>
+      <Modal
+        isOpen={randomCocktailOpen}
+        onRequestClose={() => setRandomCocktailOpen(false)}
+        contentLabel='Random Cocktail'
+        className='modal'
+        overlayClassName='overlay z-20'
+        preventScroll={true}
+      >
+        <RandomCocktailSelection
+          handleCloseModal={() => setRandomCocktailOpen(false)}
+          cocktails={displayedCocktails || []}
+        />
       </Modal>
     </div>
   );
