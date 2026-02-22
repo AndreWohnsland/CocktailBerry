@@ -128,6 +128,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             field_volume.setText("")
         if fields_ingredient:
             fields_ingredient[0].setText(surprise_label)
+        self._update_volume_button_labels(random_cocktail=True)
 
     def _prepare_random_cocktail(self, amount: int) -> None:
         """Pick a random cocktail from the pool and prepare it."""
@@ -349,7 +350,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # Set initial button labels
         self._update_volume_button_labels()
 
-    def _update_volume_button_labels(self) -> None:
+    def _update_volume_button_labels(self, random_cocktail: bool = False) -> None:
         """Update the labels of volume buttons, recalculating prices if payment is active."""
         for volume, button in self._volume_buttons:
             volume_converted = self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)
@@ -357,6 +358,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             if cfg.payment_enabled:
                 multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.is_virgin else 1.0
                 price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume, price_multiplier=multiplier)
+                if random_cocktail:
+                    price = "?"
                 price_str = f"{price}".rstrip("0").rstrip(".")
                 label += f": {price_str}€"
             button.setText(label)
