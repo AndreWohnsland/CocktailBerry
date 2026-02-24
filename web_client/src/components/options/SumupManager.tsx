@@ -6,7 +6,9 @@ import { createSumupReader, deleteSumupReader, setActiveSumupReader, useSumupRea
 import { useConfig } from '../../providers/ConfigProvider';
 import type { SumupReader } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
+import Button from '../common/Button';
 import ErrorComponent from '../common/ErrorComponent';
+import ItemCard from '../common/ItemCard';
 import LoadingData from '../common/LoadingData';
 import TextHeader from '../common/TextHeader';
 import TextInput from '../common/TextInput';
@@ -81,7 +83,7 @@ const SumupManager: React.FC = () => {
           icon={FaPlus}
           textSize='md'
           filled
-          passive={!isFormValid || isCreating}
+          disabled={!isFormValid || isCreating}
           onClick={handleCreate}
         />
       </form>
@@ -91,37 +93,33 @@ const SumupManager: React.FC = () => {
         {readers?.map((reader) => {
           const isActive = reader.id === activeReaderId;
           return (
-            <div
+            <ItemCard
               key={reader.id}
-              className={`border p-4 rounded-xl ${isActive ? 'border-secondary' : 'border-primary'}`}
-            >
-              <div className='flex justify-between items-center'>
-                <div className='flex flex-col'>
-                  <h3 className='text-lg text-secondary font-semibold'>{reader.name}</h3>
-                  {isActive && <span className='text-sm text-neutral'>{t('sumup.activeReader')}</span>}
-                </div>
-                <div className='flex gap-2'>
+              title={reader.name}
+              subtitle={isActive ? t('sumup.activeReader') : undefined}
+              highlighted={isActive}
+              actions={
+                <>
                   {!isActive && (
-                    <button
-                      type='button'
+                    <Button
+                      filled
+                      icon={FaCheck}
+                      label={t('sumup.use')}
+                      className='px-4'
                       onClick={() => handleUse(reader)}
-                      className='button-primary-filled flex items-center p-2 px-4'
-                    >
-                      <FaCheck className='mr-2' />
-                      {t('sumup.use')}
-                    </button>
+                    />
                   )}
-                  <button
-                    type='button'
+                  <Button
+                    style='danger'
+                    filled
+                    icon={FaTrashAlt}
+                    label={t('delete')}
+                    className='px-4'
                     onClick={() => handleDelete(reader)}
-                    className='button-danger-filled flex items-center p-2 px-4'
-                  >
-                    <FaTrashAlt className='mr-2' />
-                    {t('delete')}
-                  </button>
-                </div>
-              </div>
-            </div>
+                  />
+                </>
+              }
+            />
           );
         })}
       </div>

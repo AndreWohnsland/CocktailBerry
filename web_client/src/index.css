@@ -72,8 +72,15 @@ body {
   @apply button-base border-danger bg-danger text-background;
 }
 
+.passive {
+  opacity: 0.5;
+}
+
 .disabled {
   filter: grayscale(70%);
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .select-base {

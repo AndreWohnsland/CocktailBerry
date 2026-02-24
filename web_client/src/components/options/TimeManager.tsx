@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateDateTime } from '../../api/options';
 import { confirmAndExecute } from '../../utils';
+import Button from '../common/Button';
 import TextHeader from '../common/TextHeader';
 
 const TimeManager: React.FC = () => {
@@ -45,13 +46,13 @@ const TimeManager: React.FC = () => {
             className='input-base !p-2'
           />
         </label>
-        <button
+        <Button
           type='submit'
-          className={`col-span-1 md:col-span-2 p-2 mt-4 button-primary-filled ${!dataValid() && 'disabled'}`}
+          filled
+          label={t('submit')}
           disabled={!dataValid()}
-        >
-          {t('submit')}
-        </button>
+          className='col-span-1 md:col-span-2 mt-4'
+        />
       </form>
     </div>
   );

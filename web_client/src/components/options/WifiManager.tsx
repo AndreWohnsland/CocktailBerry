@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateWifiData, useAvailableSsids } from '../../api/options';
 import { confirmAndExecute } from '../../utils';
+import Button from '../common/Button';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import TextHeader from '../common/TextHeader';
@@ -39,9 +40,12 @@ const WifiManager: React.FC = () => {
     <div className='p-4 w-full max-w-3xl'>
       <TextHeader text={t('wifi.setupWifi')} />
       <form onSubmit={handleSubmit} className='grid grid-cols-1 md:grid-cols-2 gap-2'>
-        <button type='button' onClick={toggleInputMode} className='col-span-1 md:col-span-2 button-secondary p-2 my-4'>
-          {isInputMode ? t('wifi.switchToSelect') : t('wifi.switchToInput')}
-        </button>
+        <Button
+          style='secondary'
+          label={isInputMode ? t('wifi.switchToSelect') : t('wifi.switchToInput')}
+          className='col-span-1 md:col-span-2 my-4'
+          onClick={toggleInputMode}
+        />
         <label className='text-neutral text-center' htmlFor='wifi-input'>
           {'SSID:'}
           {isInputMode ? (
@@ -83,13 +87,13 @@ const WifiManager: React.FC = () => {
             className='input-base !p-2'
           />
         </label>
-        <button
+        <Button
           type='submit'
+          filled
+          label={t('submit')}
           disabled={!dataValid()}
-          className={`col-span-1 md:col-span-2 button-primary-filled p-2 mt-4 ${!dataValid() && 'disabled'}`}
-        >
-          {t('submit')}
-        </button>
+          className='col-span-1 md:col-span-2 mt-4'
+        />
       </form>
     </div>
   );

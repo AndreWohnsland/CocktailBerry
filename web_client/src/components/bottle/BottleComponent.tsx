@@ -1,12 +1,14 @@
 import type React from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaMinus, FaPlus } from 'react-icons/fa6';
-import Modal from 'react-modal';
 import { updateBottle } from '../../api/bottles';
 import type { Bottle, Ingredient } from '../../types/models';
 import { errorToast, executeAndShow } from '../../utils';
+import Modal from 'react-modal';
+import Button from '../common/Button';
 import CloseButton from '../common/CloseButton';
+import DropDown from '../common/DropDown';
+import MinMaxInput from '../common/MinMaxInput';
 import ProgressBar from '../common/ProgressBar';
 
 interface BottleProps {
@@ -48,17 +50,6 @@ const BottleComponent: React.FC<BottleProps> = ({
     setIsModalOpen(false);
   };
 
-  const adjustFillLevel = (delta: number) => {
-    setTempFillLevel((prev) => {
-      const newValue = Math.max(0, prev + delta);
-      return Math.round(newValue / delta) * delta;
-    });
-  };
-
-  const setFillLevel = (level: number) => {
-    setTempFillLevel(level);
-  };
-
   const handleAdjustment = async () => {
     if (!selectedIngredient) return;
     executeAndShow(() => updateBottle(bottle.number, selectedIngredient.id, tempFillLevel)).then((success) => {
@@ -73,8 +64,8 @@ const BottleComponent: React.FC<BottleProps> = ({
     0,
   );
 
-  const handleSelectionChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newIngredientId = Number.parseInt(event.target.value, 10);
+  const handleSelectionChange = async (value: string) => {
+    const newIngredientId = Number.parseInt(value, 10);
     let possibleIngredients = freeIngredients;
     let newIngredient: Ingredient | undefined;
 
@@ -110,24 +101,21 @@ const BottleComponent: React.FC<BottleProps> = ({
           <div className='place-content-center text-center text-secondary font-bold text-2xl mx-1 w-12'>
             {bottle.number}
           </div>
-          <select
-            className='select-base block w-full !p-2'
-            name={`ingredient-bottle-${bottle.number}`}
-            value={selectedIngredientId}
-            onChange={handleSelectionChange}
-          >
-            {selectedIngredient && <option value={selectedIngredient.id}>{selectedIngredient.name}</option>}
-            <option key={0} value={0}>
-              -
-            </option>
-            {freeIngredients
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((ingredient) => (
-                <option key={ingredient.id} value={ingredient.id}>
-                  {ingredient.name}
-                </option>
-              ))}
-          </select>
+          <DropDown
+            className='block w-full !p-2'
+            id={`ingredient-bottle-${bottle.number}`}
+            value={selectedIngredientId.toString()}
+            allowedValues={[
+              ...(selectedIngredient
+                ? [{ value: selectedIngredient.id.toString(), label: selectedIngredient.name }]
+                : []),
+              { value: '0', label: '-' },
+              ...freeIngredients
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((ingredient) => ({ value: ingredient.id.toString(), label: ingredient.name })),
+            ]}
+            handleInputChange={handleSelectionChange}
+          />
           <button type='button' onClick={onToggle} className={getClass()}>
             {t('new')}
           </button>
@@ -139,10 +127,10 @@ const BottleComponent: React.FC<BottleProps> = ({
         onRequestClose={closeModal}
         className='modal slim'
         overlayClassName='overlay z-20'
-        preventScroll={true}
+        preventScroll
       >
-        <div className='rounded w-full h-full flex flex-col'>
-          <div className='pl-2 flex justify-between items-center mb-2'>
+        <div className='px-1 rounded w-full h-full flex flex-col'>
+          <div className='flex justify-between items-center mb-2'>
             <p className='text-xl font-bold text-secondary'>{selectedIngredient?.name ?? 'Ingredient'}</p>
             <CloseButton onClick={closeModal} />
           </div>
@@ -151,33 +139,16 @@ const BottleComponent: React.FC<BottleProps> = ({
               {t('bottles.adjustHeader', { maximum: selectedIngredient?.bottle_volume })}
             </p>
             <div className='flex-grow'></div>
-            <div className='flex justify-center items-center mb-4 gap-2'>
-              <button type='button' className='button-primary p-2 h-full' onClick={() => setFillLevel(0)}>
-                Min
-              </button>
-              <button type='button' onClick={() => adjustFillLevel(-50)} className='button-primary p-2'>
-                <FaMinus size={25} />
-              </button>
-              <input type='number' value={tempFillLevel} readOnly className='input-base h-full' />
-              <button type='button' onClick={() => adjustFillLevel(50)} className='button-primary p-2'>
-                <FaPlus size={25} />
-              </button>
-              <button
-                type='button'
-                className='button-primary p-2 h-full'
-                onClick={() => setFillLevel(selectedIngredient?.bottle_volume ?? 0)}
-              >
-                Max
-              </button>
-            </div>
+            <MinMaxInput
+              value={tempFillLevel}
+              onChange={setTempFillLevel}
+              max={selectedIngredient?.bottle_volume ?? 0}
+              delta={50}
+              className='mb-4'
+            />
             <div className='flex-grow'></div>
-            <div className='flex justify-between'></div>
-            <div className='mt-4 w-full'>
-              <button type='button' onClick={handleAdjustment} className='button-primary-filled w-full p-2 mb-2'>
-                {t('save')}
-              </button>
-            </div>
           </div>
+          <Button label={t('save')} filled className='w-full' onClick={handleAdjustment} />
         </div>
       </Modal>
     </>

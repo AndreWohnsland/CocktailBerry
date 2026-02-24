@@ -2,13 +2,14 @@ import type { IconType } from 'react-icons';
 
 interface ButtonProps {
   label: string | number;
-  style?: 'primary' | 'secondary' | 'neutral';
+  style?: 'primary' | 'secondary' | 'neutral' | 'danger';
   filled?: boolean;
   textSize?: 'sm' | 'md' | 'lg';
   icon?: IconType;
   iconSize?: number;
   className?: string;
   passive?: boolean;
+  disabled?: boolean;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
 }
@@ -20,6 +21,7 @@ const Button = ({
   iconSize = 20,
   textSize = 'sm',
   passive = false,
+  disabled = false,
   filled = false,
   type = 'button',
   ...props
@@ -30,12 +32,23 @@ const Button = ({
     lg: 'text-xl',
   };
   const textSizeClass = textMapping[textSize];
-  const extraClasses = [`button-${style}${filled ? '-filled' : ''}`, passive && 'disabled', textSizeClass, className]
+  const extraClasses = [
+    `button-${style}${filled ? '-filled' : ''}`,
+    passive && 'passive',
+    disabled && 'disabled',
+    textSizeClass,
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
   return (
-    <button type='button' className={`p-2 flex items-center justify-center ${extraClasses}`} {...props}>
-      {Icon && <Icon className={`mr-2`} size={iconSize} />}
+    <button
+      type={type}
+      className={`p-2 flex items-center justify-center ${extraClasses}`}
+      disabled={disabled}
+      {...props}
+    >
+      {Icon && <Icon className='mr-2' size={iconSize} />}
       {label}
     </button>
   );

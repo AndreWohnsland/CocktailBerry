@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { postAvailableIngredients, useAvailableIngredients, useIngredients } from '../../api/ingredients';
 import type { Ingredient } from '../../types/models';
+import Button from '../common/Button';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import TextHeader from '../common/TextHeader';
@@ -90,12 +91,8 @@ const AvailableBottles: React.FC = () => {
         </div>
       </div>
       <div className='w-full flex justify-between mt-12'>
-        <button type='button' onClick={() => navigate(-1)} className='button-primary p-2 w-1/2 mr-2'>
-          {t('back')}
-        </button>
-        <button type='button' onClick={updateAvailable} className='button-primary-filled p-2 w-1/2'>
-          {t('apply')}
-        </button>
+        <Button label={t('back')} className='w-1/2 mr-2' onClick={() => navigate(-1)} />
+        <Button label={t('apply')} filled className='w-1/2' onClick={updateAvailable} />
       </div>
     </div>
   );

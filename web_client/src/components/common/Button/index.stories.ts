@@ -17,7 +17,7 @@ const meta = {
     style: {
       control: {
         type: 'select',
-        options: ['primary', 'secondary', 'neutral'],
+        options: ['primary', 'secondary', 'neutral', 'danger'],
       },
     },
     textSize: { control: { type: 'select', options: ['sm', 'md', 'lg'] } },
@@ -117,5 +117,54 @@ export const Small: Story = {
   args: {
     textSize: 'sm',
     label: 'Button',
+  },
+};
+
+export const Danger: Story = {
+  args: {
+    style: 'danger',
+    label: 'Delete',
+  },
+};
+
+export const DangerFilled: Story = {
+  args: {
+    style: 'danger',
+    filled: true,
+    label: 'Delete',
+  },
+};
+
+export const Passive: Story = {
+  args: {
+    label: 'Passive',
+    passive: true,
+    filled: true,
+  },
+};
+
+export const PassiveDanger: Story = {
+  args: {
+    style: 'danger',
+    filled: true,
+    label: 'Delete',
+    passive: true,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    label: 'Disabled',
+    disabled: true,
+    filled: true,
+  },
+};
+
+export const DangerFilledDisabled: Story = {
+  args: {
+    style: 'danger',
+    filled: true,
+    label: 'Delete',
+    disabled: true,
   },
 };
