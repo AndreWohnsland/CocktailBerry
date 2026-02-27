@@ -4,7 +4,9 @@ import { FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { addAddon, deleteAddon, updateAddon, useAddonData } from '../../api/options';
 import type { AddonData } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
+import Button from '../common/Button';
 import ErrorComponent from '../common/ErrorComponent';
+import ItemCard from '../common/ItemCard';
 import LoadingData from '../common/LoadingData';
 import TextHeader from '../common/TextHeader';
 
@@ -57,14 +59,13 @@ const AddonManager: React.FC = () => {
   const createAddonButton = (addon: AddonData) => {
     if (addon.is_installable && addon.official && !addon.installed) {
       return (
-        <button
-          type='button'
+        <Button
+          filled
+          icon={FaPlus}
+          label={`${t('add')} (${addon.version})`}
+          className='px-4'
           onClick={() => handleInstall(addon)}
-          className='button-primary-filled flex items-center p-2 px-4'
-        >
-          <FaPlus className='mr-2' />
-          {t('add')} ({addon.version})
-        </button>
+        />
       );
     } else if (!addon.satisfy_min_version && !addon.installed) {
       return (
@@ -78,13 +79,14 @@ const AddonManager: React.FC = () => {
       return <div className='button-neutral !border !font-normal p-2 px-4'>{t('addons.notOfficial')}</div>;
     } else {
       return (
-        <button
-          type='button'
+        <Button
+          style='danger'
+          filled
+          icon={FaTrashAlt}
+          label={t('delete')}
+          className='px-4'
           onClick={() => handleDelete(addon)}
-          className='button-danger-filled flex items-center p-2 px-4'
-        >
-          <FaTrashAlt className='mr-2' /> {t('delete')}
-        </button>
+        />
       );
     }
   };
@@ -93,29 +95,22 @@ const AddonManager: React.FC = () => {
       <TextHeader text={t('addons.manageAddons')} />
       <div className='grid grid-cols-1 gap-2'>
         {sortedAddons?.map((addon) => (
-          <div key={addon.name} className='border border-primary p-4 rounded-xl'>
-            <div className='flex justify-between items-center mb-4'>
-              <div className='flex flex-col'>
-                <h3 className='text-lg text-secondary font-semibold'>{addon.name}</h3>
-                {addon.local_version && (
-                  <h4 className='text-secondary text-sm font-normal'>
-                    {t('addons.localVersion', { version: addon.local_version })}
-                  </h4>
-                )}
-              </div>
-              {createAddonButton(addon)}
-            </div>
-            <p>{addon.description}</p>
+          <ItemCard
+            key={addon.name}
+            title={addon.name}
+            subtitle={addon.local_version ? t('addons.localVersion', { version: addon.local_version }) : undefined}
+            description={addon.description}
+            actions={createAddonButton(addon)}
+          >
             {addon.can_update && (
-              <button
-                type='button'
+              <Button
+                filled
+                label={t('addons.update', { version: addon.version })}
+                className='px-4 mt-6 w-full'
                 onClick={() => handleUpdate(addon)}
-                className='button-primary-filled p-2 px-4 mt-6 w-full'
-              >
-                {t('addons.update', { version: addon.version })}
-              </button>
+              />
             )}
-          </div>
+          </ItemCard>
         ))}
       </div>
     </div>

@@ -279,18 +279,12 @@ const ConfigWindow: React.FC = () => {
       />
       <div className='flex flex-col w-full max-w-3xl items-center justify-center mt-8'>
         <div className='flex-grow p-2 w-full'>
-          {Object.keys(configData).map(
-            (key) => isInCurrentTab(key, selectedTab) && renderConfigEntry(key),
-          )}
+          {Object.keys(configData).map((key) => isInCurrentTab(key, selectedTab) && renderConfigEntry(key))}
         </div>
         <div className='flex flex-col items-center justify-center w-full px-2'>
           {subTabs.length > 0 && (
             <>
-              <TabSelector
-                tabs={subTabs}
-                selectedTab={selectedSubTab ?? ''}
-                onSelectTab={setSelectedSubTab}
-              />
+              <TabSelector tabs={subTabs} selectedTab={selectedSubTab ?? ''} onSelectTab={setSelectedSubTab} />
               {selectedSubTab && (
                 <div className='flex-grow p-2 w-full'>
                   {Object.keys(configData).map(

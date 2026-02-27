@@ -112,3 +112,18 @@ export const Small: Story = {
     label: 'TileButton',
   },
 };
+
+export const Passive: Story = {
+  args: {
+    label: 'Passive TileButton',
+    passive: true,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    label: 'Disabled TileButton',
+    disabled: true,
+    filled: true,
+  },
+};

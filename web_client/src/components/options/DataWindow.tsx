@@ -6,6 +6,8 @@ import { FaCocktail, FaUndo } from 'react-icons/fa';
 import { FaCoins, FaLemon } from 'react-icons/fa6';
 import { resetDataInsights, useConsumeData } from '../../api/options';
 import { confirmAndExecute } from '../../utils';
+import Button from '../common/Button';
+import DropDown from '../common/DropDown';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import TextHeader from '../common/TextHeader';
@@ -54,10 +56,6 @@ const ConsumeWindow: React.FC = () => {
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
 
-  const handleDataTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDataType(event.target.value);
-  };
-
   const resetData = () => {
     confirmAndExecute(t('data.resetTheData'), resetDataInsights).then((success) => {
       if (success) {
@@ -96,14 +94,11 @@ const ConsumeWindow: React.FC = () => {
       <div className='flex flex-col items-center justify-center flex-shrink-0 mb-2'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
           <p className='text-2xl font-bold text-secondary mr-4 text-center'>{t('data.data')}:</p>
-          <select value={selectedDataType} onChange={handleDataTypeChange} className='select-base'>
-            {consumeData &&
-              Object.keys(consumeData).map((dataType) => (
-                <option key={dataType} value={dataType}>
-                  {createSelectionUserText(dataType)}
-                </option>
-              ))}
-          </select>
+          <DropDown
+            value={selectedDataType}
+            allowedValues={Object.keys(consumeData).map((k) => ({ value: k, label: createSelectionUserText(k) }))}
+            handleInputChange={setSelectedDataType}
+          />
         </div>
       </div>
 
@@ -113,16 +108,17 @@ const ConsumeWindow: React.FC = () => {
             <ConsumeBarChart title={t('data.recipes')} data={selectedData.recipes} unit='x' icon={FaCocktail} />
             <ConsumeBarChart title={t('data.ingredients')} data={selectedData.ingredients} icon={FaLemon} />
             {selectedData.cost && <ConsumeBarChart title={t('data.cost')} data={selectedData.cost} icon={FaCoins} />}
-            {consumeData['AT RESET'].recipes && Object.keys(consumeData['AT RESET'].recipes).length > 0 && (
-              <button
-                type='button'
-                className='button-danger p-2 w-full flex items-center justify-center max-w-lg'
-                onClick={resetData}
-              >
-                <FaUndo className='mr-4' size={20} />
-                {t('data.reset')}
-              </button>
-            )}
+            {consumeData['AT RESET'].recipes &&
+              Object.keys(consumeData['AT RESET'].recipes).length > 0 &&
+              selectedDataType === 'AT RESET' && (
+                <Button
+                  style='danger'
+                  icon={FaUndo}
+                  label={t('data.reset')}
+                  className='w-full max-w-lg'
+                  onClick={resetData}
+                />
+              )}
           </>
         )}
       </div>

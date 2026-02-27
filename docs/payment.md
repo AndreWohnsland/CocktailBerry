@@ -221,9 +221,8 @@ The recommended way for a "basic" hardware setup is:
         powershell -ExecutionPolicy ByPass -c "irm https://github.com/AndreWohnsland/CocktailBerry-Payment/blob/main/scripts/windows_installer.ps1 | iex"
         ```
 
-        <!-- TODO: LINK -->
-        <!-- Alternatively, there is also a pre-built executable available for the GUI, which you can download from the release page. -->
-        <!-- You might not be able to set all options tough when using this directly, so even when using this, going over this preparation and service installation steps is recommended. -->
+        Alternatively, there is also a pre-built executable available for the GUI, which you can download from the [release page](https://github.com/AndreWohnsland/CocktailBerry-Payment/releases).
+        You might not be able to set all options tough when using this directly, so even when using this, going over this preparation and service installation steps is recommended.
 
         If [uv](https://docs.astral.sh/uv/getting-started/installation) or [git](https://git-scm.com/install/windows) fails to install, you might need to install them manually first.
 

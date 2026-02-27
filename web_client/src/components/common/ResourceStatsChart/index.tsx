@@ -11,7 +11,8 @@ export interface ResourceStatsChartProps {
   mean: number;
   raw: number[];
   unit?: string;
-  threshold?: number;}
+  threshold?: number;
+}
 
 const MAX_POINTS = 100;
 

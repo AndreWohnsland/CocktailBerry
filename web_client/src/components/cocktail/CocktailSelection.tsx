@@ -10,12 +10,12 @@ import { Tabs } from '../../constants/tabs';
 import { useConfig } from '../../providers/ConfigProvider';
 import type { Cocktail, PrepareResult } from '../../types/models';
 import { errorToast, scaleCocktail } from '../../utils';
-import Button from '../common/Button';
 import CloseButton from '../common/CloseButton';
 import ProgressModal from './ProgressModal';
 import RefillPrompt from './RefillPrompt';
+import ServingSizeButtons from './ServingSizeButtons';
 import TeamSelection from './TeamSelection';
-import { FALLBACK_SERVING_SIZES, getServingSizeIconIndex, servingSizeIcons } from './utils';
+import { FALLBACK_SERVING_SIZES } from './utils';
 
 interface CocktailModalProps {
   selectedCocktail: Cocktail;
@@ -224,22 +224,11 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
               </ul>
             </div>
           </div>
-          <div className='flex justify-center items-end w-full mt-auto gap-2 sm:mb-0 mb-2'>
-            {possibleServingSizes
-              .sort((a, b) => a - b)
-              .map((amount, index) => (
-                <Button
-                  label={amount + calculateDisplayPrice(amount, displayCocktail.price_per_100_ml)}
-                  filled
-                  key={amount}
-                  onClick={() => prepareCocktailClick(amount)}
-                  textSize='lg'
-                  className='w-full'
-                  icon={servingSizeIcons[getServingSizeIconIndex(index, possibleServingSizes.length)]}
-                  iconSize={25}
-                />
-              ))}
-          </div>
+          <ServingSizeButtons
+            servingSizes={possibleServingSizes}
+            onSelect={prepareCocktailClick}
+            getLabel={(amount) => amount + calculateDisplayPrice(amount, displayCocktail.price_per_100_ml)}
+          />
         </div>
       </div>
       <RefillPrompt

@@ -54,3 +54,27 @@ export const WithSuffix: Story = {
     handleInputChange: () => {},
   },
 };
+
+export const Large: Story = {
+  args: {
+    value: 500,
+    large: true,
+    handleInputChange: () => {},
+  },
+};
+
+export const FillParent: Story = {
+  args: {
+    value: 250,
+    fillParent: true,
+    readOnly: true,
+    className: 'h-full',
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 300, height: 100, border: '4px dashed gray' }}>
+        <Story />
+      </div>
+    ),
+  ],
+};

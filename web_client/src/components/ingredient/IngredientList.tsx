@@ -1,18 +1,21 @@
 // components/IngredientList.tsx
-import type React from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaPen, FaPlus, FaTrashAlt } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa';
 import { IoHandLeft } from 'react-icons/io5';
-import Modal from 'react-modal';
 import { deleteIngredient, postIngredient, updateIngredient, useIngredients } from '../../api/ingredients';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
 import type { Ingredient, IngredientInput } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
+import Modal from 'react-modal';
+import CheckBox from '../common/CheckBox';
 import CloseButton from '../common/CloseButton';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import ModalActions from '../common/ModalActions';
+import NumberInput from '../common/NumberInput';
 import SearchBar from '../common/SearchBar';
+import TextInput from '../common/TextInput';
 import TileButton from '../common/TileButton';
 
 const IngredientList: React.FC = () => {
@@ -50,20 +53,8 @@ const IngredientList: React.FC = () => {
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    let newValue: string | number | boolean = value;
-    if (type === 'checkbox') {
-      newValue = checked;
-    } else if (type === 'number') {
-      const parsedValue = Number.parseInt(value, 10);
-      if (Number.isNaN(parsedValue)) {
-        return; // Abort if the value is not a valid number
-      }
-      newValue = parsedValue;
-    }
-
-    setSelectedIngredient((prev) => prev && { ...prev, [name]: newValue });
+  const updateField = <K extends keyof IngredientInput>(field: K, value: IngredientInput[K]) => {
+    setSelectedIngredient((prev) => prev && { ...prev, [field]: value });
   };
 
   const closeModal = () => {
@@ -146,104 +137,62 @@ const IngredientList: React.FC = () => {
               </p>
               <CloseButton onClick={closeModal} />
             </div>
-            <div className='flex-grow'></div>
+            <div className='flex-grow' />
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>
-              <label className='flex justify-center items-center'>
-                <p className='pr-2'>{t('ingredients.name')}:</p>
-                <input
-                  type='text'
-                  name='name'
+              <div className='flex justify-center items-center'>
+                <TextInput
+                  prefix={`${t('ingredients.name')}:`}
                   value={selectedIngredient.name}
-                  onChange={handleChange}
-                  className='input-base w-full p-2 mr-2'
-                />
-              </label>
-              <label className='flex justify-center items-center'>
-                <p className='pr-2'>{t('ingredients.alcohol')}:</p>
-                <input
-                  type='number'
-                  name='alcohol'
-                  value={selectedIngredient.alcohol}
-                  onChange={handleChange}
-                  className='input-base w-full p-2 mr-2'
-                />
-              </label>
-              <label className='flex justify-center items-center' style={{ whiteSpace: 'nowrap' }}>
-                <p className='pr-2'>{t('ingredients.bottleVolume')}:</p>
-                <input
-                  type='number'
-                  name='bottle_volume'
-                  value={selectedIngredient.bottle_volume}
-                  onChange={handleChange}
-                  className='input-base w-full p-2 mr-2'
-                />
-              </label>
-              <label className='flex justify-center items-center'>
-                <p className='pr-2'>{t('ingredients.cost')}:</p>
-                <input
-                  type='number'
-                  name='cost'
-                  value={selectedIngredient.cost}
-                  onChange={handleChange}
-                  className='input-base w-full p-2 mr-2'
-                />
-              </label>
-              <div className='flex justify-start items-center' style={{ whiteSpace: 'nowrap' }}>
-                <p className='pr-2'>{t('ingredients.pumpSpeed')}:</p>
-                <input
-                  type='number'
-                  name='pump_speed'
-                  value={selectedIngredient.pump_speed}
-                  onChange={handleChange}
-                  className='input-base w-full p-2 mr-2'
+                  handleInputChange={(v) => updateField('name', v)}
                 />
               </div>
-              <label className='flex justify-center items-center'>
-                <p className='pr-2'>{t('ingredients.unit')}:</p>
-                <input
-                  type='text'
-                  name='unit'
+              <NumberInput
+                prefix={`${t('ingredients.alcohol')}:`}
+                value={selectedIngredient.alcohol}
+                handleInputChange={(v) => updateField('alcohol', v)}
+              />
+              <NumberInput
+                prefix={`${t('ingredients.bottleVolume')}:`}
+                value={selectedIngredient.bottle_volume}
+                handleInputChange={(v) => updateField('bottle_volume', v)}
+              />
+              <NumberInput
+                prefix={`${t('ingredients.cost')}:`}
+                value={selectedIngredient.cost}
+                handleInputChange={(v) => updateField('cost', v)}
+              />
+              <NumberInput
+                prefix={`${t('ingredients.pumpSpeed')}:`}
+                value={selectedIngredient.pump_speed}
+                handleInputChange={(v) => updateField('pump_speed', v)}
+              />
+              <div className='flex justify-center items-center'>
+                <TextInput
+                  prefix={`${t('ingredients.unit')}:`}
                   value={selectedIngredient.unit}
-                  onChange={handleChange}
-                  className='input-base w-full p-2 mr-2'
+                  handleInputChange={(v) => updateField('unit', v)}
                 />
-              </label>
-              <label className='flex justify-center items-center col-span-2 h-xs:col-span-1'>
-                <p className='text-primary pr-2'>{t('ingredients.onlyAddByHand')}:</p>
-                <input
-                  type='checkbox'
-                  name='hand'
-                  checked={selectedIngredient.hand}
-                  onChange={handleChange}
-                  className='checkbox-large'
+              </div>
+              <div className='flex justify-center items-center col-span-2 h-xs:col-span-1'>
+                <CheckBox
+                  value={selectedIngredient.hand}
+                  checkName={t('ingredients.onlyAddByHand')}
+                  handleInputChange={(v) => updateField('hand', v)}
                 />
-              </label>
+              </div>
             </form>
-            <div className='flex-grow'></div>
-
+            <div className='flex-grow' />
             <div className='flex justify-between mt-2'>
-              <button
-                type='button'
-                onClick={handleDelete}
-                disabled={!selectedIngredient?.id}
-                className={`${
-                  !selectedIngredient?.id && 'disabled'
-                } button-danger-filled p-2 px-4 flex justify-between items-center`}
-              >
-                <FaTrashAlt className='mr-2' />
-                {t('delete')}
-              </button>
-              <button
-                type='button'
-                className={`p-2 px-4 flex justify-between items-center button-primary-filled ${
-                  !isValidIngredient() && 'disabled'
-                }`}
-                disabled={!isValidIngredient()}
-                onClick={handlePost}
-              >
-                {selectedIngredient?.id ? <FaPen className='mr-2' /> : <FaPlus className='mr-2' />}
-                {selectedIngredient?.id ? t('apply') : t('create')}
-              </button>
+              <ModalActions
+                onDelete={handleDelete}
+                onSave={handlePost}
+                isNew={!selectedIngredient?.id}
+                deleteDisabled={!selectedIngredient?.id}
+                saveDisabled={!isValidIngredient()}
+                deleteLabel={t('delete')}
+                saveLabel={t('apply')}
+                createLabel={t('create')}
+              />
             </div>
           </div>
         )}

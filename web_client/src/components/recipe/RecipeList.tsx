@@ -1,9 +1,8 @@
 import type React from 'react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaPen, FaPlus, FaTrashAlt, FaUpload } from 'react-icons/fa';
+import { FaPlus, FaTrashAlt, FaUpload } from 'react-icons/fa';
 import { MdNoDrinks } from 'react-icons/md';
-import Modal from 'react-modal';
 import {
   deleteCocktail,
   deleteCocktailImage,
@@ -17,10 +16,17 @@ import { useIngredients } from '../../api/ingredients';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
 import type { Cocktail, CocktailInput } from '../../types/models';
 import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
+import Button from '../common/Button';
+import CheckBox from '../common/CheckBox';
+import DropDown from '../common/DropDown';
+import Modal from 'react-modal';
 import CloseButton from '../common/CloseButton';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
+import ModalActions from '../common/ModalActions';
+import NumberInput from '../common/NumberInput';
 import SearchBar from '../common/SearchBar';
+import TextInput from '../common/TextInput';
 import TileButton from '../common/TileButton';
 
 const RecipeList: React.FC = () => {
@@ -74,21 +80,24 @@ const RecipeList: React.FC = () => {
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setSelectedCocktail((prev) => prev && { ...prev, [name]: type === 'checkbox' ? checked : value });
+  const handleFieldChange = <K extends keyof CocktailInput>(name: K, value: CocktailInput[K]) => {
+    setSelectedCocktail((prev) => prev && { ...prev, [name]: value });
   };
 
-  const handleIngredientChange = (index: number, e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
+  const handleIngredientSelect = (index: number, value: string) => {
     setSelectedCocktail((prev) => {
       if (!prev) return null;
       const ingredients = [...prev.ingredients];
-      if (e.target.tagName === 'SELECT') {
-        ingredients[index] = { ...ingredients[index], id: Number(value) };
-      } else {
-        ingredients[index] = { ...ingredients[index], [name]: Number(value) };
-      }
+      ingredients[index] = { ...ingredients[index], id: Number(value) };
+      return { ...prev, ingredients };
+    });
+  };
+
+  const handleIngredientField = (index: number, field: 'amount' | 'recipe_order', value: number) => {
+    setSelectedCocktail((prev) => {
+      if (!prev) return null;
+      const ingredients = [...prev.ingredients];
+      ingredients[index] = { ...ingredients[index], [field]: value };
       return { ...prev, ingredients };
     });
   };
@@ -224,98 +233,63 @@ const RecipeList: React.FC = () => {
               <p className='text-xl font-bold text-secondary'>{selectedCocktail.name ?? t('recipes.newRecipe')}</p>
               <CloseButton onClick={closeModal} />
             </div>
-            <div className='flex-grow'></div>
+            <div className='flex-grow' />
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>
-              <label className='flex justify-center items-center'>
-                <p className='pr-2'>{t('recipes.name')}:</p>
-                <input
-                  type='text'
-                  name='name'
+              <div className='flex justify-center items-center'>
+                <TextInput
                   value={selectedCocktail.name}
-                  onChange={handleChange}
-                  className='input-base w-full p-2 mr-2'
+                  handleInputChange={(value) => handleFieldChange('name', value)}
+                  prefix={`${t('recipes.name')}:`}
                 />
-              </label>
+              </div>
               <div className='flex flex-row items-center w-full justify-center'>
-                <label className='flex justify-center items-center pr-4'>
-                  <p className='pr-2'>{t('recipes.enabled')}:</p>
-                  <input
-                    type='checkbox'
-                    name='enabled'
-                    checked={selectedCocktail.enabled}
-                    onChange={handleChange}
-                    className='checkbox-large'
+                <div className='pr-4'>
+                  <CheckBox
+                    value={selectedCocktail.enabled}
+                    checkName={t('recipes.enabled')}
+                    handleInputChange={(value) => handleFieldChange('enabled', value)}
                   />
-                </label>
-                <label className='flex justify-center items-center'>
-                  <p className='pr-2'>{t('recipes.virginAvailable')}:</p>
-                  <input
-                    type='checkbox'
-                    name='virgin_available'
-                    checked={selectedCocktail.virgin_available}
-                    onChange={handleChange}
-                    className='checkbox-large'
-                  />
-                </label>
+                </div>
+                <CheckBox
+                  value={selectedCocktail.virgin_available}
+                  checkName={t('recipes.virginAvailable')}
+                  handleInputChange={(value) => handleFieldChange('virgin_available', value)}
+                />
               </div>
               {selectedCocktail.ingredients.map((ingredient, index) => (
                 <div key={ingredient.id} className='flex items-center'>
-                  <select
-                    value={ingredient.id}
-                    onChange={(e) => handleIngredientChange(index, e)}
-                    className='select-base p-2 mr-2'
-                  >
-                    <option value={0} disabled>
-                      {t('recipes.selectIngredient')}
-                    </option>
-                    {sortedIngredients?.map((ing) => (
-                      <option key={ing.id} value={ing.id}>
-                        {ing.name}
-                      </option>
-                    ))}
-                  </select>
-                  <label className='flex justify-center items-center'>
-                    <input
-                      type='number'
-                      name='amount'
-                      value={ingredient.amount}
-                      onChange={(e) => handleIngredientChange(index, e)}
-                      className='input-base p-2'
-                    />
-                    <p className='px-1'>ml</p>
-                  </label>
-                  <input
-                    type='number'
-                    name='recipe_order'
-                    value={ingredient.recipe_order}
-                    onChange={(e) => handleIngredientChange(index, e)}
-                    className='input-base p-2 mr-1 max-w-8'
+                  <DropDown
+                    value={ingredient.id ? ingredient.id.toString() : ''}
+                    allowedValues={
+                      sortedIngredients?.map((ing) => ({ value: ing.id.toString(), label: ing.name })) ?? []
+                    }
+                    handleInputChange={(value) => handleIngredientSelect(index, value)}
+                    placeholder={t('recipes.selectIngredient')}
+                    className='mr-2'
                   />
-                  <button type='button' onClick={() => removeIngredient(index)} className='button-danger p-2 mr-1'>
+                  <NumberInput
+                    value={ingredient.amount}
+                    handleInputChange={(value) => handleIngredientField(index, 'amount', value)}
+                    suffix='ml'
+                  />
+                  <NumberInput
+                    value={ingredient.recipe_order}
+                    handleInputChange={(value) => handleIngredientField(index, 'recipe_order', value)}
+                    className='max-w-8'
+                  />
+                  <button type='button' onClick={() => removeIngredient(index)} className='button-danger p-2 ml-1'>
                     <FaTrashAlt />
                   </button>
                 </div>
               ))}
-              <button
-                type='button'
-                onClick={addIngredient}
-                className='button-neutral p-1 flex items-center justify-center'
-              >
-                <FaPlus className='mr-2' />
-                {t('recipes.addIngredient')}
-              </button>
-              <label className='flex justify-center items-center'>
-                <p className='pr-2'>{t('recipes.price')}:</p>
-                <input
-                  type='number'
-                  name='price_per_100_ml'
-                  step='0.1'
-                  value={selectedCocktail.price_per_100_ml}
-                  onChange={handleChange}
-                  className='input-base w-full p-2'
-                />
-                <p className='px-2'>€/100ml</p>
-              </label>
+              <Button style='neutral' icon={FaPlus} label={t('recipes.addIngredient')} onClick={addIngredient} />
+              <NumberInput
+                value={selectedCocktail.price_per_100_ml}
+                handleInputChange={(value) => handleFieldChange('price_per_100_ml', value)}
+                prefix={`${t('recipes.price')}:`}
+                suffix='€/100ml'
+                step={0.1}
+              />
               <div className='flex items-center pt-1'>
                 <button
                   type='button'
@@ -339,30 +313,18 @@ const RecipeList: React.FC = () => {
                 </button>
               </div>
             </form>
-            <div className='flex-grow'></div>
+            <div className='flex-grow' />
             <div className='flex justify-between mt-2'>
-              <button
-                type='button'
-                onClick={handleDelete}
-                disabled={!selectedCocktail?.id}
-                className={`${
-                  !selectedCocktail?.id && 'disabled'
-                } p-2 px-4 flex justify-between items-center button-danger-filled`}
-              >
-                <FaTrashAlt className='mr-2' />
-                {t('delete')}
-              </button>
-              <button
-                type='button'
-                className={`p-2 px-4 flex justify-between items-center button-primary-filled ${
-                  !isValidCocktail() && 'disabled'
-                }`}
-                onClick={handlePost}
-                disabled={!isValidCocktail()}
-              >
-                {selectedCocktail?.id ? <FaPen className='mr-2' /> : <FaPlus className='mr-2' />}
-                {selectedCocktail?.id ? t('apply') : t('create')}
-              </button>
+              <ModalActions
+                onDelete={handleDelete}
+                onSave={handlePost}
+                isNew={!selectedCocktail?.id}
+                deleteDisabled={!selectedCocktail?.id}
+                saveDisabled={!isValidCocktail()}
+                deleteLabel={t('delete')}
+                saveLabel={t('apply')}
+                createLabel={t('create')}
+              />
             </div>
           </div>
         )}
