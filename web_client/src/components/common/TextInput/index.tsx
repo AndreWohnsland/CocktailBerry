@@ -10,8 +10,8 @@ interface TextInputProps {
 
 const TextInput = ({ value, prefix, suffix, placeholder, type, large = false, handleInputChange }: TextInputProps) => {
   return (
-    <>
-      {prefix && <span className='text-neutral mr-1'>{prefix}</span>}
+    <div className='flex items-center whitespace-nowrap w-full'>
+      {prefix && <span className='text-neutral mx-1 whitespace-nowrap'>{prefix}</span>}
       <input
         type={type || 'text'}
         value={value}
@@ -19,8 +19,8 @@ const TextInput = ({ value, prefix, suffix, placeholder, type, large = false, ha
         className={large ? 'input-base-large' : 'input-base'}
         placeholder={placeholder}
       />
-      {suffix && <span className='text-neutral ml-1'>{suffix}</span>}
-    </>
+      {suffix && <span className='text-neutral mx-1 whitespace-nowrap'>{suffix}</span>}
+    </div>
   );
 };
 
