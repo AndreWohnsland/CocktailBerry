@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FaCog, FaExclamationTriangle, FaSpinner } from 'react-icons/fa';
 import { MdLock } from 'react-icons/md';
-import InfoScreen from '.';
 import Button from '../Button';
+import InfoScreen from '.';
 
 const meta: Meta<typeof InfoScreen> = {
   title: 'Feedback/InfoScreen',

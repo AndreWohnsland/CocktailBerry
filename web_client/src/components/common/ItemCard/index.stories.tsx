@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
 import { FaCheck, FaTrashAlt } from 'react-icons/fa';
-
-import ItemCard from '.';
+import { fn } from 'storybook/test';
 import Button from '../Button';
+import ItemCard from '.';
 
 const meta: Meta<typeof ItemCard> = {
   title: 'Elements/ItemCard',

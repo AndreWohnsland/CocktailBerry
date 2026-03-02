@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaPlus, FaTrashAlt, FaUpload } from 'react-icons/fa';
 import { MdNoDrinks } from 'react-icons/md';
+import Modal from 'react-modal';
 import {
   deleteCocktail,
   deleteCocktailImage,
@@ -18,9 +19,8 @@ import type { Cocktail, CocktailInput } from '../../types/models';
 import { confirmAndExecute, errorToast, executeAndShow } from '../../utils';
 import Button from '../common/Button';
 import CheckBox from '../common/CheckBox';
-import DropDown from '../common/DropDown';
-import Modal from 'react-modal';
 import CloseButton from '../common/CloseButton';
+import DropDown from '../common/DropDown';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import ModalActions from '../common/ModalActions';

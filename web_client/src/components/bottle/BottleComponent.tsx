@@ -1,10 +1,10 @@
 import type React from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Modal from 'react-modal';
 import { updateBottle } from '../../api/bottles';
 import type { Bottle, Ingredient } from '../../types/models';
 import { errorToast, executeAndShow } from '../../utils';
-import Modal from 'react-modal';
 import Button from '../common/Button';
 import CloseButton from '../common/CloseButton';
 import DropDown from '../common/DropDown';

@@ -1,4 +1,4 @@
-import { useQuery, type UseQueryResult } from 'react-query';
+import { type UseQueryResult, useQuery } from 'react-query';
 import type { Bottle } from '../types/models';
 import { axiosInstance } from './common';
 
