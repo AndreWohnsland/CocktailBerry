@@ -124,6 +124,7 @@ allowed_keys = Literal[
     "news_v2_available",
     "no_button",
     "no_ingredient_selected",
+    "no_waiter_logged_in",
     "no_recipe_selected",
     "not_enough_ingredient_volume",
     "options_updated_and_restart",

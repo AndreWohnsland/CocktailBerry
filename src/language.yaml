@@ -61,6 +61,9 @@ dialog:
   cocktail_canceled:
     en: 'The cocktail was cancelled!'
     de: 'Der Cocktail wurde abgebrochen!'
+  no_waiter_logged_in:
+    en: 'No service personnel is logged in. Please scan your NFC tag first.'
+    de: 'Kein Service Personal angemeldet. Bitte zuerst den NFC-Tag scannen.'
   cocktail_ready:
     en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
     de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nach tropft.{full_comment}'
