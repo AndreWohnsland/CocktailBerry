@@ -104,7 +104,7 @@ const tabConfig: { [key: string]: string[] } = {
   UI: ['UI'],
   MAKER: ['MAKER'],
   HARDWARE: ['PUMP', 'LED', 'RFID', 'I2C'],
-  SOFTWARE: ['MICROSERVICE', 'TEAM'],
+  SOFTWARE: ['MICROSERVICE', 'TEAM', 'WAITER'],
   PAYMENT: ['PAYMENT'],
 };
 

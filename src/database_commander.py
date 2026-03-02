@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, Literal
 
 import sqlalchemy
 from sqlalchemy import create_engine, func
-from sqlalchemy.orm import Session, scoped_session, sessionmaker
+from sqlalchemy.orm import Session, joinedload, scoped_session, sessionmaker
 
 from src.db_models import (
     Base,
@@ -24,6 +24,8 @@ from src.db_models import (
     DbRecipe,
     DbResourceUsage,
     DbTeamdata,
+    DbWaiter,
+    DbWaiterLog,
 )
 from src.dialog_handler import DialogHandler
 from src.filepath import DATABASE_PATH, DEFAULT_DATABASE_PATH, HOME_PATH
@@ -411,7 +413,7 @@ class DatabaseCommander:
         with self.session_scope() as session:
             recipe = session.query(DbRecipe).filter(DbRecipe.name == recipe_name).one_or_none()
             if recipe is None:
-                raise ElementNotFoundError(f"Recipe with name {recipe_name} not found")
+                raise ElementNotFoundError(f"Recipe with name {recipe_name}")
 
             if virgin:
                 recipe.counter_lifetime_virgin += 1
@@ -467,7 +469,7 @@ class DatabaseCommander:
         with self.session_scope() as session:
             recipe = session.query(DbRecipe).filter(DbRecipe.id == recipe_id).one_or_none()
             if recipe is None:
-                raise ElementNotFoundError(f"Recipe ID {recipe_id} not found")
+                raise ElementNotFoundError(f"Recipe ID {recipe_id}")
 
             recipe.name = name
             recipe.alcohol = alcohol_level
@@ -598,7 +600,7 @@ class DatabaseCommander:
         with self.session_scope() as session:
             ingredient = session.query(DbIngredient).filter(DbIngredient.id == ingredient_id).one_or_none()
             if ingredient is None:
-                raise ElementNotFoundError(f"Ingredient ID {ingredient_id} not found")
+                raise ElementNotFoundError(f"Ingredient ID {ingredient_id}")
             session.delete(ingredient)
 
     def delete_recipe(self, recipe_name: str | int) -> None:
@@ -609,7 +611,7 @@ class DatabaseCommander:
             else:
                 recipe = session.query(DbRecipe).filter(DbRecipe.id == recipe_name).one_or_none()
             if recipe is None:
-                raise ElementNotFoundError(f"Recipe {recipe_name} not found")
+                raise ElementNotFoundError(f"Recipe {recipe_name}")
             session.delete(recipe)
 
     def delete_recipe_ingredient_data(self, recipe_id: int) -> None:
@@ -942,6 +944,87 @@ class DatabaseCommander:
                 )
                 for e in db_events
             ]
+
+    # ---- Waiter Methods ----
+
+    def get_all_waiters(self) -> list[DbWaiter]:
+        """Get all registered waiters."""
+        with self.session_scope() as session:
+            return list(session.query(DbWaiter).order_by(DbWaiter.name).all())
+
+    def get_waiter_by_nfc_id(self, nfc_id: str) -> DbWaiter | None:
+        """Get a waiter by NFC ID."""
+        with self.session_scope() as session:
+            return session.query(DbWaiter).filter(DbWaiter.nfc_id == nfc_id).one_or_none()
+
+    def create_waiter(self, nfc_id: str, name: str, permissions: dict[str, bool] | None = None) -> DbWaiter:
+        """Create a new waiter. Raises ElementAlreadyExistsError if name already exists."""
+        with self.session_scope() as session:
+            existing = session.query(DbWaiter).filter(DbWaiter.name == name).one_or_none()
+            if existing is not None:
+                raise ElementAlreadyExistsError(name)
+            existing_nfc = session.query(DbWaiter).filter(DbWaiter.nfc_id == nfc_id).one_or_none()
+            if existing_nfc is not None:
+                raise ElementAlreadyExistsError(nfc_id)
+            waiter = DbWaiter(nfc_id=nfc_id, name=name)
+            if permissions is not None:
+                for key, value in permissions.items():
+                    setattr(waiter, f"privilege_{key}", value)
+            session.add(waiter)
+            session.commit()
+            return waiter
+
+    def update_waiter(
+        self, nfc_id: str, name: str | None = None, permissions: dict[str, bool] | None = None
+    ) -> DbWaiter:
+        """Update a waiter's name and/or permissions."""
+        with self.session_scope() as session:
+            waiter = session.query(DbWaiter).filter(DbWaiter.nfc_id == nfc_id).one_or_none()
+            if waiter is None:
+                raise ElementNotFoundError(nfc_id)
+            if name is not None:
+                existing = (
+                    session.query(DbWaiter).filter(DbWaiter.name == name, DbWaiter.nfc_id != nfc_id).one_or_none()
+                )
+                if existing is not None:
+                    raise ElementAlreadyExistsError(name)
+                waiter.name = name
+            if permissions is not None:
+                for key, value in permissions.items():
+                    setattr(waiter, f"privilege_{key}", value)
+            session.commit()
+            return waiter
+
+    def delete_waiter(self, nfc_id: str) -> None:
+        """Delete a waiter by NFC ID."""
+        with self.session_scope() as session:
+            waiter = session.query(DbWaiter).filter(DbWaiter.nfc_id == nfc_id).one_or_none()
+            if waiter is None:
+                raise ElementNotFoundError(nfc_id)
+            session.delete(waiter)
+            session.commit()
+
+    def log_waiter_cocktail(self, waiter_nfc_id: str, recipe_id: int, volume: int, is_virgin: bool) -> None:
+        """Log a cocktail preparation for a waiter."""
+        with self.session_scope() as session:
+            log = DbWaiterLog(
+                waiter_nfc_id=waiter_nfc_id,
+                recipe_id=recipe_id,
+                volume=volume,
+                is_virgin=is_virgin,
+            )
+            session.add(log)
+            session.commit()
+
+    def get_waiter_logs(self) -> list[DbWaiterLog]:
+        """Get all waiter logs with related waiter and recipe data."""
+        with self.session_scope() as session:
+            return list(
+                session.query(DbWaiterLog)
+                .options(joinedload(DbWaiterLog.waiter), joinedload(DbWaiterLog.recipe))
+                .order_by(DbWaiterLog.timestamp.desc())
+                .all()
+            )
 
 
 DB_COMMANDER = DatabaseCommander()

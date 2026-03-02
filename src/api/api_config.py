@@ -45,6 +45,7 @@ class Tags(StrEnum):
     INGREDIENTS = "ingredients"
     OPTIONS = "options"
     PAYMENT = "payment"
+    WAITERS = "waiters"
     MAKER_PROTECTED = "maker protected"
     MASTER_PROTECTED = "master protected"
     TESTING = "testing"
@@ -74,6 +75,10 @@ TAGS_METADATA = [
     {
         "name": Tags.PAYMENT,
         "description": "Operation related to the payment service.",
+    },
+    {
+        "name": Tags.WAITERS,
+        "description": "Service Personnel mode management and tracking.",
     },
     {
         "name": Tags.MAKER_PROTECTED,
