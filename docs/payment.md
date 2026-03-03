@@ -1,6 +1,6 @@
 # Setting Up and Using the Payment Feature
 
-!!! info "First Of All"
+!!! info "Optional Feature"
     Take note that none of this section is required to run the base program.
     This is a way to run your CocktailBerry machines in a more commercial mode.
     If you are not interested in them, just skip this section.
