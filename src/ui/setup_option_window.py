@@ -28,6 +28,7 @@ from src.ui.setup_news_window import NewsWindow
 from src.ui.setup_resource_window import ResourceWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
 from src.ui.setup_sumup_window import SumupWindow
+from src.ui.setup_waiter_window import WaiterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.updater import UpdateInfo, Updater
@@ -69,6 +70,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_about.clicked.connect(DP_CONTROLLER.say_welcome_message)
         self.button_news.clicked.connect(self._open_news_window)
         self.button_sumup.clicked.connect(self._open_sumup_window)
+        self.button_waiter.clicked.connect(self._open_waiter_window)
         self.button_events.clicked.connect(self._open_event_window)
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
@@ -205,12 +207,16 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Open the SumUp configuration window."""
         self.sumup_window = SumupWindow(self.mainscreen)
 
+    def _open_waiter_window(self) -> None:
+        """Open the waiter configuration window."""
+        self.waiter_window = WaiterWindow(self.mainscreen)
+
     def _open_event_window(self) -> None:
         """Open the events window."""
         self.event_window = EventWindow()
 
     def _check_internet_connection(self) -> None:
-        """Check if there is a active internet connection."""
+        """Check if there is an active internet connection."""
         is_connected = has_connection()
         DP_CONTROLLER.say_internet_connection_status(is_connected)
 

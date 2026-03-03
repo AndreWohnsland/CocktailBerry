@@ -30,6 +30,7 @@ from .picture_window import Ui_PictureWindow
 from .refill_prompt import Ui_RefillPrompt
 from .resource_window import Ui_ResourceWindow
 from .sumup_reader_window import Ui_SumupWindow
+from .waiter_window import Ui_WaiterWindow
 
 __all__ = [
     "Ui_addingredient",
@@ -62,5 +63,6 @@ __all__ = [
     "Ui_RFIDWriterWindow",
     "Ui_SumupWindow",
     "Ui_Teamselection",
+    "Ui_WaiterWindow",
     "Ui_WiFiWindow",
 ]

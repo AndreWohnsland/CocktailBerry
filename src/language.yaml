@@ -63,7 +63,7 @@ dialog:
     de: 'Der Cocktail wurde abgebrochen!'
   no_waiter_logged_in:
     en: 'No service personnel is logged in. Please scan your NFC tag first.'
-    de: 'Kein Service Personal angemeldet. Bitte zuerst den NFC-Tag scannen.'
+    de: 'Kein Servicepersonal angemeldet. Bitte zuerst den NFC-Tag scannen.'
   cocktail_ready:
     en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
     de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nach tropft.{full_comment}'
@@ -595,6 +595,9 @@ ui:
     sumup:
       en: 'SumUp Set Up'
       de: 'SumUp Einrichtung'
+    waiter:
+      en: 'Service Personnel'
+      de: 'Servicepersonal'
     about:
       en: 'About CocktailBerry'
       de: 'Info CocktailBerry'
@@ -975,6 +978,109 @@ ui:
     acknowledge:
       en: 'Do not show again'
       de: 'Nicht mehr anzeigen'
+
+  ##### WAITER WINDOW #####
+  # all values for waiter window
+  waiter_window:
+    management:
+      en: 'Management'
+      de: 'Verwaltung'
+    statistics:
+      en: 'Statistics'
+      de: 'Statistik'
+    last_scanned:
+      en: 'Last scanned NFC'
+      de: 'Zuletzt gescannte NFC'
+    current_nfc:
+      en: 'NFC ID'
+      de: 'NFC ID'
+    current_waiter:
+      en: 'Service Personnel'
+      de: 'Servicepersonal'
+    no_waiter:
+      en: 'No Service Personnel'
+      de: 'Kein Servicepersonal'
+    use_scanned:
+      en: 'Use scanned NFC ID'
+      de: 'Gescannte NFC ID übernehmen'
+    register_waiter:
+      en: 'Register Service Personnel'
+      de: 'Servicepersonal registrieren'
+    nfc_id_placeholder:
+      en: 'NFC ID'
+      de: 'NFC ID'
+    name_placeholder:
+      en: 'Name'
+      de: 'Name'
+    permissions_label:
+      en: 'Permissions'
+      de: 'Berechtigungen'
+    permission_maker:
+      en: 'Maker'
+      de: 'Maker'
+    permission_ingredients:
+      en: 'Ingredients'
+      de: 'Zutaten'
+    permission_recipes:
+      en: 'Recipes'
+      de: 'Rezepte'
+    permission_bottles:
+      en: 'Bottles'
+      de: 'Flaschen'
+    create_waiter:
+      en: 'Create'
+      de: 'Erstellen'
+    registered_waiters:
+      en: 'Registered Service Personnel'
+      de: 'Registriertes Servicepersonal'
+    no_waiters:
+      en: 'No Service Personnel registered'
+      de: 'Kein Servicepersonal registriert'
+    active:
+      en: 'Active'
+      de: 'Aktiv'
+    edit:
+      en: 'Edit'
+      de: 'Bearbeiten'
+    delete:
+      en: 'Delete'
+      de: 'Löschen'
+    save:
+      en: 'Save'
+      de: 'Speichern'
+    cancel:
+      en: 'Cancel'
+      de: 'Abbrechen'
+    waiter_exists:
+      en: 'Service Personnel with this NFC ID or name already exists.'
+      de: 'Servicepersonal mit dieser NFC ID oder diesem Namen existiert bereits.'
+    waiter_not_found:
+      en: 'Service Personnel not found.'
+      de: 'Servicepersonal nicht gefunden.'
+    waiter_created:
+      en: 'Service Personnel created.'
+      de: 'Servicepersonal erstellt.'
+    waiter_updated:
+      en: 'Service Personnel updated.'
+      de: 'Servicepersonal aktualisiert.'
+    waiter_deleted:
+      en: 'Service Personnel deleted.'
+      de: 'Servicepersonal gelöscht.'
+    no_logs:
+      en: 'No statistics available.'
+      de: 'Keine Statistik verfügbar.'
+    stats_summary:
+      en: '{cocktails} cocktails, {volume} ml total'
+      de: '{cocktails} Cocktails, {volume} ml gesamt'
+    deleted_user:
+      en: 'Deleted User'
+      de: 'Gelöschter Nutzer'
+    deleted_recipe:
+      en: 'Deleted Recipe'
+      de: 'Gelöschtes Rezept'
+    virgin:
+      en: 'Virgin'
+      de: 'Virgin'
 
   ##### SUMUP WINDOW #####
   # all values for sumup window

@@ -4,12 +4,15 @@ import contextlib
 import random
 from collections.abc import Callable
 from enum import IntEnum
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 import typer
 import yaml
 from pydantic.dataclasses import dataclass as api_dataclass
 from pyfiglet import Figlet
+
+if TYPE_CHECKING:
+    from src.api.models import WaiterResponse
 
 from src import (
     MAX_SUPPORTED_BOTTLES,
@@ -558,12 +561,13 @@ class Shared:
         self.cocktail_status = CocktailStatus()
         # Waiter mode state
         self.current_waiter_nfc_id: str | None = None
-        self.current_waiter_name: str | None = None
+        self.current_waiter: WaiterResponse | None = None
         # those are used to display once the message after startup if there are some issues
         self.startup_need_time_adjustment = StartupIssue()
         self.startup_python_deprecated = StartupIssue()
         self.startup_config_issue = StartupIssue()
         self.startup_payment_issue = StartupIssue()
+        self.startup_waiter_issue = StartupIssue()
 
 
 def version_callback(value: bool) -> None:
