@@ -15,6 +15,7 @@ from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.models import Cocktail, CocktailStatus, EventType, Ingredient, PrepareResult
 from src.programs.addons import ADDONS
+from src.service.waiter_service import WaiterService
 from src.service_handler import SERVICE_HANDLER
 
 if TYPE_CHECKING:
@@ -50,6 +51,8 @@ def prepare_cocktail(
     additional_message: str = "",
 ) -> tuple[PrepareResult, str]:
     """Prepare a Cocktail, if not already another one is in production and enough ingredients are available."""
+    # Capture current waiter at preparation start (immune to logout during prep)
+    waiter_nfc_id = shared.current_waiter_nfc_id
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     addon_data: dict[str, Any] = {"cocktail": cocktail}
 
@@ -90,6 +93,10 @@ def prepare_cocktail(
         consumption_amount = consumption
         DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
         DBC.save_event(EventType.COCKTAIL_CANCELED, f"{display_name}")
+        if waiter_nfc_id is not None:
+            DBC.log_waiter_cocktail(waiter_nfc_id, cocktail.id, real_volume, cocktail.is_virgin)
+        if cfg.WAITER_LOGOUT_AFTER_COCKTAIL and cfg.waiter_mode_active:
+            WaiterService().logout_waiter()
         return PrepareResult.CANCELED, canceled_message
 
     shared.cocktail_status.status = PrepareResult.FINISHED
@@ -97,6 +104,11 @@ def prepare_cocktail(
     consumption_amount = [x.amount for x in cocktail.adjusted_ingredients]
     DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
     DBC.save_event(EventType.COCKTAIL_PREPARATION, f"{display_name}")
+    # Log waiter cocktail on successful preparation
+    if waiter_nfc_id is not None:
+        DBC.log_waiter_cocktail(waiter_nfc_id, cocktail.id, real_volume, cocktail.is_virgin)
+    if cfg.WAITER_LOGOUT_AFTER_COCKTAIL and cfg.waiter_mode_active:
+        WaiterService().logout_waiter()
 
     return PrepareResult.FINISHED, add_message
 
@@ -112,6 +124,9 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
 
     Returns the validator code | Error message (in case of addon).
     """
+    # Check waiter mode: block if no registered waiter logged in
+    if cfg.waiter_mode_active and shared.current_waiter is None:
+        return PrepareResult.NO_WAITER_LOGGED_IN, DH.get_translation("no_waiter_logged_in"), None
     addon_data: dict[str, Any] = {"cocktail": cocktail}
     if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
         return PrepareResult.IN_PROGRESS, DH.cocktail_in_progress(), None

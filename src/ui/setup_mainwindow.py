@@ -23,7 +23,14 @@ from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.programs.addons import ADDONS
 from src.service.nfc_payment_service import NFCPaymentService, UserLookup
-from src.startup_checks import can_update, check_payment_service, connection_okay, is_python_deprecated
+from src.service.waiter_service import WaiterService
+from src.startup_checks import (
+    can_update,
+    check_payment_service,
+    check_waiter_mode,
+    connection_okay,
+    is_python_deprecated,
+)
 from src.tabs import bottles, ingredients, recipes
 from src.ui.cocktail_view import CocktailView
 from src.ui.icons import BUTTON_SIZE, IconSetter
@@ -69,7 +76,7 @@ RESTRICTED_MODE_UNLOCK_SEQUENCE = [
 class MainScreen(QMainWindow, Ui_MainWindow):
     """Creates the Mainscreen."""
 
-    def __init__(self) -> None:  # noqa: PLR0915
+    def __init__(self) -> None:  # noqa: C901, PLR0915
         """Init the main window. Many of the button and List connects are in pass_setup."""
         super().__init__()
         self.setupUi(self)
@@ -101,12 +108,21 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
         self.cocktail_selection: CocktailSelection | None = None
+
         # Run payment check before starting NFC so payment gets disabled if needed
         payment_result = check_payment_service()
         if not payment_result.ok:
             cfg.PAYMENT_TYPE = "Disabled"
         if cfg.cocktailberry_payment:
             NFCPaymentService().start_continuous_sensing()
+
+        # Same for waiter mode
+        waiter_check = check_waiter_mode()
+        if not waiter_check.ok:
+            cfg.WAITER_MODE = False
+        if cfg.waiter_mode_active:
+            WaiterService().start_continuous_sensing()
+
         self.cocktail_view.populate_cocktails()
         self.container_maker.addWidget(self.cocktail_view)
 
@@ -475,11 +491,26 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if index in unprotected_tabs:
             self.previous_tab_index = index
             return
+        if self._waiter_can_access_locked_tab(index):
+            self.previous_tab_index = index
+            return
         if DP_CONTROLLER.password_prompt(cfg.UI_MAKER_PASSWORD, header_type="maker"):
             self.previous_tab_index = index
             return
         # Set back to the prev tab if password not right
         self.tabWidget.setCurrentIndex(old_index)
+
+    def _waiter_can_access_locked_tab(self, index: int) -> bool:
+        if not cfg.waiter_mode_active or shared.current_waiter is None:
+            return False
+
+        permission_by_index = {
+            int(TabIndex.MAKER): shared.current_waiter.permissions.maker,
+            int(TabIndex.INGREDIENTS): shared.current_waiter.permissions.ingredients,
+            int(TabIndex.RECIPES): shared.current_waiter.permissions.recipes,
+            int(TabIndex.BOTTLES): shared.current_waiter.permissions.bottles,
+        }
+        return permission_by_index.get(index, False)
 
     def _apply_search_to_list(self) -> None:
         """Apply the search to the list widget."""

@@ -14,7 +14,7 @@ from src.api.api_config import DESCRIPTION, TAGS_METADATA, Tags
 from src.api.internal.log_config import log_config
 from src.api.internal.validation import ValidationError
 from src.api.models import AboutInfo, ApiMessage
-from src.api.routers import bottles, cocktails, ingredients, options
+from src.api.routers import bottles, cocktails, ingredients, options, waiters
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.config.errors import ConfigError
@@ -26,7 +26,14 @@ from src.migration.setup_web import download_latest_web_client
 from src.programs.addons import ADDONS, CouldNotInstallAddonError
 from src.resource_stats import start_resource_tracker
 from src.service.nfc_payment_service import NFCPaymentService
-from src.startup_checks import can_update, check_payment_service, connection_okay, is_python_deprecated
+from src.service.waiter_service import WaiterService
+from src.startup_checks import (
+    can_update,
+    check_payment_service,
+    check_waiter_mode,
+    connection_okay,
+    is_python_deprecated,
+)
 from src.updater import UpdateInfo, Updater
 from src.utils import get_platform_data
 
@@ -53,6 +60,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         _logger.warning(f"Payment service check failed: {payment_check.reason}. Disabling payment.")
         cfg.PAYMENT_TYPE = "Disabled"
         shared.startup_payment_issue.set_issue(message=payment_check.reason)
+    waiter_check = check_waiter_mode()
+    if not waiter_check.ok:
+        _logger.warning(f"Waiter mode check failed: {waiter_check.reason}. Disabling waiter mode.")
+        cfg.WAITER_MODE = False
+        shared.startup_waiter_issue.set_issue(message=waiter_check.reason)
     mc = MachineController()
     mc.init_machine()
     ADDONS.setup_addons()
@@ -70,6 +82,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     ADDONS.start_trigger_loop()
     if cfg.cocktailberry_payment:
         NFCPaymentService().start_continuous_sensing()
+    if cfg.waiter_mode_active:
+        WaiterService().start_continuous_sensing()
     yield
     mc.cleanup()
 
@@ -139,6 +153,8 @@ app.include_router(options.router)
 app.include_router(options.protected_router)
 app.include_router(ingredients.router)
 app.include_router(ingredients.protected_router)
+app.include_router(waiters.router)
+app.include_router(waiters.protected_router)
 
 
 @app.get("/", tags=[Tags.TESTING], summary="Test endpoint, check if api works")
