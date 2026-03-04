@@ -36,13 +36,13 @@ dependencies = [
 [dependency-groups]
 dev = [
   "mkdocs-material>=9.5.49",
-  "mkdocs>=1.6.1",
   "ipykernel>=6.29.5",
   "pytest>=8.3.4",
   "pytest-cov>=6.0.0",
   "pre-commit>=4.2.0",
   "ty==0.0.16",
   "ruff>=0.15.1",
+  "zensical>=0.0.24",
 ]
 
 [project.optional-dependencies]

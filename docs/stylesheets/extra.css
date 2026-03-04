@@ -1,3 +1,11 @@
+[data-md-color-primary='custom'] {
+  --md-primary-fg-color: #ff3166;
+  --md-primary-fg-color--light: #ff3166;
+  --md-primary-fg-color--dark: #ff3166;
+  --md-primary-bg-color: #fff;
+  --md-primary-bg-color--light: #ffffffb3;
+}
+
 @media screen and (max-width: 768px) {
   img {
     width: auto;
