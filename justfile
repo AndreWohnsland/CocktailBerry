@@ -161,12 +161,12 @@ python-test:
 # Serve documentation locally
 [group('Documentation')]
 docs:
-    uv run mkdocs serve
+    uv run zensical serve
 
 # Build documentation
 [group('Documentation')]
 docs-build:
-    uv run mkdocs build
+    uv run zensical build
 
 # Install pre-commit hooks
 [group('Pre-commit & CI')]

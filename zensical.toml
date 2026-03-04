@@ -1,0 +1,93 @@
+[project]
+site_name = "CocktailBerry: Open Source Cocktail Machine Software"
+site_description = "Official CocktailBerry Documentation: Open Source Software to easily build your own automated cocktail machine."
+site_author = "Andre Wohnsland"
+copyright = "&copy; Copyright 2026, Andre Wohnsland & contributors"
+repo_url = "https://github.com/AndreWohnsland/CocktailBerry"
+repo_name = "GitHub Cocktailberry"
+
+nav = [
+  { "Home" = "index.md" },
+  { "About" = "about.md" },
+  { "Quickstart" = "quickstart.md" },
+  { "Installation" = "installation.md" },
+  { "Hardware" = "hardware.md" },
+  { "Setup / Usage" = "setup.md" },
+  { "CocktailBerry Web" = "web.md" },
+  { "Supported Languages" = "languages.md" },
+  { "CLI commands" = "commands.md" },
+  { "Payment Feature" = "payment.md" },
+  { "Service Personnel" = "waiter.md" },
+  { "Advanced Topics" = "advanced.md" },
+  { "Addons" = "addons.md" },
+  { "Troubleshooting" = "troubleshooting.md" },
+  { "FAQ" = "faq.md" },
+  { "Feature Timetable" = "features.md" },
+  { "Development" = "development.md" },
+  { "How to Support" = "support.md" },
+]
+
+extra_css = ["stylesheets/extra.css"]
+
+[project.theme]
+variant = "classic"
+custom_dir = "docs/overrides"
+logo = "img/berry.svg"
+favicon = "img/favicon.ico"
+features = [
+  "navigation.footer",
+  "content.code.copy",
+  "content.code.annotate",
+  "announce.dismiss",
+  "content.tabs.link",
+]
+
+[[project.theme.palette]]
+scheme = "default"
+primary = "custom"
+toggle.icon = "material/weather-sunny"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "custom"
+toggle.icon = "material/weather-night"
+toggle.name = "Switch to light mode"
+
+# Since we customize superfences and tabbed, we must explicitly define all extensions
+# https://zensical.org/docs/setup/extensions/#default-configuration-zensicaltoml
+[project.markdown_extensions.abbr]
+[project.markdown_extensions.admonition]
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions.def_list]
+[project.markdown_extensions.footnotes]
+[project.markdown_extensions.md_in_html]
+[project.markdown_extensions.toc]
+permalink = "#"
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+[project.markdown_extensions.pymdownx.betterem]
+smart_enable = "all"
+[project.markdown_extensions.pymdownx.caret]
+[project.markdown_extensions.pymdownx.details]
+[project.markdown_extensions.pymdownx.emoji]
+emoji_index = "zensical.extensions.emoji.twemoji"
+emoji_generator = "zensical.extensions.emoji.to_svg"
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+[project.markdown_extensions.pymdownx.inlinehilite]
+[project.markdown_extensions.pymdownx.keys]
+[project.markdown_extensions.pymdownx.mark]
+[project.markdown_extensions.pymdownx.smartsymbols]
+[project.markdown_extensions.pymdownx.snippets]
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+combine_header_slug = true
+slugify = { function = "pymdownx.slugs.slugify", kwds = { case = "lower" } }
+[project.markdown_extensions.pymdownx.tasklist]
+custom_checkbox = true
+[project.markdown_extensions.pymdownx.tilde]
