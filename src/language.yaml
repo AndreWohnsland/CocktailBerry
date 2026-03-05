@@ -840,6 +840,15 @@ ui:
     PAYMENT_LOGOUT_AFTER_PREPARATION:
       en: 'Remove user information (used for cocktail display filter) after cocktail preparation, lock screen if enabled'
       de: 'Entferne Benutzerinformationen (für Cocktail Anzeigefilter verwendet) nach der Cocktail Zubereitung, Sperrbildschirm wenn aktiviert'
+    WAITER_MODE:
+      en: 'Enables the service personnel mode, requiring NFC scan before cocktail preparation. Needs an NFC/RFID reader to be configured.'
+      de: 'Aktiviert den Servicepersonal-Modus, der einen NFC-Scan vor der Cocktail Zubereitung erfordert. Ein NFC/RFID-Leser muss konfiguriert sein.'
+    WAITER_LOGOUT_AFTER_COCKTAIL:
+      en: 'Automatically log out the service personnel after a cocktail has been prepared'
+      de: 'Servicepersonal nach der Cocktail Zubereitung automatisch abmelden'
+    WAITER_AUTO_LOGOUT_S:
+      en: 'Time in seconds before the service personnel is automatically logged out, use 0 to disable'
+      de: 'Zeit in Sekunden bis das Servicepersonal automatisch abgemeldet wird, verwende 0 zum Deaktivieren'
     CUSTOM_COLOR_PRIMARY:
       en: 'Custom primary (most elements) color if custom theme is selected'
       de: 'Eigene primäre (meisten Elemente) Farbe, wenn custom Theme ausgewählt ist'
