@@ -2,6 +2,8 @@ import type React from 'react';
 import { validateMakerPassword, validateMasterPassword } from '../../api/options';
 import { useAuth } from '../../providers/AuthProvider';
 import { useConfig } from '../../providers/ConfigProvider';
+import { useWaiter } from '../../providers/WaiterProvider';
+import type { Waiter } from '../../types/models';
 import PasswordPage from './PasswordPage';
 
 interface ProtectedRouteProps {
@@ -31,14 +33,36 @@ interface MakerPasswordProtectedProps {
   tabNumber: number;
 }
 
+const waiterHasPermissionForTab = (waiter: Waiter | null | undefined, tabNumber: number): boolean => {
+  if (!waiter) {
+    return false;
+  }
+
+  const permissionByTab: Record<number, boolean> = {
+    0: waiter.permissions.maker,
+    1: waiter.permissions.ingredients,
+    2: waiter.permissions.recipes,
+    3: waiter.permissions.bottles,
+  };
+  return permissionByTab[tabNumber] ?? false;
+};
+
 export const MakerPasswordProtected: React.FC<MakerPasswordProtectedProps> = ({ children, tabNumber }) => {
   const { config } = useConfig();
   const isProtected = config.UI_LOCKED_TABS[tabNumber];
   const { makerAuthenticated, setMakerAuthenticated, setMakerPassword } = useAuth();
   const hasPassword = config.UI_MAKER_PASSWORD;
+  const { waiterState, isLoading: isWaiterLoading } = useWaiter();
+  const shouldCheckWaiter = Boolean(config.WAITER_MODE && hasPassword && isProtected && !makerAuthenticated);
+  const waiterCanBypass = shouldCheckWaiter && waiterHasPermissionForTab(waiterState?.waiter, tabNumber);
+
+  if (shouldCheckWaiter && isWaiterLoading && !waiterState) {
+    return null;
+  }
+
   return (
     <ProtectedRoute
-      isProtected={hasPassword && isProtected && !makerAuthenticated}
+      isProtected={hasPassword && isProtected && !makerAuthenticated && !waiterCanBypass}
       setAuthenticated={(password: number) => {
         setMakerAuthenticated(true);
         setMakerPassword(password);

@@ -2,7 +2,15 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { BsBootstrapReboot, BsInfoCircleFill } from 'react-icons/bs';
-import { FaCocktail, FaCreditCard, FaExclamationTriangle, FaInfoCircle, FaNewspaper, FaRegClock } from 'react-icons/fa';
+import {
+  FaCocktail,
+  FaCreditCard,
+  FaExclamationTriangle,
+  FaInfoCircle,
+  FaNewspaper,
+  FaRegClock,
+  FaUserTie,
+} from 'react-icons/fa';
 import { FaCalculator, FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
 import { GrUpdate } from 'react-icons/gr';
 import { MdEventNote, MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
@@ -196,6 +204,9 @@ const OptionWindow = () => {
           <TileButton label={t('options.news')} icon={FaNewspaper} onClick={() => navigate('news')} />
           {config.PAYMENT_TYPE === 'SumUp' && (
             <TileButton label={t('options.sumup')} icon={FaCreditCard} onClick={() => navigate('sumup')} />
+          )}
+          {config.WAITER_MODE && (
+            <TileButton label={t('options.waiters')} icon={FaUserTie} onClick={() => navigate('waiters')} />
           )}
           <TileButton label={t('options.about')} icon={BsInfoCircleFill} onClick={() => setIsAboutModalOpen(true)} />
         </div>

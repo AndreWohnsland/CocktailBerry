@@ -9,12 +9,14 @@ import { API_URL } from '../../api/common';
 import { usePaymentWebSocket } from '../../api/payment';
 import { useConfig } from '../../providers/ConfigProvider';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
+import { useWaiter } from '../../providers/WaiterProvider';
 import type { Cocktail } from '../../types/models';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import LockScreen from '../common/LockScreen';
 import SearchBar from '../common/SearchBar';
 import UserDisplay from '../common/UserDisplay';
+import WaiterDisplay from '../common/WaiterDisplay';
 import CocktailSelection from './CocktailSelection';
 import RandomCocktailSelection from './RandomCocktailSelection';
 import SingleIngredientSelection from './SingleIngredientSelection';
@@ -37,6 +39,9 @@ const CocktailList: React.FC = () => {
     isConnected,
   } = usePaymentWebSocket(config.PAYMENT_TYPE === 'CocktailBerry');
 
+  // Use waiter state from provider (single shared WebSocket + HTTP fallback)
+  const { waiterState: effectiveWaiter, isLoading: isCurrentWaiterLoading } = useWaiter();
+
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
 
@@ -49,6 +54,17 @@ const CocktailList: React.FC = () => {
     selectedCocktail === null
   ) {
     return <LockScreen title={t('lockScreen.paymentTitle')} message={t('lockScreen.paymentMessage')} />;
+  }
+
+  // Show lock screen if waiter mode is active but no registered waiter is logged in
+  if (config.WAITER_MODE && selectedCocktail === null) {
+    if (isCurrentWaiterLoading && effectiveWaiter === null) {
+      return null;
+    }
+
+    if (!effectiveWaiter?.waiter) {
+      return <LockScreen title={t('waiter.lockTitle')} message={t('waiter.lockMessage')} />;
+    }
   }
 
   const handleCloseModal = () => {
@@ -92,7 +108,8 @@ const CocktailList: React.FC = () => {
     <div className='px-2 centered max-w-7xl'>
       <div className={`w-full h-10 mb-2 sticky z-10 ${restrictedModeActive ? 'top-1' : 'top-10'}`}>
         {config.PAYMENT_TYPE === 'CocktailBerry' && <UserDisplay user={user} />}
-        <div className='absolute right-0 top-0 w-full'>
+        {config.WAITER_MODE && <WaiterDisplay waiter={effectiveWaiter} />}
+        <div className='absolute right-0 top-0 w-full pointer-events-none'>
           <SearchBar
             search={search}
             tabBarVisible={!restrictedModeActive}

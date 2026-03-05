@@ -4,6 +4,7 @@
   "apply": "Anwenden",
   "save": "Speichern",
   "delete": "Löschen",
+  "edit": "Bearbeiten",
   "submit": "Absenden",
   "add": "Hinzufügen",
   "back": "Zurück",
@@ -112,7 +113,8 @@
     "updateCocktailBerry": "CocktailBerry Software aktualisieren",
     "updateSystem": "System aktualisieren",
     "updateTheSystem": "Möchtest du das System aktualisieren?",
-    "wifi": "WLAN"
+    "wifi": "WLAN",
+    "waiters": "Servicepersonal"
   },
   "news": {
     "noNews": "Du bist auf dem neusten Stand!",
@@ -232,5 +234,33 @@
     "use": "Verwenden",
     "deleteReader": "Möchtest du den Leser '{{name}}' löschen?",
     "readerCreated": "Leser '{{name}}' wurde erfolgreich erstellt"
+  },
+  "waiter": {
+    "title": "Servicepersonal Verwaltung",
+    "noWaiter": "Kein Servicepersonal",
+    "unknown": "Unbekannt ({{nfcId}})",
+    "lockTitle": "Servicepersonal Scan erforderlich",
+    "lockMessage": "Bitte scanne deinen NFC-Tag, um dich als Servicepersonal anzumelden.",
+    "lastScanned": "Zuletzt gescannte NFC-ID",
+    "registerWaiter": "Neues Servicepersonal registrieren",
+    "nfcIdPlaceholder": "NFC-ID",
+    "namePlaceholder": "Servicepersonal Name",
+    "useScanned": "Nutzen",
+    "creating": "Wird erstellt...",
+    "created": "Servicepersonal '{{name}}' wurde erfolgreich registriert",
+    "updated": "Servicepersonal erfolgreich aktualisiert",
+    "confirmDelete": "Möchtest du den Servicepersonal '{{name}}' löschen? Bestehende Protokolle bleiben erhalten aber die Verknüpfungen entfernt.",
+    "active": "Derzeit aktiv",
+    "noWaiters": "Kein Servicepersonal registriert Scanne einen NFC-Tag und registriere einen Servicepersonal, um zu starten.",
+    "noLogs": "Noch keine Cocktail-Protokolle aufgezeichnet.",
+    "statsSummary": "{{count}} Cocktails, {{volume}} ml insgesamt",
+    "permissionsLabel": "Berechtigungen",
+    "permissions": {
+      "maker": "Maker",
+      "ingredients": "Zutaten",
+      "recipes": "Rezepte",
+      "bottles": "Flaschen"
+    },
+    "logout": "Abmelden"
   }
 }

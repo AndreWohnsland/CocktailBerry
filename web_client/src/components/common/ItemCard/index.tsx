@@ -17,7 +17,7 @@ const ItemCard = ({ title, subtitle, description, highlighted = false, actions, 
           <h3 className='text-lg text-secondary font-semibold'>{title}</h3>
           {subtitle && <span className='text-sm text-neutral'>{subtitle}</span>}
         </div>
-        {actions && <div className='flex gap-2'>{actions}</div>}
+        {actions && <div className='flex flex-col sm:flex-row gap-2'>{actions}</div>}
       </div>
       {description && <p className='mt-4'>{description}</p>}
       {children}
