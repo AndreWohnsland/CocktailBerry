@@ -34,27 +34,27 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className={`z-10 sticky mb-2 flex flex-row ${tabBarVisible ? 'top-10' : 'top-1'}`}>
-      <div className='flex-grow'></div>
+    <div className={`z-10 sticky mb-2 flex flex-row pointer-events-none ${tabBarVisible ? 'top-10' : 'top-1'}`}>
+      <div className='flex-grow' />
       <input
         type='text'
         name='searchInput'
         placeholder={t('search')}
         value={search ?? ''}
         onChange={(e) => setSearch(e.target.value)}
-        className='h-10 input-base mr-1 w-full p-3 max-w-sm'
+        className='h-10 input-base mr-1 w-full p-3 max-w-sm pointer-events-auto'
         hidden={!showSearch}
       />
       <div className={`flex ${showSearch ? '' : 'hidden'}`}>
         <button
           type='button'
           onClick={() => setSearch('')}
-          className='h-10 w-10 button-neutral flex items-center justify-center p-2 mr-1 !border'
+          className='h-10 w-10 button-neutral flex items-center justify-center p-2 mr-1 !border pointer-events-auto'
         >
           <FaEraser size={20} />
         </button>
       </div>
-      {afterInput && <div className={`mr-1 ${showSearch ? '' : 'hidden'}`}>{afterInput}</div>}
+      {afterInput && <div className={`mr-1 pointer-events-auto ${showSearch ? '' : 'hidden'}`}>{afterInput}</div>}
       <button
         type='button'
         onClick={handleHideToggle}

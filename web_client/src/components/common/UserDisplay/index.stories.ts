@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import React from 'react';
-
-import UserDisplay from '.';
 import type { PaymentUserData } from '../../../types/models';
+import UserDisplay from '.';
 
 const meta = {
   title: 'Elements/UserDisplay',

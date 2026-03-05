@@ -4,7 +4,7 @@ from fastapi import HTTPException, Security
 from fastapi.security import APIKeyHeader
 
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import Tab
+from src.config.config_manager import Tab, shared
 
 master_password_header = APIKeyHeader(name="x-master-key", scheme_name="Master Password", auto_error=False)
 maker_password_header = APIKeyHeader(name="x-maker-key", scheme_name="Maker Password", auto_error=False)
@@ -17,6 +17,20 @@ def _parse_password(password: str | None) -> int:
         return int(password)
     except ValueError:
         raise HTTPException(status_code=403, detail="Invalid Password")
+
+
+def _waiter_has_tab_permission(tab: Tab) -> bool:
+    waiter = shared.current_waiter
+    if waiter is None:
+        return False
+
+    permission_by_tab = {
+        Tab.MAKER: waiter.permissions.maker,
+        Tab.INGREDIENTS: waiter.permissions.ingredients,
+        Tab.RECIPES: waiter.permissions.recipes,
+        Tab.BOTTLES: waiter.permissions.bottles,
+    }
+    return permission_by_tab.get(tab, False)
 
 
 def master_protected_dependency(master_password: str | None = Security(master_password_header)) -> None:
@@ -32,6 +46,8 @@ def maker_protected(tab: Tab) -> Callable[[str], None]:
         if cfg.UI_MAKER_PASSWORD == 0:
             return
         if not cfg.UI_LOCKED_TABS[tab]:
+            return
+        if cfg.waiter_mode_active and _waiter_has_tab_permission(tab):
             return
         password = _parse_password(maker_password)
         if password != cfg.UI_MAKER_PASSWORD:

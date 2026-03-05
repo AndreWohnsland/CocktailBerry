@@ -243,3 +243,52 @@ class DbEvent(Base):
         self.event_type = event_type
         self.timestamp = timestamp or datetime.datetime.now()
         self.additional_info = additional_info
+
+
+class DbWaiter(Base):
+    __tablename__ = "Waiters"
+    nfc_id: Mapped[str] = mapped_column(primary_key=True, name="NFC_ID")
+    name: Mapped[str] = mapped_column(unique=True, nullable=False, name="Name")
+    privilege_maker: Mapped[bool] = mapped_column(default=False, name="Privilege_Maker")
+    privilege_ingredients: Mapped[bool] = mapped_column(default=False, name="Privilege_Ingredients")
+    privilege_recipes: Mapped[bool] = mapped_column(default=False, name="Privilege_Recipes")
+    privilege_bottles: Mapped[bool] = mapped_column(default=False, name="Privilege_Bottles")
+    privilege_options: Mapped[bool] = mapped_column(default=False, name="Privilege_Options")
+
+    logs: Mapped[list["DbWaiterLog"]] = relationship("DbWaiterLog", back_populates="waiter")
+
+    def __init__(self, nfc_id: str, name: str) -> None:
+        self.nfc_id = nfc_id
+        self.name = name
+
+
+class DbWaiterLog(Base):
+    __tablename__ = "WaiterLog"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
+    timestamp: Mapped[datetime.datetime] = mapped_column(
+        nullable=False, name="Timestamp", default=datetime.datetime.now
+    )
+    waiter_nfc_id: Mapped[str | None] = mapped_column(
+        ForeignKey("Waiters.NFC_ID", ondelete="SET NULL"), nullable=True, name="Waiter_NFC_ID"
+    )
+    recipe_id: Mapped[int | None] = mapped_column(
+        ForeignKey("Recipes.ID", ondelete="SET NULL"), nullable=True, name="Recipe_ID"
+    )
+    volume: Mapped[int] = mapped_column(nullable=False, name="Volume")
+    is_virgin: Mapped[bool] = mapped_column(nullable=False, name="Is_Virgin")
+
+    waiter: Mapped[Optional["DbWaiter"]] = relationship("DbWaiter", back_populates="logs")
+    recipe: Mapped[Optional["DbRecipe"]] = relationship("DbRecipe")
+
+    def __init__(
+        self,
+        waiter_nfc_id: str,
+        recipe_id: int | None,
+        volume: int,
+        is_virgin: bool,
+    ) -> None:
+        self.waiter_nfc_id = waiter_nfc_id
+        self.recipe_id = recipe_id
+        self.volume = volume
+        self.is_virgin = is_virgin
+        self.timestamp = datetime.datetime.now()

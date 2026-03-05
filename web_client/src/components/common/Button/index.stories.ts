@@ -1,9 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-
-import { fn } from 'storybook/test';
-
 import { FaPlus } from 'react-icons/fa6';
 import { IoHandLeft } from 'react-icons/io5';
+import { fn } from 'storybook/test';
 import Button from '.';
 
 const meta = {

@@ -374,6 +374,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             self.vbox_software: (
                 "MICROSERVICE",
                 "TEAM",
+                "WAITER",
             ),
             self.vbox_payment: ("PAYMENT",),
         }

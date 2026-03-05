@@ -55,6 +55,7 @@ if TYPE_CHECKING:
         Ui_RFIDWriterWindow,
         Ui_SumupWindow,
         Ui_Teamselection,
+        Ui_WaiterWindow,
         Ui_WiFiWindow,
     )
 
@@ -124,6 +125,7 @@ allowed_keys = Literal[
     "news_v2_available",
     "no_button",
     "no_ingredient_selected",
+    "no_waiter_logged_in",
     "no_recipe_selected",
     "not_enough_ingredient_volume",
     "options_updated_and_restart",
@@ -856,6 +858,7 @@ class UiLanguage:
             (w.button_rfid, "rfid"),
             (w.button_news, "news"),
             (w.button_sumup, "sumup"),
+            (w.button_waiter, "waiter"),
             (w.button_about, "about"),
             (w.button_back, "back"),
         ]:
@@ -895,6 +898,13 @@ class UiLanguage:
     def adjust_news_window(self, w: Ui_NewsWindow) -> None:
         """Translate the elements from the news window."""
         w.button_back.setText(self._choose_language("back"))
+
+    def adjust_waiter_window(self, w: Ui_WaiterWindow) -> None:
+        """Translate the elements from the waiter window."""
+        w.button_back.setText(self._choose_language("back"))
+        window = "waiter_window"
+        w.waiter_tabs.setTabText(w.waiter_tabs.indexOf(w.tab_management), self._choose_language("management", window))
+        w.waiter_tabs.setTabText(w.waiter_tabs.indexOf(w.tab_statistics), self._choose_language("statistics", window))
 
     def adjust_sumup_window(self, w: Ui_SumupWindow) -> None:
         """Translate the elements from the sumup window."""

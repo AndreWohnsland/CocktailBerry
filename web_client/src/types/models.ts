@@ -73,6 +73,7 @@ export type PrepareResult =
   | 'NOT_ENOUGH_INGREDIENTS'
   | 'ADDON_ERROR'
   | 'WAITING_FOR_PAYMENT'
+  | 'NO_WAITER_LOGGED_IN'
   | 'UNDEFINED';
 
 export interface UserAuth {
@@ -181,6 +182,9 @@ export interface DefinedConfigData {
   PAYMENT_TIMEOUT_S: number;
   PAYMENT_AUTO_LOGOUT_TIME_S: number;
   PAYMENT_LOGOUT_AFTER_PREPARATION: boolean;
+  WAITER_MODE: boolean;
+  WAITER_LOGOUT_AFTER_COCKTAIL: boolean;
+  WAITER_AUTO_LOGOUT_S: number;
   CUSTOM_COLOR_PRIMARY: string;
   CUSTOM_COLOR_SECONDARY: string;
   CUSTOM_COLOR_NEUTRAL: string;
@@ -336,4 +340,42 @@ export interface AboutInfo {
   platform: string;
   project_name: string;
   version: string;
+}
+
+export interface WaiterPermissions {
+  maker: boolean;
+  ingredients: boolean;
+  recipes: boolean;
+  bottles: boolean;
+}
+
+export interface Waiter {
+  nfc_id: string;
+  name: string;
+  permissions: WaiterPermissions;
+}
+
+export interface WaiterCreate {
+  nfc_id: string;
+  name: string;
+  permissions?: WaiterPermissions;
+}
+
+export interface WaiterUpdate {
+  name?: string;
+  permissions?: WaiterPermissions;
+}
+
+export interface WaiterLogEntry {
+  id: number;
+  timestamp: string;
+  waiter_name: string;
+  recipe_name: string;
+  volume: number;
+  is_virgin: boolean;
+}
+
+export interface CurrentWaiterState {
+  nfc_id: string | null;
+  waiter: Waiter | null;
 }

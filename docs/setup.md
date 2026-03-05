@@ -77,13 +77,16 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 ??? info "List Software Config Values"
     Software config values are used to configure additional connected software and its behavior.
 
-    | Value Name              | Description                                                |
-    | :---------------------- | :--------------------------------------------------------- |
-    | `MICROSERVICE_ACTIVE`   | Post to microservice set up by docker                      |
-    | `MICROSERVICE_BASE_URL` | Base URL for microservice (default: http://127.0.0.1:5000) |
-    | `TEAMS_ACTIVE`          | Use teams feature                                          |
-    | `TEAM_BUTTON_NAMES`     | List of format ["Team1", "Team2"]                          |
-    | `TEAM_API_URL`          | Endpoint of teams API, default used port by API is 8080    |
+    | Value Name                     | Description                                                |
+    | :----------------------------- | :--------------------------------------------------------- |
+    | `MICROSERVICE_ACTIVE`          | Post to microservice set up by docker                      |
+    | `MICROSERVICE_BASE_URL`        | Base URL for microservice (default: http://127.0.0.1:5000) |
+    | `TEAMS_ACTIVE`                 | Use teams feature                                          |
+    | `TEAM_BUTTON_NAMES`            | List of format ["Team1", "Team2"]                          |
+    | `TEAM_API_URL`                 | Endpoint of teams API, default used port by API is 8080    |
+    | `WAITER_MODE`                  | Enable or disable Service Personnel Mode                   |
+    | `WAITER_LOGOUT_AFTER_COCKTAIL` | Log out after cocktail preparation                         |
+    | `WAITER_AUTO_LOGOUT_S`         | Log out after x seconds of inactivity (0 = disabled)       |
 
 ??? info "Payment Related Config Values"
     Payment config values are used to configure the payment system and its behavior.

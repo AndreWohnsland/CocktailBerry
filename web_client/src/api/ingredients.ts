@@ -1,4 +1,4 @@
-import { useQuery, type UseQueryResult } from 'react-query';
+import { type UseQueryResult, useQuery } from 'react-query';
 import type { Ingredient, IngredientInput } from '../types/models';
 import { axiosInstance } from './common';
 

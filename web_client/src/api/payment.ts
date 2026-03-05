@@ -4,6 +4,9 @@ import type { Cocktail, PaymentUserData, PaymentUserUpdate } from '../types/mode
 import { errorToast } from '../utils';
 import { API_URL } from './common';
 
+const RECONNECT_BASE_DELAY_MS = 1_000;
+const RECONNECT_MAX_DELAY_MS = 16_000;
+
 export const usePaymentWebSocket = (enabled: boolean) => {
   const [user, setUser] = useState<PaymentUserData | null>(null);
   const [cocktails, setCocktails] = useState<Cocktail[]>([]);
@@ -24,62 +27,83 @@ export const usePaymentWebSocket = (enabled: boolean) => {
       return undefined;
     }
 
-    // Create WebSocket URL (convert http to ws)
-    const wsUrl = `${API_URL.replace(/^http/, 'ws')}/cocktails/ws/payment/user`;
-    const ws = new WebSocket(wsUrl);
-    // Track if connection was ever established (to suppress StrictMode double-mount noise)
-    let wasConnected = false;
+    let disposed = false;
+    let reconnectAttempt = 0;
+    let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+    let ws: WebSocket | null = null;
 
-    ws.onopen = () => {
-      console.log('Payment WebSocket connected');
-      wasConnected = true;
-      setIsConnected(true);
-    };
+    const connect = () => {
+      if (disposed) return;
+      const wsUrl = `${API_URL.replace(/^http/, 'ws')}/cocktails/ws/payment/user`;
+      ws = new WebSocket(wsUrl);
+      // Track if connection was ever established (to suppress StrictMode double-mount noise)
+      let wasConnected = false;
 
-    ws.onmessage = (event) => {
-      try {
-        const data: PaymentUserUpdate = JSON.parse(event.data);
+      ws.onopen = () => {
+        console.log('Payment WebSocket connected');
+        wasConnected = true;
+        reconnectAttempt = 0;
+        setIsConnected(true);
+      };
 
-        // Handle error states - show toast but don't change user state
-        const lookupResult = data.changeReason;
-        if (lookupResult === 'USER_NOT_FOUND') {
-          errorToast(t('payment.userNotFound'));
-          return;
+      ws.onmessage = (event) => {
+        try {
+          const data: PaymentUserUpdate = JSON.parse(event.data);
+
+          // Handle error states - show toast but don't change user state
+          const lookupResult = data.changeReason;
+          if (lookupResult === 'USER_NOT_FOUND') {
+            errorToast(t('payment.userNotFound'));
+            return;
+          }
+          if (lookupResult === 'SERVICE_UNAVAILABLE') {
+            errorToast(t('payment.serviceUnavailable'));
+            return;
+          }
+
+          // Only update if user actually changed
+          const currentUid = data.user?.nfc_id ?? null;
+          if (currentUid !== prevUserUidRef.current) {
+            prevUserUidRef.current = currentUid;
+            setUser(data.user);
+            setCocktails(data.cocktails);
+          }
+        } catch (error) {
+          console.error('Error parsing WebSocket message:', error);
         }
-        if (lookupResult === 'SERVICE_UNAVAILABLE') {
-          errorToast(t('payment.serviceUnavailable'));
-          return;
+      };
+
+      ws.onerror = (error) => {
+        // Only log errors if connection was established (avoid React StrictMode noise)
+        if (wasConnected) {
+          console.error('Payment WebSocket error:', error);
         }
+      };
 
-        // Only update if user actually changed
-        const currentUid = data.user?.nfc_id ?? null;
-        if (currentUid !== prevUserUidRef.current) {
-          prevUserUidRef.current = currentUid;
-          setUser(data.user);
-          setCocktails(data.cocktails);
+      ws.onclose = () => {
+        // Only log if connection was established (avoid React StrictMode noise)
+        if (wasConnected) {
+          console.log('Payment WebSocket closed');
         }
-      } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
-      }
+        setIsConnected(false);
+        // Schedule reconnection with exponential backoff
+        if (!disposed) {
+          const delay = Math.min(RECONNECT_BASE_DELAY_MS * 2 ** reconnectAttempt, RECONNECT_MAX_DELAY_MS);
+          reconnectAttempt += 1;
+          console.log(`Payment WebSocket reconnecting in ${delay}ms (attempt ${reconnectAttempt})`);
+          reconnectTimer = setTimeout(connect, delay);
+        }
+      };
     };
 
-    ws.onerror = (error) => {
-      // Only log errors if connection was established (avoid React StrictMode noise)
-      if (wasConnected) {
-        console.error('Payment WebSocket error:', error);
-      }
-    };
-
-    ws.onclose = () => {
-      // Only log if connection was established (avoid React StrictMode noise)
-      if (wasConnected) {
-        console.log('Payment WebSocket closed');
-      }
-      setIsConnected(false);
-    };
+    connect();
 
     return () => {
-      ws.close();
+      disposed = true;
+      if (reconnectTimer) {
+        clearTimeout(reconnectTimer);
+      }
+      ws?.close();
     };
   }, [enabled, t]);
 

@@ -4,12 +4,15 @@ import contextlib
 import random
 from collections.abc import Callable
 from enum import IntEnum
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 import typer
 import yaml
 from pydantic.dataclasses import dataclass as api_dataclass
 from pyfiglet import Figlet
+
+if TYPE_CHECKING:
+    from src.api.models import WaiterResponse
 
 from src import (
     MAX_SUPPORTED_BOTTLES,
@@ -148,6 +151,10 @@ class ConfigManager:
     PAYMENT_SUMUP_TERMINAL_ID: str = ""
     PAYMENT_AUTO_LOGOUT_TIME_S: int = 60
     PAYMENT_LOGOUT_AFTER_PREPARATION: bool = True
+    # Waiter mode settings
+    WAITER_MODE: bool = False
+    WAITER_LOGOUT_AFTER_COCKTAIL: bool = False
+    WAITER_AUTO_LOGOUT_S: int = 0
     # Custom theme settings
     CUSTOM_COLOR_PRIMARY: str = "#007bff"
     CUSTOM_COLOR_SECONDARY: str = "#ef9700"
@@ -275,6 +282,9 @@ class ConfigManager:
             "PAYMENT_SUMUP_TERMINAL_ID": StringType(),
             "PAYMENT_AUTO_LOGOUT_TIME_S": IntType([build_number_limiter(0, 1000000000)], suffix="s"),
             "PAYMENT_LOGOUT_AFTER_PREPARATION": BoolType(check_name="Logout After Preparation"),
+            "WAITER_MODE": BoolType(check_name="Enable Service Personnel Mode"),
+            "WAITER_LOGOUT_AFTER_COCKTAIL": BoolType(check_name="Logout After Cocktail"),
+            "WAITER_AUTO_LOGOUT_S": IntType([build_number_limiter(0, 100000)], suffix="s"),
             "CUSTOM_COLOR_PRIMARY": StringType(),
             "CUSTOM_COLOR_SECONDARY": StringType(),
             "CUSTOM_COLOR_NEUTRAL": StringType(),
@@ -299,6 +309,16 @@ class ConfigManager:
     def payment_enabled(self) -> bool:
         """Check if any payment option is selected."""
         return self.PAYMENT_TYPE != "Disabled"
+
+    @property
+    def waiter_mode_active(self) -> bool:
+        """Check if waiter mode is enabled."""
+        return self.WAITER_MODE
+
+    @property
+    def nfc_enabled(self) -> bool:
+        """Check if any NFC reader is enabled."""
+        return self.RFID_READER != "No"
 
     def read_local_config(self, update_config: bool = False, validate: bool = True) -> None:
         """Read the local config file and set the values if they are valid.
@@ -392,6 +412,8 @@ class ConfigManager:
 
         Currently implemented:
         - Checks that I2C pin types used in PUMP_CONFIG have corresponding enabled devices in I2C_CONFIG.
+        - Checks that WAITER_MODE is not enabled alongside CocktailBerry NFC payment.
+        - Check that some nfc is active when payment/waiter mode is active.
         """
         # Collect all I2C pin types used in PUMP_CONFIG (excluding GPIO)
         required_i2c_types: set[str] = set()
@@ -409,6 +431,19 @@ class ConfigManager:
                 f"PUMP_CONFIG uses I2C pin types {', '.join(missing_types)} but I2C_CONFIG "
                 "has no enabled devices of these types. Add enabled entries to I2C_CONFIG."
             )
+            _logger.error(f"Config Error: {error_msg}")
+            if validate:
+                raise ConfigError(error_msg)
+
+        # Check that waiter mode is not enabled alongside CocktailBerry NFC payment
+        if self.WAITER_MODE and self.payment_enabled:
+            error_msg = "WAITER_MODE cannot be enabled when payment is also enabled"
+            _logger.error(f"Config Error: {error_msg}")
+            if validate:
+                raise ConfigError(error_msg)
+
+        if (self.WAITER_MODE or self.payment_enabled) and not self.nfc_enabled:
+            error_msg = "NFC must be set when payment or waiter mode is active"
             _logger.error(f"Config Error: {error_msg}")
             if validate:
                 raise ConfigError(error_msg)
@@ -524,11 +559,15 @@ class Shared:
         self.is_v1 = False
         self.restricted_mode_active = False
         self.cocktail_status = CocktailStatus()
+        # Waiter mode state
+        self.current_waiter_nfc_id: str | None = None
+        self.current_waiter: WaiterResponse | None = None
         # those are used to display once the message after startup if there are some issues
         self.startup_need_time_adjustment = StartupIssue()
         self.startup_python_deprecated = StartupIssue()
         self.startup_config_issue = StartupIssue()
         self.startup_payment_issue = StartupIssue()
+        self.startup_waiter_issue = StartupIssue()
 
 
 def version_callback(value: bool) -> None:

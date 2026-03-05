@@ -4,6 +4,7 @@
   "apply": "Apply",
   "save": "Save",
   "delete": "Delete",
+  "edit": "Edit",
   "submit": "Submit",
   "add": "Add",
   "back": "Back",
@@ -112,7 +113,8 @@
     "updateCocktailBerry": "Update CocktailBerry Software",
     "updateSystem": "Update System",
     "updateTheSystem": "Do you want to update the System?",
-    "wifi": "WiFi"
+    "wifi": "WiFi",
+    "waiters": "Waiters"
   },
   "news": {
     "noNews": "You are up to date!",
@@ -232,5 +234,33 @@
     "use": "Use",
     "deleteReader": "Do you want to delete the reader '{{name}}'",
     "readerCreated": "Reader '{{name}}' was created successfully"
+  },
+  "waiter": {
+    "title": "Service Personnel Management",
+    "noWaiter": "No Service Personnel",
+    "unknown": "Unknown ({{nfcId}})",
+    "lockTitle": "Service Personnel Scan Required",
+    "lockMessage": "Please scan your NFC tag to log in as a service personnel.",
+    "lastScanned": "Last scanned NFC ID",
+    "registerWaiter": "Register New Service Personnel",
+    "nfcIdPlaceholder": "NFC ID",
+    "namePlaceholder": "Service Personnel Name",
+    "useScanned": "Use",
+    "creating": "Creating...",
+    "created": "Service Personnel '{{name}}' was registered successfully",
+    "updated": "Service Personnel updated successfully",
+    "confirmDelete": "Do you want to delete the service personnel '{{name}}'? Existing logs will be preserved but associations are lost.",
+    "active": "Currently active",
+    "noWaiters": "No waiters registered. Scan an NFC tag and register a service personnel to get started.",
+    "noLogs": "No cocktail logs recorded yet.",
+    "statsSummary": "{{count}} cocktails, {{volume}} ml total",
+    "permissionsLabel": "Permissions",
+    "permissions": {
+      "maker": "Maker",
+      "ingredients": "Ingredients",
+      "recipes": "Recipes",
+      "bottles": "Bottles"
+    },
+    "logout": "Logout"
   }
 }

@@ -10,6 +10,7 @@ import { AuthProvider } from './providers/AuthProvider.tsx';
 import { ConfigProvider } from './providers/ConfigProvider.tsx';
 import { CustomColorProvider } from './providers/CustomColorProvider.tsx';
 import { RestrictedModeProvider } from './providers/RestrictedModeProvider.tsx';
+import { WaiterProvider } from './providers/WaiterProvider.tsx';
 
 const queryClient = new QueryClient();
 
@@ -26,9 +27,11 @@ createRoot(root).render(
         <ConfigProvider>
           <CustomColorProvider>
             <RestrictedModeProvider>
-              <AuthProvider>
-                <App />
-              </AuthProvider>
+              <WaiterProvider>
+                <AuthProvider>
+                  <App />
+                </AuthProvider>
+              </WaiterProvider>
             </RestrictedModeProvider>
           </CustomColorProvider>
         </ConfigProvider>

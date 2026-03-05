@@ -1,10 +1,15 @@
-from typing import Annotated, TypeVar
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Annotated, TypeVar
 
 from annotated_types import Len
 from pydantic import BaseModel, Field
 
 from src.config.config_manager import StartupIssue
 from src.models import Event, PrepareResult
+
+if TYPE_CHECKING:
+    from src.db_models import DbWaiter
 
 T = TypeVar("T")
 
@@ -29,8 +34,8 @@ class CocktailIngredient(BaseModel):
 
 
 class CocktailsAndIngredients(BaseModel):
-    cocktails: list["Cocktail"]
-    ingredients: list["Ingredient"]
+    cocktails: list[Cocktail]
+    ingredients: list[Ingredient]
 
 
 class Cocktail(BaseModel):
@@ -117,6 +122,7 @@ class IssueData(BaseModel):
     internet: StartupIssue
     config: StartupIssue
     payment: StartupIssue
+    waiter: StartupIssue
 
 
 class DateTimeInput(BaseModel):
@@ -148,3 +154,54 @@ class SumupReaderResponse(BaseModel):
 class SumupReaderCreate(BaseModel):
     name: str
     pairing_code: str
+
+
+class WaiterPermissions(BaseModel):
+    maker: bool = False
+    ingredients: bool = False
+    recipes: bool = False
+    bottles: bool = False
+
+
+class WaiterResponse(BaseModel):
+    nfc_id: str
+    name: str
+    permissions: WaiterPermissions
+
+    @classmethod
+    def from_db(cls, waiter: DbWaiter) -> WaiterResponse:
+        return cls(
+            nfc_id=waiter.nfc_id,
+            name=waiter.name,
+            permissions=WaiterPermissions(
+                maker=waiter.privilege_maker,
+                ingredients=waiter.privilege_ingredients,
+                recipes=waiter.privilege_recipes,
+                bottles=waiter.privilege_bottles,
+            ),
+        )
+
+
+class WaiterCreate(BaseModel):
+    nfc_id: str
+    name: str
+    permissions: WaiterPermissions | None = None
+
+
+class WaiterUpdate(BaseModel):
+    name: str | None = None
+    permissions: WaiterPermissions | None = None
+
+
+class WaiterLogEntry(BaseModel):
+    id: int
+    timestamp: str
+    waiter_name: str
+    recipe_name: str
+    volume: int
+    is_virgin: bool
+
+
+class CurrentWaiterState(BaseModel):
+    nfc_id: str | None = None
+    waiter: WaiterResponse | None = None

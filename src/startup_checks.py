@@ -13,8 +13,8 @@ _logger = LoggerHandler("startup_checks")
 
 
 @dataclass
-class PaymentCheckResult:
-    """Result of a payment startup check."""
+class CheckResult:
+    """Result of a startup check."""
 
     ok: bool
     reason: str = ""
@@ -42,18 +42,18 @@ def is_python_deprecated() -> bool:
     return sys_python < FUTURE_PYTHON_VERSION
 
 
-def check_payment_service() -> PaymentCheckResult:
+def check_payment_service() -> CheckResult:
     """Check if the configured payment service can start properly."""
     if not cfg.payment_enabled:
-        return PaymentCheckResult(ok=True)
+        return CheckResult(ok=True)
     if cfg.sumup_payment:
         return _check_sumup()
     if cfg.cocktailberry_payment:
         return _check_cocktailberry_nfc()
-    return PaymentCheckResult(ok=True)
+    return CheckResult(ok=True)
 
 
-def _check_sumup() -> PaymentCheckResult:
+def _check_sumup() -> CheckResult:
     """Validate SumUp payment prerequisites."""
     # Try to initialize the client and list readers to verify credentials
     try:
@@ -63,17 +63,26 @@ def _check_sumup() -> PaymentCheckResult:
         )
         result = service.get_all_readers_result()
         if isinstance(result, Err):
-            return PaymentCheckResult(ok=False, reason=f"SumUp API error: {result.error} (code: {result.code})")
+            return CheckResult(ok=False, reason=f"SumUp API error: {result.error} (code: {result.code})")
         _logger.info(f"SumUp startup check passed, {len(result.data)} reader(s) found.")
     except Exception as e:
-        return PaymentCheckResult(ok=False, reason=f"SumUp API error: {e}")
+        return CheckResult(ok=False, reason=f"SumUp API error: {e}")
     if not cfg.PAYMENT_SUMUP_TERMINAL_ID:
         _logger.warning("Reader is not set, but it is required for payments. Please set it up.")
-    return PaymentCheckResult(ok=True)
+    return CheckResult(ok=True)
 
 
-def _check_cocktailberry_nfc() -> PaymentCheckResult:
+def _check_cocktailberry_nfc() -> CheckResult:
     """Validate CocktailBerry NFC payment prerequisites."""
     if RFIDReader().rfid is None:
-        return PaymentCheckResult(ok=False, reason=f"Could not set up or use {cfg.RFID_READER} reader, see logs.")
-    return PaymentCheckResult(ok=True)
+        return CheckResult(ok=False, reason=f"Could not set up or use '{cfg.RFID_READER}' reader, see logs.")
+    return CheckResult(ok=True)
+
+
+def check_waiter_mode() -> CheckResult:
+    """Check if waiter mode can start properly (NFC reader available)."""
+    if not cfg.WAITER_MODE:
+        return CheckResult(ok=True)
+    if RFIDReader().rfid is None:
+        return CheckResult(ok=False, reason=f"Could not set up or use '{cfg.RFID_READER}' reader for waiter mode.")
+    return CheckResult(ok=True)

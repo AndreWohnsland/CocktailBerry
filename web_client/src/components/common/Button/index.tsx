@@ -48,7 +48,7 @@ const Button = ({
       disabled={disabled}
       {...props}
     >
-      {Icon && <Icon className='mr-2' size={iconSize} />}
+      {Icon && <Icon className={`${label ? 'mr-2' : ''}`} size={iconSize} />}
       {label}
     </button>
   );
