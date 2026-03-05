@@ -42,7 +42,7 @@ const WaiterDisplay: React.FC<WaiterDisplayProps> = ({ waiter, initialOpen = fal
   return (
     <div className='sticky-top mb-2 float-left mr-2 relative z-20'>
       <div className='flex-shrink inline-flex items-center gap-1'>
-        <Activity mode={!isOpen ? 'visible' : 'hidden'}>
+        <Activity mode={isOpen ? 'hidden' : 'visible'}>
           <Button
             style='primary'
             icon={FaUserTie}
@@ -53,14 +53,7 @@ const WaiterDisplay: React.FC<WaiterDisplayProps> = ({ waiter, initialOpen = fal
           />
         </Activity>
         <Activity mode={isOpen ? 'visible' : 'hidden'}>
-          <Button
-            style='neutral'
-            icon={IoClose}
-            iconSize={26}
-            label=''
-            onClick={toggle}
-            className='h-10'
-          />
+          <Button style='neutral' icon={IoClose} iconSize={26} label='' onClick={toggle} className='h-10' />
           <Button
             style='danger'
             filled
@@ -77,5 +70,3 @@ const WaiterDisplay: React.FC<WaiterDisplayProps> = ({ waiter, initialOpen = fal
 };
 
 export default WaiterDisplay;
-
-

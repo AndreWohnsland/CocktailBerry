@@ -203,5 +203,5 @@ class WaiterLogEntry(BaseModel):
 
 
 class CurrentWaiterState(BaseModel):
-    nfc_id: str | None
-    waiter: WaiterResponse | None
+    nfc_id: str | None = None
+    waiter: WaiterResponse | None = None
