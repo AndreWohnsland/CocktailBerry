@@ -224,7 +224,8 @@ const ConfigWindow: React.FC = () => {
   const handleAddItem = (key: string, defaultValue: PossibleConfigValue) => {
     setConfigData((prevData) => {
       const currentValue = prevData[key];
-      const newValue = Array.isArray(currentValue) ? [...currentValue, defaultValue] : [defaultValue];
+      const clonedDefault = structuredClone(defaultValue);
+      const newValue = Array.isArray(currentValue) ? [...currentValue, clonedDefault] : [clonedDefault];
       return {
         ...prevData,
         [key]: newValue,
