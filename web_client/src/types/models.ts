@@ -198,6 +198,7 @@ export interface PumpConfig {
   pin: number;
   volume_flow: number;
   tube_volume: number;
+  board_number: number;
 }
 
 export interface CustomColors {
@@ -213,12 +214,15 @@ export interface ReversionConfig {
   pin: number;
   pin_type: string;
   inverted: boolean;
+  board_number: number;
 }
 
 export interface I2CConfig {
+  device_type: string;
   enabled: boolean;
   address_int: number;
   inverted: boolean;
+  board_number: number;
 }
 
 // generic interface for the config data with ui information

@@ -24,6 +24,7 @@ class SinglePinControllerFactory:
         self,
         pin: int,
         pin_type: SupportedPinControlType,
+        board_number: int = 1,
         invert_override: bool | None = None,
     ) -> SinglePinController:
         """Return the appropriate GPIO.
@@ -33,7 +34,7 @@ class SinglePinControllerFactory:
         gpio_inverted = cfg.MAKER_PINS_INVERTED if invert_override is None else invert_override
         match pin_type:
             case "MCP23017" | "PCF8574" | "PCA9535":
-                return self._i2c_factory.create_i2c_gpio(pin_type, pin, invert_override)
+                return self._i2c_factory.create_i2c_gpio(pin_type, pin, board_number, invert_override)
             case "GPIO":
                 if is_rpi5():
                     return Rpi5GPIO(pin, gpio_inverted)
@@ -71,7 +72,9 @@ class PinController:
         invert_override: bool | None = None,
     ) -> SinglePinController:
         """Create and initialize a SinglePinController for a pin."""
-        controller = self._factory.generate_single_pin_controller(pin_id.pin, pin_id.pin_type, invert_override)
+        controller = self._factory.generate_single_pin_controller(
+            pin_id.pin, pin_id.pin_type, pin_id.board_number, invert_override
+        )
         controller.initialize(is_input, pull_down)
         self._pins[pin_id] = controller
         return controller

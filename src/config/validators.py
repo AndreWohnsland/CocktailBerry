@@ -22,12 +22,22 @@ def build_number_limiter(min_val: float = 1, max_val: float = 100) -> Callable[[
     return limit_number
 
 
-def valide_no_identical_active_i2c_devices(configname: str, data: list[dict]) -> None:
-    """Validate that no I2C device type is enabled more than once."""
-    active_types = [d["device_type"] for d in data if d["enabled"]]
-    duplicates = {t for t in active_types if active_types.count(t) > 1}
-    if duplicates:
-        raise ConfigError(
-            f"{configname} has duplicate enabled device types: "
-            f"{', '.join(duplicates)}. Each type can only be enabled once."
-        )
+def build_distinct_validator(keys: list[str]) -> Callable[[str, list[dict]], None]:
+    """Build a validator that checks list items have distinct values across the given keys.
+
+    Each combination of values for the specified keys must be unique across all items in the list.
+    """
+
+    def validate_distinct(configname: str, data: list[dict]) -> None:
+        seen: list[tuple] = []
+        for item in data:
+            key_tuple = tuple(item.get(k) for k in keys)
+            if key_tuple in seen:
+                readable = ", ".join(f"{k}={item.get(k)}" for k in keys)
+                raise ConfigError(
+                    f"{configname} has duplicate entries for ({readable}). "
+                    f"Each combination of {', '.join(keys)} must be unique."
+                )
+            seen.append(key_tuple)
+
+    return validate_distinct

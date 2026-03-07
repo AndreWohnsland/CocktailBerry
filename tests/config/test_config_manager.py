@@ -151,7 +151,9 @@ class TestConfigManagerSetConfig:
             config.set_config(
                 {
                     "MAKER_NUMBER_BOTTLES": 1,
-                    "PUMP_CONFIG": [{"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017"}],
+                    "PUMP_CONFIG": [
+                        {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 1}
+                    ],
                     "I2C_CONFIG": [],
                 },
                 validate=True,
@@ -163,8 +165,18 @@ class TestConfigManagerSetConfig:
         config.set_config(
             {
                 "MAKER_NUMBER_BOTTLES": 1,
-                "PUMP_CONFIG": [{"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017"}],
-                "I2C_CONFIG": [{"device_type": "MCP23017", "enabled": True, "address_int": 20, "inverted": False}],
+                "PUMP_CONFIG": [
+                    {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 1}
+                ],
+                "I2C_CONFIG": [
+                    {
+                        "device_type": "MCP23017",
+                        "enabled": True,
+                        "address_int": 20,
+                        "inverted": False,
+                        "board_number": 1,
+                    }
+                ],
             },
             validate=True,
         )
@@ -178,8 +190,18 @@ class TestConfigManagerSetConfig:
             config.set_config(
                 {
                     "MAKER_NUMBER_BOTTLES": 1,
-                    "PUMP_CONFIG": [{"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "PCA9535"}],
-                    "I2C_CONFIG": [{"device_type": "PCA9535", "enabled": False, "address_int": 20, "inverted": False}],
+                    "PUMP_CONFIG": [
+                        {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "PCA9535", "board_number": 1}
+                    ],
+                    "I2C_CONFIG": [
+                        {
+                            "device_type": "PCA9535",
+                            "enabled": False,
+                            "address_int": 20,
+                            "inverted": False,
+                            "board_number": 1,
+                        }
+                    ],
                 },
                 validate=True,
             )
@@ -198,33 +220,85 @@ class TestConfigManagerSetConfig:
         assert len(config.PUMP_CONFIG) == 1
         assert config.PUMP_CONFIG[0].pin_type == "GPIO"
 
-    def test_set_config_i2c_config_rejects_duplicate_enabled_device_types(self) -> None:
-        """Test that I2C_CONFIG rejects duplicate enabled device types."""
+    def test_set_config_i2c_config_rejects_duplicate_device_type_and_board(self) -> None:
+        """Test that I2C_CONFIG rejects duplicate (device_type, board_number) combinations."""
         config = ConfigManager()
-        with pytest.raises(ConfigError, match="duplicate enabled device types"):
+        with pytest.raises(ConfigError, match="duplicate entries"):
             config.set_config(
                 {
                     "I2C_CONFIG": [
-                        {"device_type": "MCP23017", "enabled": True, "address_int": 20, "inverted": False},
-                        {"device_type": "MCP23017", "enabled": True, "address_int": 21, "inverted": False},
+                        {
+                            "device_type": "MCP23017",
+                            "enabled": True,
+                            "address_int": 20,
+                            "inverted": False,
+                            "board_number": 1,
+                        },
+                        {
+                            "device_type": "MCP23017",
+                            "enabled": True,
+                            "address_int": 21,
+                            "inverted": False,
+                            "board_number": 1,
+                        },
                     ],
                 },
                 validate=True,
             )
 
-    def test_set_config_i2c_config_allows_duplicate_disabled_device_types(self) -> None:
-        """Test that I2C_CONFIG allows duplicate disabled device types."""
+    def test_set_config_i2c_config_rejects_duplicate_disabled_same_board(self) -> None:
+        """Test that I2C_CONFIG rejects duplicate (device_type, board_number) even if disabled."""
+        config = ConfigManager()
+        with pytest.raises(ConfigError, match="duplicate entries"):
+            config.set_config(
+                {
+                    "I2C_CONFIG": [
+                        {
+                            "device_type": "MCP23017",
+                            "enabled": True,
+                            "address_int": 20,
+                            "inverted": False,
+                            "board_number": 1,
+                        },
+                        {
+                            "device_type": "MCP23017",
+                            "enabled": False,
+                            "address_int": 21,
+                            "inverted": False,
+                            "board_number": 1,
+                        },
+                    ],
+                },
+                validate=True,
+            )
+
+    def test_set_config_i2c_config_allows_same_type_different_boards(self) -> None:
+        """Test that I2C_CONFIG allows same device type with different board numbers."""
         config = ConfigManager()
         config.set_config(
             {
                 "I2C_CONFIG": [
-                    {"device_type": "MCP23017", "enabled": True, "address_int": 20, "inverted": False},
-                    {"device_type": "MCP23017", "enabled": False, "address_int": 21, "inverted": False},
+                    {
+                        "device_type": "MCP23017",
+                        "enabled": True,
+                        "address_int": 20,
+                        "inverted": False,
+                        "board_number": 1,
+                    },
+                    {
+                        "device_type": "MCP23017",
+                        "enabled": True,
+                        "address_int": 21,
+                        "inverted": False,
+                        "board_number": 2,
+                    },
                 ],
             },
             validate=True,
         )
         assert len(config.I2C_CONFIG) == 2
+        assert config.I2C_CONFIG[0].board_number == 1
+        assert config.I2C_CONFIG[1].board_number == 2
 
     def test_set_config_i2c_config_allows_different_enabled_device_types(self) -> None:
         """Test that I2C_CONFIG allows different enabled device types."""
@@ -232,13 +306,105 @@ class TestConfigManagerSetConfig:
         config.set_config(
             {
                 "I2C_CONFIG": [
-                    {"device_type": "MCP23017", "enabled": True, "address_int": 20, "inverted": False},
-                    {"device_type": "PCA9535", "enabled": True, "address_int": 21, "inverted": False},
+                    {
+                        "device_type": "MCP23017",
+                        "enabled": True,
+                        "address_int": 20,
+                        "inverted": False,
+                        "board_number": 1,
+                    },
+                    {
+                        "device_type": "PCA9535",
+                        "enabled": True,
+                        "address_int": 21,
+                        "inverted": False,
+                        "board_number": 1,
+                    },
                 ],
             },
             validate=True,
         )
         assert len(config.I2C_CONFIG) == 2
+
+    def test_set_config_i2c_pump_requires_matching_board_number(self) -> None:
+        """Test that PUMP_CONFIG I2C board_number must match an I2C_CONFIG entry."""
+        config = ConfigManager()
+        with pytest.raises(ConfigError):
+            config.set_config(
+                {
+                    "MAKER_NUMBER_BOTTLES": 1,
+                    "PUMP_CONFIG": [
+                        {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 2}
+                    ],
+                    "I2C_CONFIG": [
+                        {
+                            "device_type": "MCP23017",
+                            "enabled": True,
+                            "address_int": 20,
+                            "inverted": False,
+                            "board_number": 1,
+                        }
+                    ],
+                },
+                validate=True,
+            )
+
+    def test_set_config_pump_config_rejects_duplicate_pins_same_board(self) -> None:
+        """Test that PUMP_CONFIG rejects duplicate (pin_type, board_number, pin) combinations."""
+        config = ConfigManager()
+        with pytest.raises(ConfigError, match="duplicate entries"):
+            config.set_config(
+                {
+                    "MAKER_NUMBER_BOTTLES": 2,
+                    "PUMP_CONFIG": [
+                        {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 1},
+                        {"pin": 0, "volume_flow": 25.0, "tube_volume": 3, "pin_type": "MCP23017", "board_number": 1},
+                    ],
+                    "I2C_CONFIG": [
+                        {
+                            "device_type": "MCP23017",
+                            "enabled": True,
+                            "address_int": 20,
+                            "inverted": False,
+                            "board_number": 1,
+                        }
+                    ],
+                },
+                validate=True,
+            )
+
+    def test_set_config_pump_config_allows_same_pin_different_boards(self) -> None:
+        """Test that PUMP_CONFIG allows same pin number on different boards."""
+        config = ConfigManager()
+        config.set_config(
+            {
+                "MAKER_NUMBER_BOTTLES": 2,
+                "PUMP_CONFIG": [
+                    {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 1},
+                    {"pin": 0, "volume_flow": 25.0, "tube_volume": 3, "pin_type": "MCP23017", "board_number": 2},
+                ],
+                "I2C_CONFIG": [
+                    {
+                        "device_type": "MCP23017",
+                        "enabled": True,
+                        "address_int": 20,
+                        "inverted": False,
+                        "board_number": 1,
+                    },
+                    {
+                        "device_type": "MCP23017",
+                        "enabled": True,
+                        "address_int": 21,
+                        "inverted": False,
+                        "board_number": 2,
+                    },
+                ],
+            },
+            validate=True,
+        )
+        assert len(config.PUMP_CONFIG) == 2
+        assert config.PUMP_CONFIG[0].board_number == 1
+        assert config.PUMP_CONFIG[1].board_number == 2
 
 
 class TestConfigManagerReadLocalConfig:
