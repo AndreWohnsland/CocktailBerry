@@ -5,22 +5,30 @@ import CloseButton from '../CloseButton';
 interface ListDisplayProps<T = PossibleConfigValue> {
   children: React.ReactNode[];
   defaultValue: T;
+  divided?: boolean;
   immutable: boolean;
   onAdd?: (value: T) => void;
   onRemove?: (index: number) => void;
 }
 
-const ListDisplay = ({ children, defaultValue, immutable, onAdd, onRemove }: ListDisplayProps) => {
+const divideClasses = 'divide-y divide-[color-mix(in_srgb,var(--neutral-color)_50%,transparent)]';
+
+const ListDisplay = ({ children, defaultValue, divided, immutable, onAdd, onRemove }: ListDisplayProps) => {
   return (
     <div className='flex flex-col items-center w-full'>
-      {children.map((item, index) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: is always ordered here
-        <div key={index} className='flex items-center mb-1 w-full'>
-          <span className='mr-1 font-bold text-secondary min-w-4'>{index + 1}</span>
-          {item}
-          {!immutable && <CloseButton iconSize={33} onClick={() => onRemove?.(index)} />}
-        </div>
-      ))}
+      <div className={`flex flex-col w-full ${divided ? divideClasses : ''}`}>
+        {children.map((item, index) => (
+          <div
+            // biome-ignore lint/suspicious/noArrayIndexKey: is always ordered here
+            key={index}
+            className={`flex items-center w-full ${divided ? 'p-1.5' : 'p-0.5'}`}
+          >
+            <span className='mx-1 font-bold text-secondary min-w-4'>{index + 1}</span>
+            {item}
+            {!immutable && <CloseButton iconSize={33} onClick={() => onRemove?.(index)} />}
+          </div>
+        ))}
+      </div>
       {!immutable && (
         <button
           type='button'
