@@ -25,15 +25,16 @@ class I2CExpanderFactory:
     """Factory for managing I2C expander devices and creating GPIO controllers.
 
     Takes a list of I2CExpanderConfig and manages device instances internally.
+    Supports multiple boards of the same type, distinguished by board_number.
     Provides create_i2c_gpio() to create GPIO controllers for specific device types.
     """
 
     def __init__(self, configs: list[I2CExpanderConfig]) -> None:
         self._configs = configs
         self._i2c = None
-        self._mcp23017: MCP23017 | None = None
-        self._pcf8574: PCF8574 | None = None
-        self._pca9535: PCA9535 | None = None
+        self._mcp23017: dict[int, MCP23017] = {}
+        self._pcf8574: dict[int, PCF8574] = {}
+        self._pca9535: dict[int, PCA9535] = {}
         self._initialize_devices()
 
     def _initialize_devices(self) -> None:
@@ -52,27 +53,25 @@ class I2CExpanderFactory:
         # Initialize each enabled device
         for config in enabled_configs:
             device_type = config.device_type
+            board_number = config.board_number
             match device_type:
                 case "MCP23017":
-                    if self._mcp23017 is not None:
-                        _logger.warning("Duplicate MCP23017 config found, using first one")
-                        continue
-                    self._mcp23017 = get_mcp23017(config, self._i2c)
+                    device = get_mcp23017(config, self._i2c)
+                    if device is not None:
+                        self._mcp23017[board_number] = device
                 case "PCF8574":
-                    if self._pcf8574 is not None:
-                        _logger.warning("Duplicate PCF8574 config found, using first one")
-                        continue
-                    self._pcf8574 = get_pcf8574(config, self._i2c)
+                    device = get_pcf8574(config, self._i2c)
+                    if device is not None:
+                        self._pcf8574[board_number] = device
                 case "PCA9535":
-                    if self._pca9535 is not None:
-                        _logger.warning("Duplicate PCA9535 config found, using first one")
-                        continue
-                    self._pca9535 = get_pca9535(config, self._i2c)
+                    device = get_pca9535(config, self._i2c)
+                    if device is not None:
+                        self._pca9535[board_number] = device
 
-    def get_config_for_type(self, device_type: I2CExpanderType) -> I2CExpanderConfig | None:
-        """Get the config for a specific device type."""
+    def get_config_for_type(self, device_type: I2CExpanderType, board_number: int = 1) -> I2CExpanderConfig | None:
+        """Get the config for a specific device type and board number."""
         for config in self._configs:
-            if config.device_type == device_type and config.enabled:
+            if config.device_type == device_type and config.board_number == board_number and config.enabled:
                 return config
         return None
 
@@ -80,35 +79,40 @@ class I2CExpanderFactory:
         self,
         device_type: I2CExpanderType,
         pin: int,
+        board_number: int = 1,
         invert_override: bool | None = None,
     ) -> SinglePinController:
-        """Create a GPIO controller for the specified I2C expander type.
+        """Create a GPIO controller for the specified I2C expander type and board.
 
         Args:
             device_type: The type of I2C expander (MCP23017, PCF8574, PCA9535)
             pin: The pin number on the expander
+            board_number: The board number to target (default 1)
             invert_override: Optional override for pin inversion. If None, uses config value.
 
         Returns:
             A SinglePinController for the specified pin.
 
         """
-        config = self.get_config_for_type(device_type)
+        config = self.get_config_for_type(device_type, board_number)
         default_inverted = config.inverted if config else False
         inverted = invert_override if invert_override is not None else default_inverted
 
         if config is None:
-            _logger.error(f"No enabled config found for device type {device_type}, please check your configuration.")
+            _logger.error(
+                f"No enabled config found for device type {device_type} board {board_number}, "
+                "please check your configuration."
+            )
 
         match device_type:
             case "MCP23017":
-                return MCP23017GPIO(pin, inverted, self._mcp23017)
+                return MCP23017GPIO(pin, inverted, self._mcp23017.get(board_number))
             case "PCF8574":
-                return PCF8574GPIO(pin, inverted, self._pcf8574)
+                return PCF8574GPIO(pin, inverted, self._pcf8574.get(board_number))
             case "PCA9535":
-                return PCA9535GPIO(pin, inverted, self._pca9535)
+                return PCA9535GPIO(pin, inverted, self._pca9535.get(board_number))
 
     @property
     def has_enabled_devices(self) -> bool:
         """Check if any I2C expander is enabled and initialized."""
-        return self._mcp23017 is not None or self._pcf8574 is not None or self._pca9535 is not None
+        return bool(self._mcp23017 or self._pcf8574 or self._pca9535)

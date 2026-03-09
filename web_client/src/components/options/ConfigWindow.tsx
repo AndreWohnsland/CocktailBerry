@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { FaSave } from 'react-icons/fa';
 import { updateOptions, useConfig } from '../../api/options';
 import { useConfig as useConfigProvider } from '../../providers/ConfigProvider';
-import type { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
-import { executeAndShow, isInCurrentTab, isInCurrentSubTab, subTabConfig, OPTIONTABS } from '../../utils';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
+import type { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
+import { executeAndShow, isInCurrentSubTab, isInCurrentTab, OPTIONTABS, subTabConfig } from '../../utils';
 import CheckBox from '../common/CheckBox';
 import ColorSelect from '../common/ColorSelect';
 import DropDown from '../common/DropDown';
@@ -14,8 +14,9 @@ import ErrorComponent from '../common/ErrorComponent';
 import ListDisplay from '../common/ListDisplay';
 import LoadingData from '../common/LoadingData';
 import NumberInput from '../common/NumberInput';
-import TextInput from '../common/TextInput';
+import ObjectDisplay from '../common/ObjectDisplay';
 import TabSelector from '../common/TabSelector';
+import TextInput from '../common/TextInput';
 
 // some of the config are "old" meaning they are only used in the QT but not React UI
 // we will define them here and skip the values for those (e.g. not generate input fields)
@@ -168,13 +169,9 @@ const ConfigWindow: React.FC = () => {
   };
 
   const renderObjectField = (key: string, value: { [key: string]: PossibleConfigValueTypes }) => (
-    <div className='flex flex-row w-full'>
-      {Object.keys(value).map((subKey) => (
-        <div key={subKey} className='flex items-center w-full'>
-          {renderInputField(`${key}.${subKey}`, value[subKey])}
-        </div>
-      ))}
-    </div>
+    <ObjectDisplay>
+      {Object.keys(value).map((subKey) => renderInputField(`${key}.${subKey}`, value[subKey]))}
+    </ObjectDisplay>
   );
 
   const renderColorField = (key: string, value: string) => {
@@ -187,6 +184,7 @@ const ConfigWindow: React.FC = () => {
     return (
       <ListDisplay
         defaultValue={defaultValue}
+        divided={value.length > 0 && typeof value[0] === 'object' && !Array.isArray(value[0])}
         immutable={baseConfig.immutable}
         onAdd={(value) => handleAddItem(key, value)}
         onRemove={(index) => handleRemoveItem(key, index)}

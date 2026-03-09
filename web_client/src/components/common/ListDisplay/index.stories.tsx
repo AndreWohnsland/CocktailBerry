@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import NumberInput from '../NumberInput';
+import ObjectDisplay from '../ObjectDisplay';
+import TextInput from '../TextInput';
 import ListDisplay from '.';
 
 const meta: Meta<typeof ListDisplay> = {
@@ -56,6 +58,27 @@ export const WithManyItems: Story = {
       // biome-ignore lint/suspicious/noArrayIndexKey: Testing
       <NumberInput key={i} value={i * 100} handleInputChange={(value) => console.log(value)} suffix='ml' />
     )),
+    immutable: false,
+    defaultValue: '',
+    onAdd: (value) => console.log('Add', value),
+    onRemove: (index) => console.log('Remove', index),
+  },
+};
+
+const noop = () => {};
+
+export const DividedWithObjects: Story = {
+  args: {
+    children: Array.from({ length: 4 }, (_, i) => (
+      <ObjectDisplay key={`obj-${i + 1}`}>
+        {[
+          <TextInput key='name' value={`Pump ${i + 1}`} handleInputChange={noop} />,
+          <NumberInput key='pin' value={i + 10} handleInputChange={noop} suffix='pin' />,
+          <NumberInput key='volume' value={(i + 1) * 100} handleInputChange={noop} suffix='ml' />,
+        ]}
+      </ObjectDisplay>
+    )),
+    divided: true,
     immutable: false,
     defaultValue: '',
     onAdd: (value) => console.log('Add', value),

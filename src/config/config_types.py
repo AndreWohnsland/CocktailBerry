@@ -318,16 +318,17 @@ class DictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
 
 @dataclass(frozen=True)
 class PinId:
-    """Unique identifier for a pin, combining the pin type and pin number."""
+    """Unique identifier for a pin, combining the pin type, board number, and pin number."""
 
     pin_type: SupportedPinControlType
+    board_number: int
     pin: int
 
     def __str__(self) -> str:
-        return f"{self.pin_type}-{self.pin}"
+        return f"{self.pin_type}-{self.board_number}-{self.pin}"
 
     def __repr__(self) -> str:
-        return f"{self.pin_type}-{self.pin}"
+        return f"{self.pin_type}-{self.board_number}-{self.pin}"
 
 
 class PumpConfig(ConfigClass):
@@ -339,20 +340,23 @@ class PumpConfig(ConfigClass):
         volume_flow: float,
         tube_volume: int,
         pin_type: SupportedPinControlType = "GPIO",
+        board_number: int = 1,
     ) -> None:
         self.pin_type = pin_type
         self.pin = pin
         self.volume_flow = volume_flow
         self.tube_volume = tube_volume
+        self.board_number = board_number
 
     @property
     def pin_id(self) -> PinId:
-        """Build PinId from this config's pin_type and pin."""
-        return PinId(self.pin_type, self.pin)
+        """Build PinId from this config's pin_type, board_number and pin."""
+        return PinId(self.pin_type, self.board_number, self.pin)
 
     def to_config(self) -> dict[str, int | float | SupportedPinControlType]:
         return {
             "pin_type": self.pin_type,
+            "board_number": self.board_number,
             "pin": self.pin,
             "volume_flow": self.volume_flow,
             "tube_volume": self.tube_volume,
@@ -364,6 +368,7 @@ class I2CExpanderConfig(ConfigClass):
 
     Shared by MCP23017 (16 pins, 0-15), PCF8574 (8 pins, 0-7), and PCA9535 (16 pins, 0-15).
     Default I2C address is 0x20, configurable to 0x20-0x27.
+    Multiple boards of the same type are distinguished by board_number.
     """
 
     device_type: I2CExpanderType
@@ -374,11 +379,13 @@ class I2CExpanderConfig(ConfigClass):
         enabled: bool,
         address_int: int,
         inverted: bool,
+        board_number: int = 1,
     ) -> None:
         self.device_type = device_type
         self.enabled = enabled
         self.address_int = address_int
         self.inverted = inverted
+        self.board_number = board_number
 
     @property
     def address_hex(self) -> int:
@@ -387,6 +394,7 @@ class I2CExpanderConfig(ConfigClass):
     def to_config(self) -> dict[str, bool | int | str]:
         return {
             "device_type": self.device_type,
+            "board_number": self.board_number,
             "enabled": self.enabled,
             "address_int": self.address_int,
             "inverted": self.inverted,
@@ -404,20 +412,23 @@ class ReversionConfig(ConfigClass):
         pin: int,
         inverted: bool,
         pin_type: SupportedPinControlType = "GPIO",
+        board_number: int = 1,
     ) -> None:
         self.use_reversion = use_reversion
         self.pin = pin
         self.pin_type = pin_type
         self.inverted = inverted
+        self.board_number = board_number
 
     @property
     def pin_id(self) -> PinId:
-        """Build PinId from this config's pin_type and pin."""
-        return PinId(self.pin_type, self.pin)
+        """Build PinId from this config's pin_type, board_number and pin."""
+        return PinId(self.pin_type, self.board_number, self.pin)
 
     def to_config(self) -> dict[str, Any]:
         return {
             "pin_type": self.pin_type,
+            "board_number": self.board_number,
             "pin": self.pin,
             "use_reversion": self.use_reversion,
             "inverted": self.inverted,
@@ -435,20 +446,23 @@ class NormalLedConfig(ConfigClass):
         default_on: bool,
         preparation_state: SupportedLedStatesType,
         pin_type: SupportedPinControlType = "GPIO",
+        board_number: int = 1,
     ) -> None:
         self.pin = pin
         self.default_on = default_on
         self.preparation_state = preparation_state
         self.pin_type = pin_type
+        self.board_number = board_number
 
     @property
     def pin_id(self) -> PinId:
-        """Build PinId from this config's pin_type and pin."""
-        return PinId(self.pin_type, self.pin)
+        """Build PinId from this config's pin_type, board_number and pin."""
+        return PinId(self.pin_type, self.board_number, self.pin)
 
     def to_config(self) -> dict[str, Any]:
         return {
             "pin_type": self.pin_type,
+            "board_number": self.board_number,
             "pin": self.pin,
             "default_on": self.default_on,
             "preparation_state": self.preparation_state,
@@ -477,7 +491,7 @@ class WS281xLedConfig(ConfigClass):
     @property
     def pin_id(self) -> PinId:
         """Build PinId from this config's pin_type and pin."""
-        return PinId("GPIO", self.pin)
+        return PinId("GPIO", 1, self.pin)
 
     def to_config(self) -> dict[str, Any]:
         return {

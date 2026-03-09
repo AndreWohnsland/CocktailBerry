@@ -40,7 +40,7 @@ from src.config.config_types import (
     WS281xLedConfig,
 )
 from src.config.errors import ConfigError
-from src.config.validators import build_number_limiter, validate_max_length, valide_no_identical_active_i2c_devices
+from src.config.validators import build_distinct_validator, build_number_limiter, validate_max_length
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.models import CocktailStatus
@@ -191,6 +191,7 @@ class ConfigManager:
                 DictType(
                     {
                         "pin_type": ChooseOptions.pin,
+                        "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
                         "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                         "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
                         "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
@@ -198,11 +199,13 @@ class ConfigManager:
                     PumpConfig,
                 ),
                 lambda: self.choose_bottle_number(ignore_limits=True),
+                [build_distinct_validator(["pin_type", "board_number", "pin"])],
             ),
             "I2C_CONFIG": ListType(
                 DictType(
                     {
                         "device_type": ChooseOptions.i2c,
+                        "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
                         "enabled": BoolType(check_name="Enabled", default=True),
                         "address_int": IntType(prefix="0x", default=20),
                         "inverted": BoolType(check_name="Inverted"),
@@ -210,7 +213,7 @@ class ConfigManager:
                     I2CExpanderConfig,
                 ),
                 0,
-                [valide_no_identical_active_i2c_devices],
+                [build_distinct_validator(["device_type", "board_number"])],
             ),
             "MAKER_NAME": StringType([validate_max_length]),
             "MAKER_NUMBER_BOTTLES": IntType([build_number_limiter(1, 999)]),
@@ -221,8 +224,9 @@ class ConfigManager:
             "MAKER_PUMP_REVERSION_CONFIG": DictType(
                 {
                     "use_reversion": BoolType(check_name="active", default=False),
-                    "pin": IntType([build_number_limiter(0)], default=0, prefix="Pin:"),
                     "pin_type": ChooseOptions.pin,
+                    "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
+                    "pin": IntType([build_number_limiter(0)], default=0, prefix="Pin:"),
                     "inverted": BoolType(check_name="Inverted", default=False),
                 },
                 ReversionConfig,
@@ -239,6 +243,7 @@ class ConfigManager:
                 DictType(
                     {
                         "pin_type": ChooseOptions.pin,
+                        "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
                         "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                         "default_on": BoolType(check_name="Default On"),
                         "preparation_state": ChooseOptions.leds,
@@ -415,21 +420,22 @@ class ConfigManager:
         - Checks that WAITER_MODE is not enabled alongside CocktailBerry NFC payment.
         - Check that some nfc is active when payment/waiter mode is active.
         """
-        # Collect all I2C pin types used in PUMP_CONFIG (excluding GPIO)
-        required_i2c_types: set[str] = set()
+        # Collect all I2C (pin_type, board_number) pairs used in PUMP_CONFIG (excluding GPIO)
+        required_i2c_boards: set[tuple[str, int]] = set()
         for pump in self.PUMP_CONFIG:
             if pump.pin_type != "GPIO":
-                required_i2c_types.add(pump.pin_type)
+                required_i2c_boards.add((pump.pin_type, pump.board_number))
 
-        # Get enabled I2C device types from I2C_CONFIG
-        enabled_i2c_types = {cfg.device_type for cfg in self.I2C_CONFIG if cfg.enabled}
+        # Get enabled I2C (device_type, board_number) pairs from I2C_CONFIG
+        enabled_i2c_boards = {(cfg.device_type, cfg.board_number) for cfg in self.I2C_CONFIG if cfg.enabled}
 
-        # Check that all required I2C types have enabled devices
-        missing_types = required_i2c_types - enabled_i2c_types
-        if missing_types:
+        # Check that all required I2C boards have enabled devices
+        missing_boards = required_i2c_boards - enabled_i2c_boards
+        if missing_boards:
+            readable = ", ".join(f"{t} board {n}" for t, n in missing_boards)
             error_msg = (
-                f"PUMP_CONFIG uses I2C pin types {', '.join(missing_types)} but I2C_CONFIG "
-                "has no enabled devices of these types. Add enabled entries to I2C_CONFIG."
+                f"PUMP_CONFIG uses I2C boards {readable} but I2C_CONFIG "
+                "has no enabled devices for them. Add enabled entries to I2C_CONFIG."
             )
             _logger.error(f"Config Error: {error_msg}")
             if validate:
