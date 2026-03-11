@@ -6,12 +6,11 @@ Also defines the Mode for controls.
 # pylint: disable=unnecessary-lambda
 import os
 import platform
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QEvent, QEventLoop, QObject
 from PyQt6.QtGui import QIntValidator, QMouseEvent
 from PyQt6.QtWidgets import QLineEdit, QMainWindow
-from zmq import IntEnum
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import CONFIG as cfg
@@ -32,6 +31,7 @@ from src.startup_checks import (
     is_python_deprecated,
 )
 from src.tabs import bottles, ingredients, recipes
+from src.tabs.qt_tab_index import TabIndex
 from src.ui.cocktail_view import CocktailView
 from src.ui.icons import BUTTON_SIZE, IconSetter
 from src.ui.setup_available_window import AvailableWindow
@@ -49,16 +49,8 @@ from src.ui.setup_team_window import TeamScreen
 from src.ui_elements import Ui_MainWindow
 from src.updater import UpdateInfo, Updater
 
-
-class TabIndex(IntEnum):
-    """Enum for the tab indices."""
-
-    SEARCH = 0
-    MAKER = 1
-    INGREDIENTS = 2
-    RECIPES = 3
-    BOTTLES = 4
-
+if TYPE_CHECKING:
+    from src.api.models import PermissionKey
 
 RESTRICTED_MODE_UNLOCK_SEQUENCE = [
     TabIndex.INGREDIENTS,
@@ -71,6 +63,13 @@ RESTRICTED_MODE_UNLOCK_SEQUENCE = [
     TabIndex.BOTTLES,
     TabIndex.BOTTLES,
 ]
+
+_PERMISSION_BY_TAB_INDEX: dict[int, PermissionKey] = {
+    int(TabIndex.MAKER): "maker",
+    int(TabIndex.INGREDIENTS): "ingredients",
+    int(TabIndex.RECIPES): "recipes",
+    int(TabIndex.BOTTLES): "bottles",
+}
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -349,7 +348,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
     def open_option_window(self) -> None:
         """Open up the options."""
-        if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD):
+        if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD, permission_key="options"):
             return
         self.option_window = OptionWindow(self)
 
@@ -494,7 +493,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self._waiter_can_access_locked_tab(index):
             self.previous_tab_index = index
             return
-        if DP_CONTROLLER.password_prompt(cfg.UI_MAKER_PASSWORD, header_type="maker"):
+        if DP_CONTROLLER.password_prompt(
+            cfg.UI_MAKER_PASSWORD,
+            header_type="maker",
+            permission_key=_PERMISSION_BY_TAB_INDEX.get(index),
+        ):
             self.previous_tab_index = index
             return
         # Set back to the prev tab if password not right

@@ -133,7 +133,7 @@ def delete_ingredient(w: MainScreen) -> None:
         return
     if not DP_CONTROLLER.ask_to_delete_x(selected_ingredient):
         return
-    if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD):
+    if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD, permission_key="options"):
         return
 
     ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)

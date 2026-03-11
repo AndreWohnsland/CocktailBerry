@@ -47,8 +47,9 @@ const DEFAULT_PERMISSIONS: WaiterPermissions = {
   ingredients: false,
   recipes: false,
   bottles: false,
+  options: false,
 };
-const PERMISSION_KEYS = ['maker', 'ingredients', 'recipes', 'bottles'] as const;
+const PERMISSION_KEYS = ['maker', 'ingredients', 'recipes', 'bottles', 'options'] as const;
 
 const ManagementTab: React.FC = () => {
   const { config } = useConfig();

@@ -25,6 +25,7 @@ from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data
 
 if TYPE_CHECKING:
+    from src.api.models import PermissionKey
     from src.ui.setup_custom_dialog import CustomDialog
     from src.ui_elements import (
         Ui_addingredient,
@@ -253,11 +254,14 @@ class DialogHandler:
         self,
         right_password: int,
         header_type: Literal["master", "maker"] = "master",
+        permission_key: PermissionKey | None = None,
     ) -> bool:
         """Open a password prompt, return if successful entered password.
 
         Option to also use other than master password
         This is useful for example for the UI_MAKER_PASSWORD, or if needed for more things in the future.
+        If permission_key is provided and waiter mode is active, an NFC scan with
+        sufficient permissions will auto-accept the dialog.
         """
         from src.ui.setup_password_dialog import PasswordDialog
 
@@ -265,7 +269,7 @@ class DialogHandler:
         # Empty means zero in this case, since the config is an int
         if right_password == 0:
             return True
-        return PasswordDialog(right_password, header_type).exec()
+        return PasswordDialog(right_password, header_type, permission_key=permission_key).exec()
 
     def __output_language_dialog(
         self,

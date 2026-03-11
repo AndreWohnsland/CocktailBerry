@@ -33,8 +33,17 @@ def _waiter_has_tab_permission(tab: Tab) -> bool:
     return permission_by_tab.get(tab, False)
 
 
+def _waiter_has_options_permission() -> bool:
+    waiter = shared.current_waiter
+    if waiter is None:
+        return False
+    return waiter.permissions.options
+
+
 def master_protected_dependency(master_password: str | None = Security(master_password_header)) -> None:
     if cfg.UI_MASTERPASSWORD == 0:
+        return
+    if cfg.waiter_mode_active and _waiter_has_options_permission():
         return
     password = _parse_password(master_password)
     if password != cfg.UI_MASTERPASSWORD:

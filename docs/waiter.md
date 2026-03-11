@@ -37,8 +37,9 @@ On startup, CocktailBerry validates that the NFC reader is available and disable
 Before your staff can use the machine, you need to register their NFC chips.
 Open the Service Personnel management window from the options menu.
 When a staff member scans their NFC chip, the scanned ID appears in the management view.
-You can then assign a name and select which permissions that person should have (Maker, Ingredients, Recipes, Bottles).
-Each permission controls whether the person can access that tab, and whether they can bypass the maker password for it.
+You can then assign a name and select which permissions that person should have (Maker, Ingredients, Recipes, Bottles, Options).
+Each tab permission controls whether the person can access that tab and bypass the maker password for it.
+The Options permission controls whether the person can bypass the master password, see the [warning below](#password-bypass) for details.
 
 ## Login and Logout Flow
 
@@ -63,10 +64,12 @@ sequenceDiagram
 Once logged in, the staff member can then prepare cocktails, and each preparation is logged to their name.
 Logout happens either manually, automatically after a cocktail, or after a configured timeout.
 
-### Difference in Appearance Between v1 and v2
+## Difference in Appearance Between v1 and v2
 
 Since we use distinct GUI technologies for v1 (Qt) and v2 (Web), there are some differences in how the logged-in staff member is displayed and how logout works.
 See the according section for your version below.
+
+### Logged-in Staff Display and Logout
 
 === "v1"
 
@@ -78,19 +81,25 @@ See the according section for your version below.
     The currently logged-in staff member is displayed as an inline badge on the maker screen, showing their name.
     Clicking the badge reveals a dedicated logout button, allowing the staff member to log out directly.
 
-### Password Bypass
+## Password Bypass
 
-If a staff member has the appropriate permissions, they can bypass the maker password for the tabs they have access to.
-See some specifics on implementation and differences between v1 and v2 below.
+If a staff member has the appropriate tab permissions, they bypass the maker password for the tabs they have access to.
+Staff members with the Options permission additionally bypass the master password, granting access to the options menu and other master-password-protected actions like deleting recipes or ingredients.
 
-=== "v1"
+!!! danger "Grant with Care"
+    The **Options** permission effectively grants full administrative access to CocktailBerry.
+    A staff member with this permission can bypass the master password, which means they can:
 
-    Staff members need to be logged in (e.g. by scanning their NFC chip) before they can access a protected tab without entering the maker password.
-    Scanning the NFC chip while already be prompted for the password will not remove the password, so be sure to log in before navigating to the protected tab.
+    - Change any configuration setting
+    - Delete and manage recipes and ingredients
+    - Create, edit, and delete other service personnel (including granting themselves more permissions)
+    - Access system functions like reboot, shutdown, backups, and updates
 
-=== "v2"
+    Only grant this permission to fully trusted and authorized personnel.
 
-    Staff members can also scan the NFC when prompted for the maker password, which will bypass the password if they have the required permissions.
+In both v1 and v2, a staff member can scan their NFC chip while being prompted for a password.
+If they have the required permission, the password dialog is automatically accepted.
+Additionally, if a staff member is already logged in before navigating to a protected area, the password prompt is skipped entirely.
 
 ## Statistics
 

@@ -351,6 +351,7 @@ export interface WaiterPermissions {
   ingredients: boolean;
   recipes: boolean;
   bottles: boolean;
+  options: boolean;
 }
 
 export interface Waiter {

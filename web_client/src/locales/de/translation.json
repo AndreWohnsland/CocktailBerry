@@ -259,7 +259,8 @@
       "maker": "Maker",
       "ingredients": "Zutaten",
       "recipes": "Rezepte",
-      "bottles": "Flaschen"
+      "bottles": "Flaschen",
+      "options": "Optionen"
     },
     "logout": "Abmelden"
   }
