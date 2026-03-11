@@ -230,7 +230,7 @@ def delete_recipe(w: MainScreen) -> None:
         return
     if not DP_CONTROLLER.ask_to_delete_x(recipe_name):
         return
-    if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD):
+    if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD, permission_key="options"):
         return
 
     DB_COMMANDER.delete_recipe(recipe_name)

@@ -259,7 +259,8 @@
       "maker": "Maker",
       "ingredients": "Ingredients",
       "recipes": "Recipes",
-      "bottles": "Bottles"
+      "bottles": "Bottles",
+      "options": "Options"
     },
     "logout": "Logout"
   }

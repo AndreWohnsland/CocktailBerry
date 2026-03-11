@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, TypeVar
+from typing import TYPE_CHECKING, Annotated, Literal, TypeVar
 
 from annotated_types import Len
 from pydantic import BaseModel, Field
@@ -156,11 +156,15 @@ class SumupReaderCreate(BaseModel):
     pairing_code: str
 
 
+PermissionKey = Literal["maker", "ingredients", "recipes", "bottles", "options"]
+
+
 class WaiterPermissions(BaseModel):
     maker: bool = False
     ingredients: bool = False
     recipes: bool = False
     bottles: bool = False
+    options: bool = False
 
 
 class WaiterResponse(BaseModel):
@@ -178,6 +182,7 @@ class WaiterResponse(BaseModel):
                 ingredients=waiter.privilege_ingredients,
                 recipes=waiter.privilege_recipes,
                 bottles=waiter.privilege_bottles,
+                options=waiter.privilege_options,
             ),
         )
 

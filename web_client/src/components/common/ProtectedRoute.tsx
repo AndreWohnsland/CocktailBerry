@@ -83,9 +83,17 @@ export const MasterPasswordProtected: React.FC<MasterPasswordProtectedProps> = (
   const { config } = useConfig();
   const { masterAuthenticated, setMasterAuthenticated, setMasterPassword } = useAuth();
   const hasPassword = config.UI_MASTERPASSWORD;
+  const { waiterState, isLoading: isWaiterLoading } = useWaiter();
+  const shouldCheckWaiter = Boolean(config.WAITER_MODE && hasPassword && !masterAuthenticated);
+  const waiterCanBypass = shouldCheckWaiter && Boolean(waiterState?.waiter?.permissions?.options);
+
+  if (shouldCheckWaiter && isWaiterLoading && !waiterState) {
+    return null;
+  }
+
   return (
     <ProtectedRoute
-      isProtected={hasPassword && !masterAuthenticated}
+      isProtected={hasPassword && !masterAuthenticated && !waiterCanBypass}
       setAuthenticated={(password: number) => {
         setMasterAuthenticated(true);
         setMasterPassword(password);

@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 class WaiterWindow(QMainWindow, Ui_WaiterWindow):
     """Creates the waiter window Widget."""
 
-    _PERMISSION_KEYS = ("maker", "ingredients", "recipes", "bottles")
+    _PERMISSION_KEYS = ("maker", "ingredients", "recipes", "bottles", "options")
 
     def __init__(self, mainscreen: MainScreen) -> None:
         """Init. Connect all the buttons and set window policy."""
@@ -230,6 +230,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         self._edit_permission_boxes["ingredients"].setChecked(waiter.privilege_ingredients)
         self._edit_permission_boxes["recipes"].setChecked(waiter.privilege_recipes)
         self._edit_permission_boxes["bottles"].setChecked(waiter.privilege_bottles)
+        self._edit_permission_boxes["options"].setChecked(waiter.privilege_options)
         self._refresh_waiters_list()
 
     def _save_waiter(self) -> None:

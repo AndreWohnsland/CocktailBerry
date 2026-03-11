@@ -1036,6 +1036,9 @@ ui:
     permission_bottles:
       en: 'Bottles'
       de: 'Flaschen'
+    permission_options:
+      en: 'Options'
+      de: 'Optionen'
     create_waiter:
       en: 'Create'
       de: 'Erstellen'
