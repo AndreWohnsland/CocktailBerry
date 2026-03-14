@@ -4,6 +4,8 @@ Also defines the Mode for controls.
 """
 
 # pylint: disable=unnecessary-lambda
+from __future__ import annotations
+
 import os
 import platform
 from typing import TYPE_CHECKING, Any
