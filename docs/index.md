@@ -54,6 +54,7 @@ CocktailBerry offers the following features:
 - Switch between user interface languages
 - Support WS281x LEDs on your machine
 - Support for RFID/NFC reader
+- Support for Service Personnel
 - Implement your own [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) to extend the base functionality
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
