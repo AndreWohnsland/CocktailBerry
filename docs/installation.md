@@ -10,7 +10,7 @@ These are the minimal tools needed to get started:
 - [Git](https://git-scm.com/downloads)
 - recommended: **latest** [Raspberry Pi OS, 64 bit](https://www.raspberrypi.com/software/) (Desktop, Trixie)
 
-The desktop version of Raspberry Pi OS is recommended, but if you just want to have a peak into the project, any OS having Python and Git will work just fine.
+The desktop version of Raspberry Pi OS is recommended, but if you just want to have a peek into the project, any OS having Python and Git will work just fine.
 The RPi is needed to control the Pumps in a real machine, but the program will work fine even without any physical machine.
 
 ## Install CocktailBerry on the RPi

@@ -63,7 +63,7 @@ uv run runme.py setup-web
 ```
 
 This will set up the web interface as the default interface and start it instead of the old main program.
-You can now access the the website by opening your browser and navigating to `http://<ip>` or locally on `http://localhost`.
+You can now access the website by opening your browser and navigating to `http://<ip>` or locally on `http://localhost`.
 
 Note: In the following section we use `uv run api.py` instead of `uv run runme.py` to start the web interface.
 

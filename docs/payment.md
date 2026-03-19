@@ -49,7 +49,7 @@ To use payments with CocktailBerry, you will need the following:
 
 === "SumUp"
     - A [SumUp Solo Terminal](https://store.sumup.com/de-DE/website/product-selection/card_reader.solo_bundle_cradle)
-    - A [SumUp Account](https://www.sumup.com/) fully set up and you merchant code
+    - A [SumUp Account](https://www.sumup.com/) fully set up and your merchant code
     - API key generated for your account
     - CocktailBerry version 3.1 or higher
 
@@ -70,7 +70,7 @@ After that, CocktailBerry should start normally again.
 
 ## Concept
 
-If this feature is enabled, user will need to pay before being able to order a cocktail.
+If this feature is enabled, users will need to pay before being able to order a cocktail.
 
 === "NFC Based"
     When using NFC based payments, each user will need to have an NFC tag (e.g., card or key fob) associated with them.
@@ -132,7 +132,7 @@ Overall Process:
 
     CocktailBerry Machines using the payment option will communicate with the backend API to process payments and manage user balances.
     This requires the machines being either on the same network or having access to the backend API over the internet.
-    User will then pay the cocktails over NFC cards, while service personal can manage the users and top up balances via the GUI separately.
+    Users will then pay for the cocktails over NFC cards, while service personnel can manage the users and top up balances via the GUI separately.
 
 === "SumUp"
     ```mermaid
@@ -170,7 +170,7 @@ The recommended way for a "basic" hardware setup is:
     - A desktop device + USB NFC reader running the payment GUI, can be Windows
     - CocktailBerry machine + USB NFC reader, connected to the payment API over the network
 
-    While you can run the backend on the same machine as CocktailBerry, or the the Admin payment GUI, it is recommended to run them on separate devices for better performance and security.
+    While you can run the backend on the same machine as CocktailBerry, or the Admin payment GUI, it is recommended to run them on separate devices for better performance and security.
 
     If you want to really keep it minimalistic, you can also run both API and GUI on the same device, e.g. a Raspberry Pi 4.
     In this case you would need to ensure that this device is not down or turned off.
@@ -202,7 +202,7 @@ The recommended way for a "basic" hardware setup is:
 
     === "Linux Systems"
 
-        Linux is the most easy way, since most of the things can be done over a script.
+        Linux is the easiest way, since most of the things can be done over a script.
         Just run:
 
         ```bash
@@ -222,7 +222,7 @@ The recommended way for a "basic" hardware setup is:
         ```
 
         Alternatively, there is also a pre-built executable available for the GUI, which you can download from the [release page](https://github.com/AndreWohnsland/CocktailBerry-Payment/releases).
-        You might not be able to set all options tough when using this directly, so even when using this, going over this preparation and service installation steps is recommended.
+        You might not be able to set all options though when using this directly, so even when using this, going over this preparation and service installation steps is recommended.
 
         If [uv](https://docs.astral.sh/uv/getting-started/installation) or [git](https://git-scm.com/install/windows) fails to install, you might need to install them manually first.
 
@@ -249,13 +249,13 @@ The recommended way for a "basic" hardware setup is:
     After that, you will need to connect your terminal to the internet following the steps on it.
     Then select Cloud API mode on the terminal.
     It will display a code, you will need this in CocktailBerry to link the terminal to your account.
-    Go to options -> SumUp, there you can give you Terminal a name and enter the code.
+    Go to options -> SumUp, there you can give your Terminal a name and enter the code.
     After submitting, you should see a successful message and the terminal should be displayed and selected in the list of connected Terminals.
     In case you own multiple machines and registered terminals, you can also select or change the terminal over the dropdown.
     Take note that only one terminal per machine is supported.
     The terminal identifier will be stored in the config file as `PAYMENT_SUMUP_TERMINAL_ID`.
 
-    Since you will store the API key in you settings, which is accessible over the options GUI, make sure to set a good master password to protect your settings.
+    Since you will store the API key in your settings, which is accessible over the options GUI, make sure to set a good master password to protect your settings.
 
 ## Configuration
 

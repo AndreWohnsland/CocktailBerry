@@ -7,7 +7,7 @@ If you don't find any solution here, you can [open a ticket](https://github.com/
 ## Major Version Updates
 
 If a breaking change is introduced, a major version update is released (e.g. v2.9.0 to v3.0.0).
-Usually, this changes cannot be automatically migrated and need some manual steps.
+Usually, these changes cannot be automatically migrated and need some manual steps.
 Other cases might need the latest OS version or python version, which you might or might not have.
 See below for migration steps for the related versions.
 
@@ -19,7 +19,7 @@ This way, you ensure that everything is working as intended and you don't run in
 
 V3 introduces the NFC Payment service integration as well as the update from PyQt5 to PyQt6.
 While the NFC changes "just" need some shell commands, the PyQt6 library needs the latest Raspberry Pi OS to work properly out of the box.
-There is a good chance that your current setup will work due to the migrator doing it magic and you have PyQt6 after that.
+There is a good chance that your current setup will work due to the migrator doing its magic and you have PyQt6 after that.
 It is however not guaranteed, so if you run into any issues, please ensure that you are on the latest OS (Trixie) first.
 
 To add the NFC, please run the following commands in your terminal:
@@ -49,10 +49,10 @@ When submitting an error, please also provide the `logs/debuglog.log` file.
 ## Icons are Missing
 
 If some of the icons (check / cross on the checkbox, up / down arrow on the list view) are missing, make sure you run the script within the folder (e.g. `uv run runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`).
-This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
+This is because of the nature of Qt and the translation to python, if you go from another folder the picture resources can't be found.
 
 Another reason may be, if you are using a custom style sheet with colors using rgb.
-If thats the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
+If that's the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
 
 ## Changing Volume Unit
 
@@ -69,15 +69,15 @@ If you rather don't want to have the new recipes, you can overwrite the local `C
 cp Cocktail_database_backup-{your-date-string}.db Cocktail_database.db
 ```
 
-This will restore the state of the backup previous this migration step.
+This will restore the state of the backup prior to this migration step.
 Please take a look into the production_log file, if a backup was created.
-Otherwise, you may up ending using an older one.
+Otherwise, you may end up using an older one.
 
 ## Using a High Resolution Screen
 
 The UI of the program is somewhat dynamic, but Qt got it's limitations.
 To ensure that the UI looks nice like in the screenshots, a resolution not higher than ~1200px on the long side (width) is recommended.
-If you happen to use a high res screen, there is a easy fix, tough.
+If you happen to use a high res screen, there is an easy fix, though.
 For example, when using a screen with a 2560x1600 resolution, I would recommend divide the value by `x` (for example x=2).
 In the CocktailBerry config set width to 2560/2 = 1280 and height to 1600/2 = 800.
 In case you used the provided setup, just change the first line in the ~/launcher.sh file `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case).
@@ -125,7 +125,7 @@ In case the machine got a RTC build in and uses it, this option can usually be s
 Getting the WS281x to work may be a little bit tricky.
 You need to run the program as root/sudo, so you also need to change this in `~/launcher.sh`.
 If you are using the latest installer, there will be a virtual environment created, so you should use this as root.
-This also does you require to reinstall the python packages for the main program.
+This also requires you to reinstall the python packages for the main program.
 A better way would be to add the user to the gpio/other needed groups, so you can run the program as normal user.
 
 ```bash
@@ -145,7 +145,7 @@ If the GUI looks different than when you run it without sudo, try the `-E` flag,
 
 See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.
 I had success using the 12 and 18 PWM0 pin, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.
-Other described pins may also work, but are untested, so I recommend to stick to the both one that should work.
+Other described pins may also work, but are untested, so I recommend to stick to the two that should work.
 If you use any other non controllable LED connected over the relay, you can use any pin you want, since it's only activating the relay.
 
 ## Set Up RFID Reader
@@ -177,21 +177,21 @@ If you do so, remove them or replace them with another pin.
 Otherwise, the RFID will not work.
 Best is to restart the Pi afterwards and then check if the RFID is working as intended.
 While the USB NFC reader does not occupy any GPIO pins, it has some challenges on its own.
-You currently cant write data to the card, only read the UID is supported.
+You can't currently write data to the card, only read the UID is supported.
 
-## Ui Seems Wrong on none RaspOS System
+## UI Seems Wrong on non-RaspOS System
 
 On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
-This can be dependant on the flavour of Linux, as well as the desktop variant you are using.
-I had best experience when using a LXDE/XFCE variant, for example of a Debian Linux, on a none Raspberry Pi single board computer.
-Other desktop variants may do not respect the always on top property, resulting in the taskbar show up on top the app when running the program and pop ups appear.
+This can be dependent on the flavour of Linux, as well as the desktop variant you are using.
+I had best experience when using a LXDE/XFCE variant, for example of a Debian Linux, on a non-Raspberry Pi single board computer.
+Other desktop variants may not respect the always on top property, resulting in the taskbar show up on top the app when running the program and pop ups appear.
 Please take note that CocktailBerry will run on other systems than the Raspberry Pi OS and RPi, but may take some tweaking and testing in the settings.
 Since I probably don't own that combination of Hardware and OS, you probably need to figure out that settings by yourself.
-If you are a unexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
+If you are an unexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
 
 ## Task Bar Overlap / Push GUI
 
-This may happen (especially at older versions os RPi OS or higher res screens) when running the program and some dialog window opens.
+This may happen (especially at older versions of RPi OS or higher res screens) when running the program and some dialog window opens.
 The task bar (bar with programs on it) may overlap the dialog window or push it down by it's height.
 Ensure that you have unchecked the "Reserve space, and not covered by maximised windows" option.
 You can find it under the panel preferences (right click the task bar > panel settings > Advanced).
@@ -200,7 +200,7 @@ Unchecking this box usually fixes this problem.
 ## Reset Config
 
 In case you want to reset the configuration, it is the best way to just delete the custom_config.yaml in the main folder.
-This file holds your configuration and will be created with the defaults if it does not exists.
+This file holds your configuration and will be created with the defaults if it does not exist.
 
 There are also backups of the config file before migration, located at `~/cb_backup/` with the version number before this specific migration.
 The config file is located at `~/CocktailBerry/custom_config.yaml`.

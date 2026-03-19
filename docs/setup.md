@@ -161,7 +161,7 @@ Currently supported options (boards) are:
 
 !!! info "Not your Board?"
     Even if your board is not listed here, it may work.
-    This value is used to determinate the control method for the pins of the board.
+    This value is used to determine the control method for the pins of the board.
 
 ## Themes
 
@@ -189,7 +189,7 @@ Do a mix of the different volumes, add them together and check if the scale show
 
 ## Cleaning the Machine
 
-CocktailBerry has a build in cleaning function for cleaning at the end of a party.
+CocktailBerry has a build-in cleaning function for cleaning at the end of a party.
 You will find the feature at the option gear under the **Bottles** tab.
 CocktailBerry will then go to cleaning mode for the defined time within the config (default is 20 seconds).
 A message prompt will inform the user to provide enough water for the cleaning process.

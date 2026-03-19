@@ -57,7 +57,7 @@ uv run runme.py setup-microservice
 The terminal will interactively ask you for the required information.
 
 One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktailberry-now-with-home-assistant).
-The service will also temporary stores the data within a database, if there was no connection to the endpoint, and try later again.
+The service will also temporarily stores the data within a database, if there was no connection to the endpoint, and try later again.
 This way, no data will get lost in the void.
 
 ### Posting Data to the Official API

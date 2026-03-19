@@ -1,6 +1,6 @@
 # Overview
 
-CocktailBerry is used to control a cocktail your machine and easily prepare cocktails over a nice-looking user interface.
+CocktailBerry is used to control your cocktail machine and easily prepare cocktails over a nice-looking user interface.
 It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
 Track and display cocktail data for different teams to even further increase the fun.
 Have also a look into the [User Guide](assets/CocktailBerryUserGuide.pdf).
@@ -11,7 +11,7 @@ Let's get started!
 You can easily install the software by just flashing the Raspberry Pi OS on a SD card, insert it, start the device and install the software with just one command.
 Then, get some coffee and let the script do the work.
 When you come back, you can set up the machine over the graphical user interface and start mixing cocktails.
-This way, you don't have to know much about software an can go full focus on the hardware.
+This way, you don't have to know much about software and can go full focus on the hardware.
 If you want to do your own software part, you can still add this over [addons](addons.md).
 
 <figure markdown>

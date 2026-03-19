@@ -71,7 +71,7 @@ Verified means that the addon is known by the CocktailBerry programmers and was 
 ## Creating Addons
 
 This section is for people, who want to write their own addon. 
-Here you will find the ressources to get started.
+Here you will find the resources to get started.
 
 !!! info "Developers Guide"
     This section is for developer and people, who want to add some features to CocktailBerry.
@@ -160,7 +160,7 @@ The easiest (but bad) way is to hard code this into the code and let the user ch
 But this approach is not robust against code changes (new versions of addon), and also not user friendly (config not accessible over GUI).
 Therefore, the addon provider can use the CocktailBerry configuration.
 To do so, the user needs to inject the config name, type and validation function into the config.
-There is also the option to provided a description, as well as according translations.
+There is also the option to provide a description, as well as according translations.
 It is important that you use the `define_configuration()` function for this, as it is executed before the setup of the addon and loading in local set config values.
 You can find each direction in the subsections below.
 
@@ -532,7 +532,7 @@ Some examples may be:
 If your addon uses other external dependencies (Python libraries), please provide some sort of installation guide.
 The easiest way would be information in the readme of your project, that instructs the user which commands are necessary to get the addon running.
 Also, if your configuration values are more complex or do need additional context, it is best practice to also provide documentation for them.
-This will reduce user confusion an will raise the popularity of your addon.
+This will reduce user confusion and will raise the popularity of your addon.
 
 If you created a cool addon, you can link me the project.
 It may be included here, after it's functionality has been verified.

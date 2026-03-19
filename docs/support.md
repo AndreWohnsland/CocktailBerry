@@ -6,11 +6,11 @@ There are different ways to support and contribute to CocktailBerry. This includ
 
 This helps to identify missing features as well as eliminate bugs.
 This way, CocktailBerry will get better faster.
-Also, if a desired feature makes sense, it will probably implemented in the future.
+Also, if a desired feature makes sense, it will probably be implemented in the future.
 
 #### Star the project on GitHub
 
-This shows that the project is used and trusted, as well will raise it's visibility.
+This shows that the project is used and trusted, as well as raises its visibility.
 If more people are using CocktailBerry, more feedback will be received.
 
 !!! quote "Tell your Friends"
