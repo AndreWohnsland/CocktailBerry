@@ -41,7 +41,7 @@ const registeredWaiter: CurrentWaiterState = {
   waiter: {
     nfc_id: 'ABC123',
     name: 'Alice',
-    permissions: { maker: true, ingredients: false, recipes: false, bottles: false, options: false, },
+    permissions: { maker: true, ingredients: false, recipes: false, bottles: false, options: false },
   },
 };
 

@@ -31,10 +31,7 @@ export const WaiterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return null;
   }, [wsState, httpWaiter]);
 
-  const contextValue = useMemo(
-    () => ({ waiterState, isConnected, isLoading }),
-    [waiterState, isConnected, isLoading],
-  );
+  const contextValue = useMemo(() => ({ waiterState, isConnected, isLoading }), [waiterState, isConnected, isLoading]);
 
   return <WaiterContext.Provider value={contextValue}>{children}</WaiterContext.Provider>;
 };

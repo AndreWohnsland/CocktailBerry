@@ -34,7 +34,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className={`z-10 sticky mb-2 flex flex-row pointer-events-none ${tabBarVisible ? 'top-10' : 'top-1'}`}>
+    <div className={`z-10 sticky mb-2 flex flex-row pointer-events-none w-full ${tabBarVisible ? 'top-10' : 'top-1'}`}>
       <div className='flex-grow' />
       <input
         type='text'
