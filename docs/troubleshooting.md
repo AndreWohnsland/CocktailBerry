@@ -53,6 +53,7 @@ This is because of the nature of Qt and the translation to python, if you go fro
 
 Another reason may be, if you are using a custom style sheet with colors using rgb.
 If that's the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
+If that's the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
 
 ## Changing Volume Unit
 
@@ -177,7 +178,7 @@ If you do so, remove them or replace them with another pin.
 Otherwise, the RFID will not work.
 Best is to restart the Pi afterwards and then check if the RFID is working as intended.
 While the USB NFC reader does not occupy any GPIO pins, it has some challenges on its own.
-You can't currently write data to the card, only read the UID is supported.
+You currently can't write data to the card, only reading the UID is supported.
 
 ## UI Seems Wrong on non-RaspOS System
 
@@ -247,22 +248,22 @@ With the v1.30.0 release, the maker view was completely rewritten.
 This includes the way cocktails are shown as a list and single view.
 There is a picture now for every cocktail, the default provided cocktails all got an according picture.
 There is also a default picture for cocktails without a picture, like newly user added ones.
-You can upload your own pictures over the according button the recipe tab.
+You can upload your own pictures via the corresponding button in the recipe tab.
 Your picture will then replace the default provided picture.
 
 The user pictures are stored in the `~/CocktailBerry/display_images_user` folder.
 The picture will be saved with the cocktail id as name and jpg format.
-You can also provide the cocktail name in lowercase and underscore instead spaces as picture name in jpg format (e.g. `cuba_libre.jpg` for "Cuba Libre"), if you prefer to upload the pictures via hand in that folder instead of the GUI.
+You can also provide the cocktail name in lowercase with underscores instead of spaces as the picture name in jpg format (e.g. `cuba_libre.jpg` for "Cuba Libre"), if you prefer to upload the pictures manually in that folder instead of the GUI.
 
 If your database is quite old, newer cocktails you added may either have the default picture, or may have another picture from new cocktails contained now in the database.
 This is due to the database using incrementing integers as primary key for the cocktails.
 This is historically and can't be changed easily in running installations.
-If thats the case, please use the GUI option to replace wrong pictures with your desired ones.
+If that's the case, please use the GUI option to replace wrong pictures with your desired ones.
 If you feel that the default pictures are switched, you can also use the default ones as replacement.
 They are located at `~/CocktailBerry/default_cocktail_images`.
 
 Here is an extensive list of all default cocktails and their according image.
-If you think your cocktail have the wrong picture, you can use the according picture name from the list below to replace it.
+If you think your cocktail has the wrong picture, you can use the corresponding picture name from the list below to replace it.
 
 ??? info "List of Default Pictures"
 

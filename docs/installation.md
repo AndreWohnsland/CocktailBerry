@@ -30,7 +30,7 @@ You can always install the other things later, the docs provide information with
     ```bash
     wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash
     ```
-    to get the script and run it on the Pi. To easy to be true, isn't it?
+    to get the script and run it on the Pi. Too easy to be true, isn't it?
 
 If you want to have the new v2 API and app, see [web setup](web.md) how to easily switch after the setup.
 Or add a `-s v2` at the end of the command to execute the switch directly after installing.

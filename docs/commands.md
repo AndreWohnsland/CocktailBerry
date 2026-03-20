@@ -32,7 +32,7 @@ uv run runme.py [OPTIONS]
 #   --help             Show help
 ```
 
-If you want to debug your microservice, you ca activate the debug `-d` flag.
+If you want to debug your microservice, you can activate the debug `-d` flag.
 When debug is active, the data will be send to the **/debug** endpoint.
 This endpoint will only log the payload (request.json), but not send it anywhere.
 You can also show the program version, this is also shown at program start in the console.

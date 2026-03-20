@@ -14,7 +14,7 @@
 [![Support CocktailBerry](https://img.shields.io/badge/Support%20CocktailBerry-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
 CocktailBerry is a Python and Qt (or React for v2) based app for a cocktail machine on the Raspberry Pi.
-It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
+It enables you to build your own, fully customized machine, while still being able to use the identical software on each machine.
 Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://docs.cocktailberry.org).
 
 <a href="https://demo.cocktailberry.org/"><img src="docs/pictures/demobutton.png" alt="v2-demo" height="70"/></a>

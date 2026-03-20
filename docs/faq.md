@@ -136,6 +136,7 @@ This should usually be more than enough and goes well hand in hand with the hard
 Relays-arrays can have up to 8 switches controlled with one 5V input.
 The usual size is 8 (or 16 with a built-in converter) relays for a relay board.
 In theory, the RPi could control up to 26 pumps when using all possible GPIOs, but that's overkill IMHO.
+If you use I2C, you can theoretically control up to 128 pumps with one Raspberry Pi.
 
 ### What is the Inverted Option
 
