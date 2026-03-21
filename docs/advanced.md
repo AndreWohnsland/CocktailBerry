@@ -6,7 +6,7 @@
     If you are not interested in them, just skip this section.
 
 !!! example "Use the CLI"
-    The **easiest** way to install the CocktailBerry microservice is over the [CLI](commands.md#setup-the-microservice).
+    The **easiest** way to install the CocktailBerry microservice is via the [CLI](commands.md#setup-the-microservice).
     Just run:
     ```bash
     uv run runme.py setup-microservice
@@ -17,12 +17,12 @@
     There is the option to install directly from Docker Hub, a new tag is built every release.
     This is for more advanced users, since you need to set the files/settings yourself.
 
-    Visit [Docker Hub](https://hub.docker.com/search?q=andrewo92) and pull the according images and follow the instruction on Docker Hub.
+    Visit [Docker Hub](https://hub.docker.com/search?q=andrewo92) and pull the corresponding images and follow the instruction on Docker Hub.
 
 ## Installation of Services
 
 Simply have `docker compose` installed and run either the CLI command or the docker compose command in the folder, where you specified the `docker-compose.yaml` file.
-You will also find more information below for the specific services.
+You will also find more information below about the specific services.
 
 ```bash
 uv run runme.py setup-microservice # (1)!
@@ -57,7 +57,7 @@ uv run runme.py setup-microservice
 The terminal will interactively ask you for the required information.
 
 One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktailberry-now-with-home-assistant).
-The service will also temporarily stores the data within a database, if there was no connection to the endpoint, and try later again.
+The service will also temporarily store the data within a database, if there was no connection to the endpoint, and try later again.
 This way, no data will get lost in the void.
 
 ### Posting Data to the Official API

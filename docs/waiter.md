@@ -61,13 +61,13 @@ sequenceDiagram
     cb->>cb: Auto-Logout (if configured)
 ```
 
-Once logged in, the staff member can then prepare cocktails, and each preparation is logged to their name.
+Once logged in, the staff member can then prepare cocktails, and each preparation is logged under their name.
 Logout happens either manually, automatically after a cocktail, or after a configured timeout.
 
 ## Difference in Appearance Between v1 and v2
 
 Since we use distinct GUI technologies for v1 (Qt) and v2 (Web), there are some differences in how the logged-in staff member is displayed and how logout works.
-See the according section for your version below.
+See the corresponding section for your version below.
 
 ### Logged-in Staff Display and Logout
 

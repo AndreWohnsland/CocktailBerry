@@ -9,10 +9,10 @@ Also, there is plenty of information at the [setup section](setup.md).
 
 ### What are Good Pumps
 
-Any pumps being food safe and having a volume flow between 10-50 ml/s are optimal.
+Food-safe pumps with a volume flow between 10-50 ml/s are optimal.
 Higher or lower values are also possible, but may lead either to longer cocktail preparation time or not perfectly dosed cocktails.
 Best pumps to look out for are peristaltic pumps or membrane pumps.
-Also take note that currently all pumps run in parallel so check that your power supply is able to power at least 6 pumps at once.
+Also take note that currently all pumps run in parallel, so check that your power supply is able to power at least 6 pumps at once.
 You can see at the [hardware section](hardware.md) for some recommended pumps.
 
 ### Which Raspberry Pi is Recommended
@@ -35,7 +35,7 @@ Checkout [this section](hardware.md#possible-basic-circuit), this explains a bas
 ### What Display to Use
 
 It depends on how you build your machine, but you will most likely want some sort of touchscreen which can be connected to the Raspberry Pi.
-Even an 5-inch 800x480 will work, but in my opinion a 7-inch 1024x600 is quite good.
+Even a 5-inch 800x480 will work, but in my opinion a 7-inch 1024x600 is quite good.
 You can see at the [hardware section](hardware.md) for some recommended displays.
 Higher resolution screens can be used, for high-res screens (at least v1) I recommend [this setting](troubleshooting.md#using-a-high-resolution-screen) for the best user experience.
 
@@ -94,7 +94,7 @@ If you want to have a look into the software, you can also install / run it on y
 ### Do I Have to Manually Start
 
 There are different ways to auto start an application on the Raspberry Pi.
-The installer script automatically sets up a way, that the program starts after the system is booted.
+The installer script automatically sets up a way that the program starts after the system is booted.
 So after the installation, you just need to turn on your Pi!
 
 ### What is the Restricted Mode

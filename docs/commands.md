@@ -2,13 +2,13 @@
 
 In this section, there is an overview and description of the Command Line Interface (CLI) commands of the program.
 Within the CocktailBerry folder, you can execute them with the schema `uv run runme/api.py [command] [options]`.
-There is also a `--help` flag to get information on the program, or it's sub-commands.
+There is also a `--help` flag to get information on the program, or its sub-commands.
 You can use this to get information on the commands when running locally.
 
 !!! info "Used Auto Setup?"
-    If you installed over the setup script, the program will usually started over the `~/launcher.sh` file.
+    If you installed via the setup script, the program will usually be started via the `~/launcher.sh` file.
     When you want to use other than the default options, change the `~/launcher.sh` file accordingly.
-    Just add the flags or their according values to the `uv run runme.py` command.
+    Just add the flags or their corresponding values to the `uv run runme.py` command.
 
 !!! info "v1 or v2?"
     If you are already running the API (v2) version, you need to use the command `api.py` instead of `runme.py`.
@@ -33,7 +33,7 @@ uv run runme.py [OPTIONS]
 ```
 
 If you want to debug your microservice, you can activate the debug `-d` flag.
-When debug is active, the data will be send to the **/debug** endpoint.
+When debug is active, the data will be sent to the **/debug** endpoint.
 This endpoint will only log the payload (request.json), but not send it anywhere.
 You can also show the program version, this is also shown at program start in the console.
 In addition, you may want to display another name than CocktailBerry, which is the default.
@@ -104,7 +104,7 @@ uv run runme.py clear-database [OPTIONS]
 
 This command will delete all recipes and ingredients from the local database.
 Before that, a local backup is created, in case you want a rollback.
-You can then either enter new recipes over the interface, or import your recipes from a file (see below).
+You can then either enter new recipes via the interface, or import your recipes from a file (see below).
 
 ## Importing Recipes from File
 
@@ -145,18 +145,18 @@ If there is another type of separator, please use a text editor to change it acc
 Also, if the recipe uses different types of units, please convert to the one provided by the conversion argument.
 The script will check for duplicates and wait for user prompt, if there are any issues.
 If the data got no unit between amount and name, use the `--no-unit` or `-nu` flag.
-If the recipe use another unit than ml, please provide the according conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
+If the recipe use another unit than ml, please provide the corresponding conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
 
 !!! danger "Safety First"
     I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
-    You can also use the build-in backup functionality in CocktailBerry for this.
+    You can also use the built-in backup functionality in CocktailBerry for this.
 
 !!! note "As a Side Note"
     You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
     In cases of many ingredients, it's quite exhausting to select the right one.
     Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
     The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the single cocktails.
-    This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
+    This import function is limited by design, because batch import should only rarely (if ever) happen, and some consideration and checking of the recipes should take place before doing so.
 
 ## Creating Addon Base File
 

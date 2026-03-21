@@ -9,11 +9,11 @@
 
 If you want to use CocktailBerry autonomously, while still charging for cocktails, you can use one of the Payment Features.
 This is an optional feature, where you can use CocktailBerry in a more robust way to limit cocktail spending by some criteria.
-Currently, two types are supported: NFC based payments and SumUp Terminal payments.
+Currently, two types are supported: NFC-based payments and SumUp Terminal payments.
 
 === "NFC Based"
 
-    For the NFC based payments, a separate Payment Service is used to manage user entities and their balances.
+    For the NFC-based payments, a separate Payment Service is used to manage user entities and their balances.
     You can own the whole service and manage the NFC tags yourself.
     A "User" entity is a NFC tag, which can have some (non-personal) properties associated with it.
     Currently supported criteria are:
@@ -33,7 +33,7 @@ Currently, two types are supported: NFC based payments and SumUp Terminal paymen
     For SumUp Terminal payments, a physical SumUp card terminal (Solo) is used to process payments.
     CocktailBerry as well as the terminal need to be connected to the internet for this to work.
     When a user wants to order a cocktail, CocktailBerry will request a payment from the SumUp Terminal.
-    This will be done over the SumUp Cloud API, which is currently only supported for SumUp Solo terminals.
+    This will be done via the SumUp Cloud API, which is currently only supported for SumUp Solo terminals.
     The user will then need to confirm the payment on the terminal, by the supported payment methods.
     You will need a SumUp account and a compatible terminal for this to work.
 
@@ -55,7 +55,7 @@ To use payments with CocktailBerry, you will need the following:
 
 !!! danger "Updating from older Versions?"
     If you are updating from an older version of CocktailBerry, you might need to run some additional setup steps.
-    It is recommended to backup your current settings and do a clean install over the setup script instead.
+    It is recommended to backup your current settings and do a clean install via the setup script instead.
     Then use the backup to restore your settings.
 
 If you want to update your existing installation, do the usual update process.
@@ -73,10 +73,10 @@ After that, CocktailBerry should start normally again.
 If this feature is enabled, users will need to pay before being able to order a cocktail.
 
 === "NFC Based"
-    When using NFC based payments, each user will need to have an NFC tag (e.g., card or key fob) associated with them.
+    When using NFC-based payments, each user will need to have an NFC tag (e.g., card or key fob) associated with them.
     The tag will be read by the NFC reader, and the unique identifier (UID) of the tag will be sent to the CocktailBerry Manager Service.
     The Manager Service will then check if the UID is valid and if the user associated with the tag has sufficient balance to order a cocktail.
-    A Tag ID can be associated with a 18+ or younger than 18 user, allowing to restrict cocktail orders based on age.
+    A Tag ID can be associated with an 18+ or younger than 18 user, allowing to restrict cocktail orders based on age.
     If the UID is valid and the user has sufficient balance, the order will be processed.
     The Service will take care of deducting the cocktail price from the user's balance.
     Also, managing user balances and age restrictions will be handled by the Manager Service.
@@ -131,8 +131,8 @@ Overall Process:
     While you can run it on the same device as the backend, it is recommended to run it on a separate device for better performance and security.
 
     CocktailBerry Machines using the payment option will communicate with the backend API to process payments and manage user balances.
-    This requires the machines being either on the same network or having access to the backend API over the internet.
-    Users will then pay for the cocktails over NFC cards, while service personnel can manage the users and top up balances via the GUI separately.
+    This requires the machines being either on the same network or having access to the backend API via the internet.
+    Users will then pay for the cocktails via NFC cards, while service personnel can manage the users and top up balances via the GUI separately.
 
 === "SumUp"
     ```mermaid
@@ -153,9 +153,9 @@ Overall Process:
     The customer orders a cocktail from the CocktailBerry machine.
     CocktailBerry requests a payment from the SumUp API.
     The SumUp API communicates with the SumUp Terminal to start the payment process.
-    The customer pays using the terminal over Card or other supported methods.
+    The customer pays using the terminal via card or other supported methods.
     The transaction data is sent back to the SumUp API, which then is polled by CocktailBerry about the successful payment.
-    Since this is done over the cloud API, CocktailBerry and the Terminal both need to be connected to the internet.
+    Since this is done via the cloud API, CocktailBerry and the Terminal both need to be connected to the internet.
     Once the payment is confirmed, CocktailBerry processes the order and dispenses the cocktail.
 
 ## Setup
@@ -198,7 +198,7 @@ The recommended way for a "basic" hardware setup is:
 
 === "NFC Based"
 
-    Follow the according steps for your OS to set up the payment service and GUI.
+    Follow the corresponding steps for your OS to set up the payment service and GUI.
 
     === "Linux Systems"
 

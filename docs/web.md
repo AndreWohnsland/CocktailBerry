@@ -7,15 +7,15 @@
 
 This is within the [roadmap](https://github.com/users/AndreWohnsland/projects/1) for v2.
 The goal of this release is to provide a more polished and at the same time more flexible app.
-It includes a new web interface that can be used to control the machine from any device in the same network.
+It includes a new web interface that can be used to control the machine from any device on the same network.
 This allows users to control the machine from their phone, tablet, or any other device that has a web browser.
 Machines without a display (e.g. Headless) are no longer a dream, you can build and use them now with CocktailBerry.
 In addition, the API (backend) is no longer tightly coupled to the frontend.
-Advanced users can use the API for their own use, like writing their own frontend or automating tasks over home automation.
+Advanced users can use the API for their own use, like writing their own frontend or automating tasks via home automation.
 
 ## Quick Install
 
-You can also directly install it over the all in one installer script by specifying `v2` as version.
+You can also directly install it via the all in one installer script by specifying `v2` as version.
 
 ```bash
 wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash -s v2
@@ -32,9 +32,9 @@ The web interface requires a modern web browser that supports the latest web tec
 You do not need a touch screen, just a device being able to connect to the same network as the Raspberry Pi.
 However, a touchscreen can be used to control the app directly on the Raspberry Pi.
 
-As a word of caution: Currently it is difficult to propagate events to open the keyboard on kiosk mode (full screen).
-This is only an issue if you are using a touchscreen directly connected to the Raspberry Pi, not over phone or tablet.
-You might start with a none full screen web browser for now, but we are working on a solution.
+As a word of caution: Currently it is difficult to trigger the virtual keyboard in kiosk mode (full screen).
+This is only an issue if you are using a touchscreen directly connected to the Raspberry Pi, not via phone or tablet.
+You might start with a non-full-screen web browser for now, but we are working on a solution.
 
 ## Limitations
 

@@ -8,48 +8,48 @@ Currently, addons can be triggered at:
 - Before a cocktail is prepared, this may also prevent the cocktail
 - After a cocktail is prepared
 - Run a continuous loop, which can trigger a cocktail preparation
-- Build up it's own GUI or buttons to execute other program logic
+- Build up its own GUI or buttons to execute other program logic
 
 You can use the addons to implement some exotic feature, just for you, or make it accessible for the public.
 Addons were introduced to give the user more control over specific things.
-Like you could implement a scale into your machine below the position for the glass and only prepare the cocktail if a glass is recognized.
+For example, you could implement a scale into your machine below the position for the glass and only prepare the cocktail if a glass is recognized.
 
 !!! danger "Everyone can make Addons"
     In general, you should check and understand the addon or trust the author of it.
     Addons are not made directly by the CocktailBerry development team.
-    The installation of additional packages required for the addon must also be handled be the user or the provided addon.
+    The installation of additional packages required for the addon must also be handled by the user or the provided addon.
     Usually, the addon provider should deliver an installation or setup guide for the addon.
 
 The extension for addons was made, so that there is no big feature creep within the main application.
-This would cause more and more optional settings, which most user are not interested in.
-With addons, users will get the best base experience of CocktailBerry, but can easily extent it to their own taste.
+This would cause more and more optional settings, which most users are not interested in.
+With addons, users will get the best base experience of CocktailBerry, but can easily extend it to their own taste.
 
 Some examples for an addon could be:
 
 - Implementation of a weight scale to detect if a glass is present
 - Add a checklist for invoices or cost splitting
-- Modify starting values (default output volume, eg.) to let them be changed over the GUI
+- Modify starting values (default output volume, eg.) to let them be changed via the GUI
 - Integrate external things like automatic ice crasher
 - And almost anything you can think of
 
 ## Installing Addons
 
 There are two options to install an addon.
-If it's an [official addon](https://github.com/AndreWohnsland/CocktailBerry-Addons), you can manage it over CocktailBerry.
+If it's an [official addon](https://github.com/AndreWohnsland/CocktailBerry-Addons), you can manage it via CocktailBerry.
 Go to Setting > Addons > Manage, there you can check the addons you want to have installed.
-For any none official one, just put the Python file of the addon into the `addons` folder.
+For any non-official one, just put the Python file of the addon into the `addons` folder.
 It is usually located at `~/CocktailBerry/addons`.
 If the addon needs additional Python packages, make sure you also install the needed requirements by the addon.
 An addon should only contain **one** file per addon.
 If an addon is not working properly, this is mostly due to an error within the addon and not CocktailBerry.
-If you think it is related to CocktailBerry, you can open an according issue.
+If you think it is related to CocktailBerry, you can open a corresponding issue.
 
 ## Updating Addons
 
 The update process is quite similar to the installation one.
 Either go to the CocktailBerry GUI for addons, manage and apply the addons.
 This will also update existing ones.
-If you use an external one, just replace the current file with the latest one, this let you run the latest version.
+If you use an external one, just replace the current file with the latest one, this lets you run the latest version.
 
 ## Verified Addons
 
@@ -70,11 +70,11 @@ Verified means that the addon is known by the CocktailBerry programmers and was 
 
 ## Creating Addons
 
-This section is for people, who want to write their own addon. 
+This section is for people who want to write their own addon.
 Here you will find the resources to get started.
 
 !!! info "Developers Guide"
-    This section is for developer and people, who want to add some features to CocktailBerry.
+    This section is for developers and people who want to add some features to CocktailBerry.
     If you just want to use addons of other people, look at the sections above.
 
 ### Set Up
@@ -102,8 +102,8 @@ An addon can currently execute code at init, cleanup, start or end of a cocktail
 In addition, you can provide logic to build up your own GUI, if it is necessary.
 The file needs the Addon class, please also inherit from the Interface, so you get information about all functions.
 A more detailed description can be found at the plus icons in the code below.
-Even if not all functions must be present within the file, it is best practice to define all.
-So it is explicitly clear, that some of the functions do not do anything by design.
+Even if not all functions must be present within the file, it is best practice to define all of them.
+This makes it explicitly clear that some of the functions intentionally do nothing.
 A basic structure could look like this:
 
 ```python
@@ -145,7 +145,7 @@ class Addon(AddonInterface): # (2)!
 2. Your class needs to have the name Addon and should inherit from the AddonInterface.
 3. Define additional configuration values for your addon here, executed before setup.
 4. Initializes the addon, executed at program start.
-5. Method for cleanup, executed a program end just before the program closes.
+5. Method for cleanup, executed at program end just before the program closes.
 6. Executed right before the cocktail preparation. In case of a RuntimeError, the cocktail will not be prepared and the message will be shown to the user instead.
 7. Executed right after the cocktail preparation, before other services are connected or DB is updated.
 8. This function will be run in a thread on a continuous loop. You can use the `prepare` function to trigger a cocktail preparation. It will return a boolean if the cocktail was prepared successfully and a message string holding more information. There is currently no GUI indication that this cocktail preparation was triggered.
@@ -157,10 +157,10 @@ Now that you know the skeleton, you can fill it with your program logic.
 
 Some addons may need additional user information, like connected pins, or other variable settings.
 The easiest (but bad) way is to hard code this into the code and let the user change this value.
-But this approach is not robust against code changes (new versions of addon), and also not user friendly (config not accessible over GUI).
+But this approach is not robust against code changes (new versions of addon), and also not user friendly (config not accessible via GUI).
 Therefore, the addon provider can use the CocktailBerry configuration.
 To do so, the user needs to inject the config name, type and validation function into the config.
-There is also the option to provide a description, as well as according translations.
+There is also the option to provide a description, as well as corresponding translations.
 It is important that you use the `define_configuration()` function for this, as it is executed before the setup of the addon and loading in local set config values.
 You can find each direction in the subsections below.
 
@@ -201,7 +201,7 @@ my_config = getattr(cfg, "ADDON_CONFIG") # (2)!
 program_language = cfg.UI_LANGUAGE # (3)!
 ```
 
-1. You can access your previously defined attributes over the `CONFIG` object.
+1. You can access your previously defined attributes via the `CONFIG` object.
 2. Using the `getattr()` will work as well, if you prefer this way.
 3. The `CONFIG` object also holds all settings, which are in the base CocktailBerry app. You can access them as well!
 
@@ -210,7 +210,7 @@ program_language = cfg.UI_LANGUAGE # (3)!
 You can further add validation besides the type validation of your config.
 If you don't want to have any other validation besides the type, you don't need to provide additional information.
 If you want to have additional validation, you can pass any number of functions into the validation list.
-Each function needs to have two arguments: The first one being the config name, the second one is the according value.
+Each function needs to have two arguments: The first one being the config name, the second the corresponding value.
 If the value is not valid, you must raise a ConfigError, other errors are not caught by the GUI.
 The description of the error should inform the user, why it is not valid.
 Cases may be limiting length of characters, only specific number ranges or similar.
@@ -245,7 +245,7 @@ In this case, you can also add a validation function, which will validate each l
 The schema is identical as before, you can define your custom validation functions.
 Take note that currently no nested lists are supported and each list element needs to have the same type.
 If the default value is an empty list, you must provide the element type to the `list_type` argument.
-Otherwise, the string type will used as fallback type.
+Otherwise, the string type will be used as fallback type.
 
 ```python
 def _less_than_10(configname: str, configvalue: int): # (1)!
@@ -275,7 +275,7 @@ In this case, you provide a list of allowed string values.
 The default value will be the first element of the options, but you can also define this value, if it should be another one.
 The GUI will then display a drop down, only showing the allowed values.
 Please take note, if you want types other than string, you need to convert them after you retrieve the value from the config.
-The dropdown element only support string values.
+The dropdown element only supports string values.
 
 ```python
 def define_configuration(self):
@@ -304,8 +304,8 @@ def define_configuration(self):
 Optionally, you can add an additional description to your configuration.
 This helps users using the GUI understanding the value better.
 Use the `UI_LANGUAGE` object to set the configuration description.
-You can either use a single string describing the config in english, or use a dictionary with the language codes.
-At least english is needed, if you do not provided a full list of translations.
+You can either use a single string describing the config in English, or use a dictionary with the language codes.
+At least English is needed, if you do not provide a full list of translations.
 If you don't want to provide GUI description, you can skip this step.
 But it is encouraged to do so to improve user experience.
 
@@ -326,8 +326,8 @@ def define_configuration(self):
 ```
 
 1. You need to import the `UI_LANGUAGE` object to access the dialogues
-2. If you do provide a dictionary, it needs at least the english (`en`) key!
-3. You can also just use a string in the english language, if you don't want to provide translation 
+2. If you do provide a dictionary, it needs at least the English (`en`) key!
+3. You can also just use a string in the English language, if you don't want to provide translation 
 
 ### Prevent Cocktail Preparation
 
@@ -336,8 +336,8 @@ This way, you can prevent the preparation of the cocktail.
 For example, if your scale does not recognize a glass, a cocktail should not be prepared.
 To break the preparation process, raise a RuntimeError. 
 Please do not use other error types, because only this type will be caught and handled.
-You can provide an error message in either english, or an according translation for the current language.
-You do not need to provide all languages if you do an translation, but you need at least the english one.
+You can provide an error message in either English, or a corresponding translation for the current language.
+You do not need to provide all languages if you do a translation, but you need at least the English one.
 The error message will be shown as a dialog to the user, so it should explain why the cocktail was not prepared.
 
 ```python
@@ -354,7 +354,7 @@ def before_cocktail(self, data: dict):
 ```
 
 1. Insert your custom logic to check on condition or external devices if everything is as it should be.
-2. You can either directly provide the message, or again define a translation. In the latter, see handling below. If you do provide translation, please make sure english is at least present.
+2. You can either directly provide the message, or again define a translation. In the latter, see handling below. If you do provide translation, please make sure English is at least present.
 3. When you do the language selection here, it is best to fall back to `en` on a not found key. This is useful when a new language is released, which your addon currently does not support. Otherwise a KeyError will crash the program. The current language is in `cfg.UI_LANGUAGE`.
 4. Please raise a `RuntimeError`, other errors will not be caught and crash the program. The used message will be shown to the user.
 
@@ -362,9 +362,9 @@ def before_cocktail(self, data: dict):
 
 The best way to implement logging into your addon is to use the internal CocktailBerry logger.
 This way, your logs are saved and formatted the same way as the other logs.
-This makes it easy for the user to view them over the GUI.
+This makes it easy for the user to view them via the GUI.
 The `log_event` takes two arguments: The log level ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL") and the log message.
-Or you can just use the default way, the python logger is implemented with the according level function.
+Or you can just use the default way: the Python logger is implemented with the corresponding level function.
 
 ```python
 from src.logger_handler import LoggerHandler # (1)!
@@ -388,7 +388,7 @@ def setup(self):
 There are scenarios where you want to persistently store your data.
 You can either define your own database location and use a framework to your liking, or use the default CocktailBerry database.
 If you want to use the default database, import the `DatabaseCommander` class and create an instance of it.
-The handler attribute have the `query_database` command as an abstraction to interact with the database.
+The handler attribute has the `query_database` command as an abstraction to interact with the database.
 Here you can execute SQLite commands passed as a string.
 If you want to have dynamic arguments, you can pass them according to the SQLite syntax (`?`), with the corresponding values in the second argument as tuple.
 The results are automatically fetched and returned as a list of tuples.
@@ -424,7 +424,7 @@ def setup(self):
 
 The `build_gui()` function is used to build up an own GUI for your addon if the user navigates to the addon window.
 A `container` (QVBoxLayout) for your elements is provided, where you can fill in custom Qt elements, if you want that.
-If you just want to have some buttons which executes a function, when the user clicks on it, you can use the `button_generator`.
+If you just want to have some buttons which execute a function when the user clicks on it, you can use the `button_generator`.
 It takes a string (label of the button) and a function (executed at button click) as arguments.
 With the help of this function, you can generate Qt buttons without knowing any Qt at all.
 If you are experienced with Qt, you can use the container to build more complex things.
@@ -476,7 +476,7 @@ ADDON_NAME = "Your Displayed Name" # (1)!
 
 1. Define the ADDON_NAME at root level (outside the other functions or classes) in your file.
 
-### Dialogues an Prompts
+### Dialogues and Prompts
 
 There are times, you either want to inform the user with a dialog or want to have a confirmation of the user.
 In this cases, you can use the `DP_CONTROLLER` object.
@@ -516,12 +516,12 @@ Following attributes are available in the before_cocktail data:
 Following attributes are available in the after_cocktail data:
 
 - cocktail: [Cocktail object](https://github.com/AndreWohnsland/CocktailBerry/blob/master/src/models.py#L28), containing name, adjusted_ingredients and many more attributes. Ingredient object got name and amount for example.
-- consumption: List of spend ingredients, which where added by machine (cocktail.machineadds).
+- consumption: List of spent ingredients, which were added by machine (cocktail.machineadds).
 
 ### And Many More
 
 In theory, you can use any element from CocktailBerry, but this would go beyond the scope and is not necessary in most cases.
-If you are a little familiar with the base code, this should no problem for you.
+If you are a little familiar with the base code, this should be no problem for you.
 Some examples may be:
 
 - `src.machine.rfid` RFID Controller

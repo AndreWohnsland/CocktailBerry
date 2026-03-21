@@ -8,5 +8,5 @@ CocktailBerry includes multi-language support. You can change the language with 
 |  German  | `de`  |    1.3.0     |       ✔️       |     ✔️     |
 
 !!! info "Not your Language?"
-    If you are interested in implementing your own native language, feel free to contact me or submit an according pull request.
+    If you are interested in implementing your own native language, feel free to contact me or submit a corresponding pull request.
     So you can also become a part of CocktailBerry.

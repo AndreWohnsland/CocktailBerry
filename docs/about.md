@@ -1,7 +1,7 @@
 # Overview
 
-CocktailBerry is used to control your cocktail machine and easily prepare cocktails over a nice-looking user interface.
-It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
+CocktailBerry is used to control your cocktail machine and easily prepare cocktails via a nice-looking user interface.
+It also offers the option to create and manage your recipes and ingredients via the interface and calculates the possible cocktails to prepare from given ingredients.
 Track and display cocktail data for different teams to even further increase the fun.
 Have also a look into the [User Guide](assets/CocktailBerryUserGuide.pdf).
 Let's get started!
@@ -10,9 +10,9 @@ Let's get started!
 
 You can easily install the software by just flashing the Raspberry Pi OS on a SD card, insert it, start the device and install the software with just one command.
 Then, get some coffee and let the script do the work.
-When you come back, you can set up the machine over the graphical user interface and start mixing cocktails.
+When you come back, you can set up the machine via the graphical user interface and start mixing cocktails.
 This way, you don't have to know much about software and can go full focus on the hardware.
-If you want to do your own software part, you can still add this over [addons](addons.md).
+If you want to do your own software part, you can still add this via [addons](addons.md).
 
 <figure markdown>
   ![Cocktail in the making](pictures/Cocktailmaker_action.gif){ width="600" }
@@ -25,7 +25,7 @@ CocktailBerry comes with two versions: v1 and v2.
 Most impressions here shown are from v1, but v2 is quite similar.
 The main difference is that v2 comes with a more modern design and as a web app, offering more flexibility and accessibility.
 You can have a look at the [v2 demo](https://demo.cocktailberry.org/cocktails) to interactively experience it.
-The interface was programmed for the users to easily interact with CocktailBerry and manage everything over the GUI.
+The interface was programmed for the users to easily interact with CocktailBerry and manage everything via the GUI.
 There are different views for the tasks.
 
 <figure markdown>

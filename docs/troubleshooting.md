@@ -51,8 +51,7 @@ When submitting an error, please also provide the `logs/debuglog.log` file.
 If some of the icons (check / cross on the checkbox, up / down arrow on the list view) are missing, make sure you run the script within the folder (e.g. `uv run runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`).
 This is because of the nature of Qt and the translation to python, if you go from another folder the picture resources can't be found.
 
-Another reason may be, if you are using a custom style sheet with colors using rgb.
-If that's the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
+Another reason may be if you are using a custom style sheet with colors using rgb.
 If that's the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
 
 ## Changing Volume Unit
@@ -76,15 +75,15 @@ Otherwise, you may end up using an older one.
 
 ## Using a High Resolution Screen
 
-The UI of the program is somewhat dynamic, but Qt got it's limitations.
+The UI of the program is somewhat dynamic, but Qt got its limitations.
 To ensure that the UI looks nice like in the screenshots, a resolution not higher than ~1200px on the long side (width) is recommended.
-If you happen to use a high res screen, there is an easy fix, though.
+If you happen to use a high-resolution screen, there is an easy fix, though.
 For example, when using a screen with a 2560x1600 resolution, I would recommend divide the value by `x` (for example x=2).
-In the CocktailBerry config set width to 2560/2 = 1280 and height to 1600/2 = 800.
+In the CocktailBerry config, set width to 2560/2 = 1280 and height to 1600/2 = 800.
 In case you used the provided setup, just change the first line in the ~/launcher.sh file `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case).
 This will use the lower dimensions for the application but scale it up by the factor of two so it occupies the whole screen.
 Decimal numbers for x do also work, just try not to get decimals for width / height.
-If you use your own startup script or similar, just add the export line with an according value to it, or set the environment variable in any other desired way.
+If you use your own startup script or similar, just add the export line with a corresponding value to it, or set the environment variable in any other desired way.
 
 ## Touchscreen Calibration
 
@@ -168,8 +167,8 @@ Currently you can use those different types of reader:
 
 Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/).
 You only need the wiring and the installation of the libraries (usually they are already installed).
-The according code is integrated into CocktailBerry.
-After that, you select the according option in the settings dropdown for the reader.
+The corresponding code is integrated into CocktailBerry.
+After that, you select the corresponding option in the settings dropdown for the reader.
 When using the teams function, you can then also use a RFID chip, which inserts the information (name of person) for the leaderboard.
 In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
 
@@ -193,7 +192,7 @@ If you are an unexperienced user with Linux, I recommend you stick to the recomm
 ## Task Bar Overlap / Push GUI
 
 This may happen (especially at older versions of RPi OS or higher res screens) when running the program and some dialog window opens.
-The task bar (bar with programs on it) may overlap the dialog window or push it down by it's height.
+The task bar (bar with programs on it) may overlap the dialog window or push it down by its height.
 Ensure that you have unchecked the "Reserve space, and not covered by maximised windows" option.
 You can find it under the panel preferences (right click the task bar > panel settings > Advanced).
 Unchecking this box usually fixes this problem.
@@ -223,7 +222,7 @@ cat ~/cb_backup/custom_config_pre_{version_number}.yaml
 
 It may happen that you don't get the latest version of the software prompted at start, even if you check for updates.
 This can be due to different reasons.
-First, check if you have a internet connection.
+First, check if you have an internet connection.
 If you have, check if you have the latest recommended version of python installed.
 CocktailBerry will not show the update if the future needed python version is higher than the current installed one.
 Another reason may be that your git file is corrupted.
@@ -246,7 +245,7 @@ If you get another error output, it is best to submit the error output with the 
 
 With the v1.30.0 release, the maker view was completely rewritten.
 This includes the way cocktails are shown as a list and single view.
-There is a picture now for every cocktail, the default provided cocktails all got an according picture.
+There is a picture now for every cocktail, the default provided cocktails all got a corresponding picture.
 There is also a default picture for cocktails without a picture, like newly user added ones.
 You can upload your own pictures via the corresponding button in the recipe tab.
 Your picture will then replace the default provided picture.
@@ -257,12 +256,12 @@ You can also provide the cocktail name in lowercase with underscores instead of 
 
 If your database is quite old, newer cocktails you added may either have the default picture, or may have another picture from new cocktails contained now in the database.
 This is due to the database using incrementing integers as primary key for the cocktails.
-This is historically and can't be changed easily in running installations.
+This is historical and can't be changed easily in running installations.
 If that's the case, please use the GUI option to replace wrong pictures with your desired ones.
 If you feel that the default pictures are switched, you can also use the default ones as replacement.
 They are located at `~/CocktailBerry/default_cocktail_images`.
 
-Here is an extensive list of all default cocktails and their according image.
+Here is an extensive list of all default cocktails and their corresponding image.
 If you think your cocktail has the wrong picture, you can use the corresponding picture name from the list below to replace it.
 
 ??? info "List of Default Pictures"

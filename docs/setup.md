@@ -6,8 +6,8 @@ CocktailBerry will work directly after using the installer, but you can make you
 
 CocktailBerry comes with a limited set of recipes and ingredients.
 You can use the program to add your own ingredients or recipes, or rename and change existing ones.
-Just use the implemented UI for the procedure under the according tabs (**Ingredients** or **Recipes**).
-All entered values are checked for reason and if something is wrong, an error message will inform the user what is wrong with the data input.
+Just use the implemented UI for the procedure under the corresponding tabs (**Ingredients** or **Recipes**).
+All entered values are checked for validity and if something is wrong, an error message will inform the user what is wrong with the data input.
 
 !!! info "Database Structure"
     If you want to browse through the data in the database, I recommend some program like [DB Browser for SQLite](https://sqlitebrowser.org/).
@@ -16,7 +16,7 @@ All entered values are checked for reason and if something is wrong, an error me
 ## Setting up the Machine / Modifying other Values
 
 You can manage your config within CocktailBerry.
-Just go to the bottles tab (v1), click the gear icon or to the according option tab (v2) and enter your password.
+Just go to the bottles tab (v1), click the gear icon or to the corresponding option tab (v2) and enter your password.
 You can then use the UI to change the configuration.
 The configuration is also divided into own tabs, containing similar categories in one tab.
 
@@ -189,7 +189,7 @@ Do a mix of the different volumes, add them together and check if the scale show
 
 ## Cleaning the Machine
 
-CocktailBerry has a build-in cleaning function for cleaning at the end of a party.
+CocktailBerry has a built-in cleaning function for cleaning at the end of a party.
 You will find the feature at the option gear under the **Bottles** tab.
 CocktailBerry will then go to cleaning mode for the defined time within the config (default is 20 seconds).
 A message prompt will inform the user to provide enough water for the cleaning process.

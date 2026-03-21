@@ -2,7 +2,7 @@
 
 Here you will find a list of the new features introduced over time.
 If you don't find a feature listed in the docs on your CocktailBerry, chances may be that you didn't update for some time.
-Cross check your version with the feature list and their according introduction time.
+Cross check your version with the feature list and their corresponding introduction time.
 Usually, updating to the latest version is always a good idea.
 
 | Version     | Feature Description                                                                                                  |

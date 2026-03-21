@@ -53,7 +53,7 @@ The Raspberry Pi will provide too little power / current to operate the pumps.
 You have to use two power circuits, one for powering the Raspberry Pi and one for the pumps.
 The pump circuit will be most likely 12 or 24 V.
 You can either use two different power supplies or use a step down converter for the RPi.
-The RPi will control a relay, mosfet or another electrical switch over the GPIO output.
+The RPi will control a relay, mosfet or another electrical switch via the GPIO output.
 
 <figure markdown>
   ![circuit](pictures/circuit.jpg)
@@ -61,9 +61,9 @@ The RPi will control a relay, mosfet or another electrical switch over the GPIO 
 </figure>
 
 You can use any of the GPIOs of the RPi, the connected pump to that pin can be defined in the config.
-The switch will then turn the pump on or off over the RPi.
+The switch will then turn the pump on or off via the RPi.
 How you will build your CocktailBerry is still completely up to you.
-The only restriction by the software is that the GPIO pins are turned on / off over the RPi.
+The only restriction by the software is that the GPIO pins are turned on / off via the RPi.
 
 ## Custom PCBs or STLs
 
