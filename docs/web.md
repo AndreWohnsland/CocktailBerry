@@ -1,40 +1,40 @@
 # CocktailBerry Web
 
 !!! info "This is still new and not the default interface yet"
-    This is a new implementation and not so much battle tested like the old interface.
+    This is a new implementation and not as battle-tested as the old interface.
     If you spot any issues, please report them in the [GitHub repository](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose).
     In general, most features should work as expected, but there might be some edge cases that are not covered yet.
 
 This is within the [roadmap](https://github.com/users/AndreWohnsland/projects/1) for v2.
 The goal of this release is to provide a more polished and at the same time more flexible app.
-It includes a new web interface that can be used to control the machine from any device in the same network.
+It includes a new web interface that can be used to control the machine from any device on the same network.
 This allows users to control the machine from their phone, tablet, or any other device that has a web browser.
 Machines without a display (e.g. Headless) are no longer a dream, you can build and use them now with CocktailBerry.
 In addition, the API (backend) is no longer tightly coupled to the frontend.
-Advanced users can use the API for their own use, like writing their own frontend or automating tasks over home automation.
+Advanced users can use the API for their own use, like writing their own frontend or automating tasks via home automation.
 
 ## Quick Install
 
-You can also directly install it over the all in one installer script by specifying `v2` as version.
+You can also directly install it via the all-in-one installer script by specifying `v2` as version.
 
 ```bash
 wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash -s v2
 ```
 
-This will do the similar setup steps as in v1, but directly install the web interface version.
+This will do similar setup steps as in v1, but directly install the web interface version.
 
 ## Requirements
 
 It is not recommended to use this on Raspberry Pi 3 series or older, as the performance might not be sufficient.
 Use a Raspberry Pi 4 with 2 GB or more of RAM for the best experience.
-You need to have an up to date Raspberry Pi OS installed.
+You need to have an up-to-date Raspberry Pi OS installed.
 The web interface requires a modern web browser that supports the latest web technologies.
 You do not need a touch screen, just a device being able to connect to the same network as the Raspberry Pi.
 However, a touchscreen can be used to control the app directly on the Raspberry Pi.
 
-As a word of caution: Currently it is difficult to propagate events to open the keyboard on kiosk mode (full screen).
-This is only an issue if you are using a touchscreen directly connected to the Raspberry Pi, not over phone or tablet.
-You might start with a none full screen web browser for now, but we are working on a solution.
+As a word of caution: Currently it is difficult to trigger the virtual keyboard in kiosk mode (full screen).
+This is only an issue if you are using a touchscreen directly connected to the Raspberry Pi, not via phone or tablet.
+You might start with a non-full-screen web browser for now, but we are working on a solution.
 
 ## Limitations
 
@@ -42,7 +42,7 @@ Currently, the web interface might have some issues with touch screens directly 
 In some occasions, older OS or not properly configured screens, the default keyboard might not show up.
 If you are using an external device to control the app, this should not be an issue.
 In case you are using a touch screen directly connected to the Raspberry Pi, running the browser in non-kiosk mode might help.
-Installing maliit keyboard might also be an alternative.
+Installing the maliit keyboard might also be an alternative.
 
 ## Installation
 
@@ -63,7 +63,7 @@ uv run runme.py setup-web
 ```
 
 This will set up the web interface as the default interface and start it instead of the old main program.
-You can now access the the website by opening your browser and navigating to `http://<ip>` or locally on `http://localhost`.
+You can now access the website by opening your browser and navigating to `http://<ip>` or locally on `http://localhost`.
 
 Note: In the following section we use `uv run api.py` instead of `uv run runme.py` to start the web interface.
 

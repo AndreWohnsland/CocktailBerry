@@ -6,7 +6,7 @@
     If you are not interested in them, just skip this section.
 
 !!! example "Use the CLI"
-    The **easiest** way to install the CocktailBerry microservice is over the [CLI](commands.md#setup-the-microservice).
+    The **easiest** way to install the CocktailBerry microservice is via the [CLI](commands.md#setup-the-microservice).
     Just run:
     ```bash
     uv run runme.py setup-microservice
@@ -17,12 +17,12 @@
     There is the option to install directly from Docker Hub, a new tag is built every release.
     This is for more advanced users, since you need to set the files/settings yourself.
 
-    Visit [Docker Hub](https://hub.docker.com/search?q=andrewo92) and pull the according images and follow the instruction on Docker Hub.
+    Visit [Docker Hub](https://hub.docker.com/search?q=andrewo92) and pull the corresponding images and follow the instructions on Docker Hub.
 
 ## Installation of Services
 
 Simply have `docker compose` installed and run either the CLI command or the docker compose command in the folder, where you specified the `docker-compose.yaml` file.
-You will also find more information below for the specific services.
+You will also find more information below about the specific services.
 
 ```bash
 uv run runme.py setup-microservice # (1)!
@@ -31,8 +31,8 @@ docker compose up --build -d # (3)!
 ```
 
 1. This is the recommended and easiest way!
-2. Just use this in case you want to use the team feature and also on the same device as CocktailBerry, I recommend at least a RPi 4 with 2GB RAM.
-3. If you are an experienced docker user, feel free to do it yourself! If you got a quite old system, docker v1 may be installed. Best is to upgrade, but you can use `docker-compose` as command.
+2. Just use this in case you want to use the team feature and also on the same device as CocktailBerry, I recommend at least an RPi 4 with 2GB RAM.
+3. If you are an experienced docker user, feel free to do it yourself! If you got a quite old system, docker v1 may be installed. Best is to upgrade, but you can use `docker-compose` as a command.
 
 This will handle the setup of all docker services.
 You may have to set the environment variables, depending on your setup.
@@ -57,7 +57,7 @@ uv run runme.py setup-microservice
 The terminal will interactively ask you for the required information.
 
 One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktailberry-now-with-home-assistant).
-The service will also temporary stores the data within a database, if there was no connection to the endpoint, and try later again.
+The service will also temporarily store the data within a database, if there was no connection to the endpoint, and try again later.
 This way, no data will get lost in the void.
 
 ### Posting Data to the Official API
@@ -74,13 +74,13 @@ After that, your CocktailBerry will be able to also submit data and help populat
 !!! warning "For Experienced Users"
     This is an advanced feature, and you should be familiar with some tinkering on the RPi and command shell.
 
-CocktailBerry got an optional team feature.
+CocktailBerry has an optional team feature.
 If enabled within the config, the user can choose one of the defined teams to register the cocktail to.
-The names of the teams, as well the URL of the dashboard device, can be specified within the config.
+The names of the teams, as well as the URL of the dashboard device, can be specified within the config.
 CocktailBerry will then send the information to the team's API.
 
 The Dashboard will use the API to display the current status.
-You can use amount of cocktails or cocktail volume as metric.
+You can use the number of cocktails or cocktail volume as metric.
 In addition, there is the option to display all time data of the leader board.
 By default, the latest 24 hours, so mostly this party, will be shown.
 You should use a second device for the API / the dashboard for easy display on another screen.
@@ -98,10 +98,10 @@ You should use a second device for the API / the dashboard for easy display on a
 The **recommended way** is to use a second Raspberry Pi with a touchscreen attached.
 But you might also install everything on the same device, if you have enough resources.
 For this case, I recommend at least a Raspberry Pi 4 with 2GB RAM.
-In addition, docker and compose needs to be installed on the device.
+In addition, docker and compose need to be installed on the device.
 
 !!! tip "More Flexibility"
-    Both of these images are also available at [Docker Hub](https://hub.docker.com/search?q=andrewo92), so if you want to tweak them, you can just use the pre-build image.
+    Both of these images are also available at [Docker Hub](https://hub.docker.com/search?q=andrewo92), so if you want to tweak them, you can just use the pre-built image.
     Create the according `docker-compose.yaml` file on your desktop, or in a separate location.
     In `CocktailBerry/dashboard` you will find the `docker-compose.both.yaml` file, which you can also use as a template.
 
@@ -116,7 +116,7 @@ sh scripts/setup.sh dashboard
 ```
 
 !!! danger "Important"
-    **Please do not use the script on the same Device as CocktailBerry!** It will else overwrite the CocktailBerry autostart.
+    **Please do not use the script on the same Device as CocktailBerry!** It will otherwise overwrite the CocktailBerry autostart.
 
 ### Teams on Same Device
 
@@ -155,7 +155,7 @@ For this, a very easy way is to use [RaspAp](https://raspap.com/).
 !!! info "Less Typing"
     Using the included script `sh scripts/install_docker.sh` and `sh scripts/install_compose.sh` will also do that for you.
     You may have executed it at the setup of your CocktailBerry, if you used the all in one script, and therefore already installed docker.
-    Using them have the benefit that they may be more up to date than the commands below.
+    Using them has the benefit that they may be more up to date than the commands below.
 
 Just run these commands in sequence on the Pi:
 

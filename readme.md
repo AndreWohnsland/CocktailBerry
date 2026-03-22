@@ -14,7 +14,7 @@
 [![Support CocktailBerry](https://img.shields.io/badge/Support%20CocktailBerry-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
 
 CocktailBerry is a Python and Qt (or React for v2) based app for a cocktail machine on the Raspberry Pi.
-It enables you to build your own, fully customized machine, while still be able to use the identical software on each machine.
+It enables you to build your own, fully customized machine, while still being able to use the identical software on each machine.
 Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://docs.cocktailberry.org).
 
 <a href="https://demo.cocktailberry.org/"><img src="docs/pictures/demobutton.png" alt="v2-demo" height="70"/></a>
@@ -25,8 +25,8 @@ Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
 <a href="https://docs.cocktailberry.org/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
 <a href="https://stats-cocktailberry.streamlit.app/"><img src="docs/pictures/dashboardbutton.png" alt="dashboard" height="70"/></a>
 
-This app is used to control a cocktail machine and easily prepare cocktails over a nice-looking user interface.
-It also offers the option to create and manage your recipes and ingredients over the interface and calculates the possible cocktails to prepare over given ingredients.
+This app is used to control a cocktail machine and easily prepare cocktails via a nice-looking user interface.
+It also offers the option to create and manage your recipes and ingredients via the interface and calculates the possible cocktails to prepare from given ingredients.
 Track and display cocktail data for different teams to even further increase the fun.
 Let's get started!
 
@@ -40,33 +40,34 @@ Like this project? Give it a star on GitHub! ⭐
 
 CocktailBerry currently comes in two versions, v1 and v2.
 The v1 is the stable version which ships the QT app as a single application.
-[v2](https://docs.cocktailberry.org/web/) is the new version with a separate API and UI, which offers more flexibility, but might have some issues on build in touchscreens.
+[v2](https://docs.cocktailberry.org/web/) is the new version with a separate API and UI, which offers more flexibility, but might have some issues on built-in touchscreens.
 Both versions have the full feature set listed below.
 
 CocktailBerry can do:
 
 - Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
-- Let customers pay over NFC chips/cards
-- Add new ingredients and recipes with needed information over the UI
+- Let customers pay via NFC chips/cards
+- Add new ingredients and recipes with needed information via the UI
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
-- Define connected ingredients to the machine and existing additional ingredients over the UI
+- Define connected ingredients to the machine and existing additional ingredients via the UI
 - Auto calculate and display possible recipes dependent on given information
 - Option to serve cocktails without alcohol
 - Execute a cleaning program to get rid of remaining fluids
 - Visualize the cocktail data and get insights
-- Run headless, so you can access it over another device
+- Run headless, so you can access it from another device
 - Send cocktail production data to a given endpoint, for example a webhook
 - Keep track of cocktail count and volume from different teams for some fun competition
 - Select different themes to fit your liking
 - Switch between user interface languages
 - Support WS281x LEDs on your machine
 - Support for RFID/NFC reader
+- Support for Service Personnel
 - Implement your own [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) to extend the base functionality
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
 
 - Provide the teams API to post and get cocktail data
-- Display different modes of data for a by team comparison
+- Display different modes of data for a team-by-team comparison
 - _Optional_: Use the dashboard as WiFi hot-spot
 
 # Quickstart
@@ -74,7 +75,7 @@ In addition, there is the possibility to use and set up a second device as a das
 Here are some simple steps to get CocktailBerry running. You need to have **Python 3.13** or newer and **git** installed.
 If you are using a Raspberry Pi and a current OS, you should be good to go.
 
-On the RPi, you can try the new [all in one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh).
+On the RPi, you can try the new [all-in-one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh).
 One command should install everything:
 
 ```bash
@@ -145,7 +146,7 @@ Generally, it is recommended to first open an issue or an discussion to talk abo
 
 # Development
 
-This project uses [uv](https://docs.astral.sh/uv/), [node.js](https://nodejs.org/en) and [yarn](https://yarnpkg.com/getting-started/install) to manage all its python dependencies.
+This project uses [uv](https://docs.astral.sh/uv/), [node.js](https://nodejs.org/en) and [yarn](https://yarnpkg.com/getting-started/install) to manage all its Python dependencies.
 To get started, you need to install the tools and then install the dependencies.
 See also at the [dev notes](./docs/.devnotes.md) section for a complete run down as well as extra information.
 
@@ -181,7 +182,7 @@ If you want to develop the api, you can also run it with
 uv run fastapi dev ./src/api/api.py
 ```
 
-and run the web ui over:
+and run the web UI via:
 
 ```bash
 cd web_app/
@@ -198,8 +199,8 @@ The mocked NFC reader will cycle through two predefined IDs every minute, it wil
 If you want to test specific behavior, it is recommended not to mock but use the real hardware.
 
 The mocked payment service will simulate successful payments without actually connecting to any external service.
-It will create not existing ids with a default balance of 20.
-The adult flag will circle between true and false for each new id.
+It will create non-existing IDs with a default balance of 20.
+The adult flag will cycle between true and false for each new id.
 
 ## Building Documentation
 

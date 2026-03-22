@@ -7,7 +7,7 @@ If you don't find any solution here, you can [open a ticket](https://github.com/
 ## Major Version Updates
 
 If a breaking change is introduced, a major version update is released (e.g. v2.9.0 to v3.0.0).
-Usually, this changes cannot be automatically migrated and need some manual steps.
+Usually, these changes cannot be automatically migrated and need some manual steps.
 Other cases might need the latest OS version or python version, which you might or might not have.
 See below for migration steps for the related versions.
 
@@ -19,7 +19,7 @@ This way, you ensure that everything is working as intended and you don't run in
 
 V3 introduces the NFC Payment service integration as well as the update from PyQt5 to PyQt6.
 While the NFC changes "just" need some shell commands, the PyQt6 library needs the latest Raspberry Pi OS to work properly out of the box.
-There is a good chance that your current setup will work due to the migrator doing it magic and you have PyQt6 after that.
+There is a good chance that your current setup will work due to the migrator doing its magic and you have PyQt6 after that.
 It is however not guaranteed, so if you run into any issues, please ensure that you are on the latest OS (Trixie) first.
 
 To add the NFC, please run the following commands in your terminal:
@@ -31,7 +31,7 @@ bash scripts/setup_usb_nfc.sh
 
 If you are not on the latest Raspberry Pi OS, please consider updating your system first.
 The best way is to backup your data and do a fresh install of the OS.
-I personally cannot recommend upgrading an existing OS, except you know what you are doing and how to fix issues.
+I personally cannot recommend upgrading an existing OS, unless you know what you are doing and how to fix issues.
 Otherwise, you can run:
 
 ```bash
@@ -43,47 +43,47 @@ sudo apt install python3-pyqt6
 
 All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled, and an info message should be displayed.
 If in any case any unexpected behavior occurs, feel free to open an issue.
-Usually, a part of the actions are also logged into the log files.
+Usually, part of the actions is also logged into the log files.
 When submitting an error, please also provide the `logs/debuglog.log` file.
 
 ## Icons are Missing
 
 If some of the icons (check / cross on the checkbox, up / down arrow on the list view) are missing, make sure you run the script within the folder (e.g. `uv run runme.py`) and not from another folder (e.g. `CocktailBerry/runme.py`).
-This is because of the nature of Qt and the translation to python, if you go from another folder the picture ressources can't be found.
+This is because of the nature of Qt and the translation to python, if you go from another folder the picture resources can't be found.
 
-Another reason may be, if you are using a custom style sheet with colors using rgb.
-If thats the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
+Another reason may be if you are using a custom style sheet with colors using rgb.
+If that's the case, please change the color codes to the hexadecimal representation of the color, because qtawesome can't handle rgb color codes.
 
 ## Changing Volume Unit
 
-For the users of the machine, there is the possibility to set the `EXP_MAKER_UNIT` and `EXP_MAKER_FACTOR` option to change the displayed unit, for example to oz.
+For the users of the machine, there is the possibility to set the `EXP_MAKER_UNIT` and `EXP_MAKER_FACTOR` options to change the displayed unit, for example to oz.
 Please take note that the units stored in the database are still in ml, and if inserting new recipes, you still need to provide them in ml.
-This feature is purely cosmetic and for the user of the maker tab when making cocktails, that no calculations need to be done while making cocktails.
+This feature is purely cosmetic and for the user of the maker tab when making cocktails, so that no calculations need to be done while making cocktails.
 
 ## Restoring Database
 
 The migrations create a backup of the database before doing the modifying steps.
-If you rather don't want to have the new recipes, you can overwrite the local `Cocktail_database.db` with the `Cocktail_database_backup.db` file.
+If you'd rather not have the new recipes, you can overwrite the local `Cocktail_database.db` with the `Cocktail_database_backup.db` file.
 
 ```bash
 cp Cocktail_database_backup-{your-date-string}.db Cocktail_database.db
 ```
 
-This will restore the state of the backup previous this migration step.
-Please take a look into the production_log file, if a backup was created.
-Otherwise, you may up ending using an older one.
+This will restore the state of the backup prior to this migration step.
+Please take a look at the production_log file, if a backup was created.
+Otherwise, you may end up using an older one.
 
 ## Using a High Resolution Screen
 
-The UI of the program is somewhat dynamic, but Qt got it's limitations.
+The UI of the program is somewhat dynamic, but Qt has its limitations.
 To ensure that the UI looks nice like in the screenshots, a resolution not higher than ~1200px on the long side (width) is recommended.
-If you happen to use a high res screen, there is a easy fix, tough.
-For example, when using a screen with a 2560x1600 resolution, I would recommend divide the value by `x` (for example x=2).
-In the CocktailBerry config set width to 2560/2 = 1280 and height to 1600/2 = 800.
+If you happen to use a high-resolution screen, there is an easy fix, though.
+For example, when using a screen with a 2560x1600 resolution, I would recommend dividing the value by `x` (for example x=2).
+In the CocktailBerry config, set width to 2560/2 = 1280 and height to 1600/2 = 800.
 In case you used the provided setup, just change the first line in the ~/launcher.sh file `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case).
 This will use the lower dimensions for the application but scale it up by the factor of two so it occupies the whole screen.
-Decimal numbers for x do also work, just try not to get decimals for width / height.
-If you use your own startup script or similar, just add the export line with an according value to it, or set the environment variable in any other desired way.
+Decimal numbers for x also work, just try not to get decimals for width / height.
+If you use your own startup script or similar, just add the export line with a corresponding value to it, or set the environment variable in any other desired way.
 
 ## Touchscreen Calibration
 
@@ -114,19 +114,19 @@ After the reboot, the calibration should be okay.
 ## How to Have the Right Time
 
 There is the config value `MAKER_CHECK_INTERNET`.
-If you wish to use your microservice, but got no internet at the moment, the data will be saved and send later.
+If you wish to use your microservice, but have no internet at the moment, the data will be saved and sent later.
 One problem that occurred, is that, for example on a standard Raspberry Pi, the clock and therefore the timestamp will probably be wrong.
-This new option tackles that. If it's set active with an active microservice, it will check for internet connection at startup.
+This new option tackles that. If it's set to active with an active microservice, it will check for internet connection at startup.
 If there is no connection, a dialog will pop up and give the user the possibility to adjust the time.
-In case the machine got a RTC build in and uses it, this option can usually be set to `false`, because due to the RTC, the time should be correct.
+In case the machine has an RTC built in and uses it, this option can usually be set to `false`, because due to the RTC, the time should be correct.
 
 ## Get the LED Working
 
 Getting the WS281x to work may be a little bit tricky.
 You need to run the program as root/sudo, so you also need to change this in `~/launcher.sh`.
 If you are using the latest installer, there will be a virtual environment created, so you should use this as root.
-This also does you require to reinstall the python packages for the main program.
-A better way would be to add the user to the gpio/other needed groups, so you can run the program as normal user.
+This also requires you to reinstall the python packages for the main program.
+A better way would be to add the user to the gpio/other needed groups, so you can run the program as a normal user.
 
 ```bash
 # for v1: change this line
@@ -144,55 +144,55 @@ sudo -E .venv/bin/python api.py
 If the GUI looks different than when you run it without sudo, try the `-E` flag, this should use your environment for Qt.
 
 See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.
-I had success using the 12 and 18 PWM0 pin, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.
-Other described pins may also work, but are untested, so I recommend to stick to the both one that should work.
+I had success using the 12 and 18 PWM0 pins, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.
+Other described pins may also work, but are untested, so I recommend sticking to the two that should work.
 If you use any other non controllable LED connected over the relay, you can use any pin you want, since it's only activating the relay.
 
 ## Set Up RFID Reader
 
-Setting up a GPIO RFID reader and integrate it into the program is an intermediate task.
+Setting up a GPIO RFID reader and integrating it into the program is an intermediate task.
 It is not recommended for complete beginners, and it may include some tinkering.
 As long as you use the recommended usb reader, you should be fine.
-Currently you can use those different types of reader:
+Currently, you can use these different types of readers:
 
 - Basic MFRC522 ([like this](https://amzn.to/4puhW4T), SPI Protocol)
 - USB RFID Reader (like [this](https://amzn.to/4p75hVZ), only reading UID supported)
 
 !!! bug "Please Read"
-    Reading / Writing RFIDs while still having a interactive GUI may cause a lot of troubles.
+    Reading / Writing RFIDs while still having an interactive GUI may cause a lot of trouble.
     Some reader frameworks lock themselves until the read or write is done and have no direct cancel methods.
     So even using threads only fixes the responsiveness of the app.
-    Therefore, the best is if you trigger a write, finish the write.
-    If you have experience with the reader + python feel free to contact me, so we can improve this feature.
+    Therefore, it's best to trigger a write, finish the write.
+    If you have experience with the reader + Python feel free to contact me, so we can improve this feature.
 
 Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/).
 You only need the wiring and the installation of the libraries (usually they are already installed).
-The according code is integrated into CocktailBerry.
-After that, you select the according option in the settings dropdown for the reader.
-When using the teams function, you can then also use a RFID chip, which inserts the information (name of person) for the leaderboard.
+The corresponding code is integrated into CocktailBerry.
+After that, you select the corresponding option in the settings dropdown for the reader.
+When using the teams function, you can then also use an RFID chip, which inserts the information (name of person) for the leaderboard.
 In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
 
 Take care that you don't use any of the connected pins of the RFID reader in the CocktailBerry config for a pump or a LED.
 If you do so, remove them or replace them with another pin.
 Otherwise, the RFID will not work.
-Best is to restart the Pi afterwards and then check if the RFID is working as intended.
+It's best to restart the Pi afterwards and then check if the RFID is working as intended.
 While the USB NFC reader does not occupy any GPIO pins, it has some challenges on its own.
-You currently cant write data to the card, only read the UID is supported.
+You currently can't write data to the card, only reading the UID is supported.
 
-## Ui Seems Wrong on none RaspOS System
+## UI Seems Wrong on non-RaspOS System
 
 On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
-This can be dependant on the flavour of Linux, as well as the desktop variant you are using.
-I had best experience when using a LXDE/XFCE variant, for example of a Debian Linux, on a none Raspberry Pi single board computer.
-Other desktop variants may do not respect the always on top property, resulting in the taskbar show up on top the app when running the program and pop ups appear.
+This can be dependent on the flavour of Linux, as well as the desktop variant you are using.
+I had the best experience when using a LXDE/XFCE variant, for example of a Debian Linux, on a non-Raspberry Pi single board computer.
+Other desktop variants may not respect the always on top property, resulting in the taskbar showing up on top of the app when running the program and pop ups appear.
 Please take note that CocktailBerry will run on other systems than the Raspberry Pi OS and RPi, but may take some tweaking and testing in the settings.
-Since I probably don't own that combination of Hardware and OS, you probably need to figure out that settings by yourself.
-If you are a unexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
+Since I probably don't own that combination of hardware and OS, you probably need to figure out those settings by yourself.
+If you are an inexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
 
 ## Task Bar Overlap / Push GUI
 
-This may happen (especially at older versions os RPi OS or higher res screens) when running the program and some dialog window opens.
-The task bar (bar with programs on it) may overlap the dialog window or push it down by it's height.
+This may happen (especially at older versions of RPi OS or higher res screens) when running the program and some dialog window opens.
+The task bar (bar with programs on it) may overlap the dialog window or push it down by its height.
 Ensure that you have unchecked the "Reserve space, and not covered by maximised windows" option.
 You can find it under the panel preferences (right click the task bar > panel settings > Advanced).
 Unchecking this box usually fixes this problem.
@@ -200,7 +200,7 @@ Unchecking this box usually fixes this problem.
 ## Reset Config
 
 In case you want to reset the configuration, it is the best way to just delete the custom_config.yaml in the main folder.
-This file holds your configuration and will be created with the defaults if it does not exists.
+This file holds your configuration and will be created with the defaults if it does not exist.
 
 There are also backups of the config file before migration, located at `~/cb_backup/` with the version number before this specific migration.
 The config file is located at `~/CocktailBerry/custom_config.yaml`.
@@ -222,11 +222,11 @@ cat ~/cb_backup/custom_config_pre_{version_number}.yaml
 
 It may happen that you don't get the latest version of the software prompted at start, even if you check for updates.
 This can be due to different reasons.
-First, check if you have a internet connection.
+First, check if you have an internet connection.
 If you have, check if you have the latest recommended version of python installed.
-CocktailBerry will not show the update if the future needed python version is higher than the current installed one.
+CocktailBerry will not show the update if the future required Python version is higher than the current installed one.
 Another reason may be that your git file is corrupted.
-Check with for errors like object file x is empty:
+Check for errors like object file x is empty:
 
 ```sh
 cd ~/CocktailBerry
@@ -245,24 +245,24 @@ If you get another error output, it is best to submit the error output with the 
 
 With the v1.30.0 release, the maker view was completely rewritten.
 This includes the way cocktails are shown as a list and single view.
-There is a picture now for every cocktail, the default provided cocktails all got an according picture.
+There is a picture now for every cocktail, the default provided cocktails all got a corresponding picture.
 There is also a default picture for cocktails without a picture, like newly user added ones.
-You can upload your own pictures over the according button the recipe tab.
+You can upload your own pictures via the corresponding button in the recipe tab.
 Your picture will then replace the default provided picture.
 
 The user pictures are stored in the `~/CocktailBerry/display_images_user` folder.
 The picture will be saved with the cocktail id as name and jpg format.
-You can also provide the cocktail name in lowercase and underscore instead spaces as picture name in jpg format (e.g. `cuba_libre.jpg` for "Cuba Libre"), if you prefer to upload the pictures via hand in that folder instead of the GUI.
+You can also provide the cocktail name in lowercase with underscores instead of spaces as the picture name in jpg format (e.g. `cuba_libre.jpg` for "Cuba Libre"), if you prefer to upload the pictures manually in that folder instead of the GUI.
 
 If your database is quite old, newer cocktails you added may either have the default picture, or may have another picture from new cocktails contained now in the database.
 This is due to the database using incrementing integers as primary key for the cocktails.
-This is historically and can't be changed easily in running installations.
-If thats the case, please use the GUI option to replace wrong pictures with your desired ones.
+This is historical and can't be changed easily in running installations.
+If that's the case, please use the GUI option to replace wrong pictures with your desired ones.
 If you feel that the default pictures are switched, you can also use the default ones as replacement.
 They are located at `~/CocktailBerry/default_cocktail_images`.
 
-Here is an extensive list of all default cocktails and their according image.
-If you think your cocktail have the wrong picture, you can use the according picture name from the list below to replace it.
+Here is an extensive list of all default cocktails and their corresponding image.
+If you think your cocktail has the wrong picture, you can use the corresponding picture name from the list below to replace it.
 
 ??? info "List of Default Pictures"
 
@@ -366,14 +366,14 @@ sudo chmod 755 ~/launcher.sh
 ```
 
 !!! info "By the Way"
-    The provided installer script does all that steps for you.
+    The provided installer script does all those steps for you.
 
 ### The GUI on the RPi Looks Different from the Screenshots
 
 I've noticed when running as root (sudo python) and running as the pi user (python) by default the pi will use different GUI resources.
 Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
 Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
-Using the users environment with `sudo -E .venv/bin/python runme.py` should also do the trick.
+Using the user's environment with `sudo -E .venv/bin/python runme.py` should also do the trick.
 
 ### Raspberry Pi 5 GPIO Issues
 

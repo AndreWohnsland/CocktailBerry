@@ -2,13 +2,13 @@
 
 In this section, there is an overview and description of the Command Line Interface (CLI) commands of the program.
 Within the CocktailBerry folder, you can execute them with the schema `uv run runme/api.py [command] [options]`.
-There is also a `--help` flag to get information on the program, or it's sub-commands.
+There is also a `--help` flag to get information on the program, or its sub-commands.
 You can use this to get information on the commands when running locally.
 
 !!! info "Used Auto Setup?"
-    If you installed over the setup script, the program will usually started over the `~/launcher.sh` file.
+    If you installed via the setup script, the program will usually be started via the `~/launcher.sh` file.
     When you want to use other than the default options, change the `~/launcher.sh` file accordingly.
-    Just add the flags or their according values to the `uv run runme.py` command.
+    Just add the flags or their corresponding values to the `uv run runme.py` command.
 
 !!! info "v1 or v2?"
     If you are already running the API (v2) version, you need to use the command `api.py` instead of `runme.py`.
@@ -32,15 +32,15 @@ uv run runme.py [OPTIONS]
 #   --help             Show help
 ```
 
-If you want to debug your microservice, you ca activate the debug `-d` flag.
-When debug is active, the data will be send to the **/debug** endpoint.
+If you want to debug your microservice, you can activate the debug `-d` flag.
+When debug is active, the data will be sent to the **/debug** endpoint.
 This endpoint will only log the payload (request.json), but not send it anywhere.
 You can also show the program version, this is also shown at program start in the console.
 In addition, you may want to display another name than CocktailBerry, which is the default.
 Use the `-n` option, like `-n "YourName"`, to set a custom name.
-If you want omit the machine name, version and platform data, use the `-q` flag.
+If you want to omit the machine name, version and platform data, use the `-q` flag.
 
-There are some additional environment variables you can set to alter the program behavior, without user be able to change it via settings:
+There are some additional environment variables you can set to alter the program behavior, without the user being able to change it via settings:
 
 - **COCKTAILBERRY_NO_WELCOME_MESSAGE**: If this variable is set to any value, the welcome message at program start will be omitted (v1).
 - **COCKTAILBERRY_LOG_LEVEL**: Set the log level of the program. Possible values are: DEBUG, INFO, WARNING, ERROR, CRITICAL.
@@ -66,10 +66,10 @@ uv run api.py [OPTIONS]
 ## Switch to CocktailBerry Web
 
 This command will set up the web interface as the default interface.
-Take care, this wil no longer start the main program, but the web interface.
+Take care, this will no longer start the main program, but the web interface.
 The web interface will then be accessible over a web browser, which will be opened in Kiosk mode on the machine.
 If you want to access the web interface from another device, you can open the browser and navigate to `http://<ip>` or locally on `http://localhost`.
-If SSL is enabled, since this is a self-signed certificate, you will get a warning in the browser, which user can ignore.
+If SSL is enabled, since this is a self-signed certificate, you will get a warning in the browser, which you can ignore.
 
 ```bash
 uv run runme.py setup-web
@@ -84,7 +84,7 @@ uv run runme.py setup-web
 In case you activated the web interface as the default interface, you can switch back to the old main program.
 This command will switch back to the old main program.
 This will no longer start the web interface, but the main program.
-The main program will then be started as usual as an full windowed app.
+The main program will then be started as usual as a full windowed app.
 
 ```bash
 uv run runme.py switch-back
@@ -92,7 +92,7 @@ uv run runme.py switch-back
 
 ## Clearing Local Database
 
-There may be CocktailBerry owners, who want to create a complete new database.
+There may be CocktailBerry owners, who want to create a completely new database.
 To clean the local database, run:
 
 ```bash
@@ -104,7 +104,7 @@ uv run runme.py clear-database [OPTIONS]
 
 This command will delete all recipes and ingredients from the local database.
 Before that, a local backup is created, in case you want a rollback.
-You can then either enter new recipes over the interface, or import your recipes from a file (see below).
+You can then either enter new recipes via the interface, or import your recipes from a file (see below).
 
 ## Importing Recipes from File
 
@@ -137,30 +137,30 @@ Amount [unit] Ingredient1 Name
 Amount [unit] Ingredient2 Name
 ```
 
-You need to adjust the alcohol level, the bottle volume and hand add flag after the import, if there are new added ingredients.
+You need to adjust the alcohol level, the bottle volume and hand add flag after the import, if there are newly added ingredients.
 The script will use a default of 0%, 1000 ml and not only handadd for each new ingredient.
 
 The amount of newlines can be one or more between each line.
 If there is another type of separator, please use a text editor to change it accordingly.
 Also, if the recipe uses different types of units, please convert to the one provided by the conversion argument.
 The script will check for duplicates and wait for user prompt, if there are any issues.
-If the data got no unit between amount and name, use the `--no-unit` or `-nu` flag.
-If the recipe use another unit than ml, please provide the according conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
+If the data has no unit between amount and name, use the `--no-unit` or `-nu` flag.
+If the recipe uses another unit than ml, please provide the corresponding conversion factor, like `--conversion 29.5735` or `-c 29.5735`, when using oz.
 
 !!! danger "Safety First"
     I still **STRONGLY** recommend doing a backup of your local database (`Cocktail_database.db`) before running the import, just in case.
-    You can also use the build-in backup functionality in CocktailBerry for this.
+    You can also use the built-in backup functionality in CocktailBerry for this.
 
 !!! note "As a Side Note"
     You should probably not mindlessly import a great amount of cocktails, because this will make the user experience of your CocktailBerry worse.
     In cases of many ingredients, it's quite exhausting to select the right one.
     Having too many recipes active at once may also overwhelm your user, because there is too much to choose.
-    The recipes provided by default with CocktailBerry try to aim a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the single cocktails.
-    This import function is limited by design, because batch import should only rarely (if even) happening, and some consideration and checking of the recipes should take place before doing so.
+    The recipes provided by default with CocktailBerry try to aim for a good balance between the amount of cocktails, as well as a moderate common amount of ingredients within the single cocktails.
+    This import function is limited by design, because batch import should only rarely (if ever) happen, and some consideration and checking of the recipes should take place before doing so.
 
 ## Creating Addon Base File
 
-Use this command to get starting developing your own addon!
+Use this command to get started developing your own addon!
 
 ```bash
 uv run runme.py create-addon [OPTIONS] ADDON_NAME
@@ -174,12 +174,12 @@ uv run runme.py create-addon [OPTIONS] ADDON_NAME
 
 Creates a file containing the base structure to get started with your addon.
 The file is placed in the `addons` folder.
-File name will be the name converted to lower case, space are replaced with underscores and stripped of special characters.
+File name will be the name converted to lower case, spaces are replaced with underscores and stripped of special characters.
 
 ## Setup the Microservice
 
 You can also use CocktailBerry to set up the [microservice](advanced.md#cocktailberry-microservice) and change the env variables.
-It uses the latest image from Dockerhub.
+It uses the latest image from Docker Hub.
 With the microservice, also [watchtower](https://containrrr.dev/watchtower/) will be deployed.
 Watchtower will check periodically if there is a new microservice image and install it in the background.
 
@@ -195,7 +195,7 @@ uv run runme.py setup-microservice [OPTIONS]
 ```
 
 Set up the microservice.
-If the API key, hook endpoint or hook header is not provided as an option, prompts the user for the values.
+If the API key, hook endpoint or hook header is not provided as an option, it prompts the user for the values.
 Within the prompts, you can reset the value to the default one, or also skip this value if it should not be changed.
 A compose file will be created in the home directory, if this command was not already run once.
 If this file already exists, the values will be replaced with the provided ones.
@@ -209,7 +209,7 @@ If this file already exists, the values will be replaced with the provided ones.
 ## Setup the Teams Dashboard
 
 You can also use CocktailBerry to set up the [Teams Dashboard](advanced.md#dashboard-with-teams).
-It uses the latest image from Dockerhub.
+It uses the latest image from Docker Hub.
 With the dashboard, also [watchtower](https://containrrr.dev/watchtower/) will be deployed.
 Watchtower will check periodically if there is a new dashboard image and install it in the background.
 
@@ -221,13 +221,13 @@ uv run runme.py setup-teams-service [OPTIONS]
 #   --help                  Show help
 ```
 
-Set up the teams microservice. You can use english (en) or german (de) as language.
+Set up the teams microservice. You can use English (en) or German (de) as the language.
 Will run the frontend at `localhost:8050` (http://127.0.0.1:8050), backend at `localhost:8080` (http://127.0.0.1:8080).
 
 ## Create an Access Point
 
 You can also use CocktailBerry to set up an access point.
-The access point will be crated on a virtual wlan1 interface.
+The access point will be created on a virtual wlan1 interface.
 So you can still use the wlan0 interface for your normal network connection.
 This requires that you can have a virtual interface on your chip, for example the Raspberry Pi 3B+.
 

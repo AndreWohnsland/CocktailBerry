@@ -9,19 +9,19 @@
 
 If you want to use CocktailBerry autonomously, while still charging for cocktails, you can use one of the Payment Features.
 This is an optional feature, where you can use CocktailBerry in a more robust way to limit cocktail spending by some criteria.
-Currently, two types are supported: NFC based payments and SumUp Terminal payments.
+Currently, two types are supported: NFC-based payments and SumUp Terminal payments.
 
 === "NFC Based"
 
-    For the NFC based payments, a separate Payment Service is used to manage user entities and their balances.
+    For the NFC-based payments, a separate Payment Service is used to manage user entities and their balances.
     You can own the whole service and manage the NFC tags yourself.
-    A "User" entity is a NFC tag, which can have some (non-personal) properties associated with it.
+    A "User" entity is an NFC tag, which can have some (non-personal) properties associated with it.
     Currently supported criteria are:
 
     - **Alcohol restriction**: Users can be restricted from ordering alcoholic cocktails (child vs adult).
     - **Balance**: Each entity can have a balance, which is checked and deducted when ordering cocktails.
 
-    A separate payment service needs to be installed and setup to manage the user entities.
+    A separate payment service needs to be installed and set up to manage the user entities.
     There is a dedicated project and (see below) setup instructions for this service.
 
 === "SumUp"
@@ -33,7 +33,7 @@ Currently, two types are supported: NFC based payments and SumUp Terminal paymen
     For SumUp Terminal payments, a physical SumUp card terminal (Solo) is used to process payments.
     CocktailBerry as well as the terminal need to be connected to the internet for this to work.
     When a user wants to order a cocktail, CocktailBerry will request a payment from the SumUp Terminal.
-    This will be done over the SumUp Cloud API, which is currently only supported for SumUp Solo terminals.
+    This will be done via the SumUp Cloud API, which is currently only supported for SumUp Solo terminals.
     The user will then need to confirm the payment on the terminal, by the supported payment methods.
     You will need a SumUp account and a compatible terminal for this to work.
 
@@ -49,13 +49,13 @@ To use payments with CocktailBerry, you will need the following:
 
 === "SumUp"
     - A [SumUp Solo Terminal](https://store.sumup.com/de-DE/website/product-selection/card_reader.solo_bundle_cradle)
-    - A [SumUp Account](https://www.sumup.com/) fully set up and you merchant code
+    - A [SumUp Account](https://www.sumup.com/) fully set up and your merchant code
     - API key generated for your account
     - CocktailBerry version 3.1 or higher
 
 !!! danger "Updating from older Versions?"
     If you are updating from an older version of CocktailBerry, you might need to run some additional setup steps.
-    It is recommended to backup your current settings and do a clean install over the setup script instead.
+    It is recommended to backup your current settings and do a clean install via the setup script instead.
     Then use the backup to restore your settings.
 
 If you want to update your existing installation, do the usual update process.
@@ -70,13 +70,13 @@ After that, CocktailBerry should start normally again.
 
 ## Concept
 
-If this feature is enabled, user will need to pay before being able to order a cocktail.
+If this feature is enabled, users will need to pay before being able to order a cocktail.
 
 === "NFC Based"
-    When using NFC based payments, each user will need to have an NFC tag (e.g., card or key fob) associated with them.
+    When using NFC-based payments, each user will need to have an NFC tag (e.g., card or key fob) associated with them.
     The tag will be read by the NFC reader, and the unique identifier (UID) of the tag will be sent to the CocktailBerry Manager Service.
     The Manager Service will then check if the UID is valid and if the user associated with the tag has sufficient balance to order a cocktail.
-    A Tag ID can be associated with a 18+ or younger than 18 user, allowing to restrict cocktail orders based on age.
+    A Tag ID can be associated with an 18+ or younger than 18 user, allowing to restrict cocktail orders based on age.
     If the UID is valid and the user has sufficient balance, the order will be processed.
     The Service will take care of deducting the cocktail price from the user's balance.
     Also, managing user balances and age restrictions will be handled by the Manager Service.
@@ -131,8 +131,8 @@ Overall Process:
     While you can run it on the same device as the backend, it is recommended to run it on a separate device for better performance and security.
 
     CocktailBerry Machines using the payment option will communicate with the backend API to process payments and manage user balances.
-    This requires the machines being either on the same network or having access to the backend API over the internet.
-    User will then pay the cocktails over NFC cards, while service personal can manage the users and top up balances via the GUI separately.
+    This requires the machines being either on the same network or having access to the backend API via the internet.
+    Users will then pay for the cocktails via NFC cards, while service personnel can manage the users and top up balances via the GUI separately.
 
 === "SumUp"
     ```mermaid
@@ -153,9 +153,9 @@ Overall Process:
     The customer orders a cocktail from the CocktailBerry machine.
     CocktailBerry requests a payment from the SumUp API.
     The SumUp API communicates with the SumUp Terminal to start the payment process.
-    The customer pays using the terminal over Card or other supported methods.
-    The transaction data is sent back to the SumUp API, which then is polled by CocktailBerry about the successful payment.
-    Since this is done over the cloud API, CocktailBerry and the Terminal both need to be connected to the internet.
+    The customer pays using the terminal via card or other supported methods.
+    The transaction data is sent back to the SumUp API, which is then polled by CocktailBerry about the successful payment.
+    Since this is done via the cloud API, CocktailBerry and the Terminal both need to be connected to the internet.
     Once the payment is confirmed, CocktailBerry processes the order and dispenses the cocktail.
 
 ## Setup
@@ -170,7 +170,7 @@ The recommended way for a "basic" hardware setup is:
     - A desktop device + USB NFC reader running the payment GUI, can be Windows
     - CocktailBerry machine + USB NFC reader, connected to the payment API over the network
 
-    While you can run the backend on the same machine as CocktailBerry, or the the Admin payment GUI, it is recommended to run them on separate devices for better performance and security.
+    While you can run the backend on the same machine as CocktailBerry, or the Admin payment GUI, it is recommended to run them on separate devices for better performance and security.
 
     If you want to really keep it minimalistic, you can also run both API and GUI on the same device, e.g. a Raspberry Pi 4.
     In this case you would need to ensure that this device is not down or turned off.
@@ -186,7 +186,7 @@ The recommended way for a "basic" hardware setup is:
 
     You will need a setup [sumup](https://www.sumup.com/) account for this to work.
     Once created, you will be asked multiple things during the account setup.
-    When you are done, see at your account settings, where you should see your Merchant Code (a string starting with "MCM").
+    When you are done, check your account settings, where you should see your Merchant Code (a string starting with "MCM").
     In addition, you will need to [create an API key](https://me.sumup.com/settings/api-keys) for your account.
     More information can also be found in the [SumUp Developer Documentation](https://developer.sumup.com/tools/authorization/authorization#create-api-key).
     Keep this safe, you will need it in the CocktailBerry settings.
@@ -198,11 +198,11 @@ The recommended way for a "basic" hardware setup is:
 
 === "NFC Based"
 
-    Follow the according steps for your OS to set up the payment service and GUI.
+    Follow the corresponding steps for your OS to set up the payment service and GUI.
 
     === "Linux Systems"
 
-        Linux is the most easy way, since most of the things can be done over a script.
+        Linux is the easiest way, since most of the things can be done over a script.
         Just run:
 
         ```bash
@@ -222,7 +222,7 @@ The recommended way for a "basic" hardware setup is:
         ```
 
         Alternatively, there is also a pre-built executable available for the GUI, which you can download from the [release page](https://github.com/AndreWohnsland/CocktailBerry-Payment/releases).
-        You might not be able to set all options tough when using this directly, so even when using this, going over this preparation and service installation steps is recommended.
+        You might not be able to set all options though when using this directly, so even when using this, going over this preparation and service installation steps is recommended.
 
         If [uv](https://docs.astral.sh/uv/getting-started/installation) or [git](https://git-scm.com/install/windows) fails to install, you might need to install them manually first.
 
@@ -242,27 +242,27 @@ The recommended way for a "basic" hardware setup is:
 
 === "SumUp"
     First, you will need to provide both, the SumUp API key as well as the merchant code to CocktailBerry.
-    You can enter both over the GUI, or edit the `custom_config.yaml` directly in the CocktailBerry folder, since the copying the key is better.
+    You can enter both over the GUI, or edit the `custom_config.yaml` directly in the CocktailBerry folder, since copying the key is better.
     Look for the `PAYMENT_SUMUP_API_KEY` and `PAYMENT_SUMUP_MERCHANT_CODE` entries and set them accordingly.
     In addition, you will need to select the SumUp payment option in the GUI or set `PAYMENT_OPTION` to `SumUp` in the config file.
 
     After that, you will need to connect your terminal to the internet following the steps on it.
     Then select Cloud API mode on the terminal.
     It will display a code, you will need this in CocktailBerry to link the terminal to your account.
-    Go to options -> SumUp, there you can give you Terminal a name and enter the code.
+    Go to options -> SumUp, there you can give your Terminal a name and enter the code.
     After submitting, you should see a successful message and the terminal should be displayed and selected in the list of connected Terminals.
     In case you own multiple machines and registered terminals, you can also select or change the terminal over the dropdown.
     Take note that only one terminal per machine is supported.
     The terminal identifier will be stored in the config file as `PAYMENT_SUMUP_TERMINAL_ID`.
 
-    Since you will store the API key in you settings, which is accessible over the options GUI, make sure to set a good master password to protect your settings.
+    Since you will store the API key in your settings, which is accessible over the options GUI, make sure to set a good master password to protect your settings.
 
 ## Configuration
 
 You can manage the settings like all other settings over the CocktailBerry Interface.
 See also the [Configuration documentation](setup.md) for more details.
 
-In general, the options were made so you can tweak them as you needed.
+In general, the options were made so you can tweak them as you need.
 You might experiment with different settings to find the best fit for your use case.
 
 Some important options are:
@@ -272,7 +272,7 @@ Some important options are:
     - **Auto Logout**: Automatically log out users after a specified time, only enable this if you are sure this time is more than enough for a user to order a cocktail.
     - **Logout after Order**: Log out the user after each order, useful if users usually just order one Cocktail and you use the lock screen.
     - **Lock Screen**: User needs to scan his NFC to unlock the cocktail selection. Use this if you want to enforce first time scanning to filter/show only possible cocktails.
-    - **Show not possible cocktails**: Show all cocktails (not possible in another style), even if the user is not allowed to order them. Might be not the best if you use age restrictions, since they will never be able to order them.
+    - **Show not possible cocktails**: Show all cocktails (not possible in another style), even if the user is not allowed to order them. might not be the best if you use age restrictions, since they will never be able to order them.
 
 === "SumUp"
     - **Opt In**: Enable and select the SumUp payment integration.

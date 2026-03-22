@@ -12,7 +12,7 @@ It may be implemented in the future.
 
 ## Contributing Possibilities
 
-To get started, have a quick look into the [Guidelines for contributing](https://github.com/AndreWohnsland/CocktailBerry/blob/master/CONTRIBUTING.md).
+To get started, have a quick look at the [Guidelines for contributing](https://github.com/AndreWohnsland/CocktailBerry/blob/master/CONTRIBUTING.md).
 Here is a general list of features or refactoring things, I may do in the future.
 With your help, these things come even faster!
 If your idea is not on the list, feel free to open a feature request, I may consider it!
