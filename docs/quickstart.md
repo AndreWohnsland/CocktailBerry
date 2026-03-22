@@ -7,7 +7,7 @@ If you want to use v2 in a manual installation, you also need to have [Node.js](
 ## Raspberry Pi
 
 !!! tip "RPi: Try the all in one Script"
-    If you are on your Raspberry Pi, you can just use the so called *All In One Script*!
+    If you are on your Raspberry Pi, you can just use the so-called *All In One Script*!
     This will check that git, Python and your OS are compatible for the project and install CocktailBerry including Docker and Compose on the Pi.
 
     Just use:
@@ -18,7 +18,7 @@ If you want to use v2 in a manual installation, you also need to have [Node.js](
     to get the script and run it on the Pi. Too easy to be true, isn't it?
 
 Now you can [Set Up](setup.md#setting-up-the-machine-modifying-other-values) your CocktailBerry and tweak the settings to your liking.
-If you want to have the new v2 API and app, see [web setup](web.md) how to easily switch after the setup.
+If you want to have the new v2 API and app, see [web setup](web.md) for how to easily switch after the setup.
 Or add a `-s v2` at the end of the command to execute the switch directly after installing.
 
 ## Other OS or Development Setup

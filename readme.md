@@ -67,7 +67,7 @@ CocktailBerry can do:
 In addition, there is the possibility to use and set up a second device as a dashboard:
 
 - Provide the teams API to post and get cocktail data
-- Display different modes of data for a by team comparison
+- Display different modes of data for a team-by-team comparison
 - _Optional_: Use the dashboard as WiFi hot-spot
 
 # Quickstart
@@ -75,7 +75,7 @@ In addition, there is the possibility to use and set up a second device as a das
 Here are some simple steps to get CocktailBerry running. You need to have **Python 3.13** or newer and **git** installed.
 If you are using a Raspberry Pi and a current OS, you should be good to go.
 
-On the RPi, you can try the new [all in one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh).
+On the RPi, you can try the new [all-in-one installer script](https://github.com/AndreWohnsland/CocktailBerry/blob/master/scripts/all_in_one.sh).
 One command should install everything:
 
 ```bash

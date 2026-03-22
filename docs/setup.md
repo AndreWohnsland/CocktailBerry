@@ -10,7 +10,7 @@ Just use the implemented UI for the procedure under the corresponding tabs (**In
 All entered values are checked for validity and if something is wrong, an error message will inform the user what is wrong with the data input.
 
 !!! info "Database Structure"
-    If you want to browse through the data in the database, I recommend some program like [DB Browser for SQLite](https://sqlitebrowser.org/).
+    If you want to browse through the data in the database, I recommend a program like [DB Browser for SQLite](https://sqlitebrowser.org/).
     You can view the DB schema [here](https://github.com/AndreWohnsland/CocktailBerry/blob/master/docs/.devnotes.md#db-schema).
 
 ## Setting up the Machine / Modifying other Values
@@ -18,14 +18,14 @@ All entered values are checked for validity and if something is wrong, an error 
 You can manage your config within CocktailBerry.
 Just go to the bottles tab (v1), click the gear icon or to the corresponding option tab (v2) and enter your password.
 You can then use the UI to change the configuration.
-The configuration is also divided into own tabs, containing similar categories in one tab.
+The configuration is also divided into separate tabs, containing similar categories in one tab.
 
-These values are stored under the local `custom_config.yaml` file.
+These values are stored in the local `custom_config.yaml` file.
 This file will be created at the first machine run and inherit all default values.
 Depending on your pumps and connection to the Pi, these can differ from the default and can be changed.
-If any of the values got a wrong data type, a message with the issue will be shown.
+If any of the values have a wrong data type, a message with the issue will be shown.
 Names starting with `EXP` are experimental and may be changed in the future.
-They can be used at own risk of CocktailBerry not working 100% properly.
+They can be used at your own risk of CocktailBerry not working 100% properly.
 
 ??? info "List UI Config Values"
     UI Config Values are used to change the look and feel of the program.
@@ -48,7 +48,7 @@ They can be used at own risk of CocktailBerry not working 100% properly.
 
     | Value Name                    | Description                                               |
     | :---------------------------- | :-------------------------------------------------------- |
-    | `MAKER_NAME`                  | Give your CocktailBerry an own name, max 30 chars         |
+    | `MAKER_NAME`                  | Give your CocktailBerry its own name, max 30 chars        |
     | `MAKER_NUMBER_BOTTLES`        | Number of displayed bottles, can use up to 16 bottles     |
     | `MAKER_PREPARE_VOLUME`        | List of possible spend volumes of machine                 |
     | `MAKER_SIMULTANEOUSLY_PUMPS`  | Number of pumps which can be simultaneously active        |
@@ -140,14 +140,14 @@ Customizing and using your own setting will make your CocktailBerry unique.
 
 The choice is up to you what you want to connect.
 See [here](#possible-ingredient-choice) for a possible ingredient setting.
-Select under **Bottles** your assigned ingredients for each pump.
+Select your assigned ingredients under **Bottles** for each pump.
 In addition, you can define ingredients which are available, but are not connected to the machine (under **Bottles** >  _available_).
-This can be ingredients, which would not be optimal for your pump (sticky), or are only very rarely used in cocktails.
-At the ingredient properties, you can set this ingredient only addable by hand.
-These ingredients are not shown in the bottle dropdown but only at the available window.
-Choose this option for ingredients you won't connect to the machine, to reduce the amount of options displayed at the dropdown.
+These can be ingredients, which would not be optimal for your pump (sticky), or are only very rarely used in cocktails.
+In the ingredient properties, you can set this ingredient as only addable by hand.
+These ingredients are not shown in the bottle dropdown but only in the available window.
+Choose this option for ingredients you won't connect to the machine, to reduce the amount of options displayed in the dropdown.
 
-The program will then evaluate which recipe meets all requirements to only show the recipes where all existing ingredients (machine + hand) exist.
+The program will then evaluate which recipes meet all requirements to only show the recipes where all existing ingredients (machine + hand) exist.
 All possible recipes will be shown in the **Maker** Tab.
 See also [this FAQ](faq.md#what-is-the-available-button) for more information on this topic.
 
@@ -165,7 +165,7 @@ Currently supported options (boards) are:
 
 ## Themes
 
-Currently, there are following themes:
+Currently, there are the following themes:
 
 - **default**: The look and feel of the project pictures. Blue, Orange and Black as main colors.
 - **bavaria**: The somewhat light mode of the app. Blue, Black and White as main colors.
@@ -196,14 +196,14 @@ A message prompt will inform the user to provide enough water for the cleaning p
 
 !!! question "When to Clean"
     Depending on the build specification of your machine, it is a good practice to execute the cleaning of the machine before and after usage.
-    This depends on the frequency you use CocktailBerry, where it's stored, how good it was cleaned and so on.
+    This depends on how frequently you use CocktailBerry, where it's stored, how good it was cleaned and so on.
 
 If you have activated the option of inverted current with `MAKER_PINS_INVERTED`, you will be prompted before the cleaning if you want to invert the current for the cleaning process.
 This way, you can clean the tubes from both sides and get rid of all fluid in the end.
 
 ## Possible Ingredient Choice
 
-If you are unsure, which ingredients you may need or want to connect to CocktailBerry, here is a quick suggestion.
+If you are unsure which ingredients you may need or want to connect to CocktailBerry, here is a quick suggestion.
 You don't need to use all ten slots, but the more you use, the more recipes will be possible:
 
 - Vodka
@@ -217,7 +217,7 @@ You don't need to use all ten slots, but the more you use, the more recipes will
 - _optional_ Tequila
 - _optional_ Grapefruit Juice
 
-In addition, there are some ingredients recommend adding by hand, the most important additional ingredients will be:
+In addition, there are some ingredients recommended for adding by hand, the most important additional ingredients will be:
 
 - Soft drinks (Cola, Fanta, Sprite)
 - Grenadine syrup
@@ -225,7 +225,7 @@ In addition, there are some ingredients recommend adding by hand, the most impor
 - Lemon juice (just a little, you can also use fresh lemons)
 - _optional_ Cointreau (you may just not add it if not desired)
 
-With this as your base set up, even if not using the optional ingredients, your CocktailBerry will be able to do plenty of different cocktails.
+With this as your base setup, even if not using the optional ingredients, your CocktailBerry will be able to do plenty of different cocktails.
 
 !!! tip "Data Insights"
     You can export the CocktailBerry data to a CSV file over the interface.
@@ -236,13 +236,13 @@ With this as your base set up, even if not using the optional ingredients, your 
 
 There is the option to enable the automatic search for updates at program start.
 The `MAKER_SEARCH_UPDATES` config can enable this feature.
-CocktailBerry will then check the GitHub repository for new releases and informs the user about it.
+CocktailBerry will then check the GitHub repository for new releases and inform the user about it.
 If accepted, CocktailBerry will pull the latest version and restart the program afterwards.
 The migrator will do any necessary steps to adjust local files, like the database to the latest release.
 
 ## Backups
 
 You can backup your local data (local database, config-file) to a desired folder or external device.
-Use this backup to restore the data, or recover the progress and recipes after doing a OS reinstall.
+Use this backup to restore the data, or recover the progress and recipes after doing an OS reinstall.
 Just go to the **Bottles** tab, click on the gear icon and enter your master password to get to the options window.
 There you will find both options for backup and restoring your data.

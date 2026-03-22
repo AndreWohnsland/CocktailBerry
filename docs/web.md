@@ -1,7 +1,7 @@
 # CocktailBerry Web
 
 !!! info "This is still new and not the default interface yet"
-    This is a new implementation and not so much battle tested like the old interface.
+    This is a new implementation and not as battle-tested as the old interface.
     If you spot any issues, please report them in the [GitHub repository](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose).
     In general, most features should work as expected, but there might be some edge cases that are not covered yet.
 
@@ -15,19 +15,19 @@ Advanced users can use the API for their own use, like writing their own fronten
 
 ## Quick Install
 
-You can also directly install it via the all in one installer script by specifying `v2` as version.
+You can also directly install it via the all-in-one installer script by specifying `v2` as version.
 
 ```bash
 wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash -s v2
 ```
 
-This will do the similar setup steps as in v1, but directly install the web interface version.
+This will do similar setup steps as in v1, but directly install the web interface version.
 
 ## Requirements
 
 It is not recommended to use this on Raspberry Pi 3 series or older, as the performance might not be sufficient.
 Use a Raspberry Pi 4 with 2 GB or more of RAM for the best experience.
-You need to have an up to date Raspberry Pi OS installed.
+You need to have an up-to-date Raspberry Pi OS installed.
 The web interface requires a modern web browser that supports the latest web technologies.
 You do not need a touch screen, just a device being able to connect to the same network as the Raspberry Pi.
 However, a touchscreen can be used to control the app directly on the Raspberry Pi.
@@ -42,7 +42,7 @@ Currently, the web interface might have some issues with touch screens directly 
 In some occasions, older OS or not properly configured screens, the default keyboard might not show up.
 If you are using an external device to control the app, this should not be an issue.
 In case you are using a touch screen directly connected to the Raspberry Pi, running the browser in non-kiosk mode might help.
-Installing maliit keyboard might also be an alternative.
+Installing the maliit keyboard might also be an alternative.
 
 ## Installation
 

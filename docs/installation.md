@@ -11,18 +11,18 @@ These are the minimal tools needed to get started:
 - recommended: **latest** [Raspberry Pi OS, 64 bit](https://www.raspberrypi.com/software/) (Desktop, Trixie)
 
 The desktop version of Raspberry Pi OS is recommended, but if you just want to have a peek into the project, any OS having Python and Git will work just fine.
-The RPi is needed to control the Pumps in a real machine, but the program will work fine even without any physical machine.
+The RPi is needed to control the pumps in a real machine, but the program will work fine even without any physical machine.
 
 ## Install CocktailBerry on the RPi
 
-After flashing the latest Raspberry Pi 64 bit OS, you can use the provided shell scripts to set everything automatically up on your Raspberry Pi.
+After flashing the latest Raspberry Pi 64-bit OS, you can use the provided shell scripts to set everything up automatically on your Raspberry Pi.
 Or just install [the requirements](#installing-requirements), when you want to have a look into the program on your PC.
 You can always install the other things later, the docs provide information within each corresponding section.
 
 ### Automatic Installation
 
 !!! tip "RPi: Try the new all in one Script"
-    If you are on your Raspberry Pi, you can now also use the so called *All In One Script*!
+    If you are on your Raspberry Pi, you can now also use the so-called *All In One Script*!
     This will check that git, Python and your OS are compatible for the project and install CocktailBerry including Docker and compose on the Pi.
 
     Just use:
@@ -32,12 +32,12 @@ You can always install the other things later, the docs provide information with
     ```
     to get the script and run it on the Pi. Too easy to be true, isn't it?
 
-If you want to have the new v2 API and app, see [web setup](web.md) how to easily switch after the setup.
+If you want to have the new v2 API and app, see [web setup](web.md) for how to easily switch after the setup.
 Or add a `-s v2` at the end of the command to execute the switch directly after installing.
 
 ### Manual Installation
 
-To clone and setup this project run:
+To clone and set up this project run:
 
 ```bash
 cd ~
@@ -76,7 +76,7 @@ to get all requirements.
 ## Install PyQt6 on RaspberryPi
 
 On the latest Raspberry Pi OS (Trixie), PyQt6 installs automatically via uv when you run `uv sync --extra v1`.
-If you encounter issues, you can install the system package as fallback:
+If you encounter issues, you can install the system package as a fallback:
 
 ```bash
 sudo apt update
@@ -85,7 +85,7 @@ sudo apt install python3-pyqt6
 
 ## Development on Non-Pi Hardware
 
-When you are working on another hardware (for example on a Windows or macOS engine) it is recommended (but not necessary) to set `UI_DEVENVIRONMENT` to `true`.
+When you are working on other hardware (for example on a Windows or macOS engine) it is recommended (but not necessary) to set `UI_DEVENVIRONMENT` to `true`.
 This will enable your cursor.
 All configuration can be customized under `custom_config.yaml`, or over the user interface of the program.
 This file will be created at the first program start.
@@ -97,4 +97,4 @@ By default, the full screen is also limited to 800x480.
 So usually, you won't have any problems with the usual HD or uHD screens.
 You can change the application size with the corresponding config settings, if you want to use a different screen size.
 See [Setting up the Machine / Modifying other Values](setup.md#setting-up-the-machine-modifying-other-values) for more information.
-If you are using a high resolution screen, I recommend [this solution](troubleshooting.md#using-a-high-resolution-screen) to prevent the UI looking weird.
+If you are using a high resolution screen, I recommend [this solution](troubleshooting.md#using-a-high-resolution-screen) to prevent the UI from looking weird.

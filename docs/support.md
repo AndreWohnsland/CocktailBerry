@@ -10,12 +10,12 @@ Also, if a desired feature makes sense, it will probably be implemented in the f
 
 #### Star the project on GitHub
 
-This shows that the project is used and trusted, as well as raises its visibility.
+This shows that the project is used and trusted and raises its visibility.
 If more people are using CocktailBerry, more feedback will be received.
 
 !!! quote "Tell your Friends"
-    If you think other people might enjoy CocktailBerry, be not shy to tell them about the project.
-    More active user means more feedback, which is always a great benefit and will boost development.
+    If you think other people might enjoy CocktailBerry, don't be shy to tell them about the project.
+    More active users mean more feedback, which is always a great benefit and will boost development.
 
 #### Implement an addon
 
@@ -24,8 +24,8 @@ This is a good place to start, since you need little knowledge about the base co
 
 #### Contribute to the base code
 
-Either help implementing new base features, fix issues or improve the existing code base.
-This requires some working into the existing base code, but delivers a great opportunity to shape CocktailBerry.
+Either help implement new base features, fix issues or improve the existing code base.
+This requires some work on the existing base code, but delivers a great opportunity to shape CocktailBerry.
 
 #### Buy me a coffee and other support options
 

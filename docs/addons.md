@@ -28,7 +28,7 @@ Some examples for an addon could be:
 
 - Implementation of a weight scale to detect if a glass is present
 - Add a checklist for invoices or cost splitting
-- Modify starting values (default output volume, eg.) to let them be changed via the GUI
+- Modify starting values (default output volume, e.g.) to let them be changed via the GUI
 - Integrate external things like automatic ice crasher
 - And almost anything you can think of
 
@@ -36,7 +36,7 @@ Some examples for an addon could be:
 
 There are two options to install an addon.
 If it's an [official addon](https://github.com/AndreWohnsland/CocktailBerry-Addons), you can manage it via CocktailBerry.
-Go to Setting > Addons > Manage, there you can check the addons you want to have installed.
+Go to Settings > Addons > Manage, there you can check the addons you want to have installed.
 For any non-official one, just put the Python file of the addon into the `addons` folder.
 It is usually located at `~/CocktailBerry/addons`.
 If the addon needs additional Python packages, make sure you also install the needed requirements by the addon.
@@ -55,7 +55,7 @@ If you use an external one, just replace the current file with the latest one, t
 
 Here is a list of verified addons that you can use.
 They are either directly from CocktailBerry or from other third party providers.
-Verified means that the addon is known by the CocktailBerry programmers and was at least once tested for its functionality.
+Verified means that the addon is known by the CocktailBerry programmers and was tested at least once for its functionality.
 
 - [Start Glass Volume](https://github.com/AndreWohnsland/CocktailBerry-Addons#start-glass-volume): Change default glass volume at machine start
 - [Recipe Presets](https://github.com/AndreWohnsland/CocktailBerry-Addons?tab=readme-ov-file#-recipe-presets): Manage and use recipe presets
@@ -161,7 +161,7 @@ But this approach is not robust against code changes (new versions of addon), an
 Therefore, the addon provider can use the CocktailBerry configuration.
 To do so, the user needs to inject the config name, type and validation function into the config.
 There is also the option to provide a description, as well as corresponding translations.
-It is important that you use the `define_configuration()` function for this, as it is executed before the setup of the addon and loading in local set config values.
+It is important that you use the `define_configuration()` function for this, as it is executed before the setup of the addon and loading of locally set config values.
 You can find each direction in the subsections below.
 
 #### Add Config Values
@@ -187,12 +187,12 @@ def define_configuration(self):
 ```
 
 1. Needs to import the `CONFIG` object from CocktailBerry.
-2. Adds the configuration under given name and default value. Currently supported are int, float, str, bool and list. Different types have different input mask in the config GUI.
+2. Adds the configuration under given name and default value. Currently supported are int, float, str, bool and list. Different types have different input masks in the config GUI.
 
 #### Use Config Values
 
 Using existing, as well as your newly defined configuration values is quite easy.
-All configuration are stored within the `CONFIG` object and are accessible there.
+All configurations are stored within the `CONFIG` object and are accessible there.
 You can use the config name as its attribute to get the desired configuration.
 
 ```python
@@ -236,13 +236,13 @@ def define_configuration(self):
 2. Check function for config validation. First argument is the configname, second is the configvalue.
 3. We just raise the exception if the value is "forbidden".
 4. Failed validation should throw the `ConfigError`, other errors will crash the app.
-5. You can define any number of check function. Please take care that the function interface has two arguments.
+5. You can define any number of check functions. Please take care that the function interface has two arguments.
 
 #### Validate List Settings
 
 An extra case is, if your setting is a list of values.
 In this case, you can also add a validation function, which will validate each list element.
-The schema is identical as before, you can define your custom validation functions.
+The schema is identical to before, you can define your custom validation functions.
 Take note that currently no nested lists are supported and each list element needs to have the same type.
 If the default value is an empty list, you must provide the element type to the `list_type` argument.
 Otherwise, the string type will be used as fallback type.
@@ -263,9 +263,9 @@ def define_configuration(self):
     ) 
 ```
 
-1. This function just raises an error is the value is 10 or greater. Again, use the ConfigError, as shown in the last example.
+1. This function just raises an error if the value is 10 or greater. Again, use the ConfigError, as shown in the last example.
 2. The general set up is identical to the other config examples.
-3. Here you could check the list, for example if the length meets a criteria. We do not check anything additional.
+3. Here you could check the list, for example if the length meets a criterion. We do not check anything additional.
 4. Here you can check each element in the list, in this case we check if any element is >10.
 
 #### Using Selection for Dropdowns
@@ -296,13 +296,13 @@ def define_configuration(self):
 
 1. First, you need to define the list of allowed options.
 2. Here, you set the default value to the second option. The default value uses the first option.
-3. Provide the values as string, even if they are other (here int) types
-4. Convert the values after retrieving to your desired type
+3. Provide the values as strings, even if they are other (here int) types
+4. Convert the values after retrieving them to your desired type
 
 #### Add GUI Description
 
 Optionally, you can add an additional description to your configuration.
-This helps users using the GUI understanding the value better.
+This helps users using the GUI to understand the value better.
 Use the `UI_LANGUAGE` object to set the configuration description.
 You can either use a single string describing the config in English, or use a dictionary with the language codes.
 At least English is needed, if you do not provide a full list of translations.
@@ -422,7 +422,7 @@ def setup(self):
 
 ### Own GUI
 
-The `build_gui()` function is used to build up an own GUI for your addon if the user navigates to the addon window.
+The `build_gui()` function is used to build your own GUI for your addon if the user navigates to the addon window.
 A `container` (QVBoxLayout) for your elements is provided, where you can fill in custom Qt elements, if you want that.
 If you just want to have some buttons which execute a function when the user clicks on it, you can use the `button_generator`.
 It takes a string (label of the button) and a function (executed at button click) as arguments.
@@ -478,8 +478,8 @@ ADDON_NAME = "Your Displayed Name" # (1)!
 
 ### Dialogues and Prompts
 
-There are times, you either want to inform the user with a dialog or want to have a confirmation of the user.
-In this cases, you can use the `DP_CONTROLLER` object.
+There are times when you either want to inform the user with a dialog or want to have a confirmation of the user.
+In these cases, you can use the `DP_CONTROLLER` object.
 The method `standard_box` will create a window showing your text.
 The method `user_ok` will prompt the user with the text and return if the user pressed ok.
 Those methods will use the default used elements from CocktailBerry.
@@ -493,29 +493,29 @@ def after_cocktail(self, data: dict):
 ```
 
 1. Import the `DP_CONTROLLER` from CocktailBerry to use dialogues.
-2. The `user_okay` method will wait until the user accepts or decline and return the result as boolean.
+2. The `user_okay` method will wait until the user accepts or declines and return the result as a boolean.
 3. The `standard_box` will display your text as a full screen window, with a close / ok button.
 
 ### Data Before and After Cocktail
 
-In addition for the action before and after the cocktail preparation, there is additional data provided with the function.
+In addition to the action before and after the cocktail preparation, there is additional data provided with the function.
 You can use the data for your custom logic.
-All data is contained within the dictionary as first argument.
+All data is contained within the dictionary as the first argument.
 You can extract the needed properties from it.
 In the future, there may be more attributes you can use.
-The advantage of an dictionary is that this won't break your addon, if new properties are added.
+The advantage of a dictionary is that this won't break your addon, if new properties are added.
 
 #### Before Cocktail
 
-Following attributes are available in the before_cocktail data:
+The following attributes are available in the before_cocktail data:
 
-- cocktail: [Cocktail object](https://github.com/AndreWohnsland/CocktailBerry/blob/master/src/models.py#L28), containing name, adjusted_ingredients and many more attributes. Ingredient object got name and amount for example.
+- cocktail: [Cocktail object](https://github.com/AndreWohnsland/CocktailBerry/blob/master/src/models.py#L28), containing name, adjusted_ingredients and many more attributes. Ingredient object has name and amount for example.
 
 #### After Cocktail
 
-Following attributes are available in the after_cocktail data:
+The following attributes are available in the after_cocktail data:
 
-- cocktail: [Cocktail object](https://github.com/AndreWohnsland/CocktailBerry/blob/master/src/models.py#L28), containing name, adjusted_ingredients and many more attributes. Ingredient object got name and amount for example.
+- cocktail: [Cocktail object](https://github.com/AndreWohnsland/CocktailBerry/blob/master/src/models.py#L28), containing name, adjusted_ingredients and many more attributes. Ingredient object has name and amount for example.
 - consumption: List of spent ingredients, which were added by machine (cocktail.machineadds).
 
 ### And Many More
@@ -535,11 +535,11 @@ Also, if your configuration values are more complex or do need additional contex
 This will reduce user confusion and will raise the popularity of your addon.
 
 If you created a cool addon, you can link me the project.
-It may be included here, after it's functionality has been verified.
+It may be included here, after its functionality has been verified.
 This way, more users may find the addon and can use it.
 
 ### Make it Verified
 
-To publish your addon and make it visible to the users of CocktailBerry, you can checkout the [official repository](https://github.com/AndreWohnsland/CocktailBerry-Addons).
+To publish your addon and make it visible to the users of CocktailBerry, you can check out the [official repository](https://github.com/AndreWohnsland/CocktailBerry-Addons).
 CocktailBerry will use the information listed there, to get the addon data.
 Follow the development steps to make your addon a verified and accessible addon!

@@ -60,5 +60,5 @@ CocktailBerry offers the following features:
 In addition, there is the possibility to use and set up a second device as a dashboard:
 
 - Provide the teams API to post and get cocktail data
-- Display different modes of data for a by team comparison
+- Display different modes of data for a team-by-team comparison
 - _Optional_: Use the dashboard as WiFi hot-spot

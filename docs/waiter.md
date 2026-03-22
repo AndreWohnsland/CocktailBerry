@@ -6,7 +6,7 @@
 
 !!! warning "NFC Reader Conflict"
     Service Personnel Mode and CocktailBerry NFC Payment both require the NFC reader.
-    They cannot be enabled at the same time, nor is the initial intend that they would be used together.
+    They cannot be enabled at the same time, nor is the initial intent that they would be used together.
     If you need payment functionality, see the [Payment Feature](payment.md) instead.
 
 ## Overview

@@ -15,13 +15,13 @@ Currently, two types are supported: NFC-based payments and SumUp Terminal paymen
 
     For the NFC-based payments, a separate Payment Service is used to manage user entities and their balances.
     You can own the whole service and manage the NFC tags yourself.
-    A "User" entity is a NFC tag, which can have some (non-personal) properties associated with it.
+    A "User" entity is an NFC tag, which can have some (non-personal) properties associated with it.
     Currently supported criteria are:
 
     - **Alcohol restriction**: Users can be restricted from ordering alcoholic cocktails (child vs adult).
     - **Balance**: Each entity can have a balance, which is checked and deducted when ordering cocktails.
 
-    A separate payment service needs to be installed and setup to manage the user entities.
+    A separate payment service needs to be installed and set up to manage the user entities.
     There is a dedicated project and (see below) setup instructions for this service.
 
 === "SumUp"
@@ -154,7 +154,7 @@ Overall Process:
     CocktailBerry requests a payment from the SumUp API.
     The SumUp API communicates with the SumUp Terminal to start the payment process.
     The customer pays using the terminal via card or other supported methods.
-    The transaction data is sent back to the SumUp API, which then is polled by CocktailBerry about the successful payment.
+    The transaction data is sent back to the SumUp API, which is then polled by CocktailBerry about the successful payment.
     Since this is done via the cloud API, CocktailBerry and the Terminal both need to be connected to the internet.
     Once the payment is confirmed, CocktailBerry processes the order and dispenses the cocktail.
 
@@ -186,7 +186,7 @@ The recommended way for a "basic" hardware setup is:
 
     You will need a setup [sumup](https://www.sumup.com/) account for this to work.
     Once created, you will be asked multiple things during the account setup.
-    When you are done, see at your account settings, where you should see your Merchant Code (a string starting with "MCM").
+    When you are done, check your account settings, where you should see your Merchant Code (a string starting with "MCM").
     In addition, you will need to [create an API key](https://me.sumup.com/settings/api-keys) for your account.
     More information can also be found in the [SumUp Developer Documentation](https://developer.sumup.com/tools/authorization/authorization#create-api-key).
     Keep this safe, you will need it in the CocktailBerry settings.
@@ -242,7 +242,7 @@ The recommended way for a "basic" hardware setup is:
 
 === "SumUp"
     First, you will need to provide both, the SumUp API key as well as the merchant code to CocktailBerry.
-    You can enter both over the GUI, or edit the `custom_config.yaml` directly in the CocktailBerry folder, since the copying the key is better.
+    You can enter both over the GUI, or edit the `custom_config.yaml` directly in the CocktailBerry folder, since copying the key is better.
     Look for the `PAYMENT_SUMUP_API_KEY` and `PAYMENT_SUMUP_MERCHANT_CODE` entries and set them accordingly.
     In addition, you will need to select the SumUp payment option in the GUI or set `PAYMENT_OPTION` to `SumUp` in the config file.
 
@@ -262,7 +262,7 @@ The recommended way for a "basic" hardware setup is:
 You can manage the settings like all other settings over the CocktailBerry Interface.
 See also the [Configuration documentation](setup.md) for more details.
 
-In general, the options were made so you can tweak them as you needed.
+In general, the options were made so you can tweak them as you need.
 You might experiment with different settings to find the best fit for your use case.
 
 Some important options are:
@@ -272,7 +272,7 @@ Some important options are:
     - **Auto Logout**: Automatically log out users after a specified time, only enable this if you are sure this time is more than enough for a user to order a cocktail.
     - **Logout after Order**: Log out the user after each order, useful if users usually just order one Cocktail and you use the lock screen.
     - **Lock Screen**: User needs to scan his NFC to unlock the cocktail selection. Use this if you want to enforce first time scanning to filter/show only possible cocktails.
-    - **Show not possible cocktails**: Show all cocktails (not possible in another style), even if the user is not allowed to order them. Might be not the best if you use age restrictions, since they will never be able to order them.
+    - **Show not possible cocktails**: Show all cocktails (not possible in another style), even if the user is not allowed to order them. might not be the best if you use age restrictions, since they will never be able to order them.
 
 === "SumUp"
     - **Opt In**: Enable and select the SumUp payment integration.

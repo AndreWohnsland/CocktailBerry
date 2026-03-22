@@ -31,7 +31,7 @@ bash scripts/setup_usb_nfc.sh
 
 If you are not on the latest Raspberry Pi OS, please consider updating your system first.
 The best way is to backup your data and do a fresh install of the OS.
-I personally cannot recommend upgrading an existing OS, except you know what you are doing and how to fix issues.
+I personally cannot recommend upgrading an existing OS, unless you know what you are doing and how to fix issues.
 Otherwise, you can run:
 
 ```bash
@@ -43,7 +43,7 @@ sudo apt install python3-pyqt6
 
 All cases (e.g. not enough of one ingredient, no/wrong values ...) should be handled, and an info message should be displayed.
 If in any case any unexpected behavior occurs, feel free to open an issue.
-Usually, a part of the actions are also logged into the log files.
+Usually, part of the actions is also logged into the log files.
 When submitting an error, please also provide the `logs/debuglog.log` file.
 
 ## Icons are Missing
@@ -56,33 +56,33 @@ If that's the case, please change the color codes to the hexadecimal representat
 
 ## Changing Volume Unit
 
-For the users of the machine, there is the possibility to set the `EXP_MAKER_UNIT` and `EXP_MAKER_FACTOR` option to change the displayed unit, for example to oz.
+For the users of the machine, there is the possibility to set the `EXP_MAKER_UNIT` and `EXP_MAKER_FACTOR` options to change the displayed unit, for example to oz.
 Please take note that the units stored in the database are still in ml, and if inserting new recipes, you still need to provide them in ml.
-This feature is purely cosmetic and for the user of the maker tab when making cocktails, that no calculations need to be done while making cocktails.
+This feature is purely cosmetic and for the user of the maker tab when making cocktails, so that no calculations need to be done while making cocktails.
 
 ## Restoring Database
 
 The migrations create a backup of the database before doing the modifying steps.
-If you rather don't want to have the new recipes, you can overwrite the local `Cocktail_database.db` with the `Cocktail_database_backup.db` file.
+If you'd rather not have the new recipes, you can overwrite the local `Cocktail_database.db` with the `Cocktail_database_backup.db` file.
 
 ```bash
 cp Cocktail_database_backup-{your-date-string}.db Cocktail_database.db
 ```
 
 This will restore the state of the backup prior to this migration step.
-Please take a look into the production_log file, if a backup was created.
+Please take a look at the production_log file, if a backup was created.
 Otherwise, you may end up using an older one.
 
 ## Using a High Resolution Screen
 
-The UI of the program is somewhat dynamic, but Qt got its limitations.
+The UI of the program is somewhat dynamic, but Qt has its limitations.
 To ensure that the UI looks nice like in the screenshots, a resolution not higher than ~1200px on the long side (width) is recommended.
 If you happen to use a high-resolution screen, there is an easy fix, though.
-For example, when using a screen with a 2560x1600 resolution, I would recommend divide the value by `x` (for example x=2).
+For example, when using a screen with a 2560x1600 resolution, I would recommend dividing the value by `x` (for example x=2).
 In the CocktailBerry config, set width to 2560/2 = 1280 and height to 1600/2 = 800.
 In case you used the provided setup, just change the first line in the ~/launcher.sh file `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case).
 This will use the lower dimensions for the application but scale it up by the factor of two so it occupies the whole screen.
-Decimal numbers for x do also work, just try not to get decimals for width / height.
+Decimal numbers for x also work, just try not to get decimals for width / height.
 If you use your own startup script or similar, just add the export line with a corresponding value to it, or set the environment variable in any other desired way.
 
 ## Touchscreen Calibration
@@ -114,11 +114,11 @@ After the reboot, the calibration should be okay.
 ## How to Have the Right Time
 
 There is the config value `MAKER_CHECK_INTERNET`.
-If you wish to use your microservice, but got no internet at the moment, the data will be saved and send later.
+If you wish to use your microservice, but have no internet at the moment, the data will be saved and sent later.
 One problem that occurred, is that, for example on a standard Raspberry Pi, the clock and therefore the timestamp will probably be wrong.
-This new option tackles that. If it's set active with an active microservice, it will check for internet connection at startup.
+This new option tackles that. If it's set to active with an active microservice, it will check for internet connection at startup.
 If there is no connection, a dialog will pop up and give the user the possibility to adjust the time.
-In case the machine got a RTC build in and uses it, this option can usually be set to `false`, because due to the RTC, the time should be correct.
+In case the machine has an RTC built in and uses it, this option can usually be set to `false`, because due to the RTC, the time should be correct.
 
 ## Get the LED Working
 
@@ -126,7 +126,7 @@ Getting the WS281x to work may be a little bit tricky.
 You need to run the program as root/sudo, so you also need to change this in `~/launcher.sh`.
 If you are using the latest installer, there will be a virtual environment created, so you should use this as root.
 This also requires you to reinstall the python packages for the main program.
-A better way would be to add the user to the gpio/other needed groups, so you can run the program as normal user.
+A better way would be to add the user to the gpio/other needed groups, so you can run the program as a normal user.
 
 ```bash
 # for v1: change this line
@@ -144,38 +144,38 @@ sudo -E .venv/bin/python api.py
 If the GUI looks different than when you run it without sudo, try the `-E` flag, this should use your environment for Qt.
 
 See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.
-I had success using the 12 and 18 PWM0 pin, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.
-Other described pins may also work, but are untested, so I recommend to stick to the two that should work.
+I had success using the 12 and 18 PWM0 pins, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.
+Other described pins may also work, but are untested, so I recommend sticking to the two that should work.
 If you use any other non controllable LED connected over the relay, you can use any pin you want, since it's only activating the relay.
 
 ## Set Up RFID Reader
 
-Setting up a GPIO RFID reader and integrate it into the program is an intermediate task.
+Setting up a GPIO RFID reader and integrating it into the program is an intermediate task.
 It is not recommended for complete beginners, and it may include some tinkering.
 As long as you use the recommended usb reader, you should be fine.
-Currently you can use those different types of reader:
+Currently, you can use these different types of readers:
 
 - Basic MFRC522 ([like this](https://amzn.to/4puhW4T), SPI Protocol)
 - USB RFID Reader (like [this](https://amzn.to/4p75hVZ), only reading UID supported)
 
 !!! bug "Please Read"
-    Reading / Writing RFIDs while still having a interactive GUI may cause a lot of troubles.
+    Reading / Writing RFIDs while still having an interactive GUI may cause a lot of trouble.
     Some reader frameworks lock themselves until the read or write is done and have no direct cancel methods.
     So even using threads only fixes the responsiveness of the app.
-    Therefore, the best is if you trigger a write, finish the write.
-    If you have experience with the reader + python feel free to contact me, so we can improve this feature.
+    Therefore, it's best to trigger a write, finish the write.
+    If you have experience with the reader + Python feel free to contact me, so we can improve this feature.
 
 Setting them up is described [here for the MFRC522](https://pimylifeup.com/raspberry-pi-rfid-rc522/).
 You only need the wiring and the installation of the libraries (usually they are already installed).
 The corresponding code is integrated into CocktailBerry.
 After that, you select the corresponding option in the settings dropdown for the reader.
-When using the teams function, you can then also use a RFID chip, which inserts the information (name of person) for the leaderboard.
+When using the teams function, you can then also use an RFID chip, which inserts the information (name of person) for the leaderboard.
 In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
 
 Take care that you don't use any of the connected pins of the RFID reader in the CocktailBerry config for a pump or a LED.
 If you do so, remove them or replace them with another pin.
 Otherwise, the RFID will not work.
-Best is to restart the Pi afterwards and then check if the RFID is working as intended.
+It's best to restart the Pi afterwards and then check if the RFID is working as intended.
 While the USB NFC reader does not occupy any GPIO pins, it has some challenges on its own.
 You currently can't write data to the card, only reading the UID is supported.
 
@@ -183,11 +183,11 @@ You currently can't write data to the card, only reading the UID is supported.
 
 On different Linux systems (other than the recommended Raspbian OS), there may be differences in the look and functionality of the user interface.
 This can be dependent on the flavour of Linux, as well as the desktop variant you are using.
-I had best experience when using a LXDE/XFCE variant, for example of a Debian Linux, on a non-Raspberry Pi single board computer.
-Other desktop variants may not respect the always on top property, resulting in the taskbar show up on top the app when running the program and pop ups appear.
+I had the best experience when using a LXDE/XFCE variant, for example of a Debian Linux, on a non-Raspberry Pi single board computer.
+Other desktop variants may not respect the always on top property, resulting in the taskbar showing up on top of the app when running the program and pop ups appear.
 Please take note that CocktailBerry will run on other systems than the Raspberry Pi OS and RPi, but may take some tweaking and testing in the settings.
-Since I probably don't own that combination of Hardware and OS, you probably need to figure out that settings by yourself.
-If you are an unexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
+Since I probably don't own that combination of hardware and OS, you probably need to figure out those settings by yourself.
+If you are an inexperienced user with Linux, I recommend you stick to the recommended settings on a Pi.
 
 ## Task Bar Overlap / Push GUI
 
@@ -224,9 +224,9 @@ It may happen that you don't get the latest version of the software prompted at 
 This can be due to different reasons.
 First, check if you have an internet connection.
 If you have, check if you have the latest recommended version of python installed.
-CocktailBerry will not show the update if the future needed python version is higher than the current installed one.
+CocktailBerry will not show the update if the future required Python version is higher than the current installed one.
 Another reason may be that your git file is corrupted.
-Check with for errors like object file x is empty:
+Check for errors like object file x is empty:
 
 ```sh
 cd ~/CocktailBerry
@@ -366,14 +366,14 @@ sudo chmod 755 ~/launcher.sh
 ```
 
 !!! info "By the Way"
-    The provided installer script does all that steps for you.
+    The provided installer script does all those steps for you.
 
 ### The GUI on the RPi Looks Different from the Screenshots
 
 I've noticed when running as root (sudo python) and running as the pi user (python) by default the pi will use different GUI resources.
 Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
 Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
-Using the users environment with `sudo -E .venv/bin/python runme.py` should also do the trick.
+Using the user's environment with `sudo -E .venv/bin/python runme.py` should also do the trick.
 
 ### Raspberry Pi 5 GPIO Issues
 

@@ -1,7 +1,7 @@
 # Feature Timetable
 
 Here you will find a list of the new features introduced over time.
-If you don't find a feature listed in the docs on your CocktailBerry, chances may be that you didn't update for some time.
+If you don't find a feature listed in the docs on your CocktailBerry, chances are that you didn't update for some time.
 Cross check your version with the feature list and their corresponding introduction time.
 Usually, updating to the latest version is always a good idea.
 
@@ -36,7 +36,7 @@ Usually, updating to the latest version is always a good idea.
 | **v1.18.0** | Addons are now possible <br> Better recipe ingredient calculation                                                    |
 | **v1.17.0** | Setting up your own custom theme <br> Possibility to set up WiFi over the GUI <br> Implementation of the RFID reader |
 | **v1.16.0** | Summarized logs over the GUI                                                                                         |
-| **v1.15.0** | Control a LED during cocktail preparation                                                                            |
+| **v1.15.0** | Control an LED during cocktail preparation                                                                            |
 | **v1.14.0** | Can invert pins <br> set simultaneous pump count <br> support for generic board                                      |
 | **v1.13.1** | Clearing the database over the CLI                                                                                   |
 | **v1.11.0** | Internet check and time adjustment feature                                                                           |
