@@ -190,6 +190,7 @@ class ConfigManager:
             "PUMP_CONFIG": ListType(
                 DictType(
                     {
+                        "pump_type": ChooseOptions.dispenser,
                         "pin_type": ChooseOptions.pin,
                         "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
                         "pin": IntType([build_number_limiter(0)], prefix="Pin:"),

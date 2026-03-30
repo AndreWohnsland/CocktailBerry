@@ -13,6 +13,7 @@ from typing import Any, Protocol, Self, get_args
 
 from src import (
     I2CExpanderType,
+    SupportedDispenserType,
     SupportedLanguagesType,
     SupportedLedStatesType,
     SupportedPaymentOptions,
@@ -29,6 +30,7 @@ SUPPORTED_LED_STATES = list(get_args(SupportedLedStatesType))
 SUPPORTED_PAYMENT = list(get_args(SupportedPaymentOptions))
 SUPPORTED_PIN_CONTROL = list(get_args(SupportedPinControlType))
 SUPPORTED_I2C_EXPANDERS = list(get_args(I2CExpanderType))
+SUPPORTED_DISPENSERS = list(get_args(SupportedDispenserType))
 
 
 class ConfigInterface[T](Protocol):
@@ -138,6 +140,7 @@ class ChooseOptions:
     payment = ChooseType(allowed=SUPPORTED_PAYMENT)
     pin = ChooseType(allowed=SUPPORTED_PIN_CONTROL, default="GPIO")
     i2c = ChooseType(allowed=SUPPORTED_I2C_EXPANDERS, default="PCF8574")
+    dispenser = ChooseType(allowed=SUPPORTED_DISPENSERS, default="DC")
 
 
 class StringType(_ConfigType[str]):
@@ -341,20 +344,23 @@ class PumpConfig(ConfigClass):
         tube_volume: int,
         pin_type: SupportedPinControlType = "GPIO",
         board_number: int = 1,
+        pump_type: SupportedDispenserType = "DC",
     ) -> None:
         self.pin_type = pin_type
         self.pin = pin
         self.volume_flow = volume_flow
         self.tube_volume = tube_volume
         self.board_number = board_number
+        self.pump_type = pump_type
 
     @property
     def pin_id(self) -> PinId:
         """Build PinId from this config's pin_type, board_number and pin."""
         return PinId(self.pin_type, self.board_number, self.pin)
 
-    def to_config(self) -> dict[str, int | float | SupportedPinControlType]:
+    def to_config(self) -> dict[str, int | float | str]:
         return {
+            "pump_type": self.pump_type,
             "pin_type": self.pin_type,
             "board_number": self.board_number,
             "pin": self.pin,
