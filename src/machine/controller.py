@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import atexit
 import contextlib
-import time
-from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Self
 
 from src.logger_handler import LoggerHandler
@@ -14,27 +12,20 @@ with contextlib.suppress(ModuleNotFoundError):
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.config.config_types import PinId
 from src.database_commander import DatabaseCommander
+from src.machine.dispensers import create_dispenser
+from src.machine.dispensers.base import BaseDispenser
+from src.machine.dispensers.scheduler import DispenserScheduler, PreparationItem
+from src.machine.hardware import HardwareContext
 from src.machine.leds import LedController
 from src.machine.pin_controller import PinController
 from src.machine.reverter import Reverter
-from src.models import CocktailStatus, EventType, Ingredient, PrepareResult
+from src.models import CocktailStatus, EventType, Ingredient, PreparationResult, PrepareResult
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 _logger = LoggerHandler("MachineController")
-
-
-@dataclass
-class _PreparationData:
-    pin: PinId
-    volume_flow: int | float
-    flow_time: float
-    consumption: float = 0.0
-    closed: bool = False
-    recipe_order: int = 1
 
 
 class MachineController:
@@ -48,12 +39,16 @@ class MachineController:
         return cls._instance
 
     def __init__(self) -> None:
-        # Time for print intervals, need to remember the last print time
-        self._print_time = 0.0
+        if getattr(self, "_initialized", False):
+            return
+        self.dispensers: dict[int, BaseDispenser] = {}
+        self._initialized = True
 
     def init_machine(self) -> None:
-        self.pin_controller = PinController()
-        self.led_controller = LedController()
+        self.hardware = HardwareContext(
+            pin_controller=PinController(),
+            led_controller=LedController(),
+        )
         self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()
         self.default_led()
@@ -65,13 +60,13 @@ class MachineController:
         Activates all pumps for the given time.
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
-        prep_data = _build_clean_data()
+        items = self._build_clean_items()
         if w is not None:
             w.open_progression_window("Cleaning")
         _header_print("Start Cleaning")
         if revert_pumps:
             self.reverter.revert_on()
-        self._start_preparation(w, prep_data, False)
+        self._run_scheduler(w, items)
         if revert_pumps:
             self.reverter.revert_off()
         _header_print("Done Cleaning")
@@ -88,204 +83,111 @@ class MachineController:
         is_cocktail: bool = True,
         verbose: bool = True,
         finish_message: str = "",
-    ) -> tuple[list[int], float, float]:
+    ) -> PreparationResult:
         """RPI Logic to prepare the cocktail.
 
         Calculates needed time for each slot according to data and config.
         Updates Progressbar status. Returns data for DB updates.
-
-        Args:
-        ----
-            w (QtMainWindow): MainWindow Object
-            ingredient_list (list[Ingredient]): List of Ingredients to prepare
-            recipe (str, optional): Option to change the display text of Progress Screen. Defaults to "".
-            is_cocktail (bool, optional): If the preparation is a cocktail. Default to True.
-            verbose (bool, optional): If the preparation should be verbose. Defaults to True.
-            finish_message (str, optional): Message to display after preparation. Defaults to "".
-
-        Returns:
-        -------
-            tuple(List[int], float, float): Consumption of each bottle, taken time, max needed time
-
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
         if w is not None:
             w.open_progression_window(recipe)
-        prep_data = _build_preparation_data(ingredient_list)
+        items = self._build_preparation_items(ingredient_list)
         _header_print(f"Starting {recipe}")
         if is_cocktail:
-            self.led_controller.preparation_start()
-        current_time, max_time = self._start_preparation(w, prep_data, verbose)
+            self.hardware.led_controller.preparation_start()
+        self._run_scheduler(w, items, verbose=verbose)
         if is_cocktail:
-            self.led_controller.preparation_end()
-        consumption = [round(x.consumption) for x in prep_data]
-        _logger.info(f"Total calculated consumption: {consumption}")
+            self.hardware.led_controller.preparation_end()
+        # Write consumption back to ingredient objects
+        for item in items:
+            if item.ingredient is not None:
+                item.ingredient.consumption = item.consumption
+        machine_ingredients = [item.ingredient for item in items if item.ingredient is not None]
+        _logger.info(f"Total calculated consumption: {[round(i.consumption) for i in machine_ingredients]}")
         _header_print(f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
         if shared.cocktail_status.status != PrepareResult.CANCELED:
             shared.cocktail_status.status = PrepareResult.FINISHED
             shared.cocktail_status.message = finish_message
-        return consumption, current_time, max_time
+        return PreparationResult(
+            ingredients=machine_ingredients,
+        )
 
-    def _start_preparation(
-        self, w: MainScreen | None, prep_data: list[_PreparationData], verbose: bool = True
-    ) -> tuple[float, float]:
-        """Prepare the volumes of the given data."""
-        self._print_time = 0.0
-        current_time = 0.0
-        # need to cut data into chunks
-        chunked_preparation = self._chunk_preparation_data(prep_data)
-        chunk_max = [max(x.flow_time for x in y) for y in chunked_preparation]
-        max_time = round(sum(chunk_max), 2)
-        cocktail_start_time = time.perf_counter()
-        # Iterate over each chunk
-        for section in chunked_preparation:
-            # interrupt loop if user interrupt cocktail
-            if shared.cocktail_status.status == PrepareResult.CANCELED:
-                break
-            # Getting values for the section
-            section_time = 0.0
-            section_max = max(x.flow_time for x in section)
-            pins = [x.pin for x in section]
-            progress_string = _generate_progress(current_time, max_time)
-            section_start_time = time.perf_counter()
-            self._start_pumps(pins, progress_string)
-            # iterate over each prep data
-            while section_time < section_max and shared.cocktail_status.status != PrepareResult.CANCELED:
-                self._process_preparation_section(current_time, max_time, section, section_time)
-                # Adjust needed data
-                if verbose:
-                    self._consumption_print([x.consumption for x in prep_data], current_time, max_time)
-                time_now = time.perf_counter()
-                current_time = round(time_now - cocktail_start_time, 2)
-                section_time = round(time_now - section_start_time, 2)
-                progress = int(current_time / max_time * 100)
-                shared.cocktail_status.progress = progress
-                if w is not None:
-                    w.change_progression_window(progress)
-                    QApplication.processEvents()
+    def _run_scheduler(self, w: MainScreen | None, items: list[PreparationItem], verbose: bool = True) -> None:
+        """Create a scheduler and run the given items."""
+        scheduler = DispenserScheduler(cfg.MAKER_SIMULTANEOUSLY_PUMPS, verbose=verbose)
 
-            progress_string = _generate_progress(current_time, max_time)
-            self._stop_pumps(pins, progress_string)
-        return current_time, max_time
+        def on_progress(progress: int, consumption: list[float]) -> None:
+            shared.cocktail_status.progress = progress
+            if w is not None:
+                w.change_progression_window(progress)
+                QApplication.processEvents()
 
-    def _chunk_preparation_data(self, prep_data: list[_PreparationData]) -> list[list[_PreparationData]]:
-        """Chunk the preparation data into smaller sections respecting the MAKER_SIMULTANEOUSLY_PUMPS."""
-        chunk = cfg.MAKER_SIMULTANEOUSLY_PUMPS
-        # also take the recipe order in consideration
-        # first separate the preparation data into a list of lists,
-        # where each list contains the data for one recipe order
-        unique_orders = list({x.recipe_order for x in prep_data})
-        # sort to ensure lowest order is first
-        unique_orders.sort()
-        chunked_preparation: list[list[_PreparationData]] = []
-        for number in unique_orders:
-            # get all the same order number
-            order_chunk = [x for x in prep_data if x.recipe_order == number]
-            # split the chunk again, if the size exceeds the chunk size
-            chunked_preparation.extend([order_chunk[i : i + chunk] for i in range(0, len(order_chunk), chunk)])
-        return chunked_preparation
+        def is_cancelled() -> bool:
+            return shared.cocktail_status.status == PrepareResult.CANCELED
 
-    def _process_preparation_section(
-        self,
-        current_time: float,
-        max_time: float,
-        section: list[_PreparationData],
-        section_time: float,
-    ) -> None:
-        """Iterate over the data in each section and control pumps accordingly."""
-        for data in section:
-            if data.flow_time > section_time and not data.closed:
-                data.consumption = data.volume_flow * section_time
-            elif not data.closed:
-                progress = _generate_progress(current_time, max_time)
-                self._stop_pumps([data.pin], progress)
-                data.closed = True
+        scheduler.run(items, on_progress, is_cancelled)
 
     def set_up_pumps(self) -> None:
-        """Get all used pins, prints pins and uses controller class to set up."""
+        """Initialize dispensers for all configured pump slots."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
-        active_pins = [x.pin_id for x in used_config]
-        _logger.info(f"<i> Initializing Pins: {active_pins}")
-        self.pin_controller.initialize_pin_list(active_pins)
+        self.dispensers = {}
+        for slot, pump_cfg in enumerate(used_config, start=1):
+            dispenser = create_dispenser(slot, pump_cfg, self.hardware)
+            dispenser.setup()
+            self.dispensers[slot] = dispenser
+        _logger.info(f"<i> Initialized {len(self.dispensers)} dispensers")
         self.reverter.initialize_pin()
 
-    def _start_pumps(self, pin_list: list[PinId], print_prefix: str = "") -> None:
-        """Informs and opens all given pins."""
-        _logger.info(f"{print_prefix}<o> Opening Pins: {pin_list}")
-        self.pin_controller.activate_pin_list(pin_list)
-
     def close_all_pumps(self) -> None:
-        """Close all pins connected to the pumps."""
-        used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
-        active_pins = [x.pin_id for x in used_config]
-        self._stop_pumps(active_pins)
+        """Stop all active dispensers."""
+        for dispenser in self.dispensers.values():
+            dispenser.stop()
 
     def cleanup(self) -> None:
         """Cleanup for shutdown the machine."""
         self.close_all_pumps()
-        self.led_controller.turn_off()
-        self.pin_controller.cleanup_pin_list()
+        self.hardware.cleanup()
 
-    def _stop_pumps(self, pin_list: list[PinId], print_prefix: str = "") -> None:
-        """Informs and closes all given pins."""
-        _logger.info(f"{print_prefix}<x> Closing Pins: {pin_list}")
-        self.pin_controller.close_pin_list(pin_list)
+    def _build_clean_items(self) -> list[PreparationItem]:
+        """Build cleaning items for all active dispensers."""
+        items = []
+        for dispenser in self.dispensers.values():
+            amount_ml = dispenser.volume_flow * cfg.MAKER_CLEAN_TIME
+            items.append(
+                PreparationItem(
+                    dispenser=dispenser,
+                    amount_ml=amount_ml,
+                    pump_speed=100,
+                    estimated_time=float(cfg.MAKER_CLEAN_TIME),
+                )
+            )
+        return items
+
+    def _build_preparation_items(self, ingredient_list: list[Ingredient]) -> list[PreparationItem]:
+        """Build the preparation items from ingredients and dispensers."""
+        items = []
+        for ing in ingredient_list:
+            if ing.bottle is None:
+                continue
+            dispenser = self.dispensers[ing.bottle]
+            items.append(
+                PreparationItem(
+                    dispenser=dispenser,
+                    amount_ml=float(ing.amount),
+                    pump_speed=ing.pump_speed,
+                    estimated_time=dispenser.estimated_time(ing.amount, ing.pump_speed),
+                    recipe_order=ing.recipe_order,
+                    ingredient=ing,
+                )
+            )
+        return items
 
     def default_led(self) -> None:
         """Turn the LED on."""
-        self.led_controller.default_led()
-
-    def _consumption_print(
-        self, consumption: list[float], current_time: float, max_time: float, interval: int = 1
-    ) -> None:
-        """Display each interval seconds information for cocktail preparation."""
-        # we do not want to print at the beginning
-        if round(self._print_time, 1) == 0:
-            self._print_time += interval
-        # if there was no print in the interval, print, usually we print every second at default settings
-        if current_time >= self._print_time:
-            self._print_time += interval
-            pretty_consumption = [round(x) for x in consumption]
-            progress = _generate_progress(current_time, max_time)
-            _logger.debug(f"{progress}Volumes: {pretty_consumption}")
-
-
-def _build_preparation_data(
-    ingredient_list: list[Ingredient],
-) -> list[_PreparationData]:
-    """Build the data needed for machine preparation."""
-    # build prep data for each ingredient
-    prep_data = []
-    for ing in ingredient_list:
-        if ing.bottle is None:  # bottle should never be None at this point
-            continue
-        pump_cfg = cfg.PUMP_CONFIG[ing.bottle - 1]
-        volume_flow = pump_cfg.volume_flow * ing.pump_speed / 100
-        prep_data.append(
-            _PreparationData(
-                pump_cfg.pin_id,
-                volume_flow,
-                round(ing.amount / volume_flow, 1),
-                recipe_order=ing.recipe_order,
-            )
-        )
-    return prep_data
-
-
-def _build_clean_data() -> list[_PreparationData]:
-    """Build a list of needed cleaning data objects."""
-    used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
-    prep_data = []
-    for pump_cfg in used_config:
-        prep_data.append(_PreparationData(pump_cfg.pin_id, pump_cfg.volume_flow, cfg.MAKER_CLEAN_TIME))
-    return prep_data
-
-
-def _generate_progress(current_time: float, total_time: float) -> str:
-    """Print the current passed time in relation to total time."""
-    return f"{current_time: <4.1f} | {total_time: >4.1f} s: "
+        self.hardware.led_controller.default_led()
 
 
 def _header_print(msg: str) -> None:

@@ -57,59 +57,47 @@ def prepare_cocktail(
     addon_data: dict[str, Any] = {"cocktail": cocktail}
 
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
-    ingredient_bottles = [x for x in cocktail.machineadds if x.amount > 0]
-
-    # Now make the cocktail
-    display_name = f"{cocktail.name} (Virgin)" if cocktail.is_virgin else cocktail.name
-    _logger.info(f"Preparing {cocktail.adjusted_amount} ml {display_name}")
+    ingredients_machine = [x for x in cocktail.machineadds if x.amount > 0]
+    _logger.info(f"Preparing {cocktail.adjusted_amount} ml {cocktail.display_name}")
     comment = _build_comment_maker(cocktail)
+
     # only use separator if we got both messages
     separator = "\n" if additional_message and comment else ""
     add_message = additional_message + separator + DH.cocktail_ready(comment)
-    canceled_message = DH.get_translation("cocktail_canceled")
     mc = MachineController()
-    consumption, taken_time, max_time = mc.make_cocktail(
-        w, ingredient_bottles, display_name, finish_message=add_message
-    )
+    result = mc.make_cocktail(w, ingredients_machine, cocktail.display_name, finish_message=add_message)
     DBC = DatabaseCommander()
-    DBC.increment_recipe_counter(cocktail.name, cocktail.is_virgin)
+    # single ingredient got represented as a cocktail with one ingredient, but no id, skip recipe increment
+    if cocktail.id != 0:
+        DBC.increment_recipe_counter(cocktail.name, cocktail.is_virgin)
 
-    percentage_made = taken_time / max_time
-    real_volume = round(cocktail.adjusted_amount * percentage_made)
-
-    # run Addons after cocktail preparation
-    addon_data["consumption"] = consumption
+    # Set hand-add consumption before addon call so all data is available, always set hand add to recipe level
+    for ing in cocktail.handadds:
+        ing.consumption = float(ing.amount)
     ADDONS.after_cocktail(addon_data)
 
     # only post if cocktail was made over 50%
     minimum_cocktail_progress = 0.5
-    if percentage_made >= minimum_cocktail_progress:
-        SERVICE_HANDLER.post_team_data(shared.selected_team, real_volume, shared.team_member_name)
-        SERVICE_HANDLER.post_cocktail_to_hook(display_name, real_volume, cocktail)
+    if result.completion_ratio >= minimum_cocktail_progress:
+        SERVICE_HANDLER.post_team_data(shared.selected_team, result.real_volume, shared.team_member_name)
+        SERVICE_HANDLER.post_cocktail_to_hook(cocktail, result.real_volume)
 
-    # the cocktail was canceled!
-    if shared.cocktail_status.status == PrepareResult.CANCELED:
-        consumption_names = [x.name for x in cocktail.machineadds]
-        consumption_amount = consumption
-        DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
-        DBC.save_event(EventType.COCKTAIL_CANCELED, f"{display_name}")
-        if waiter_nfc_id is not None:
-            DBC.log_waiter_cocktail(waiter_nfc_id, cocktail.id, real_volume, cocktail.is_virgin)
-        if cfg.WAITER_LOGOUT_AFTER_COCKTAIL and cfg.waiter_mode_active:
-            WaiterService().logout_waiter()
-        return PrepareResult.CANCELED, canceled_message
-
-    shared.cocktail_status.status = PrepareResult.FINISHED
+    # Persist all ingredient consumption
     consumption_names = [x.name for x in cocktail.adjusted_ingredients]
-    consumption_amount = [x.amount for x in cocktail.adjusted_ingredients]
+    consumption_amount = [round(x.consumption) for x in cocktail.adjusted_ingredients]
     DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
-    DBC.save_event(EventType.COCKTAIL_PREPARATION, f"{display_name}")
-    # Log waiter cocktail on successful preparation
+
     if waiter_nfc_id is not None:
-        DBC.log_waiter_cocktail(waiter_nfc_id, cocktail.id, real_volume, cocktail.is_virgin)
+        DBC.log_waiter_cocktail(waiter_nfc_id, cocktail.id, result.real_volume, cocktail.is_virgin)
     if cfg.WAITER_LOGOUT_AFTER_COCKTAIL and cfg.waiter_mode_active:
         WaiterService().logout_waiter()
 
+    if shared.cocktail_status.status == PrepareResult.CANCELED:
+        DBC.save_event(EventType.COCKTAIL_CANCELED, f"{cocktail.display_name}")
+        return PrepareResult.CANCELED, DH.get_translation("cocktail_canceled")
+
+    DBC.save_event(EventType.COCKTAIL_PREPARATION, f"{cocktail.display_name}")
+    shared.cocktail_status.status = PrepareResult.FINISHED
     return PrepareResult.FINISHED, add_message
 
 
@@ -180,7 +168,7 @@ def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> N
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     _logger.info(f"Spending {ingredient.amount} ml {ingredient.name}")
     mc = MachineController()
-    made_volume, _, _ = mc.make_cocktail(w, [ingredient], ingredient.name, False)
-    consumed_volume = made_volume[0]
+    mc.make_cocktail(w, [ingredient], ingredient.name, False)
+    consumed_volume = round(ingredient.consumption)
     DBC = DatabaseCommander()
     DBC.increment_ingredient_consumption(ingredient.name, consumed_volume)

@@ -515,8 +515,7 @@ The following attributes are available in the before_cocktail data:
 
 The following attributes are available in the after_cocktail data:
 
-- cocktail: [Cocktail object](https://github.com/AndreWohnsland/CocktailBerry/blob/master/src/models.py#L28), containing name, adjusted_ingredients and many more attributes. Ingredient object has name and amount for example.
-- consumption: List of spent ingredients, which were added by machine (cocktail.machineadds).
+- cocktail: [Cocktail object](https://github.com/AndreWohnsland/CocktailBerry/blob/master/src/models.py#L28), containing name, adjusted_ingredients and many more attributes. Each ingredient has a `consumption` attribute with the actual dispensed volume (machine adds from the pumps, hand adds set to their recipe amount).
 
 ### And Many More
 
