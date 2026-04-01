@@ -423,7 +423,7 @@ async def get_news() -> DataResponse[dict[str, str]]:
 
     news_dict = {}
     for key in unacknowledged_keys:
-        news_dict[key] = DH.get_translation(key)  # type: ignore[arg-type]
+        news_dict[key] = DH.get_translation(key)  # type: ignore
 
     return DataResponse(data=news_dict)
 

@@ -16,8 +16,8 @@ from sumup.readers import (
     Reader,
     StatusResponse,
 )
-from sumup.readers.types import StatusResponseDataState
 from sumup.transactions import GetTransactionV21Params, TransactionFull
+from sumup.types import StatusResponseDataState
 
 from src.logger_handler import LoggerHandler
 

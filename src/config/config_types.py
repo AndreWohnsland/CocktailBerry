@@ -95,7 +95,7 @@ class _ConfigType[T](ConfigInterface[T]):
         if self.default is not None:
             return self.default
 
-        defaults = {
+        defaults: dict[type, Any] = {
             str: "",
             int: 0,
             float: 0.0,
