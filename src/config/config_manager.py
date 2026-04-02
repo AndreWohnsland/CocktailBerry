@@ -24,18 +24,23 @@ from src import (
     __version__,
 )
 from src.config.config_types import (
+    BasePumpConfig,
     BoolType,
     ChooseOptions,
     ChooseType,
     ConfigInterface,
+    DCPumpConfig,
     DictType,
+    DiscriminatedDictType,
     FloatType,
+    HX711ScaleConfig,
     I2CExpanderConfig,
     IntType,
     ListType,
+    NAU7802ScaleConfig,
     NormalLedConfig,
-    PumpConfig,
     ReversionConfig,
+    StepperPumpConfig,
     StringType,
     WS281xLedConfig,
 )
@@ -85,8 +90,8 @@ class ConfigManager:
     UI_HEIGHT: int = 480
     UI_PICTURE_SIZE: int = 240
     UI_ONLY_MAKER_TAB: bool = False
-    PUMP_CONFIG: ClassVar[list[PumpConfig]] = [
-        PumpConfig(pin, flow, 0, "GPIO") for pin, flow in zip(_default_pins, _default_volume_flow)
+    PUMP_CONFIG: ClassVar[list[BasePumpConfig]] = [
+        DCPumpConfig(pin, flow, 0, "GPIO") for pin, flow in zip(_default_pins, _default_volume_flow)
     ]
     # Inverts the pin signal (on is low, off is high)
     MAKER_PINS_INVERTED: bool = True
@@ -162,6 +167,8 @@ class ConfigManager:
     CUSTOM_COLOR_BACKGROUND: str = "#0d0d0d"
     CUSTOM_COLOR_DANGER: str = "#d00000"
     # Config to change the displayed values in the maker to another unit
+    # Scale configuration for weight-based dispensing
+    SCALE_CONFIG = HX711ScaleConfig(enabled=False)
     EXP_MAKER_UNIT: str = "ml"
     EXP_MAKER_FACTOR: float = 1.0
     EXP_DEMO_MODE: bool = False
@@ -188,19 +195,44 @@ class ConfigManager:
             "UI_ONLY_MAKER_TAB": BoolType(check_name="Only Maker Tab Accessible"),
             "MAKER_PINS_INVERTED": BoolType(check_name="Inverted"),
             "PUMP_CONFIG": ListType(
-                DictType(
+                DiscriminatedDictType(
+                    "pump_type",
                     {
-                        "pump_type": ChooseOptions.dispenser,
-                        "pin_type": ChooseOptions.pin,
-                        "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
-                        "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
-                        "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
-                        "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
+                        "DC": DictType(
+                            {
+                                "pump_type": ChooseOptions.dispenser,
+                                "pin_type": ChooseOptions.pin,
+                                "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
+                                "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
+                                "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
+                                "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
+                                "consumption_estimation": ChooseOptions.consumption_estimation,
+                            },
+                            DCPumpConfig,
+                        ),
+                        "Stepper": DictType(
+                            {
+                                "pump_type": ChooseOptions.dispenser,
+                                "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
+                                "dir_pin": IntType([build_number_limiter(0)], prefix="Dir:"),
+                                "driver_type": ChooseOptions.stepper_driver,
+                                "step_type": ChooseOptions.stepper_step_type,
+                                "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
+                                "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
+                                "consumption_estimation": ChooseOptions.consumption_estimation,
+                            },
+                            StepperPumpConfig,
+                        ),
                     },
-                    PumpConfig,
+                    default_variant="DC",
                 ),
                 lambda: self.choose_bottle_number(ignore_limits=True),
-                [build_distinct_validator(["pin_type", "board_number", "pin"])],
+                [
+                    build_distinct_validator(
+                        ["pin_type", "board_number", "pin"],
+                        fallback={"pin_type": "GPIO", "board_number": 1},
+                    )
+                ],
             ),
             "I2C_CONFIG": ListType(
                 DictType(
@@ -296,6 +328,31 @@ class ConfigManager:
             "CUSTOM_COLOR_NEUTRAL": StringType(),
             "CUSTOM_COLOR_BACKGROUND": StringType(),
             "CUSTOM_COLOR_DANGER": StringType(),
+            "SCALE_CONFIG": DiscriminatedDictType(
+                "scale_type",
+                {
+                    "HX711": DictType(
+                        {
+                            "scale_type": ChooseOptions.scale_driver,
+                            "enabled": BoolType(check_name="Enabled"),
+                            "calibration_factor": FloatType([build_number_limiter(0.001, 10000)]),
+                            "data_pin": IntType([build_number_limiter(0)], prefix="Data:"),
+                            "clock_pin": IntType([build_number_limiter(0)], prefix="Clock:"),
+                        },
+                        HX711ScaleConfig,
+                    ),
+                    "NAU7802": DictType(
+                        {
+                            "scale_type": ChooseOptions.scale_driver,
+                            "enabled": BoolType(check_name="Enabled"),
+                            "calibration_factor": FloatType([build_number_limiter(0.001, 10000)]),
+                            "i2c_address": IntType([build_number_limiter(0, 127)], prefix="0x"),
+                        },
+                        NAU7802ScaleConfig,
+                    ),
+                },
+                default_variant="HX711",
+            ),
             "EXP_MAKER_UNIT": StringType(),
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),
             "EXP_DEMO_MODE": BoolType(check_name="Activate Demo Mode"),
@@ -380,11 +437,20 @@ class ConfigManager:
             config["immutable"] = setting.immutable
             list_type = setting.list_type
             # in case of list we need to go into the object, all list object types are the same
-            self._enhance_config_specific_information(config, list_type)  # ty:ignore[invalid-argument-type]
+            self._enhance_config_specific_information(config, list_type)
         if isinstance(setting, DictType):
-            for key, value in setting.dict_types.items():  # ty:ignore[unresolved-attribute]
+            for key, value in setting.dict_types.items():
                 config[key] = {}
                 self._enhance_config_specific_information(config[key], value)
+        if isinstance(setting, DiscriminatedDictType):
+            config["discriminator"] = setting.discriminator
+            config["variants"] = {}
+            for variant_name, variant_dict_type in setting.variants.items():
+                variant_config: dict[str, Any] = {}
+                for key, value in variant_dict_type.dict_types.items():
+                    variant_config[key] = {}
+                    self._enhance_config_specific_information(variant_config[key], value)
+                config["variants"][variant_name] = variant_config
 
     def set_config(self, configuration: dict, validate: bool) -> None:
         """Validate the config and set new values."""
@@ -420,11 +486,17 @@ class ConfigManager:
         - Checks that I2C pin types used in PUMP_CONFIG have corresponding enabled devices in I2C_CONFIG.
         - Checks that WAITER_MODE is not enabled alongside CocktailBerry NFC payment.
         - Check that some nfc is active when payment/waiter mode is active.
+        - Checks that weight-based pumps have an enabled scale.
         """
+        self._validate_i2c_boards(validate)
+        self._validate_waiter_payment(validate)
+        self._validate_scale_config(validate)
+
+    def _validate_i2c_boards(self, validate: bool) -> None:
         # Collect all I2C (pin_type, board_number) pairs used in PUMP_CONFIG (excluding GPIO)
         required_i2c_boards: set[tuple[str, int]] = set()
         for pump in self.PUMP_CONFIG:
-            if pump.pin_type != "GPIO":
+            if isinstance(pump, DCPumpConfig) and pump.pin_type != "GPIO":
                 required_i2c_boards.add((pump.pin_type, pump.board_number))
 
         # Get enabled I2C (device_type, board_number) pairs from I2C_CONFIG
@@ -442,6 +514,7 @@ class ConfigManager:
             if validate:
                 raise ConfigError(error_msg)
 
+    def _validate_waiter_payment(self, validate: bool) -> None:
         # Check that waiter mode is not enabled alongside CocktailBerry NFC payment
         if self.WAITER_MODE and self.payment_enabled:
             error_msg = "WAITER_MODE cannot be enabled when payment is also enabled"
@@ -451,6 +524,18 @@ class ConfigManager:
 
         if (self.WAITER_MODE or self.payment_enabled) and not self.nfc_enabled:
             error_msg = "NFC must be set when payment or waiter mode is active"
+            _logger.error(f"Config Error: {error_msg}")
+            if validate:
+                raise ConfigError(error_msg)
+
+    def _validate_scale_config(self, validate: bool) -> None:
+        # Check that weight-based pumps have an enabled scale
+        has_weight_pump = any(p.consumption_estimation == "weight" for p in self.PUMP_CONFIG)
+        if has_weight_pump and not self.SCALE_CONFIG.enabled:
+            error_msg = (
+                "PUMP_CONFIG has pumps with consumption_estimation='weight' but SCALE_CONFIG is not enabled. "
+                "Enable the scale or switch pumps to time-based estimation."
+            )
             _logger.error(f"Config Error: {error_msg}")
             if validate:
                 raise ConfigError(error_msg)
@@ -470,7 +555,7 @@ class ConfigManager:
         default_value: str | float | bool | list[str] | list[int] | list[float],
         validation_function: list[Callable[[str, Any], None]] | None = None,
         list_validation_function: list[Callable[[str, Any], None]] | None = None,
-        list_type: type | None = None,
+        list_type: type[str | int | float] | None = None,
         min_length: int | Callable[[], int] = 0,
     ) -> None:
         """Add the configuration under the given name.
@@ -495,7 +580,7 @@ class ConfigManager:
             setattr(self, config_name, default_value)
 
         # Use internal type mapping for the config
-        config_type_mapping = {
+        config_type_mapping: dict[type[str | int | float | bool], type[StringType | IntType | FloatType | BoolType]] = {
             str: StringType,
             int: IntType,
             float: FloatType,
@@ -509,7 +594,7 @@ class ConfigManager:
             elif list_type is None:
                 list_type = type(default_value[0])
             config_class = config_type_mapping[list_type]
-            config_setting = ListType(config_class(list_validation_function), min_length)
+            config_setting = ListType(config_class(list_validation_function), min_length)  # pyright: ignore[reportArgumentType]
         else:
             config_type = type(default_value)
             config_class = config_type_mapping[config_type]

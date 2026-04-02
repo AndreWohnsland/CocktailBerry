@@ -3,6 +3,10 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from threading import Event
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.machine.scale import ScaleInterface
 
 ProgressCallback = Callable[[float, bool], None]
 """Callback signature: (consumption_ml, is_done) -> None"""
@@ -15,13 +19,16 @@ class BaseDispenser(ABC):
     and should be called from a worker thread by the MachineController.
     """
 
-    needs_exclusive: bool = False
-    """If True, this dispenser requires exclusive access during dispensing (e.g. scale-based)."""
-
-    def __init__(self, slot: int, volume_flow: float) -> None:
+    def __init__(self, slot: int, volume_flow: float, scale: ScaleInterface | None = None) -> None:
         self.slot = slot
         self.volume_flow = volume_flow
         self._stop_event = Event()
+        self._scale = scale
+
+    @property
+    def needs_exclusive(self) -> bool:
+        """True when this dispenser requires exclusive scheduling (i.e. it uses a scale)."""
+        return self._scale is not None
 
     @abstractmethod
     def setup(self) -> None:
@@ -48,3 +55,13 @@ class BaseDispenser(ABC):
     def estimated_time(self, amount_ml: float, pump_speed: int) -> float:
         """Calculate estimated dispense time in seconds. Used for scheduling."""
         return amount_ml / (self.volume_flow * pump_speed / 100)
+
+    def _get_consumption(self, current_estimate: float) -> float:
+        """Return current consumption in ml.
+
+        When a scale is present, reads grams directly (density assumed ~1 g/ml).
+        Otherwise returns the caller's time/step-based estimate.
+        """
+        if self._scale is not None:
+            return self._scale.read_grams()
+        return current_estimate

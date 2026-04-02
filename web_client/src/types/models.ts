@@ -192,14 +192,37 @@ export interface DefinedConfigData {
   CUSTOM_COLOR_DANGER: string;
   EXP_MAKER_UNIT: string;
   EXP_MAKER_FACTOR: number;
+  SCALE_CONFIG: ScaleConfig;
 }
 
-export interface PumpConfig {
+export interface ScaleConfig {
+  scale_type: string;
+  enabled: boolean;
+  calibration_factor: number;
+}
+
+export interface DCPumpConfig {
+  pump_type: 'DC';
   pin: number;
+  pin_type: string;
+  board_number: number;
   volume_flow: number;
   tube_volume: number;
-  board_number: number;
+  consumption_estimation: 'time' | 'weight';
 }
+
+export interface StepperPumpConfig {
+  pump_type: 'Stepper';
+  pin: number;
+  dir_pin: number;
+  driver_type: string;
+  step_type: string;
+  volume_flow: number;
+  tube_volume: number;
+  consumption_estimation: 'time' | 'weight';
+}
+
+export type PumpConfig = DCPumpConfig | StepperPumpConfig;
 
 export interface CustomColors {
   primary: string;
@@ -254,6 +277,8 @@ type PossibleUiInformation = {
   immutable?: boolean;
   allowed?: string[];
   check_name?: string;
+  discriminator?: string;
+  variants?: { [variantName: string]: { [fieldKey: string]: PossibleUiInformation } };
 };
 
 export type PossibleConfigValueTypes = boolean | number | string | boolean[] | number[] | string[];

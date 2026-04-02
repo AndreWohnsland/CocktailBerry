@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import time
+from typing import TYPE_CHECKING
 
 from src.config.config_types import PinId
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser, ProgressCallback
 from src.machine.pin_controller import PinController
+
+if TYPE_CHECKING:
+    from src.machine.scale import ScaleInterface
 
 _logger = LoggerHandler("DCDispenser")
 
@@ -16,12 +20,20 @@ _LOOP_INTERVAL = 0.01
 class DCDispenser(BaseDispenser):
     """Dispenser for DC pumps controlled via relay pins.
 
-    Uses time-based dispensing: activates a pin for a calculated duration
-    based on amount and flow rate, then deactivates it.
+    Uses time-based dispensing by default: activates a pin for a calculated
+    duration based on amount and flow rate. When a scale is provided, dispensing
+    stops as soon as the measured weight reaches the target amount instead.
     """
 
-    def __init__(self, slot: int, volume_flow: float, pin_id: PinId, pin_controller: PinController) -> None:
-        super().__init__(slot, volume_flow)
+    def __init__(
+        self,
+        slot: int,
+        volume_flow: float,
+        pin_id: PinId,
+        pin_controller: PinController,
+        scale: ScaleInterface | None = None,
+    ) -> None:
+        super().__init__(slot, volume_flow, scale)
         self.pin_id = pin_id
         self._pin_controller = pin_controller
 
@@ -32,17 +44,19 @@ class DCDispenser(BaseDispenser):
         self._stop_event.clear()
         flow_rate = self.volume_flow * pump_speed / 100
         flow_time = amount_ml / flow_rate
-        _logger.info(f"<o> Slot {self.slot:<2} {self.pin_id!s:<14}| dispensing {amount_ml:.0f}ml over {flow_time:.1f}s")
+        mode = "scale" if self._scale is not None else f"{flow_time:.1f}s"
+        _logger.info(f"<o> Slot {self.slot:<2} {self.pin_id!s:<14}| dispensing {amount_ml:.0f}ml ({mode})")
+        if self._scale is not None:
+            self._scale.tare()
         self._pin_controller.activate_pin(self.pin_id)
         start = time.perf_counter()
         consumption = 0.0
         try:
             while not self._stop_event.is_set():
                 elapsed = time.perf_counter() - start
-                if elapsed >= flow_time:
-                    consumption = flow_rate * flow_time
+                consumption = self._get_consumption(flow_rate * elapsed)
+                if consumption >= amount_ml:
                     break
-                consumption = flow_rate * elapsed
                 callback(consumption, False)
                 time.sleep(_LOOP_INTERVAL)
         finally:

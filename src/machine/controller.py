@@ -20,6 +20,7 @@ from src.machine.hardware import HardwareContext
 from src.machine.leds import LedController
 from src.machine.pin_controller import PinController
 from src.machine.reverter import Reverter
+from src.machine.scale import create_scale
 from src.models import CocktailStatus, EventType, Ingredient, PreparationResult, PrepareResult
 
 if TYPE_CHECKING:
@@ -48,6 +49,7 @@ class MachineController:
         self.hardware = HardwareContext(
             pin_controller=PinController(),
             led_controller=LedController(),
+            scale=create_scale(cfg.SCALE_CONFIG),
         )
         self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()

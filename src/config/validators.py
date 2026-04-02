@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from typing import Any
 
 from src.config.errors import ConfigError
 
@@ -22,18 +23,20 @@ def build_number_limiter(min_val: float = 1, max_val: float = 100) -> Callable[[
     return limit_number
 
 
-def build_distinct_validator(keys: list[str]) -> Callable[[str, list[dict]], None]:
+def build_distinct_validator(keys: list[str], fallback: dict[str, Any] = {}) -> Callable[[str, list[dict]], None]:
     """Build a validator that checks list items have distinct values across the given keys.
 
     Each combination of values for the specified keys must be unique across all items in the list.
+    Can provide fallback values for missing keys to ensure they are included in the uniqueness check.
+    This is useful for sealed classes where different types may have different key sets.
     """
 
     def validate_distinct(configname: str, data: list[dict]) -> None:
         seen: list[tuple] = []
         for item in data:
-            key_tuple = tuple(item.get(k) for k in keys)
+            key_tuple = tuple(item.get(k, fallback.get(k, "undefined")) for k in keys)
             if key_tuple in seen:
-                readable = ", ".join(f"{k}={item.get(k)}" for k in keys)
+                readable = ", ".join(f"{k}={item.get(k, 'undefined')}" for k in keys)
                 raise ConfigError(
                     f"{configname} has duplicate entries for ({readable}). "
                     f"Each combination of {', '.join(keys)} must be unique."

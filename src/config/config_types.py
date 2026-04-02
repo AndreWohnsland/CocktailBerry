@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from typing import Any, Protocol, Self, get_args
 
 from src import (
+    ConsumptionEstimationType,
     I2CExpanderType,
     SupportedDispenserType,
     SupportedLanguagesType,
@@ -19,6 +20,9 @@ from src import (
     SupportedPaymentOptions,
     SupportedPinControlType,
     SupportedRfidType,
+    SupportedScaleDriverType,
+    SupportedStepperDriverType,
+    SupportedStepperStepType,
     SupportedThemesType,
 )
 from src.config.errors import ConfigError
@@ -31,6 +35,10 @@ SUPPORTED_PAYMENT = list(get_args(SupportedPaymentOptions))
 SUPPORTED_PIN_CONTROL = list(get_args(SupportedPinControlType))
 SUPPORTED_I2C_EXPANDERS = list(get_args(I2CExpanderType))
 SUPPORTED_DISPENSERS = list(get_args(SupportedDispenserType))
+SUPPORTED_STEPPER_DRIVERS = list(get_args(SupportedStepperDriverType))
+SUPPORTED_STEPPER_STEP_TYPES = list(get_args(SupportedStepperStepType))
+SUPPORTED_CONSUMPTION_ESTIMATIONS = list(get_args(ConsumptionEstimationType))
+SUPPORTED_SCALE_DRIVERS = list(get_args(SupportedScaleDriverType))
 
 
 class ConfigInterface[T](Protocol):
@@ -141,6 +149,10 @@ class ChooseOptions:
     pin = ChooseType(allowed=SUPPORTED_PIN_CONTROL, default="GPIO")
     i2c = ChooseType(allowed=SUPPORTED_I2C_EXPANDERS, default="PCF8574")
     dispenser = ChooseType(allowed=SUPPORTED_DISPENSERS, default="DC")
+    stepper_driver = ChooseType(allowed=SUPPORTED_STEPPER_DRIVERS, default="A4988")
+    stepper_step_type = ChooseType(allowed=SUPPORTED_STEPPER_STEP_TYPES, default="Full")
+    consumption_estimation = ChooseType(allowed=SUPPORTED_CONSUMPTION_ESTIMATIONS, default="time")
+    scale_driver = ChooseType(allowed=SUPPORTED_SCALE_DRIVERS, default="HX711")
 
 
 class StringType(_ConfigType[str]):
@@ -316,6 +328,57 @@ class DictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
         return self.from_config(self.get_default())
 
 
+class DiscriminatedDictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
+    """Dict type that dispatches to variant DictTypes based on a discriminator field.
+
+    Used for polymorphic config where a single list can hold different config class types,
+    distinguished by a discriminator field value (e.g. pump_type -> DC or Stepper).
+    """
+
+    def __init__(
+        self,
+        discriminator: str,
+        variants: dict[str, DictType[Any]],
+        default_variant: str | None = None,
+    ) -> None:
+        super().__init__(dict, [], None, None)
+        self.discriminator = discriminator
+        self.variants = variants
+        self.default_variant = default_variant
+
+    def _resolve_variant(self, configname: str, config_dict: dict[str, Any]) -> DictType[Any]:
+        """Get the variant DictType for the given config dict."""
+        disc_value = config_dict.get(self.discriminator)
+        if disc_value is None:
+            disc_value = self.default_variant
+        if disc_value is None:
+            raise ConfigError(f"Missing discriminator '{self.discriminator}' in '{configname}'")
+        variant = self.variants.get(disc_value)
+        if variant is None:
+            allowed = ", ".join(self.variants.keys())
+            raise ConfigError(f"Unknown {self.discriminator} '{disc_value}' in '{configname}', allowed: {allowed}")
+        return variant
+
+    def validate(self, configname: str, config_dict: dict[str, Any]) -> None:  # ty:ignore[invalid-method-override]
+        super().validate(configname, config_dict)
+        variant = self._resolve_variant(configname, config_dict)
+        variant.validate(configname, config_dict)
+
+    def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:  # ty:ignore[invalid-method-override]
+        variant = self._resolve_variant("", config_dict)
+        return variant.from_config(config_dict)
+
+    def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:  # ty:ignore[invalid-method-override]
+        disc_value = getattr(config_class, self.discriminator)
+        variant = self.variants[disc_value]
+        return variant.to_config(config_class)
+
+    def get_default(self) -> dict[str, Any]:
+        """Get the default value from the first variant."""
+        first_variant = next(iter(self.variants.values()))
+        return first_variant.get_default()
+
+
 ### -------------------- Specific Config Classes -------------------- ###
 
 
@@ -334,39 +397,205 @@ class PinId:
         return f"{self.pin_type}-{self.board_number}-{self.pin}"
 
 
-class PumpConfig(ConfigClass):
-    pin_type: SupportedPinControlType
+class BasePumpConfig(ConfigClass):
+    """Base configuration shared by all dispenser types."""
+
+    pump_type: SupportedDispenserType
+    volume_flow: float
+    tube_volume: int
+    consumption_estimation: ConsumptionEstimationType
 
     def __init__(
         self,
-        pin: int,
-        volume_flow: float,
-        tube_volume: int,
+        pump_type: SupportedDispenserType = "DC",
+        volume_flow: float = 30.0,
+        tube_volume: int = 0,
+        consumption_estimation: ConsumptionEstimationType = "time",
+        **kwargs: Any,
+    ) -> None:
+        self.pump_type = pump_type
+        self.volume_flow = volume_flow
+        self.tube_volume = tube_volume
+        self.consumption_estimation = consumption_estimation
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "pump_type": self.pump_type,
+            "volume_flow": self.volume_flow,
+            "tube_volume": self.tube_volume,
+            "consumption_estimation": self.consumption_estimation,
+        }
+
+
+class DCPumpConfig(BasePumpConfig):
+    """Configuration for DC pump dispensers."""
+
+    pin_type: SupportedPinControlType
+    pin: int
+    board_number: int
+
+    def __init__(
+        self,
+        pin: int = 0,
+        volume_flow: float = 30.0,
+        tube_volume: int = 0,
         pin_type: SupportedPinControlType = "GPIO",
         board_number: int = 1,
         pump_type: SupportedDispenserType = "DC",
+        consumption_estimation: ConsumptionEstimationType = "time",
     ) -> None:
+        super().__init__(
+            pump_type=pump_type,
+            volume_flow=volume_flow,
+            tube_volume=tube_volume,
+            consumption_estimation=consumption_estimation,
+        )
         self.pin_type = pin_type
         self.pin = pin
-        self.volume_flow = volume_flow
-        self.tube_volume = tube_volume
         self.board_number = board_number
-        self.pump_type = pump_type
 
     @property
     def pin_id(self) -> PinId:
         """Build PinId from this config's pin_type, board_number and pin."""
         return PinId(self.pin_type, self.board_number, self.pin)
 
-    def to_config(self) -> dict[str, int | float | str]:
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config.update(
+            {
+                "pin_type": self.pin_type,
+                "board_number": self.board_number,
+                "pin": self.pin,
+            }
+        )
+        return config
+
+
+class StepperPumpConfig(BasePumpConfig):
+    """Configuration for stepper motor dispensers."""
+
+    pin: int
+    dir_pin: int
+    driver_type: SupportedStepperDriverType
+    step_type: SupportedStepperStepType
+
+    def __init__(
+        self,
+        pin: int = 0,
+        dir_pin: int = 0,
+        driver_type: SupportedStepperDriverType = "A4988",
+        step_type: SupportedStepperStepType = "Full",
+        volume_flow: float = 30.0,
+        tube_volume: int = 0,
+        pump_type: SupportedDispenserType = "Stepper",
+        consumption_estimation: ConsumptionEstimationType = "time",
+    ) -> None:
+        super().__init__(
+            pump_type=pump_type,
+            volume_flow=volume_flow,
+            tube_volume=tube_volume,
+            consumption_estimation=consumption_estimation,
+        )
+        self.pin = pin
+        self.dir_pin = dir_pin
+        self.driver_type = driver_type
+        self.step_type = step_type
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config.update(
+            {
+                "pin": self.pin,
+                "dir_pin": self.dir_pin,
+                "driver_type": self.driver_type,
+                "step_type": self.step_type,
+            }
+        )
+        return config
+
+
+# Backwards compatibility alias
+PumpConfig = DCPumpConfig
+
+
+class BaseScaleConfig(ConfigClass):
+    """Base configuration shared by all scale driver types."""
+
+    scale_type: SupportedScaleDriverType
+    enabled: bool
+    calibration_factor: float
+
+    def __init__(
+        self,
+        scale_type: SupportedScaleDriverType = "HX711",
+        enabled: bool = False,
+        calibration_factor: float = 1.0,
+        **kwargs: Any,
+    ) -> None:
+        self.scale_type = scale_type
+        self.enabled = enabled
+        self.calibration_factor = calibration_factor
+
+    def to_config(self) -> dict[str, Any]:
         return {
-            "pump_type": self.pump_type,
-            "pin_type": self.pin_type,
-            "board_number": self.board_number,
-            "pin": self.pin,
-            "volume_flow": self.volume_flow,
-            "tube_volume": self.tube_volume,
+            "scale_type": self.scale_type,
+            "enabled": self.enabled,
+            "calibration_factor": self.calibration_factor,
         }
+
+
+class HX711ScaleConfig(BaseScaleConfig):
+    """Configuration for HX711 load cell amplifier (2-wire bit-bang protocol)."""
+
+    data_pin: int
+    clock_pin: int
+
+    def __init__(
+        self,
+        data_pin: int = 5,
+        clock_pin: int = 6,
+        enabled: bool = False,
+        calibration_factor: float = 1.0,
+        scale_type: SupportedScaleDriverType = "HX711",
+    ) -> None:
+        super().__init__(scale_type=scale_type, enabled=enabled, calibration_factor=calibration_factor)
+        self.data_pin = data_pin
+        self.clock_pin = clock_pin
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config.update(
+            {
+                "data_pin": self.data_pin,
+                "clock_pin": self.clock_pin,
+            }
+        )
+        return config
+
+
+class NAU7802ScaleConfig(BaseScaleConfig):
+    """Configuration for NAU7802 I2C load cell amplifier."""
+
+    i2c_address: int
+
+    def __init__(
+        self,
+        i2c_address: int = 42,
+        enabled: bool = False,
+        calibration_factor: float = 1.0,
+        scale_type: SupportedScaleDriverType = "NAU7802",
+    ) -> None:
+        super().__init__(scale_type=scale_type, enabled=enabled, calibration_factor=calibration_factor)
+        self.i2c_address = i2c_address
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config.update(
+            {
+                "i2c_address": self.i2c_address,
+            }
+        )
+        return config
 
 
 class I2CExpanderConfig(ConfigClass):
@@ -378,6 +607,10 @@ class I2CExpanderConfig(ConfigClass):
     """
 
     device_type: I2CExpanderType
+    enabled: bool
+    address_int: int
+    inverted: bool
+    board_number: int
 
     def __init__(
         self,
@@ -410,7 +643,11 @@ class I2CExpanderConfig(ConfigClass):
 class ReversionConfig(ConfigClass):
     """Configuration for pump reversion."""
 
+    use_reversion: bool
+    pin: int
+    inverted: bool
     pin_type: SupportedPinControlType
+    board_number: int
 
     def __init__(
         self,
@@ -444,7 +681,11 @@ class ReversionConfig(ConfigClass):
 class NormalLedConfig(ConfigClass):
     """Configuration for normal (non-WS281x) LEDs."""
 
+    pin: int
+    default_on: bool
+    preparation_state: SupportedLedStatesType
     pin_type: SupportedPinControlType
+    board_number: int
 
     def __init__(
         self,
@@ -477,6 +718,13 @@ class NormalLedConfig(ConfigClass):
 
 class WS281xLedConfig(ConfigClass):
     """Configuration for WS281x (controllable) LEDs."""
+
+    pin: int
+    brightness: int
+    count: int
+    number_rings: int
+    default_on: bool
+    preparation_state: SupportedLedStatesType
 
     def __init__(
         self,

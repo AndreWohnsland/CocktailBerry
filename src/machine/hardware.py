@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from src.machine.leds import LedController
 from src.machine.pin_controller import PinController
+from src.machine.scale import ScaleInterface
 
 
 @dataclass
@@ -16,8 +17,11 @@ class HardwareContext:
 
     pin_controller: PinController
     led_controller: LedController
+    scale: ScaleInterface | None = field(default=None)
 
     def cleanup(self) -> None:
         """Shut down all hardware: turn off LEDs and release all pins."""
         self.led_controller.turn_off()
         self.pin_controller.cleanup_pin_list()
+        if self.scale is not None:
+            self.scale.cleanup()

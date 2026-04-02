@@ -32,6 +32,8 @@ dependencies = [
     "adafruit-circuitpython-pcf8574>=1.0.16",
     "adafruit-circuitpython-busdevice>=5.2.16",
     "rpimotorlib>=4.0",
+    "hx711>=1.1.2.3 ; sys_platform == 'linux'",
+    "cedargrove-nau7802>=2.1.4 ; sys_platform == 'linux'",
 ]
 
 [dependency-groups]
@@ -134,5 +136,7 @@ include = [
   "src/machine/raspberry.py",
   "src/machine/leds.py",
   "src/machine/dispensers/stepper.py",
+  "src/machine/scale/hx711.py",
+  "src/machine/scale/nau7802.py",
 ]
 rules = { unresolved-import = "ignore", invalid-type-form = "ignore", unresolved-attribute = "ignore", possibly-missing-attribute = "ignore" }
