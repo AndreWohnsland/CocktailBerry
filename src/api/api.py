@@ -14,7 +14,7 @@ from src.api.api_config import DESCRIPTION, TAGS_METADATA, Tags
 from src.api.internal.log_config import log_config
 from src.api.internal.validation import ValidationError
 from src.api.models import AboutInfo, ApiMessage
-from src.api.routers import bottles, cocktails, ingredients, options, waiters
+from src.api.routers import bottles, cocktails, ingredients, options, scale, waiters
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.config.errors import ConfigError
@@ -155,6 +155,8 @@ app.include_router(ingredients.router)
 app.include_router(ingredients.protected_router)
 app.include_router(waiters.router)
 app.include_router(waiters.protected_router)
+app.include_router(scale.router)
+app.include_router(scale.protected_router)
 
 
 @app.get("/", tags=[Tags.TESTING], summary="Test endpoint, check if api works")

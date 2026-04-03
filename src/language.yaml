@@ -25,6 +25,18 @@ dialog:
   bottle_calibration_started:
     en: 'Bottle {bottle_id} calibration to {amount} started!'
     de: 'Flasche {bottle_id} Kalibrierung auf {amount} gestartet!'
+  no_scale_available:
+    en: 'No scale available'
+    de: 'Keine Waage verfügbar'
+  scale_tared:
+    en: 'Scale tared successfully'
+    de: 'Waage erfolgreich tariert'
+  scale_calibrated:
+    en: 'Scale calibrated, new factor: {factor}'
+    de: 'Waage kalibriert, neuer Faktor: {factor}'
+  scale_known_weight_positive:
+    en: 'Known weight must be positive'
+    de: 'Bekanntes Gewicht muss positiv sein'
   no_recipe_selected:
     en: 'No recipe selected!'
     de: 'Kein Rezept ausgewählt!'
@@ -604,6 +616,9 @@ ui:
     back:
       en: '< Back'
       de: '< Zurück'
+    scale_calibration:
+      en: 'Scale Calibration'
+      de: 'Waagen Kalibrierung'
 
   ##### DATE PICKER WINDOW #####
   # all values for date picker window
