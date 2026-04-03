@@ -4,7 +4,16 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
+from PyQt6.QtWidgets import (
+    QBoxLayout,
+    QCheckBox,
+    QComboBox,
+    QHBoxLayout,
+    QLayout,
+    QMainWindow,
+    QPushButton,
+    QVBoxLayout,
+)
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import (
@@ -13,6 +22,7 @@ from src.config.config_types import (
     ConfigClass,
     ConfigInterface,
     DictType,
+    DiscriminatedDictType,
     FloatType,
     IntType,
     ListType,
@@ -124,7 +134,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
     def _open_color_window(self) -> None:
         self.color_window = ColorWindow(self.mainscreen)
 
-    def _build_input_field(
+    def _build_input_field(  # noqa: C901
         self, config_name: str, config_setting: ConfigInterface, current_value: Any, layout: QBoxLayout | None = None
     ) -> Callable[[], CONFIG_TYPES_POSSIBLE]:
         """Build the input field and returns its getter function."""
@@ -149,6 +159,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             field = self._build_list_field(layout, config_name, current_value, config_setting)
         elif isinstance(config_setting, ChooseType):
             field = self._build_selection_filed(layout, current_value, config_setting.allowed)
+        elif isinstance(config_setting, DiscriminatedDictType):
+            field = self._build_discriminated_dict_field(layout, config_name, current_value, config_setting)
         elif isinstance(config_setting, DictType):
             field = self._build_dict_field(layout, config_name, current_value, config_setting)
         else:
@@ -222,7 +234,9 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             add_button = create_button("+ add", font_size=MEDIUM_FONT, min_h=0, bold=True, css_class="neutral")
             # since we use the class for for dict types, but value for simple types, we need to check here
             list_value = config_setting.list_type
-            if isinstance(list_value, DictType):
+            if isinstance(list_value, DiscriminatedDictType):
+                default_value = list_value.from_config(list_value.get_default())
+            elif isinstance(list_value, DictType):
                 default_value = list_value.get_default_config_class()
             else:
                 default_value = list_value.get_default()
@@ -290,6 +304,77 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         recursive_delete(element)
         getter_fn_list.remove(getter_fn)
         element.deleteLater()
+
+    @staticmethod
+    def _clear_layout_recursive(layout: QLayout) -> None:
+        """Recursively remove all widgets and child layouts from a layout."""
+        for i in reversed(range(layout.count())):
+            item = layout.itemAt(i)
+            if item is None:
+                continue
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)
+                widget.deleteLater()
+            child_layout = item.layout()
+            if child_layout is not None:
+                ConfigWindow._clear_layout_recursive(child_layout)
+                child_layout.deleteLater()
+
+    def _build_discriminated_dict_field(
+        self,
+        layout: QBoxLayout,
+        config_name: str,
+        current_value: ConfigClass,
+        config_setting: DiscriminatedDictType,
+    ) -> Callable[[], dict]:
+        """Build a dict field with a discriminator dropdown that swaps variant-specific fields."""
+        v_container = QVBoxLayout()
+        getter_fn_dict: dict[str, Callable] = {}
+        variant_container = QHBoxLayout()
+
+        disc_value = getattr(current_value, config_setting.discriminator)
+        disc_combo = self._build_discriminator_dropdown(v_container, disc_value, list(config_setting.variants.keys()))
+
+        def _build_variant_fields(variant_name: str, values: dict[str, Any]) -> None:
+            variant_dict_type = config_setting.variants[variant_name]
+            getter_fn_dict.clear()
+            for key, value_setting in variant_dict_type.dict_types.items():
+                if key == config_setting.discriminator:
+                    continue
+                value = values.get(key, value_setting.get_default())
+                getter_fn_dict[key] = self._build_input_field(config_name, value_setting, value, variant_container)
+
+        def _on_discriminator_changed(new_variant: str) -> None:
+            old_values = {key: getter() for key, getter in getter_fn_dict.items()}
+            self._clear_layout_recursive(variant_container)
+            new_variant_type = config_setting.variants[new_variant]
+            merged = {
+                k: old_values.get(k, vs.get_default())
+                for k, vs in new_variant_type.dict_types.items()
+                if k != config_setting.discriminator
+            }
+            _build_variant_fields(new_variant, merged)
+
+        _build_variant_fields(disc_value, current_value.to_config())
+        disc_combo.currentTextChanged.connect(_on_discriminator_changed)
+
+        v_container.addLayout(variant_container)
+        layout.addLayout(v_container)
+        disc_key = config_setting.discriminator
+        return lambda: {disc_key: disc_combo.currentText(), **{k: g() for k, g in getter_fn_dict.items()}}
+
+    def _build_discriminator_dropdown(
+        self, container: QVBoxLayout, current_value: str, variant_names: list[str]
+    ) -> QComboBox:
+        """Build a dropdown for selecting the discriminator variant."""
+        disc_combo = QComboBox()
+        disc_combo.addItems(variant_names)
+        adjust_font(disc_combo, MEDIUM_FONT)
+        disc_combo.setProperty("cssClass", "secondary")
+        disc_combo.setCurrentIndex(disc_combo.findText(str(current_value), Qt.MatchFlag.MatchFixedString))
+        container.addWidget(disc_combo)
+        return disc_combo
 
     def _build_dict_field(
         self,
