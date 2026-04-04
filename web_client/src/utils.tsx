@@ -97,7 +97,7 @@ const exactSorting: { [key: string]: string[] } = {
     'CUSTOM_COLOR_BACKGROUND',
     'CUSTOM_COLOR_DANGER',
   ],
-  HARDWARE: ['MAKER_PUMP_REVERSION_CONFIG', 'MAKER_PINS_INVERTED'],
+  HARDWARE: ['MAKER_PUMP_REVERSION_CONFIG', 'MAKER_PINS_INVERTED', 'SCALE_CONFIG', 'CARRIAGE_CONFIG'],
 };
 
 const tabConfig: { [key: string]: string[] } = {

@@ -645,6 +645,31 @@
             </property>
            </widget>
           </item>
+          <item row="11" column="1">
+           <widget class="QPushButton" name="button_scale_calibration">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>5000</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>28</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Scale Calibration</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>

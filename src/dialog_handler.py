@@ -869,6 +869,7 @@ class UiLanguage:
             (w.button_waiter, "waiter"),
             (w.button_about, "about"),
             (w.button_back, "back"),
+            (w.button_scale_calibration, "scale_calibration"),
         ]:
             ui_element.setText(self._choose_language(text_name, window))
 

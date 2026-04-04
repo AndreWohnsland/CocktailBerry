@@ -141,6 +141,14 @@ const OptionWindow = () => {
             icon={FaScaleUnbalanced}
             onClick={() => navigate('calibration')}
           />
+          {config.SCALE_CONFIG?.enabled && (
+            <TileButton
+              label={t('options.scaleCalibration')}
+              filled
+              icon={FaCalculator}
+              onClick={() => navigate('scale-calibration')}
+            />
+          )}
           <TileButton
             label={t('options.configuration')}
             filled

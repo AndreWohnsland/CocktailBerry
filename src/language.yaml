@@ -739,8 +739,8 @@ ui:
       en: 'Disable all other tabs than the maker one; You will only be prompted at program start if you want to go to config window with master password'
       de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
     PUMP_CONFIG:
-      en: 'Setting for each pump: Pin type (GPIO or I2C board), board number (# only relevant for I2C, to distinguish multiple boards of the same type), pin connected to the pump, volume flow in ml/s, tube volume to the pump in ml (used to pump given volume after a bottle change). I2C pins start at 0-7 or 0-15 depending on the board type.'
-      de: 'Einstellung für jede Pumpe: Pin-Typ (GPIO oder I2C-Board), Board-Nummer (# nur relevant für I2C, um mehrere Boards des gleichen Typs zu unterscheiden), Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen zur Pumpe in ml (wird verwendet, um das gegebene Volumen nach einem Flaschenwechsel zu pumpen). I2C-Pins beginnen bei 0-7 oder 0-15 je nach Board-Typ.'
+      en: 'Setting for each pump: Pump type (DC or Stepper), pin type (GPIO or I2C board), board number (# only relevant for I2C), pin connected to the pump, volume flow in ml/s, tube volume in ml, consumption estimation method (time or weight based) and carriage position (0-100%). I2C pins start at 0-7 or 0-15 depending on the board type.'
+      de: 'Einstellung für jede Pumpe: Pumpen-Typ (DC oder Stepper), Pin-Typ (GPIO oder I2C-Board), Board-Nummer (# nur relevant für I2C), Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen in ml, Verbrauchsermittlung (zeit- oder gewichtsbasiert) und Schlittenposition (0-100%). I2C-Pins beginnen bei 0-7 oder 0-15 je nach Board-Typ.'
     I2C_CONFIG:
       en: 'I2C GPIO expander configuration. Select the board type, board number (# to distinguish multiple boards of the same type), enable/disable, I2C address (default 0x20) and signal inversion. Multiple boards of the same type are supported with different board numbers.'
       de: 'I2C GPIO-Expander Konfiguration. Board-Typ, Board-Nummer (# um mehrere Boards des gleichen Typs zu unterscheiden), Aktivierung, I2C-Adresse (Standard 0x20) und Signalinvertierung auswählen. Mehrere Boards des gleichen Typs werden über verschiedene Board-Nummern unterstützt.'
@@ -888,6 +888,12 @@ ui:
     EXP_DEMO_MODE:
       en: 'Set the API into demo mode (no destructive actions)'
       de: 'Setze die API in den Demo Modus (keine destruktiven Aktionen)'
+    SCALE_CONFIG:
+      en: 'Scale hardware configuration: driver type, enable/disable and calibration factor for weight-based measurement'
+      de: 'Waagen-Konfiguration: Treibertyp, Aktivierung und Kalibrierungsfaktor für gewichtsbasierte Messung'
+    CARRIAGE_CONFIG:
+      en: 'Carriage/slide hardware configuration: enable/disable, home position (0-100%), movement speed (%/s) and whether to move during cleaning'
+      de: 'Schlitten-Konfiguration: Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll'
 
   ##### COLOR WINDOW #####
   # all values for settings in color window
@@ -992,6 +998,43 @@ ui:
     deviation_too_large:
       en: 'Deviation too large, please check'
       de: 'Abweichung zu groß, bitte prüfen'
+
+  ##### SCALE CALIBRATION WINDOW #####
+  # all values for scale calibration window
+  scale_calibration_window:
+    header:
+      en: 'Scale Calibration'
+      de: 'Waagen Kalibrierung'
+    not_available:
+      en: 'Scale is not available. Please enable and configure a scale first.'
+      de: 'Waage nicht verfügbar. Bitte zuerst eine Waage aktivieren und konfigurieren.'
+    tare_instruction:
+      en: 'Remove everything from the scale and press Tare to zero it.'
+      de: 'Alles von der Waage entfernen und auf Tare drücken um sie zu nullen.'
+    tare:
+      en: 'Tare'
+      de: 'Tarieren'
+    place_weight_instruction:
+      en: 'Place a known weight on the scale and enter its weight below.'
+      de: 'Ein bekanntes Gewicht auf die Waage legen und das Gewicht unten eingeben.'
+    known_weight:
+      en: 'Known Weight (g)'
+      de: 'Bekanntes Gewicht (g)'
+    calibrate:
+      en: 'Calibrate'
+      de: 'Kalibrieren'
+    calibration_done:
+      en: 'Calibration done! New factor: {factor}'
+      de: 'Kalibrierung abgeschlossen! Neuer Faktor: {factor}'
+    calibration_error:
+      en: 'Calibration failed, invalid reading from scale.'
+      de: 'Kalibrierung fehlgeschlagen, ungültige Ablesung der Waage.'
+    back:
+      en: '< Back'
+      de: '< Zurück'
+    back_to_tare:
+      en: 'Back to Tare'
+      de: 'Zurück zum Tarieren'
 
   ##### NEWS WINDOW #####
   # all values for news window

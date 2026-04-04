@@ -428,6 +428,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 "MAKER_PUMP_REVERSION_CONFIG",
                 "MAKER_PINS_INVERTED",
                 "I2C_CONFIG",
+                "SCALE_CONFIG",
+                "CARRIAGE_CONFIG",
             ),
             self.vbox_payment_cocktailberry: (
                 "PAYMENT_SHOW_NOT_POSSIBLE",

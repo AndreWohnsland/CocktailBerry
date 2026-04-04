@@ -105,6 +105,7 @@
     "reboot": "Reboot",
     "rebootTheSystem": "Do you want to reboot the System?",
     "restore": "Restore",
+    "scaleCalibration": "Scale Calibration",
     "shutdown": "Shutdown",
     "shutdownTheSystem": "Do you want to shutdown the System?",
     "startCleaningProgram": "Do you want to start the Cleaning Program?",
@@ -136,6 +137,22 @@
     "reset": "Reset",
     "continuePumping": "Continue Pumping",
     "next": "Next"
+  },
+  "scaleCalibration": {
+    "header": "Scale Calibration",
+    "notAvailable": "Scale is not available. Please enable and configure a scale first.",
+    "loading": "Loading ...",
+    "tareInstruction": "Remove everything from the scale and press Tare to zero it.",
+    "tareSuccess": "Scale tared successfully",
+    "tare": "Tare",
+    "placeWeightInstruction": "Place a known weight on the scale and enter its weight below.",
+    "knownWeight": "Known Weight (g)",
+    "readWeight": "Read Current Weight",
+    "currentReading": "Current reading: {{weight}} g",
+    "calibrate": "Calibrate",
+    "calibrationDone": "Calibration Done!",
+    "newFactor": "New calibration factor: {{factor}}",
+    "recalibrate": "Recalibrate"
   },
   "data": {
     "data": "Data",

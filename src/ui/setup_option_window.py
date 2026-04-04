@@ -17,6 +17,7 @@ from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, NEEDED_BACKUP_FILES
 from src.models import EventType
 from src.programs.calibration import CalibrationScreen
+from src.programs.scale_calibration import ScaleCalibrationScreen
 from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
 from src.ui.qt_worker import CallableWorker, run_with_spinner
@@ -56,6 +57,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_reboot.clicked.connect(self._reboot_system)
         self.button_shutdown.clicked.connect(self._shutdown_system)
         self.button_calibration.clicked.connect(self._open_calibration)
+        self.button_scale_calibration.clicked.connect(self._open_scale_calibration)
         self.button_backup.clicked.connect(self._create_backup)
         self.button_restore.clicked.connect(self._upload_backup)
         self.button_export.clicked.connect(self._data_insights)
@@ -75,6 +77,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
         self.button_rfid.setEnabled(cfg.RFID_READER != "No")
         self.button_sumup.setEnabled(cfg.sumup_payment)
+        self.button_scale_calibration.setEnabled(cfg.SCALE_CONFIG.enabled)
 
         self.config_window: ConfigWindow | None = None
         self.log_window: LogWindow | None = None
@@ -85,6 +88,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.backup_restore_window: BackupRestoreWindow | None = None
         self.resource_window: ResourceWindow | None = None
         self.calibration_screen: CalibrationScreen | None = None
+        self.scale_calibration_screen: ScaleCalibrationScreen | None = None
         self.sumup_window: SumupWindow | None = None
         self.event_window: EventWindow | None = None
         UI_LANGUAGE.adjust_option_window(self)
@@ -141,6 +145,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _open_calibration(self) -> None:
         """Open the calibration window."""
         self.calibration_screen = CalibrationScreen()
+
+    def _open_scale_calibration(self) -> None:
+        """Open the scale calibration window."""
+        self.scale_calibration_screen = ScaleCalibrationScreen()
 
     def _create_backup(self) -> None:
         """Prompt the user for a folder path to save the backup to.

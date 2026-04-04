@@ -105,6 +105,7 @@
     "reboot": "Neustart",
     "rebootTheSystem": "Möchtest du das System neu starten?",
     "restore": "Wiederherstellen",
+    "scaleCalibration": "Waagen Kalibrierung",
     "shutdown": "Herunterfahren",
     "shutdownTheSystem": "Möchtest du das System herunterfahren?",
     "startCleaningProgram": "Möchtest du das Reinigungsprogramm starten?",
@@ -136,6 +137,22 @@
     "reset": "Zurücksetzen",
     "continuePumping": "Weiter Pumpen",
     "next": "Weiter"
+  },
+  "scaleCalibration": {
+    "header": "Waagen Kalibrierung",
+    "notAvailable": "Waage nicht verfügbar. Bitte zuerst eine Waage aktivieren und konfigurieren.",
+    "loading": "Laden ...",
+    "tareInstruction": "Alles von der Waage entfernen und auf Tare drücken um sie zu nullen.",
+    "tareSuccess": "Waage erfolgreich tariert",
+    "tare": "Tarieren",
+    "placeWeightInstruction": "Ein bekanntes Gewicht auf die Waage legen und das Gewicht unten eingeben.",
+    "knownWeight": "Bekanntes Gewicht (g)",
+    "readWeight": "Aktuelles Gewicht lesen",
+    "currentReading": "Aktuelle Messung: {{weight}} g",
+    "calibrate": "Kalibrieren",
+    "calibrationDone": "Kalibrierung abgeschlossen!",
+    "newFactor": "Neuer Kalibrierungsfaktor: {{factor}}",
+    "recalibrate": "Erneut kalibrieren"
   },
   "data": {
     "data": "Daten",
