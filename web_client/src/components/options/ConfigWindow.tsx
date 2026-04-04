@@ -77,6 +77,34 @@ const ConfigWindow: React.FC = () => {
     const nestedProperty = nestedPropertyMatch ? nestedPropertyMatch[1] : '';
 
     const selectedData = data?.[baseConfigName];
+
+    // For discriminated dicts, resolve variant-specific metadata
+    if (selectedData?.discriminator && selectedData?.variants && nestedProperty) {
+      // Find the current variant by extracting the index from the key and looking at state
+      const indexMatch = /\[(\d+)\]/.exec(key);
+      if (indexMatch) {
+        const index = Number(indexMatch[1]);
+        const listData = configData[baseConfigName];
+        if (Array.isArray(listData) && typeof listData[index] === 'object' && listData[index]) {
+          const item = listData[index] as { [k: string]: PossibleConfigValue };
+          const currentVariant = String(item[selectedData.discriminator as string] ?? '');
+          const variantMeta = (selectedData.variants as Record<string, Record<string, Record<string, unknown>>>)?.[
+            currentVariant
+          ]?.[nestedProperty];
+          if (variantMeta) {
+            return {
+              prefix: variantMeta.prefix as string | undefined,
+              suffix: variantMeta.suffix as string | undefined,
+              immutable: selectedData?.immutable ?? false,
+              allowed: variantMeta.allowed as string[] | undefined,
+              checkName: (variantMeta.check_name as string) ?? 'on',
+              default: variantMeta.default as PossibleConfigValue | undefined,
+            };
+          }
+        }
+      }
+    }
+
     const nestedData = selectedData?.[nestedProperty] ?? selectedData;
     return {
       prefix: nestedData?.prefix,
@@ -168,11 +196,114 @@ const ConfigWindow: React.FC = () => {
     );
   };
 
-  const renderObjectField = (key: string, value: { [key: string]: PossibleConfigValueTypes }) => (
-    <ObjectDisplay>
-      {Object.keys(value).map((subKey) => renderInputField(`${key}.${subKey}`, value[subKey]))}
-    </ObjectDisplay>
-  );
+  const getDiscriminatorInfo = (key: string) => {
+    const baseConfigRegex = /^([^[\].]+)/;
+    const baseConfigMatch = baseConfigRegex.exec(key);
+    const baseConfigName = baseConfigMatch ? baseConfigMatch[0] : '';
+    const selectedData = data?.[baseConfigName];
+    if (selectedData?.discriminator && selectedData?.variants) {
+      return {
+        discriminator: selectedData.discriminator as string,
+        variants: selectedData.variants as {
+          [variantName: string]: {
+            [fieldKey: string]: {
+              prefix?: string;
+              suffix?: string;
+              allowed?: string[];
+              check_name?: string;
+              default?: PossibleConfigValue;
+            };
+          };
+        },
+      };
+    }
+    return null;
+  };
+
+  const handleDiscriminatorChange = (
+    key: string,
+    discriminator: string,
+    newVariant: string,
+    variants: { [variantName: string]: { [fieldKey: string]: { default?: PossibleConfigValue } } },
+  ) => {
+    setConfigData((prevData) => {
+      const newData = structuredClone(prevData);
+      // Parse the key to get the object reference (e.g. "PUMP_CONFIG[0]" -> navigate to that item)
+      const keyParts = key.match(/([^[\].]+)/g);
+      if (!keyParts) return prevData;
+
+      let current: Record<string, unknown> = newData;
+      for (let i = 0; i < keyParts.length; i++) {
+        if (i === keyParts.length - 1) {
+          // This is the object to replace
+          const oldObj = current[keyParts[i]] as { [k: string]: PossibleConfigValue } | undefined;
+          const newVariantFields = variants[newVariant] ?? {};
+          const newObj: { [k: string]: PossibleConfigValue } = { [discriminator]: newVariant };
+          // For each field in the new variant, copy old value if exists, else use default
+          for (const [fieldKey, fieldMeta] of Object.entries(newVariantFields)) {
+            if (fieldKey === discriminator) continue;
+            newObj[fieldKey] = oldObj?.[fieldKey] ?? (fieldMeta.default as PossibleConfigValue) ?? '';
+          }
+          current[keyParts[i]] = newObj;
+        } else {
+          current = current[keyParts[i]] as Record<string, unknown>;
+        }
+      }
+      return newData as ConfigData;
+    });
+  };
+
+  const renderDiscriminatedObjectField = (
+    key: string,
+    value: { [key: string]: PossibleConfigValueTypes },
+    discInfo: {
+      discriminator: string;
+      variants: {
+        [variantName: string]: {
+          [fieldKey: string]: {
+            prefix?: string;
+            suffix?: string;
+            allowed?: string[];
+            check_name?: string;
+            default?: PossibleConfigValue;
+          };
+        };
+      };
+    },
+  ) => {
+    const currentVariant = String(value[discInfo.discriminator] ?? '');
+    const variantNames = Object.keys(discInfo.variants);
+    const variantFields = discInfo.variants[currentVariant] ?? {};
+
+    return (
+      <div className='flex flex-col items-center w-full gap-1'>
+        <DropDown
+          value={currentVariant}
+          allowedValues={variantNames}
+          handleInputChange={(newValue) =>
+            handleDiscriminatorChange(key, discInfo.discriminator, String(newValue), discInfo.variants)
+          }
+        />
+        <ObjectDisplay>
+          {Object.keys(variantFields)
+            .filter((subKey) => subKey !== discInfo.discriminator)
+            .map((subKey) => renderInputField(`${key}.${subKey}`, value[subKey] ?? ''))}
+        </ObjectDisplay>
+      </div>
+    );
+  };
+
+  const renderObjectField = (key: string, value: { [key: string]: PossibleConfigValueTypes }) => {
+    const discInfo = getDiscriminatorInfo(key);
+    if (discInfo) {
+      return renderDiscriminatedObjectField(key, value, discInfo);
+    }
+    return (
+      <ObjectDisplay>
+        {Object.keys(value).map((subKey) => renderInputField(`${key}.${subKey}`, value[subKey]))}
+      </ObjectDisplay>
+    );
+  };
 
   const renderColorField = (key: string, value: string) => {
     return <ColorSelect value={value} handleInputChange={(newValue) => handleInputChange(key, newValue)} />;
