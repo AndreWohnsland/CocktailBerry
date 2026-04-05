@@ -44,8 +44,9 @@ class StepperDispenser(BaseDispenser):
         driver_type: SupportedStepperDriverType,
         step_type: SupportedStepperStepType,
         scale: ScaleInterface | None = None,
+        carriage_position: int = 0,
     ) -> None:
-        super().__init__(slot, volume_flow, scale)
+        super().__init__(slot, volume_flow, scale, carriage_position)
         self.step_pin = step_pin
         self.dir_pin = dir_pin
         self.driver_type = driver_type

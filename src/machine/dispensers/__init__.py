@@ -13,7 +13,14 @@ def create_dispenser(slot: int, pump_config: BasePumpConfig, hardware: HardwareC
     scale: ScaleInterface | None = hardware.scale if pump_config.consumption_estimation == "weight" else None
     match pump_config:
         case DCPumpConfig():
-            return DCDispenser(slot, pump_config.volume_flow, pump_config.pin_id, hardware.pin_controller, scale)
+            return DCDispenser(
+                slot,
+                pump_config.volume_flow,
+                pump_config.pin_id,
+                hardware.pin_controller,
+                scale,
+                pump_config.carriage_position,
+            )
         case StepperPumpConfig():
             return StepperDispenser(
                 slot=slot,
@@ -23,6 +30,7 @@ def create_dispenser(slot: int, pump_config: BasePumpConfig, hardware: HardwareC
                 driver_type=pump_config.driver_type,
                 step_type=pump_config.step_type,
                 scale=scale,
+                carriage_position=pump_config.carriage_position,
             )
         case _:
             msg = f"Unknown pump config type: {type(pump_config)}"

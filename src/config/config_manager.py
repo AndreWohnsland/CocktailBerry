@@ -24,6 +24,7 @@ from src import (
     __version__,
 )
 from src.config.config_types import (
+    BaseCarriageConfig,
     BasePumpConfig,
     BoolType,
     ChooseOptions,
@@ -169,6 +170,7 @@ class ConfigManager:
     # Config to change the displayed values in the maker to another unit
     # Scale configuration for weight-based dispensing
     SCALE_CONFIG = HX711ScaleConfig(enabled=False)
+    CARRIAGE_CONFIG = BaseCarriageConfig(enabled=False)
     EXP_MAKER_UNIT: str = "ml"
     EXP_MAKER_FACTOR: float = 1.0
     EXP_DEMO_MODE: bool = False
@@ -207,6 +209,7 @@ class ConfigManager:
                                 "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
                                 "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
                                 "consumption_estimation": ChooseOptions.consumption_estimation,
+                                "carriage_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
                             },
                             DCPumpConfig,
                         ),
@@ -220,6 +223,7 @@ class ConfigManager:
                                 "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
                                 "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
                                 "consumption_estimation": ChooseOptions.consumption_estimation,
+                                "carriage_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
                             },
                             StepperPumpConfig,
                         ),
@@ -352,6 +356,15 @@ class ConfigManager:
                     ),
                 },
                 default_variant="HX711",
+            ),
+            "CARRIAGE_CONFIG": DictType(
+                {
+                    "enabled": BoolType(check_name="Enabled"),
+                    "home_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
+                    "speed_pct_per_s": FloatType([build_number_limiter(0.1, 100)], suffix="%/s"),
+                    "move_during_cleaning": BoolType(check_name="Move During Cleaning"),
+                },
+                BaseCarriageConfig,
             ),
             "EXP_MAKER_UNIT": StringType(),
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),

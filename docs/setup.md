@@ -67,12 +67,14 @@ They can be used at your own risk of CocktailBerry not working 100% properly.
     | Value Name                    | Description                                                                                     |
     | :---------------------------- | :---------------------------------------------------------------------------------------------- |
     | `MAKER_PINS_INVERTED`         | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)                     |
-    | `PUMP_CONFIG`                 | List with config for each pump: pin, volume flow, tube volume to pump up                        |
+    | `PUMP_CONFIG`                 | Config for each pump: type, pin, volume flow, tube volume, estimation method, carriage position |
     | `I2C_CONFIG`                  | Config for I2C GPIO expander (16 pins, 0-15)                                                    |
     | `LED_NORMAL`                  | List of normal (non-addressable) LED configs: pin, default on, prep state                       |
     | `LED_WSLED`                   | List of WS281x (addressable) LED configs: pin, brightness, count, rings, default on, prep state |
     | `RFID_READER`                 | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)               |
     | `MAKER_PUMP_REVERSION_CONFIG` | Enables reversion (direction) of pump during cleaning                                           |
+    | `SCALE_CONFIG`                | Scale hardware configuration: driver type, enable/disable and calibration factor                |
+    | `CARRIAGE_CONFIG`             | Carriage/slide configuration: enable/disable, home position, speed and cleaning behavior        |
 
 ??? info "List Software Config Values"
     Software config values are used to configure additional connected software and its behavior.

@@ -13,6 +13,7 @@ with contextlib.suppress(ModuleNotFoundError):
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
+from src.machine.carriage import create_carriage
 from src.machine.dispensers import create_dispenser
 from src.machine.dispensers.base import BaseDispenser
 from src.machine.dispensers.scheduler import DispenserScheduler, PreparationItem
@@ -50,6 +51,7 @@ class MachineController:
             pin_controller=PinController(),
             led_controller=LedController(),
             scale=create_scale(cfg.SCALE_CONFIG),
+            carriage=create_carriage(cfg.CARRIAGE_CONFIG),
         )
         self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()
@@ -68,7 +70,7 @@ class MachineController:
         _header_print("Start Cleaning")
         if revert_pumps:
             self.reverter.revert_on()
-        self._run_scheduler(w, items)
+        self._run_scheduler(w, items, use_carriage=cfg.CARRIAGE_CONFIG.move_during_cleaning)
         if revert_pumps:
             self.reverter.revert_off()
         _header_print("Done Cleaning")
@@ -98,7 +100,7 @@ class MachineController:
         _header_print(f"Starting {recipe}")
         if is_cocktail:
             self.hardware.led_controller.preparation_start()
-        self._run_scheduler(w, items, verbose=verbose)
+        self._run_scheduler(w, items, verbose=verbose, use_carriage=True)
         if is_cocktail:
             self.hardware.led_controller.preparation_end()
         # Write consumption back to ingredient objects
@@ -117,9 +119,22 @@ class MachineController:
             ingredients=machine_ingredients,
         )
 
-    def _run_scheduler(self, w: MainScreen | None, items: list[PreparationItem], verbose: bool = True) -> None:
+    def _run_scheduler(
+        self,
+        w: MainScreen | None,
+        items: list[PreparationItem],
+        verbose: bool = True,
+        use_carriage: bool = False,
+    ) -> None:
         """Create a scheduler and run the given items."""
-        scheduler = DispenserScheduler(cfg.MAKER_SIMULTANEOUSLY_PUMPS, verbose=verbose)
+        carriage = self.hardware.carriage if use_carriage else None
+        home_position = cfg.CARRIAGE_CONFIG.home_position if carriage is not None else 0
+        scheduler = DispenserScheduler(
+            cfg.MAKER_SIMULTANEOUSLY_PUMPS,
+            verbose=verbose,
+            carriage=carriage,
+            home_position=home_position,
+        )
 
         def on_progress(progress: int, consumption: list[float]) -> None:
             shared.cocktail_status.progress = progress

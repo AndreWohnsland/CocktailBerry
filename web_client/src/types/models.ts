@@ -193,12 +193,20 @@ export interface DefinedConfigData {
   EXP_MAKER_UNIT: string;
   EXP_MAKER_FACTOR: number;
   SCALE_CONFIG: ScaleConfig;
+  CARRIAGE_CONFIG: CarriageConfig;
 }
 
 export interface ScaleConfig {
   scale_type: string;
   enabled: boolean;
   calibration_factor: number;
+}
+
+export interface CarriageConfig {
+  enabled: boolean;
+  home_position: number;
+  speed_pct_per_s: number;
+  move_during_cleaning: boolean;
 }
 
 export interface DCPumpConfig {
@@ -209,6 +217,7 @@ export interface DCPumpConfig {
   volume_flow: number;
   tube_volume: number;
   consumption_estimation: 'time' | 'weight';
+  carriage_position: number;
 }
 
 export interface StepperPumpConfig {
@@ -220,6 +229,7 @@ export interface StepperPumpConfig {
   volume_flow: number;
   tube_volume: number;
   consumption_estimation: 'time' | 'weight';
+  carriage_position: number;
 }
 
 export type PumpConfig = DCPumpConfig | StepperPumpConfig;

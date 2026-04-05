@@ -9,18 +9,22 @@ from src.machine.dispensers.base import BaseDispenser
 from src.machine.dispensers.scheduler import (
     DispenserScheduler,
     PreparationItem,
+    _estimate_carriage_time,
     _estimate_group_time,
     _group_by_recipe_order,
+    _order_by_carriage_position,
     _run_dispenser,
+    _total_travel,
 )
 from src.models import Ingredient
 
 
-def _mock_dispenser(slot: int, volume_flow: float = 10.0) -> MagicMock:
+def _mock_dispenser(slot: int, volume_flow: float = 10.0, carriage_position: int = 0) -> MagicMock:
     """Create a mock dispenser with working estimated_time."""
     mock = MagicMock(spec=BaseDispenser)
     mock.slot = slot
     mock.volume_flow = volume_flow
+    mock.carriage_position = carriage_position
     mock.estimated_time.side_effect = lambda amount, pump_speed: amount / (volume_flow * pump_speed / 100)
     mock.dispense.return_value = 0.0
     return mock
@@ -197,3 +201,200 @@ class TestController:
         # Both should be marked done
         assert items[0].done is True
         assert items[1].done is True
+
+
+class TestCarriageOrdering:
+    def test_order_ascending_from_home_zero(self):
+        items = [
+            PreparationItem(
+                dispenser=_mock_dispenser(1, carriage_position=50), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(2, carriage_position=10), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(3, carriage_position=80), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+        ]
+        result = _order_by_carriage_position(items, home_position=0)
+        positions = [x.dispenser.carriage_position for x in result]
+        assert positions == [10, 50, 80]
+
+    def test_order_descending_from_home_100(self):
+        # On a 1D line with return-to-home, ascending and descending always
+        # have equal total travel. The tiebreaker (<=) picks ascending.
+        items = [
+            PreparationItem(
+                dispenser=_mock_dispenser(1, carriage_position=10), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(2, carriage_position=70), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(3, carriage_position=90), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+        ]
+        result = _order_by_carriage_position(items, home_position=100)
+        positions = [x.dispenser.carriage_position for x in result]
+        assert positions == [10, 70, 90]
+
+    def test_order_from_middle_home(self):
+        # Home at 50, items at 10, 40, 60, 90
+        # Ascending travel: |10-50| + |40-10| + |60-40| + |90-60| + |90-50| = 40+30+20+30+40 = 160
+        # Descending travel: |90-50| + |60-90| + |40-60| + |10-40| + |10-50| = 40+30+20+30+40 = 160
+        # Tie → ascending wins (<=)
+        items = [
+            PreparationItem(
+                dispenser=_mock_dispenser(1, carriage_position=60), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(2, carriage_position=10), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(3, carriage_position=90), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(4, carriage_position=40), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+        ]
+        result = _order_by_carriage_position(items, home_position=50)
+        positions = [x.dispenser.carriage_position for x in result]
+        assert positions == [10, 40, 60, 90]
+
+    def test_order_empty(self):
+        assert _order_by_carriage_position([], home_position=0) == []
+
+    def test_total_travel(self):
+        items = [
+            PreparationItem(
+                dispenser=_mock_dispenser(1, carriage_position=10), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(2, carriage_position=50), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(3, carriage_position=80), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+        ]
+        # home(0) -> 10 -> 50 -> 80 -> home(0) = 10 + 40 + 30 + 80 = 160
+        assert _total_travel(items, home_position=0) == 160
+
+    def test_estimate_carriage_time(self):
+        mock_carriage = MagicMock()
+        mock_carriage.travel_time.return_value = 0.0
+        items1 = [
+            PreparationItem(
+                dispenser=_mock_dispenser(1), amount_ml=10, pump_speed=100, estimated_time=5.0, recipe_order=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(2), amount_ml=10, pump_speed=100, estimated_time=3.0, recipe_order=1
+            ),
+        ]
+        items2 = [
+            PreparationItem(
+                dispenser=_mock_dispenser(3), amount_ml=10, pump_speed=100, estimated_time=2.0, recipe_order=2
+            ),
+        ]
+        assert _estimate_carriage_time([items1, items2], mock_carriage, home_position=0) == pytest.approx(10.0)
+
+    def test_estimate_carriage_time_with_travel(self):
+        mock_carriage = MagicMock()
+        # travel_time returns |to - from| / 10 (simulating speed_pct_per_s=10)
+        mock_carriage.travel_time.side_effect = lambda f, t: abs(t - f) / 10.0
+        items = [
+            PreparationItem(
+                dispenser=_mock_dispenser(1, carriage_position=20),
+                amount_ml=10,
+                pump_speed=100,
+                estimated_time=1.0,
+                recipe_order=1,
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(2, carriage_position=60),
+                amount_ml=10,
+                pump_speed=100,
+                estimated_time=1.0,
+                recipe_order=1,
+            ),
+        ]
+        # home(0)->20: 2.0s travel + 1.0s dispense + 20->60: 4.0s travel + 1.0s dispense + 60->0: 6.0s travel
+        result = _estimate_carriage_time([items], mock_carriage, home_position=0)
+        assert result == pytest.approx(14.0)
+
+
+class TestCarriageScheduler:
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_scheduler_carriage_all_sequential(self, mock_sleep: MagicMock):
+        """When carriage is active, all items run sequentially even if they could be parallel."""
+        mock_carriage = MagicMock()
+        mock_carriage.travel_time.return_value = 0.0
+        mock_disp1 = _mock_dispenser(1, carriage_position=20)
+        mock_disp2 = _mock_dispenser(2, carriage_position=60)
+        mock_disp1.dispense.return_value = 10.0
+        mock_disp2.dispense.return_value = 10.0
+        mock_disp1.needs_exclusive = False
+        mock_disp2.needs_exclusive = False
+
+        items = [
+            PreparationItem(dispenser=mock_disp1, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
+            PreparationItem(dispenser=mock_disp2, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
+        ]
+
+        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage, home_position=0)
+        _current_time, max_time = scheduler.run(items, lambda p, c: None, lambda: False)
+
+        # Sequential: 1.0 + 1.0 = 2.0
+        assert max_time == pytest.approx(2.0)
+        # Carriage should move to each position then home
+        assert mock_carriage.move_to.call_count == 2
+        mock_carriage.home.assert_called_once()
+        # Both dispensers called
+        mock_disp1.dispense.assert_called_once()
+        mock_disp2.dispense.assert_called_once()
+
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_scheduler_carriage_orders_by_position(self, mock_sleep: MagicMock):
+        """Carriage scheduler reorders items by position to minimize travel."""
+        mock_carriage = MagicMock()
+        mock_carriage.travel_time.return_value = 0.0
+        mock_disp1 = _mock_dispenser(1, carriage_position=80)
+        mock_disp2 = _mock_dispenser(2, carriage_position=20)
+        mock_disp1.dispense.return_value = 10.0
+        mock_disp2.dispense.return_value = 10.0
+        mock_disp1.needs_exclusive = False
+        mock_disp2.needs_exclusive = False
+
+        items = [
+            PreparationItem(dispenser=mock_disp1, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
+            PreparationItem(dispenser=mock_disp2, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
+        ]
+
+        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage, home_position=0)
+        scheduler.run(items, lambda p, c: None, lambda: False)
+
+        # Should move to position 20 first (closer to home=0), then 80
+        move_calls = [call.args[0] for call in mock_carriage.move_to.call_args_list]
+        assert move_calls == [20, 80]
+
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_scheduler_no_carriage_unchanged(self, mock_sleep: MagicMock):
+        """Without carriage, scheduler behavior is unchanged (parallel)."""
+        mock_disp1 = _mock_dispenser(1)
+        mock_disp2 = _mock_dispenser(2)
+        mock_disp1.dispense.return_value = 10.0
+        mock_disp2.dispense.return_value = 10.0
+        mock_disp1.needs_exclusive = False
+        mock_disp2.needs_exclusive = False
+
+        items = [
+            PreparationItem(dispenser=mock_disp1, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
+            PreparationItem(dispenser=mock_disp2, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
+        ]
+
+        scheduler = DispenserScheduler(max_concurrent=2)
+        _current_time, max_time = scheduler.run(items, lambda p, c: None, lambda: False)
+
+        # Parallel: max(1.0, 1.0) = 1.0
+        assert max_time == pytest.approx(1.0)
+        mock_disp1.dispense.assert_called_once()
+        mock_disp2.dispense.assert_called_once()

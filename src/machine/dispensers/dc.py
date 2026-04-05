@@ -32,8 +32,9 @@ class DCDispenser(BaseDispenser):
         pin_id: PinId,
         pin_controller: PinController,
         scale: ScaleInterface | None = None,
+        carriage_position: int = 0,
     ) -> None:
-        super().__init__(slot, volume_flow, scale)
+        super().__init__(slot, volume_flow, scale, carriage_position)
         self.pin_id = pin_id
         self._pin_controller = pin_controller
 

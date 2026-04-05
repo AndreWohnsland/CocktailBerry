@@ -404,6 +404,7 @@ class BasePumpConfig(ConfigClass):
     volume_flow: float
     tube_volume: int
     consumption_estimation: ConsumptionEstimationType
+    carriage_position: int
 
     def __init__(
         self,
@@ -411,12 +412,14 @@ class BasePumpConfig(ConfigClass):
         volume_flow: float = 30.0,
         tube_volume: int = 0,
         consumption_estimation: ConsumptionEstimationType = "time",
+        carriage_position: int = 0,
         **kwargs: Any,
     ) -> None:
         self.pump_type = pump_type
         self.volume_flow = volume_flow
         self.tube_volume = tube_volume
         self.consumption_estimation = consumption_estimation
+        self.carriage_position = carriage_position
 
     def to_config(self) -> dict[str, Any]:
         return {
@@ -424,6 +427,7 @@ class BasePumpConfig(ConfigClass):
             "volume_flow": self.volume_flow,
             "tube_volume": self.tube_volume,
             "consumption_estimation": self.consumption_estimation,
+            "carriage_position": self.carriage_position,
         }
 
 
@@ -443,12 +447,14 @@ class DCPumpConfig(BasePumpConfig):
         board_number: int = 1,
         pump_type: SupportedDispenserType = "DC",
         consumption_estimation: ConsumptionEstimationType = "time",
+        carriage_position: int = 0,
     ) -> None:
         super().__init__(
             pump_type=pump_type,
             volume_flow=volume_flow,
             tube_volume=tube_volume,
             consumption_estimation=consumption_estimation,
+            carriage_position=carriage_position,
         )
         self.pin_type = pin_type
         self.pin = pin
@@ -489,12 +495,14 @@ class StepperPumpConfig(BasePumpConfig):
         tube_volume: int = 0,
         pump_type: SupportedDispenserType = "Stepper",
         consumption_estimation: ConsumptionEstimationType = "time",
+        carriage_position: int = 0,
     ) -> None:
         super().__init__(
             pump_type=pump_type,
             volume_flow=volume_flow,
             tube_volume=tube_volume,
             consumption_estimation=consumption_estimation,
+            carriage_position=carriage_position,
         )
         self.pin = pin
         self.dir_pin = dir_pin
@@ -755,4 +763,41 @@ class WS281xLedConfig(ConfigClass):
             "number_rings": self.number_rings,
             "default_on": self.default_on,
             "preparation_state": self.preparation_state,
+        }
+
+
+class BaseCarriageConfig(ConfigClass):
+    """Configuration for the optional carriage/slide hardware.
+
+    Positions are abstract values from 0 to 100 representing the percentage
+    of total travel range. The home_position defines where the carriage
+    rests when idle (0 = start, 50 = middle, 100 = end).
+    speed_pct_per_s defines how fast the carriage moves in percent of total
+    range per second (e.g. 10.0 means it takes 10s for the full range).
+    """
+
+    enabled: bool
+    home_position: int
+    speed_pct_per_s: float
+    move_during_cleaning: bool
+
+    def __init__(
+        self,
+        enabled: bool = False,
+        home_position: int = 0,
+        speed_pct_per_s: float = 10.0,
+        move_during_cleaning: bool = False,
+        **kwargs: Any,
+    ) -> None:
+        self.enabled = enabled
+        self.home_position = home_position
+        self.speed_pct_per_s = speed_pct_per_s
+        self.move_during_cleaning = move_during_cleaning
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "enabled": self.enabled,
+            "home_position": self.home_position,
+            "speed_pct_per_s": self.speed_pct_per_s,
+            "move_during_cleaning": self.move_during_cleaning,
         }

@@ -11,6 +11,7 @@ from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser
 
 if TYPE_CHECKING:
+    from src.machine.carriage import CarriageInterface
     from src.models import Ingredient
 
 _logger = LoggerHandler("DispenserScheduler")
@@ -47,9 +48,17 @@ class DispenserScheduler:
     - Manages threading, progress aggregation, and cancellation
     """
 
-    def __init__(self, max_concurrent: int, verbose: bool = True) -> None:
+    def __init__(
+        self,
+        max_concurrent: int,
+        verbose: bool = True,
+        carriage: CarriageInterface | None = None,
+        home_position: int = 0,
+    ) -> None:
         self.max_concurrent = max_concurrent
         self.verbose = verbose
+        self._carriage = carriage
+        self._home_position = home_position
         self._next_log_time = 0.0
 
     def run(
@@ -67,7 +76,11 @@ class DispenserScheduler:
 
         self._next_log_time = 0.0
         groups = _group_by_recipe_order(items)
-        max_time = _estimate_total_time(groups, self.max_concurrent)
+        if self._carriage is not None:
+            groups = [_order_by_carriage_position(g, self._home_position) for g in groups]
+            max_time = _estimate_carriage_time(groups, self._carriage, self._home_position)
+        else:
+            max_time = _estimate_total_time(groups, self.max_concurrent)
         if max_time == 0:
             return 0.0, 0.0
 
@@ -76,7 +89,13 @@ class DispenserScheduler:
         for group in groups:
             if is_cancelled():
                 break
-            self._run_group(group, items, on_progress, is_cancelled)
+            if self._carriage is not None:
+                self._run_group_with_carriage(group, items, on_progress, is_cancelled)
+            else:
+                self._run_group(group, items, on_progress, is_cancelled)
+
+        if self._carriage is not None:
+            self._carriage.home()
 
         elapsed = round(time.perf_counter() - start_time, 2)
         return elapsed, max_time
@@ -100,6 +119,21 @@ class DispenserScheduler:
         for item in exclusive:
             if is_cancelled():
                 break
+            self._run_exclusive(item, all_items, on_progress, is_cancelled)
+
+    def _run_group_with_carriage(
+        self,
+        group: list[PreparationItem],
+        all_items: list[PreparationItem],
+        on_progress: SchedulerProgressCallback,
+        is_cancelled: CancelCheck,
+    ) -> None:
+        """Run a group sequentially with carriage positioning before each item."""
+        assert self._carriage is not None
+        for item in group:
+            if is_cancelled():
+                break
+            self._carriage.move_to(item.dispenser.carriage_position)
             self._run_exclusive(item, all_items, on_progress, is_cancelled)
 
     def _run_parallel(
@@ -232,3 +266,54 @@ def _estimate_group_time(estimated_times: list[float], max_concurrent: int) -> f
         earliest = heapq.heappop(slots)
         heapq.heappush(slots, earliest + t)
     return max(slots)
+
+
+def _estimate_carriage_time(
+    groups: list[list[PreparationItem]],
+    carriage: CarriageInterface,
+    home_position: int,
+) -> float:
+    """Estimate total preparation time in carriage mode.
+
+    Sums dispense times and carriage travel times between positions.
+    """
+    total = 0.0
+    current_pos = home_position
+    for group in groups:
+        for item in group:
+            pos = item.dispenser.carriage_position
+            total += carriage.travel_time(current_pos, pos)
+            total += item.estimated_time
+            current_pos = pos
+    # Return home after last item
+    total += carriage.travel_time(current_pos, home_position)
+    return round(total, 2)
+
+
+def _order_by_carriage_position(items: list[PreparationItem], home_position: int) -> list[PreparationItem]:
+    """Order items to minimize total carriage travel distance.
+
+    Since positions are on a 1D line (0-100), the optimal order is a monotonic
+    sweep from the starting point. We choose the sweep direction (ascending or
+    descending) that results in less total travel from home through all
+    positions and back to home.
+    """
+    if not items:
+        return []
+    ascending = sorted(items, key=lambda x: x.dispenser.carriage_position)
+    descending = list(reversed(ascending))
+    if _total_travel(ascending, home_position) <= _total_travel(descending, home_position):
+        return ascending
+    return descending
+
+
+def _total_travel(items: list[PreparationItem], home_position: int) -> int:
+    """Calculate total carriage travel: home -> items in order -> home."""
+    if not items:
+        return 0
+    positions = [x.dispenser.carriage_position for x in items]
+    total = abs(positions[0] - home_position)
+    for i in range(1, len(positions)):
+        total += abs(positions[i] - positions[i - 1])
+    total += abs(positions[-1] - home_position)
+    return total

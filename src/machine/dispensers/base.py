@@ -19,11 +19,14 @@ class BaseDispenser(ABC):
     and should be called from a worker thread by the MachineController.
     """
 
-    def __init__(self, slot: int, volume_flow: float, scale: ScaleInterface | None = None) -> None:
+    def __init__(
+        self, slot: int, volume_flow: float, scale: ScaleInterface | None = None, carriage_position: int = 0
+    ) -> None:
         self.slot = slot
         self.volume_flow = volume_flow
         self._stop_event = Event()
         self._scale = scale
+        self.carriage_position = carriage_position
 
     @property
     def needs_exclusive(self) -> bool:
