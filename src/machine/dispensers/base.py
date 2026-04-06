@@ -6,6 +6,7 @@ from threading import Event
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from src.config.config_types import BasePumpConfig
     from src.machine.scale import ScaleInterface
 
 ProgressCallback = Callable[[float, bool], None]
@@ -19,14 +20,13 @@ class BaseDispenser(ABC):
     and should be called from a worker thread by the MachineController.
     """
 
-    def __init__(
-        self, slot: int, volume_flow: float, scale: ScaleInterface | None = None, carriage_position: int = 0
-    ) -> None:
+    def __init__(self, slot: int, config: BasePumpConfig, scale: ScaleInterface | None = None) -> None:
         self.slot = slot
-        self.volume_flow = volume_flow
+        self.config = config
+        self.volume_flow = config.volume_flow
         self._stop_event = Event()
         self._scale = scale
-        self.carriage_position = carriage_position
+        self.carriage_position = config.carriage_position
 
     @property
     def needs_exclusive(self) -> bool:

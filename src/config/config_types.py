@@ -584,17 +584,21 @@ class HX711ScaleConfig(BaseScaleConfig):
 class NAU7802ScaleConfig(BaseScaleConfig):
     """Configuration for NAU7802 I2C load cell amplifier."""
 
-    i2c_address: int
+    i2c_address: str
 
     def __init__(
         self,
-        i2c_address: int = 42,
+        i2c_address: str = "2A",
         enabled: bool = False,
         calibration_factor: float = 1.0,
         scale_type: SupportedScaleDriverType = "NAU7802",
     ) -> None:
         super().__init__(scale_type=scale_type, enabled=enabled, calibration_factor=calibration_factor)
-        self.i2c_address = i2c_address
+        self.i2c_address = i2c_address.upper()
+
+    @property
+    def address_hex(self) -> int:
+        return int(self.i2c_address, 16)
 
     def to_config(self) -> dict[str, Any]:
         config = super().to_config()
@@ -616,7 +620,7 @@ class I2CExpanderConfig(ConfigClass):
 
     device_type: I2CExpanderType
     enabled: bool
-    address_int: int
+    address: str
     inverted: bool
     board_number: int
 
@@ -624,26 +628,26 @@ class I2CExpanderConfig(ConfigClass):
         self,
         device_type: I2CExpanderType,
         enabled: bool,
-        address_int: int,
-        inverted: bool,
+        address: str = "20",
+        inverted: bool = False,
         board_number: int = 1,
     ) -> None:
         self.device_type = device_type
         self.enabled = enabled
-        self.address_int = address_int
+        self.address = address.upper()
         self.inverted = inverted
         self.board_number = board_number
 
     @property
     def address_hex(self) -> int:
-        return int(str(self.address_int), 16)
+        return int(self.address, 16)
 
     def to_config(self) -> dict[str, bool | int | str]:
         return {
             "device_type": self.device_type,
             "board_number": self.board_number,
             "enabled": self.enabled,
-            "address_int": self.address_int,
+            "address": self.address,
             "inverted": self.inverted,
         }
 

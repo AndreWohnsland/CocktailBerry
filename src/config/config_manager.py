@@ -46,7 +46,12 @@ from src.config.config_types import (
     WS281xLedConfig,
 )
 from src.config.errors import ConfigError
-from src.config.validators import build_distinct_validator, build_number_limiter, validate_max_length
+from src.config.validators import (
+    build_distinct_validator,
+    build_number_limiter,
+    validate_i2c_address,
+    validate_max_length,
+)
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.models import CocktailStatus
@@ -244,7 +249,7 @@ class ConfigManager:
                         "device_type": ChooseOptions.i2c,
                         "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
                         "enabled": BoolType(check_name="Enabled", default=True),
-                        "address_int": IntType(prefix="0x", default=20),
+                        "address": StringType([validate_i2c_address], prefix="0x", default="20"),
                         "inverted": BoolType(check_name="Inverted"),
                     },
                     I2CExpanderConfig,
@@ -350,7 +355,7 @@ class ConfigManager:
                             "scale_type": ChooseOptions.scale_driver,
                             "enabled": BoolType(check_name="Enabled"),
                             "calibration_factor": FloatType([build_number_limiter(0.001, 10000)]),
-                            "i2c_address": IntType([build_number_limiter(0, 127)], prefix="0x"),
+                            "i2c_address": StringType([validate_i2c_address], prefix="0x", default="2A"),
                         },
                         NAU7802ScaleConfig,
                     ),

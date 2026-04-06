@@ -3,12 +3,12 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from src.config.config_types import PinId
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser, ProgressCallback
 from src.machine.pin_controller import PinController
 
 if TYPE_CHECKING:
+    from src.config.config_types import DCPumpConfig
     from src.machine.scale import ScaleInterface
 
 _logger = LoggerHandler("DCDispenser")
@@ -28,14 +28,12 @@ class DCDispenser(BaseDispenser):
     def __init__(
         self,
         slot: int,
-        volume_flow: float,
-        pin_id: PinId,
+        config: DCPumpConfig,
         pin_controller: PinController,
         scale: ScaleInterface | None = None,
-        carriage_position: int = 0,
     ) -> None:
-        super().__init__(slot, volume_flow, scale, carriage_position)
-        self.pin_id = pin_id
+        super().__init__(slot, config, scale)
+        self.pin_id = config.pin_id
         self._pin_controller = pin_controller
 
     def setup(self) -> None:

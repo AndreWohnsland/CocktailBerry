@@ -15,22 +15,15 @@ def create_dispenser(slot: int, pump_config: BasePumpConfig, hardware: HardwareC
         case DCPumpConfig():
             return DCDispenser(
                 slot,
-                pump_config.volume_flow,
-                pump_config.pin_id,
+                pump_config,
                 hardware.pin_controller,
                 scale,
-                pump_config.carriage_position,
             )
         case StepperPumpConfig():
             return StepperDispenser(
                 slot=slot,
-                volume_flow=pump_config.volume_flow,
-                step_pin=pump_config.pin,
-                dir_pin=pump_config.dir_pin,
-                driver_type=pump_config.driver_type,
-                step_type=pump_config.step_type,
+                config=pump_config,
                 scale=scale,
-                carriage_position=pump_config.carriage_position,
             )
         case _:
             msg = f"Unknown pump config type: {type(pump_config)}"

@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from src.logger_handler import LoggerHandler
 from src.machine.i2c.i2c_expander import get_i2c
 from src.machine.scale.base import ScaleInterface
+
+if TYPE_CHECKING:
+    from src.config.config_types import NAU7802ScaleConfig
 
 _logger = LoggerHandler("NAU7802Scale")
 
@@ -17,22 +22,22 @@ except (ModuleNotFoundError, ImportError, RuntimeError):
 class NAU7802Scale(ScaleInterface):
     """Scale using NAU7802 I2C load cell amplifier."""
 
-    def __init__(self, i2c_address: int, calibration_factor: float) -> None:
+    def __init__(self, config: NAU7802ScaleConfig) -> None:
         if not NAU7802_AVAILABLE:
             msg = "cedargrove_nau7802 library is not available. Cannot initialize NAU7802 scale."
             _logger.error(msg)
             raise ImportError(msg)
-        self._calibration_factor = calibration_factor
+        self._calibration_factor = config.calibration_factor
         self._zero_offset: float = 0.0
         i2c = get_i2c()
         if i2c is None:
             msg = "I2C bus is not available. Cannot initialize NAU7802 scale."
             _logger.error(msg)
             raise RuntimeError(msg)
-        self._nau = NAU7802(i2c, address=i2c_address)
+        self._nau = NAU7802(i2c, address=config.address_hex)
         self._nau.gain = 128
         self._nau.channel = 1
-        _logger.log_event("INFO", f"NAU7802 scale initialized (address=0x{i2c_address:02X})")
+        _logger.log_event("INFO", f"NAU7802 scale initialized (address=0x{config.i2c_address})")
 
     def _raw_reading(self) -> float:
         readings = [self._nau.read() for _ in range(5)]

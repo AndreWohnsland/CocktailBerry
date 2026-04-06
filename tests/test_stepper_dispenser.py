@@ -5,21 +5,23 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import MagicMock, patch
 
+from src.config.config_types import StepperPumpConfig
 from src.machine.dispensers.stepper import StepperDispenser
 
 
 class TestStepperDispenser:
     def _make_dispenser(self, **kwargs: Any) -> StepperDispenser:
         defaults = {
-            "slot": 1,
-            "volume_flow": 30.0,
-            "step_pin": 17,
+            "pin": 17,
             "dir_pin": 27,
+            "volume_flow": 30.0,
+            "tube_volume": 5,
             "driver_type": "A4988",
             "step_type": "Full",
         }
         defaults.update(kwargs)
-        return StepperDispenser(**defaults)
+        config = StepperPumpConfig(**defaults)
+        return StepperDispenser(slot=1, config=config)
 
     @patch("src.machine.dispensers.stepper.StepperDispenser.setup")
     def test_dispense_calculates_correct_steps(self, mock_setup: MagicMock) -> None:

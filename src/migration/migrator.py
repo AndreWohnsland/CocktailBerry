@@ -125,6 +125,7 @@ class Migrator:
                 add_price_column_to_recipes,
                 _install_pyqt6_over_apt,  # user running bookworm need this
             ],
+            "3.4.0": [_migrate_i2c_addresses_to_hex_strings],
         }
 
         for version, actions in version_actions.items():
@@ -250,6 +251,29 @@ def _add_maker_lock_value() -> None:
     configuration["UI_LOCKED_TABS"] = locked_tabs
     with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
+
+
+def _migrate_i2c_addresses_to_hex_strings() -> None:
+    """Migrate I2C addresses from int to hex string format.
+
+    - I2C_CONFIG: address_int (int like 20 meaning 0x20) -> address (string "20")
+    - SCALE_CONFIG: i2c_address (int like 42 = 0x2A) -> i2c_address (string "2A")
+    """
+    configuration = _get_local_config("I2C address migration")
+    if configuration is None:
+        return
+    changed = False
+    # Migrate I2C_CONFIG entries
+    for entry in configuration.get("I2C_CONFIG", []):
+        if "address_int" in entry:
+            old_val = entry.pop("address_int")
+            # address_int was stored as e.g. 20 meaning 0x20, so str(20) = "20" which is the hex string
+            entry["address"] = str(old_val).upper()
+            changed = True
+    if changed:
+        with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+            yaml.dump(configuration, stream, default_flow_style=False)
+        _logger.info("Migrated I2C addresses to hex string format")
 
 
 def _get_converted_value[T](new_type: Callable[[Any], T], default_value: T, local_config: Any) -> T:

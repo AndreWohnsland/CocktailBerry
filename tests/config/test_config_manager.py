@@ -172,7 +172,7 @@ class TestConfigManagerSetConfig:
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 20,
+                        "address": "20",
                         "inverted": False,
                         "board_number": 1,
                     }
@@ -199,7 +199,7 @@ class TestConfigManagerSetConfig:
                         {
                             "device_type": "PCA9535",
                             "enabled": False,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         }
@@ -234,14 +234,14 @@ class TestConfigManagerSetConfig:
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         },
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 21,
+                            "address": "21",
                             "inverted": False,
                             "board_number": 1,
                         },
@@ -260,14 +260,14 @@ class TestConfigManagerSetConfig:
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         },
                         {
                             "device_type": "MCP23017",
                             "enabled": False,
-                            "address_int": 21,
+                            "address": "21",
                             "inverted": False,
                             "board_number": 1,
                         },
@@ -285,14 +285,14 @@ class TestConfigManagerSetConfig:
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 20,
+                        "address": "20",
                         "inverted": False,
                         "board_number": 1,
                     },
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 21,
+                        "address": "21",
                         "inverted": False,
                         "board_number": 2,
                     },
@@ -313,14 +313,14 @@ class TestConfigManagerSetConfig:
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 20,
+                        "address": "20",
                         "inverted": False,
                         "board_number": 1,
                     },
                     {
                         "device_type": "PCA9535",
                         "enabled": True,
-                        "address_int": 21,
+                        "address": "21",
                         "inverted": False,
                         "board_number": 1,
                     },
@@ -344,7 +344,7 @@ class TestConfigManagerSetConfig:
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         }
@@ -382,7 +382,7 @@ class TestConfigManagerSetConfig:
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         }
@@ -453,7 +453,7 @@ class TestConfigManagerSetConfig:
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 20,
+                        "address": "20",
                         "inverted": False,
                         "board_number": 1,
                     }
@@ -479,14 +479,14 @@ class TestConfigManagerSetConfig:
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 20,
+                        "address": "20",
                         "inverted": False,
                         "board_number": 1,
                     },
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 21,
+                        "address": "21",
                         "inverted": False,
                         "board_number": 2,
                     },
@@ -506,11 +506,14 @@ class TestConfigManagerSetConfig:
 class TestConfigManagerReadLocalConfig:
     """Tests for ConfigManager.read_local_config() method."""
 
-    def test_read_local_config_handles_missing_file(self, tmp_path: Path) -> None:
+    def test_read_local_config_handles_missing_file(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that read_local_config doesn't fail when file is missing.
 
         Edge case: First run when no config file exists yet.
         """
+        config_file = tmp_path / "test_config.yaml"  # does not exist
+        monkeypatch.setattr("src.config.config_manager.CUSTOM_CONFIG_FILE", config_file)
+
         config = ConfigManager()
         # Should not raise even if file doesn't exist
         config.read_local_config(update_config=False, validate=True)

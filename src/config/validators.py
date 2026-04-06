@@ -44,3 +44,21 @@ def build_distinct_validator(keys: list[str], fallback: dict[str, Any] = {}) -> 
             seen.append(key_tuple)
 
     return validate_distinct
+
+
+def validate_i2c_address(configname: str, data: str) -> None:
+    """Validate that data is a valid I2C hex address string (e.g. '20', '2A', '3f').
+
+    Accepts 1-2 hex characters (case-insensitive). Addresses must be in the valid
+    7-bit I2C range (0x03-0x77). Stores uppercase internally.
+    """
+    if not data:
+        raise ConfigError(f"{configname} must not be empty")
+    try:
+        value = int(data, 16)
+    except ValueError:
+        raise ConfigError(f"{configname} must be a valid hex address (e.g. '20', '2A'), got '{data}'")
+    _min_i2c_address = 0x03
+    _max_i2c_address = 0x77
+    if value < _min_i2c_address or value > _max_i2c_address:
+        raise ConfigError(f"{configname} must be a valid 7-bit I2C address (03-77 hex), got '{data}'")

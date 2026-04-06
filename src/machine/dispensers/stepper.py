@@ -3,11 +3,11 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from src import SupportedStepperDriverType, SupportedStepperStepType
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser, ProgressCallback
 
 if TYPE_CHECKING:
+    from src.config.config_types import StepperPumpConfig
     from src.machine.scale import ScaleInterface
 
 _logger = LoggerHandler("StepperDispenser")
@@ -38,19 +38,14 @@ class StepperDispenser(BaseDispenser):
     def __init__(
         self,
         slot: int,
-        volume_flow: float,
-        step_pin: int,
-        dir_pin: int,
-        driver_type: SupportedStepperDriverType,
-        step_type: SupportedStepperStepType,
+        config: StepperPumpConfig,
         scale: ScaleInterface | None = None,
-        carriage_position: int = 0,
     ) -> None:
-        super().__init__(slot, volume_flow, scale, carriage_position)
-        self.step_pin = step_pin
-        self.dir_pin = dir_pin
-        self.driver_type = driver_type
-        self.step_type = step_type
+        super().__init__(slot, config, scale)
+        self.step_pin = config.pin
+        self.dir_pin = config.dir_pin
+        self.driver_type = config.driver_type
+        self.step_type = config.step_type
         self._motor: rpi_motor_lib.A4988Nema | None = None
 
     @property

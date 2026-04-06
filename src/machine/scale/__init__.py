@@ -23,9 +23,9 @@ def create_scale(config: BaseScaleConfig) -> ScaleInterface | None:
         return None
     try:
         if isinstance(config, HX711ScaleConfig):
-            return HX711Scale(config.data_pin, config.clock_pin, config.calibration_factor)
+            return HX711Scale(config)
         if isinstance(config, NAU7802ScaleConfig):
-            return NAU7802Scale(config.i2c_address, config.calibration_factor)
+            return NAU7802Scale(config)
         _logger.log_event("ERROR", f"Unknown scale config type: {type(config)}")
         return None
     except Exception:

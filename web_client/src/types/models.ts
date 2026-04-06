@@ -253,7 +253,7 @@ export interface ReversionConfig {
 export interface I2CConfig {
   device_type: string;
   enabled: boolean;
-  address_int: number;
+  address: string;
   inverted: boolean;
   board_number: number;
 }
