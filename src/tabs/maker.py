@@ -72,15 +72,14 @@ def prepare_cocktail(
         DBC.increment_recipe_counter(cocktail.name, cocktail.is_virgin)
 
     # Set hand-add consumption before addon call so all data is available, always set hand add to recipe level
-    for ing in cocktail.handadds:
-        ing.consumption = float(ing.amount)
+    cocktail.set_handadd_consumption()
     ADDONS.after_cocktail(addon_data)
 
     # only post if cocktail was made over 50%
     minimum_cocktail_progress = 0.5
     if result.completion_ratio >= minimum_cocktail_progress:
-        SERVICE_HANDLER.post_team_data(shared.selected_team, result.real_volume, shared.team_member_name)
-        SERVICE_HANDLER.post_cocktail_to_hook(cocktail, result.real_volume)
+        SERVICE_HANDLER.post_team_data(shared.selected_team, cocktail.produced_volume, shared.team_member_name)
+        SERVICE_HANDLER.post_cocktail_to_hook(cocktail, cocktail.produced_volume)
 
     # Persist all ingredient consumption
     consumption_names = [x.name for x in cocktail.adjusted_ingredients]
@@ -88,7 +87,7 @@ def prepare_cocktail(
     DBC.set_multiple_ingredient_consumption(consumption_names, consumption_amount)
 
     if waiter_nfc_id is not None:
-        DBC.log_waiter_cocktail(waiter_nfc_id, cocktail.id, result.real_volume, cocktail.is_virgin)
+        DBC.log_waiter_cocktail(waiter_nfc_id, cocktail.id, cocktail.produced_volume, cocktail.is_virgin)
     if cfg.WAITER_LOGOUT_AFTER_COCKTAIL and cfg.waiter_mode_active:
         WaiterService().logout_waiter()
 

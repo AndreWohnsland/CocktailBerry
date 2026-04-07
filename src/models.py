@@ -168,6 +168,16 @@ class Cocktail:
         # single ingredient cocktails will not be considered virgin, because they are an ingredient (wrapper)
         return self.adjusted_alcohol == 0 and len(self.ingredients) > 1
 
+    def set_handadd_consumption(self) -> None:
+        """Set the consumption for handadds to their amount, as they are not tracked by the machine."""
+        for ing in self.handadds:
+            ing.consumption = float(ing.amount)
+
+    @property
+    def produced_volume(self) -> int:
+        """Returns the total produced volume of the cocktail."""
+        return round(sum(i.consumption for i in self.adjusted_ingredients))
+
     def current_price(
         self,
         round_to_next: float,
