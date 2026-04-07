@@ -1,0 +1,149 @@
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass, field
+from importlib import import_module
+from typing import Any
+
+import typer
+
+from src import __version__
+from src.config.config_manager import CONFIG as cfg
+from src.config.config_types import BasePumpConfig, ChooseOptions, ConfigInterface, DictType, FloatType, IntType
+from src.config.validators import build_number_limiter
+from src.filepath import DISPENSER_ADDON_FOLDER, DISPENSER_ADDON_SKELETON
+from src.logger_handler import LoggerHandler
+from src.machine.dispensers.base import BaseDispenser
+
+_logger = LoggerHandler("DispenserAddonManager")
+_check_addon = "please check dispenser addon or contact provider"
+
+# Shared BasePumpConfig fields auto-injected into every dispenser addon.
+# The pump_type ChooseOptions entry is injected dynamically after all addons are loaded.
+_SHARED_PUMP_FIELDS: dict[str, ConfigInterface[Any]] = {
+    "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
+    "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
+    "consumption_estimation": ChooseOptions.consumption_estimation,
+    "carriage_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
+}
+
+
+@dataclass
+class DispenserAddonEntry:
+    """Registry entry for one custom dispenser addon."""
+
+    name: str
+    config_class: type[BasePumpConfig]
+    config_fields: dict[str, ConfigInterface[Any]]
+    implementation_class: type
+    full_config_fields: dict[str, ConfigInterface[Any]] = field(default_factory=dict)
+
+
+class DispenserAddonManager:
+    """Discovers and registers custom dispenser addons from addons/dispensers/."""
+
+    def __init__(self) -> None:
+        self.dispensers: dict[str, DispenserAddonEntry] = {}
+        self._loaded = False
+
+    def _load_all(self) -> None:
+        if not DISPENSER_ADDON_FOLDER.exists():
+            return
+        addon_files = DISPENSER_ADDON_FOLDER.glob("*.py")
+        for path in addon_files:
+            if path.stem.startswith("__"):
+                continue
+            self._load_addon(path.stem)
+
+    def _load_addon(self, filename: str) -> None:
+        try:
+            module = import_module(f"addons.dispensers.{filename}")
+        except ImportError as e:
+            _logger.error(f"Could not import dispenser addon: {filename} due to <{e}>, {_check_addon}.")
+            return
+
+        name: str | None = getattr(module, "EXTENSION_NAME", None)
+        if not name:
+            _logger.warning(f"Missing EXTENSION_NAME in {filename}, {_check_addon}.")
+            return
+
+        config_class = getattr(module, "ConfigClass", None)
+        config_fields: dict[str, ConfigInterface[Any]] | None = getattr(module, "CONFIG_FIELDS", None)
+        implementation_class = getattr(module, "Implementation", None)
+
+        if config_class is None or config_fields is None or implementation_class is None:
+            _logger.warning(
+                f"Dispenser addon '{name}' in {filename} is missing ConfigClass, CONFIG_FIELDS, "
+                f"or Implementation, {_check_addon}."
+            )
+            return
+
+        if name in self.dispensers:
+            _logger.warning(f"Duplicate dispenser addon name '{name}' in {filename}, skipping.")
+            return
+
+        # Validate that Implementation inherits from BaseDispenser
+
+        if not issubclass(implementation_class, BaseDispenser):
+            _logger.warning(f"Implementation in '{name}' does not inherit from BaseDispenser, {_check_addon}.")
+            return
+
+        # Validate that ConfigClass inherits from BasePumpConfig
+
+        if not issubclass(config_class, BasePumpConfig):
+            _logger.warning(f"ConfigClass in '{name}' does not inherit from BasePumpConfig, {_check_addon}.")
+            return
+
+        entry = DispenserAddonEntry(
+            name=name,
+            config_class=config_class,
+            config_fields=config_fields,
+            implementation_class=implementation_class,
+        )
+        self.dispensers[name] = entry
+        _logger.info(f"Loaded dispenser addon: {name}")
+
+    def build_full_config_fields(self) -> None:
+        """Build full config fields for all addons and register them as PUMP_CONFIG variants.
+
+        Must be called before config is read, so the new dispenser types are known.
+        """
+        if not self._loaded:
+            self._load_all()
+            self._loaded = True
+        if not self.dispensers:
+            return
+
+        for name, entry in self.dispensers.items():
+            full_fields: dict[str, ConfigInterface[Any]] = {"pump_type": ChooseOptions.dispenser}
+            # Add user-defined fields first (they come after pump_type in the UI)
+            full_fields.update(entry.config_fields)
+            # Add shared base fields
+            full_fields.update(_SHARED_PUMP_FIELDS)
+            entry.full_config_fields = full_fields
+            cfg.add_discriminator_variant("PUMP_CONFIG", name, DictType(full_fields, entry.config_class))
+
+
+def generate_dispenser_addon_skeleton(name: str) -> None:
+    """Create a base dispenser addon file under the given name."""
+    file_name = name.replace(" ", "_")
+    file_name = re.sub(r"\W", "", file_name.lower())
+    addon_path = DISPENSER_ADDON_FOLDER / f"{file_name}.py"
+    if addon_path.exists():
+        msg = f"There is already a dispenser addon created under the {name=} in {file_name}.py"
+        typer.echo(typer.style(f"{msg}, aborting...", fg=typer.colors.RED, bold=True))
+        raise typer.Exit()
+    DISPENSER_ADDON_FOLDER.mkdir(parents=True, exist_ok=True)
+    addon_path.write_text(
+        (
+            DISPENSER_ADDON_SKELETON.read_text(encoding="utf-8")
+            .replace("EXTENSION_NAME_HOLDER", name)
+            .replace("VERSION_HOLDER", __version__)
+        ),
+        encoding="utf-8",
+    )
+    msg = f"Dispenser addon file was created at {addon_path}"
+    typer.echo(typer.style(msg, fg=typer.colors.GREEN, bold=True))
+
+
+DISPENSER_ADDONS = DispenserAddonManager()

@@ -15,6 +15,7 @@ from src.programs.addons import ADDONS
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.common_cli import register_common_commands
 from src.programs.config_window import run_config_window
+from src.programs.dispenser_addons import DISPENSER_ADDONS
 from src.resource_stats import start_resource_tracker
 from src.utils import generate_custom_style_file, time_print
 
@@ -42,6 +43,7 @@ def main(
     if not quiet:
         show_start_message(displayed_name)
     start_resource_tracker()
+    DISPENSER_ADDONS.build_full_config_fields()
     ADDONS.define_addon_configuration()
     # Load the config file and check for errors, update the config (sync new values if not present)
     try:

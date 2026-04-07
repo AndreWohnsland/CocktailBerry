@@ -26,5 +26,10 @@ def create_dispenser(slot: int, pump_config: BasePumpConfig, hardware: HardwareC
                 scale=scale,
             )
         case _:
+            from src.programs.dispenser_addons import DISPENSER_ADDONS
+
+            entry = DISPENSER_ADDONS.dispensers.get(pump_config.pump_type)
+            if entry is not None:
+                return entry.implementation_class(slot, pump_config, scale)
             msg = f"Unknown pump config type: {type(pump_config)}"
             raise ValueError(msg)

@@ -20,6 +20,7 @@ nav = [
   { "Service Personnel" = "waiter.md" },
   { "Advanced Topics" = "advanced.md" },
   { "Addons" = "addons.md" },
+  { "Hardware Extensions" = "hardware-extensions.md" },
   { "Troubleshooting" = "troubleshooting.md" },
   { "FAQ" = "faq.md" },
   { "Feature Timetable" = "features.md" },
