@@ -400,7 +400,7 @@ class PinId:
 class BasePumpConfig(ConfigClass):
     """Base configuration shared by all dispenser types."""
 
-    pump_type: SupportedDispenserType
+    pump_type: str
     volume_flow: float
     tube_volume: int
     consumption_estimation: ConsumptionEstimationType
@@ -408,7 +408,7 @@ class BasePumpConfig(ConfigClass):
 
     def __init__(
         self,
-        pump_type: SupportedDispenserType = "DC",
+        pump_type: str = "DC",
         volume_flow: float = 30.0,
         tube_volume: int = 0,
         consumption_estimation: ConsumptionEstimationType = "time",

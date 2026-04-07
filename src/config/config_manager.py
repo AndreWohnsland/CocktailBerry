@@ -376,6 +376,37 @@ class ConfigManager:
             "EXP_DEMO_MODE": BoolType(check_name="Activate Demo Mode"),
         }
 
+    def add_discriminator_variant(
+        self,
+        config_name: str,
+        variant_name: str,
+        variant: DictType,
+    ) -> None:
+        """Add a new variant to a DiscriminatedDictType config entry.
+
+        Finds the DiscriminatedDictType for the given config_name (unwrapping ListType if needed),
+        registers the new variant, and updates the discriminator ChooseType's allowed list.
+        """
+        setting = self.config_type.get(config_name)
+        if setting is None:
+            _logger.warning(f"Cannot add variant '{variant_name}': config '{config_name}' not found")
+            return
+        disc_type: DiscriminatedDictType | None = None
+        if isinstance(setting, DiscriminatedDictType):
+            disc_type = setting
+        elif isinstance(setting, ListType) and isinstance(setting.list_type, DiscriminatedDictType):
+            disc_type = setting.list_type
+        if disc_type is None:
+            _logger.warning(f"Cannot add variant '{variant_name}': '{config_name}' is not a DiscriminatedDictType")
+            return
+        disc_type.variants[variant_name] = variant
+        # Update the discriminator ChooseType allowed list in existing variants
+        discriminator_field = disc_type.discriminator
+        for existing_variant in disc_type.variants.values():
+            choose_type = existing_variant.dict_types.get(discriminator_field)
+            if isinstance(choose_type, ChooseType) and variant_name not in choose_type.allowed:
+                choose_type.allowed.append(variant_name)
+
     @property
     def sumup_payment(self) -> bool:
         """Check if SumUp payment option is selected."""
