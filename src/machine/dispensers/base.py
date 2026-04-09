@@ -54,6 +54,7 @@ class BaseDispenser(ABC):
         if self._scale is not None:
             self._scale.tare()
         consumption = 0.0
+        callback(consumption, False)
         for consumption in self._dispense_steps(amount_ml, pump_speed):
             if self._stop_event.is_set():
                 break

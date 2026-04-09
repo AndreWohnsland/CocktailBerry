@@ -139,6 +139,8 @@ class DispenserScheduler:
                 break
             self._carriage.move_to(item.dispenser.carriage_position)
             self._run_exclusive(item, all_items, on_progress, is_cancelled)
+            if self._carriage.wait_after_dispense > 0 and not is_cancelled():
+                time.sleep(self._carriage.wait_after_dispense)
 
     def _run_parallel(
         self,
@@ -288,6 +290,7 @@ def _estimate_carriage_time(
             pos = item.dispenser.carriage_position
             total += carriage.travel_time(current_pos, pos)
             total += item.estimated_time
+            total += carriage.wait_after_dispense
             current_pos = pos
     # Return home after last item
     total += carriage.travel_time(current_pos, home_position)

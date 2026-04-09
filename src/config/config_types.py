@@ -784,6 +784,7 @@ class BaseCarriageConfig(ConfigClass):
     home_position: int
     speed_pct_per_s: float
     move_during_cleaning: bool
+    wait_after_dispense: float
 
     def __init__(
         self,
@@ -791,12 +792,14 @@ class BaseCarriageConfig(ConfigClass):
         home_position: int = 0,
         speed_pct_per_s: float = 10.0,
         move_during_cleaning: bool = False,
+        wait_after_dispense: float = 0.0,
         **kwargs: Any,
     ) -> None:
         self.enabled = enabled
         self.home_position = home_position
         self.speed_pct_per_s = speed_pct_per_s
         self.move_during_cleaning = move_during_cleaning
+        self.wait_after_dispense = wait_after_dispense
 
     def to_config(self) -> dict[str, Any]:
         return {
@@ -804,4 +807,5 @@ class BaseCarriageConfig(ConfigClass):
             "home_position": self.home_position,
             "speed_pct_per_s": self.speed_pct_per_s,
             "move_during_cleaning": self.move_during_cleaning,
+            "wait_after_dispense": self.wait_after_dispense,
         }

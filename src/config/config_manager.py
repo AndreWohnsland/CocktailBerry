@@ -368,6 +368,7 @@ class ConfigManager:
                     "home_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
                     "speed_pct_per_s": FloatType([build_number_limiter(0.1, 100)], suffix="%/s"),
                     "move_during_cleaning": BoolType(check_name="Move During Cleaning"),
+                    "wait_after_dispense": FloatType([build_number_limiter(0, 30)], suffix="s"),
                 },
                 BaseCarriageConfig,
             ),

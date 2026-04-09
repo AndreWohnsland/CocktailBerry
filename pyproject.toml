@@ -77,7 +77,7 @@ allow-direct-references = true
 [tool.ruff]
 # don't check import order in the migration script
 line-length = 120
-exclude = ["ui_elements", "addon_skeleton.py", "dispenser_addon_skeleton.py"]
+exclude = ["ui_elements", "src/skeletons"]
 target-version = "py313"
 
 [tool.ruff.lint]

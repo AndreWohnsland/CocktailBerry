@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
+# TODO: we need some "initial tare" somewhere (maybe here or other module/UI) for initial calibration
+# this might already exists in the new ui but not sure, better keep track
+
 
 class ScaleInterface(ABC):
     """Abstract interface for a weight scale used in weight-based dispensing.

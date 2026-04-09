@@ -281,6 +281,7 @@ class TestCarriageOrdering:
     def test_estimate_carriage_time(self):
         mock_carriage = MagicMock()
         mock_carriage.travel_time.return_value = 0.0
+        mock_carriage.wait_after_dispense = 0.0
         items1 = [
             PreparationItem(
                 dispenser=_mock_dispenser(1), amount_ml=10, pump_speed=100, estimated_time=5.0, recipe_order=1
@@ -298,6 +299,7 @@ class TestCarriageOrdering:
 
     def test_estimate_carriage_time_with_travel(self):
         mock_carriage = MagicMock()
+        mock_carriage.wait_after_dispense = 0.0
         # travel_time returns |to - from| / 10 (simulating speed_pct_per_s=10)
         mock_carriage.travel_time.side_effect = lambda f, t: abs(t - f) / 10.0
         items = [
@@ -327,6 +329,7 @@ class TestCarriageScheduler:
         """When carriage is active, all items run sequentially even if they could be parallel."""
         mock_carriage = MagicMock()
         mock_carriage.travel_time.return_value = 0.0
+        mock_carriage.wait_after_dispense = 0.0
         mock_disp1 = _mock_dispenser(1, carriage_position=20)
         mock_disp2 = _mock_dispenser(2, carriage_position=60)
         mock_disp1.dispense.return_value = 10.0
@@ -356,6 +359,7 @@ class TestCarriageScheduler:
         """Carriage scheduler reorders items by position to minimize travel."""
         mock_carriage = MagicMock()
         mock_carriage.travel_time.return_value = 0.0
+        mock_carriage.wait_after_dispense = 0.0
         mock_disp1 = _mock_dispenser(1, carriage_position=80)
         mock_disp2 = _mock_dispenser(2, carriage_position=20)
         mock_disp1.dispense.return_value = 10.0

@@ -35,7 +35,7 @@ class DispenserAddonEntry:
     name: str
     config_class: type[BasePumpConfig]
     config_fields: dict[str, ConfigInterface[Any]]
-    implementation_class: type
+    implementation_class: type[BaseDispenser]
     full_config_fields: dict[str, ConfigInterface[Any]] = field(default_factory=dict)
 
 
