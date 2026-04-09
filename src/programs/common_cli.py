@@ -10,7 +10,7 @@ from src.migration.web_migrator import add_web_desktop_file, replace_backend_scr
 from src.programs.addons import generate_addon_skeleton
 from src.programs.clearing import clear_local_database
 from src.programs.data_import import importer
-from src.programs.dispenser_addons import generate_dispenser_addon_skeleton
+from src.programs.dispenser_addons import generate_dispenser_extension_skeleton
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
 from src.utils import create_ap, delete_ap, get_platform_data
 
@@ -108,13 +108,13 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
 
     @cli.command()
     def create_dispenser(dispenser_name: str) -> None:
-        """Create the base file for a custom dispenser addon under the given name.
+        """Create the base file for a custom dispenser extension under the given name.
 
         The file is saved under the addons/dispensers folder.
         File name will be the name converted to lower case, spaces are replaced with underscores
         and stripped of special characters.
         """
-        generate_dispenser_addon_skeleton(dispenser_name)
+        generate_dispenser_extension_skeleton(dispenser_name)
 
     @cli.command()
     def setup_microservice(

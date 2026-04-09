@@ -18,7 +18,7 @@ import typer
 from requests.exceptions import ConnectionError as ReqConnectionError
 
 from src import __version__
-from src.filepath import ADDON_FOLDER, ADDON_SKELTON
+from src.filepath import ADDON_FOLDER, ADDON_SKELETON
 from src.logger_handler import LoggerHandler
 from src.models import AddonData, Cocktail
 
@@ -357,7 +357,7 @@ def generate_addon_skeleton(name: str) -> None:
         raise typer.Exit()
     addon_path.write_text(
         (
-            ADDON_SKELTON.read_text(encoding="utf-8")
+            ADDON_SKELETON.read_text(encoding="utf-8")
             .replace("ADDON_NAME_HOLDER", name)
             .replace("VERSION_HOLDER", __version__)
         ),
