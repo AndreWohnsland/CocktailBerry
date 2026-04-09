@@ -22,7 +22,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
-from src.programs.addons import ADDONS
+from src.programs.addons.addons import ADDONS
 from src.service.nfc_payment_service import NFCPaymentService, UserLookup
 from src.service.waiter_service import WaiterService
 from src.startup_checks import (

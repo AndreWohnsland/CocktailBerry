@@ -23,8 +23,9 @@ from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FO
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.setup_web import download_latest_web_client
-from src.programs.addons import ADDONS, CouldNotInstallAddonError
-from src.programs.dispenser_addons import DISPENSER_ADDONS
+from src.programs.addons.addons import ADDONS, CouldNotInstallAddonError
+from src.programs.addons.dispenser_extensions import DISPENSER_ADDONS
+from src.programs.addons.hardware_extensions import HARDWARE_ADDONS
 from src.resource_stats import start_resource_tracker
 from src.service.nfc_payment_service import NFCPaymentService
 from src.service.waiter_service import WaiterService
@@ -45,6 +46,7 @@ _logger = LoggerHandler("CocktailBerry_API")
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     start_resource_tracker()
     DISPENSER_ADDONS.build_full_config_fields()
+    HARDWARE_ADDONS.build_config()
     ADDONS.define_addon_configuration()
     try:
         cfg.read_local_config(update_config=True)

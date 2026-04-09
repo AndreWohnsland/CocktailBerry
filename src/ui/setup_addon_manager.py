@@ -6,7 +6,7 @@ from src.dialog_handler import DIALOG_HANDLER, UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.models import AddonData
-from src.programs.addons import ADDONS, CouldNotInstallAddonError
+from src.programs.addons.addons import ADDONS, CouldNotInstallAddonError
 from src.ui.creation_utils import SMALL_FONT, create_button, create_label
 from src.ui_elements import Ui_AddonManager
 

@@ -9,7 +9,7 @@ from src.machine.dispensers.base import BaseDispenser
 
 if TYPE_CHECKING:
     from src.config.config_types import StepperPumpConfig
-    from src.machine.scale import ScaleInterface
+    from src.machine.hardware import HardwareContext
 
 _logger = LoggerHandler("StepperDispenser")
 
@@ -40,9 +40,9 @@ class StepperDispenser(BaseDispenser):
         self,
         slot: int,
         config: StepperPumpConfig,
-        scale: ScaleInterface | None = None,
+        hardware: HardwareContext,
     ) -> None:
-        super().__init__(slot, config, scale)
+        super().__init__(slot, config, hardware)
         self.step_pin = config.pin
         self.dir_pin = config.dir_pin
         self.driver_type = config.driver_type

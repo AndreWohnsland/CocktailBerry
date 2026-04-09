@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 
 from src.config.config_types import StepperPumpConfig
 from src.machine.dispensers.stepper import StepperDispenser
+from src.machine.hardware import HardwareContext
 
 
 class TestStepperDispenser:
@@ -21,7 +22,9 @@ class TestStepperDispenser:
         }
         defaults.update(kwargs)
         config = StepperPumpConfig(**defaults)
-        return StepperDispenser(slot=1, config=config)
+        hardware = MagicMock(spec=HardwareContext)
+        hardware.scale = None
+        return StepperDispenser(slot=1, config=config, hardware=hardware)
 
     @patch("src.machine.dispensers.stepper.StepperDispenser.setup")
     def test_dispense_calculates_correct_steps(self, mock_setup: MagicMock) -> None:

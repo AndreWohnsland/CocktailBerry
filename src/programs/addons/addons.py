@@ -4,7 +4,6 @@ import atexit
 import contextlib
 import importlib
 import json
-import re
 import sys
 import threading
 import time
@@ -14,11 +13,9 @@ from importlib import import_module
 from typing import TYPE_CHECKING, Any, Literal, Protocol, runtime_checkable
 
 import requests
-import typer
 from requests.exceptions import ConnectionError as ReqConnectionError
 
-from src import __version__
-from src.filepath import ADDON_FOLDER, ADDON_SKELETON
+from src.filepath import ADDON_FOLDER
 from src.logger_handler import LoggerHandler
 from src.models import AddonData, Cocktail
 
@@ -342,29 +339,6 @@ class AddOnManager:
                 )
             )
         return possible_addons
-
-
-def generate_addon_skeleton(name: str) -> None:
-    """Create an base addon file unter the given name."""
-    # Converts space into underscores
-    file_name = name.replace(" ", "_")
-    # strips all other unwanted things
-    file_name = re.sub(r"\W", "", file_name.lower())
-    addon_path = ADDON_FOLDER / f"{file_name}.py"
-    if addon_path.exists():
-        msg = f"There is already an addon created under the {name=} in {file_name}.py"
-        typer.echo(typer.style(f"{msg}, aborting...", fg=typer.colors.RED, bold=True))
-        raise typer.Exit()
-    addon_path.write_text(
-        (
-            ADDON_SKELETON.read_text(encoding="utf-8")
-            .replace("ADDON_NAME_HOLDER", name)
-            .replace("VERSION_HOLDER", __version__)
-        ),
-        encoding="utf-8",
-    )
-    msg = f"Addon file was create at {addon_path}"
-    typer.echo(typer.style(msg, fg=typer.colors.GREEN, bold=True))
 
 
 ADDONS = AddOnManager()

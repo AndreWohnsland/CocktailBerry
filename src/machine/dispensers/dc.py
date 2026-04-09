@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING
 
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser
-from src.machine.pin_controller import PinController
 
 if TYPE_CHECKING:
     from src.config.config_types import DCPumpConfig
+    from src.machine.hardware import HardwareContext
     from src.machine.scale import ScaleInterface
 
 _logger = LoggerHandler("DCDispenser")
@@ -30,12 +30,12 @@ class DCDispenser(BaseDispenser):
         self,
         slot: int,
         config: DCPumpConfig,
-        pin_controller: PinController,
+        hardware: HardwareContext,
         scale: ScaleInterface | None = None,
     ) -> None:
-        super().__init__(slot, config, scale)
+        super().__init__(slot, config, hardware)
         self.pin_id = config.pin_id
-        self._pin_controller = pin_controller
+        self._pin_controller = hardware.pin_controller
 
     def setup(self) -> None:
         self._pin_controller.initialize_pin(self.pin_id)

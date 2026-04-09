@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.config.config_types import BasePumpConfig
-    from src.machine.scale import ScaleInterface
+    from src.machine.hardware import HardwareContext
 
 ProgressCallback = Callable[[float, bool], None]
 """Callback signature: (consumption_ml, is_done) -> None"""
@@ -22,12 +22,18 @@ class BaseDispenser(ABC):
     scale taring, and progress callbacks automatically.
     """
 
-    def __init__(self, slot: int, config: BasePumpConfig, scale: ScaleInterface | None = None) -> None:
+    def __init__(
+        self,
+        slot: int,
+        config: BasePumpConfig,
+        hardware: HardwareContext,
+    ) -> None:
         self.slot = slot
         self.config = config
         self.volume_flow = config.volume_flow
         self._stop_event = Event()
-        self._scale = scale
+        self.hardware = hardware
+        self._scale = hardware.scale if config.consumption_estimation == "weight" else None
         self.carriage_position = config.carriage_position
 
     @property

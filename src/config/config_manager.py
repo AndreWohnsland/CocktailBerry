@@ -676,6 +676,20 @@ class ConfigManager:
         addon_choose = ChooseType(options, validation_function)
         self.config_type[config_name] = addon_choose
 
+    def add_complex_config(
+        self,
+        config_name: str,
+        config_setting: DictType,
+    ) -> None:
+        """Add a complex DictType configuration under the given name.
+
+        Sets the default value from the DictType's config class and registers the type.
+        Used by hardware extensions to register their config at startup.
+        """
+        if not hasattr(self, config_name):
+            setattr(self, config_name, config_setting.config_class())
+        self.config_type[config_name] = config_setting
+
 
 @api_dataclass
 class StartupIssue:

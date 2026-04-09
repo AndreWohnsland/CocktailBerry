@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QLabel, QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.programs.addons import ADDONS
+from src.programs.addons.addons import ADDONS
 from src.ui.creation_utils import MEDIUM_FONT, adjust_font, create_button
 from src.ui.setup_addon_manager import AddonManager
 from src.ui_elements import Ui_Addonwindow

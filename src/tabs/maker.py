@@ -14,7 +14,7 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.models import Cocktail, CocktailStatus, EventType, Ingredient, PrepareResult
-from src.programs.addons import ADDONS
+from src.programs.addons.addons import ADDONS
 from src.service.waiter_service import WaiterService
 from src.service_handler import SERVICE_HANDLER
 

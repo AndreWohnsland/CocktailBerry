@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
 from importlib import import_module
 from typing import Any
 
-import typer
-
-from src import __version__
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import BasePumpConfig, ChooseOptions, ConfigInterface, DictType, FloatType, IntType
 from src.config.validators import build_number_limiter
-from src.filepath import DISPENSER_ADDON_FOLDER, DISPENSER_EXTENSION_SKELETON
+from src.filepath import DISPENSER_ADDON_FOLDER
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser
 
@@ -67,13 +63,14 @@ class DispenserExtensionManager:
             _logger.warning(f"Missing EXTENSION_NAME in {filename}, {_check_extension}.")
             return
 
-        config_class = getattr(module, "ConfigClass", None)
+        config_class = getattr(module, "ExtensionConfig", None)
         config_fields: dict[str, ConfigInterface[Any]] | None = getattr(module, "CONFIG_FIELDS", None)
         implementation_class = getattr(module, "Implementation", None)
 
         if config_class is None or config_fields is None or implementation_class is None:
             _logger.warning(
-                f"Dispenser extension '{name}' in {filename} is missing ConfigClass, CONFIG_FIELDS, "
+                f"Dispenser extension '{name}' in {filename} is missing ExtensionConfig, "
+                "CONFIG_FIELDS, "
                 f"or Implementation, {_check_extension}."
             )
             return
@@ -88,10 +85,10 @@ class DispenserExtensionManager:
             _logger.warning(f"Implementation in '{name}' does not inherit from BaseDispenser, {_check_extension}.")
             return
 
-        # Validate that ConfigClass inherits from BasePumpConfig
+        # Validate that ExtensionConfig inherits from BasePumpConfig
 
         if not issubclass(config_class, BasePumpConfig):
-            _logger.warning(f"ConfigClass in '{name}' does not inherit from BasePumpConfig, {_check_extension}.")
+            _logger.warning(f"ExtensionConfig in '{name}' does not inherit from BasePumpConfig, {_check_extension}.")
             return
 
         entry = DispenserAddonEntry(
@@ -122,28 +119,6 @@ class DispenserExtensionManager:
             full_fields.update(entry.config_fields)
             entry.full_config_fields = full_fields
             cfg.add_discriminator_variant("PUMP_CONFIG", name, DictType(full_fields, entry.config_class))
-
-
-def generate_dispenser_extension_skeleton(name: str) -> None:
-    """Create a base dispenser extension file under the given name."""
-    file_name = name.replace(" ", "_")
-    file_name = re.sub(r"\W", "", file_name.lower())
-    extension_path = DISPENSER_ADDON_FOLDER / f"{file_name}.py"
-    if extension_path.exists():
-        msg = f"There is already a dispenser extension created under the {name=} in {file_name}.py"
-        typer.echo(typer.style(f"{msg}, aborting...", fg=typer.colors.RED, bold=True))
-        raise typer.Exit()
-    DISPENSER_ADDON_FOLDER.mkdir(parents=True, exist_ok=True)
-    extension_path.write_text(
-        (
-            DISPENSER_EXTENSION_SKELETON.read_text(encoding="utf-8")
-            .replace("EXTENSION_NAME_HOLDER", name)
-            .replace("VERSION_HOLDER", __version__)
-        ),
-        encoding="utf-8",
-    )
-    msg = f"Dispenser extension file was created at {extension_path}"
-    typer.echo(typer.style(msg, fg=typer.colors.GREEN, bold=True))
 
 
 DISPENSER_ADDONS = DispenserExtensionManager()

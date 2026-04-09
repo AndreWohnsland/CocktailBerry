@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import time
 from collections.abc import Generator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from src import ConsumptionEstimationType
 from src.config.config_types import BasePumpConfig, StringType
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser
-from src.machine.scale import ScaleInterface
+from src.machine.hardware import HardwareContext
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # This is a hardware extension skeleton.
@@ -16,7 +16,7 @@ from src.machine.scale import ScaleInterface
 # Your custom extension needs four exports:
 #   EXTENSION_NAME - unique name shown in the hardware type dropdown
 #   CONFIG_FIELDS  - dict of extra config fields (beyond the shared BasePumpConfig fields)
-#   ConfigClass    - config class inheriting from BasePumpConfig
+#   ExtensionConfig - config class inheriting from BasePumpConfig
 #   Implementation - dispenser class inheriting from BaseDispenser
 #
 # Shared fields (volume_flow, tube_volume, consumption_estimation, carriage_position)
@@ -27,7 +27,7 @@ EXTENSION_NAME = "EXTENSION_NAME_HOLDER"
 _logger = LoggerHandler("EXTENSION_NAME_HOLDER")
 
 
-class ConfigClass(BasePumpConfig):
+class ExtensionConfig(BasePumpConfig):
     """Custom configuration for this dispenser type.
 
     Add any extra attributes your dispenser needs beyond the shared ones.
@@ -76,9 +76,11 @@ class Implementation(BaseDispenser):
 
     Inherited attributes from BaseDispenser:
       self.slot              — pump slot number (int)
-      self.config            — your ConfigClass instance
+      self.config            — your ExtensionConfig instance
       self.volume_flow       — configured flow rate in ml/s
       self.carriage_position — carriage position (0-100)
+      self.hardware          — HardwareContext with pin_controller, scale, led_controller,
+                               carriage, and extra (dict of hardware extension instances)
       self._scale            — ScaleInterface or None when no scale is connected
 
     Key inherited methods:
@@ -91,8 +93,10 @@ class Implementation(BaseDispenser):
       cleanup() — release hardware at program shutdown.
     """
 
-    def __init__(self, slot: int, config: ConfigClass, scale: ScaleInterface | None = None) -> None:
-        super().__init__(slot, config, scale)
+    def __init__(
+        self, slot: int, config: ExtensionConfig, hardware: HardwareContext,
+    ) -> None:
+        super().__init__(slot, config, hardware)
         self.label = config.label
 
     def setup(self) -> None:

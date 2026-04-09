@@ -23,6 +23,7 @@ from src.machine.pin_controller import PinController
 from src.machine.reverter import Reverter
 from src.machine.scale import create_scale
 from src.models import CocktailStatus, EventType, Ingredient, PreparationResult, PrepareResult
+from src.programs.addons.hardware_extensions import HARDWARE_ADDONS
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -52,6 +53,7 @@ class MachineController:
             led_controller=LedController(),
             scale=create_scale(cfg.SCALE_CONFIG),
             carriage=create_carriage(cfg.CARRIAGE_CONFIG),
+            extra=HARDWARE_ADDONS.create_all(),
         )
         self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()
@@ -166,6 +168,7 @@ class MachineController:
     def cleanup(self) -> None:
         """Cleanup for shutdown the machine."""
         self.close_all_pumps()
+        HARDWARE_ADDONS.cleanup_all()
         self.hardware.cleanup()
 
     def _build_clean_items(self) -> list[PreparationItem]:

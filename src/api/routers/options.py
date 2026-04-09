@@ -39,7 +39,7 @@ from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.models import AddonData, ConsumeData, EventType, ResourceInfo, ResourceStats
-from src.programs.addons import ADDONS
+from src.programs.addons.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
 from src.service.sumup_payment_service import Err
 from src.shared import NEWS_KEYS
