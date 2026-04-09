@@ -178,7 +178,6 @@ class MachineController:
                     dispenser=dispenser,
                     amount_ml=amount_ml,
                     pump_speed=100,
-                    estimated_time=float(cfg.MAKER_CLEAN_TIME),
                 )
             )
         return items
@@ -195,7 +194,6 @@ class MachineController:
                     dispenser=dispenser,
                     amount_ml=float(ing.amount),
                     pump_speed=ing.pump_speed,
-                    estimated_time=dispenser.estimated_time(ing.amount, ing.pump_speed),
                     recipe_order=ing.recipe_order,
                     ingredient=ing,
                 )

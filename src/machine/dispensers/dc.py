@@ -65,8 +65,9 @@ class DCDispenser(BaseDispenser):
         return consumption
 
     def stop(self) -> None:
-        self._stop_event.set()
+        super().stop()
         self._pin_controller.close_pin(self.pin_id)
 
     def cleanup(self) -> None:
         self.stop()
+        self._pin_controller.cleanup_pin(self.pin_id)

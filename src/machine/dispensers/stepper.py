@@ -111,8 +111,6 @@ class StepperDispenser(BaseDispenser):
         callback(consumption, True)
         return consumption
 
-    def stop(self) -> None:
-        self._stop_event.set()
-
     def cleanup(self) -> None:
         self.stop()
+        self._motor = None

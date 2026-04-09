@@ -30,12 +30,16 @@ class PreparationItem:
     dispenser: BaseDispenser
     amount_ml: float
     pump_speed: int
-    estimated_time: float
+    estimated_time: float = 0.0
     consumption: float = 0.0
     done: bool = False
     recipe_order: int = 1
     ingredient: Ingredient | None = None
     """Back-reference to the source ingredient. None for non-ingredient tasks like cleaning."""
+
+    def __post_init__(self) -> None:
+        if self.estimated_time == 0.0:
+            self.estimated_time = self.amount_ml / (self.dispenser.volume_flow * self.pump_speed / 100)
 
 
 class DispenserScheduler:

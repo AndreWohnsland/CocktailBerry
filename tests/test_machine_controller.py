@@ -20,12 +20,11 @@ from src.models import Ingredient
 
 
 def _mock_dispenser(slot: int, volume_flow: float = 10.0, carriage_position: int = 0) -> MagicMock:
-    """Create a mock dispenser with working estimated_time."""
+    """Create a mock dispenser."""
     mock = MagicMock(spec=BaseDispenser)
     mock.slot = slot
     mock.volume_flow = volume_flow
     mock.carriage_position = carriage_position
-    mock.estimated_time.side_effect = lambda amount, pump_speed: amount / (volume_flow * pump_speed / 100)
     mock.dispense.return_value = 0.0
     return mock
 

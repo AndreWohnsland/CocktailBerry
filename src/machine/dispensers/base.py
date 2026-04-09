@@ -45,19 +45,27 @@ class BaseDispenser(ABC):
         The callback is called periodically with (consumption_ml, is_done).
         Implementations should check self._stop_event to support cancellation.
         pump_speed is the percentage of the pump's configured volume_flow (100 = full speed).
+
+        Important: call self._stop_event.clear() at the start of your implementation
+        to reset the event from any previous stop() call.
         """
 
-    @abstractmethod
     def stop(self) -> None:
-        """Emergency stop / cancel current dispensing."""
+        """Emergency stop / cancel current dispensing.
 
-    @abstractmethod
+        Sets the stop event so the dispense loop exits.
+        Override this if you need additional hardware cleanup on stop
+        (e.g. closing a relay pin), but always call super().stop().
+        """
+        self._stop_event.set()
+
     def cleanup(self) -> None:
-        """Release hardware resources."""
+        """Release hardware resources.
 
-    def estimated_time(self, amount_ml: float, pump_speed: int) -> float:
-        """Calculate estimated dispense time in seconds. Used for scheduling."""
-        return amount_ml / (self.volume_flow * pump_speed / 100)
+        Called at program shutdown. Override if your dispenser holds
+        hardware resources that need explicit release.
+        The default implementation does nothing.
+        """
 
     def _get_consumption(self, current_estimate: float) -> float:
         """Return current consumption in ml.

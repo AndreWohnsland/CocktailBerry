@@ -93,14 +93,45 @@ The `to_config()` method must serialize all fields (call `super().to_config()` a
 
 Your `Implementation` class must inherit from `BaseDispenser` and implement these methods:
 
-| Method                                      | Description                                                                                                                                                                             |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `setup()`                                   | Initialize hardware resources                                                                                                                                                           |
-| `dispense(amount_ml, pump_speed, callback)` | Dispense the given amount. Must be **blocking**. Check `self._stop_event` for cancellation. Return actual consumption in ml. Call `callback(dispensed_ml, is_done)` to report progress. |
-| `stop()`                                    | Emergency stop — set `self._stop_event`                                                                                                                                                 |
-| `cleanup()`                                 | Release hardware resources                                                                                                                                                              |
+| Method                                      | Required | Description                                                                                                                                                                                                         |
+| ------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `setup()`                                   | **yes**  | Initialize hardware resources                                                                                                                                                                                       |
+| `dispense(amount_ml, pump_speed, callback)` | **yes**  | Dispense the given amount. Must be **blocking**. Clear `self._stop_event` at the start, then check it for cancellation. Return actual consumption in ml. Call `callback(dispensed_ml, is_done)` to report progress. |
+| `stop()`                                    | no       | Emergency stop. Default sets `self._stop_event`. Override and call `super().stop()` if you need additional hardware cleanup.                                                                                        |
+| `cleanup()`                                 | no       | Release hardware resources at shutdown. Default does nothing.                                                                                                                                                       |
 
 The constructor receives `slot` (pump position), `config` (your `ConfigClass` instance), and optionally `scale` (for weight-based estimation).
+
+### Inherited Attributes & Helpers
+
+`BaseDispenser` provides several attributes and methods you can use in your implementation — no need to define them yourself:
+
+| Attribute / Method                           | Description                                                                                                                                                             |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `self.slot`                                  | Pump slot number (int), set from constructor                                                                                                                            |
+| `self.config`                                | Your `ConfigClass` instance                                                                                                                                             |
+| `self.volume_flow`                           | Configured flow rate in ml/s (from config)                                                                                                                              |
+| `self.carriage_position`                     | Carriage position 0–100 (from config)                                                                                                                                   |
+| `self._stop_event`                           | `threading.Event` — set by `stop()` to signal cancellation. Must be cleared at the start of `dispense()` via `self._stop_event.clear()`. Check it in your dispense loop |
+| `self._scale`                                | `ScaleInterface` or `None` — the connected scale, if any                                                                                                                |
+| `self._get_consumption(estimate)`            | Returns the scale reading in ml if a scale is present, otherwise returns the passed time/step-based `estimate`                                                          |
+| `self.needs_exclusive`                       | Property, `True` when a scale is attached. Used by the scheduler to run this dispenser exclusively (not in parallel with others)                                        |
+
+#### Using the Scale
+
+If a scale is connected (`self._scale is not None`), you can use it for precise weight-based dispensing instead of relying on time estimates:
+
+```python
+# Tare the scale before dispensing
+if self._scale is not None:
+    self._scale.tare()
+
+# In your dispense loop, use _get_consumption instead of a raw time estimate:
+time_estimate = elapsed * effective_flow
+consumption = self._get_consumption(time_estimate)
+# If a scale is present, this returns the actual weight reading.
+# Otherwise it returns your time_estimate as a fallback.
+```
 
 ### Full Example
 
@@ -172,6 +203,7 @@ class Implementation(BaseDispenser): # (8)!
     def dispense( # (10)!
         self, amount_ml: float, pump_speed: int, callback: ProgressCallback
     ) -> float:
+        self._stop_event.clear()
         effective_flow = self.volume_flow * pump_speed / 100
         total_time = amount_ml / effective_flow
         step_interval = 0.1
@@ -192,7 +224,7 @@ class Implementation(BaseDispenser): # (8)!
         return dispensed
 
     def stop(self) -> None: # (13)!
-        self._stop_event.set()
+        super().stop()
 
     def cleanup(self) -> None: # (14)!
         _logger.info(
@@ -209,10 +241,10 @@ class Implementation(BaseDispenser): # (8)!
 7. Only define your **extra** config fields here. Shared fields (`volume_flow`, `tube_volume`, etc.) and the `pump_type` dropdown are auto-injected.
 8. Your dispenser implementation must inherit from `BaseDispenser`.
 9. Called once to initialize hardware resources (e.g. GPIO pins, SPI buses).
-10. Core dispensing logic. Must be **blocking** — return only when done or cancelled. Return actual consumption in ml.
+10. Core dispensing logic. Must be **blocking** — return only when done or cancelled. Clear `self._stop_event` at the start to reset from any previous `stop()`. Return actual consumption in ml.
 11. Check `self._stop_event` regularly to support cancellation during dispensing.
 12. Report progress via the callback: `callback(dispensed_ml, is_done)`. Use `False` for intermediate updates, `True` when finished.
-13. Called on emergency stop. Setting `self._stop_event` will cause the `dispense()` loop to exit.
+13. Called on emergency stop. Setting `self._stop_event` (via `super().stop()`) will cause the `dispense()` loop to exit.
 14. Called at program shutdown to release hardware resources.
 
 ## Scales
