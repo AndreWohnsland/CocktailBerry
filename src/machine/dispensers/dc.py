@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 from src.logger_handler import LoggerHandler
-from src.machine.dispensers.base import BaseDispenser, ProgressCallback
+from src.machine.dispensers.base import BaseDispenser
 from src.machine.pin_controller import PinController
 
 if TYPE_CHECKING:
@@ -39,30 +40,25 @@ class DCDispenser(BaseDispenser):
     def setup(self) -> None:
         self._pin_controller.initialize_pin(self.pin_id)
 
-    def dispense(self, amount_ml: float, pump_speed: int, callback: ProgressCallback) -> float:
-        self._stop_event.clear()
+    def _dispense_steps(self, amount_ml: float, pump_speed: int) -> Generator[float]:
         flow_rate = self.volume_flow * pump_speed / 100
         flow_time = amount_ml / flow_rate
         mode = "scale" if self._scale is not None else f"{flow_time:.1f}s"
         _logger.info(f"<o> Slot {self.slot:<2} {self.pin_id!s:<14}| dispensing {amount_ml:.0f}ml ({mode})")
-        if self._scale is not None:
-            self._scale.tare()
         self._pin_controller.activate_pin(self.pin_id)
         start = time.perf_counter()
         consumption = 0.0
         try:
-            while not self._stop_event.is_set():
+            while True:
                 elapsed = time.perf_counter() - start
                 consumption = self._get_consumption(flow_rate * elapsed)
+                yield consumption
                 if consumption >= amount_ml:
-                    break
-                callback(consumption, False)
+                    return
                 time.sleep(_LOOP_INTERVAL)
         finally:
             self._pin_controller.close_pin(self.pin_id)
-        _logger.info(f"<x> Slot {self.slot:<2} {self.pin_id!s:<14}| dispensed {consumption:.0f}ml")
-        callback(consumption, True)
-        return consumption
+            _logger.info(f"<x> Slot {self.slot:<2} {self.pin_id!s:<14}| dispensed {consumption:.0f}ml")
 
     def stop(self) -> None:
         super().stop()

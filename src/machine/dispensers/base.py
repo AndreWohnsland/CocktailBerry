@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 from threading import Event
 from typing import TYPE_CHECKING
 
@@ -16,8 +16,10 @@ ProgressCallback = Callable[[float, bool], None]
 class BaseDispenser(ABC):
     """Base class for all dispenser types.
 
-    Each dispenser controls one pump slot. The dispense() method is blocking
-    and should be called from a worker thread by the MachineController.
+    Each dispenser controls one pump slot. Subclasses implement
+    ``_dispense_steps()`` as a generator that yields consumption values.
+    The concrete ``dispense()`` method handles stop-event management,
+    scale taring, and progress callbacks automatically.
     """
 
     def __init__(self, slot: int, config: BasePumpConfig, scale: ScaleInterface | None = None) -> None:
@@ -37,17 +39,61 @@ class BaseDispenser(ABC):
     def setup(self) -> None:
         """Initialize hardware resources for this dispenser."""
 
-    @abstractmethod
     def dispense(self, amount_ml: float, pump_speed: int, callback: ProgressCallback) -> float:
         """Dispense the given amount at the given pump speed.
 
-        This method is blocking and returns the actual consumption in ml.
-        The callback is called periodically with (consumption_ml, is_done).
-        Implementations should check self._stop_event to support cancellation.
-        pump_speed is the percentage of the pump's configured volume_flow (100 = full speed).
+        This is a template method that drives ``_dispense_steps()``.
+        It handles clearing/checking the stop event, taring the scale,
+        and calling the progress callback. Subclasses normally only need
+        to implement ``_dispense_steps()``.
 
-        Important: call self._stop_event.clear() at the start of your implementation
-        to reset the event from any previous stop() call.
+        pump_speed is the percentage of the pump's configured volume_flow
+        (100 = full speed). Returns actual consumption in ml.
+        """
+        self._stop_event.clear()
+        if self._scale is not None:
+            self._scale.tare()
+        consumption = 0.0
+        for consumption in self._dispense_steps(amount_ml, pump_speed):
+            if self._stop_event.is_set():
+                break
+            callback(consumption, False)
+        callback(consumption, True)
+        return consumption
+
+    @abstractmethod
+    def _dispense_steps(self, amount_ml: float, pump_speed: int) -> Generator[float]:
+        """Yield consumption values during dispensing.
+
+        The base ``dispense()`` iterates this generator and handles:
+        - Clearing / checking the stop event (cancellation)
+        - Taring the scale (if present)
+        - Calling progress callbacks
+
+        Implementations should:
+        1. Activate hardware, then yield consumption updates in a loop.
+        2. Use ``self._get_consumption(estimate)`` to read the scale when
+           available or fall back to a time/step-based estimate.
+        3. Use ``try/finally`` for hardware cleanup — the generator is
+           automatically closed on cancellation, so ``finally`` runs
+           in both normal and stop scenarios.
+
+        Minimal example::
+
+            def _dispense_steps(self, amount_ml, pump_speed):
+                flow = self.volume_flow * pump_speed / 100
+                elapsed = 0.0
+                try:
+                    self._activate()
+                    while True:
+                        time.sleep(0.01)
+                        elapsed += 0.01
+                        consumption = self._get_consumption(elapsed * flow)
+                        yield consumption
+                        if consumption >= amount_ml:
+                            return
+                finally:
+                    self._deactivate()
         """
 
     def stop(self) -> None:

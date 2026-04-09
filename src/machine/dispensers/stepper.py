@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 from src.logger_handler import LoggerHandler
-from src.machine.dispensers.base import BaseDispenser, ProgressCallback
+from src.machine.dispensers.base import BaseDispenser
 
 if TYPE_CHECKING:
     from src.config.config_types import StepperPumpConfig
@@ -62,15 +63,11 @@ class StepperDispenser(BaseDispenser):
         except Exception as e:
             _logger.error(f"Failed to initialize stepper motor for slot {self.slot}: {e}")
 
-    def dispense(self, amount_ml: float, pump_speed: int, callback: ProgressCallback) -> float:
-        self._stop_event.clear()
+    def _dispense_steps(self, amount_ml: float, pump_speed: int) -> Generator[float]:
         flow_rate = self.volume_flow * pump_speed / 100
-        # Run stepper at max speed for the duration needed to dispense the volume
         duration = amount_ml / flow_rate if flow_rate > 0 else 0.0
         step_delay = _DEFAULT_STEP_DELAY
-        # motor_go sleeps twice per step (HIGH + LOW), so each step = 2 * step_delay
         total_steps = max(1, int(duration / (2 * step_delay)))
-        # How many steps per chunk to maintain ~100Hz callback rate
         steps_per_chunk = max(1, int(_CHUNK_INTERVAL / (2 * step_delay)))
 
         mode = "scale" if self._scale is not None else f"{duration:.1f}s"
@@ -79,14 +76,11 @@ class StepperDispenser(BaseDispenser):
             f"{total_steps} steps @ {step_delay * 1000:.3f}ms/step ({mode})"
         )
 
-        if self._scale is not None:
-            self._scale.tare()
-
         steps_done = 0
         consumption = 0.0
         start = time.perf_counter()
         try:
-            while steps_done < total_steps and not self._stop_event.is_set():
+            while steps_done < total_steps:
                 chunk = min(steps_per_chunk, total_steps - steps_done)
                 if self._motor is not None:
                     self._motor.motor_go(
@@ -100,16 +94,12 @@ class StepperDispenser(BaseDispenser):
                 steps_done += chunk
                 step_estimate = (steps_done / total_steps) * amount_ml
                 consumption = self._get_consumption(step_estimate)
+                yield consumption
                 if consumption >= amount_ml:
-                    break
-                callback(consumption, False)
+                    return
         finally:
-            pass
-
-        elapsed = time.perf_counter() - start
-        _logger.info(f"<x> Slot {self.slot:<2} {self._log_label}| dispensed {consumption:.0f}ml in {elapsed:.1f}s")
-        callback(consumption, True)
-        return consumption
+            elapsed = time.perf_counter() - start
+            _logger.info(f"<x> Slot {self.slot:<2} {self._log_label}| dispensed {consumption:.0f}ml in {elapsed:.1f}s")
 
     def cleanup(self) -> None:
         self.stop()
