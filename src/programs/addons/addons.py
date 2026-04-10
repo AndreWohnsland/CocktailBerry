@@ -10,7 +10,7 @@ import time
 from collections.abc import Callable
 from dataclasses import fields
 from importlib import import_module
-from typing import TYPE_CHECKING, Any, Literal, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Literal
 
 import requests
 from requests.exceptions import ConnectionError as ReqConnectionError
@@ -18,6 +18,7 @@ from requests.exceptions import ConnectionError as ReqConnectionError
 from src.filepath import ADDON_FOLDER
 from src.logger_handler import LoggerHandler
 from src.models import AddonData, Cocktail
+from src.programs.addons import AddonInterface
 
 with contextlib.suppress(ModuleNotFoundError):
     from PyQt6.QtWidgets import QVBoxLayout
@@ -40,43 +41,6 @@ _GITHUB_ADDON_SOURCE = "https://raw.githubusercontent.com/AndreWohnsland/Cocktai
 
 class CouldNotInstallAddonError(Exception):
     pass
-
-
-@runtime_checkable
-class AddonInterface(Protocol):
-    def version(self) -> str:
-        """Return the version of the addon."""
-        return getattr(self, "ADDON_VERSION", "1.0.0")
-
-    def define_configuration(self) -> None:
-        """Define configuration for the addon."""
-
-    def setup(self) -> None:
-        """Init the addon."""
-
-    def cleanup(self) -> None:
-        """Clean up the addon."""
-
-    def before_cocktail(self, data: dict[str, Any]) -> None:
-        """Logic to be executed before the cocktail."""
-
-    def after_cocktail(self, data: dict[str, Any]) -> None:
-        """Logic to be executed after the cocktail."""
-
-    def build_gui(
-        self,
-        container: QVBoxLayout,
-        button_generator: Callable[[str, Callable[[], None]], None],
-    ) -> bool:
-        """Logic to build up the addon GUI."""
-        return False
-
-    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]) -> None:
-        """Will be executed in the background loop and can trigger a cocktail preparation.
-
-        Use the prepare function to start a cocktail preparation with prepare(cocktail).
-        Return if cocktail preparation was successful and a message.
-        """
 
 
 class AddOnManager:

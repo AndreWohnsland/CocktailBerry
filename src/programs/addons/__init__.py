@@ -1,11 +1,15 @@
+import contextlib
 import re
+from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal, Protocol, runtime_checkable
 
 import typer
 
 from src import __version__
+from src.config.config_types import ConfigClass
 from src.filepath import (
     ADDON_FOLDER,
     ADDON_SKELETON,
@@ -14,6 +18,59 @@ from src.filepath import (
     HARDWARE_ADDON_FOLDER,
     HARDWARE_EXTENSION_SKELETON,
 )
+from src.models import Cocktail
+
+with contextlib.suppress(ModuleNotFoundError):
+    from PyQt6.QtWidgets import QVBoxLayout
+
+
+@runtime_checkable
+class AddonInterface(Protocol):
+    def version(self) -> str:
+        """Return the version of the addon."""
+        return getattr(self, "ADDON_VERSION", "1.0.0")
+
+    def define_configuration(self) -> None:
+        """Define configuration for the addon."""
+
+    def setup(self) -> None:
+        """Init the addon."""
+
+    def cleanup(self) -> None:
+        """Clean up the addon."""
+
+    def before_cocktail(self, data: dict[str, Any]) -> None:
+        """Logic to be executed before the cocktail."""
+
+    def after_cocktail(self, data: dict[str, Any]) -> None:
+        """Logic to be executed after the cocktail."""
+
+    def build_gui(
+        self,
+        container: QVBoxLayout,
+        button_generator: Callable[[str, Callable[[], None]], None],
+    ) -> bool:
+        """Logic to build up the addon GUI."""
+        return False
+
+    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]) -> None:
+        """Will be executed in the background loop and can trigger a cocktail preparation.
+
+        Use the prepare function to start a cocktail preparation with prepare(cocktail).
+        Return if cocktail preparation was successful and a message.
+        """
+
+
+class BaseHardwareExtension[ConfigT: ConfigClass](ABC):
+    """Base class for custom hardware extensions."""
+
+    @abstractmethod
+    def create(self, config: ConfigT) -> Any:
+        """Create and return the shared hardware instance."""
+
+    @abstractmethod
+    def cleanup(self, instance: Any) -> None:
+        """Release resources for a previously created hardware instance."""
 
 
 @dataclass

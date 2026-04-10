@@ -8,6 +8,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import ConfigClass, ConfigInterface, DictType
 from src.filepath import HARDWARE_ADDON_FOLDER
 from src.logger_handler import LoggerHandler
+from src.programs.addons import BaseHardwareExtension
 
 _logger = LoggerHandler("HardwareExtensionManager")
 _check_extension = "please check hardware extension or contact provider"
@@ -20,8 +21,7 @@ class HardwareAddonEntry:
     name: str
     config_class: type[ConfigClass]
     config_fields: dict[str, ConfigInterface[Any]]
-    create_fn: Any  # Callable[[ConfigClass], Any]
-    cleanup_fn: Any  # Callable[[Any], None]
+    implementation: BaseHardwareExtension[Any]
     instance: Any = field(default=None)
 
 
@@ -55,14 +55,13 @@ class HardwareExtensionManager:
 
         config_class = getattr(module, "ExtensionConfig", None)
         config_fields: dict[str, ConfigInterface[Any]] | None = getattr(module, "CONFIG_FIELDS", None)
-        create_fn = getattr(module, "create", None)
-        cleanup_fn = getattr(module, "cleanup", None)
+        implementation_class = getattr(module, "Implementation", None)
 
-        if config_class is None or config_fields is None or create_fn is None or cleanup_fn is None:
+        if config_class is None or config_fields is None or implementation_class is None:
             _logger.warning(
                 f"Hardware extension '{name}' in {filename} is missing ExtensionConfig, "
                 "CONFIG_FIELDS, "
-                f"create, or cleanup, {_check_extension}."
+                f"or Implementation, {_check_extension}."
             )
             return
 
@@ -70,20 +69,21 @@ class HardwareExtensionManager:
             _logger.warning(f"Duplicate hardware extension name '{name}' in {filename}, skipping.")
             return
 
-        if not issubclass(config_class, ConfigClass):
-            _logger.warning(f"ConfigClass in '{name}' does not inherit from ConfigClass, {_check_extension}.")
+        if not isinstance(config_class, type) or not issubclass(config_class, ConfigClass):
+            _logger.warning(f"ExtensionConfig in '{name}' does not inherit from ConfigClass, {_check_extension}.")
             return
 
-        if not callable(create_fn) or not callable(cleanup_fn):
-            _logger.warning(f"create/cleanup in '{name}' must be callable, {_check_extension}.")
+        if not isinstance(implementation_class, type) or not issubclass(implementation_class, BaseHardwareExtension):
+            _logger.warning(
+                f"Implementation in '{name}' does not inherit from BaseHardwareExtension, {_check_extension}."
+            )
             return
 
         entry = HardwareAddonEntry(
             name=name,
             config_class=config_class,
             config_fields=config_fields,
-            create_fn=create_fn,
-            cleanup_fn=cleanup_fn,
+            implementation=implementation_class(),
         )
         self.hardware[name] = entry
         _logger.info(f"Loaded hardware extension: {name}")
@@ -117,7 +117,7 @@ class HardwareExtensionManager:
                 _logger.warning(f"Config for hardware extension '{name}' not found, skipping.")
                 continue
             try:
-                instance = entry.create_fn(config)
+                instance = entry.implementation.create(config)
                 entry.instance = instance
                 result[name] = instance
                 _logger.info(f"Created hardware extension instance: {name}")
@@ -130,7 +130,7 @@ class HardwareExtensionManager:
         for name, entry in self.hardware.items():
             if entry.instance is not None:
                 try:
-                    entry.cleanup_fn(entry.instance)
+                    entry.implementation.cleanup(entry.instance)
                     _logger.info(f"Cleaned up hardware extension: {name}")
                 except Exception as e:
                     _logger.error(f"Failed to cleanup hardware extension '{name}': {e}")

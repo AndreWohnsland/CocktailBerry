@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.config.config_types import ConfigClass as BaseConfigClass
-from src.config.config_types import StringType
+from src.config.config_types import ConfigClass, StringType
 from src.logger_handler import LoggerHandler
+from src.programs.addons import BaseHardwareExtension
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # This is a hardware extension skeleton.
@@ -13,15 +13,14 @@ from src.logger_handler import LoggerHandler
 #   EXTENSION_NAME - unique name for this hardware extension
 #   CONFIG_FIELDS  - dict of config fields for GUI configuration
 #   ExtensionConfig - config class inheriting from config_types.ConfigClass
-#   create         - function that creates the hardware instance from config
-#   cleanup        - function that cleans up the hardware instance
+#   Implementation - class inheriting from BaseHardwareExtension
 
 
 EXTENSION_NAME = "EXTENSION_NAME_HOLDER"
 _logger = LoggerHandler("EXTENSION_NAME_HOLDER")
 
 
-class ExtensionConfig(BaseConfigClass):
+class ExtensionConfig(ConfigClass):
     """Custom configuration for this hardware extension.
 
     Define any attributes your hardware needs.
@@ -50,26 +49,41 @@ CONFIG_FIELDS: dict[str, Any] = {
 }
 
 
-def create(config: ExtensionConfig) -> Any:
-    """Create and return your hardware instance.
+class MyHardware:
+    """Your custom hardware class.
 
-    This is called once during machine initialization, before dispensers are set up.
-    The returned object is stored in ``hardware.extra["EXTENSION_NAME_HOLDER"]``
-    and can be accessed by your dispenser extensions.
-
-    You decide the shape of the return value — it can be a single object,
-    a list, a dict, or anything your dispenser code expects.
+    Rename this and add your own attributes and methods.
     """
-    _logger.info(f"Creating hardware: {config.label}")
-    # >>> Initialize your hardware here <<<
-    # Example: return MyUartBoard(config.port, config.baud_rate)
-    return None
+
+    def __init__(self, label: str) -> None:
+        self.label = label
+
+    def close(self) -> None:
+        """Release any resources (serial ports, connections, etc.)."""
 
 
-def cleanup(instance: Any) -> None:
-    """Clean up the hardware instance.
+class Implementation(BaseHardwareExtension[ExtensionConfig]):
+    """Hardware extension implementation.
 
-    Called at program shutdown. Release any resources (serial ports, connections, etc.).
+    The created object is stored in ``hardware.extra["EXTENSION_NAME_HOLDER"]``
+    and can be accessed by your other hardware (dispenser) extensions.
     """
-    _logger.info("Cleaning up hardware")
-    # >>> Clean up your hardware here <<<
+
+    def create(self, config: ExtensionConfig) -> MyHardware:
+        """Create and return your hardware instance.
+
+        This is called once during machine initialization, before dispensers are set up.
+        You decide the shape of the return value.
+        """
+        _logger.info(f"Creating hardware: {config.label}")
+        # >>> Initialize your hardware here <<<
+        return MyHardware(config.label)
+
+    def cleanup(self, instance: MyHardware) -> None:
+        """Clean up the hardware instance.
+
+        Called at program shutdown. Release any resources (serial ports, connections, etc.).
+        """
+        _logger.info("Cleaning up hardware")
+        # >>> Clean up your hardware here <<<
+        instance.close()
