@@ -1,18 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from importlib import import_module
+from dataclasses import dataclass
 from typing import Any
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import BasePumpConfig, ChooseOptions, ConfigInterface, DictType, FloatType, IntType
 from src.config.validators import build_number_limiter
 from src.filepath import DISPENSER_ADDON_FOLDER
-from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser
-
-_logger = LoggerHandler("DispenserExtensionManager")
-_check_extension = "please check dispenser extension or contact provider"
+from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionManager
 
 # Shared BasePumpConfig fields auto-injected into every dispenser extension.
 _SHARED_PUMP_FIELDS: dict[str, ConfigInterface[Any]] = {
@@ -25,99 +21,60 @@ _SHARED_PUMP_FIELDS: dict[str, ConfigInterface[Any]] = {
 
 
 @dataclass
-class DispenserAddonEntry:
+class DispenserAddonEntry(BaseAddonEntry):
     """Registry entry for one custom dispenser extension."""
 
-    name: str
     config_class: type[BasePumpConfig]
-    config_fields: dict[str, ConfigInterface[Any]]
     implementation_class: type[BaseDispenser]
-    full_config_fields: dict[str, ConfigInterface[Any]] = field(default_factory=dict)
 
 
-class DispenserExtensionManager:
+class DispenserExtensionManager(BaseExtensionManager[DispenserAddonEntry]):
     """Discovers and registers custom dispenser extensions from addons/dispensers/."""
 
-    def __init__(self) -> None:
-        self.dispensers: dict[str, DispenserAddonEntry] = {}
-        self._loaded = False
+    _folder = DISPENSER_ADDON_FOLDER
+    _import_prefix = "addons.dispensers"
+    _label = "dispenser extension"
 
-    def _load_all(self) -> None:
-        if not DISPENSER_ADDON_FOLDER.exists():
-            return
-        extension_files = DISPENSER_ADDON_FOLDER.glob("*.py")
-        for path in extension_files:
-            if path.stem.startswith("__"):
-                continue
-            self._load_extension(path.stem)
-
-    def _load_extension(self, filename: str) -> None:
-        try:
-            module = import_module(f"addons.dispensers.{filename}")
-        except ImportError as e:
-            _logger.error(f"Could not import dispenser extension: {filename} due to <{e}>, {_check_extension}.")
+    def _validate_and_register(
+        self,
+        name: str,
+        config_class: type,
+        config_fields: dict[str, ConfigInterface[Any]],
+        implementation_class: type,
+    ) -> None:
+        if not issubclass(implementation_class, BaseDispenser):
+            self._logger.warning(f"Implementation in '{name}' does not inherit from BaseDispenser, {self._check_msg}.")
             return
 
-        name: str | None = getattr(module, "EXTENSION_NAME", None)
-        if not name:
-            _logger.warning(f"Missing EXTENSION_NAME in {filename}, {_check_extension}.")
-            return
-
-        config_class = getattr(module, "ExtensionConfig", None)
-        config_fields: dict[str, ConfigInterface[Any]] | None = getattr(module, "CONFIG_FIELDS", None)
-        implementation_class = getattr(module, "Implementation", None)
-
-        if config_class is None or config_fields is None or implementation_class is None:
-            _logger.warning(
-                f"Dispenser extension '{name}' in {filename} is missing ExtensionConfig, "
-                "CONFIG_FIELDS, "
-                f"or Implementation, {_check_extension}."
+        if not issubclass(config_class, BasePumpConfig):
+            self._logger.warning(
+                f"ExtensionConfig in '{name}' does not inherit from BasePumpConfig, {self._check_msg}."
             )
             return
 
-        if name in self.dispensers:
-            _logger.warning(f"Duplicate dispenser extension name '{name}' in {filename}, skipping.")
-            return
-
-        # Validate that Implementation inherits from BaseDispenser
-
-        if not issubclass(implementation_class, BaseDispenser):
-            _logger.warning(f"Implementation in '{name}' does not inherit from BaseDispenser, {_check_extension}.")
-            return
-
-        # Validate that ExtensionConfig inherits from BasePumpConfig
-
-        if not issubclass(config_class, BasePumpConfig):
-            _logger.warning(f"ExtensionConfig in '{name}' does not inherit from BasePumpConfig, {_check_extension}.")
-            return
-
-        entry = DispenserAddonEntry(
+        self.entries[name] = DispenserAddonEntry(
             name=name,
             config_class=config_class,
             config_fields=config_fields,
             implementation_class=implementation_class,
         )
-        self.dispensers[name] = entry
-        _logger.info(f"Loaded dispenser extension: {name}")
+        self._logger.info(f"Loaded dispenser extension: {name}")
 
     def build_full_config_fields(self) -> None:
         """Build full config fields for all extensions and register them as PUMP_CONFIG variants.
 
         Must be called before config is read, so the new dispenser types are known.
         """
-        if not self._loaded:
-            self._load_all()
-            self._loaded = True
-        if not self.dispensers:
+        self._ensure_loaded()
+        if not self.entries:
             return
 
-        for name, entry in self.dispensers.items():
+        for name, entry in self.entries.items():
             full_fields: dict[str, ConfigInterface[Any]] = {}
             # Add shared base fields first (pump_type comes first in the UI)
             full_fields.update(_SHARED_PUMP_FIELDS)
             # Add user-defined fields after shared ones
             full_fields.update(entry.config_fields)
-            entry.full_config_fields = full_fields
             cfg.add_discriminator_variant("PUMP_CONFIG", name, DictType(full_fields, entry.config_class))
 
 

@@ -48,13 +48,13 @@ def test_hardware_manager_supports_class_based_implementation(monkeypatch: pytes
     result = manager.create_all()
 
     assert result == {"ClassHardware": {"label": "alpha"}}
-    implementation = manager.hardware["ClassHardware"].implementation
+    implementation = manager.entries["ClassHardware"].implementation
     assert isinstance(implementation, DummyImplementation)
 
     manager.cleanup_all()
 
     assert implementation.cleaned_instances == [{"label": "alpha"}]
-    assert manager.hardware["ClassHardware"].instance is None
+    assert manager.entries["ClassHardware"].instance is None
 
 
 def test_hardware_manager_rejects_missing_implementation(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -68,4 +68,4 @@ def test_hardware_manager_rejects_missing_implementation(monkeypatch: pytest.Mon
 
     manager._load_extension("incomplete")
 
-    assert "Incomplete" not in manager.hardware
+    assert "Incomplete" not in manager.entries
