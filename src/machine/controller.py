@@ -48,13 +48,16 @@ class MachineController:
         self._initialized = True
 
     def init_machine(self) -> None:
+        # Stage 1: core hardware + extensions (no dependencies)
         self.hardware = HardwareContext(
             pin_controller=PinController(),
             led_controller=LedController(),
-            scale=create_scale(cfg.SCALE_CONFIG),
-            carriage=create_carriage(cfg.CARRIAGE_CONFIG),
             extra=HARDWARE_ADDONS.create_all(),
         )
+        # Stage 2: scale can access pins, leds, extra
+        self.hardware.scale = create_scale(cfg.SCALE_CONFIG, self.hardware)
+        # Stage 3: carriage can access pins, leds, extra, AND scale
+        self.hardware.carriage = create_carriage(cfg.CARRIAGE_CONFIG, self.hardware)
         self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()
         self.default_led()

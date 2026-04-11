@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.config.config_types import ConfigClass, StringType
+from src.config.config_types import ConfigClass, ConfigInterface, StringType
 from src.logger_handler import LoggerHandler
 from src.programs.addons import BaseHardwareExtension
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # This is a hardware extension skeleton.
-# For more information see: https://docs.cocktailberry.org/hardware-extensions/
+# For more information see: https://docs.cocktailberry.org/hardware-extensions/#hardware-context-extensions
 # Your custom extension needs four exports:
 #   EXTENSION_NAME - unique name for this hardware extension
 #   CONFIG_FIELDS  - dict of config fields for GUI configuration
@@ -44,7 +44,7 @@ class ExtensionConfig(ConfigClass):
 
 
 # Define your config fields here. These will appear in the configuration UI.
-CONFIG_FIELDS: dict[str, Any] = {
+CONFIG_FIELDS: dict[str, ConfigInterface] = {
     "label": StringType(default="default"),
 }
 

@@ -2,17 +2,17 @@ from __future__ import annotations
 
 import time
 from collections.abc import Generator
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from src import ConsumptionEstimationType
-from src.config.config_types import BasePumpConfig, StringType
+from src.config.config_types import BasePumpConfig, ConfigInterface, StringType
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser
 from src.machine.hardware import HardwareContext
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # This is a hardware extension skeleton.
-# For more information see: https://docs.cocktailberry.org/hardware-extensions/
+# For more information see: https://docs.cocktailberry.org/hardware-extensions/#dispensers
 # Your custom extension needs four exports:
 #   EXTENSION_NAME - unique name shown in the hardware type dropdown
 #   CONFIG_FIELDS  - dict of extra config fields (beyond the shared BasePumpConfig fields)
@@ -62,7 +62,7 @@ class ExtensionConfig(BasePumpConfig):
 
 # Only define the EXTRA fields here. Shared fields (volume_flow, tube_volume, etc.)
 # and the pump_type dropdown are auto-injected by the extension manager.
-CONFIG_FIELDS: dict[str, Any] = {
+CONFIG_FIELDS: dict[str, ConfigInterface] = {
     "label": StringType(default="default"),
 }
 

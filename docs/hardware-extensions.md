@@ -1,7 +1,7 @@
 # Custom Hardware Extensions
 
 CocktailBerry allows you to create your own implementations of hardware components.
-This way you can integrate custom dispensers, scales, or carriages that are not natively supported.
+This way you can integrate custom dispensers, scales, carriages or even other hardware components that are not natively supported.
 Hardware extensions live in subfolders of the `addons` folder and are automatically discovered at startup.
 
 !!! info "Only needed for unsupported hardware"
@@ -10,9 +10,59 @@ Hardware extensions live in subfolders of the `addons` folder and are automatica
 
 Supported types are:
 
+- **Hardware context extensions** — shared hardware instances accessible to dispensers and other code via the `HardwareContext` (e.g. UART boards, SPI buses, custom controllers)
 - **Dispensers** — control pumps and valves for dispensing liquids
 - **Scales** — read weight measurements for weight-based recipes and estimation
 - **Carriages** — control the movement of the pump carriage for multi-position setups
+
+Best way to start is use the CLI commands to create skeleton files for your extensions, then fill in the implementation details.
+See the sections below for detailed guides and examples for each type.
+
+## Architecture Overview
+
+The diagram below shows how the different extension types relate to each other and to the rest of the machine at startup and at runtime.
+
+```mermaid
+flowchart TD
+    subgraph stage1["1. Core/Shared Hardware"]
+        pin["PinController"]
+        led["LedController"]
+        hw_ext["Hardware Extensions\n(addons/hardware/)"]
+        pin --> hctx
+        led --> hctx
+        hw_ext --> hctx
+        hctx["HardwareContext\ncreated"]
+    end
+
+    stage1 -->|"HardwareContext passed"| stage2
+
+    subgraph stage2["2. Scale creation"]
+        scale["Scale\n(addons/scales/)"]
+    scale --> hctx2["HardwareContext\n(+ scale)"]
+    end
+
+    stage2 -->|"HardwareContext passed"| stage3
+
+    subgraph stage3["3. Carriage creation"]
+        carriage["Carriage\n(addons/carriages/)"]
+        carriage --> hctx3["HardwareContext\n(+ carriage)"]
+    end
+
+    stage3 -->|"HardwareContext passed"| dispensers
+
+    subgraph dispensers["4. Dispensers creation (one per slot)"]
+        custom["Dispenser\n(addons/dispensers/)"]
+    end
+```
+
+**Reading the diagram:**
+
+The `HardwareContext` is built up in stages, so each component has access to everything created before it:
+
+1. **Core hardware** — `PinController`, `LedController`, and hardware extension instances (`extra` dict) are created first.
+2. **Scale** — receives the context, so it can access pins, LEDs, and hardware extensions if needed.
+3. **Carriage** — receives the context including the scale, so it can access everything above.
+4. **Dispensers** — each slot gets the fully assembled context.
 
 ## Extension Structure
 
@@ -28,7 +78,7 @@ Every hardware extension file — regardless of type — must export four things
 The concrete base classes for `ExtensionConfig` and `Implementation` depend on the hardware type.
 See the type-specific sections below for details.
 
-### Available Config Field Types
+## Available Config Field Types
 
 Use these types from `src.config.config_types` to define your custom fields:
 
@@ -39,6 +89,7 @@ Use these types from `src.config.config_types` to define your custom fields:
 | `StringType` | Text input    | `StringType(default="my_value")`                             |
 | `BoolType`   | Checkbox      | `BoolType(check_name="Enable Feature")`                      |
 | `ChooseType` | Dropdown      | `ChooseType(allowed=["A", "B"], default="A")`                |
+| `ListType`   | List input    | `ListType(BoolType(), default=[])`                           |
 
 Validators like `build_number_limiter(min, max)` from `src.config.validators` can be used to constrain values.
 You always can write your own, for more information, see also the config section under addons.
@@ -55,21 +106,6 @@ This is the recommended approach when:
 - Multiple pumps share a single communication bus (e.g. a UART board controlling N pumps)
 - You need one-time initialization for hardware that several dispensers depend on
 - You want GUI-configurable settings for that shared hardware (not hard-coded)
-
-### Extension Contract
-
-A hardware context extension is a single Python file placed in `addons/hardware/`.
-It must export four things:
-
-| Export            | Type                          | Description                                                                           |
-| ----------------- | ----------------------------- | ------------------------------------------------------------------------------------- |
-| `EXTENSION_NAME`  | `str`                         | Unique name — used as the key in `hardware.extra`                                     |
-| `ExtensionConfig` | `type[ConfigClass]`           | Config class inheriting from `ConfigClass`                                            |
-| `CONFIG_FIELDS`   | `dict[str, ConfigInterface]`  | Config fields for the GUI                                                             |
-| `Implementation`  | `type[BaseHardwareExtension]` | Class inheriting from `BaseHardwareExtension` with `create()` and `cleanup()` methods |
-
-The `create()` method's return value is opaque to the framework.
-You decide whether it's a single object, a list, a dict, or anything else — your dispenser code knows how to use it.
 
 ### Getting Started
 
@@ -88,8 +124,8 @@ Hardware context extensions follow this lifecycle:
 
 1. **Discovery & config registration** — Extensions are discovered and `CONFIG_FIELDS` are registered before config is read. The config key is `HW_<EXTENSION_NAME>` (uppercase, spaces replaced with underscores).
 2. **Config load** — The GUI can now show and edit the hardware extension fields.
-3. **`Implementation.create(config)`** — Called during `init_machine()`, before dispensers are set up. The returned instance is stored in `hardware.extra["YourExtensionName"]`.
-4. **Dispensers set up** — Dispensers receive the full `HardwareContext` (including `extra`). They access your hardware via `hardware.extra["YourExtensionName"]`.
+3. **`Implementation.create(config)`** — Called during `init_machine()`, before specific hardware (sub-)components are set up. The returned instance is stored in `hardware.extra["YourExtensionName"]`.
+4. **Component set up** — Other components like dispensers receive the full `HardwareContext` (including `extra`). They access your hardware via `hardware.extra["YourExtensionName"]`.
 5. **`Implementation.cleanup(instance)`** — Called at shutdown, before pins and other core hardware are released.
 
 ### Full Example
@@ -101,16 +137,16 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.config.config_types import ConfigClass, IntType, StringType
+from src.config.config_types import ConfigClass, ConfigInterface, IntType, StringType # (1)!
 from src.config.validators import build_number_limiter
 from src.logger_handler import LoggerHandler
-from src.programs.addons import BaseHardwareExtension
+from src.programs.addons import BaseHardwareExtension # (2)!
 
-EXTENSION_NAME = "UartBoard"
+EXTENSION_NAME = "UartBoard" # (3)!
 _logger = LoggerHandler("UartBoard")
 
 
-class ExtensionConfig(ConfigClass):
+class ExtensionConfig(ConfigClass): # (4)!
     """Configuration for the UART pump board."""
 
     port: str
@@ -120,26 +156,26 @@ class ExtensionConfig(ConfigClass):
         self,
         port: str = "/dev/ttyUSB0",
         baud_rate: int = 9600,
-        **kwargs: Any,
+        **kwargs: Any, # (5)!
     ) -> None:
         self.port = port
         self.baud_rate = baud_rate
 
-    def to_config(self) -> dict[str, Any]:
+    def to_config(self) -> dict[str, Any]: # (6)!
         return {"port": self.port, "baud_rate": self.baud_rate}
 
     @classmethod
-    def from_config(cls, config: dict[str, Any]) -> ExtensionConfig:
+    def from_config(cls, config: dict[str, Any]) -> ExtensionConfig: # (7)!
         return cls(**config)
 
 
-CONFIG_FIELDS: dict[str, Any] = {
+CONFIG_FIELDS: dict[str, ConfigInterface] = { # (8)!
     "port": StringType(default="/dev/ttyUSB0"),
     "baud_rate": IntType([build_number_limiter(1200, 115200)]),
 }
 
 
-class UartConnection:
+class UartConnection: # (9)!
     """Singleton-like UART connection managed by the framework."""
 
     def __init__(self, port: str, baud_rate: int) -> None:
@@ -158,19 +194,28 @@ class UartConnection:
         _logger.info("UART connection closed")
 
 
-class Implementation(BaseHardwareExtension[ExtensionConfig]):  # (1)!
+class Implementation(BaseHardwareExtension[ExtensionConfig]):  # (10)!
     """Manages the UART board lifecycle."""
 
-    def create(self, config: ExtensionConfig) -> UartConnection:  # (2)!
+    def create(self, config: ExtensionConfig) -> UartConnection:  # (11)!
         return UartConnection(config.port, config.baud_rate)
 
-    def cleanup(self, instance: UartConnection) -> None:  # (3)!
+    def cleanup(self, instance: UartConnection) -> None:  # (12)!
         instance.close()
 ```
 
-1. Your implementation must inherit from `BaseHardwareExtension`.
-2. Return value can be any type — your dispenser extensions cast it accordingly.
-3. Called at shutdown to release resources.
+1. Import `ConfigClass` for your config and any field types you need. `ConfigInterface` is the type hint for the `CONFIG_FIELDS` dict values.
+2. Import `BaseHardwareExtension` — the base class for all hardware context extensions.
+3. Unique name used to identify this extension. The config key will be `HW_UARTBOARD`. Dispensers access the instance via `hardware.extra["UartBoard"]`.
+4. Your config class must inherit from `ConfigClass`. Define all settings your hardware needs as attributes.
+5. Always accept `**kwargs` to stay forward-compatible with future framework fields.
+6. Serialize all fields to a dict — the framework calls this to persist your config.
+7. Deserialize from a dict — the framework calls this to restore your config from the saved state.
+8. Define your config fields here. These appear in the configuration UI so the user can adjust settings. Use validators like `build_number_limiter` to constrain values.
+9. This is your actual hardware class — it can be any type you want. The framework stores the instance returned by `create()` in `hardware.extra["UartBoard"]` so dispensers can use it.
+10. Your implementation must inherit from `BaseHardwareExtension`, parameterized with your `ExtensionConfig` type.
+11. Called once during `init_machine()`. Create and return your hardware instance here. The return value can be any type — your dispenser extensions cast it accordingly.
+12. Called at shutdown to release resources. Receives the same instance that `create()` returned.
 
 ### Using from a Dispenser Extension
 
@@ -180,13 +225,15 @@ A dispenser extension accesses the hardware context extension via `self.hardware
 class Implementation(BaseDispenser):
     def __init__(self, slot, config, hardware):
         super().__init__(slot, config, hardware)
-        # Access the UART board from hardware.extra
-        self._board = hardware.extra["UartBoard"]
+        self._board = hardware.extra["UartBoard"] # (1)!
 
     def _dispense_steps(self, amount_ml, pump_speed):
-        self._board.send_command(self.slot, amount_ml)
+        self._board.send_command(self.slot, amount_ml) # (2)!
         # ... yield consumption updates ...
 ```
+
+1. The key must match the `EXTENSION_NAME` of your hardware context extension. The framework guarantees that hardware extensions are created before dispensers, so the instance is always available here.
+2. You can now call any method on the shared hardware instance. Since all dispensers receive the same `HardwareContext`, they all share the same `UartConnection` object.
 
 For the full dispenser extension guide (including `hardware` access), see the [Dispensers](#dispensers) section below.
 
@@ -202,8 +249,6 @@ For dispensers, the base classes are:
 - `Implementation` inherits from **`BaseDispenser`** (`src.machine.dispensers.base`)
 
 ### Getting Started
-
-First, clone the latest version of CocktailBerry in your development environment and install all dependencies with `uv sync`.
 
 !!! tip "Use the CLI"
     Create a skeleton file with the CLI command:
@@ -226,6 +271,7 @@ Every dispenser automatically gets the following shared fields injected — you 
 
 Only define your **extra** fields in `CONFIG_FIELDS`.
 These will appear in the configuration UI between the pump type dropdown and the shared fields.
+While you might not need all these shared fields for every dispenser, they are commonly used and provide a consistent configuration experience across dispenser types.
 
 ### ExtensionConfig
 
@@ -247,7 +293,7 @@ Your `Implementation` class must inherit from `BaseDispenser` and implement thes
 | `stop()`                                 | no       | Emergency stop. Default sets the internal stop event. Override and call `super().stop()` if you need additional hardware cleanup (e.g. close pin). |
 | `cleanup()`                              | no       | Release hardware resources at shutdown. Default does nothing.                                                                                      |
 
-The constructor receives `slot` (pump position), `config` (your `ExtensionConfig` instance), `hardware` (`HardwareContext` — provides access to pin controller, scale, LED controller, carriage, and `extra` dict of hardware extension instances), and optionally `scale` (for weight-based estimation, automatically resolved from the hardware context).
+The constructor receives `slot` (pump position), `config` (your `ExtensionConfig` instance), `hardware` (`HardwareContext` — provides access to pin controller, scale, LED controller, carriage, and `extra` dict of hardware extension instances).
 
 #### How `_dispense_steps()` Works
 
@@ -300,7 +346,7 @@ from collections.abc import Generator
 from typing import TYPE_CHECKING, Any
 
 from src import ConsumptionEstimationType
-from src.config.config_types import BasePumpConfig, StringType # (1)!
+from src.config.config_types import BasePumpConfig, ConfigInterface, StringType # (1)!
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser # (2)!
 from src.machine.hardware import HardwareContext
@@ -340,7 +386,7 @@ class ExtensionConfig(BasePumpConfig): # (4)!
         return config
 
 
-CONFIG_FIELDS: dict[str, Any] = { # (7)!
+CONFIG_FIELDS: dict[str, ConfigInterface] = { # (7)!
     "label": StringType(default="dummy"),
 }
 
@@ -368,21 +414,22 @@ class Implementation(BaseDispenser): # (8)!
             f"Dummy '{self.label}' slot {self.slot}: "
             f"dispensing {amount_ml:.1f} ml"
         )
-        dispensed = 0.0
+        consumption = 0.0
         try:
             # >>> Activate your hardware here <<<
             while True: # (11)!
                 time.sleep(step_interval)
                 elapsed += step_interval
-                dispensed = min(elapsed * effective_flow, amount_ml)
-                yield dispensed # (12)!
-                if dispensed >= amount_ml:
+                time_estimate  = elapsed * effective_flow, amount_ml
+                consumption = self._get_consumption(time_estimate)
+                yield consumption # (12)!
+                if consumption >= amount_ml:
                     return
         finally:
             # >>> Deactivate your hardware here <<< (13)!
             _logger.info(
                 f"Dummy '{self.label}' slot {self.slot}: "
-                f"done, dispensed {dispensed:.1f} ml"
+                f"done, dispensed {consumption:.1f} ml"
             )
 
     def cleanup(self) -> None: # (14)!
