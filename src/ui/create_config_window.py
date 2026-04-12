@@ -150,9 +150,11 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             layout.addWidget(prefix_text)
 
         if isinstance(config_setting, IntType):
-            field: Callable[[], CONFIG_TYPES_POSSIBLE] = self._build_int_field(layout, config_name, current_value)
+            field: Callable[[], CONFIG_TYPES_POSSIBLE] = self._build_int_field(
+                layout, config_name, current_value, config_setting.allow_negative
+            )
         elif isinstance(config_setting, FloatType):
-            field = self._build_float_field(layout, config_name, current_value)
+            field = self._build_float_field(layout, config_name, current_value, config_setting.allow_negative)
         elif isinstance(config_setting, BoolType):
             field = self._build_bool_field(layout, current_value, config_setting.check_name)
         elif isinstance(config_setting, ListType):
@@ -171,25 +173,54 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             layout.addWidget(suffix_text)
         return field
 
-    def _build_int_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], int]:
+    def _build_int_field(
+        self,
+        layout: QBoxLayout,
+        config_name: str,
+        current_value: int,
+        allow_negative: bool = False,
+    ) -> Callable[[], int]:
         """Build a field for integer input with numpad."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.setMinimumSize(QSize(10, 10))
         config_input.clicked.connect(
-            lambda: NumpadWidget(self, config_input, 300, 20, config_name, header_is_entered_number=True)
+            lambda: NumpadWidget(
+                self,
+                config_input,
+                300,
+                20,
+                config_name,
+                header_is_entered_number=True,
+                allow_negative=allow_negative,
+            )
         )
         layout.addWidget(config_input)
         return lambda: int(config_input.text() or 0)
 
-    def _build_float_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], float]:
+    def _build_float_field(
+        self,
+        layout: QBoxLayout,
+        config_name: str,
+        current_value: int,
+        allow_negative: bool = False,
+    ) -> Callable[[], float]:
         """Build a field for integer input with numpad."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(
-            lambda: NumpadWidget(self, config_input, 300, 20, config_name, True, header_is_entered_number=True)
+            lambda: NumpadWidget(
+                self,
+                config_input,
+                300,
+                20,
+                config_name,
+                True,
+                header_is_entered_number=True,
+                allow_negative=allow_negative,
+            )
         )
         layout.addWidget(config_input)
         return lambda: float(config_input.text() or 0.0)

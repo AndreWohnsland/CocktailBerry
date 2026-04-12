@@ -57,54 +57,50 @@ const ConfigWindow: React.FC = () => {
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
 
-  const getBaseConfig = (
-    key: string,
-  ): {
+  /** Resolve the current discriminated object from configData for a given base config name.
+   *  Handles both list items (PUMP_CONFIG[0]) and plain objects (SOME_CONFIG). */
+  const resolveDiscriminatedObject = (baseConfigName: string, key: string): Record<string, PossibleConfigValue> => {
+    const indexMatch = /\[(\d+)\]/.exec(key);
+    if (indexMatch) {
+      const list = configData[baseConfigName];
+      return (list as PossibleConfigValue[])[Number(indexMatch[1])] as Record<string, PossibleConfigValue>;
+    }
+    return configData[baseConfigName] as Record<string, PossibleConfigValue>;
+  };
+
+  type BaseConfig = {
     prefix?: string;
     suffix?: string;
     immutable: boolean;
     allowed?: string[];
     checkName: string;
     default?: PossibleConfigValue;
-  } => {
-    const baseConfigRegex = /^([^[\].]+)/;
-    const nestedPropertyRegex = /\.([^.]+)$/;
+  };
 
-    const baseConfigMatch = baseConfigRegex.exec(key);
-    const baseConfigName = baseConfigMatch ? baseConfigMatch[0] : '';
-
-    const nestedPropertyMatch = nestedPropertyRegex.exec(key);
-    const nestedProperty = nestedPropertyMatch ? nestedPropertyMatch[1] : '';
-
+  const getBaseConfig = (key: string): BaseConfig => {
+    const baseConfigName = key.match(/^([^[\].]+)/)?.[0] ?? '';
+    const nestedProperty = key.match(/\.([^.]+)$/)?.[1] ?? '';
     const selectedData = data?.[baseConfigName];
 
-    // For discriminated dicts, resolve variant-specific metadata
-    if (selectedData?.discriminator && selectedData?.variants && nestedProperty) {
-      // Find the current variant by extracting the index from the key and looking at state
-      const indexMatch = /\[(\d+)\]/.exec(key);
-      if (indexMatch) {
-        const index = Number(indexMatch[1]);
-        const listData = configData[baseConfigName];
-        if (Array.isArray(listData) && typeof listData[index] === 'object' && listData[index]) {
-          const item = listData[index] as { [k: string]: PossibleConfigValue };
-          const currentVariant = String(item[selectedData.discriminator as string] ?? '');
-          const variantMeta = (selectedData.variants as Record<string, Record<string, Record<string, unknown>>>)?.[
-            currentVariant
-          ]?.[nestedProperty];
-          if (variantMeta) {
-            return {
-              prefix: variantMeta.prefix as string | undefined,
-              suffix: variantMeta.suffix as string | undefined,
-              immutable: selectedData?.immutable ?? false,
-              allowed: variantMeta.allowed as string[] | undefined,
-              checkName: (variantMeta.check_name as string) ?? 'on',
-              default: variantMeta.default as PossibleConfigValue | undefined,
-            };
-          }
-        }
+    // For discriminated types, resolve variant-specific metadata for the nested property
+    if (nestedProperty && selectedData?.discriminator && selectedData?.variants) {
+      const obj = resolveDiscriminatedObject(baseConfigName, key);
+      const currentVariant = String(obj[selectedData.discriminator as string] ?? '');
+      const variants = selectedData.variants as Record<string, Record<string, Record<string, unknown>>>;
+      const variantMeta = variants[currentVariant]?.[nestedProperty];
+      if (variantMeta) {
+        return {
+          prefix: variantMeta.prefix as string | undefined,
+          suffix: variantMeta.suffix as string | undefined,
+          immutable: selectedData.immutable ?? false,
+          allowed: variantMeta.allowed as string[] | undefined,
+          checkName: (variantMeta.check_name as string) ?? 'on',
+          default: variantMeta.default as PossibleConfigValue | undefined,
+        };
       }
     }
 
+    // Fallback: use nested property metadata or top-level config metadata
     const nestedData = selectedData?.[nestedProperty] ?? selectedData;
     return {
       prefix: nestedData?.prefix,
