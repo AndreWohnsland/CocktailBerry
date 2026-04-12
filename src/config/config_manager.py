@@ -344,7 +344,8 @@ class ConfigManager:
                         {
                             "scale_type": ChooseOptions.scale_driver,
                             "enabled": BoolType(check_name="Enabled"),
-                            "calibration_factor": FloatType([build_number_limiter(0.001, 10000)]),
+                            "calibration_factor": FloatType(prefix="cali:", allow_negative=True),
+                            "zero_raw_offset": FloatType(prefix="offset:", allow_negative=True),
                             "data_pin": IntType([build_number_limiter(0)], prefix="Data:"),
                             "clock_pin": IntType([build_number_limiter(0)], prefix="Clock:"),
                         },
@@ -354,7 +355,8 @@ class ConfigManager:
                         {
                             "scale_type": ChooseOptions.scale_driver,
                             "enabled": BoolType(check_name="Enabled"),
-                            "calibration_factor": FloatType([build_number_limiter(0.001, 10000)]),
+                            "calibration_factor": FloatType(prefix="cali:", allow_negative=True),
+                            "zero_raw_offset": FloatType(prefix="offset:", allow_negative=True),
                             "i2c_address": StringType([validate_i2c_address], prefix="0x", default="2A"),
                         },
                         NAU7802ScaleConfig,

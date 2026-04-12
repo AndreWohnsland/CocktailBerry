@@ -27,7 +27,7 @@ class NAU7802Scale(ScaleInterface):
             msg = "cedargrove_nau7802 library is not available. Cannot initialize NAU7802 scale."
             _logger.error(msg)
             raise ImportError(msg)
-        self._calibration_factor = config.calibration_factor
+        super().__init__(config)
         self._zero_offset: float = 0.0
         i2c = get_i2c()
         if i2c is None:
@@ -35,22 +35,29 @@ class NAU7802Scale(ScaleInterface):
             _logger.error(msg)
             raise RuntimeError(msg)
         self._nau = NAU7802(i2c, address=config.address_hex)
+        # PGA gain: amplifies the load cell signal (1-128); 128 is typical for low mV/V load cells
         self._nau.gain = 128
+        # ADC sample rate in SPS (10/20/40/80/320); 80 SPS = ~12.5ms per reading
+        self._nau.conversion_rate = 80
         self._nau.channel = 1
         _logger.log_event("INFO", f"NAU7802 scale initialized (address=0x{config.i2c_address})")
 
-    def _raw_reading(self) -> float:
-        readings = [self._nau.read() for _ in range(5)]
+    def _raw_reading(self, samples: int = 1) -> float:
+        readings = [self._nau.read() for _ in range(max(1, samples))]
         return sum(readings) / len(readings)
 
     def tare(self) -> None:
-        self._zero_offset = self._raw_reading()
+        self._zero_offset = self._raw_reading(10)
 
     def read_grams(self) -> float:
         return (self._raw_reading() - self._zero_offset) / self._calibration_factor
 
-    def read_raw(self) -> float:
-        return self._raw_reading() - self._zero_offset
+    def read_raw(self, samples: int = 1) -> float:
+        return self._raw_reading(samples) - self._zero_offset
+
+    def get_gross_grams(self) -> float:
+        """Return the absolute weight in grams relative to the empty scale calibration."""
+        return (self._raw_reading() - self._zero_raw_offset) / self._calibration_factor
 
     def cleanup(self) -> None:
         self._nau.enable = False

@@ -10,7 +10,6 @@ from src.machine.dispensers.base import BaseDispenser
 if TYPE_CHECKING:
     from src.config.config_types import DCPumpConfig
     from src.machine.hardware import HardwareContext
-    from src.machine.scale import ScaleInterface
 
 _logger = LoggerHandler("DCDispenser")
 
@@ -31,7 +30,6 @@ class DCDispenser(BaseDispenser):
         slot: int,
         config: DCPumpConfig,
         hardware: HardwareContext,
-        scale: ScaleInterface | None = None,
     ) -> None:
         super().__init__(slot, config, hardware)
         self.pin_id = config.pin_id

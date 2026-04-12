@@ -177,8 +177,10 @@ class IntType(_ConfigType[int]):
         prefix: str | None = None,
         suffix: str | None = None,
         default: int = 0,
+        allow_negative: bool = False,
     ) -> None:
         super().__init__(int, validator_functions, prefix, suffix, default)
+        self.allow_negative = allow_negative
 
 
 class FloatType(_ConfigType[float]):
@@ -190,8 +192,10 @@ class FloatType(_ConfigType[float]):
         prefix: str | None = None,
         suffix: str | None = None,
         default: float = 0.0,
+        allow_negative: bool = False,
     ) -> None:
         super().__init__(float, validator_functions, prefix, suffix, default)
+        self.allow_negative = allow_negative
 
     def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
@@ -532,23 +536,27 @@ class BaseScaleConfig(ConfigClass):
     scale_type: SupportedScaleDriverType
     enabled: bool
     calibration_factor: float
+    zero_raw_offset: float
 
     def __init__(
         self,
         scale_type: SupportedScaleDriverType = "HX711",
         enabled: bool = False,
         calibration_factor: float = 1.0,
+        zero_raw_offset: float = 0.0,
         **kwargs: Any,
     ) -> None:
         self.scale_type = scale_type
         self.enabled = enabled
         self.calibration_factor = calibration_factor
+        self.zero_raw_offset = zero_raw_offset
 
     def to_config(self) -> dict[str, Any]:
         return {
             "scale_type": self.scale_type,
             "enabled": self.enabled,
             "calibration_factor": self.calibration_factor,
+            "zero_raw_offset": self.zero_raw_offset,
         }
 
 
@@ -560,13 +568,19 @@ class HX711ScaleConfig(BaseScaleConfig):
 
     def __init__(
         self,
-        data_pin: int = 5,
-        clock_pin: int = 6,
+        scale_type: SupportedScaleDriverType = "HX711",
         enabled: bool = False,
         calibration_factor: float = 1.0,
-        scale_type: SupportedScaleDriverType = "HX711",
+        zero_raw_offset: float = 0.0,
+        data_pin: int = 5,
+        clock_pin: int = 6,
     ) -> None:
-        super().__init__(scale_type=scale_type, enabled=enabled, calibration_factor=calibration_factor)
+        super().__init__(
+            scale_type=scale_type,
+            enabled=enabled,
+            calibration_factor=calibration_factor,
+            zero_raw_offset=zero_raw_offset,
+        )
         self.data_pin = data_pin
         self.clock_pin = clock_pin
 
@@ -588,12 +602,18 @@ class NAU7802ScaleConfig(BaseScaleConfig):
 
     def __init__(
         self,
-        i2c_address: str = "2A",
+        scale_type: SupportedScaleDriverType = "NAU7802",
         enabled: bool = False,
         calibration_factor: float = 1.0,
-        scale_type: SupportedScaleDriverType = "NAU7802",
+        zero_raw_offset: float = 0.0,
+        i2c_address: str = "2A",
     ) -> None:
-        super().__init__(scale_type=scale_type, enabled=enabled, calibration_factor=calibration_factor)
+        super().__init__(
+            scale_type=scale_type,
+            enabled=enabled,
+            calibration_factor=calibration_factor,
+            zero_raw_offset=zero_raw_offset,
+        )
         self.i2c_address = i2c_address.upper()
 
     @property

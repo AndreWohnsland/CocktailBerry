@@ -27,9 +27,9 @@ class HX711Scale(ScaleInterface):
             msg = "gpiozero library is not available. Cannot initialize HX711 scale."
             _logger.log_event("ERROR", msg)
             raise ImportError(msg)
+        super().__init__(config)
         self._data_pin = config.data_pin
         self._clock_pin = config.clock_pin
-        self._calibration_factor = config.calibration_factor
         self._offset = 0
         self._dt = DigitalInputDevice(self._data_pin, pull_up=False)
         self._sck = DigitalOutputDevice(self._clock_pin, active_high=True, initial_value=False)
@@ -62,13 +62,13 @@ class HX711Scale(ScaleInterface):
         self._offset = int(sum(readings) / len(readings))
         _logger.log_event("INFO", f"HX711 tare set, new offset: {self._offset}")
 
-    def read_grams(self, samples: int = 5) -> float:
+    def read_grams(self, samples: int = 1) -> float:
         """Return average weight in grams."""
         readings = [self._read_raw() for _ in range(max(1, samples))]
         avg = sum(readings) / len(readings)
         return (avg - self._offset) / self._calibration_factor if self._calibration_factor else 0.0
 
-    def read_raw(self, samples: int = 5) -> float:
+    def read_raw(self, samples: int = 1) -> float:
         """Return average raw value (offset subtracted)."""
         readings = [self._read_raw() for _ in range(max(1, samples))]
         avg = sum(readings) / len(readings)
@@ -100,6 +100,12 @@ class HX711Scale(ScaleInterface):
         _logger.log_event(
             "INFO", f"HX711 calibration set: scale_factor={self._calibration_factor}, offset={self._offset}"
         )
+
+    def get_gross_grams(self, samples: int = 1) -> float:
+        """Return the absolute weight in grams relative to the empty scale calibration."""
+        readings = [self._read_raw() for _ in range(max(1, samples))]
+        avg = sum(readings) / len(readings)
+        return (avg - self._zero_raw_offset) / self._calibration_factor if self._calibration_factor else 0.0
 
     def cleanup(self) -> None:
         self._sck.close()
