@@ -241,7 +241,7 @@ class MachineController:
             raise RuntimeError("No scale available")
         if known_weight_grams <= 0:
             raise ValueError("Known weight must be positive")
-        factor = self.hardware.scale.calibrate_with_known_weight(known_weight_grams, samples)
+        factor = round(self.hardware.scale.calibrate_with_known_weight(known_weight_grams, samples), 3)
         cfg.SCALE_CONFIG.calibration_factor = factor
         if zero_raw_offset is not None:
             self.hardware.scale.set_zero_raw_offset(zero_raw_offset)

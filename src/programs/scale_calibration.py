@@ -18,6 +18,7 @@ class ScaleCalibrationScreen(QMainWindow):
         central = QWidget()
         self.setCentralWidget(central)
         self.main_layout = QVBoxLayout(central)
+        self._zero_offset = None
 
         self.header_label = create_label(
             UI_LANGUAGE._choose_language("header", "scale_calibration_window"),
@@ -155,15 +156,14 @@ class ScaleCalibrationScreen(QMainWindow):
         if known_weight <= 0:
             return
         try:
-            offset = getattr(self, "_zero_offset", None)
-            factor = self.mc.scale_calibrate(known_weight, zero_raw_offset=offset)
+            factor = self.mc.scale_calibrate(known_weight, zero_raw_offset=self._zero_offset)
         except RuntimeError:
             self.label_status.setText(UI_LANGUAGE._choose_language("calibration_error", "scale_calibration_window"))
             return
         text = UI_LANGUAGE._choose_language("calibration_done", "scale_calibration_window", factor=f"{factor:.4f}")
-        if offset is not None:
+        if self._zero_offset is not None:
             text += "\n" + UI_LANGUAGE._choose_language(
-                "zero_offset", "scale_calibration_window", offset=f"{offset:.2f}"
+                "zero_offset", "scale_calibration_window", offset=f"{self._zero_offset:.2f}"
             )
         self.label_status.setText(text)
 
