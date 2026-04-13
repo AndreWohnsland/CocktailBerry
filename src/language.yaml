@@ -1029,6 +1029,9 @@ ui:
     calibration_error:
       en: 'Calibration failed, invalid reading from scale.'
       de: 'Kalibrierung fehlgeschlagen, ungültige Ablesung der Waage.'
+    zero_offset:
+      en: 'Zero raw offset: {offset}'
+      de: 'Null-Rohwert-Offset: {offset}'
     back:
       en: '< Back'
       de: '< Zurück'
