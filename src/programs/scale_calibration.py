@@ -18,7 +18,7 @@ class ScaleCalibrationScreen(QMainWindow):
         central = QWidget()
         self.setCentralWidget(central)
         self.main_layout = QVBoxLayout(central)
-        self._zero_offset = None
+        self._zero_offset: int = 0
 
         self.header_label = create_label(
             UI_LANGUAGE._choose_language("header", "scale_calibration_window"),
@@ -130,6 +130,10 @@ class ScaleCalibrationScreen(QMainWindow):
 
         layout.addStretch()
 
+        self.button_read_weight = create_button(UI_LANGUAGE._choose_language("read_weight", "scale_calibration_window"))
+        self.button_read_weight.clicked.connect(self._do_read_weight)
+        layout.addWidget(self.button_read_weight)
+
         self.button_calibrate = create_button(UI_LANGUAGE._choose_language("calibrate", "scale_calibration_window"))
         self.button_calibrate.clicked.connect(self._do_calibrate)
         layout.addWidget(self.button_calibrate)
@@ -147,6 +151,16 @@ class ScaleCalibrationScreen(QMainWindow):
         self._zero_offset = self.mc.scale_tare()
         self.stack.setCurrentWidget(self.calibrate_page)
 
+    def _do_read_weight(self) -> None:
+        """Read current weight from scale and display in status label."""
+        try:
+            weight = self.mc.scale_read_grams()
+        except RuntimeError:
+            return
+        self.label_status.setText(
+            UI_LANGUAGE._choose_language("current_reading", "scale_calibration_window", weight=f"{weight:.1f}")
+        )
+
     def _do_calibrate(self) -> None:
         """Read scale, compute factor, save config."""
         try:
@@ -160,11 +174,12 @@ class ScaleCalibrationScreen(QMainWindow):
         except RuntimeError:
             self.label_status.setText(UI_LANGUAGE._choose_language("calibration_error", "scale_calibration_window"))
             return
-        text = UI_LANGUAGE._choose_language("calibration_done", "scale_calibration_window", factor=f"{factor:.4f}")
-        if self._zero_offset is not None:
-            text += "\n" + UI_LANGUAGE._choose_language(
-                "zero_offset", "scale_calibration_window", offset=f"{self._zero_offset:.2f}"
-            )
+        text = UI_LANGUAGE._choose_language(
+            "calibration_done",
+            "scale_calibration_window",
+            factor=f"{factor:.4f}",
+            offset=f"{self._zero_offset:.2f}",
+        )
         self.label_status.setText(text)
 
     def _reset_to_tare(self) -> None:

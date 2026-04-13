@@ -3,6 +3,8 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
+import stamina
+
 from src.logger_handler import LoggerHandler
 from src.machine.scale.base import ScaleInterface
 
@@ -35,6 +37,7 @@ class HX711Scale(ScaleInterface):
         self._sck = DigitalOutputDevice(self._clock_pin, active_high=True, initial_value=False)
         _logger.info(f"HX711 scale initialized (data={self._data_pin}, clock={self._clock_pin})")
 
+    @stamina.retry(on=RuntimeError, attempts=3, wait_initial=0.0, wait_max=0.0, wait_jitter=0.0)
     def _read_raw_over_sck(self, timeout: float = 0.5) -> int:
         """Read a single 24-bit raw value from HX711.
 
@@ -50,40 +53,54 @@ class HX711Scale(ScaleInterface):
         t_end = time.time() + timeout
         while self._dt.value == 1:
             if time.time() > t_end:
-                _logger.warning("HX711: Timeout waiting for data ready")
-                return 0
+                raise RuntimeError("HX711: Timeout waiting for data ready")
             time.sleep(0.001)
         value = 0
         for _ in range(24):
+            # Rising edge: chip prepares the bit; falling edge: DOUT shifts and stabilises
             self._sck.on()
-            value = (value << 1) | (1 if self._dt.value else 0)
             self._sck.off()
+            value = (value << 1) | (1 if self._dt.value else 0)
         # Gain setting: 1 extra clock (128x gain, channel A)
         self._sck.on()
         self._sck.off()
+        # Reject known overflow/underflow sentinel values
+        if value in (0x7FFFFF, 0x800000):
+            raise RuntimeError("HX711: Invalid reading (overflow/underflow sentinel)")
         # Two's complement
         if value & 0x800000:
             value -= 1 << 24
         return value
 
-    def _sample_raw_over_sck(self, samples: int) -> int:
-        """Read raw value n times and return the average."""
-        readings = [self._read_raw_over_sck() for _ in range(max(1, samples))]
+    def _sample_raw_over_sck(self, samples: int, _retry: bool = True) -> int:
+        """Read raw value n times, skipping failed reads, and return the average."""
+        readings = []
+        for _ in range(max(1, samples)):
+            try:
+                readings.append(self._read_raw_over_sck())
+            except RuntimeError:
+                _logger.warning("HX711: Skipping failed reading")
+        if not readings:
+            if _retry:
+                _logger.warning("HX711: All readings failed, retrying once")
+                return self._sample_raw_over_sck(samples, _retry=False)
+            _logger.error("HX711: All readings failed, no retry, returning 0")
+            return 0
         return int(sum(readings) / len(readings))
 
-    def tare(self, samples: int = 3) -> float:
+    def tare(self, samples: int = 3) -> int:
         """Set offset to current (empty) value."""
         self._offset = self._sample_raw_over_sck(samples)
         _logger.debug(f"HX711 tare set, new offset: {self._offset}")
-        return float(self._offset)
+        return self._offset
 
     def read_grams(self) -> float:
         """Return average weight in grams."""
-        return self.read_raw(samples=1) / self._calibration_factor
+        return (self.read_raw(samples=1) - self._offset) / self._calibration_factor
 
-    def read_raw(self, samples: int = 1) -> float:
+    def read_raw(self, samples: int = 1) -> int:
         """Return average raw value (offset subtracted)."""
-        return self._sample_raw_over_sck(samples) - self._offset
+        return self._sample_raw_over_sck(samples)
 
     def get_gross_grams(self) -> float:
         """Return the absolute weight in grams relative to the empty scale calibration."""

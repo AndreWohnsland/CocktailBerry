@@ -1024,20 +1024,23 @@ ui:
       en: 'Calibrate'
       de: 'Kalibrieren'
     calibration_done:
-      en: 'Calibration done! New factor: {factor}'
-      de: 'Kalibrierung abgeschlossen! Neuer Faktor: {factor}'
+      en: "Calibration done! New factor: {factor}\nZero raw offset: {offset}"
+      de: "Kalibrierung abgeschlossen! Neuer Faktor: {factor}\nNull-Rohwert-Offset: {offset}"
     calibration_error:
       en: 'Calibration failed, invalid reading from scale.'
       de: 'Kalibrierung fehlgeschlagen, ungültige Ablesung der Waage.'
-    zero_offset:
-      en: 'Zero raw offset: {offset}'
-      de: 'Null-Rohwert-Offset: {offset}'
     back:
       en: '< Back'
       de: '< Zurück'
     back_to_tare:
       en: 'Back to Tare'
       de: 'Zurück zum Tarieren'
+    read_weight:
+      en: 'Read Current Weight'
+      de: 'Aktuelles Gewicht lesen'
+    current_reading:
+      en: 'Current reading: {weight} g'
+      de: 'Aktuelle Messung: {weight} g'
 
   ##### NEWS WINDOW #####
   # all values for news window

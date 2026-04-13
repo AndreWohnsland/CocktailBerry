@@ -536,14 +536,14 @@ class BaseScaleConfig(ConfigClass):
     scale_type: SupportedScaleDriverType
     enabled: bool
     calibration_factor: float
-    zero_raw_offset: float
+    zero_raw_offset: int
 
     def __init__(
         self,
         scale_type: SupportedScaleDriverType = "HX711",
         enabled: bool = False,
         calibration_factor: float = 1.0,
-        zero_raw_offset: float = 0.0,
+        zero_raw_offset: int = 0,
         **kwargs: Any,
     ) -> None:
         self.scale_type = scale_type
@@ -571,7 +571,7 @@ class HX711ScaleConfig(BaseScaleConfig):
         scale_type: SupportedScaleDriverType = "HX711",
         enabled: bool = False,
         calibration_factor: float = 1.0,
-        zero_raw_offset: float = 0.0,
+        zero_raw_offset: int = 0,
         data_pin: int = 5,
         clock_pin: int = 6,
     ) -> None:
@@ -605,7 +605,7 @@ class NAU7802ScaleConfig(BaseScaleConfig):
         scale_type: SupportedScaleDriverType = "NAU7802",
         enabled: bool = False,
         calibration_factor: float = 1.0,
-        zero_raw_offset: float = 0.0,
+        zero_raw_offset: int = 0,
         i2c_address: str = "2A",
     ) -> None:
         super().__init__(

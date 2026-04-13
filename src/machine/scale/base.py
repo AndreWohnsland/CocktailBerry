@@ -25,11 +25,11 @@ class ScaleInterface(ABC):
         self._zero_raw_offset = config.zero_raw_offset
 
     @abstractmethod
-    def tare(self, samples: int = 3) -> float:
+    def tare(self, samples: int = 3) -> int:
         """Capture the current raw reading as the dynamic tare offset.
 
-        All subsequent read_grams() and read_raw() calls are relative to this point.
-        Does not affect zero_raw_offset or get_gross_grams().
+        All subsequent read_grams() calls are relative to this point.
+        Does not affect _zero_raw_offset or get_gross_grams().
         Returns the raw offset value that was captured.
         """
 
@@ -38,13 +38,11 @@ class ScaleInterface(ABC):
         """Return the weight in grams relative to the last tare() call."""
 
     @abstractmethod
-    def read_raw(self, samples: int = 1) -> float:
-        """Return the average raw ADC reading relative to the last tare() call (before calibration factor).
+    def read_raw(self, samples: int = 1) -> int:
+        """Return the average raw ADC reading (before calibration factor, no offset).
 
         samples: number of readings to average, higher values reduce noise but increase latency
         (each ADC reading is rate-limited by the hardware, typically 10-80 SPS).
-        Used during calibration to compute the calibration factor:
-        calibration_factor = read_raw() / known_weight_grams
         """
 
     @abstractmethod
@@ -60,17 +58,19 @@ class ScaleInterface(ABC):
         detecting whether anything is on the scale regardless of prior tare calls.
         """
 
-    def calibrate_with_known_weight(self, weight_g: float, samples: int = 10) -> float:
+    def calibrate_with_known_weight(self, weight_g: float, zero_raw_offset: float, samples: int = 10) -> float:
         """Calibrate scale factor using a known weight (after tare).
 
+        zero_raw_offset is the raw ADC reading corresponding to 0g (empty scale)
         Overwrite this if your scale requires a different calibration procedure.
         """
         if weight_g <= 0:
             _logger.error("Calibration weight must be > 0")
             return self._calibration_factor
-        factor = self.read_raw(samples) / weight_g
+        factor = (self.read_raw(samples) - zero_raw_offset) / weight_g
         self.set_calibration_factor(factor)
-        return self._calibration_factor
+        self.set_zero_raw_offset(zero_raw_offset)
+        return factor
 
     def set_calibration_factor(self, calibration_factor: float) -> None:
         """Set the calibration factor directly (bypassing tare and calibrate_with_known_weight).

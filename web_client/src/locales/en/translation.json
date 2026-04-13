@@ -153,7 +153,8 @@
     "calibrationDone": "Calibration Done!",
     "newFactor": "New calibration factor: {{factor}}",
     "newZeroOffset": "Zero raw offset: {{offset}}",
-    "recalibrate": "Recalibrate"
+    "recalibrate": "Recalibrate",
+    "backToTare": "Back to Tare"
   },
   "data": {
     "data": "Data",

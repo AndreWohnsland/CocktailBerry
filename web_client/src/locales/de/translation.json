@@ -153,7 +153,8 @@
     "calibrationDone": "Kalibrierung abgeschlossen!",
     "newFactor": "Neuer Kalibrierungsfaktor: {{factor}}",
     "newZeroOffset": "Null-Rohwert-Offset: {{offset}}",
-    "recalibrate": "Erneut kalibrieren"
+    "recalibrate": "Erneut kalibrieren",
+    "backToTare": "Zurück zum Tarieren"
   },
   "data": {
     "data": "Daten",

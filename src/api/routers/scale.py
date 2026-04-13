@@ -43,7 +43,7 @@ async def read_scale() -> ApiMessageWithData[float]:
 
 
 @protected_router.post("/calibrate", summary="Calibrate the scale using a known weight.")
-async def calibrate_scale(known_weight_grams: float, zero_raw_offset: float | None = None) -> ApiMessageWithData[float]:
+async def calibrate_scale(known_weight_grams: float, zero_raw_offset: int) -> ApiMessageWithData[float]:
     mc = _require_scale()
     if known_weight_grams <= 0:
         raise HTTPException(status_code=400, detail=DH.get_translation("scale_known_weight_positive"))

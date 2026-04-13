@@ -28,7 +28,7 @@ class NAU7802Scale(ScaleInterface):
             _logger.error(msg)
             raise ImportError(msg)
         super().__init__(config)
-        self._zero_offset: float = 0.0
+        self._zero_offset: int = 0
         i2c = get_i2c()
         if i2c is None:
             msg = "I2C bus is not available. Cannot initialize NAU7802 scale."
@@ -42,19 +42,19 @@ class NAU7802Scale(ScaleInterface):
         self._nau.channel = 1
         _logger.log_event("INFO", f"NAU7802 scale initialized (address=0x{config.i2c_address})")
 
-    def _sample_raw(self, samples: int) -> float:
+    def _sample_raw(self, samples: int) -> int:
         readings = [self._nau.read() for _ in range(max(1, samples))]
-        return sum(readings) / len(readings)
+        return int(sum(readings) / len(readings))
 
-    def tare(self, samples: int = 3) -> float:
+    def tare(self, samples: int = 3) -> int:
         self._zero_offset = self._sample_raw(samples)
         return self._zero_offset
 
     def read_grams(self) -> float:
         return (self._sample_raw(1) - self._zero_offset) / self._calibration_factor
 
-    def read_raw(self, samples: int = 1) -> float:
-        return self._sample_raw(samples) - self._zero_offset
+    def read_raw(self, samples: int = 1) -> int:
+        return self._sample_raw(samples)
 
     def get_gross_grams(self) -> float:
         """Return the absolute weight in grams relative to the empty scale calibration."""

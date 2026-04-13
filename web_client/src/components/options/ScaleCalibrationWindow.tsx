@@ -12,7 +12,7 @@ const ScaleCalibrationWindow = () => {
   const [knownWeight, setKnownWeight] = useState(100);
   const [currentReading, setCurrentReading] = useState<number | null>(null);
   const [calibrationFactor, setCalibrationFactor] = useState<number | null>(null);
-  const [zeroOffset, setZeroOffset] = useState<number | null>(null);
+  const [zeroOffset, setZeroOffset] = useState<number>(0);
   const { data: scaleStatus, isLoading } = useScaleStatus();
   const { t } = useTranslation();
 
@@ -44,7 +44,7 @@ const ScaleCalibrationWindow = () => {
     setStep('tare');
     setCurrentReading(null);
     setCalibrationFactor(null);
-    setZeroOffset(null);
+    setZeroOffset(0);
   };
 
   if (isLoading) {
@@ -110,6 +110,9 @@ const ScaleCalibrationWindow = () => {
               onClick={() => executeAndShow(handleCalibrate)}
             >
               {t('scaleCalibration.calibrate')}
+            </button>
+            <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleReset}>
+              {t('scaleCalibration.backToTare')}
             </button>
           </div>
         </>
