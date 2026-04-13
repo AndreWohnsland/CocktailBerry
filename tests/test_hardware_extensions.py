@@ -40,7 +40,7 @@ def test_hardware_manager_supports_class_based_implementation(monkeypatch: pytes
         CONFIG_FIELDS={"label": StringType(default="default")},
         Implementation=DummyImplementation,
     )
-    monkeypatch.setattr("src.programs.addons.hardware_extensions.import_module", lambda _: module)
+    monkeypatch.setattr("src.programs.addons.extension_base.import_module", lambda _: module)
     monkeypatch.setattr(cfg, "HW_CLASSHARDWARE", DummyConfig(label="alpha"), raising=False)
 
     manager._load_extension("class_hardware")
@@ -64,7 +64,7 @@ def test_hardware_manager_rejects_missing_implementation(monkeypatch: pytest.Mon
         ExtensionConfig=DummyConfig,
         CONFIG_FIELDS={"label": StringType(default="default")},
     )
-    monkeypatch.setattr("src.programs.addons.hardware_extensions.import_module", lambda _: module)
+    monkeypatch.setattr("src.programs.addons.extension_base.import_module", lambda _: module)
 
     manager._load_extension("incomplete")
 

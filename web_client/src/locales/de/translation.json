@@ -152,6 +152,7 @@
     "calibrate": "Kalibrieren",
     "calibrationDone": "Kalibrierung abgeschlossen!",
     "newFactor": "Neuer Kalibrierungsfaktor: {{factor}}",
+    "newZeroOffset": "Null-Rohwert-Offset: {{offset}}",
     "recalibrate": "Erneut kalibrieren"
   },
   "data": {

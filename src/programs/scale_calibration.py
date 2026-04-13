@@ -142,8 +142,8 @@ class ScaleCalibrationScreen(QMainWindow):
         self.stack.addWidget(self.calibrate_page)
 
     def _do_tare(self) -> None:
-        """Execute tare and move to calibrate page."""
-        self.mc.scale_tare()
+        """Execute tare, store offset, and move to calibrate page."""
+        self._zero_offset = self.mc.scale_tare()
         self.stack.setCurrentWidget(self.calibrate_page)
 
     def _do_calibrate(self) -> None:
@@ -155,13 +155,17 @@ class ScaleCalibrationScreen(QMainWindow):
         if known_weight <= 0:
             return
         try:
-            factor = self.mc.scale_calibrate(known_weight)
+            offset = getattr(self, "_zero_offset", None)
+            factor = self.mc.scale_calibrate(known_weight, zero_raw_offset=offset)
         except RuntimeError:
             self.label_status.setText(UI_LANGUAGE._choose_language("calibration_error", "scale_calibration_window"))
             return
-        self.label_status.setText(
-            UI_LANGUAGE._choose_language("calibration_done", "scale_calibration_window", factor=f"{factor:.4f}")
-        )
+        text = UI_LANGUAGE._choose_language("calibration_done", "scale_calibration_window", factor=f"{factor:.4f}")
+        if offset is not None:
+            text += "\n" + UI_LANGUAGE._choose_language(
+                "zero_offset", "scale_calibration_window", offset=f"{offset:.2f}"
+            )
+        self.label_status.setText(text)
 
     def _reset_to_tare(self) -> None:
         """Go back to tare page and reset."""

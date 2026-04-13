@@ -42,22 +42,23 @@ class NAU7802Scale(ScaleInterface):
         self._nau.channel = 1
         _logger.log_event("INFO", f"NAU7802 scale initialized (address=0x{config.i2c_address})")
 
-    def _raw_reading(self, samples: int = 1) -> float:
+    def _sample_raw(self, samples: int) -> float:
         readings = [self._nau.read() for _ in range(max(1, samples))]
         return sum(readings) / len(readings)
 
-    def tare(self) -> None:
-        self._zero_offset = self._raw_reading(10)
+    def tare(self, samples: int = 3) -> float:
+        self._zero_offset = self._sample_raw(samples)
+        return self._zero_offset
 
     def read_grams(self) -> float:
-        return (self._raw_reading() - self._zero_offset) / self._calibration_factor
+        return (self._sample_raw(1) - self._zero_offset) / self._calibration_factor
 
     def read_raw(self, samples: int = 1) -> float:
-        return self._raw_reading(samples) - self._zero_offset
+        return self._sample_raw(samples) - self._zero_offset
 
     def get_gross_grams(self) -> float:
         """Return the absolute weight in grams relative to the empty scale calibration."""
-        return (self._raw_reading() - self._zero_raw_offset) / self._calibration_factor
+        return (self._sample_raw(1) - self._zero_raw_offset) / self._calibration_factor
 
     def cleanup(self) -> None:
         self._nau.enable = False

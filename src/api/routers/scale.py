@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from src.api.api_config import Tags
 from src.api.middleware import master_protected_dependency
-from src.api.models import ApiMessage, ApiMessageWithData
+from src.api.models import ApiMessageWithData
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import MachineController
 
@@ -29,10 +29,10 @@ async def get_scale_status() -> ApiMessageWithData[bool]:
 
 
 @protected_router.post("/tare", summary="Tare (zero) the scale.")
-async def tare_scale() -> ApiMessage:
+async def tare_scale() -> ApiMessageWithData[float]:
     mc = _require_scale()
-    mc.scale_tare()
-    return ApiMessage(message=DH.get_translation("scale_tared"))
+    offset = mc.scale_tare()
+    return ApiMessageWithData(message=DH.get_translation("scale_tared"), data=offset)
 
 
 @protected_router.post("/read", summary="Read current weight in grams.")
@@ -42,20 +42,13 @@ async def read_scale() -> ApiMessageWithData[float]:
     return ApiMessageWithData(message="Scale reading", data=round(weight, 1))
 
 
-@protected_router.post("/read-raw", summary="Read raw uncalibrated value from scale.")
-async def read_scale_raw() -> ApiMessageWithData[float]:
-    mc = _require_scale()
-    raw = mc.scale_read_raw()
-    return ApiMessageWithData(message="Raw scale reading", data=raw)
-
-
 @protected_router.post("/calibrate", summary="Calibrate the scale using a known weight.")
-async def calibrate_scale(known_weight_grams: float) -> ApiMessageWithData[float]:
+async def calibrate_scale(known_weight_grams: float, zero_raw_offset: float | None = None) -> ApiMessageWithData[float]:
     mc = _require_scale()
     if known_weight_grams <= 0:
         raise HTTPException(status_code=400, detail=DH.get_translation("scale_known_weight_positive"))
     try:
-        factor = mc.scale_calibrate(known_weight_grams)
+        factor = mc.scale_calibrate(known_weight_grams, zero_raw_offset=zero_raw_offset)
     except RuntimeError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return ApiMessageWithData(message=DH.get_translation("scale_calibrated", factor=f"{factor:.4f}"), data=factor)

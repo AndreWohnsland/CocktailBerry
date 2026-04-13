@@ -211,17 +211,15 @@ class MachineController:
         """Check if a scale is available and initialized."""
         return self.hardware.scale is not None
 
-    def scale_tare(self) -> None:
-        """Tare (zero) the scale. Raises RuntimeError if no scale is available."""
-        if self.hardware.scale is None:
-            raise RuntimeError("No scale available")
-        self.hardware.scale.tare()
+    def scale_tare(self, samples: int = 3) -> float:
+        """Tare (zero) the scale.
 
-    def scale_read_raw(self) -> float:
-        """Read the raw (uncalibrated) value from the scale. Raises RuntimeError if no scale."""
+        Returns the raw offset value captured during tare.
+        Raises RuntimeError if no scale is available.
+        """
         if self.hardware.scale is None:
             raise RuntimeError("No scale available")
-        return self.hardware.scale.read_raw()
+        return self.hardware.scale.tare(samples)
 
     def scale_read_grams(self) -> float:
         """Read the calibrated weight in grams from the scale. Raises RuntimeError if no scale."""
@@ -229,24 +227,26 @@ class MachineController:
             raise RuntimeError("No scale available")
         return self.hardware.scale.read_grams()
 
-    def scale_calibrate(self, known_weight_grams: float) -> float:
+    def scale_calibrate(
+        self, known_weight_grams: float, zero_raw_offset: float | None = None, samples: int = 10
+    ) -> float:
         """Calibrate the scale using a known reference weight.
 
         Reads the raw ADC value (after tare) and computes the calibration factor.
-        The factor is persisted to config. Returns the new calibration factor.
+        If zero_raw_offset is provided, it is also persisted to the scale and config.
+        Both values are synced to config in one write. Returns the new calibration factor.
         Raises RuntimeError if no scale or if the reading is invalid.
         """
         if self.hardware.scale is None:
             raise RuntimeError("No scale available")
         if known_weight_grams <= 0:
             raise ValueError("Known weight must be positive")
-        raw = self.hardware.scale.read_raw()
-        if raw <= 0:
-            raise RuntimeError(f"Invalid raw reading from scale: {raw}")
-        factor = raw / known_weight_grams
+        factor = self.hardware.scale.calibrate_with_known_weight(known_weight_grams, samples)
         cfg.SCALE_CONFIG.calibration_factor = factor
+        if zero_raw_offset is not None:
+            self.hardware.scale.set_zero_raw_offset(zero_raw_offset)
+            cfg.SCALE_CONFIG.zero_raw_offset = zero_raw_offset
         cfg.sync_config_to_file()
-        _logger.info(f"Scale calibrated: factor={factor:.4f} (raw={raw:.2f}, known={known_weight_grams}g)")
         return factor
 
     def default_led(self) -> None:

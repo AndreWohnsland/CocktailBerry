@@ -12,6 +12,7 @@ const ScaleCalibrationWindow = () => {
   const [knownWeight, setKnownWeight] = useState(100);
   const [currentReading, setCurrentReading] = useState<number | null>(null);
   const [calibrationFactor, setCalibrationFactor] = useState<number | null>(null);
+  const [zeroOffset, setZeroOffset] = useState<number | null>(null);
   const { data: scaleStatus, isLoading } = useScaleStatus();
   const { t } = useTranslation();
 
@@ -19,7 +20,8 @@ const ScaleCalibrationWindow = () => {
 
   const handleTare = async () => {
     const success = await executeAndShow(async () => {
-      await tareScale();
+      const result = await tareScale();
+      setZeroOffset(result.data);
       return t('scaleCalibration.tareSuccess');
     });
     if (success) {
@@ -33,7 +35,7 @@ const ScaleCalibrationWindow = () => {
   };
 
   const handleCalibrate = async () => {
-    const result = await calibrateScale(knownWeight);
+    const result = await calibrateScale(knownWeight, zeroOffset);
     setCalibrationFactor(result.data);
     setStep('result');
   };
@@ -42,6 +44,7 @@ const ScaleCalibrationWindow = () => {
     setStep('tare');
     setCurrentReading(null);
     setCalibrationFactor(null);
+    setZeroOffset(null);
   };
 
   if (isLoading) {
@@ -119,6 +122,11 @@ const ScaleCalibrationWindow = () => {
             {calibrationFactor !== null && (
               <p className='text-lg text-neutral'>
                 {t('scaleCalibration.newFactor', { factor: calibrationFactor.toFixed(4) })}
+              </p>
+            )}
+            {zeroOffset !== null && (
+              <p className='text-lg text-neutral'>
+                {t('scaleCalibration.newZeroOffset', { offset: zeroOffset.toFixed(2) })}
               </p>
             )}
           </div>

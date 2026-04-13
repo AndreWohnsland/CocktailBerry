@@ -33,14 +33,24 @@ class HX711Scale(ScaleInterface):
         self._offset = 0
         self._dt = DigitalInputDevice(self._data_pin, pull_up=False)
         self._sck = DigitalOutputDevice(self._clock_pin, active_high=True, initial_value=False)
-        _logger.log_event("INFO", f"HX711 scale initialized (data={self._data_pin}, clock={self._clock_pin})")
+        _logger.info(f"HX711 scale initialized (data={self._data_pin}, clock={self._clock_pin})")
 
-    def _read_raw(self, timeout: float = 0.5) -> int:
-        """Read a single 24-bit raw value from HX711."""
+    def _read_raw_over_sck(self, timeout: float = 0.5) -> int:
+        """Read a single 24-bit raw value from HX711.
+
+        One call = one complete ADC conversion: wait for the chip to signal
+        data ready, then clock out all 24 bits via bit-bang. Duration is
+        determined by the chip's sample rate (~100ms at 10 SPS, ~12.5ms at 80 SPS).
+
+        The sample rate is hardware-only — set by the RATE pin on the HX711 chip:
+        RATE tied to GND = 10 SPS (default), RATE tied to VCC = 80 SPS.
+        Many breakout boards expose this as a solder bridge labeled "80Hz".
+        There is no software way to change it.
+        """
         t_end = time.time() + timeout
         while self._dt.value == 1:
             if time.time() > t_end:
-                _logger.log_event("WARNING", "HX711: Timeout waiting for data ready")
+                _logger.warning("HX711: Timeout waiting for data ready")
                 return 0
             time.sleep(0.001)
         value = 0
@@ -56,58 +66,30 @@ class HX711Scale(ScaleInterface):
             value -= 1 << 24
         return value
 
-    def tare(self, samples: int = 10) -> None:
-        """Set offset to current (empty) value."""
-        readings = [self._read_raw() for _ in range(max(1, samples))]
-        self._offset = int(sum(readings) / len(readings))
-        _logger.log_event("INFO", f"HX711 tare set, new offset: {self._offset}")
+    def _sample_raw_over_sck(self, samples: int) -> int:
+        """Read raw value n times and return the average."""
+        readings = [self._read_raw_over_sck() for _ in range(max(1, samples))]
+        return int(sum(readings) / len(readings))
 
-    def read_grams(self, samples: int = 1) -> float:
+    def tare(self, samples: int = 3) -> float:
+        """Set offset to current (empty) value."""
+        self._offset = self._sample_raw_over_sck(samples)
+        _logger.debug(f"HX711 tare set, new offset: {self._offset}")
+        return float(self._offset)
+
+    def read_grams(self) -> float:
         """Return average weight in grams."""
-        readings = [self._read_raw() for _ in range(max(1, samples))]
-        avg = sum(readings) / len(readings)
-        return (avg - self._offset) / self._calibration_factor if self._calibration_factor else 0.0
+        return self.read_raw(samples=1) / self._calibration_factor
 
     def read_raw(self, samples: int = 1) -> float:
         """Return average raw value (offset subtracted)."""
-        readings = [self._read_raw() for _ in range(max(1, samples))]
-        avg = sum(readings) / len(readings)
-        return avg - self._offset
+        return self._sample_raw_over_sck(samples) - self._offset
 
-    def calibrate_with_known_weight(self, weight_g: float, samples: int = 10) -> float:
-        """Calibrate scale factor using a known weight (after tare)."""
-        if weight_g <= 0:
-            _logger.log_event("ERROR", "Calibration weight must be > 0")
-            return self._calibration_factor
-        readings = [self._read_raw() for _ in range(max(1, samples))]
-        avg = sum(readings) / len(readings)
-        if avg == self._offset:
-            _logger.log_event("ERROR", "Calibration: raw == offset, no measurable difference")
-            return self._calibration_factor
-        self._calibration_factor = (avg - self._offset) / float(weight_g)
-        _logger.log_event(
-            "INFO",
-            f"HX711 calibrated: avg={avg:.1f}, offset={self._offset}, scale_factor={self._calibration_factor:.5f}",
-        )
-        return self._calibration_factor
-
-    def get_calibration(self) -> tuple[float, int]:
-        return self._calibration_factor, self._offset
-
-    def set_calibration(self, scale_factor: float, offset: int) -> None:
-        self._calibration_factor = float(scale_factor) if scale_factor else 1.0
-        self._offset = int(offset)
-        _logger.log_event(
-            "INFO", f"HX711 calibration set: scale_factor={self._calibration_factor}, offset={self._offset}"
-        )
-
-    def get_gross_grams(self, samples: int = 1) -> float:
+    def get_gross_grams(self) -> float:
         """Return the absolute weight in grams relative to the empty scale calibration."""
-        readings = [self._read_raw() for _ in range(max(1, samples))]
-        avg = sum(readings) / len(readings)
-        return (avg - self._zero_raw_offset) / self._calibration_factor if self._calibration_factor else 0.0
+        return (self._sample_raw_over_sck(1) - self._zero_raw_offset) / self._calibration_factor
 
     def cleanup(self) -> None:
         self._sck.close()
         self._dt.close()
-        _logger.log_event("INFO", "HX711 cleaned up")
+        _logger.info("HX711 cleaned up")
