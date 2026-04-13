@@ -20,7 +20,7 @@ const ScaleCalibrationWindow = () => {
 
   const handleTare = async () => {
     const success = await executeAndShow(async () => {
-      const result = await tareScale();
+      const result = await tareScale(5);
       setZeroOffset(result.data);
       return t('scaleCalibration.tareSuccess');
     });
@@ -38,6 +38,7 @@ const ScaleCalibrationWindow = () => {
     const result = await calibrateScale(knownWeight, zeroOffset);
     setCalibrationFactor(result.data);
     setStep('result');
+    return t('scaleCalibration.calibrationDone');
   };
 
   const handleReset = () => {

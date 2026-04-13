@@ -29,9 +29,9 @@ async def get_scale_status() -> ApiMessageWithData[bool]:
 
 
 @protected_router.post("/tare", summary="Tare (zero) the scale.")
-async def tare_scale() -> ApiMessageWithData[float]:
+async def tare_scale(samples: int = 3) -> ApiMessageWithData[float]:
     mc = _require_scale()
-    offset = mc.scale_tare()
+    offset = mc.scale_tare(samples)
     return ApiMessageWithData(message=DH.get_translation("scale_tared"), data=offset)
 
 

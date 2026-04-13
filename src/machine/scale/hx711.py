@@ -84,8 +84,8 @@ class HX711Scale(ScaleInterface):
             if _retry:
                 _logger.warning("HX711: All readings failed, retrying once")
                 return self._sample_raw_over_sck(samples, _retry=False)
-            _logger.error("HX711: All readings failed, no retry, returning 0")
-            return 0
+            _logger.error("HX711: All readings failed, no retry, returning offset")
+            return self._offset  # <- this will result in a reading of 0g
         return int(sum(readings) / len(readings))
 
     def tare(self, samples: int = 3) -> int:

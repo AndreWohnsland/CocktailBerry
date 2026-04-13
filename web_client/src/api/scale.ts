@@ -21,8 +21,10 @@ export const useScaleStatus = (): UseQueryResult<ScaleStatus, Error> => {
   return useQuery<ScaleStatus, Error>('scaleStatus', getScaleStatus);
 };
 
-export const tareScale = async (): Promise<ScaleReading> => {
-  return axiosInstance.post<ScaleReading>(`${scale_url}/tare`).then((response) => response.data);
+export const tareScale = async (samples: number = 3): Promise<ScaleReading> => {
+  return axiosInstance
+    .post<ScaleReading>(`${scale_url}/tare`, null, { params: { samples } })
+    .then((response) => response.data);
 };
 
 export const readScale = async (): Promise<ScaleReading> => {
@@ -30,6 +32,9 @@ export const readScale = async (): Promise<ScaleReading> => {
 };
 
 export const calibrateScale = async (knownWeightGrams: number, zeroRawOffset: number): Promise<ScaleReading> => {
-  const params: Record<string, number> = { known_weight_grams: knownWeightGrams, zero_raw_offset: zeroRawOffset };
-  return axiosInstance.post<ScaleReading>(`${scale_url}/calibrate`, null, { params }).then((response) => response.data);
+  return axiosInstance
+    .post<ScaleReading>(`${scale_url}/calibrate`, null, {
+      params: { known_weight_grams: knownWeightGrams, zero_raw_offset: zeroRawOffset },
+    })
+    .then((response) => response.data);
 };

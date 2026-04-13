@@ -60,7 +60,8 @@ class HX711Scale(ScaleInterface):
 
     def read_grams(self) -> float:
         """Return weight in grams relative to the last tare() call."""
-        return self._hx.weight(1)
+        # This will return a Mass class, we need to get this value
+        return round(self._hx.weight(1).getValue(), 2)
 
     def get_gross_grams(self) -> float:
         """Return absolute weight using the initial zero calibration offset."""

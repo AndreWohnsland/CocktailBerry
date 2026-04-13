@@ -227,7 +227,7 @@ class MachineController:
             raise RuntimeError("No scale available")
         return self.hardware.scale.read_grams()
 
-    def scale_calibrate(self, known_weight_grams: float, zero_raw_offset: int, samples: int = 10) -> float:
+    def scale_calibrate(self, known_weight_grams: float, zero_raw_offset: int, samples: int = 20) -> float:
         """Calibrate the scale using a known reference weight.
 
         Reads the raw ADC value (after tare) and computes the calibration factor.
@@ -239,7 +239,7 @@ class MachineController:
             raise RuntimeError("No scale available")
         if known_weight_grams <= 0:
             raise ValueError("Known weight must be positive")
-        factor = round(self.hardware.scale.calibrate_with_known_weight(known_weight_grams, zero_raw_offset, samples), 3)
+        factor = round(self.hardware.scale.calibrate_with_known_weight(known_weight_grams, zero_raw_offset, samples), 1)
         cfg.SCALE_CONFIG.calibration_factor = factor
         cfg.SCALE_CONFIG.zero_raw_offset = zero_raw_offset
         cfg.sync_config_to_file()

@@ -148,7 +148,7 @@ class ScaleCalibrationScreen(QMainWindow):
 
     def _do_tare(self) -> None:
         """Execute tare, store offset, and move to calibrate page."""
-        self._zero_offset = self.mc.scale_tare()
+        self._zero_offset = self.mc.scale_tare(5)
         self.stack.setCurrentWidget(self.calibrate_page)
 
     def _do_read_weight(self) -> None:
