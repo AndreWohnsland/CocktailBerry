@@ -75,6 +75,9 @@ if [[ "$1" != "cicd" ]]; then
   cd ~/CocktailBerry/ || exit
 fi
 
+# reuse dependency installer, so we can setup newly added dependencies in one place
+bash scripts/dependency_installer.sh
+
 # Making necessary steps for the according program
 if [[ "$1" = "dashboard" ]]; then
   echo "> Setting up Dashboard"
