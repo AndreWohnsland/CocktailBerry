@@ -94,26 +94,26 @@ const ScaleCalibrationWindow = () => {
                 suffix='g'
               />
             </div>
-            {currentReading !== null && (
-              <div className='text-center text-lg font-semibold text-neutral'>
-                {t('scaleCalibration.currentReading', { weight: currentReading })}
-              </div>
-            )}
+            <div className='text-center text-lg font-semibold text-neutral'>
+              {t('scaleCalibration.currentReading', { weight: currentReading || '-.-' })}
+            </div>
           </div>
           <div className='flex-grow py-2'></div>
           <div className='w-full space-y-3'>
-            <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleReadWeight}>
-              {t('scaleCalibration.readWeight')}
-            </button>
+            <div className='flex gap-3'>
+              <button type='button' className='button-primary text-lg p-4 flex-1' onClick={handleReadWeight}>
+                {t('scaleCalibration.readWeight')}
+              </button>
+              <button type='button' className='button-primary text-lg p-4 flex-1' onClick={handleReset}>
+                {t('scaleCalibration.backToTare')}
+              </button>
+            </div>
             <button
               type='button'
               className='button-primary-filled text-lg p-4 w-full'
               onClick={() => executeAndShow(handleCalibrate)}
             >
               {t('scaleCalibration.calibrate')}
-            </button>
-            <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleReset}>
-              {t('scaleCalibration.backToTare')}
             </button>
           </div>
         </>

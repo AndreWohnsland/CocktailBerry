@@ -1029,15 +1029,12 @@ ui:
     calibration_error:
       en: 'Calibration failed, invalid reading from scale.'
       de: 'Kalibrierung fehlgeschlagen, ungültige Ablesung der Waage.'
-    back:
-      en: '< Back'
-      de: '< Zurück'
     back_to_tare:
       en: 'Back to Tare'
       de: 'Zurück zum Tarieren'
     read_weight:
-      en: 'Read Current Weight'
-      de: 'Aktuelles Gewicht lesen'
+      en: 'Read Weight'
+      de: 'Gewicht lesen'
     current_reading:
       en: 'Current reading: {weight} g'
       de: 'Aktuelle Messung: {weight} g'

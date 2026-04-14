@@ -1,10 +1,10 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMainWindow, QStackedWidget, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QHBoxLayout, QMainWindow, QStackedWidget, QVBoxLayout, QWidget
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.machine.controller import MachineController
-from src.ui.creation_utils import HEADER_FONT, LARGE_FONT, MEDIUM_FONT, create_button, create_label
+from src.ui.creation_utils import FontSize, create_button, create_label, create_spacer
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 
@@ -20,13 +20,19 @@ class ScaleCalibrationScreen(QMainWindow):
         self.main_layout = QVBoxLayout(central)
         self._zero_offset: int = 0
 
+        header_row = QHBoxLayout()
         self.header_label = create_label(
             UI_LANGUAGE._choose_language("header", "scale_calibration_window"),
-            HEADER_FONT,
+            FontSize.HEADER,
             bold=True,
             centered=True,
+            css_class="secondary",
         )
-        self.main_layout.addWidget(self.header_label)
+        header_row.addWidget(self.header_label)
+        self.button_back = create_button("X", min_w=60, max_w=60, min_h=50, css_class="destructive btn-inverted")
+        self.button_back.clicked.connect(self.close)
+        header_row.addWidget(self.button_back)
+        self.main_layout.addLayout(header_row)
 
         if not self.mc.has_scale:
             self._build_no_scale_view()
@@ -42,14 +48,11 @@ class ScaleCalibrationScreen(QMainWindow):
         self.main_layout.addStretch()
         not_available_label = create_label(
             UI_LANGUAGE._choose_language("not_available", "scale_calibration_window"),
-            LARGE_FONT,
+            FontSize.LARGE,
             centered=True,
         )
         self.main_layout.addWidget(not_available_label)
         self.main_layout.addStretch()
-        back_button = create_button(UI_LANGUAGE._choose_language("back", "scale_calibration_window"))
-        back_button.clicked.connect(self.close)
-        self.main_layout.addWidget(back_button)
 
     def _build_calibration_view(self) -> None:
         """Build the stacked widget with tare and calibrate pages."""
@@ -61,11 +64,6 @@ class ScaleCalibrationScreen(QMainWindow):
 
         self.stack.setCurrentWidget(self.tare_page)
 
-        # Bottom buttons
-        self.button_back = create_button(UI_LANGUAGE._choose_language("back", "scale_calibration_window"))
-        self.button_back.clicked.connect(self.close)
-        self.main_layout.addWidget(self.button_back)
-
     def _build_tare_page(self) -> None:
         """Page 1: instruct user to clear the scale, then tare."""
         self.tare_page = QWidget()
@@ -74,13 +72,16 @@ class ScaleCalibrationScreen(QMainWindow):
 
         self.tare_instruction = create_label(
             UI_LANGUAGE._choose_language("tare_instruction", "scale_calibration_window"),
-            MEDIUM_FONT,
+            FontSize.MEDIUM,
             centered=True,
         )
         layout.addWidget(self.tare_instruction)
         layout.addStretch()
 
-        self.button_tare = create_button(UI_LANGUAGE._choose_language("tare", "scale_calibration_window"))
+        self.button_tare = create_button(
+            UI_LANGUAGE._choose_language("tare", "scale_calibration_window"),
+            css_class="btn-inverted",
+        )
         self.button_tare.clicked.connect(self._do_tare)
         layout.addWidget(self.button_tare)
 
@@ -94,15 +95,16 @@ class ScaleCalibrationScreen(QMainWindow):
 
         self.place_instruction = create_label(
             UI_LANGUAGE._choose_language("place_weight_instruction", "scale_calibration_window"),
-            MEDIUM_FONT,
+            FontSize.MEDIUM,
             centered=True,
         )
         layout.addWidget(self.place_instruction)
+        layout.addItem(create_spacer(10))
 
         # Known weight input
         weight_label = create_label(
             UI_LANGUAGE._choose_language("known_weight", "scale_calibration_window"),
-            MEDIUM_FONT,
+            FontSize.MEDIUM,
             centered=True,
         )
         layout.addWidget(weight_label)
@@ -123,26 +125,32 @@ class ScaleCalibrationScreen(QMainWindow):
             )
         )
         layout.addWidget(self.input_known_weight)
+        layout.addItem(create_spacer(10))
 
         # Status label for feedback
-        self.label_status = create_label("", MEDIUM_FONT, centered=True)
+        self.label_status = create_label("", FontSize.MEDIUM, centered=True)
         layout.addWidget(self.label_status)
 
         layout.addStretch()
 
+        row = QHBoxLayout()
         self.button_read_weight = create_button(UI_LANGUAGE._choose_language("read_weight", "scale_calibration_window"))
         self.button_read_weight.clicked.connect(self._do_read_weight)
-        layout.addWidget(self.button_read_weight)
-
-        self.button_calibrate = create_button(UI_LANGUAGE._choose_language("calibrate", "scale_calibration_window"))
-        self.button_calibrate.clicked.connect(self._do_calibrate)
-        layout.addWidget(self.button_calibrate)
+        row.addWidget(self.button_read_weight)
 
         self.button_back_to_tare = create_button(
             UI_LANGUAGE._choose_language("back_to_tare", "scale_calibration_window")
         )
         self.button_back_to_tare.clicked.connect(self._reset_to_tare)
-        layout.addWidget(self.button_back_to_tare)
+        row.addWidget(self.button_back_to_tare)
+        layout.addLayout(row)
+
+        self.button_calibrate = create_button(
+            UI_LANGUAGE._choose_language("calibrate", "scale_calibration_window"),
+            css_class="btn-inverted",
+        )
+        self.button_calibrate.clicked.connect(self._do_calibrate)
+        layout.addWidget(self.button_calibrate)
 
         self.stack.addWidget(self.calibrate_page)
 
