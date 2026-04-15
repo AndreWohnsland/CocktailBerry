@@ -8,6 +8,7 @@ from src.machine.scale.base import ScaleInterface
 
 if TYPE_CHECKING:
     from src.config.config_types import NAU7802ScaleConfig
+    from src.machine.hardware import HardwareContext
 
 _logger = LoggerHandler("NAU7802Scale")
 
@@ -22,12 +23,12 @@ except (ModuleNotFoundError, ImportError, RuntimeError):
 class NAU7802Scale(ScaleInterface):
     """Scale using NAU7802 I2C load cell amplifier."""
 
-    def __init__(self, config: NAU7802ScaleConfig) -> None:
+    def __init__(self, config: NAU7802ScaleConfig, hardware: HardwareContext) -> None:
         if not NAU7802_AVAILABLE:
             msg = "cedargrove_nau7802 library is not available. Cannot initialize NAU7802 scale."
             _logger.error(msg)
             raise ImportError(msg)
-        super().__init__(config)
+        super().__init__(config, hardware)
         self._zero_offset: int = 0
         i2c = get_i2c()
         if i2c is None:

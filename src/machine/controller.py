@@ -57,6 +57,9 @@ class MachineController:
         # Stage 2: scale can access pins, leds, extra
         self.hardware.scale = create_scale(cfg.SCALE_CONFIG, self.hardware)
         # Stage 3: carriage can access pins, leds, extra, AND scale
+        # Note: referencing (find_reference()) can take seconds and is deliberately deferred —
+        # call :meth:`find_carriage_reference` from the caller after the GUI/API is ready,
+        # wrapping it in a spinner/progress indicator as appropriate for the version.
         self.hardware.carriage = create_carriage(cfg.CARRIAGE_CONFIG, self.hardware)
         self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()
@@ -210,6 +213,24 @@ class MachineController:
     def has_scale(self) -> bool:
         """Check if a scale is available and initialized."""
         return self.hardware.scale is not None
+
+    @property
+    def has_carriage(self) -> bool:
+        """Check if a carriage is available."""
+        return self.hardware.carriage is not None
+
+    def find_carriage_reference(self) -> None:
+        """Drive the carriage to its reference sensor to establish position.
+
+        Kept separate from :meth:`init_machine` because referencing can take
+        several seconds and would block the main GUI / API startup. Callers
+        decide when to run it (e.g. after the v1 GUI is visible — wrap in a
+        spinner — or at the end of the v2 lifespan). Safe to call again at
+        runtime. No-op if no carriage is configured.
+        """
+        if self.hardware.carriage is None:
+            return
+        self.hardware.carriage.find_reference()
 
     def scale_tare(self, samples: int = 3) -> int:
         """Tare (zero) the scale.

@@ -12,8 +12,7 @@ from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.programs.addons.addons import ADDONS
-from src.programs.addons.dispenser_extensions import DISPENSER_ADDONS
-from src.programs.addons.hardware_extensions import HARDWARE_ADDONS
+from src.programs.addons.bootstrap import initialize_addon_configs
 from src.programs.cocktailberry import run_cocktailberry
 from src.programs.common_cli import register_common_commands
 from src.programs.config_window import run_config_window
@@ -44,9 +43,7 @@ def main(
     if not quiet:
         show_start_message(displayed_name)
     start_resource_tracker()
-    DISPENSER_ADDONS.build_full_config_fields()
-    HARDWARE_ADDONS.build_config()
-    ADDONS.define_addon_configuration()
+    initialize_addon_configs()
     # Load the config file and check for errors, update the config (sync new values if not present)
     try:
         cfg.read_local_config(update_config=True)

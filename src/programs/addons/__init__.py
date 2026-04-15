@@ -13,10 +13,14 @@ from src.config.config_types import ConfigClass
 from src.filepath import (
     ADDON_FOLDER,
     ADDON_SKELETON,
+    CARRIAGE_ADDON_FOLDER,
+    CARRIAGE_EXTENSION_SKELETON,
     DISPENSER_ADDON_FOLDER,
     DISPENSER_EXTENSION_SKELETON,
     HARDWARE_ADDON_FOLDER,
     HARDWARE_EXTENSION_SKELETON,
+    SCALE_ADDON_FOLDER,
+    SCALE_EXTENSION_SKELETON,
 )
 from src.models import Cocktail
 
@@ -81,7 +85,7 @@ class _SkeletonConfig:
     name_placeholder: str
 
 
-SKELETON_OPTIONS = Literal["addon", "dispenser", "hardware"]
+SKELETON_OPTIONS = Literal["addon", "dispenser", "hardware", "scale", "carriage"]
 
 _SKELETON_CONFIGS: dict[SKELETON_OPTIONS, _SkeletonConfig] = {
     "addon": _SkeletonConfig(
@@ -100,6 +104,18 @@ _SKELETON_CONFIGS: dict[SKELETON_OPTIONS, _SkeletonConfig] = {
         HARDWARE_ADDON_FOLDER,
         HARDWARE_EXTENSION_SKELETON,
         "hardware extension",
+        "EXTENSION_NAME_HOLDER",
+    ),
+    "scale": _SkeletonConfig(
+        SCALE_ADDON_FOLDER,
+        SCALE_EXTENSION_SKELETON,
+        "scale extension",
+        "EXTENSION_NAME_HOLDER",
+    ),
+    "carriage": _SkeletonConfig(
+        CARRIAGE_ADDON_FOLDER,
+        CARRIAGE_EXTENSION_SKELETON,
+        "carriage extension",
         "EXTENSION_NAME_HOLDER",
     ),
 }

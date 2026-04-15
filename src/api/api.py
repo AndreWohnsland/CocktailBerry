@@ -24,8 +24,7 @@ from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.setup_web import download_latest_web_client
 from src.programs.addons.addons import ADDONS, CouldNotInstallAddonError
-from src.programs.addons.dispenser_extensions import DISPENSER_ADDONS
-from src.programs.addons.hardware_extensions import HARDWARE_ADDONS
+from src.programs.addons.bootstrap import initialize_addon_configs
 from src.resource_stats import start_resource_tracker
 from src.service.nfc_payment_service import NFCPaymentService
 from src.service.waiter_service import WaiterService
@@ -45,9 +44,7 @@ _logger = LoggerHandler("CocktailBerry_API")
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     start_resource_tracker()
-    DISPENSER_ADDONS.build_full_config_fields()
-    HARDWARE_ADDONS.build_config()
-    ADDONS.define_addon_configuration()
+    initialize_addon_configs()
     try:
         cfg.read_local_config(update_config=True)
     except ConfigError as e:
@@ -88,6 +85,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         NFCPaymentService().start_continuous_sensing()
     if cfg.waiter_mode_active:
         WaiterService().start_continuous_sensing()
+    # Reference the carriage last — may take seconds and does not need to block
+    # earlier startup steps (config, DB, addons).
+    mc.find_carriage_reference()
     yield
     mc.cleanup()
 

@@ -8,6 +8,7 @@ from src.machine.scale.base import ScaleInterface
 
 if TYPE_CHECKING:
     from src.config.config_types import HX711ScaleConfig
+    from src.machine.hardware import HardwareContext
 
 try:
     from HX711 import Mass, Options, ReadType, SimpleHX711
@@ -28,13 +29,13 @@ _logger = LoggerHandler("HX711Scale")
 class HX711Scale(ScaleInterface):
     """HX711 scale using hx711-rpi-py backend."""
 
-    def __init__(self, config: HX711ScaleConfig) -> None:
+    def __init__(self, config: HX711ScaleConfig, hardware: HardwareContext) -> None:
         if not HX711_AVAILABLE:
             msg = "hx711-rpi-py library is not available."
             _logger.log_event("ERROR", msg)
             raise ImportError(msg)
 
-        super().__init__(config)
+        super().__init__(config, hardware)
         self._zero_raw_offset = config.zero_raw_offset
 
         self._hx = SimpleHX711(

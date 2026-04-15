@@ -15,13 +15,24 @@ __all__ = ["CarriageInterface", "create_carriage"]
 
 
 def create_carriage(config: BaseCarriageConfig, hardware: HardwareContext) -> CarriageInterface | None:
-    """Create a carriage instance from config, returning None if disabled.
+    """Create a carriage instance from config, returning None if unavailable.
 
-    The *hardware* context is available for future carriage extensions
-    that need access to pin controllers, scale, or hardware extension instances.
-    No concrete implementations exist yet — this always returns None.
+    Every carriage — currently only from ``addons/carriages/`` — receives the
+    full ``HardwareContext`` so it can reach pins, LEDs, the scale, or hardware
+    extension instances if needed. Built-in sentinels like ``"NoCarriage"``
+    resolve to ``None``, equivalent to a disabled carriage.
     """
-    if not config.enabled:
+    if not config.enabled or config.carriage_type == "NoCarriage":
         return None
-    _logger.log_event("WARNING", "Carriage is enabled but no driver implementation is available yet")
-    return None
+    try:
+        # Custom carriage extensions from addons/carriages/ — dispatch by carriage_type.
+        from src.programs.addons.carriage_extensions import CARRIAGE_ADDONS
+
+        entry = CARRIAGE_ADDONS.entries.get(config.carriage_type)
+        if entry is not None:
+            return entry.implementation_class(config, hardware)
+        _logger.error(f"Unknown carriage type: {config.carriage_type}")
+        return None
+    except Exception:
+        _logger.warning("Carriage initialization failed, continuing without carriage")
+        return None

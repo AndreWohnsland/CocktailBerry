@@ -73,6 +73,40 @@ class Tab(IntEnum):
 
 TAB_ORDER = [Tab.MAKER, Tab.INGREDIENTS, Tab.RECIPES, Tab.BOTTLES]
 
+# -----------------------------------------------------------------------------
+# Shared UI-field definitions for DiscriminatedDictType config families.
+#
+# Each constant is the single source of truth for the shared fields of a
+# Base*Config family. Both the built-in variants in ``config_manager.py`` and
+# the addon variants registered by the extension managers in
+# ``src/programs/addons/`` spread (``**``) these dicts into their variant
+# DictType so the shared fields are declared exactly once.
+# -----------------------------------------------------------------------------
+
+SHARED_PUMP_FIELDS: dict[str, ConfigInterface[Any]] = {
+    "pump_type": ChooseOptions.dispenser,
+    "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
+    "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
+    "consumption_estimation": ChooseOptions.consumption_estimation,
+    "carriage_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
+}
+
+SHARED_SCALE_FIELDS: dict[str, ConfigInterface[Any]] = {
+    "scale_type": ChooseOptions.scale_driver,
+    "enabled": BoolType(check_name="Enabled"),
+    "calibration_factor": FloatType(prefix="cali:", allow_negative=True),
+    "zero_raw_offset": FloatType(prefix="offset:", allow_negative=True),
+}
+
+SHARED_CARRIAGE_FIELDS: dict[str, ConfigInterface[Any]] = {
+    "carriage_type": ChooseOptions.carriage_type,
+    "enabled": BoolType(check_name="Enabled"),
+    "home_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
+    "speed_pct_per_s": FloatType([build_number_limiter(0.1, 100)], suffix="%/s"),
+    "move_during_cleaning": BoolType(check_name="Move During Cleaning"),
+    "wait_after_dispense": FloatType([build_number_limiter(0, 30)], suffix="s"),
+}
+
 
 class ConfigManager:
     """Manager for all static configuration of the machine.
@@ -207,28 +241,20 @@ class ConfigManager:
                     {
                         "DC": DictType(
                             {
-                                "pump_type": ChooseOptions.dispenser,
+                                **SHARED_PUMP_FIELDS,
                                 "pin_type": ChooseOptions.pin,
                                 "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
                                 "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
-                                "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
-                                "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
-                                "consumption_estimation": ChooseOptions.consumption_estimation,
-                                "carriage_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
                             },
                             DCPumpConfig,
                         ),
                         "Stepper": DictType(
                             {
-                                "pump_type": ChooseOptions.dispenser,
+                                **SHARED_PUMP_FIELDS,
                                 "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                                 "dir_pin": IntType([build_number_limiter(0)], prefix="Dir:"),
                                 "driver_type": ChooseOptions.stepper_driver,
                                 "step_type": ChooseOptions.stepper_step_type,
-                                "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
-                                "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
-                                "consumption_estimation": ChooseOptions.consumption_estimation,
-                                "carriage_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
                             },
                             StepperPumpConfig,
                         ),
@@ -342,10 +368,7 @@ class ConfigManager:
                 {
                     "HX711": DictType(
                         {
-                            "scale_type": ChooseOptions.scale_driver,
-                            "enabled": BoolType(check_name="Enabled"),
-                            "calibration_factor": FloatType(prefix="cali:", allow_negative=True),
-                            "zero_raw_offset": FloatType(prefix="offset:", allow_negative=True),
+                            **SHARED_SCALE_FIELDS,
                             "data_pin": IntType([build_number_limiter(0)], prefix="Data:"),
                             "clock_pin": IntType([build_number_limiter(0)], prefix="Clock:"),
                         },
@@ -353,10 +376,7 @@ class ConfigManager:
                     ),
                     "NAU7802": DictType(
                         {
-                            "scale_type": ChooseOptions.scale_driver,
-                            "enabled": BoolType(check_name="Enabled"),
-                            "calibration_factor": FloatType(prefix="cali:", allow_negative=True),
-                            "zero_raw_offset": FloatType(prefix="offset:", allow_negative=True),
+                            **SHARED_SCALE_FIELDS,
                             "i2c_address": StringType([validate_i2c_address], prefix="0x", default="2A"),
                         },
                         NAU7802ScaleConfig,
@@ -364,15 +384,15 @@ class ConfigManager:
                 },
                 default_variant="HX711",
             ),
-            "CARRIAGE_CONFIG": DictType(
+            "CARRIAGE_CONFIG": DiscriminatedDictType(
+                "carriage_type",
                 {
-                    "enabled": BoolType(check_name="Enabled"),
-                    "home_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
-                    "speed_pct_per_s": FloatType([build_number_limiter(0.1, 100)], suffix="%/s"),
-                    "move_during_cleaning": BoolType(check_name="Move During Cleaning"),
-                    "wait_after_dispense": FloatType([build_number_limiter(0, 30)], suffix="s"),
+                    "NoCarriage": DictType(
+                        {**SHARED_CARRIAGE_FIELDS},
+                        BaseCarriageConfig,
+                    ),
                 },
-                BaseCarriageConfig,
+                default_variant="NoCarriage",
             ),
             "EXP_MAKER_UNIT": StringType(),
             "EXP_MAKER_FACTOR": FloatType([build_number_limiter(0.01, 100)]),

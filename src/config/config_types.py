@@ -14,6 +14,7 @@ from typing import Any, Protocol, Self, get_args
 from src import (
     ConsumptionEstimationType,
     I2CExpanderType,
+    SupportedCarriageType,
     SupportedDispenserType,
     SupportedLanguagesType,
     SupportedLedStatesType,
@@ -39,6 +40,7 @@ SUPPORTED_STEPPER_DRIVERS = list(get_args(SupportedStepperDriverType))
 SUPPORTED_STEPPER_STEP_TYPES = list(get_args(SupportedStepperStepType))
 SUPPORTED_CONSUMPTION_ESTIMATIONS = list(get_args(ConsumptionEstimationType))
 SUPPORTED_SCALE_DRIVERS = list(get_args(SupportedScaleDriverType))
+SUPPORTED_CARRIAGE_TYPES = list(get_args(SupportedCarriageType))
 
 
 class ConfigInterface[T](Protocol):
@@ -153,6 +155,7 @@ class ChooseOptions:
     stepper_step_type = ChooseType(allowed=SUPPORTED_STEPPER_STEP_TYPES, default="Full")
     consumption_estimation = ChooseType(allowed=SUPPORTED_CONSUMPTION_ESTIMATIONS, default="time")
     scale_driver = ChooseType(allowed=SUPPORTED_SCALE_DRIVERS, default="HX711")
+    carriage_type = ChooseType(allowed=SUPPORTED_CARRIAGE_TYPES, default="NoCarriage")
 
 
 class StringType(_ConfigType[str]):
@@ -531,16 +534,21 @@ PumpConfig = DCPumpConfig
 
 
 class BaseScaleConfig(ConfigClass):
-    """Base configuration shared by all scale driver types."""
+    """Base configuration shared by all scale driver types.
 
-    scale_type: SupportedScaleDriverType
+    ``scale_type`` is a plain ``str`` to allow custom scale extensions to register
+    their own variants (see ``src/programs/addons/scale_extensions.py``).
+    Built-in drivers still default to one of :data:`SUPPORTED_SCALE_DRIVERS`.
+    """
+
+    scale_type: str
     enabled: bool
     calibration_factor: float
     zero_raw_offset: int
 
     def __init__(
         self,
-        scale_type: SupportedScaleDriverType = "HX711",
+        scale_type: str = "HX711",
         enabled: bool = False,
         calibration_factor: float = 1.0,
         zero_raw_offset: int = 0,
@@ -568,7 +576,7 @@ class HX711ScaleConfig(BaseScaleConfig):
 
     def __init__(
         self,
-        scale_type: SupportedScaleDriverType = "HX711",
+        scale_type: str = "HX711",
         enabled: bool = False,
         calibration_factor: float = 1.0,
         zero_raw_offset: int = 0,
@@ -602,7 +610,7 @@ class NAU7802ScaleConfig(BaseScaleConfig):
 
     def __init__(
         self,
-        scale_type: SupportedScaleDriverType = "NAU7802",
+        scale_type: str = "NAU7802",
         enabled: bool = False,
         calibration_factor: float = 1.0,
         zero_raw_offset: int = 0,
@@ -791,15 +799,21 @@ class WS281xLedConfig(ConfigClass):
 
 
 class BaseCarriageConfig(ConfigClass):
-    """Configuration for the optional carriage/slide hardware.
+    """Configuration shared by all carriage/slide driver types.
 
     Positions are abstract values from 0 to 100 representing the percentage
     of total travel range. The home_position defines where the carriage
     rests when idle (0 = start, 50 = middle, 100 = end).
     speed_pct_per_s defines how fast the carriage moves in percent of total
     range per second (e.g. 10.0 means it takes 10s for the full range).
+
+    ``carriage_type`` is a plain ``str`` to allow custom carriage extensions
+    to register their own variants (see ``src/programs/addons/carriage_extensions.py``).
+    The built-in ``"NoCarriage"`` sentinel is selected when no concrete driver
+    is installed; :func:`create_carriage` will return ``None`` for that value.
     """
 
+    carriage_type: str
     enabled: bool
     home_position: int
     speed_pct_per_s: float
@@ -808,6 +822,7 @@ class BaseCarriageConfig(ConfigClass):
 
     def __init__(
         self,
+        carriage_type: str = "NoCarriage",
         enabled: bool = False,
         home_position: int = 0,
         speed_pct_per_s: float = 10.0,
@@ -815,6 +830,7 @@ class BaseCarriageConfig(ConfigClass):
         wait_after_dispense: float = 0.0,
         **kwargs: Any,
     ) -> None:
+        self.carriage_type = carriage_type
         self.enabled = enabled
         self.home_position = home_position
         self.speed_pct_per_s = speed_pct_per_s
@@ -823,6 +839,7 @@ class BaseCarriageConfig(ConfigClass):
 
     def to_config(self) -> dict[str, Any]:
         return {
+            "carriage_type": self.carriage_type,
             "enabled": self.enabled,
             "home_position": self.home_position,
             "speed_pct_per_s": self.speed_pct_per_s,

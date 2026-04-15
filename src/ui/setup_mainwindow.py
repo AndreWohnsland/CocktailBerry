@@ -21,6 +21,7 @@ from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER, ItemDelegate
 from src.logger_handler import LoggerHandler
+from src.machine.controller import MachineController
 from src.models import Cocktail
 from src.programs.addons.addons import ADDONS
 from src.service.nfc_payment_service import NFCPaymentService, UserLookup
@@ -36,6 +37,7 @@ from src.tabs import bottles, ingredients, recipes
 from src.tabs.qt_tab_index import TabIndex
 from src.ui.cocktail_view import CocktailView
 from src.ui.icons import BUTTON_SIZE, IconSetter
+from src.ui.qt_worker import CallableWorker, run_with_spinner
 from src.ui.setup_available_window import AvailableWindow
 from src.ui.setup_bottle_window import BottleWindow
 from src.ui.setup_cocktail_selection import CocktailSelection
@@ -105,6 +107,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.datepicker: DatePicker | None = None
         self.picture_window: PictureWindow | None = None
         self.refill_dialog: RefillDialog | None = None
+        # Holds the background worker that references the carriage after the GUI is up.
+        self._carriage_ref_worker: CallableWorker[None] | None = None
         self.cocktail_view = CocktailView(self)
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
@@ -172,6 +176,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.switch_to_cocktail_list()
         if cfg.cocktailberry_payment:
             NFCPaymentService().add_callback("cocktail_list", self.cocktail_view.emit_user_change)
+        # Reference the carriage last, after the GUI is fully up. Referencing
+        # can take several seconds; run it in a background thread with a
+        # spinner so the main window stays responsive and the user sees
+        # something is happening.
+        mc = MachineController()
+        if mc.has_carriage:
+            self._carriage_ref_worker = run_with_spinner(mc.find_carriage_reference, parent=self)
 
     def update_check(self) -> None:
         """Check if there is an update and asks to update, if exists."""

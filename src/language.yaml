@@ -892,8 +892,8 @@ ui:
       en: 'Scale hardware configuration: driver type, enable/disable and calibration factor for weight-based measurement'
       de: 'Waagen-Konfiguration: Treibertyp, Aktivierung und Kalibrierungsfaktor für gewichtsbasierte Messung'
     CARRIAGE_CONFIG:
-      en: 'Carriage/slide hardware configuration: enable/disable, home position (0-100%), movement speed (%/s) and whether to move during cleaning'
-      de: 'Schlitten-Konfiguration: Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll'
+      en: 'Carriage/slide hardware configuration: driver type, enable/disable, home position (0-100%), movement speed (%/s) and whether to move during cleaning'
+      de: 'Schlitten-Konfiguration: Treibertyp, Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll'
 
   ##### COLOR WINDOW #####
   # all values for settings in color window

@@ -7,6 +7,7 @@ from src.logger_handler import LoggerHandler
 
 if TYPE_CHECKING:
     from src.config.config_types import BaseScaleConfig
+    from src.machine.hardware import HardwareContext
 
 
 _logger = LoggerHandler("BaseScale")
@@ -18,9 +19,16 @@ class ScaleInterface(ABC):
     A single scale instance is shared across all dispensers via HardwareContext.
     Because only one dispenser can use the scale at a time, any dispenser that
     has a scale reference automatically requires exclusive scheduling.
+
+    The ``hardware`` argument gives access to the full HardwareContext (pin
+    controller, LEDs, and the ``extra`` dict of hardware extension instances).
+    Built-in drivers may ignore it; custom scale extensions from
+    ``addons/scales/`` can use it to access pins or shared hardware.
     """
 
-    def __init__(self, config: BaseScaleConfig) -> None:
+    def __init__(self, config: BaseScaleConfig, hardware: HardwareContext) -> None:
+        self.config = config
+        self.hardware = hardware
         self._calibration_factor = config.calibration_factor
         self._zero_raw_offset = config.zero_raw_offset
 

@@ -4,20 +4,11 @@ from dataclasses import dataclass
 from typing import Any
 
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_types import BasePumpConfig, ChooseOptions, ConfigInterface, DictType, FloatType, IntType
-from src.config.validators import build_number_limiter
+from src.config.config_manager import SHARED_PUMP_FIELDS
+from src.config.config_types import BasePumpConfig, ConfigInterface, DictType
 from src.filepath import DISPENSER_ADDON_FOLDER
 from src.machine.dispensers.base import BaseDispenser
 from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionManager
-
-# Shared BasePumpConfig fields auto-injected into every dispenser extension.
-_SHARED_PUMP_FIELDS: dict[str, ConfigInterface[Any]] = {
-    "pump_type": ChooseOptions.dispenser,
-    "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
-    "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
-    "consumption_estimation": ChooseOptions.consumption_estimation,
-    "carriage_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
-}
 
 
 @dataclass
@@ -72,7 +63,7 @@ class DispenserExtensionManager(BaseExtensionManager[DispenserAddonEntry]):
         for name, entry in self.entries.items():
             full_fields: dict[str, ConfigInterface[Any]] = {}
             # Add shared base fields first (pump_type comes first in the UI)
-            full_fields.update(_SHARED_PUMP_FIELDS)
+            full_fields.update(SHARED_PUMP_FIELDS)
             # Add user-defined fields after shared ones
             full_fields.update(entry.config_fields)
             cfg.add_discriminator_variant("PUMP_CONFIG", name, DictType(full_fields, entry.config_class))

@@ -203,6 +203,7 @@ export interface ScaleConfig {
 }
 
 export interface CarriageConfig {
+  carriage_type: string;
   enabled: boolean;
   home_position: number;
   speed_pct_per_s: number;

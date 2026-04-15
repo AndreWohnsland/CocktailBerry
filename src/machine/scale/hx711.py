@@ -10,6 +10,7 @@ from src.machine.scale.base import ScaleInterface
 
 if TYPE_CHECKING:
     from src.config.config_types import HX711ScaleConfig
+    from src.machine.hardware import HardwareContext
 
 try:
     from gpiozero import DigitalInputDevice, DigitalOutputDevice
@@ -24,12 +25,12 @@ _logger = LoggerHandler("HX711Scale")
 class HX711Scale(ScaleInterface):
     """Robust HX711 scale using gpiozero, Pi 5 compatible."""
 
-    def __init__(self, config: HX711ScaleConfig) -> None:
+    def __init__(self, config: HX711ScaleConfig, hardware: HardwareContext) -> None:
         if not GPIOZERO_AVAILABLE:
             msg = "gpiozero library is not available. Cannot initialize HX711 scale."
             _logger.log_event("ERROR", msg)
             raise ImportError(msg)
-        super().__init__(config)
+        super().__init__(config, hardware)
         self._data_pin = config.data_pin
         self._clock_pin = config.clock_pin
         self._offset = 0
