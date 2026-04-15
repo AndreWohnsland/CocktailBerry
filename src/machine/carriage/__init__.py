@@ -35,4 +35,5 @@ def create_carriage(config: BaseCarriageConfig, hardware: HardwareContext) -> Ca
         return None
     except Exception:
         _logger.warning("Carriage initialization failed, continuing without carriage")
+        _logger.log_exception("Carriage initialization traceback")
         return None
