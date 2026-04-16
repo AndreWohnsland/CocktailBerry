@@ -63,3 +63,7 @@ Key modules use singletons — never instantiate new copies, always import the e
 
 - SQLite + SQLAlchemy ORM, models in `src/db_models.py`
 - Tests use in-memory SQLite (`sqlite:///:memory:`) via the `db_commander` fixture
+
+## Global vs Local imports
+
+Try to always use top level imports and not runtime imports, except this would create a circular import, then you can use runtime imports to break the cycle.
