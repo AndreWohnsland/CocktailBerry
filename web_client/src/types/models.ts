@@ -201,6 +201,7 @@ export interface ScaleConfig {
   scale_type: string;
   enabled: boolean;
   calibration_factor: number;
+  zero_raw_offset: number;
 }
 
 export interface CarriageConfig {
@@ -209,6 +210,7 @@ export interface CarriageConfig {
   home_position: number;
   speed_pct_per_s: number;
   move_during_cleaning: boolean;
+  wait_after_dispense: number;
 }
 
 export interface DCPumpConfig {

@@ -75,4 +75,5 @@ def create_scale(config: BaseScaleConfig, hardware: HardwareContext) -> ScaleInt
         return _health_check(scale)
     except Exception:
         _logger.log_event("WARNING", "Scale initialization failed, falling back to time-based dispensing")
+        _logger.log_exception("Scale initialization traceback")
         return None

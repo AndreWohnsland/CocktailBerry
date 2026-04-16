@@ -36,7 +36,6 @@ class HX711Scale(ScaleInterface):
             raise ImportError(msg)
 
         super().__init__(config, hardware)
-        self._zero_raw_offset = config.zero_raw_offset
 
         self._hx = SimpleHX711(
             config.data_pin,
