@@ -37,15 +37,21 @@ class NAU7802Scale(ScaleInterface):
             raise RuntimeError(msg)
         self._nau = NAU7802(i2c, address=config.address_hex)
         # PGA gain: amplifies the load cell signal (1-128); 128 is typical for low mV/V load cells
-        self._nau.gain = 128
-        # ADC sample rate in SPS (10/20/40/80/320); 80 SPS = ~12.5ms per reading
-        self._nau.conversion_rate = 80
+        self._nau.gain = 128  # (should also be default)
         self._nau.channel = 1
+        # Ignore analog input signals and calibrate the the input offset using an internal reference voltage
+        self._nau.calibrate()
         _logger.log_event("INFO", f"NAU7802 scale initialized (address=0x{config.i2c_address})")
 
+    def _wait_and_read(self) -> int:
+        while not self._nau.available():
+            pass
+        return self._nau.read()
+
     def _sample_raw(self, samples: int) -> int:
-        readings = [self._nau.read() for _ in range(max(1, samples))]
-        return int(sum(readings) / len(readings))
+        n = max(1, samples)
+        readings = [self._wait_and_read() for _ in range(n)]
+        return int(sum(readings) / n)
 
     def tare(self, samples: int = 3) -> int:
         self._zero_offset = self._sample_raw(samples)
