@@ -9,7 +9,6 @@ from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QHBoxLayout,
-    QLayout,
     QMainWindow,
     QPushButton,
     QVBoxLayout,
@@ -318,39 +317,9 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self, element: QHBoxLayout, getter_fn: Callable, getter_fn_list: list[Callable]
     ) -> None:
         """Remove the referenced element from the ui."""
-
-        def recursive_delete(widget: QBoxLayout) -> None:
-            """Recursively delete all children of the given widget."""
-            for i in reversed(range(widget.count())):
-                found_element = widget.itemAt(i)
-                if found_element is None:
-                    continue
-                found_widget = found_element.widget()
-                if found_widget is not None:
-                    found_widget.setParent(None)
-                    found_widget.deleteLater()
-                if isinstance(found_element, QBoxLayout):
-                    recursive_delete(found_element)
-
-        recursive_delete(element)
+        DP_CONTROLLER.delete_items_of_layout(element)
         getter_fn_list.remove(getter_fn)
         element.deleteLater()
-
-    @staticmethod
-    def _clear_layout_recursive(layout: QLayout) -> None:
-        """Recursively remove all widgets and child layouts from a layout."""
-        for i in reversed(range(layout.count())):
-            item = layout.itemAt(i)
-            if item is None:
-                continue
-            widget = item.widget()
-            if widget is not None:
-                widget.setParent(None)
-                widget.deleteLater()
-            child_layout = item.layout()
-            if child_layout is not None:
-                ConfigWindow._clear_layout_recursive(child_layout)
-                child_layout.deleteLater()
 
     def _build_discriminated_dict_field(
         self,
@@ -378,7 +347,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
 
         def _on_discriminator_changed(new_variant: str) -> None:
             old_values = {key: getter() for key, getter in getter_fn_dict.items()}
-            self._clear_layout_recursive(variant_container)
+            DP_CONTROLLER.delete_items_of_layout(variant_container)
             new_variant_type = config_setting.variants[new_variant]
             merged = {
                 k: old_values.get(k, vs.get_default())
