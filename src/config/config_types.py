@@ -545,6 +545,7 @@ class BaseScaleConfig(ConfigClass):
     enabled: bool
     calibration_factor: float
     zero_raw_offset: int
+    minimal_weight: int
 
     def __init__(
         self,
@@ -552,12 +553,14 @@ class BaseScaleConfig(ConfigClass):
         enabled: bool = False,
         calibration_factor: float = 1.0,
         zero_raw_offset: int = 0,
+        minimal_weight: int = 0,
         **kwargs: Any,
     ) -> None:
         self.scale_type = scale_type
         self.enabled = enabled
         self.calibration_factor = calibration_factor
         self.zero_raw_offset = zero_raw_offset
+        self.minimal_weight = minimal_weight
 
     def to_config(self) -> dict[str, Any]:
         return {
@@ -565,6 +568,7 @@ class BaseScaleConfig(ConfigClass):
             "enabled": self.enabled,
             "calibration_factor": self.calibration_factor,
             "zero_raw_offset": self.zero_raw_offset,
+            "minimal_weight": self.minimal_weight,
         }
 
 
@@ -580,6 +584,7 @@ class HX711ScaleConfig(BaseScaleConfig):
         enabled: bool = False,
         calibration_factor: float = 1.0,
         zero_raw_offset: int = 0,
+        minimal_weight: int = 0,
         data_pin: int = 5,
         clock_pin: int = 6,
     ) -> None:
@@ -588,6 +593,7 @@ class HX711ScaleConfig(BaseScaleConfig):
             enabled=enabled,
             calibration_factor=calibration_factor,
             zero_raw_offset=zero_raw_offset,
+            minimal_weight=minimal_weight,
         )
         self.data_pin = data_pin
         self.clock_pin = clock_pin
@@ -614,6 +620,7 @@ class NAU7802ScaleConfig(BaseScaleConfig):
         enabled: bool = False,
         calibration_factor: float = 1.0,
         zero_raw_offset: int = 0,
+        minimal_weight: int = 0,
         i2c_address: str = "2A",
     ) -> None:
         super().__init__(
@@ -621,6 +628,7 @@ class NAU7802ScaleConfig(BaseScaleConfig):
             enabled=enabled,
             calibration_factor=calibration_factor,
             zero_raw_offset=zero_raw_offset,
+            minimal_weight=minimal_weight,
         )
         self.i2c_address = i2c_address.upper()
 

@@ -134,6 +134,10 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
     except RuntimeError as err:
         return PrepareResult.ADDON_ERROR, str(err), None
 
+    mc = MachineController()
+    if not mc.is_glass_present():
+        return PrepareResult.NO_GLASS_DETECTED, DH.get_translation("no_glass_detected"), None
+
     return PrepareResult.VALIDATION_OK, "", None
 
 

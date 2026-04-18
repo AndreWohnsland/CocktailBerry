@@ -248,6 +248,20 @@ class MachineController:
             raise RuntimeError("No scale available")
         return self.hardware.scale.read_grams()
 
+    def is_glass_present(self) -> bool:
+        """Return whether a glass is present on the scale.
+
+        Returns True if no scale is configured, minimal_weight is 0 (feature disabled),
+        or the gross weight reading (plus tolerance) meets the minimal_weight threshold.
+        """
+        _GLASS_WEIGHT_TOLERANCE = 1.0
+        if self.hardware.scale is None:
+            return True
+        minimal_weight = cfg.SCALE_CONFIG.minimal_weight
+        if minimal_weight == 0:
+            return True
+        return self.hardware.scale.get_gross_grams() + _GLASS_WEIGHT_TOLERANCE >= minimal_weight
+
     def scale_calibrate(self, known_weight_grams: float, zero_raw_offset: int, samples: int = 20) -> float:
         """Calibrate the scale using a known reference weight.
 

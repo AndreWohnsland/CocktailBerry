@@ -127,6 +127,7 @@ allowed_keys = Literal[
     "no_button",
     "no_ingredient_selected",
     "no_waiter_logged_in",
+    "no_glass_detected",
     "no_recipe_selected",
     "no_scale_available",
     "not_enough_ingredient_volume",
