@@ -76,6 +76,9 @@ dialog:
   no_waiter_logged_in:
     en: 'No service personnel is logged in. Please scan your NFC tag first.'
     de: 'Kein Servicepersonal angemeldet. Bitte zuerst den NFC-Tag scannen.'
+  no_glass_detected:
+    en: 'No glass detected. Please place a glass before ordering.'
+    de: 'Kein Glas erkannt. Bitte vor der Bestellung ein Glas aufstellen.'
   cocktail_ready:
     en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
     de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nach tropft.{full_comment}'
@@ -889,8 +892,8 @@ ui:
       en: 'Set the API into demo mode (no destructive actions)'
       de: 'Setze die API in den Demo Modus (keine destruktiven Aktionen)'
     SCALE_CONFIG:
-      en: 'Scale hardware configuration: driver type, enable/disable and calibration factor for weight-based measurement'
-      de: 'Waagen-Konfiguration: Treibertyp, Aktivierung und Kalibrierungsfaktor für gewichtsbasierte Messung'
+      en: 'Scale hardware configuration: driver type, enable/disable, calibration factor for weight-based measurement and minimal detected weight for cocktail preparation allowed.'
+      de: 'Waagen-Konfiguration: Treibertyp, Aktivierung, Kalibrierungsfaktor für gewichtsbasierte Messung und minimal erkanntes Gewicht für die Cocktailzubereitung zu starten.'
     CARRIAGE_CONFIG:
       en: 'Carriage/slide hardware configuration: driver type, enable/disable, home position (0-100%), movement speed (%/s) and whether to move during cleaning'
       de: 'Schlitten-Konfiguration: Treibertyp, Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll'
