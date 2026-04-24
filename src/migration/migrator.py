@@ -125,7 +125,7 @@ class Migrator:
                 add_price_column_to_recipes,
                 _install_pyqt6_over_apt,  # user running bookworm need this
             ],
-            "3.4.0": [_migrate_i2c_addresses_to_hex_strings],
+            "4.0.0": [_migrate_i2c_addresses_to_hex_strings],
         }
 
         for version, actions in version_actions.items():
