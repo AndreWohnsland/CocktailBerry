@@ -20,7 +20,13 @@ nav = [
   { "Service Personnel" = "waiter.md" },
   { "Advanced Topics" = "advanced.md" },
   { "Addons" = "addons.md" },
-  { "Hardware Extensions" = "hardware-extensions.md" },
+  { "Hardware Extensions" = [
+    "hardware-extensions/index.md",
+    { "Context Extensions" = "hardware-extensions/hardware-context.md" },
+    { "Scales" = "hardware-extensions/scales.md" },
+    { "Carriages" = "hardware-extensions/carriages.md" },
+    { "Dispensers" = "hardware-extensions/dispensers.md" },
+  ]},
   { "Troubleshooting" = "troubleshooting.md" },
   { "FAQ" = "faq.md" },
   { "Feature Timetable" = "features.md" },
@@ -46,6 +52,7 @@ features = [
   "content.code.annotate",
   "announce.dismiss",
   "content.tabs.link",
+  "navigation.indexes",
 ]
 
 [[project.theme.palette]]
