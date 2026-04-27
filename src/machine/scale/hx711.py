@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-import time
+import contextlib
 from typing import TYPE_CHECKING
-
-import stamina
 
 from src.logger_handler import LoggerHandler
 from src.machine.scale.base import ScaleInterface
@@ -13,101 +11,75 @@ if TYPE_CHECKING:
     from src.machine.hardware import HardwareContext
 
 try:
-    from gpiozero import DigitalInputDevice, DigitalOutputDevice
+    from HX711 import Mass, Options, ReadType, SimpleHX711
 
-    GPIOZERO_AVAILABLE = True
+    HX711_AVAILABLE = True
 except (ModuleNotFoundError, ImportError):
-    GPIOZERO_AVAILABLE = False
+    HX711_AVAILABLE = False
 
 _logger = LoggerHandler("HX711Scale")
 
+# LIBRARY INFORMATION
+# read() will always return raw (without offset)
+# zero() will set the library's internal offset
+# getOffset() returns the library's internal offset
+# weight() returns (raw - library_offset) / calibration_factor
+
 
 class HX711Scale(ScaleInterface):
-    """Robust HX711 scale using gpiozero, Pi 5 compatible."""
+    """HX711 scale using hx711-rpi-py backend."""
 
     def __init__(self, config: HX711ScaleConfig, hardware: HardwareContext) -> None:
-        if not GPIOZERO_AVAILABLE:
-            msg = "gpiozero library is not available. Cannot initialize HX711 scale."
+        if not HX711_AVAILABLE:
+            msg = "hx711-rpi-py library is not available."
             _logger.log_event("ERROR", msg)
             raise ImportError(msg)
+
         super().__init__(config, hardware)
-        self._data_pin = config.data_pin
-        self._clock_pin = config.clock_pin
-        self._offset = 0
-        self._dt = DigitalInputDevice(self._data_pin, pull_up=False)
-        self._sck = DigitalOutputDevice(self._clock_pin, active_high=True, initial_value=False)
-        _logger.info(f"HX711 scale initialized (data={self._data_pin}, clock={self._clock_pin})")
 
-    @stamina.retry(on=RuntimeError, attempts=3, wait_initial=0.0, wait_max=0.0, wait_jitter=0.0)
-    def _read_raw_over_sck(self, timeout: float = 0.5) -> int:
-        """Read a single 24-bit raw value from HX711.
+        self._hx = SimpleHX711(
+            config.data_pin,
+            config.clock_pin,
+            int(config.calibration_factor),
+            config.zero_raw_offset,
+        )
+        self._hx.setUnit(Mass.Unit.G)
 
-        One call = one complete ADC conversion: wait for the chip to signal
-        data ready, then clock out all 24 bits via bit-bang. Duration is
-        determined by the chip's sample rate (~100ms at 10 SPS, ~12.5ms at 80 SPS).
-
-        The sample rate is hardware-only — set by the RATE pin on the HX711 chip:
-        RATE tied to GND = 10 SPS (default), RATE tied to VCC = 80 SPS.
-        Many breakout boards expose this as a solder bridge labeled "80Hz".
-        There is no software way to change it.
-        """
-        t_end = time.time() + timeout
-        while self._dt.value == 1:
-            if time.time() > t_end:
-                raise RuntimeError("HX711: Timeout waiting for data ready")
-            time.sleep(0.001)
-        value = 0
-        for _ in range(24):
-            # Rising edge: chip prepares the bit; falling edge: DOUT shifts and stabilises
-            self._sck.on()
-            self._sck.off()
-            value = (value << 1) | (1 if self._dt.value else 0)
-        # Gain setting: 1 extra clock (128x gain, channel A)
-        self._sck.on()
-        self._sck.off()
-        # Reject known overflow/underflow sentinel values
-        if value in (0x7FFFFF, 0x800000):
-            raise RuntimeError("HX711: Invalid reading (overflow/underflow sentinel)")
-        # Two's complement
-        if value & 0x800000:
-            value -= 1 << 24
-        return value
-
-    def _sample_raw_over_sck(self, samples: int, _retry: bool = True) -> int:
-        """Read raw value n times, skipping failed reads, and return the average."""
-        readings = []
-        for _ in range(max(1, samples)):
-            try:
-                readings.append(self._read_raw_over_sck())
-            except RuntimeError:
-                _logger.warning("HX711: Skipping failed reading")
-        if not readings:
-            if _retry:
-                _logger.warning("HX711: All readings failed, retrying once")
-                return self._sample_raw_over_sck(samples, _retry=False)
-            _logger.error("HX711: All readings failed, no retry, returning offset")
-            return self._offset  # <- this will result in a reading of 0g
-        return int(sum(readings) / len(readings))
+        _logger.info(f"HX711 scale initialized via hx711-rpi-py (data={config.data_pin}, clock={config.clock_pin})")
 
     def tare(self, samples: int = 3) -> int:
         """Set offset to current (empty) value."""
-        self._offset = self._sample_raw_over_sck(samples)
-        _logger.debug(f"HX711 tare set, new offset: {self._offset}")
-        return self._offset
-
-    def read_grams(self) -> float:
-        """Return average weight in grams."""
-        return (self.read_raw(samples=1) - self._offset) / self._calibration_factor
+        self._hx.zero(Options(samples, ReadType.Median))
+        offset = int(self._hx.getOffset())
+        _logger.debug(f"HX711 tare set, new offset: {offset}")
+        return offset
 
     def read_raw(self, samples: int = 1) -> int:
-        """Return average raw value (offset subtracted)."""
-        return self._sample_raw_over_sck(samples)
+        """Return raw ADC reading relative to the last tare() call (before calibration factor)."""
+        return self._hx.read(Options(samples, ReadType.Median))
+
+    def read_grams(self) -> float:
+        """Return weight in grams relative to the last tare() call."""
+        # This will return a Mass class, we need to get this value
+        return round(self._hx.weight(1).getValue(), 2)
 
     def get_gross_grams(self) -> float:
-        """Return the absolute weight in grams relative to the empty scale calibration."""
-        return (self._sample_raw_over_sck(1) - self._zero_raw_offset) / self._calibration_factor
+        """Return absolute weight using the initial zero calibration offset."""
+        raw = int(self._hx.read())
+        return (raw - self._zero_raw_offset) / self._calibration_factor
 
     def cleanup(self) -> None:
-        self._sck.close()
-        self._dt.close()
+        with contextlib.suppress(Exception):
+            self._hx.disconnect()
         _logger.info("HX711 cleaned up")
+
+    def set_calibration_factor(self, calibration_factor: float) -> None:
+        self._hx.setReferenceUnit(int(calibration_factor))
+        self._calibration_factor = calibration_factor
+        _logger.info(f"Scale calibration factor set: scale_factor={self._calibration_factor}")
+
+    def set_zero_raw_offset(self, zero_raw_offset: float) -> None:
+        # Only update the Python-side value used by get_gross_grams().
+        # The library's internal offset is managed exclusively by zero() (tare).
+        self._zero_raw_offset = zero_raw_offset
+        _logger.info(f"Scale zero raw offset set: zero_raw_offset={self._zero_raw_offset}")
