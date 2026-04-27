@@ -92,14 +92,14 @@ class TestController:
             assert prep_data[0].dispenser is dispensers[1]
             assert prep_data[0].pump_speed == 100
             assert prep_data[0].estimated_time == pytest.approx(10.0)  # 100ml / (10ml/s * 100%)
-            assert prep_data[0].amount_ml == 100.0
+            assert prep_data[0].amount_ml == pytest.approx(100.0)
             assert prep_data[0].recipe_order == 1
             assert prep_data[0].ingredient is ingredients[0]
 
             assert prep_data[1].dispenser is dispensers[2]
             assert prep_data[1].pump_speed == 50
             assert prep_data[1].estimated_time == pytest.approx(20.0)  # 200ml / (20ml/s * 50%)
-            assert prep_data[1].amount_ml == 200.0
+            assert prep_data[1].amount_ml == pytest.approx(200.0)
             assert prep_data[1].recipe_order == 2
             assert prep_data[1].ingredient is ingredients[1]
 
@@ -166,8 +166,8 @@ class TestController:
 
         result = _run_dispenser(data)
 
-        assert result == 100.0
-        assert data.consumption == 100.0
+        assert result == pytest.approx(100.0)
+        assert data.consumption == pytest.approx(100.0)
         assert data.done is True
         mock_disp.dispense.assert_called_once()
         call_args = mock_disp.dispense.call_args

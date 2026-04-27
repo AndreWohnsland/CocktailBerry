@@ -16,7 +16,7 @@ try:
     from gpiozero import DigitalInputDevice, DigitalOutputDevice
 
     GPIOZERO_AVAILABLE = True
-except (ModuleNotFoundError, ImportError):
+except ImportError:
     GPIOZERO_AVAILABLE = False
 
 _logger = LoggerHandler("HX711Scale")

@@ -38,7 +38,7 @@ class PreparationItem:
     """Back-reference to the source ingredient. None for non-ingredient tasks like cleaning."""
 
     def __post_init__(self) -> None:
-        if self.estimated_time == 0.0:
+        if self.estimated_time <= 0.0:
             self.estimated_time = self.amount_ml / (self.dispenser.volume_flow * self.pump_speed / 100)
 
 

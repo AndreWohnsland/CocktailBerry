@@ -9,7 +9,7 @@ import time
 import zipfile
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Annotated, Any, Literal, Union
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
@@ -311,7 +311,7 @@ async def update_addon(addon: AddonData) -> ApiMessage:
 
 
 @protected_router.get("/connection", summary="Check internet connection")
-async def check_internet_connection() -> dict[str, Union[str, bool]]:  # noqa: UP007
+async def check_internet_connection() -> dict[str, str | bool]:
     is_connected = has_connection()
     return {
         "is_connected": is_connected,

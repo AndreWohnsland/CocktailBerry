@@ -14,7 +14,7 @@ try:
     from HX711 import Mass, Options, ReadType, SimpleHX711
 
     HX711_AVAILABLE = True
-except (ModuleNotFoundError, ImportError):
+except ImportError:
     HX711_AVAILABLE = False
 
 _logger = LoggerHandler("HX711Scale")

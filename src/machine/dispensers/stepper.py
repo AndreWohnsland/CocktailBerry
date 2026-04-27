@@ -17,7 +17,7 @@ try:
     from RpiMotorLib import RpiMotorLib as rpi_motor_lib
 
     MOTOR_LIB_AVAILABLE = True
-except (ModuleNotFoundError, ImportError, RuntimeError):
+except (ImportError, RuntimeError):
     MOTOR_LIB_AVAILABLE = False
 
 _CHUNK_INTERVAL = 0.01

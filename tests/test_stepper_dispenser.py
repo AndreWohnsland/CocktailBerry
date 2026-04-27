@@ -39,7 +39,7 @@ class TestStepperDispenser:
         # callback should have been called with done=True at the end
         callback.assert_called()
         last_call = callback.call_args_list[-1]
-        assert last_call[0][1] is True  # is_done=True
+        assert last_call[0][1] is True
 
     @patch("src.machine.dispensers.stepper.StepperDispenser.setup")
     def test_dispense_respects_stop_event(self, mock_setup: MagicMock) -> None:

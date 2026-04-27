@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from typing import TYPE_CHECKING
 
 from src.logger_handler import LoggerHandler
@@ -16,7 +17,7 @@ try:
     from cedargrove_nau7802 import NAU7802  # type: ignore[import-untyped]
 
     NAU7802_AVAILABLE = True
-except (ModuleNotFoundError, ImportError, RuntimeError):
+except (ImportError, RuntimeError):
     NAU7802_AVAILABLE = False
 
 
@@ -45,7 +46,7 @@ class NAU7802Scale(ScaleInterface):
 
     def _wait_and_read(self) -> int:
         while not self._nau.available():
-            pass
+            time.sleep(0.01)
         return self._nau.read()
 
     def _sample_raw(self, samples: int) -> int:

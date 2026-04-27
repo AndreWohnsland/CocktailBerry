@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import atexit
 import contextlib
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Any, Self, TypeGuard
 
 from src.logger_handler import LoggerHandler
 
@@ -26,6 +26,7 @@ from src.models import CocktailStatus, EventType, Ingredient, PreparationResult,
 from src.programs.addons.hardware_extensions import HARDWARE_ADDONS
 
 if TYPE_CHECKING:
+    from src.machine.scale.base import ScaleInterface
     from src.ui.setup_mainwindow import MainScreen
 
 _logger = LoggerHandler("MachineController")
@@ -232,21 +233,26 @@ class MachineController:
             return
         self.hardware.carriage.find_reference()
 
+    def _has_scale(self, scale: ScaleInterface | None) -> TypeGuard[ScaleInterface]:
+        return scale is not None
+
+    def _assure_scale(self) -> ScaleInterface:
+        scale = self.hardware.scale
+        if not self._has_scale(scale):
+            raise RuntimeError("No scale available")
+        return scale
+
     def scale_tare(self, samples: int = 3) -> int:
         """Tare (zero) the scale.
 
         Returns the raw offset value captured during tare.
         Raises RuntimeError if no scale is available.
         """
-        if self.hardware.scale is None:
-            raise RuntimeError("No scale available")
-        return self.hardware.scale.tare(samples)
+        return self._assure_scale().tare(samples)
 
     def scale_read_grams(self) -> float:
         """Read the calibrated weight in grams from the scale. Raises RuntimeError if no scale."""
-        if self.hardware.scale is None:
-            raise RuntimeError("No scale available")
-        return self.hardware.scale.read_grams()
+        return self._assure_scale().read_grams()
 
     def is_glass_present(self) -> bool:
         """Return whether a glass is present on the scale.
@@ -270,11 +276,10 @@ class MachineController:
         Both values are synced to config in one write. Returns the new calibration factor.
         Raises RuntimeError if no scale or if the reading is invalid.
         """
-        if self.hardware.scale is None:
-            raise RuntimeError("No scale available")
+        scale = self._assure_scale()
         if known_weight_grams <= 0:
             raise ValueError("Known weight must be positive")
-        factor = round(self.hardware.scale.calibrate_with_known_weight(known_weight_grams, zero_raw_offset, samples), 1)
+        factor = round(scale.calibrate_with_known_weight(known_weight_grams, zero_raw_offset, samples), 1)
         cfg.SCALE_CONFIG.calibration_factor = factor
         cfg.SCALE_CONFIG.zero_raw_offset = zero_raw_offset
         cfg.sync_config_to_file()

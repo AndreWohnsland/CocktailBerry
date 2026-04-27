@@ -78,8 +78,8 @@ const ConfigWindow: React.FC = () => {
   };
 
   const getBaseConfig = (key: string): BaseConfig => {
-    const baseConfigName = key.match(/^([^[\].]+)/)?.[0] ?? '';
-    const nestedProperty = key.match(/\.([^.]+)$/)?.[1] ?? '';
+    const baseConfigName = /^([^[\].]+)/.exec(key)?.[0] ?? '';
+    const nestedProperty = /\.([^.]+)$/.exec(key)?.[1] ?? '';
     const selectedData = data?.[baseConfigName];
 
     // For discriminated types, resolve variant-specific metadata for the nested property
