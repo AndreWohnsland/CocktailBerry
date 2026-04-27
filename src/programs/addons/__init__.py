@@ -51,7 +51,7 @@ class AddonInterface(Protocol):
 
     def build_gui(
         self,
-        container: QVBoxLayout,
+        container: "QVBoxLayout",
         button_generator: Callable[[str, Callable[[], None]], None],
     ) -> bool:
         """Logic to build up the addon GUI."""
