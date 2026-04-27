@@ -95,7 +95,7 @@ SHARED_SCALE_FIELDS: dict[str, ConfigInterface[Any]] = {
     "scale_type": ChooseOptions.scale_driver,
     "enabled": BoolType(check_name="Enabled"),
     "calibration_factor": FloatType(prefix="cali:", allow_negative=True),
-    "zero_raw_offset": FloatType(prefix="offset:", allow_negative=True),
+    "zero_raw_offset": IntType(prefix="offset:", allow_negative=True),
     "minimal_weight": IntType([build_number_limiter(0)], prefix="min:", suffix="g"),
 }
 

@@ -41,7 +41,7 @@ class HX711Scale(ScaleInterface):
             config.data_pin,
             config.clock_pin,
             int(config.calibration_factor),
-            int(config.zero_raw_offset),
+            config.zero_raw_offset,
         )
         self._hx.setUnit(Mass.Unit.G)
 
