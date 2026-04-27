@@ -68,4 +68,4 @@ class NAU7802Scale(ScaleInterface):
         return (self._sample_raw(1) - self._zero_raw_offset) / self._calibration_factor
 
     def cleanup(self) -> None:
-        self._nau.enable = False
+        self._nau.enable(False)
