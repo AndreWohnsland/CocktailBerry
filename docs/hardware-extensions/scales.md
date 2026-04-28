@@ -71,6 +71,16 @@ The constructor receives `config` (your `ExtensionConfig` instance) and `hardwar
 | `calibrate_with_known_weight(weight_g, zero_raw_offset, samples=10)` | Default implementation: computes the scale factor from a known weight and persists it. Override if your scale needs a custom routine.  |
 | `set_calibration_factor(factor)` / `set_zero_raw_offset(offset)`     | Setters used by the calibration flow. Override if you need additional side-effects (e.g. writing to EEPROM on the amplifier).          |
 
+## Lifecycle
+
+Scale extensions follow this lifecycle:
+
+1. **Discovery & variant registration** — Extensions are discovered and registered as variants of `SCALE_CONFIG` before config is read.
+2. **Config load** — The GUI can now show and edit the scale extension fields.
+3. **Construction** — During `init_machine()`, after hardware extensions are created, `Implementation(config, hardware)` is called. You receive the `HardwareContext` (pin controller, LEDs, `extra`). The instance is wired into the context and shared across all weight-based dispensers.
+4. **Runtime use** — Dispensers and the calibration UI call `tare()`, `read_grams()`, `read_raw()`, and `get_gross_grams()` as needed. `calibrate_with_known_weight()` is invoked from the calibration flow.
+5. **`cleanup()`** — Called at shutdown to release hardware resources (GPIO, SPI, I²C).
+
 ## Full Example
 
 Below is a complete example of a fake software scale that reports a constant weight — useful as a template or for dry-running without hardware:

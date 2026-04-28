@@ -18,7 +18,7 @@ For dispensers, the base classes are:
     uv run runme.py create-dispenser "Your Dispenser Name"
     ```
 
-    This creates a ready-to-fill file in `addons/dispensers/your-dispenser-name.py`.
+    This creates a ready-to-fill file in `addons/dispensers/your_dispenser_name.py`.
 
 ## Shared vs Custom Config Fields
 
@@ -95,6 +95,16 @@ consumption = self._get_consumption(time_estimate)
 # Otherwise it returns your time_estimate as a fallback.
 ```
 
+## Lifecycle
+
+Dispenser extensions follow this lifecycle:
+
+1. **Discovery & variant registration** — Extensions are discovered and registered as variants of `PUMP_CONFIG` before config is read.
+2. **Config load** — The GUI can now show and edit the dispenser extension fields.
+3. **Construction** — During `init_machine()`, after the scale and carriage are created, `Implementation(slot, config, hardware)` is called once per pump slot. You receive the fully assembled `HardwareContext` (pin controller, LEDs, scale, carriage, `extra`).
+4. **Runtime use** — The scheduler calls `dispense(amount_ml, pump_speed, callback)` on each slot. The base class drives your `_dispense_steps()` generator and dispatches progress updates. `stop()` may be called from another thread to cancel.
+5. **`cleanup()`** — Called at shutdown to release hardware resources.
+
 ## Full Example
 
 Below is a complete example of a simple dummy dispenser that simulates dispensing via sleep:
@@ -110,7 +120,9 @@ from src import ConsumptionEstimationType
 from src.config.config_types import BasePumpConfig, ConfigInterface, StringType # (1)!
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser # (2)!
-from src.machine.hardware import HardwareContext
+
+if TYPE_CHECKING:
+    from src.machine.hardware import HardwareContext
 
 
 EXTENSION_NAME = "Dummy" # (3)!
@@ -181,7 +193,7 @@ class Implementation(BaseDispenser): # (8)!
             while True: # (11)!
                 time.sleep(step_interval)
                 elapsed += step_interval
-                time_estimate  = elapsed * effective_flow, amount_ml
+                time_estimate = min(elapsed * effective_flow, amount_ml)
                 consumption = self._get_consumption(time_estimate)
                 yield consumption # (12)!
                 if consumption >= amount_ml:

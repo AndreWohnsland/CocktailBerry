@@ -33,14 +33,14 @@ class HardwareExtensionManager(BaseExtensionManager[HardwareAddonEntry]):
         config_fields: dict[str, ConfigInterface[Any]],
         implementation_class: type,
     ) -> None:
-        if not isinstance(config_class, type) or not issubclass(config_class, ConfigClass):
-            self._logger.warning(f"ExtensionConfig in '{name}' does not inherit from ConfigClass, {self._check_msg}.")
-            return
-
         if not isinstance(implementation_class, type) or not issubclass(implementation_class, BaseHardwareExtension):
             self._logger.warning(
                 f"Implementation in '{name}' does not inherit from BaseHardwareExtension, {self._check_msg}."
             )
+            return
+
+        if not isinstance(config_class, type) or not issubclass(config_class, ConfigClass):
+            self._logger.warning(f"ExtensionConfig in '{name}' does not inherit from ConfigClass, {self._check_msg}.")
             return
 
         self.entries[name] = HardwareAddonEntry(

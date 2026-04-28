@@ -2,13 +2,15 @@ from __future__ import annotations
 
 import time
 from collections.abc import Generator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from src import ConsumptionEstimationType
 from src.config.config_types import BasePumpConfig, ConfigInterface, StringType
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser
-from src.machine.hardware import HardwareContext
+
+if TYPE_CHECKING:
+    from src.machine.hardware import HardwareContext
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # This is a hardware extension skeleton.

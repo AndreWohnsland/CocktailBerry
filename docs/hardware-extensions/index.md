@@ -10,10 +10,10 @@ Hardware extensions live in subfolders of the `addons` folder and are automatica
 
 Supported types are:
 
-- **[Hardware context extensions](hardware-context.md)** — shared hardware instances accessible to dispensers and other code via the `HardwareContext` (e.g. UART boards, SPI buses, custom controllers)
-- **[Dispensers](dispensers.md)** — control pumps and valves for dispensing liquids
+- **[Hardware Context Extensions](hardware-context.md)** — shared hardware instances accessible to dispensers and other code via the `HardwareContext` (e.g. UART boards, SPI buses, custom controllers)
 - **[Scales](scales.md)** — read weight measurements for weight-based recipes and estimation
 - **[Carriages](carriages.md)** — control the movement of the pump carriage for multi-position setups
+- **[Dispensers](dispensers.md)** — control pumps and valves for dispensing liquids
 
 Best way to start is use the CLI commands to create skeleton files for your extensions, then fill in the implementation details.
 See the subpages for detailed guides and examples for each type.

@@ -1,15 +1,22 @@
 # Hardware Context Extensions
 
 Hardware context extensions let you register **shared hardware** — such as a UART board, SPI bus, or any custom controller — that multiple dispenser extensions (or other code) can access at runtime.
+Each hardware context extension is a single Python file placed in the `addons/hardware/` folder.
+Once added, the extension gets its own configuration page in the UI and its instance is stored in `HardwareContext.extra["YourExtensionName"]` for other components to access.
 
-Unlike dispenser extensions, which create one instance *per pump slot*, a hardware context extension creates **one instance per extension** and stores it in `hardware.extra["YourExtensionName"]`.
-Dispensers (and other extension code) then access it from the `HardwareContext` they receive.
+Unlike dispenser extensions, which create one instance *per pump slot*, a hardware context extension creates **one instance per extension**.
+Dispensers (and other extension code) access it from the `HardwareContext` they receive.
 
 This is the recommended approach when:
 
 - Multiple pumps share a single communication bus (e.g. a UART board controlling N pumps)
 - You need one-time initialization for hardware that several dispensers depend on
 - You want GUI-configurable settings for that shared hardware (not hard-coded)
+
+For hardware context extensions, the base classes are:
+
+- `ExtensionConfig` inherits from **`ConfigClass`** (`src.config.config_types`)
+- `Implementation` inherits from **`BaseHardwareExtension`** (`src.programs.addons`)
 
 ## Getting Started
 
@@ -22,6 +29,36 @@ This is the recommended approach when:
 
     This creates a ready-to-fill file in `addons/hardware/your_hardware_name.py`.
 
+## Shared vs Custom Config Fields
+
+Unlike dispenser, scale, and carriage extensions, hardware context extensions have **no shared fields** — define every field your hardware needs yourself in `CONFIG_FIELDS` and on `ExtensionConfig`.
+The framework registers the whole config under the key `HW_<EXTENSION_NAME>` (uppercase, spaces replaced with underscores), so each hardware extension gets its own top-level config page in the UI.
+
+## ExtensionConfig
+
+Your `ExtensionConfig` must inherit from `ConfigClass`.
+Define every attribute your hardware needs and assign them in `__init__`.
+The `to_config()` method must serialize all fields to a dict; `from_config()` must rebuild the instance from a dict.
+
+!!! warning "Accept **kwargs"
+    Your `__init__` should accept `**kwargs` to be forward-compatible with future framework fields.
+
+## Implementation
+
+Your `Implementation` class must inherit from `BaseHardwareExtension[ExtensionConfig]` and implement these methods:
+
+| Method               | Required | Description                                                                                                                                       |
+| -------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `create(config)`     | **yes**  | Build and return the shared hardware instance. The returned object is stored in `hardware.extra["EXTENSION_NAME"]` and may be of any type.        |
+| `cleanup(instance)`  | **yes**  | Release resources held by the instance previously returned from `create()`. Called at shutdown before core hardware is released.                  |
+
+The actual hardware class itself can be any Python class — `BaseHardwareExtension` only manages the lifecycle, not the shape of the instance.
+
+## Inherited Attributes & Helpers
+
+`BaseHardwareExtension` is a thin lifecycle wrapper and provides no inherited attributes or helpers — your `Implementation` is stateless aside from what `create()` returns.
+All state belongs on the hardware class you return from `create()`.
+
 ## Lifecycle
 
 Hardware context extensions follow this lifecycle:
@@ -29,7 +66,7 @@ Hardware context extensions follow this lifecycle:
 1. **Discovery & config registration** — Extensions are discovered and `CONFIG_FIELDS` are registered before config is read. The config key is `HW_<EXTENSION_NAME>` (uppercase, spaces replaced with underscores).
 2. **Config load** — The GUI can now show and edit the hardware extension fields.
 3. **`Implementation.create(config)`** — Called during `init_machine()`, before specific hardware (sub-)components are set up. The returned instance is stored in `hardware.extra["YourExtensionName"]`.
-4. **Component set up** — Other components like dispensers receive the full `HardwareContext` (including `extra`). They access your hardware via `hardware.extra["YourExtensionName"]`.
+4. **Component set up** — Other components like scales, carriages, and dispensers receive the full `HardwareContext` (including `extra`). They access your hardware via `hardware.extra["YourExtensionName"]`.
 5. **`Implementation.cleanup(instance)`** — Called at shutdown, before pins and other core hardware are released.
 
 ## Full Example
