@@ -14,6 +14,7 @@ Supported types are:
 - **[Scales](scales.md)** — read weight measurements for weight-based recipes and estimation
 - **[Carriages](carriages.md)** — control the movement of the pump carriage for multi-position setups
 - **[Dispensers](dispensers.md)** — control pumps and valves for dispensing liquids
+- **[RFID Readers](rfid.md)** — read NFC/RFID cards for payments, waiter mode, or custom flows
 
 Best way to start is use the CLI commands to create skeleton files for your extensions, then fill in the implementation details.
 See the subpages for detailed guides and examples for each type.
@@ -48,9 +49,16 @@ flowchart TD
         carriage --> hctx3["HardwareContext\n(+ carriage)"]
     end
 
-    stage3 -->|"HardwareContext passed"| dispensers
+    stage3 -->|"HardwareContext passed"| stage4
 
-    subgraph dispensers["4. Dispensers creation (one per slot)"]
+    subgraph stage4["4. RFID creation"]
+        rfid["RFID reader\n(addons/rfid/)"]
+        rfid --> hctx4["HardwareContext\n(+ rfid)"]
+    end
+
+    stage4 -->|"HardwareContext passed"| dispensers
+
+    subgraph dispensers["5. Dispensers creation (one per slot)"]
         custom["Dispenser\n(addons/dispensers/)"]
     end
 ```
@@ -62,7 +70,8 @@ The `HardwareContext` is built up in stages, so each component has access to eve
 1. **Core hardware** — `PinController`, `LedController`, and hardware extension instances (`extra` dict) are created first.
 2. **Scale** — receives the context, so it can access pins, LEDs, and hardware extensions if needed.
 3. **Carriage** — receives the context including the scale, so it can access everything above.
-4. **Dispensers** — each slot gets the fully assembled context.
+4. **RFID** — receives the context including scale and carriage; the resulting controller is also attached to the `RFIDReader()` singleton facade.
+5. **Dispensers** — each slot gets the fully assembled context.
 
 ## Extension Structure
 

@@ -21,6 +21,7 @@ from src.machine.hardware import HardwareContext
 from src.machine.leds import LedController
 from src.machine.pin_controller import PinController
 from src.machine.reverter import Reverter
+from src.machine.rfid import RFIDReader, create_rfid
 from src.machine.scale import create_scale
 from src.models import CocktailStatus, EventType, Ingredient, PreparationResult, PrepareResult
 from src.programs.addons.hardware_extensions import HARDWARE_ADDONS
@@ -62,6 +63,9 @@ class MachineController:
         # call :meth:`find_carriage_reference` from the caller after the GUI/API is ready,
         # wrapping it in a spinner/progress indicator as appropriate for the version.
         self.hardware.carriage = create_carriage(cfg.CARRIAGE_CONFIG, self.hardware)
+        # Stage 4: RFID can access pins, leds, extra, scale, AND carriage
+        self.hardware.rfid = create_rfid(cfg.RFID_CONFIG, self.hardware)
+        RFIDReader().attach(self.hardware.rfid)
         self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()
         self.default_led()

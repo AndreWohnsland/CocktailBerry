@@ -6,6 +6,7 @@ from typing import Any
 from src.machine.carriage import CarriageInterface
 from src.machine.leds import LedController
 from src.machine.pin_controller import PinController
+from src.machine.rfid import RFIDInterface
 from src.machine.scale import ScaleInterface
 
 
@@ -21,6 +22,7 @@ class HardwareContext:
     led_controller: LedController
     scale: ScaleInterface | None = field(default=None)
     carriage: CarriageInterface | None = field(default=None)
+    rfid: RFIDInterface | None = field(default=None)
     extra: dict[str, Any] = field(default_factory=dict)
 
     def cleanup(self) -> None:
@@ -31,3 +33,5 @@ class HardwareContext:
             self.scale.cleanup()
         if self.carriage is not None:
             self.carriage.cleanup()
+        if self.rfid is not None:
+            self.rfid.cleanup()

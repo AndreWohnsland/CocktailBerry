@@ -71,7 +71,7 @@ They can be used at your own risk of CocktailBerry not working 100% properly.
     | `I2C_CONFIG`                  | Config for I2C GPIO expander (16 pins, 0-15)                                                    |
     | `LED_NORMAL`                  | List of normal (non-addressable) LED configs: pin, default on, prep state                       |
     | `LED_WSLED`                   | List of WS281x (addressable) LED configs: pin, brightness, count, rings, default on, prep state |
-    | `RFID_READER`                 | Enables connected RFID reader, [more info](troubleshooting.md#set-up-rfid-reader)               |
+    | `RFID_CONFIG`                 | RFID/NFC reader configuration: driver type, enable/disable, [more info](troubleshooting.md#set-up-rfid-reader) |
     | `MAKER_PUMP_REVERSION_CONFIG` | Enables reversion (direction) of pump during cleaning                                           |
     | `SCALE_CONFIG`                | Scale hardware configuration: driver type, enable/disable and calibration factor                |
     | `CARRIAGE_CONFIG`             | Carriage/slide configuration: enable/disable, home position, speed and cleaning behavior        |

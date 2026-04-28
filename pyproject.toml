@@ -132,7 +132,8 @@ rules = { unresolved-import = "ignore" }
 
 [[tool.ty.overrides]]
 include = [
-  "src/machine/rfid.py",
+  "src/machine/rfid/mfrc522.py",
+  "src/machine/rfid/usb.py",
   "src/machine/raspberry.py",
   "src/machine/leds.py",
   "src/machine/dispensers/stepper.py",

@@ -19,13 +19,13 @@ from src import (
     PROJECT_NAME,
     SupportedLanguagesType,
     SupportedPaymentOptions,
-    SupportedRfidType,
     SupportedThemesType,
     __version__,
 )
 from src.config.config_types import (
     BaseCarriageConfig,
     BasePumpConfig,
+    BaseRfidConfig,
     BoolType,
     ChooseOptions,
     ChooseType,
@@ -108,6 +108,11 @@ SHARED_CARRIAGE_FIELDS: dict[str, ConfigInterface[Any]] = {
     "wait_after_dispense": FloatType([build_number_limiter(0, 30)], suffix="s"),
 }
 
+SHARED_RFID_FIELDS: dict[str, ConfigInterface[Any]] = {
+    "rfid_type": ChooseOptions.rfid,
+    "enabled": BoolType(check_name="Enabled"),
+}
+
 
 class ConfigManager:
     """Manager for all static configuration of the machine.
@@ -172,8 +177,8 @@ class ConfigManager:
     LED_NORMAL: ClassVar[list[NormalLedConfig]] = []
     # List of WS281x (addressable) LED configurations
     LED_WSLED: ClassVar[list[WS281xLedConfig]] = []
-    # if a RFID reader exists
-    RFID_READER: SupportedRfidType = "No"
+    # RFID reader configuration (discriminated by ``rfid_type``)
+    RFID_CONFIG = BaseRfidConfig(rfid_type="No", enabled=False)
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE: bool = False
     MICROSERVICE_BASE_URL: str = "http://127.0.0.1:5000"
@@ -335,7 +340,15 @@ class ConfigManager:
                 ),
                 0,
             ),
-            "RFID_READER": ChooseOptions.rfid,
+            "RFID_CONFIG": DiscriminatedDictType(
+                "rfid_type",
+                {
+                    "No": DictType({**SHARED_RFID_FIELDS}, BaseRfidConfig),
+                    "MFRC522": DictType({**SHARED_RFID_FIELDS}, BaseRfidConfig),
+                    "USB": DictType({**SHARED_RFID_FIELDS}, BaseRfidConfig),
+                },
+                default_variant="No",
+            ),
             "MICROSERVICE_ACTIVE": BoolType(check_name="Microservice Active"),
             "MICROSERVICE_BASE_URL": StringType(),
             "TEAMS_ACTIVE": BoolType(check_name="Teams Active"),
@@ -454,7 +467,7 @@ class ConfigManager:
     @property
     def nfc_enabled(self) -> bool:
         """Check if any NFC reader is enabled."""
-        return self.RFID_READER != "No"
+        return self.RFID_CONFIG.enabled and self.RFID_CONFIG.rfid_type != "No"
 
     def read_local_config(self, update_config: bool = False, validate: bool = True) -> None:
         """Read the local config file and set the values if they are valid.

@@ -75,7 +75,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_waiter.clicked.connect(self._open_waiter_window)
         self.button_events.clicked.connect(self._open_event_window)
 
-        self.button_rfid.setEnabled(cfg.RFID_READER != "No")
+        self.button_rfid.setEnabled(cfg.nfc_enabled)
         self.button_sumup.setEnabled(cfg.sumup_payment)
         self.button_scale_calibration.setEnabled(cfg.SCALE_CONFIG.enabled)
 

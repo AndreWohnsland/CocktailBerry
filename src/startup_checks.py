@@ -75,7 +75,10 @@ def _check_sumup() -> CheckResult:
 def _check_cocktailberry_nfc() -> CheckResult:
     """Validate CocktailBerry NFC payment prerequisites."""
     if RFIDReader().rfid is None:
-        return CheckResult(ok=False, reason=f"Could not set up or use '{cfg.RFID_READER}' reader, see logs.")
+        return CheckResult(
+            ok=False,
+            reason=f"Could not set up or use '{cfg.RFID_CONFIG.rfid_type}' reader, see logs.",
+        )
     return CheckResult(ok=True)
 
 
@@ -84,5 +87,8 @@ def check_waiter_mode() -> CheckResult:
     if not cfg.WAITER_MODE:
         return CheckResult(ok=True)
     if RFIDReader().rfid is None:
-        return CheckResult(ok=False, reason=f"Could not set up or use '{cfg.RFID_READER}' reader for waiter mode.")
+        return CheckResult(
+            ok=False,
+            reason=f"Could not set up or use '{cfg.RFID_CONFIG.rfid_type}' reader for waiter mode.",
+        )
     return CheckResult(ok=True)

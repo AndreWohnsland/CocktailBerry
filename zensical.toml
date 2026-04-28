@@ -25,6 +25,7 @@ nav = [
     { "Context Extensions" = "hardware-extensions/hardware-context.md" },
     { "Scales" = "hardware-extensions/scales.md" },
     { "Carriages" = "hardware-extensions/carriages.md" },
+    { "RFID Readers" = "hardware-extensions/rfid.md" },
     { "Dispensers" = "hardware-extensions/dispensers.md" },
   ]},
   { "Troubleshooting" = "troubleshooting.md" },

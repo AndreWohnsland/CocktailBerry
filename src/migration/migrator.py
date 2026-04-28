@@ -125,7 +125,10 @@ class Migrator:
                 add_price_column_to_recipes,
                 _install_pyqt6_over_apt,  # user running bookworm need this
             ],
-            "4.0.0": [_migrate_i2c_addresses_to_hex_strings],
+            "4.0.0": [
+                _migrate_i2c_addresses_to_hex_strings,
+                _migrate_rfid_reader_to_discriminated_config,
+            ],
         }
 
         for version, actions in version_actions.items():
@@ -274,6 +277,28 @@ def _migrate_i2c_addresses_to_hex_strings() -> None:
         with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
             yaml.dump(configuration, stream, default_flow_style=False)
         _logger.info("Migrated I2C addresses to hex string format")
+
+
+def _migrate_rfid_reader_to_discriminated_config() -> None:
+    """Convert the flat ``RFID_READER`` string into the discriminated ``RFID_CONFIG`` dict.
+
+    Old shape: ``RFID_READER: "No" | "MFRC522" | "USB"`` (plain string).
+    New shape: ``RFID_CONFIG: {rfid_type: <type>, enabled: <bool>}`` (DiscriminatedDictType).
+    """
+    configuration = _get_local_config("RFID_READER")
+    if configuration is None or "RFID_READER" not in configuration:
+        return
+    old_value = configuration.pop("RFID_READER")
+    if not isinstance(old_value, str):
+        old_value = "No"
+    rfid_type = old_value if old_value in ("No", "MFRC522", "USB") else "No"
+    configuration["RFID_CONFIG"] = {
+        "rfid_type": rfid_type,
+        "enabled": rfid_type != "No",
+    }
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+    _logger.info(f"Migrated RFID_READER='{old_value}' to RFID_CONFIG")
 
 
 def _get_converted_value[T](new_type: Callable[[Any], T], default_value: T, local_config: Any) -> T:

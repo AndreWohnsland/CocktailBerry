@@ -24,15 +24,3 @@ class SinglePinController(Protocol):
     @abstractmethod
     def read(self) -> bool:
         raise NotImplementedError
-
-
-class RFIDController(Protocol):
-    """Interface for the RFID reader."""
-
-    @abstractmethod
-    def read_card(self) -> tuple[str | None, str | None]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def write_card(self, text: str) -> bool:
-        raise NotImplementedError

@@ -47,7 +47,7 @@ class WaiterService:
 
         Should be called once at program start.
         """
-        if cfg.RFID_READER == "No":
+        if not cfg.nfc_enabled:
             _logger.error("No NFC reader type specified. Disabling waiter mode.")
             cfg.WAITER_MODE = False
             return

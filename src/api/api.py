@@ -56,6 +56,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         shared.startup_need_time_adjustment.set_issue()
     if is_python_deprecated():
         shared.startup_python_deprecated.set_issue()
+    # Initialise the machine first so the RFID controller is wired before any
+    # check (payment, waiter) inspects it via RFIDReader().
+    mc = MachineController()
+    mc.init_machine()
+    ADDONS.setup_addons()
     payment_check = check_payment_service()
     if not payment_check.ok:
         _logger.warning(f"Payment service check failed: {payment_check.reason}. Disabling payment.")
@@ -66,9 +71,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         _logger.warning(f"Waiter mode check failed: {waiter_check.reason}. Disabling waiter mode.")
         cfg.WAITER_MODE = False
         shared.startup_waiter_issue.set_issue(message=waiter_check.reason)
-    mc = MachineController()
-    mc.init_machine()
-    ADDONS.setup_addons()
     update_info = can_update()
     if update_info.status == UpdateInfo.Status.UPDATE_AVAILABLE:
         _logger.info("Update available, performing update...")

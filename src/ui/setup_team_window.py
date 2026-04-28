@@ -61,7 +61,7 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         self._thread.finished.connect(self._thread.deleteLater)
         self._thread.start()
 
-        if cfg.RFID_READER != "No":
+        if cfg.nfc_enabled:
             self._rfid_reader = RFIDReader()
             self._rfid_reader.read_rfid(self._write_rfid_value)
         else:

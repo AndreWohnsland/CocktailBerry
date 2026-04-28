@@ -126,7 +126,7 @@ class NFCPaymentService:
         Callbacks can be added/removed dynamically without stopping the sensing.
         """
         # need to check that the right nfc reader is connected only USB is supported
-        if cfg.RFID_READER == "No":
+        if not cfg.nfc_enabled:
             _logger.error("No NFC reader type specified. Disabling payment service.")
             cfg.PAYMENT_TYPE = "Disabled"
             return

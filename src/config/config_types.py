@@ -854,3 +854,32 @@ class BaseCarriageConfig(ConfigClass):
             "move_during_cleaning": self.move_during_cleaning,
             "wait_after_dispense": self.wait_after_dispense,
         }
+
+
+class BaseRfidConfig(ConfigClass):
+    """Base configuration shared by all RFID reader driver types.
+
+    ``rfid_type`` is a plain ``str`` to allow custom RFID extensions to register
+    their own variants (see ``src/programs/addons/rfid_extensions.py``).
+    Built-in drivers still default to one of :data:`SUPPORTED_RFID`.
+    The built-in ``"No"`` sentinel is selected when no concrete driver is wanted;
+    :func:`create_rfid` will return ``None`` for that value.
+    """
+
+    rfid_type: str
+    enabled: bool
+
+    def __init__(
+        self,
+        rfid_type: str = "No",
+        enabled: bool = False,
+        **kwargs: Any,
+    ) -> None:
+        self.rfid_type = rfid_type
+        self.enabled = enabled
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "rfid_type": self.rfid_type,
+            "enabled": self.enabled,
+        }
