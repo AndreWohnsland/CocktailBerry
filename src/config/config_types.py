@@ -905,9 +905,8 @@ class BaseRfidConfig(ConfigClass):
 
     ``rfid_type`` is a plain ``str`` to allow custom RFID extensions to register
     their own variants (see ``src/programs/addons/rfid_extensions.py``).
-    Built-in drivers still default to one of :data:`SUPPORTED_RFID`.
-    The built-in ``"No"`` sentinel is selected when no concrete driver is wanted;
-    :func:`create_rfid` will return ``None`` for that value.
+    Built-in drivers still default to one of :data:`SUPPORTED_RFID`. To disable
+    the reader, set ``enabled=False`` instead of using a sentinel type.
     """
 
     rfid_type: str
@@ -915,7 +914,7 @@ class BaseRfidConfig(ConfigClass):
 
     def __init__(
         self,
-        rfid_type: str = "No",
+        rfid_type: str = "USB",
         enabled: bool = False,
         **kwargs: Any,
     ) -> None:

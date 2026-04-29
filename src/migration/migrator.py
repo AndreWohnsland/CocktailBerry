@@ -310,17 +310,23 @@ def _migrate_rfid_reader_to_discriminated_config() -> None:
 
     Old shape: ``RFID_READER: "No" | "MFRC522" | "USB"`` (plain string).
     New shape: ``RFID_CONFIG: {rfid_type: <type>, enabled: <bool>}`` (DiscriminatedDictType).
+    The "No" sentinel maps to ``rfid_type="USB"`` with ``enabled=False`` — the
+    type is just a default for the dropdown; ``enabled`` decides whether a
+    reader is created.
     """
     configuration = _get_local_config("RFID_READER")
     if configuration is None or "RFID_READER" not in configuration:
         return
     old_value = configuration.pop("RFID_READER")
-    if not isinstance(old_value, str):
-        old_value = "No"
-    rfid_type = old_value if old_value in ("No", "MFRC522", "USB") else "No"
+    if not isinstance(old_value, str) or old_value not in ("MFRC522", "USB"):
+        rfid_type = "USB"
+        enabled = False
+    else:
+        rfid_type = old_value
+        enabled = True
     configuration["RFID_CONFIG"] = {
         "rfid_type": rfid_type,
-        "enabled": rfid_type != "No",
+        "enabled": enabled,
     }
     with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)

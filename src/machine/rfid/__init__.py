@@ -24,13 +24,13 @@ def create_rfid(config: BaseRfidConfig, hardware: HardwareContext) -> RFIDInterf
 
     Every RFID controller — built-in or from ``addons/rfid/`` — receives the
     full ``HardwareContext`` so it can reach pins, LEDs, scale, carriage, or
-    hardware extension instances if needed. The built-in ``"No"`` sentinel
-    resolves to ``None``, equivalent to a disabled reader.
+    hardware extension instances if needed. A disabled config (``enabled=False``)
+    resolves to ``None``.
     """
     if "MOCK_RFID" in os.environ:
         _logger.warning("Using mock RFID reader.")
         return MockReader(config, hardware)
-    if not config.enabled or config.rfid_type == "No":
+    if not config.enabled:
         return None
     try:
         if config.rfid_type == "MFRC522":

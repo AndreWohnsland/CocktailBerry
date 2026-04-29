@@ -183,7 +183,7 @@ class ConfigManager:
     # List of LED configurations (discriminated by ``led_type``: Normal or WSLED)
     LED_CONFIG: ClassVar[list[BaseLedConfig]] = []
     # RFID reader configuration (discriminated by ``rfid_type``)
-    RFID_CONFIG = BaseRfidConfig(rfid_type="No", enabled=False)
+    RFID_CONFIG = BaseRfidConfig(rfid_type="USB", enabled=False)
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
     MICROSERVICE_ACTIVE: bool = False
     MICROSERVICE_BASE_URL: str = "http://127.0.0.1:5000"
@@ -349,11 +349,10 @@ class ConfigManager:
             "RFID_CONFIG": DiscriminatedDictType(
                 "rfid_type",
                 {
-                    "No": DictType({**SHARED_RFID_FIELDS}, BaseRfidConfig),
                     "MFRC522": DictType({**SHARED_RFID_FIELDS}, BaseRfidConfig),
                     "USB": DictType({**SHARED_RFID_FIELDS}, BaseRfidConfig),
                 },
-                default_variant="No",
+                default_variant="USB",
             ),
             "MICROSERVICE_ACTIVE": BoolType(check_name="Microservice Active"),
             "MICROSERVICE_BASE_URL": StringType(),
@@ -473,7 +472,7 @@ class ConfigManager:
     @property
     def nfc_enabled(self) -> bool:
         """Check if any NFC reader is enabled."""
-        return self.RFID_CONFIG.enabled and self.RFID_CONFIG.rfid_type != "No"
+        return self.RFID_CONFIG.enabled
 
     def read_local_config(self, update_config: bool = False, validate: bool = True) -> None:
         """Read the local config file and set the values if they are valid.
