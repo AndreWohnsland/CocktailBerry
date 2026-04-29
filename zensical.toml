@@ -26,6 +26,7 @@ nav = [
     { "Scales" = "hardware-extensions/scales.md" },
     { "Carriages" = "hardware-extensions/carriages.md" },
     { "RFID Readers" = "hardware-extensions/rfid.md" },
+    { "LEDs" = "hardware-extensions/leds.md" },
     { "Dispensers" = "hardware-extensions/dispensers.md" },
   ]},
   { "Troubleshooting" = "troubleshooting.md" },

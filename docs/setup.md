@@ -69,8 +69,7 @@ They can be used at your own risk of CocktailBerry not working 100% properly.
     | `MAKER_PINS_INVERTED`         | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)                     |
     | `PUMP_CONFIG`                 | Config for each pump: type, pin, volume flow, tube volume, estimation method, carriage position |
     | `I2C_CONFIG`                  | Config for I2C GPIO expander (16 pins, 0-15)                                                    |
-    | `LED_NORMAL`                  | List of normal (non-addressable) LED configs: pin, default on, prep state                       |
-    | `LED_WSLED`                   | List of WS281x (addressable) LED configs: pin, brightness, count, rings, default on, prep state |
+    | `LED_CONFIG`                  | List of LED configs (discriminated by `led_type`: Normal or WSLED)                              |
     | `RFID_CONFIG`                 | RFID/NFC reader configuration: driver type, enable/disable, [more info](troubleshooting.md#set-up-rfid-reader) |
     | `MAKER_PUMP_REVERSION_CONFIG` | Enables reversion (direction) of pump during cleaning                                           |
     | `SCALE_CONFIG`                | Scale hardware configuration: driver type, enable/disable and calibration factor                |

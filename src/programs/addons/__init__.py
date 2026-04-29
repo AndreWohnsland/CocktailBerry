@@ -19,6 +19,8 @@ from src.filepath import (
     DISPENSER_EXTENSION_SKELETON,
     HARDWARE_ADDON_FOLDER,
     HARDWARE_EXTENSION_SKELETON,
+    LED_ADDON_FOLDER,
+    LED_EXTENSION_SKELETON,
     RFID_ADDON_FOLDER,
     RFID_EXTENSION_SKELETON,
     SCALE_ADDON_FOLDER,
@@ -87,7 +89,7 @@ class _SkeletonConfig:
     name_placeholder: str
 
 
-SKELETON_OPTIONS = Literal["addon", "dispenser", "hardware", "scale", "carriage", "rfid"]
+SKELETON_OPTIONS = Literal["addon", "dispenser", "hardware", "scale", "carriage", "rfid", "led"]
 
 _SKELETON_CONFIGS: dict[SKELETON_OPTIONS, _SkeletonConfig] = {
     "addon": _SkeletonConfig(
@@ -124,6 +126,12 @@ _SKELETON_CONFIGS: dict[SKELETON_OPTIONS, _SkeletonConfig] = {
         RFID_ADDON_FOLDER,
         RFID_EXTENSION_SKELETON,
         "rfid extension",
+        "EXTENSION_NAME_HOLDER",
+    ),
+    "led": _SkeletonConfig(
+        LED_ADDON_FOLDER,
+        LED_EXTENSION_SKELETON,
+        "led extension",
         "EXTENSION_NAME_HOLDER",
     ),
 }

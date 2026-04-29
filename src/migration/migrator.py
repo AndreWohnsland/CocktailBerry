@@ -128,6 +128,7 @@ class Migrator:
             "4.0.0": [
                 _migrate_i2c_addresses_to_hex_strings,
                 _migrate_rfid_reader_to_discriminated_config,
+                _migrate_combine_led_lists_into_one_config,
             ],
         }
 
@@ -277,6 +278,31 @@ def _migrate_i2c_addresses_to_hex_strings() -> None:
         with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
             yaml.dump(configuration, stream, default_flow_style=False)
         _logger.info("Migrated I2C addresses to hex string format")
+
+
+def _migrate_combine_led_lists_into_one_config() -> None:
+    """Merge the legacy ``LED_NORMAL`` and ``LED_WSLED`` lists into the new ``LED_CONFIG`` list.
+
+    Old shape: two top-level keys, each ``list[dict]`` with type-specific fields.
+    New shape: single ``LED_CONFIG`` ``list[dict]`` discriminated by ``led_type``
+    (``"Normal"`` or ``"WSLED"``).
+    """
+    configuration = _get_local_config("LED_NORMAL/LED_WSLED")
+    if configuration is None:
+        return
+    has_normal = "LED_NORMAL" in configuration
+    has_wsled = "LED_WSLED" in configuration
+    if not (has_normal or has_wsled):
+        return
+    merged: list[dict] = []
+    for entry in configuration.pop("LED_NORMAL", []) or []:
+        merged.append({**entry, "led_type": "Normal"})
+    for entry in configuration.pop("LED_WSLED", []) or []:
+        merged.append({**entry, "led_type": "WSLED"})
+    configuration["LED_CONFIG"] = merged
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+    _logger.info(f"Migrated {len(merged)} LED entries from LED_NORMAL/LED_WSLED into LED_CONFIG")
 
 
 def _migrate_rfid_reader_to_discriminated_config() -> None:

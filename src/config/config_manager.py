@@ -24,6 +24,7 @@ from src import (
 )
 from src.config.config_types import (
     BaseCarriageConfig,
+    BaseLedConfig,
     BasePumpConfig,
     BaseRfidConfig,
     BoolType,
@@ -113,6 +114,12 @@ SHARED_RFID_FIELDS: dict[str, ConfigInterface[Any]] = {
     "enabled": BoolType(check_name="Enabled"),
 }
 
+SHARED_LED_FIELDS: dict[str, ConfigInterface[Any]] = {
+    "led_type": ChooseOptions.led_driver,
+    "default_on": BoolType(check_name="Default On"),
+    "preparation_state": ChooseOptions.leds,
+}
+
 
 class ConfigManager:
     """Manager for all static configuration of the machine.
@@ -173,10 +180,8 @@ class ConfigManager:
     MAKER_ADD_SINGLE_INGREDIENT: bool = False
     # Option to show a random cocktail tile in the maker tab
     MAKER_RANDOM_COCKTAIL: bool = False
-    # List of normal (non-addressable) LED configurations
-    LED_NORMAL: ClassVar[list[NormalLedConfig]] = []
-    # List of WS281x (addressable) LED configurations
-    LED_WSLED: ClassVar[list[WS281xLedConfig]] = []
+    # List of LED configurations (discriminated by ``led_type``: Normal or WSLED)
+    LED_CONFIG: ClassVar[list[BaseLedConfig]] = []
     # RFID reader configuration (discriminated by ``rfid_type``)
     RFID_CONFIG = BaseRfidConfig(rfid_type="No", enabled=False)
     # If to use microservice (mostly docker on same device) to handle external API calls and according url
@@ -313,30 +318,31 @@ class ConfigManager:
             "MAKER_USE_RECIPE_VOLUME": BoolType(check_name="Use Recipe Volume"),
             "MAKER_ADD_SINGLE_INGREDIENT": BoolType(check_name="Can Spend Single Ingredient"),
             "MAKER_RANDOM_COCKTAIL": BoolType(check_name="Random Cocktail Option"),
-            "LED_NORMAL": ListType(
-                DictType(
+            "LED_CONFIG": ListType(
+                DiscriminatedDictType(
+                    "led_type",
                     {
-                        "pin_type": ChooseOptions.pin,
-                        "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
-                        "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
-                        "default_on": BoolType(check_name="Default On"),
-                        "preparation_state": ChooseOptions.leds,
+                        "Normal": DictType(
+                            {
+                                **SHARED_LED_FIELDS,
+                                "pin_type": ChooseOptions.pin,
+                                "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
+                                "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
+                            },
+                            NormalLedConfig,
+                        ),
+                        "WSLED": DictType(
+                            {
+                                **SHARED_LED_FIELDS,
+                                "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
+                                "brightness": IntType([build_number_limiter(1, 100)], suffix="%", default=100),
+                                "count": IntType([build_number_limiter(1, 500)], suffix="LEDs", default=24),
+                                "number_rings": IntType([build_number_limiter(1, 10)], suffix="X", default=1),
+                            },
+                            WS281xLedConfig,
+                        ),
                     },
-                    NormalLedConfig,
-                ),
-                0,
-            ),
-            "LED_WSLED": ListType(
-                DictType(
-                    {
-                        "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
-                        "brightness": IntType([build_number_limiter(1, 100)], suffix="%", default=100),
-                        "count": IntType([build_number_limiter(1, 500)], suffix="LEDs", default=24),
-                        "number_rings": IntType([build_number_limiter(1, 10)], suffix="X", default=1),
-                        "default_on": BoolType(check_name="Default On"),
-                        "preparation_state": ChooseOptions.leds,
-                    },
-                    WS281xLedConfig,
+                    default_variant="Normal",
                 ),
                 0,
             ),

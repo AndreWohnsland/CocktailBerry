@@ -26,12 +26,19 @@ class HardwareContext:
     extra: dict[str, Any] = field(default_factory=dict)
 
     def cleanup(self) -> None:
-        """Shut down all hardware: turn off LEDs and release all pins."""
+        """Shut down all hardware in a safe order.
+
+        Order matters: stop running LED effect threads (and any other
+        consumers) BEFORE releasing the underlying pins, so a daemon
+        animation cannot keep writing to a GPIO that has already been
+        cleaned up.
+        """
         self.led_controller.turn_off()
-        self.pin_controller.cleanup_pin_list()
+        self.led_controller.cleanup()
         if self.scale is not None:
             self.scale.cleanup()
         if self.carriage is not None:
             self.carriage.cleanup()
         if self.rfid is not None:
             self.rfid.cleanup()
+        self.pin_controller.cleanup_pin_list()

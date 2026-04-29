@@ -16,5 +16,6 @@ SupportedStepperStepType = Literal["Full", "Half", "1/4", "1/8", "1/16", "1/32"]
 ConsumptionEstimationType = Literal["time", "weight"]
 SupportedScaleDriverType = Literal["HX711", "NAU7802"]
 SupportedCarriageType = Literal["NoCarriage"]
+SupportedLedDriverType = Literal["Normal", "WSLED"]
 NEEDED_PYTHON_VERSION = (3, 11)
 FUTURE_PYTHON_VERSION = (3, 13)

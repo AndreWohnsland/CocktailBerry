@@ -156,6 +156,16 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
         generate_skeleton_for("rfid", rfid_name)
 
     @cli.command()
+    def create_led(led_name: str) -> None:
+        """Create the base file for a custom LED extension under the given name.
+
+        The file is saved under the addons/leds folder.
+        File name will be the name converted to lower case, spaces are replaced with underscores
+        and stripped of special characters.
+        """
+        generate_skeleton_for("led", led_name)
+
+    @cli.command()
     def setup_microservice(
         api_key: str | None = typer.Option(None, "--api-key", "-a", help="API key for dashboard"),
         hook_endpoint: str | None = typer.Option(None, "--hook-endpoint", "-e", help="Custom hook endpoint"),

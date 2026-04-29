@@ -795,12 +795,9 @@ ui:
     MAKER_RANDOM_COCKTAIL:
       en: 'Adds a random cocktail tile to the maker tab that picks a surprise cocktail on prepare'
       de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
-    LED_NORMAL:
-      en: 'List with config for each normal (non-addressable) LED: pin type, board number (# only relevant for I2C), pin, default on state, preparation state (on/off/effects)'
-      de: 'Liste mit Einstellung für jeden normalen (nicht ansteuerbaren) LED: Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
-    LED_WSLED:
-      en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects). Only supports GPIO.'
-      de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). Unterstützt nur GPIO.'
+    LED_CONFIG:
+      en: 'List with config for each LED (discriminated by led_type: Normal pin LED or WSLED addressable). Custom drivers can be added via addons/leds extensions.'
+      de: 'Liste mit Einstellung für jeden LED (Diskriminator led_type: Normal-Pin oder WSLED ansteuerbar). Eigene Treiber via addons/leds Erweiterungen.'
     RFID_CONFIG:
       en: 'RFID/NFC reader configuration. Choose driver type (No, MFRC522, USB) and toggle enabled. Custom drivers can be added via addons/rfid extensions.'
       de: 'RFID/NFC Reader Konfiguration. Treiber-Typ wählen (No, MFRC522, USB) und aktiviert umschalten. Eigene Treiber via addons/rfid Erweiterungen.'

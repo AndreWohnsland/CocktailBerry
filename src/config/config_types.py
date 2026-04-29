@@ -17,6 +17,7 @@ from src import (
     SupportedCarriageType,
     SupportedDispenserType,
     SupportedLanguagesType,
+    SupportedLedDriverType,
     SupportedLedStatesType,
     SupportedPaymentOptions,
     SupportedPinControlType,
@@ -41,6 +42,7 @@ SUPPORTED_STEPPER_STEP_TYPES = list(get_args(SupportedStepperStepType))
 SUPPORTED_CONSUMPTION_ESTIMATIONS = list(get_args(ConsumptionEstimationType))
 SUPPORTED_SCALE_DRIVERS = list(get_args(SupportedScaleDriverType))
 SUPPORTED_CARRIAGE_TYPES = list(get_args(SupportedCarriageType))
+SUPPORTED_LED_DRIVERS = list(get_args(SupportedLedDriverType))
 
 
 class ConfigInterface[T](Protocol):
@@ -156,6 +158,7 @@ class ChooseOptions:
     consumption_estimation = ChooseType(allowed=SUPPORTED_CONSUMPTION_ESTIMATIONS, default="time")
     scale_driver = ChooseType(allowed=SUPPORTED_SCALE_DRIVERS, default="HX711")
     carriage_type = ChooseType(allowed=SUPPORTED_CARRIAGE_TYPES, default="NoCarriage")
+    led_driver = ChooseType(allowed=SUPPORTED_LED_DRIVERS, default="Normal")
 
 
 class StringType(_ConfigType[str]):
@@ -726,26 +729,60 @@ class ReversionConfig(ConfigClass):
         }
 
 
-class NormalLedConfig(ConfigClass):
+class BaseLedConfig(ConfigClass):
+    """Base configuration shared by all LED driver types.
+
+    ``led_type`` is a plain ``str`` to allow custom LED extensions to register
+    their own variants (see ``src/programs/addons/led_extensions.py``).
+    Built-in drivers still default to one of :data:`SUPPORTED_LED_DRIVERS`.
+    """
+
+    led_type: str
+    default_on: bool
+    preparation_state: SupportedLedStatesType
+
+    def __init__(
+        self,
+        led_type: str = "Normal",
+        default_on: bool = False,
+        preparation_state: SupportedLedStatesType = "Effect",
+        **kwargs: Any,
+    ) -> None:
+        self.led_type = led_type
+        self.default_on = default_on
+        self.preparation_state = preparation_state
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "led_type": self.led_type,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
+        }
+
+
+class NormalLedConfig(BaseLedConfig):
     """Configuration for normal (non-WS281x) LEDs."""
 
     pin: int
-    default_on: bool
-    preparation_state: SupportedLedStatesType
     pin_type: SupportedPinControlType
     board_number: int
 
     def __init__(
         self,
-        pin: int,
-        default_on: bool,
-        preparation_state: SupportedLedStatesType,
+        pin: int = 0,
+        default_on: bool = False,
+        preparation_state: SupportedLedStatesType = "Effect",
         pin_type: SupportedPinControlType = "GPIO",
         board_number: int = 1,
+        led_type: str = "Normal",
+        **kwargs: Any,
     ) -> None:
+        super().__init__(
+            led_type=led_type,
+            default_on=default_on,
+            preparation_state=preparation_state,
+        )
         self.pin = pin
-        self.default_on = default_on
-        self.preparation_state = preparation_state
         self.pin_type = pin_type
         self.board_number = board_number
 
@@ -755,40 +792,45 @@ class NormalLedConfig(ConfigClass):
         return PinId(self.pin_type, self.board_number, self.pin)
 
     def to_config(self) -> dict[str, Any]:
-        return {
-            "pin_type": self.pin_type,
-            "board_number": self.board_number,
-            "pin": self.pin,
-            "default_on": self.default_on,
-            "preparation_state": self.preparation_state,
-        }
+        config = super().to_config()
+        config.update(
+            {
+                "pin_type": self.pin_type,
+                "board_number": self.board_number,
+                "pin": self.pin,
+            }
+        )
+        return config
 
 
-class WS281xLedConfig(ConfigClass):
+class WS281xLedConfig(BaseLedConfig):
     """Configuration for WS281x (controllable) LEDs."""
 
     pin: int
     brightness: int
     count: int
     number_rings: int
-    default_on: bool
-    preparation_state: SupportedLedStatesType
 
     def __init__(
         self,
-        pin: int,
-        brightness: int,
-        count: int,
-        number_rings: int,
-        default_on: bool,
-        preparation_state: SupportedLedStatesType,
+        pin: int = 0,
+        brightness: int = 100,
+        count: int = 24,
+        number_rings: int = 1,
+        default_on: bool = False,
+        preparation_state: SupportedLedStatesType = "Effect",
+        led_type: str = "WSLED",
+        **kwargs: Any,
     ) -> None:
+        super().__init__(
+            led_type=led_type,
+            default_on=default_on,
+            preparation_state=preparation_state,
+        )
         self.pin = pin
         self.brightness = brightness
         self.count = count
         self.number_rings = number_rings
-        self.default_on = default_on
-        self.preparation_state = preparation_state
 
     @property
     def pin_id(self) -> PinId:
@@ -796,14 +838,16 @@ class WS281xLedConfig(ConfigClass):
         return PinId("GPIO", 1, self.pin)
 
     def to_config(self) -> dict[str, Any]:
-        return {
-            "pin": self.pin,
-            "brightness": self.brightness,
-            "count": self.count,
-            "number_rings": self.number_rings,
-            "default_on": self.default_on,
-            "preparation_state": self.preparation_state,
-        }
+        config = super().to_config()
+        config.update(
+            {
+                "pin": self.pin,
+                "brightness": self.brightness,
+                "count": self.count,
+                "number_rings": self.number_rings,
+            }
+        )
+        return config
 
 
 class BaseCarriageConfig(ConfigClass):

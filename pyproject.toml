@@ -135,7 +135,7 @@ include = [
   "src/machine/rfid/mfrc522.py",
   "src/machine/rfid/usb.py",
   "src/machine/raspberry.py",
-  "src/machine/leds.py",
+  "src/machine/leds/wsled.py",
   "src/machine/dispensers/stepper.py",
   "src/machine/scale/hx711.py",
   "src/machine/scale/hx711_custom.py",

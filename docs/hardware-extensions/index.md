@@ -15,6 +15,7 @@ Supported types are:
 - **[Carriages](carriages.md)** — control the movement of the pump carriage for multi-position setups
 - **[Dispensers](dispensers.md)** — control pumps and valves for dispensing liquids
 - **[RFID Readers](rfid.md)** — read NFC/RFID cards for payments, waiter mode, or custom flows
+- **[LEDs](leds.md)** — drive indicator/lighting hardware for status, ambience, and preparation effects
 
 Best way to start is use the CLI commands to create skeleton files for your extensions, then fill in the implementation details.
 See the subpages for detailed guides and examples for each type.
@@ -25,14 +26,15 @@ The diagram below shows how the different extension types relate to each other a
 
 ```mermaid
 flowchart TD
-    subgraph stage1["1. Core/Shared Hardware"]
+    subgraph stage1["1. Core/Shared Hardware + LEDs"]
         pin["PinController"]
-        led["LedController"]
         hw_ext["Hardware Extensions\n(addons/hardware/)"]
+        leds["LEDs\n(addons/leds/)"]
         pin --> hctx
-        led --> hctx
         hw_ext --> hctx
         hctx["HardwareContext\ncreated"]
+        hctx --> leds
+        leds --> hctx_leds["HardwareContext\n(+ leds populated)"]
     end
 
     stage1 -->|"HardwareContext passed"| stage2
@@ -67,7 +69,7 @@ flowchart TD
 
 The `HardwareContext` is built up in stages, so each component has access to everything created before it:
 
-1. **Core hardware** — `PinController`, `LedController`, and hardware extension instances (`extra` dict) are created first.
+1. **Core hardware + LEDs** — `PinController`, hardware extension instances (`extra` dict), and the `HardwareContext` itself are created first. The `LedController` singleton is then populated from `LED_CONFIG` so every later stage already sees the active LED list.
 2. **Scale** — receives the context, so it can access pins, LEDs, and hardware extensions if needed.
 3. **Carriage** — receives the context including the scale, so it can access everything above.
 4. **RFID** — receives the context including scale and carriage; the resulting controller is also attached to the `RFIDReader()` singleton facade.
