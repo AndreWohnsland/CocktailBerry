@@ -4,13 +4,15 @@ Hardware context extensions let you register **shared hardware** — such as a U
 Each hardware context extension is a single Python file placed in the `addons/hardware/` folder.
 Once added, the extension gets its own configuration page in the UI and its instance is stored in `HardwareContext.extra["YourExtensionName"]` for other components to access.
 
+Unlike dispenser extensions, which create one instance *per pump slot*, or other hardware that serves a specific purpose in the main code (scale, etc.), a hardware context extension creates **one instance per extension** and stores it in `hardware.extra["YourExtensionName"]`.
+Dispensers (and other extension code) then access it from the `HardwareContext` they receive.
 Unlike dispenser extensions, which create one instance *per pump slot*, a hardware context extension creates **one instance per extension**.
 Dispensers (and other extension code) access it from the `HardwareContext` they receive.
 
 This is the recommended approach when:
 
 - Multiple pumps share a single communication bus (e.g. a UART board controlling N pumps)
-- You need one-time initialization for hardware that several dispensers depend on
+- You need one-time initialization for hardware that several hardware components depend on
 - You want GUI-configurable settings for that shared hardware (not hard-coded)
 
 For hardware context extensions, the base classes are:
@@ -47,10 +49,10 @@ The `to_config()` method must serialize all fields to a dict; `from_config()` mu
 
 Your `Implementation` class must inherit from `BaseHardwareExtension[ExtensionConfig]` and implement these methods:
 
-| Method               | Required | Description                                                                                                                                       |
-| -------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `create(config)`     | **yes**  | Build and return the shared hardware instance. The returned object is stored in `hardware.extra["EXTENSION_NAME"]` and may be of any type.        |
-| `cleanup(instance)`  | **yes**  | Release resources held by the instance previously returned from `create()`. Called at shutdown before core hardware is released.                  |
+| Method              | Required | Description                                                                                                                                |
+| ------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `create(config)`    | **yes**  | Build and return the shared hardware instance. The returned object is stored in `hardware.extra["EXTENSION_NAME"]` and may be of any type. |
+| `cleanup(instance)` | **yes**  | Release resources held by the instance previously returned from `create()`. Called at shutdown before core hardware is released.           |
 
 The actual hardware class itself can be any Python class — `BaseHardwareExtension` only manages the lifecycle, not the shape of the instance.
 
@@ -111,7 +113,7 @@ class ExtensionConfig(ConfigClass): # (4)!
 
 
 CONFIG_FIELDS: dict[str, ConfigInterface] = { # (8)!
-    "port": StringType(default="/dev/ttyUSB0"),
+    "port": StringType(),
     "baud_rate": IntType([build_number_limiter(1200, 115200)]),
 }
 

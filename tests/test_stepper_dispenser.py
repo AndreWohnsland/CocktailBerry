@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from src.config.config_types import StepperPumpConfig
 from src.machine.dispensers.stepper import StepperDispenser
@@ -26,8 +26,7 @@ class TestStepperDispenser:
         hardware.scale = None
         return StepperDispenser(slot=1, config=config, hardware=hardware)
 
-    @patch("src.machine.dispensers.stepper.StepperDispenser.setup")
-    def test_dispense_calculates_correct_steps(self, mock_setup: MagicMock) -> None:
+    def test_dispense_calculates_correct_steps(self) -> None:
         d = self._make_dispenser()
         d._motor = MagicMock()
         callback = MagicMock()
@@ -41,8 +40,7 @@ class TestStepperDispenser:
         last_call = callback.call_args_list[-1]
         assert last_call[0][1] is True
 
-    @patch("src.machine.dispensers.stepper.StepperDispenser.setup")
-    def test_dispense_respects_stop_event(self, mock_setup: MagicMock) -> None:
+    def test_dispense_respects_stop_event(self) -> None:
         d = self._make_dispenser()
         d._motor = MagicMock()
         callback = MagicMock()
@@ -57,8 +55,7 @@ class TestStepperDispenser:
         # Should have dispensed much less than the full 10ml
         assert consumption < 10.0
 
-    @patch("src.machine.dispensers.stepper.StepperDispenser.setup")
-    def test_dispense_pump_speed_affects_delay(self, mock_setup: MagicMock) -> None:
+    def test_dispense_pump_speed_affects_delay(self) -> None:
         d = self._make_dispenser()
         d._motor = MagicMock()
         callback = MagicMock()

@@ -34,8 +34,6 @@ class DCDispenser(BaseDispenser):
         super().__init__(slot, config, hardware)
         self.pin_id = config.pin_id
         self._pin_controller = hardware.pin_controller
-
-    def setup(self) -> None:
         self._pin_controller.initialize_pin(self.pin_id)
 
     def _dispense_steps(self, amount_ml: float, pump_speed: int) -> Generator[float]:

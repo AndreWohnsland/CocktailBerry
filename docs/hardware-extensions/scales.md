@@ -5,7 +5,8 @@ Each scale extension is a single Python file placed in the `addons/scales/` fold
 Once added, the new scale type appears in the scale configuration dropdown alongside the built-in `HX711` and `NAU7802` drivers.
 
 Unlike dispensers, a **single** scale is created per machine (one `SCALE_CONFIG` entry).
-It is wired into the `HardwareContext` and shared across all weight-based dispensers — any dispenser referencing the scale is automatically scheduled exclusively (no parallel dispensing) so readings stay consistent.
+It is wired into the `HardwareContext` and shared across all weight-based dispensers.
+Any dispenser referencing the scale is automatically scheduled exclusively (no parallel dispensing) so readings stay consistent.
 
 For scales, the base classes are:
 
@@ -56,7 +57,8 @@ Your `Implementation` class must inherit from `ScaleInterface` and implement the
 | `cleanup()`         | **yes**  | Release any hardware resources held by the scale.                                                                                              |
 | `get_gross_grams()` | **yes**  | Return the absolute weight in grams relative to `_zero_raw_offset` (the one-time empty-scale calibration). Used for glass detection etc.       |
 
-The constructor receives `config` (your `ExtensionConfig` instance) and `hardware` (`HardwareContext` — provides access to pin controller, LED controller, and `extra` dict of hardware extension instances). Built-in scales may ignore `hardware`; extensions may use it to access pins or shared hardware.
+The constructor receives `config` (your `ExtensionConfig` instance) and `hardware` (`HardwareContext` — provides access to pin controller, LED controller, and `extra` dict of hardware extension instances).
+Built-in scales may ignore `hardware`, extensions may use it to access pins or shared hardware.
 
 ## Inherited Attributes & Helpers
 
@@ -83,7 +85,7 @@ Scale extensions follow this lifecycle:
 
 ## Full Example
 
-Below is a complete example of a fake software scale that reports a constant weight — useful as a template or for dry-running without hardware:
+Below is a complete example of a fake software scale that reports a constant weight, useful as a template or for dry-running without hardware:
 
 ```python
 from __future__ import annotations

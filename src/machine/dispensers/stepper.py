@@ -48,12 +48,6 @@ class StepperDispenser(BaseDispenser):
         self.driver_type = config.driver_type
         self.step_type = config.step_type
         self._motor: rpi_motor_lib.A4988Nema | None = None
-
-    @property
-    def _log_label(self) -> str:
-        return f"{self.driver_type:<14}"
-
-    def setup(self) -> None:
         if not MOTOR_LIB_AVAILABLE:
             _logger.warning(f"RpiMotorLib not installed. Will not be able to control slot stepper slot {self.slot}")
             return
@@ -62,6 +56,10 @@ class StepperDispenser(BaseDispenser):
             self._motor = rpi_motor_lib.A4988Nema(self.dir_pin, self.step_pin, (-1, -1, -1), self.driver_type)
         except Exception as e:
             _logger.error(f"Failed to initialize stepper motor for slot {self.slot}: {e}")
+
+    @property
+    def _log_label(self) -> str:
+        return f"{self.driver_type:<14}"
 
     def _dispense_steps(self, amount_ml: float, pump_speed: int) -> Generator[float]:
         flow_rate = self.volume_flow * pump_speed / 100

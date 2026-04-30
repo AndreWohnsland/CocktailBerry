@@ -93,6 +93,8 @@ class Implementation(BaseDispenser):
       stop()    — for immediate hardware shutdown on emergency stop.
                   Always call super().stop(). Runs from another thread.
       cleanup() — release hardware at program shutdown.
+
+        Initialize hardware resources directly in __init__.
     """
 
     def __init__(
@@ -100,10 +102,7 @@ class Implementation(BaseDispenser):
     ) -> None:
         super().__init__(slot, config, hardware)
         self.label = config.label
-
-    def setup(self) -> None:
-        """Initialize hardware resources for this dispenser."""
-        _logger.info(f"Dispenser '{self.label}' slot {self.slot} set up")
+        _logger.info(f"Dispenser '{self.label}' slot {self.slot} initialized")
 
     def _dispense_steps(self, amount_ml: float, pump_speed: int) -> Generator[float]:
         """Yield consumption values while dispensing.

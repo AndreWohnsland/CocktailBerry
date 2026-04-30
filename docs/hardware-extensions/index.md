@@ -1,11 +1,11 @@
 # Custom Hardware Extensions
 
-CocktailBerry allows you to create your own implementations of hardware components.
-This way you can integrate custom dispensers, scales, carriages or even other hardware components that are not natively supported.
+CocktailBerry allows you to create your own implementation of hardware components.
+This way you can integrate custom dispensers, scales, carriages or "generic" other hardware components that are not natively supported.
 Hardware extensions live in subfolders of the `addons` folder and are automatically discovered at startup.
 
 !!! info "Only needed for unsupported hardware"
-    In general, you only need to create custom hardware extensions if you have pumps, scales, or carriages that CocktailBerry does not support out of the box.
+    In general, you only need to create custom hardware extensions if you have pumps/dispensers, scales, or carriages that CocktailBerry does not support out of the box.
     If your hardware is already supported, you can configure it directly in the UI without any coding.
 
 Supported types are:
@@ -17,7 +17,7 @@ Supported types are:
 - **[RFID Readers](rfid.md)** — read NFC/RFID cards for payments, waiter mode, or custom flows
 - **[LEDs](leds.md)** — drive indicator/lighting hardware for status, ambience, and preparation effects
 
-Best way to start is use the CLI commands to create skeleton files for your extensions, then fill in the implementation details.
+The best way to start is to use the CLI commands to create skeleton files for your extensions, then fill in the implementation details.
 See the subpages for detailed guides and examples for each type.
 
 ## Architecture Overview
@@ -77,7 +77,7 @@ The `HardwareContext` is built up in stages, so each component has access to eve
 
 ## Extension Structure
 
-Every hardware extension file — regardless of type — must export four things:
+Every hardware extension file, regardless of type, must export four things:
 
 | Export            | Description                                                       |
 | ----------------- | ----------------------------------------------------------------- |
@@ -100,7 +100,7 @@ Use these types from `src.config.config_types` to define your custom fields:
 | `StringType` | Text input    | `StringType(default="my_value")`                             |
 | `BoolType`   | Checkbox      | `BoolType(check_name="Enable Feature")`                      |
 | `ChooseType` | Dropdown      | `ChooseType(allowed=["A", "B"], default="A")`                |
-| `ListType`   | List input    | `ListType(BoolType(), default=[])`                           |
+| `ListType`   | List input    | `ListType(StringType(), default=[])`                         |
 
 Validators like `build_number_limiter(min, max)` from `src.config.validators` can be used to constrain values.
-You always can write your own, for more information, see also the config section under addons.
+You can always write your own validators, for more information, see also the config section under [addons](../addons.md#add-validation).

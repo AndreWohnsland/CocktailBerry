@@ -41,10 +41,6 @@ class BaseDispenser(ABC):
         """True when this dispenser requires exclusive scheduling (i.e. it uses a scale)."""
         return self._scale is not None
 
-    @abstractmethod
-    def setup(self) -> None:
-        """Initialize hardware resources for this dispenser."""
-
     def dispense(self, amount_ml: float, pump_speed: int, callback: ProgressCallback) -> float:
         """Dispense the given amount at the given pump speed.
 

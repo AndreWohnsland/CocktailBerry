@@ -49,12 +49,13 @@ Your `Implementation` class must inherit from `BaseDispenser` and implement thes
 
 | Method                                   | Required | Description                                                                                                                                        |
 | ---------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `setup()`                                | **yes**  | Initialize hardware resources                                                                                                                      |
 | `_dispense_steps(amount_ml, pump_speed)` | **yes**  | Generator that yields consumption values. Use `try/finally` for hardware cleanup. See details below.                                               |
 | `stop()`                                 | no       | Emergency stop. Default sets the internal stop event. Override and call `super().stop()` if you need additional hardware cleanup (e.g. close pin). |
 | `cleanup()`                              | no       | Release hardware resources at shutdown. Default does nothing.                                                                                      |
 
 The constructor receives `slot` (pump position), `config` (your `ExtensionConfig` instance), `hardware` (`HardwareContext` — provides access to pin controller, scale, LED controller, carriage, and `extra` dict of hardware extension instances).
+
+Initialize hardware resources directly in `__init__()`.
 
 ### How `_dispense_steps()` Works
 
@@ -173,10 +174,10 @@ class Implementation(BaseDispenser): # (8)!
         super().__init__(slot, config, hardware)
         self.label = config.label
 
-    def setup(self) -> None: # (9)!
-        _logger.info(f"Dummy dispenser '{self.label}' slot {self.slot} set up")
+        # Initialize your hardware here
+        _logger.info(f"Dummy dispenser '{self.label}' slot {self.slot} initialized")
 
-    def _dispense_steps( # (10)!
+    def _dispense_steps( # (9)!
         self, amount_ml: float, pump_speed: int
     ) -> Generator[float, None, None]:
         effective_flow = self.volume_flow * pump_speed / 100
@@ -190,22 +191,22 @@ class Implementation(BaseDispenser): # (8)!
         consumption = 0.0
         try:
             # >>> Activate your hardware here <<<
-            while True: # (11)!
+            while True: # (10)!
                 time.sleep(step_interval)
                 elapsed += step_interval
                 time_estimate = min(elapsed * effective_flow, amount_ml)
                 consumption = self._get_consumption(time_estimate)
-                yield consumption # (12)!
+                yield consumption # (11)!
                 if consumption >= amount_ml:
                     return
         finally:
-            # >>> Deactivate your hardware here <<< (13)!
+            # >>> Deactivate your hardware here <<< (12)!
             _logger.info(
                 f"Dummy '{self.label}' slot {self.slot}: "
                 f"done, dispensed {consumption:.1f} ml"
             )
 
-    def cleanup(self) -> None: # (14)!
+    def cleanup(self) -> None: # (13)!
         _logger.info(
             f"Dummy dispenser '{self.label}' slot {self.slot} cleaned up"
         )
@@ -219,9 +220,8 @@ class Implementation(BaseDispenser): # (8)!
 6. Serialize all fields — call `super().to_config()` first, then update with your extra fields.
 7. Only define your **extra** config fields here. Shared fields (`volume_flow`, `tube_volume`, etc.) and the `pump_type` dropdown are auto-injected.
 8. Your dispenser implementation must inherit from `BaseDispenser`.
-9. Called once to initialize hardware resources (e.g. GPIO pins, SPI buses).
-10. Generator that yields consumption values. The base `dispense()` method handles stop events, scale taring, and progress callbacks — you just yield.
-11. Use a simple `while True` loop. No need to check `self._stop_event` — the base class checks it between yields and closes the generator on cancellation.
-12. Yield the current consumption. The base class passes this to the scheduler's progress callback. Important to do this regularly (e.g. every 0.1s) so the UI can update and cancellations are responsive.
-13. The `finally` block runs on both normal completion and cancellation — use it for hardware cleanup (e.g. closing relay pins, stopping motors).
-14. Called at program shutdown to release hardware resources.
+9. Generator that yields consumption values. The base `dispense()` method handles stop events, scale taring, and progress callbacks — you just yield.
+10. Use a simple `while True` loop. No need to check `self._stop_event` — the base class checks it between yields and closes the generator on cancellation.
+11. Yield the current consumption. The base class passes this to the scheduler's progress callback. Important to do this regularly (e.g. every 0.1s) so the UI can update and cancellations are responsive.
+12. The `finally` block runs on both normal completion and cancellation — use it for hardware cleanup (e.g. closing relay pins, stopping motors).
+13. Called at program shutdown to release hardware resources.

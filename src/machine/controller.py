@@ -169,7 +169,6 @@ class MachineController:
         self.dispensers = {}
         for slot, pump_cfg in enumerate(used_config, start=1):
             dispenser = create_dispenser(slot, pump_cfg, self.hardware)
-            dispenser.setup()
             self.dispensers[slot] = dispenser
         _logger.info(f"<i> Initialized {len(self.dispensers)} dispensers")
         self.reverter.initialize_pin()
