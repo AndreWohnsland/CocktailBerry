@@ -19,10 +19,6 @@ dependencies = [
     "fastapi[standard]>=0.135.2",
     "uvicorn>=0.42.0",
     "sse-starlette>=3.3.4",
-    "mfrc522>=0.0.7 ; sys_platform == 'linux'",
-    "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
-    "gpiozero>=2.0.1 ; sys_platform == 'linux'",
-    "rpi-gpio>=0.7.1 ; sys_platform == 'linux'",
     "python-periphery>=2.4.1",
     "sqlalchemy>=2.0.46",
     "alembic>=1.18.4",
@@ -32,8 +28,12 @@ dependencies = [
     "adafruit-circuitpython-pcf8574>=1.0.16",
     "adafruit-circuitpython-busdevice>=5.2.16",
     "rpimotorlib>=4.0",
+    "cedargrove-nau7802>=2.1.4",
+    "mfrc522>=0.0.7 ; sys_platform == 'linux'",
+    "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
+    "gpiozero>=2.0.1 ; sys_platform == 'linux'",
+    "rpi-gpio>=0.7.1 ; sys_platform == 'linux'",
     "hx711>=1.1.2.3 ; sys_platform == 'linux'",
-    "cedargrove-nau7802>=2.1.4 ; sys_platform == 'linux'",
 ]
 
 [dependency-groups]
