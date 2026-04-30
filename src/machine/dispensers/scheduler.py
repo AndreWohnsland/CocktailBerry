@@ -39,7 +39,10 @@ class PreparationItem:
 
     def __post_init__(self) -> None:
         if self.estimated_time <= 0.0:
-            self.estimated_time = self.amount_ml / (self.dispenser.volume_flow * self.pump_speed / 100)
+            divisor = self.dispenser.volume_flow * self.pump_speed / 100
+            if divisor == 0:
+                return
+            self.estimated_time = self.amount_ml / divisor
 
 
 class DispenserScheduler:
@@ -133,7 +136,8 @@ class DispenserScheduler:
         is_cancelled: CancelCheck,
     ) -> None:
         """Run a group sequentially with carriage positioning before each item."""
-        assert self._carriage is not None
+        if self._carriage is None:
+            raise ValueError("Carriage is required for this operation")
         for item in group:
             if is_cancelled():
                 break

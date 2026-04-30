@@ -29,6 +29,11 @@ nav = [
     { "LEDs" = "hardware-extensions/leds.md" },
     { "Dispensers" = "hardware-extensions/dispensers.md" },
   ]},
+  { "Migration Guides" = [
+    "migration/index.md",
+    { "v3 Update" = "migration/v3.md" },
+    { "v4 Update" = "migration/v4.md" },
+  ]},
   { "Troubleshooting" = "troubleshooting.md" },
   { "FAQ" = "faq.md" },
   { "Feature Timetable" = "features.md" },

@@ -45,7 +45,7 @@ Version-specific code:
 Key modules use singletons — never instantiate new copies, always import the existing instance:
 
 - **Via `__new__`**: `MachineController` (`src/machine/controller.py`), `NFCPaymentService` (`src/service/nfc_payment_service.py`)
-- **Module-level instances**: `DB_COMMANDER` (`src/database_commander.py`), `CONFIG` / `shared` (`src/config/config_manager.py`), `DIALOG_HANDLER` (`src/dialog_handler.py`), `ADDONS` (`src/programs/addons.py`)
+- **Module-level instances**: `DB_COMMANDER` (`src/database_commander.py`), `CONFIG` / `shared` (`src/config/config_manager.py`), `DIALOG_HANDLER` (`src/dialog_handler.py`), `ADDONS` (`src/programs/addons/addons.py`), hardware-extension managers (`HARDWARE_ADDONS`, `SCALE_ADDONS`, `CARRIAGE_ADDONS`, `RFID_ADDONS`, `LED_ADDONS`, `DISPENSER_ADDONS` in `src/programs/addons/*_extensions.py`)
 
 ## Running Checks
 

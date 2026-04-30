@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from src.config.config_manager import CONFIG as cfg
 from src.programs.addons.addons import ADDONS
 from src.programs.addons.carriage_extensions import CARRIAGE_ADDONS
 from src.programs.addons.dispenser_extensions import DISPENSER_ADDONS
@@ -22,6 +23,9 @@ def initialize_addon_configs() -> None:
 
     Keeping the order here centralised means both entrypoints stay in sync, and
     any future addon type only needs to be wired in one place.
+
+    Marks the config manager as initialized so any later call to
+    ``read_local_config`` from a misordered entrypoint fails loud.
     """
     HARDWARE_ADDONS.build_config()
     SCALE_ADDONS.build_full_config_fields()
@@ -30,3 +34,4 @@ def initialize_addon_configs() -> None:
     LED_ADDONS.build_full_config_fields()
     DISPENSER_ADDONS.build_full_config_fields()
     ADDONS.define_addon_configuration()
+    cfg.mark_addon_configs_initialized()

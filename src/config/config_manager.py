@@ -233,6 +233,9 @@ class ConfigManager:
         attributes within the config, which is not a desired behavior. The sync will include all latest features within
         the config as well as allow custom settings without git overriding changes.
         """
+        # Tracks whether addon-contributed config variants have been registered.
+        # Flipped to True only via mark_addon_configs_initialized().
+        self._addon_configs_initialized: bool = False
         # Dict of Format "configname": (type, List[CheckCallbacks])
         # The check function needs to be a callable with interface fn(configname, configvalue)
         self.config_type: dict[str, ConfigInterface] = {
@@ -474,12 +477,27 @@ class ConfigManager:
         """Check if any NFC reader is enabled."""
         return self.RFID_CONFIG.enabled
 
+    def mark_addon_configs_initialized(self) -> None:
+        """Signal that addon-contributed config variants have been registered.
+
+        Called once by ``initialize_addon_configs`` at startup. Idempotent — calling
+        more than once is a no-op. There is intentionally no way to unset the flag.
+        """
+        self._addon_configs_initialized = True
+
     def read_local_config(self, update_config: bool = False, validate: bool = True) -> None:
         """Read the local config file and set the values if they are valid.
 
         Might throw a ConfigError if the config is not valid and should be validated.
         Ignore the error if the file is not found, as it is created at the first start of the program.
         """
+        if not self._addon_configs_initialized:
+            raise RuntimeError(
+                "read_local_config() called before initialize_addon_configs(). "
+                "Addon-contributed config variants would be silently dropped, leading to "
+                "validation errors at runtime. Call "
+                "src.programs.addons.bootstrap.initialize_addon_configs() first."
+            )
         configuration: dict = {}
         with contextlib.suppress(FileNotFoundError), CUSTOM_CONFIG_FILE.open(encoding="UTF-8") as stream:
             configuration = yaml.safe_load(stream)
