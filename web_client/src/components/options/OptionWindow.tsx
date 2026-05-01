@@ -37,7 +37,7 @@ import TileButton from '../common/TileButton';
 import AboutModal from './AboutModal';
 
 const OptionWindow = () => {
-  const { theme, changeTheme, config } = useConfig();
+  const { theme, changeTheme, config, isTileBlacklisted } = useConfig();
   const navigate = useNavigate();
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
@@ -134,14 +134,18 @@ const OptionWindow = () => {
           />
         </div>
         <div className='grid gap-1 w-full grid-cols-1 md:grid-cols-2'>
-          <TileButton label={t('options.cleaning')} filled icon={MdWaterDrop} iconSize={22} onClick={cleanClick} />
-          <TileButton
-            label={t('options.calibration')}
-            filled
-            icon={FaScaleUnbalanced}
-            onClick={() => navigate('calibration')}
-          />
-          {config.SCALE_CONFIG?.enabled && (
+          {!isTileBlacklisted('cleaning') && (
+            <TileButton label={t('options.cleaning')} filled icon={MdWaterDrop} iconSize={22} onClick={cleanClick} />
+          )}
+          {!isTileBlacklisted('calibration') && (
+            <TileButton
+              label={t('options.calibration')}
+              filled
+              icon={FaScaleUnbalanced}
+              onClick={() => navigate('calibration')}
+            />
+          )}
+          {config.SCALE_CONFIG?.enabled && !isTileBlacklisted('scale_calibration') && (
             <TileButton
               label={t('options.scaleCalibration')}
               filled
@@ -149,74 +153,121 @@ const OptionWindow = () => {
               onClick={() => navigate('scale-calibration')}
             />
           )}
-          <TileButton
-            label={t('options.configuration')}
-            filled
-            icon={FaGear}
-            onClick={() => navigate('configuration')}
-          />
-          <TileButton label={t('options.data')} icon={FaChartSimple} onClick={() => navigate('data')} />
-          <TileButton label={t('options.backup')} icon={FaDownload} onClick={() => executeAndShow(getBackupClick)} />
-          <TileButton label={t('options.restore')} icon={FaUpload} onClick={() => executeAndShow(uploadBackupClick)} />
-          <TileButton
-            label={t('options.reboot')}
-            icon={BsBootstrapReboot}
-            onClick={() => confirmAndExecute(t('options.rebootTheSystem'), rebootSystem)}
-          />
-          <TileButton
-            label={t('options.shutdown')}
-            icon={RiShutDownLine}
-            onClick={() => confirmAndExecute(t('options.shutdownTheSystem'), shutdownSystem)}
-          />
-          <TileButton label={t('options.logs')} icon={FaInfoCircle} onClick={() => navigate('logs')} />
-          <TileButton
-            label={t('options.systemResourceUsage')}
-            icon={AiOutlineLoading3Quarters}
-            iconSize={22}
-            onClick={() => navigate('resources')}
-          />
-          <TileButton label={t('options.events')} icon={MdEventNote} iconSize={24} onClick={() => navigate('events')} />
-          <TileButton
-            label={t('options.updateSystem')}
-            filled
-            icon={GrUpdate}
-            onClick={() => confirmAndExecute(t('options.updateTheSystem'), updateSystem)}
-          />
-          <TileButton
-            label={t('options.updateCocktailBerry')}
-            filled
-            icon={FaCocktail}
-            className='md:col-span-2'
-            onClick={() => executeAndShow(updateSoftware)}
-          />
-          <TileButton label={t('options.wifi')} icon={FaWifi} onClick={() => navigate('wifi')} />
-          <TileButton
-            label={t('options.internetCheck')}
-            icon={MdOutlineSignalWifiStatusbarConnectedNoInternet4}
-            onClick={() => executeAndShow(checkInternetConnection)}
-          />
-          <TileButton
-            label={t('options.addons')}
-            icon={TiDocumentAdd}
-            iconSize={24}
-            onClick={() => navigate('addons')}
-          />
-          <TileButton label={t('options.adjustTime')} icon={FaRegClock} onClick={() => navigate('time')} />
-          <TileButton label={t('options.issues')} icon={FaExclamationTriangle} onClick={() => navigate('/issues')} />
-          <TileButton
-            label={t('recipeCalculation.title')}
-            filled
-            icon={FaCalculator}
-            onClick={() => navigate('/manage/recipes/calculation')}
-          />
-          <TileButton label={t('options.news')} icon={FaNewspaper} onClick={() => navigate('news')} />
-          {config.PAYMENT_TYPE === 'SumUp' && (
+          {!isTileBlacklisted('configuration') && (
+            <TileButton
+              label={t('options.configuration')}
+              filled
+              icon={FaGear}
+              onClick={() => navigate('configuration')}
+            />
+          )}
+          {!isTileBlacklisted('data') && (
+            <TileButton label={t('options.data')} icon={FaChartSimple} onClick={() => navigate('data')} />
+          )}
+          {!isTileBlacklisted('backup') && (
+            <TileButton label={t('options.backup')} icon={FaDownload} onClick={() => executeAndShow(getBackupClick)} />
+          )}
+          {!isTileBlacklisted('restore') && (
+            <TileButton
+              label={t('options.restore')}
+              icon={FaUpload}
+              onClick={() => executeAndShow(uploadBackupClick)}
+            />
+          )}
+          {!isTileBlacklisted('reboot') && (
+            <TileButton
+              label={t('options.reboot')}
+              icon={BsBootstrapReboot}
+              onClick={() => confirmAndExecute(t('options.rebootTheSystem'), rebootSystem)}
+            />
+          )}
+          {!isTileBlacklisted('shutdown') && (
+            <TileButton
+              label={t('options.shutdown')}
+              icon={RiShutDownLine}
+              onClick={() => confirmAndExecute(t('options.shutdownTheSystem'), shutdownSystem)}
+            />
+          )}
+          {!isTileBlacklisted('logs') && (
+            <TileButton label={t('options.logs')} icon={FaInfoCircle} onClick={() => navigate('logs')} />
+          )}
+          {!isTileBlacklisted('system_resource_usage') && (
+            <TileButton
+              label={t('options.systemResourceUsage')}
+              icon={AiOutlineLoading3Quarters}
+              iconSize={22}
+              onClick={() => navigate('resources')}
+            />
+          )}
+          {!isTileBlacklisted('events') && (
+            <TileButton
+              label={t('options.events')}
+              icon={MdEventNote}
+              iconSize={24}
+              onClick={() => navigate('events')}
+            />
+          )}
+          {!isTileBlacklisted('update_system') && (
+            <TileButton
+              label={t('options.updateSystem')}
+              filled
+              icon={GrUpdate}
+              onClick={() => confirmAndExecute(t('options.updateTheSystem'), updateSystem)}
+            />
+          )}
+          {!isTileBlacklisted('update_software') && (
+            <TileButton
+              label={t('options.updateCocktailBerry')}
+              filled
+              icon={FaCocktail}
+              className='md:col-span-2'
+              onClick={() => executeAndShow(updateSoftware)}
+            />
+          )}
+          {!isTileBlacklisted('wifi') && (
+            <TileButton label={t('options.wifi')} icon={FaWifi} onClick={() => navigate('wifi')} />
+          )}
+          {!isTileBlacklisted('internet_check') && (
+            <TileButton
+              label={t('options.internetCheck')}
+              icon={MdOutlineSignalWifiStatusbarConnectedNoInternet4}
+              onClick={() => executeAndShow(checkInternetConnection)}
+            />
+          )}
+          {!isTileBlacklisted('addons') && (
+            <TileButton
+              label={t('options.addons')}
+              icon={TiDocumentAdd}
+              iconSize={24}
+              onClick={() => navigate('addons')}
+            />
+          )}
+          {!isTileBlacklisted('adjust_time') && (
+            <TileButton label={t('options.adjustTime')} icon={FaRegClock} onClick={() => navigate('time')} />
+          )}
+          {!isTileBlacklisted('issues') && (
+            <TileButton label={t('options.issues')} icon={FaExclamationTriangle} onClick={() => navigate('/issues')} />
+          )}
+          {!isTileBlacklisted('recipe_calculation') && (
+            <TileButton
+              label={t('recipeCalculation.title')}
+              filled
+              icon={FaCalculator}
+              onClick={() => navigate('/manage/recipes/calculation')}
+            />
+          )}
+          {!isTileBlacklisted('news') && (
+            <TileButton label={t('options.news')} icon={FaNewspaper} onClick={() => navigate('news')} />
+          )}
+          {config.PAYMENT_TYPE === 'SumUp' && !isTileBlacklisted('sumup') && (
             <TileButton label={t('options.sumup')} icon={FaCreditCard} onClick={() => navigate('sumup')} />
           )}
-          {config.WAITER_MODE && (
+          {config.WAITER_MODE && !isTileBlacklisted('waiters') && (
             <TileButton label={t('options.waiters')} icon={FaUserTie} onClick={() => navigate('waiters')} />
           )}
-          <TileButton label={t('options.about')} icon={BsInfoCircleFill} onClick={() => setIsAboutModalOpen(true)} />
+          {!isTileBlacklisted('about') && (
+            <TileButton label={t('options.about')} icon={BsInfoCircleFill} onClick={() => setIsAboutModalOpen(true)} />
+          )}
         </div>
       </div>
       <AboutModal isOpen={isAboutModalOpen} onClose={() => setIsAboutModalOpen(false)} aboutInfo={aboutInfo} />

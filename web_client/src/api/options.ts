@@ -2,6 +2,7 @@ import { type UseQueryResult, useQuery } from 'react-query';
 import type {
   AboutInfo,
   AddonData,
+  Blacklist,
   ConfigData,
   ConfigDataWithUiInfo,
   ConsumeData,
@@ -18,6 +19,16 @@ import type {
 import { axiosInstance } from './common';
 
 const optionsUrl = '/options';
+const blacklistUrl = '/blacklist';
+
+// Blacklist (producer-defined; UI-only enforcement, public endpoint)
+export const getBlacklist = async (): Promise<Blacklist> => {
+  return axiosInstance.get<Blacklist>(blacklistUrl).then((res) => res.data);
+};
+
+export const useBlacklist = (): UseQueryResult<Blacklist, Error> => {
+  return useQuery<Blacklist, Error>('blacklist', getBlacklist);
+};
 
 // Config
 export const getConfig = async (): Promise<ConfigDataWithUiInfo> => {

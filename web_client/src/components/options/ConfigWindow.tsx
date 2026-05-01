@@ -34,7 +34,7 @@ const ConfigWindow: React.FC = () => {
   const [configData, setConfigData] = useState<ConfigData>({});
   const [selectedTab, setSelectedTab] = useState('UI');
   const [selectedSubTab, setSelectedSubTab] = useState<string | null>(null);
-  const { refetchConfig, changeTheme } = useConfigProvider();
+  const { refetchConfig, changeTheme, isConfigBlacklisted } = useConfigProvider();
   const { restrictedModeActive } = useRestrictedMode();
   const { t } = useTranslation();
 
@@ -44,7 +44,7 @@ const ConfigWindow: React.FC = () => {
       // need to extract ConfigDataWithUiInfo to ConfigData (extract key: {value: value} to key: value)
       const extractedData: { [key: string]: PossibleConfigValue } = {};
       Object.keys(data).forEach((key) => {
-        if (configToIgnore.includes(key)) {
+        if (configToIgnore.includes(key) || isConfigBlacklisted(key)) {
           return;
         }
         extractedData[key] = data[key].value;
@@ -52,7 +52,26 @@ const ConfigWindow: React.FC = () => {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: syncing local editable state with fetched API data
       setConfigData(extractedData);
     }
-  }, [data]);
+  }, [data, isConfigBlacklisted]);
+
+  // After blacklist filtering, the current selectedTab may now be empty. Snap
+  // to the first visible outer tab so the user never lands on a blank section.
+  // Computed from current configData so it follows blacklist updates.
+  useEffect(() => {
+    const keys = Object.keys(configData);
+    if (keys.length === 0) return;
+    const visible = OPTIONTABS.filter(
+      (tab) =>
+        keys.some((key) => isInCurrentTab(key, tab)) ||
+        Object.keys(subTabConfig[tab] ?? {}).some((sub) => keys.some((key) => isInCurrentSubTab(key, tab, sub))),
+    );
+    if (visible.length === 0) return;
+    if (!visible.includes(selectedTab)) {
+      setSelectedTab(visible[0]);
+      const newSubTabs = subTabConfig[visible[0]] ? Object.keys(subTabConfig[visible[0]]) : [];
+      setSelectedSubTab(newSubTabs.length > 0 ? newSubTabs[0] : null);
+    }
+  }, [configData, selectedTab]);
 
   if (isLoading) return <LoadingData />;
   if (error) return <ErrorComponent text={error.message} />;
@@ -387,7 +406,16 @@ const ConfigWindow: React.FC = () => {
     </div>
   );
 
-  const subTabs = subTabConfig[selectedTab] ? Object.keys(subTabConfig[selectedTab]) : [];
+  // After blacklist filtering, some outer/sub tabs may become empty. Hide them
+  // so the selector never shows an empty section.
+  const configKeys = Object.keys(configData);
+  const visibleTabs = OPTIONTABS.filter(
+    (tab) =>
+      configKeys.some((key) => isInCurrentTab(key, tab)) ||
+      Object.keys(subTabConfig[tab] ?? {}).some((sub) => configKeys.some((key) => isInCurrentSubTab(key, tab, sub))),
+  );
+  const allSubTabs = subTabConfig[selectedTab] ? Object.keys(subTabConfig[selectedTab]) : [];
+  const subTabs = allSubTabs.filter((sub) => configKeys.some((key) => isInCurrentSubTab(key, selectedTab, sub)));
 
   const handleSelectTab = (tab: string) => {
     setSelectedTab(tab);
@@ -398,14 +426,14 @@ const ConfigWindow: React.FC = () => {
   return (
     <>
       <TabSelector
-        tabs={OPTIONTABS}
+        tabs={visibleTabs}
         selectedTab={selectedTab}
         onSelectTab={handleSelectTab}
         className={`fixed bg-background z-9 ${restrictedModeActive ? 'top-0' : 'top-9'}`}
       />
       <div className='flex flex-col w-full max-w-3xl items-center justify-center mt-8'>
         <div className='flex-grow p-2 w-full'>
-          {Object.keys(configData).map((key) => isInCurrentTab(key, selectedTab) && renderConfigEntry(key))}
+          {configKeys.map((key) => isInCurrentTab(key, selectedTab) && renderConfigEntry(key))}
         </div>
         <div className='flex flex-col items-center justify-center w-full px-2'>
           {subTabs.length > 0 && (
@@ -413,7 +441,7 @@ const ConfigWindow: React.FC = () => {
               <TabSelector tabs={subTabs} selectedTab={selectedSubTab ?? ''} onSelectTab={setSelectedSubTab} />
               {selectedSubTab && (
                 <div className='flex-grow p-2 w-full'>
-                  {Object.keys(configData).map(
+                  {configKeys.map(
                     (key) => isInCurrentSubTab(key, selectedTab, selectedSubTab) && renderConfigEntry(key),
                   )}
                 </div>

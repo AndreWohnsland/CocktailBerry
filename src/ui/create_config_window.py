@@ -29,6 +29,7 @@ from src.config.config_types import (
 from src.config.errors import ConfigError
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.programs.blacklist import BLACKLIST
 from src.ui.creation_utils import (
     LARGE_FONT,
     MEDIUM_FONT,
@@ -75,9 +76,13 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _init_ui(self) -> None:
+        # Track which tab containers actually receive a config field. We need this
+        # for the empty-tab hiding logic below: a tab whose only child is a layout
+        # spacer must still be considered empty.
+        self._populated_vboxes: set[QVBoxLayout] = set()
         # adds all the configs to the window
         for key, config_setting in cfg.config_type.items():
-            if key in CONFIG_TO_SKIP:
+            if key in CONFIG_TO_SKIP or BLACKLIST.is_config_blacklisted(key):
                 continue
             self._choose_display_style(key, config_setting)
 
@@ -88,6 +93,44 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.vbox_other.addItem(create_spacer(1, expand=True))
         # same for the sumup payment tab
         self.vbox_payment_sumup.addItem(create_spacer(1, expand=True))
+        self._hide_empty_tabs()
+
+    def _hide_empty_tabs(self) -> None:
+        """Hide outer/inner tabs that ended up with no configs after blacklist filtering.
+
+        Tabs are inferred from ``self._populated_vboxes``, which is filled in
+        ``_choose_tab_container`` whenever a config field is routed to a vbox.
+        For the Payment tab there is a nested QTabWidget — we hide each inner
+        tab independently and only hide the outer tab if both inner ones are
+        empty.
+        """
+        outer_tab_vboxes: dict[Any, list[QVBoxLayout]] = {
+            self.tab_ui: [self.vbox_ui],
+            self.tab_maker: [self.vbox_maker],
+            self.tab_hardware: [self.vbox_hardware],
+            self.tab_software: [self.vbox_software],
+            self.tab_other: [self.vbox_other],
+            self.tab_payment: [self.vbox_payment_cocktailberry, self.vbox_payment_sumup],
+        }
+        payment_inner: dict[Any, QVBoxLayout] = {
+            self.tab_payment_cocktailberry: self.vbox_payment_cocktailberry,
+            self.tab_payment_sumup: self.vbox_payment_sumup,
+        }
+        for inner_tab, vbox in payment_inner.items():
+            if vbox not in self._populated_vboxes:
+                idx = self.tabs_payment_option.indexOf(inner_tab)
+                if idx >= 0:
+                    self.tabs_payment_option.setTabVisible(idx, False)
+        for tab, vboxes in outer_tab_vboxes.items():
+            if not any(v in self._populated_vboxes for v in vboxes):
+                idx = self.tabs_option.indexOf(tab)
+                if idx >= 0:
+                    self.tabs_option.setTabVisible(idx, False)
+        # Make sure a visible tab is selected (default index 0 may now be hidden).
+        for idx in range(self.tabs_option.count()):
+            if self.tabs_option.isTabVisible(idx):
+                self.tabs_option.setCurrentIndex(idx)
+                break
 
     def _save_config(self) -> None:
         try:
@@ -421,6 +464,12 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
 
     def _choose_tab_container(self, config_name: str) -> QVBoxLayout:
         """Get the object name of the tab container, that the config belongs to."""
+        vbox = self._resolve_tab_container(config_name)
+        # Track populated tabs for the post-init empty-tab hiding pass.
+        self._populated_vboxes.add(vbox)
+        return vbox
+
+    def _resolve_tab_container(self, config_name: str) -> QVBoxLayout:
         # specific sorting for some values where prefix may not match the category good enough
         exact_sorting = {
             self.vbox_ui: ("MAKER_THEME",),

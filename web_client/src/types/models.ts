@@ -423,3 +423,43 @@ export interface CurrentWaiterState {
   nfc_id: string | null;
   waiter: Waiter | null;
 }
+
+/**
+ * Mirror of the backend `OptionTiles` Pydantic model. Each field corresponds
+ * to one option-tile in the Options screen; `true` means the producer has
+ * blacklisted that tile and the UI must hide it.
+ */
+export interface OptionTiles {
+  cleaning: boolean;
+  configuration: boolean;
+  calibration: boolean;
+  scale_calibration: boolean;
+  backup: boolean;
+  restore: boolean;
+  data: boolean;
+  logs: boolean;
+  wifi: boolean;
+  addons: boolean;
+  internet_check: boolean;
+  update_system: boolean;
+  update_software: boolean;
+  system_resource_usage: boolean;
+  about: boolean;
+  news: boolean;
+  sumup: boolean;
+  waiters: boolean;
+  events: boolean;
+  reboot: boolean;
+  shutdown: boolean;
+  rfid: boolean;
+  adjust_time: boolean;
+  issues: boolean;
+  recipe_calculation: boolean;
+}
+
+export type OptionTileName = keyof OptionTiles;
+
+export interface Blacklist {
+  configs: string[];
+  options: OptionTiles;
+}

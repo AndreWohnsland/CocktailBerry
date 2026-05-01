@@ -376,6 +376,9 @@ class OptionTiles(BaseModel):
     reboot: bool = False
     shutdown: bool = False
     rfid: bool = False
+    adjust_time: bool = False
+    issues: bool = False
+    recipe_calculation: bool = False
 
 
 class BlackList(BaseModel):
@@ -384,8 +387,14 @@ class BlackList(BaseModel):
 
     @field_validator("options", mode="before")
     @classmethod
-    def map_options(cls, v: Any) -> dict[str, bool]:
-        """Convert ["option4"] → {option1: False, ..., option4: True}."""
-        if not isinstance(v, list) and not all(isinstance(i, str) for i in v):
-            raise ValueError("options must be a list of option names")
-        return dict.fromkeys(v, True)
+    def map_options(cls, v: Any) -> Any:
+        """Accept either the CLI list-of-tile-names form or a native OptionTiles/dict.
+
+        - ``["cleaning", "rfid"]`` → ``{cleaning: True, rfid: True, ...}``
+        - ``OptionTiles(...)`` / ``{...}`` → passed through untouched.
+        """
+        if isinstance(v, list):
+            if not all(isinstance(i, str) for i in v):
+                raise ValueError("options list must contain only tile names")
+            return dict.fromkeys(v, True)
+        return v
