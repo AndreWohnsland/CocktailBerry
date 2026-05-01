@@ -2,8 +2,9 @@ import copy
 import math
 from dataclasses import dataclass, field
 from enum import Enum, StrEnum
+from typing import Any
 
-from pydantic import computed_field
+from pydantic import BaseModel, computed_field, field_validator
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from src import __version__
@@ -350,3 +351,41 @@ class Event:
     def __str__(self) -> str:
         additional_info = f" | {self.additional_info}" if self.additional_info else ""
         return f"{self.timestamp} | {self.event_type.value}{additional_info}"
+
+
+class OptionTiles(BaseModel):
+    cleaning: bool = False
+    configuration: bool = False
+    calibration: bool = False
+    scale_calibration: bool = False
+    backup: bool = False
+    restore: bool = False
+    data: bool = False
+    logs: bool = False
+    wifi: bool = False
+    addons: bool = False
+    internet_check: bool = False
+    update_system: bool = False
+    update_software: bool = False
+    system_resource_usage: bool = False
+    about: bool = False
+    news: bool = False
+    sumup: bool = False
+    waiters: bool = False
+    events: bool = False
+    reboot: bool = False
+    shutdown: bool = False
+    rfid: bool = False
+
+
+class BlackList(BaseModel):
+    configs: list[str]
+    options: OptionTiles
+
+    @field_validator("options", mode="before")
+    @classmethod
+    def map_options(cls, v: Any) -> dict[str, bool]:
+        """Convert ["option4"] → {option1: False, ..., option4: True}."""
+        if not isinstance(v, list) and not all(isinstance(i, str) for i in v):
+            raise ValueError("options must be a list of option names")
+        return dict.fromkeys(v, True)

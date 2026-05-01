@@ -29,6 +29,7 @@ dependencies = [
     "adafruit-circuitpython-busdevice>=5.2.16",
     "rpimotorlib>=4.0",
     "cedargrove-nau7802>=2.1.4",
+    "inquirerprompt>=0.3.4",
     "mfrc522>=0.0.7 ; sys_platform == 'linux'",
     "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
     "gpiozero>=2.0.1 ; sys_platform == 'linux'",

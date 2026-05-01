@@ -179,6 +179,7 @@ Cocktail_database.db
 Cocktail_database_backup*.db
 failed_data.db
 custom_config.*
+blacklist.json
 .version.ini
 # some testing files
 tmp_*
