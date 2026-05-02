@@ -29,7 +29,10 @@ import {
   uploadBackup,
   useAboutInfo,
 } from '../../api/options';
+import { useAuth } from '../../providers/AuthProvider';
 import { useConfig } from '../../providers/ConfigProvider';
+import { useWaiter } from '../../providers/WaiterProvider';
+import type { OptionTileName } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
 import ProgressModal from '../cocktail/ProgressModal';
 import DropDown from '../common/DropDown';
@@ -44,6 +47,14 @@ const OptionWindow = () => {
   const { data: aboutInfo } = useAboutInfo();
   const themes = ['default', 'berry', 'bavaria', 'alien', 'tropical', 'purple', 'custom'];
   const { t } = useTranslation();
+  const { masterAuthenticated } = useAuth();
+  const { waiterState } = useWaiter();
+  const showTile = (tile: OptionTileName) => {
+    if (isTileBlacklisted(tile)) return false;
+    if (masterAuthenticated || !config.WAITER_MODE) return true;
+    const waiter = waiterState?.waiter;
+    return waiter == null ? true : Boolean(waiter.tile_permissions?.[tile]);
+  };
 
   const cleanClick = async () => {
     const started = await confirmAndExecute(t('options.startCleaningProgram'), cleanMachine);
@@ -134,10 +145,10 @@ const OptionWindow = () => {
           />
         </div>
         <div className='grid gap-1 w-full grid-cols-1 md:grid-cols-2'>
-          {!isTileBlacklisted('cleaning') && (
+          {showTile('cleaning') && (
             <TileButton label={t('options.cleaning')} filled icon={MdWaterDrop} iconSize={22} onClick={cleanClick} />
           )}
-          {!isTileBlacklisted('calibration') && (
+          {showTile('calibration') && (
             <TileButton
               label={t('options.calibration')}
               filled
@@ -145,7 +156,7 @@ const OptionWindow = () => {
               onClick={() => navigate('calibration')}
             />
           )}
-          {config.SCALE_CONFIG?.enabled && !isTileBlacklisted('scale_calibration') && (
+          {config.SCALE_CONFIG?.enabled && showTile('scale_calibration') && (
             <TileButton
               label={t('options.scaleCalibration')}
               filled
@@ -153,7 +164,7 @@ const OptionWindow = () => {
               onClick={() => navigate('scale-calibration')}
             />
           )}
-          {!isTileBlacklisted('configuration') && (
+          {showTile('configuration') && (
             <TileButton
               label={t('options.configuration')}
               filled
@@ -161,37 +172,37 @@ const OptionWindow = () => {
               onClick={() => navigate('configuration')}
             />
           )}
-          {!isTileBlacklisted('data') && (
+          {showTile('data') && (
             <TileButton label={t('options.data')} icon={FaChartSimple} onClick={() => navigate('data')} />
           )}
-          {!isTileBlacklisted('backup') && (
+          {showTile('backup') && (
             <TileButton label={t('options.backup')} icon={FaDownload} onClick={() => executeAndShow(getBackupClick)} />
           )}
-          {!isTileBlacklisted('restore') && (
+          {showTile('restore') && (
             <TileButton
               label={t('options.restore')}
               icon={FaUpload}
               onClick={() => executeAndShow(uploadBackupClick)}
             />
           )}
-          {!isTileBlacklisted('reboot') && (
+          {showTile('reboot') && (
             <TileButton
               label={t('options.reboot')}
               icon={BsBootstrapReboot}
               onClick={() => confirmAndExecute(t('options.rebootTheSystem'), rebootSystem)}
             />
           )}
-          {!isTileBlacklisted('shutdown') && (
+          {showTile('shutdown') && (
             <TileButton
               label={t('options.shutdown')}
               icon={RiShutDownLine}
               onClick={() => confirmAndExecute(t('options.shutdownTheSystem'), shutdownSystem)}
             />
           )}
-          {!isTileBlacklisted('logs') && (
+          {showTile('logs') && (
             <TileButton label={t('options.logs')} icon={FaInfoCircle} onClick={() => navigate('logs')} />
           )}
-          {!isTileBlacklisted('system_resource_usage') && (
+          {showTile('system_resource_usage') && (
             <TileButton
               label={t('options.systemResourceUsage')}
               icon={AiOutlineLoading3Quarters}
@@ -199,7 +210,7 @@ const OptionWindow = () => {
               onClick={() => navigate('resources')}
             />
           )}
-          {!isTileBlacklisted('events') && (
+          {showTile('events') && (
             <TileButton
               label={t('options.events')}
               icon={MdEventNote}
@@ -207,7 +218,7 @@ const OptionWindow = () => {
               onClick={() => navigate('events')}
             />
           )}
-          {!isTileBlacklisted('update_system') && (
+          {showTile('update_system') && (
             <TileButton
               label={t('options.updateSystem')}
               filled
@@ -215,7 +226,7 @@ const OptionWindow = () => {
               onClick={() => confirmAndExecute(t('options.updateTheSystem'), updateSystem)}
             />
           )}
-          {!isTileBlacklisted('update_software') && (
+          {showTile('update_software') && (
             <TileButton
               label={t('options.updateCocktailBerry')}
               filled
@@ -224,17 +235,15 @@ const OptionWindow = () => {
               onClick={() => executeAndShow(updateSoftware)}
             />
           )}
-          {!isTileBlacklisted('wifi') && (
-            <TileButton label={t('options.wifi')} icon={FaWifi} onClick={() => navigate('wifi')} />
-          )}
-          {!isTileBlacklisted('internet_check') && (
+          {showTile('wifi') && <TileButton label={t('options.wifi')} icon={FaWifi} onClick={() => navigate('wifi')} />}
+          {showTile('internet_check') && (
             <TileButton
               label={t('options.internetCheck')}
               icon={MdOutlineSignalWifiStatusbarConnectedNoInternet4}
               onClick={() => executeAndShow(checkInternetConnection)}
             />
           )}
-          {!isTileBlacklisted('addons') && (
+          {showTile('addons') && (
             <TileButton
               label={t('options.addons')}
               icon={TiDocumentAdd}
@@ -242,13 +251,13 @@ const OptionWindow = () => {
               onClick={() => navigate('addons')}
             />
           )}
-          {!isTileBlacklisted('adjust_time') && (
+          {showTile('adjust_time') && (
             <TileButton label={t('options.adjustTime')} icon={FaRegClock} onClick={() => navigate('time')} />
           )}
-          {!isTileBlacklisted('issues') && (
+          {showTile('issues') && (
             <TileButton label={t('options.issues')} icon={FaExclamationTriangle} onClick={() => navigate('/issues')} />
           )}
-          {!isTileBlacklisted('recipe_calculation') && (
+          {showTile('recipe_calculation') && (
             <TileButton
               label={t('recipeCalculation.title')}
               filled
@@ -256,16 +265,16 @@ const OptionWindow = () => {
               onClick={() => navigate('/manage/recipes/calculation')}
             />
           )}
-          {!isTileBlacklisted('news') && (
+          {showTile('news') && (
             <TileButton label={t('options.news')} icon={FaNewspaper} onClick={() => navigate('news')} />
           )}
-          {config.PAYMENT_TYPE === 'SumUp' && !isTileBlacklisted('sumup') && (
+          {config.PAYMENT_TYPE === 'SumUp' && showTile('sumup') && (
             <TileButton label={t('options.sumup')} icon={FaCreditCard} onClick={() => navigate('sumup')} />
           )}
-          {config.WAITER_MODE && !isTileBlacklisted('waiters') && (
+          {config.WAITER_MODE && showTile('waiters') && (
             <TileButton label={t('options.waiters')} icon={FaUserTie} onClick={() => navigate('waiters')} />
           )}
-          {!isTileBlacklisted('about') && (
+          {showTile('about') && (
             <TileButton label={t('options.about')} icon={BsInfoCircleFill} onClick={() => setIsAboutModalOpen(true)} />
           )}
         </div>

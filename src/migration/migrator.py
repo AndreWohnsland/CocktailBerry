@@ -39,6 +39,7 @@ from src.migration.update_data import (
     add_virgin_counters_to_recipes,
     clear_resource_log_file,
     fix_amount_in_recipe,
+    migrate_waiter_privileges_to_roles,
     remove_hand_from_recipe_data,
 )
 from src.migration.web_migrator import replace_backend_script
@@ -129,6 +130,7 @@ class Migrator:
                 _migrate_i2c_addresses_to_hex_strings,
                 _migrate_rfid_reader_to_discriminated_config,
                 _migrate_combine_led_lists_into_one_config,
+                migrate_waiter_privileges_to_roles,
             ],
         }
 

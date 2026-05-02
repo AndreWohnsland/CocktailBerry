@@ -385,7 +385,7 @@ export interface AboutInfo {
   version: string;
 }
 
-export interface WaiterPermissions {
+export interface TabPermission {
   maker: boolean;
   ingredients: boolean;
   recipes: boolean;
@@ -393,21 +393,43 @@ export interface WaiterPermissions {
   options: boolean;
 }
 
+export interface Role {
+  id: number;
+  name: string;
+  permissions: TabPermission;
+  tile_permissions: OptionTiles;
+}
+
+export interface RoleCreate {
+  name: string;
+  permissions: TabPermission;
+  tile_permissions: OptionTiles;
+}
+
+export interface RoleUpdate {
+  name?: string;
+  permissions?: TabPermission;
+  tile_permissions?: OptionTiles;
+}
+
 export interface Waiter {
   nfc_id: string;
   name: string;
-  permissions: WaiterPermissions;
+  role_id: number;
+  role: Role;
+  permissions: TabPermission;
+  tile_permissions: OptionTiles;
 }
 
 export interface WaiterCreate {
   nfc_id: string;
   name: string;
-  permissions?: WaiterPermissions;
+  role_id: number;
 }
 
 export interface WaiterUpdate {
   name?: string;
-  permissions?: WaiterPermissions;
+  role_id?: number;
 }
 
 export interface WaiterLogEntry {

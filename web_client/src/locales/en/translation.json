@@ -115,7 +115,8 @@
     "updateSystem": "Update System",
     "updateTheSystem": "Do you want to update the System?",
     "wifi": "WiFi",
-    "waiters": "Waiters"
+    "waiters": "Waiters",
+    "rfid": "RFID"
   },
   "news": {
     "noNews": "You are up to date!",
@@ -275,6 +276,13 @@
     "noLogs": "No cocktail logs recorded yet.",
     "statsSummary": "{{count}} cocktails, {{volume}} ml total",
     "permissionsLabel": "Permissions",
+    "roleLabel": "Role",
+    "selectRole": "Select a role",
+    "tabs": {
+      "management": "Management",
+      "statistics": "Statistics",
+      "roles": "Roles"
+    },
     "permissions": {
       "maker": "Maker",
       "ingredients": "Ingredients",
@@ -283,5 +291,23 @@
       "options": "Options"
     },
     "logout": "Logout"
+  },
+  "role": {
+    "create": "Create Role",
+    "created": "Role '{{name}}' was created",
+    "updated": "Role updated",
+    "confirmDelete": "Do you want to delete the role '{{name}}'?",
+    "namePlaceholder": "Role name",
+    "tabPermissions": "Tab Permissions",
+    "tilePermissions": "Option Tile Permissions",
+    "noRoles": "No roles defined yet. Create a role first to register service personnel.",
+    "createFirstHint": "No roles defined yet. Switch to the Roles tab and create one before registering personnel.",
+    "tileGroups": {
+      "system": "System",
+      "configuration": "Configuration",
+      "data": "Data",
+      "hardware": "Hardware",
+      "maintenance": "Maintenance"
+    }
   }
 }

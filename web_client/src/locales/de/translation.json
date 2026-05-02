@@ -115,7 +115,8 @@
     "updateSystem": "System aktualisieren",
     "updateTheSystem": "Möchtest du das System aktualisieren?",
     "wifi": "WLAN",
-    "waiters": "Servicepersonal"
+    "waiters": "Servicepersonal",
+    "rfid": "RFID"
   },
   "news": {
     "noNews": "Du bist auf dem neusten Stand!",
@@ -275,6 +276,13 @@
     "noLogs": "Noch keine Cocktail-Protokolle aufgezeichnet.",
     "statsSummary": "{{count}} Cocktails, {{volume}} ml insgesamt",
     "permissionsLabel": "Berechtigungen",
+    "roleLabel": "Rolle",
+    "selectRole": "Rolle auswählen",
+    "tabs": {
+      "management": "Verwaltung",
+      "statistics": "Statistik",
+      "roles": "Rollen"
+    },
     "permissions": {
       "maker": "Maker",
       "ingredients": "Zutaten",
@@ -283,5 +291,23 @@
       "options": "Optionen"
     },
     "logout": "Abmelden"
+  },
+  "role": {
+    "create": "Rolle erstellen",
+    "created": "Rolle '{{name}}' wurde erstellt",
+    "updated": "Rolle aktualisiert",
+    "confirmDelete": "Möchtest du die Rolle '{{name}}' löschen?",
+    "namePlaceholder": "Rollenname",
+    "tabPermissions": "Tab-Berechtigungen",
+    "tilePermissions": "Optionskachel-Berechtigungen",
+    "noRoles": "Noch keine Rollen definiert. Erstelle zuerst eine Rolle, um Servicepersonal zu registrieren.",
+    "createFirstHint": "Noch keine Rollen vorhanden. Wechsle zum Tab 'Roles' und lege zuerst eine an.",
+    "tileGroups": {
+      "system": "System",
+      "configuration": "Konfiguration",
+      "data": "Daten",
+      "hardware": "Hardware",
+      "maintenance": "Wartung"
+    }
   }
 }
