@@ -125,6 +125,7 @@ const RolesTab: React.FC = () => {
           filled
           disabled={!name.trim() || isCreating}
           onClick={handleCreate}
+          className='mt-8'
         />
       </form>
 
@@ -211,8 +212,8 @@ const PermissionGrid: React.FC<PermissionGridProps> = ({ permissions, onChange }
   const { t } = useTranslation();
   return (
     <>
-      <p className='text-sm text-neutral mb-2'>{t('role.tabPermissions')}</p>
-      <div className='flex flex-wrap gap-4 mb-4'>
+      <p className='text-md text-neutral mb-2'>{t('role.tabPermissions')}</p>
+      <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6'>
         {PERMISSION_KEYS.map((key) => (
           <CheckBox
             key={key}
@@ -235,12 +236,12 @@ const TilePermissionGrid: React.FC<TilePermissionGridProps> = ({ tiles, onChange
   const { t } = useTranslation();
   return (
     <>
-      <p className='text-sm text-neutral mb-2'>{t('role.tilePermissions')}</p>
-      <div className='flex flex-col gap-3 mb-4'>
+      <p className='text-md text-neutral mb-2'>{t('role.tilePermissions')}</p>
+      <div className='flex flex-col gap-4 mb-4'>
         {Object.entries(TILE_GROUPS).map(([group, keys]) => (
           <div key={group}>
-            <p className='text-xs text-neutral uppercase mb-1'>{t(`role.tileGroups.${group}`)}</p>
-            <div className='flex flex-wrap gap-3'>
+            <p className='text-xs text-neutral uppercase mb-2'>{t(`role.tileGroups.${group}`)}</p>
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
               {keys.map((key) => (
                 <CheckBox
                   key={key}

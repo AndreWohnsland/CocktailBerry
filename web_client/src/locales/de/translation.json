@@ -111,7 +111,7 @@
     "startCleaningProgram": "Möchtest du das Reinigungsprogramm starten?",
     "sumup": "SumUp",
     "systemResourceUsage": "Ressourcen Auslastung",
-    "updateCocktailBerry": "CocktailBerry Software aktualisieren",
+    "updateCocktailBerry": "CocktailBerry aktualisieren",
     "updateSystem": "System aktualisieren",
     "updateTheSystem": "Möchtest du das System aktualisieren?",
     "wifi": "WLAN",
@@ -307,7 +307,7 @@
       "configuration": "Konfiguration",
       "data": "Daten",
       "hardware": "Hardware",
-      "maintenance": "Wartung"
+      "maintenance": "Verwaltung"
     }
   }
 }

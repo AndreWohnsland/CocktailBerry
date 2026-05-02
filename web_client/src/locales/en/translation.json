@@ -111,7 +111,7 @@
     "startCleaningProgram": "Do you want to start the Cleaning Program?",
     "sumup": "SumUp",
     "systemResourceUsage": "Resource Usage",
-    "updateCocktailBerry": "Update CocktailBerry Software",
+    "updateCocktailBerry": "Update CocktailBerry",
     "updateSystem": "Update System",
     "updateTheSystem": "Do you want to update the System?",
     "wifi": "WiFi",
@@ -307,7 +307,7 @@
       "configuration": "Configuration",
       "data": "Data",
       "hardware": "Hardware",
-      "maintenance": "Maintenance"
+      "maintenance": "Management"
     }
   }
 }
