@@ -33,10 +33,12 @@ dependencies = [
     "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
     "gpiozero>=2.0.1 ; sys_platform == 'linux'",
     "rpi-gpio>=0.7.1 ; sys_platform == 'linux'",
-    "hx711-rpi-py>=1.65.0 ; sys_platform == 'linux'",
 ]
 
 [dependency-groups]
+pi-hardware = [
+  "hx711-rpi-py>=1.65.0 ; sys_platform == 'linux'",
+]
 dev = [
   "mkdocs-material>=9.7.6",
   "ipykernel>=7.2.0",
@@ -60,6 +62,7 @@ nfc = [
 ]
 
 [tool.uv]
+default-groups = ["dev", "pi-hardware"]
 override-dependencies = [
     "pyqt6-qt6; sys_platform != 'linux' or python_version >= '3.12'",
     "pyqt6; sys_platform != 'linux' or python_version >= '3.12'"
