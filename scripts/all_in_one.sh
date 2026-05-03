@@ -36,7 +36,7 @@ LANG_OPTIONS=$(IFS=', '; echo "${SUPPORTED_LANGUAGES[*]}")
 echo ""
 while true; do
   echo -n ">> Enter your display language ($LANG_OPTIONS) [en]: "
-  read -r CB_LANGUAGE
+  read -r CB_LANGUAGE < /dev/tty
   CB_LANGUAGE=${CB_LANGUAGE:-en}
   # shellcheck disable=SC2076
   if [[ " ${SUPPORTED_LANGUAGES[*]} " =~ " $CB_LANGUAGE " ]]; then
