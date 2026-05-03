@@ -71,7 +71,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QScrollArea" name="scroll_area_2">
+         <widget class="QScrollArea" name="scroll_area_management">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -152,7 +152,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QScrollArea" name="scroll_area">
+         <widget class="QScrollArea" name="scroll_area_statistics">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -233,7 +233,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QScrollArea" name="scroll_area_5">
+         <widget class="QScrollArea" name="scroll_area_roles">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
