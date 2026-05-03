@@ -28,19 +28,21 @@ def _health_check(scale: ScaleInterface) -> ScaleInterface | None:
     This is necessary because some scale drivers (especially HX711) will block indefinitely
     if the hardware is not present, which would break the entire program on use.
     """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        future = executor.submit(scale.read_raw, 1)
-        try:
-            future.result(timeout=_SCALE_HEALTH_CHECK_TIMEOUT)
-            return scale
-        except concurrent.futures.TimeoutError:
-            _logger.log_event(
-                "ERROR",
-                f"Scale health check timed out after {_SCALE_HEALTH_CHECK_TIMEOUT}s — "
-                "no hardware connected? Deactivating scale.",
-            )
-        except Exception as exc:
-            _logger.log_event("ERROR", f"Scale health check failed: {exc} — Deactivating scale.")
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+    future = executor.submit(scale.read_raw, 1)
+    try:
+        future.result(timeout=_SCALE_HEALTH_CHECK_TIMEOUT)
+        executor.shutdown(wait=False)
+        return scale
+    except concurrent.futures.TimeoutError:
+        _logger.log_event(
+            "ERROR",
+            f"Scale health check timed out after {_SCALE_HEALTH_CHECK_TIMEOUT}s — "
+            "no hardware connected? Deactivating scale.",
+        )
+    except Exception as exc:
+        _logger.log_event("ERROR", f"Scale health check failed: {exc} — Deactivating scale.")
+    executor.shutdown(wait=False)
     with contextlib.suppress(Exception):
         scale.cleanup()
     return None
