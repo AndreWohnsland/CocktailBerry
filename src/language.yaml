@@ -1190,6 +1190,15 @@ ui:
     waiter_deleted:
       en: 'Service Personnel deleted.'
       de: 'Servicepersonal gelöscht.'
+    role_created:
+      en: 'Role created.'
+      de: 'Rolle erstellt.'
+    role_updated:
+      en: 'Role updated.'
+      de: 'Rolle aktualisiert.'
+    role_deleted:
+      en: 'Role deleted.'
+      de: 'Rolle gelöscht.'
     no_logs:
       en: 'No statistics available.'
       de: 'Keine Statistik verfügbar.'

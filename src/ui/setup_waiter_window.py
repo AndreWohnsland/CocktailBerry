@@ -4,16 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import (
-    QCheckBox,
-    QComboBox,
-    QGridLayout,
-    QHBoxLayout,
-    QMainWindow,
-    QScrollArea,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QMainWindow, QVBoxLayout, QWidget
 
 from src.config.config_manager import shared
 from src.database_commander import (
@@ -62,7 +53,6 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         self._editing_nfc_id: str | None = None
         self._editing_role_id: int | None = None
 
-        self._add_roles_tab()
         UI_LANGUAGE.adjust_waiter_window(self)
         self._render_management()
         self._render_statistics()
@@ -75,20 +65,6 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
 
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
-
-    def _add_roles_tab(self) -> None:
-        """Inject a third "Roles" tab into the waiter window programmatically."""
-        self.tab_roles = QWidget()
-        outer_layout = QVBoxLayout(self.tab_roles)
-        scroll = QScrollArea(self.tab_roles)
-        scroll.setWidgetResizable(True)
-        contents = QWidget()
-        scroll.setWidget(contents)
-        self.data_container_roles = QVBoxLayout(contents)
-        self.data_container_roles.setContentsMargins(9, 3, 6, 15)
-        self.data_container_roles.setSpacing(6)
-        outer_layout.addWidget(scroll)
-        self.waiter_tabs.addTab(self.tab_roles, "Roles")
 
     def closeEvent(self, a0: Any) -> None:
         if hasattr(self, "_scan_timer"):
@@ -450,7 +426,15 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
     def _render_roles(self) -> None:
         DP_CONTROLLER.delete_items_of_layout(self.data_container_roles)
 
-        self._add_section_header(self.data_container_roles, UI_LANGUAGE.get_translation("create_role", "waiter_window"))
+        self._role_form_header = create_label(
+            "",
+            FontSize.LARGE,
+            bold=True,
+            min_h=36,
+            css_class="secondary",
+        )
+        self.data_container_roles.addWidget(self._role_form_header)
+        self.data_container_roles.addItem(create_spacer(6))
 
         self._role_create_name_input = ClickableLineEdit()
         self._role_create_name_input.setPlaceholderText(
@@ -480,15 +464,15 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         )
         self._role_create_tile_boxes = self._build_tile_permission_checkboxes(self.data_container_roles)
 
-        create_btn = create_button(
-            UI_LANGUAGE.get_translation("create_role", "waiter_window"),
+        self._role_submit_btn = create_button(
+            "",
             font_size=MEDIUM_FONT,
             min_h=50,
             css_class="btn-inverted",
         )
-        create_btn.clicked.connect(self._create_role)
+        self._role_submit_btn.clicked.connect(self._create_role)
         self.data_container_roles.addItem(create_spacer(10))
-        self.data_container_roles.addWidget(create_btn)
+        self.data_container_roles.addWidget(self._role_submit_btn)
 
         self.data_container_roles.addItem(create_spacer(10))
         self._add_section_header(
@@ -498,7 +482,16 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         self.data_container_roles.addLayout(self._role_list_layout)
         self.data_container_roles.addItem(create_spacer(1, expand=True))
 
+        self._update_role_form_mode_labels()
         self._refresh_roles_list()
+
+    def _update_role_form_mode_labels(self) -> None:
+        if self._editing_role_id is None:
+            self._role_form_header.setText(UI_LANGUAGE.get_translation("create_role", "waiter_window"))
+            self._role_submit_btn.setText(UI_LANGUAGE.get_translation("create_role", "waiter_window"))
+            return
+        self._role_form_header.setText(UI_LANGUAGE.get_translation("edit", "waiter_window"))
+        self._role_submit_btn.setText(UI_LANGUAGE.get_translation("save", "waiter_window"))
 
     def _build_tile_permission_checkboxes(self, parent_layout: QVBoxLayout) -> dict[str, QCheckBox]:
         boxes: dict[str, QCheckBox] = {}
@@ -541,6 +534,8 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
             box.setChecked(False)
         for box in self._role_create_tile_boxes.values():
             box.setChecked(False)
+        DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("role_created", "waiter_window"), close_time=5)
+        self._update_role_form_mode_labels()
         self._refresh_roles_list()
         self._refresh_waiters_list()
 
@@ -563,15 +558,19 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
                 if bool(getattr(role, f"privilege_{key}"))
             ]
             if permission_names:
-                card_layout.addWidget(create_label(", ".join(permission_names), FontSize.SMALL, css_class="secondary"))
+                card_layout.addWidget(
+                    create_label(
+                        ", ".join(permission_names),
+                        FontSize.SMALL,
+                        css_class="secondary",
+                        min_h=25,
+                    )
+                )
 
             active_tiles = [key for key in _ALL_TILE_KEYS if bool((role.tile_permissions or {}).get(key))]
             if active_tiles:
-                tile_preview_limit = 6
-                preview = ", ".join(key.replace("_", " ").title() for key in active_tiles[:tile_preview_limit])
-                if len(active_tiles) > tile_preview_limit:
-                    preview += f" (+{len(active_tiles) - tile_preview_limit})"
-                card_layout.addWidget(create_label(preview, FontSize.SMALL))
+                preview = ", ".join(key.replace("_", " ").title() for key in active_tiles)
+                card_layout.addWidget(create_label(preview, FontSize.SMALL, min_h=25))
 
             actions = QHBoxLayout()
             edit_btn = create_button(
@@ -604,6 +603,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         for key, box in self._role_create_tile_boxes.items():
             box.setChecked(bool(tiles.get(key)))
         self._role_create_name_input.setText(role.name)
+        self._update_role_form_mode_labels()
 
     def _update_role_inline(self) -> None:
         """Save edits made on the create-form when _editing_role_id is set."""
@@ -628,6 +628,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         except ElementNotFoundError as exc:
             DP_CONTROLLER.standard_box(str(exc))
             self._editing_role_id = None
+            self._update_role_form_mode_labels()
             self._refresh_roles_list()
             return
         self._editing_role_id = None
@@ -636,6 +637,8 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
             box.setChecked(False)
         for box in self._role_create_tile_boxes.values():
             box.setChecked(False)
+        DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("role_updated", "waiter_window"), close_time=5)
+        self._update_role_form_mode_labels()
         self._refresh_roles_list()
         self._refresh_waiters_list()
 
@@ -649,6 +652,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
             return
         except ElementNotFoundError:
             return
+        DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("role_deleted", "waiter_window"), close_time=5)
         self._refresh_roles_list()
         self._refresh_waiters_list()
 
