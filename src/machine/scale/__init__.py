@@ -17,7 +17,7 @@ _logger = LoggerHandler("scale")
 
 __all__ = ["HX711Scale", "NAU7802Scale", "ScaleInterface", "create_scale"]
 
-_SCALE_HEALTH_CHECK_TIMEOUT = 1.0
+_SCALE_HEALTH_CHECK_TIMEOUT = 2.0
 
 
 def _forked_read(scale: ScaleInterface, queue: multiprocessing.Queue) -> None:  # type: ignore[type-arg]
