@@ -29,6 +29,13 @@ const colorConfigs = [
   'CUSTOM_COLOR_DANGER',
 ];
 
+/** Returns true if `tab` contains any of the given config `keys` directly or in one of its sub-tabs. */
+const isTabVisible = (tab: string, keys: string[]): boolean => {
+  if (keys.some((key) => isInCurrentTab(key, tab))) return true;
+  const subs = Object.keys(subTabConfig[tab] ?? {});
+  return subs.some((sub) => keys.some((key) => isInCurrentSubTab(key, tab, sub)));
+};
+
 const ConfigWindow: React.FC = () => {
   const { data, isLoading, error } = useConfig();
   const [configData, setConfigData] = useState<ConfigData>({});
@@ -60,11 +67,7 @@ const ConfigWindow: React.FC = () => {
   useEffect(() => {
     const keys = Object.keys(configData);
     if (keys.length === 0) return;
-    const visible = OPTIONTABS.filter(
-      (tab) =>
-        keys.some((key) => isInCurrentTab(key, tab)) ||
-        Object.keys(subTabConfig[tab] ?? {}).some((sub) => keys.some((key) => isInCurrentSubTab(key, tab, sub))),
-    );
+    const visible = OPTIONTABS.filter((tab) => isTabVisible(tab, keys));
     if (visible.length === 0) return;
     if (!visible.includes(selectedTab)) {
       setSelectedTab(visible[0]);
@@ -409,11 +412,7 @@ const ConfigWindow: React.FC = () => {
   // After blacklist filtering, some outer/sub tabs may become empty. Hide them
   // so the selector never shows an empty section.
   const configKeys = Object.keys(configData);
-  const visibleTabs = OPTIONTABS.filter(
-    (tab) =>
-      configKeys.some((key) => isInCurrentTab(key, tab)) ||
-      Object.keys(subTabConfig[tab] ?? {}).some((sub) => configKeys.some((key) => isInCurrentSubTab(key, tab, sub))),
-  );
+  const visibleTabs = OPTIONTABS.filter((tab) => isTabVisible(tab, configKeys));
   const allSubTabs = subTabConfig[selectedTab] ? Object.keys(subTabConfig[selectedTab]) : [];
   const subTabs = allSubTabs.filter((sub) => configKeys.some((key) => isInCurrentSubTab(key, selectedTab, sub)));
 

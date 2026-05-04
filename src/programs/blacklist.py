@@ -24,9 +24,7 @@ def generate_blacklist() -> None:
     ).execute()
     options = inquirer.checkbox(
         message="Blacklisted options:",
-        choices=[
-            Choice(value=k, enabled=getattr(blacklist.options, k, False)) for k in list(OptionTiles.model_fields.keys())
-        ],
+        choices=[Choice(value=k, enabled=getattr(blacklist.options, k, False)) for k in OptionTiles.model_fields],
     ).execute()
     with BLACKLIST_FILE.open("w") as f:
         json.dump({"configs": configs, "options": options}, f, indent=2)
