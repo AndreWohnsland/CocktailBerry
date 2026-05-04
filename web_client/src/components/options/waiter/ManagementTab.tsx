@@ -14,6 +14,7 @@ import ItemCard from '../../common/ItemCard';
 import LoadingData from '../../common/LoadingData';
 import TextInput from '../../common/TextInput';
 import TileButton from '../../common/TileButton';
+
 const ManagementTab: React.FC = () => {
   const { config } = useConfig();
   const { data: waiters, isLoading, error, refetch } = useWaiters();
