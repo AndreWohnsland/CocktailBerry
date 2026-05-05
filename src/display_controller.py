@@ -515,16 +515,20 @@ class DisplayController(DialogHandler):
     # Layouts
     def delete_items_of_layout(self, layout: QLayout | None = None) -> None:
         """Recursively delete all items of the given layout."""
-        if layout is not None:
-            while layout.count():
-                item = layout.takeAt(0)
-                if item is None:
-                    continue
-                widget = item.widget()
-                if widget is not None:
-                    widget.setParent(None)
-                else:
-                    self.delete_items_of_layout(item.layout())
+        if layout is None:
+            return
+        while layout.count():
+            item = layout.takeAt(0)
+            if item is None:
+                continue
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)
+                widget.deleteLater()
+            child_layout = item.layout()
+            if child_layout is not None:
+                self.delete_items_of_layout(child_layout)
+                child_layout.deleteLater()
 
     def _decide_rounding(self, val: float, threshold: int = 8) -> int | float:
         """Get the right rounding for numbers displayed to the user."""

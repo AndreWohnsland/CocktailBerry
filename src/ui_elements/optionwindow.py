@@ -239,6 +239,15 @@ class Ui_Optionwindow(object):
         self.button_waiter.setFont(font)
         self.button_waiter.setObjectName("button_waiter")
         self.gridLayout_2.addWidget(self.button_waiter, 11, 0, 1, 1)
+        self.button_scale_calibration = QtWidgets.QPushButton(parent=self.scrollAreaWidgetContents)
+        self.button_scale_calibration.setMinimumSize(QtCore.QSize(0, 80))
+        self.button_scale_calibration.setMaximumSize(QtCore.QSize(5000, 300))
+        font = QtGui.QFont()
+        font.setPointSize(28)
+        font.setBold(True)
+        self.button_scale_calibration.setFont(font)
+        self.button_scale_calibration.setObjectName("button_scale_calibration")
+        self.gridLayout_2.addWidget(self.button_scale_calibration, 11, 1, 1, 1)
         self.verticalLayout_3.addLayout(self.gridLayout_2)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.gridLayout.addWidget(self.scrollArea, 4, 0, 1, 1)
@@ -277,6 +286,7 @@ class Ui_Optionwindow(object):
         self.button_events.setText(_translate("Optionwindow", "Events"))
         self.button_update_system.setText(_translate("Optionwindow", "Update System"))
         self.button_waiter.setText(_translate("Optionwindow", "Service Personnel"))
+        self.button_scale_calibration.setText(_translate("Optionwindow", "Scale Calibration"))
 
 
 if __name__ == "__main__":

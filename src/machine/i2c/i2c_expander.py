@@ -120,7 +120,7 @@ def get_i2c() -> busio.I2C | None:
         )
         return None
     try:
-        return busio.I2C(board.SCL, board.SDA)  # ty:ignore[possibly-missing-attribute]
+        return busio.I2C(board.SCL, board.SDA)
     except Exception as e:
         _logger.error(f"Could not initialize I2C bus: {e}")
         return None

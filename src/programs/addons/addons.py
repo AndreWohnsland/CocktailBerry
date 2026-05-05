@@ -4,23 +4,21 @@ import atexit
 import contextlib
 import importlib
 import json
-import re
 import sys
 import threading
 import time
 from collections.abc import Callable
 from dataclasses import fields
 from importlib import import_module
-from typing import TYPE_CHECKING, Any, Literal, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Literal
 
 import requests
-import typer
 from requests.exceptions import ConnectionError as ReqConnectionError
 
-from src import __version__
-from src.filepath import ADDON_FOLDER, ADDON_SKELTON
+from src.filepath import ADDON_FOLDER
 from src.logger_handler import LoggerHandler
 from src.models import AddonData, Cocktail
+from src.programs.addons import AddonInterface
 
 with contextlib.suppress(ModuleNotFoundError):
     from PyQt6.QtWidgets import QVBoxLayout
@@ -43,43 +41,6 @@ _GITHUB_ADDON_SOURCE = "https://raw.githubusercontent.com/AndreWohnsland/Cocktai
 
 class CouldNotInstallAddonError(Exception):
     pass
-
-
-@runtime_checkable
-class AddonInterface(Protocol):
-    def version(self) -> str:
-        """Return the version of the addon."""
-        return getattr(self, "ADDON_VERSION", "1.0.0")
-
-    def define_configuration(self) -> None:
-        """Define configuration for the addon."""
-
-    def setup(self) -> None:
-        """Init the addon."""
-
-    def cleanup(self) -> None:
-        """Clean up the addon."""
-
-    def before_cocktail(self, data: dict[str, Any]) -> None:
-        """Logic to be executed before the cocktail."""
-
-    def after_cocktail(self, data: dict[str, Any]) -> None:
-        """Logic to be executed after the cocktail."""
-
-    def build_gui(
-        self,
-        container: QVBoxLayout,
-        button_generator: Callable[[str, Callable[[], None]], None],
-    ) -> bool:
-        """Logic to build up the addon GUI."""
-        return False
-
-    def cocktail_trigger(self, prepare: Callable[[Cocktail], tuple[bool, str]]) -> None:
-        """Will be executed in the background loop and can trigger a cocktail preparation.
-
-        Use the prepare function to start a cocktail preparation with prepare(cocktail).
-        Return if cocktail preparation was successful and a message.
-        """
 
 
 class AddOnManager:
@@ -342,29 +303,6 @@ class AddOnManager:
                 )
             )
         return possible_addons
-
-
-def generate_addon_skeleton(name: str) -> None:
-    """Create an base addon file unter the given name."""
-    # Converts space into underscores
-    file_name = name.replace(" ", "_")
-    # strips all other unwanted things
-    file_name = re.sub(r"\W", "", file_name.lower())
-    addon_path = ADDON_FOLDER / f"{file_name}.py"
-    if addon_path.exists():
-        msg = f"There is already an addon created under the {name=} in {file_name}.py"
-        typer.echo(typer.style(f"{msg}, aborting...", fg=typer.colors.RED, bold=True))
-        raise typer.Exit()
-    addon_path.write_text(
-        (
-            ADDON_SKELTON.read_text(encoding="utf-8")
-            .replace("ADDON_NAME_HOLDER", name)
-            .replace("VERSION_HOLDER", __version__)
-        ),
-        encoding="utf-8",
-    )
-    msg = f"Addon file was create at {addon_path}"
-    typer.echo(typer.style(msg, fg=typer.colors.GREEN, bold=True))
 
 
 ADDONS = AddOnManager()

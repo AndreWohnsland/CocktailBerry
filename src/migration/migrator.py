@@ -125,6 +125,11 @@ class Migrator:
                 add_price_column_to_recipes,
                 _install_pyqt6_over_apt,  # user running bookworm need this
             ],
+            "4.0.0": [
+                _migrate_i2c_addresses_to_hex_strings,
+                _migrate_rfid_reader_to_discriminated_config,
+                _migrate_combine_led_lists_into_one_config,
+            ],
         }
 
         for version, actions in version_actions.items():
@@ -250,6 +255,82 @@ def _add_maker_lock_value() -> None:
     configuration["UI_LOCKED_TABS"] = locked_tabs
     with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
+
+
+def _migrate_i2c_addresses_to_hex_strings() -> None:
+    """Migrate I2C addresses from int to hex string format.
+
+    - I2C_CONFIG: address_int (int like 20 meaning 0x20) -> address (string "20")
+    - SCALE_CONFIG: i2c_address (int like 42 = 0x2A) -> i2c_address (string "2A")
+    """
+    configuration = _get_local_config("I2C address migration")
+    if configuration is None:
+        return
+    changed = False
+    # Migrate I2C_CONFIG entries
+    for entry in configuration.get("I2C_CONFIG", []):
+        if "address_int" in entry:
+            old_val = entry.pop("address_int")
+            # address_int was stored as e.g. 20 meaning 0x20, so str(20) = "20" which is the hex string
+            entry["address"] = str(old_val).upper()
+            changed = True
+    if changed:
+        with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+            yaml.dump(configuration, stream, default_flow_style=False)
+        _logger.info("Migrated I2C addresses to hex string format")
+
+
+def _migrate_combine_led_lists_into_one_config() -> None:
+    """Merge the legacy ``LED_NORMAL`` and ``LED_WSLED`` lists into the new ``LED_CONFIG`` list.
+
+    Old shape: two top-level keys, each ``list[dict]`` with type-specific fields.
+    New shape: single ``LED_CONFIG`` ``list[dict]`` discriminated by ``led_type``
+    (``"Normal"`` or ``"WSLED"``).
+    """
+    configuration = _get_local_config("LED_NORMAL/LED_WSLED")
+    if configuration is None:
+        return
+    has_normal = "LED_NORMAL" in configuration
+    has_wsled = "LED_WSLED" in configuration
+    if not (has_normal or has_wsled):
+        return
+    merged: list[dict] = []
+    for entry in configuration.pop("LED_NORMAL", []) or []:
+        merged.append({**entry, "led_type": "Normal"})
+    for entry in configuration.pop("LED_WSLED", []) or []:
+        merged.append({**entry, "led_type": "WSLED"})
+    configuration["LED_CONFIG"] = merged
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+    _logger.info(f"Migrated {len(merged)} LED entries from LED_NORMAL/LED_WSLED into LED_CONFIG")
+
+
+def _migrate_rfid_reader_to_discriminated_config() -> None:
+    """Convert the flat ``RFID_READER`` string into the discriminated ``RFID_CONFIG`` dict.
+
+    Old shape: ``RFID_READER: "No" | "MFRC522" | "USB"`` (plain string).
+    New shape: ``RFID_CONFIG: {rfid_type: <type>, enabled: <bool>}`` (DiscriminatedDictType).
+    The "No" sentinel maps to ``rfid_type="USB"`` with ``enabled=False`` — the
+    type is just a default for the dropdown; ``enabled`` decides whether a
+    reader is created.
+    """
+    configuration = _get_local_config("RFID_READER")
+    if configuration is None or "RFID_READER" not in configuration:
+        return
+    old_value = configuration.pop("RFID_READER")
+    if not isinstance(old_value, str) or old_value not in ("MFRC522", "USB"):
+        rfid_type = "USB"
+        enabled = False
+    else:
+        rfid_type = old_value
+        enabled = True
+    configuration["RFID_CONFIG"] = {
+        "rfid_type": rfid_type,
+        "enabled": enabled,
+    }
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+    _logger.info(f"Migrated RFID_READER='{old_value}' to RFID_CONFIG")
 
 
 def _get_converted_value[T](new_type: Callable[[Any], T], default_value: T, local_config: Any) -> T:

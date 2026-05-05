@@ -15,6 +15,7 @@ import IngredientList from './components/ingredient/IngredientList.tsx';
 import AddonManager from './components/options/AddonManager.tsx';
 import CalibrationWindow from './components/options/CalibrationWindow.tsx';
 import ConfigWindow from './components/options/ConfigWindow.tsx';
+import ScaleCalibrationWindow from './components/options/ScaleCalibrationWindow.tsx';
 import DataWindow from './components/options/DataWindow.tsx';
 import EventWindow from './components/options/EventWindow.tsx';
 import LogWindow from './components/options/LogWindow.tsx';
@@ -180,6 +181,14 @@ function App() {
               element={
                 <MasterPasswordProtected>
                   <CalibrationWindow />
+                </MasterPasswordProtected>
+              }
+            />
+            <Route
+              path='options/scale-calibration'
+              element={
+                <MasterPasswordProtected>
+                  <ScaleCalibrationWindow />
                 </MasterPasswordProtected>
               }
             />

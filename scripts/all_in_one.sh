@@ -21,6 +21,12 @@ for arg in "$@"; do
   esac
 done
 
+# Add current user to sudoers with NOPASSWD to avoid password prompts during installation
+SUDOERS_FILE="/etc/sudoers.d/010_${USER}-nopasswd"
+echo "~~ Adding current user ($USER) to sudoers NOPASSWD for installation ~~"
+echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee "$SUDOERS_FILE" > /dev/null
+sudo chmod 440 "$SUDOERS_FILE"
+
 # Welcome and system updates
 echo "~~~~~~~ CocktailBerry All In One Installation Script ~~~~~~~~"
 echo "> Source taken from: https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh"
@@ -36,7 +42,7 @@ LANG_OPTIONS=$(IFS=', '; echo "${SUPPORTED_LANGUAGES[*]}")
 echo ""
 while true; do
   echo -n ">> Enter your display language ($LANG_OPTIONS) [en]: "
-  read -r CB_LANGUAGE
+  read -r CB_LANGUAGE < /dev/tty
   CB_LANGUAGE=${CB_LANGUAGE:-en}
   # shellcheck disable=SC2076
   if [[ " ${SUPPORTED_LANGUAGES[*]} " =~ " $CB_LANGUAGE " ]]; then

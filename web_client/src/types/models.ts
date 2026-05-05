@@ -74,6 +74,7 @@ export type PrepareResult =
   | 'ADDON_ERROR'
   | 'WAITING_FOR_PAYMENT'
   | 'NO_WAITER_LOGGED_IN'
+  | 'NO_GLASS_DETECTED'
   | 'UNDEFINED';
 
 export interface UserAuth {
@@ -192,14 +193,50 @@ export interface DefinedConfigData {
   CUSTOM_COLOR_DANGER: string;
   EXP_MAKER_UNIT: string;
   EXP_MAKER_FACTOR: number;
+  SCALE_CONFIG: ScaleConfig;
+  CARRIAGE_CONFIG: CarriageConfig;
 }
 
-export interface PumpConfig {
+export interface ScaleConfig {
+  scale_type: string;
+  enabled: boolean;
+  calibration_factor: number;
+  zero_raw_offset: number;
+}
+
+export interface CarriageConfig {
+  carriage_type: string;
+  enabled: boolean;
+  home_position: number;
+  speed_pct_per_s: number;
+  move_during_cleaning: boolean;
+  wait_after_dispense: number;
+}
+
+export interface DCPumpConfig {
+  pump_type: 'DC';
   pin: number;
+  pin_type: string;
+  board_number: number;
   volume_flow: number;
   tube_volume: number;
-  board_number: number;
+  consumption_estimation: 'time' | 'weight';
+  carriage_position: number;
 }
+
+export interface StepperPumpConfig {
+  pump_type: 'Stepper';
+  pin: number;
+  dir_pin: number;
+  driver_type: string;
+  step_type: string;
+  volume_flow: number;
+  tube_volume: number;
+  consumption_estimation: 'time' | 'weight';
+  carriage_position: number;
+}
+
+export type PumpConfig = DCPumpConfig | StepperPumpConfig;
 
 export interface CustomColors {
   primary: string;
@@ -220,7 +257,7 @@ export interface ReversionConfig {
 export interface I2CConfig {
   device_type: string;
   enabled: boolean;
-  address_int: number;
+  address: string;
   inverted: boolean;
   board_number: number;
 }
@@ -254,6 +291,8 @@ type PossibleUiInformation = {
   immutable?: boolean;
   allowed?: string[];
   check_name?: string;
+  discriminator?: string;
+  variants?: { [variantName: string]: { [fieldKey: string]: PossibleUiInformation } };
 };
 
 export type PossibleConfigValueTypes = boolean | number | string | boolean[] | number[] | string[];

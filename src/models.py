@@ -1,6 +1,6 @@
 import copy
 import math
-from dataclasses import field
+from dataclasses import dataclass, field
 from enum import Enum, StrEnum
 
 from pydantic import computed_field
@@ -23,6 +23,7 @@ class PrepareResult(Enum):
     ADDON_ERROR = "ADDON_ERROR"
     WAITING_FOR_PAYMENT = "WAITING_FOR_PAYMENT"
     NO_WAITER_LOGGED_IN = "NO_WAITER_LOGGED_IN"
+    NO_GLASS_DETECTED = "NO_GLASS_DETECTED"
 
 
 class EventType(StrEnum):
@@ -76,6 +77,7 @@ class Ingredient:
     cost: int = 0
     recipe_order: int = 2
     unit: str = "ml"
+    consumption: float = 0.0
 
     def __post_init__(self) -> None:
         # limit fill level to [0, bottle_volume]
@@ -86,6 +88,27 @@ class Ingredient:
         self_compare = (int(self.bottle is None), -self.amount, -len(self.name))
         other_compare = (int(other.bottle is None), -other.amount, -len(other.name))
         return self_compare < other_compare
+
+
+@dataclass
+class PreparationResult:
+    """Result of a cocktail/ingredient preparation run."""
+
+    ingredients: list[Ingredient]
+
+    @property
+    def completion_ratio(self) -> float:
+        """Ratio of consumed volume to required volume (0.0 if no ingredients)."""
+        total_required = sum(i.amount for i in self.ingredients)
+        if total_required == 0:
+            return 0.0
+        total_consumed = sum(i.consumption for i in self.ingredients)
+        return total_consumed / total_required
+
+    @property
+    def real_volume(self) -> int:
+        """Total consumed volume."""
+        return round(sum(i.consumption for i in self.ingredients))
 
 
 @pydantic_dataclass
@@ -112,6 +135,11 @@ class Cocktail:
         self.adjusted_ingredients = copy.deepcopy(self.ingredients)
         self.adjusted_alcohol = self.alcohol
         self.adjusted_amount = self.amount
+
+    @property
+    def display_name(self) -> str:
+        """Display name for the cocktail, including virgin tag if applicable."""
+        return f"{self.name} (Virgin)" if self.is_virgin else self.name
 
     # also changes handadd to machine add if the handadd is currently at the machine
     # this way the user needs to add less, if it happens to be also on the machine
@@ -140,6 +168,16 @@ class Cocktail:
         """Returns if the cocktail is virgin."""
         # single ingredient cocktails will not be considered virgin, because they are an ingredient (wrapper)
         return self.adjusted_alcohol == 0 and len(self.ingredients) > 1
+
+    def set_handadd_consumption(self) -> None:
+        """Set the consumption for handadds to their amount, as they are not tracked by the machine."""
+        for ing in self.handadds:
+            ing.consumption = float(ing.amount)
+
+    @property
+    def produced_volume(self) -> int:
+        """Returns the total produced volume of the cocktail."""
+        return round(sum(i.consumption for i in self.adjusted_ingredients))
 
     def current_price(
         self,

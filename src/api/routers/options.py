@@ -9,7 +9,7 @@ import time
 import zipfile
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Annotated, Any, Literal, Union
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
@@ -39,7 +39,7 @@ from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.models import AddonData, ConsumeData, EventType, ResourceInfo, ResourceStats
-from src.programs.addons import ADDONS
+from src.programs.addons.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
 from src.service.sumup_payment_service import Err
 from src.shared import NEWS_KEYS
@@ -311,7 +311,7 @@ async def update_addon(addon: AddonData) -> ApiMessage:
 
 
 @protected_router.get("/connection", summary="Check internet connection")
-async def check_internet_connection() -> dict[str, Union[str, bool]]:  # noqa: UP007
+async def check_internet_connection() -> dict[str, str | bool]:
     is_connected = has_connection()
     return {
         "is_connected": is_connected,
@@ -423,7 +423,7 @@ async def get_news() -> DataResponse[dict[str, str]]:
 
     news_dict = {}
     for key in unacknowledged_keys:
-        news_dict[key] = DH.get_translation(key)  # type: ignore[arg-type]
+        news_dict[key] = DH.get_translation(key)  # type: ignore
 
     return DataResponse(data=news_dict)
 

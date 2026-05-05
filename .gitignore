@@ -197,6 +197,9 @@ display_images_user/*.png
 # ignore all but init in addons
 addons/*
 !addons/__init__.py
+!addons/*/
+addons/*/*
+!addons/*/__init__.py
 
 # LLM things
 GEMINI.md

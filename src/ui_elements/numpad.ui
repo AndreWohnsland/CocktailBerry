@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>428</height>
+    <width>362</width>
+    <height>418</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -43,7 +43,6 @@
      <property name="font">
       <font>
        <pointsize>20</pointsize>
-       <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
@@ -65,19 +64,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -91,19 +89,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -117,19 +114,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -143,19 +139,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -169,19 +164,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -195,19 +189,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -221,19 +214,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -247,19 +239,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -273,19 +264,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -299,19 +289,18 @@
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>110</width>
-         <height>70</height>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -320,50 +309,23 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="2">
-      <widget class="QPushButton" name="PBdel">
-       <property name="minimumSize">
-        <size>
-         <width>110</width>
-         <height>60</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>110</width>
-         <height>70</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>24</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>del</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
+     <item row="4" column="1" colspan="2">
       <widget class="QPushButton" name="PBenter">
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>110</width>
-         <height>70</height>
+         <width>500</width>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>24</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -375,29 +337,81 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0" colspan="3">
-      <widget class="QPushButton" name="PBdot">
+     <item row="4" column="0">
+      <widget class="QPushButton" name="PBdel">
        <property name="minimumSize">
         <size>
          <width>110</width>
-         <height>60</height>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>500</width>
-         <height>70</height>
+         <width>110</width>
+         <height>65</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>24</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>del</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QPushButton" name="PBdot">
+       <property name="minimumSize">
+        <size>
+         <width>110</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>110</width>
+         <height>65</height>
         </size>
        </property>
        <property name="font">
         <font>
          <pointsize>40</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
         <string>.</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="PBminus">
+       <property name="minimumSize">
+        <size>
+         <width>110</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>110</width>
+         <height>65</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>40</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

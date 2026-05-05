@@ -1,55 +1,60 @@
 [project]
 name = "CocktailBerry"
-version = "3.3.0"
+version = "4.0.0"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
-authors = [{ name= "Andre Wohnsland" , email =  "cocktailmakeraw@gmail.com" }]
+authors = [{ name= "Andre Wohnsland" , email =  "info@cocktailberry.org" }]
 readme = "readme.md"
 requires-python = ">= 3.13"
 
 dependencies = [
     "gitpython>=3.1.46",
-    "requests>=2.32.5",
-    "sumup>=0.0.22",
+    "requests>=2.33.1",
+    "sumup>=0.1.2",
     "pyyaml>=6.0.3",
-    "typer>=0.24.0",
+    "typer>=0.24.1",
     "pyfiglet>=1.0.4",
     "pillow>=12.1.1",
     "psutil>=6.0.0",
     "distro>=1.9.0",
-    "fastapi[standard]>=0.129.0",
-    "uvicorn>=0.41.0",
-    "sse-starlette>=3.2.0",
-    "mfrc522>=0.0.7 ; sys_platform == 'linux'",
-    "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
-    "gpiozero>=2.0.1 ; sys_platform == 'linux'",
-    "rpi-gpio>=0.7.1 ; sys_platform == 'linux'",
+    "fastapi[standard]>=0.135.2",
+    "uvicorn>=0.42.0",
+    "sse-starlette>=3.3.4",
     "python-periphery>=2.4.1",
     "sqlalchemy>=2.0.46",
     "alembic>=1.18.4",
     "pulp>=3.3.0",
     "stamina>=25.2.0",
-    "adafruit-circuitpython-mcp230xx>=2.5.19",
-    "adafruit-circuitpython-pcf8574>=1.0.15",
-    "adafruit-circuitpython-busdevice>=5.2.15",
+    "adafruit-circuitpython-mcp230xx>=2.6.1",
+    "adafruit-circuitpython-pcf8574>=1.0.16",
+    "adafruit-circuitpython-busdevice>=5.2.16",
+    "rpimotorlib>=4.0",
+    "cedargrove-nau7802>=2.1.4",
+    "mfrc522>=0.0.7 ; sys_platform == 'linux'",
+    "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
+    "gpiozero>=2.0.1 ; sys_platform == 'linux'",
+    "rpi-gpio>=0.7.1 ; sys_platform == 'linux'",
 ]
 
 [dependency-groups]
+pi-hardware = [
+  "hx711-rpi-py>=1.65.0 ; sys_platform == 'linux'",
+]
 dev = [
-  "mkdocs-material>=9.5.49",
-  "ipykernel>=6.29.5",
-  "pytest>=8.3.4",
-  "pytest-cov>=6.0.0",
-  "pre-commit>=4.2.0",
-  "ty==0.0.16",
-  "ruff>=0.15.1",
-  "zensical>=0.0.24",
+  "mkdocs-material>=9.7.6",
+  "ipykernel>=7.2.0",
+  "pytest>=9.0.3",
+  "pytest-cov>=7.1.0",
+  "pre-commit>=4.5.1",
+  "ty==0.0.32",
+  "ruff>=0.15.12",
+  "zensical>=0.0.36",
 ]
 
 [project.optional-dependencies]
 v1 = [
     "pyqt6>=6.10.1",
     "pyqtwaitingspinner>=1.2.6",
-    "qtawesome>=1.4.0",
+    "qtawesome>=1.4.1",
     "qtsass>=0.4.0",
 ]
 nfc = [
@@ -57,6 +62,7 @@ nfc = [
 ]
 
 [tool.uv]
+default-groups = ["dev", "pi-hardware"]
 override-dependencies = [
     "pyqt6-qt6; sys_platform != 'linux' or python_version >= '3.12'",
     "pyqt6; sys_platform != 'linux' or python_version >= '3.12'"
@@ -74,7 +80,7 @@ allow-direct-references = true
 [tool.ruff]
 # don't check import order in the migration script
 line-length = 120
-exclude = ["ui_elements", "addon_skeleton.py"]
+exclude = ["ui_elements", "src/skeletons"]
 target-version = "py313"
 
 [tool.ruff.lint]
@@ -129,8 +135,13 @@ rules = { unresolved-import = "ignore" }
 
 [[tool.ty.overrides]]
 include = [
-  "src/machine/rfid.py",
+  "src/machine/rfid/mfrc522.py",
+  "src/machine/rfid/usb.py",
   "src/machine/raspberry.py",
-  "src/machine/leds.py",
+  "src/machine/leds/wsled.py",
+  "src/machine/dispensers/stepper.py",
+  "src/machine/scale/hx711.py",
+  "src/machine/scale/hx711_custom.py",
+  "src/machine/scale/nau7802.py",
 ]
 rules = { unresolved-import = "ignore", invalid-type-form = "ignore", unresolved-attribute = "ignore", possibly-missing-attribute = "ignore" }

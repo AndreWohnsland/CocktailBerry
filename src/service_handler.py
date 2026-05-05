@@ -28,15 +28,15 @@ class ServiceHandler:
         self.base_url = cfg.MICROSERVICE_BASE_URL
         self.headers = {"content-type": "application/json"}
 
-    def post_cocktail_to_hook(self, cocktail_name: str, cocktail_volume: int, cocktail_object: Cocktail) -> dict:
+    def post_cocktail_to_hook(self, cocktail: Cocktail, prepared_volume: int) -> dict:
         """Post the given cocktail data to the microservice handling internet traffic to send to defined webhook."""
         if not cfg.MICROSERVICE_ACTIVE:
             return _service_disabled()
         # Extracts the volume and name from the ingredient objects
-        ingredient_data = [{"name": i.name, "volume": i.amount} for i in cocktail_object.adjusted_ingredients]
+        ingredient_data = [{"name": i.name, "volume": i.amount} for i in cocktail.adjusted_ingredients]
         data = {
-            "cocktailname": cocktail_name,
-            "volume": cocktail_volume,
+            "cocktailname": cocktail.display_name,
+            "volume": prepared_volume,
             "machinename": cfg.MAKER_NAME,
             "countrycode": cfg.UI_LANGUAGE,
             "ingredients": ingredient_data,

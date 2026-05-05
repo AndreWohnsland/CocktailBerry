@@ -127,7 +127,9 @@ allowed_keys = Literal[
     "no_button",
     "no_ingredient_selected",
     "no_waiter_logged_in",
+    "no_glass_detected",
     "no_recipe_selected",
+    "no_scale_available",
     "not_enough_ingredient_volume",
     "options_updated_and_restart",
     "options_updated",
@@ -148,6 +150,9 @@ allowed_keys = Literal[
     "recipe_help",
     "recipe_updated",
     "restart_config",
+    "scale_calibrated",
+    "scale_known_weight_positive",
+    "scale_tared",
     "some_value_missing_specific",
     "some_value_missing",
     "sumup_checkout_failed",
@@ -865,6 +870,7 @@ class UiLanguage:
             (w.button_waiter, "waiter"),
             (w.button_about, "about"),
             (w.button_back, "back"),
+            (w.button_scale_calibration, "scale_calibration"),
         ]:
             ui_element.setText(self._choose_language(text_name, window))
 

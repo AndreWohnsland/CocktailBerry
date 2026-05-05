@@ -20,6 +20,20 @@ nav = [
   { "Service Personnel" = "waiter.md" },
   { "Advanced Topics" = "advanced.md" },
   { "Addons" = "addons.md" },
+  { "Hardware Extensions" = [
+    "hardware-extensions/index.md",
+    { "Context Extensions" = "hardware-extensions/hardware-context.md" },
+    { "Scales" = "hardware-extensions/scales.md" },
+    { "Carriages" = "hardware-extensions/carriages.md" },
+    { "RFID Readers" = "hardware-extensions/rfid.md" },
+    { "LEDs" = "hardware-extensions/leds.md" },
+    { "Dispensers" = "hardware-extensions/dispensers.md" },
+  ]},
+  { "Migration Guides" = [
+    "migration/index.md",
+    { "v3 Update" = "migration/v3.md" },
+    { "v4 Update" = "migration/v4.md" },
+  ]},
   { "Troubleshooting" = "troubleshooting.md" },
   { "FAQ" = "faq.md" },
   { "Feature Timetable" = "features.md" },
@@ -45,6 +59,7 @@ features = [
   "content.code.annotate",
   "announce.dismiss",
   "content.tabs.link",
+  "navigation.indexes",
 ]
 
 [[project.theme.palette]]

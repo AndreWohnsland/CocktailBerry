@@ -11,7 +11,7 @@ import pytest
 import yaml
 
 from src.config.config_manager import ConfigManager
-from src.config.config_types import IntType, ListType
+from src.config.config_types import DCPumpConfig, IntType, ListType, StepperPumpConfig
 from src.config.errors import ConfigError
 
 
@@ -172,7 +172,7 @@ class TestConfigManagerSetConfig:
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 20,
+                        "address": "20",
                         "inverted": False,
                         "board_number": 1,
                     }
@@ -181,7 +181,9 @@ class TestConfigManagerSetConfig:
             validate=True,
         )
         assert len(config.PUMP_CONFIG) == 1
-        assert config.PUMP_CONFIG[0].pin_type == "MCP23017"
+        pump_config = config.PUMP_CONFIG[0]
+        assert isinstance(pump_config, DCPumpConfig)
+        assert pump_config.pin_type == "MCP23017"
 
     def test_set_config_i2c_pump_with_disabled_i2c_config_fails(self) -> None:
         """Test that I2C pin type fails if matching I2C_CONFIG is disabled."""
@@ -197,7 +199,7 @@ class TestConfigManagerSetConfig:
                         {
                             "device_type": "PCA9535",
                             "enabled": False,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         }
@@ -218,7 +220,9 @@ class TestConfigManagerSetConfig:
             validate=True,
         )
         assert len(config.PUMP_CONFIG) == 1
-        assert config.PUMP_CONFIG[0].pin_type == "GPIO"
+        pump_config = config.PUMP_CONFIG[0]
+        assert isinstance(pump_config, DCPumpConfig)
+        assert pump_config.pin_type == "GPIO"
 
     def test_set_config_i2c_config_rejects_duplicate_device_type_and_board(self) -> None:
         """Test that I2C_CONFIG rejects duplicate (device_type, board_number) combinations."""
@@ -230,14 +234,14 @@ class TestConfigManagerSetConfig:
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         },
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 21,
+                            "address": "21",
                             "inverted": False,
                             "board_number": 1,
                         },
@@ -256,14 +260,14 @@ class TestConfigManagerSetConfig:
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         },
                         {
                             "device_type": "MCP23017",
                             "enabled": False,
-                            "address_int": 21,
+                            "address": "21",
                             "inverted": False,
                             "board_number": 1,
                         },
@@ -281,14 +285,14 @@ class TestConfigManagerSetConfig:
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 20,
+                        "address": "20",
                         "inverted": False,
                         "board_number": 1,
                     },
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 21,
+                        "address": "21",
                         "inverted": False,
                         "board_number": 2,
                     },
@@ -309,14 +313,14 @@ class TestConfigManagerSetConfig:
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 20,
+                        "address": "20",
                         "inverted": False,
                         "board_number": 1,
                     },
                     {
                         "device_type": "PCA9535",
                         "enabled": True,
-                        "address_int": 21,
+                        "address": "21",
                         "inverted": False,
                         "board_number": 1,
                     },
@@ -340,7 +344,7 @@ class TestConfigManagerSetConfig:
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         }
@@ -357,14 +361,28 @@ class TestConfigManagerSetConfig:
                 {
                     "MAKER_NUMBER_BOTTLES": 2,
                     "PUMP_CONFIG": [
-                        {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 1},
-                        {"pin": 0, "volume_flow": 25.0, "tube_volume": 3, "pin_type": "MCP23017", "board_number": 1},
+                        {
+                            "pump_type": "DC",
+                            "pin": 0,
+                            "volume_flow": 30.0,
+                            "tube_volume": 5,
+                            "pin_type": "MCP23017",
+                            "board_number": 1,
+                        },
+                        {
+                            "pump_type": "DC",
+                            "pin": 0,
+                            "volume_flow": 25.0,
+                            "tube_volume": 3,
+                            "pin_type": "MCP23017",
+                            "board_number": 1,
+                        },
                     ],
                     "I2C_CONFIG": [
                         {
                             "device_type": "MCP23017",
                             "enabled": True,
-                            "address_int": 20,
+                            "address": "20",
                             "inverted": False,
                             "board_number": 1,
                         }
@@ -372,6 +390,80 @@ class TestConfigManagerSetConfig:
                 },
                 validate=True,
             )
+
+    def test_set_config_pump_config_rejects_duplicate_pins_same_board_over_implicit_type(self) -> None:
+        """Test that PUMP_CONFIG rejects duplicate (pin_type, board_number, pin) combinations.
+
+        If the fields are not present we use GPIO, 1 as fallback
+        """
+        config = ConfigManager()
+        with pytest.raises(ConfigError, match="duplicate entries"):
+            config.set_config(
+                {
+                    "MAKER_NUMBER_BOTTLES": 2,
+                    "PUMP_CONFIG": [
+                        {
+                            "pump_type": "DC",
+                            "pin": 0,
+                            "volume_flow": 30.0,
+                            "tube_volume": 5,
+                            "pin_type": "GPIO",
+                            "board_number": 1,
+                        },
+                        {
+                            "pump_type": "Stepper",
+                            "pin": 0,
+                            "dir_pin": 0,
+                            "driver_type": "A4988",
+                            "step_type": "Full",
+                            "volume_flow": 1,
+                            "tube_volume": 1,
+                        },
+                    ],
+                },
+                validate=True,
+            )
+
+    def test_set_config_pump_config_accept_different_pump_types(self) -> None:
+        """Test that PUMP_CONFIG rejects duplicate (pin_type, board_number, pin) combinations."""
+        config = ConfigManager()
+        config.set_config(
+            {
+                "MAKER_NUMBER_BOTTLES": 2,
+                "PUMP_CONFIG": [
+                    {
+                        "pump_type": "DC",
+                        "pin": 0,
+                        "volume_flow": 30.0,
+                        "tube_volume": 5,
+                        "pin_type": "MCP23017",
+                        "board_number": 1,
+                    },
+                    {
+                        "pump_type": "Stepper",
+                        "pin": 0,
+                        "dir_pin": 0,
+                        "driver_type": "A4988",
+                        "step_type": "Full",
+                        "volume_flow": 1,
+                        "tube_volume": 1,
+                    },
+                ],
+                "I2C_CONFIG": [
+                    {
+                        "device_type": "MCP23017",
+                        "enabled": True,
+                        "address": "20",
+                        "inverted": False,
+                        "board_number": 1,
+                    }
+                ],
+            },
+            validate=True,
+        )
+        assert len(config.PUMP_CONFIG) == 2
+        assert isinstance(config.PUMP_CONFIG[0], DCPumpConfig)
+        assert isinstance(config.PUMP_CONFIG[1], StepperPumpConfig)
 
     def test_set_config_pump_config_allows_same_pin_different_boards(self) -> None:
         """Test that PUMP_CONFIG allows same pin number on different boards."""
@@ -387,14 +479,14 @@ class TestConfigManagerSetConfig:
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 20,
+                        "address": "20",
                         "inverted": False,
                         "board_number": 1,
                     },
                     {
                         "device_type": "MCP23017",
                         "enabled": True,
-                        "address_int": 21,
+                        "address": "21",
                         "inverted": False,
                         "board_number": 2,
                     },
@@ -403,18 +495,25 @@ class TestConfigManagerSetConfig:
             validate=True,
         )
         assert len(config.PUMP_CONFIG) == 2
-        assert config.PUMP_CONFIG[0].board_number == 1
-        assert config.PUMP_CONFIG[1].board_number == 2
+        first_config = config.PUMP_CONFIG[0]
+        second_config = config.PUMP_CONFIG[1]
+        assert isinstance(first_config, DCPumpConfig)
+        assert isinstance(second_config, DCPumpConfig)
+        assert first_config.board_number == 1
+        assert second_config.board_number == 2
 
 
 class TestConfigManagerReadLocalConfig:
     """Tests for ConfigManager.read_local_config() method."""
 
-    def test_read_local_config_handles_missing_file(self, tmp_path: Path) -> None:
+    def test_read_local_config_handles_missing_file(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that read_local_config doesn't fail when file is missing.
 
         Edge case: First run when no config file exists yet.
         """
+        config_file = tmp_path / "test_config.yaml"  # does not exist
+        monkeypatch.setattr("src.config.config_manager.CUSTOM_CONFIG_FILE", config_file)
+
         config = ConfigManager()
         # Should not raise even if file doesn't exist
         config.read_local_config(update_config=False, validate=True)
@@ -713,12 +812,16 @@ class TestIntegrationConfigDumpAndLoad:
 
         # Pump configs should match
         assert len(config2.PUMP_CONFIG) == 2
-        assert config2.PUMP_CONFIG[0].pin == 10
-        assert config2.PUMP_CONFIG[0].volume_flow == pytest.approx(20.5)
-        assert config2.PUMP_CONFIG[0].tube_volume == 5
-        assert config2.PUMP_CONFIG[1].pin == 11
-        assert config2.PUMP_CONFIG[1].volume_flow == pytest.approx(25.0)
-        assert config2.PUMP_CONFIG[1].tube_volume == 6
+        pump_config_1 = config2.PUMP_CONFIG[0]
+        pump_config_2 = config2.PUMP_CONFIG[1]
+        assert isinstance(pump_config_1, DCPumpConfig)
+        assert isinstance(pump_config_2, DCPumpConfig)
+        assert pump_config_1.pin == 10
+        assert pump_config_1.volume_flow == pytest.approx(20.5)
+        assert pump_config_1.tube_volume == 5
+        assert pump_config_2.pin == 11
+        assert pump_config_2.volume_flow == pytest.approx(25.0)
+        assert pump_config_2.tube_volume == 6
 
     def test_load_config_with_new_defaults(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that loading old config file gets new default values.
@@ -806,7 +909,7 @@ class TestEdgeCasesConfigManager:
         # PUMP_CONFIG uses a callable for min_length
         pump_list = config.config_type["PUMP_CONFIG"]
         assert isinstance(pump_list, ListType)
-        min_len = pump_list.min_length() if callable(pump_list.min_length) else pump_list.min_length
+        min_len = pump_list.min_length() if callable(pump_list.min_length) else pump_list.min_length  # ty:ignore[call-top-callable]
 
         # Should use the value from choose_bottle_number
         assert min_len == config.choose_bottle_number(ignore_limits=True)

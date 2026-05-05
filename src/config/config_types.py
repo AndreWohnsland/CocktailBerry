@@ -12,12 +12,19 @@ from dataclasses import dataclass, field
 from typing import Any, Protocol, Self, get_args
 
 from src import (
+    ConsumptionEstimationType,
     I2CExpanderType,
+    SupportedCarriageType,
+    SupportedDispenserType,
     SupportedLanguagesType,
+    SupportedLedDriverType,
     SupportedLedStatesType,
     SupportedPaymentOptions,
     SupportedPinControlType,
     SupportedRfidType,
+    SupportedScaleDriverType,
+    SupportedStepperDriverType,
+    SupportedStepperStepType,
     SupportedThemesType,
 )
 from src.config.errors import ConfigError
@@ -29,6 +36,13 @@ SUPPORTED_LED_STATES = list(get_args(SupportedLedStatesType))
 SUPPORTED_PAYMENT = list(get_args(SupportedPaymentOptions))
 SUPPORTED_PIN_CONTROL = list(get_args(SupportedPinControlType))
 SUPPORTED_I2C_EXPANDERS = list(get_args(I2CExpanderType))
+SUPPORTED_DISPENSERS = list(get_args(SupportedDispenserType))
+SUPPORTED_STEPPER_DRIVERS = list(get_args(SupportedStepperDriverType))
+SUPPORTED_STEPPER_STEP_TYPES = list(get_args(SupportedStepperStepType))
+SUPPORTED_CONSUMPTION_ESTIMATIONS = list(get_args(ConsumptionEstimationType))
+SUPPORTED_SCALE_DRIVERS = list(get_args(SupportedScaleDriverType))
+SUPPORTED_CARRIAGE_TYPES = list(get_args(SupportedCarriageType))
+SUPPORTED_LED_DRIVERS = list(get_args(SupportedLedDriverType))
 
 
 class ConfigInterface[T](Protocol):
@@ -93,7 +107,7 @@ class _ConfigType[T](ConfigInterface[T]):
         if self.default is not None:
             return self.default
 
-        defaults = {
+        defaults: dict[type, Any] = {
             str: "",
             int: 0,
             float: 0.0,
@@ -138,6 +152,13 @@ class ChooseOptions:
     payment = ChooseType(allowed=SUPPORTED_PAYMENT)
     pin = ChooseType(allowed=SUPPORTED_PIN_CONTROL, default="GPIO")
     i2c = ChooseType(allowed=SUPPORTED_I2C_EXPANDERS, default="PCF8574")
+    dispenser = ChooseType(allowed=SUPPORTED_DISPENSERS, default="DC")
+    stepper_driver = ChooseType(allowed=SUPPORTED_STEPPER_DRIVERS, default="A4988")
+    stepper_step_type = ChooseType(allowed=SUPPORTED_STEPPER_STEP_TYPES, default="Full")
+    consumption_estimation = ChooseType(allowed=SUPPORTED_CONSUMPTION_ESTIMATIONS, default="time")
+    scale_driver = ChooseType(allowed=SUPPORTED_SCALE_DRIVERS, default="HX711")
+    carriage_type = ChooseType(allowed=SUPPORTED_CARRIAGE_TYPES, default="NoCarriage")
+    led_driver = ChooseType(allowed=SUPPORTED_LED_DRIVERS, default="Normal")
 
 
 class StringType(_ConfigType[str]):
@@ -162,8 +183,10 @@ class IntType(_ConfigType[int]):
         prefix: str | None = None,
         suffix: str | None = None,
         default: int = 0,
+        allow_negative: bool = False,
     ) -> None:
         super().__init__(int, validator_functions, prefix, suffix, default)
+        self.allow_negative = allow_negative
 
 
 class FloatType(_ConfigType[float]):
@@ -175,8 +198,10 @@ class FloatType(_ConfigType[float]):
         prefix: str | None = None,
         suffix: str | None = None,
         default: float = 0.0,
+        allow_negative: bool = False,
     ) -> None:
         super().__init__(float, validator_functions, prefix, suffix, default)
+        self.allow_negative = allow_negative
 
     def validate(self, configname: str, value: Any) -> None:
         """Validate the given value."""
@@ -313,6 +338,57 @@ class DictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
         return self.from_config(self.get_default())
 
 
+class DiscriminatedDictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
+    """Dict type that dispatches to variant DictTypes based on a discriminator field.
+
+    Used for polymorphic config where a single list can hold different config class types,
+    distinguished by a discriminator field value (e.g. pump_type -> DC or Stepper).
+    """
+
+    def __init__(
+        self,
+        discriminator: str,
+        variants: dict[str, DictType[Any]],
+        default_variant: str | None = None,
+    ) -> None:
+        super().__init__(dict, [], None, None)
+        self.discriminator = discriminator
+        self.variants = variants
+        self.default_variant = default_variant
+
+    def _resolve_variant(self, configname: str, config_dict: dict[str, Any]) -> DictType[Any]:
+        """Get the variant DictType for the given config dict."""
+        disc_value = config_dict.get(self.discriminator)
+        if disc_value is None:
+            disc_value = self.default_variant
+        if disc_value is None:
+            raise ConfigError(f"Missing discriminator '{self.discriminator}' in '{configname}'")
+        variant = self.variants.get(disc_value)
+        if variant is None:
+            allowed = ", ".join(self.variants.keys())
+            raise ConfigError(f"Unknown {self.discriminator} '{disc_value}' in '{configname}', allowed: {allowed}")
+        return variant
+
+    def validate(self, configname: str, config_dict: dict[str, Any]) -> None:  # ty:ignore[invalid-method-override]
+        super().validate(configname, config_dict)
+        variant = self._resolve_variant(configname, config_dict)
+        variant.validate(configname, config_dict)
+
+    def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:  # ty:ignore[invalid-method-override]
+        variant = self._resolve_variant("", config_dict)
+        return variant.from_config(config_dict)
+
+    def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:  # ty:ignore[invalid-method-override]
+        disc_value = getattr(config_class, self.discriminator)
+        variant = self.variants[disc_value]
+        return variant.to_config(config_class)
+
+    def get_default(self) -> dict[str, Any]:
+        """Get the default value from the first variant."""
+        first_variant = next(iter(self.variants.values()))
+        return first_variant.get_default()
+
+
 ### -------------------- Specific Config Classes -------------------- ###
 
 
@@ -331,21 +407,67 @@ class PinId:
         return f"{self.pin_type}-{self.board_number}-{self.pin}"
 
 
-class PumpConfig(ConfigClass):
-    pin_type: SupportedPinControlType
+class BasePumpConfig(ConfigClass):
+    """Base configuration shared by all dispenser types."""
+
+    pump_type: str
+    volume_flow: float
+    tube_volume: int
+    consumption_estimation: ConsumptionEstimationType
+    carriage_position: int
 
     def __init__(
         self,
-        pin: int,
-        volume_flow: float,
-        tube_volume: int,
-        pin_type: SupportedPinControlType = "GPIO",
-        board_number: int = 1,
+        pump_type: str = "DC",
+        volume_flow: float = 30.0,
+        tube_volume: int = 0,
+        consumption_estimation: ConsumptionEstimationType = "time",
+        carriage_position: int = 0,
+        **kwargs: Any,
     ) -> None:
-        self.pin_type = pin_type
-        self.pin = pin
+        self.pump_type = pump_type
         self.volume_flow = volume_flow
         self.tube_volume = tube_volume
+        self.consumption_estimation = consumption_estimation
+        self.carriage_position = carriage_position
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "pump_type": self.pump_type,
+            "volume_flow": self.volume_flow,
+            "tube_volume": self.tube_volume,
+            "consumption_estimation": self.consumption_estimation,
+            "carriage_position": self.carriage_position,
+        }
+
+
+class DCPumpConfig(BasePumpConfig):
+    """Configuration for DC pump dispensers."""
+
+    pin_type: SupportedPinControlType
+    pin: int
+    board_number: int
+
+    def __init__(
+        self,
+        pin: int = 0,
+        volume_flow: float = 30.0,
+        tube_volume: int = 0,
+        pin_type: SupportedPinControlType = "GPIO",
+        board_number: int = 1,
+        pump_type: SupportedDispenserType = "DC",
+        consumption_estimation: ConsumptionEstimationType = "time",
+        carriage_position: int = 0,
+    ) -> None:
+        super().__init__(
+            pump_type=pump_type,
+            volume_flow=volume_flow,
+            tube_volume=tube_volume,
+            consumption_estimation=consumption_estimation,
+            carriage_position=carriage_position,
+        )
+        self.pin_type = pin_type
+        self.pin = pin
         self.board_number = board_number
 
     @property
@@ -353,14 +475,178 @@ class PumpConfig(ConfigClass):
         """Build PinId from this config's pin_type, board_number and pin."""
         return PinId(self.pin_type, self.board_number, self.pin)
 
-    def to_config(self) -> dict[str, int | float | SupportedPinControlType]:
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config.update(
+            {
+                "pin_type": self.pin_type,
+                "board_number": self.board_number,
+                "pin": self.pin,
+            }
+        )
+        return config
+
+
+class StepperPumpConfig(BasePumpConfig):
+    """Configuration for stepper motor dispensers."""
+
+    pin: int
+    dir_pin: int
+    driver_type: SupportedStepperDriverType
+    step_type: SupportedStepperStepType
+
+    def __init__(
+        self,
+        pin: int = 0,
+        dir_pin: int = 0,
+        driver_type: SupportedStepperDriverType = "A4988",
+        step_type: SupportedStepperStepType = "Full",
+        volume_flow: float = 30.0,
+        tube_volume: int = 0,
+        pump_type: SupportedDispenserType = "Stepper",
+        consumption_estimation: ConsumptionEstimationType = "time",
+        carriage_position: int = 0,
+    ) -> None:
+        super().__init__(
+            pump_type=pump_type,
+            volume_flow=volume_flow,
+            tube_volume=tube_volume,
+            consumption_estimation=consumption_estimation,
+            carriage_position=carriage_position,
+        )
+        self.pin = pin
+        self.dir_pin = dir_pin
+        self.driver_type = driver_type
+        self.step_type = step_type
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config.update(
+            {
+                "pin": self.pin,
+                "dir_pin": self.dir_pin,
+                "driver_type": self.driver_type,
+                "step_type": self.step_type,
+            }
+        )
+        return config
+
+
+# Backwards compatibility alias
+PumpConfig = DCPumpConfig
+
+
+class BaseScaleConfig(ConfigClass):
+    """Base configuration shared by all scale driver types.
+
+    ``scale_type`` is a plain ``str`` to allow custom scale extensions to register
+    their own variants (see ``src/programs/addons/scale_extensions.py``).
+    Built-in drivers still default to one of :data:`SUPPORTED_SCALE_DRIVERS`.
+    """
+
+    scale_type: str
+    enabled: bool
+    calibration_factor: float
+    zero_raw_offset: int
+    minimal_weight: int
+
+    def __init__(
+        self,
+        scale_type: str = "HX711",
+        enabled: bool = False,
+        calibration_factor: float = 1.0,
+        zero_raw_offset: int = 0,
+        minimal_weight: int = 0,
+        **kwargs: Any,
+    ) -> None:
+        self.scale_type = scale_type
+        self.enabled = enabled
+        self.calibration_factor = calibration_factor
+        self.zero_raw_offset = zero_raw_offset
+        self.minimal_weight = minimal_weight
+
+    def to_config(self) -> dict[str, Any]:
         return {
-            "pin_type": self.pin_type,
-            "board_number": self.board_number,
-            "pin": self.pin,
-            "volume_flow": self.volume_flow,
-            "tube_volume": self.tube_volume,
+            "scale_type": self.scale_type,
+            "enabled": self.enabled,
+            "calibration_factor": self.calibration_factor,
+            "zero_raw_offset": self.zero_raw_offset,
+            "minimal_weight": self.minimal_weight,
         }
+
+
+class HX711ScaleConfig(BaseScaleConfig):
+    """Configuration for HX711 load cell amplifier (2-wire bit-bang protocol)."""
+
+    data_pin: int
+    clock_pin: int
+
+    def __init__(
+        self,
+        scale_type: str = "HX711",
+        enabled: bool = False,
+        calibration_factor: float = 1.0,
+        zero_raw_offset: int = 0,
+        minimal_weight: int = 0,
+        data_pin: int = 5,
+        clock_pin: int = 6,
+    ) -> None:
+        super().__init__(
+            scale_type=scale_type,
+            enabled=enabled,
+            calibration_factor=calibration_factor,
+            zero_raw_offset=zero_raw_offset,
+            minimal_weight=minimal_weight,
+        )
+        self.data_pin = data_pin
+        self.clock_pin = clock_pin
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config.update(
+            {
+                "data_pin": self.data_pin,
+                "clock_pin": self.clock_pin,
+            }
+        )
+        return config
+
+
+class NAU7802ScaleConfig(BaseScaleConfig):
+    """Configuration for NAU7802 I2C load cell amplifier."""
+
+    i2c_address: str
+
+    def __init__(
+        self,
+        scale_type: str = "NAU7802",
+        enabled: bool = False,
+        calibration_factor: float = 1.0,
+        zero_raw_offset: int = 0,
+        minimal_weight: int = 0,
+        i2c_address: str = "2A",
+    ) -> None:
+        super().__init__(
+            scale_type=scale_type,
+            enabled=enabled,
+            calibration_factor=calibration_factor,
+            zero_raw_offset=zero_raw_offset,
+            minimal_weight=minimal_weight,
+        )
+        self.i2c_address = i2c_address.upper()
+
+    @property
+    def address_hex(self) -> int:
+        return int(self.i2c_address, 16)
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config.update(
+            {
+                "i2c_address": self.i2c_address,
+            }
+        )
+        return config
 
 
 class I2CExpanderConfig(ConfigClass):
@@ -372,31 +658,35 @@ class I2CExpanderConfig(ConfigClass):
     """
 
     device_type: I2CExpanderType
+    enabled: bool
+    address: str
+    inverted: bool
+    board_number: int
 
     def __init__(
         self,
         device_type: I2CExpanderType,
         enabled: bool,
-        address_int: int,
-        inverted: bool,
+        address: str = "20",
+        inverted: bool = False,
         board_number: int = 1,
     ) -> None:
         self.device_type = device_type
         self.enabled = enabled
-        self.address_int = address_int
+        self.address = address.upper()
         self.inverted = inverted
         self.board_number = board_number
 
     @property
     def address_hex(self) -> int:
-        return int(str(self.address_int), 16)
+        return int(self.address, 16)
 
     def to_config(self) -> dict[str, bool | int | str]:
         return {
             "device_type": self.device_type,
             "board_number": self.board_number,
             "enabled": self.enabled,
-            "address_int": self.address_int,
+            "address": self.address,
             "inverted": self.inverted,
         }
 
@@ -404,7 +694,11 @@ class I2CExpanderConfig(ConfigClass):
 class ReversionConfig(ConfigClass):
     """Configuration for pump reversion."""
 
+    use_reversion: bool
+    pin: int
+    inverted: bool
     pin_type: SupportedPinControlType
+    board_number: int
 
     def __init__(
         self,
@@ -435,22 +729,60 @@ class ReversionConfig(ConfigClass):
         }
 
 
-class NormalLedConfig(ConfigClass):
-    """Configuration for normal (non-WS281x) LEDs."""
+class BaseLedConfig(ConfigClass):
+    """Base configuration shared by all LED driver types.
 
-    pin_type: SupportedPinControlType
+    ``led_type`` is a plain ``str`` to allow custom LED extensions to register
+    their own variants (see ``src/programs/addons/led_extensions.py``).
+    Built-in drivers still default to one of :data:`SUPPORTED_LED_DRIVERS`.
+    """
+
+    led_type: str
+    default_on: bool
+    preparation_state: SupportedLedStatesType
 
     def __init__(
         self,
-        pin: int,
-        default_on: bool,
-        preparation_state: SupportedLedStatesType,
-        pin_type: SupportedPinControlType = "GPIO",
-        board_number: int = 1,
+        led_type: str = "Normal",
+        default_on: bool = False,
+        preparation_state: SupportedLedStatesType = "Effect",
+        **kwargs: Any,
     ) -> None:
-        self.pin = pin
+        self.led_type = led_type
         self.default_on = default_on
         self.preparation_state = preparation_state
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "led_type": self.led_type,
+            "default_on": self.default_on,
+            "preparation_state": self.preparation_state,
+        }
+
+
+class NormalLedConfig(BaseLedConfig):
+    """Configuration for normal (non-WS281x) LEDs."""
+
+    pin: int
+    pin_type: SupportedPinControlType
+    board_number: int
+
+    def __init__(
+        self,
+        pin: int = 0,
+        default_on: bool = False,
+        preparation_state: SupportedLedStatesType = "Effect",
+        pin_type: SupportedPinControlType = "GPIO",
+        board_number: int = 1,
+        led_type: str = "Normal",
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            led_type=led_type,
+            default_on=default_on,
+            preparation_state=preparation_state,
+        )
+        self.pin = pin
         self.pin_type = pin_type
         self.board_number = board_number
 
@@ -460,33 +792,45 @@ class NormalLedConfig(ConfigClass):
         return PinId(self.pin_type, self.board_number, self.pin)
 
     def to_config(self) -> dict[str, Any]:
-        return {
-            "pin_type": self.pin_type,
-            "board_number": self.board_number,
-            "pin": self.pin,
-            "default_on": self.default_on,
-            "preparation_state": self.preparation_state,
-        }
+        config = super().to_config()
+        config.update(
+            {
+                "pin_type": self.pin_type,
+                "board_number": self.board_number,
+                "pin": self.pin,
+            }
+        )
+        return config
 
 
-class WS281xLedConfig(ConfigClass):
+class WS281xLedConfig(BaseLedConfig):
     """Configuration for WS281x (controllable) LEDs."""
+
+    pin: int
+    brightness: int
+    count: int
+    number_rings: int
 
     def __init__(
         self,
-        pin: int,
-        brightness: int,
-        count: int,
-        number_rings: int,
-        default_on: bool,
-        preparation_state: SupportedLedStatesType,
+        pin: int = 0,
+        brightness: int = 100,
+        count: int = 24,
+        number_rings: int = 1,
+        default_on: bool = False,
+        preparation_state: SupportedLedStatesType = "Effect",
+        led_type: str = "WSLED",
+        **kwargs: Any,
     ) -> None:
+        super().__init__(
+            led_type=led_type,
+            default_on=default_on,
+            preparation_state=preparation_state,
+        )
         self.pin = pin
         self.brightness = brightness
         self.count = count
         self.number_rings = number_rings
-        self.default_on = default_on
-        self.preparation_state = preparation_state
 
     @property
     def pin_id(self) -> PinId:
@@ -494,11 +838,91 @@ class WS281xLedConfig(ConfigClass):
         return PinId("GPIO", 1, self.pin)
 
     def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config.update(
+            {
+                "pin": self.pin,
+                "brightness": self.brightness,
+                "count": self.count,
+                "number_rings": self.number_rings,
+            }
+        )
+        return config
+
+
+class BaseCarriageConfig(ConfigClass):
+    """Configuration shared by all carriage/slide driver types.
+
+    Positions are abstract values from 0 to 100 representing the percentage
+    of total travel range. The home_position defines where the carriage
+    rests when idle (0 = start, 50 = middle, 100 = end).
+    speed_pct_per_s defines how fast the carriage moves in percent of total
+    range per second (e.g. 10.0 means it takes 10s for the full range).
+
+    ``carriage_type`` is a plain ``str`` to allow custom carriage extensions
+    to register their own variants (see ``src/programs/addons/carriage_extensions.py``).
+    The built-in ``"NoCarriage"`` sentinel is selected when no concrete driver
+    is installed; :func:`create_carriage` will return ``None`` for that value.
+    """
+
+    carriage_type: str
+    enabled: bool
+    home_position: int
+    speed_pct_per_s: float
+    move_during_cleaning: bool
+    wait_after_dispense: float
+
+    def __init__(
+        self,
+        carriage_type: str = "NoCarriage",
+        enabled: bool = False,
+        home_position: int = 0,
+        speed_pct_per_s: float = 10.0,
+        move_during_cleaning: bool = False,
+        wait_after_dispense: float = 0.0,
+        **kwargs: Any,
+    ) -> None:
+        self.carriage_type = carriage_type
+        self.enabled = enabled
+        self.home_position = home_position
+        self.speed_pct_per_s = speed_pct_per_s
+        self.move_during_cleaning = move_during_cleaning
+        self.wait_after_dispense = wait_after_dispense
+
+    def to_config(self) -> dict[str, Any]:
         return {
-            "pin": self.pin,
-            "brightness": self.brightness,
-            "count": self.count,
-            "number_rings": self.number_rings,
-            "default_on": self.default_on,
-            "preparation_state": self.preparation_state,
+            "carriage_type": self.carriage_type,
+            "enabled": self.enabled,
+            "home_position": self.home_position,
+            "speed_pct_per_s": self.speed_pct_per_s,
+            "move_during_cleaning": self.move_during_cleaning,
+            "wait_after_dispense": self.wait_after_dispense,
+        }
+
+
+class BaseRfidConfig(ConfigClass):
+    """Base configuration shared by all RFID reader driver types.
+
+    ``rfid_type`` is a plain ``str`` to allow custom RFID extensions to register
+    their own variants (see ``src/programs/addons/rfid_extensions.py``).
+    Built-in drivers still default to one of :data:`SUPPORTED_RFID`. To disable
+    the reader, set ``enabled=False`` instead of using a sentinel type.
+    """
+
+    rfid_type: str
+    enabled: bool
+
+    def __init__(
+        self,
+        rfid_type: str = "USB",
+        enabled: bool = False,
+        **kwargs: Any,
+    ) -> None:
+        self.rfid_type = rfid_type
+        self.enabled = enabled
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "rfid_type": self.rfid_type,
+            "enabled": self.enabled,
         }

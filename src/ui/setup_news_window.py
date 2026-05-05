@@ -52,7 +52,7 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
         layout.setContentsMargins(10, 10, 10, 10)
 
         news_label = create_label(
-            DIALOG_HANDLER.get_translation(news_key),  # type: ignore[arg-type]
+            DIALOG_HANDLER.get_translation(news_key),  # type: ignore
             FontSize.MEDIUM,
             centered=True,
             word_wrap=True,

@@ -4,7 +4,15 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
+from PyQt6.QtWidgets import (
+    QBoxLayout,
+    QCheckBox,
+    QComboBox,
+    QHBoxLayout,
+    QMainWindow,
+    QPushButton,
+    QVBoxLayout,
+)
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import (
@@ -13,6 +21,7 @@ from src.config.config_types import (
     ConfigClass,
     ConfigInterface,
     DictType,
+    DiscriminatedDictType,
     FloatType,
     IntType,
     ListType,
@@ -124,7 +133,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
     def _open_color_window(self) -> None:
         self.color_window = ColorWindow(self.mainscreen)
 
-    def _build_input_field(
+    def _build_input_field(  # noqa: C901
         self, config_name: str, config_setting: ConfigInterface, current_value: Any, layout: QBoxLayout | None = None
     ) -> Callable[[], CONFIG_TYPES_POSSIBLE]:
         """Build the input field and returns its getter function."""
@@ -140,15 +149,19 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             layout.addWidget(prefix_text)
 
         if isinstance(config_setting, IntType):
-            field: Callable[[], CONFIG_TYPES_POSSIBLE] = self._build_int_field(layout, config_name, current_value)
+            field: Callable[[], CONFIG_TYPES_POSSIBLE] = self._build_int_field(
+                layout, config_name, current_value, config_setting.allow_negative
+            )
         elif isinstance(config_setting, FloatType):
-            field = self._build_float_field(layout, config_name, current_value)
+            field = self._build_float_field(layout, config_name, current_value, config_setting.allow_negative)
         elif isinstance(config_setting, BoolType):
             field = self._build_bool_field(layout, current_value, config_setting.check_name)
         elif isinstance(config_setting, ListType):
             field = self._build_list_field(layout, config_name, current_value, config_setting)
         elif isinstance(config_setting, ChooseType):
             field = self._build_selection_filed(layout, current_value, config_setting.allowed)
+        elif isinstance(config_setting, DiscriminatedDictType):
+            field = self._build_discriminated_dict_field(layout, config_name, current_value, config_setting)
         elif isinstance(config_setting, DictType):
             field = self._build_dict_field(layout, config_name, current_value, config_setting)
         else:
@@ -159,25 +172,54 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             layout.addWidget(suffix_text)
         return field
 
-    def _build_int_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], int]:
+    def _build_int_field(
+        self,
+        layout: QBoxLayout,
+        config_name: str,
+        current_value: int,
+        allow_negative: bool = False,
+    ) -> Callable[[], int]:
         """Build a field for integer input with numpad."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.setMinimumSize(QSize(10, 10))
         config_input.clicked.connect(
-            lambda: NumpadWidget(self, config_input, 300, 20, config_name, header_is_entered_number=True)
+            lambda: NumpadWidget(
+                self,
+                config_input,
+                300,
+                20,
+                config_name,
+                header_is_entered_number=True,
+                allow_negative=allow_negative,
+            )
         )
         layout.addWidget(config_input)
         return lambda: int(config_input.text() or 0)
 
-    def _build_float_field(self, layout: QBoxLayout, config_name: str, current_value: int) -> Callable[[], float]:
+    def _build_float_field(
+        self,
+        layout: QBoxLayout,
+        config_name: str,
+        current_value: int,
+        allow_negative: bool = False,
+    ) -> Callable[[], float]:
         """Build a field for integer input with numpad."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
         config_input.clicked.connect(
-            lambda: NumpadWidget(self, config_input, 300, 20, config_name, True, header_is_entered_number=True)
+            lambda: NumpadWidget(
+                self,
+                config_input,
+                300,
+                20,
+                config_name,
+                True,
+                header_is_entered_number=True,
+                allow_negative=allow_negative,
+            )
         )
         layout.addWidget(config_input)
         return lambda: float(config_input.text() or 0.0)
@@ -222,7 +264,9 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
             add_button = create_button("+ add", font_size=MEDIUM_FONT, min_h=0, bold=True, css_class="neutral")
             # since we use the class for for dict types, but value for simple types, we need to check here
             list_value = config_setting.list_type
-            if isinstance(list_value, DictType):
+            if isinstance(list_value, DiscriminatedDictType):
+                default_value = list_value.from_config(list_value.get_default())
+            elif isinstance(list_value, DictType):
                 default_value = list_value.get_default_config_class()
             else:
                 default_value = list_value.get_default()
@@ -273,23 +317,64 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self, element: QHBoxLayout, getter_fn: Callable, getter_fn_list: list[Callable]
     ) -> None:
         """Remove the referenced element from the ui."""
-
-        def recursive_delete(widget: QBoxLayout) -> None:
-            """Recursively delete all children of the given widget."""
-            for i in reversed(range(widget.count())):
-                found_element = widget.itemAt(i)
-                if found_element is None:
-                    continue
-                found_widget = found_element.widget()
-                if found_widget is not None:
-                    found_widget.setParent(None)
-                    found_widget.deleteLater()
-                if isinstance(found_element, QBoxLayout):
-                    recursive_delete(found_element)
-
-        recursive_delete(element)
+        DP_CONTROLLER.delete_items_of_layout(element)
         getter_fn_list.remove(getter_fn)
         element.deleteLater()
+
+    def _build_discriminated_dict_field(
+        self,
+        layout: QBoxLayout,
+        config_name: str,
+        current_value: ConfigClass,
+        config_setting: DiscriminatedDictType,
+    ) -> Callable[[], dict]:
+        """Build a dict field with a discriminator dropdown that swaps variant-specific fields."""
+        v_container = QVBoxLayout()
+        getter_fn_dict: dict[str, Callable] = {}
+        variant_container = QHBoxLayout()
+
+        disc_value = getattr(current_value, config_setting.discriminator)
+        disc_combo = self._build_discriminator_dropdown(v_container, disc_value, list(config_setting.variants.keys()))
+
+        def _build_variant_fields(variant_name: str, values: dict[str, Any]) -> None:
+            variant_dict_type = config_setting.variants[variant_name]
+            getter_fn_dict.clear()
+            for key, value_setting in variant_dict_type.dict_types.items():
+                if key == config_setting.discriminator:
+                    continue
+                value = values.get(key, value_setting.get_default())
+                getter_fn_dict[key] = self._build_input_field(config_name, value_setting, value, variant_container)
+
+        def _on_discriminator_changed(new_variant: str) -> None:
+            old_values = {key: getter() for key, getter in getter_fn_dict.items()}
+            DP_CONTROLLER.delete_items_of_layout(variant_container)
+            new_variant_type = config_setting.variants[new_variant]
+            merged = {
+                k: old_values.get(k, vs.get_default())
+                for k, vs in new_variant_type.dict_types.items()
+                if k != config_setting.discriminator
+            }
+            _build_variant_fields(new_variant, merged)
+
+        _build_variant_fields(disc_value, current_value.to_config())
+        disc_combo.currentTextChanged.connect(_on_discriminator_changed)
+
+        v_container.addLayout(variant_container)
+        layout.addLayout(v_container)
+        disc_key = config_setting.discriminator
+        return lambda: {disc_key: disc_combo.currentText(), **{k: g() for k, g in getter_fn_dict.items()}}
+
+    def _build_discriminator_dropdown(
+        self, container: QVBoxLayout, current_value: str, variant_names: list[str]
+    ) -> QComboBox:
+        """Build a dropdown for selecting the discriminator variant."""
+        disc_combo = QComboBox()
+        disc_combo.addItems(variant_names)
+        adjust_font(disc_combo, MEDIUM_FONT)
+        disc_combo.setProperty("cssClass", "secondary")
+        disc_combo.setCurrentIndex(disc_combo.findText(str(current_value), Qt.MatchFlag.MatchFixedString))
+        container.addWidget(disc_combo)
+        return disc_combo
 
     def _build_dict_field(
         self,
@@ -343,6 +428,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 "MAKER_PUMP_REVERSION_CONFIG",
                 "MAKER_PINS_INVERTED",
                 "I2C_CONFIG",
+                "SCALE_CONFIG",
+                "CARRIAGE_CONFIG",
             ),
             self.vbox_payment_cocktailberry: (
                 "PAYMENT_SHOW_NOT_POSSIBLE",

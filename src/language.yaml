@@ -25,6 +25,18 @@ dialog:
   bottle_calibration_started:
     en: 'Bottle {bottle_id} calibration to {amount} started!'
     de: 'Flasche {bottle_id} Kalibrierung auf {amount} gestartet!'
+  no_scale_available:
+    en: 'No scale available'
+    de: 'Keine Waage verfügbar'
+  scale_tared:
+    en: 'Scale tared successfully'
+    de: 'Waage erfolgreich tariert'
+  scale_calibrated:
+    en: 'Scale calibrated, new factor: {factor}'
+    de: 'Waage kalibriert, neuer Faktor: {factor}'
+  scale_known_weight_positive:
+    en: 'Known weight must be positive'
+    de: 'Bekanntes Gewicht muss positiv sein'
   no_recipe_selected:
     en: 'No recipe selected!'
     de: 'Kein Rezept ausgewählt!'
@@ -64,6 +76,9 @@ dialog:
   no_waiter_logged_in:
     en: 'No service personnel is logged in. Please scan your NFC tag first.'
     de: 'Kein Servicepersonal angemeldet. Bitte zuerst den NFC-Tag scannen.'
+  no_glass_detected:
+    en: 'No glass detected. Please place a glass before ordering.'
+    de: 'Kein Glas erkannt. Bitte vor der Bestellung ein Glas aufstellen.'
   cocktail_ready:
     en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
     de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nach tropft.{full_comment}'
@@ -604,6 +619,9 @@ ui:
     back:
       en: '< Back'
       de: '< Zurück'
+    scale_calibration:
+      en: 'Scale Calibration'
+      de: 'Waagen Kalibrierung'
 
   ##### DATE PICKER WINDOW #####
   # all values for date picker window
@@ -724,8 +742,8 @@ ui:
       en: 'Disable all other tabs than the maker one; You will only be prompted at program start if you want to go to config window with master password'
       de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
     PUMP_CONFIG:
-      en: 'Setting for each pump: Pin type (GPIO or I2C board), board number (# only relevant for I2C, to distinguish multiple boards of the same type), pin connected to the pump, volume flow in ml/s, tube volume to the pump in ml (used to pump given volume after a bottle change). I2C pins start at 0-7 or 0-15 depending on the board type.'
-      de: 'Einstellung für jede Pumpe: Pin-Typ (GPIO oder I2C-Board), Board-Nummer (# nur relevant für I2C, um mehrere Boards des gleichen Typs zu unterscheiden), Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen zur Pumpe in ml (wird verwendet, um das gegebene Volumen nach einem Flaschenwechsel zu pumpen). I2C-Pins beginnen bei 0-7 oder 0-15 je nach Board-Typ.'
+      en: 'Setting for each pump: Pump type (DC or Stepper), pin type (GPIO or I2C board), board number (# only relevant for I2C), pin connected to the pump, volume flow in ml/s, tube volume in ml, consumption estimation method (time or weight based) and carriage position (0-100%). DC controls relay-driven pumps like membrane, peristaltic or even valves. Stepper is for stepper motor driven pumps. I2C pins start at 0-7 or 0-15 depending on the board type. Custom drivers can be added via addons/dispensers extensions.'
+      de: 'Einstellung für jede Pumpe: Pumpen-Typ (DC oder Stepper), Pin-Typ (GPIO oder I2C-Board), Board-Nummer (# nur relevant für I2C), Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen in ml, Verbrauchsermittlung (zeit- oder gewichtsbasiert) und Schlittenposition (0-100%). DC steuert relais-basierte Pumpen wie Membran-, Schlauchpumpen oder auch Ventile. Stepper ist für Schrittmotor-betriebene Pumpen. I2C-Pins beginnen bei 0-7 oder 0-15 je nach Board-Typ. Eigene Treiber via addons/dispensers Erweiterungen.'
     I2C_CONFIG:
       en: 'I2C GPIO expander configuration. Select the board type, board number (# to distinguish multiple boards of the same type), enable/disable, I2C address (default 0x20) and signal inversion. Multiple boards of the same type are supported with different board numbers.'
       de: 'I2C GPIO-Expander Konfiguration. Board-Typ, Board-Nummer (# um mehrere Boards des gleichen Typs zu unterscheiden), Aktivierung, I2C-Adresse (Standard 0x20) und Signalinvertierung auswählen. Mehrere Boards des gleichen Typs werden über verschiedene Board-Nummern unterstützt.'
@@ -777,15 +795,12 @@ ui:
     MAKER_RANDOM_COCKTAIL:
       en: 'Adds a random cocktail tile to the maker tab that picks a surprise cocktail on prepare'
       de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
-    LED_NORMAL:
-      en: 'List with config for each normal (non-addressable) LED: pin type, board number (# only relevant for I2C), pin, default on state, preparation state (on/off/effects)'
-      de: 'Liste mit Einstellung für jeden normalen (nicht ansteuerbaren) LED: Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
-    LED_WSLED:
-      en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects). Only supports GPIO.'
-      de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). Unterstützt nur GPIO.'
-    RFID_READER:
-      en: 'Using a RFID Reader: Basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
-      de: 'Wird ein RFID Reader verwendet: Standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'
+    LED_CONFIG:
+      en: 'List with config for each LED (discriminated by led_type: Normal pin LED or WSLED addressable). Custom drivers can be added via addons/leds extensions.'
+      de: 'Liste mit Einstellung für jeden LED (Diskriminator led_type: Normal-Pin oder WSLED ansteuerbar). Eigene Treiber via addons/leds Erweiterungen.'
+    RFID_CONFIG:
+      en: 'RFID/NFC reader configuration. Choose driver type (No, MFRC522, USB) and toggle enabled. Custom drivers can be added via addons/rfid extensions.'
+      de: 'RFID/NFC Reader Konfiguration. Treiber-Typ wählen (No, MFRC522, USB) und aktiviert umschalten. Eigene Treiber via addons/rfid Erweiterungen.'
     MICROSERVICE_ACTIVE:
       en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'
@@ -873,6 +888,12 @@ ui:
     EXP_DEMO_MODE:
       en: 'Set the API into demo mode (no destructive actions)'
       de: 'Setze die API in den Demo Modus (keine destruktiven Aktionen)'
+    SCALE_CONFIG:
+      en: 'Scale hardware configuration: driver type, enable/disable, calibration factor for weight-based measurement and minimal detected weight for cocktail preparation allowed. Custom drivers can be added via addons/scales extensions.'
+      de: 'Waagen-Konfiguration: Treibertyp, Aktivierung, Kalibrierungsfaktor für gewichtsbasierte Messung und minimal erkanntes Gewicht für die Cocktailzubereitung zu starten. Eigene Treiber via addons/scales Erweiterungen.'
+    CARRIAGE_CONFIG:
+      en: 'Carriage/slide hardware configuration: driver type, enable/disable, home position (0-100%), movement speed (%/s) and whether to move during cleaning. Custom drivers can be added via addons/carriages extensions.'
+      de: 'Schlitten-Konfiguration: Treibertyp, Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll. Eigene Treiber via addons/carriages Erweiterungen.'
 
   ##### COLOR WINDOW #####
   # all values for settings in color window
@@ -977,6 +998,46 @@ ui:
     deviation_too_large:
       en: 'Deviation too large, please check'
       de: 'Abweichung zu groß, bitte prüfen'
+
+  ##### SCALE CALIBRATION WINDOW #####
+  # all values for scale calibration window
+  scale_calibration_window:
+    header:
+      en: 'Scale Calibration'
+      de: 'Waagen Kalibrierung'
+    not_available:
+      en: 'Scale is not available. Please enable and configure a scale first.'
+      de: 'Waage nicht verfügbar. Bitte zuerst eine Waage aktivieren und konfigurieren.'
+    tare_instruction:
+      en: 'Remove everything from the scale and press Tare to zero it.'
+      de: 'Alles von der Waage entfernen und auf Tare drücken um sie zu nullen.'
+    tare:
+      en: 'Tare'
+      de: 'Tarieren'
+    place_weight_instruction:
+      en: 'Place a known weight on the scale and enter its weight below.'
+      de: 'Ein bekanntes Gewicht auf die Waage legen und das Gewicht unten eingeben.'
+    known_weight:
+      en: 'Known Weight (g)'
+      de: 'Bekanntes Gewicht (g)'
+    calibrate:
+      en: 'Calibrate'
+      de: 'Kalibrieren'
+    calibration_done:
+      en: "Calibration done! New factor: {factor}\nZero raw offset: {offset}"
+      de: "Kalibrierung abgeschlossen! Neuer Faktor: {factor}\nNull-Rohwert-Offset: {offset}"
+    calibration_error:
+      en: 'Calibration failed, invalid reading from scale.'
+      de: 'Kalibrierung fehlgeschlagen, ungültige Ablesung der Waage.'
+    back_to_tare:
+      en: 'Back to Tare'
+      de: 'Zurück zum Tarieren'
+    read_weight:
+      en: 'Read Weight'
+      de: 'Gewicht lesen'
+    current_reading:
+      en: 'Current reading: {weight} g'
+      de: 'Aktuelle Messung: {weight} g'
 
   ##### NEWS WINDOW #####
   # all values for news window

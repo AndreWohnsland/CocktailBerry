@@ -3,8 +3,28 @@ from typing import Any
 
 import pytest
 
+from src.config.config_manager import CONFIG, ConfigManager
 from src.database_commander import DatabaseCommander
 from src.db_models import DbBottle
+
+
+@pytest.fixture(autouse=True)
+def _mark_addon_configs_initialized(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Auto-mark any ConfigManager instance as addon-initialized.
+
+    Production code requires :func:`initialize_addon_configs` to run before
+    ``read_local_config``. Tests don't run bootstrap, so flip the flag for
+    every ConfigManager (including the module-level singleton) via the public
+    setter so tests don't hit the runtime guard.
+    """
+    CONFIG.mark_addon_configs_initialized()
+    original_init = ConfigManager.__init__
+
+    def patched_init(self: ConfigManager, *args: Any, **kwargs: Any) -> None:
+        original_init(self, *args, **kwargs)
+        self.mark_addon_configs_initialized()
+
+    monkeypatch.setattr(ConfigManager, "__init__", patched_init)
 
 
 @pytest.fixture

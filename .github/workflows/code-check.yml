@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: 🔍 Lint with ruff
-        run: uv run ruff check src
+        run: uv run --no-group pi-hardware ruff check src
 
   ty:
     runs-on: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: 🔍 Type Checking with ty
-        run: uv run --extra v1 ty check src
+        run: uv run --extra v1 --no-group pi-hardware ty check src
 
   pytest:
     runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: 🔍 Run PyTest
-        run: uv run pytest
+        run: uv run --no-group pi-hardware pytest
 
   check-web-client:
     runs-on: ubuntu-latest

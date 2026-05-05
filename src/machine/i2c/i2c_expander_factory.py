@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from src import I2CExpanderType
-from src.config.config_types import I2CExpanderConfig
+from src.config.config_types import I2CExpanderConfig, PinId
 from src.logger_handler import LoggerHandler
 from src.machine.i2c.i2c_expander import get_i2c
 from src.machine.i2c.MCP23017 import MCP23017GPIO, get_mcp23017
@@ -77,23 +77,22 @@ class I2CExpanderFactory:
 
     def create_i2c_gpio(
         self,
-        device_type: I2CExpanderType,
-        pin: int,
-        board_number: int = 1,
+        pin_id: PinId,
         invert_override: bool | None = None,
     ) -> SinglePinController:
         """Create a GPIO controller for the specified I2C expander type and board.
 
         Args:
-            device_type: The type of I2C expander (MCP23017, PCF8574, PCA9535)
-            pin: The pin number on the expander
-            board_number: The board number to target (default 1)
+            pin_id: The PinId identifying the device type, board number, and pin.
             invert_override: Optional override for pin inversion. If None, uses config value.
 
         Returns:
             A SinglePinController for the specified pin.
 
         """
+        device_type = cast(I2CExpanderType, pin_id.pin_type)  # only called for I2C types
+        board_number = pin_id.board_number
+        pin = pin_id.pin
         config = self.get_config_for_type(device_type, board_number)
         default_inverted = config.inverted if config else False
         inverted = invert_override if invert_override is not None else default_inverted
@@ -111,6 +110,9 @@ class I2CExpanderFactory:
                 return PCF8574GPIO(pin, inverted, self._pcf8574.get(board_number))
             case "PCA9535":
                 return PCA9535GPIO(pin, inverted, self._pca9535.get(board_number))
+            case _:
+                msg = f"Unsupported I2C device type: {device_type}"
+                raise ValueError(msg)
 
     @property
     def has_enabled_devices(self) -> bool:

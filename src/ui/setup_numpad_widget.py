@@ -21,6 +21,7 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
         y_pos: int = 0,
         header_text: str = "Password",
         use_float: bool = False,
+        allow_negative: bool = False,
         overwrite_number: bool = False,
         header_is_entered_number: bool = False,
     ) -> None:
@@ -45,15 +46,20 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
             self.LHeader.setText(header_text)
         self.source_line_edit = le_to_write
         self._add_float(use_float)
+        self._add_minus(allow_negative)
         self.show()
         DP_CONTROLLER.set_display_settings(self, resize=False)
+
+    def minus_toggled(self, checked: bool) -> None:
+        """Add or remove minus sign in front based on PBminus state."""
+        text = self.source_line_edit.text()
+        new_text = f"-{text}" if checked else text.lstrip("-")
+        self.change_text(new_text)
 
     def number_clicked(self, number: int) -> None:
         """Add the clicked number to the lineedit."""
         text = str(number) if self.overwrite_number else f"{self.source_line_edit.text()}{number}"
-        self.source_line_edit.setText(text)
-        if self.header_is_entered_number:
-            self.LHeader.setText(text)
+        self.change_text(text)
 
     def enter_clicked(self) -> None:
         """Enters/Closes the Dialog."""
@@ -62,9 +68,7 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
     def del_clicked(self) -> None:
         """Delete the last digit in the lineedit."""
         current_string = self.source_line_edit.text()[:-1]
-        self.source_line_edit.setText(current_string)
-        if self.header_is_entered_number:
-            self.LHeader.setText(current_string)
+        self.change_text(current_string)
 
     def _add_float(self, use_float: bool) -> None:
         if not use_float:
@@ -72,9 +76,23 @@ class NumpadWidget(QDialog, Ui_NumpadWindow):
             return
         self.PBdot.clicked.connect(self._dot_clicked)
 
+    def _add_minus(self, allow_negative: bool) -> None:
+        if not allow_negative:
+            self.PBminus.deleteLater()
+            return
+        if self.source_line_edit.text().startswith("-"):
+            self.PBminus.setChecked(True)
+        self.PBminus.toggled.connect(self.minus_toggled)
+
     def _dot_clicked(self) -> None:
         """Add a dot if its not the first letter or a dot already exists."""
         current_string = self.source_line_edit.text()
         if "." in current_string or len(current_string) == 0:
             return
-        self.source_line_edit.setText(f"{self.source_line_edit.text()}.")
+        self.change_text(f"{self.source_line_edit.text()}.")
+
+    def change_text(self, new_text: str) -> None:
+        """Change the text in the lineedit and header."""
+        self.source_line_edit.setText(new_text)
+        if self.header_is_entered_number:
+            self.LHeader.setText(new_text)
