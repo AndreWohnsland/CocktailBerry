@@ -207,5 +207,5 @@ The adult flag will cycle between true and false for each new id.
 You can build the documentation locally using:
 
 ```bash
-uv run mkdocs serve
+uv run zensical serve
 ```
