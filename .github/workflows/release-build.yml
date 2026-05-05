@@ -30,7 +30,6 @@ jobs:
       - name: Set version in pyproject.toml and refresh lock
         run: |
           uv version "${{ steps.get_version.outputs.version }}"
-          uv lock
 
       - name: Commit changes
         env:
