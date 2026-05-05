@@ -69,8 +69,8 @@ const noop = () => {};
 
 export const DividedWithObjects: Story = {
   args: {
-    children: Array.from({ length: 4 }, (_, i) => (
-      <ObjectDisplay key={`obj-${i + 1}`}>
+    children: ['pump-a', 'pump-b', 'pump-c', 'pump-d'].map((slug, i) => (
+      <ObjectDisplay key={slug}>
         {[
           <TextInput key='name' value={`Pump ${i + 1}`} handleInputChange={noop} />,
           <NumberInput key='pin' value={i + 10} handleInputChange={noop} suffix='pin' />,

@@ -6,10 +6,10 @@ from annotated_types import Len
 from pydantic import BaseModel, Field
 
 from src.config.config_manager import StartupIssue
-from src.models import Event, PrepareResult
+from src.models import Event, OptionTiles, PrepareResult
 
 if TYPE_CHECKING:
-    from src.db_models import DbWaiter
+    from src.db_models import DbRole, DbWaiter
 
 T = TypeVar("T")
 
@@ -159,7 +159,7 @@ class SumupReaderCreate(BaseModel):
 PermissionKey = Literal["maker", "ingredients", "recipes", "bottles", "options"]
 
 
-class WaiterPermissions(BaseModel):
+class TabPermission(BaseModel):
     maker: bool = False
     ingredients: bool = False
     recipes: bool = False
@@ -167,35 +167,70 @@ class WaiterPermissions(BaseModel):
     options: bool = False
 
 
+class RoleResponse(BaseModel):
+    id: int
+    name: str
+    permissions: TabPermission
+    tile_permissions: OptionTiles
+
+    @classmethod
+    def from_db(cls, role: DbRole) -> RoleResponse:
+        return cls(
+            id=role.id,
+            name=role.name,
+            permissions=TabPermission(
+                maker=role.privilege_maker,
+                ingredients=role.privilege_ingredients,
+                recipes=role.privilege_recipes,
+                bottles=role.privilege_bottles,
+                options=role.privilege_options,
+            ),
+            tile_permissions=OptionTiles(**(role.tile_permissions or {})),
+        )
+
+
+class RoleCreate(BaseModel):
+    name: str
+    permissions: TabPermission = Field(default_factory=TabPermission)
+    tile_permissions: OptionTiles = Field(default_factory=OptionTiles)
+
+
+class RoleUpdate(BaseModel):
+    name: str | None = None
+    permissions: TabPermission | None = None
+    tile_permissions: OptionTiles | None = None
+
+
 class WaiterResponse(BaseModel):
     nfc_id: str
     name: str
-    permissions: WaiterPermissions
+    role_id: int
+    role: RoleResponse
+    permissions: TabPermission
+    tile_permissions: OptionTiles
 
     @classmethod
     def from_db(cls, waiter: DbWaiter) -> WaiterResponse:
+        role = RoleResponse.from_db(waiter.role)
         return cls(
             nfc_id=waiter.nfc_id,
             name=waiter.name,
-            permissions=WaiterPermissions(
-                maker=waiter.privilege_maker,
-                ingredients=waiter.privilege_ingredients,
-                recipes=waiter.privilege_recipes,
-                bottles=waiter.privilege_bottles,
-                options=waiter.privilege_options,
-            ),
+            role_id=role.id,
+            role=role,
+            permissions=role.permissions,
+            tile_permissions=role.tile_permissions,
         )
 
 
 class WaiterCreate(BaseModel):
     nfc_id: str
     name: str
-    permissions: WaiterPermissions | None = None
+    role_id: int
 
 
 class WaiterUpdate(BaseModel):
     name: str | None = None
-    permissions: WaiterPermissions | None = None
+    role_id: int | None = None
 
 
 class WaiterLogEntry(BaseModel):

@@ -8,6 +8,7 @@ from src.migration.qt_migrator import roll_back_to_qt_script
 from src.migration.squeekboard import create_and_start_squeekboard_service, stop_and_disable_squeekboard_service
 from src.migration.web_migrator import add_web_desktop_file, replace_backend_script
 from src.programs.addons import generate_skeleton_for
+from src.programs.blacklist import generate_blacklist
 from src.programs.clearing import clear_local_database
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
@@ -212,3 +213,15 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
         roll_back_to_qt_script()
         subprocess.run(["sudo", "python", str(QT_MIGRATION_SCRIPT.absolute())], check=True)
         typer.echo(typer.style("Switched back to Qt setup successfully!", fg=typer.colors.GREEN, bold=True))
+
+    @cli.command()
+    def generate_manufacturer_blacklist() -> None:
+        """Generate the manufacturer blacklist interactively.
+
+        As a manufacturer, you can use this command to blacklist certain configurations or options
+        that should not be shown to your enduser, customer or buyer of the machine.
+        This effectively means that you will not be able to manage or use these things over the UI.
+        This is especially useful if you are selling the machine to endusers and want to hide certain
+        options or configurations that are not relevant for them, to not overwhelm them with too many options.
+        """
+        generate_blacklist()

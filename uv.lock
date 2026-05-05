@@ -338,6 +338,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "gitpython" },
     { name = "gpiozero", marker = "sys_platform == 'linux'" },
+    { name = "inquirerprompt" },
     { name = "mfrc522", marker = "sys_platform == 'linux'" },
     { name = "pillow" },
     { name = "psutil" },
@@ -394,6 +395,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.135.2" },
     { name = "gitpython", specifier = ">=3.1.46" },
     { name = "gpiozero", marker = "sys_platform == 'linux'", specifier = ">=2.0.1" },
+    { name = "inquirerprompt", specifier = ">=0.3.4" },
     { name = "mfrc522", marker = "sys_platform == 'linux'", specifier = ">=0.0.7" },
     { name = "pillow", specifier = ">=12.1.1" },
     { name = "psutil", specifier = ">=6.0.0" },
@@ -847,6 +849,19 @@ wheels = [
 ]
 
 [[package]]
+name = "inquirerprompt"
+version = "0.3.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pfzy" },
+    { name = "prompt-toolkit" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b9/c9/3028c383f4ba1d2fc52cc110ce4a2a9aabf784b646ad0eb36b647ada8b73/inquirerprompt-0.3.4.tar.gz", hash = "sha256:553387d8da4a6f55562f2f19570ef9f2ab0a71d3d6e1bf7d2b475359472860be", size = 42705, upload-time = "2026-03-14T15:54:17.011Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/e8/c9d17f753f1ffe367daa706be623c399d34d1461afbb53b48a9d6599ef9b/inquirerprompt-0.3.4-py3-none-any.whl", hash = "sha256:08461096b8fa7a601fba6bf79f82b482ebe26250e2862f8edfcd240597c90840", size = 68593, upload-time = "2026-03-14T15:54:15.487Z" },
+]
+
+[[package]]
 name = "ipykernel"
 version = "7.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1194,6 +1209,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f", size = 166450, upload-time = "2023-11-25T09:07:26.339Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9e/c3/059298687310d527a58bb01f3b1965787ee3b40dce76752eda8b44e9a2c5/pexpect-4.9.0-py2.py3-none-any.whl", hash = "sha256:7236d1e080e4936be2dc3e326cec0af72acf9212a7e1d060210e70a47e253523", size = 63772, upload-time = "2023-11-25T06:56:14.81Z" },
+]
+
+[[package]]
+name = "pfzy"
+version = "0.3.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/5a/32b50c077c86bfccc7bed4881c5a2b823518f5450a30e639db5d3711952e/pfzy-0.3.4.tar.gz", hash = "sha256:717ea765dd10b63618e7298b2d98efd819e0b30cd5905c9707223dceeb94b3f1", size = 8396, upload-time = "2022-01-28T02:26:17.946Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8c/d7/8ff98376b1acc4503253b685ea09981697385ce344d4e3935c2af49e044d/pfzy-0.3.4-py3-none-any.whl", hash = "sha256:5f50d5b2b3207fa72e7ec0ef08372ef652685470974a107d0d4999fc5a903a96", size = 8537, upload-time = "2022-01-28T02:26:16.047Z" },
 ]
 
 [[package]]

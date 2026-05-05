@@ -9,7 +9,9 @@ BACKUP_FOLDER = HOME_PATH / "cb_backup"
 # Ensure the backup directory exists
 BACKUP_FOLDER.mkdir(parents=True, exist_ok=True)
 VENV_FOLDER = ROOT_PATH / ".venv"
+PYPROJECT_FILE = ROOT_PATH / "pyproject.toml"
 CUSTOM_CONFIG_FILE = ROOT_PATH / "custom_config.yaml"
+BLACKLIST_FILE = ROOT_PATH / "blacklist.json"
 VERSION_FILE = ROOT_PATH / ".version.ini"
 LOG_FOLDER = ROOT_PATH / "logs"
 SAVE_FOLDER = ROOT_PATH / "saves"

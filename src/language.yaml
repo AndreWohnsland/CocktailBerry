@@ -259,6 +259,9 @@ dialog:
   element_already_exists:
     en: 'Element {element_name} already exists!'
     de: 'Element {element_name} gibt es schon!'
+  role_in_use:
+    en: 'Role {element_name} is still assigned to one or more waiters and cannot be deleted.'
+    de: 'Rolle {element_name} ist noch einem oder mehreren Mitarbeitern zugewiesen und kann nicht gelöscht werden.'
   cocktail_in_progress:
     en: 'A preparation is currently in progress. Please wait until it is finished.'
     de: 'Eine Zubereitung is bereits im Gange. Bitte warte, bis diese fertig ist.'
@@ -1058,6 +1061,54 @@ ui:
     statistics:
       en: 'Statistics'
       de: 'Statistik'
+    roles:
+      en: 'Roles'
+      de: 'Rollen'
+    role_label:
+      en: 'Role'
+      de: 'Rolle'
+    select_role:
+      en: 'Select a role'
+      de: 'Rolle auswählen'
+    no_roles_yet:
+      en: 'No roles defined yet. Create one in the Roles tab.'
+      de: 'Noch keine Rollen vorhanden. Lege eine im Tab "Rollen" an.'
+    create_role:
+      en: 'Create Role'
+      de: 'Rolle erstellen'
+    role_name_placeholder:
+      en: 'Role name'
+      de: 'Rollenname'
+    tab_permissions_label:
+      en: 'Tab Permissions'
+      de: 'Tab-Berechtigungen'
+    tile_permissions_label:
+      en: 'Option Tile Permissions'
+      de: 'Optionskachel-Berechtigungen'
+    tile_group_system:
+      en: 'System'
+      de: 'System'
+    tile_group_configuration:
+      en: 'Configuration'
+      de: 'Konfiguration'
+    tile_group_data:
+      en: 'Data'
+      de: 'Daten'
+    tile_group_hardware:
+      en: 'Hardware'
+      de: 'Hardware'
+    tile_group_maintenance:
+      en: 'Maintenance'
+      de: 'Wartung'
+    registered_roles:
+      en: 'Defined Roles'
+      de: 'Definierte Rollen'
+    no_roles:
+      en: 'No roles defined.'
+      de: 'Keine Rollen definiert.'
+    confirm_delete_role:
+      en: 'Do you want to delete the role "{name}"?'
+      de: 'Möchtest du die Rolle "{name}" löschen?'
     last_scanned:
       en: 'Last scanned NFC'
       de: 'Zuletzt gescannte NFC'
@@ -1139,6 +1190,15 @@ ui:
     waiter_deleted:
       en: 'Service Personnel deleted.'
       de: 'Servicepersonal gelöscht.'
+    role_created:
+      en: 'Role created.'
+      de: 'Rolle erstellt.'
+    role_updated:
+      en: 'Role updated.'
+      de: 'Rolle aktualisiert.'
+    role_deleted:
+      en: 'Role deleted.'
+      de: 'Rolle gelöscht.'
     no_logs:
       en: 'No statistics available.'
       de: 'Keine Statistik verfügbar.'
