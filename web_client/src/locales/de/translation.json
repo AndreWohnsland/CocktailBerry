@@ -263,6 +263,7 @@
     "lockTitle": "Servicepersonal Scan erforderlich",
     "lockMessage": "Bitte scanne deinen NFC-Tag, um dich als Servicepersonal anzumelden.",
     "lastScanned": "Zuletzt gescannte NFC-ID",
+    "nfcNotRegistered": "Gescannter NFC-Tag ist nicht registriert",
     "registerWaiter": "Neues Servicepersonal registrieren",
     "nfcIdPlaceholder": "NFC-ID",
     "namePlaceholder": "Servicepersonal Name",

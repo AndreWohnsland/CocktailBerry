@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { type UseQueryResult, useQuery } from 'react-query';
 import type { CurrentWaiterState, Waiter, WaiterCreate, WaiterLogEntry, WaiterUpdate } from '../types/models';
-import { API_URL, axiosInstance } from './common';
+import { axiosInstance } from './common';
+import { useReconnectingWebSocket } from './useReconnectingWebSocket';
 
 const waitersUrl = '/waiters';
-
-const RECONNECT_BASE_DELAY_MS = 1_000;
-const RECONNECT_MAX_DELAY_MS = 16_000;
 
 // Logout
 
@@ -64,80 +62,24 @@ export const useCurrentWaiter = (enabled: boolean): UseQueryResult<Waiter | null
 
 export const useWaiterWebSocket = (enabled: boolean) => {
   const [waiter, setWaiter] = useState<CurrentWaiterState | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
   const prevStateRef = useRef<string | null>(null);
 
-  useEffect(() => {
-    if (!enabled) {
-      setWaiter(null);
-      setIsConnected(false);
-      prevStateRef.current = null;
-      return undefined;
-    }
-
-    let disposed = false;
-    let reconnectAttempt = 0;
-    let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-    let ws: WebSocket | null = null;
-
-    const connect = () => {
-      if (disposed) return;
-      const wsUrl = `${API_URL.replace(/^http/, 'ws')}/waiters/ws/current`;
-      ws = new WebSocket(wsUrl);
-      let wasConnected = false;
-
-      ws.onopen = () => {
-        console.log('Waiter WebSocket connected');
-        wasConnected = true;
-        reconnectAttempt = 0;
-        setIsConnected(true);
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const data: CurrentWaiterState = JSON.parse(event.data);
-          // Use serialized string to detect any change (nfc_id, waiter)
-          const stateKey = JSON.stringify(data);
-          if (stateKey !== prevStateRef.current) {
-            prevStateRef.current = stateKey;
-            setWaiter(data);
-          }
-        } catch (error) {
-          console.error('Error parsing waiter WebSocket message:', error);
-        }
-      };
-
-      ws.onerror = (error) => {
-        if (wasConnected) {
-          console.error('Waiter WebSocket error:', error);
-        }
-      };
-
-      ws.onclose = () => {
-        if (wasConnected) {
-          console.log('Waiter WebSocket closed');
-        }
-        setIsConnected(false);
-        // Schedule reconnection with exponential backoff
-        if (!disposed) {
-          const delay = Math.min(RECONNECT_BASE_DELAY_MS * 2 ** reconnectAttempt, RECONNECT_MAX_DELAY_MS);
-          reconnectAttempt += 1;
-          console.log(`Waiter WebSocket reconnecting in ${delay}ms (attempt ${reconnectAttempt})`);
-          reconnectTimer = setTimeout(connect, delay);
-        }
-      };
-    };
-
-    connect();
-
-    return () => {
-      disposed = true;
-      if (reconnectTimer) {
-        clearTimeout(reconnectTimer);
+  const { isConnected } = useReconnectingWebSocket<CurrentWaiterState>({
+    enabled,
+    path: '/waiters/ws/current',
+    label: 'Waiter',
+    onMessage: (data) => {
+      const stateKey = JSON.stringify(data);
+      if (stateKey !== prevStateRef.current) {
+        prevStateRef.current = stateKey;
+        setWaiter(data);
       }
-      ws?.close();
-    };
-  }, [enabled]);
+    },
+    onReset: () => {
+      setWaiter(null);
+      prevStateRef.current = null;
+    },
+  });
 
   return { waiter, isConnected };
 };

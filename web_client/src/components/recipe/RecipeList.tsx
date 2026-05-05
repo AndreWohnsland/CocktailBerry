@@ -110,7 +110,8 @@ const RecipeList: React.FC = () => {
   };
 
   const handleUploadImage = async () => {
-    if (!selectedCocktail?.id) {
+    const cocktailId = selectedCocktail?.id;
+    if (!cocktailId) {
       errorToast('Recipe needs to be created before uploading image.');
       return;
     }
@@ -119,19 +120,16 @@ const RecipeList: React.FC = () => {
       errorToast('Please select a file before uploading.');
       return;
     }
-    // biome-ignore lint/style/noNonNullAssertion: will always be defined here
-    const success = await executeAndShow(() => uploadCocktailImage(selectedCocktail.id!, file));
+    const success = await executeAndShow(() => uploadCocktailImage(cocktailId, file));
     if (success) {
       refetch();
     }
   };
 
   const handleDeleteImage = async () => {
-    if (!selectedCocktail?.id) return;
-    const success = await confirmAndExecute(t('recipes.deleteExistingImage'), () =>
-      // biome-ignore lint/style/noNonNullAssertion: will always be defined here
-      deleteCocktailImage(selectedCocktail.id!),
-    );
+    const cocktailId = selectedCocktail?.id;
+    if (!cocktailId) return;
+    const success = await confirmAndExecute(t('recipes.deleteExistingImage'), () => deleteCocktailImage(cocktailId));
     if (success) {
       refetch();
     }
