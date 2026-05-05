@@ -22,14 +22,13 @@ jobs:
           VERSION=${VERSION#v}
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
-      - name: Install the latest version of uv using Python 3.13
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-        with:
-          python-version: "3.13"
-
-      - name: Set version in pyproject.toml and refresh lock
+      - name: Update version in pyproject.toml
         run: |
-          uv version "${{ steps.get_version.outputs.version }}"
+          sed -i "/^version = \".*\"$/s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" pyproject.toml
+
+      - name: Update version in uv.lock for cocktailberry
+        run: |
+          sed -i "/name = \"cocktailberry\"/,/version = \".*\"/ s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" uv.lock
 
       - name: Commit changes
         env:
