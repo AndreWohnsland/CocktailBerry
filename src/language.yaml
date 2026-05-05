@@ -250,7 +250,7 @@ dialog:
   ask_restricted_mode:
     en: 'Do you want to enable restricted mode? Only the cocktail maker will be accessible. You can still access configuration with the master password.'
     de: 'Möchten Sie den eingeschränkten Modus aktivieren? Nur der Cocktail-Maker wird zugänglich sein. Sie können weiterhin mit dem Master-Passwort auf die Konfiguration zugreifen.'
-    pl: 'Czy chcesz włączyć tryb ograniczony? Dostępny będzie tylko automat do koktajli. Nadal możesz wejść w konfigurację hasłem master.'
+    pl: 'Czy chcesz włączyć tryb ograniczony? Dostępny będzie tylko Koktajl Maker. Nadal możesz uzyskać dostęp do konfiguracji za pomocą hasła głównego.'
   backup_created:
     en: 'Backup has been created at: {folder}.'
     de: 'Backup wurde unter {folder} gespeichert.'
@@ -339,6 +339,10 @@ dialog:
     en: 'Element {element_name} already exists!'
     de: 'Element {element_name} gibt es schon!'
     pl: 'Element {element_name} już istnieje!'
+  role_in_use:
+    en: 'Role {element_name} is still assigned to one or more waiters and cannot be deleted.'
+    de: 'Rolle {element_name} ist noch einem oder mehreren Mitarbeitern zugewiesen und kann nicht gelöscht werden.'
+    pl: 'Rola {element_name} jest nadal przypisana do jednego lub większej liczby osób obsługi i nie może zostać usunięta.'
   cocktail_in_progress:
     en: 'A preparation is currently in progress. Please wait until it is finished.'
     de: 'Eine Zubereitung is bereits im Gange. Bitte warte, bis diese fertig ist.'
@@ -821,7 +825,7 @@ ui:
     header_master_password:
       en: 'Enter master password:'
       de: 'Passwort eingeben:'
-      pl: 'Wprowadź hasło administratora:'
+      pl: 'Wprowadź hasło główne:'
     header_maker_password:
       en: 'Enter maker password:'
       de: 'Maker Passwort eingeben:'
@@ -924,7 +928,7 @@ ui:
     UI_MASTERPASSWORD:
       en: 'Password for critical actions and to get to settings, use 0 for no password'
       de: 'Passwort für kritische Aktionen und um zu den Einstellungen zu kommen, verwende 0 um kein Passwort zu verwenden'
-      pl: 'Hasło do krytycznych akcji i ustawień, użyj 0 aby wyłączyć hasło'
+      pl: 'Hasło do ustawień i akcji krytycznych, użyj 0 aby wyłączyć hasło'
     UI_MAKER_PASSWORD:
       en: 'Password for tabs other than the maker one, use 0 for no password'
       de: 'Passwort alle Tabs, außer den Maker Tab, verwende 0 um kein Passwort zu verwenden'
@@ -1370,6 +1374,70 @@ ui:
       en: 'Statistics'
       de: 'Statistik'
       pl: 'Statystyki'
+    roles:
+      en: 'Roles'
+      de: 'Rollen'
+      pl: 'Role'
+    role_label:
+      en: 'Role'
+      de: 'Rolle'
+      pl: 'Rola'
+    select_role:
+      en: 'Select a role'
+      de: 'Rolle auswählen'
+      pl: 'Wybierz rolę'
+    no_roles_yet:
+      en: 'No roles defined yet. Create one in the Roles tab.'
+      de: 'Noch keine Rollen vorhanden. Lege eine im Tab "Rollen" an.'
+      pl: 'Nie zdefiniowano jeszcze żadnych ról. Utwórz jedną w zakładce "Role".'
+    create_role:
+      en: 'Create Role'
+      de: 'Rolle erstellen'
+      pl: 'Utwórz rolę'
+    role_name_placeholder:
+      en: 'Role name'
+      de: 'Rollenname'
+      pl: 'Nazwa roli'
+    tab_permissions_label:
+      en: 'Tab Permissions'
+      de: 'Tab-Berechtigungen'
+      pl: 'Uprawnienia zakładek'
+    tile_permissions_label:
+      en: 'Option Tile Permissions'
+      de: 'Optionskachel-Berechtigungen'
+      pl: 'Uprawnienia kafelków opcji'
+    tile_group_system:
+      en: 'System'
+      de: 'System'
+      pl: 'System'
+    tile_group_configuration:
+      en: 'Configuration'
+      de: 'Konfiguration'
+      pl: 'Konfiguracja'
+    tile_group_data:
+      en: 'Data'
+      de: 'Daten'
+      pl: 'Dane'
+    tile_group_hardware:
+      en: 'Hardware'
+      de: 'Hardware'
+      pl: 'Sprzęt'
+    tile_group_maintenance:
+      en: 'Maintenance'
+      de: 'Wartung'
+      pl: 'Konserwacja'
+    registered_roles:
+      en: 'Defined Roles'
+      de: 'Definierte Rollen'
+      pl: 'Zdefiniowane role'
+    no_roles:
+      en: 'No roles defined.'
+      de: 'Keine Rollen definiert.'
+      pl: 'Nie zdefiniowano żadnych ról.'
+    confirm_delete_role:
+      en: 'Do you want to delete the role "{name}"?'
+      de: 'Möchtest du die Rolle "{name}" löschen?'
+      pl: 'Czy chcesz usunąć rolę "{name}"?'
     last_scanned:
       en: 'Last scanned NFC'
       de: 'Zuletzt gescannte NFC'
@@ -1478,6 +1546,18 @@ ui:
       en: 'Service Personnel deleted.'
       de: 'Servicepersonal gelöscht.'
       pl: 'Usunięto perspnel obsługujący.'
+    role_created:
+      en: 'Role created.'
+      de: 'Rolle erstellt.'
+      pl: 'Rola została utworzona.'
+    role_updated:
+      en: 'Role updated.'
+      de: 'Rolle aktualisiert.'
+      pl: 'Rola została zaktualizowana.'
+    role_deleted:
+      en: 'Role deleted.'
+      de: 'Rolle gelöscht.'
+      pl: 'Rola została usunięta.'  
     no_logs:
       en: 'No statistics available.'
       de: 'Keine Statistik verfügbar.'
