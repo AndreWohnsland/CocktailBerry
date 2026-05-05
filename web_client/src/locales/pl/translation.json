@@ -70,7 +70,7 @@
     "enableAll": "Włącz wszystkie",
     "name": "Nazwa",
     "enabled": "Włączony",
-    "virginAvailable": "Wersja bezalkoholowa dostępna",
+    "virginAvailable": "Dostępna jest wersja bezalkoholowa",
     "price": "Cena",
     "addIngredient": "Dodaj składnik",
     "selectIngredient": "Wybierz składnik",
@@ -137,6 +137,24 @@
     "continuePumping": "Kontynuuj pompowanie",
     "next": "Dalej"
   },
+  "scaleCalibration": {
+    "header": "Kalibracja wagi",
+    "notAvailable": "Waga jest niedostępna. Najpierw włącz i skonfiguruj wagę.",
+    "loading": "Ładowanie ...",
+    "tareInstruction": "Usuń wszystko z wagi i naciśnij Taruj, aby wyzerować wskazanie.",
+    "tareSuccess": "Waga została pomyślnie wytarowana",
+    "tare": "Taruj",
+    "placeWeightInstruction": "Połóż na wadze znany ciężar i wpisz jego masę poniżej.",
+    "knownWeight": "Znana masa (g)",
+    "readWeight": "Odczytaj aktualną masę",
+    "currentReading": "Aktualny odczyt: {{weight}} g",
+    "calibrate": "Kalibruj",
+    "calibrationDone": "Kalibracja zakończona!",
+    "newFactor": "Nowy współczynnik kalibracji: {{factor}}",
+    "newZeroOffset": "Przesuniecie zera: {{offset}}",
+    "recalibrate": "Kalibruj ponownie",
+    "backToTare": "Powrót do tarowania"
+  },
   "data": {
     "data": "Dane",
     "noData": "Brak danych",
@@ -191,7 +209,7 @@
     "reset": "Nie pokazuj ponownie"
   },
   "timeManager": {
-    "adjustTime": "Ustaw czas i datę",
+    "adjustTime": "Ustaw datę i czas",
     "adjustTimeConfirmation": "Czy chcesz ustawić czas systemowy na podane dane?"
   },
   "resources": {
@@ -257,7 +275,7 @@
     "statsSummary": "{{count}} koktajli, {{volume}} ml łącznie",
     "permissionsLabel": "Uprawnienia",
     "permissions": {
-      "maker": "Automat",
+      "maker": "Maker",
       "ingredients": "Składniki",
       "recipes": "Przepisy",
       "bottles": "Butelki",
