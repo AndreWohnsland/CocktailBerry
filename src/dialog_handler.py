@@ -14,7 +14,7 @@ import yaml
 try:
     from PyQt6.QtCore import Qt
     from PyQt6.QtGui import QIcon
-    from PyQt6.QtWidgets import QApplication, QDialog, QFileDialog
+    from PyQt6.QtWidgets import QApplication, QDialog, QFileDialog, QWidget
 except ModuleNotFoundError:
     pass
 
@@ -150,6 +150,7 @@ allowed_keys = Literal[
     "recipe_help",
     "recipe_updated",
     "restart_config",
+    "role_in_use",
     "scale_calibrated",
     "scale_known_weight_positive",
     "scale_tared",
@@ -915,6 +916,9 @@ class UiLanguage:
         window = "waiter_window"
         w.waiter_tabs.setTabText(w.waiter_tabs.indexOf(w.tab_management), self._choose_language("management", window))
         w.waiter_tabs.setTabText(w.waiter_tabs.indexOf(w.tab_statistics), self._choose_language("statistics", window))
+        tab_roles: QWidget | None = getattr(w, "tab_roles", None)
+        if tab_roles is not None:
+            w.waiter_tabs.setTabText(w.waiter_tabs.indexOf(tab_roles), self._choose_language("roles", window))
 
     def adjust_sumup_window(self, w: Ui_SumupWindow) -> None:
         """Translate the elements from the sumup window."""

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import concurrent.futures
 import contextlib
+import multiprocessing
 from typing import TYPE_CHECKING
 
 from src.logger_handler import LoggerHandler
@@ -17,7 +17,16 @@ _logger = LoggerHandler("scale")
 
 __all__ = ["HX711Scale", "NAU7802Scale", "ScaleInterface", "create_scale"]
 
-_SCALE_HEALTH_CHECK_TIMEOUT = 1.0
+_SCALE_HEALTH_CHECK_TIMEOUT = 2.0
+
+
+def _forked_read(scale: ScaleInterface, queue: multiprocessing.Queue) -> None:  # type: ignore[type-arg]
+    """Target for the health-check subprocess: put True on success, False on error."""
+    try:
+        scale.read_raw(1)
+        queue.put(True)
+    except Exception:
+        queue.put(False)
 
 
 def _health_check(scale: ScaleInterface) -> ScaleInterface | None:
@@ -25,25 +34,32 @@ def _health_check(scale: ScaleInterface) -> ScaleInterface | None:
 
     Returns the scale on success, or None (after cleanup) if the call blocks
     or raises — indicating the hardware is not connected or not working.
-    This is necessary because some scale drivers (especially HX711) will block indefinitely
-    if the hardware is not present, which would break the entire program on use.
+    The check runs in a forked subprocess so it can be forcefully killed if
+    the driver blocks indefinitely (e.g. HX711 with no hardware present).
     """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        future = executor.submit(scale.read_raw, 1)
-        try:
-            future.result(timeout=_SCALE_HEALTH_CHECK_TIMEOUT)
-            return scale
-        except concurrent.futures.TimeoutError:
-            _logger.log_event(
-                "ERROR",
-                f"Scale health check timed out after {_SCALE_HEALTH_CHECK_TIMEOUT}s — "
-                "no hardware connected? Deactivating scale.",
-            )
-        except Exception as exc:
-            _logger.log_event("ERROR", f"Scale health check failed: {exc} — Deactivating scale.")
-    with contextlib.suppress(Exception):
-        scale.cleanup()
-    return None
+    ctx = multiprocessing.get_context("fork")
+    queue: multiprocessing.Queue = ctx.Queue()  # type: ignore[type-arg]
+    proc = ctx.Process(target=_forked_read, args=(scale, queue), daemon=True)
+    proc.start()
+    proc.join(timeout=_SCALE_HEALTH_CHECK_TIMEOUT)
+    if proc.is_alive():
+        proc.kill()
+        proc.join()
+        _logger.log_event(
+            "ERROR",
+            f"Scale health check timed out after {_SCALE_HEALTH_CHECK_TIMEOUT}s — "
+            "no hardware connected? Deactivating scale.",
+        )
+        with contextlib.suppress(Exception):
+            scale.cleanup()
+        return None
+    success = not queue.empty() and queue.get_nowait()
+    if not success:
+        _logger.log_event("ERROR", "Scale health check failed — Deactivating scale.")
+        with contextlib.suppress(Exception):
+            scale.cleanup()
+        return None
+    return scale
 
 
 def create_scale(config: BaseScaleConfig, hardware: HardwareContext) -> ScaleInterface | None:

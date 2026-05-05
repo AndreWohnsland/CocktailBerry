@@ -2,7 +2,7 @@ name: Update version, build & publish CocktailBerry images
 run-name: "Version: ${{ github.event.release.tag_name }}, build and publish images"
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 jobs:
   update-version:
@@ -22,17 +22,14 @@ jobs:
           VERSION=${VERSION#v}
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
-      - name: Update version in src/__init__.py
-        run: |
-          sed -i "s/__version__ = \".*\"/__version__ = \"${{ steps.get_version.outputs.version }}\"/" src/__init__.py
+      - name: Install the latest version of uv using Python 3.13
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: "3.13"
 
-      - name: Update version in pyproject.toml
+      - name: Set version in pyproject.toml and refresh lock
         run: |
-          sed -i "/^version = \".*\"$/s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" pyproject.toml
-
-      - name: Update version in uv.lock for cocktailberry
-        run: |
-          sed -i "/name = \"cocktailberry\"/,/version = \".*\"/ s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" uv.lock
+          uv version "${{ steps.get_version.outputs.version }}"
 
       - name: Commit changes
         env:

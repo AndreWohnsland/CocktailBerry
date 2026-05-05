@@ -4,10 +4,15 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QCheckBox, QHBoxLayout, QMainWindow, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QMainWindow, QVBoxLayout, QWidget
 
 from src.config.config_manager import shared
-from src.database_commander import DatabaseCommander, ElementAlreadyExistsError, ElementNotFoundError
+from src.database_commander import (
+    DatabaseCommander,
+    ElementAlreadyExistsError,
+    ElementNotFoundError,
+    RoleInUseError,
+)
 from src.db_models import DbWaiterLog
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -18,6 +23,16 @@ from src.ui_elements.clickablelineedit import ClickableLineEdit
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
+
+
+_TILE_GROUPS: dict[str, tuple[str, ...]] = {
+    "system": ("reboot", "shutdown", "internet_check", "update_system", "update_software"),
+    "configuration": ("configuration", "addons", "sumup", "wifi", "adjust_time", "rfid"),
+    "data": ("data", "logs", "system_resource_usage", "events", "news", "about", "issues"),
+    "hardware": ("cleaning", "calibration", "scale_calibration"),
+    "maintenance": ("backup", "restore", "waiters", "recipe_calculation"),
+}
+_ALL_TILE_KEYS: tuple[str, ...] = tuple(key for keys in _TILE_GROUPS.values() for key in keys)
 
 
 class WaiterWindow(QMainWindow, Ui_WaiterWindow):
@@ -36,10 +51,14 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
 
         self._last_seen_nfc_id: str | None = None
         self._editing_nfc_id: str | None = None
+        self._editing_role_id: int | None = None
+        self._edit_name_input: ClickableLineEdit | None = None
+        self._edit_role_combo: QComboBox | None = None
 
         UI_LANGUAGE.adjust_waiter_window(self)
         self._render_management()
         self._render_statistics()
+        self._render_roles()
 
         self._scan_timer = QTimer(self)
         self._scan_timer.timeout.connect(self._refresh_scan_state)
@@ -57,6 +76,8 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
     def _on_tab_changed(self) -> None:
         if self.waiter_tabs.currentWidget() == self.tab_statistics:
             self._render_statistics()
+        elif self.waiter_tabs.currentWidget() == self.tab_roles:
+            self._render_roles()
 
     def _render_management(self) -> None:
         DP_CONTROLLER.delete_items_of_layout(self.data_container_management)
@@ -98,11 +119,11 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         self.data_container_management.addWidget(self._create_name_input)
 
         self.data_container_management.addWidget(
-            create_label(UI_LANGUAGE.get_translation("permissions_label", "waiter_window"), FontSize.MEDIUM, min_h=30)
+            create_label(UI_LANGUAGE.get_translation("role_label", "waiter_window"), FontSize.MEDIUM, min_h=30)
         )
-        create_permissions_layout = QHBoxLayout()
-        self._create_permission_boxes = self._build_permission_checkboxes(create_permissions_layout, default_maker=True)
-        self.data_container_management.addLayout(create_permissions_layout)
+        self._create_role_combo = QComboBox()
+        adjust_font(self._create_role_combo, MEDIUM_FONT)
+        self.data_container_management.addWidget(self._create_role_combo)
 
         create_btn = create_button(
             UI_LANGUAGE.get_translation("create_waiter", "waiter_window"),
@@ -113,10 +134,6 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         create_btn.clicked.connect(self._create_waiter)
         self.data_container_management.addItem(create_spacer(10))
         self.data_container_management.addWidget(create_btn)
-
-        self._edit_section_widget = QWidget(self.scrollAreaWidgetContents_3)
-        self._edit_section_widget.setVisible(False)
-        self._render_edit_section()
 
         self.data_container_management.addItem(create_spacer(10))
         self._add_section_header(
@@ -129,8 +146,9 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
 
         self._refresh_waiters_list()
 
-    def _render_edit_section(self) -> None:
-        layout = QVBoxLayout(self._edit_section_widget)
+    def _create_edit_section_widget(self, selected_role_id: int) -> QWidget:
+        edit_section_widget = QWidget(self.scrollAreaWidgetContents_3)
+        layout = QVBoxLayout(edit_section_widget)
 
         self._edit_name_input = ClickableLineEdit()
         self._edit_name_input.setPlaceholderText(UI_LANGUAGE.get_translation("name_placeholder", "waiter_window"))
@@ -140,14 +158,15 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
 
         layout.addWidget(
             create_label(
-                UI_LANGUAGE.get_translation("permissions_label", "waiter_window"),
+                UI_LANGUAGE.get_translation("role_label", "waiter_window"),
                 FontSize.MEDIUM,
                 min_h=30,
             )
         )
-        permission_layout = QHBoxLayout()
-        self._edit_permission_boxes = self._build_permission_checkboxes(permission_layout, default_maker=True)
-        layout.addLayout(permission_layout)
+        self._edit_role_combo = QComboBox()
+        adjust_font(self._edit_role_combo, MEDIUM_FONT)
+        self._populate_role_combo(self._edit_role_combo, selected_role_id=selected_role_id)
+        layout.addWidget(self._edit_role_combo)
         layout.addItem(create_spacer(10))
 
         actions = QHBoxLayout()
@@ -167,6 +186,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         actions.addWidget(save_btn)
         actions.addWidget(cancel_btn)
         layout.addLayout(actions)
+        return edit_section_widget
 
     def _build_permission_checkboxes(self, layout: QHBoxLayout, default_maker: bool) -> dict[str, QCheckBox]:
         boxes: dict[str, QCheckBox] = {}
@@ -202,20 +222,21 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
     def _create_waiter(self) -> None:
         nfc_id = self._create_nfc_input.text().strip()
         name = self._create_name_input.text().strip()
-        if not nfc_id or not name:
+        role_id = self._create_role_combo.currentData()
+        if not nfc_id or not name or role_id is None:
             DP_CONTROLLER.say_some_value_missing()
             return
-        permissions = self._collect_permissions(self._create_permission_boxes)
         try:
-            DatabaseCommander().create_waiter(nfc_id=nfc_id, name=name, permissions=permissions)
+            DatabaseCommander().create_waiter(nfc_id=nfc_id, name=name, role_id=int(role_id))
         except ElementAlreadyExistsError:
             DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_exists", "waiter_window"))
+            return
+        except ElementNotFoundError:
+            DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("no_roles_yet", "waiter_window"))
             return
 
         self._create_nfc_input.clear()
         self._create_name_input.clear()
-        for key, checkbox in self._create_permission_boxes.items():
-            checkbox.setChecked(key == "maker")
 
         DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_created", "waiter_window"), close_time=5)
         self._refresh_waiters_list()
@@ -225,24 +246,20 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         if waiter is None:
             return
         self._editing_nfc_id = nfc_id
-        self._edit_name_input.setText(waiter.name)
-        self._edit_permission_boxes["maker"].setChecked(waiter.privilege_maker)
-        self._edit_permission_boxes["ingredients"].setChecked(waiter.privilege_ingredients)
-        self._edit_permission_boxes["recipes"].setChecked(waiter.privilege_recipes)
-        self._edit_permission_boxes["bottles"].setChecked(waiter.privilege_bottles)
-        self._edit_permission_boxes["options"].setChecked(waiter.privilege_options)
         self._refresh_waiters_list()
 
     def _save_waiter(self) -> None:
         if self._editing_nfc_id is None:
             return
+        if self._edit_name_input is None or self._edit_role_combo is None:
+            return
         edit_name = self._edit_name_input.text().strip()
-        if not edit_name:
+        role_id = self._edit_role_combo.currentData()
+        if not edit_name or role_id is None:
             DP_CONTROLLER.say_some_value_missing()
             return
-        permissions = self._collect_permissions(self._edit_permission_boxes)
         try:
-            DatabaseCommander().update_waiter(self._editing_nfc_id, name=edit_name, permissions=permissions)
+            DatabaseCommander().update_waiter(self._editing_nfc_id, name=edit_name, role_id=int(role_id))
         except ElementAlreadyExistsError:
             DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_exists", "waiter_window"))
             return
@@ -256,7 +273,8 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
 
     def _cancel_edit(self) -> None:
         self._editing_nfc_id = None
-        self._edit_section_widget.setVisible(False)
+        self._edit_name_input = None
+        self._edit_role_combo = None
         self._refresh_waiters_list()
 
     def _delete_waiter(self, nfc_id: str, waiter_name: str) -> None:
@@ -274,8 +292,11 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         self._render_statistics()
 
     def _refresh_waiters_list(self) -> None:
-        self._edit_section_widget.setVisible(False)
+        self._edit_name_input = None
+        self._edit_role_combo = None
         DP_CONTROLLER.delete_items_of_layout(self._waiter_list_layout)
+
+        self._populate_role_combo(self._create_role_combo)
 
         waiters = DatabaseCommander().get_all_waiters()
         if not waiters:
@@ -286,8 +307,11 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
 
         for waiter in waiters:
             if self._editing_nfc_id == waiter.nfc_id:
-                self._waiter_list_layout.addWidget(self._edit_section_widget)
-                self._edit_section_widget.setVisible(True)
+                edit_section_widget = self._create_edit_section_widget(waiter.role_id)
+                edit_name_input = self._edit_name_input
+                if edit_name_input is not None:
+                    edit_name_input.setText(waiter.name)
+                self._waiter_list_layout.addWidget(edit_section_widget)
                 self._waiter_list_layout.addItem(create_spacer(10))
 
             card = QWidget()
@@ -299,14 +323,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
             )
             card_layout.addWidget(create_label(f"{waiter.name}{active_suffix}", FontSize.MEDIUM, bold=True))
             card_layout.addWidget(create_label(waiter.nfc_id, FontSize.SMALL))
-
-            permission_names = [
-                UI_LANGUAGE.get_translation(f"permission_{key}", "waiter_window")
-                for key in self._PERMISSION_KEYS
-                if bool(getattr(waiter, f"privilege_{key}"))
-            ]
-            if permission_names:
-                card_layout.addWidget(create_label(", ".join(permission_names), FontSize.SMALL, css_class="secondary"))
+            card_layout.addWidget(create_label(waiter.role.name, FontSize.SMALL, css_class="secondary"))
             card_layout.addItem(create_spacer(4))
 
             action_layout = QHBoxLayout()
@@ -397,6 +414,268 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
     def _collect_permissions(self, checkboxes: dict[str, QCheckBox]) -> dict[str, bool]:
         return {key: box.isChecked() for key, box in checkboxes.items()}
 
+    def _populate_role_combo(self, combo: QComboBox, selected_role_id: int | None = None) -> None:
+        combo.blockSignals(True)
+        combo.clear()
+        roles = DatabaseCommander().get_all_roles()
+        for role in roles:
+            combo.addItem(role.name, role.id)
+        if selected_role_id is not None:
+            for index in range(combo.count()):
+                if combo.itemData(index) == selected_role_id:
+                    combo.setCurrentIndex(index)
+                    break
+        combo.blockSignals(False)
+
+    # ---------- Roles tab ----------
+
+    def _render_roles(self) -> None:
+        DP_CONTROLLER.delete_items_of_layout(self.data_container_roles)
+
+        self._role_form_header = create_label(
+            "",
+            FontSize.LARGE,
+            bold=True,
+            min_h=36,
+            css_class="secondary",
+        )
+        self.data_container_roles.addWidget(self._role_form_header)
+        self.data_container_roles.addItem(create_spacer(6))
+
+        self._role_create_name_input = ClickableLineEdit()
+        self._role_create_name_input.setPlaceholderText(
+            UI_LANGUAGE.get_translation("role_name_placeholder", "waiter_window")
+        )
+        self._role_create_name_input.clicked.connect(self._open_role_create_name_keyboard)
+        adjust_font(self._role_create_name_input, MEDIUM_FONT)
+        self.data_container_roles.addWidget(self._role_create_name_input)
+
+        self.data_container_roles.addWidget(
+            create_label(
+                UI_LANGUAGE.get_translation("tab_permissions_label", "waiter_window"),
+                FontSize.MEDIUM,
+                css_class="neutral",
+                min_h=30,
+            )
+        )
+        tab_perm_layout = QHBoxLayout()
+        self._role_create_permission_boxes = self._build_permission_checkboxes(tab_perm_layout, default_maker=False)
+        self.data_container_roles.addLayout(tab_perm_layout)
+        self.data_container_roles.addSpacerItem(create_spacer(10))
+
+        self.data_container_roles.addWidget(
+            create_label(
+                UI_LANGUAGE.get_translation("tile_permissions_label", "waiter_window"),
+                FontSize.MEDIUM,
+                css_class="neutral",
+                min_h=30,
+            )
+        )
+        self._role_create_tile_boxes = self._build_tile_permission_checkboxes(self.data_container_roles)
+
+        self._role_submit_btn = create_button(
+            "",
+            font_size=MEDIUM_FONT,
+            min_h=50,
+            css_class="btn-inverted",
+        )
+        self._role_submit_btn.clicked.connect(self._create_role)
+        self.data_container_roles.addItem(create_spacer(10))
+        self.data_container_roles.addWidget(self._role_submit_btn)
+
+        self.data_container_roles.addItem(create_spacer(10))
+        self._add_section_header(
+            self.data_container_roles, UI_LANGUAGE.get_translation("registered_roles", "waiter_window")
+        )
+        self._role_list_layout = QVBoxLayout()
+        self.data_container_roles.addLayout(self._role_list_layout)
+        self.data_container_roles.addItem(create_spacer(1, expand=True))
+
+        self._update_role_form_mode_labels()
+        self._refresh_roles_list()
+
+    def _update_role_form_mode_labels(self) -> None:
+        if self._editing_role_id is None:
+            self._role_form_header.setText(UI_LANGUAGE.get_translation("create_role", "waiter_window"))
+            self._role_submit_btn.setText(UI_LANGUAGE.get_translation("create_role", "waiter_window"))
+            return
+        self._role_form_header.setText(UI_LANGUAGE.get_translation("edit", "waiter_window"))
+        self._role_submit_btn.setText(UI_LANGUAGE.get_translation("save", "waiter_window"))
+
+    def _build_tile_permission_checkboxes(self, parent_layout: QVBoxLayout) -> dict[str, QCheckBox]:
+        boxes: dict[str, QCheckBox] = {}
+        for group_name, keys in _TILE_GROUPS.items():
+            parent_layout.addWidget(
+                create_label(
+                    UI_LANGUAGE.get_translation(f"tile_group_{group_name}", "waiter_window"),
+                    FontSize.SMALL,
+                    css_class="neutral",
+                    min_h=24,
+                )
+            )
+            grid = QGridLayout()
+            for index, key in enumerate(keys):
+                checkbox = QCheckBox(key.replace("_", " ").title())
+                adjust_font(checkbox, MEDIUM_FONT)
+                boxes[key] = checkbox
+                grid.addWidget(checkbox, index // 2, index % 2)
+            parent_layout.addLayout(grid)
+            parent_layout.addSpacerItem(create_spacer(5))
+        return boxes
+
+    def _create_role(self) -> None:
+        # When in edit mode the same submit button updates the role.
+        if self._editing_role_id is not None:
+            self._update_role_inline()
+            return
+        name = self._role_create_name_input.text().strip()
+        if not name:
+            DP_CONTROLLER.say_some_value_missing()
+            return
+        permissions = self._collect_permissions(self._role_create_permission_boxes)
+        tile_permissions = self._collect_permissions(self._role_create_tile_boxes)
+        try:
+            DatabaseCommander().create_role(name, permissions=permissions, tile_permissions=tile_permissions)
+        except ElementAlreadyExistsError as exc:
+            DP_CONTROLLER.standard_box(str(exc))
+            return
+        self._role_create_name_input.clear()
+        for box in self._role_create_permission_boxes.values():
+            box.setChecked(False)
+        for box in self._role_create_tile_boxes.values():
+            box.setChecked(False)
+        DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("role_created", "waiter_window"), close_time=5)
+        self._update_role_form_mode_labels()
+        self._refresh_roles_list()
+        self._refresh_waiters_list()
+
+    def _refresh_roles_list(self) -> None:
+        DP_CONTROLLER.delete_items_of_layout(self._role_list_layout)
+        roles = DatabaseCommander().get_all_roles()
+        if not roles:
+            self._role_list_layout.addWidget(
+                create_label(UI_LANGUAGE.get_translation("no_roles", "waiter_window"), FontSize.MEDIUM, centered=True)
+            )
+            return
+        for role in roles:
+            card = QWidget()
+            card_layout = QVBoxLayout(card)
+            card_layout.addWidget(create_label(role.name, FontSize.MEDIUM, bold=True))
+
+            permission_names = [
+                UI_LANGUAGE.get_translation(f"permission_{key}", "waiter_window")
+                for key in self._PERMISSION_KEYS
+                if bool(getattr(role, f"privilege_{key}"))
+            ]
+            if permission_names:
+                card_layout.addWidget(
+                    create_label(
+                        ", ".join(permission_names),
+                        FontSize.SMALL,
+                        css_class="secondary",
+                        min_h=25,
+                    )
+                )
+
+            active_tiles = [key for key in _ALL_TILE_KEYS if bool((role.tile_permissions or {}).get(key))]
+            if active_tiles:
+                preview = ", ".join(key.replace("_", " ").title() for key in active_tiles)
+                card_layout.addWidget(create_label(preview, FontSize.SMALL, min_h=25))
+
+            actions = QHBoxLayout()
+            edit_btn = create_button(
+                UI_LANGUAGE.get_translation("edit", "waiter_window"),
+                font_size=MEDIUM_FONT,
+                min_h=45,
+                css_class="btn-inverted",
+            )
+            edit_btn.clicked.connect(lambda _, role_id=role.id: self._start_edit_role(role_id))
+            delete_btn = create_button(
+                UI_LANGUAGE.get_translation("delete", "waiter_window"),
+                font_size=MEDIUM_FONT,
+                min_h=45,
+                css_class="destructive",
+            )
+            delete_btn.clicked.connect(lambda _, role_id=role.id, name=role.name: self._delete_role(role_id, name))
+            actions.addWidget(edit_btn)
+            actions.addWidget(delete_btn)
+            card_layout.addLayout(actions)
+            self._role_list_layout.addWidget(card)
+
+    def _start_edit_role(self, role_id: int) -> None:
+        role = DatabaseCommander().get_role_by_id(role_id)
+        if role is None:
+            return
+        self._editing_role_id = role_id
+        for key, box in self._role_create_permission_boxes.items():
+            box.setChecked(bool(getattr(role, f"privilege_{key}")))
+        tiles = role.tile_permissions or {}
+        for key, box in self._role_create_tile_boxes.items():
+            box.setChecked(bool(tiles.get(key)))
+        self._role_create_name_input.setText(role.name)
+        self._update_role_form_mode_labels()
+        self._scroll_roles_to_top()
+
+    def _scroll_roles_to_top(self) -> None:
+        scrollbar = self.scroll_area_roles.verticalScrollBar()
+        if scrollbar is None:
+            return
+        scrollbar.setValue(scrollbar.minimum())
+
+    def _update_role_inline(self) -> None:
+        """Save edits made on the create-form when _editing_role_id is set."""
+        if self._editing_role_id is None:
+            return
+        name = self._role_create_name_input.text().strip()
+        if not name:
+            DP_CONTROLLER.say_some_value_missing()
+            return
+        permissions = self._collect_permissions(self._role_create_permission_boxes)
+        tile_permissions = self._collect_permissions(self._role_create_tile_boxes)
+        try:
+            DatabaseCommander().update_role(
+                self._editing_role_id,
+                name=name,
+                permissions=permissions,
+                tile_permissions=tile_permissions,
+            )
+        except ElementAlreadyExistsError as exc:
+            DP_CONTROLLER.standard_box(str(exc))
+            return
+        except ElementNotFoundError as exc:
+            DP_CONTROLLER.standard_box(str(exc))
+            self._editing_role_id = None
+            self._update_role_form_mode_labels()
+            self._refresh_roles_list()
+            return
+        self._editing_role_id = None
+        self._role_create_name_input.clear()
+        for box in self._role_create_permission_boxes.values():
+            box.setChecked(False)
+        for box in self._role_create_tile_boxes.values():
+            box.setChecked(False)
+        DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("role_updated", "waiter_window"), close_time=5)
+        self._update_role_form_mode_labels()
+        self._refresh_roles_list()
+        self._refresh_waiters_list()
+
+    def _delete_role(self, role_id: int, role_name: str) -> None:
+        if not DP_CONTROLLER.ask_to_delete_x(role_name):
+            return
+        try:
+            DatabaseCommander().delete_role(role_id)
+        except RoleInUseError as exc:
+            DP_CONTROLLER.standard_box(str(exc))
+            return
+        except ElementNotFoundError:
+            return
+        DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("role_deleted", "waiter_window"), close_time=5)
+        self._refresh_roles_list()
+        self._refresh_waiters_list()
+
+    def _open_role_create_name_keyboard(self) -> None:
+        KeyboardWidget(self.mainscreen, self._role_create_name_input)
+
     def _build_stats_summary(self, cocktails_count: int, total_volume_ml: int) -> str:
         return UI_LANGUAGE.get_translation(
             "stats_summary",
@@ -416,4 +695,5 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         KeyboardWidget(self.mainscreen, self._create_name_input)
 
     def _open_edit_name_keyboard(self) -> None:
-        KeyboardWidget(self.mainscreen, self._edit_name_input)
+        if self._edit_name_input is not None:
+            KeyboardWidget(self.mainscreen, self._edit_name_input)

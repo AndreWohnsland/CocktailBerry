@@ -30,23 +30,18 @@ dialog:
   bottle_calibration_started:
     en: 'Bottle {bottle_id} calibration to {amount} started!'
     de: 'Flasche {bottle_id} Kalibrierung auf {amount} gestartet!'
-    pl: 'Rozpoczęto kalibrację butelki {bottle_id} do {amount}!'
   no_scale_available:
     en: 'No scale available'
     de: 'Keine Waage verfügbar'
-    pl: 'Brak dostępnej wagi'
   scale_tared:
     en: 'Scale tared successfully'
     de: 'Waage erfolgreich tariert'
-    pl: 'Waga została wytarowana'
   scale_calibrated:
     en: 'Scale calibrated, new factor: {factor}'
     de: 'Waage kalibriert, neuer Faktor: {factor}'
-    pl: 'Waga skalibrowana, nowy współczynnik: {factor}'
   scale_known_weight_positive:
     en: 'Known weight must be positive'
     de: 'Bekanntes Gewicht muss positiv sein'
-    pl: 'Znana waga musi być większa od zera'
   no_recipe_selected:
     en: 'No recipe selected!'
     de: 'Kein Rezept ausgewählt!'
@@ -98,7 +93,9 @@ dialog:
   no_waiter_logged_in:
     en: 'No service personnel is logged in. Please scan your NFC tag first.'
     de: 'Kein Servicepersonal angemeldet. Bitte zuerst den NFC-Tag scannen.'
-    pl: 'Brak zalogowanej obsługi. Najpierw zeskanuj tag NFC.'
+  no_glass_detected:
+    en: 'No glass detected. Please place a glass before ordering.'
+    de: 'Kein Glas erkannt. Bitte vor der Bestellung ein Glas aufstellen.'
   cocktail_ready:
     en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
     de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nach tropft.{full_comment}'
@@ -338,11 +335,9 @@ dialog:
   element_already_exists:
     en: 'Element {element_name} already exists!'
     de: 'Element {element_name} gibt es schon!'
-    pl: 'Element {element_name} już istnieje!'
   role_in_use:
     en: 'Role {element_name} is still assigned to one or more waiters and cannot be deleted.'
     de: 'Rolle {element_name} ist noch einem oder mehreren Mitarbeitern zugewiesen und kann nicht gelöscht werden.'
-    pl: 'Rola {element_name} jest nadal przypisana do jednego lub większej liczby osób obsługi i nie może zostać usunięta.'
   cocktail_in_progress:
     en: 'A preparation is currently in progress. Please wait until it is finished.'
     de: 'Eine Zubereitung is bereits im Gange. Bitte warte, bis diese fertig ist.'
@@ -804,11 +799,9 @@ ui:
     back:
       en: '< Back'
       de: '< Zurück'
-      pl: '< Wstecz'
     scale_calibration:
       en: 'Scale Calibration'
       de: 'Waagen Kalibrierung'
-      pl: 'Kalibracja wagi'
 
   ##### DATE PICKER WINDOW #####
   # all values for date picker window
@@ -958,9 +951,8 @@ ui:
       de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
       pl: 'Wyłącz wszystkie zakładki poza Makere. Przy starcie programu zostaniesz zapytany tylko, czy chcesz przejść do konfiguracji z hasłem głównym'
     PUMP_CONFIG:
-      en: 'Setting for each pump: Pump type (DC or Stepper), pin type (GPIO or I2C board), board number (# only relevant for I2C), pin connected to the pump, volume flow in ml/s, tube volume in ml, consumption estimation method (time or weight based) and carriage position (0-100%). DC controls relay-driven pumps like membrane, peristaltic or even valves. Stepper is for stepper motor driven pumps. I2C pins start at 0-7 or 0-15 depending on the board type.'
-      de: 'Einstellung für jede Pumpe: Pumpen-Typ (DC oder Stepper), Pin-Typ (GPIO oder I2C-Board), Board-Nummer (# nur relevant für I2C), Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen in ml, Verbrauchsermittlung (zeit- oder gewichtsbasiert) und Schlittenposition (0-100%). DC steuert relais-basierte Pumpen wie Membran-, Schlauchpumpen oder auch Ventile. Stepper ist für Schrittmotor-betriebene Pumpen. I2C-Pins beginnen bei 0-7 oder 0-15 je nach Board-Typ.'
-      pl: 'Ustawienia dla każdej pompy: typ pompy (DC lub Stepper), typ pinu (GPIO lub płytka I2C), numer płytki (# tylko dla I2C), pin podłączony do pompy, przepływ w ml/s, objętość wężyka w ml, metoda pomiaru zużycia (czasowa lub wagowa) oraz pozycja wózka (0-100%). DC steruje przeknikami pomp (membranowe, perystaltyczne) lub zaworami. Stepper dotyczy pomp z silnikiem krokowym. Piny I2C są numerowane od 0–7 lub 0–15, w zależności od typu płytki.'
+      en: 'Setting for each pump: Pump type (DC or Stepper), pin type (GPIO or I2C board), board number (# only relevant for I2C), pin connected to the pump, volume flow in ml/s, tube volume in ml, consumption estimation method (time or weight based) and carriage position (0-100%). DC controls relay-driven pumps like membrane, peristaltic or even valves. Stepper is for stepper motor driven pumps. I2C pins start at 0-7 or 0-15 depending on the board type. Custom drivers can be added via addons/dispensers extensions.'
+      de: 'Einstellung für jede Pumpe: Pumpen-Typ (DC oder Stepper), Pin-Typ (GPIO oder I2C-Board), Board-Nummer (# nur relevant für I2C), Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen in ml, Verbrauchsermittlung (zeit- oder gewichtsbasiert) und Schlittenposition (0-100%). DC steuert relais-basierte Pumpen wie Membran-, Schlauchpumpen oder auch Ventile. Stepper ist für Schrittmotor-betriebene Pumpen. I2C-Pins beginnen bei 0-7 oder 0-15 je nach Board-Typ. Eigene Treiber via addons/dispensers Erweiterungen.'
     I2C_CONFIG:
       en: 'I2C GPIO expander configuration. Select the board type, board number (# to distinguish multiple boards of the same type), enable/disable, I2C address (default 0x20) and signal inversion. Multiple boards of the same type are supported with different board numbers.'
       de: 'I2C GPIO-Expander Konfiguration. Board-Typ, Board-Nummer (# um mehrere Boards des gleichen Typs zu unterscheiden), Aktivierung, I2C-Adresse (Standard 0x20) und Signalinvertierung auswählen. Mehrere Boards des gleichen Typs werden über verschiedene Board-Nummern unterstützt.'
@@ -1028,19 +1020,12 @@ ui:
     MAKER_RANDOM_COCKTAIL:
       en: 'Adds a random cocktail tile to the maker tab that picks a surprise cocktail on prepare'
       de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
-      pl: 'Dodaje kafelek Losowy koktajl w zakładce Maker, który podczas przygotowania losuje napój.'
-    LED_NORMAL:
-      en: 'List with config for each normal (non-addressable) LED: pin type, board number (# only relevant for I2C), pin, default on state, preparation state (on/off/effects)'
-      de: 'Liste mit Einstellung für jeden normalen (nicht ansteuerbaren) LED: Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
-      pl: 'Lista konfiguracji dla każdej zwykłej (nieadresowalnej) diody LED: typ pinu, numer płytki (# tylko dla I2C), pin, domyślny stan, stan podczas przygotowania (on/off/efekty)'
-    LED_WSLED:
-      en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects). Only supports GPIO.'
-      de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). Unterstützt nur GPIO.'
-      pl: 'Lista konfiguracji dla każdej diody WS281x (adresowalnej): pin, jasność, liczba LED, liczba połączonych pierścieni, domyślny stan, stan podczas przygotowania (on/off/efekty). Obsługuje tylko GPIO.'
-    RFID_READER:
-      en: 'Using a RFID Reader: Basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
-      de: 'Wird ein RFID Reader verwendet: Standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'
-      pl: 'Używany czytnik RFID: podstawowy MFRC522 (SPI) lub USB. USB nie obsługuje zapisu/odczytu danych z tagów, tylko ID.'
+    LED_CONFIG:
+      en: 'List with config for each LED (discriminated by led_type: Normal pin LED or WSLED addressable). Custom drivers can be added via addons/leds extensions.'
+      de: 'Liste mit Einstellung für jeden LED (Diskriminator led_type: Normal-Pin oder WSLED ansteuerbar). Eigene Treiber via addons/leds Erweiterungen.'
+    RFID_CONFIG:
+      en: 'RFID/NFC reader configuration. Choose driver type (No, MFRC522, USB) and toggle enabled. Custom drivers can be added via addons/rfid extensions.'
+      de: 'RFID/NFC Reader Konfiguration. Treiber-Typ wählen (No, MFRC522, USB) und aktiviert umschalten. Eigene Treiber via addons/rfid Erweiterungen.'
     MICROSERVICE_ACTIVE:
       en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'
@@ -1156,15 +1141,12 @@ ui:
     EXP_DEMO_MODE:
       en: 'Set the API into demo mode (no destructive actions)'
       de: 'Setze die API in den Demo Modus (keine destruktiven Aktionen)'
-      pl: 'Ustaw API w tryb demo (bez działań nieodwracalnych)'
     SCALE_CONFIG:
-      en: 'Scale hardware configuration: driver type, enable/disable and calibration factor for weight-based measurement'
-      de: 'Waagen-Konfiguration: Treibertyp, Aktivierung und Kalibrierungsfaktor für gewichtsbasierte Messung'
-      pl: 'Konfiguracja wagi: typ sterownika, włączenie i kalibracja dla pomiaru wagowego'
+      en: 'Scale hardware configuration: driver type, enable/disable, calibration factor for weight-based measurement and minimal detected weight for cocktail preparation allowed. Custom drivers can be added via addons/scales extensions.'
+      de: 'Waagen-Konfiguration: Treibertyp, Aktivierung, Kalibrierungsfaktor für gewichtsbasierte Messung und minimal erkanntes Gewicht für die Cocktailzubereitung zu starten. Eigene Treiber via addons/scales Erweiterungen.'
     CARRIAGE_CONFIG:
-      en: 'Carriage/slide hardware configuration: driver type, enable/disable, home position (0-100%), movement speed (%/s) and whether to move during cleaning'
-      de: 'Schlitten-Konfiguration: Treibertyp, Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll'
-      pl: 'Konfiguracja wózka: typ sterownika, włączenie, pozycja startowa (0-100%), prędkość (%/s) i ruch podczas czyszczenia'
+      en: 'Carriage/slide hardware configuration: driver type, enable/disable, home position (0-100%), movement speed (%/s) and whether to move during cleaning. Custom drivers can be added via addons/carriages extensions.'
+      de: 'Schlitten-Konfiguration: Treibertyp, Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll. Eigene Treiber via addons/carriages Erweiterungen.'
 
 ##### COLOR WINDOW #####
   # all values for settings in color window
@@ -1299,59 +1281,47 @@ ui:
       de: 'Abweichung zu groß, bitte prüfen'
       pl: 'Zbyt duże odchylenie, sprawdź'
 
-##### SCALE CALIBRATION WINDOW #####
+  ##### SCALE CALIBRATION WINDOW #####
   # all values for scale calibration window
   scale_calibration_window:
     header:
       en: 'Scale Calibration'
       de: 'Waagen Kalibrierung'
-      pl: 'Kalibracja wagi'
     not_available:
       en: 'Scale is not available. Please enable and configure a scale first.'
       de: 'Waage nicht verfügbar. Bitte zuerst eine Waage aktivieren und konfigurieren.'
-      pl: 'Waga jest niedostępna. Najpierw włącz i skonfiguruj wagę.'
     tare_instruction:
       en: 'Remove everything from the scale and press Tare to zero it.'
       de: 'Alles von der Waage entfernen und auf Tare drücken um sie zu nullen.'
-      pl: 'Usuń wszystko z wagi i naciśnij tarowanie.'
     tare:
       en: 'Tare'
       de: 'Tarieren'
-      pl: 'Taruj'
     place_weight_instruction:
       en: 'Place a known weight on the scale and enter its weight below.'
       de: 'Ein bekanntes Gewicht auf die Waage legen und das Gewicht unten eingeben.'
-      pl: 'Połóż znane obciążenie na wadze i wpisz jego wartość.'
     known_weight:
       en: 'Known Weight (g)'
       de: 'Bekanntes Gewicht (g)'
-      pl: 'Znana waga (g)'
     calibrate:
       en: 'Calibrate'
       de: 'Kalibrieren'
-      pl: 'Kalibruj'
     calibration_done:
       en: "Calibration done! New factor: {factor}\nZero raw offset: {offset}"
       de: "Kalibrierung abgeschlossen! Neuer Faktor: {factor}\nNull-Rohwert-Offset: {offset}"
-      pl: "Kalibracja zakończona! Nowy współczynnik: {factor}\nOffset zerowy: {offset}"
     calibration_error:
       en: 'Calibration failed, invalid reading from scale.'
       de: 'Kalibrierung fehlgeschlagen, ungültige Ablesung der Waage.'
-      pl: 'Kalibracja nieudana, nieprawidłowy odczyt z wagi.'
     back_to_tare:
       en: 'Back to Tare'
       de: 'Zurück zum Tarieren'
-      pl: 'Wróć do tarowania'
     read_weight:
       en: 'Read Weight'
       de: 'Gewicht lesen'
-      pl: 'Odczytaj wagę'
     current_reading:
       en: 'Current reading: {weight} g'
       de: 'Aktuelle Messung: {weight} g'
-      pl: 'Aktualny odczyt: {weight} g'
 
-##### NEWS WINDOW #####
+  ##### NEWS WINDOW #####
   # all values for news window
   news_window:
     no_news:
@@ -1373,71 +1343,54 @@ ui:
     statistics:
       en: 'Statistics'
       de: 'Statistik'
-      pl: 'Statystyki'
     roles:
       en: 'Roles'
       de: 'Rollen'
-      pl: 'Role'
     role_label:
       en: 'Role'
       de: 'Rolle'
-      pl: 'Rola'
     select_role:
       en: 'Select a role'
       de: 'Rolle auswählen'
-      pl: 'Wybierz rolę'
     no_roles_yet:
       en: 'No roles defined yet. Create one in the Roles tab.'
       de: 'Noch keine Rollen vorhanden. Lege eine im Tab "Rollen" an.'
-      pl: 'Nie zdefiniowano jeszcze żadnych ról. Utwórz jedną w zakładce "Role".'
     create_role:
       en: 'Create Role'
       de: 'Rolle erstellen'
-      pl: 'Utwórz rolę'
     role_name_placeholder:
       en: 'Role name'
       de: 'Rollenname'
-      pl: 'Nazwa roli'
     tab_permissions_label:
       en: 'Tab Permissions'
       de: 'Tab-Berechtigungen'
-      pl: 'Uprawnienia zakładek'
     tile_permissions_label:
       en: 'Option Tile Permissions'
       de: 'Optionskachel-Berechtigungen'
-      pl: 'Uprawnienia kafelków opcji'
     tile_group_system:
       en: 'System'
       de: 'System'
-      pl: 'System'
     tile_group_configuration:
       en: 'Configuration'
       de: 'Konfiguration'
-      pl: 'Konfiguracja'
     tile_group_data:
       en: 'Data'
       de: 'Daten'
-      pl: 'Dane'
     tile_group_hardware:
       en: 'Hardware'
       de: 'Hardware'
-      pl: 'Sprzęt'
     tile_group_maintenance:
       en: 'Maintenance'
       de: 'Wartung'
-      pl: 'Konserwacja'
     registered_roles:
       en: 'Defined Roles'
       de: 'Definierte Rollen'
-      pl: 'Zdefiniowane role'
     no_roles:
       en: 'No roles defined.'
       de: 'Keine Rollen definiert.'
-      pl: 'Nie zdefiniowano żadnych ról.'
     confirm_delete_role:
       en: 'Do you want to delete the role "{name}"?'
       de: 'Möchtest du die Rolle "{name}" löschen?'
-      pl: 'Czy chcesz usunąć rolę "{name}"?'
     last_scanned:
       en: 'Last scanned NFC'
       de: 'Zuletzt gescannte NFC'
@@ -1545,19 +1498,15 @@ ui:
     waiter_deleted:
       en: 'Service Personnel deleted.'
       de: 'Servicepersonal gelöscht.'
-      pl: 'Usunięto perspnel obsługujący.'
     role_created:
       en: 'Role created.'
       de: 'Rolle erstellt.'
-      pl: 'Rola została utworzona.'
     role_updated:
       en: 'Role updated.'
       de: 'Rolle aktualisiert.'
-      pl: 'Rola została zaktualizowana.'
     role_deleted:
       en: 'Role deleted.'
       de: 'Rolle gelöscht.'
-      pl: 'Rola została usunięta.'  
     no_logs:
       en: 'No statistics available.'
       de: 'Keine Statistik verfügbar.'

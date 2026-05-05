@@ -50,10 +50,9 @@ async def get_waiters() -> list[WaiterResponse]:
 
 @protected_router.post("", summary="Register a new waiter", dependencies=[not_on_demo])
 async def create_waiter(data: WaiterCreate) -> WaiterResponse:
-    """Register a new waiter with NFC ID and name."""
+    """Register a new waiter with NFC ID, name, and assigned role."""
     DBC = DatabaseCommander()
-    permissions = data.permissions.model_dump() if data.permissions else None
-    waiter = DBC.create_waiter(data.nfc_id, data.name, permissions=permissions)
+    waiter = DBC.create_waiter(data.nfc_id, data.name, role_id=data.role_id)
     response = WaiterResponse.from_db(waiter)
     # If the newly registered NFC ID is the currently scanned one, update shared state
     if shared.current_waiter_nfc_id == data.nfc_id:
@@ -64,10 +63,9 @@ async def create_waiter(data: WaiterCreate) -> WaiterResponse:
 
 @protected_router.put("/{nfc_id}", summary="Update a waiter", dependencies=[not_on_demo])
 async def update_waiter(nfc_id: str, data: WaiterUpdate) -> WaiterResponse:
-    """Update a waiter's name and/or permissions."""
+    """Update a waiter's name and/or assigned role."""
     DBC = DatabaseCommander()
-    permissions = data.permissions.model_dump() if data.permissions else None
-    waiter = DBC.update_waiter(nfc_id, name=data.name, permissions=permissions)
+    waiter = DBC.update_waiter(nfc_id, name=data.name, role_id=data.role_id)
     response = WaiterResponse.from_db(waiter)
     # Update shared state if this is the current waiter
     if shared.current_waiter_nfc_id == nfc_id:

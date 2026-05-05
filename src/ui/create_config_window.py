@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
@@ -29,6 +30,7 @@ from src.config.config_types import (
 from src.config.errors import ConfigError
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.programs.blacklist import BLACKLIST
 from src.ui.creation_utils import (
     LARGE_FONT,
     MEDIUM_FONT,
@@ -49,6 +51,33 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 CONFIG_TYPES_POSSIBLE = str | int | float | bool | list[Any] | dict[str, Any]
+MIN_ELEMENT_WIDTH = 150
+
+
+def _even_columns(item_count: int, max_per_row: int) -> int:
+    """Determine the best number of columns so rows are evenly filled.
+
+    Mirrors the logic in the web ObjectDisplay component.
+    """
+    if item_count <= max_per_row:
+        return item_count
+    # prefer a divisor of item_count that is <= max_per_row for perfectly even rows
+    for cols in range(max_per_row, 1, -1):
+        if item_count % cols == 0:
+            return cols
+    # fallback: pick cols that minimizes the difference between row sizes
+    best = max_per_row
+    best_diff = max_per_row
+    for cols in range(max_per_row, 1, -1):
+        rows = math.ceil(item_count / cols)
+        last_row = item_count - cols * (rows - 1)
+        diff = cols - last_row
+        if diff < best_diff:
+            best_diff = diff
+            best = cols
+    return best
+
+
 # Those are only for the v2 program
 CONFIG_TO_SKIP = (
     "CUSTOM_COLOR_PRIMARY",
@@ -75,9 +104,13 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _init_ui(self) -> None:
+        # Track which tab containers actually receive a config field. We need this
+        # for the empty-tab hiding logic below: a tab whose only child is a layout
+        # spacer must still be considered empty.
+        self._populated_vboxes: set[QVBoxLayout] = set()
         # adds all the configs to the window
         for key, config_setting in cfg.config_type.items():
-            if key in CONFIG_TO_SKIP:
+            if key in CONFIG_TO_SKIP or BLACKLIST.is_config_blacklisted(key):
                 continue
             self._choose_display_style(key, config_setting)
 
@@ -88,6 +121,44 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.vbox_other.addItem(create_spacer(1, expand=True))
         # same for the sumup payment tab
         self.vbox_payment_sumup.addItem(create_spacer(1, expand=True))
+        self._hide_empty_tabs()
+
+    def _hide_empty_tabs(self) -> None:
+        """Hide outer/inner tabs that ended up with no configs after blacklist filtering.
+
+        Tabs are inferred from ``self._populated_vboxes``, which is filled in
+        ``_choose_tab_container`` whenever a config field is routed to a vbox.
+        For the Payment tab there is a nested QTabWidget — we hide each inner
+        tab independently and only hide the outer tab if both inner ones are
+        empty.
+        """
+        outer_tab_vboxes: dict[Any, list[QVBoxLayout]] = {
+            self.tab_ui: [self.vbox_ui],
+            self.tab_maker: [self.vbox_maker],
+            self.tab_hardware: [self.vbox_hardware],
+            self.tab_software: [self.vbox_software],
+            self.tab_other: [self.vbox_other],
+            self.tab_payment: [self.vbox_payment_cocktailberry, self.vbox_payment_sumup],
+        }
+        payment_inner: dict[Any, QVBoxLayout] = {
+            self.tab_payment_cocktailberry: self.vbox_payment_cocktailberry,
+            self.tab_payment_sumup: self.vbox_payment_sumup,
+        }
+        for inner_tab, vbox in payment_inner.items():
+            if vbox not in self._populated_vboxes:
+                idx = self.tabs_payment_option.indexOf(inner_tab)
+                if idx >= 0:
+                    self.tabs_payment_option.setTabVisible(idx, False)
+        for tab, vboxes in outer_tab_vboxes.items():
+            if not any(v in self._populated_vboxes for v in vboxes):
+                idx = self.tabs_option.indexOf(tab)
+                if idx >= 0:
+                    self.tabs_option.setTabVisible(idx, False)
+        # Make sure a visible tab is selected (default index 0 may now be hidden).
+        for idx in range(self.tabs_option.count()):
+            if self.tabs_option.isTabVisible(idx):
+                self.tabs_option.setCurrentIndex(idx)
+                break
 
     def _save_config(self) -> None:
         try:
@@ -331,7 +402,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         """Build a dict field with a discriminator dropdown that swaps variant-specific fields."""
         v_container = QVBoxLayout()
         getter_fn_dict: dict[str, Callable] = {}
-        variant_container = QHBoxLayout()
+        variant_container = QVBoxLayout()
 
         disc_value = getattr(current_value, config_setting.discriminator)
         disc_combo = self._build_discriminator_dropdown(v_container, disc_value, list(config_setting.variants.keys()))
@@ -339,11 +410,18 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         def _build_variant_fields(variant_name: str, values: dict[str, Any]) -> None:
             variant_dict_type = config_setting.variants[variant_name]
             getter_fn_dict.clear()
-            for key, value_setting in variant_dict_type.dict_types.items():
-                if key == config_setting.discriminator:
-                    continue
-                value = values.get(key, value_setting.get_default())
-                getter_fn_dict[key] = self._build_input_field(config_name, value_setting, value, variant_container)
+            sub_items = [
+                (key, values.get(key, value_setting.get_default()), value_setting)
+                for key, value_setting in variant_dict_type.dict_types.items()
+                if key != config_setting.discriminator
+            ]
+            max_per_row = max(1, cfg.UI_WIDTH // MIN_ELEMENT_WIDTH)
+            cols = _even_columns(len(sub_items), max_per_row)
+            for row_start in range(0, len(sub_items), cols):
+                h_row = QHBoxLayout()
+                for key, value, value_setting in sub_items[row_start : row_start + cols]:
+                    getter_fn_dict[key] = self._build_input_field(config_name, value_setting, value, h_row)
+                variant_container.addLayout(h_row)
 
         def _on_discriminator_changed(new_variant: str) -> None:
             old_values = {key: getter() for key, getter in getter_fn_dict.items()}
@@ -384,16 +462,23 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         config_setting: DictType,
     ) -> Callable[[], dict]:
         """Build a dict of fields for a dict input."""
-        h_container = QHBoxLayout()
         getter_fn_dict: dict[str, Callable] = {}
         dict_values = current_value.to_config()
-        for key, value in dict_values.items():
-            value_setting = config_setting.dict_types.get(key)
-            if value_setting is None:
-                raise RuntimeError(f"Config '{config_name}' has a key '{key}' that is not defined in the dict types.")
-            getter_fn = self._build_input_field(config_name, value_setting, value, h_container)
-            getter_fn_dict[key] = getter_fn
-        layout.addLayout(h_container)
+        items = list(dict_values.items())
+        max_per_row = max(1, cfg.UI_WIDTH // MIN_ELEMENT_WIDTH)
+        cols = _even_columns(len(items), max_per_row)
+        v_container = QVBoxLayout()
+        for row_start in range(0, len(items), cols):
+            h_row = QHBoxLayout()
+            for key, value in items[row_start : row_start + cols]:
+                value_setting = config_setting.dict_types.get(key)
+                if value_setting is None:
+                    raise RuntimeError(
+                        f"Config '{config_name}' has a key '{key}' that is not defined in the dict types."
+                    )
+                getter_fn_dict[key] = self._build_input_field(config_name, value_setting, value, h_row)
+            v_container.addLayout(h_row)
+        layout.addLayout(v_container)
         return lambda: {key: getter() for key, getter in getter_fn_dict.items()}
 
     def _build_fallback_field(self, layout: QBoxLayout, current_value: CONFIG_TYPES_POSSIBLE) -> Callable[[], str]:
@@ -421,6 +506,12 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
 
     def _choose_tab_container(self, config_name: str) -> QVBoxLayout:
         """Get the object name of the tab container, that the config belongs to."""
+        vbox = self._resolve_tab_container(config_name)
+        # Track populated tabs for the post-init empty-tab hiding pass.
+        self._populated_vboxes.add(vbox)
+        return vbox
+
+    def _resolve_tab_container(self, config_name: str) -> QVBoxLayout:
         # specific sorting for some values where prefix may not match the category good enough
         exact_sorting = {
             self.vbox_ui: ("MAKER_THEME",),

@@ -23,6 +23,7 @@ from src.db_models import (
     DbNews,
     DbRecipe,
     DbResourceUsage,
+    DbRole,
     DbTeamdata,
     DbWaiter,
     DbWaiterLog,
@@ -66,6 +67,13 @@ class ElementAlreadyExistsError(DatabaseTransactionError):
 
     def __init__(self, element_name: str) -> None:
         super().__init__("element_already_exists", {"element_name": element_name})
+
+
+class RoleInUseError(DatabaseTransactionError):
+    """Raised when trying to delete a role that still has waiters assigned."""
+
+    def __init__(self, role_name: str) -> None:
+        super().__init__("role_in_use", {"element_name": role_name})
 
 
 class DatabaseCommander:
@@ -945,41 +953,124 @@ class DatabaseCommander:
                 for e in db_events
             ]
 
+    # ---- Role Methods ----
+
+    def get_all_roles(self) -> list[DbRole]:
+        """Get all roles."""
+        with self.session_scope() as session:
+            return list(session.query(DbRole).order_by(DbRole.name).all())
+
+    def get_role_by_id(self, role_id: int) -> DbRole | None:
+        """Get a role by ID."""
+        with self.session_scope() as session:
+            return session.query(DbRole).filter(DbRole.id == role_id).one_or_none()
+
+    def get_role_by_name(self, name: str) -> DbRole | None:
+        """Get a role by name."""
+        with self.session_scope() as session:
+            return session.query(DbRole).filter(DbRole.name == name).one_or_none()
+
+    def create_role(
+        self,
+        name: str,
+        permissions: dict[str, bool] | None = None,
+        tile_permissions: dict[str, bool] | None = None,
+    ) -> DbRole:
+        """Create a new role. Raises ElementAlreadyExistsError if name already exists."""
+        with self.session_scope() as session:
+            existing = session.query(DbRole).filter(DbRole.name == name).one_or_none()
+            if existing is not None:
+                raise ElementAlreadyExistsError(name)
+            role = DbRole(name=name, tile_permissions=dict(tile_permissions or {}))
+            if permissions is not None:
+                for key, value in permissions.items():
+                    setattr(role, f"privilege_{key}", value)
+            session.add(role)
+            session.commit()
+            return role
+
+    def update_role(
+        self,
+        role_id: int,
+        *,
+        name: str | None = None,
+        permissions: dict[str, bool] | None = None,
+        tile_permissions: dict[str, bool] | None = None,
+    ) -> DbRole:
+        """Update a role's name, tab permissions, and/or tile permissions."""
+        with self.session_scope() as session:
+            role = session.query(DbRole).filter(DbRole.id == role_id).one_or_none()
+            if role is None:
+                raise ElementNotFoundError(str(role_id))
+            if name is not None and name != role.name:
+                existing = session.query(DbRole).filter(DbRole.name == name, DbRole.id != role_id).one_or_none()
+                if existing is not None:
+                    raise ElementAlreadyExistsError(name)
+                role.name = name
+            if permissions is not None:
+                for key, value in permissions.items():
+                    setattr(role, f"privilege_{key}", value)
+            if tile_permissions is not None:
+                role.tile_permissions = dict(tile_permissions)
+            session.commit()
+            return role
+
+    def delete_role(self, role_id: int) -> None:
+        """Delete a role. Raises RoleInUseError if any waiter still references it."""
+        with self.session_scope() as session:
+            role = session.query(DbRole).filter(DbRole.id == role_id).one_or_none()
+            if role is None:
+                raise ElementNotFoundError(str(role_id))
+            in_use = session.query(DbWaiter).filter(DbWaiter.role_id == role_id).count()
+            if in_use:
+                raise RoleInUseError(role.name)
+            session.delete(role)
+            session.commit()
+
     # ---- Waiter Methods ----
 
     def get_all_waiters(self) -> list[DbWaiter]:
         """Get all registered waiters."""
         with self.session_scope() as session:
-            return list(session.query(DbWaiter).order_by(DbWaiter.name).all())
+            return list(session.query(DbWaiter).options(joinedload(DbWaiter.role)).order_by(DbWaiter.name).all())
 
     def get_waiter_by_nfc_id(self, nfc_id: str) -> DbWaiter | None:
         """Get a waiter by NFC ID."""
         with self.session_scope() as session:
-            return session.query(DbWaiter).filter(DbWaiter.nfc_id == nfc_id).one_or_none()
+            return (
+                session.query(DbWaiter)
+                .options(joinedload(DbWaiter.role))
+                .filter(DbWaiter.nfc_id == nfc_id)
+                .one_or_none()
+            )
 
-    def create_waiter(self, nfc_id: str, name: str, permissions: dict[str, bool] | None = None) -> DbWaiter:
-        """Create a new waiter. Raises ElementAlreadyExistsError if name already exists."""
+    def create_waiter(self, nfc_id: str, name: str, role_id: int) -> DbWaiter:
+        """Create a new waiter bound to a role. Raises if name/nfc_id already exist or role missing."""
         with self.session_scope() as session:
+            role = session.query(DbRole).filter(DbRole.id == role_id).one_or_none()
+            if role is None:
+                raise ElementNotFoundError(str(role_id))
             existing = session.query(DbWaiter).filter(DbWaiter.name == name).one_or_none()
             if existing is not None:
                 raise ElementAlreadyExistsError(name)
             existing_nfc = session.query(DbWaiter).filter(DbWaiter.nfc_id == nfc_id).one_or_none()
             if existing_nfc is not None:
                 raise ElementAlreadyExistsError(nfc_id)
-            waiter = DbWaiter(nfc_id=nfc_id, name=name)
-            if permissions is not None:
-                for key, value in permissions.items():
-                    setattr(waiter, f"privilege_{key}", value)
+            waiter = DbWaiter(nfc_id=nfc_id, name=name, role_id=role_id)
             session.add(waiter)
             session.commit()
+            session.refresh(waiter, attribute_names=["role"])
             return waiter
 
-    def update_waiter(
-        self, nfc_id: str, name: str | None = None, permissions: dict[str, bool] | None = None
-    ) -> DbWaiter:
-        """Update a waiter's name and/or permissions."""
+    def update_waiter(self, nfc_id: str, name: str | None = None, role_id: int | None = None) -> DbWaiter:
+        """Update a waiter's name and/or role."""
         with self.session_scope() as session:
-            waiter = session.query(DbWaiter).filter(DbWaiter.nfc_id == nfc_id).one_or_none()
+            waiter = (
+                session.query(DbWaiter)
+                .options(joinedload(DbWaiter.role))
+                .filter(DbWaiter.nfc_id == nfc_id)
+                .one_or_none()
+            )
             if waiter is None:
                 raise ElementNotFoundError(nfc_id)
             if name is not None:
@@ -989,10 +1080,13 @@ class DatabaseCommander:
                 if existing is not None:
                     raise ElementAlreadyExistsError(name)
                 waiter.name = name
-            if permissions is not None:
-                for key, value in permissions.items():
-                    setattr(waiter, f"privilege_{key}", value)
+            if role_id is not None and role_id != waiter.role_id:
+                role = session.query(DbRole).filter(DbRole.id == role_id).one_or_none()
+                if role is None:
+                    raise ElementNotFoundError(str(role_id))
+                waiter.role_id = role_id
             session.commit()
+            session.refresh(waiter, attribute_names=["role"])
             return waiter
 
     def delete_waiter(self, nfc_id: str) -> None:

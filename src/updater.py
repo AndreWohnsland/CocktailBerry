@@ -125,7 +125,7 @@ class Updater:
 
     def _get_latest_tag(self) -> TagReference:
         """Extract the latest version number from the tags."""
-        return sorted(self.repo.tags, key=lambda t: Version(t.name.replace("v", "")))[-1]
+        return max(self.repo.tags, key=lambda t: Version(t.name.replace("v", "")))
 
     def _parse_release_data(self, response: Response) -> str:
         """Convert the response into a string to display."""

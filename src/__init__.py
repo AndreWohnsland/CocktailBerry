@@ -1,6 +1,16 @@
+import tomllib
 from typing import Literal
 
-__version__ = "4.0.0"
+from src.filepath import PYPROJECT_FILE
+
+
+def _read_pyproject_version() -> str:
+    with PYPROJECT_FILE.open("rb") as file:
+        pyproject = tomllib.load(file)
+    return str(pyproject["project"]["version"])
+
+
+__version__ = _read_pyproject_version()
 PROJECT_NAME = "CocktailBerry"
 MAX_SUPPORTED_BOTTLES = 24
 SupportedLanguagesType = Literal["en", "de"]

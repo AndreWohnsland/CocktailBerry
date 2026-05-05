@@ -6,7 +6,7 @@ import os
 import shutil
 from typing import TYPE_CHECKING
 
-from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QMainWindow, QPushButton
 
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DatabaseCommander
@@ -16,6 +16,7 @@ from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, NEEDED_BACKUP_FILES
 from src.models import EventType
+from src.programs.blacklist import BLACKLIST
 from src.programs.calibration import CalibrationScreen
 from src.programs.scale_calibration import ScaleCalibrationScreen
 from src.ui.create_backup_restore_window import BackupRestoreWindow
@@ -79,6 +80,8 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_sumup.setEnabled(cfg.sumup_payment)
         self.button_scale_calibration.setEnabled(cfg.SCALE_CONFIG.enabled)
 
+        self._apply_tile_blacklist()
+
         self.config_window: ConfigWindow | None = None
         self.log_window: LogWindow | None = None
         self.rfid_writer_window: RFIDWriterWindow | None = None
@@ -94,6 +97,83 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         UI_LANGUAGE.adjust_option_window(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
+
+    _TILE_GRID_COLUMNS = 2
+
+    def _apply_tile_blacklist(self) -> None:
+        """Repack the option tile grid so blacklisted tiles disappear cleanly.
+
+        The base layout is defined statically in ``optionwindow.ui`` as a
+        QGridLayout with explicit ``(row, col)`` placements. Hiding a button
+        with ``setVisible(False)`` does NOT collapse its grid cell, leaving
+        visible gaps. Instead this helper:
+
+        1. Removes every tile from ``gridLayout_2``.
+        2. Walks ``_TILE_ORDER`` (the canonical top-to-bottom, left-to-right
+           layout) and re-inserts the buttons whose ``OptionTiles`` field is
+           NOT blacklisted, advancing a 2-column cursor that respects the
+           ``span`` value (1 for half-width, 2 for full-width tiles).
+        3. Hides skipped buttons so they no longer occupy any space.
+
+        The helper preserves the original visual order. Tiles with span equal
+        to ``_TILE_GRID_COLUMNS`` are always placed on a fresh row and force
+        the next tile to a new row.
+        """
+        layout = self.gridLayout_2
+        # Step 1: clear current grid contents (keep buttons alive on self).
+        for button, _attr, _span in self._TILE_ORDER:
+            layout.removeWidget(button)
+        # Step 2: re-insert visible tiles using a 2-col cursor.
+        row = 0
+        col = 0
+        for button, attr, span in self._TILE_ORDER:
+            if BLACKLIST.is_tile_blacklisted(attr):
+                button.setVisible(False)
+                continue
+            if span == self._TILE_GRID_COLUMNS:
+                if col != 0:
+                    row += 1
+                    col = 0
+                layout.addWidget(button, row, 0, 1, self._TILE_GRID_COLUMNS)
+                row += 1
+            else:
+                layout.addWidget(button, row, col, 1, 1)
+                col += 1
+                if col >= self._TILE_GRID_COLUMNS:
+                    col = 0
+                    row += 1
+
+    @property
+    def _TILE_ORDER(self) -> list[tuple[QPushButton, str, int]]:
+        """Canonical tile ordering (button, OptionTiles attribute, column span).
+
+        Order matches the original ``optionwindow.ui`` grid reading top-to-bottom,
+        left-to-right. Span is 2 for full-width tiles, otherwise 1.
+        """
+        return [
+            (self.button_clean, "cleaning", 1),
+            (self.button_calibration, "calibration", 1),
+            (self.button_config, "configuration", 1),
+            (self.button_export, "data", 1),
+            (self.button_backup, "backup", 1),
+            (self.button_restore, "restore", 1),
+            (self.button_reboot, "reboot", 1),
+            (self.button_shutdown, "shutdown", 1),
+            (self.button_logs, "logs", 1),
+            (self.button_resources, "system_resource_usage", 1),
+            (self.button_events, "events", 1),
+            (self.button_update_system, "update_system", 1),
+            (self.button_update_software, "update_software", 2),
+            (self.button_wifi, "wifi", 1),
+            (self.button_check_internet, "internet_check", 1),
+            (self.button_addons, "addons", 1),
+            (self.button_rfid, "rfid", 1),
+            (self.button_news, "news", 1),
+            (self.button_sumup, "sumup", 1),
+            (self.button_waiter, "waiters", 1),
+            (self.button_scale_calibration, "scale_calibration", 1),
+            (self.button_about, "about", 2),
+        ]
 
     def _open_config(self) -> None:
         """Open the config window."""

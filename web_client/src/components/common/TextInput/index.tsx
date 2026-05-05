@@ -5,12 +5,22 @@ interface TextInputProps {
   placeholder?: string;
   type?: 'text' | 'password';
   large?: boolean;
+  className?: string;
   handleInputChange: (value: string) => void;
 }
 
-const TextInput = ({ value, prefix, suffix, placeholder, type, large = false, handleInputChange }: TextInputProps) => {
+const TextInput = ({
+  value,
+  prefix,
+  suffix,
+  placeholder,
+  type,
+  large = false,
+  className,
+  handleInputChange,
+}: TextInputProps) => {
   return (
-    <div className='flex items-center whitespace-nowrap w-full'>
+    <div className={`flex items-center whitespace-nowrap w-full ${className ?? ''}`}>
       {prefix && <span className='text-neutral mx-1 whitespace-nowrap'>{prefix}</span>}
       <input
         type={type || 'text'}

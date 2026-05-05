@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional
 
-from sqlalchemy import ForeignKey, PrimaryKeyConstraint
+from sqlalchemy import JSON, ForeignKey, PrimaryKeyConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -245,21 +245,51 @@ class DbEvent(Base):
         self.additional_info = additional_info
 
 
-class DbWaiter(Base):
-    __tablename__ = "Waiters"
-    nfc_id: Mapped[str] = mapped_column(primary_key=True, name="NFC_ID")
+class DbRole(Base):
+    __tablename__ = "Roles"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
     name: Mapped[str] = mapped_column(unique=True, nullable=False, name="Name")
     privilege_maker: Mapped[bool] = mapped_column(default=False, name="Privilege_Maker")
     privilege_ingredients: Mapped[bool] = mapped_column(default=False, name="Privilege_Ingredients")
     privilege_recipes: Mapped[bool] = mapped_column(default=False, name="Privilege_Recipes")
     privilege_bottles: Mapped[bool] = mapped_column(default=False, name="Privilege_Bottles")
     privilege_options: Mapped[bool] = mapped_column(default=False, name="Privilege_Options")
+    tile_permissions: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict, name="Tile_Permissions")
 
+    waiters: Mapped[list["DbWaiter"]] = relationship("DbWaiter", back_populates="role")
+
+    def __init__(
+        self,
+        name: str,
+        privilege_maker: bool = False,
+        privilege_ingredients: bool = False,
+        privilege_recipes: bool = False,
+        privilege_bottles: bool = False,
+        privilege_options: bool = False,
+        tile_permissions: dict | None = None,
+    ) -> None:
+        self.name = name
+        self.privilege_maker = privilege_maker
+        self.privilege_ingredients = privilege_ingredients
+        self.privilege_recipes = privilege_recipes
+        self.privilege_bottles = privilege_bottles
+        self.privilege_options = privilege_options
+        self.tile_permissions = tile_permissions or {}
+
+
+class DbWaiter(Base):
+    __tablename__ = "Waiters"
+    nfc_id: Mapped[str] = mapped_column(primary_key=True, name="NFC_ID")
+    name: Mapped[str] = mapped_column(unique=True, nullable=False, name="Name")
+    role_id: Mapped[int] = mapped_column(ForeignKey("Roles.ID", ondelete="RESTRICT"), nullable=False, name="Role_ID")
+
+    role: Mapped["DbRole"] = relationship("DbRole", back_populates="waiters")
     logs: Mapped[list["DbWaiterLog"]] = relationship("DbWaiterLog", back_populates="waiter")
 
-    def __init__(self, nfc_id: str, name: str) -> None:
+    def __init__(self, nfc_id: str, name: str, role_id: int) -> None:
         self.nfc_id = nfc_id
         self.name = name
+        self.role_id = role_id
 
 
 class DbWaiterLog(Base):
