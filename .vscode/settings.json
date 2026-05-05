@@ -19,7 +19,7 @@
     "runme",
     "Sideview"
   ],
-  "cSpell.language": "en,de",
+  "cSpell.language": "en,de,pl",
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.codeActionsOnSave": {

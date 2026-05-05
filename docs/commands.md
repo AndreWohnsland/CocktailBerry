@@ -217,11 +217,11 @@ Watchtower will check periodically if there is a new dashboard image and install
 uv run runme.py setup-teams-service [OPTIONS]
 
 # Options:
-#   -l, --language [en|de]  language for the teams service  [default: en]
+#   -l, --language [en|de|pl]  language for the teams service  [default: en]
 #   --help                  Show help
 ```
 
-Set up the teams microservice. You can use English (en) or German (de) as the language.
+Set up the teams microservice. You can use English (en), German (de) or Polish (pl) as the language.
 Will run the frontend at `localhost:8050` (http://127.0.0.1:8050), backend at `localhost:8080` (http://127.0.0.1:8080).
 
 ## Create an Access Point

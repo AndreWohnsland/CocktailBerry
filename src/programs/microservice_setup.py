@@ -110,6 +110,7 @@ class LanguageChoice(StrEnum):
 
     ENGLISH = "en"
     GERMAN = "de"
+    POLISH = "pl"
 
 
 def _get_ip() -> str:

@@ -192,7 +192,7 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
     ) -> None:
         """Set up the teams microservice.
 
-        You can use english [en] or german [de] as language.
+        You can use english [en], german [de] or polish [pl] as language.
         Will run the frontend at localhost:8050 (http://localhost:8050), backend at localhost:8080 (http://localhost:8080).
         See also https://docs.cocktailberry.org/advanced/#dashboard-with-teams.
         """
