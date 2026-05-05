@@ -114,7 +114,8 @@
     "updateSystem": "Aktualizuj system",
     "updateTheSystem": "Czy chcesz zaktualizować system?",
     "wifi": "WiFi",
-    "waiters": "Obsługa"
+    "waiters": "Obsługa",
+    "rfid": "RFID"
   },
   "news": {
     "noNews": "Masz najnowszą wersję!",
@@ -231,7 +232,7 @@
   },
   "userDisplay": {
     "noUser": "Brak NFC",
-    "userBalance": "{{balance}} €"
+    "userBalance": "{{balance}} PLN"
   },
   "restrictedMode": {
     "title": "Tryb ograniczony",
@@ -274,6 +275,13 @@
     "noLogs": "Brak logów koktajli.",
     "statsSummary": "{{count}} koktajli, {{volume}} ml łącznie",
     "permissionsLabel": "Uprawnienia",
+    "roleLabel": "Role",
+    "selectRole": "Wybierz rolę",
+    "tabs": {
+      "management": "Zarządzanie",
+      "statistics": "Statystyki",
+      "roles": "Role"
+    },
     "permissions": {
       "maker": "Maker",
       "ingredients": "Składniki",
@@ -282,5 +290,23 @@
       "options": "Opcje"
     },
     "logout": "Wyloguj"
+  },
+  "role": {
+    "create": "Utwórz rolę",
+    "created": "Rola '{{name}}' została utworzona",
+    "updated": "Rola została zaktualizowana",
+    "confirmDelete": "Czy chcesz usunąć rolę '{{name}}'?",
+    "namePlaceholder": "Nazwa roli",
+    "tabPermissions": "Uprawnienia zakładek",
+    "tilePermissions": "Uprawnienia kafelków opcji",
+    "noRoles": "Nie zdefiniowano jeszcze ról. Najpierw utwórz rolę, aby zarejestrować personel serwisowy.",
+    "createFirstHint": "Nie zdefiniowano jeszcze ról. Przejdź do zakładki Role i utwórz jedną przed rejestracją personelu.",
+    "tileGroups": {
+      "system": "System",
+      "configuration": "Konfiguracja",
+      "data": "Dane",
+      "hardware": "Sprzęt",
+      "maintenance": "Zarządzanie"
+    }
   }
 }
