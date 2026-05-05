@@ -263,7 +263,7 @@
     "lockTitle": "Wymagane logowanie obsługi",
     "lockMessage": "Zeskanuj tag NFC, aby się zalogować.",
     "lastScanned": "Ostatni zeskanowany NFC",
-    "nfcNotRegistered": "Zeskanowany tag NFC nie jest zarejestrowany"
+    "nfcNotRegistered": "Zeskanowany tag NFC nie jest zarejestrowany",
     "registerWaiter": "Zarejestruj obsługę",
     "nfcIdPlaceholder": "ID NFC",
     "namePlaceholder": "Nazwa obsługi",
