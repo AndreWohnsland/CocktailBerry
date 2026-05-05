@@ -10,344 +10,451 @@ dialog:
   box_title:
     en: 'Information'
     de: 'Information'
+    pl: 'Informacja'
   wrong_password:
     en: 'Wrong Password!'
     de: 'Falsches Passwort!'
+    pl: 'Nieprawidłowe hasło!'
   done:
     en: 'Done!'
     de: 'Fertig!'
+    pl: 'Gotowe!'
   bottles_renewed:
     en: 'Renewed selected bottles!'
     de: 'Ausgewählte Flaschen erneuert!'
+    pl: 'Wybrane butelki zostały uzupełnione!'
   bottle_updated:
     en: 'Bottle {bottle_id} updated successfully to {amount} of ingredient {ingredient_id}!'
     de: 'Flasche {bottle_id} erfolgreich auf {amount} von Zutat {ingredient_id} aktualisiert!'
+    pl: 'Butelka {bottle_id} została pomyślnie zaktualizowana do {amount} składnika {ingredient_id}!'
   bottle_calibration_started:
     en: 'Bottle {bottle_id} calibration to {amount} started!'
     de: 'Flasche {bottle_id} Kalibrierung auf {amount} gestartet!'
+    pl: 'Rozpoczęto kalibrację butelki {bottle_id} do {amount}!'
   no_scale_available:
     en: 'No scale available'
     de: 'Keine Waage verfügbar'
+    pl: 'Brak dostępnej wagi'
   scale_tared:
     en: 'Scale tared successfully'
     de: 'Waage erfolgreich tariert'
+    pl: 'Waga została wytarowana'
   scale_calibrated:
     en: 'Scale calibrated, new factor: {factor}'
     de: 'Waage kalibriert, neuer Faktor: {factor}'
+    pl: 'Waga skalibrowana, nowy współczynnik: {factor}'
   scale_known_weight_positive:
     en: 'Known weight must be positive'
     de: 'Bekanntes Gewicht muss positiv sein'
+    pl: 'Znana waga musi być większa od zera'
   no_recipe_selected:
     en: 'No recipe selected!'
     de: 'Kein Rezept ausgewählt!'
+    pl: 'Nie wybrano przepisu!'
   no_ingredient_selected:
     en: 'No ingredient selected!'
     de: 'Keine Zutat ausgewählt!'
+    pl: 'Nie wybrano składnika!'
   ingredient_still_at_bottle:
     en: 'Error, the ingredient is still used at a bottle!'
     de: 'Fehler, die Zutat ist noch in der Belegung registriert!'
+    pl: 'Błąd, składnik jest nadal używany w butelce!'
   ingredient_still_in_available:
     en: 'Error, the ingredient is still registered at available ingredients!'
     de: 'Fehler, die Zutat ist noch unter den verfügbaren Zutaten registriert!'
+    pl: 'Błąd, składnik nadal jest na liście dostępnych składników!'
   ingredient_still_at_recipe:
     en: "Ingredient can not be deleted, it is still used at:\n<{recipe_string}>"
     de: "Zutat kann nicht gelöscht werden, da sie in:\n<{recipe_string}>\ngenutzt wird"
+    pl: "Nie można usunąć składnika, jest używany w:\n<{recipe_string}>"
   ingredient_still_as_machine_add:
     en: "Ingredient can not be changed to hand add, it is still used as machine add at:\n{recipe_list}"
     de: "Zutat kann nicht auf Hand geändert werden, da sie in:\n{recipe_list}\nmit der Maschine genutzt wird"
+    pl: "Nie można zmienić składnika na dodawanie ręczne, nadal jest używany automatycznie w:\n{recipe_list}"
   ingredient_double_usage:
     en: "One of the ingredient\n<{ingredient_name}>\nwas used multiple times!"
     de: "Eine der Zutaten:\n<{ingredient_name}>\nwurde doppelt verwendet!"
+    pl: "Składnik\n<{ingredient_name}>\nzostał użyty wielokrotnie!"
   ingredient_deleted:
     en: "Ingredient:\n<{ingredient_name}>\ndeleted"
     de: "Zutat mit dem Namen:\n<{ingredient_name}>\ngelöscht!"
+    pl: "Składnik:\n<{ingredient_name}>\nzostał usunięty"
   ingredient_added:
     en: "Ingredient\n<{ingredient_name}>\nentered"
     de: "Zutat mit dem Namen:\n<{ingredient_name}>\neingetragen"
+    pl: "Dodano składnik:\n<{ingredient_name}>"
   ingredient_changed:
     en: "Ingredient\n<{selected_ingredient}>\nwas updated to\n<{ingredient_name}>"
     de: "Zutat\n<{selected_ingredient}>\nnach\n<{ingredient_name}>\naktualisiert"
+    pl: "Składnik\n<{selected_ingredient}>\nzostał zmieniony na\n<{ingredient_name}>"
   available_ingredient_updated:
     en: 'Available ingredients were updated!'
     de: 'Verfügbare Zutaten wurden aktualisiert!'
+    pl: 'Dostępne składniki zostały zaktualizowane!'
   cocktail_canceled:
     en: 'The cocktail was cancelled!'
     de: 'Der Cocktail wurde abgebrochen!'
+    pl: 'Koktajl został anulowany!'
   no_waiter_logged_in:
     en: 'No service personnel is logged in. Please scan your NFC tag first.'
     de: 'Kein Servicepersonal angemeldet. Bitte zuerst den NFC-Tag scannen.'
-  no_glass_detected:
-    en: 'No glass detected. Please place a glass before ordering.'
-    de: 'Kein Glas erkannt. Bitte vor der Bestellung ein Glas aufstellen.'
+    pl: 'Brak zalogowanej obsługi. Najpierw zeskanuj tag NFC.'
   cocktail_ready:
     en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
     de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nach tropft.{full_comment}'
+    pl: 'Koktajl jest gotowy. Poczekaj chwilę, aż reszta płynu spłynie.{full_comment}'
   cocktail_ready_add:
     en: 'Also add:'
     de: 'Noch hinzufügen:'
+    pl: 'Dodaj również:'
   cocktail_not_possible:
     en: 'Cocktail is not possible to make, not all ingredients are available!'
     de: 'Cocktail zubereiten ist nicht möglich, nicht alle Zutaten sind verfügbar!'
+    pl: 'Nie można przygotować koktajlu – brakuje składników!'
   enter_cocktail_name:
     en: 'Please enter cocktail name!'
     de: 'Bitte Cocktail Namen eingeben!'
+    pl: 'Wprowadź nazwę koktajlu!'
   recipe_deleted:
     en: "Recipe\n<{recipe_name}>\nwas deleted"
     de: "Rezept mit dem Namen\n<{recipe_name}>\nwurde gelöscht!"
+    pl: "Przepis\n<{recipe_name}>\nzostał usunięty"
   all_recipes_enabled:
     en: 'All recipes are enabled!'
     de: 'Alle Rezepte wurden wieder aktiv gesetzt!'
+    pl: 'Wszystkie przepisy zostały włączone!'
   recipe_added:
     en: "Recipe\n<{recipe_name}>\nwas added!"
     de: "Rezept unter dem Namen:\n<{recipe_name}>\neingetragen!"
+    pl: "Dodano przepis:\n<{recipe_name}>"
   recipe_updated:
     en: "Recipe\n<{old_name}>\nupdated to\n<{new_name}>"
     de: "Rezept\n<{old_name}>\nnach\n<{new_name}>\naktualisiert!"
+    pl: "Przepis\n<{old_name}>\nzostał zmieniony na\n<{new_name}>"
   recipe_at_least_one_ingredient:
     en: 'You need to use at least one ingredient!'
     de: 'Es muss mindestens eine Zutat eingetragen sein!'
+    pl: 'Musisz użyć co najmniej jednego składnika!'
   all_data_exported:
     en: 'All data was exported and amount was reset!'
     de: 'Alle Daten wurden exportiert und die Mengen zurückgesetzt!'
+    pl: 'Dane zostały wyeksportowane, a wartości zresetowane!'
   not_enough_ingredient_volume:
     en: '{ingredient_name} has not enough volume! {volume} ml is needed, only {level} ml left. Please refill the bottle.'
     de: '{ingredient_name} hat nicht genug Volumen! {volume} ml benötigt aber nur {level} ml vorhanden. Bitte Flasche auffüllen.'
+    pl: '{ingredient_name} jest za mało! Potrzebne jest {volume} ml, a jest dostępne tylko {level} ml. Uzupełnij butelkę.'
   bottle_tab_locked:
     en: 'The bottle tab is locked, please inform a person with permission.'
     de: 'Der Flaschen Tab ist gesperrt, bitte informiere eine berechtigte Person.'
+    pl: 'Zakładka "Butelki" jest zablokowana, poinformuj uprawnioną osobę.'
   name_already_exists:
     en: 'This name is already used!'
     de: 'Dieser Name wurde bereits verwendet!'
+    pl: 'Ta nazwa jest już używana!'
   some_value_missing:
     en: 'At least one value is missing!'
     de: 'Irgendwo ist ein Wert vergessen worden!'
+    pl: 'Brakuje co najmniej jednej wartości!'
   some_value_missing_specific:
     en: '{value} is missing!'
     de: '{value} wurde vergessen!'
+    pl: 'Brakuje wartości: {value}!'
   needs_to_be_int:
     en: 'Wrong value for a number field!'
     de: 'Falscher Wert für ein Zahlenfeld'
+    pl: 'Nieprawidłowa wartość w polu liczbowym!'
   needs_to_be_int_specific:
     en: '{value} needs to be a number!'
     de: '{value} muss eine ganze Zahl sein!'
+    pl: '{value} musi być liczbą!'
   alcohol_level_max_limit:
     en: 'Alcohol level can not exceed 100 percent!'
     de: 'Alkoholgehalt kann nicht größer als 100 Prozent sein!'
+    pl: 'Zawartość alkoholu nie może przekraczać 100%!'
   update_available:
     en: 'There is a new update available. Do you want to pull it from GitHub? The program will be restarted afterwards.'
     de: 'Es ist ein neues Update verfügbar. Update von GitHub pullen? Das Programm wird danach neu gestartet.'
+    pl: 'Dostępna jest nowa aktualizacja. Czy chcesz pobrać ją z GitHub? Program zostanie następnie uruchomiony ponownie.'
   update_available_major_warning:
     en: 'WARNING: This is a major update and have probably breaking changes.\nPlease check the changelog before updating.\nSee https://github.com/AndreWohnsland/CocktailBerry/releases for more information.'
     de: 'WARNUNG: Dies ist ein Major Update und hat wahrscheinlich Breaking Changes.\nBitte schaue dir das Changelog vor dem Update an.\nSiehe https://github.com/AndreWohnsland/CocktailBerry/releases für mehr Informationen.'
+    pl: 'OSTRZEŻENIE: To jest duża aktualizacja, która może zawierać niekompatybilne zmiany.\nSprawdź changelog przed aktualizacją.\nWięcej informacji: https://github.com/AndreWohnsland/CocktailBerry/releases'
   restart_config:
     en: 'Restart the program to apply new configuration?'
     de: 'Programm neu starten, um die geänderten Einstellungen zu laden?'
+    pl: 'Czy uruchomić program ponownie, aby zastosować nowe ustawienia?'
   confirmation_required:
     en: 'Confirmation required'
     de: 'Bestätigung nötig'
+    pl: 'Wymagane potwierdzenie'
   yes_button:
     en: 'Yes'
     de: 'Ja'
+    pl: 'Tak'
   no_button:
     en: 'No'
     de: 'Nein'
+    pl: 'Nie'
   wrong_config:
     en: "At least one value is wrong in the config:\n{error}"
     de: "Mindestens ein Wert ist Fehlerhaft:\n{error}"
+    pl: "Co najmniej jedna wartość w konfiguracji jest błędna:\n{error}"
   backup_failed:
     en: 'This seems to be no CocktailBerry backup folder. Please use the right folder. It needs to have some specific files. Did not find {file}.'
     de: 'Ausgewählter Ordner ist kein CocktailBerry Backup. Bitte richtigen Ordner auswählen. Es müssen einige spezifische Dateien enthalten sein. Konnte {file} nicht finden.'
+    pl: 'To nie wygląda na folder kopii zapasowej CocktailBerry. Wybierz właściwy folder. Brakuje wymaganych plików. Nie znaleziono {file}.'
   update_failed:
     en: 'Update failed. Please check the logs for further information.'
     de: 'Update fehlgeschlagen. Bitte schaue in die Logs für mehr Informationen.'
+    pl: 'Aktualizacja nie powiodła się. Sprawdź logi po więcej informacji.'
   ask_to_clean:
     en: 'Starting Cleaning Progress? Please provide enough water.'
     de: 'Reinigung Starten? Bitte genug Wasser bereitstellen.'
+    pl: 'Rozpocząć czyszczenie? Zapewnij odpowiednią ilość wody.'
   ask_to_shutdown:
     en: 'Shutdown the System?'
     de: 'Soll das System herunter gefahren werden?'
+    pl: 'Wyłączyć system?'
   ask_to_reboot:
     en: 'Reboot the System?'
     de: 'Soll das System neu gestartet werden?'
+    pl: 'Uruchomić system ponownie?'
   ask_for_backup_location:
     en: 'Please select backup location.'
     de: 'Bitte Backup Ort auswählen.'
+    pl: 'Wybierz lokalizację kopii zapasowej.'
   ask_for_image_location:
     en: 'Please select image location.'
     de: 'Bitte Bild Ort auswählen.'
+    pl: 'Wybierz lokalizację obrazu.'
   ask_backup_overwrite:
     en: 'Load selected backup files for: "{backup_files}" in? This will overwrite local data. The program will restart afterwards.'
     de: 'Ausgewählte Backup Dateien für "{backup_files}" verwenden? Lokale Daten werden überschrieben. Ein Neustart wird danach ausgeführt.'
+    pl: 'Wczytać wybrane pliki kopii zapasowej dla: "{backup_files}"? Spowoduje to nadpisanie danych lokalnych. Program zostanie uruchomiony ponownie.'
   ask_enable_all_recipes:
     en: 'Do you want to enable all recipes? All possible ones will be then shown at the maker tab.'
     de: 'Alle Rezepte aktiv setzen? Machbare Rezepte werden dann im Maker Tab angezeigt.'
+    pl: 'Czy chcesz włączyć wszystkie przepisy? Wszystkie przepisy będą widoczne w zakładce Maker.'
   ask_to_delete_x:
     en: 'Do you want to delete {x}? This cannot be reverted.'
     de: 'Soll {x} gelöscht werden? Dies kann nicht rückgängig gemacht werden.'
+    pl: 'Czy chcesz usunąć {x}? Tego nie można cofnąć.'
   ask_to_delete_reader:
     en: 'Do you want to delete the reader "{reader_name}"? This cannot be reverted.'
     de: 'Soll der Reader "{reader_name}" gelöscht werden? Dies kann nicht rückgängig gemacht werden.'
+    pl: 'Czy chcesz usunąć czytnik "{reader_name}"? Tego nie można cofnąć.'
   ask_to_remove_picture:
     en: 'Do you want to remove the user picture? This cannot be reverted.'
     de: 'Soll das User Bild entfernt werden? Dies kann nicht rückgängig gemacht werden.'
+    pl: 'Czy chcesz usunąć zdjęcie użytkownika? Tego nie można cofnąć.'
   ask_restricted_mode:
     en: 'Do you want to enable restricted mode? Only the cocktail maker will be accessible. You can still access configuration with the master password.'
     de: 'Möchten Sie den eingeschränkten Modus aktivieren? Nur der Cocktail-Maker wird zugänglich sein. Sie können weiterhin mit dem Master-Passwort auf die Konfiguration zugreifen.'
+    pl: 'Czy chcesz włączyć tryb ograniczony? Dostępny będzie tylko Koktajl Maker. Nadal możesz uzyskać dostęp do konfiguracji za pomocą hasła głównego.'
   backup_created:
     en: 'Backup has been created at: {folder}.'
     de: 'Backup wurde unter {folder} gespeichert.'
+    pl: 'Kopia zapasowa została utworzona w: {folder}.'
   ask_adjust_time:
     en: 'There seems to be no internet connection, your date/time may be wrong. This is important when sending data with the service. Do you want to adjust time?'
     de: 'Es scheint keine Internetverbindung zu bestehen, Datum/Zeit könnte falsch sein. Dies ist wichtig, wenn Daten über den Service versandt werden. Zeit anpassen?'
+    pl: 'Brak połączenia z internetem, data/czas mogą być nieprawidłowe. Jest to ważne przy wysyłaniu danych. Czy chcesz ustawić czas?'
   python_deprecated:
     en: 'Your system Python is {sys_python}. In the future, {program_python} is required. Please upgrade, otherwise a future CocktailBerry update will break your program. Also, the auto update function will not show new updates until then.'
     de: 'Die Python Version des Systems is {sys_python}. In Zukunft wird {program_python} benötigt. Bitte upgrade diese bald, sonst wird mit einem kommenden Update CocktailBerry nicht mehr funktionieren. Die Autoupdate Funktion wird solange keine neuen Updates anzeigen.'
+    pl: 'Twoja wersja Pythona to {sys_python}. W przyszłości wymagany będzie {program_python}. Zaktualizuj system, w przeciwnym razie aktualizacje CocktailBerry przestaną działać.'
   payment_disabled:
     en: "The payment service was disabled because of a startup issue:\n\n{reason}\n\nPlease check your configuration."
     de: "Der Zahlungsservice wurde aufgrund eines Startproblems deaktiviert:\n\n{reason}\n\nBitte überprüfe die Konfiguration."
+    pl: "Usługa płatności została wyłączona z powodu problemu podczas uruchamiania:\n\n{reason}\n\nSprawdź konfigurację."
   ask_export_data:
     en: 'Export cocktail and ingredient data, as well reset possible values?'
     de: 'Cocktail und Zutaten Daten exportieren und mögliche Werte zurücksetzen?'
+    pl: 'Wyeksportować dane koktajli i składników oraz zresetować wartości?'
   ask_to_system_update:
     en: 'Should the System (OS) be updated? This may take some time and will restart the system after that.'
     de: 'Soll das Betriebssystem (OS) updated werden? Das kann einige Zeit dauern und das System wird danach neu gestartet.'
+    pl: 'Czy zaktualizować system operacyjny? Może to chwilę potrwać i zakończy się ponownym uruchomieniem.'
   ask_to_install_qtsass:
     en: "The Python library qtsass is needed for this feature. Since it may take 30-60 minutes building on the RPi, it was not done by the migrator.\n\nInstall and restart now? Without it can not use custom themes."
     de: "Die Python Bibliothek qtsass wird für dieses Feature benötigt. Das Bauen dieser kann 30-60 Minuten auf dem RPi benötigen, deshalb wurde dies nicht vom Migrator gemacht.\n\nSoll diese installiert und neu gestartet werden? Ohne die Bibliothek können keine Custom Themes erstellt werden."
+    pl: "Do tej funkcji wymagana jest biblioteka Python qtsass. Kompilacja na RPi może trwać 30–60 minut, dlatego nie została zainstalowana automatycznie.\n\nZainstalować i uruchomić ponownie? Bez tego nie można używać własnych motywów."
   ask_to_use_reverted_pump:
     en: 'Should the pump flow be reverted? This will activated the reversion pin and change the flow direction.'
     de: 'Soll die Pumpenrichtung geändert werden? Dies wird den Umkehrpin aktivieren und die Pumpenrichtung ändern.'
+    pl: 'Czy odwrócić kierunek pompy? Zostanie aktywowany pin zmiany kierunku przepływu.'
   welcome_dialog:
     en: "CocktailBerry Software Version {version} by Andre Wohnsland.\nSystem: {platform}.\nUsing python version: {python_version} with PyQt app.\n\nCheck https://docs.cocktailberry.org for more information.\n\nThere is an alternative v2 Web UI available, have a look in the documentation for more info"
     de: "CocktailBerry Software Version {version} von Andre Wohnsland.\nSystem: {platform}.\nVerwendete Python Version: {python_version} mit PyQt App.\n\nMehr Informationen unter https://docs.cocktailberry.org.\n\nEs gibt eine neue v2 Web Ui, schau in der Dokumentation für mehr Informationen."
+    pl: "CocktailBerry Wersja {version} autorstwa Andre Wohnsland.\nSystem: {platform}.\nWersja Pythona: {python_version} z aplikacją PyQt.\n\nWięcej informacji: https://docs.cocktailberry.org\n\nDostępny jest alternatywny interfejs Web UI v2."
   wifi_setup_failed:
     en: 'There was an error setting up WiFi. Please check the logs for further information.'
     de: 'Es ist ein Fehler beim Einrichten des WiFi aufgetreten. Schaue in die Logs für mehr Informationen.'
+    pl: 'Wystąpił błąd podczas konfiguracji WiFi. Sprawdź logi.'
   wifi_success:
     en: 'WiFi has been set up successfully.'
     de: 'WiFi wurde erfolgreich eingerichtet.'
+    pl: 'WiFi zostało skonfigurowane pomyślnie.'
   wifi_failure:
     en: "There is still no internet connection.\nCheck your credentials, ssid: {ssid}, password: {password}\nIf they are correct, wait shortly then check internet again via the option feature or restart system and consult the logs."
     de: "Es besteht noch keine Internetverbindung.\nPrüfe deine Eingabe: ssid: {ssid}, password: {password}\nWenn diese stimmen, warte kurz und prüfe dein Internet über die Optionen noch einmal oder starte das System neu und schau auch in die Logs."
+    pl: "Brak połączenia z internetem.\nSprawdź dane: ssid: {ssid}, hasło: {password}\nJeśli są poprawne, odczekaj chwilę i sprawdź ponownie lub uruchom system."
   internet_connection_ok:
     en: 'There is a internet connection.'
     de: 'Es besteht eine Internetverbindung.'
+    pl: 'Jest połączenie z internetem.'
   internet_connection_not_ok:
     en: 'X There is no internet connection.'
     de: 'X Es besteht keine Internetverbindung.'
+    pl: 'X Brak połączenia z internetem.'
   qtsass_not_successful:
     en: 'The package qtsass could not be installed. Try running "[sudo] pip install qtsass" (sudo only, if program is executed with sudo python) and wait until its done.'
     de: 'Das qtsass Paket konnte nicht installiert werden. Versuche "[sudo] pip install qtsass" (sudo nur, wenn das program mit sudo python ausgeführt wird) auszuführen und warte, bis die installation abgeschlossen ist.'
+    pl: 'Pakiet qtsass nie mógł zostać zainstalowany. Spróbuj uruchomić "[sudo] pip install qtsass" (sudo tylko jeśli program uruchamiany jest przez sudo python) i poczekaj aż zakończy instalację.'
   cocktailberry_up_to_date:
     en: 'You are running the latest version of CocktailBerry.'
     de: 'Du hast die neuste Version von CocktailBerry.'
+    pl: 'Używasz najnowszej wersji CocktailBerry.'
   create_cocktail_first:
     en: 'No Cocktail selected, select the one you want to add a picture. Please create the cocktail first before adding a picture to it!'
     de: 'Kein Cocktail ausgewählt, wähle einen Cocktail aus, um ein Bild hinzuzufügen. Bitte erst den Cocktail erstellen, bevor ein Bild hinzugefügt wird!'
+    pl: 'Nie wybrano koktajlu, wybierz koktajl do którego chcesz dodać obraz. Przed dodaniem zdjęcia najpierw utwórz koktajl!'
   image_processing_failed:
     en: 'Image processing failed. Please ensure that you use a jpg or png file.'
     de: 'Bildverarbeitung fehlgeschlagen. Bitte stelle sicher, dass du eine jpg oder png Datei verwendest.'
+    pl: 'Przetwarzanie obrazu nie powiodło się. Upewnij się, że używasz pliku jpg lub png.'
   recipe_help:
     en: 'Here you can add a Cocktail. You need the ingredient and according amount. You can assign a number from 1-9 to each ingredient. Ingredients with the same number will be spend at the same time by the machine in increasing order. Leave all at 1 if all should spend in parallel. You can also assign a picture to existing cocktails. Cocktails not enabled will not appear in the maker. If you enable virgin, a non alcoholic version of the cocktail will be possible.'
     de: 'Hier kannst du einen Cocktail hinzufügen. Du benötigst die Zutat und die entsprechende Menge. Du kannst jeder Zutat eine Nummer von 1-9 zuweisen. Zutaten mit der gleichen Nummer werden der Größe aufsteigend gleichzeitig von der Maschine ausgegeben. Lass alle auf 1, wenn alle auf einmal ausgegeben werden sollen. Du kannst auch ein Bild zu existierenden Cocktails hinzufügen. Nicht aktivierte Cocktails werden nicht im Maker angezeigt. Wenn du Virgin aktivierst, wird eine alkoholfreie Version des Cocktails möglich sein.'
+    pl: 'Tutaj możesz dodać koktajl. Potrzebujesz składnika i odpowiedniej ilości. Możesz przypisać każdemu składnikowi numer od 1 do 9. Składniki z tym samym numerem będą podawane jednocześnie w kolejności rosnącej. Zostaw 1 dla wszystkich, jeśli mają być podawane równolegle. Możesz też dodać obraz do istniejących koktajli. Nieaktywne koktajle nie będą widoczne w makerze. Jeśli włączysz "Bezalkoholowy", dostępna też będzie wersja bezalkoholowa.'
   ingredient_must_be_handadd:
     en: 'Ingredient must be configured as hand add (set checkbox) when using other units than ml. This is because the machine only supports ml as output unit.'
     de: 'Zutat muss als per Hand hinzufügen konfiguriert sein (Checkbox setzen), wenn andere Einheiten als ml verwendet werden. Dies liegt daran, dass die Maschine nur ml als Ausgabeeinheit unterstützt.'
+    pl: 'Składnik musi być ustawiony jako ręczne dodawanie (checkbox), jeśli używane są inne jednostki niż ml. Maszyna obsługuje tylko ml jako jednostkę wyjściową.'
   element_not_found:
     en: 'Element {element_name} not found!'
     de: 'Element {element_name} nicht gefunden!'
+    pl: 'Nie znaleziono elementu {element_name}!'
   element_already_exists:
     en: 'Element {element_name} already exists!'
     de: 'Element {element_name} gibt es schon!'
+    pl: 'Element {element_name} już istnieje!'
   role_in_use:
     en: 'Role {element_name} is still assigned to one or more waiters and cannot be deleted.'
     de: 'Rolle {element_name} ist noch einem oder mehreren Mitarbeitern zugewiesen und kann nicht gelöscht werden.'
+    pl: 'Rola {element_name} jest nadal przypisana do jednego lub większej liczby osób obsługi i nie może zostać usunięta.'
   cocktail_in_progress:
     en: 'A preparation is currently in progress. Please wait until it is finished.'
     de: 'Eine Zubereitung is bereits im Gange. Bitte warte, bis diese fertig ist.'
+    pl: 'Trwa przygotowanie. Poczekaj aż się zakończy.'
   preparation_cancelled:
     en: 'The preparation was cancelled.'
     de: 'Die Zubereitung wurde abgebrochen.'
+    pl: 'Przygotowanie zostało anulowane.'
   image_deleted:
     en: 'Image deleted successfully.'
     de: 'Bild erfolgreich gelöscht.'
+    pl: 'Obraz został usunięty.'
   image_uploaded:
     en: 'Image uploaded successfully.'
     de: 'Bild erfolgreich hochgeladen.'
+    pl: 'Obraz został przesłany.'
   hand_ingredient_cannot_prepared:
     en: 'Hand ingredients cannot be prepared.'
     de: 'Hand Zutaten können nicht zubereitet werden.'
+    pl: 'Składniki ręczne nie mogą być przygotowane.'
   ingredient_not_connected:
     en: 'Ingredient is not connected to the machine!'
     de: 'Zutat ist nicht mit der Maschine verbunden!'
+    pl: 'Składnik nie jest podłączony do maszyny!'
   cleaning_started:
     en: 'Cleaning process started!'
     de: 'Reinigung gestartet!'
+    pl: 'Rozpoczęto czyszczenie!'
   options_updated:
     en: 'Options updated!'
     de: 'Optionen aktualisiert!'
+    pl: 'Opcje zostały zaktualizowane!'
   options_updated_and_restart:
     en: 'Options updated! Backend will be restarted.'
     de: 'Optionen aktualisiert! Backend wird neu gestartet.'
-  # Payment state messages
+    pl: 'Opcje zostały zaktualizowane! Backend zostanie uruchomiony ponownie.'
   payment_inactive:
     en: 'Payment service is not active.'
     de: 'Zahlungsservice ist nicht aktiv.'
+    pl: 'Usługa płatności nie jest aktywna.'
   payment_no_user:
     en: 'Please scan a NFC tag.'
     de: 'Bitte NFC Tag scannen.'
+    pl: 'Zeskanuj tag NFC.'
   payment_insufficient_balance:
     en: 'Insufficient balance, please top up your account.'
     de: 'Nicht genug Guthaben, bitte Konto aufladen.'
+    pl: 'Niewystarczające środki, doładuj konto.'
   payment_too_young:
     en: 'User is not allowed to get alcohol.'
     de: 'Benutzer kann kein Alkohol bekommen.'
+    pl: 'Użytkownik nie może otrzymać alkoholu.'
   payment_successful:
     en: 'Payment successful. New balance: {current_balance:.2f}'
     de: 'Zahlung erfolgreich. Neues Guthaben: {current_balance:.2f}'
+    pl: 'Płatność udana. Nowe saldo: {current_balance:.2f}'
   payment_api_not_reachable:
     en: 'Payment service is not reachable. If this persists, contact the owner.'
     de: 'Zahlungsservice ist nicht erreichbar. Wenn dies andauert, kontaktiere den Besitzer.'
+    pl: 'Usługa płatności jest niedostępna. Jeśli problem się utrzymuje, skontaktuj się z właścicielem.'
   api_interface_conflict:
     en: 'API interface conflict detected. Please contact the system administrator.'
     de: 'API-Schnittstellenkonflikt erkannt. Bitte kontaktieren Sie den Systemadministrator.'
+    pl: 'Wykryto konflikt interfejsu API. Skontaktuj się z administratorem systemu.'
   payment_canceled:
     en: 'Payment was canceled by user or timeout'
     de: 'Zahlung wurde durch Benutzer oder wegen Zeitüberschreitung abgebrochen.'
+    pl: 'Płatność została anulowana przez użytkownika lub z powodu przekroczenia czasu.'
   payment_user_not_found:
     en: 'This NFC/card is not registered. Please register or contact owner.'
     de: 'Diese NFC/Karte ist nicht registriert. Bitte registrieren oder kontaktiere den Besitzer.'
-  # SumUp payment state messages
+    pl: 'Ta karta NFC nie jest zarejestrowana. Zarejestruj ją lub skontaktuj się z właścicielem.'
   sumup_payment_successful:
     en: 'Payment successful via SumUp terminal.'
     de: 'Zahlung erfolgreich über SumUp Terminal.'
+    pl: 'Płatność przez terminal SumUp zakończona sukcesem.'
   sumup_waiting_for_payment:
     en: 'Please complete payment on the terminal.'
     de: 'Bitte Zahlung am Terminal abschließen.'
+    pl: 'Dokończ płatność na terminalu.'
   sumup_payment_declined:
     en: 'Payment was declined or failed.'
     de: 'Zahlung wurde abgelehnt oder fehlgeschlagen.'
+    pl: 'Płatność została odrzucona lub nie powiodła się.'
   sumup_no_terminal:
     en: 'No SumUp terminal configured. Please set up the terminal in settings.'
     de: 'Kein SumUp Terminal konfiguriert. Bitte Terminal in den Einstellungen einrichten.'
+    pl: 'Nie skonfigurowano terminala SumUp. Skonfiguruj go w ustawieniach.'
   sumup_checkout_failed:
     en: 'Failed to initiate checkout or there were intermittent connection issues. Please check the terminal connection, it might be offline.'
     de: 'Checkout konnte nicht gestartet werden oder es gab zwischendurch Verbindungsprobleme. Bitte Terminal-Verbindung prüfen, es könnte offline sein.'
+    pl: 'Nie udało się rozpocząć płatności lub wystąpiły problemy z połączeniem. Sprawdź terminal, może być offline.'
   pumpt_volume_flow_adjusted:
     en: 'Pump {pump_number} volume flow adjusted to {new_flow} ml/s.'
     de: 'Pumpen {pump_number} Volumenstrom auf {new_flow} ml/s angepasst.'
+    pl: 'Przepływ pompy {pump_number} został ustawiony na {new_flow} ml/s.'
   new_ingredient_speed:
     en: 'Ingredient {ingredient_name} speed factor adjusted to {new_speed} %.'
     de: 'Zutaten {ingredient_name} Geschwindigkeitsfaktor auf {new_speed} % angepasst.'
+    pl: 'Współczynnik prędkości dla składnika {ingredient_name} został ustawiony na {new_speed}%.'
   news_default_message:
     en: 'Welcome to CocktailBerry! Check out the documentation at https://docs.cocktailberry.org to get started and learn more about the features. If you like this project, consider supporting it on GitHub or the other platforms.'
     de: 'Willkommen bei CocktailBerry! Schaue dir die Dokumentation unter https://docs.cocktailberry.org an, um loszulegen und mehr über die Funktionen zu erfahren. Wenn dir dieses Projekt gefällt, unterstütze es auf GitHub oder den anderen Plattformen.'
+    pl: 'Witamy w CocktailBerry! Sprawdź dokumentację na https://docs.cocktailberry.org aby rozpocząć i poznać funkcje. Jeśli podoba Ci się ten projekt, rozważ wsparcie na GitHub lub innych platformach.'
   news_v2_available:
     en: 'The new web interface (v2) is now available! Access it from any device on your network. Check out the documentation for more information.'
     de: 'Das neue Web-Interface (v2) ist jetzt verfügbar! Greife darauf von jedem Gerät in deinem Netzwerk zu. Weitere Informationen findest du in der Dokumentation.'
+    pl: 'Nowy interfejs webowy (v2) jest już dostępny! Możesz uzyskać do niego dostęp z każdego urządzenia w sieci. Sprawdź dokumentację aby uzyskać więcej informacji.'
   news_acknowledged:
     en: 'News acknowledged successfully'
     de: 'Nachricht erfolgreich bestätigt'
+    pl: 'Wiadomość została potwierdzona'
 
 # Change of language in UI elements
 ui:
@@ -356,50 +463,65 @@ ui:
     cancel_button:
       en: 'Cancel'
       de: 'Abbrechen'
+      pl: 'Anuluj'
     enter_button:
       en: 'Enter'
       de: 'Eintragen'
+      pl: 'Wprowadź'
     change_button:
       en: 'change'
       de: 'ändern'
+      pl: 'zmień'
     add_button:
       en: 'add'
       de: 'hinzufügen'
+      pl: 'dodaj'
     close_button:
       en: 'Close'
       de: 'Schließen'
+      pl: 'Zamknij'
     ok_button:
       en: 'Ok'
       de: 'Ok'
+      pl: 'OK'
     yes_button:
       en: 'Yes'
       de: 'Ja'
+      pl: 'Tak'
     no_button:
       en: 'No'
       de: 'Nein'
+      pl: 'Nie'
     back:
       en: '< Back'
       de: '< Zurück'
+      pl: '< Wstecz'
     apply:
       en: 'Apply'
       de: 'Anwenden'
+      pl: 'Zastosuj'
     done:
       en: 'Done!'
       de: 'Fertig!'
+      pl: 'Gotowe!'
     reset:
       en: 'Reset'
       de: 'Zurücksetzen'
+      pl: 'Resetuj'
     next:
       en: 'Next >'
       de: 'Weiter >'
+      pl: 'Dalej >'
   # dynamic values for maker tab
   maker:
     add_self:
       en: 'Add by hand:'
       de: 'Selbst hinzufügen:'
+      pl: 'Dodaj ręcznie:'
     cocktail_dummy:
       en: 'Choose Cocktail'
       de: 'Cocktail aussuchen'
+      pl: 'Wybierz koktajl'
 
   ##### MAIN WINDOW #####
   # all values for main window
@@ -407,81 +529,106 @@ ui:
     tab_maker:
       en: 'Maker'
       de: 'Maker'
+      pl: 'Maker'
     tab_ingredients:
       en: 'Ingredients'
       de: 'Zutaten'
+      pl: 'Składniki'
     tab_recipes:
       en: 'Recipes'
       de: 'Rezepte'
+      pl: 'Przepisy'
     tab_bottles:
       en: 'Bottles'
       de: 'Flaschen'
+      pl: 'Butelki'
     ingredient_label:
       en: 'Ingredient'
       de: 'Zutat'
+      pl: 'Składnik'
     alcohol_level_label:
       en: 'Alcohol'
       de: 'Alkohol'
+      pl: 'Alkohol'
     bottle_volume_label:
       en: 'Bottle volume'
       de: 'Flaschenvolumen'
+      pl: 'Pojemność butelki'
     single_ingredient_button:
       en: 'Spend single ingredient'
       de: 'Einzelne Zutat ausgeben'
+      pl: 'Podaj pojedynczy składnik'
     handadd_check_label:
       en: 'Only add self by hand'
       de: 'Nur selbst hinzufügen'
+      pl: 'Dodawane tylko ręczne'
     available_button:
       en: 'available'
       de: 'verfügbar'
+      pl: 'dostępne'
     hand_add_label:
       en: 'Add self:'
       de: 'Selbst:'
+      pl: 'Ręcznie:'
     renew_button:
       en: 'apply'
       de: 'anwenden'
+      pl: 'zastosuj'
     virgin_possibility:
       en: 'Allow virgin'
       de: 'Virgin erlauben'
+      pl: 'Zezwól na wersję bezalkoholową'
     label_pump_speed:
       en: 'Pump speed'
       de: 'Pumpengeschwindigkeit'
+      pl: 'Prędkość pompy'
     label_ingredient_cost:
       en: 'Cost'
       de: 'Kosten'
+      pl: 'Koszt'
     label_picture:
       en: 'Picture'
       de: 'Bild'
+      pl: 'Zdjęcie'
     header_search:
       en: 'Search available cocktails by name or ingredient'
       de: 'Suche verfügbare Cocktails nach Namen oder Zutat'
+      pl: 'Szukaj dostępnych koktajli po nazwie lub składniku'
     enter_to_maker:
       en: 'Show in Maker'
       de: 'Im Maker anzeigen'
+      pl: 'Pokaż w Makerze'
     label_ingredient_unit:
       en: 'Unit'
       de: 'Einheit'
+      pl: 'Jednostka'
     label_cocktail_price:
       en: 'Price'
       de: 'Preis'
+      pl: 'Cena'
     label_single_ingredient:
       en: 'Single Ingredient'
       de: 'Einzelne Zutat'
+      pl: 'Pojedynczy składnik'
     nfc_scan_to_proceed:
       en: 'Scan NFC to proceed'
       de: 'NFC scannen um fortzufahren'
+      pl: 'Zeskanuj NFC aby kontynuować'
     random_cocktail_label:
       en: 'Random Cocktail'
       de: 'Zufalls-Cocktail'
+      pl: 'Losowy koktajl'
     random_be_surprised:
       en: 'Be Surprised!'
       de: 'Lass dich überraschen!'
+      pl: 'Daj się zaskoczyć!'
 
   cocktail_selection:
     # best is to use some space before to get a padding for icon
     prepare_button:
       en: '  Prepare {amount} {unit}'
       de: '  {amount} {unit} Zubereiten'
+      pl: '  Przygotuj {amount} {unit}'
 
   ##### AVAILABLE WINDOW #####
   # all values for available window
@@ -489,9 +636,11 @@ ui:
     available_label:
       en: 'Available'
       de: 'Vorhanden'
+      pl: 'Dostępne'
     possible_label:
       en: 'Possible'
       de: 'Möglich'
+      pl: 'Możliwe'
 
   ##### HAND ADD WINDOW #####
   # all values for hand add window
@@ -499,6 +648,7 @@ ui:
     title:
       en: 'Ingredients for hand add'
       de: 'Zutaten selbst hinzufügen'
+      pl: 'Składniki do ręcznego dodania'
 
   ##### PROCESS SCREEN #####
   # all values for process screen
@@ -506,18 +656,23 @@ ui:
     cancel_label:
       en: 'The process can also be canceled'
       de: 'Der Vorgang kann auch abgebrochen werden'
+      pl: 'Proces można również anulować'
     progress_label:
       en: 'Progress:'
       de: 'Fortschritt:'
+      pl: 'Postęp:'
     header_label:
       en: '{cocktail_type} is being prepared!'
       de: '{cocktail_type} wird zubereitet!'
+      pl: '{cocktail_type} jest przygotowywany!'
     cleaning_label:
       en: 'Cleaning'
       de: 'Reinigen'
+      pl: 'Czyszczenie'
     bottle_renew_label:
       en: 'Renewing bottles'
       de: 'Flaschen erneuern'
+      pl: 'Uzupełnione butelek'
 
   ##### BONUSINGREDIENT SCREEN #####
   # all values for bonusingredient screen
@@ -525,9 +680,11 @@ ui:
     spend_button:
       en: 'Spend'
       de: 'Ausgeben'
+      pl: 'Podaj'
     title:
       en: 'Select output ingredient'
       de: 'Zutaten Ausgabe auswählen'
+      pl: 'Wybierz składnik wyjściowy'
 
   ##### BOTTLE WINDOW #####
   # all values for bottle window
@@ -535,6 +692,7 @@ ui:
     header:
       en: 'Select/change level of bottles'
       de: 'Füllstand der Flaschen auswählen/ändern'
+      pl: 'Wybierz/zmień poziom napełnienia butelek'
 
   ##### TEAM WINDOW #####
   # all values for team window
@@ -542,22 +700,27 @@ ui:
     header:
       en: 'Select your Team'
       de: 'Team auswählen'
+      pl: 'Wybierz swój zespół'
 
-  ##### numpad WINDOW #####
+    ##### numpad WINDOW #####
   # all values for password window
   numpad_window:
     amount:
       en: 'Enter amount!'
       de: 'Menge eingeben!'
+      pl: 'Wprowadź ilość!'
     alcohol:
       en: 'Enter alcohol!'
       de: 'Alkoholgehalt eingeben!'
+      pl: 'Wprowadź zawartość alkoholu!'
     number:
       en: 'Enter number!'
       de: 'Nummer eingeben!'
+      pl: 'Wprowadź numer!'
     price:
       en: 'Enter price!'
       de: 'Preis eingeben!'
+      pl: 'Wprowadź cenę!'
 
   ##### OPTION WINDOW #####
   # all values for option window
@@ -565,66 +728,87 @@ ui:
     cleaning:
       en: 'Cleaning'
       de: 'Reinigen'
+      pl: 'Czyszczenie'
     config:
       en: 'Configuration'
       de: 'Einstellungen'
+      pl: 'Konfiguracja'
     calibration:
       en: 'Calibration'
       de: 'Kalibrierung'
+      pl: 'Kalibracja'
     data:
       en: 'Data'
       de: 'Daten'
+      pl: 'Dane'
     backup:
       en: 'Backup'
       de: 'Backup'
+      pl: 'Kopia zapasowa'
     restore:
       en: 'Restore'
       de: 'Wiederherstellen'
+      pl: 'Przywracanie'
     reboot:
       en: 'Reboot'
       de: 'Neustart'
+      pl: 'Restart'
     shutdown:
       en: 'Shutdown'
       de: 'Herunterfahren'
+      pl: 'Wyłącz'
     logs:
       en: 'Logs'
       de: 'Logs'
+      pl: 'Logi'
     update_system:
       en: 'System Update'
       de: 'System Update'
+      pl: 'Aktualizacja systemu'
     events:
       en: 'Events'
       de: 'Ereignisse'
+      pl: 'Zdarzenia'
     wifi:
       en: 'WiFi Setup'
       de: 'WiFi Einrichtung'
+      pl: 'Konfiguracja WiFi'
     addons:
       en: 'Addons'
       de: 'Addons'
+      pl: 'Dodatki'
     rfid:
       en: 'Write RFID'
       de: 'RFID Schreiben'
+      pl: 'Zapis RFID'
     check_internet:
       en: 'Internet Check'
       de: 'Internet Check'
+      pl: 'Sprawdzenie połącznia z internetem'
     news:
       en: 'News'
       de: 'Neuigkeiten'
+      pl: 'Wiadomości'
     sumup:
       en: 'SumUp Set Up'
       de: 'SumUp Einrichtung'
+      pl: 'Konfiguracja SumUp'
     waiter:
       en: 'Service Personnel'
       de: 'Servicepersonal'
+      pl: 'Personel obsługi'
     about:
       en: 'About CocktailBerry'
       de: 'Info CocktailBerry'
+      pl: 'O CocktailBerry'
     back:
       en: '< Back'
       de: '< Zurück'
+      pl: '< Wstecz'
     scale_calibration:
       en: 'Scale Calibration'
       de: 'Waagen Kalibrierung'
+      pl: 'Kalibracja wagi'
 
   ##### DATE PICKER WINDOW #####
   # all values for date picker window
@@ -632,6 +816,7 @@ ui:
     header:
       en: 'Select Date and Time'
       de: 'Datum und Zeit bestimmen'
+      pl: 'Wybierz datę i godzinę'
 
   ##### PASSWORD WINDOW #####
   # all values for password dialog window
@@ -640,26 +825,33 @@ ui:
     header_master_password:
       en: 'Enter master password:'
       de: 'Passwort eingeben:'
+      pl: 'Wprowadź hasło główne:'
     header_maker_password:
       en: 'Enter maker password:'
       de: 'Maker Passwort eingeben:'
+      pl: 'Wprowadź hasło Maker:'
 
   rfid_writer:
     write:
       en: 'Write RFID'
       de: 'RFID Schreiben'
+      pl: 'Zapisz RFID'
     start_text:
       en: 'Please enter text and select write'
       de: 'Bitte Text eingeben und schreiben auswählen'
+      pl: 'Wprowadź tekst i wybierz zapisz'
     success:
       en: 'Write successful'
       de: 'Erfolgreich geschrieben'
+      pl: 'Zapis zakończony pomyślnie'
     prompt:
       en: 'Put RFID to terminal'
       de: 'RFID an Terminal halten'
+      pl: 'Zbliż RFID do terminala'
     error:
       en: 'Text needs to be 3+ chars'
       de: 'Text muss min. 3 Zeichen sein'
+      pl: 'Tekst musi mieć co najmniej 3 znaki'
 
   ##### WIFI WINDOW #####
   # all values for wifi window
@@ -667,9 +859,11 @@ ui:
     ssid:
       en: 'SSID (network name)'
       de: 'SSID (Netzwerkname)'
+      pl: 'SSID (nazwa sieci)'
     password:
       en: 'Password'
       de: 'Passwort'
+      pl: 'Hasło'
 
   ##### ADDON WINDOW #####
   # all values for addon window
@@ -677,9 +871,11 @@ ui:
     no_gui:
       en: 'This addon got no additional GUI you can interact with.'
       de: 'Dieses Addon hat keine zusätzliche Benutzeroberfläche zur Interaktion.'
+      pl: 'Ten dodatek nie posiada dodatkowego interfejsu GUI do interakcji.'
     manage:
       en: 'Manage'
       de: 'Verwalten'
+      pl: 'Zarządzaj'
 
   ##### DATA WINDOW #####
   # all values for data window
@@ -687,24 +883,31 @@ ui:
     export:
       en: 'Data Export'
       de: 'Datenexport'
+      pl: 'Eksport danych'
     cocktails_made:
       en: 'Cocktails made: '
       de: 'Cocktails zubereitet: '
+      pl: 'Zrobione koktajle: '
     ingredient_volume:
       en: 'Ingredients: '
       de: 'Zutaten: '
+      pl: 'Składniki: '
     cost_ingredients:
       en: 'Cost of ingredients: '
       de: 'Kosten der Zutaten: '
+      pl: 'Koszt składników: '
     no_cost_data:
       en: 'No cost data available'
       de: 'Keine Kosten Daten verfügbar'
+      pl: 'Brak danych o kosztach'
     since_reset:
       en: 'Since reset'
       de: 'Seit Zurücksetzen'
+      pl: 'Od resetu'
     all_time:
       en: 'All time'
       de: 'Komplette Zeit'
+      pl: 'Cały czas'
 
   ##### PICTURE WINDOW #####
   # all values for picture (upload) window
@@ -712,6 +915,7 @@ ui:
     header:
       en: 'Set picture for {cocktail}'
       de: 'Bild einstellen für {cocktail}'
+      pl: 'Ustaw obraz dla {cocktail}'
 
   ##### SETTINGS WINDOW #####
   # all values for settings window
@@ -720,500 +924,660 @@ ui:
     UI_DEVENVIRONMENT:
       en: 'Activates the development setting'
       de: 'Schaltet die Entwicklungseinstellung ein'
+      pl: 'Aktywuje ustawienia deweloperskie'
     UI_MASTERPASSWORD:
       en: 'Password for critical actions and to get to settings, use 0 for no password'
       de: 'Passwort für kritische Aktionen und um zu den Einstellungen zu kommen, verwende 0 um kein Passwort zu verwenden'
+      pl: 'Hasło do ustawień i akcji krytycznych, użyj 0 aby wyłączyć hasło'
     UI_MAKER_PASSWORD:
       en: 'Password for tabs other than the maker one, use 0 for no password'
       de: 'Passwort alle Tabs, außer den Maker Tab, verwende 0 um kein Passwort zu verwenden'
+      pl: 'Hasło do zakładek innych niż Maker, użyj 0 aby wyłączyć hasło'
     UI_LOCKED_TABS:
       en: 'Tabs, which should only be accessible with the maker password, 1: Maker 2: Ingredients, 3: Recipes, 4: Bottles'
       de: 'Tabs, die nur mit dem Maker Passwort zugänglich sein sollen, 1: Maker 2: Zutaten, 3: Rezepte, 4: Flaschen'
+      pl: 'Zakładki dostępne tylko z hasłem maker: 1: Maker 2: Składniki, 3: Przepisy, 4: Butelki'
     UI_LANGUAGE:
       en: 'Displayed language of the program'
       de: 'Spracheinstellung vom Programm'
+      pl: 'Język programu'
     UI_WIDTH:
       en: 'Width of the application'
       de: 'Breite des Programms'
+      pl: 'Szerokość aplikacji'
     UI_HEIGHT:
       en: 'Height of the application'
       de: 'Höhe des Programms'
+      pl: 'Wysokość aplikacji'
     UI_PICTURE_SIZE:
       en: 'Approximate size of the picture in the maker tab, will try to scale to this size. Will use nearest size to fit a full number of pictures per row.'
       de: 'Ungefähre Größe des Bildes im Maker Tab, wird versucht auf diese Größe zu skalieren. Wird die nächste Größe verwenden, um eine ganze Anzahl an Bildern pro Reihe zu haben.'
+      pl: 'Przybliżony rozmiar obrazka w zakładce Maker, system spróbuje dopasować do tej wielkości. Zostanie użyty najbliższy rozmiar, aby zmieścić pełną liczbę obrazków w rzędzie.'
     UI_ONLY_MAKER_TAB:
       en: 'Disable all other tabs than the maker one; You will only be prompted at program start if you want to go to config window with master password'
       de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
+      pl: 'Wyłącz wszystkie zakładki poza Makere. Przy starcie programu zostaniesz zapytany tylko, czy chcesz przejść do konfiguracji z hasłem głównym'
     PUMP_CONFIG:
-      en: 'Setting for each pump: Pump type (DC or Stepper), pin type (GPIO or I2C board), board number (# only relevant for I2C), pin connected to the pump, volume flow in ml/s, tube volume in ml, consumption estimation method (time or weight based) and carriage position (0-100%). DC controls relay-driven pumps like membrane, peristaltic or even valves. Stepper is for stepper motor driven pumps. I2C pins start at 0-7 or 0-15 depending on the board type. Custom drivers can be added via addons/dispensers extensions.'
-      de: 'Einstellung für jede Pumpe: Pumpen-Typ (DC oder Stepper), Pin-Typ (GPIO oder I2C-Board), Board-Nummer (# nur relevant für I2C), Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen in ml, Verbrauchsermittlung (zeit- oder gewichtsbasiert) und Schlittenposition (0-100%). DC steuert relais-basierte Pumpen wie Membran-, Schlauchpumpen oder auch Ventile. Stepper ist für Schrittmotor-betriebene Pumpen. I2C-Pins beginnen bei 0-7 oder 0-15 je nach Board-Typ. Eigene Treiber via addons/dispensers Erweiterungen.'
+      en: 'Setting for each pump: Pump type (DC or Stepper), pin type (GPIO or I2C board), board number (# only relevant for I2C), pin connected to the pump, volume flow in ml/s, tube volume in ml, consumption estimation method (time or weight based) and carriage position (0-100%). DC controls relay-driven pumps like membrane, peristaltic or even valves. Stepper is for stepper motor driven pumps. I2C pins start at 0-7 or 0-15 depending on the board type.'
+      de: 'Einstellung für jede Pumpe: Pumpen-Typ (DC oder Stepper), Pin-Typ (GPIO oder I2C-Board), Board-Nummer (# nur relevant für I2C), Pin verbunden mit der Pumpe, Volumenstrom in ml/s, Schlauchvolumen in ml, Verbrauchsermittlung (zeit- oder gewichtsbasiert) und Schlittenposition (0-100%). DC steuert relais-basierte Pumpen wie Membran-, Schlauchpumpen oder auch Ventile. Stepper ist für Schrittmotor-betriebene Pumpen. I2C-Pins beginnen bei 0-7 oder 0-15 je nach Board-Typ.'
+      pl: 'Ustawienia dla każdej pompy: typ pompy (DC lub Stepper), typ pinu (GPIO lub płytka I2C), numer płytki (# tylko dla I2C), pin podłączony do pompy, przepływ w ml/s, objętość wężyka w ml, metoda pomiaru zużycia (czasowa lub wagowa) oraz pozycja wózka (0-100%). DC steruje przeknikami pomp (membranowe, perystaltyczne) lub zaworami. Stepper dotyczy pomp z silnikiem krokowym. Piny I2C są numerowane od 0–7 lub 0–15, w zależności od typu płytki.'
     I2C_CONFIG:
       en: 'I2C GPIO expander configuration. Select the board type, board number (# to distinguish multiple boards of the same type), enable/disable, I2C address (default 0x20) and signal inversion. Multiple boards of the same type are supported with different board numbers.'
       de: 'I2C GPIO-Expander Konfiguration. Board-Typ, Board-Nummer (# um mehrere Boards des gleichen Typs zu unterscheiden), Aktivierung, I2C-Adresse (Standard 0x20) und Signalinvertierung auswählen. Mehrere Boards des gleichen Typs werden über verschiedene Board-Nummern unterstützt.'
+      pl: 'Konfiguracja ekspandera GPIO I2C. Wybierz typ płytki, numer płytki (# do rozróżnienia wielu płytek tego samego typu), włączenie/wyłączenie, adres I2C (domyślnie 0x20) oraz inwersję sygnału. Obsługiwane są wielokrotne płytki tego samego typu z różnymi numerami.'
     MAKER_NAME:
       en: 'Name of your CocktailBerry machine'
       de: 'Name von deiner CocktailBerry Maschine'
+      pl: 'Nazwa Twojej maszyny CocktailBerry'
     MAKER_NUMBER_BOTTLES:
       en: 'Number of bottles of the machine'
       de: 'Flaschenanzahl der Maschine'
+      pl: 'Liczba butelek w maszynie'
     MAKER_PREPARE_VOLUME:
       en: 'List of volume of the cocktail to prepare for the user to choose from. Using one value will result in a fixed volume.'
       de: 'Liste der Volumen des Cocktails, die der Benutzer auswählen kann. Wenn nur ein Wert gegeben ist, wird ein festes Volumen verwendet.'
+      pl: 'Lista dostępnych objętości koktajlu do wyboru przez użytkownika. Jeśli podana jest jedna wartość, zostanie użyta stała objętość.'
     MAKER_SIMULTANEOUSLY_PUMPS:
       en: 'Maximum number of pumps simultaneously on'
       de: 'Maximale Pumpenanzahl, die gleichzeitig an ist'
+      pl: 'Maksymalna liczba pomp działających jednocześnie'
     MAKER_CLEAN_TIME:
       en: 'Time in seconds the cleaning program is executed'
       de: 'Zeit in Sekunden, die das Reinigungsprogramm ausgeführt wird'
+      pl: 'Czas w sekundach działania programu czyszczenia'
     MAKER_ALCOHOL_FACTOR:
       en: 'Value to scale alcoholic ingredients in each recipe. Use this to decrease/increase the alcohol level of all cocktails. Default is 100%'
       de: 'Skalierungsfaktor für alkoholische Zutaten in jedem Rezept. Verwende diesen, um den Alkoholgehalt aller Cocktails zu verringern/erhöhen. Standard ist 100%'
+      pl: 'Wartość skalująca składniki alkoholowe w każdym przepisie. Użyj tego do zmniejszenia/zwiększenia poziomu alkoholu we wszystkich koktajlach. Domyślnie 100%'
     MAKER_PUMP_REVERSION_CONFIG:
       en: 'Configuration for pump reversion: pin type, board number (# only relevant for I2C), pin and signal inversion. Needed for some setups to be able to revert the pump direction.'
       de: 'Konfiguration für Pumpen Umkehrung: Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin und Signalinvertierung. Benötigt von einigen Setups, um die Pumpenrichtung ändern zu können.'
+      pl: 'Konfiguracja zmiany kierunku pompy: typ pinu, numer płytki (# tylko dla I2C), pin oraz inwersja sygnału. Wymagana w niektórych konfiguracjach do zmiany kierunku pompy.'
     MAKER_SEARCH_UPDATES:
       en: 'Search for updates, if available internet connection'
       de: 'Sucht nach Updates, wenn Internetverbindung besteht'
+      pl: 'Sprawdza dostępność aktualizacji, jeśli jest połączenie z internetem'
     MAKER_CHECK_BOTTLE:
       en: 'Checks before each cocktail if there is enough volume in the needed bottles. Aborts with a warning if there is not. Disable to ignore fill level.'
       de: 'Prüft vor dem Cocktail ob genug in den benötigten Flasche ist, bricht mit Warnung ab falls nicht. Ausschalten ignoriert Füllstand.'
+      pl: 'Przed każdym koktajlem sprawdza, czy w wymaganych butelkach znajduje się wystarczająca ilość składników. W razie braku przerywa i wyświetla ostrzeżenie. Wyłączenie tej opcji ignoruje poziom napełnienia.'
     MAKER_PINS_INVERTED:
       en: 'Inverts the pin signal fo the GPIOs (on is low, off is high), needed for most relays, not used for I2C'
       de: 'Vertauscht das Pin Signal für die GPIOs (an ist low, aus ist high), benötigt von vielen Relays, nicht verwendet bei I2C'
+      pl: 'Odwraca sygnał pinów GPIO (Wł to LOW, Wył to HIGH), wymagane dla większości przekaźników, nie używane dla I2C'
     MAKER_THEME:
       en: 'Color theme of the application, use custom to select your own color'
       de: 'Farbeinstellung des Programms, wähle custom aus, um es selbst zu stylen'
+      pl: 'Motyw kolorystyczny aplikacji, użyj custom aby wybrać własny kolor'
     MAKER_MAX_HAND_INGREDIENTS:
       en: 'Maximum number of ingredients the user has to add by hand to consider a cocktail as possible/available'
       de: 'Maximale Anzahl an Zutaten, die der Nutzer per Hand hinzufügen muss, damit ein Cocktail als machbar/verfügbar gilt'
+      pl: 'Maksymalna liczba składników dodawanych ręcznie, aby koktajl był uznany za możliwy/dostępny'
     MAKER_CHECK_INTERNET:
       en: 'Checks if machine is connected to the internet at startup'
       de: 'Prüft ob beim Programmstart eine Internetverbindung besteht'
+      pl: 'Sprawdza połączenie z internetem przy starcie programu'
     MAKER_USE_RECIPE_VOLUME:
       en: 'Use recipe volume instead of scaling to defined volume. This disables scaling of cocktail amount in the maker tab.'
       de: 'Verwende Rezept Volumen anstatt Skalierung auf definiertes Volumen. Dies deaktiviert die Skalierung von Cocktail Menge im Maker Tab.'
+      pl: 'Używaj objętości z przepisu zamiast skalowania do zdefiniowanej objętości. Wyłącza to skalowanie ilości koktajlu w zakładce Maker.'
     MAKER_ADD_SINGLE_INGREDIENT:
       en: 'Adds the option to also spend a single ingredient to the cocktails in the maker tab'
       de: 'Fügt eine Option zu den Cocktails in dem Maker Tab hinzu, auch einzelne Zutaten ausgeben zu können'
+      pl: 'Dodaje opcję wydawania pojedynczego składnika do koktajli w zakładce Maker'
     MAKER_RANDOM_COCKTAIL:
       en: 'Adds a random cocktail tile to the maker tab that picks a surprise cocktail on prepare'
       de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
-    LED_CONFIG:
-      en: 'List with config for each LED (discriminated by led_type: Normal pin LED or WSLED addressable). Custom drivers can be added via addons/leds extensions.'
-      de: 'Liste mit Einstellung für jeden LED (Diskriminator led_type: Normal-Pin oder WSLED ansteuerbar). Eigene Treiber via addons/leds Erweiterungen.'
-    RFID_CONFIG:
-      en: 'RFID/NFC reader configuration. Choose driver type (No, MFRC522, USB) and toggle enabled. Custom drivers can be added via addons/rfid extensions.'
-      de: 'RFID/NFC Reader Konfiguration. Treiber-Typ wählen (No, MFRC522, USB) und aktiviert umschalten. Eigene Treiber via addons/rfid Erweiterungen.'
+      pl: 'Dodaje kafelek Losowy koktajl w zakładce Maker, który podczas przygotowania losuje napój.'
+    LED_NORMAL:
+      en: 'List with config for each normal (non-addressable) LED: pin type, board number (# only relevant for I2C), pin, default on state, preparation state (on/off/effects)'
+      de: 'Liste mit Einstellung für jeden normalen (nicht ansteuerbaren) LED: Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte)'
+      pl: 'Lista konfiguracji dla każdej zwykłej (nieadresowalnej) diody LED: typ pinu, numer płytki (# tylko dla I2C), pin, domyślny stan, stan podczas przygotowania (on/off/efekty)'
+    LED_WSLED:
+      en: 'List with config for each WS281x (addressable) LED: pin, brightness, LED count, number of daisy chained rings, default on state, preparation state (on/off/effects). Only supports GPIO.'
+      de: 'Liste mit Einstellung für jeden WS281x (ansteuerbaren) LED: Pin, Helligkeit, LED Anzahl, Anzahl der in Serie verbundenen Ringe, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). Unterstützt nur GPIO.'
+      pl: 'Lista konfiguracji dla każdej diody WS281x (adresowalnej): pin, jasność, liczba LED, liczba połączonych pierścieni, domyślny stan, stan podczas przygotowania (on/off/efekty). Obsługuje tylko GPIO.'
+    RFID_READER:
+      en: 'Using a RFID Reader: Basic MFRC522 (SPI) or an USB. USB does not support writing/reading data from tags, just IDs.'
+      de: 'Wird ein RFID Reader verwendet: Standard MFRC522 (SPI) oder ein USB. USB unterstützt kein Schreiben/Lesen von Daten auf Tags, nur IDs.'
+      pl: 'Używany czytnik RFID: podstawowy MFRC522 (SPI) lub USB. USB nie obsługuje zapisu/odczytu danych z tagów, tylko ID.'
     MICROSERVICE_ACTIVE:
       en: 'Activates the interaction with the microservice'
       de: 'Aktiviert die Interaktion mit dem Microservice'
+      pl: 'Aktywuje interakcję z mikrousługą'
     MICROSERVICE_BASE_URL:
       en: 'URL address for the microservice'
       de: 'URL Adresse des Microservice'
+      pl: 'Adres URL mikrousługi'
     TEAMS_ACTIVE:
       en: 'Activates the team function'
       de: 'Aktiviert die Team Funktion'
+      pl: 'Aktywuje funkcję Zespół'
     TEAM_BUTTON_NAMES:
       en: 'Names of the teams'
       de: 'Name der Teams'
+      pl: 'Nazwy zespołu'
     TEAM_API_URL:
       en: 'URL address for teams API'
       de: 'URL Adresse der Teams API'
+      pl: 'Adres URL API zespołu'
     PAYMENT_TYPE:
       en: 'Type of payment integration to use; official CocktailBerry Payment service (NFC) or SumUp'
       de: 'Art der Zahlungsintegration, die verwendet werden soll; offizieller CocktailBerry Zahlungsservice (NFC) oder SumUp'
+      pl: 'Typ integracji płatności. Oficjalny serwis CocktailBerry (NFC) lub SumUp'
     PAYMENT_PRICE_ROUNDING:
       en: 'Rounding for payment prices, round up to next multiple of number, e.g. 0.25 will round 3.60 to 3.75; 1.00 will round 3.33 to 4.00'
       de: 'Rundung für Zahlungsbeträge, runde auf das nächste Vielfache der Zahl auf, z.B. 0,25 rundet 3,60 auf 3,75; 1,00 rundet 3,33 auf 4,00'
+      pl: 'Zaokrąglanie cen płatności do najbliższej wielokrotności, np. 0.25 zmienia 3.60 na 3.75; 1.00 zmienia 3.33 na 4.00'
     PAYMENT_VIRGIN_MULTIPLIER:
       en: 'Multiplier percentage to apply to virgin cocktail prices'
       de: 'Multiplikator Prozentsatz, der auf Preise für alkoholfreie Cocktails angewendet wird'
+      pl: 'Mnożnik procentowy stosowany do cen koktajli bezalkoholowych'
     PAYMENT_TIMEOUT_S:
       en: 'Timeout in seconds before reader cancels the payment scan'
       de: 'Timeout in Sekunden bevor der Leser den Zahlungs-Scan abbricht'
+      pl: 'Czas w sekundach przed anulowaniem skanowania płatności'
     PAYMENT_SHOW_NOT_POSSIBLE:
       en: 'Show cocktails that are not possible to the user (missing balance, no alcohol allowed, etc.) in a disabled style'
       de: 'Zeige Cocktails an, die für den Benutzer nicht möglich sind (zu wenig Guthaben, kein Alkohol erlaubt, etc.) in deaktiviertem Stil'
+      pl: 'Pokazuj niedostępne koktajle (brak środków, brak alkoholu itp.) w wyszarzonym stylu'
     PAYMENT_LOCK_SCREEN_NO_USER:
       en: 'Show lock screen if no user is detected on payment NFC/RFID scan'
       de: 'Zeige Sperrbildschirm an, wenn kein Benutzer bei Zahlung per NFC/RFID erkannt wird'
+      pl: 'Pokazuj ekran blokady, gdy nie wykryto użytkownika przy skanowaniu NFC/RFID'
     PAYMENT_SERVICE_URL:
       en: 'URL address for the CocktailBerry payment service API'
       de: 'URL Adresse der CocktailBerry Zahlungsservice API'
+      pl: 'Adres URL API serwisu płatności CocktailBerry'
     PAYMENT_SECRET_KEY:
       en: 'Secret key for the CocktailBerry payment service API'
       de: 'Geheimer Schlüssel für die CocktailBerry Zahlungsservice API'
+      pl: 'Tajny klucz API serwisu płatności CocktailBerry'
     PAYMENT_SUMUP_API_KEY:
       en: 'API key for SumUp payment integration'
       de: 'API Schlüssel für SumUp Zahlungsintegration'
+      pl: 'Klucz API integracji SumUp'
     PAYMENT_SUMUP_MERCHANT_CODE:
       en: 'Merchant code for SumUp payment integration'
       de: 'Händlercode für SumUp Zahlungsintegration'
+      pl: 'Kod sprzedawcy SumUp'
     PAYMENT_SUMUP_TERMINAL_ID:
       en: 'Terminal ID for SumUp payment integration (usually auto-managed over setup UI)'
       de: 'Terminal ID für SumUp Zahlungsintegration (üblicherweise automatisch über Setup UI verwaltet)'
+      pl: 'ID terminala SumUp (zwykle zarządzane automatycznie przez UI)'
     PAYMENT_AUTO_LOGOUT_TIME_S:
       en: 'Auto logout time in seconds for user information (scanned NFC/RFID), use 0 to disable'
       de: 'Automatische Abmeldezeit in Sekunden für Benutzerinformationen (gescannte NFC/RFID), verwende 0 zum Deaktivieren'
+      pl: 'Czas automatycznego wylogowania w sekundach dla danych użytkownika (NFC/RFID), 0 wyłącza'
     PAYMENT_LOGOUT_AFTER_PREPARATION:
       en: 'Remove user information (used for cocktail display filter) after cocktail preparation, lock screen if enabled'
       de: 'Entferne Benutzerinformationen (für Cocktail Anzeigefilter verwendet) nach der Cocktail Zubereitung, Sperrbildschirm wenn aktiviert'
+      pl: 'Usuwa dane użytkownika po przygotowaniu koktajlu, blokuje ekran jeśli aktywne'
     WAITER_MODE:
       en: 'Enables the service personnel mode, requiring NFC scan before cocktail preparation. Needs an NFC/RFID reader to be configured.'
       de: 'Aktiviert den Servicepersonal-Modus, der einen NFC-Scan vor der Cocktail Zubereitung erfordert. Ein NFC/RFID-Leser muss konfiguriert sein.'
+      pl: 'Włącza tryb obsługi, wymagający skanowania NFC przed przygotowaniem koktajlu. Wymaga czytnika NFC/RFID.'
     WAITER_LOGOUT_AFTER_COCKTAIL:
       en: 'Automatically log out the service personnel after a cocktail has been prepared'
       de: 'Servicepersonal nach der Cocktail Zubereitung automatisch abmelden'
+      pl: 'Automatycznie wyloguj personel po przygotowaniu koktajlu'
     WAITER_AUTO_LOGOUT_S:
       en: 'Time in seconds before the service personnel is automatically logged out, use 0 to disable'
       de: 'Zeit in Sekunden bis das Servicepersonal automatisch abgemeldet wird, verwende 0 zum Deaktivieren'
+      pl: 'Czas w sekundach do automatycznego wylogowania personelu, 0 wyłącza'
     CUSTOM_COLOR_PRIMARY:
       en: 'Custom primary (most elements) color if custom theme is selected'
       de: 'Eigene primäre (meisten Elemente) Farbe, wenn custom Theme ausgewählt ist'
+      pl: 'Własny kolor główny (większość elementów) dla motywu custom'
     CUSTOM_COLOR_SECONDARY:
       en: 'Custom secondary (active, hover) color if custom theme is selected'
       de: 'Eigene sekundäre (aktiv, hover) Farbe, wenn custom Theme ausgewählt ist'
+      pl: 'Własny kolor drugorzędny (aktywny/hover) dla motywu custom'
     CUSTOM_COLOR_NEUTRAL:
       en: 'Custom neutral (inactive, subtle) color if custom theme is selected'
       de: 'Eigene neutrale (inaktiv, subtile) Farbe, wenn custom Theme ausgewählt ist'
+      pl: 'Własny kolor neutralny (nieaktywny) dla motywu custom'
     CUSTOM_COLOR_BACKGROUND:
       en: 'Custom background color if custom theme is selected'
       de: 'Eigene Hintergrundfarbe, wenn custom Theme ausgewählt ist'
+      pl: 'Własny kolor tła dla motywu custom'
     CUSTOM_COLOR_DANGER:
       en: 'Custom danger (e.g. delete) color if custom theme is selected'
       de: 'Eigene Gefahr (z.B. löschen) Farbe, wenn custom Theme ausgewählt ist'
+      pl: 'Własny kolor ostrzegawczy (np. usuwanie) dla motywu custom'
     EXP_MAKER_UNIT:
       en: 'Unit to show in the maker tab for volume'
       de: 'Anzeigeeinheit der Volumen im Maker Tab'
+      pl: 'Jednostka objętości w zakładce Maker'
     EXP_MAKER_FACTOR:
       en: 'Multiplication factor for the displayed volumes in the maker tab'
       de: 'Multiplikationsfaktor für die angezeigten Volumen im Maker Tab'
+      pl: 'Współczynnik skalowania wyświetlanych objętości w Maker'
     EXP_DEMO_MODE:
       en: 'Set the API into demo mode (no destructive actions)'
       de: 'Setze die API in den Demo Modus (keine destruktiven Aktionen)'
+      pl: 'Ustaw API w tryb demo (bez działań nieodwracalnych)'
     SCALE_CONFIG:
-      en: 'Scale hardware configuration: driver type, enable/disable, calibration factor for weight-based measurement and minimal detected weight for cocktail preparation allowed. Custom drivers can be added via addons/scales extensions.'
-      de: 'Waagen-Konfiguration: Treibertyp, Aktivierung, Kalibrierungsfaktor für gewichtsbasierte Messung und minimal erkanntes Gewicht für die Cocktailzubereitung zu starten. Eigene Treiber via addons/scales Erweiterungen.'
+      en: 'Scale hardware configuration: driver type, enable/disable and calibration factor for weight-based measurement'
+      de: 'Waagen-Konfiguration: Treibertyp, Aktivierung und Kalibrierungsfaktor für gewichtsbasierte Messung'
+      pl: 'Konfiguracja wagi: typ sterownika, włączenie i kalibracja dla pomiaru wagowego'
     CARRIAGE_CONFIG:
-      en: 'Carriage/slide hardware configuration: driver type, enable/disable, home position (0-100%), movement speed (%/s) and whether to move during cleaning. Custom drivers can be added via addons/carriages extensions.'
-      de: 'Schlitten-Konfiguration: Treibertyp, Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll. Eigene Treiber via addons/carriages Erweiterungen.'
+      en: 'Carriage/slide hardware configuration: driver type, enable/disable, home position (0-100%), movement speed (%/s) and whether to move during cleaning'
+      de: 'Schlitten-Konfiguration: Treibertyp, Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll'
+      pl: 'Konfiguracja wózka: typ sterownika, włączenie, pozycja startowa (0-100%), prędkość (%/s) i ruch podczas czyszczenia'
 
-  ##### COLOR WINDOW #####
+##### COLOR WINDOW #####
   # all values for settings in color window
   # Use same names as color names
   color_window:
     use_template:
       en: 'Use Template'
       de: 'Template nehmen'
+      pl: 'Użyj szablonu'
     description:
       en: 'Here, you can set your own custom colors for the application. If you want to start from a specific theme, select it over the drop down and click use template. You need to select custom as a theme for this settings to be applied.'
       de: 'Here kann der eigene Stil der Anwendung definiert werden. Wenn von einer existieren Theme gestartet werden soll, wähle diese im Dropdown aus und klicke Template nehmen. Die option custom muss als Theme gewählt werden, damit diese aktiv ist.'
+      pl: 'Tutaj możesz ustawić własne kolory aplikacji. Jeśli chcesz zacząć od istniejącego motywu, wybierz go z listy rozwijanej i kliknij użyj szablonu. Aby ustawienia były aktywne, musisz wybrać motyw custom.'
     primary:
       en: 'Primary color, for the font and buttons'
       de: 'Primäre Farbe, für die Schrift und Buttons'
+      pl: 'Kolor główny dla czcionek i przycisków'
     secondary:
       en: 'Secondary color, for selected elements or other separation'
       de: 'Sekundäre Farbe, für ausgewählte Elemente bzw. Unterscheidungen'
+      pl: 'Drugi kolor do akcentowania wybranych elementów'
     destructive:
       en: 'Color for destructive elements, like delete'
       de: 'Neutrale Farbe für destruktive Elemente, wie Löschen'
+      pl: 'Neutralny kolor dla działań nieodwracalnych, np. usuwania'
     neutral:
       en: 'Neutral color, for examples some Headers'
       de: 'Neutrale Farbe, wie zum Beispiel einige Überschriften'
+      pl: 'Kolor neutralny, np. dla nagłówków'
     background:
       en: 'Background color of the application'
       de: 'Hintergrund Farbe der Anwendung'
+      pl: 'Kolor tła aplikacji'
     border:
       en: 'Border color of the Ui elements'
       de: 'Rahmen Farbe der Ui Elemente'
+      pl: 'Kolor obramowania elementów interfejsu'
     progressbar:
       en: 'Color of the progressbar'
       de: 'Farbe des Fortschrittsbalken'
+      pl: 'Kolor paska postępu'
     progressbg:
       en: 'Background color of the progressbar'
       de: 'Hintergrund Farbe des Fortschrittsbalken'
+      pl: 'Kolor tła paska postępu'
     tabborder:
       en: 'Border color of the top tabs'
       de: 'Rahmen Farbe der oberen Tabs'
+      pl: 'Kolor obramowania górnych zakładek'
 
-  ##### BACKUP WINDOW #####
+##### BACKUP WINDOW #####
   # all values for settings in backup window
   backup_window:
     header:
       en: 'Restore Backup'
       de: 'Backup Wiederherstellen'
+      pl: 'Przywróć kopię zapasową'
     style:
       en: 'Custom Style'
       de: 'Custom Style'
+      pl: 'Styl niestandardowy'
     config:
       en: 'Configuration'
       de: 'Einstellungen'
+      pl: 'Konfiguracja'
     images:
       en: 'Custom Images'
       de: 'Custom Bilder'
+      pl: 'Obrazy użytkownika'
     database:
       en: 'Database (Own Cocktails)'
       de: 'Datenbank (Eigene Cocktails)'
+      pl: 'Baza danych (własne koktajle)'
 
-  ##### REFILL WINDOW #####
+##### REFILL WINDOW #####
   # all values for settings in refill window
   refill_prompt:
     information:
       en: 'The {ingredient_name} ingredient is low, {needed_volume} ml is needed. Please refill it ({ingredient_volume} ml is the bottle volume).'
       de: 'Die {ingredient_name} Zutat ist niedrig, {needed_volume} ml werden benötigt. Bitte fülle sie auf ({ingredient_volume} ml ist das Flaschenvolumen).'
+      pl: 'Za mało składnika {ingredient_name}. Wymagane jest {needed_volume} ml. Uzupełnij go ({ingredient_volume} ml to pojemność butelki).'
     later:
       en: '< Later'
       de: '< Später'
+      pl: '< Później'
     to_bottles:
       en: 'Go to Bottles'
       de: 'Zu den Flaschen'
+      pl: 'Przejdź do butelek'
 
-  ##### CALIBRATION WINDOW #####
+##### CALIBRATION WINDOW #####
   # all values for settings in calibration window
   calibration_window:
     header:
       en: 'Pump Calibration'
       de: 'Pumpen Kalibrieren'
+      pl: 'Kalibracja pomp'
     pump_number:
       en: 'Pump'
       de: 'Pumpe'
+      pl: 'Pompa'
     amount:
       en: 'Amount'
       de: 'Menge'
+      pl: 'Ilość'
     measured_amount:
       en: 'ml measured'
       de: 'ml gemessen'
+      pl: 'zmierzone ml'
     spend:
       en: 'Spend'
       de: 'Ausgeben'
+      pl: 'Wydaj'
     enter_measured_amount:
       en: 'Enter Measured Amount'
       de: 'Bitte gemessene Menge eingeben'
+      pl: 'Wprowadź zmierzoną ilość'
     target_amount:
       en: 'Target Amount: {amount} ml'
       de: 'Zielmenge: {amount} ml'
+      pl: 'Docelowa ilość: {amount} ml'
     new_volume_flow:
       en: 'New Volume Flow: {flow} ml/s'
       de: 'Neuer Volumenstrom: {flow} ml/s'
+      pl: 'Nowy przepływ: {flow} ml/s'
     new_ingredient_speed:
       en: 'New Ingredient Factor: {speed} %'
       de: 'Neuer Zutaten-Faktor: {speed} %'
+      pl: 'Nowy współczynnik składnika: {speed} %'
     deviation_too_large:
       en: 'Deviation too large, please check'
       de: 'Abweichung zu groß, bitte prüfen'
+      pl: 'Zbyt duże odchylenie, sprawdź'
 
-  ##### SCALE CALIBRATION WINDOW #####
+##### SCALE CALIBRATION WINDOW #####
   # all values for scale calibration window
   scale_calibration_window:
     header:
       en: 'Scale Calibration'
       de: 'Waagen Kalibrierung'
+      pl: 'Kalibracja wagi'
     not_available:
       en: 'Scale is not available. Please enable and configure a scale first.'
       de: 'Waage nicht verfügbar. Bitte zuerst eine Waage aktivieren und konfigurieren.'
+      pl: 'Waga jest niedostępna. Najpierw włącz i skonfiguruj wagę.'
     tare_instruction:
       en: 'Remove everything from the scale and press Tare to zero it.'
       de: 'Alles von der Waage entfernen und auf Tare drücken um sie zu nullen.'
+      pl: 'Usuń wszystko z wagi i naciśnij tarowanie.'
     tare:
       en: 'Tare'
       de: 'Tarieren'
+      pl: 'Taruj'
     place_weight_instruction:
       en: 'Place a known weight on the scale and enter its weight below.'
       de: 'Ein bekanntes Gewicht auf die Waage legen und das Gewicht unten eingeben.'
+      pl: 'Połóż znane obciążenie na wadze i wpisz jego wartość.'
     known_weight:
       en: 'Known Weight (g)'
       de: 'Bekanntes Gewicht (g)'
+      pl: 'Znana waga (g)'
     calibrate:
       en: 'Calibrate'
       de: 'Kalibrieren'
+      pl: 'Kalibruj'
     calibration_done:
       en: "Calibration done! New factor: {factor}\nZero raw offset: {offset}"
       de: "Kalibrierung abgeschlossen! Neuer Faktor: {factor}\nNull-Rohwert-Offset: {offset}"
+      pl: "Kalibracja zakończona! Nowy współczynnik: {factor}\nOffset zerowy: {offset}"
     calibration_error:
       en: 'Calibration failed, invalid reading from scale.'
       de: 'Kalibrierung fehlgeschlagen, ungültige Ablesung der Waage.'
+      pl: 'Kalibracja nieudana, nieprawidłowy odczyt z wagi.'
     back_to_tare:
       en: 'Back to Tare'
       de: 'Zurück zum Tarieren'
+      pl: 'Wróć do tarowania'
     read_weight:
       en: 'Read Weight'
       de: 'Gewicht lesen'
+      pl: 'Odczytaj wagę'
     current_reading:
       en: 'Current reading: {weight} g'
       de: 'Aktuelle Messung: {weight} g'
+      pl: 'Aktualny odczyt: {weight} g'
 
-  ##### NEWS WINDOW #####
+##### NEWS WINDOW #####
   # all values for news window
   news_window:
     no_news:
       en: 'You are up to date!'
       de: 'Du bist auf dem neuesten Stand!'
+      pl: 'Jesteś na bieżąco!'
     acknowledge:
       en: 'Do not show again'
       de: 'Nicht mehr anzeigen'
+      pl: 'Nie pokazuj ponownie'
 
-  ##### WAITER WINDOW #####
+##### WAITER WINDOW #####
   # all values for waiter window
   waiter_window:
     management:
       en: 'Management'
       de: 'Verwaltung'
+      pl: 'Zarządzanie'
     statistics:
       en: 'Statistics'
       de: 'Statistik'
+      pl: 'Statystyki'
     roles:
       en: 'Roles'
       de: 'Rollen'
+      pl: 'Role'
     role_label:
       en: 'Role'
       de: 'Rolle'
+      pl: 'Rola'
     select_role:
       en: 'Select a role'
       de: 'Rolle auswählen'
+      pl: 'Wybierz rolę'
     no_roles_yet:
       en: 'No roles defined yet. Create one in the Roles tab.'
       de: 'Noch keine Rollen vorhanden. Lege eine im Tab "Rollen" an.'
+      pl: 'Nie zdefiniowano jeszcze żadnych ról. Utwórz jedną w zakładce "Role".'
     create_role:
       en: 'Create Role'
       de: 'Rolle erstellen'
+      pl: 'Utwórz rolę'
     role_name_placeholder:
       en: 'Role name'
       de: 'Rollenname'
+      pl: 'Nazwa roli'
     tab_permissions_label:
       en: 'Tab Permissions'
       de: 'Tab-Berechtigungen'
+      pl: 'Uprawnienia zakładek'
     tile_permissions_label:
       en: 'Option Tile Permissions'
       de: 'Optionskachel-Berechtigungen'
+      pl: 'Uprawnienia kafelków opcji'
     tile_group_system:
       en: 'System'
       de: 'System'
+      pl: 'System'
     tile_group_configuration:
       en: 'Configuration'
       de: 'Konfiguration'
+      pl: 'Konfiguracja'
     tile_group_data:
       en: 'Data'
       de: 'Daten'
+      pl: 'Dane'
     tile_group_hardware:
       en: 'Hardware'
       de: 'Hardware'
+      pl: 'Sprzęt'
     tile_group_maintenance:
       en: 'Maintenance'
       de: 'Wartung'
+      pl: 'Konserwacja'
     registered_roles:
       en: 'Defined Roles'
       de: 'Definierte Rollen'
+      pl: 'Zdefiniowane role'
     no_roles:
       en: 'No roles defined.'
       de: 'Keine Rollen definiert.'
+      pl: 'Nie zdefiniowano żadnych ról.'
     confirm_delete_role:
       en: 'Do you want to delete the role "{name}"?'
       de: 'Möchtest du die Rolle "{name}" löschen?'
+      pl: 'Czy chcesz usunąć rolę "{name}"?'
     last_scanned:
       en: 'Last scanned NFC'
       de: 'Zuletzt gescannte NFC'
+      pl: 'Ostatnie NFC'
     current_nfc:
       en: 'NFC ID'
       de: 'NFC ID'
+      pl: 'ID NFC'
     current_waiter:
       en: 'Service Personnel'
       de: 'Servicepersonal'
+      pl: 'Obsługa'
     no_waiter:
       en: 'No Service Personnel'
       de: 'Kein Servicepersonal'
+      pl: 'Brak obsługi'
     use_scanned:
       en: 'Use scanned NFC ID'
       de: 'Gescannte NFC ID übernehmen'
+      pl: 'Użyj zeskanowanego NFC'
     register_waiter:
       en: 'Register Service Personnel'
       de: 'Servicepersonal registrieren'
+      pl: 'Zarejestruj obsługę'
     nfc_id_placeholder:
       en: 'NFC ID'
       de: 'NFC ID'
+      pl: 'ID NFC'
     name_placeholder:
       en: 'Name'
       de: 'Name'
+      pl: 'Nazwa'
     permissions_label:
       en: 'Permissions'
       de: 'Berechtigungen'
+      pl: 'Uprawnienia'
     permission_maker:
       en: 'Maker'
       de: 'Maker'
+      pl: 'Maker'
     permission_ingredients:
       en: 'Ingredients'
       de: 'Zutaten'
+      pl: 'Składniki'
     permission_recipes:
       en: 'Recipes'
       de: 'Rezepte'
+      pl: 'Przepisy'
     permission_bottles:
       en: 'Bottles'
       de: 'Flaschen'
+      pl: 'Butelki'
     permission_options:
       en: 'Options'
       de: 'Optionen'
+      pl: 'Opcje'
     create_waiter:
       en: 'Create'
       de: 'Erstellen'
+      pl: 'Utwórz'
     registered_waiters:
       en: 'Registered Service Personnel'
       de: 'Registriertes Servicepersonal'
+      pl: 'Zarejestrowana obsługa'
     no_waiters:
       en: 'No Service Personnel registered'
       de: 'Kein Servicepersonal registriert'
+      pl: 'Brak zarejestrowanej obsługi'
     active:
       en: 'Active'
       de: 'Aktiv'
+      pl: 'Aktywny'
     edit:
       en: 'Edit'
       de: 'Bearbeiten'
+      pl: 'Edytuj'
     delete:
       en: 'Delete'
       de: 'Löschen'
+      pl: 'Usuń'
     save:
       en: 'Save'
       de: 'Speichern'
+      pl: 'Zapisz'
     cancel:
       en: 'Cancel'
       de: 'Abbrechen'
+      pl: 'Anuluj'
     waiter_exists:
       en: 'Service Personnel with this NFC ID or name already exists.'
       de: 'Servicepersonal mit dieser NFC ID oder diesem Namen existiert bereits.'
+      pl: 'Obsługa o tym NFC ID lub nazwie już istnieje.'
     waiter_not_found:
       en: 'Service Personnel not found.'
       de: 'Servicepersonal nicht gefunden.'
+      pl: 'Nie znaleziono perspnelu obsługującego.'
     waiter_created:
       en: 'Service Personnel created.'
       de: 'Servicepersonal erstellt.'
+      pl: 'Utworzono perspnel obsługujący.'
     waiter_updated:
       en: 'Service Personnel updated.'
       de: 'Servicepersonal aktualisiert.'
+      pl: 'Zaktualizowano perspnel obsługujący.'
     waiter_deleted:
       en: 'Service Personnel deleted.'
       de: 'Servicepersonal gelöscht.'
+      pl: 'Usunięto perspnel obsługujący.'
     role_created:
       en: 'Role created.'
       de: 'Rolle erstellt.'
+      pl: 'Rola została utworzona.'
     role_updated:
       en: 'Role updated.'
       de: 'Rolle aktualisiert.'
+      pl: 'Rola została zaktualizowana.'
     role_deleted:
       en: 'Role deleted.'
       de: 'Rolle gelöscht.'
+      pl: 'Rola została usunięta.'  
     no_logs:
       en: 'No statistics available.'
       de: 'Keine Statistik verfügbar.'
+      pl: 'Brak statystyk.'
     stats_summary:
       en: '{cocktails} cocktails, {volume} ml total'
       de: '{cocktails} Cocktails, {volume} ml gesamt'
+      pl: '{cocktails} koktajli, {volume} ml łącznie'
     deleted_user:
       en: 'Deleted User'
       de: 'Gelöschter Nutzer'
+      pl: 'Użytkownik został usunięty'
     deleted_recipe:
       en: 'Deleted Recipe'
       de: 'Gelöschtes Rezept'
+      pl: 'Przepis został usunięty '
     virgin:
       en: 'Virgin'
       de: 'Virgin'
+      pl: 'Bezalkoholowy'
 
   ##### SUMUP WINDOW #####
   # all values for sumup window
@@ -1221,9 +1585,12 @@ ui:
     code_label:
       en: 'Pairing Code: '
       de: 'Pairing Code: '
+      pl: 'Kod parowania: '
     name_label:
       en: 'Shown Name: '
       de: 'Anzeigename: '
+      pl: 'Wyświetlana nazwa: '
     reader_label:
       en: 'Connected Terminal: '
       de: 'Verbundenes Lesegerät: '
+      pl: 'Podłączony terminal: '
