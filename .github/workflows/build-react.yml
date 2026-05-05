@@ -4,7 +4,7 @@ run-name: |
 
 on:
   release:
-    types: [published]
+    types: [ published ]
   workflow_dispatch:
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
           dir: ./web_client
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cocktailberry_web_client
           path: ./web_client/dist
