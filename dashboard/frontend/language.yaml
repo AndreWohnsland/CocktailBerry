@@ -9,27 +9,38 @@ header_label:
     - 'Volumen (Heute)'
     - 'Anzahl (Komplett)'
     - 'Volumen (Komplett)'
+  pl:
+    - 'Ilość (dzisiaj)'
+    - 'Objętość (dzisiaj)'
+    - 'Ilość (łącznie)'
+    - 'Objętość (łącznie)'
 
 default_message:
   en: 'Drink cocktails to start ...'
   de: 'Cocktails trinken zum starten ...'
+  pl: 'Wypij koktajl, aby rozpocząć ...'
 
 call_to_action:
   en: "Let's go!"
   de: 'Auf gehts!'
+  pl: 'Zaczynajmy!'
 
 amount_today:
   en: 'Amount Today'
   de: 'Anzahl Heute'
+  pl: 'Ilość dzisiaj'
 
 volume_today:
   en: 'Volume Today'
   de: 'Menge Heute'
+  pl: 'Objętość dzisiaj'
 
 amount_all:
   en: 'Amout All Time'
   de: 'Anzahl Komplett'
+  pl: 'Ilość łącznie'
 
 volume_all:
   en: 'Volume All Time'
   de: 'Menge Komplett'
+  pl: 'Objętość łącznie'
