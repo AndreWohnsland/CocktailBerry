@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
@@ -50,6 +51,33 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 CONFIG_TYPES_POSSIBLE = str | int | float | bool | list[Any] | dict[str, Any]
+MIN_ELEMENT_WIDTH = 150
+
+
+def _even_columns(item_count: int, max_per_row: int) -> int:
+    """Determine the best number of columns so rows are evenly filled.
+
+    Mirrors the logic in the web ObjectDisplay component.
+    """
+    if item_count <= max_per_row:
+        return item_count
+    # prefer a divisor of item_count that is <= max_per_row for perfectly even rows
+    for cols in range(max_per_row, 1, -1):
+        if item_count % cols == 0:
+            return cols
+    # fallback: pick cols that minimizes the difference between row sizes
+    best = max_per_row
+    best_diff = max_per_row
+    for cols in range(max_per_row, 1, -1):
+        rows = math.ceil(item_count / cols)
+        last_row = item_count - cols * (rows - 1)
+        diff = cols - last_row
+        if diff < best_diff:
+            best_diff = diff
+            best = cols
+    return best
+
+
 # Those are only for the v2 program
 CONFIG_TO_SKIP = (
     "CUSTOM_COLOR_PRIMARY",
@@ -374,7 +402,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         """Build a dict field with a discriminator dropdown that swaps variant-specific fields."""
         v_container = QVBoxLayout()
         getter_fn_dict: dict[str, Callable] = {}
-        variant_container = QHBoxLayout()
+        variant_container = QVBoxLayout()
 
         disc_value = getattr(current_value, config_setting.discriminator)
         disc_combo = self._build_discriminator_dropdown(v_container, disc_value, list(config_setting.variants.keys()))
@@ -382,11 +410,18 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         def _build_variant_fields(variant_name: str, values: dict[str, Any]) -> None:
             variant_dict_type = config_setting.variants[variant_name]
             getter_fn_dict.clear()
-            for key, value_setting in variant_dict_type.dict_types.items():
-                if key == config_setting.discriminator:
-                    continue
-                value = values.get(key, value_setting.get_default())
-                getter_fn_dict[key] = self._build_input_field(config_name, value_setting, value, variant_container)
+            sub_items = [
+                (key, values.get(key, value_setting.get_default()), value_setting)
+                for key, value_setting in variant_dict_type.dict_types.items()
+                if key != config_setting.discriminator
+            ]
+            max_per_row = max(1, cfg.UI_WIDTH // MIN_ELEMENT_WIDTH)
+            cols = _even_columns(len(sub_items), max_per_row)
+            for row_start in range(0, len(sub_items), cols):
+                h_row = QHBoxLayout()
+                for key, value, value_setting in sub_items[row_start : row_start + cols]:
+                    getter_fn_dict[key] = self._build_input_field(config_name, value_setting, value, h_row)
+                variant_container.addLayout(h_row)
 
         def _on_discriminator_changed(new_variant: str) -> None:
             old_values = {key: getter() for key, getter in getter_fn_dict.items()}
@@ -427,16 +462,23 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         config_setting: DictType,
     ) -> Callable[[], dict]:
         """Build a dict of fields for a dict input."""
-        h_container = QHBoxLayout()
         getter_fn_dict: dict[str, Callable] = {}
         dict_values = current_value.to_config()
-        for key, value in dict_values.items():
-            value_setting = config_setting.dict_types.get(key)
-            if value_setting is None:
-                raise RuntimeError(f"Config '{config_name}' has a key '{key}' that is not defined in the dict types.")
-            getter_fn = self._build_input_field(config_name, value_setting, value, h_container)
-            getter_fn_dict[key] = getter_fn
-        layout.addLayout(h_container)
+        items = list(dict_values.items())
+        max_per_row = max(1, cfg.UI_WIDTH // MIN_ELEMENT_WIDTH)
+        cols = _even_columns(len(items), max_per_row)
+        v_container = QVBoxLayout()
+        for row_start in range(0, len(items), cols):
+            h_row = QHBoxLayout()
+            for key, value in items[row_start : row_start + cols]:
+                value_setting = config_setting.dict_types.get(key)
+                if value_setting is None:
+                    raise RuntimeError(
+                        f"Config '{config_name}' has a key '{key}' that is not defined in the dict types."
+                    )
+                getter_fn_dict[key] = self._build_input_field(config_name, value_setting, value, h_row)
+            v_container.addLayout(h_row)
+        layout.addLayout(v_container)
         return lambda: {key: getter() for key, getter in getter_fn_dict.items()}
 
     def _build_fallback_field(self, layout: QBoxLayout, current_value: CONFIG_TYPES_POSSIBLE) -> Callable[[], str]:
