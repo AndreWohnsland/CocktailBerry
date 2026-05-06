@@ -37,7 +37,7 @@ else
 fi
 
 # Ask for the language setting early so we can configure the database and config later
-SUPPORTED_LANGUAGES=("en" "de")
+SUPPORTED_LANGUAGES=("en" "de" "pl")
 LANG_OPTIONS=$(IFS=', '; echo "${SUPPORTED_LANGUAGES[*]}")
 echo ""
 while true; do
@@ -166,9 +166,15 @@ if [[ "$DEV_FLAG" = true ]]; then
   git checkout dev
 fi
 
-# Copy the language-specific default database to the working database
+# Copy the English default database to the working database, then localize
+# its Ingredient/Recipe names to the chosen UI language. The localize script
+# is stdlib-only so it can run before `uv sync` below.
 echo "~~ Setting up database for language: $CB_LANGUAGE ~~"
-cp ~/CocktailBerry/cocktail_data_"$CB_LANGUAGE".db ~/CocktailBerry/Cocktail_database.db || echo "> WARNING: Could not copy default database"
+cp ~/CocktailBerry/cocktail_data_en.db ~/CocktailBerry/Cocktail_database.db || echo "> WARNING: Could not copy default database"
+if [[ "$CB_LANGUAGE" != "en" ]]; then
+  echo "~~ Localizing default database to: $CB_LANGUAGE ~~"
+  python3 ~/CocktailBerry/scripts/localize_database.py "$CB_LANGUAGE" || echo "> WARNING: Could not localize default database"
+fi
 
 # Create a custom config with the selected language
 echo "~~ Creating custom config with language setting ~~"
