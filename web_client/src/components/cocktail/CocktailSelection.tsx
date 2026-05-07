@@ -11,7 +11,7 @@ import { useConfig } from '../../providers/ConfigProvider';
 import type { Cocktail, PrepareResult } from '../../types/models';
 import { errorToast, scaleCocktail } from '../../utils';
 import CloseButton from '../common/CloseButton';
-import ProgressModal from './ProgressModal';
+import ProgressModal from '../common/ProgressModal';
 import RefillPrompt from './RefillPrompt';
 import ServingSizeButtons from './ServingSizeButtons';
 import TeamSelection from './TeamSelection';

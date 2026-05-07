@@ -5,15 +5,15 @@ import Modal from 'react-modal';
 import { cancelPayment, getCocktailStatus, stopCocktail } from '../../api/cocktails';
 import { useConfig } from '../../providers/ConfigProvider';
 import { errorToast } from '../../utils';
-import ProgressBar from '../common/ProgressBar';
-import TextHeader from '../common/TextHeader';
+import ProgressBar from './ProgressBar';
+import TextHeader from './TextHeader';
 
 interface ProgressModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   progress: number;
   displayName: string;
-  triggerOnClose?: () => void;
+  triggerOnClose?: (status: string) => void;
 }
 
 const ProgressModal: React.FC<ProgressModalProps> = ({
@@ -31,19 +31,22 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
   const [message, setMessage] = useState<string | null>(null);
   const { t } = useTranslation();
 
-  const closeWindow = React.useCallback(() => {
-    setCurrentProgress(0);
-    setMessage(null);
-    onRequestClose();
-    if (triggerOnClose) {
-      triggerOnClose();
-    }
-  }, [onRequestClose, triggerOnClose]);
+  const closeWindow = React.useCallback(
+    (finalStatus?: string) => {
+      setCurrentProgress(0);
+      setMessage(null);
+      onRequestClose();
+      if (triggerOnClose) {
+        triggerOnClose(finalStatus ?? 'CANCELED');
+      }
+    },
+    [onRequestClose, triggerOnClose],
+  );
 
   const handleCancelPayment = async () => {
     try {
       await cancelPayment();
-      closeWindow();
+      closeWindow('CANCELED');
     } catch (error) {
       errorToast(error);
     }
@@ -72,7 +75,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
           const formattedMessage = cocktailStatus.message.replaceAll('\n', '<br />');
           setMessage(formattedMessage);
         } else {
-          closeWindow();
+          closeWindow(cocktailStatus.status);
         }
       }, 250);
     }
@@ -97,7 +100,11 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       );
     } else {
       return (
-        <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={closeWindow}>
+        <button
+          type='button'
+          className='mt-4 px-4 py-2 button-primary w-1/2'
+          onClick={() => closeWindow(currentStatus)}
+        >
           {t('close')}
         </button>
       );

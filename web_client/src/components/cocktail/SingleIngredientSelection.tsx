@@ -7,8 +7,8 @@ import { errorToast } from '../../utils';
 import Button from '../common/Button';
 import CloseButton from '../common/CloseButton';
 import DropDown from '../common/DropDown';
+import ProgressModal from '../common/ProgressModal';
 import StepperControl from '../common/StepperControl';
-import ProgressModal from './ProgressModal';
 
 interface SingleIngredientSelectionProps {
   onClose: () => void;

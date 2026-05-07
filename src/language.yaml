@@ -673,6 +673,10 @@ ui:
       en: 'Renewing bottles'
       de: 'Flaschen erneuern'
       pl: 'Uzupełnione butelek'
+    calibration_label:
+      en: '{amount} ml volume, pump #{pump}'
+      de: '{amount} ml Volumen, Pumpe #{pump}'
+      pl: '{amount} ml objętości, pompa #{pump}'
 
   ##### BONUSINGREDIENT SCREEN #####
   # all values for bonusingredient screen

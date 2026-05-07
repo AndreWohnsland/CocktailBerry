@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from PyQt6.QtWidgets import QMainWindow, QWidget
 
@@ -7,9 +10,13 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.models import PrepareResult
 from src.tabs import maker
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui_elements import Ui_CalibrationRealWidget, Ui_CalibrationTargetWidget, Ui_CalibrationWindow
+
+if TYPE_CHECKING:
+    from src.ui.setup_mainwindow import MainScreen
 
 MAX_DEVIATION_FACTOR = 20  # maximum allowed deviation factor for calibration
 
@@ -36,11 +43,12 @@ class CalibrationData:
 
 
 class _CalibrationTargetWidget(QWidget, Ui_CalibrationTargetWidget):
-    def __init__(self, calibration_data: CalibrationData) -> None:
+    def __init__(self, calibration_data: CalibrationData, mainscreen: MainScreen | None = None) -> None:
         """Init the calibration Screen."""
         super().__init__()
         self.setupUi(self)
         self.calibration_data = calibration_data
+        self.mainscreen = mainscreen
         bottles = cfg.MAKER_NUMBER_BOTTLES
         self.button_start.clicked.connect(self.output_volume)
         self.channel_plus.clicked.connect(
@@ -53,15 +61,20 @@ class _CalibrationTargetWidget(QWidget, Ui_CalibrationTargetWidget):
         self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.input_amount, 10, 200, -10))
 
     def output_volume(self) -> None:
-        """Output the set number of volume according to defined volume flow."""
+        """Output the set number of volume according to defined volume flow.
+
+        Shows the shared progress screen during the spend. On cancel the spent volume
+        is discarded from the auto-calibration accumulator so the user can simply retry.
+        """
         channel_number = int(self.input_pump_number.text())
         amount = int(self.input_amount.text())
         self.calibration_data.pump_number = channel_number
-        self.calibration_data.target_volume += amount
         self.channel_plus.setEnabled(False)
         self.channel_minus.setEnabled(False)
-        self.button_next.setEnabled(True)
-        maker.calibrate(channel_number, amount)
+        result = maker.calibrate(channel_number, amount, w=self.mainscreen)
+        if result == PrepareResult.FINISHED:
+            self.calibration_data.target_volume += amount
+        self.button_next.setEnabled(self.calibration_data.target_volume > 0)
 
     def reset(self) -> None:
         """Reset the calibration data."""
@@ -163,15 +176,16 @@ class _CalibrationRealWidget(QWidget, Ui_CalibrationRealWidget):
 
 
 class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
-    def __init__(self) -> None:
+    def __init__(self, mainscreen: MainScreen | None = None) -> None:
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
 
+        self.mainscreen = mainscreen
         self.button_exit.clicked.connect(self.close)
         self.button_reset.clicked.connect(self.reset)
         self.calibration_data = CalibrationData(1)
-        self.page_target = _CalibrationTargetWidget(self.calibration_data)
+        self.page_target = _CalibrationTargetWidget(self.calibration_data, mainscreen)
         self.page_real = _CalibrationRealWidget(self.calibration_data)
 
         self.stack.addWidget(self.page_target)

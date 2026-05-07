@@ -9,6 +9,7 @@ import type { Ingredient, PossibleConfigValue } from '../../types/models';
 import { executeAndShow } from '../../utils';
 import DropDown from '../common/DropDown';
 import NumberInput from '../common/NumberInput';
+import ProgressModal from '../common/ProgressModal';
 import TextHeader from '../common/TextHeader';
 
 const MAX_DEVIATION_FACTOR = 20;
@@ -22,6 +23,9 @@ const CalibrationWindow = () => {
   const [targetVolume, setTargetVolume] = useState(0);
   const [measuredVolume, setMeasuredVolume] = useState(0);
   const [selectedIngredientId, setSelectedIngredientId] = useState<string>('');
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [pendingAmount, setPendingAmount] = useState(0);
+  const [pendingPump, setPendingPump] = useState(1);
   const { config, refetchConfig } = useConfig();
   const { data: ingredients = [], refetch: refetchIngredients } = useIngredients(false);
   const { t } = useTranslation();
@@ -72,7 +76,17 @@ const CalibrationWindow = () => {
   const handleStartPumping = async () => {
     const success = await executeAndShow(() => calibrateBottle(channel, amount));
     if (!success) return;
-    setTargetVolume((prev) => prev + amount);
+    setPendingAmount(amount);
+    setPendingPump(channel);
+    setIsProgressModalOpen(true);
+  };
+
+  const handleProgressClose = (status: string) => {
+    setIsProgressModalOpen(false);
+    if (status === 'FINISHED') {
+      setTargetVolume((prev) => prev + pendingAmount);
+    }
+    setPendingAmount(0);
   };
 
   const handleNext = () => {
@@ -134,6 +148,13 @@ const CalibrationWindow = () => {
   return (
     <div className='flex flex-col justify-between items-center p-4 w-full h-full max-w-md max-h-[40rem]'>
       <TextHeader text={t('calibration.pumpCalibrationProgram')} />
+      <ProgressModal
+        isOpen={isProgressModalOpen}
+        onRequestClose={() => setIsProgressModalOpen(false)}
+        progress={0}
+        displayName={t('calibration.progressTitle', { amount: pendingAmount, pump: pendingPump })}
+        triggerOnClose={handleProgressClose}
+      />
 
       <div className='text-center text-lg font-semibold text-neutral mt-2'>
         <span className='mr-4'>{t('calibration.targetAmount', { amount: targetVolume })}</span>

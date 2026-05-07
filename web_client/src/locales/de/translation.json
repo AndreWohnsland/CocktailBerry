@@ -137,7 +137,8 @@
     "apply": "Anwenden",
     "reset": "Zurücksetzen",
     "continuePumping": "Weiter Pumpen",
-    "next": "Weiter"
+    "next": "Weiter",
+    "progressTitle": "{{amount}} ml Volumen, Pumpe #{{pump}}"
   },
   "scaleCalibration": {
     "header": "Waagen Kalibrierung",

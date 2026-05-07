@@ -14,7 +14,7 @@ i18n.use(initReactI18next).init({
     },
     pl: {
       translation: translationPL,
-      }
+    },
   },
   lng: 'en',
   fallbackLng: 'en',
