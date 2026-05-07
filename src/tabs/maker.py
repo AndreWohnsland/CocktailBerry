@@ -11,6 +11,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab, shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
+from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.models import Cocktail, CocktailStatus, EventType, Ingredient, PrepareResult
@@ -141,10 +142,17 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
     return PrepareResult.VALIDATION_OK, "", None
 
 
-def calibrate(bottle_number: int, amount: int) -> None:
-    """Calibrate a bottle."""
+def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> PrepareResult:
+    """Calibrate a bottle.
+
+    Returns the final preparation status so callers can decide whether to accumulate
+    the spent volume into the auto-calibration target (FINISHED) or discard it (CANCELED).
+    """
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
-    display_name = f"{amount} ml volume, pump #{bottle_number}"
+    _logger.info(f"Calibrating pump #{bottle_number} with {amount} ml")
+    display_name = UI_LANGUAGE._choose_language(
+        "calibration_label", "progress_screen", amount=amount, pump=bottle_number
+    )
     ing = Ingredient(
         id=0,
         name="Calibration",
@@ -158,12 +166,13 @@ def calibrate(bottle_number: int, amount: int) -> None:
     )
     mc = MachineController()
     mc.make_cocktail(
-        w=None,
+        w=w,
         ingredient_list=[ing],
         recipe=display_name,
         is_cocktail=False,
         verbose=False,
     )
+    return shared.cocktail_status.status
 
 
 def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> None:

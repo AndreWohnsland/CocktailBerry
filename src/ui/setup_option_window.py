@@ -224,7 +224,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def _open_calibration(self) -> None:
         """Open the calibration window."""
-        self.calibration_screen = CalibrationScreen()
+        self.calibration_screen = CalibrationScreen(self.mainscreen)
 
     def _open_scale_calibration(self) -> None:
         """Open the scale calibration window."""

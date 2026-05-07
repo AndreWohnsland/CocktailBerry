@@ -34,8 +34,8 @@ import { useConfig } from '../../providers/ConfigProvider';
 import { useWaiter } from '../../providers/WaiterProvider';
 import type { OptionTileName } from '../../types/models';
 import { confirmAndExecute, executeAndShow } from '../../utils';
-import ProgressModal from '../cocktail/ProgressModal';
 import DropDown from '../common/DropDown';
+import ProgressModal from '../common/ProgressModal';
 import TileButton from '../common/TileButton';
 import AboutModal from './AboutModal';
 

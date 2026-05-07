@@ -137,7 +137,8 @@
     "apply": "Apply",
     "reset": "Reset",
     "continuePumping": "Continue Pumping",
-    "next": "Next"
+    "next": "Next",
+    "progressTitle": "{{amount}} ml volume, pump #{{pump}}"
   },
   "scaleCalibration": {
     "header": "Scale Calibration",
