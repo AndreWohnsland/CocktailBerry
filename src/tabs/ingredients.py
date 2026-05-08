@@ -57,7 +57,14 @@ def _add_new_ingredient(w: MainScreen, ing: Ingredient) -> bool:
         return False
 
     DB_COMMANDER.insert_new_ingredient(
-        ing.name, ing.alcohol, ing.bottle_volume, bool(ing.hand), ing.pump_speed, ing.cost, ing.unit
+        ing.name,
+        ing.alcohol,
+        ing.bottle_volume,
+        bool(ing.hand),
+        ing.pump_speed,
+        ing.cost,
+        ing.unit,
+        ing.disallow_pump_back,
     )
     # needs to fill the ingredient comboboxes, bottles tab only if it is not a handadd
     to_fill = DP_CONTROLLER.get_comboboxes_recipes(w)
@@ -94,6 +101,7 @@ def _change_existing_ingredient(w: MainScreen, ingredient_list_widget: QListWidg
         old_ingredient.id,
         ing.cost,
         ing.unit,
+        ing.disallow_pump_back,
     )
 
     DP_CONTROLLER.delete_list_widget_item(ingredient_list_widget, ing.selected)
@@ -183,6 +191,7 @@ def display_selected_ingredient(w: MainScreen) -> None:
         ],
     )
     DP_CONTROLLER.set_checkbox_value(ingredient_input.hand_add, ingredient.hand)
+    DP_CONTROLLER.set_checkbox_value(ingredient_input.disallow_pump_back, ingredient.disallow_pump_back)
 
 
 @logerror
@@ -200,4 +209,5 @@ def clear_ingredient_information(w: MainScreen) -> None:
     DP_CONTROLLER.fill_multiple_lineedit([ingredient_input.unit, ingredient_input.pump_speed], ["ml", "100"])
     DP_CONTROLLER.unselect_list_widget_items(ingredient_input.selected_ingredient)
     DP_CONTROLLER.set_checkbox_value(ingredient_input.hand_add, False)
+    DP_CONTROLLER.set_checkbox_value(ingredient_input.disallow_pump_back, False)
     DP_CONTROLLER.set_ingredient_add_label(w, False)

@@ -79,6 +79,7 @@ class Ingredient:
     recipe_order: int = 2
     unit: str = "ml"
     consumption: float = 0.0
+    disallow_pump_back: bool = False
 
     def __post_init__(self) -> None:
         # limit fill level to [0, bottle_volume]

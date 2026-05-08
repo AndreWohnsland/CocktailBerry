@@ -29,6 +29,7 @@ export interface Ingredient extends CocktailIngredient {
   pump_speed: number;
   cost: number;
   bottle?: number;
+  disallow_pump_back: boolean;
 }
 
 export interface IngredientInput {
@@ -41,6 +42,7 @@ export interface IngredientInput {
   pump_speed: number;
   hand: boolean;
   unit: string;
+  disallow_pump_back: boolean;
 }
 
 export interface CocktailIngredientInput {

@@ -50,6 +50,7 @@ const IngredientList: React.FC = () => {
       pump_speed: 100,
       hand: false,
       unit: 'ml',
+      disallow_pump_back: false,
     });
   };
 
@@ -178,6 +179,13 @@ const IngredientList: React.FC = () => {
                   value={selectedIngredient.hand}
                   checkName={t('ingredients.onlyAddByHand')}
                   handleInputChange={(v) => updateField('hand', v)}
+                />
+              </div>
+              <div className='flex justify-center items-center col-span-2 h-xs:col-span-1'>
+                <CheckBox
+                  value={selectedIngredient.disallow_pump_back}
+                  checkName={t('ingredients.doNotRevert')}
+                  handleInputChange={(v) => updateField('disallow_pump_back', v)}
                 />
               </div>
             </form>

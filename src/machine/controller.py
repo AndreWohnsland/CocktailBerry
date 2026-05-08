@@ -77,10 +77,12 @@ class MachineController:
     def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False) -> None:
         """Clean the pumps for the defined time in the config.
 
-        Activates all pumps for the given time.
+        Activates all pumps for the given time. When reverting, ingredients
+        flagged as disallow_pump_back are skipped (single hardware reversion
+        pin flips all pumps, so disallowed slots cannot run forward in parallel).
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
-        items = self._build_clean_items()
+        items = self._build_clean_items(revert=revert_pumps)
         if w is not None:
             w.open_progression_window("Cleaning")
         _header_print("Start Cleaning")
@@ -184,10 +186,22 @@ class MachineController:
         HARDWARE_ADDONS.cleanup_all()
         self.hardware.cleanup()
 
-    def _build_clean_items(self) -> list[PreparationItem]:
-        """Build cleaning items for all active dispensers."""
+    def _build_clean_items(self, revert: bool = False) -> list[PreparationItem]:
+        """Build cleaning items for all active dispensers.
+
+        When revert is True, slots whose ingredient is flagged as
+        disallow_pump_back are excluded — they would otherwise be
+        force-reverted by the shared reversion pin.
+        """
+        skip_slots: set[int] = set()
+        if revert:
+            for ingredient in DatabaseCommander().get_ingredients_at_bottles():
+                if ingredient.disallow_pump_back and ingredient.bottle is not None:
+                    skip_slots.add(ingredient.bottle)
         items = []
-        for dispenser in self.dispensers.values():
+        for slot, dispenser in self.dispensers.items():
+            if slot in skip_slots:
+                continue
             amount_ml = dispenser.volume_flow * cfg.MAKER_CLEAN_TIME
             items.append(
                 PreparationItem(

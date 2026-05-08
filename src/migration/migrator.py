@@ -33,6 +33,7 @@ from src.migration.export_data import add_export_tables_to_db, migrate_csv_expor
 from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
 from src.migration.update_data import (
     add_cost_consumption_column_to_ingredients,
+    add_disallow_pump_back_column_to_ingredients,
     add_foreign_keys,
     add_price_column_to_recipes,
     add_resource_usage_table,
@@ -132,6 +133,7 @@ class Migrator:
                 _migrate_combine_led_lists_into_one_config,
                 migrate_waiter_privileges_to_roles,
             ],
+            "4.1.0": [add_disallow_pump_back_column_to_ingredients],
         }
 
         for version, actions in version_actions.items():

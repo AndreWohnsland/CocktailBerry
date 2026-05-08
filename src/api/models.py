@@ -59,6 +59,7 @@ class Ingredient(CocktailIngredient):
     pump_speed: int
     cost: int = 0
     bottle: int | None = None
+    disallow_pump_back: bool = False
 
 
 class IngredientInput(BaseModel):
@@ -70,6 +71,7 @@ class IngredientInput(BaseModel):
     pump_speed: int = Field(..., gt=0)
     hand: bool
     unit: str
+    disallow_pump_back: bool = False
 
 
 class CocktailIngredientInput(BaseModel):

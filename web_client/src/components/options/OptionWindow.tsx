@@ -33,7 +33,7 @@ import { useAuth } from '../../providers/AuthProvider';
 import { useConfig } from '../../providers/ConfigProvider';
 import { useWaiter } from '../../providers/WaiterProvider';
 import type { OptionTileName } from '../../types/models';
-import { confirmAndExecute, executeAndShow } from '../../utils';
+import { askYesNo, confirmAndExecute, executeAndShow } from '../../utils';
 import DropDown from '../common/DropDown';
 import ProgressModal from '../common/ProgressModal';
 import TileButton from '../common/TileButton';
@@ -57,7 +57,12 @@ const OptionWindow = () => {
   };
 
   const cleanClick = async () => {
-    const started = await confirmAndExecute(t('options.startCleaningProgram'), cleanMachine);
+    const started = await confirmAndExecute(t('options.startCleaningProgram'), async () => {
+      const revertPumps = config.MAKER_PUMP_REVERSION_CONFIG?.use_reversion
+        ? await askYesNo(t('options.useReversion'))
+        : false;
+      return cleanMachine(revertPumps);
+    });
     if (!started) return;
     setIsProgressModalOpen(true);
   };

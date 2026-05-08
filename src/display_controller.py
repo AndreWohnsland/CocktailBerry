@@ -66,6 +66,7 @@ class IngredientInputFields:
     hand_add: QCheckBox
     pump_speed: QLineEdit
     unit: QLineEdit
+    disallow_pump_back: QCheckBox
 
 
 class DisplayController(DialogHandler):
@@ -131,6 +132,7 @@ class DisplayController(DialogHandler):
             ]
         )
         hand_add = ingredient_input.hand_add.isChecked()
+        disallow_pump_back = ingredient_input.disallow_pump_back.isChecked()
         selected_ingredient = self.get_list_widget_selection(ingredient_input.selected_ingredient)
         return Ingredient(
             id=-1,
@@ -143,6 +145,7 @@ class DisplayController(DialogHandler):
             selected=selected_ingredient,
             cost=int(ingredient_cost),
             unit=unit,
+            disallow_pump_back=disallow_pump_back,
         )
 
     def get_recipe_field_data(self, w: Ui_MainWindow) -> RecipeInput:
@@ -624,6 +627,7 @@ class DisplayController(DialogHandler):
             w.CHBHand,
             w.line_edit_pump_speed,
             w.line_edit_ingredient_unit,
+            w.check_ingredient_do_not_revert,
         )
 
     def get_label_bottles(self, w: Ui_MainWindow, get_all: bool = False) -> list[QLabel]:

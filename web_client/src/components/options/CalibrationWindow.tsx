@@ -124,6 +124,7 @@ const CalibrationWindow = () => {
         pump_speed: newPumpSpeed,
         hand: selectedIngredient.hand,
         unit: selectedIngredient.unit,
+        disallow_pump_back: selectedIngredient.disallow_pump_back,
       }),
     );
     await refetchIngredients();

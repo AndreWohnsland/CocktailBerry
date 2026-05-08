@@ -280,9 +280,9 @@ dialog:
     de: "Die Python Bibliothek qtsass wird für dieses Feature benötigt. Das Bauen dieser kann 30-60 Minuten auf dem RPi benötigen, deshalb wurde dies nicht vom Migrator gemacht.\n\nSoll diese installiert und neu gestartet werden? Ohne die Bibliothek können keine Custom Themes erstellt werden."
     pl: "Do tej funkcji wymagana jest biblioteka Python qtsass. Kompilacja na RPi może trwać 30–60 minut, dlatego nie została zainstalowana automatycznie.\n\nZainstalować i uruchomić ponownie? Bez tego nie można używać własnych motywów."
   ask_to_use_reverted_pump:
-    en: 'Should the pump flow be reverted? This will activated the reversion pin and change the flow direction.'
-    de: 'Soll die Pumpenrichtung geändert werden? Dies wird den Umkehrpin aktivieren und die Pumpenrichtung ändern.'
-    pl: 'Czy odwrócić kierunek pompy? Zostanie aktywowany pin zmiany kierunku przepływu.'
+    en: "Should the pump flow be reverted? This will activate the reversion pin and change the flow direction. Ingredients flagged as 'never pump back' will be skipped."
+    de: "Soll die Pumpenrichtung geändert werden? Dies wird den Umkehrpin aktivieren und die Pumpenrichtung ändern. Zutaten mit 'Niemals zurück pumpen' werden übersprungen."
+    pl: "Czy odwrócić kierunek pompy? Zostanie aktywowany pin zmiany kierunku przepływu. Składniki oznaczone jako 'Nigdy nie pompuj z powrotem' zostaną pominięte."
   welcome_dialog:
     en: "CocktailBerry Software Version {version} by Andre Wohnsland.\nSystem: {platform}.\nUsing python version: {python_version} with PyQt app.\n\nCheck https://docs.cocktailberry.org for more information.\n\nThere is an alternative v2 Web UI available, have a look in the documentation for more info"
     de: "CocktailBerry Software Version {version} von Andre Wohnsland.\nSystem: {platform}.\nVerwendete Python Version: {python_version} mit PyQt App.\n\nMehr Informationen unter https://docs.cocktailberry.org.\n\nEs gibt eine neue v2 Web Ui, schau in der Dokumentation für mehr Informationen."
@@ -602,6 +602,10 @@ ui:
       en: 'Unit'
       de: 'Einheit'
       pl: 'Jednostka'
+    check_ingredient_do_not_revert:
+      en: 'Never pump back'
+      de: 'Niemals zurück pumpen'
+      pl: 'Nigdy nie pompuj z powrotem'
     label_cocktail_price:
       en: 'Price'
       de: 'Preis'

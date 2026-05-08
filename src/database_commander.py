@@ -166,6 +166,7 @@ class DatabaseCommander:
             cost=data.ingredient.cost,
             recipe_order=data.recipe_order,
             unit=data.ingredient.unit,
+            disallow_pump_back=data.ingredient.disallow_pump_back,
         )
 
     def _map_ingredient(self, data: DbIngredient) -> Ingredient:
@@ -181,6 +182,7 @@ class DatabaseCommander:
             bottle=data.bottle.number if data.bottle else None,
             cost=data.cost,
             unit=data.unit,
+            disallow_pump_back=data.disallow_pump_back,
         )
 
     def _empty_ingredient(self, bottle: int) -> Ingredient:
@@ -400,6 +402,7 @@ class DatabaseCommander:
         ingredient_id: int,
         cost: int,
         unit: str,
+        disallow_pump_back: bool = False,
     ) -> None:
         """Update the given ingredient id to new properties."""
         with self.session_scope() as session:
@@ -415,6 +418,7 @@ class DatabaseCommander:
             ingredient.pump_speed = pump_speed
             ingredient.cost = cost
             ingredient.unit = unit
+            ingredient.disallow_pump_back = disallow_pump_back
 
     def increment_recipe_counter(self, recipe_name: str, virgin: bool) -> None:
         """Increase the recipe counter by one of given recipe name."""
@@ -509,6 +513,7 @@ class DatabaseCommander:
         pump_speed: int,
         cost: int,
         unit: str,
+        disallow_pump_back: bool = False,
     ) -> None:
         """Insert a new ingredient into the database."""
         new_ingredient = DbIngredient(
@@ -522,6 +527,7 @@ class DatabaseCommander:
             pump_speed=pump_speed,
             cost=cost,
             unit=unit,
+            disallow_pump_back=disallow_pump_back,
         )
         with self.session_scope() as session:
             try:

@@ -63,7 +63,8 @@
     "pumpSpeed": "Pump Speed",
     "unit": "Unit",
     "onlyAddByHand": "Can only add by Hand",
-    "deleteIngredient": "Do you want to delete the Ingredient?"
+    "deleteIngredient": "Do you want to delete the Ingredient?",
+    "doNotRevert": "Never pump back"
   },
   "recipes": {
     "newRecipe": "New Recipe",
@@ -109,6 +110,7 @@
     "shutdown": "Shutdown",
     "shutdownTheSystem": "Do you want to shutdown the System?",
     "startCleaningProgram": "Do you want to start the Cleaning Program?",
+    "useReversion": "Should the pump flow be reverted? This will activate the reversion pin and change the flow direction. Ingredients flagged as 'never pump back' will be skipped.",
     "sumup": "SumUp",
     "systemResourceUsage": "Resource Usage",
     "updateCocktailBerry": "Update CocktailBerry",
