@@ -1,13 +1,25 @@
+from collections.abc import Callable, Sequence
 from enum import IntEnum
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QGridLayout, QLabel, QProgressBar, QPushButton, QSizePolicy, QSpacerItem, QWidget
+from PyQt6.QtWidgets import (
+    QBoxLayout,
+    QGridLayout,
+    QLabel,
+    QProgressBar,
+    QPushButton,
+    QSizePolicy,
+    QSpacerItem,
+    QWidget,
+)
 
 SMALL_FONT = 14
 MEDIUM_FONT = 16
 LARGE_FONT = 18
 HEADER_FONT = 22
+
+NARROW_WIDTH_THRESHOLD = 700
 
 
 class FontSize(IntEnum):
@@ -148,3 +160,53 @@ def generate_grid_bar_chart(
 def generate_bottle_management(row: int) -> int:
     """Generate a row for bottle management."""
     return row
+
+
+def apply_responsive_layouts(
+    width: int,
+    layouts: Sequence[QBoxLayout],
+    threshold: int = NARROW_WIDTH_THRESHOLD,
+) -> None:
+    """Flip QBoxLayouts to vertical when ``width < threshold``, else horizontal.
+
+    Intended to be called from a widget's ``resizeEvent``. Skips layouts whose
+    direction already matches the target to avoid redundant relayouts.
+    """
+    direction = QBoxLayout.Direction.TopToBottom if width < threshold else QBoxLayout.Direction.LeftToRight
+    for layout in layouts:
+        if layout.direction() != direction:
+            layout.setDirection(direction)
+
+
+def repack_grid(
+    layout: QGridLayout,
+    items: Sequence[tuple[QWidget, int]],
+    columns: int,
+    skip: Callable[[QWidget], bool] | None = None,
+) -> None:
+    """Reflow widgets in a QGridLayout to ``columns`` columns, row-major.
+
+    items: list of (widget, span). Span is clamped to ``columns``; full-span
+    widgets are forced onto a fresh row. Skipped widgets are hidden and
+    omitted; surviving widgets are made visible.
+    """
+    if columns < 1:
+        raise ValueError("columns must be >= 1")
+    for widget, _ in items:
+        layout.removeWidget(widget)
+    row = 0
+    col = 0
+    for widget, span in items:
+        if skip is not None and skip(widget):
+            widget.setVisible(False)
+            continue
+        widget.setVisible(True)
+        effective_span = min(span, columns)
+        if effective_span == columns and col != 0:
+            row += 1
+            col = 0
+        layout.addWidget(widget, row, col, 1, effective_span)
+        col += effective_span
+        if col >= columns:
+            row += 1
+            col = 0
