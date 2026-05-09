@@ -85,13 +85,13 @@ class MachineController:
         items = self._build_clean_items(revert=revert_pumps)
         if w is not None:
             w.open_progression_window("Cleaning")
-        _header_print("Start Cleaning")
+        _logger.log_header("INFO", "Start Cleaning")
         if revert_pumps:
             self.reverter.revert_on()
         self._run_scheduler(w, items, use_carriage=cfg.CARRIAGE_CONFIG.move_during_cleaning)
         if revert_pumps:
             self.reverter.revert_off()
-        _header_print("Done Cleaning")
+        _logger.log_header("INFO", "Done Cleaning")
         if w is not None:
             w.close_progression_window()
         shared.cocktail_status.status = PrepareResult.FINISHED
@@ -115,7 +115,7 @@ class MachineController:
         if w is not None:
             w.open_progression_window(recipe)
         items = self._build_preparation_items(ingredient_list)
-        _header_print(f"Starting {recipe}")
+        _logger.log_header("INFO", f"Starting {recipe}")
         if is_cocktail:
             self.hardware.led_controller.preparation_start()
         self._run_scheduler(w, items, verbose=verbose, use_carriage=True)
@@ -127,7 +127,7 @@ class MachineController:
                 item.ingredient.consumption = item.consumption
         machine_ingredients = [item.ingredient for item in items if item.ingredient is not None]
         _logger.info(f"Total calculated consumption: {[round(i.consumption) for i in machine_ingredients]}")
-        _header_print(f"Finished {recipe}")
+        _logger.log_header("INFO", f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
         if shared.cocktail_status.status != PrepareResult.CANCELED:
@@ -308,11 +308,6 @@ class MachineController:
     def default_led(self) -> None:
         """Turn the LED on."""
         self.hardware.led_controller.default_led()
-
-
-def _header_print(msg: str) -> None:
-    """Format the message with dashes around."""
-    _logger.info(f"{' ' + msg + ' ':-^80}")
 
 
 MACHINE = MachineController()
