@@ -591,9 +591,9 @@ ui:
       de: 'Bild'
       pl: 'Zdjęcie'
     header_search:
-      en: 'Search available cocktails by name or ingredient'
-      de: 'Suche verfügbare Cocktails nach Namen oder Zutat'
-      pl: 'Szukaj dostępnych koktajli po nazwie lub składniku'
+      en: 'Search cocktails by name/ingredient'
+      de: 'Suche Cocktails nach Namen/Zutat'
+      pl: 'Szukaj koktajli po nazwie/składniku'
     enter_to_maker:
       en: 'Show in Maker'
       de: 'Im Maker anzeigen'
@@ -773,6 +773,10 @@ ui:
       en: 'System Update'
       de: 'System Update'
       pl: 'Aktualizacja systemu'
+    update_software:
+      en: 'Software Update'
+      de: 'Software Update'
+      pl: 'Aktualizacja oprogramowania'
     events:
       en: 'Events'
       de: 'Ereignisse'
@@ -1174,7 +1178,7 @@ ui:
       de: 'Schlitten-Konfiguration: Treibertyp, Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll'
       pl: 'Konfiguracja wózka: typ sterownika, włączenie, pozycja startowa (0-100%), prędkość (%/s) i ruch podczas czyszczenia'
 
-##### COLOR WINDOW #####
+  ##### COLOR WINDOW #####
   # all values for settings in color window
   # Use same names as color names
   color_window:
@@ -1223,7 +1227,7 @@ ui:
       de: 'Rahmen Farbe der oberen Tabs'
       pl: 'Kolor obramowania górnych zakładek'
 
-##### BACKUP WINDOW #####
+  ##### BACKUP WINDOW #####
   # all values for settings in backup window
   backup_window:
     header:
@@ -1247,7 +1251,7 @@ ui:
       de: 'Datenbank (Eigene Cocktails)'
       pl: 'Baza danych (własne koktajle)'
 
-##### REFILL WINDOW #####
+  ##### REFILL WINDOW #####
   # all values for settings in refill window
   refill_prompt:
     information:
@@ -1263,7 +1267,7 @@ ui:
       de: 'Zu den Flaschen'
       pl: 'Przejdź do butelek'
 
-##### CALIBRATION WINDOW #####
+  ##### CALIBRATION WINDOW #####
   # all values for settings in calibration window
   calibration_window:
     header:
@@ -1307,7 +1311,7 @@ ui:
       de: 'Abweichung zu groß, bitte prüfen'
       pl: 'Zbyt duże odchylenie, sprawdź'
 
-##### SCALE CALIBRATION WINDOW #####
+  ##### SCALE CALIBRATION WINDOW #####
   # all values for scale calibration window
   scale_calibration_window:
     header:
@@ -1359,7 +1363,7 @@ ui:
       de: 'Aktuelle Messung: {weight} g'
       pl: 'Aktualny odczyt: {weight} g'
 
-##### NEWS WINDOW #####
+  ##### NEWS WINDOW #####
   # all values for news window
   news_window:
     no_news:
@@ -1371,7 +1375,7 @@ ui:
       de: 'Nicht mehr anzeigen'
       pl: 'Nie pokazuj ponownie'
 
-##### WAITER WINDOW #####
+  ##### WAITER WINDOW #####
   # all values for waiter window
   waiter_window:
     management:
@@ -1565,7 +1569,7 @@ ui:
     role_deleted:
       en: 'Role deleted.'
       de: 'Rolle gelöscht.'
-      pl: 'Rola została usunięta.'  
+      pl: 'Rola została usunięta.'
     no_logs:
       en: 'No statistics available.'
       de: 'Keine Statistik verfügbar.'

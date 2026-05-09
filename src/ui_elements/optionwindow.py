@@ -262,7 +262,7 @@ class Ui_Optionwindow(object):
         self.button_back.setText(_translate("Optionwindow", "< Back"))
         self.button_back.setProperty("cssClass", _translate("Optionwindow", "btn-inverted"))
         self.button_backup.setText(_translate("Optionwindow", "Backup"))
-        self.button_update_software.setText(_translate("Optionwindow", "Update CocktailBerry Software"))
+        self.button_update_software.setText(_translate("Optionwindow", "Update Software"))
         self.button_update_software.setProperty("cssClass", _translate("Optionwindow", "btn-inverted"))
         self.button_addons.setText(_translate("Optionwindow", "Addons"))
         self.button_check_internet.setText(_translate("Optionwindow", "Check Internet"))

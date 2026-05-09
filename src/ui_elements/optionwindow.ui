@@ -151,7 +151,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Update CocktailBerry Software</string>
+             <string>Update Software</string>
             </property>
             <property name="cssClass" stdset="0">
              <string>btn-inverted</string>
