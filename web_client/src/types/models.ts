@@ -29,6 +29,7 @@ export interface Ingredient extends CocktailIngredient {
   pump_speed: number;
   cost: number;
   bottle?: number;
+  disallow_pump_back: boolean;
 }
 
 export interface IngredientInput {
@@ -41,6 +42,7 @@ export interface IngredientInput {
   pump_speed: number;
   hand: boolean;
   unit: string;
+  disallow_pump_back: boolean;
 }
 
 export interface CocktailIngredientInput {
@@ -296,7 +298,16 @@ type PossibleUiInformation = {
 };
 
 export type PossibleConfigValueTypes = boolean | number | string | boolean[] | number[] | string[];
-export type PossibleConfigValue = PossibleConfigValueTypes | { [key: string]: PossibleConfigValueTypes };
+export type PossibleConfigValue =
+  | PossibleConfigValueTypes
+  | { [key: string]: PossibleConfigValueTypes }
+  | PumpConfig
+  | PumpConfig[]
+  | I2CConfig
+  | I2CConfig[]
+  | ReversionConfig
+  | ScaleConfig
+  | CarriageConfig;
 
 export interface ConsumeData {
   data: {

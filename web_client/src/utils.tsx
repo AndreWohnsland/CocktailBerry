@@ -39,6 +39,10 @@ export const confirmAndExecute = async (message: string, executable: () => Promi
   }
 };
 
+export const askYesNo = async (message: string): Promise<boolean> => {
+  return globalThis.window.confirm(message);
+};
+
 const extractErrorMessage = (error: unknown): string => {
   const err = error as { response?: { data?: { detail?: string } }; detail?: string; message?: string };
   let errorMessage = err?.response?.data?.detail ?? err?.detail ?? err?.message ?? error ?? 'An error occurred';

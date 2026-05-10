@@ -153,6 +153,15 @@ def add_foreign_keys() -> None:
     execute_raw_sql("PRAGMA foreign_keys=on;")
 
 
+def add_disallow_pump_back_column_to_ingredients() -> None:
+    """Add the Disallow_pump_back column to the Ingredients table."""
+    _logger.log_event("INFO", "Adding Disallow_pump_back column to Ingredients DB")
+    try:
+        execute_raw_sql("ALTER TABLE Ingredients ADD COLUMN Disallow_pump_back BOOLEAN NOT NULL DEFAULT 0;")
+    except OperationalError:
+        _logger.log_event("INFO", "Could not add Disallow_pump_back column to DB, this may because it already exists")
+
+
 def add_cost_consumption_column_to_ingredients() -> None:
     """Add the cost consumption column to the Ingredients table."""
     _logger.log_event("INFO", "Adding cost consumption column to Ingredients DB")

@@ -63,7 +63,8 @@
     "pumpSpeed": "Pumpgeschwindigkeit",
     "unit": "Einheit",
     "onlyAddByHand": "Kann nur von Hand hinzugefügt werden",
-    "deleteIngredient": "Möchtest du die Zutat löschen?"
+    "deleteIngredient": "Möchtest du die Zutat löschen?",
+    "doNotRevert": "Niemals zurück pumpen"
   },
   "recipes": {
     "newRecipe": "Neues Rezept",
@@ -109,6 +110,7 @@
     "shutdown": "Herunterfahren",
     "shutdownTheSystem": "Möchtest du das System herunterfahren?",
     "startCleaningProgram": "Möchtest du das Reinigungsprogramm starten?",
+    "useReversion": "Soll die Pumpenrichtung umgekehrt werden? Dies aktiviert den Umkehrpin und ändert die Flussrichtung. Zutaten mit 'Niemals zurück pumpen' werden übersprungen.",
     "sumup": "SumUp",
     "systemResourceUsage": "Ressourcen Auslastung",
     "updateCocktailBerry": "CocktailBerry aktualisieren",

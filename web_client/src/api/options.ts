@@ -48,8 +48,10 @@ export const updateOptions = async (options: ConfigData): Promise<{ message: str
 };
 
 // Clean
-export const cleanMachine = async (): Promise<{ message: string }> => {
-  return axiosInstance.post<{ message: string }>(`${optionsUrl}/clean`).then((res) => res.data);
+export const cleanMachine = async (revertPumps = false): Promise<{ message: string }> => {
+  return axiosInstance
+    .post<{ message: string }>(`${optionsUrl}/clean`, null, { params: { revert_pumps: revertPumps } })
+    .then((res) => res.data);
 };
 
 // OS/System Management

@@ -6,6 +6,7 @@ import os
 import shutil
 from typing import TYPE_CHECKING
 
+from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtWidgets import QMainWindow, QPushButton
 
 from src.config.config_manager import CONFIG as cfg
@@ -21,6 +22,7 @@ from src.programs.calibration import CalibrationScreen
 from src.programs.scale_calibration import ScaleCalibrationScreen
 from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
+from src.ui.creation_utils import NARROW_WIDTH_THRESHOLD, repack_grid
 from src.ui.qt_worker import CallableWorker, run_with_spinner
 from src.ui.setup_addon_window import AddonWindow
 from src.ui.setup_data_window import DataWindow
@@ -48,6 +50,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
     def __init__(self, parent: MainScreen) -> None:
         super().__init__()
+        self._tile_columns = 2
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)
         self.mainscreen = parent
@@ -98,50 +101,29 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    _TILE_GRID_COLUMNS = 2
-
     def _apply_tile_blacklist(self) -> None:
-        """Repack the option tile grid so blacklisted tiles disappear cleanly.
+        """Repack the option tile grid, dropping blacklisted tiles.
 
-        The base layout is defined statically in ``optionwindow.ui`` as a
-        QGridLayout with explicit ``(row, col)`` placements. Hiding a button
-        with ``setVisible(False)`` does NOT collapse its grid cell, leaving
-        visible gaps. Instead this helper:
-
-        1. Removes every tile from ``gridLayout_2``.
-        2. Walks ``_TILE_ORDER`` (the canonical top-to-bottom, left-to-right
-           layout) and re-inserts the buttons whose ``OptionTiles`` field is
-           NOT blacklisted, advancing a 2-column cursor that respects the
-           ``span`` value (1 for half-width, 2 for full-width tiles).
-        3. Hides skipped buttons so they no longer occupy any space.
-
-        The helper preserves the original visual order. Tiles with span equal
-        to ``_TILE_GRID_COLUMNS`` are always placed on a fresh row and force
-        the next tile to a new row.
+        Delegates to ``repack_grid``. Column count tracks ``self._tile_columns``
+        so the same code handles both blacklist filtering and responsive
+        column-count changes triggered from ``resizeEvent``.
         """
-        layout = self.gridLayout_2
-        # Step 1: clear current grid contents (keep buttons alive on self).
-        for button, _attr, _span in self._TILE_ORDER:
-            layout.removeWidget(button)
-        # Step 2: re-insert visible tiles using a 2-col cursor.
-        row = 0
-        col = 0
-        for button, attr, span in self._TILE_ORDER:
-            if BLACKLIST.is_tile_blacklisted(attr):
-                button.setVisible(False)
-                continue
-            if span == self._TILE_GRID_COLUMNS:
-                if col != 0:
-                    row += 1
-                    col = 0
-                layout.addWidget(button, row, 0, 1, self._TILE_GRID_COLUMNS)
-                row += 1
-            else:
-                layout.addWidget(button, row, col, 1, 1)
-                col += 1
-                if col >= self._TILE_GRID_COLUMNS:
-                    col = 0
-                    row += 1
+        order = self._TILE_ORDER
+        attr_by_button = {button: attr for button, attr, _ in order}
+        items = [(button, span) for button, _attr, span in order]
+        repack_grid(
+            self.gridLayout_2,
+            items,
+            self._tile_columns,
+            skip=lambda widget: BLACKLIST.is_tile_blacklisted(attr_by_button[widget]),
+        )
+
+    def resizeEvent(self, a0: QResizeEvent | None) -> None:
+        super().resizeEvent(a0)
+        target_columns = 1 if self.width() < NARROW_WIDTH_THRESHOLD else 2
+        if target_columns != self._tile_columns:
+            self._tile_columns = target_columns
+            self._apply_tile_blacklist()
 
     @property
     def _TILE_ORDER(self) -> list[tuple[QPushButton, str, int]]:

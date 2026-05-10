@@ -77,19 +77,21 @@ class MachineController:
     def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False) -> None:
         """Clean the pumps for the defined time in the config.
 
-        Activates all pumps for the given time.
+        Activates all pumps for the given time. When reverting, ingredients
+        flagged as disallow_pump_back are skipped (single hardware reversion
+        pin flips all pumps, so disallowed slots cannot run forward in parallel).
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
-        items = self._build_clean_items()
+        items = self._build_clean_items(revert=revert_pumps)
         if w is not None:
             w.open_progression_window("Cleaning")
-        _header_print("Start Cleaning")
+        _logger.log_header("INFO", "Start Cleaning")
         if revert_pumps:
             self.reverter.revert_on()
         self._run_scheduler(w, items, use_carriage=cfg.CARRIAGE_CONFIG.move_during_cleaning)
         if revert_pumps:
             self.reverter.revert_off()
-        _header_print("Done Cleaning")
+        _logger.log_header("INFO", "Done Cleaning")
         if w is not None:
             w.close_progression_window()
         shared.cocktail_status.status = PrepareResult.FINISHED
@@ -113,7 +115,7 @@ class MachineController:
         if w is not None:
             w.open_progression_window(recipe)
         items = self._build_preparation_items(ingredient_list)
-        _header_print(f"Starting {recipe}")
+        _logger.log_header("INFO", f"Starting {recipe}")
         if is_cocktail:
             self.hardware.led_controller.preparation_start()
         self._run_scheduler(w, items, verbose=verbose, use_carriage=True)
@@ -125,7 +127,7 @@ class MachineController:
                 item.ingredient.consumption = item.consumption
         machine_ingredients = [item.ingredient for item in items if item.ingredient is not None]
         _logger.info(f"Total calculated consumption: {[round(i.consumption) for i in machine_ingredients]}")
-        _header_print(f"Finished {recipe}")
+        _logger.log_header("INFO", f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
         if shared.cocktail_status.status != PrepareResult.CANCELED:
@@ -184,10 +186,22 @@ class MachineController:
         HARDWARE_ADDONS.cleanup_all()
         self.hardware.cleanup()
 
-    def _build_clean_items(self) -> list[PreparationItem]:
-        """Build cleaning items for all active dispensers."""
+    def _build_clean_items(self, revert: bool = False) -> list[PreparationItem]:
+        """Build cleaning items for all active dispensers.
+
+        When revert is True, slots whose ingredient is flagged as
+        disallow_pump_back are excluded — they would otherwise be
+        force-reverted by the shared reversion pin.
+        """
+        skip_slots: set[int] = set()
+        if revert:
+            for ingredient in DatabaseCommander().get_ingredients_at_bottles():
+                if ingredient.disallow_pump_back and ingredient.bottle is not None:
+                    skip_slots.add(ingredient.bottle)
         items = []
-        for dispenser in self.dispensers.values():
+        for slot, dispenser in self.dispensers.items():
+            if slot in skip_slots:
+                continue
             amount_ml = dispenser.volume_flow * cfg.MAKER_CLEAN_TIME
             items.append(
                 PreparationItem(
@@ -294,11 +308,6 @@ class MachineController:
     def default_led(self) -> None:
         """Turn the LED on."""
         self.hardware.led_controller.default_led()
-
-
-def _header_print(msg: str) -> None:
-    """Format the message with dashes around."""
-    _logger.info(f"{' ' + msg + ' ':-^80}")
 
 
 MACHINE = MachineController()

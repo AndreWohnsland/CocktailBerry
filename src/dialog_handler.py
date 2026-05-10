@@ -861,6 +861,7 @@ class UiLanguage:
             (w.button_shutdown, "shutdown"),
             (w.button_logs, "logs"),
             (w.button_update_system, "update_system"),
+            (w.button_update_software, "update_software"),
             (w.button_events, "events"),
             (w.button_wifi, "wifi"),
             (w.button_check_internet, "check_internet"),

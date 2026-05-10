@@ -49,6 +49,7 @@ async def add_ingredient(ingredient: IngredientInput) -> ApiMessageWithData[Ingr
         pump_speed=ingredient.pump_speed,
         cost=ingredient.cost,
         unit=ingredient.unit,
+        disallow_pump_back=ingredient.disallow_pump_back,
     )
     db_ingredient = DBC.get_ingredient(ingredient.name)
     if db_ingredient is None:
@@ -72,6 +73,7 @@ async def update_ingredient(ingredient_id: int, ingredient: IngredientInput) -> 
         ingredient_id=ingredient_id,
         cost=ingredient.cost,
         unit=ingredient.unit,
+        disallow_pump_back=ingredient.disallow_pump_back,
     )
     db_ingredient = DBC.get_ingredient(ingredient_id)
     if db_ingredient is None:

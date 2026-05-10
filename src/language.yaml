@@ -280,9 +280,9 @@ dialog:
     de: "Die Python Bibliothek qtsass wird für dieses Feature benötigt. Das Bauen dieser kann 30-60 Minuten auf dem RPi benötigen, deshalb wurde dies nicht vom Migrator gemacht.\n\nSoll diese installiert und neu gestartet werden? Ohne die Bibliothek können keine Custom Themes erstellt werden."
     pl: "Do tej funkcji wymagana jest biblioteka Python qtsass. Kompilacja na RPi może trwać 30–60 minut, dlatego nie została zainstalowana automatycznie.\n\nZainstalować i uruchomić ponownie? Bez tego nie można używać własnych motywów."
   ask_to_use_reverted_pump:
-    en: 'Should the pump flow be reverted? This will activated the reversion pin and change the flow direction.'
-    de: 'Soll die Pumpenrichtung geändert werden? Dies wird den Umkehrpin aktivieren und die Pumpenrichtung ändern.'
-    pl: 'Czy odwrócić kierunek pompy? Zostanie aktywowany pin zmiany kierunku przepływu.'
+    en: "Should the pump flow be reverted? This will activate the reversion pin and change the flow direction. Ingredients flagged as 'never pump back' will be skipped."
+    de: "Soll die Pumpenrichtung geändert werden? Dies wird den Umkehrpin aktivieren und die Pumpenrichtung ändern. Zutaten mit 'Niemals zurück pumpen' werden übersprungen."
+    pl: "Czy odwrócić kierunek pompy? Zostanie aktywowany pin zmiany kierunku przepływu. Składniki oznaczone jako 'Nigdy nie pompuj z powrotem' zostaną pominięte."
   welcome_dialog:
     en: "CocktailBerry Software Version {version} by Andre Wohnsland.\nSystem: {platform}.\nUsing python version: {python_version} with PyQt app.\n\nCheck https://docs.cocktailberry.org for more information.\n\nThere is an alternative v2 Web UI available, have a look in the documentation for more info"
     de: "CocktailBerry Software Version {version} von Andre Wohnsland.\nSystem: {platform}.\nVerwendete Python Version: {python_version} mit PyQt App.\n\nMehr Informationen unter https://docs.cocktailberry.org.\n\nEs gibt eine neue v2 Web Ui, schau in der Dokumentation für mehr Informationen."
@@ -591,9 +591,9 @@ ui:
       de: 'Bild'
       pl: 'Zdjęcie'
     header_search:
-      en: 'Search available cocktails by name or ingredient'
-      de: 'Suche verfügbare Cocktails nach Namen oder Zutat'
-      pl: 'Szukaj dostępnych koktajli po nazwie lub składniku'
+      en: 'Search cocktails by name/ingredient'
+      de: 'Suche Cocktails nach Namen/Zutat'
+      pl: 'Szukaj koktajli po nazwie/składniku'
     enter_to_maker:
       en: 'Show in Maker'
       de: 'Im Maker anzeigen'
@@ -602,6 +602,10 @@ ui:
       en: 'Unit'
       de: 'Einheit'
       pl: 'Jednostka'
+    check_ingredient_do_not_revert:
+      en: 'Never pump back'
+      de: 'Niemals zurück pumpen'
+      pl: 'Nigdy nie pompuj z powrotem'
     label_cocktail_price:
       en: 'Price'
       de: 'Preis'
@@ -769,6 +773,10 @@ ui:
       en: 'System Update'
       de: 'System Update'
       pl: 'Aktualizacja systemu'
+    update_software:
+      en: 'Software Update'
+      de: 'Software Update'
+      pl: 'Aktualizacja oprogramowania'
     events:
       en: 'Events'
       de: 'Ereignisse'
@@ -1170,7 +1178,7 @@ ui:
       de: 'Schlitten-Konfiguration: Treibertyp, Aktivierung, Startposition (0-100%), Geschwindigkeit (%/s) und ob während der Reinigung bewegt werden soll'
       pl: 'Konfiguracja wózka: typ sterownika, włączenie, pozycja startowa (0-100%), prędkość (%/s) i ruch podczas czyszczenia'
 
-##### COLOR WINDOW #####
+  ##### COLOR WINDOW #####
   # all values for settings in color window
   # Use same names as color names
   color_window:
@@ -1219,7 +1227,7 @@ ui:
       de: 'Rahmen Farbe der oberen Tabs'
       pl: 'Kolor obramowania górnych zakładek'
 
-##### BACKUP WINDOW #####
+  ##### BACKUP WINDOW #####
   # all values for settings in backup window
   backup_window:
     header:
@@ -1243,7 +1251,7 @@ ui:
       de: 'Datenbank (Eigene Cocktails)'
       pl: 'Baza danych (własne koktajle)'
 
-##### REFILL WINDOW #####
+  ##### REFILL WINDOW #####
   # all values for settings in refill window
   refill_prompt:
     information:
@@ -1259,7 +1267,7 @@ ui:
       de: 'Zu den Flaschen'
       pl: 'Przejdź do butelek'
 
-##### CALIBRATION WINDOW #####
+  ##### CALIBRATION WINDOW #####
   # all values for settings in calibration window
   calibration_window:
     header:
@@ -1303,7 +1311,7 @@ ui:
       de: 'Abweichung zu groß, bitte prüfen'
       pl: 'Zbyt duże odchylenie, sprawdź'
 
-##### SCALE CALIBRATION WINDOW #####
+  ##### SCALE CALIBRATION WINDOW #####
   # all values for scale calibration window
   scale_calibration_window:
     header:
@@ -1355,7 +1363,7 @@ ui:
       de: 'Aktuelle Messung: {weight} g'
       pl: 'Aktualny odczyt: {weight} g'
 
-##### NEWS WINDOW #####
+  ##### NEWS WINDOW #####
   # all values for news window
   news_window:
     no_news:
@@ -1367,7 +1375,7 @@ ui:
       de: 'Nicht mehr anzeigen'
       pl: 'Nie pokazuj ponownie'
 
-##### WAITER WINDOW #####
+  ##### WAITER WINDOW #####
   # all values for waiter window
   waiter_window:
     management:
@@ -1561,7 +1569,7 @@ ui:
     role_deleted:
       en: 'Role deleted.'
       de: 'Rolle gelöscht.'
-      pl: 'Rola została usunięta.'  
+      pl: 'Rola została usunięta.'
     no_logs:
       en: 'No statistics available.'
       de: 'Keine Statistik verfügbar.'

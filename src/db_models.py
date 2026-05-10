@@ -42,6 +42,7 @@ class DbIngredient(Base):
     cost: Mapped[int] = mapped_column(default=0, name="Cost")
     unit: Mapped[str] = mapped_column(default="ml", name="Unit")
     pump_speed: Mapped[int] = mapped_column(default=100, name="Pump_speed")
+    disallow_pump_back: Mapped[bool] = mapped_column(default=False, name="Disallow_pump_back")
 
     bottle: Mapped[Optional["DbBottle"]] = relationship("DbBottle", uselist=False, back_populates="ingredient")
     cocktail_associations: Mapped[list["DbCocktailIngredient"]] = relationship(
@@ -64,6 +65,7 @@ class DbIngredient(Base):
         cost: int = 0,
         unit: str = "ml",
         pump_speed: int = 100,
+        disallow_pump_back: bool = False,
     ) -> None:
         self.name = name
         self.alcohol = alcohol
@@ -78,6 +80,7 @@ class DbIngredient(Base):
         self.cost = cost
         self.unit = unit
         self.pump_speed = pump_speed
+        self.disallow_pump_back = disallow_pump_back
 
 
 class DbRecipe(Base):

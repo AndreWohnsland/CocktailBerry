@@ -63,7 +63,8 @@
     "pumpSpeed": "Prędkość pompy",
     "unit": "Jednostka",
     "onlyAddByHand": "Można dodać tylko ręcznie",
-    "deleteIngredient": "Czy chcesz usunąć składnik?"
+    "deleteIngredient": "Czy chcesz usunąć składnik?",
+    "doNotRevert": "Nigdy nie pompuj z powrotem"
   },
   "recipes": {
     "newRecipe": "Nowy przepis",
@@ -109,6 +110,7 @@
     "shutdown": "Wyłącz",
     "shutdownTheSystem": "Czy chcesz wyłączyć system?",
     "startCleaningProgram": "Czy chcesz uruchomić program czyszczenia?",
+    "useReversion": "Czy odwrócić kierunek pompy? Aktywuje pin zmiany kierunku przepływu. Składniki oznaczone jako 'Nigdy nie pompuj z powrotem' zostaną pominięte.",
     "sumup": "SumUp",
     "systemResourceUsage": "Zużycie zasobów",
     "updateCocktailBerry": "Aktualizuj oprogramowanie CocktailBerry",

@@ -73,6 +73,7 @@ def map_ingredient(ingredient: DBIngredient | None) -> Ingredient | None:
         fill_level=ingredient.fill_level,
         pump_speed=ingredient.pump_speed,
         cost=ingredient.cost,
+        disallow_pump_back=ingredient.disallow_pump_back,
     )
 
 

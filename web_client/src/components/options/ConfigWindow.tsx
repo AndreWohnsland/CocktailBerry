@@ -349,7 +349,7 @@ const ConfigWindow: React.FC = () => {
       return renderListField(key, value);
     }
     if (typeof value === 'object') {
-      return renderObjectField(key, value);
+      return renderObjectField(key, value as { [key: string]: PossibleConfigValueTypes });
     }
 
     return (

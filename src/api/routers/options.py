@@ -104,12 +104,13 @@ async def update_options(options: dict, background_tasks: BackgroundTasks) -> Ap
 
 
 @protected_router.post("/clean", tags=[Tags.PREPARATION], summary="Start the machine cleaning")
-async def clean_machine(background_tasks: BackgroundTasks) -> ApiMessage:
+async def clean_machine(background_tasks: BackgroundTasks, revert_pumps: bool = False) -> ApiMessage:
     raise_when_cocktail_is_in_progress()
-    _logger.log_header("INFO", "Cleaning the Pumps")
-    revert_pumps = cfg.MAKER_PUMP_REVERSION_CONFIG.use_reversion
+    _logger.info("Cleaning started by user request")
+    # Reversion only honored when machine is configured for it; ignore the flag otherwise.
+    use_revert = revert_pumps and cfg.MAKER_PUMP_REVERSION_CONFIG.use_reversion
     mc = MachineController()
-    background_tasks.add_task(mc.clean_pumps, None, revert_pumps)
+    background_tasks.add_task(mc.clean_pumps, None, use_revert)
     return ApiMessage(message=DH.get_translation("cleaning_started"))
 
 
