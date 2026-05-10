@@ -5,7 +5,7 @@ import { calibrateBottle } from '../../api/bottles';
 import { updateIngredient, useIngredients } from '../../api/ingredients';
 import { updateOptions } from '../../api/options';
 import { useConfig } from '../../providers/ConfigProvider';
-import type { Ingredient, PossibleConfigValue } from '../../types/models';
+import type { Ingredient } from '../../types/models';
 import { executeAndShow } from '../../utils';
 import DropDown from '../common/DropDown';
 import NumberInput from '../common/NumberInput';
@@ -105,7 +105,7 @@ const CalibrationWindow = () => {
       ...updatedPumpConfig[channel - 1],
       volume_flow: newFlow,
     };
-    await executeAndShow(() => updateOptions({ PUMP_CONFIG: updatedPumpConfig as unknown as PossibleConfigValue }));
+    await executeAndShow(() => updateOptions({ PUMP_CONFIG: updatedPumpConfig }));
     await refetchConfig();
     handleReset();
   };

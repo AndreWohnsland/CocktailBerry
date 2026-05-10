@@ -298,7 +298,16 @@ type PossibleUiInformation = {
 };
 
 export type PossibleConfigValueTypes = boolean | number | string | boolean[] | number[] | string[];
-export type PossibleConfigValue = PossibleConfigValueTypes | { [key: string]: PossibleConfigValueTypes };
+export type PossibleConfigValue =
+  | PossibleConfigValueTypes
+  | { [key: string]: PossibleConfigValueTypes }
+  | PumpConfig
+  | PumpConfig[]
+  | I2CConfig
+  | I2CConfig[]
+  | ReversionConfig
+  | ScaleConfig
+  | CarriageConfig;
 
 export interface ConsumeData {
   data: {
