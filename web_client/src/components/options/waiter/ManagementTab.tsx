@@ -123,7 +123,7 @@ const ManagementTab: React.FC = () => {
       )}
 
       {noRoles && (
-        <div className='mb-4 p-3 border-2 border-warning rounded-xl text-warning'>{t('role.createFirstHint')}</div>
+        <div className='mb-4 p-3 border border-danger rounded-xl text-danger'>{t('role.createFirstHint')}</div>
       )}
 
       <form
