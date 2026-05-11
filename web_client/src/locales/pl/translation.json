@@ -194,7 +194,8 @@
     "enterPassword": "Wprowadź hasło",
     "passwordNeeded": "Wymagane hasło: {{passwordName}}",
     "passwordProtectedBy": "Ta sekcja jest chroniona hasłem {{passwordName}}.",
-    "enterThePassword": "Wprowadź hasło, aby kontynuować:"
+    "enterThePassword": "Wprowadź hasło, aby kontynuować:",
+    "nfcHint": "Upoważniony personel może zamiast tego zeskanować tag NFC."
   },
   "issues": {
     "systemIssues": "Problemy systemowe",

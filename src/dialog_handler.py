@@ -897,6 +897,11 @@ class UiLanguage:
         w.header.setText(self._choose_language(f"header_{header_type}_password", window))
         w.cancel_button.setText(self._choose_language("cancel_button"))
         w.enter_button.setText(self._choose_language("ok_button"))
+        w.hint_label.setText(self._choose_language("nfc_hint", window))
+
+    def get_password_nfc_hint(self) -> str:
+        """Return localized hint that authorized personnel can scan NFC instead of entering the password."""
+        return self._choose_language("nfc_hint", "password_dialog")
 
     def adjust_custom_prompt(self, w: Ui_CustomPrompt) -> None:
         """Translate all the labels from the password window."""

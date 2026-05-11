@@ -165,8 +165,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Start clean process if user confirms the action."""
         if not DP_CONTROLLER.ask_to_start_cleaning():
             return
-        # bottles.clean_machine(self.mainscreen)
-        _logger.log_header("INFO", "Cleaning the Pumps")
+        _logger.info("Cleaning requested over option UI, starting cleaning process")
         revert_pumps = False
         if cfg.MAKER_PUMP_REVERSION_CONFIG.use_reversion:
             revert_pumps = DP_CONTROLLER.ask_to_use_reverted_pump()

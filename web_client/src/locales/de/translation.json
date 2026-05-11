@@ -194,7 +194,8 @@
     "enterPassword": "Passwort eingeben",
     "passwordNeeded": "{{passwordName}} Passwort Benötigt",
     "passwordProtectedBy": "Dieser Bereich ist durch das {{passwordName}} Passwort geschützt.",
-    "enterThePassword": "Gib das Passwort ein, um fortzufahren:"
+    "enterThePassword": "Gib das Passwort ein, um fortzufahren:",
+    "nfcHint": "Berechtigtes Personal kann stattdessen den NFC-Tag scannen."
   },
   "issues": {
     "systemIssues": "Systemprobleme",
