@@ -29,6 +29,7 @@ class MFRC522Reader(RFIDInterface):
         super().__init__(config, hardware)
         if not MFRC522_AVAILABLE:
             raise RuntimeError(_NOT_AVAILABLE_MSG)
+        _logger.info("<i> Initializing MFRC522 RFID reader (SPI)")
         self.rfid = SimpleMFRC522()  # pylint: disable=E0601
 
     def read_card(self) -> tuple[str | None, str | None]:

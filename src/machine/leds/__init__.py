@@ -28,6 +28,10 @@ def create_led_controller(config_list: list[BaseLedConfig], hardware: HardwareCo
     from src.config.config_types import NormalLedConfig, WS281xLedConfig
 
     controller = LedController()
+    if not config_list:
+        _logger.debug("No LEDs configured")
+        return controller
+    _logger.info(f"<i> Initializing {len(config_list)} LED(s)")
     leds: list[LedInterface] = []
     for config in config_list:
         try:

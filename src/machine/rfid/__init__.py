@@ -31,7 +31,9 @@ def create_rfid(config: BaseRfidConfig, hardware: HardwareContext) -> RFIDInterf
         _logger.warning("Using mock RFID reader.")
         return MockReader(config, hardware)
     if not config.enabled:
+        _logger.debug("RFID disabled in config")
         return None
+    _logger.info("<i> Initializing RFID")
     try:
         if config.rfid_type == "MFRC522":
             return MFRC522Reader(config, hardware)

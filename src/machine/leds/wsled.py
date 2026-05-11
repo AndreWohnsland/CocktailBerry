@@ -35,6 +35,7 @@ class WSLed(LedInterface):
         self.brightness = min(int(255 * config.brightness / 100), 255)
         self.count = config.count
         self.number_rings = config.number_rings
+        _logger.info(f"<i> Initializing WS281x LED on pin {self.pin} ({self.count * self.number_rings} px)")
         self.strip = Adafruit_NeoPixel(
             self.count * self.number_rings,
             self.pin,  # best to use 12 or 18

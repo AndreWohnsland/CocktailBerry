@@ -23,14 +23,18 @@ def create_carriage(config: BaseCarriageConfig, hardware: HardwareContext) -> Ca
     resolve to ``None``, equivalent to a disabled carriage.
     """
     if not config.enabled or config.carriage_type == "NoCarriage":
+        _logger.debug("Carriage disabled in config")
         return None
+    _logger.info("<i> Initializing carriage")
     try:
         # Custom carriage extensions from addons/carriages/ — dispatch by carriage_type.
         from src.programs.addons.carriage_extensions import CARRIAGE_ADDONS
 
         entry = CARRIAGE_ADDONS.entries.get(config.carriage_type)
         if entry is not None:
-            return entry.implementation_class(config, hardware)
+            instance = entry.implementation_class(config, hardware)
+            _logger.info(f"Carriage ready ({config.carriage_type})")
+            return instance
         _logger.error(f"Unknown carriage type: {config.carriage_type}")
         return None
     except Exception:

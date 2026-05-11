@@ -37,6 +37,7 @@ class USBReader(RFIDInterface):
         super().__init__(config, hardware)
         if not USB_AVAILABLE:
             raise RuntimeError(_NOT_AVAILABLE_MSG)
+        _logger.info("<i> Initializing USB RFID reader (PC/SC)")
         available: list[PCSCReader] = readers()
         if not available:
             raise RuntimeError("No PC/SC reader found")
