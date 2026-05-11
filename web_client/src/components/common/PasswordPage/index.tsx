@@ -10,9 +10,10 @@ export interface PasswordPageProps {
   passwordName: string;
   setAuthenticated: (password: number) => void;
   authMethod: (password: number) => Promise<{ message: string }>;
+  showNfcHint?: boolean;
 }
 
-const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthenticated, authMethod }) => {
+const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthenticated, authMethod, showNfcHint }) => {
   const [password, setPassword] = useState('');
   const { t } = useTranslation();
 
@@ -38,7 +39,8 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthentica
           value={password}
           handleInputChange={setPassword}
           placeholder={t('password.enterPassword')}
-        />
+          />
+          {showNfcHint && <p className='mt-2 w-full text-center text-sm italic'>{t('password.nfcHint')}</p>}
         <Button label={t('submit')} filled onClick={handlePasswordSubmit} className='w-full mt-6' />
       </form>
     </div>

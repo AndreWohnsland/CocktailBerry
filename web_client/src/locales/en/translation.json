@@ -194,7 +194,8 @@
     "enterPassword": "Enter Password",
     "passwordNeeded": "{{passwordName}} Password Needed",
     "passwordProtectedBy": "This section is protected by the {{passwordName}} password.",
-    "enterThePassword": "Enter the password to continue:"
+    "enterThePassword": "Enter the password to continue:",
+    "nfcHint": "Authorized personnel can scan their NFC tag instead."
   },
   "issues": {
     "systemIssues": "System Issues",

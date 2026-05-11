@@ -12,6 +12,7 @@ interface ProtectedRouteProps {
   passwordName: string;
   authMethod: (password: number) => Promise<{ message: string }>;
   isProtected?: boolean;
+  showNfcHint?: boolean;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
@@ -20,9 +21,17 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   passwordName,
   authMethod,
   isProtected = true,
+  showNfcHint = false,
 }) => {
   if (isProtected) {
-    return <PasswordPage passwordName={passwordName} setAuthenticated={setAuthenticated} authMethod={authMethod} />;
+    return (
+      <PasswordPage
+        passwordName={passwordName}
+        setAuthenticated={setAuthenticated}
+        authMethod={authMethod}
+        showNfcHint={showNfcHint}
+      />
+    );
   }
 
   return <>{children}</>;
@@ -63,6 +72,7 @@ export const MakerPasswordProtected: React.FC<MakerPasswordProtectedProps> = ({ 
   return (
     <ProtectedRoute
       isProtected={hasPassword && isProtected && !makerAuthenticated && !waiterCanBypass}
+      showNfcHint={shouldCheckWaiter}
       setAuthenticated={(password: number) => {
         setMakerAuthenticated(true);
         setMakerPassword(password);
@@ -94,6 +104,7 @@ export const MasterPasswordProtected: React.FC<MasterPasswordProtectedProps> = (
   return (
     <ProtectedRoute
       isProtected={hasPassword && !masterAuthenticated && !waiterCanBypass}
+      showNfcHint={shouldCheckWaiter}
       setAuthenticated={(password: number) => {
         setMasterAuthenticated(true);
         setMasterPassword(password);

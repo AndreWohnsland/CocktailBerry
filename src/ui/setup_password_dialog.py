@@ -47,10 +47,15 @@ class PasswordDialog(QMainWindow, Ui_PasswordDialog):
             getattr(self, f"PB{number}").clicked.connect(lambda _, n=number: self._number_clicked(n))
 
         UI_LANGUAGE.adjust_password_window(self, header_type)
+        self._add_nfc_hint_if_applicable()
 
         # Bridge signal for thread-safe waiter NFC callback
         self._waiter_accepted.connect(lambda: self._finish(True))
         self._register_waiter_callback()
+
+    def _add_nfc_hint_if_applicable(self) -> None:
+        """Show or hide the NFC hint label depending on waiter mode and permission key."""
+        self.hint_label.setVisible(self._permission_key is not None and cfg.waiter_mode_active)
 
     def _register_waiter_callback(self) -> None:
         """Register a WaiterService callback to auto-accept on NFC scan with sufficient permissions."""

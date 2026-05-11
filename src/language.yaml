@@ -842,6 +842,10 @@ ui:
       en: 'Enter maker password:'
       de: 'Maker Passwort eingeben:'
       pl: 'Wprowadź hasło Maker:'
+    nfc_hint:
+      en: 'Authorized personnel can scan their NFC tag instead.'
+      de: 'Berechtigtes Personal kann stattdessen den NFC-Tag scannen.'
+      pl: 'Upoważniony personel może zamiast tego zeskanować tag NFC.'
 
   rfid_writer:
     write:
