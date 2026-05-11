@@ -71,6 +71,8 @@ class HardwareExtensionManager(BaseExtensionManager[HardwareAddonEntry]):
         Returns a dict mapping extension name -> instance for HardwareContext.extra.
         """
         result: dict[str, Any] = {}
+        if self.entries:
+            self._logger.info(f"<i> Creating {len(self.entries)} hardware extension(s)")
         for name, entry in self.entries.items():
             config_name = f"HW_{name.upper().replace(' ', '_')}"
             config = getattr(cfg, config_name, None)

@@ -72,7 +72,9 @@ def create_scale(config: BaseScaleConfig, hardware: HardwareContext) -> ScaleInt
     from src.config.config_types import HX711ScaleConfig, NAU7802ScaleConfig
 
     if not config.enabled:
+        _logger.debug("Scale disabled in config")
         return None
+    _logger.info("<i> Initializing scale")
     try:
         if isinstance(config, HX711ScaleConfig):
             scale = HX711Scale(config, hardware)

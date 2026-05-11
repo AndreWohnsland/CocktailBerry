@@ -50,6 +50,7 @@ class MachineController:
         self._initialized = True
 
     def init_machine(self) -> None:
+        _logger.log_header("INFO", "Initializing machine")
         # Stage 1: core hardware + extensions (no dependencies)
         self.hardware = HardwareContext(
             pin_controller=PinController(),
@@ -72,6 +73,7 @@ class MachineController:
         self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()
         self.default_led()
+        _logger.log_header("INFO", "Machine initialized")
         atexit.register(self.cleanup)
 
     def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False) -> None:
@@ -168,11 +170,11 @@ class MachineController:
     def set_up_pumps(self) -> None:
         """Initialize dispensers for all configured pump slots."""
         used_config = cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES]
+        _logger.info(f"<i> Initializing {cfg.MAKER_NUMBER_BOTTLES} dispensers")
         self.dispensers = {}
         for slot, pump_cfg in enumerate(used_config, start=1):
             dispenser = create_dispenser(slot, pump_cfg, self.hardware)
             self.dispensers[slot] = dispenser
-        _logger.info(f"<i> Initialized {len(self.dispensers)} dispensers")
         self.reverter.initialize_pin()
 
     def close_all_pumps(self) -> None:
