@@ -52,17 +52,31 @@ while true; do
 done
 echo "> Language set to: $CB_LANGUAGE"
 
-# It otherwise might be that the blue window blocks everything and user needs to cancel it
-echo "~~ Setting needrestart to auto-restart services (at /etc/needrestart/needrestart.conf) ~~"
-sudo sed -i -E 's|^[# ]*\$nrconf\{restart\}\s*=.*|\$nrconf{restart} = "a";|' /etc/needrestart/needrestart.conf || echo "> Could not set needrestart to auto-restart services, but continuing ..."
-export DEBIAN_FRONTEND=noninteractive
-export NEEDRESTART_MODE=a
-
-echo "~~ Disabling needrestart kernel hints ~~"
-sudo sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf || echo "> Could not disable needrestart kernel hints, but continuing ..."
+# Suppress interactive prompts during apt operations. Pass env inline to sudo
+# because sudo strips DEBIAN_FRONTEND / NEEDRESTART_MODE by default, which is
+# why the first run on a fresh install used to hang on the blue needrestart
+# kernel-hint dialog. NEEDRESTART_SUSPEND=1 also covers the case where the
+# needrestart package is freshly installed mid-upgrade and has no config yet.
+APT_ENV=(DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a NEEDRESTART_SUSPEND=1)
 
 echo "~~ Updating system to latest version, depending on your system age, this may take some time ... ~~"
-sudo apt-get update && sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
+sudo "${APT_ENV[@]}" apt-get update
+sudo "${APT_ENV[@]}" apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
+
+# Now that the upgrade is done, needrestart is (likely) installed and its
+# config exists. Patch it best-effort so future apt operations outside this
+# script also behave non-interactively.
+if [[ -f /etc/needrestart/needrestart.conf ]]; then
+  echo "~~ Persisting needrestart config (auto-restart, no kernel hints) ~~"
+  sudo sed -i -E 's|^[# ]*\$nrconf\{restart\}\s*=.*|\$nrconf{restart} = "a";|' /etc/needrestart/needrestart.conf || true
+  sudo sed -i 's/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g' /etc/needrestart/needrestart.conf || true
+fi
+
+# Keep these exported for any apt commands later in this script that still
+# use plain `sudo apt install` (git, python3-venv, pip, lxterminal, …).
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+export NEEDRESTART_SUSPEND=1
 
 # Steps for git
 echo "~~ Check if git is installed ~~"
