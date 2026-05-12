@@ -21,14 +21,14 @@ DF_START = pd.DataFrame(
 px_colors = px.colors.qualitative.Plotly
 
 
-def __give_team_number(df: pd.DataFrame):
+def __give_team_number(df: pd.DataFrame) -> None:
     """Add the number to the team names."""
     stats = df.groupby("Team")["Amount"].sum()
     for team, amount in stats.items():
         df["Team"] = df["Team"].replace("^" + str(team) + "$", f"{team} ({amount})", regex=True)
 
 
-def __decide_data(datatype: int):
+def __decide_data(datatype: int) -> tuple[bool, int | None, int]:
     index = datatype - 1
     count = [True, False, True, False][index]
     hour_range = [24, 24, None, None][index]
@@ -36,7 +36,7 @@ def __decide_data(datatype: int):
     return (count, hour_range, limit)
 
 
-def get_plot_data(datatype: int):
+def get_plot_data(datatype: int) -> pd.DataFrame:
     count, hour_range, limit = __decide_data(datatype)
     headers = {"content-type": "application/json"}
     payload = {"limit": limit, "count": count, "hour_range": hour_range}
@@ -51,7 +51,7 @@ def get_plot_data(datatype: int):
     return data
 
 
-def generate_treemap(df: pd.DataFrame):
+def generate_treemap(df: pd.DataFrame) -> px.Figure:
     """Generate a treemap out of the df."""
     # if its 1st or 2nd graph type (today data) add color mapping that team keeps
     # same color, even if the value changes
