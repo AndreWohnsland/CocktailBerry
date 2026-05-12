@@ -27,7 +27,7 @@ def try_send_query_data() -> None:
             return
         # pylint: disable=broad-except
         except Exception as err:
-            logger.error(f"Some other error occurred: {err}")
+            logger.exception("Some other error occurred:", err)
             return
         # if send successfully, delete this entry
         else:

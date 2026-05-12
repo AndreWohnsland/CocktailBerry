@@ -39,7 +39,7 @@ async def post_cocktail_hook(cocktail: Cocktail) -> JSONResponse:
             db_handler = DatabaseHandler()
             db_handler.save_failed_post(payload, url, headers)
         except Exception as err:
-            logger.error("Some other error occurred: %s", err)
+            logger.exception("Some other error occurred: %s", err)
 
     make_date = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M")
     if cocktail.makedate is not None:
