@@ -119,7 +119,6 @@ else
   if is_raspberry_pi5; then
     sudo usermod -aG gpio "$(whoami)"
     uv pip install lgpio
-    newgrp gpio
   fi
 fi
 echo "Done with the setup"
