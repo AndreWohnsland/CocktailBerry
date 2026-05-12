@@ -110,16 +110,16 @@ else
     sudo apt-get -y install python3-pyqt6 || echo "ERROR: Could not install PyQt6" >&2
     uv sync --inexact --extra v1 --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
   fi
-  if is_raspberry_pi5; then
-    sudo usermod -aG gpio "$(whoami)"
-    newgrp gpio
-    uv pip install lgpio
-  fi
-  # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
   if is_raspberry_pi; then
     sudo raspi-config nonint do_i2c 0
   else
     bash scripts/setup_non_rpi.sh
+  fi
+  # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
+  if is_raspberry_pi5; then
+    sudo usermod -aG gpio "$(whoami)"
+    uv pip install lgpio
+    newgrp gpio
   fi
 fi
 echo "Done with the setup"
