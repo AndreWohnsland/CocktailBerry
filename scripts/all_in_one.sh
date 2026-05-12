@@ -59,13 +59,22 @@ echo "> Language set to: $CB_LANGUAGE"
 # needrestart package is freshly installed mid-upgrade and has no config yet.
 APT_ENV=(DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a NEEDRESTART_SUSPEND=1)
 
+# Pre-configure needrestart BEFORE the upgrade so the very first run is
+# already non-interactive. needrestart loads conf.d/ even when it is being
+# installed for the first time during the upgrade below.
+echo "~~ Pre-configuring needrestart to prevent interactive prompts ~~"
+sudo mkdir -p /etc/needrestart/conf.d
+sudo tee /etc/needrestart/conf.d/99-cocktailberry.conf > /dev/null << 'NEEDRESTART_EOF'
+$nrconf{restart} = "a";
+$nrconf{kernelhints} = -1;
+NEEDRESTART_EOF
+
 echo "~~ Updating system to latest version, depending on your system age, this may take some time ... ~~"
 sudo "${APT_ENV[@]}" apt-get update
 sudo "${APT_ENV[@]}" apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
-# Now that the upgrade is done, needrestart is (likely) installed and its
-# config exists. Patch it best-effort so future apt operations outside this
-# script also behave non-interactively.
+# Belt-and-suspenders: also patch the main needrestart.conf if it now exists,
+# so the settings persist even if the conf.d snippet is ever removed.
 if [[ -f /etc/needrestart/needrestart.conf ]]; then
   echo "~~ Persisting needrestart config (auto-restart, no kernel hints) ~~"
   sudo sed -i -E 's|^[# ]*\$nrconf\{restart\}\s*=.*|\$nrconf{restart} = "a";|' /etc/needrestart/needrestart.conf || true
