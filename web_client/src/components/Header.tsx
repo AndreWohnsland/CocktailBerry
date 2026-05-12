@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { useRestrictedMode } from '../providers/RestrictedModeProvider';
 
 const Header: React.FC = () => {

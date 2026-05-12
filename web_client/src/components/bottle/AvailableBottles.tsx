@@ -2,7 +2,7 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { postAvailableIngredients, useAvailableIngredients, useIngredients } from '../../api/ingredients';
 import type { Ingredient } from '../../types/models';

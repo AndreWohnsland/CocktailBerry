@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FaWineBottle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import Modal from 'react-modal';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { refillBottle } from '../../api/bottles';
 import { executeAndShow } from '../../utils';
 
