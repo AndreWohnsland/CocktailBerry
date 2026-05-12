@@ -91,7 +91,7 @@ const ConsumeWindow: React.FC = () => {
 
   return (
     <div className='flex flex-col w-full max-w-5xl'>
-      <div className='flex flex-col items-center justify-center flex-shrink-0 mb-2'>
+      <div className='flex flex-col items-center justify-center shrink-0 mb-2'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
           <p className='text-2xl font-bold text-secondary mr-4 text-center'>{t('data.data')}:</p>
           <DropDown
@@ -102,7 +102,7 @@ const ConsumeWindow: React.FC = () => {
         </div>
       </div>
 
-      <div className='flex-grow p-2 items-center justify-center flex flex-col w-full'>
+      <div className='grow p-2 items-center justify-center flex flex-col w-full'>
         {consumeData && (
           <>
             <ConsumeBarChart title={t('data.recipes')} data={selectedData.recipes} unit='x' icon={FaCocktail} />

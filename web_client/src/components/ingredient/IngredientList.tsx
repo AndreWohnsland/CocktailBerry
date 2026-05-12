@@ -138,7 +138,7 @@ const IngredientList: React.FC = () => {
               </p>
               <CloseButton onClick={closeModal} />
             </div>
-            <div className='flex-grow' />
+            <div className='grow' />
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>
               <div className='flex justify-center items-center'>
                 <TextInput
@@ -189,7 +189,7 @@ const IngredientList: React.FC = () => {
                 />
               </div>
             </form>
-            <div className='flex-grow' />
+            <div className='grow' />
             <div className='flex justify-between mt-2'>
               <ModalActions
                 onDelete={handleDelete}

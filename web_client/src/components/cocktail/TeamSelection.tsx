@@ -24,7 +24,7 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ isOpen, amount, prepareCo
     <Modal isOpen={isOpen} className='modal slim h-fit' overlayClassName='overlay z-30'>
       <div className='flex flex-col items-center justify-center w-full h-full'>
         <TextHeader text={t('cocktails.selectTeam')} />
-        <div className='flex-grow'></div>
+        <div className='grow'></div>
         <div className='grid gap-2 sm:grid-cols-2 grid-cols-1 w-full h-full'>
           {config.TEAM_BUTTON_NAMES.map((teamName, index) => {
             const buttonClasses = ['button-primary-filled', 'button-secondary-filled', 'button-neutral-filled'];
@@ -41,7 +41,7 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ isOpen, amount, prepareCo
             );
           })}
         </div>
-        <div className='flex-grow'></div>
+        <div className='grow'></div>
       </div>
     </Modal>
   );

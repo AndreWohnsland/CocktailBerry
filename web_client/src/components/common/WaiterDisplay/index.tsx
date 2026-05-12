@@ -23,7 +23,7 @@ const WaiterDisplay: React.FC<WaiterDisplayProps> = ({ waiter, initialOpen = fal
   if (!hasWaiter) {
     return (
       <div className='sticky-top mb-2 float-left mr-2 relative z-20'>
-        <div className='flex-shrink inline-block'>
+        <div className='shrink inline-block'>
           <div className={badgeStyle}>{t('waiter.noWaiter')}</div>
         </div>
       </div>
@@ -41,7 +41,7 @@ const WaiterDisplay: React.FC<WaiterDisplayProps> = ({ waiter, initialOpen = fal
 
   return (
     <div className='sticky-top mb-2 float-left mr-2 relative z-20'>
-      <div className='flex-shrink inline-flex items-center gap-1'>
+      <div className='shrink inline-flex items-center gap-1'>
         <Activity mode={isOpen ? 'hidden' : 'visible'}>
           <Button
             style='primary'

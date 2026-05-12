@@ -147,7 +147,7 @@ const CalibrationWindow = () => {
   };
 
   return (
-    <div className='flex flex-col justify-between items-center p-4 w-full h-full max-w-md max-h-[40rem]'>
+    <div className='flex flex-col justify-between items-center p-4 w-full h-full max-w-md max-h-160'>
       <TextHeader text={t('calibration.pumpCalibrationProgram')} />
       <ProgressModal
         isOpen={isProgressModalOpen}
@@ -164,7 +164,7 @@ const CalibrationWindow = () => {
         </button>
       </div>
 
-      <div className='flex-grow py-2'></div>
+      <div className='grow py-2'></div>
 
       {step === 'target' && (
         <>
@@ -213,7 +213,7 @@ const CalibrationWindow = () => {
             </div>
             <div className='text-center text-lg font-semibold text-neutral'>{t('calibration.amount')}</div>
           </div>
-          <div className='flex-grow py-2'></div>
+          <div className='grow py-2'></div>
           <div className='w-full space-y-3'>
             {targetVolume > 0 && (
               <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleNext}>
@@ -261,10 +261,10 @@ const CalibrationWindow = () => {
               />
             </div>
 
-            <div className='text-center text-lg font-semibold text-neutral min-h-[2rem]'>{getCalibrationMessage()}</div>
+            <div className='text-center text-lg font-semibold text-neutral min-h-8'>{getCalibrationMessage()}</div>
           </div>
 
-          <div className='flex-grow py-2'></div>
+          <div className='grow py-2'></div>
 
           <div className='w-full space-y-3'>
             <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleContinuePumping}>

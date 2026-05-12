@@ -48,10 +48,10 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
         </div>
 
         <div className='max-w-md w-full h-full flex flex-col p-2'>
-          <div className='flex-grow'></div>
+          <div className='grow'></div>
           <div className='flex flex-col items-center'>
             <DropDown
-              className='w-full !p-3 mb-8'
+              className='w-full p-3! mb-8'
               value={selectedId?.toString() ?? ''}
               placeholder={t('cocktails.selectIngredient')}
               allowedValues={allIngredients
@@ -82,7 +82,7 @@ const SingleIngredientSelection: React.FC<SingleIngredientSelectionProps> = ({ o
               onClick={handleSpend}
             />
           </div>
-          <div className='flex-grow'></div>
+          <div className='grow'></div>
         </div>
       </div>
       <ProgressModal

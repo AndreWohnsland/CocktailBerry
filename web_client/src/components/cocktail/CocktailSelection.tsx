@@ -197,7 +197,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
             </div>
             <CloseButton onClick={handleCloseModal} />
           </div>
-          <div className='flex-grow flex flex-col justify-center w-full'>
+          <div className='grow flex flex-col justify-center w-full'>
             <p className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral underline mb-2'>
               {alcohol === 'virgin' && 'Virgin '}
               {selectedCocktail.name}

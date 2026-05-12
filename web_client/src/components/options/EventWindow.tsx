@@ -38,7 +38,7 @@ const EventWindow: React.FC = () => {
 
   return (
     <div className='flex flex-col w-full max-w-xl'>
-      <div className='flex flex-col items-center justify-center flex-shrink-0 mb-2'>
+      <div className='flex flex-col items-center justify-center shrink-0 mb-2'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
           <p className='text-2xl font-bold text-secondary mr-4'>Events:</p>
           <DropDown
@@ -49,7 +49,7 @@ const EventWindow: React.FC = () => {
           />
         </div>
       </div>
-      <div className='flex-grow p-2'>
+      <div className='grow p-2'>
         {filteredEvents.map((event, index) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: ordered from backend
           <div key={index} className='px-1 break-all'>

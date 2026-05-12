@@ -1,11 +1,38 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import './themes.css';
-@import 'themes.css';
-@import 'react-toastify/dist/ReactToastify.css';
+@import "tailwindcss";
+@import "./themes.css";
+@import "react-toastify/dist/ReactToastify.css" layer(utilities);
 
-.button-base {
+@theme {
+  --color-primary: var(--primary-color);
+  --color-secondary: var(--secondary-color);
+  --color-neutral: var(--neutral-color);
+  --color-background: var(--background-color);
+  --color-danger: var(--danger-color);
+}
+
+@custom-variant h-xs (@media (min-height: 400px));
+@custom-variant h-sm (@media (min-height: 640px));
+@custom-variant h-md (@media (min-height: 768px));
+@custom-variant h-lg (@media (min-height: 1024px));
+
+@source inline("{bg,text,border,ring,shadow}-{primary,secondary,neutral,background,danger}");
+
+/*
+  v3 default border-color was gray-200; v4 defaults to currentColor. Override
+  to --primary-color so a bare `border` utility (no color companion) inherits
+  the active theme's primary instead of a gray fallback.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--primary-color);
+  }
+}
+
+@utility button-base {
   @apply border-2 rounded-md font-bold;
 }
 
@@ -23,8 +50,8 @@
 body {
   margin: 0;
   font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif;
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -36,7 +63,7 @@ body {
   color: var(--primary-color);
 }
 
-.button-primary {
+@utility button-primary {
   @apply button-base border-primary text-primary bg-background;
 }
 
@@ -104,8 +131,8 @@ body {
   @apply text-primary border-primary rounded-lg bg-background border text-center p-2 w-full;
 }
 
-.input-base[type='number'],
-.input-base-large[type='number'] {
+.input-base[type="number"],
+.input-base-large[type="number"] {
   @apply pr-0; /* Add padding to the left */
 }
 
@@ -115,13 +142,13 @@ body {
   outline: 2px solid var(--secondary-color);
 }
 
-input[type='checkbox'] {
-  @apply w-6 h-6 border-primary border rounded-sm bg-background text-primary appearance-none checked:border-secondary;
+input[type="checkbox"] {
+  @apply w-6 h-6 border-primary border rounded-xs bg-background text-primary appearance-none checked:border-secondary;
   position: relative;
 }
 
-input[type='checkbox']:checked::after {
-  content: '';
+input[type="checkbox"]:checked::after {
+  content: "";
   display: block;
   position: absolute;
   top: 50%;
@@ -133,19 +160,19 @@ input[type='checkbox']:checked::after {
   transform: translate(-50%, -60%) rotate(45deg);
 }
 
-input[type='file']::file-selector-button {
+input[type="file"]::file-selector-button {
   @apply button-primary px-2 mr-2 border;
 }
 
-input[type='file']::-webkit-file-upload-button {
+input[type="file"]::-webkit-file-upload-button {
   @apply button-primary px-2 mr-2 border;
 }
 
-input[type='file']::-ms-browse {
+input[type="file"]::-ms-browse {
   @apply button-primary px-2 mr-2 border;
 }
 
-input[type='color'] {
+input[type="color"] {
   @apply rounded-md h-10;
   border: 1px solid var(--primary-color);
   background-color: var(--background-color);
@@ -156,27 +183,27 @@ input[type='color'] {
   outline: none;
 }
 
-input[type='color']::-webkit-color-swatch {
+input[type="color"]::-webkit-color-swatch {
   border: none;
 }
 
-input[type='color']::-webkit-color-swatch-wrapper {
+input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
 }
 
-input[type='color']::-moz-focus-inner {
+input[type="color"]::-moz-focus-inner {
   border: 0;
 }
 
 /* Override the picker dropdown itself (requires experimental flags in some browsers) */
-input[type='color']::file-selector-button {
+input[type="color"]::file-selector-button {
   background: var(--background-color);
   color: var(--primary-color);
   border: 1px solid var(--primary-color);
 }
 
-input[type='date']::-webkit-calendar-picker-indicator,
-input[type='time']::-webkit-calendar-picker-indicator {
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
   color: var(--primary-color);
   background-color: var(--primary-color);
 }

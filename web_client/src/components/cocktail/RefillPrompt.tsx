@@ -52,7 +52,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumb
             <IoClose className='ml-3' size={25} />
           </button>
         </div>
-        <div className='flex-grow'></div>
+        <div className='grow'></div>
         <div className='text-center mb-6'>
           <p>{message}</p>
         </div>
@@ -68,7 +68,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumb
             {t('cocktails.bottleRefilledCheck')}
           </label>
         </div>
-        <div className='flex-grow'></div>
+        <div className='grow'></div>
         <button
           type='button'
           className={`${!isChecked && 'disabled'} button-primary-filled px-4 py-2 w-full`}

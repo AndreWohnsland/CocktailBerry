@@ -43,7 +43,7 @@ const ResourceWindow: React.FC = () => {
 
   return (
     <div className='flex flex-col w-full max-w-5xl'>
-      <div className='flex flex-col items-center justify-center flex-shrink-0 mb-4'>
+      <div className='flex flex-col items-center justify-center shrink-0 mb-4'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
           <p className='text-2xl font-bold text-secondary mr-4 text-center'>{t('resources.startTime')}:</p>
           <select value={selectedSession ?? ''} onChange={handleSessionChange} className='select-base'>
@@ -55,7 +55,7 @@ const ResourceWindow: React.FC = () => {
           </select>
         </div>
       </div>
-      <div className='flex-grow p-2 items-center justify-center flex flex-col w-full'>
+      <div className='grow p-2 items-center justify-center flex flex-col w-full'>
         {statsLoading && <LoadingData />}
         {statsError && <ErrorComponent text={statsError.message} />}
         {stats && (
