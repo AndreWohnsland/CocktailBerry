@@ -5,25 +5,25 @@ description = "CocktailBerry Dashboard"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "python-dotenv>=1.0.1",
-    "pyyaml>=6.0.2",
+    "python-dotenv>=1.2.2",
+    "pyyaml>=6.0.3",
 ]
 
 [project.optional-dependencies]
 backend = [
-    "fastapi>=0.115.5",
-    "uvicorn>=0.32.1",
+    "fastapi>=0.136.1",
+    "uvicorn>=0.46.0",
 ]
 frontend = [
-    "dash>=3.0.4",
-    "gunicorn>=23.0.0",
-    "matplotlib>=3.10.1",
-    "numpy>=2.2.5",
-    "pandas>=2.2.3",
-    "plotly>=6.0.1",
+    "dash>=4.1.0",
+    "gunicorn>=26.0.0",
+    "matplotlib>=3.10.9",
+    "numpy>=2.4.4",
+    "pandas>=3.0.2",
+    "plotly>=6.7.0",
     "pywaffle>=1.1.1",
-    "requests>=2.32.3",
-    "scipy>=1.15.2",
+    "requests>=2.33.1",
+    "scipy>=1.17.0",
 ]
 
 [tool.uv.pip]

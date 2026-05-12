@@ -25,7 +25,7 @@ def __give_team_number(df: pd.DataFrame):
     """Add the number to the team names."""
     stats = df.groupby("Team")["Amount"].sum()
     for team, amount in stats.items():
-        df.Team.replace("^" + str(team) + "$", f"{team} ({amount})", inplace=True, regex=True)
+        df["Team"] = df["Team"].replace("^" + str(team) + "$", f"{team} ({amount})", regex=True)
 
 
 def __decide_data(datatype: int):

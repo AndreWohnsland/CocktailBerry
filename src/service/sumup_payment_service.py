@@ -10,13 +10,10 @@ import stamina
 from stamina.instrumentation import RetryDetails, set_on_retry_hooks
 from sumup import APIError, Sumup
 from sumup.readers import (
-    CreateReaderBody,
-    CreateReaderCheckoutBody,
-    CreateReaderCheckoutBodyTotalAmount,
     Reader,
     StatusResponse,
 )
-from sumup.transactions import GetTransactionV21Params, TransactionFull
+from sumup.transactions import TransactionFull
 from sumup.types import StatusResponseDataState
 
 from src.logger_handler import LoggerHandler
@@ -111,11 +108,9 @@ class _SumupSdkClient:
     @run_catching
     def create_reader(self, name: str, pairing_code: str) -> Reader:
         return self._client.readers.create(
-            self._merchant_code,
-            CreateReaderBody(
-                name=name,
-                pairing_code=pairing_code,
-            ),
+            merchant_code=self._merchant_code,
+            name=name,
+            pairing_code=pairing_code,
         )
 
     @run_catching
@@ -137,15 +132,13 @@ class _SumupSdkClient:
         return self._client.readers.create_checkout(
             merchant_code=self._merchant_code,
             reader_id=reader_id,
-            body=CreateReaderCheckoutBody(
-                total_amount=CreateReaderCheckoutBodyTotalAmount(
-                    value=value,
-                    currency=currency,
-                    minor_unit=minor_unit,
-                ),
-                description=description,
-                return_url=None,
-            ),
+            total_amount={
+                "value": value,
+                "currency": currency,
+                "minor_unit": minor_unit,
+            },
+            description=description,
+            return_url=None,
         ).data.client_transaction_id
 
     @run_catching
@@ -162,7 +155,7 @@ class _SumupSdkClient:
     def get_transaction(self, client_transaction_id: str) -> TransactionFull:
         return self._client.transactions.get(
             self._merchant_code,
-            GetTransactionV21Params(client_transaction_id=client_transaction_id),
+            client_transaction_id=client_transaction_id,
         )
 
 
