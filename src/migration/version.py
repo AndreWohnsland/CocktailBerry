@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import functools
 from typing import Self
 
 
+@functools.total_ordering
 class Version:
     """Class to compare semantic version numbers."""
 

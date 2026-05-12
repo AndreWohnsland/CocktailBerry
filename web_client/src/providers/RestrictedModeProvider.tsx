@@ -10,7 +10,7 @@ interface IRestrictedMode {
 
 const STORE_PROMPTED: string = 'RESTRICTED_MODE_PROMPTED';
 const STORE_RESTRICTED: string = 'RESTRICTED_MODE_ACTIVE';
-const RestrictedModeContext = createContext({} as IRestrictedMode);
+const RestrictedModeContext = createContext<IRestrictedMode | null>(null);
 
 export const RestrictedModeProvider = ({ children }: { children: React.ReactNode }) => {
   const { config } = useConfig();
@@ -71,5 +71,8 @@ export const RestrictedModeProvider = ({ children }: { children: React.ReactNode
   return <RestrictedModeContext.Provider value={contextValue}>{children}</RestrictedModeContext.Provider>;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useRestrictedMode = () => useContext(RestrictedModeContext);
+export const useRestrictedMode = () => {
+  const context = useContext(RestrictedModeContext);
+  if (!context) throw new Error('useRestrictedMode must be used within a RestrictedModeProvider');
+  return context;
+};

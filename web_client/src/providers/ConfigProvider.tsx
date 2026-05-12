@@ -47,7 +47,7 @@ const EMPTY_OPTION_TILES: OptionTiles = {
 };
 const EMPTY_BLACKLIST: Blacklist = { configs: [], options: EMPTY_OPTION_TILES };
 
-const ConfigContext = createContext({} as IConfig);
+const ConfigContext = createContext<IConfig | null>(null);
 
 export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [config, setConfig] = useState<DefinedConfigData>(JSON.parse(localStorage.getItem(STORE_CONFIG) ?? '{}'));
@@ -121,5 +121,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   return <ConfigContext.Provider value={contextValue}>{children}</ConfigContext.Provider>;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useConfig = () => useContext(ConfigContext);
+export const useConfig = () => {
+  const context = useContext(ConfigContext);
+  if (!context) throw new Error('useConfig must be used within a ConfigProvider');
+  return context;
+};

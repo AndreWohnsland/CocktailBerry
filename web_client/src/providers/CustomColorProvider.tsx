@@ -10,7 +10,7 @@ interface ICustomColor {
 }
 
 const STORE_CUSTOM_COLOR: string = 'COLORS';
-const CustomColorContext = createContext({} as ICustomColor);
+const CustomColorContext = createContext<ICustomColor | null>(null);
 
 // Helper to get colors from config or defaults
 const getColorsFromConfig = (config: DefinedConfigData | undefined): CustomColors => ({
@@ -75,5 +75,8 @@ export const CustomColorProvider = ({ children }: { children: React.ReactNode })
   return <CustomColorContext.Provider value={contextValue}>{children}</CustomColorContext.Provider>;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useCustomColor = () => useContext(CustomColorContext);
+export const useCustomColor = () => {
+  const context = useContext(CustomColorContext);
+  if (!context) throw new Error('useCustomColor must be used within a CustomColorProvider');
+  return context;
+};

@@ -1,4 +1,5 @@
 import copy
+import functools
 import math
 from dataclasses import dataclass, field
 from enum import Enum, StrEnum
@@ -61,6 +62,7 @@ class CocktailStatus:
     status: PrepareResult = PrepareResult.FINISHED
 
 
+@functools.total_ordering
 @pydantic_dataclass
 class Ingredient:
     """Class to represent one ingredient."""

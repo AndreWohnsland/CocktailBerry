@@ -44,26 +44,26 @@ SMALL_BUTTON_SIZE = QSize(24, 24)
 
 @dataclass
 class PresetIcon:
-    setting = _SETTING_ICON
-    plus = _PLUS_ICON
-    minus = _MINUS_ICON
-    delete = _DELETE_ICON
-    clear = _CLEAR_ICON
-    cocktail = _COCKTAIL_ICON
-    virgin = _VIRGIN_ICON
-    spinner = _SPINNER_ICON
-    time = _TIME_ICON
-    search = _SEARCH_ICON
-    upload = _UPLOAD_ICON
-    question = _QUESTION_ICON
-    tiny_glass = _TINY_GLASS
-    small_glass = _SMALL_GLASS
-    medium_glass = _MEDIUM_GLASS
-    big_glass = _BIG_GLASS
-    huge_glass = _HUGE_GLASS
-    skull = _SKULL
-    easy = _EASY
-    border = _BORDER_ICON
+    setting: str = _SETTING_ICON
+    plus: str = _PLUS_ICON
+    minus: str = _MINUS_ICON
+    delete: str = _DELETE_ICON
+    clear: str = _CLEAR_ICON
+    cocktail: str = _COCKTAIL_ICON
+    virgin: str = _VIRGIN_ICON
+    spinner: str = _SPINNER_ICON
+    time: str = _TIME_ICON
+    search: str = _SEARCH_ICON
+    upload: str = _UPLOAD_ICON
+    question: str = _QUESTION_ICON
+    tiny_glass: str = _TINY_GLASS
+    small_glass: str = _SMALL_GLASS
+    medium_glass: str = _MEDIUM_GLASS
+    big_glass: str = _BIG_GLASS
+    huge_glass: str = _HUGE_GLASS
+    skull: str = _SKULL
+    easy: str = _EASY
+    border: str = _BORDER_ICON
 
 
 @dataclass
