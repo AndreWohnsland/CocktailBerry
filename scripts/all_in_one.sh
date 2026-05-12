@@ -221,9 +221,9 @@ bash scripts/setup_usb_nfc.sh || true
 cd ~/CocktailBerry
 echo "~~ Setting up and installing CocktailBerry ~~"
 if [[ "$V2_FLAG" = true ]]; then
-  bash scripts/setup.sh v2
+  bash scripts/setup.sh v2 </dev/null
 else
-  bash scripts/setup.sh
+  bash scripts/setup.sh </dev/null
 fi
 
 echo "~~ Register successful installation: ~~"
