@@ -16,7 +16,7 @@ import { GrUpdate } from 'react-icons/gr';
 import { MdEventNote, MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
 import { RiShutDownLine } from 'react-icons/ri';
 import { TiDocumentAdd } from 'react-icons/ti';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import {
   checkInternetConnection,
   cleanMachine,

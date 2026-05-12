@@ -65,14 +65,14 @@ const ScaleCalibrationWindow = () => {
     <div className='flex flex-col justify-between items-center p-4 w-full h-full max-w-md max-h-[40rem]'>
       <TextHeader text={t('scaleCalibration.header')} />
 
-      <div className='flex-grow py-2'></div>
+      <div className='grow py-2'></div>
 
       {step === 'tare' && (
         <>
           <div className='w-full max-w-sm space-y-6 text-center'>
             <p className='text-lg text-neutral'>{t('scaleCalibration.tareInstruction')}</p>
           </div>
-          <div className='flex-grow py-2'></div>
+          <div className='grow py-2'></div>
           <button type='button' className='button-primary-filled text-lg p-4 w-full' onClick={handleTare}>
             {t('scaleCalibration.tare')}
           </button>
@@ -98,7 +98,7 @@ const ScaleCalibrationWindow = () => {
               {t('scaleCalibration.currentReading', { weight: currentReading || '-.-' })}
             </div>
           </div>
-          <div className='flex-grow py-2'></div>
+          <div className='grow py-2'></div>
           <div className='w-full space-y-3'>
             <div className='flex gap-3'>
               <button type='button' className='button-primary text-lg p-4 flex-1' onClick={handleReadWeight}>
@@ -134,7 +134,7 @@ const ScaleCalibrationWindow = () => {
               </p>
             )}
           </div>
-          <div className='flex-grow py-2'></div>
+          <div className='grow py-2'></div>
           <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleReset}>
             {t('scaleCalibration.recalibrate')}
           </button>

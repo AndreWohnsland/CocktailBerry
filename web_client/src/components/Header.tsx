@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { useRestrictedMode } from '../providers/RestrictedModeProvider';
 
 const Header: React.FC = () => {
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
   }
 
   return (
-    <header className='fixed top-0 left-0 right-0 bg-background shadow-sm shadow-neutral z-10'>
+    <header className='fixed top-0 left-0 right-0 bg-background shadow-xs shadow-neutral z-10'>
       <div className='flex justify-center items-center py-1 px-4'>
         <nav className='flex space-x-1 overflow-x-auto'>
           <NavLink to='/cocktails' className={({ isActive }) => getNavLinkClass(isActive)}>

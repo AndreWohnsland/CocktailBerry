@@ -35,7 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <div className={`z-10 sticky mb-2 flex flex-row pointer-events-none ${tabBarVisible ? 'top-10' : 'top-1'}`}>
-      <div className='flex-grow' />
+      <div className='grow' />
       <input
         type='text'
         name='searchInput'
@@ -49,7 +49,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <button
           type='button'
           onClick={() => setSearch('')}
-          className='h-10 w-10 button-neutral flex items-center justify-center p-2 mr-1 !border pointer-events-auto'
+          className='h-10 w-10 button-neutral flex items-center justify-center p-2 mr-1 border! pointer-events-auto'
         >
           <FaEraser size={20} />
         </button>
@@ -58,7 +58,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       <button
         type='button'
         onClick={handleHideToggle}
-        className='h-10 w-10 button-primary flex items-center justify-center p-2 !border pointer-events-auto'
+        className='h-10 w-10 button-primary flex items-center justify-center p-2 border! pointer-events-auto'
       >
         <FaSearch size={20} />
       </button>

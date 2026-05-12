@@ -124,7 +124,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       <div className='progress-modal h-full flex flex-col justify-between'>
         <TextHeader text={displayName} huge />
         {currentStatus === 'WAITING_FOR_PAYMENT' ? (
-          <div className='flex flex-col items-center justify-center flex-grow gap-8'>
+          <div className='flex flex-col items-center justify-center grow gap-8'>
             <FaCreditCard className='text-primary animate-pulse' size={120} />
             <div className='text-center'>
               <p className='text-2xl text-neutral font-bold mb-4'>{t('payment.scanNFC')}</p>

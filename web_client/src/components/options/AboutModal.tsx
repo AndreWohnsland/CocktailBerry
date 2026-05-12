@@ -28,7 +28,7 @@ const AboutModal = ({ isOpen, onClose, aboutInfo }: AboutModalProps) => {
           <TextHeader text={t('options.about')} subheader />
           <CloseButton onClick={onClose} />
         </div>
-        <div className='flex-grow' />
+        <div className='grow' />
         <div className='text-neutral text-center items-center leading-relaxed space-y-4'>
           {aboutInfo ? (
             formatText(
@@ -42,7 +42,7 @@ const AboutModal = ({ isOpen, onClose, aboutInfo }: AboutModalProps) => {
             <span>Loading...</span>
           )}
         </div>
-        <div className='flex-grow py-4' />
+        <div className='grow py-4' />
         <footer className='bg-background px-4 rounded-b-lg flex justify-center'>
           <span className='text-neutral mr-2'>{t('options.documentation')}</span>
           <a

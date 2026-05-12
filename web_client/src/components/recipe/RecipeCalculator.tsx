@@ -81,7 +81,7 @@ function RecipeCalculator() {
         />
         <Button label={t('recipeCalculation.optimize')} filled onClick={handleCalculate} icon={FaCalculator} />
       </div>
-      <div className='flex-grow flex flex-col sm:flex-row justify-start items-start w-full h-full sm:h-[70vh] h-md:mb-6 mb-2'>
+      <div className='grow flex flex-col sm:flex-row justify-start items-start w-full h-full sm:h-[70vh] h-md:mb-6 mb-2'>
         <div className='w-full sm:w-1/2 h-full flex flex-col'>
           <TextHeader
             text={t('recipeCalculation.cocktailsHeader', {
@@ -102,7 +102,7 @@ function RecipeCalculator() {
             />
             <label htmlFor='cocktail-select-all'>{t('recipeCalculation.selectAll')}</label>
           </div>
-          <div className='flex-grow overflow-y-auto border-2 border-neutral rounded p-2 min-h-0'>
+          <div className='grow overflow-y-auto border-2 border-neutral rounded p-2 min-h-0'>
             {cocktails
               ?.sort((a, b) => a.name.localeCompare(b.name))
               .map((cocktail) => (
@@ -127,7 +127,7 @@ function RecipeCalculator() {
             subheader
             space={2}
           />
-          <div className='flex-grow overflow-y-auto border-2 border-neutral rounded p-2 min-h-0'>
+          <div className='grow overflow-y-auto border-2 border-neutral rounded p-2 min-h-0'>
             {ingredientWithRecipes.map((ingredient) => (
               <Accordion
                 key={ingredient.id}

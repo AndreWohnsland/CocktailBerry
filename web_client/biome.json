@@ -31,6 +31,9 @@
       },
       "a11y": {
         "useKeyWithClickEvents": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
       }
     }
   },

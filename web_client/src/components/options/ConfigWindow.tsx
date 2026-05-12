@@ -431,7 +431,7 @@ const ConfigWindow: React.FC = () => {
         className={`fixed bg-background z-9 ${restrictedModeActive ? 'top-0' : 'top-9'}`}
       />
       <div className='flex flex-col w-full max-w-3xl items-center justify-center mt-8'>
-        <div className='flex-grow p-2 w-full'>
+        <div className='grow p-2 w-full'>
           {configKeys.map((key) => isInCurrentTab(key, selectedTab) && renderConfigEntry(key))}
         </div>
         <div className='flex flex-col items-center justify-center w-full px-2'>
@@ -439,7 +439,7 @@ const ConfigWindow: React.FC = () => {
             <>
               <TabSelector tabs={subTabs} selectedTab={selectedSubTab ?? ''} onSelectTab={setSelectedSubTab} />
               {selectedSubTab && (
-                <div className='flex-grow p-2 w-full'>
+                <div className='grow p-2 w-full'>
                   {configKeys.map(
                     (key) => isInCurrentSubTab(key, selectedTab, selectedSubTab) && renderConfigEntry(key),
                   )}

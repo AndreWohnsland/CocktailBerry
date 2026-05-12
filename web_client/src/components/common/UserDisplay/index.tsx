@@ -23,7 +23,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ user }) => {
 
   return (
     <div className='sticky-top mb-2 float-left mr-2'>
-      <div className='flex-shrink inline-block'>{user ? userElement : noUserElement}</div>
+      <div className='shrink inline-block'>{user ? userElement : noUserElement}</div>
     </div>
   );
 };

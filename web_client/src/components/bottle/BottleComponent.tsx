@@ -102,7 +102,7 @@ const BottleComponent: React.FC<BottleProps> = ({
             {bottle.number}
           </div>
           <DropDown
-            className='block w-full !p-2'
+            className='block w-full p-2!'
             id={`ingredient-bottle-${bottle.number}`}
             value={selectedIngredientId.toString()}
             allowedValues={[
@@ -138,7 +138,7 @@ const BottleComponent: React.FC<BottleProps> = ({
             <p className='text-neutral text-center mt-4'>
               {t('bottles.adjustHeader', { maximum: selectedIngredient?.bottle_volume })}
             </p>
-            <div className='flex-grow'></div>
+            <div className='grow'></div>
             <MinMaxInput
               value={tempFillLevel}
               onChange={setTempFillLevel}
@@ -146,7 +146,7 @@ const BottleComponent: React.FC<BottleProps> = ({
               delta={50}
               className='mb-4'
             />
-            <div className='flex-grow'></div>
+            <div className='grow'></div>
           </div>
           <Button label={t('save')} filled className='w-full' onClick={handleAdjustment} />
         </div>

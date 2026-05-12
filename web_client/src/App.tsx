@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Modal from 'react-modal';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { ToastContainer } from 'react-toastify';
 import { useIssues } from './api/options.ts';
 import AvailableBottles from './components/bottle/AvailableBottles.tsx';

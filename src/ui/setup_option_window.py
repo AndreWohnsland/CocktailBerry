@@ -115,7 +115,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             self.gridLayout_2,
             items,
             self._tile_columns,
-            skip=lambda widget: BLACKLIST.is_tile_blacklisted(attr_by_button[widget]),
+            skip=lambda widget: BLACKLIST.is_tile_blacklisted(attr_by_button[widget]),  # ty: ignore[invalid-argument-type]
         )
 
     def resizeEvent(self, a0: QResizeEvent | None) -> None:

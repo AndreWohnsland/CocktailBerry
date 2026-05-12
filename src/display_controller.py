@@ -112,10 +112,10 @@ class DisplayController(DialogHandler):
             if item is None:
                 continue
             data: Cocktail | None = item.data(Qt.ItemDataRole.UserRole)
-            if data:
-                list_widget_data.append(data)
+            if data is not None:
+                list_widget_data.append(data)  # ty: ignore[invalid-argument-type]
             else:
-                list_widget_data.append(item.text())  # pyright: ignore[reportArgumentType]
+                list_widget_data.append(item.text())
         return list_widget_data
 
     def get_ingredient_data(self, w: Ui_MainWindow) -> Ingredient:

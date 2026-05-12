@@ -231,7 +231,7 @@ const RecipeList: React.FC = () => {
               <p className='text-xl font-bold text-secondary'>{selectedCocktail.name ?? t('recipes.newRecipe')}</p>
               <CloseButton onClick={closeModal} />
             </div>
-            <div className='flex-grow' />
+            <div className='grow' />
             <form className='space-y-2 text-neutral grid-cols-2 grid h-xs:grid-cols-1'>
               <div className='flex justify-center items-center'>
                 <TextInput
@@ -311,7 +311,7 @@ const RecipeList: React.FC = () => {
                 </button>
               </div>
             </form>
-            <div className='flex-grow' />
+            <div className='grow' />
             <div className='flex justify-between mt-2'>
               <ModalActions
                 onDelete={handleDelete}
