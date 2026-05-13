@@ -83,7 +83,7 @@ class HardwareExtensionManager(BaseExtensionManager[HardwareAddonEntry]):
                 instance = entry.implementation.create(config)
                 entry.instance = instance
                 result[name] = instance
-                self._logger.info(f"Created hardware extension instance: {name}")
+                self._logger.info(f"<i> Created hardware extension instance: {name}")
             except Exception as e:
                 self._logger.error(f"Failed to create hardware extension '{name}': {e}")
         return result
@@ -94,7 +94,7 @@ class HardwareExtensionManager(BaseExtensionManager[HardwareAddonEntry]):
             if entry.instance is not None:
                 try:
                     entry.implementation.cleanup(entry.instance)
-                    self._logger.info(f"Cleaned up hardware extension: {name}")
+                    self._logger.info(f"<c> Cleaned up hardware extension: {name}")
                 except Exception as e:
                     self._logger.error(f"Failed to cleanup hardware extension '{name}': {e}")
                 entry.instance = None
