@@ -52,17 +52,40 @@ while true; do
 done
 echo "> Language set to: $CB_LANGUAGE"
 
-# It otherwise might be that the blue window blocks everything and user needs to cancel it
-echo "~~ Setting needrestart to auto-restart services (at /etc/needrestart/needrestart.conf) ~~"
-sudo sed -i -E 's|^[# ]*\$nrconf\{restart\}\s*=.*|\$nrconf{restart} = "a";|' /etc/needrestart/needrestart.conf || echo "> Could not set needrestart to auto-restart services, but continuing ..."
-export DEBIAN_FRONTEND=noninteractive
-export NEEDRESTART_MODE=a
+# Suppress interactive prompts during apt operations. Pass env inline to sudo
+# because sudo strips DEBIAN_FRONTEND / NEEDRESTART_MODE by default, which is
+# why the first run on a fresh install used to hang on the blue needrestart
+# kernel-hint dialog. NEEDRESTART_SUSPEND=1 also covers the case where the
+# needrestart package is freshly installed mid-upgrade and has no config yet.
+APT_ENV=(DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a NEEDRESTART_SUSPEND=1)
 
-echo "~~ Disabling needrestart kernel hints ~~"
-sudo sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf || echo "> Could not disable needrestart kernel hints, but continuing ..."
+# Pre-configure needrestart BEFORE the upgrade so the very first run is
+# already non-interactive. needrestart loads conf.d/ even when it is being
+# installed for the first time during the upgrade below.
+echo "~~ Pre-configuring needrestart to prevent interactive prompts ~~"
+sudo mkdir -p /etc/needrestart/conf.d
+sudo tee /etc/needrestart/conf.d/99-cocktailberry.conf > /dev/null << 'NEEDRESTART_EOF'
+$nrconf{restart} = "a";
+$nrconf{kernelhints} = -1;
+NEEDRESTART_EOF
 
 echo "~~ Updating system to latest version, depending on your system age, this may take some time ... ~~"
-sudo apt-get update && sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
+sudo "${APT_ENV[@]}" apt-get update
+sudo "${APT_ENV[@]}" apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
+
+# Belt-and-suspenders: also patch the main needrestart.conf if it now exists,
+# so the settings persist even if the conf.d snippet is ever removed.
+if [[ -f /etc/needrestart/needrestart.conf ]]; then
+  echo "~~ Persisting needrestart config (auto-restart, no kernel hints) ~~"
+  sudo sed -i -E 's|^[# ]*\$nrconf\{restart\}\s*=.*|\$nrconf{restart} = "a";|' /etc/needrestart/needrestart.conf || true
+  sudo sed -i 's/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g' /etc/needrestart/needrestart.conf || true
+fi
+
+# Keep these exported for any apt commands later in this script that still
+# use plain `sudo apt install` (git, python3-venv, pip, lxterminal, …).
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+export NEEDRESTART_SUSPEND=1
 
 # Steps for git
 echo "~~ Check if git is installed ~~"
@@ -198,9 +221,9 @@ bash scripts/setup_usb_nfc.sh || true
 cd ~/CocktailBerry
 echo "~~ Setting up and installing CocktailBerry ~~"
 if [[ "$V2_FLAG" = true ]]; then
-  bash scripts/setup.sh v2
+  bash scripts/setup.sh v2 </dev/null
 else
-  bash scripts/setup.sh
+  bash scripts/setup.sh </dev/null
 fi
 
 echo "~~ Register successful installation: ~~"
