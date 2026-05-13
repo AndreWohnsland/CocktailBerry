@@ -75,7 +75,7 @@ class Implementation(BaseHardwareExtension[ExtensionConfig]):
         This is called once during machine initialization, before dispensers are set up.
         You decide the shape of the return value.
         """
-        _logger.info(f"Creating hardware: {config.label}")
+        _logger.info(f"<i> Creating hardware: {config.label}")
         # >>> Initialize your hardware here <<<
         return MyHardware(config.label)
 
@@ -84,6 +84,6 @@ class Implementation(BaseHardwareExtension[ExtensionConfig]):
 
         Called at program shutdown. Release any resources (serial ports, connections, etc.).
         """
-        _logger.info("Cleaning up hardware")
+        _logger.info("<c> Cleaning up hardware")
         # >>> Clean up your hardware here <<<
         instance.close()
