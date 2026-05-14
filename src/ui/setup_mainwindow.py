@@ -427,7 +427,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.LEGehaltRezept.setMaxLength(2)
         self.line_edit_ingredient_name.setMaxLength(20)
         self.LEFlaschenvolumen.clicked.connect(lambda: self.open_numpad(self.LEFlaschenvolumen, 50, 50, amount))
-        self.LEFlaschenvolumen.setMaxLength(5)
+        self.LEFlaschenvolumen.setMaxLength(8)
         self.line_edit_pump_speed.clicked.connect(lambda: self.open_numpad(self.line_edit_pump_speed, 50, 50, number))
         self.line_edit_pump_speed.setMaxLength(3)
         self.line_edit_ingredient_cost.clicked.connect(
