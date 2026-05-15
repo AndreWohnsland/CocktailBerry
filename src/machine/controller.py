@@ -118,7 +118,6 @@ class MachineController:
         ingredient_list: list[Ingredient],
         recipe: str = "",
         is_cocktail: bool = True,
-        verbose: bool = True,
         finish_message: str = "",
     ) -> PreparationResult:
         """RPI Logic to prepare the cocktail.
@@ -133,7 +132,7 @@ class MachineController:
         _logger.log_header("INFO", f"Starting {recipe}")
         if is_cocktail:
             self.hardware.led_controller.preparation_start()
-        self._run_scheduler(w, items, verbose=verbose, use_carriage=True)
+        self._run_scheduler(w, items, use_carriage=True)
         if is_cocktail:
             self.hardware.led_controller.preparation_end()
         # Write consumption back to ingredient objects
@@ -156,14 +155,12 @@ class MachineController:
         self,
         w: MainScreen | None,
         items: list[PreparationItem],
-        verbose: bool = True,
         use_carriage: bool = False,
     ) -> None:
         """Create a scheduler and run the given items."""
         carriage = self.hardware.carriage if use_carriage else None
         scheduler = DispenserScheduler(
             cfg.MAKER_SIMULTANEOUSLY_PUMPS,
-            verbose=verbose,
             carriage=carriage,
         )
 

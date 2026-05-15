@@ -131,7 +131,7 @@ class ExtensionConfig(BaseCarriageConfig): # (4)!
         enabled: bool = False,
         home_position: int = 0,
         speed_pct_per_s: float = 10.0,
-        move_during_cleaning: bool = False,
+        move_during_cleaning: bool = True,
         wait_after_dispense: float = 0.0,
         **kwargs: Any, # (5)!
     ) -> None:
