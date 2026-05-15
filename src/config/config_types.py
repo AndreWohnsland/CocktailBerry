@@ -760,11 +760,11 @@ class DispenserControlledReversionConfig(BaseReversionConfig):
 
     def __init__(
         self,
-        active: bool = False,
+        enabled: bool = False,
         reversion_type: str = "Dispenser Controlled",
         **kwargs: Any,
     ) -> None:
-        super().__init__(reversion_type=reversion_type, enabled=active)
+        super().__init__(reversion_type=reversion_type, enabled=enabled)
 
 
 class BaseLedConfig(ConfigClass):
