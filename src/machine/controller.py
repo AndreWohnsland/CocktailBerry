@@ -91,7 +91,8 @@ class MachineController:
         _logger.log_header("INFO", "Start Cleaning")
         if revert_pumps and self.hardware.reverter is not None:
             self.hardware.reverter.revert_on()
-        carriage = self.hardware.carriage if cfg.CARRIAGE_CONFIG.move_during_cleaning else None
+        use_carriage = cfg.CARRIAGE_CONFIG.move_during_cleaning and not revert_pumps
+        carriage = self.hardware.carriage if use_carriage else None
         scheduler = CleaningScheduler(cfg.MAKER_SIMULTANEOUSLY_PUMPS, carriage=carriage)
 
         def on_progress(progress: int, _: list[float]) -> None:
