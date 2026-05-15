@@ -7,14 +7,19 @@ from src.config.config_types import PumpConfig
 from src.machine.controller import MachineController
 from src.machine.dispensers.base import BaseDispenser
 from src.machine.dispensers.scheduler import (
+    _CLEANING_LARGE_AMOUNT,
+    BaseScheduler,
+    CleaningItem,
+    CleaningScheduler,
     DispenserScheduler,
     PreparationItem,
-    _estimate_carriage_time,
+    _dispense_item,
     _estimate_group_time,
     _group_by_recipe_order,
     _order_by_carriage_position,
-    _run_dispenser,
     _total_travel,
+    estimate_carriage_time,
+    estimate_total_time,
 )
 from src.models import Ingredient
 
@@ -153,7 +158,7 @@ class TestController:
         # Empty
         assert _estimate_group_time([], 2) == pytest.approx(0.0)
 
-    def test_run_dispenser(self):
+    def test_dispense_item(self):
         mock_disp = _mock_dispenser(1)
         mock_disp.dispense.return_value = 100.0
 
@@ -164,15 +169,44 @@ class TestController:
             estimated_time=10,
         )
 
-        result = _run_dispenser(data)
+        _dispense_item(data)
 
-        assert result == pytest.approx(100.0)
         assert data.consumption == pytest.approx(100.0)
         assert data.done is True
         mock_disp.dispense.assert_called_once()
         call_args = mock_disp.dispense.call_args
-        assert call_args[0][0] == 100  # amount_ml
-        assert call_args[0][1] == 100  # pump_speed
+        assert call_args.kwargs["amount_ml"] == 100
+        assert call_args.kwargs["pump_speed"] == 100
+        assert call_args.kwargs["revert"] is False
+
+    def test_dispense_item_calls_on_step(self):
+        """Exclusive path passes on_step to emit aggregate progress per update."""
+        mock_disp = _mock_dispenser(1)
+
+        def fake_dispense(amount_ml: float, pump_speed: int, revert: bool, callback) -> float:  # noqa: ANN001
+            callback(50.0, False)
+            callback(100.0, True)
+            return 100.0
+
+        mock_disp.dispense.side_effect = fake_dispense
+        data = PreparationItem(dispenser=mock_disp, amount_ml=100, pump_speed=100, estimated_time=10)
+        on_step = MagicMock()
+
+        _dispense_item(data, on_step=on_step)
+
+        assert on_step.call_count == 2
+        assert data.consumption == pytest.approx(100.0)
+        assert data.done is True
+
+    def test_dispense_item_swallows_exceptions(self):
+        mock_disp = _mock_dispenser(1)
+        mock_disp.dispense.side_effect = RuntimeError("boom")
+        data = PreparationItem(dispenser=mock_disp, amount_ml=100, pump_speed=100, estimated_time=10)
+
+        _dispense_item(data)  # must not raise
+
+        # consumption stays at default; done not set when an exception occurs
+        assert data.done is False
 
     @patch("src.machine.dispensers.scheduler.time.sleep")
     def test_scheduler_run(self, mock_sleep: MagicMock):
@@ -190,10 +224,11 @@ class TestController:
         ]
 
         scheduler = DispenserScheduler(max_concurrent=2)
-        _current_time, max_time = scheduler.run(items, lambda p, c: None, lambda: False)
+        scheduler.run(items, lambda p, c: None, lambda: False)
 
         # Verify max_time estimation: 1.0s + 1.0s for two sequential groups
-        assert max_time == pytest.approx(2.0)
+        groups = _group_by_recipe_order(items)
+        assert estimate_total_time(groups, 2) == pytest.approx(2.0)
         # Both dispensers should have been called
         mock_disp1.dispense.assert_called_once()
         mock_disp2.dispense.assert_called_once()
@@ -278,7 +313,7 @@ class TestCarriageOrdering:
         # home(0) -> 10 -> 50 -> 80 -> home(0) = 10 + 40 + 30 + 80 = 160
         assert _total_travel(items, home_position=0) == 160
 
-    def test_estimate_carriage_time(self):
+    def testestimate_carriage_time(self):
         mock_carriage = MagicMock()
         mock_carriage.travel_time.return_value = 0.0
         mock_carriage.wait_after_dispense = 0.0
@@ -295,9 +330,9 @@ class TestCarriageOrdering:
                 dispenser=_mock_dispenser(3), amount_ml=10, pump_speed=100, estimated_time=2.0, recipe_order=2
             ),
         ]
-        assert _estimate_carriage_time([items1, items2], mock_carriage, home_position=0) == pytest.approx(10.0)
+        assert estimate_carriage_time([items1, items2], mock_carriage, home_position=0) == pytest.approx(10.0)
 
-    def test_estimate_carriage_time_with_travel(self):
+    def testestimate_carriage_time_with_travel(self):
         mock_carriage = MagicMock()
         mock_carriage.wait_after_dispense = 0.0
         # travel_time returns |to - from| / 10 (simulating speed_pct_per_s=10)
@@ -319,7 +354,7 @@ class TestCarriageOrdering:
             ),
         ]
         # home(0)->20: 2.0s travel + 1.0s dispense + 20->60: 4.0s travel + 1.0s dispense + 60->0: 6.0s travel
-        result = _estimate_carriage_time([items], mock_carriage, home_position=0)
+        result = estimate_carriage_time([items], mock_carriage, home_position=0)
         assert result == pytest.approx(14.0)
 
 
@@ -330,6 +365,7 @@ class TestCarriageScheduler:
         mock_carriage = MagicMock()
         mock_carriage.travel_time.return_value = 0.0
         mock_carriage.wait_after_dispense = 0.0
+        mock_carriage.home_position = 0
         mock_disp1 = _mock_dispenser(1, carriage_position=20)
         mock_disp2 = _mock_dispenser(2, carriage_position=60)
         mock_disp1.dispense.return_value = 10.0
@@ -342,11 +378,12 @@ class TestCarriageScheduler:
             PreparationItem(dispenser=mock_disp2, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
         ]
 
-        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage, home_position=0)
-        _current_time, max_time = scheduler.run(items, lambda p, c: None, lambda: False)
+        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage)
+        scheduler.run(items, lambda p, c: None, lambda: False)
 
         # Sequential: 1.0 + 1.0 = 2.0
-        assert max_time == pytest.approx(2.0)
+        groups = _group_by_recipe_order(items)
+        assert estimate_carriage_time(groups, mock_carriage, mock_carriage.home_position) == pytest.approx(2.0)
         # Carriage should move to each position then home
         assert mock_carriage.move_to.call_count == 2
         mock_carriage.home.assert_called_once()
@@ -360,6 +397,7 @@ class TestCarriageScheduler:
         mock_carriage = MagicMock()
         mock_carriage.travel_time.return_value = 0.0
         mock_carriage.wait_after_dispense = 0.0
+        mock_carriage.home_position = 0
         mock_disp1 = _mock_dispenser(1, carriage_position=80)
         mock_disp2 = _mock_dispenser(2, carriage_position=20)
         mock_disp1.dispense.return_value = 10.0
@@ -372,7 +410,7 @@ class TestCarriageScheduler:
             PreparationItem(dispenser=mock_disp2, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
         ]
 
-        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage, home_position=0)
+        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage)
         scheduler.run(items, lambda p, c: None, lambda: False)
 
         # Should move to position 20 first (closer to home=0), then 80
@@ -395,9 +433,102 @@ class TestCarriageScheduler:
         ]
 
         scheduler = DispenserScheduler(max_concurrent=2)
-        _current_time, max_time = scheduler.run(items, lambda p, c: None, lambda: False)
+        scheduler.run(items, lambda p, c: None, lambda: False)
 
         # Parallel: max(1.0, 1.0) = 1.0
-        assert max_time == pytest.approx(1.0)
+        groups = _group_by_recipe_order(items)
+        assert estimate_total_time(groups, 2) == pytest.approx(1.0)
         mock_disp1.dispense.assert_called_once()
         mock_disp2.dispense.assert_called_once()
+
+
+class TestCleaningScheduler:
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_cleaning_runs_each_dispenser(self, _mock_sleep: MagicMock):
+        """Each dispenser is invoked with the sentinel amount and stopped after duration."""
+        mock_disp1 = _mock_dispenser(1)
+        mock_disp2 = _mock_dispenser(2)
+        items = [
+            CleaningItem(dispenser=mock_disp1, duration_seconds=0.0),
+            CleaningItem(dispenser=mock_disp2, duration_seconds=0.0),
+        ]
+
+        CleaningScheduler(max_concurrent=2).run(items, lambda p, c: None, lambda: False)
+
+        mock_disp1.dispense.assert_called_once()
+        mock_disp2.dispense.assert_called_once()
+        # First positional arg passed to dispense is the sentinel amount.
+        assert mock_disp1.dispense.call_args.args[0] == _CLEANING_LARGE_AMOUNT
+        mock_disp1.stop.assert_called()
+        mock_disp2.stop.assert_called()
+
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_cleaning_carriage_orders_by_position(self, _mock_sleep: MagicMock):
+        """Carriage cleaning reorders items by position to minimize travel."""
+        mock_carriage = MagicMock()
+        mock_carriage.wait_after_dispense = 0.0
+        mock_carriage.home_position = 0
+        mock_disp1 = _mock_dispenser(1, carriage_position=80)
+        mock_disp2 = _mock_dispenser(2, carriage_position=20)
+        items = [
+            CleaningItem(dispenser=mock_disp1, duration_seconds=0.0),
+            CleaningItem(dispenser=mock_disp2, duration_seconds=0.0),
+        ]
+
+        CleaningScheduler(max_concurrent=1, carriage=mock_carriage).run(items, lambda p, c: None, lambda: False)
+
+        move_calls = [call.args[0] for call in mock_carriage.move_to.call_args_list]
+        assert move_calls == [20, 80]
+        mock_carriage.home.assert_called_once()
+
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_cleaning_progress_increases(self, _mock_sleep: MagicMock):
+        """Progress values are monotone non-decreasing and finish at 100."""
+        items = [
+            CleaningItem(dispenser=_mock_dispenser(1), duration_seconds=0.0),
+            CleaningItem(dispenser=_mock_dispenser(2), duration_seconds=0.0),
+        ]
+        seen: list[int] = []
+
+        CleaningScheduler(max_concurrent=1).run(items, lambda p, _c: seen.append(p), lambda: False)
+
+        assert seen, "progress should have been emitted at least once"
+        assert seen == sorted(seen)
+        assert seen[-1] == 100
+
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_cleaning_cancellation_stops_dispensers(self, _mock_sleep: MagicMock):
+        """When is_cancelled returns True mid-run, stop() is called on the active batch."""
+        mock_disp1 = _mock_dispenser(1)
+        mock_disp2 = _mock_dispenser(2)
+        items = [
+            CleaningItem(dispenser=mock_disp1, duration_seconds=10.0),
+            CleaningItem(dispenser=mock_disp2, duration_seconds=10.0),
+        ]
+        # Cancel after the first poll so the timed loop exits and triggers stop.
+        cancel_calls = iter([False, True, True, True, True])
+        CleaningScheduler(max_concurrent=2).run(items, lambda p, c: None, lambda: next(cancel_calls, True))
+
+        mock_disp1.stop.assert_called()
+        mock_disp2.stop.assert_called()
+
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_base_carriage_sequence_call_order(self, mock_sleep: MagicMock):
+        """BaseScheduler._run_carriage_sequence preserves move → on_each → sleep order."""
+        mock_carriage = MagicMock()
+        mock_carriage.wait_after_dispense = 0.5
+        mock_carriage.home_position = 0
+        disp = _mock_dispenser(1, carriage_position=30)
+        item = CleaningItem(dispenser=disp, duration_seconds=0.0)
+        scheduler = BaseScheduler(max_concurrent=1, carriage=mock_carriage)
+
+        events: list[str] = []
+        mock_carriage.move_to.side_effect = lambda *_: events.append("move")
+        mock_sleep.side_effect = lambda *_: events.append("sleep")
+
+        def on_each(_item: CleaningItem, _idx: int, _total: int) -> None:
+            events.append("on_each")
+
+        scheduler._run_carriage_sequence([item], on_each=on_each, is_cancelled=lambda: False)  # ty:ignore[invalid-argument-type]
+
+        assert events == ["move", "on_each", "sleep"]

@@ -6,6 +6,7 @@ from typing import Any
 from src.machine.carriage import CarriageInterface
 from src.machine.leds import LedController
 from src.machine.pin_controller import PinController
+from src.machine.reverter import Reverter
 from src.machine.rfid import RFIDInterface
 from src.machine.scale import ScaleInterface
 
@@ -20,6 +21,7 @@ class HardwareContext:
 
     pin_controller: PinController
     led_controller: LedController
+    reverter: Reverter | None
     scale: ScaleInterface | None = field(default=None)
     carriage: CarriageInterface | None = field(default=None)
     rfid: RFIDInterface | None = field(default=None)
@@ -41,4 +43,6 @@ class HardwareContext:
             self.carriage.cleanup()
         if self.rfid is not None:
             self.rfid.cleanup()
+        if self.reverter is not None:
+            self.reverter.cleanup()
         self.pin_controller.cleanup_pin_list()

@@ -5,7 +5,7 @@ from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 from src.logger_handler import LoggerHandler
-from src.machine.dispensers.base import BaseDispenser
+from src.machine.dispensers.base import BaseDispenser, DispenseContext
 
 if TYPE_CHECKING:
     from src.config.config_types import StepperPumpConfig
@@ -48,6 +48,7 @@ class StepperDispenser(BaseDispenser):
         self.driver_type = config.driver_type
         self.step_type = config.step_type
         self._motor: rpi_motor_lib.A4988Nema | None = None
+        self._revert = False
         if not MOTOR_LIB_AVAILABLE:
             _logger.warning(f"RpiMotorLib not installed. Will not be able to control slot stepper slot {self.slot}")
             return
@@ -60,6 +61,12 @@ class StepperDispenser(BaseDispenser):
     @property
     def _log_label(self) -> str:
         return f"{self.driver_type:<14}"
+
+    def _before_dispense(self, ctx: DispenseContext) -> None:
+        self._revert = ctx.revert
+
+    def _after_dispense(self, ctx: DispenseContext) -> None:
+        self._revert = False
 
     def _dispense_steps(self, amount_ml: float, pump_speed: int) -> Generator[float]:
         flow_rate = self.volume_flow * pump_speed / 100
@@ -82,7 +89,7 @@ class StepperDispenser(BaseDispenser):
                 chunk = min(steps_per_chunk, total_steps - steps_done)
                 if self._motor is not None:
                     self._motor.motor_go(
-                        False,  # clockwise
+                        self._revert,  # clockwise; reversed when revert is active
                         self.step_type,
                         chunk,
                         step_delay,

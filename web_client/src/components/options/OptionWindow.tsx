@@ -58,7 +58,7 @@ const OptionWindow = () => {
 
   const cleanClick = async () => {
     const started = await confirmAndExecute(t('options.startCleaningProgram'), async () => {
-      const revertPumps = config.MAKER_PUMP_REVERSION_CONFIG?.use_reversion
+      const revertPumps = config.MAKER_PUMP_REVERSION_CONFIG?.enabled
         ? await askYesNo(t('options.useReversion'))
         : false;
       return cleanMachine(revertPumps);
@@ -146,7 +146,7 @@ const OptionWindow = () => {
             value={theme}
             allowedValues={Object.fromEntries(themes.map((t) => [t, t.charAt(0).toUpperCase() + t.slice(1)]))}
             handleInputChange={(value) => themeSelect(value)}
-            className='!p-2'
+            className='p-2!'
           />
         </div>
         <div className='grid gap-1 w-full grid-cols-1 md:grid-cols-2'>

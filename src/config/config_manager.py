@@ -34,14 +34,15 @@ from src.config.config_types import (
     DCPumpConfig,
     DictType,
     DiscriminatedDictType,
+    DispenserControlledReversionConfig,
     FloatType,
+    GlobalReversionConfig,
     HX711ScaleConfig,
     I2CExpanderConfig,
     IntType,
     ListType,
     NAU7802ScaleConfig,
     NormalLedConfig,
-    ReversionConfig,
     StepperPumpConfig,
     StringType,
     WS281xLedConfig,
@@ -89,7 +90,7 @@ SHARED_PUMP_FIELDS: dict[str, ConfigInterface[Any]] = {
     "volume_flow": FloatType([build_number_limiter(0.1, 1000)], suffix="ml/s"),
     "tube_volume": IntType([build_number_limiter(0, 100)], suffix="ml"),
     "consumption_estimation": ChooseOptions.consumption_estimation,
-    "carriage_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
+    "carriage_position": IntType([build_number_limiter(0, 100)], prefix="pos:", suffix="%"),
 }
 
 SHARED_SCALE_FIELDS: dict[str, ConfigInterface[Any]] = {
@@ -103,9 +104,9 @@ SHARED_SCALE_FIELDS: dict[str, ConfigInterface[Any]] = {
 SHARED_CARRIAGE_FIELDS: dict[str, ConfigInterface[Any]] = {
     "carriage_type": ChooseOptions.carriage_type,
     "enabled": BoolType(check_name="Enabled"),
-    "home_position": IntType([build_number_limiter(0, 100)], suffix="pos"),
+    "home_position": IntType([build_number_limiter(0, 100)], prefix="pos:", suffix="%"),
     "speed_pct_per_s": FloatType([build_number_limiter(0.1, 100)], suffix="%/s"),
-    "move_during_cleaning": BoolType(check_name="Move During Cleaning"),
+    "move_during_cleaning": BoolType(check_name="Move During Cleaning", default=True),
     "wait_after_dispense": FloatType([build_number_limiter(0, 30)], suffix="s"),
 }
 
@@ -118,6 +119,11 @@ SHARED_LED_FIELDS: dict[str, ConfigInterface[Any]] = {
     "led_type": ChooseOptions.led_driver,
     "default_on": BoolType(check_name="Default On"),
     "preparation_state": ChooseOptions.leds,
+}
+
+SHARED_REVERSION_FIELDS: dict[str, ConfigInterface[Any]] = {
+    "reversion_type": ChooseOptions.reversion_type,
+    "enabled": BoolType(check_name="Enabled", default=False),
 }
 
 
@@ -163,7 +169,9 @@ class ConfigManager:
     # Base multiplier for alcohol in the recipe
     MAKER_ALCOHOL_FACTOR: int = 100
     # Reversion for cleaning
-    MAKER_PUMP_REVERSION_CONFIG = ReversionConfig(use_reversion=False, pin=0, pin_type="GPIO", inverted=False)
+    MAKER_PUMP_REVERSION_CONFIG = GlobalReversionConfig(
+        enabled=False, pin=0, pin_type="GPIO", board_number=1, inverted=False
+    )
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES: bool = True
     # If the maker should check if there is enough in the bottle before making a cocktail
@@ -303,15 +311,27 @@ class ConfigManager:
             "MAKER_SIMULTANEOUSLY_PUMPS": IntType([build_number_limiter(1, 999)]),
             "MAKER_CLEAN_TIME": IntType([build_number_limiter()], suffix="s"),
             "MAKER_ALCOHOL_FACTOR": IntType([build_number_limiter(10, 200)], suffix="%"),
-            "MAKER_PUMP_REVERSION_CONFIG": DictType(
+            "MAKER_PUMP_REVERSION_CONFIG": DiscriminatedDictType(
+                "reversion_type",
                 {
-                    "use_reversion": BoolType(check_name="active", default=False),
-                    "pin_type": ChooseOptions.pin,
-                    "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
-                    "pin": IntType([build_number_limiter(0)], default=0, prefix="Pin:"),
-                    "inverted": BoolType(check_name="Inverted", default=False),
+                    "Global": DictType(
+                        {
+                            **SHARED_REVERSION_FIELDS,
+                            "pin_type": ChooseOptions.pin,
+                            "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
+                            "pin": IntType([build_number_limiter(0)], default=0, prefix="Pin:"),
+                            "inverted": BoolType(check_name="Inverted", default=False),
+                        },
+                        GlobalReversionConfig,
+                    ),
+                    "Dispenser Controlled": DictType(
+                        {
+                            **SHARED_REVERSION_FIELDS,
+                        },
+                        DispenserControlledReversionConfig,
+                    ),
                 },
-                ReversionConfig,
+                default_variant="Global",
             ),
             "MAKER_SEARCH_UPDATES": BoolType(check_name="Search for Updates"),
             "MAKER_CHECK_BOTTLE": BoolType(check_name="Check Bottle Volume"),

@@ -170,7 +170,6 @@ def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> P
         ingredient_list=[ing],
         recipe=display_name,
         is_cocktail=False,
-        verbose=False,
     )
     return shared.cocktail_status.status
 

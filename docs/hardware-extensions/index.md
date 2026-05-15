@@ -28,9 +28,11 @@ The diagram below shows how the different extension types relate to each other a
 flowchart TD
     subgraph stage1["1. Core/Shared Hardware + LEDs"]
         pin["PinController"]
+        reverter["Reverter"]
         hw_ext["Hardware Extensions\n(addons/hardware/)"]
         leds["LEDs\n(addons/leds/)"]
         pin --> hctx
+        reverter --> hctx
         hw_ext --> hctx
         hctx["HardwareContext\ncreated"]
         hctx --> leds
@@ -69,7 +71,7 @@ flowchart TD
 
 The `HardwareContext` is built up in stages, so each component has access to everything created before it:
 
-1. **Core hardware + LEDs** — `PinController`, hardware extension instances (`extra` dict), and the `HardwareContext` itself are created first. The `LedController` singleton is then populated from `LED_CONFIG` so every later stage already sees the active LED list.
+1. **Core hardware + LEDs** — `PinController`, `Reverter`, hardware extension instances (`extra` dict), and the `HardwareContext` itself are created first. The `Reverter` receives the shared `PinController` instance directly. The `LedController` singleton is then populated from `LED_CONFIG` so every later stage already sees the active LED list.
 2. **Scale** — receives the context, so it can access pins, LEDs, and hardware extensions if needed.
 3. **Carriage** — receives the context including the scale, so it can access everything above.
 4. **RFID** — receives the context including scale and carriage; the resulting controller is also attached to the `RFIDReader()` singleton facade.

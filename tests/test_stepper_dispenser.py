@@ -30,7 +30,7 @@ class TestStepperDispenser:
         d = self._make_dispenser()
         d._motor = MagicMock()
         callback = MagicMock()
-        consumption = d.dispense(10.0, 100, callback)
+        consumption = d.dispense(10.0, 100, False, callback)
         # Steps are based on duration / (2 * step_delay), not steps_per_ml
         total_steps_called = sum(call.args[2] for call in d._motor.motor_go.call_args_list)
         assert total_steps_called > 0
@@ -51,7 +51,7 @@ class TestStepperDispenser:
                 d._stop_event.set()
 
         callback.side_effect = stop_on_callback
-        consumption = d.dispense(10.0, 100, callback)
+        consumption = d.dispense(10.0, 100, False, callback)
         # Should have dispensed much less than the full 10ml
         assert consumption < 10.0
 
@@ -61,14 +61,14 @@ class TestStepperDispenser:
         callback = MagicMock()
 
         # Full speed - fewer steps (shorter duration)
-        d.dispense(1.0, 100, callback)
+        d.dispense(1.0, 100, False, callback)
         full_speed_steps = sum(call.args[2] for call in d._motor.motor_go.call_args_list)
 
         d._motor.reset_mock()
         callback.reset_mock()
 
         # Half speed - more steps (longer duration)
-        d.dispense(1.0, 50, callback)
+        d.dispense(1.0, 50, False, callback)
         half_speed_steps = sum(call.args[2] for call in d._motor.motor_go.call_args_list)
 
         # Half speed should take twice as long (double the steps at same step delay)

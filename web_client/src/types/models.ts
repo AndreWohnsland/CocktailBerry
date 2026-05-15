@@ -248,13 +248,24 @@ export interface CustomColors {
   danger: string;
 }
 
-export interface ReversionConfig {
-  use_reversion: boolean;
+export interface BaseReversionConfig {
+  reversion_type: 'Global' | 'Dispenser Controlled';
+  enabled: boolean;
+}
+
+export interface GlobalReversionConfig extends BaseReversionConfig {
+  reversion_type: 'Global';
   pin: number;
   pin_type: string;
   inverted: boolean;
   board_number: number;
 }
+
+export interface DispenserControlledReversionConfig extends BaseReversionConfig {
+  reversion_type: 'Dispenser Controlled';
+}
+
+export type ReversionConfig = GlobalReversionConfig | DispenserControlledReversionConfig;
 
 export interface I2CConfig {
   device_type: string;

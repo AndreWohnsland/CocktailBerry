@@ -133,7 +133,10 @@ class Migrator:
                 _migrate_combine_led_lists_into_one_config,
                 migrate_waiter_privileges_to_roles,
             ],
-            "4.1.0": [add_disallow_pump_back_column_to_ingredients],
+            "4.1.0": [
+                add_disallow_pump_back_column_to_ingredients,
+                _migrate_reversion_use_reversion_to_enabled,
+            ],
         }
 
         for version, actions in version_actions.items():
@@ -335,6 +338,35 @@ def _migrate_rfid_reader_to_discriminated_config() -> None:
     with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
     _logger.info(f"Migrated RFID_READER='{old_value}' to RFID_CONFIG")
+
+
+def _migrate_reversion_use_reversion_to_enabled() -> None:
+    """Migrate ``MAKER_PUMP_REVERSION_CONFIG`` to the discriminated shape.
+
+    - Renames ``use_reversion`` to ``enabled``
+    - Adds ``reversion_type: "Global"`` for legacy configs that only knew the global variant
+
+    Old shape: ``MAKER_PUMP_REVERSION_CONFIG: {use_reversion: <bool>, ...}``
+    New shape: ``MAKER_PUMP_REVERSION_CONFIG: {reversion_type: "Global", enabled: <bool>, ...}``
+    """
+    configuration = _get_local_config("MAKER_PUMP_REVERSION_CONFIG")
+    if configuration is None:
+        return
+    reversion_config = configuration.get("MAKER_PUMP_REVERSION_CONFIG")
+    if not isinstance(reversion_config, dict):
+        return
+    changed = False
+    if "use_reversion" in reversion_config:
+        reversion_config["enabled"] = reversion_config.pop("use_reversion")
+        changed = True
+    if "reversion_type" not in reversion_config:
+        reversion_config["reversion_type"] = "Global"
+        changed = True
+    if not changed:
+        return
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+    _logger.info("Migrated MAKER_PUMP_REVERSION_CONFIG to discriminated shape")
 
 
 def _get_converted_value[T](new_type: Callable[[Any], T], default_value: T, local_config: Any) -> T:

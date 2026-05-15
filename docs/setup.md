@@ -64,16 +64,16 @@ They can be used at your own risk of CocktailBerry not working 100% properly.
 ??? info "List Hardware Config Values"
     Hardware config values are used to configure and enable the connected hardware.
 
-    | Value Name                    | Description                                                                                     |
-    | :---------------------------- | :---------------------------------------------------------------------------------------------- |
-    | `MAKER_PINS_INVERTED`         | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)                     |
-    | `PUMP_CONFIG`                 | Config for each pump: type, pin, volume flow, tube volume, estimation method, carriage position |
-    | `I2C_CONFIG`                  | Config for I2C GPIO expander (16 pins, 0-15)                                                    |
-    | `LED_CONFIG`                  | List of LED configs (discriminated by `led_type`: Normal or WSLED)                              |
+    | Value Name                    | Description                                                                                                    |
+    | :---------------------------- | :------------------------------------------------------------------------------------------------------------- |
+    | `MAKER_PINS_INVERTED`         | [Inverts](faq.md#what-is-the-inverted-option) pin signal (on=low, off=high)                                    |
+    | `PUMP_CONFIG`                 | Config for each pump: type, pin, volume flow, tube volume, estimation method, carriage position                |
+    | `I2C_CONFIG`                  | Config for I2C GPIO expander (16 pins, 0-15)                                                                   |
+    | `LED_CONFIG`                  | List of LED configs (discriminated by `led_type`: Normal or WSLED)                                             |
     | `RFID_CONFIG`                 | RFID/NFC reader configuration: driver type, enable/disable, [more info](troubleshooting.md#set-up-rfid-reader) |
-    | `MAKER_PUMP_REVERSION_CONFIG` | Enables reversion (direction) of pump during cleaning                                           |
-    | `SCALE_CONFIG`                | Scale hardware configuration: driver type, enable/disable and calibration factor                |
-    | `CARRIAGE_CONFIG`             | Carriage/slide configuration: enable/disable, home position, speed and cleaning behavior        |
+    | `MAKER_PUMP_REVERSION_CONFIG` | Enables reversion (direction) of pump during cleaning                                                          |
+    | `SCALE_CONFIG`                | Scale hardware configuration: driver type, enable/disable and calibration factor                               |
+    | `CARRIAGE_CONFIG`             | Carriage/slide configuration: enable/disable, home position, speed and cleaning behavior                       |
 
 ??? info "List Software Config Values"
     Software config values are used to configure additional connected software and its behavior.
@@ -83,7 +83,7 @@ They can be used at your own risk of CocktailBerry not working 100% properly.
     | `MICROSERVICE_ACTIVE`          | Post to microservice set up by docker                      |
     | `MICROSERVICE_BASE_URL`        | Base URL for microservice (default: http://127.0.0.1:5000) |
     | `TEAMS_ACTIVE`                 | Use teams feature                                          |
-    | `TEAM_BUTTON_NAMES`            | List of format ["Team1", "Team2"]                          |
+    | `TEAM_BUTTON_NAMES`            | List of format \["Team1", "Team2"\]                        |
     | `TEAM_API_URL`                 | Endpoint of teams API, default used port by API is 8080    |
     | `WAITER_MODE`                  | Enable or disable Service Personnel Mode                   |
     | `WAITER_LOGOUT_AFTER_COCKTAIL` | Log out after cocktail preparation                         |
